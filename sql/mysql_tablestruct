@@ -1,0 +1,53 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+#
+# Dumping data for bots
+#
+
+show tables;
+show fields from CHA;
+show fields from CON;
+show fields from DEX;
+show fields from INTL;
+show fields from STR;
+show fields from WIS;
+show fields from ability_scores;
+show fields from action;
+show fields from answers;
+show fields from bantable;
+show fields from bogus_itemtable;
+show fields from bottable;
+show fields from bugreportlist;
+show fields from claimed;
+show fields from depalias;
+show fields from help;
+show fields from items;
+show fields from itemtable;
+show fields from logonmessage;
+show fields from mailtable;
+show fields from monster;
+show fields from negativeitem;
+show fields from objects;
+show fields from olditem;
+show fields from oldmail;
+show fields from olduser;
+show fields from positiveitem;
+show fields from respawningitemtable;
+show fields from rooms;
+show fields from rooms2;
+show fields from rooms3;
+show fields from sillynamestable;
+show fields from skills;
+show fields from skilltable;
+show fields from tmp_itemtable;
+show fields from tmp_mailtable;
+show fields from tmp_usertable;
+show fields from todo;
+show fields from treasure;
+show fields from unbantable;
+show fields from usertable;
+show fields from usertable_corrupted;
+show fields from weapons;
+
+END_OF_DATA

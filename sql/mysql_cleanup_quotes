@@ -1,0 +1,24 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h 216.167.59.38 -u karn --password=pagedown -s mud <<END_OF_DATA
+#
+# update logonmessage
+#
+
+select concat("delete from tmp_itemtable where id=",id,";")
+from items
+where (adject1 like "%'%" or adject2 like "%'%" or adject3 like "%'%" or 
+name like "%'%") and id>0;
+
+select concat("delete from itemtable where id=",id,";")
+from items
+where (adject1 like "%'%" or adject2 like "%'%" or adject3 like "%'%" or 
+name like "%'%") and id>0;
+
+select concat("delete from items where id=",id,";")
+from items
+where (adject1 like "%'%" or adject2 like "%'%" or adject3 like "%'%" or 
+name like "%'%") and id>0;
+
+END_OF_DATA
+

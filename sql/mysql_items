@@ -1,0 +1,768 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Empty tables
+#
+#delete from items;
+#delete from itemtable; 
+#delete from tmp_itemtable;
+
+#
+# Dumping data for table 'items'
+#
+
+REPLACE INTO items VALUES (1,'bucket','sturdy','old','wooden',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bucket.gif\">Bucket</H1>
+You examine the bucket carefully. It contains nothing. It is made of
+solid dark ash wood and a iron handle. The different wooden boards are connected
+by a big iron band which runs all the way around the bucket. It is
+watertight and will probably come in very handy if you run accross a well
+and feel thirsty. It seems to be relatively new.<P>','',0,0,0,2);
+REPLACE INTO items VALUES (2,'pick','strong','iron','sharp',
+0,0,0,0,'','',0,0,1,1,1,3,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/pick.gif\">Pick</H1>
+You examine the pick carefully. It is very sharp and is very hard. It is
+rough but extremely adequate for its sole purpose : To make minsmeat out of
+huge rocks and other stuff. However it will equally handy go through
+cell-tissue.<P>','',0,0,0,5);
+REPLACE INTO items VALUES (3,'rose','red','soft','thorny',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/rose.gif\">A Rose</H1>
+You examine the rose carefully. It is totally red, with a nice green
+stem. It looks very delicate and one careless
+swipe from your hand could wipe it from existence. <P>Ofcourse, flowers like
+this deserve your full attention, and you smell the rose, which with its
+scent, moves you to distant realms where evil is but an shadowy image of an
+old memory.<P>
+','',0,0,0,1);
+REPLACE INTO items VALUES (4,'ring','starry','wedding','beautiful',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/starring.gif\">A Ring</H1>
+It\'s a ring, a ring made of gold, solid gold with intricate carvings.
+<P>On top you notice a diamond, yet it is not a diamond. Upon closer inspection
+you notice that what you mistook for a diamond is in fact something weird.
+The longer you look, the more you notice that it is not a diamond, but
+something that\'s giving off light much much more intense. So intense you
+are unable to really determine what it is. If you wouldn\'t know any better,
+you\'d swear that this ring contained a star from the sky.<P>','',3,5,0,0);
+
+replace into items values
+(5,'beer','cold','soothing','alcoholic',0,0,0,0,'','<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/beer.gif\">You Drink
+</H1><HR>
+Carefully you take the glass filled to the top with beer, a nice white froth
+on top. Gently you
+set it to your mouth and slowly but with determination you let the icy cold,
+bitter tasting, liquid slide down you throat. By Karn, you needed that. You feel
+a lot better, now that your principal thirst has lessened. You could do with
+another beer, but that beer won\'t be so good as this one...<P>
+',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/beer.gif\">A Beer</H1>
+You examine the glass of beer you are holding carefully. It has a good 
+share
+of foom and is golden towards the bottom. You almost can\'t resist the
+temptation to drink it down. What a beautiful sight. What a very good
+feeling   
+it would be to drink
+it right here and now. You could, however, give it to somebody else, but you
+would be nuts if you did, wouldn\'t you?<P>
+','',0,0,0,2);
+
+replace into tmp_itemtable values (5,'','Bill',100,0,'','');
+replace into itemtable values (5,'','Bill',100,0,'','');
+
+replace into items values
+(6,'coke','cold','refreshing','tasty',0,0,0,0,'','<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/past2.gif\">
+You drink</H1><HR>
+Carefully you take the glass of Cola. You set
+it to your lips. With a routinely gesture you drink the Coke. You like the nice
+aftertaste and the mixed carbon gas bubbling through your nose and mouth.
+You really needed that,
+and now that you are feeling much better, you are able to sustain heavy
+adventures.<P>
+',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/past2.gif\">
+Coca Cola
+Bottle</H1><HR>
+Carefully you look at the bottle filled with the dark substance. It is cold,
+dark and rich in cafeine. All the stuff that will make your day.<P>
+','',0,0,0,2);
+
+replace into tmp_itemtable values (6,'','Bill',100,0,'','');
+replace into itemtable values (6,'','Bill',100,0,'','');
+
+replace into items values
+(7,'juice','cold','orange','refreshing',0,0,0,0,'','<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/juice_m.gif\">
+You drink</H1><HR>
+Carefully you take the glass with the rich yellow liquid inside. You
+feel that it makes your hands grow cold. Vapour condenses to the outside of
+the glass. You press it against your lips. Gently, you take a sip. A
+strong sensation touches your tongue.<P>
+You drink the glass of orange juice. Very good, and very refreshing. It has
+been a long time since you have had something to drink and this really helps
+you out. You feel that now you do not need to drink a lot any more.
+<P>
+<EMBED src=\"http://lok.il.fontys.nl/~karchan/wav/soda.wav\"
+autostart=\"true\" hidden=\"true\" loop=\"true\"></EMBED>
+',0,0,1,1,1,0,'<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/juice_m.gif\">
+Jus d\'Orange</H1><HR>
+Carefully you look at the glass filled with the deep yellow liquid. It is
+cold,
+and sweet. All the stuff that will make your day.<P>
+','',0,0,0,2);
+
+replace into tmp_itemtable values (7,'','Bill',100,0,'','');
+replace into itemtable values (7,'','Bill',100,0,'','');
+
+replace into items values
+(8,'tea','cup','of','hot',0,0,0,0,'','<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cup.gif\">
+You drink</H1><HR>
+Carefully you take the glass with the rich hot tea inside your
+right hand. You feel that it makes your hands grow very hot. 
+Steamy vapour escapes from the cup. You immediately recognise the scent of
+the tea as the scent accompanied with <I>Earl Grey</I>. You press the glass
+ against your lips. Gently, you take a sip of the hot
+stuff, and almost burn your tongue. Excellent tea.<P>
+',0,0,1,1,1,0,'<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cup.gif\">
+Cup of Tea</H1><HR>
+Carefully you look at the glass filled with the deep golden transparent
+liquid. 
+It is
+very hot, and sweet. All the stuff that will make your day.<P>
+','',0,0,0,2);
+
+replace into tmp_itemtable values (8,'','Bill',100,0,'','');
+replace into itemtable values (8,'','Bill',100,0,'','');
+
+replace into items values
+(9,'coffee','hot','black','caffeine-filled',0,0,0,0,'','<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cup2.gif\">
+You drink</H1><HR>
+Carefully you take the glass with the rich hot black liquid inside
+your right hand. You
+feel that it makes your hands grow very hot.
+Gently, you take a sip from the cup. A strong sensation touches your tongue, 
+as the first dot of cafeine approaches your brain.<P>
+You carefully take a sip from the cup. It is hot and very nice. Slowly you
+proceed drinking it.<P>
+',0,0,1,1,1,0,'<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cup2.gif\">
+Cup of Hot Coffee</H1><HR>
+Carefully you look at the nice cup of coffee you are holding. It is very
+fine, black, hot coffee. You blow gently across it, and at the same time a
+whiff of the rich cafeine-filled aroma enters deeply into your nose, where
+it settles down obstinately.<BR>
+','',0,0,0,5);
+
+replace into tmp_itemtable values (9,'','Bill',100,0,'','');
+replace into itemtable values (9,'','Bill',100,0,'','');
+
+replace into items values
+(10,'whisky','strong','cool','alcoholic',0,0,0,0,'','<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/whisky.gif\">
+You drink</H1><HR>
+Carefully you take the glass with the transparent golden liquid inside
+your
+right hand. You can almost hear the heedy alcoholic vapours escaping. 
+Gently, you take a sip. A strong and slightly burning
+sensation flows through your throat.<P>
+You carefully take another sip from the glass. It is very nice. Slowly you
+proceed drinking it.<P>
+',0,0,1,1,1,0,'<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/whisky.gif\">
+<! 87>Glass of Whisky</H1><HR>
+Carefully you look at the glass filled with the deep golden transparent
+liquid.
+ It is
+very alcoholic. This drink is great if you like that sort of stuff.<P>
+','',0,0,0,9);
+
+replace into tmp_itemtable values (10,'','Bill',100,0,'','');
+replace into itemtable values (10,'','Bill',100,0,'','');
+
+replace into items values
+(11,'vodka','strong','cool','alcoholic',0,0,0,0,'','<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/vodka.gif\">
+You drink</H1><HR>
+Carefully you take the glass with the transparent liquid inside your
+right hand. It looks like ordinary water to you, yet the scent from the
+glass is enough to convince you that a large amount of what you are holding
+contains alcohol. Gently, you take a sip. A strong
+sensation almost burns your throat.<P>
+You carefully take another sip from the glass. It is very nice. Slowly you
+proceed drinking it.<P>
+',0,0,1,1,1,0,'<H1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/vodka.gif\">
+Glass of Vodka</H1><HR>
+Carefully you look at the glass filled with the deep transparent liquid. It
+is
+very alcoholic. This drink is great if you like that sort of stuff.<P>
+','',0,0,0,9);
+
+replace into tmp_itemtable values (11,'','Bill',100,0,'','');
+replace into itemtable values (11,'','Bill',100,0,'','');
+
+replace into items values
+(12,'ale','cool','Karchan','alcoholic',0,0,0,0,'','<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/cask.jpg\">You drink</H1>
+You examine the glass of ale you are holding carefully. It is Bass Ale. It
+looks darker than an average beer.
+You almost can\'t resist the
+temptation to drink it down, but on second thought you decide not to bother
+resisting. You slowly and with study drink the Ale, savouring every
+taste.<P>',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/cask.jpg\">An Ale</H1>
+You examine the glass of ale you are holding carefully. It is Bass Ale. It
+does have a very more profound effect then a normal beer can produce.
+It has a good share of foom and is golden. You almost can\'t resist the
+temptation to drink it down. What a beautiful sight. What a very good
+feeling it would be to drink 
+it right here and now. You could, however, give it to somebody else, but you
+would be nuts if you did, wouldn\'t you?<P>
+','',0,0,0,4);
+
+replace into tmp_itemtable values (12,'','Bill',100,0,'','');
+replace into itemtable values (12,'','Bill',100,0,'','');
+
+replace into items values
+(13,'loaf','nice','smelling','nitritious',0,0,0,0,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/loaf.gif\">
+You eat</H1>
+You eat the nice piece of loaf in your hand.<P>','',0,0,1,1,1,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/loaf.gif\">
+A Loaf of Bread</H1>
+This is a loaf of bread.<P>
+','',0,0,0,1);
+replace into tmp_itemtable values (13,'','Karina',100,0,'','');
+replace into itemtable values (13,'','Karina',100,0,'','');
+
+replace into items values
+(14,'bread','spicy','raisin','nitritious',0,0,0,0,'
+<H1><IMG
+SRC="http://lok.il.fontys.nl/~karchan/pictures/gif/stokbrood.gif">You eat</H1>
+You stuff the nice baguette-like-looking raisin bread into your mouth. The
+taste of the raisins are in perfect balance with the taste of the bread
+itself. A very hearty meal, you think.<P>
+','',0,0,1,1,1,0,'
+<H1><IMG
+SRC="http://lok.il.fontys.nl/~karchan/pictures/gif/stokbrood.gif">Raisin
+Bread</H1>
+A nice baguette-like bread, dotted with innumerable raisins. It looks pretty
+tasty.<P>
+','',0,0,0,4);
+replace into tmp_itemtable values (14,'','Karina',100,0,'','');
+replace into itemtable values (14,'','Karina',100,0,'','');
+
+replace into items values
+(15,'cookie','nice','sugar','nitritious',0,0,0,0,'
+<H1>You eat</H1>
+You eat a nice sugar cookie.<P>
+','',0,0,1,1,1,0,'
+<H1>A Sugar Cookie</H1>
+This is a nice sugar cookie.<P>
+','',0,0,0,2);
+replace into tmp_itemtable values (15,'','Karina',100,0,'','');
+replace into itemtable values (15,'','Karina',100,0,'','');
+
+replace into items values
+(16,'gingerbread','nice','fresh','nitritious',0,0,0,0,'
+<H1><IMG SRC="http://lok.il.fontys.nl/~karchan/pictures/gif/ginger.gif">
+You eat</H1>You eat a gingerbread.<P>
+','',0,0,1,1,1,0,'
+<H1><IMG SRC="http://lok.il.fontys.nl/~karchan/pictures/gif/ginger.gif">
+A Gingerbread</H1>This is a gingerbread.<P>
+','',0,0,0,5);
+replace into tmp_itemtable values (16,'','Karina',100,0,'','');
+replace into itemtable values (16,'','Karina',100,0,'','');
+
+replace into items values
+(17,'tart','tasty','apple','nitritious',0,0,0,0,'
+<H1>You eat</H1>
+You eat a nice apple tart.<P>
+','',0,0,1,1,1,0,'
+<H1>An Apple Tart</H1>
+This is a nice apple tart.<P>
+','',0,0,0,8);
+replace into tmp_itemtable values (17,'','Karina',100,0,'','');
+replace into itemtable values (17,'','Karina',100,0,'','');
+
+replace into items values
+(18,'tart','tasty','blueberry','nitritious',0,0,0,0,'
+<H1>You eat</H1>
+You eat a nice blueberry tart.<P>
+','',0,0,1,1,1,0,'
+<H1>A Blueberry Tart</H1>
+This is a nice blueberry tart.<P>
+','',0,0,0,8);
+replace into tmp_itemtable values (18,'','Karina',100,0,'','');
+replace into itemtable values (18,'','Karina',100,0,'','');
+
+replace into items values
+(19,'biscuit','cheap','dry','nitritous',0,0,0,0,'
+<H1>You eat</H1>
+You eat a biscuit.<P>
+','',0,0,1,1,1,0,'
+<H1>A Dry Biscuit</H1>
+This is a nice, however very dry, biscuit. It doesn\'t cost much.<P>
+','',0,0,0,2);
+replace into tmp_itemtable values (19,'','Karina',100,0,'','');
+replace into itemtable values (19,'','Karina',100,0,'','');
+
+replace into items values
+(20,'stole','soft','foxskin','comfortable',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>A Foxskin Stole</H1>
+This is a nice, soft and comfortable foxskin stole. It is beautifully made,
+with different shades of red and grey in between. It looks very warm, and
+ looks very nice around your neck.<P>
+','',7,0,1,0);
+replace into tmp_itemtable values (20,'','Karsten',100,0,'','');
+replace into itemtable values (20,'','Karsten',100,0,'','');
+
+replace into items values
+(21,'gloves','white','rabbit','comfortable',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>A Pair of Gloves</H1>
+You examine the gloves carefully. They are made of rabbit-skin and they fit
+closely around your hands. They are very soft. They seem to be some small
+protection against the
+cold and they look very handsome on you. Your hands will not suffer from bad
+weather or dishwash-water anymore.
+','',3,0,0,3);
+replace into tmp_itemtable values (21,'','Karsten',100,0,'','');
+replace into itemtable values (21,'','Karsten',100,0,'','');
+
+replace into items values
+(22,'pants','dark-green','leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Dark-green Leather Pants</H1>
+You examine the pants. They seem to be solidly made, though on both
+sides you can distinctly see the sowing line of rough leather strings. You
+have absolutely no idea from what animal this came.<P>
+','',10,0,1,0);
+replace into tmp_itemtable values (22,'','Karsten',100,0,'','');
+replace into itemtable values (22,'','Karsten',100,0,'','');
+
+replace into items values
+(23,'pants','dark-brown','leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Dark-brown Leather Pants</H1>
+You examine the pants. They seem to be solidly made, though on both
+sides you can distinctly see the sowing line of rough leather strings. You
+have absolutely no idea from what animal this came.<P>
+','',10,0,1,0);
+replace into tmp_itemtable values (23,'','Karsten',100,0,'','');
+replace into itemtable values (23,'','Karsten',100,0,'','');
+
+replace into items values
+(24,'cap','round', 'leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>A Leather Cap</H1>
+The leather cap seems to be made of brown leather, you guess from a
+pig or something. It looks rather small, yet manages quaint to fit onto your
+head. Now the only question that is left is wether or not this would look
+good on you. Personally, I doubt it.<P>
+','',4,0,0,5);
+replace into tmp_itemtable values (24,'','Karsten',100,0,'','');
+replace into itemtable values (24,'','Karsten',100,0,'','');
+
+replace into items values
+(25,'jerkin','black', 'leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/jerkin.jpg\">
+Leather Jerkin</H1>
+You examine the jerkin. It seems to resemble a jacket of somekind,
+and wearing this around your body would be a sensible idea, as it gives you
+protection from both the weather as some degree of pain. On both sides of
+the jerkin you can see rough leather strings, sewn into the jerkin, of the
+same colour. It\'s a commonplace enough jerkin, yet would not mislook on you.<P>
+','',9,0,2,0);
+replace into tmp_itemtable values (25,'','Karsten',100,0,'','');
+replace into itemtable values (25,'','Karsten',100,0,'','');
+
+replace into items values
+(26,'shoes','dark-green', 'leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Dark-green Leather Shoes</H1>
+You examine the leather shoes. They are of a very particular shade
+dark-green that seems to blend in with your surroundings. If you look even
+closer you see that these colours keep changing all over the shoe. You
+notice that it depends on how you are looking at it. They are very strong,
+and will last a while. With these shoes you should be able to walk some.<P>
+','',11,0,1,0);
+replace into tmp_itemtable values (26,'','Karsten',100,0,'','');
+replace into itemtable values (26,'','Karsten',100,0,'','');
+
+replace into items values
+(27,'shoes','dark-brown', 'leather','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Dark-brown Leather Shoes</H1>
+You examine the leather shoes. They are of a very particular shade
+dark-brown that seems to blend in with your surroundings. If you look even
+closer you see that these colours keep changing all over the shoe. You
+notice that it depends on how you are looking at it. They are very strong,
+and will last a while. With these shoes you should be able to walk some.<P>
+','',11,0,1,0);
+replace into tmp_itemtable values (27,'','Karsten',100,0,'','');
+replace into itemtable values (27,'','Karsten',100,0,'','');
+
+replace into items values
+(28,'boots','high', 'soft','leather',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>High Boots</H1>
+You examine the intense black, shining, leather boots that reach up to about
+the middle of your lower legs. They seem to be excellently made, very
+sturdy, and your feet will thank you for them.<P>
+','',11,0,1,8);
+replace into tmp_itemtable values (28,'','Karsten',100,0,'','');
+replace into itemtable values (28,'','Karsten',100,0,'','');
+
+replace into items values
+(29,'boots','low', 'soft','leather',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Low Boots</H1>
+You examine the intense black, shining, leather boots. They are made low, so
+they do not reach far above your enkels. They seem to be excellently made, very
+sturdy, and your feet will thank you for them.<P>
+','',11,0,1,2);
+replace into tmp_itemtable values (29,'','Karsten',100,0,'','');
+replace into itemtable values (29,'','Karsten',100,0,'','');
+
+replace into items values
+(30,'boots','leather', 'riding','brown',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Riding Boots</H1>
+These riding boots are extremely high, much higher then any other boots you
+have seen. They reach all the way above your knee, yet they remain
+comfortable, though you feel a certain stiffness when walking. With these
+riding boots, all you now need is a horse to go riding.<P>
+','',11,0,1,5);
+replace into tmp_itemtable values (30,'','Karsten',100,0,'','');
+replace into itemtable values (30,'','Karsten',100,0,'','');
+
+replace into items values
+(31,'sandals','leather', 'brown','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>Leather Sandals</H1>
+These leather sandals are a lot cheaper then boots and shoes, and well they
+ought to be. The amount of leather used in making these shoes is far less
+then in other items in the store. The brown is light, and it seems very good
+made stuff. The leather is still soft and smells nice.<P>
+On top of each sandal is a copper buckle visible, where you can fasten the
+sandal to your foot.<P>
+','',11,0,0,5);
+replace into tmp_itemtable values (31,'','Karsten',100,0,'','');
+replace into itemtable values (31,'','Karsten',100,0,'','');
+
+replace into items values
+(32,'cake','sweet','wedding','nitritous',0,0,0,0,'
+<H1>You eat</H1>
+You eat a nice piece of wedding cake.<P>
+','',0,0,1,1,1,0,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/weddingcake.jpg\">A Piece of Wedding Cake</H1>
+This is a nice, sweet wedding cake. It\'s totally snowy virgin white, and has
+a nice layer of frosted sugar on top, with a nice dot of unhealthy whipped
+cream.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (32,'','Bill',100,0,'','');
+replace into itemtable values (32,'','Bill',100,0,'','');
+
+replace into items values
+(33,'dress','white','wedding','elegant',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>A Wedding Dress</H1>
+It is a beautiful wedding dress, as white as snow. It runs all the
+way down to your feet.<P>
+','',9,1,0,0);
+
+replace into items values
+(34,'bouquet','flowery','wedding','elegant',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/weddingbouquet.jpg\">A Wedding Bouquet</H1>
+It is a beautiful wedding bouquet, it contains a bundle of different flowers
+of different colours.<P>
+','',0,0,0,1);
+
+replace into items values
+(35,'smoking','stylish','black','old-fashioned',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1>A Black Smoking</H1>
+The smoking seems to be old-fashioned, yet stylish. In
+compleet black, with
+white front, and a conservative black tie added to the composition giving
+a sense of compleetness.
+<P>
+','',9,1,0,0);
+
+replace into items values
+(36,'coin','valuable','copper','shiny',0,0,0,0,'','',0,0,0,0,1,0,'
+<H1>Copper Coins</H1>
+You look at your money. The copper shines into your face, seeming golden at
+first sight. However, you sober up pretty quickly.
+<P>
+','',0,0,0,0);
+
+replace into items values
+(37,'coin','valuable','silver','shiny',0,0,0,0,'','',0,0,0,0,1,0,'
+<H1>Silver Coins</H1>
+You look at your money. The silver shines into your face, like sun on the
+surface of a lake. Luckily for you you sober up pretty quickly.
+<P>
+','',0,0,0,0);
+
+replace into items values
+(38,'coin','valuable','gold','shiny',0,0,0,0,'','',0,0,0,0,1,0,'
+<H1>Gold Coins</H1>
+You look at the most precious currency that money can buy. It is pure gold,
+shiny disks, that almost blind your eyes when you make them reflect in the
+light of the sun. You are rich.
+<P>
+','',0,0,0,0);
+
+replace into items values
+(39,'key','old','rusty','strong',0,0,0,0,'','',0,0,1,1,1,0,'
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/key.gif\">
+Old rusty key</H1>
+You examine the key carefully. It is very rusty, it seems to have once been
+a green key, yet now the rust has set in at almost every place, and little
+red-brown flakes fall to the floor when you handle it roughly.
+The door/chest/cupboard
+from which it came must be equally rusty. All you have to do now is to find
+a lock that will fit this key.<P>
+','',0,0,0,0);
+
+replace into items values
+(56,'stick','crooked','wooden','strong',0,0,0,0,'','',0,0,1,1,1,3,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cane.gif\">The Stick</H1>
+You examine the stick carefully. It looks like a piece of a tree, like a
+branch or something. It looks very sturdy and solid and could be easily used
+for walking among mountains. I bet an old man would be terribly excited if
+he had an instrument like this.<P>
+','',0,0,0,0);
+
+# manaincrease
+# hitincrease
+# vitalincrease
+# movementincrease
+# eatable
+# drinkable
+# room
+# lightable
+# getable
+# dropable
+# visible
+# wieldable
+# description
+# readdescr
+# wearable         
+# gold
+# silver
+# copper
+replace into items values (-16,'stones','big', 'heavy','hard',
+0,0,0,0,'','',4,0,0,0,0,0,'<H1>The Stones</H1><HR>  
+You look at the stones. They are solid and very big and they are   
+blocking your entrance to the south completely. What you should do is take a
+heavy pick and demolish them, so that travelers may continue their trade.<P>
+','',0,0,0,0);
+replace into items values (-15,'road','nowhere','leading','yellow',
+0,0,0,0,'','',5,0,0,0,0,0,'<H1>The Road</H1><HR>
+To the south, touching this square you are on, is a dusty, yellow road,
+apparently leading nowhere, but leading nowhere much easier then the forest.
+It runs strictly south for as long as you can see.
+<P>
+It is made of sand and isn\'t much more then a path which is
+frequently used by all sorts of people. This path is easier to use than
+to go tramping through the forest.<P>
+','',0,0,0,0);
+replace into items values (-14,'shop','small','ramshackle','cheap',
+0,0,0,0,'','',5,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/winkel3.gif\">The
+Shop</H1>
+<HR>
+You look to the east to see the shop. You notice a very nice shop managed by
+a not so very nice dwarf. It is of solid rocks and looks a bit old but very
+strong. Within the shop you can just see the different items displayed at
+the counter.<BR>
+That seems to be all.<P>
+','',0,0,0,0);
+replace into items values (-13,'tavern','old','dirty','bad',
+0,0,0,0,'','',5,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/house1.gif\">The
+Tavern</H1><HR>
+To the north of this square an inn can be seen, with old glass windows
+with iron bars in front of it. It looks like a vile place for people
+like yourself. Maybe you better not go there, unless you are keen on
+getting your throat cut or be involved in other disagreeable adventures.<P>
+From the Inn a lot of noise is coming, you here people laughing, shouting,
+cursing, drinking and you hear the throwing of different items which
+originally weren\'t meant to be thrown.<P>
+<Center><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/house2.gif\"></Center>
+','',0,0,0,0);
+replace into items values (-12,'well','dryed','up','dryed-up',
+0,0,0,0,'','',5,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/well1.gif\">
+The Well</H1><HR>
+In the middle of the square is a dryed up well which hasn\'t been used for
+quite some time. It is made of rough rocks put together, and although it
+isn\'t beautiful to look at it sure is solid. Above the well a wooden
+cylinder is placed, probably in old times a rope was attached to it,
+because you still can see the marks on the wood. With the rope there
+was always the possibility of somebody being able to get some water
+but nowadays, without the rope it is impossible to extract any water
+from the well.<P>','',0,0,0,0);
+replace into items values (-11,'path','sandy','yellow','yello',
+0,0,0,0,'','',3,0,0,0,0,0,'<H1>The Road</H1><HR>
+You are now standing on a road which leads towards the north and
+towards the south. It is made of sand and isn\'t much more then a path which is
+frequently used by all sorts of people. This path is easier to use than
+to go tramping through the forest, though.<P>
+','',0,0,0,0);
+replace into items values (-10,'sky','beautiful','characteristic','',
+0,0,0,0,'','',2,0,0,0,0,0,'
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/buitenlucht.gif\">
+The Sky</H1>
+You look above you, you see a beautiful sky. A lot of clouds can be seen
+with between them the characteristic beautiful blue. The sun appears from
+behind the clouds every now and then and you like it a lot. What fun would
+it be to lie down in a meadow look at the sky and examine the clouds to see
+what they look like.<P>
+','',0,0,0,0);
+replace into items values (-9,'path','sandy','yellow','yello',
+0,0,0,0,'','',2,0,0,0,0,0,'<H1>The Path</H1><HR>
+You look carefully at the path which is due west. It
+appears to be heading borth north and south and is bordering on the brim
+of a very big forest. It looks sandy and old but it would be
+comfortable enough to walk upon.<P>
+','',0,0,0,0);
+replace into items values (-8,'forest','very','big','enchanted',
+0,0,0,0,'','',2,0,0,0,0,0,'<H1>The Forest</H1><HR>
+To the west you see a huge forest which borders on the mountains. It seems
+like a nice place to have a picknick.<P>
+','',0,0,0,0);
+replace into items values (-7,'cave','big','moist','opening',
+0,0,0,0,'','',2,0,0,0,0,0,'<H1>The Cave</H1><HR>
+To the east of you a cave can be seen, embedded in the mountain. It seems a
+dark and dreary place. Who knows what you may find there.<P>
+','',0,0,0,0);
+replace into items values (-6,'button','modern','red','strange',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Button</H1><HR>
+You look closely at the button. This is what it looks like:<P> <A
+HREF=\"http://www.mit.edu:8001/afs/athena.mit.edu/user/r/e/rei/WWW/GAME/
+sipbroom.html\"><Center>Push
+Me<P> <IMG SRC=\"http://www.il.fontys.nl/~maartenl/.icon/fraidbut.gif\"
+Alt=\"Afraid\"> </Center><P> </A> <DL><DT> Under it a sign is saying:<DD><I>If   
+you push this button, the only way to come back to this game is by using the
+Reentering link on my HomePage</I></DL> <P>
+','',0,0,0,0);
+replace into items values (-5,'water','transparent','milky-white','white',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Water</H1><HR>
+You look at the water which is running down the walls. It is of a
+transparent milky-white color. Presumably this is because the cave contains
+a lot of calcium which is good for your bones, but that isn\'t important
+right now. To drink it wouldn\'t be really
+healthy. The water does make up a natural air-conditioning system. It has
+been a long time since you were in a cave where the temperature is so low,
+even bordering on chill.<P>
+','',0,0,0,0);
+replace into items values (-4,'lake','small','crystal','clear',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Lake</H1><HR>
+You look at the lake. The water seems to be of the clearest form. In
+it anything can be seen. If you look closer you can see in the water
+that a long tunnel goes through the mountain, probably reaching the outside
+world where it amounts to a river. You might be able to swim along with the
+river to see what is out there.<P>
+','',0,0,0,0);
+REPLACE INTO items values (-3,'chain','old','rusty','iron',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/chain.gif\">
+Chain</H1><HR>
+You carefully examine the chain. One end of the chain is fastened to the
+wall, the other is fastened to a book which is hanging losely beneath it. It
+looks
+old and rusty, it seems
+solid enough though. The chain seems to be made of solid iron, and you can\'t
+break it. In some mysterious way the chain is fastened to the wall.<P>
+When you have a closer look at the point where the chain is connected to the
+wall you see a particularly strange thing. Besides the iron rings in the
+wall is a little space. It seems as if the chain isn\'t fastened to the wall
+like it should. What do you suppose would happen if you were to pull it?<P>
+','',0,0,0,0);
+REPLACE INTO items VALUES (-2,'book','red','leather','old', 
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/book.gif\">The Book</H1>
+You carefully examine the book. It looks extremely old and must have been
+used hundreds of times. It is made very solid. You blow it and the dust
+swirls to every side.<P>
+You open it. On the first page are some instructions. It
+says:<P><Center><I>Type help and press the submit button</I></Center><P>
+When you close the book you notice that on top of it a creepy looking
+picture is present. It looks something like this:
+<Center><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/draak.jpg\"><BR>
+</Center>
+','<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/book.gif\">The Book</H1>
+You carefully examine the book. It looks extremely old and must have been
+used hundreds of times. It is made very solid. You blow it and the dust
+swirls to every side.<P>
+You open it. On the first page are some instructions. It
+says:<P><Center><I>Type help and press the submit button</I></Center><P>
+When you close the book you notice that on top of it a creepy looking
+picture is present. It looks something like this:
+<Center><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/draak.jpg\"><BR>
+</Center>',0,0,0,0);
+REPLACE INTO items VALUES (-1,'walls','strong','stone','watery',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Walls</H1><HR>
+You look at the walls. They appear to be made exceptionally strong and you
+doubt that anything can be done to bring them down. They are very
+boring and besides the water that is running down the wall nothing special
+seems to reach the eye, except maybe the fact that a book is hanging from
+the wall on a chain.<P>'
+,'',0,0,0,0);
+
+#
+# Dumping data for table 'itemtable'
+#
+
+REPLACE INTO itemtable VALUES (-1,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-2,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-3,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-4,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-5,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-6,'','',1,1,'','');
+REPLACE INTO itemtable VALUES (-7,'','',1,2,'','');
+REPLACE INTO itemtable VALUES (-8,'','',1,2,'','');
+REPLACE INTO itemtable VALUES (-9,'','',1,2,'','');
+
+#
+# Dumping data for table 'tmp_itemtable'
+#
+
+REPLACE INTO tmp_itemtable VALUES (-1,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-2,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-3,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-4,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-5,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-6,'','',1,1,'','');
+REPLACE INTO tmp_itemtable VALUES (-7,'','',1,2,'','');
+REPLACE INTO tmp_itemtable VALUES (-8,'','',1,2,'','');
+REPLACE INTO tmp_itemtable VALUES (-9,'','',1,2,'','');
+REPLACE INTO tmp_itemtable VALUES (-11,'','',1,3,'','');
+REPLACE INTO tmp_itemtable VALUES (-8,'','',1,3,'','');
+REPLACE INTO tmp_itemtable VALUES (-12,'','',1,5,'','');
+REPLACE INTO tmp_itemtable VALUES (-13,'','',1,5,'','');
+REPLACE INTO tmp_itemtable VALUES (-14,'','',1,5,'','');
+REPLACE INTO tmp_itemtable VALUES (-15,'','',1,5,'','');
+REPLACE INTO tmp_itemtable VALUES (-16,'','',1,4,'','');
+
+# Check select
+select items.id, tmpitems.amount, items.name, items.adject1,
+items.adject2 from items, tmp_itemtable tmpitems  
+where (lcase(items.name)=lcase('bucket')) and 
+(items.id=tmpitems.id) and 
+(tmpitems.amount>=1) and 
+(tmpitems.belongsto='') and 
+(tmpitems.room = 9) and 
+(tmpitems.search = '');
+
+END_OF_DATA
+

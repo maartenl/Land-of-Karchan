@@ -1,0 +1,35 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown -s mud <<END_OF_DATA
+#
+# update logonmessage
+#
+
+insert into help values('title','
+<H1>Title</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>title</B> - formatted output<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>title </B>&lt;full title&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Title</B> is the command that is used to create your own
+titles. These are the titles that will be shown upon the \"wholist\" of the
+game. You can add HTML code tags to your title, however, I caution you not
+to make too much use of this feature. It can irritate the people around you
+who attempt to see who is online at the time.
+
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;title This is my title&quot;<P>
+
+<DT><B>SEE ALSO</B>
+        <DD>who<P>
+</DL>
+
+');
+END_OF_DATA
+

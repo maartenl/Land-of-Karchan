@@ -1,0 +1,12 @@
+#!/bin/sh
+# ./mysql_talk "Karn was here.<BR>" 9 | grep -v concat | /bin/sh
+
+( /karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+
+select concat("echo \"$1\" >>/karchan2/mud/tmp/",name,".log") from tmp_usertable where
+room=$2;
+
+END_OF_DATA
+) | grep -v concat | /bin/sh
+
+

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+
+select id from rooms;
+
+END_OF_DATA
+

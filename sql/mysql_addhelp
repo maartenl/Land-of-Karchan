@@ -1,0 +1,285 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Dumping data for help
+#
+
+replace into help values('wear','
+<H1>Wear</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>wear</B> - wear a piece of clothing<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>wear</B> &lt;item&gt; <B>on</B> &lt;position&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Wear</B> makes your character wear a piece of clothing on the
+part that you tell him to. Some requirements are that you actually have the
+item that you want to wear in your posession and it is wearable on that part
+of your body.<P>
+The possible values of position are:<BR><OL>
+<LI>lefthand
+<LI>righthand
+<LI>head
+<LI>neck
+<LI>body
+<LI>legs
+<LI>feet</OL>
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;wear leather jerkin on body&quot;<P>
+You: <TT><B>You wear a black, leather jerkin on your body.</B></TT><BR>
+Marvin: <TT><B>Hotblack wears a black, leather jerkin on his body.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>remove, wield, unwield<P>
+</DL>
+');
+
+replace into help values('remove','
+<H1>Remove</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>remove</B> - removes a piece of clothing you are wearing<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>remove</B> &lt;item&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Remove</B> makes your character remove a piece of clothing
+that you are wearing.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;remove leather jerkin&quot;<P>
+You: <TT><B>You remove a black, leather jerkin from your body.</B></TT><BR>
+Marvin: <TT><B>Hotblack removes a black, leather jerkin from his body.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>wear, wield, unwield<P>
+</DL>
+');
+
+replace into help values('wield','
+<H1>Wield</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>wield</B> - wields an items in either your left or your right hand<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>wield</B> &lt;item&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Wield</B> makes your character wield an item in either your
+right or your left hand. Usually the first hand that is free.<P>
+The command is primarily used for wielding weapons.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;wield pick&quot;<P>
+You: <TT><B>You wield a strong, iron pick in your left hand.</B></TT><BR>
+Marvin: <TT><B>Hotblack wields a strong, iron pick in his left hand.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>remove, wear, unwield<P>
+</DL>
+');
+
+replace into help values('unwield','
+<H1>Unwield</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>unwield</B> - removes an item that you are wielding<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>unwield</B> &lt;item&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Unwield</B> makes your character stop wielding an item.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;unwield pick&quot;<P>
+You: <TT><B>You stop wielding the strong, iron pick in your right hand.</B></TT><BR>
+Marvin: <TT><B>Hotblack rstops wielding the strong, iron pick in his right
+hand.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>wear, remove, wield<P>
+</DL>
+');
+
+replace into help values('use','
+<H1>Use</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>use</B> - use object with another object<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>use</B> &lt;item&gt; with &lt;object&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Use</B> makes your character use an item in combination with
+another item, if possible.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;use rope with hook&quot;<P>
+You: <TT><B>You tie the rope to the hook.</B></TT><BR>
+Marvin: <TT><B>Hotblack ties the rope to the hook.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>wield, wear, remove, unwield<P>
+</DL>
+');
+
+replace into help values('use','
+<H1>Use</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>use</B> - use object with another object<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>use</B> &lt;item&gt; with &lt;object&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Use</B> makes your character use an item in combination with
+another item, if possible.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;use rope with hook&quot;<P>
+You: <TT><B>You tie the rope to the hook.</B></TT><BR>
+Marvin: <TT><B>Hotblack ties the rope to the hook.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>wield, wear, remove, unwield<P>
+</DL>
+');
+
+replace into help values('awaken','
+<H1>Awaken</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>awaken</B> - wakes you up if asleep<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>awaken</B><P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Awaken</B> wakes your character up. This command is the only
+command that will be accepted of the system when you are asleep. This means:
+you cannot use any commands unless you "wake up" first. Ofcourse, if you try
+to awaken yourself and you are not asleep, that would be nonsense.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;awaken&quot;<P>
+You: <TT><B>You wake up.</B></TT><BR>
+Marvin: <TT><B>Hotblack wakes up.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>sleep<P>
+</DL>
+');
+
+replace into help values('sleep','
+<H1>Sleep</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>sleep</B> - makes you go to sleep<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>sleep</B><P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Sleep</B> makes your character go to sleep. You can awaken
+again with the "awaken" command. Other users in the game will be able to
+ascertain wether or not you are sleep.<P>
+Sleep has a couple (to be exact, two) uses. It will make you heal faster,
+and it is very easy if you are AFK (Away From Keyboard). Other people in the
+game will notice it immediately that you are asleep.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;sleep&quot;<P>
+You: <TT><B>You go to sleep.</B></TT><BR>
+Marvin: <TT><B>Hotblack goes to sleep.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>awaken<P>
+</DL>
+');
+
+replace into help values('buy','
+<H1>Buy</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>buy</B> - makes you buy item(s)<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>buy</B> [amount] &lt;item&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Buy</B> makes your character buy an item. It is usually only
+possible to buy items from certain rooms, namely shops. In these shops there
+are normally lists available describing what is for sale. It\'s possible to
+buy multiple items by simply adding the amount (in digits) before the
+itemname. Ofcourse, this will cost money, and you will pay this money. If
+you do not have enough money, the game will tell you so.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;buy beer&quot;<P>
+You: <TT><B>You buy a cool, soothing beer from Bill.</B></TT><BR>
+Marvin: <TT><B>Hotblack buys a cool, soothing beer from Bill.</B></TT><P>
+
+&quot;buy 5 brown leather pants&quot;<P>
+You: <TT><B>You buy 5 brown leather pants from Bill.</B></TT><BR>
+Marvin: <TT><B>Hotblack buys 5 brown leather pants from Bill.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>get, drop, give, sell<P>
+</DL>
+');
+
+replace into help values('sell','
+<H1>Sell</H1>
+
+<DL>
+<DT><B>NAME</B>
+<DD><B>sell</B> - makes you sell item(s) to a shopkeeper<P>
+
+<DT><B>SYNOPSIS</B>
+        <DD><B>sell</B> [amount] &lt;item&gt;<P>
+
+<DT><B>DESCRIPTION</B>
+        <DD><B>Sell</B> makes your character sell an item (or multiple
+items) to a shopkeeper. Not all shopkeepers accept items, though. You will
+receive some money from the shopkeeper from the item you sold.
+<P>
+<DT><B>EXAMPLES</B>
+        <DD>
+&quot;sell beer&quot;<P>
+You: <TT><B>You sell a beer.</B></TT><BR>
+Marvin: <TT><B>Hotblack sells a beer.</B></TT><P>
+
+<DT><B>SEE ALSO</B>
+        <DD>get, drop, give, buy<P>
+</DL>
+');
+
+END_OF_DATA
+

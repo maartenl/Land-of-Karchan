@@ -1,0 +1,12 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Dumping data for table 'items'
+#
+
+REPLACE INTO items VALUES (39,'0000001','special','special','special',
+0,0,0,0,'','',1,0,0,0,0,0,'','',0,0,0,0);
+
+END_OF_DATA
+

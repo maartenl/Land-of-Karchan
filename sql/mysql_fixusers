@@ -1,0 +1,13 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown -s mud <<END_OF_DATA
+
+#
+# Dumping data for table 'respawningitemtable'
+#
+
+select 'update usertable set race="',race,'" where name="',name,'"' from
+usertable2;
+
+END_OF_DATA
+

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h 216.167.59.38 -u karn --password=pagedown mud <<END_OF_DATA
+#
+# select statement
+#
+
+select concat("delete from usertable where name='", name, "';")
+from usertable where
+to_days(now())-to_days(lastlogin)>90 and
+god=0;
+
+#delete from usertable where to_days(now())-to_days(lastlogin)>90 and god=0;
+
+select concat("delete from itemtable where belongsto='" , belongsto, "';")
+from itemtable 
+left join usertable ON itemtable.belongsto = usertable.name
+where usertable.name is NULL group by belongsto;
+
+select concat("delete from mailtable where toname='", toname, "';")
+from mailtable 
+left join usertable ON mailtable.toname = usertable.name
+where usertable.name is NULL group by toname;
+
+END_OF_DATA
+

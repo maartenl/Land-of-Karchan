@@ -1,0 +1,400 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Dumping data for table 'items'
+#
+
+# Room 4
+replace into items values
+(-17,'road','tolerably','well','dusty',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Road</H1><HR>
+You are now standing on a road which is leading towards the north and
+towards
+the south. It is made of sand and isn\'t much more then a path which is
+frequently used by all sorts of people.<P>
+To the south you notice it passing between the mountains, there
+appears to be a mountain pass there. You also notice a 
+lot of stones, piled upon the path, effectively closing this
+way out off.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-17,'','',1,4,'','');
+replace into itemtable values (-17,'','',1,4,'','');
+
+replace into items values
+(-18,'mountains','large','unpassable','high',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/jpeg/mountain.jpg\">
+The Mountains</H1><HR>
+You look up. In the air, towering towards the sky, you can see big,
+huge, unpassable mountains. 
+They form a ring around this valley, that is securer than the best
+dungeons. <P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-18,'','',1,4,'','');
+replace into itemtable values (-18,'','',1,4,'','');
+replace into tmp_itemtable values (-8,'','',1,4,'','');
+replace into itemtable values (-8,'','',1,4,'','');
+
+# Room 6 (next to road)
+replace into items values
+(-19,'road','small','east','yellow',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Road</H1><HR>
+To the east you can see a sandy and dusty road which stretches out in two
+directions. To the north and to the south towards the mountains.<P>        
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-19,'','',1,6,'','');
+replace into itemtable values (-19,'','',1,6,'','');
+ 
+replace into items values
+(-20,'trees','more','large','huge',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Trees</H1><HR>
+The trees in this forest are clearly visible. They look 
+gigantic as indeed they are, towering above you far into the
+sky. Above you, you notice a large leafy roof, carried by 
+these trees, almost totally
+shielding you from rain and other climatic changes.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-20,'','',1,6,'','');
+replace into itemtable values (-20,'','',1,6,'','');
+
+replace into items values
+(-21,'roof','large','leafy','coloured',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Roof
+made of Leaves</H1><HR>
+The trees have almost no leaves down where you are, but
+up above you you see the branches of the trees intertwine
+and entangled in each other. These branches do have leaves,
+lots of leaves. It appears that these branches and these
+leaves make up a tight roof, not allowing any sunlight to pass
+through.<P>
+Upon closer examination you notice that even more leaves
+seem to have fallen down, creating a soft layer of leaves
+beneath your feet.
+<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-21,'','',1,6,'','');
+replace into itemtable values (-21,'','',1,6,'','');
+ 
+replace into items values
+(-22,'leaves','soft','layer','of',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Ground</H1><HR>
+You notice a soft layer of leaves upon the ground. The 
+leaves seem to be in every state from just fallen, to almost
+degenerated into common top soil.<P>
+Upon closer examination you notice that these leaves are 
+covering something up. You might be able to <I>search</I>
+them.
+<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-22,'','',1,6,'','');
+replace into itemtable values (-22,'','',1,6,'','');
+
+replace into items values
+(-24,'sunlight','soft','through','trees',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Sunlight</H1><HR>
+The sunlight seems almost not to be able to make it through
+the trees. Only here and there you notice the sunlight
+slashing down in small rays through the trees, making motes
+of dust visible, dancing in the air.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-24,'','',1,6,'','');
+replace into itemtable values (-24,'','',1,6,'','');
+
+# Room 7
+replace into items values
+(-23,'trees','more','large','huge',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Trees</H1><HR>
+The trees in this forest are clearly visible. They look 
+gigantic as indeed they are, towering above you far into the
+sky.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-23,'','',1,7,'','');
+replace into itemtable values (-23,'','',1,7,'','');
+
+# Room 8
+replace into items values
+(-25,'tree','very','big','extremely',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Big
+Tree</H1><HR>
+You are presently under a big oak-tree, next to a bench on which an
+old dwarf named Karaoke is sitting. You look carefully at the tree. Besides
+the fact that it looks very old nothing spectacular can be seen. It seems
+turdy and solid, with green leaves, so many of them that you can hardly see
+the sky above.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-25,'','',1,8,'','');
+replace into itemtable values (-25,'','',1,8,'','');
+ 
+replace into items values
+(-26,'bench','aged','old','wooden',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Bench</H1><HR>  
+You look at the bench on which the old dwarf is seated. You marvel at the
+age of the bench. It seems to be just as old as the dwarf which is sitting 
+on it. You wonder if the dwarf has been seated at this bench from the time
+that it was put there. It seems as if the two go together.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-26,'','',1,8,'','');
+replace into itemtable values (-26,'','',1,8,'','');
+
+replace into items values
+(-27,'karaoke','very','old','thin',0,0,0,0,'','',0,0,0,0,0,0,'<H1>A very old
+Dwarf</H1><HR>
+You take a good look at the dwarf who calls
+himself Karaoke. He seems to be rather thin and old and has a little white
+beard and a lot of rinkles about his face. He has a little hunchback,
+therefore he always looks down. He seems very tired and his legs look like
+hell. You wonder if he ever moves from that bench he is sitting on.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-27,'','',1,8,'','');
+replace into itemtable values (-27,'','',1,8,'','');
+
+replace into items values
+(-28,'dwarf','very','old','thin',0,0,0,0,'','',0,0,0,0,0,0,'<H1>A very old
+Dwarf</H1><HR>
+You take a good look at the dwarf who calls
+himself Karaoke. He seems to be rather thin and old and has a little white
+beard and a lot of rinkles about his face. He has a little hunchback,
+therefore he always looks down. He seems very tired and his legs look like
+hell. You wonder if he ever moves from that bench he is sitting on.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-28,'','',1,8,'','');
+replace into itemtable values (-28,'','',1,8,'','');
+
+replace into items values
+(-29,'square','small','village','stone',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Village Square</H1><HR>
+To the east you notice the Village Square. Not that this village
+deserves the name of Village, with only one Inn, a shop, and
+an old senile dwarf on a bench beneath a tree.<P>
+It does somehow exhale a certain peace about it all, though.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-29,'','',1,8,'','');
+replace into itemtable values (-29,'','',1,8,'','');
+
+# Room 9
+replace into items values
+(-30,'chair','wooden','old','solid',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/herberg7.gif\">
+The Chair</H1><HR>
+You look carefully at the chair, it seems to be old but very solidly 
+made. This is
+one of those chairs that were made in the good old days, when quality
+counted and not quantity. It seems a bit worn down, with ringlets depicting
+places where people used to put their glasses. There has been a lot of
+carving done on the chair, as is usual in an Inn like this one.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-30,'','',1,9,'','');
+replace into itemtable values (-30,'','',1,9,'','');
+ 
+replace into items values
+(-31,'bar','wooden','rather','large',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/herberg6.gif\">
+The Bar</H1><HR>
+You look at the bar. It seems nice and solid and of a beautiful rich
+wood. On it different candles can be seen and potions of all sorts designed 
+to make life a little better. Watch out however for you\'ll never know how   
+you will react to one of those potions.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-31,'','',1,9,'','');
+replace into itemtable values (-31,'','',1,9,'','');
+ 
+replace into items values
+(-32,'cupboard','comparatively','big','wooden',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/herberg3.gif\">
+The Cupboard</H1><HR>
+You look at the cupboard. Except that it is closed you can not see anything
+special, beyond the fact that it is very old and wormeaten. With one knock
+you could probably knock it down, but I doubt if the barman would appreciate
+this much. It hasn\'t got a lock so you could open it. I doubt if the barman
+would mind.<P>Right next to the cupboard you notice a painting.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-32,'','',1,9,'','');
+replace into itemtable values (-32,'','',1,9,'','');
+ 
+replace into items values
+(-33,'dwarf','norse','small','ugly',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Innkeeper</H1><HR>
+You take a good look at the dwarf behind the
+bar who calls himself Bill. He seems to be rather big and ugly. He seems to
+continually try to follow every guest that comes in here with his eyes. A
+very nasty habit, which have driven a lot of guests out of the Inn. You,
+however, can withstand the gaze. He is continually rubbin\' his glasses dry
+towel.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-33,'','',1,9,'','');
+replace into itemtable values (-33,'','',1,9,'','');
+
+replace into items values
+(-34,'bill','norse','small','ugly',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Innkeeper</H1><HR>
+You take a good look at the dwarf behind the
+bar who calls himself Bill. He seems to be rather big and ugly. He seems to
+continually try to follow every guest that comes in here with his eyes. A
+very nasty habit, which have driven a lot of guests out of the Inn. You,
+however, can withstand the gaze. He is continually rubbin\' his glasses dry
+towel.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-34,'','',1,9,'','');
+replace into itemtable values (-34,'','',1,9,'','');
+ 
+replace into items values
+(-35,'menu','written','piece','of',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Menu</H1>
+The piece of paper is a menu written in strange straggeling gothic
+characters. It is hardly readable. However, you are able to make out the
+following drinks and food and their corresponding prizes.<P>
+<I>
+<TABLE>  
+<TR>
+<TH>________________________________
+<TH>________________________________
+</TR><TR><TH>Beer<TH>2 copper coins
+</TR><TR><TH>Ale<TH>4 copper coins
+</TR><TR><TH>Whitebeer (Hoegaarden) [x]<TH>5 copper coins 
+</TR><TR><TH>Whisky<TH>5 copper coins
+</TR><TR><TH>Vodka<TH>5 copper coins
+</TR><TR><TH>Jus d\'Orange<TH>2 copper coins
+</TR><TR><TH>Coca Cola (Coke)<TH>2 copper coins
+</TR><TR><TH>DietCoke [x]<TH>4 copper coins
+</TR><TR><TH>Sinas [x]<TH>4 copper coins
+</TR><TR><TH>Coffee (without biscuit) <TH>2 copper coins
+</TR><TR><TH>Tea <TH>2 copper coins
+</TR><TR><TH>Warm Chocolate Milk with cream [x]<TH>10 copper coins
+</TABLE>
+</I>
+You should be able to <B>buy</B> something from the menu. The items that
+have been marked are not available yet. Still looking for appropriate
+pictures for the drinks that are marked.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-35,'','',1,9,'','');
+replace into itemtable values (-35,'','',1,9,'','');
+
+replace into items values
+(-36,'sign','small','wooden','plate',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Sign</H1><HR>
+There is a small wooden plate hanging on the wall behind the counter. It has
+some damnible writing on it. You should be able to <I>read</I> it. From this
+distance you see, it is some kind of sound advice or something.<P>
+','<H1>The Sign</H1><HR> 
+You read the small wooden plate hanging on the wall behind the counter.
+<Center><H3>Do not hesitate to ask for credit,<BR>
+we will not hesitate to tell you to get lost.</H3></Center>
+',0,0,0,0);
+replace into tmp_itemtable values (-36,'','',1,9,'','');
+replace into itemtable values (-36,'','',1,9,'','');
+
+replace into items values
+(-37,'painting','beautiful','old','mid-eval',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/herberg2.gif\">
+The Picture</H1><HR>
+You look very hard at the picture which is adorning the west-wall of
+the Inn. It is hanging next to a cupboard. It appears to depict a woman, in
+a very oldfashioned dress. She looks dignified and has a smile on her face.
+It is a strange smile and you wonder what she is smiling about.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-37,'','',1,9,'','');
+replace into itemtable values (-37,'','',1,9,'','');
+
+#room 3, board and stuff
+replace into items values
+(-38,'sign','little','paper','written',0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/scroll.gif\">
+The Sign</H1><HR>
+There\'s a little sign, plastered to the public board. It\'s yellow and
+parched with rain and stuff, yet the writing on it is still clear. You
+should be able to read it.
+','
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/scroll.gif\">
+You read</H1><HR>
+This is what the little sign plastered to the board says:<P>
+<H4>Welcome to the MessageBoard of the Land of Karchan</H4>
+This messageboard is for leaving messages to people who have visited this
+great
+game. There are few commands at present:<P>
+<DL>
+<DT>public &lt;something&gt;
+<DD>this will put your message onto the message board where it can be read
+with <I>read public</I>.
+<DT>read public
+<DD>this will let you read all the (public) messages. See also
+<I>public</I>.
+<DT>mail
+<DD>this will create a page in which you can fill out the name of the person
+you want to send a mail to, the title of the mail and the body of the mail.
+This will work whether he is
+active in the game or not. This message can not be read by anybody but the
+person you sent it to! So please use this to issue forth private messages.
+If you have something to ask me, you can use it too.<P>
+<DT>listmail
+<DD>this will show a list of all the mails you have gotten in time. The list
+will consist of a number and header and from whom it comes. Use the number
+in the <I>readmail</I> command.
+<DT>readmail &lt;number&gt;
+<DD>this will show you the mailmessage and the time and who issued it to
+you. The number represents the mail you wanted to see. Use <I>listmail</I>
+to get a list of all mails with the appropriate numbers.
+<DT>deletemail &lt;number&gt;
+<DD>this will delete the mail with the mailnumber you have given as a
+parameter. You cannot get the mail you deleted back, so be careful.
+</DL>
+<B>P.S.</B>: You probably think that you can\'t type that much in one line,
+well that can be helped. If you want to add a number of lines all in one
+message, please use the command <B>big talk</B> before you try the
+commands.<P>
+One more thing, if you encounter any errors or incoherent situations or
+something, I would appreciate it if you would mail me about it. Than I can
+get it fixed.<P>
+Good luck, Karn, (Ruler of Karchan and Keeper of the Key to the Room of Lost
+Souls)<P>
+',0,0,0,0);
+
+replace into tmp_itemtable values (-38,'','',1,3,'','');
+replace into itemtable values (-38,'','',1,3,'','');
+
+replace into items values
+(-39,'board','big','public','paper',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/scroll.gif\">
+The Board</H1><HR>
+There\'s this big cardboard board on which a little paper sign is plastered. 
+The sign seems to have been put there in order to inform you how to use this
+apparently publicly available board. You should read it in order to gain
+some information.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-39,'','',1,3,'','');
+replace into itemtable values (-39,'','',1,3,'','');
+
+#room 23 Stones -> important
+replace into items values
+(-40,'stones','big','heavy','hard',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Stones</H1><HR>
+You look at the stones. They are solid and very big and they are
+blocking your entrance to the north completely. What you should do is take a
+heavy pick and demolish them, so that travelers may continue their trade.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-40,'','',1,23,'','');
+replace into itemtable values (-40,'','',1,23,'','');
+
+
+END_OF_DATA
+

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+#
+# update logonmessage
+#
+
+update itemtable 
+set race = 'human'
+where race<>'human' and
+race<>'fox' and
+race<>'rabbit' and
+race<>'duck' and
+race<>'wolf' and
+race<>'chipmunk' and
+race<>'ropegnaw'
+END_OF_DATA
+

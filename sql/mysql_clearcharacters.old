@@ -1,0 +1,20 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+
+#
+# Select all people out there who have been inactive for more than an hour
+#
+#select name from tmp_usertable 
+#where DATE_SUB(NOW(), INTERVAL 1 HOUR)>lastlogin;
+
+select DATE_ADD("1997-12-31 23:59:59",INTERVAL 1 SECOND);
+
+#delete from tmp_mailtable where lcase(toname)=lcase('%s');
+
+#delete from tmp_itemtable where lcase(belongsto)=lcase('%s')
+
+#delete from tmp_usertable where DATE_SUB(NOW(), INTERVAL 3 HOUR)>lastlogin;
+
+END_OF_DATA
+

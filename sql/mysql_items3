@@ -1,0 +1,724 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Dumping data for table 'items'
+#
+
+# Room 10
+replace into items values
+(-41,'forest','huge','green','tree-filled',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Forest</H1><HR>
+What can I say? You are in a forest. Trees surround you from all sides, and
+tower above you into the clear blue sky, effectively obscuring it with their
+leafy roof.<P>
+','',0,0,0,0);
+replace into items values
+(-42,'trees','huge','green','towering',0,0,0,0,'','',0,0,0,0,0,0,'<H1>The
+Forest</H1><HR>
+What can I say? You are in a forest. Trees surround you from all sides, and
+tower above you into the clear blue sky, effectively obscuring it with their
+leafy roof.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-41,'','',1,10,'','');
+replace into itemtable values (-41,'','',1,10,'','');
+replace into tmp_itemtable values (-42,'','',1,10,'','');
+replace into itemtable values (-42,'','',1,10,'','');
+replace into tmp_itemtable values (-41,'','',1,11,'','');
+replace into itemtable values (-41,'','',1,11,'','');
+replace into tmp_itemtable values (-42,'','',1,11,'','');
+replace into itemtable values (-42,'','',1,11,'','');
+replace into tmp_itemtable values (-41,'','',1,18,'','');
+replace into itemtable values (-41,'','',1,18,'','');
+replace into tmp_itemtable values (-42,'','',1,18,'','');
+replace into itemtable values (-42,'','',1,18,'','');
+replace into tmp_itemtable values (-41,'','',1,19,'','');
+replace into itemtable values (-41,'','',1,19,'','');
+
+# Room 12
+replace into items values
+(-43,'tree','big','green','brown',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Tree</H1>
+Though it looks slightly bigger then the other trees, you do not notice
+anything different on this one, until you look closer at the bark of the
+tree. Out of the brown bark are sticking some short planks and they make it
+easy for you to go climb up into the tree. The stairs, for yes, it is a
+stairs, go up in to the tree, towards a ramshackle hut you notice above
+you.<P>','',0,0,0,0);
+replace into tmp_itemtable values (-43,'','',1,12,'','');
+replace into itemtable values (-43,'','',1,12,'','');
+replace into tmp_itemtable values (-41,'','',1,12,'','');
+replace into itemtable values (-41,'','',1,12,'','');
+replace into tmp_itemtable values (-42,'','',1,12,'','');
+replace into itemtable values (-42,'','',1,12,'','');
+
+# Room 13
+replace into items values
+(-44,'hut','wooden','cleverly','hidden',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Hut</H1>
+You look around you. The hut seems to have been made some time ago, because
+the boards of which it is made are of a dark colour, as if the rain has
+beaten continually on them. In some corners you notice both sticky cobwebs
+as well as a white fungus eating its way slowly into the wood.<P>
+Branches and leaves of the tree in which the hut was built have succeeded
+over the years to invade this sanctum.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-44,'','',1,13,'','');
+replace into itemtable values (-44,'','',1,13,'','');
+
+replace into items values
+(-45,'staircase','small','improvised','wooden',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Improvised Staircase</H1>
+Below you, you see boards sticking out of the tree, forming a simple and
+slightly dangerous staircase leading down the side of the tree.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-45,'','',1,13,'','');
+replace into itemtable values (-45,'','',1,13,'','');
+
+# Room 14
+replace into tmp_itemtable values (-41,'','',1,14,'','');
+replace into itemtable values (-41,'','',1,14,'','');
+replace into tmp_itemtable values (-42,'','',1,14,'','');
+replace into itemtable values (-42,'','',1,14,'','');
+# Room 15
+replace into tmp_itemtable values (-41,'','',1,15,'','');
+replace into itemtable values (-41,'','',1,15,'','');
+replace into tmp_itemtable values (-42,'','',1,15,'','');
+replace into itemtable values (-42,'','',1,15,'','');
+
+# Room 16
+replace into items values
+(-46,'weapons','primitive','collection','of',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Weapons</H1><HR>
+You look earnestly at the weapons which are scattered across the shop
+of the old midget. You might be able to buy them if you have anough money.
+Just type <B>list</B> to see a full list of all the available objects that
+can be bought and their prices.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-46,'','',1,16,'','');
+replace into itemtable values (-46,'','',1,16,'','');
+replace into items values
+(-47,'bottles','strange','glowing','round',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Bottles</H1><HR>
+You look at the bottles which adorn the walls of the little shop. They
+are very strange. it\'s contents is glowing, and moving, and it is clearly a
+liquid but the strangest ones you have ever seen. They are probably magic
+potions, which yield great powers to everyone. You have to buy them,
+however. Karcas doesn\'t seem to be a dude which is likely to <I>give</I>
+stuff away.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-47,'','',1,16,'','');
+replace into itemtable values (-47,'','',1,16,'','');
+replace into items values
+(-48,'counter','wooden','messy','original',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1>The Counter</H1><HR>
+You look carefully at the counter of the shop. It is a dreadful mess.
+Litter is covering it, so you can\'t see the original wood. Behind the  
+counter you see a wooden hatch, leading somewhere under the floor.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-48,'','',1,16,'','');
+replace into itemtable values (-48,'','',1,16,'','');
+replace into items values
+(-49,'list','plastered','shopping','stuffy',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/scroll.gif\">
+The List</H1><HR>
+You look at the list on the west wall of the shop. It seems to be made   
+out of very old paper. It is plastered with a sticky substance which you
+don\'t want to get into. It seems to be a list of items that are available
+in this shop, as well as instructions on how to buy and sell stuff. You
+should be able to <I>read</I> it.<P>
+','
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/scroll.gif\">
+The List</H1><HR>
+
+<I>Instructions:</I><B>
+<DL>
+<DT>buy &quot;something&quot;
+<DD>this will make you buy something if it is present in the list above.
+You will automically pay the required money.
+<DT>sell &quot;something&quot;
+<DD>this will make you sell something in the same way that the buy-command
+works, you will now receive money in stead of giving money.
+</DL></B><P>
+',0,0,0,0);
+
+replace into tmp_itemtable values (-49,'','',1,16,'','');
+replace into itemtable values (-49,'','',1,16,'','');
+
+replace into items values
+(-50,'hatch', 'hidden','wooden','light-brown',0,0,0,0,'','',0,0,0,0,0,0,'
+<H1><IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/winkel2.gif\">
+The Hatch</H1><HR>
+You look at the hatch. It seems to be made of wood and it sinks a
+little into the ground. On one side of the wood a large iron ring can be
+seen. It was probably meant to pull at. You should be able to pull at the
+hatch or open the hatch.<P>
+','',0,0,0,0);
+
+replace into tmp_itemtable values (-50,'','',1,16,'','');
+replace into itemtable values (-50,'','',1,16,'','');
+
+# Room 17
+
+replace into items values (-51,'water','transparent','milky-white','white',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Water</H1><HR>
+You look at the water which is running down the walls. It is of a
+transparent milky-white color. Presumably this is because the cave contains
+a lot of calcium which is good for your bones, but that isn\'t important
+right now. To drink it wouldn\'t be really
+healthy. The water does make up a natural air-conditioning system. It has
+been a long time since you were in a cave where the temperature is so low,
+even bordering on chill.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-51,'','',1,17,'','');
+replace into itemtable values (-51,'','',1,17,'','');
+
+replace into items values (-52,'lake','small','crystal','clear',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Lake</H1><HR>
+You look at the lake. The water seems to be of the clearest form. In
+it anything can be seen. If you look closer you can see in the water
+that a long tunnel goes through the mountain, probably reaching the outside
+world where it amounts to a river. You might be able to swim along with the
+river to see what is out there.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-52,'','',1,17,'','');
+replace into itemtable values (-52,'','',1,17,'','');
+
+REPLACE INTO items VALUES (-53,'walls','strong','stone','watery',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Walls</H1><HR>
+You look at the walls. They appear to be made exceptionally strong and you
+doubt that anything can be done to bring them down. They are very
+boring and besides the water that is running down the wall nothing special
+seems to reach the eye.<P>'
+,'',0,0,0,0);
+replace into tmp_itemtable values (-53,'','',1,17,'','');
+replace into itemtable values (-53,'','',1,17,'','');
+
+# Room 18
+REPLACE INTO items VALUES (-54,'bird','yellow','singing','nice',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Bird</H1><HR>
+You look carefully at the bird you can see singing high up in the
+tree, where you are standing under. Is seems to be a nightinggale. It looks
+very beautiful and you relax in order to listen to the beautiul song that
+reaches your ears.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-54,'','',1,18,'','');
+replace into itemtable values (-54,'','',1,18,'','');
+
+# Room 19 
+replace into tmp_itemtable values (-54,'','',1,19,'','');
+replace into itemtable values (-54,'','',1,19,'','');
+
+# Room 20
+REPLACE INTO items VALUES (-55,'cobwebbs','sticky','old','white',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Cobwebbs</H1><HR>
+On the wooden planks which hold the roof together, a big family of
+spiders must be flourishing, because of the cobwebbs you see. You have to be
+very carefull or else your hair will be a huge mess and the cobwebbs will be
+entangled into it. There are
+however no spiders to be seen near the cobwebbs right now, thank god.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-55,'','',1,20,'','');
+replace into itemtable values (-55,'','',1,20,'','');
+
+REPLACE INTO items VALUES (-56,'lock','well-made','iron','strong',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Lock</H1><HR>
+You look carefully at the lock of the chest. It is very well made.  
+Somebody at least knows his business. You can\'t open it, that is for sure.
+Why don\'t you try finding the key? There is probably no other way to open this
+chest but with the key.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-56,'','',1,20,'','');
+replace into itemtable values (-56,'','',1,20,'','');
+
+REPLACE INTO items VALUES (-57,'staircase','wooden','light-brown','strong',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Stairs</H1><HR>
+You look carefully at the staircase which is leading downstairs to the  
+south. You probably end up in the main room of the Inn.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-57,'','',1,20,'','');
+replace into itemtable values (-57,'','',1,20,'','');
+
+REPLACE INTO items VALUES (-91,'chest','rusty','iron','treasure',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/hidden02.gif\">
+The Chest</H1><HR>
+On the floor on the far side of the hidden room above the main room
+of the Inn you see a solid iron chest. It happens to be very old and very
+sturdy. It\'s lock is rusted and firmly closed. It is one of those chest
+which could hide great treasure. It is exceptionally solid. Maybe some
+secret 
+treasure is hidden in there. You can\'t wait to
+have a look.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-91,'','',1,20,'','');
+replace into itemtable values (-91,'','',1,20,'','');
+
+# Room 21
+
+REPLACE INTO items VALUES (-58,'road','yellow','sandy','disused',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Road</H1>
+You look down at the dusty road which you see before you. It appears
+to be not much used. However, it is a lot better than walking through grass
+or Forest or other such stuff. It stretches towards the west to a cave and
+to the east to a crossection.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-58,'','',1,21,'','');
+replace into itemtable values (-58,'','',1,21,'','');
+
+REPLACE INTO items VALUES (-59,'cave','dreary','moist','fairy',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Cave</H1>
+You look to the west, towards the mountains. In the mountains a big
+hole can be seen. It is probably the <B>&quot;Cave of the
+Fairies&quot;</B>. You can follow the road to the west, into the cave. But
+beware of what may or may not lurk there!<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-59,'','',1,21,'','');
+replace into itemtable values (-59,'','',1,21,'','');
+
+REPLACE INTO items VALUES (-60,'crosssection','small','road','duh',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Crossection</H1>
+To the east you can see the road splitting up into a road to the north
+and south. <P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-60,'','',1,21,'','');
+replace into itemtable values (-60,'','',1,21,'','');
+
+# Room 22
+REPLACE INTO items VALUES (-61,'roadsign','wooden','sturdy','old',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/sign.gif\">
+The Roadsign</H1><HR>
+You look very hard at the roadsign beside the road. It consists of a
+normal wooden pole driven into the ground. On the pole are wooden boards
+on which words can be read, depicting where the road goes to. On a board
+which is pointing to the west you can see a tekst saying: &quot;<B>Cave of
+Fairies</B>&quot;. You see two more pointers, one to the south, with says
+&quot;<B>City of Pendulis</B>&quot;, a board to the north says :&quot;<B>Unknown</B> (Which
+means as much as, everybody that goes that way, never comes back to tell
+about it!)&quot;.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-61,'','',1,22,'','');
+replace into itemtable values (-61,'','',1,22,'','');
+
+REPLACE INTO items VALUES (-62,'sign','wooden','sturdy','old',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/sign.gif\">
+The Roadsign</H1><HR>
+You look very hard at the roadsign beside the road. It consists of a
+normal wooden pole driven into the ground. On the pole are wooden boards
+on which words can be read, depicting where the road goes to. On a board
+which is pointing to the west you can see a tekst saying: &quot;<B>Cave of
+Fairies</B>&quot;. You see two more pointers, one to the south, with says
+&quot;<B>City of Pendulis</B>&quot;, a board to the north says :&quot;<B>Unknown</B> (Which
+means as much as, everybody that goes that way, never comes back to tell
+about it!)&quot;.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-62,'','',1,22,'','');
+replace into itemtable values (-62,'','',1,22,'','');
+
+# Room 25
+REPLACE INTO items VALUES (-63,'tree','tall', 'green','old',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Tree</H1>
+You look at the tree, which you have climbed. It seems to be a sturdy
+very old oak tree. It is very big, and you
+are holding yourself tightly against a strong branch in order not to fall
+from the tree. A fall from this height would have been deadly.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-63,'','',1,25,'','');
+replace into itemtable values (-63,'','',1,25,'','');
+
+# Room 31
+REPLACE INTO items VALUES (-64,'gate','old', 'rusty','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Entrance</H1>
+You look carefully at the entrance to the city. It is an old big
+rusty gate. It must have been build ages ago, because of the strange Roman
+architecture of the gate. Standing before it, it looks huge. The gate is 
+built into the
+walls around the city. The only way in is through this gate. 
+','',0,0,0,0);
+replace into tmp_itemtable values (-64,'','',1,31,'','');
+replace into itemtable values (-64,'','',1,31,'','');
+
+REPLACE INTO items VALUES (-65,'entrance','old', 'rusty','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Entrance</H1>
+You look carefully at the entrance to the city. It is an old big
+rusty gate. It must have been build ages ago, because of the strange Roman
+architecture of the gate. Standing before it, it looks huge. The gate is 
+built into the
+walls around the city. The only way in is through this gate. 
+','',0,0,0,0);
+replace into tmp_itemtable values (-65,'','',1,31,'','');
+replace into itemtable values (-65,'','',1,31,'','');
+
+# Room 39
+REPLACE INTO items VALUES (-66,'swords','old', 'rusty','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/hall2.gif\">
+The Shield</H1>
+You look carefully at the walls. They are adorned with light blue shields,
+with two crossed swords behind them. The shield is of blue velvet. The
+swords are made with gold and solid sharp cutting steel.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-66,'','',1,39,'','');
+replace into itemtable values (-66,'','',1,39,'','');
+
+REPLACE INTO items VALUES (-67,'shields','old', 'rusty','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/hall2.gif\">
+The Shield</H1>
+You look carefully at the walls. They are adorned with light blue shields,
+with two crossed swords behind them. The shield is of blue velvet. The
+swords are made with gold and solid sharp cutting steel.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-67,'','',1,39,'','');
+replace into itemtable values (-67,'','',1,39,'','');
+
+# Room 40
+REPLACE INTO items VALUES (-68,'map','old', 'yellow','castle',
+0,0,0,0,'','',1,0,0,0,0,0,'<IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cmap.gif\">
+<H1>The Map to the Castle</H1>
+This is the map to the castle. It shows you all the places where you wish to
+go.<P>
+','<IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/cmap.gif\">
+<H1>The Map to the Castle</H1>
+This is the map to the castle. It shows you all the places where you wish to
+go.<P>
+',0,0,0,0);
+replace into tmp_itemtable values (-68,'','',1,40,'','');
+replace into itemtable values (-68,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-69,'books','old', 'yellow','written',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib3.gif\">
+The Books</H1>
+You look carefully at the bookcase. You can make out the following
+titles.<P>
+<UL>
+<LI>Map to the Castle
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/mud.html\">History of MUD</A>
+<LI>A Century of Studying the Southern Oracle - by Professor Engywoeck
+<LI>The Red Book of Westernesse - by B. Baggins
+<LI>Some notes on Elvish Languages - by B. Baggins
+<LI>Beowulf - writer unknown
+<LI>War &amp; Peace
+<LI>Crime &amp; Punishment
+<LI>Beowulf - writer unknown
+<LI>The Book of Spells - by H. M. Wordsworth
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/junk/hound.html\">The Hound of
+the
+Baskervilles</A> - from Hugo Baskerville to his sons Rodger
+and John, with instructions that they say nothing thereof to their
+sister Elizabeth
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/junk/witch.html\">Recipe for 
+disaster</A>
+<LI><A
+HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/allswellthatendswell/   
+allswellthatendswell.html\">
+Alls well that ends well - Shakespeare</A>
+<LI><A HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/asyoulikeit/
+asyoulikeit.html\">
+As you like it - Shakespeare</A>
+<LI><A HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/twelfthnight/
+twelfthnight.html\">
+The Twelfth Night - Shakespeare</A>
+<LI>Secrets
+</UL>
+<P>
+You should be able to <B>read</B> the books by clicking them..<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-69,'','',1,40,'','');
+replace into itemtable values (-69,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-70,'bookcase','wooden', 'old','wormeaten',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib3.gif\">
+The Books</H1>
+You look carefully at the bookcase. You can make out the following
+titles.<P>
+<UL>
+<LI>Map to the Castle
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/mud.html\">History of MUD</A>
+<LI>A Century of Studying the Southern Oracle - by Professor Engywoeck
+<LI>The Red Book of Westernesse - by B. Baggins
+<LI>Some notes on Elvish Languages - by B. Baggins
+<LI>Beowulf - writer unknown
+<LI>War &amp; Peace
+<LI>Crime &amp; Punishment
+<LI>Beowulf - writer unknown
+<LI>The Book of Spells - by H. M. Wordsworth
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/junk/hound.html\">The Hound of
+the
+Baskervilles</A> - from Hugo Baskerville to his sons Rodger
+and John, with instructions that they say nothing thereof to their
+sister Elizabeth
+<LI><A HREF=\"http://lok.il.fontys.nl/~karchan/junk/witch.html\">Recipe for 
+disaster</A>
+<LI><A
+HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/allswellthatendswell/   
+allswellthatendswell.html\">
+Alls well that ends well - Shakespeare</A>
+<LI><A HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/asyoulikeit/
+asyoulikeit.html\">
+As you like it - Shakespeare</A>
+<LI><A HREF=\"http://the-tech.mit.edu/Shakespeare/Comedy/twelfthnight/
+twelfthnight.html\">
+The Twelfth Night - Shakespeare</A>
+<LI>Secrets
+</UL>
+<P>
+You should be able to <B>read</B> the books by clicking them..<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-70,'','',1,40,'','');
+replace into itemtable values (-70,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-71,'candle','white', 'tallow','old',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib2.gif\">
+The Candles</H1>
+You look carefully at the candles above your head. They seem to be   
+functioning perfectly. You can see everything by their light. They are old
+and iron and look very solid indeed. People need their light to read.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-71,'','',1,40,'','');
+replace into itemtable values (-71,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-72,'candles','white', 'tallow','old',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib2.gif\">
+The Candles</H1>
+You look carefully at the candles above your head. They seem to be   
+functioning perfectly. You can see everything by their light. They are old
+and iron and look very solid indeed. People need their light to read.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-72,'','',1,40,'','');
+replace into itemtable values (-72,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-73,'table','big', 'old','oak',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib4.gif\">
+The Table</H1>
+You look carefully at the tables at each side of the room. They are very
+solid, made of oakwood. At some places you can still see the indents from
+heavy large books, having laid on the table.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-73,'','',1,40,'','');
+replace into itemtable values (-73,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-74,'tables','big', 'old','oak',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib4.gif\">
+The Table</H1>
+You look carefully at the tables at each side of the room. They are very
+solid, made of oakwood. At some places you can still see the indents from
+heavy large books, having laid on the table.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-74,'','',1,40,'','');
+replace into itemtable values (-74,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-75,'chair','old', 'oak','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib4.gif\">
+The Chairs</H1>
+You look carefully at the chairs which are gathered around the tables. They
+are very
+solid, made of oakwood. They must have been used much, for they are very
+worn down.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-75,'','',1,40,'','');
+replace into itemtable values (-75,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-76,'chairs','old', 'oak','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib4.gif\">
+The Chairs</H1>
+You look carefully at the chairs which are gathered around the tables. They
+are very
+solid, made of oakwood. They must have been used much, for they are very
+worn down.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-76,'','',1,40,'','');
+replace into itemtable values (-76,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-77,'window','old', 'oak','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib5.gif\">
+The Windows</H1>
+You look carefully at the two windows which can be seen to the south. They
+are very clean and you can see pathes of clear blue sky. If you were to read
+a lot in this library, it is ideal to get up some times and walk to the
+window and look outside.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-77,'','',1,40,'','');
+replace into itemtable values (-77,'','',1,40,'','');
+
+REPLACE INTO items VALUES (-78,'windows','old', 'oak','big',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1><IMG
+SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/bib5.gif\">
+The Windows</H1>
+You look carefully at the two windows which can be seen to the south. They
+are very clean and you can see pathes of clear blue sky. If you were to read
+a lot in this library, it is ideal to get up some times and walk to the
+window and look outside.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-78,'','',1,40,'','');
+replace into itemtable values (-78,'','',1,40,'','');
+
+# Room 66
+REPLACE INTO items VALUES (-79,'tower','runwdown', 'old','dilapadated',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Tower</H1>
+The tower to the north of you is very high, a little run down and
+dilapadated and you are not certain weather it will come crashing down if
+you shout to it a little hard. It is made of solid rocks, very careless
+bunked together. Green weed is growing between the niches and you wonder how 
+long
+this thing has been standing there. It guards the city of Pendulis from
+unwanted intruders.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-79,'','',1,66,'','');
+replace into itemtable values (-79,'','',1,66,'','');
+
+REPLACE INTO items VALUES (-80,'weeds','some', 'green', 'growing',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Weeds</H1>
+Some green weeds can be seen, growing between the large cemented blocks. You 
+might be able to pick a few.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-80,'','',1,66,'','');
+replace into itemtable values (-80,'','',1,66,'','');
+
+# Room 59
+REPLACE INTO items VALUES (-81,'bakery','nice', 'inviting', 'duh',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Bakery</H1>
+The bakery to the north has some very fine assortiments of breads and more
+interesting things. A smell of freshly baked bread overwhelms you when you
+get close. Inside maybe things would be available for you.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-81,'','',1,59,'','');
+replace into itemtable values (-81,'','',1,59,'','');
+
+REPLACE INTO items VALUES (-82,'office','money', 'changer', 'duh',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Moneychanger\'s Office</H1>
+The moneychanger\'s office is ideal for people who are carrying way to much
+gold around with them. It is a small building and inside you can make out a
+counter and a little whizened man behind it.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-82,'','',1,59,'','');
+replace into itemtable values (-82,'','',1,59,'','');
+
+# Room 41
+REPLACE INTO items VALUES (-83,'obelisk','huge', 'stone', 'intimidating',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Obelisk</H1>
+The obelisk is a rather large piece of stone, square and upright, towering
+to the sky. At the end of this rather large stone the stone descends into a
+sharp point. At the bottom, this piece of stone has been put on a pedistal.
+You see strange egyptian markings on the side of the stone.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-83,'','',1,41,'','');
+replace into itemtable values (-83,'','',1,41,'','');
+
+REPLACE INTO items VALUES (-84,'markings','strange', 'egyptian', 'odd',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Markings on the Obelisk</H1>
+The markings represent hieroglyphics out of ancient Egypt. They seem old and
+have been cut out of the stone with strong iron tools. If you think you can
+read this, you got another thing coming. They appear unintelligible to you,
+they are unreadable. What you need is some interpreter who can translate
+these hieroglyphics.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-84,'','',1,41,'','');
+replace into itemtable values (-84,'','',1,41,'','');
+
+REPLACE INTO items VALUES (-85,'houses','old', 'forwardleaning', 'yellow',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>Houses</H1>
+Around the square all sorts
+of houses can be seen. They look very old and seem to be leaning slightly
+forward, either from fatigue or from the inability of the constructor. They
+of a particular shade of yellow.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-85,'','',1,41,'','');
+replace into itemtable values (-85,'','',1,41,'','');
+
+# Room 43
+REPLACE INTO items VALUES (-86,'water','clear', 'river', 'wet',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The water</H1>
+The water of the river rushes by quickly. Along side the river you can see
+that the water is taking away trees, wood, and debrie, left by the wood. It
+is very deep in the middle of the river, you cannot see the bottom of it.
+But at the sides, near the land, the water is very clear and you can see
+through. Fish swim to all sides in the water, also other unidentifiable
+things.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-86,'','',1,43,'','');
+replace into itemtable values (-86,'','',1,43,'','');
+
+REPLACE INTO items VALUES (-87,'river','clear', 'snake', 'wet',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The water</H1>
+The water of the river rushes by quickly. Along side the river you can see
+that the water is taking away trees, wood, and debrie, left by the wood. It
+is very deep in the middle of the river, you cannot see the bottom of it.
+But at the sides, near the land, the water is very clear and you can see
+through. Fish swim to all sides in the water, also other unidentifiable
+things.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-87,'','',1,43,'','');
+replace into itemtable values (-87,'','',1,43,'','');
+
+# Room 44
+replace into tmp_itemtable values (-86,'','',1,44,'','');
+replace into itemtable values (-86,'','',1,44,'','');
+replace into tmp_itemtable values (-87,'','',1,44,'','');
+replace into itemtable values (-87,'','',1,44,'','');
+
+# Room 45
+replace into tmp_itemtable values (-86,'','',1,45,'','');
+replace into itemtable values (-86,'','',1,45,'','');
+replace into tmp_itemtable values (-87,'','',1,45,'','');
+replace into itemtable values (-87,'','',1,45,'','');
+
+REPLACE INTO items VALUES (-88,'bridge','strong', 'oak', 'long',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Bridge</H1>
+The water of the river rushes under the bridge. It seems very sturdy, made
+of incomprehensible oak. Very nice indeed. You should be able to cross it to
+the west without any conceivable problems. It is a bit old though, but still
+very solid. It\'s arched over the water, with sideboards to look after the
+the persons who cross it.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-88,'','',1,45,'','');
+replace into itemtable values (-88,'','',1,45,'','');
+
+# Room 46
+replace into tmp_itemtable values (-86,'','',1,46,'','');
+replace into itemtable values (-86,'','',1,46,'','');
+replace into tmp_itemtable values (-87,'','',1,46,'','');
+replace into itemtable values (-87,'','',1,46,'','');
+
+# Room 47
+replace into tmp_itemtable values (-86,'','',1,47,'','');
+replace into itemtable values (-86,'','',1,47,'','');
+replace into tmp_itemtable values (-87,'','',1,47,'','');
+replace into itemtable values (-87,'','',1,47,'','');
+
+REPLACE INTO items VALUES (-89,'rocks','cold', 'silent', 'grey',
+0,0,0,0,'','',1,0,0,0,0,0,'<H1>The Rocks</H1>
+Ancient stones can be seen to the east, standing on a small meadow. They are
+stood erect, and must have been set there a very long time ago. Some people
+say it\'s magic, some people say a whole lot of people helped to get them
+there, some say giants have put them there, but you are a sobered up kind of   
+guy and do not believe all that nonsense. In all probability they are just a
+bunch of vikings from the north, frozen into stone by a Wizard as a
+punishment for plundering and looting the city of Pendulis.<P>
+','',0,0,0,0);
+replace into tmp_itemtable values (-89,'','',1,47,'','');
+replace into itemtable values (-89,'','',1,47,'','');
+
+
+
+END_OF_DATA
+

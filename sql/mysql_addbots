@@ -1,0 +1,105 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+#
+# Dumping data for bots
+#
+
+replace into tmp_usertable values('Bill','duh','','Innkeeper',
+'-','-','dwarf','male','medium','short','corpulescent',
+'swarthy', 'black-eyed', 'none', 'black-haired', 'none', 'none', 'none',
+1000,1000,1000,9,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Bill','duh','','Innkeeper',
+'-','-','dwarf','male','medium','short','corpulescent',
+'swarthy', 'black-eyed', 'none', 'black-haired', 'none', 'none', 'none',
+1000,1000,1000,9,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Karcas','duh','','Shopkeeper',
+'-','-','dwarf','male','medium','tall','fat',
+'none', 'black-eyed', 'none', 'black-haired', 'black-bearded', 'none', 'none',
+1000,1000,1000,16,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Karcas','duh','','Shopkeeper',
+'-','-','dwarf','male','medium','tall','fat',
+'none', 'black-eyed', 'none', 'black-haired', 'black-bearded', 'none', 'none',
+1000,1000,1000,16,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Karaoke','duh','','Watcher',
+'-','-','dwarf','male','very old','small','none',
+'none', 'blue-eyed', 'none', 'grey-haired', 'balding', 'none', 'none',
+1000,1000,1000,8,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Karaoke','duh','','Watcher',
+'-','-','dwarf','male','very old','small','none',
+'none', 'blue-eyed', 'none', 'grey-haired', 'balding', 'none', 'none',
+1000,1000,1000,8,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Kainian','duh','','Corpulant Cleric',
+'-','-','human','male','medium','small','corpulescent',
+'none', 'blue-eyed', 'none', 'none', 'balding', 'none', 'none',
+1000,1000,1000,63,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Kainian','duh','','Corpulant Cleric',
+'-','-','human','male','medium','small','corpulescent',
+'none', 'blue-eyed', 'none', 'none', 'balding', 'none', 'none',
+1000,1000,1000,63,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Keanur','duh','','Bridge-Keeper',
+'-','-','human','male','medium','small','ascetic',
+'crippled', 'blue-eyed', 'none', 'ragged', 'none', 'none', 'none',
+1000,1000,1000,88,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Keanur','duh','','Bridge-Keeper',
+'-','-','human','male','medium','small','ascetic',
+'crippled', 'blue-eyed', 'none', 'ragged', 'none', 'none', 'none',
+1000,1000,1000,88,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Karina','duh','','ShopKeeper',
+'-','-','human','female','medium','pretty','ascetic',
+'girlish', 'blue-eyed', 'blond', 'ragged', 'none', 'none', 'none',
+1000,1000,1000,64,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Karina','duh','','ShopKeeper',
+'-','-','human','female','medium','pretty','ascetic',
+'girlish', 'blue-eyed', 'blond', 'ragged', 'none', 'none', 'none',
+1000,1000,1000,64,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Karsten','duh','','ShopKeeper',
+'-','-','human','male','medium','pretty','athletic',
+'handsome', 'blue-eyed', 'blond', 'none', 'none', 'none', 'none',
+1000,1000,1000,85,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Karsten','duh','','ShopKeeper',
+'-','-','human','male','medium','pretty','athletic',
+'handsome', 'blue-eyed', 'blond', 'none', 'none', 'none', 'none',
+1000,1000,1000,85,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into tmp_usertable values('Balthazar','duh','','Poor Wanderer',
+'-','-','human','male','crippled','blue-eyed','smelly',
+'ragged', 'ugly', 'disfigured', 'very skinny', 'none', 'none', 'none',
+1000,1000,1000,77,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+replace into usertable values('Balthazar','duh','','Poor Wanderer',
+'-','-','human','male','crippled','blue-eyed','smelly',
+'ragged', 'ugly', 'disfigured', 'very skinny', 'none', 'none', 'none',
+1000,1000,1000,77,'',0,0,'',0,0,0,0,0,0,0,0,0,0,0,2,'',5,5,5,5,5,5,5,5,5,0,0,5,5,5,
+'','','','','','','','','','','','','','','','','',0,0,0);
+
+END_OF_DATA
+
