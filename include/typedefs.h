@@ -218,6 +218,8 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring);
    
 MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows);
 
+char *composeSqlStatement(char *sqlstring, ...);
+
 roomstruct *GetRoomInfo(int room);
 
 char *generate_password(char *fpassword);
