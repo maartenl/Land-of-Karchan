@@ -1,0 +1,26 @@
+Faq List:
+-----------
+
+This is a list of anwers to questions when you are stuck.
+
+1. 
+
+Question: Help! I cannot run the cgi-binaries because I get the message  
+
+[src]$
+./enter
+./enter: error in loading shared libraries: libmysqlclient.so.8: cannot open
+shared object file: No such file or directory
+
+Answer: It is necessary for you to set your environment variable
+"LD_LIBRARY_PATH" in order to be able for the program to find its shared
+library. But, seeing as it is a webserver that needs to configure this, and
+if you are running Apache, you need to put the following line into the
+"httpd.conf":
+
+SetEnv LD_LIBRARY_PATH /usr/local/lib/mysql/
+
+That should fix the problem.
+
+Any comments, please tell me.
+
