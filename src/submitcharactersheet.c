@@ -215,10 +215,10 @@ void validateUser()
 		updateCharacterSheet(name, password);
 	}
 	fprintf(cgiOut, "Form information has been submitted.<P>\n");
-	fprintf(cgiOut, "Please click <A HREF=\"CGINamecharactersheet.cgi?name=%s\">", name);
+	fprintf(cgiOut, "Please click <A HREF=\"charactersheet.cgi?name=%s\">", name);
 	fprintf(cgiOut, "Character Sheet Info</A> to view the submitted information.<P>");
 	free(name);free(password);
-	fprintf(cgiOut, "<A HREF=\"CGINamecharactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
+	fprintf(cgiOut, "<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
 	fprintf(cgiOut, "</BODY>\n");
 	fprintf(cgiOut, "</HTML>\n");
 }

@@ -65,7 +65,7 @@ void listSheets()
 	fprintf(cgiOut, " and password of the character you created on the mud, and you will be");
 	fprintf(cgiOut, " presented with a form that you can fill out, and change later in the same");
 	fprintf(cgiOut, " way.<P>");
-	fprintf(cgiOut, "<UL>\n");
+	fprintf(cgiOut, "\n");
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -79,8 +79,8 @@ void listSheets()
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
 	}
  
-	if (mysql_query(&mysql,"select concat(\"<LI><A HREF=\\\"CGINamecharactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") "
-	"from characterinfo, usertable "
+	if (mysql_query(&mysql,"select concat(\"<A HREF=\\\"charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") "
+	", usertable.name from characterinfo, usertable "
 	"where usertable.name=characterinfo.name"))
 	{
 		// error
@@ -92,11 +92,28 @@ void listSheets()
 		if (res)// there are rows
 		{
 			int num_fields = mysql_num_fields(res);
-			// retrieve rows, then call mysql_free_result(result)
+			int num_rows = mysql_num_rows(res);
+			char beginstuff = 'x';
+			int counter = 1;
+			num_rows = num_rows / 5;
+			// retrieve rows, then call mysql_free_result(result);
+			fprintf(cgiOut, "<TABLE ALIGN=top BORDER=1><TR><TD>");
 			while ((row = mysql_fetch_row(res))!=NULL)
 			{
-				fprintf(cgiOut, "%s",row[0]);
+				if (toupper(row[1][0]) != beginstuff)
+				{
+					beginstuff = toupper(row[1][0]);
+					fprintf(cgiOut, "</UL><H1>%c</H1><UL>\r\n", beginstuff);
+				}
+				fprintf(cgiOut, "%s<BR>",row[0]);
+				if (counter++>num_rows)
+				{
+					fprintf(cgiOut, "</TD>\r\n<TD>");
+					counter=1;
+				}
+				
 			}
+			fprintf(cgiOut, "</TR></TABLE>\r\n");
 			mysql_free_result(res);
 		}
 		else// mysql_store_result() returned nothing; should it have?
@@ -115,7 +132,7 @@ void listSheets()
 	}
  	mysql_close(&mysql);
 	fprintf(cgiOut, "</UL>");
-	fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"CGINameeditcharactersheet.cgi\">\n");
+	fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"editcharactersheet.cgi\">\n");
 	fprintf(cgiOut, "<HR>\r\n");
 	fprintf(cgiOut, "(Fictional) Name:<BR>\r\n");
 	fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"name\" VALUE=\"\" SIZE=\"19\"\r\n");
@@ -125,7 +142,7 @@ void listSheets()
 	fprintf(cgiOut, "MAXLENGTH=\"39\"><P>\r\n");
 	fprintf(cgiOut, "<P>\r\n");
 	fprintf(cgiOut, "<INPUT TYPE=\"submit\" VALUE=\"Edit\">\r\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\r\n");
+	fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Clear\"><P>\r\n");
 	fprintf(cgiOut, "</FORM>\r\n");
 
 	fprintf(cgiOut, "<A HREF=\"/karchan/chronicles/chronicles2.html\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");

@@ -145,7 +145,7 @@ void showCharacterSheet(char *name, char *password)
 			if (row != NULL)
 			{
 				// full character sheet
-				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"CGINamesubmitcharactersheet.cgi\">");
+				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
 				fprintf(cgiOut, "<HR>");
 				fprintf(cgiOut, "Homepage Url:<BR>");
 				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"%s\" SIZE=\"50\" MAXLENGTH=\"253\"><P>", row[2]);
@@ -168,7 +168,7 @@ void showCharacterSheet(char *name, char *password)
 			else
 			{
 				// empty character sheet
-				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"CGINamesubmitcharactersheet.cgi\">");
+				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
 				fprintf(cgiOut, "<HR>");
 				fprintf(cgiOut, "Homepage Url:<BR>");
 				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"http://\" SIZE=\"50\" MAXLENGTH=\"253\"><P>");
@@ -314,7 +314,7 @@ void validateUser()
 		showCharacterSheet(name, password);
 	}
 	free(name);free(password);
-	fprintf(cgiOut, "<A HREF=\"CGINamecharactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
+	fprintf(cgiOut, "<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
 	fprintf(cgiOut, "</BODY>\n");
 	fprintf(cgiOut, "</HTML>\n");
 }
