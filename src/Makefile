@@ -8,7 +8,6 @@
 
 # INSTALLDIR = /home/karchan/.html/cgi-bin/
 INSTALLDIR = /home/httpd/cgi-bin/
-# INSTALLDIR = /karchan2/apache/cgi-bin/
 #
 # Options that can be used to the make command
 #
@@ -29,12 +28,9 @@ INSTALLDIR = /home/httpd/cgi-bin/
 
 CC = gcc
 COPTS = -O2 -m486
-# INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/
 INCLUDES = -I../include -idirafter /usr/include/mysql/ -idirafter ./cookies/
 
-# EXEDIR = /karchan2/apache/cgi-bin
 EXEDIR = /home/httpd/cgi-bin
-# LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
 LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
 OPTIONS = -lm -lmysqlclient -lcookies
 
