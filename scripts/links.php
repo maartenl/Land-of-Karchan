@@ -44,8 +44,8 @@ relating to fantasy.
 </UL>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
-if (($_REQUEST{"linkname"} != "") &&
-	($_COOKIE["karchanname"] != ""))
+if ((isset($_REQUEST{"linkname"})) &&
+	(isset($_COOKIE["karchanname"])))
 {
 	if (($_REQUEST{"type"} != "1") &&
 		($_REQUEST{"type"} != "2") &&
@@ -136,8 +136,8 @@ HREF="http://www.sourceforge.net/projects/mmud">http://sourceforge.net/projects/
 </DIV>
 
 <?php
-if (($_COOKIE{"karchanpassword"} != "") &&
-	($_COOKIE["karchanname"] != ""))
+if ((isset($_COOKIE{"karchanpassword"})) &&
+	(isset($_COOKIE["karchanname"])))
 {
 ?>
 Add link:<FORM METHOD="GET" ACTION="/scripts/links.php">
