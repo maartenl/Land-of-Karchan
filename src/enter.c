@@ -138,6 +138,10 @@ createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 	subtree = xmlNewChild(tree, NULL, "name", fname);
 	//tree = xmlNewChild(doc->children, NULL, "chapter", NULL);
 	subtree = xmlNewChild(tree, NULL, "password", fpassword);
+	if (getenv("REMOTE_ADDR") != NULL)
+	{
+		subtree = xmlNewChild(tree, NULL, "address", getenv("REMOTE_ADDR"));
+	}
 	if ( (fcookie != NULL) && (strcmp(fcookie, "")) && (strcmp(fcookie, " ")) )
 	{
 		subtree = xmlNewChild(tree, NULL, "cookie", fcookie);
@@ -338,7 +342,6 @@ int main(int argc, char * argv[])
 		printf("%s", receivebuf);
 	}
 	close(sockfd);
-
 	if (mudtitle != NULL) 
 	{
 		free(mudtitle);

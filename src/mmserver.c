@@ -366,6 +366,7 @@ typedef struct
 	int bufsize; // buffer size, initialised to 1024
 	char name[22];
 	char password[42];
+	char address[42];
 	char cookie[80];
 	int frames;
 	char *action; // {mud, logon, new}
@@ -485,6 +486,23 @@ parseXml(mudpersonstruct *fmine)
 			strcpy(fmine->password, temp);
 #ifdef DEBUG	
 			printf("%s,%s\n", cur2->name, fmine->password); //temp);
+#endif
+			xmlFree(temp);
+			temp = NULL;
+		}
+		if (!xmlStrcmp(cur2->name, (const xmlChar *)"address"))
+		{
+			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
+			if (strlen(temp)>39)
+			{
+				xmlFree(temp);
+				temp=NULL;
+				xmlFreeDoc(doc);
+				return 0;
+			}
+			strcpy(fmine->address, temp);
+#ifdef DEBUG	
+			printf("%s,%s\n", cur2->name, fmine->address); //temp);
 #endif
 			xmlFree(temp);
 			temp = NULL;
@@ -819,6 +837,7 @@ add_to_list(int socketfd)
 	mine = (mudpersonstruct *) malloc(sizeof(mudpersonstruct));
 	mine->name[0] = 0;
 	mine->password[0] = 0;
+	mine->address[0] = 0;
 	mine->cookie[0] = 0;
 	mine->frames = 0;
 	mine->action = NULL;
@@ -982,16 +1001,16 @@ store_in_list(int socketfd, char *buf)
 				// decide what action to take
 				if (!strcasecmp(mine->action, "logon"))
 				{
-					gameLogon(mine->name, mine->password, mine->cookie, "127.0.0.1");
+					gameLogon(mine->name, mine->password, mine->cookie, mine->address);
 				}
 				else
 				if (!strcasecmp(mine->action, "newchar"))
 				{
-					gameNewchar(mine->name, mine->password, mine->cookie, "127.0.0.1", mine->newchar);
+					gameNewchar(mine->name, mine->password, mine->cookie, mine->address, mine->newchar);
 				}
 				else
 				{
-					gameMain(mine->command, mine->name, mine->password, mine->cookie, "127.0.0.1"); 
+					gameMain(mine->command, mine->name, mine->password, mine->cookie, mine->address); 
 				}
 				fclose(filep);
 				filep = fopen("temp.txt", "r");

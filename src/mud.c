@@ -160,6 +160,10 @@ createXmlString(char *fcommand, char *fname, char *fpassword, char *fcookie, int
 	subtree = xmlNewChild(tree, NULL, "name", fname);
 	//tree = xmlNewChild(doc->children, NULL, "chapter", NULL);
 	subtree = xmlNewChild(tree, NULL, "password", fpassword);
+	if (getenv("REMOTE_ADDR") != NULL)
+	{   
+		subtree = xmlNewChild(tree, NULL, "address", getenv("REMOTE_ADDR"));
+	}   
 	if ( (fcookie != NULL) && (strcmp(fcookie, "")) && (strcmp(fcookie, " ")) )
 	{
 		subtree = xmlNewChild(tree, NULL, "cookie", fcookie);
