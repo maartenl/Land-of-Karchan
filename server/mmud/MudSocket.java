@@ -384,7 +384,7 @@ public class MudSocket extends Thread
 			case 0 :
 			{
 				returnStuff = "sessionpassword=" + myUser.getSessionPassword() + "\n";
-				returnStuff += gameMain(myUser, "me has entered the game...<BR>\r\n");
+				returnStuff += gameMain(myUser, "me has entered the game...");
 				break;
 			}
 			case 1 :
@@ -728,7 +728,7 @@ public class MudSocket extends Thread
 		{
 			case 0 :
 			{
-				returnStuff += gameMain(myUser, "me has entered the game...<BR>\r\n");
+				returnStuff += gameMain(myUser, "me has entered the game...");
 				break;
 			}
 			case 1 :
