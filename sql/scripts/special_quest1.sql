@@ -83,6 +83,26 @@ values(801, "plague2", 1, "quit", "plague2", "", 0);
 replace into methods
 values(93, "plague2", "# this method is always run upon logging out of the game.
 sql(""update tmp_attributes set value=value-1 where mod(value, 2)=0 and objectid='%me' and objecttype=1 and name='plague' and value>0"")
+if sql(""select 1 from tmp_attributes where objectid='%me' and objecttype=1 and name='plague' and value>0"")
+	getstring(""select value from tmp_attributes where objectid='%me' and objecttype=1 and name='plague' and value>0"")
+	if sql(""select %string < 10"")
+		sql(""replace into tmp_attributes values('look','looking unearthly pale, with red-rimmed and unfocused feverish eyes. Lips seem to be \\\\
+pressed together in a permanent grimace of pain. Unsightly white blodges are spread across the arms and face.','string','%me',1)"")
+	end
+	if sql(""select %string >= 10 and %string < 20"")
+		sql(""replace into tmp_attributes values('look','looking unearthly pale, with red-rimmed and unfocused feverish eyes. Unsightly white \\\\
+blodges are spread across the arms and face.','string','%me',1)"")
+	end
+	if sql(""select %string >= 20 and %string < 30"")
+		sql(""replace into tmp_attributes values('look','looking pale with red-rimmed eyes and unsightly white blodges spread across the arms and face.','string','%me',1)"")
+	end
+	if sql(""select %string >= 30 and %string < 40"")
+		sql(""replace into tmp_attributes values('look','looking pale, with red-rimmed eyes.','string','%me',1)"")
+	end
+	if sql(""select %string >= 40 and %string < 50"")
+		sql(""replace into tmp_attributes values('look','looking paler than usual.','string','%me',1)"")
+	end
+end
 return
 ");
 
