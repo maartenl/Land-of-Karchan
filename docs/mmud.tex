@@ -270,6 +270,24 @@ opponent. A few things can effect the amount of damage you do, for instance:
 \item weapon
 \end{itemize}
 
+\subsection{Death}
+Death occurs when the \emph{vitals} exceed \emph{maxvitals}. 
+When Death occurs, the following actions take place. See also the enclosed
+schematic.
+
+\begin{itemize}
+\item write messages to player(s)
+\item drop inventory of killed party on floor
+\item add corpse to the existing pile of corpses or create a new one
+\item remove person back to cave
+\item set person to no-longer-fighting-anyone
+\item determine if person dead is bot
+\item diminish experience points by half (say, 500ex becomes 250exp)
+\end{itemize}
+
+{\par\centering
+\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{death.ps}}} \par}
+
 \subsection{Learning and Improving Your Character}
 Learning and Improving your character can be done by a lot of different
 ways.
@@ -438,6 +456,10 @@ damage factor minus the defender's defensive damage factor.
 \section{Generating Miscellaneous Files}
 \subsection{Maps}
 Maps will be created using Gimp. The text contained on the map is "times" and the size = 12.
+
+Furthermore, the use shall be made of 'Crinkley Paper' as a background. The
+coffee stain stuff (Script-fu, Decor) for the use of making it ancient like,
+and the 'Fuzzy Border' (Script-fu, Decor) for rounding off the map details.
 
 \subsection{Banners}
 Banners for use on other websites will be created using Gimp. 
