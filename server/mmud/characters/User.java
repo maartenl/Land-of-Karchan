@@ -358,4 +358,13 @@ public class User extends mmud.characters.Person
 		return Database.getListOfMail(this);
 	}
 
+	public String readLog()
+	{
+		if (getFrames()==2)
+		{
+			return "";
+		}
+		return super.readLog();
+	}
+
 }
