@@ -1,9 +1,0 @@
-#!/bin/sh
-
-cd /karchan/mud/sql
-./mysql_talk "Karaoke mutters to himself inaudibly.<BR>" 8
-./mysql_talk "Karcas shouts: Goods for sale! Nice goods! Goods for sale!<BR>" 16
-./mysql_talk "Bill sets the glass down he was cleaning, picks up another \
-glass, and continues rubbing it with the dirty towel.<BR>" 9
-./mysql_talk "Kainian kneels down before the altar and prays a little.<BR>" 63
-
