@@ -675,10 +675,11 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 				row[3] = command.args
 				row[4] = method.src
 			*/
-			//returnvalue = Parse(name, &myroom, row[4]);
+			returnvalue = Parse(name, &myroom, row[4]);
 			row = mysql_fetch_row(res);
 		}
 		if (debug) {fprintf(getMMudOut(), "</FONT><HR>\r\n");}
+		
 		mysql_free_result(res);
 		if (returnvalue==1)
 		{
