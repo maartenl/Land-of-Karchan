@@ -2825,6 +2825,26 @@ Wear_Command(char *name, char *password, int room)
 		sprintf(sqlcomposite,"(items.wearable = %i) and ", itemwearable);
 	}
 	
+	/* check to see that person does not already have something on said bodypart */
+	sprintf(sqlstring, 
+		"select 1 "
+		"from tmp_itemtable "
+		"where belongsto = '%s' and "
+		"wearing = '%s'"
+		, name, tokens[aantal-1]);
+	res=SendSQL2(sqlstring, NULL);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row != NULL)
+		{
+			WriteSentenceIntoOwnLogFile(logname, "You are already wearing something there!<BR>\r\n");
+			WriteRoom(name, password, room, 0);
+			KillGame();
+		}
+		mysql_free_result(res);
+	}
+
 	/* look for specific person */
 	sprintf(sqlstring, 
 		"select sex from tmp_usertable where (name = '%s')"
