@@ -1345,7 +1345,13 @@ cgiMain()
 		{
 			SWTalk(name, password, room);
 			KillGame();
-		}		
+		}
+/* add DepTalk */		
+		if ( (!strcmp("Dep", tokens[0])) && (!strcmp("Chat", tokens[1])) )
+		{
+			DepTalk(name, password, room);
+			KillGame();
+		}
 	}
 	/* End Guilds */
 	if (!strcmp("mail", troep))

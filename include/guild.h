@@ -39,3 +39,6 @@ void RangerTalk(char *name, char *password, int room);
 
 /* add SW chat line */
 void SWTalk(char *name, char *password, int room);
+
+/* add deputy chat line */
+void DepTalk(char *name, char *password, int room);
