@@ -923,6 +923,11 @@ Root_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
+	if ( (!strcmp("dep", tokens[0])) && (!strcmp("chat", tokens[1])) )
+	{
+		DepTalk(name, password, room);
+		KillGame();
+	}
 }
 
 int CheckRoom(int i)
