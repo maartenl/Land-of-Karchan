@@ -69,7 +69,7 @@ while ($myrow = mysql_fetch_array($result))
 	if (isset($_REQUEST{"bogus"}))
 	{
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_scratchpad.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_scratchpad.php">
 <TEXTAREA NAME="scratchpad" ROWS="50" COLS="85">
 <?php echo $myrow["scratch"] ?>
 </TEXTAREA>
@@ -80,7 +80,7 @@ while ($myrow = mysql_fetch_array($result))
 	else
 	{
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_scratchpad.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_scratchpad.php">
 <INPUT TYPE="hidden" NAME="bogus" VALUE="bogus">
 <P><INPUT TYPE="submit" VALUE="Change Scratchpad"><P>
 </FORM>
