@@ -40,7 +40,7 @@ OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
-wholist clearcharacters cookies/libcookies.a
+wholist personal_info clearcharacters cookies/libcookies.a
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -163,6 +163,12 @@ wholist.o: wholist.c
 
 wholist: wholist.o
 	$(CC) $(COPTS) -o wholist wholist.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+
+personal_info.o: personal_info.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c personal_info.c 
+
+personal_info: personal_info.o cgic.o
+	$(CC) $(COPTS) -o personal_info cgic.o personal_info.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
 
 clearcharacters.o: clearcharacters.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c clearcharacters.c 
