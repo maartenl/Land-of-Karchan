@@ -84,7 +84,7 @@ XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
 TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe \
- charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
+ charactersheet editcharactersheet submitcharactersheet clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -216,12 +216,6 @@ charactersheet.o: charactersheet.c
 charactersheet: charactersheet.o cgi-util.o typedefs.o
 	$(CC) $(COPTS) -o charactersheet cgi-util.o charactersheet.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
-charactersheets.o: charactersheets.c
-	$(CC) $(COPTS) $(INCLUDES) -c charactersheets.c 
-
-charactersheets: charactersheets.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o charactersheets cgi-util.o charactersheets.o typedefs.o $(LIBDIR)  $(XMLLIBDIR)
-
 editcharactersheet.o: editcharactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c editcharactersheet.c 
 
@@ -310,7 +304,6 @@ install_scripts: all
 	@echo "Installing Mud Script Binaries..."
 	@echo "  (these are small scripts that add some functionality to the website)"
 	@cp charactersheet $(INSTALLDIR)charactersheet.cgi
-	@cp charactersheets $(INSTALLDIR)charactersheets.cgi
 	@cp editcharactersheet $(INSTALLDIR)editcharactersheet.cgi
 	@cp submitcharactersheet $(INSTALLDIR)submitcharactersheet.cgi
 	@echo "Setting UIDs for Mud Script Binaries..."
