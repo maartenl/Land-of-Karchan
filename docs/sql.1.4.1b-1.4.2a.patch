@@ -34,7 +34,8 @@ CREATE TABLE skills (
 	primary key (id));
 
 insert into skills values(0,'barehand combat', 0, 100000, 0, '', '', 0, 0, 0);
-insert into skills values(1,'pick', 0, 10, 0, '', '', 0, 0, 0);
+insert into skills values(1,'pick fighting', 0, 10, 0, '', '', 0, 0, 0);
+insert into skills values(2,'knife fighting', 0, 10, 0, '', '', 0, 0, 0);
 
 CREATE TABLE skilltable (
 	id int(4) DEFAULT 0 NOT NULL,
@@ -42,20 +43,17 @@ CREATE TABLE skilltable (
 	skilllevel int(5),
 	primary key (id, forwhom));
 
-insert into skilltable values(0, 'Karn', 10);
-insert into skilltable values(1, 'Karn', 10);
-
 # defense of black, leather jerkin
 update items set pasdefense=4 where id=25;
 
 # something to think about
-alter table usertable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+alter table usertable change race race enum("fox", "zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
 update usertable set race = "human" where race = "";
-alter table tmp_usertable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+alter table tmp_usertable change race race enum("fox", "zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
 update tmp_usertable set race = "human" where race = "";
-alter table bottable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+alter table bottable change race race enum("fox", "zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
 update bottable set race = "human" where race = "";
-alter table olduser change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+alter table olduser change race race enum("fox", "zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
 update olduser set race = "human" where race = "";
 
 alter table usertable change sex sex enum("male", "female");
