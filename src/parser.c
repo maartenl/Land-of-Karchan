@@ -26,7 +26,9 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "parser.h"
 
-extern char*troep;
+extern char *troep;
+extern int      aantal;
+extern char    *tokens[100];
 
 //char *replace = 
 //{
@@ -297,6 +299,46 @@ int Parse(char *name, int room, char *parserstring)
 					strcat(temp, i+strlen("%me"));
 					strcpy(string, temp);
 					free(temp);
+				}
+				while ((i = strstr(string, "%amount")) != NULL)
+				{
+					char *temp, change[20];
+					temp = (char *) malloc(memory+255);
+					temp[i-string]=0;
+					strncpy(temp, string, i-string);
+					sprintf(change, "%i", aantal);
+					strcat(temp, change);
+					strcat(temp, i+strlen("%amount"));
+					strcpy(string, temp);
+					free(temp);
+				}
+				while ((i = strstr(string, "%")) != NULL)
+				{
+					char *temp, number[3];
+					int integer;
+					number[0]=i[1];
+					number[1]=i[2];
+					number[2]=0;
+					integer = atoi(number);
+					if ((integer > 0) && (integer <= aantal))
+					{
+						temp = (char *) malloc(memory+255);
+						temp[i-string]=0;
+						strncpy(temp, string, i-string);
+						strcat(temp, tokens[integer-1]);
+						strcat(temp, i+3);
+						strcpy(string, temp);
+						free(temp);
+					}
+					else
+					{
+						temp = (char *) malloc(memory+255);
+						temp[i-string]=0;
+						strncpy(temp, string, i-string);
+						strcat(temp, i+1);
+						strcpy(string, temp);
+						free(temp);
+					}
 				}
 				if (debug) {fprintf(cgiOut, "[%s]<BR>\n", string);}
 				/* this is the parsing part, the previous part was just splitting up */
