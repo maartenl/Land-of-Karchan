@@ -4758,6 +4758,10 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 	char sqlstring[1024];
 	char logname[100], mysex[10];
 	
+	if (getTokenAmount() =< 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
 	/* look for specific person */
