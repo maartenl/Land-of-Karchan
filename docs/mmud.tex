@@ -92,6 +92,30 @@ using this CGI.
 
 {\par\centering \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{sourcecode.ps}}} \par}
 
+\subsection{Cookies}
+Cookies play an important part of the game, as they provide a mechanism for
+checking if a certain person is busy multiplaying, i.e. he/she is using two
+different player characters on the same computer/account or he/she is using
+two the same player characters on two different computers.
+
+The way this is done, is by using the following steps, done in the following
+programs:
+enter.cgi
+1. check for cookie
+2. cookie exists? 
+yes: corresponding user the same as current user wanting to log on?
+	yes: provide mudrelogin
+	no:  print multiplayer screen
+no: create cookie with reference to login id of person logging on
+murelogin.cgi:
+newchar.cgi:
+mud.cgi:
+3. check system to see if cookies match up
+4. upon "quit", remove cookie from system
+
+{\par\centering
+\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{cookie.ps}}} \par}
+
 \newpage
 \section{Playing the game}
 \subsection{Character Defaults}

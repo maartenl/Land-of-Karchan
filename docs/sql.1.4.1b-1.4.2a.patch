@@ -249,5 +249,22 @@ function whatsoever:<P>
 <! caress>worship
 ");
 
+#
+# Add a table containing personal information that was requested of
+# persons when they logged on for the first time.
+#
+create table private_info 
+(id int not null primary key auto_increment, 
+entrytime datetime,  
+realname varchar(40),
+email varchar(40),
+age varchar(40),
+sex varchar(40),
+location varchar(20),  
+employment varchar(50),  
+internalnewsletter varchar(40),  
+external_advertising varchar(40),
+comments blob);
+
 END_OF_DATA
 
