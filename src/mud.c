@@ -59,7 +59,7 @@ maarten_l@yahoo.com
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
-#define MM_HOST "sherlock"
+#define MM_HOST "karchan.org"
 #define MM_PORT "3339"
 
 /*! attempts to send data over a socket, if not all information is sent.
