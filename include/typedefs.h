@@ -58,8 +58,8 @@ maartenl@il.fontys.nl
 // correct way. Make certain that it has the appropriate rights to access
 // the database.
 
-#define DatabaseName "mud"
-#define DatabaseLogin "mud"
+#define DatabaseName "mmud"
+#define DatabaseLogin "mmud"
 #define DatabasePassword "42rakah"
 
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
@@ -69,6 +69,9 @@ maartenl@il.fontys.nl
 #define CGIName    "/cgi-bin/"
 
 //#define ServerName "zeus"
+//#define CGIName    "/cgi-bin/"
+
+//#define ServerName "libretto"
 //#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
@@ -219,6 +222,8 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring);
 MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows);
 
 char *composeSqlStatement(char *sqlstring, ...);
+
+MYSQL_RES *executeQuery(int *affected_rows, char *sqlstring, ...);
 
 roomstruct *GetRoomInfo(int room);
 
