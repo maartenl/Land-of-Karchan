@@ -59,7 +59,7 @@ int SendSQL()
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin) "
 	"from tmp_usertable where lastlogin < date_sub(NOW(), INTERVAL 3 HOUR) "
 	"and god=0");
-	if (!(mysql_connect(&mysql,"localhost","root", ""))) 
+	if (!(mysql_connect(&mysql,"localhost","mud", "42rakah"))) 
 		exiterr(1, sqlstring, &mysql);
  
 	if (mysql_select_db(&mysql,"mud"))
