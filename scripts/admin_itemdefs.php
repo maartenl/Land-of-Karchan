@@ -195,8 +195,39 @@ if (isset($_REQUEST{"name"}))
 	writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
 }
 																																							
-$result = mysql_query("select *,  date_format(creation, \"%Y-%m-%d %T\") as
-    creation2 from mm_items where id = ".
+
+if (isset($_REQUEST{"deleteitemdef"}))
+{
+	// check if everything is in proper format
+	if ( !is_numeric($_REQUEST{"deleteitemdef"}))
+	{
+		die("Expected item definition id to be an integer, and it wasn't.");
+	}
+	// check if no item instances are derived from this item definition
+	$result = mysql_query("select 1 from mm_itemtable where itemid = ".
+	mysql_escape_string($_REQUEST{"deleteitemdef"}), $dbhandle);
+	if (mysql_num_rows($result) > 0)
+	{
+		die("There are still item instances using this item definition.");
+	}
+	
+	// make it so
+	$query = "delete from mm_items where id = ".
+	mysql_escape_string($_REQUEST{"deleteitemdef"}).
+	" and (owner is null or owner = \"".
+	mysql_escape_string($_COOKIE["karchanadminname"]).
+	"\")";
+	mysql_query($query, $dbhandle)
+	or die("Query (".$query.") failed : " . mysql_error());
+	if (mysql_affected_rows() != 1)
+	{
+		die("Item definition does not exist or not proper owner.");
+	}
+	writeLogLong($dbhandle, "Removed item definition ".$_REQUEST{"deleteitemdef"}.".", $query);
+}
+
+$result = mysql_query("select *,date_format(creation, \"%Y-%m-%d %T\") as
+	creation2 from mm_items where id = ".
 		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -312,6 +343,13 @@ while ($myrow = mysql_fetch_array($result))
 	$myrow["owner"] == $_COOKIE["karchanadminname"])
 	{
 ?>
+<FORM METHOD="GET" ACTION="/scripts/admin_itemdefs.php">
+<b>
+<INPUT TYPE="hidden" NAME="deleteitemdef" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="submit" VALUE="Delete Item Definition">
+</FORM>
+
 <FORM METHOD="GET" ACTION="/scripts/admin_itemdefs.php">
 <b>
 <INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $myrow["id"] ?>">
