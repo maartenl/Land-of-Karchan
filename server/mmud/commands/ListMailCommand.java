@@ -42,9 +42,19 @@ public class ListMailCommand extends NormalCommand
 
 	String theString;
 
+	public ListMailCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		theString = "<H2>List of Mail</H2>\r\n";
 		theString += aUser.getListOfMail();
 		theString += aUser.printForm();

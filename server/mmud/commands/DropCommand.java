@@ -41,11 +41,16 @@ import mmud.database.*;
  */
 public class DropCommand extends NormalCommand
 {
-    private String name;
-    private String adject1;
-    private String adject2;
-    private String adject3;
-    private int amount;
+	private String name;
+	private String adject1;
+	private String adject2;
+	private String adject3;
+	private int amount;
+
+	public DropCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
 
 	/**
 	 * This method will make a <I>best effort</I> regarding dropping of
@@ -60,12 +65,15 @@ public class DropCommand extends NormalCommand
 	 * items. Illegal being defined as smaller than 1.
 	 */
 	public boolean run(User aUser)
-		throws ItemException, ParseException
+	throws ItemException, ParseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		String command = getCommand();
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		// initialise string, important otherwise previous instances will return this
-		String[] myParsed = Constants.parseCommand(command);
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
 			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);

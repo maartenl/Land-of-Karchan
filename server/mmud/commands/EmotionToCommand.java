@@ -42,7 +42,13 @@ import mmud.database.*;
 public class EmotionToCommand extends NormalCommand
 {
 
+	public EmotionToCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		String command = getCommand();
 		Logger.getLogger("mmud").finer("");

@@ -40,10 +40,20 @@ import mmud.database.*;
 public class SayCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public SayCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length <= 1)
 		{

@@ -28,6 +28,10 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.MalformedPatternException;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -41,9 +45,34 @@ public abstract class NormalCommand implements Command
 {
 
 	private String theCommand;
+	private String[] theParsedCommand;
 
-	abstract public boolean run(User aUser)
-		throws MudException;
+	/**
+	 * the regular expression the command structure must follow
+	 */
+	private String theRegExpr;
+
+	/**
+	 * Constructor.
+	 * @param aRegExpr a regular expression to which the command should
+	 * follow. For example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
+	 * parameter that can be used when the name of the character playing
+	 * is requested.
+	 */
+	public NormalCommand(String aRegExpr)
+	{
+		theRegExpr = aRegExpr;
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		Perl5Compiler myCompiler = new Perl5Compiler();
+		Perl5Matcher myMatcher = new Perl5Matcher();
+		String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
+		return (getCommand().matches(myregexpr));
+	}
 
 	public String getResult()
 	{
@@ -54,6 +83,7 @@ public abstract class NormalCommand implements Command
 	public void setCommand(String aCommand)
 	{
 		theCommand = aCommand;
+		theParsedCommand = Constants.parseCommand(theCommand);
 	}
 
 	public String getCommand()
@@ -61,4 +91,8 @@ public abstract class NormalCommand implements Command
 		return theCommand;
 	}
 
+	public String[] getParsedCommand()
+	{
+		return theParsedCommand;
+	}
 }

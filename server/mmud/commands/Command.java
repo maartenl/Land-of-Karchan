@@ -77,4 +77,10 @@ public interface Command
 	 * @return String containing the original command.
 	 */
 	public String getCommand();
+
+	/**
+	 * Gets the command parsed into words.
+	 * @return String[] containing the individual words in the command.
+	 */
+	public String[] getParsedCommand();
 }

@@ -64,9 +64,25 @@ shopkeeper is going to have his/her hands full with coppers which is not a
 very good position. At a first attempt I managed to add over 900 copper
 coins dammit!
 
-transfer gold until gold finished or no more gold required
-transfer silver until silver finished or no more silver required
-transfer copper until copper finished or no more copper required
+transfer gold until gold finished or no more gold required else
+transfer silver until silver finished or no more silver required else
+transfer copper until copper finished or no more copper required else
+if value>=10 change gold into silver else
+if value>=1 change silver into copper
+
+Better description would be+
+1. is value>=100 + you have gold coins?
+	transfer gold coins
+2. is value>=10 + you have silver coins?
+	transfer silver coins
+3. is value>=1 + you have copper coins?
+	transfer copper coins
+4. no more copper coins
+	a. no more silver coins
+		get gold coin, change to silver coins
+	b. yes more silver coins
+		get silver coin, change to copper coins
+
 item+ 1 2 1
 inventoyr 1 3 0
 0 3 0 

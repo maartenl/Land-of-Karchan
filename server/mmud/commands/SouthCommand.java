@@ -41,10 +41,19 @@ import mmud.database.*;
 public class SouthCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public SouthCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getSouth() != null)
 		{

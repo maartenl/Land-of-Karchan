@@ -46,6 +46,11 @@ public class GetCommand extends NormalCommand
 	private String adject3;
 	private int amount;
 
+	public GetCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	/**
 	 * This method will make a <I>best effort</I> regarding picking up of
 	 * the items requested. This means that, if you request 5 items, and
@@ -59,12 +64,15 @@ public class GetCommand extends NormalCommand
 	 * items. Illegal being defined as smaller than 1.
 	 */
 	public boolean run(User aUser)
-		throws ItemException, ParseException
+	throws ItemException, ParseException, MudException
 	{
-		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		// initialise string, important otherwise previous instances will return this
-		String[] myParsed = Constants.parseCommand(command);
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
 			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);

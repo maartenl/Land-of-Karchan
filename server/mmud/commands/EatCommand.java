@@ -43,14 +43,22 @@ public class EatCommand extends NormalCommand
 
 	String theResult = null;
 
-	public boolean run(User aUser)
-		throws ItemException
+	public EatCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws ItemException, MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		// initialise string, important otherwise previous instances will return this
 		theResult = null;
-		String[] myParsed = Constants.parseCommand(command);
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
 			Item myItem = null;// = aUser.getItem(myParsed, 1, myParsed.length);

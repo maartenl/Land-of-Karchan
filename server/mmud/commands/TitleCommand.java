@@ -40,7 +40,13 @@ import mmud.database.*;
 public class TitleCommand extends NormalCommand
 {
 
+	public TitleCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		String command = getCommand();
 		Logger.getLogger("mmud").finer("");

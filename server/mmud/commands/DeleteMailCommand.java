@@ -42,12 +42,20 @@ public class DeleteMailCommand extends NormalCommand
 
 	String theString;
 
-	public boolean run(User aUser)
-		throws MailException
+	public DeleteMailCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MailException, MudException
+	{
 		Logger.getLogger("mmud").finer("");
-	        String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
 			try

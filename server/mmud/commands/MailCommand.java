@@ -42,10 +42,20 @@ public class MailCommand extends NormalCommand
 
 	String theString;
 
-	public boolean run(User aUser)
+	public MailCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		if (command.trim().equalsIgnoreCase("mail"))
 		{
 			theString = "<H1>Mail To</H1><HR noshade>\r\n";

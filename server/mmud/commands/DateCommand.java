@@ -41,10 +41,19 @@ import mmud.database.*;
 public class DateCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public DateCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current date is " 
 			+ myCalendar.get(Calendar.MONTH) + "-" +

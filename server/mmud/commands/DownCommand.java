@@ -42,10 +42,19 @@ import mmud.database.*;
 public class DownCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public DownCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getDown() != null)
 		{

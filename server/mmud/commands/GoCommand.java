@@ -40,36 +40,45 @@ import mmud.database.*;
 public class GoCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public GoCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
 			if (myParsed[1].equalsIgnoreCase("south"))
 			{
-				return (new SouthCommand()).run(aUser);
+				return (new SouthCommand(".*")).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("north"))
 			{
-				return (new NorthCommand()).run(aUser);
+				return (new NorthCommand(".*")).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("west"))
 			{
-				return (new WestCommand()).run(aUser);
+				return (new WestCommand(".*")).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("east"))
 			{
-				return (new EastCommand()).run(aUser);
+				return (new EastCommand(".*")).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("up"))
 			{
-				return (new UpCommand()).run(aUser);
+				return (new UpCommand(".*")).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("down"))
 			{
-				return (new DownCommand()).run(aUser);
+				return (new DownCommand(".*")).run(aUser);
 			}
 		}
 		return false;

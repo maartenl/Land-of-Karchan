@@ -37,10 +37,19 @@ import mmud.database.*;
 public class QuitCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public QuitCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		aUser.sendMessage(aUser.getName() + " left the game.<BR>\r\n");
 		try
 		{

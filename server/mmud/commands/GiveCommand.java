@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -41,42 +42,74 @@ import mmud.database.*;
 public class GiveCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
-		throws ItemException
+	public GiveCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws ItemException, ParseException, MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		// initialise string, important otherwise previous instances will return this
-		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length >= 4)
+		if (!super.run(aUser))
 		{
-			Item myItem = null;// = aUser.getItem(myParsed, 1, myParsed.length - 2);
-			if (myItem == null)
-			{
-				aUser.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
-				return true;
-			}
-			if (myItem.isAttribute("notgiveable"))
-			{
-				aUser.writeMessage("You cannot give that item.<BR>\r\n");
-				return true;
-			}
-			Person toChar = Persons.retrievePerson(myParsed[myParsed.length - 1]);
-			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
+			return false;
+		}
+		// initialise string, important otherwise previous instances will return this
+		String[] myParsed = getParsedCommand();
+		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("to")) 
+		{
+			// determine if appropriate shopkeeper is found.
+			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
+			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
 
-			aUser.writeMessage("You give " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
-			toChar.writeMessage(aUser.getName() + " gives " + myItem.getDescription() + " to you.<BR>\r\n");
-			aUser.sendMessage(toChar, aUser.getName() + " gives " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
+			// check for item in posession of shopkeeper
+			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+			int amount = ((Integer) stuff.elementAt(0)).intValue();
+			String adject1 = (String) stuff.elementAt(1);
+			String adject2 = (String) stuff.elementAt(2);
+			String adject3 = (String) stuff.elementAt(3);
+			String name = (String) stuff.elementAt(4);
 
-			// the reason for not creating a new object, is because 
-			// the existing object might have special characteristics
-			// and a full compare is just not doable.
-//			aUser.removeFromInventory(myItem);
-//			toChar.addToInventory(myItem);
+			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			if (myItems.size() < amount)
+			{
+				if (amount == 1)
+				{
+					aUser.writeMessage("You do not have that item.<BR>\r\n");
+					return true;
+				}
+				else
+				{
+					aUser.writeMessage("You do not have that many items.<BR>\r\n");
+					return true;
+				}
+			}
+			int j = 0;
+			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
+			{
+				// here needs to be a check for validity of the item
+				boolean success = true;
+				Item myItem = (Item) myItems.elementAt(i);
+				if (myItem.isAttribute("notgiveable"))
+				{
+					aUser.writeMessage("You cannot give that item.<BR>\r\n");
+					return true;
+				}
+				if (success)
+				{
+					// transfer item to other person
+					ItemsDb.transferItem(myItem, toChar);
+					aUser.writeMessage("You give " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
+					toChar.writeMessage(aUser.getName() + " gives " + myItem.getDescription() + " to you.<BR>\r\n");
+					aUser.sendMessage(toChar, aUser.getName() + " gives " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
+					j++;
+				}
+			}
 			return true;
 		}
 		return false;

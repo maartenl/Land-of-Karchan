@@ -40,20 +40,30 @@ import mmud.database.*;
 public class HelpCommand extends NormalCommand
 {
 
-	String theHelp;
-	User theUser;
+	private String theHelp;
+	private User theUser;
+
+	public HelpCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
 
 	public boolean run(User aUser)
+	throws MudException
 	{
-		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		theUser = aUser;
-		if (command.equalsIgnoreCase("help"))
+		String[] myParsed = getParsedCommand();
+		if (myParsed.length == 1)
 		{
 			theHelp = Database.getHelp(null);
 			return true;
 		}
-        String[] myParsed = Constants.parseCommand(command);
+		else
 		if (myParsed.length == 2)
 		{
 			theHelp = Database.getHelp(myParsed[1]);
@@ -71,7 +81,7 @@ public class HelpCommand extends NormalCommand
 		try
 		{
 			String aString = theHelp;
-            aString += theUser.printForm();
+			aString += theUser.printForm();
 			return aString;
 		}
 		catch (Exception e)

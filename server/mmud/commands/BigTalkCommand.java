@@ -43,9 +43,19 @@ public class BigTalkCommand extends NormalCommand
 
 	User theUser;
 
+	public BigTalkCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		theUser = aUser;
 		return true;
 	}

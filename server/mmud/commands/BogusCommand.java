@@ -42,7 +42,13 @@ import mmud.database.*;
 public class BogusCommand extends NormalCommand
 {
 
+	public BogusCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		aUser.writeMessage("I am afraid I do not understand that.<BR>\r\n");

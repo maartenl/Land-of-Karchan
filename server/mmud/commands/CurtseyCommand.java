@@ -40,13 +40,27 @@ import mmud.database.*;
 public class CurtseyCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public CurtseyCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
+			if (myParsed[2].equalsIgnoreCase(aUser.getName()))
+			{
+				aUser.writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
+				return true;
+			}
 			Person toChar = Persons.retrievePerson(myParsed[2]);
 			if (toChar == null)
 			{

@@ -40,10 +40,20 @@ import mmud.database.*;
 public class WhimpyCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public WhimpyCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		command = command.trim();
 		if (command.equalsIgnoreCase("whimpy help"))
 		{

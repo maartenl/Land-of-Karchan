@@ -42,9 +42,19 @@ public class WhoCommand extends NormalCommand
 
 	String theString;
 
+	public WhoCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		theString = Persons.getWhoList() + aUser.printForm();
 		return true;
 	}

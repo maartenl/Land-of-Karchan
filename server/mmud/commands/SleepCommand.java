@@ -40,10 +40,20 @@ import mmud.database.*;
 public class SleepCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public SleepCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+
 		if (aUser.isaSleep())
 		{
 			aUser.writeMessage("You already are asleep.<BR>\r\n");

@@ -621,7 +621,10 @@ public class ItemsDb
 								String name,
 								Person aChar)
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("adject1=" + adject1 + 
+			",adject2=" + adject2 +
+			",adject3=" + adject3 + 
+			",name=" + name + ",char=" + aChar.getName());
 		ResultSet res;
 		Vector items = new Vector();
 		try

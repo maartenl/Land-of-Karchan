@@ -41,11 +41,20 @@ import mmud.database.*;
 public class PkillCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public PkillCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
 			boolean isOn = myParsed[1].equalsIgnoreCase("on");

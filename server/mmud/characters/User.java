@@ -507,20 +507,20 @@ public class User extends mmud.characters.Person
 	public String runCommand(String aCommand)
 	throws MudException
 	{
-		Command command = new BogusCommand();
+		Command command = new BogusCommand(".*");
 		if (isaSleep())
 		{
 			if (aCommand.trim().equalsIgnoreCase("awaken"))
 			{
-				command = new AwakenCommand();
+				command = new AwakenCommand("awaken");
 			} 
 			else if (aCommand.trim().equalsIgnoreCase("quit"))
 			{
-				command = new QuitCommand();
+				command = new QuitCommand("quit");
 			}
 			else
 			{
-				command = new AlreadyAsleepCommand();
+				command = new AlreadyAsleepCommand(".*");
 			}
 		}
 		else

@@ -40,10 +40,20 @@ import mmud.database.*;
 public class MeCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public MeCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		aUser.writeMessage(aUser.getName() + " " + command.substring(3) + "<BR>\r\n");
 		aUser.sendMessage(aUser.getName() + " " + command.substring(3) + "<BR>\r\n");
 		return true;

@@ -42,14 +42,24 @@ public class InventoryCommand extends NormalCommand
 
 	String theResult;
 
+	public InventoryCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		String invent = aUser.inventory();
 		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
 			+ " have " + (invent.equals("")?"nothing.<P>":" <UL>" 
 			+ aUser.inventory() + "</UL>") 
-            + aUser.printForm();
+			+ aUser.printForm();
 		return true;
 	}
 

@@ -42,9 +42,19 @@ import mmud.database.*;
 public class UpCommand extends NormalCommand
 {
 
+	public UpCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getUp() != null)
 		{

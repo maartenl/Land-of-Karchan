@@ -40,10 +40,19 @@ import mmud.database.*;
 public class AwakenCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public AwakenCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		if (!aUser.isaSleep())
 		{
 			aUser.writeMessage("You already are awake.<BR>\r\n");

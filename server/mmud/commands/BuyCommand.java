@@ -41,6 +41,11 @@ import mmud.database.*;
 public class BuyCommand extends NormalCommand
 {
 
+	public BuyCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	/**
 	 * should be the same as item 38
 	 */
@@ -85,11 +90,14 @@ public class BuyCommand extends NormalCommand
 	 * items requested is illegal.
 	 */
 	public boolean run(User aUser)
-		throws ItemException, ParseException
+	throws ItemException, ParseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		String command = getCommand();
-		String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String[] myParsed = getParsedCommand();
 		// parse command string
 		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
 		{
@@ -133,7 +141,7 @@ public class BuyCommand extends NormalCommand
 			Vector myCopper = aUser.getItems("valuable",  "copper", "shiny", "coin");
 			
 			int sumvalue = 0;
-			for (int i=0; i<myItems.size(); i++)
+			for (int i=0; i<amount; i++)
 			{
 				Item myItem = (Item) myItems.elementAt(0);
 				sumvalue += myItem.getValue();
@@ -219,9 +227,7 @@ public class BuyCommand extends NormalCommand
 								myCopper.add(newItem);
 							}
 						}
-						Item myCopperItem = (Item) myCopper.elementAt(myCopperPos++);
-						ItemsDb.transferItem(myCopperItem, toChar);
-					}
+					} // end while totalitemvalue>0
 					if (success)
 					{
 						aUser.sendMessage(aUser.getName() + " buys " + myItem.getDescription() + " from " + toChar.getName() + ".<BR>\r\n");
@@ -231,20 +237,6 @@ public class BuyCommand extends NormalCommand
 					}
 				}
 			}
-//			try
-//			{
-//				aUser.moveCoins(toChar, myItem.getGold(), myItem.getSilver(), myItem.getCopper());
-//				aUser.addToInventory(myItem);
-//				toChar.removeFromInventory(myItem);
-//			}
-//			catch (ItemException e)
-//			{
-//			   aUser.writeMessage("You do not have enough money.<BR>\r\n");
-//			  return true;
-//			}
-//			toChar.removeFromInventory(myItem);
-//			aUser.addToInventory(myItem);
-
 			return true;
 		}
 		return false;

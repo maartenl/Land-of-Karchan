@@ -40,11 +40,21 @@ import mmud.database.*;
 public class BowCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public BowCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		String[] myParsed = Constants.parseCommand(command);
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
+		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
 		{
 			Person toChar = Persons.retrievePerson(myParsed[2]);

@@ -43,20 +43,29 @@ import mmud.database.*;
 public class SendMailCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
-		throws MailException
+	public SendMailCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MailException, MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 4)
 		{
-            Person toChar = Persons.retrievePerson(myParsed[1]);
-            if ((toChar == null) || (!(toChar instanceof User)))
-            {
-                aUser.writeMessage("Cannot find that person.<BR>\r\n");
-            }
-            else
+			Person toChar = Persons.retrievePerson(myParsed[1]);
+			if ((toChar == null) || (!(toChar instanceof User)))
+			{
+				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			}
+			else
 			{
 				User toUser = (User) toChar;
 				int size = 0, start = 0;

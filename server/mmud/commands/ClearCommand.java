@@ -42,9 +42,19 @@ public class ClearCommand extends NormalCommand
 
 	private User theUser;
 
+	public ClearCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		theUser = aUser;
 		return true;
 	}

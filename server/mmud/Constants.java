@@ -583,62 +583,63 @@ public final class Constants
 		theValues = new Properties(theDefaults);
 		loadInfo();
 
-		theCommandStructure.put("bow", new BowCommand());
-		theCommandStructure.put("me", new MeCommand());
-		theCommandStructure.put("quit", new QuitCommand());
-		theCommandStructure.put("sleep", new SleepCommand());
-		theCommandStructure.put("awaken", new AwakenCommand());
-		theCommandStructure.put("ask", new AskCommand());
-		theCommandStructure.put("tell", new TellCommand());
-		theCommandStructure.put("say", new SayCommand());
-		theCommandStructure.put("shout", new ShoutCommand());
-		theCommandStructure.put("whisper", new WhisperCommand());
-		theCommandStructure.put("clear", new ClearCommand());
-		theCommandStructure.put("time", new TimeCommand());
-		theCommandStructure.put("date", new DateCommand());
-		theCommandStructure.put("south", new SouthCommand());
-		theCommandStructure.put("north", new NorthCommand());
-		theCommandStructure.put("east", new EastCommand());
-		theCommandStructure.put("west", new WestCommand());
-		theCommandStructure.put("s", new SouthCommand());
-		theCommandStructure.put("n", new NorthCommand());
-		theCommandStructure.put("e", new EastCommand());
-		theCommandStructure.put("w", new WestCommand());
-		theCommandStructure.put("up", new UpCommand());
-		theCommandStructure.put("down", new DownCommand());
-		theCommandStructure.put("go", new GoCommand());
-		theCommandStructure.put("help", new HelpCommand());
-		theCommandStructure.put("bigtalk", new BigTalkCommand());
-		theCommandStructure.put("curtsey", new CurtseyCommand());
-		theCommandStructure.put("eyebrow", new EyebrowCommand());
-		theCommandStructure.put("whimpy", new WhimpyCommand());
-		theCommandStructure.put("who", new WhoCommand());
-		theCommandStructure.put("deletemail", new DeleteMailCommand());
-		theCommandStructure.put("listmail", new ListMailCommand());
-		theCommandStructure.put("readmail", new ReadMailCommand());
-		theCommandStructure.put("mail", new MailCommand());
-		theCommandStructure.put("sendmail", new SendMailCommand());
-		theCommandStructure.put("pkill", new PkillCommand());
-		theCommandStructure.put("inventory", new InventoryCommand());
-		theCommandStructure.put("i", new InventoryCommand());
-		theCommandStructure.put("drink", new DrinkCommand());
-		theCommandStructure.put("eat", new EatCommand());
-		theCommandStructure.put("drop", new DropCommand());
-		theCommandStructure.put("get", new GetCommand());
-		theCommandStructure.put("give", new GiveCommand());
-		theCommandStructure.put("read", new ReadCommand());
-		theCommandStructure.put("l", new LookCommand());
-		theCommandStructure.put("look", new LookCommand());
-		theCommandStructure.put("buy", new BuyCommand());
+		theCommandStructure.put("bow", new BowCommand("bow( to (\\w)+)?"));
+		theCommandStructure.put("me", new MeCommand("me .+"));
+		theCommandStructure.put("quit", new QuitCommand("quit"));
+		theCommandStructure.put("sleep", new SleepCommand("sleep"));
+		theCommandStructure.put("awaken", new AwakenCommand("awaken"));
+		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+)?.+"));
+		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
+		theCommandStructure.put("say", new SayCommand("say (to (\\w)+)?.+"));
+		theCommandStructure.put("shout", new ShoutCommand("shout (to (\\w)+)?.+"));
+		theCommandStructure.put("whisper", new WhisperCommand("whisper (to (\\w)+)?.+"));
+		theCommandStructure.put("clear", new ClearCommand("clear"));
+		theCommandStructure.put("time", new TimeCommand("time"));
+		theCommandStructure.put("date", new DateCommand("date"));
+		theCommandStructure.put("south", new SouthCommand("south"));
+		theCommandStructure.put("north", new NorthCommand("north"));
+		theCommandStructure.put("east", new EastCommand("east"));
+		theCommandStructure.put("west", new WestCommand("west"));
+		theCommandStructure.put("s", new SouthCommand("s"));
+		theCommandStructure.put("n", new NorthCommand("n"));
+		theCommandStructure.put("e", new EastCommand("e"));
+		theCommandStructure.put("w", new WestCommand("w"));
+		theCommandStructure.put("up", new UpCommand("up"));
+		theCommandStructure.put("down", new DownCommand("down"));
+		theCommandStructure.put("go", new GoCommand("go (\\w)?"));
+		theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
+		theCommandStructure.put("bigtalk", new BigTalkCommand("bigtalk"));
+		theCommandStructure.put("curtsey", new CurtseyCommand("curtsey (to (\\w)+)?"));
+		theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
+		theCommandStructure.put("whimpy", new WhimpyCommand("whimpy( (\\w)+)?"));
+		theCommandStructure.put("who", new WhoCommand("who"));
+		theCommandStructure.put("deletemail", new DeleteMailCommand("deletemail (\\d)+"));
+		theCommandStructure.put("listmail", new ListMailCommand("listmail"));
+		theCommandStructure.put("readmail", new ReadMailCommand("readmail (\\d)+"));
+		theCommandStructure.put("mail", new MailCommand("mail"));
+		theCommandStructure.put("sendmail", new SendMailCommand("sendmail .+"));
+		theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
+		theCommandStructure.put("inventory", new InventoryCommand("inventory"));
+		theCommandStructure.put("i", new InventoryCommand("i"));
+		theCommandStructure.put("drink", new DrinkCommand("drink( (\\w)+){1,4}"));
+		theCommandStructure.put("eat", new EatCommand("eat( (\\w)+){1,4}"));
+		theCommandStructure.put("drop", new DropCommand("drop( (\\w)+){1,4}"));
+		theCommandStructure.put("get", new GetCommand("get( (\\w)+){1,4}"));
+		theCommandStructure.put("give", new GiveCommand("give( (\\w)+){1,4} to (\\w)+"));
+		theCommandStructure.put("read", new ReadCommand("read( (\\w)+){1,4}"));
+		theCommandStructure.put("l", new LookCommand("l"));
+		theCommandStructure.put("look", new LookCommand("look at( (\\w)+){1,4}"));
+		theCommandStructure.put("buy", new BuyCommand("buy( (\\w)+){1,4} from (\\w)+"));
+		theCommandStructure.put("sell", new SellCommand("sell( (\\w)+){1,4} to (\\w)+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{
-			theCommandStructure.put(emotions[i][0], new EmotionCommand());
+			theCommandStructure.put(emotions[i][0], new EmotionCommand(".*"));
 			theEmotionStructure.put(emotions[i][0], emotions[i][1]);
 		}
 		for (int i=0;i<emotions2.length;i++)
 		{
-			theCommandStructure.put(emotions2[i][0], new EmotionToCommand());
+			theCommandStructure.put(emotions2[i][0], new EmotionToCommand(".*"));
 			theEmotion2Structure.put(emotions2[i][0], emotions2[i][1]);
 		}
 		for (int i=0;i<adverb.length;i++)
@@ -661,7 +662,7 @@ public final class Constants
 		Command myCommand = (Command) theCommandStructure.get(key);
 		if (myCommand == null)
 		{
-			return new BogusCommand();
+			return new BogusCommand(".*");
 		}
 		myCommand.setCommand(aCommand);
 		return myCommand;

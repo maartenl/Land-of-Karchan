@@ -41,10 +41,19 @@ import mmud.database.*;
 public class EastCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public EastCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getEast() != null)
 		{

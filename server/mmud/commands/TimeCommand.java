@@ -42,9 +42,19 @@ import java.util.Calendar;
 public class TimeCommand extends NormalCommand
 {
 
+	public TimeCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current time is " 
 			+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":" +

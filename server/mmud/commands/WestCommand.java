@@ -41,9 +41,19 @@ import mmud.database.*;
 public class WestCommand extends NormalCommand
 {
 
+	public WestCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
 	public boolean run(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getWest() != null)
 		{

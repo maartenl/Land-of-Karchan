@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.items;     
 
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -65,7 +66,7 @@ public class Item
 	 */
 	public Item(int anItemDef, int anId)
 	{
-		theItemDef = ItemsDb.getItemDef(anItemDef);
+		theItemDef = ItemDefs.getItemDef(anItemDef);
 		theId = anId;
 	} 
 
@@ -133,7 +134,9 @@ public class Item
 	 */
 	public int getValue()   
 	{
-		return theItemDef.getValue();
+		int i = theItemDef.getValue();
+		Logger.getLogger("mmud").finer("returns " + i);
+		return i;
 	}
 
 	/**

@@ -42,10 +42,20 @@ import mmud.database.*;
 public class TellCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
+	public TellCommand(String aRegExpr)
 	{
-		String command = getCommand();
+		super(aRegExpr);
+	}
+
+	public boolean run(User aUser)
+	throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
