@@ -1,0 +1,16 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown -s mud <<END_OF_DATA
+
+#
+# Dumping data for table 'skills'
+#
+
+INSERT INTO skills VALUES (0,'bare-handed combat',0,100,0,'','',1,0,2);
+INSERT INTO skills VALUES (1, 'pick', 0, 100, 0, '', '', 1, 0, 2);
+INSERT INTO skills VALUES (2, 'knife', 0, 100, 0, '', '', 1, 0, 2);
+
+
+
+END_OF_DATA
+
