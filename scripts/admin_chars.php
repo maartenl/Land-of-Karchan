@@ -245,7 +245,7 @@ if (isset($_REQUEST{"char"}) &&
 	isset($_REQUEST{"mm_charattributes_value_type"}) &&
 	$owner)
 {
-	$query = "insert into mm_charattributes 
+	$query = "replace into mm_charattributes 
 		(name, value, value_type, charname) values(\""
 		.mysql_escape_string($_REQUEST{"mm_charattributes_name"}).
 		"\", \""
@@ -289,7 +289,7 @@ while ($myrow = mysql_fetch_array($result))
 <OPTION VALUE="boolean">boolean
 </SELECT></TD></TR>   
 </TABLE>
-<INPUT TYPE="submit" VALUE="Add Attribute">
+<INPUT TYPE="submit" VALUE="Add/Replace Attribute">
 </b>   
 </FORM>
 <?php
