@@ -1147,7 +1147,6 @@ return 0;
 }
 
 int
-i
 Sell_Command(char *name, char *password, int room, char *fcommand)
 {
 	if ((getTokenAmount() >= 2) && (!strcasecmp("sell", getToken(0))) && (room==16)) 
