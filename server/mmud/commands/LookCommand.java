@@ -104,7 +104,14 @@ public class LookCommand extends NormalCommand
 					aUser.writeMessage("You cannot see that.<BR>\r\n");
 					return true;
 				}
-				Persons.sendMessage(aUser, toChar, "%SNAME look%VERB at %TNAME.<BR>\r\n");
+				Persons.sendMessage(aUser, toChar, "%SNAME look%VERB2 at %TNAME.<BR>\r\n");
+				String stuff2 = "You look at the " + 
+					toChar.getLongDescription() + "<BR>" +
+					ItemsDb.getWearablesFromChar(toChar);
+				stuff2 = stuff2.replaceAll("%SHESHE", toChar.getSex().Direct());
+				stuff2 = stuff2.replaceAll("%SHISHER", toChar.getSex().posession());
+				stuff2 = stuff2.replaceAll("%SISARE", "is");
+				aUser.writeMessage(stuff2);
 				return true;
 			}
 			return true;

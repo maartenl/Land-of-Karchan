@@ -222,7 +222,11 @@ public class Person
 	 */
 	public String getHealthDesc()
 	{
-		return Constants.health[theHealth / (1000 / Constants.health.length)];
+		int i = Constants.health.length - 1;
+		Logger.getLogger("mmud").finer("health=" + theHealth + 
+			",arrayindex=" + theHealth / (1000 / i) +
+			",arraylength=" + Constants.health.length);
+		return Constants.health[theHealth / (1000 / i)];
 	}
 
 	/**
@@ -857,6 +861,8 @@ public class Person
 	 */
 	public String getStatistics()
 	{
+		String stuff = ItemsDb.getWearablesFromChar(this);
+		stuff = stuff.replaceAll("%SHISHER", "your");
 		return "A " +
 		getLongDescription() + 
 		".<BR>You seem to be " +
@@ -868,9 +874,8 @@ public class Person
 		getAlignmentDesc() + ".<BR>" +
 		"You are level " + getLevel() + " and " + (1000-getExperience()) + 
 		" experience points away from levelling.<BR>" +
-		"You will flee when you are " + getWhimpyDesc() + ".<BR>";
-//		Wearing
-//		Wiedling
+		"You will flee when you are " + getWhimpyDesc() + ".<BR>" +
+		stuff;
 //		Skill
 
 	}

@@ -28,6 +28,7 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.Calendar;
 
 import mmud.*;
 import mmud.characters.*;
@@ -106,6 +107,32 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'wall' executed (" + getCommand().substring(11) + ")");
 			Persons.sendWall(getCommand().substring(11));
 			aUser.writeMessage("Wall message sent.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin uptime"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'uptime' executed (" +
+				Constants.theGameStartupTime + ")");
+			Calendar time = Calendar.getInstance();
+			Calendar oldtime = Constants.theGameStartupTime;
+			aUser.writeMessage("Game started on " + 
+				oldtime +
+				".<BR>\r\nCurrent time is " + time + 
+				".<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin help"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'help' executed");
+			aUser.writeMessage("Possible commands are:<DL>" +
+				"<DT>admin help<DD>this help text" +
+				"<DT>admin reset characters<DD>reset the cached rooms, required every time you make a change to a room" +
+				"<DT>admin reset rooms<DD>reset the cached characters, required every time you make a change to a character." +
+				"Already active characters are reloaded into the cache from the database." +
+				"<DT>admin wall &lt;message&gt;<DD>pages all users with the message entered" +
+				"<DT>admin uptime<DD>show the datetime when the game was started and the current datetime " +
+				"and the elapsed time period in between." +
+				"</DL>\r\n");
 			return true;
 		}
 		return false;

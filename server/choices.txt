@@ -94,11 +94,34 @@ inventoyr 1 3 0
   keep it geneeral as in add/delete.
 
 Implementation
---------------
+==============
 
 - I split up Database.java in different static objects, that request the
 connection from Database.java in order to have some semblance of order. It
 becomes difficult to find the correct method in a huge Database object.
+
+- Create some nice typesafe enumerated classes with specific behaviour
+designed per instance. (HEME~ (HIMHER) (ETC)
+
+- Several settings in the character have a minimum value and a maximum
+value. For instance, health has an upper level of 1000 and lower level of 0.
+The idea here is to keep these values the same no matter how high the level
+of the character is. In this way we prevent unnecessary inflation. The thing
+to remember is set a high upper level, so incremental steps can be quite
+small if necessary. 1000 seems to do it.
+
+- Communication wise, there are three methods in Person.java that can be
+used. writeMessage for general info. writeMessage(source) for messages that
+change depending on who's doing it. And writeMessage(source,target) for
+messages that change depending on who's doing it to whom.
+writeMessage(source, target) calls writeMessage(source).
+writeMessage(source) calls writeMessage().
+sendMessage calls Persons.sendMessage .
+sendMessage(target) calls Persons.sendMessage .
+Persons.sendMessage calls user.writeMessage
+
+Items
+-----
 
 - It is impossible at this time, due to memory requirements, to keep all
 items as separate objects in memory. Therefore I've chosen to, with regards
@@ -129,36 +152,44 @@ unique abilities to certain items.
 - It is better to have different itemtables, for rooms/items/characters, in
 order to keep the primary key as best as possible. When moving items from
 the table over to another table, it is best to:
-1. retrieve itemids
-2. remove itemids from table (reserving itemids)
-3. add itemids to another table
-
-- Create some nice typesafe enumerated classes with specific behaviour
-designed per instance. (HEME~ (HIMHER) (ETC)
+1. remove item from table
+2. add item to other table
 
 - wielding and wearing are both stored in the wearing field. This is because
 they are mutually exclusive. An item is either being wield (weld?) or being
 worn. It could use a better name though.
 
-- Several settings in the character have a minimum value and a maximum
-value. For instance, health has an upper level of 1000 and lower level of 0.
-The idea here is to keep these values the same no matter how high the level
-of the character is. In this way we prevent unnecessary inflation. The thing
-to remember is set a high upper level, so incremental steps can be quite
-small if necessary. 1000 seems to do it.
+mm_items.wieldable/wearable = difficult, maybe not that difficult. I am
+going to ignore wieldable field.
+mm_charitemtable.wearing = simple, one number, maps straight to a
+PersonPositionEnum.
+PersonPositionEnum is going to be a simple class-member of Item.java. It is
+a little to specific to make it an attribute, although it isn't used much.
+wearable is an integer in ItemDef, to determine if it is possible to
+wear/wield the stuff somewhere.
 
-- Communication wise, there are three methods in Person.java that can be
-used. writeMessage for general info. writeMessage(source) for messages that
-change depending on who's doing it. And writeMessage(source,target) for
-messages that change depending on who's doing it to whom.
-writeMessage(source, target) calls writeMessage(source).
-writeMessage(source) calls writeMessage().
-sendMessage calls Persons.sendMessage .
-sendMessage(target) calls Persons.sendMessage .
-Persons.sendMessage calls user.writeMessage
+database: get wearing items from person
+change wearing stuff
+
+the following sql queries need to be changed to accomodate wearing:
+V- sqlGetInventoryPersonString
+V	getInventory(person)
+V- sqlDeleteItemCharString
+V	deleteItemFromChar(item)
+V- sqlAddItemCharString
+V	addItemToChar(item, person)
+V- sqlGetItemPersonString
+V	getItemsFromChar(strings, person)
+- sqlGetWearingItemsPersonString
+	getWearablesFromChar
+V- sqlSetWearingItemPersonString
+V	changeWearing(item)
+V- sqlTransferItemString
+V 	transferItem(item, person)
+
 
 Game Behaviour
---------------
+==============
 
 - gold, silver and copper coins will be normal items. All values will be
 counted using "copper". I.e. a copper coin is worth 1 copper coin. 1 silver

@@ -49,6 +49,7 @@ public class ItemDef
 	private int theGold;
 	private int theSilver;
 	private int theCopper;
+	private int theWearable;
 	private TreeMap theAttributes = new TreeMap();
 
 	/**
@@ -62,8 +63,13 @@ public class ItemDef
 	 * @param aGold the number of gold coins the item costs
 	 * @param aSilver the number of silver coins the item costs
 	 * @param aCopper the number of copper coins the item costs 
+	 * @param aWearable the possible positions that the item
+	 * can be worn on.
 	 */
-	public ItemDef(int anId, String anAdjective1, String anAdjective2, String anAdjective3, String aVerb, String aDescription, int aGold, int aSilver, int aCopper)
+	public ItemDef(int anId, String anAdjective1, String anAdjective2, 
+		String anAdjective3, String aVerb, String aDescription, 
+		int aGold, int aSilver, int aCopper,
+		int aWearable)
 	{
 		theId = anId;
 		theVerb = aVerb;
@@ -74,6 +80,7 @@ public class ItemDef
 		theGold = aGold;
 		theSilver = aSilver;
 		theCopper = aCopper;
+		theWearable = aWearable;
 	} 
 
 	/**
@@ -91,6 +98,7 @@ public class ItemDef
 		theGold = anItemDef.getGold();
 		theSilver = anItemDef.getSilver();
 		theCopper = anItemDef.getCopper();
+		theWearable = anItemDef.getWearable();
 	} 
 
 	/**
@@ -180,6 +188,26 @@ public class ItemDef
 	public int getCopper()
 	{
 		return theCopper;
+	}
+	
+	/**
+	 * Return the wearable on setting.
+	 * @return integer containing different positions that this
+	 * thing is wearable on.
+	 */
+	private int getWearable()
+	{
+		return theWearable;
+	}
+	
+	/**
+	 * Return if the position entered is a member
+	 * of the possible positions that this item can be worn on.
+	 * @return boolean, true if this item is wearable there.
+	 */
+	public boolean isWearable(PersonPositionEnum aPos)
+	{
+		return PersonPositionEnum.isIn(theWearable, aPos);
 	}
 	
 	/**

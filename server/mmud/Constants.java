@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.Handler;
 import java.util.Vector;
+import java.util.Calendar;
 
 import mmud.commands.*;
 
@@ -62,6 +63,12 @@ public final class Constants
 	public final static String config_file = CONFIG_FILE;
 
 	public final static String MUDFILEPATH = "/home/karchan/mud";
+
+	/**
+	 * A variable containing the date and time when the server was 
+	 * started. This is used in admin commands.
+	 */
+	public final static Calendar theGameStartupTime = Calendar.getInstance();
 
 	/**
 	 * a property list with the default values
@@ -93,6 +100,7 @@ public final class Constants
 	public final static String INVALIDMAILERROR = "mud mail not found";
 	public final static String ITEMDEFDOESNOTEXISTERROR = "the definition of the item does not exist";
 	public final static String ITEMDOESNOTEXISTERROR = "the item does not exist";
+	public final static String ITEMCANNOTBEWORNERROR = "the item cannot be worn (at least not there)";
 	public final static String NOTENOUGHMONEYERROR = "you do not have enough money";
 	public final static String UNABLETOPARSEPROPERLY = "the entire command or part of the command could not be parsed correctly";
 
@@ -185,13 +193,14 @@ public final class Constants
 		"feeling very bad",
 		"feeling bad",
 		"terribly hurt",
-		"quite hurt",
 		"extremely hurt",
+		"quite hurt",
 		"hurt",
 		"slightly hurt",
 		"feeling quite nice",
 		"feeling fine",
-		"feeling well"};
+		"feeling well",
+		"feeling very well"};
 
 	public static final String[] movement = {
 		"fully exhausted",
@@ -653,6 +662,10 @@ public final class Constants
 		theCommandStructure.put("i", new InventoryCommand("i"));
 		theCommandStructure.put("drink", new DrinkCommand("drink( (\\w)+){1,4}"));
 		theCommandStructure.put("eat", new EatCommand("eat( (\\w)+){1,4}"));
+		theCommandStructure.put("wear", new WearCommand("wear( (\\w)+){1,4} on (\\w)+"));
+		theCommandStructure.put("remove", new UnwearCommand("remove( (\\w)+){1,4} from (\\w)+"));
+		theCommandStructure.put("wield", new WieldCommand("wield( (\\w)+){1,4} with (\\w)+"));
+		theCommandStructure.put("unwield", new UnwieldCommand("unwield( (\\w)+){1,4} from (\\w)+"));
 		theCommandStructure.put("drop", new DropCommand("drop( (\\w)+){1,4}"));
 		theCommandStructure.put("get", new GetCommand("get( (\\w)+){1,4}"));
 		theCommandStructure.put("search", new SearchCommand("search( (\\w)+){1,4}"));

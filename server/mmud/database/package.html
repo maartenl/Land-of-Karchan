@@ -78,13 +78,19 @@ life of characters and administrators.</TD></TR>
 |*charname            |
 +---------------------+
 
-+---------------------+
-| mm_items            |
-+---------------------+
-|*id                  |
-| general stuff       |
-+---------------------+
-
+</PRE>
+<H3>mm_items</H3>
+<DL>
+<DT>id
+<DD>identification of this item definition, integer.
+<DT>wearable
+<DD>how this item is to be worn as a bitmask, integer. Values :
+1=head,2=neck,4=torso,8=arms,16=leftwrist,32=rightwrist,64=leftfinger,
+128=rightfinger,256=feet,512=hands,1024=floating,2048=waist,
+4096=legs,8192=eyes,16384=ears,32768=body,65536=wield lefthand,
+131072=wield righthand,262144=wielding both hands
+</DL>
+<PRE>
 +---------------------+
 | mm_shopkeeperitems  |
 +---------------------+

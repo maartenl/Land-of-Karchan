@@ -56,7 +56,9 @@ public class StatsCommand extends NormalCommand
 			return false;
 		}
 		String invent = aUser.getStatistics();
-		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Stats</H1>"
+		invent = invent.replaceAll("%SHESHE", "You");
+		invent = invent.replaceAll("%SISARE", "are");
+		theResult = "<H1>Stats</H1>"
 			+ invent
 			+ aUser.printForm();
 		return true;

@@ -47,6 +47,10 @@ import mmud.rooms.*;
 public class ItemsDb
 {
 
+	/**
+	 * Gets an inventory list of a person.
+	 * Items that are being worn are not a part of this list.
+	 */
 	public static String sqlGetInventoryPersonString = 
 		  "select count(*) as amount, adject1, adject2, adject3, name "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
@@ -56,6 +60,7 @@ public class ItemsDb
 		+ "mm_charitemtable.wearing is null and "
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
+
 	public static String sqlGetInventoryRoomString =
 		  "select count(*) as amount, adject1, adject2, adject3, name "
 		+ "from mm_roomitemtable, mm_itemtable, mm_items "
@@ -125,6 +130,21 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlGetWearingInventoryString =
+		"select adject1, adject2, adject3, name, wearing "
+		+ "from mm_charitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_charitemtable.id and "
+        + "belongsto = ? and mm_charitemtable.wearing <> 0";
+
+	/**
+	 * Makes one specific item either being worn or not being worn
+	 * or wielded or not being wielded.
+	 */
+	public static String sqlSetWearingItemPersonString =
+		"update mm_charitemtable set wearing = ? "
+		+ "where mm_charitemtable.id = ?";
+
 	public static String sqlGetAllItemContainerString =
 		"select mm_itemtable.itemid, mm_itemitemtable.* "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
@@ -134,7 +154,7 @@ public class ItemsDb
 	public static String sqlTransferItemString =
 		"update mm_charitemtable "
 		+ "set belongsto = ? "
-		+ "where id = ?";
+		+ "where id = ? and wearing = 0";
 	public static String sqlDeleteItemString =
 		"delete from mm_itemtable "
 		+ "where id = ?";
@@ -174,13 +194,16 @@ public class ItemsDb
 			res.getString("adject1"),
 			res.getString("adject2"), res.getString("adject3"),
 			res.getString("name"), res.getString("description"),
-			res.getInt("gold"), res.getInt("silver"), res.getInt("copper"));
+			res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
+			res.getInt("wearable"));
 		// do stuff with attributes.
 		String drinkable = res.getString("drinkable");
 		int container = res.getInt("container");
 		String eatable = res.getString("eatable");
 		String readable = res.getString("readdescr");
 		int visible = res.getInt("visible");
+		int wearable = res.getInt("wearable");
+		int wieldable = res.getInt("wieldable");
 		int dropable = (itemdefnr < 0 ? 0 : res.getInt("dropable"));
 		int getable = (itemdefnr < 0 ? 0 : res.getInt("getable"));
 		if (container != 0)
@@ -210,6 +233,10 @@ public class ItemsDb
 		if (visible == 0)
 		{
 			myItemDef.setAttribute(new Attribute("invisible", "", "string"));
+		}
+		if (wearable != 0)
+		{
+			myItemDef.setAttribute(new Attribute("wearable", wearable+"", "integer"));
 		}
 		res.close();
 		sqlGetItemDef.close();
@@ -869,7 +896,8 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId);
+				Item anItem = new Item(anItemId, anItemInstanceId,
+					PersonPositionEnum.get(res.getInt("wearing")));
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -885,5 +913,86 @@ public class ItemsDb
 		return items;
 	}
 
+	/**
+	 * Retrieve the items that are being worn or wielded by a character.
+	 * @param aChar the character who is wearing/wielding said items.
+	 * @return String containing the bulleted list of items the person is
+	 * wearing/wielding.
+	 */
+	public static String getWearablesFromChar(Person aChar)
+	{
+		Logger.getLogger("mmud").finer("char=" + aChar.getName());
+		ResultSet res;
+		StringBuffer myInventory = new StringBuffer("");
+		try
+		{
+			PreparedStatement sqlGetItem = Database.prepareStatement(sqlGetWearingInventoryString);
+			sqlGetItem.setString(1, aChar+"");
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			while (res.next())
+			{
+				PersonPositionEnum myPos = PersonPositionEnum.get(res.getInt("wearing"));
+				myInventory.append("%SHESHE %SISARE " +
+					(myPos.isWielding() ? "wielding " : "wearing ") + 
+					(Constants.isQwerty(res.getString("adject1").charAt(0)) ? "an " : "a ") + 
+					res.getString("adject1") + ", " + 
+					res.getString("adject2") + " " + 
+					res.getString("name") + " " + myPos + ".<BR>\r\n");
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").info("returns: " + myInventory);
+		return myInventory.toString();
+	}
+
+	/**
+	 * Makes an item either worn or not.
+	 * @param anItem the item to be worn or removed.
+     * @throws ItemCannotBeWornException when we were unable to wear or
+	 * remove the item.
+	 * @throws ItemDoesNotExistException when we were unable to find
+	 * the item that needs to be manipulated.
+	 */
+	public static void changeWearing(Item anItem)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer(anItem + ",wearing="+anItem.getWearing());
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlWearingItem = Database.prepareStatement(sqlSetWearingItemPersonString);
+			if (anItem.getWearing() != null)
+			{
+				sqlWearingItem.setInt(1, anItem.getWearing().toInt());
+			}
+			else
+			{
+				sqlWearingItem.setString(1, null);
+			}
+			sqlWearingItem.setInt(2, anItem.getId());
+			res = sqlWearingItem.executeUpdate();
+			sqlWearingItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
 
 }

@@ -48,6 +48,23 @@ public class Item
 	private TreeMap theAttributes = new TreeMap();
 
 	/**
+	 * Default is null pointer, if it is not being worn/wielded.
+	 */
+	private PersonPositionEnum thePlaceOnBody;
+
+	/**
+	 * Create this item object with a default Item Definition and id.
+	 * This method is usually only used by the database.
+	 * @param anItemDef definition of the item
+	 * @param anId integer identification of the item
+	 */
+	public Item(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody)
+	{
+		this(anItemDef, anId);
+		thePlaceOnBody = aPosBody;
+	} 
+
+	/**
 	 * Create this item object with a default Item Definition and id.
 	 * This method is usually only used by the database.
 	 * @param anItemDef definition of the item
@@ -65,18 +82,20 @@ public class Item
 	 * @param anItemDef integer definition identification of the item
 	 * @param anId integer identification of the item
 	 */
-	public Item(int anItemDef, int anId)
+	public Item(int anItemDef, int anId, PersonPositionEnum aPosBody)
 	{
-		theItemDef = ItemDefs.getItemDef(anItemDef);
-		theId = anId;
+		this(ItemDefs.getItemDef(anItemDef), anId, aPosBody);
 	} 
 
 	/**
-	 * Create this item object as a copy of an existing item.
+	 * Create this item object with a default Item Definition and id.
+	 * This method is usually only used by the database.
+	 * @param anItemDef integer definition identification of the item
+	 * @param anId integer identification of the item
 	 */
-	public Item(Item anItem)
+	public Item(int anItemDef, int anId)
 	{
-		//this(anItem.getItemDef());
+		this(ItemDefs.getItemDef(anItemDef), anId);
 	} 
 
 	/**
@@ -87,6 +106,46 @@ public class Item
 	public int getId()
 	{
 		return theId;
+	}
+
+	/**
+	 * Returns the position on the body where this item is worn.
+	 * Will return a null pointer if the item is not worn at all.
+	 * @return PersonPositionEnum identifying the position on the body.
+	 */
+	public PersonPositionEnum getWearing()
+	{
+		return thePlaceOnBody;
+	}
+
+	/**
+	 * Return if the position entered is a member
+	 * of the possible positions that this item can be worn on.
+	 * @return boolean, true if this item is wearable there.
+	 */
+	public boolean isWearable(PersonPositionEnum aPersonPosition)
+	{
+		return getItemDef().isWearable(aPersonPosition);
+	}
+
+	/**
+	 * Set the position on the body where this item is worn. Set the null
+	 * pointer if the item does not need to be worn.
+	 * @param aPersonPosition identifying the position on the body.
+	 * @throws RuntimeException when unable to attach the item
+	 * to this position on the body, because the item won't fit.
+	 * @throws ItemDoesNotExistException if the item could not be found.
+	 */
+	public void setWearing(PersonPositionEnum aPersonPosition)
+	throws ItemDoesNotExistException
+	{
+		if (!isWearable(aPersonPosition))
+		{
+			throw new RuntimeException("unable to attach item to position," +
+				" position illegal for this item.");
+		}
+		thePlaceOnBody = aPersonPosition;
+		ItemsDb.changeWearing(this);
 	}
 
 	/**
@@ -125,7 +184,6 @@ public class Item
 		return theItemDef.getAdjective3();
 	}
 
-       
 	/**
 	 * Returns the amount of money something costs in total copper coins.
 	 * @return integer, gold*100+silver*10+copper
@@ -264,5 +322,13 @@ public class Item
 	{
 		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name, this);
 	}
+
+
+//	public boolean isWorn
+//	public boolean isWielded
+//	public PersonPositionEnum getWorn
+//	public PersonPositionEnum getWielded
+//	public void setWorn(
+//	public void setWielded(PersonPositionEnum aNew
 
 }

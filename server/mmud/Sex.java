@@ -93,6 +93,15 @@ public final class Sex
 	}
 
 	/**
+	 * returns either "He" or "She"
+	 * @return returns either "He" or "She"
+	 */
+	public String Direct()
+	{
+		return (theSex.equals("male") ? "He" : "She");
+	}
+
+	/**
 	 * default equals implementation.
 	 */
 	public boolean equals(Object r)
