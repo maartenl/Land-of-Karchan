@@ -17,24 +17,36 @@ primary key (boardname, name, posttime)
 alter table tmp_itemtable 
 add (containerid int default 0 not null);
 
+alter table tmp_itemtable drop primary key;
+alter table tmp_itemtable add primary key (id, search, belongsto, room ,
+wearing, wielding, containerid);
+
 alter table itemtable
-add (containerid int default 0 not null);
-
-alter table bogus_itemtable
-add (containerid int default 0 not null);
-
-alter table olditem
-add (containerid int default 0 not null);
-
-alter table respawningitemtable
 add (containerid int default 0 not null);
 
 alter table itemtable drop primary key;
 alter table itemtable add primary key (id, search, belongsto, room ,
 wearing, wielding, containerid);
 
-alter table tmp_itemtable drop primary key;
-alter table tmp_itemtable add primary key (id, search, belongsto, room ,
+alter table bogus_itemtable
+add (containerid int default 0 not null);
+
+alter table bogus_itemtable drop primary key;
+alter table bogus_itemtable add primary key (id, search, belongsto, room ,
+wearing, wielding, containerid);
+
+alter table olditem
+add (containerid int default 0 not null);
+
+alter table olditem drop primary key;
+alter table olditem add primary key (id, search, belongsto, room ,
+wearing, wielding, containerid);
+
+alter table respawningitemtable
+add (containerid int default 0 not null);
+
+alter table respawningitemtable drop primary key;
+alter table respawningitemtable add primary key (id, search, belongsto, room ,
 wearing, wielding, containerid);
 
 create table containeditems (id int(7) not null,
@@ -47,8 +59,6 @@ amount int(7),
 wielding*/
 containedin int(11) not null,
 primary key (id, containedin));
-
-/* change primary key to include containerid */
 
 alter table items
 add (container int default 0 not null); /* specify weight in units, 0=no
