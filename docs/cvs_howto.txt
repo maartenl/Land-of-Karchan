@@ -11,6 +11,13 @@ Todo list for changing the docs directory:
 8. type "cvs commit docs" to commit any and all changes you made to the documents (it will ask for some comments concerning the changes you made)
 9. type "cvs release -d docs" to release the docs directory and remove it from the "working-directory"
 
+File Permissions
+----------------
+File permissions necessary for a good use of cvs are:
+- rwx on directories
+- r on files
+
+
 Building the repository:
 ------------------------
 export CVSROOT="/karchan2/mud/cvsroot/"
