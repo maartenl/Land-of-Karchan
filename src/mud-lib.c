@@ -592,7 +592,6 @@ void
 RoomTextProc(int z)
 {
 	FILE           *fp;
-	indexrec        y;
 	char           *pakem;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
