@@ -946,6 +946,7 @@ void mud_free(void *ptr)
 			mystruct->pointer = NULL;
 			memoryused-=mystruct->size;
 			mystruct->size = 0;
+			result = 1;
 		} else
 		if ((mystruct->pointer < ptr) && (mystruct->pointer + mystruct->size >= ptr))
 		{
