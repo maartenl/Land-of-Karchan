@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 printf("Bantable<P>");
 $result = mysql_query("select * from mm_bantable"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(1) failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>address:</b> %s ", $myrow[0]);
@@ -62,7 +62,7 @@ if ($_REQUEST{"unbanname"} <> "")
 	mysql_query("replace into mm_unbantable values(\"".
 	mysql_escape_string($_REQUEST{"unbanname"})."\")"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(2) failed : " . mysql_error());
 	writeLog($dbhandle, "Added name to be unbanned. (".$_REQUEST{"unbanname"}.")");
 }
 if ($_REQUEST{"sillyname"} != "")
@@ -70,27 +70,63 @@ if ($_REQUEST{"sillyname"} != "")
 	mysql_query("replace into mm_sillynamestable values(\"".
 	mysql_escape_string($_REQUEST{"sillyname"})."\")"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(3) failed : " . mysql_error());
 	writeLog($dbhandle, "Added sillyname. (".$_REQUEST{"sillyname"}.")");
 }
 
 printf("Unbantable<P>");
+if ($_REQUEST{"remove_unban"} != NULL)
+{
+	mysql_query("delete from mm_unbantable where name = \"".
+		mysql_escape_string($_REQUEST{"remove_unban"})."\""
+		, $dbhandle)
+		or die("Query(4) failed : " . mysql_error());
+	writeLog($dbhandle, "Removed unbanname. (".$_REQUEST{"remove_unban"}.")");
+}
 $result = mysql_query("select * from mm_unbantable order by name"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(5) failed : " . mysql_error());
+$count = 1;
+printf("<TABLE><TR><TD>");
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("%s<BR>", $myrow[0]);
+	printf("<A HREF=\"/scripts/admin_banned.php?remove_unban=%s\">%s</A><BR>", 
+		$myrow[0], $myrow[0]);
+	$count ++;
+	if ($count > 40)
+	{
+		$count = 1;
+		printf("</TD><TD>");
+	}
 }
+printf("</TD></TR></TABLE>");
 
 printf("Sillynamestable<P>");
+if ($_REQUEST{"remove_sillyname"} != NULL)
+{
+	mysql_query("delete from mm_sillynamestable where name = \"".
+		mysql_escape_string($_REQUEST{"remove_sillyname"})."\""
+		, $dbhandle)
+		or die("Query(6) failed : " . mysql_error());
+	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");
+}
 $result = mysql_query("select * from mm_sillynamestable order by name"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(7) failed : " . mysql_error());
+$count = 1;
+printf("<TABLE><TR><TD>");
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("%s<BR>", $myrow[0]);
+	printf("<A HREF=\"/scripts/admin_banned.php?remove_sillyname=%s\">%s</A><BR>",
+		$myrow[0], $myrow[0]);
+	$count ++;
+	if ($count > 40)
+	{
+		$count = 1;
+		printf("</TD><TD>");
+	}
 }
+printf("</TD></TR></TABLE>");
 
 if ($_REQUEST{"ban_address"} != "")
 {
@@ -104,7 +140,7 @@ if ($_REQUEST{"ban_address"} != "")
 	"\"".mysql_escape_string($_REQUEST{"ban_reason"})."\"".
 	")"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or die("Query(8) failed : " . mysql_error());
 	writeLog($dbhandle, "Added ban on address ".$_REQUEST{"ban_address"}.".");
 }
 

@@ -42,20 +42,20 @@ Logs <?php echo $_REQUEST{"status"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-if ($_REQUEST{"status"} = "1")
+if ($_REQUEST{"status"} == "1")
 {
 	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
 		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log order by creation";
 }
-if ($_REQUEST{"status"} = "2")
+if ($_REQUEST{"status"} == "2")
 {
 	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
-		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() -  INTERVAL 7 day order by creation";
+		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - 7000000 order by creation";
 }
-if ($_REQUEST{"status"} = "3")
+if ($_REQUEST{"status"} == "3")
 {
 	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message,
-		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - INTERVAL 1 day order by creation";
+		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - 1000000 order by creation";
 }
 $result = mysql_query($query
 	, $dbhandle)

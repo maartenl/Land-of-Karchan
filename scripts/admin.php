@@ -27,7 +27,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-if ($_REQUEST{"username"} != "")
+if (isset($_REQUEST{"username"}))
 {
 	setcookie("karchanadminname", $_REQUEST{"username"}, time() + 7200);
 	setcookie("karchanadminpassword", $_REQUEST{"userpassword"}, time() + 7200);
@@ -47,8 +47,8 @@ Land of Karchan - Admin
 <IMG SRC="/images/gif/dragon.gif">Karchan Admin Page</H1>
 
 <?php
-if ( ($_COOKIE["karchanadminname"] == "") &&
-	($_REQUEST{"username"} == "") )
+if ( (!isset($_COOKIE["karchanadminname"])) &&
+	(!isset($_REQUEST{"username"})) )
 {
 ?>
 <FORM METHOD="GET" ACTION="/scripts/admin.php">
@@ -65,36 +65,45 @@ else
 {
 ?>
 
-<UL>
-<LI><A HREF="/scripts/admin_problems.php">Report Problems</A>
-<LI><A HREF="/scripts/admin_itemlist.php">Item List</A>
-<LI><A HREF="/scripts/admin_log.php?status=1">Log - all</A>
-<LI><A HREF="/scripts/admin_log.php?status=2">Log - last week</A>
-<LI><A HREF="/scripts/admin_log.php?status=3">Log - yesterday</A>
-<LI><A HREF="/scripts/admin_banned.php">Banned People</A>
+<TABLE WIDTH=100%><TR><TD><A HREF="/scripts/admin_problems.php">Report Problems</A>
+</TD><TD><A HREF="/scripts/admin_itemlist.php">Item List</A>
+</TD><TD><A HREF="/scripts/admin_banned.php">Banned People</A>
+</TD></TR></TABLE>
+<HR>
+<FORM METHOD="GET" ACTION="/scripts/admin_log.php">
+Show Log
+<SELECT NAME="status">
+<option value=1>All
+<option value=2>Last Week
+<option selected value=3>Today
+</SELECT>
+<P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
 </UL>
-Room:
+<HR>
 <FORM METHOD="GET" ACTION="/scripts/admin_rooms.php">
-Room id:
+Show Room with id:
 <INPUT TYPE="text" NAME="room" VALUE="" SIZE="19" MAXLENGTH="19"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
-
-Get character info:<FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
-Character name:
+<HR>
+<FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
+Show Character with name:
 <INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
-
-Import items:<FORM METHOD="GET" ACTION="/scripts/admin_importitems.php">
-Character name:
+<HR>
+<FORM METHOD="GET" ACTION="/scripts/admin_importitems.php">
+Import items belonging to: 
 <INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
-
+<HR>
 Logonmessage:
 <FORM METHOD="GET" ACTION="/scripts/admin_logonmessage.php">
 <TEXTAREA NAME="message" VALUE="" 
@@ -103,7 +112,7 @@ ROWS="20" COLS="85"></TEXTAREA><P>
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 <FORM METHOD="GET" ACTION="/scripts/admin_select.php">
-
+<HR>
 Select statement:<BR>
 (<I>Examples</I>: <TT>select * from mm_usertable where name="Karn"</TT> or
 <TT>show fields from mm_usertable</TT>)<BR>

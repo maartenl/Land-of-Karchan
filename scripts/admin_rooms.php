@@ -69,7 +69,7 @@ todo:
 - insert into log
 
 */
-if ($_REQUEST{"west"} <> "")
+if (isset($_REQUEST{"west"}))
 {
 	// check it.
 	$result = mysql_query("select id from mm_rooms where id = ".

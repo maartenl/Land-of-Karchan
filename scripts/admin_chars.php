@@ -32,7 +32,7 @@ maarten_l@yahoo.com
 Land of Karchan - Admin
 </TITLE>
 </HEAD>
-                                                                                                                      
+																													  
 <BODY>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
@@ -42,7 +42,101 @@ Char <?php echo $_REQUEST{"char"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select * from mm_usertable where name =
+
+/* the following constraints need to be checked before any kind of update is
+to take place:
+
+changing room:
+- first check that the change is approved (i.e. owner or null)
+- does room south exist
+- does room north exist
+- does room east exist 
+- does room west exist 
+- does room up exist   
+- does room down exist 
+- does area exist
+deleting room:   
+- first check that the change is approved (i.e. owner or null)
+- check persons in room
+- check items in room  
+- check references to this room in other rooms
+adding room:
+- all information filled out correctly?
+- does area exist?
+todo:
+- update room
+- update owner
+- insert into log
+
+*/
+if (isset($_REQUEST{"race"}))
+{
+	// check it.
+	$result = mysql_query("select name from mm_usertable where name = \"".
+		mysql_escape_string($_REQUEST{"char"}).
+		"\" and (owner is null or owner = \"".   
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\")"
+		, $dbhandle)
+		or die("Query(1) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 1)
+	{
+		die("You are not the owner of this character.");
+	}
+	$result = mysql_query("select id from mm_rooms where id = \"".
+		mysql_escape_string($_REQUEST{"room"})."\"
+		, $dbhandle)
+		or die("Query(2) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 1)
+	{
+		die("Room does not exist.");
+	}
+	// make that change.
+	$query = "update mm_usertable set race=\"".
+		mysql_escape_string($_REQUEST{"race"}).
+		"\", sex=\"".
+		mysql_escape_string($_REQUEST{"sex"}).
+		"\", age=\"".
+		mysql_escape_string($_REQUEST{"age"}).
+		"\", length=\"".
+		mysql_escape_string($_REQUEST{"length"}).
+		"\", width=\"".
+		mysql_escape_string($_REQUEST{"width"}).
+		"\", complexion=\"".
+		mysql_escape_string($_REQUEST{"complexion"}).
+		"\", eyes=\"".
+		mysql_escape_string($_REQUEST{"eyes"}).
+		"\", face=\"".
+		mysql_escape_string($_REQUEST{"face"}).
+		"\", hair=\"".
+		mysql_escape_string($_REQUEST{"hair"}).
+		"\", beard=\"".
+		mysql_escape_string($_REQUEST{"beard"}).
+		"\", arm=\"".
+		mysql_escape_string($_REQUEST{"arm"}).
+		"\", leg=\"".
+		mysql_escape_string($_REQUEST{"leg"}).
+		"\", room=\"".
+		mysql_escape_string($_REQUEST{"room"}).
+		"\", experience=\"".
+		mysql_escape_string($_REQUEST{"experience"}).
+		"\", god=\"".
+		mysql_escape_string($_REQUEST{"god"}).
+		"\", active=\"".
+		mysql_escape_string($_REQUEST{"active"}).
+		"\", owner=\"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\" where name = \"".
+		mysql_escape_string($_REQUEST{"char"}).
+		"\"";
+	mysql_query($query
+		, $dbhandle)  
+		or die("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Changed character ".$_REQUEST{"char"}.".", $query);
+}
+
+$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
+	creation2 from mm_usertable where name =
 	\"".mysql_escape_string($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -73,37 +167,67 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>active:</b> %s<BR>", $myrow["active"]);
 	printf("<b>lastlogin:</b> %s<BR>", $myrow["lastlogin"]);
 	printf("<b>birth:</b> %s<BR>", $myrow["birth"]);
-	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
+	printf("<b>Creation:</b> %s<BR>", $myrow["creation2"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[21], $myrow[21]);
+	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
+		$myrow["owner"] == $_COOKIE["karchanadminname"])
+	{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
+<b>
+<INPUT TYPE="hidden" NAME="char" VALUE="<?php echo $myrow["name"] ?>">
+<TABLE>
+<TR><TD>race</TD><TD><INPUT TYPE="text" NAME="race" VALUE="<?php echo $myrow["race"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>   
+<TR><TD>sex</TD><TD><INPUT TYPE="text" NAME="sex" VALUE="<?php echo $myrow["sex"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>   
+<TR><TD>age</TD><TD><INPUT TYPE="text" NAME="age" VALUE="<?php echo $myrow["age"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>length</TD><TD><INPUT TYPE="text" NAME="length" VALUE="<?php echo $myrow["length"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>width</TD><TD><INPUT TYPE="text" NAME="width" VALUE="<?php echo $myrow["width"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>complexion</TD><TD><INPUT TYPE="text" NAME="complexion" VALUE="<?php echo $myrow["complexion"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>eyes</TD><TD><INPUT TYPE="text" NAME="eyes" VALUE="<?php echo $myrow["eyes"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>face</TD><TD><INPUT TYPE="text" NAME="face" VALUE="<?php echo $myrow["face"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>hair</TD><TD><INPUT TYPE="text" NAME="hair" VALUE="<?php echo $myrow["hair"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>beard</TD><TD><INPUT TYPE="text" NAME="beard" VALUE="<?php echo $myrow["beard"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>arm</TD><TD><INPUT TYPE="text" NAME="arm" VALUE="<?php echo $myrow["arm"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>leg</TD><TD><INPUT TYPE="text" NAME="leg" VALUE="<?php echo $myrow["leg"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>room</TD><TD><INPUT TYPE="text" NAME="room" VALUE="<?php echo $myrow["room"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>experience</TD><TD><INPUT TYPE="text" NAME="experience" VALUE="<?php echo $myrow["experience"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>god</TD><TD><INPUT TYPE="text" NAME="god" VALUE="<?php echo $myrow["god"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>active</TD><TD><INPUT TYPE="text" NAME="active" VALUE="<?php echo $myrow["active"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+</TABLE>
+<INPUT TYPE="submit" VALUE="Change Character">
+</b>   
+</FORM>
+<?php
+	}
 }
 
 printf("<P>");
 
 $result = mysql_query("select * ".
-    " from mm_charattributes".
-    " where charname = \"".mysql_escape_string($_REQUEST{"char"})."\""
-    , $dbhandle)
-    or die("Query failed : " . mysql_error());
+	" from mm_charattributes".
+	" where charname = \"".mysql_escape_string($_REQUEST{"char"})."\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
-    printf("<b>value:</b> %s ", $myrow[1]);
-    printf("<b>value_type:</b> %s<BR>", $myrow[2]);
+	printf("<b>value:</b> %s ", $myrow[1]);
+	printf("<b>value_type:</b> %s<BR>", $myrow[2]);
 }
 
 $result = mysql_query("select * ".
-    " from characterinfo".
-    " where name = \"".mysql_escape_string($_REQUEST{"char"})."\""
-    , $dbhandle)
-    or die("Query failed : " . mysql_error());
+	" from characterinfo".
+	" where name = \"".mysql_escape_string($_REQUEST{"char"})."\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-    printf("<b>imageurl:</b> %s<BR>", $myrow["imageurl"]);
-    printf("<b>homepageurl:</b> %s<BR>", $myrow["homepageurl"]);
-    printf("<b>dateofbirth:</b> %s<BR>", $myrow["dateofbirth"]);
-    printf("<b>cityofbirth:</b> %s<BR>", $myrow["cityofbirth"]);
-    printf("<b>storyline:</b> %s<BR>", $myrow["storyline"]);
+	printf("<b>imageurl:</b> %s<BR>", $myrow["imageurl"]);
+	printf("<b>homepageurl:</b> %s<BR>", $myrow["homepageurl"]);
+	printf("<b>dateofbirth:</b> %s<BR>", $myrow["dateofbirth"]);
+	printf("<b>cityofbirth:</b> %s<BR>", $myrow["cityofbirth"]);
+	printf("<b>storyline:</b> %s<BR>", $myrow["storyline"]);
 }
 
 printf("<P>");
