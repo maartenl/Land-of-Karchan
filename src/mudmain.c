@@ -1294,7 +1294,7 @@ RangerGuild_Command(char *name, char *password, int room, char *fcommand)
 			RangerEntryOut(name, password, room);
 			return 1;
 		}
-		if ( (!strcasecmp("nature", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount() > 2) && (!strcasecmp("nature", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
 		{
 			RangerTalk(name, password, room);
 			return 1;
@@ -1323,7 +1323,7 @@ MifGuild_Command(char *name, char *password, int room, char *fcommand)
 			MIFEntryOut(name, password, room);
 			return 1;
 		}
-		if ( (!strcasecmp("magic", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount() > 2) && (!strcasecmp("magic", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
 		{
 			MIFTalk(name, password, room);
 			return 1;
@@ -1825,7 +1825,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 /* add KnightTalk */		
 	if (!strcasecmp("Knights", guildstatus))
 	{
-		if ( (!strcasecmp("knight", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount() > 2) && (!strcasecmp("knight", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
 		{
 			KnightTalk(name, password, room);
 			free(junk);
