@@ -217,7 +217,12 @@ cgiMain()
 	setMMudOut(cgiOut);
 	if (0)
 	{
-		scanf("%s", ageText);scanf("%s", name);scanf("%s", password);
+		fprintf(cgiOut, "Name:");
+		fgets(name, 20, stdin);
+		fprintf(cgiOut, "Password:");
+		fgets(password, 40, stdin);
+		strcpy(ageText, "yes");
+		setFrames(0);
 	}
 	else
 	{

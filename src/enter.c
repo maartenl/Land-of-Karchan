@@ -454,10 +454,12 @@ int cgiMain()
 	setMMudOut(cgiOut);
 	
 	if (0)
-	{
-		printf("Name:");gets(name);
-		printf("Password:");gets(password);
-		setFrames(2);
+	{		
+		fprintf(cgiOut, "Name:");
+		fgets(name, 20, stdin);
+		fprintf(cgiOut, "Password:");
+		fgets(password, 40, stdin);
+		setFrames(0);
 	}
 	else 
 	{
