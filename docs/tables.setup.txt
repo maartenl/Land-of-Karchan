@@ -1,0 +1,177 @@
+Usertable
++----+---------------------+--------------+------+-----+---------+-------+
+| #  | Field               | Type         | Null | Key | Default | Extra |
++----+---------------------+--------------+------+-----+---------+-------+
+| 0  | name                | varchar(20)  |      | PRI |         |       |
+| 1  | address             | varchar(40)  | YES  |     | NULL    |       |
+| 2  | password            | varchar(40)  | YES  |     | NULL    |       |
+| 3  | title               | varchar(254) | YES  |     | NULL    |       |
+| 4  | realname            | varchar(80)  | YES  |     | NULL    |       |
+| 5  | email               | varchar(40)  | YES  |     | NULL    |       |
+| 6  | race                | varchar(20)  | YES  |     | NULL    |       |
+| 7  | sex                 | varchar(20)  | YES  |     | NULL    |       |
+| 8  | age                 | varchar(20)  | YES  |     | NULL    |       |
+| 9  | length              | varchar(20)  | YES  |     | NULL    |       |
+| 10 | width               | varchar(40)  | YES  |     | NULL    |       |
+| 11 | complexion          | varchar(40)  | YES  |     | NULL    |       |
+| 12 | eyes                | varchar(40)  | YES  |     | NULL    |       |
+| 13 | face                | varchar(40)  | YES  |     | NULL    |       |
+| 14 | hair                | varchar(40)  | YES  |     | NULL    |       |
+| 15 | beard               | varchar(40)  | YES  |     | NULL    |       |
+| 16 | arm                 | varchar(40)  | YES  |     | NULL    |       |
+| 17 | leg                 | varchar(40)  | YES  |     | NULL    |       |
+| 18 | gold                | int(9)       | YES  |     | NULL    |       |
+| 19 | silver              | int(9)       | YES  |     | NULL    |       |
+| 20 | copper              | int(9)       | YES  |     | NULL    |       |
+| 21 | room                | int(7)       | YES  |     | NULL    |       |
+| 22 | lok                 | varchar(40)  | YES  |     | NULL    |       |
+| 23 | whimpy              | int(3)       | YES  |     | NULL    |       |
+| 24 | experience          | int(7)       | YES  |     | NULL    |       |
+| 25 | fightingwho         | varchar(20)  | YES  |     | NULL    |       |
+| 26 | sleep               | int(4)       | YES  |     | NULL    |       |
+| 27 | punishment          | int(7)       | YES  |     | NULL    |       |
+| 28 | fightable           | int(2)       | YES  |     | NULL    |       |
+| 29 | vitals              | int(7)       | YES  |     | NULL    |       |
+| 30 | fysically           | int(7)       | YES  |     | NULL    |       |
+| 31 | mentally            | int(7)       | YES  |     | NULL    |       |
+| 32 | drinkstats          | int(4)       | YES  |     | NULL    |       |
+| 33 | eatstats            | int(4)       | YES  |     | NULL    |       |
+| 34 | active              | int(1)       | YES  |     | NULL    |       |
+| 35 | lastlogin           | datetime     | YES  |     | NULL    |       |
+| 36 | birth               | datetime     | YES  |     | NULL    |       |
+| 37 | god                 | int(1)       | YES  |     | NULL    |       |
+| 38 | guild               | varchar(20)  | YES  |     | NULL    |       |
+| 39 | strength            | int(7)       | YES  |     | NULL    |       |
+| 40 | intelligence        | int(7)       | YES  |     | NULL    |       |
+| 41 | dexterity           | int(7)       | YES  |     | NULL    |       |
+| 42 | constitution        | int(7)       | YES  |     | NULL    |       |
+| 43 | wisdom              | int(7)       | YES  |     | NULL    |       |
+| 44 | practises           | int(2)       | YES  |     | NULL    |       |
+| 45 | training            | int(2)       | YES  |     | NULL    |       |
+| 46 | bandage             | int(2)       | YES  |     | NULL    |       |
+| 47 | alignment           | int(3)       | YES  |     | NULL    |       |
+| 48 | manastats           | int(7)       | YES  |     | NULL    |       |
+| 49 | movementstats       | int(7)       | YES  |     | NULL    |       |
+| 50 | maxmana             | int(7)       | YES  |     | NULL    |       |
+| 51 | maxmove             | int(7)       | YES  |     | NULL    |       |
+| 52 | maxvital            | int(7)       | YES  |     | NULL    |       |
+| 53 | cgiServerSoftware   | varchar(40)  | YES  |     | NULL    |       |
+| 54 | cgiServerName       | varchar(40)  | YES  |     | NULL    |       |
+| 55 | cgiGatewayInterface | varchar(40)  | YES  |     | NULL    |       |
+| 56 | cgiServerProtocol   | varchar(40)  | YES  |     | NULL    |       |
+| 57 | cgiServerPort       | varchar(40)  | YES  |     | NULL    |       |
+| 58 | cgiRequestMethod    | varchar(40)  | YES  |     | NULL    |       |
+| 59 | cgiPathInfo         | varchar(40)  | YES  |     | NULL    |       |
+| 60 | cgiPathTranslated   | varchar(40)  | YES  |     | NULL    |       |
+| 61 | cgiScriptName       | varchar(40)  | YES  |     | NULL    |       |
+| 62 | cgiRemoteHost       | varchar(40)  | YES  |     | NULL    |       |
+| 63 | cgiRemoteAddr       | varchar(40)  | YES  |     | NULL    |       |
+| 64 | cgiAuthType         | varchar(40)  | YES  |     | NULL    |       |
+| 65 | cgiRemoteUser       | varchar(40)  | YES  |     | NULL    |       |
+| 66 | cgiRemoteIdent      | varchar(40)  | YES  |     | NULL    |       |
+| 67 | cgiContentType      | varchar(40)  | YES  |     | NULL    |       |
+| 68 | cgiAccept           | varchar(40)  | YES  |     | NULL    |       |
+| 69 | cgiUserAgent        | varchar(40)  | YES  |     | NULL    |       |
+| 70 | jumpmana            | int(4)       | YES  |     | 1       |       |
+| 71 | jumpmove            | int(4)       | YES  |     | 1       |       |
+| 72 | jumpvital           | int(4)       | YES  |     | 1       |       |
++----+---------------------+--------------+------+-----+---------+-------+
+
+73 rows in set (0.01 sec)
+
+Items
++----+------------------+--------------+------+-----+---------+-------+
+|    | Field            | Type         | Null | Key | Default | Extra |
++----+------------------+--------------+------+-----+---------+-------+
+|  0 | id               | int(7)       |      | PRI | 0       |       |
+|  1 | name             | varchar(100) | YES  |     | NULL    |       |
+|  2 | adject1          | varchar(30)  | YES  |     | NULL    |       |
+|  3 | adject2          | varchar(30)  | YES  |     | NULL    |       |
+|  4 | adject3          | varchar(30)  | YES  |     | NULL    |       |
+|  5 | manaincrease     | int(4)       | YES  |     | NULL    |       |
+|  6 | hitincrease      | int(4)       | YES  |     | NULL    |       |
+|  7 | vitalincrease    | int(4)       | YES  |     | NULL    |       |
+|  8 | movementincrease | int(4)       | YES  |     | NULL    |       |
+|  9 | eatable          | blob         | YES  |     | NULL    |       |
+| 10 | drinkable        | blob         | YES  |     | NULL    |       |
+| 11 | room             | int(7)       | YES  |     | NULL    |       |
+| 12 | lightable        | int(7)       | YES  |     | NULL    |       |
+| 13 | getable          | int(1)       | YES  |     | NULL    |       |
+| 14 | dropable         | int(1)       | YES  |     | NULL    |       |
+| 15 | visible          | int(1)       | YES  |     | NULL    |       |
+| 16 | wieldable        | int(1)       | YES  |     | NULL    |       |
+| 17 | description      | blob         | YES  |     | NULL    |       |
+| 18 | readdescr        | blob         | YES  |     | NULL    |       |
+| 19 | wearable         | int(2)       | YES  |     | NULL    |       |
+| 20 | gold             | int(7)       | YES  |     | NULL    |       |
+| 21 | silver           | int(7)       | YES  |     | NULL    |       |
+| 22 | copper           | int(7)       | YES  |     | NULL    |       |
+| 23 | weight           | int(3)       |      |     | 1       |       |
++----+------------------+--------------+------+-----+---------+-------+
+24 rows in set (0.04 sec)
+[wearable] = {1=left hand,
+	2=right hand,
+	3=both hands,
+	4=head
+	7=neck
+	8=head
+	9=body
+	10=legs
+	11=feet}
+[wieldable] = {1=left hand, 2=right hand, 3=both hands}
+
+itemtable
++----+-----------+-------------+------+-----+---------+-------+
+| #  | Field     | Type        | Null | Key | Default | Extra |
++----+-----------+-------------+------+-----+---------+-------+
+|  0 | id        | int(7)      |      | PRI | 0       |       |
+|  1 | search    | varchar(50) |      | PRI |         |       |
+|  2 | belongsto | varchar(20) |      | PRI |         |       |
+|  3 | amount    | int(7)      | YES  |     | NULL    |       |
+|  4 | room      | int(7)      |      | PRI | 0       |       |
+|  5 | wearing   | varchar(20) |      | PRI |         |       |
+|  6 | wielding  | varchar(20) |      | PRI |         |       |
++----+-----------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+[wearing] = {
+	left hand,
+	right hand,
+	both hands,
+	head,
+	neck1,
+	neck2
+	head,
+	body,
+	legs,
+	feet}
+[wielding] = {1=right hand, 2=left hand}
+
+Action
++----+----------+--------+------+-----+---------+-------+
+| #  | Field    | Type   | Null | Key | Default | Extra |
++----+----------+--------+------+-----+---------+-------+
+|  0 | id       | int(5) |      | PRI | 0       |       |
+|  1 | contents | blob   | YES  |     | NULL    |       |
++----+----------+--------+------+-----+---------+-------+
+2 rows in set (0.18 sec)
+
+
+action: "cooked"
+requirements: "fire"
+characteristics: "burnable"
+bantable
++----+---------+--------------+------+-----+---------+-------+
+| #  | Field   | Type         | Null | Key | Default | Extra |
++----+---------+--------------+------+-----+---------+-------+
+|  0 | address | varchar(40)  |      | PRI |         |       |
+|  1 | days    | int(3)       | YES  |     | NULL    |       |
+|  2 | IP      | varchar(40)  |      |     |         |       |
+|  3 | name    | varchar(20)  |      |     |         |       |
+|  4 | deputy  | varchar(20)  |      |     |         |       |
+|  5 | date    | datetime     | YES  |     | NULL    |       |
+|  6 | reason  | varchar(255) |      |     |         |       |
++----+---------+--------------+------+-----+---------+-------+
+7 rows in set (0.01 sec)
+
+
