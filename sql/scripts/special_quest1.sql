@@ -26,6 +26,20 @@ and objecttype=1"")
 	where name ='plague' \\\\
 	and objectid='%me' \\\\
 	and objecttype=1"")
+	if sql(""select %string <= 0"")
+		say(""You have died of the plague.<BR>"")
+		sayeveryone(""%me moans.<BR>You notice %me double up, fall \\\\
+to the ground and see the light slowly fading from %me's eyes.<BR>"")
+		sql(""update tmp_usertable set room=1, experience=experience - \\\\
+(experience % 1000)/2 where name='%me'"")
+		sql(""delete from tmp_attributes where name='plague' and \\\\
+objectid='%me' and objecttype=1"")
+		sql(""delete from tmp_attributes where name='look' and \\\\
+objectid='%me' and objecttype=1"")
+		set room=1
+		sayeveryone(""%me appears from nowhere.<BR>"")
+		show(""select contents from action where id=26"")
+	end
 	if sql(""select %string <= 50 and rand()<=0.005"")
 		if sql(""select %string >=40"")
 			say(""You feel temporarily faint and have to take care not to fall down.<BR>"")
@@ -687,6 +701,27 @@ if sql(""select 1 from tmp_itemtable where belongsto='%me' and id=151"")
 end
 return
 ");
+
+replace into action values(26,"<H1>The Emd</H1>
+<IMG SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou feel your body tumble
+slowly to the ground, unable to fight any more against the Whiteblodge
+Plague. You feel the darkness creep up on you. Slowly the world fades out of
+existance.<P>
+You are dead. You are at the moment in a dark room. You can't see anything.
+You hear sighs.<P>
+A voice says (behind you): Oh no, not another one...<P>
+Another voice sighs : They just keep on comin'.<P>
+Suddenly, in the distance, you see a light which slowly comes closer. As it
+comes closer, you see that it is a lantern which is being held by somebody
+(or something you can't really make it out). That someone is getting closer.
+When he is standing right before you, you have a good view of who he is. You
+can't see his face, because that is hidden by a cap. He is all in black.<P>
+You say: Hey, did somebody just die?<P> 
+He is carrying a heavy axe with him.
+This, you gather, Must be Mr. Death himself. He swings back his axe, and you
+hide your hands behind your face. (That shouldn't however help much) Than
+the axe comes crushing down.<P>
+(Type <B>look around</B>)<P>");
 
 
 
