@@ -29,15 +29,15 @@ INSTALLDIR = /karchan2/apache/cgi-bin/
 
 CC = gcc
 COPTS = -O2 -m486
-INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/
+INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/ -idirafter ./cookies/
 
 EXEDIR = /karchan2/apache/cgi-bin
-LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
-OPTIONS = -lm -lmysqlclient
+LIBDIR = -L/karchan2/servers/mysql/lib/mysql/ -L./cookies/
+OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist \
-clearcharacters libcookies
+clearcharacters 
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -86,13 +86,6 @@ mudclient.o: cgic.o mudclient.c
 
 mudserver.o: mudserver.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudserver.c 
-
-#--- Library for the Cookie functions
-
-libcookies:
-	cd cookies
-	make
-	cd ..
 
 #--- Binary executables are compiled below...
 
