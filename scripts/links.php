@@ -144,7 +144,7 @@ Your Character Password: <INPUT TYPE="password" NAME="password" VALUE="" SIZE="2
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 
-<A HREF="index.html"><IMG SRC="/images/gif/webpic/buttono.gif" BORDER="0"></A><P>
+<A HREF="/karchan/index.html"><IMG SRC="/images/gif/webpic/buttono.gif" BORDER="0"></A><P>
 
 </BODY>
 </HTML>
