@@ -120,7 +120,7 @@ During gameplay, the cookie is compared to the SessionPassword in the
 database every time. 
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{cookie.ps}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{cookie.ps}}} \par}
 
 \newpage
 \section{Playing the game}
@@ -333,6 +333,42 @@ copper coins you have in your account. Withdraw and deposit simply mutate
 the gold, silver, copper fields in your character sheet as well as the    
 amount in the different tmp\_itemtable items.
 
+\section{Special Items}
+\subsection{Containers}
+There are special items in the game that can be called containers. The
+definition of container being in this case: an item that can contain other
+items. A container can also be empty.
+
+The way it is implemented now is that there are two commands called 'put'
+and 'retrieve' for manipulating items that are in containers or should be in
+containers.
+
+The way it is stored in the database is by means of a secondary table that
+contains all the items that are contained in containers. The tmp\_itemtable
+is the table that contains the containers. The following four combinations
+can be determined:
+\begin{itemize}
+\item tmp\_itemtable.containerid=0 and items.container=0, this is the normal
+situation, this means the item is not a container.
+\item tmp\_itemtable.containerid=0 and items.container<>0, this is
+acceptable, it means that the item can be a container, but right now doesn't
+contain anything, i.e. is empty.
+\item tmp\_itemtable.containerid<>0 and items.container<>0, this is the big
+one, it means that the item is a container and that there are actually items
+contained in this container.
+\item tmp\_itemtable.containerid<>0 and items.container=0, this is an
+illegal situation that should not occur.
+\end{itemize}
+
+The following two diagrams depict the algorithm used for retrieving an item
+from a container and for putting an item into a container.
+
+{\par\centering
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{containers.ps}}} \par}
+{\par\centering
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{containers2.ps}}} \par}
+
+
 \section{Combat}
 \subsection{Who is fighting who?}
 The only way to determine wether or not a person is fighting another person
@@ -519,8 +555,8 @@ user.
 \subparagraph{\%02}is the second word in the command given by the current
 user. If the word does not exist (because the command only had 'amount'
 words) the parser will return the number. For example, if you used three
-words, '%04' would give you '04' back. Either use this info to prevent
-problems or use '%amount'.
+words, '\%04' would give you '04' back. Either use this info to prevent
+problems or use '\%amount'.
 \subparagraph{\%*}is related to the parameters described above. Instead
 of one single word from the command given by the current
 user, it substitutes the entire command entered. Usefull when having to
@@ -900,6 +936,9 @@ mysql\_healing)
 to the tmp\_usertable by a crontab entry in order to add bots that people
 have fought against and killed
 \subparagraph{bugreportlist}list of bugs still to be solved
+\subparagraph{containeditems}items that are not really active in the game
+because they are currently 'trapped' so to speak inside containers (special
+items that can contain items)
 \subparagraph{depalias}special commands for the deputies to use
 \subparagraph{help}help on commands
 \subparagraph{items}item definitions
@@ -1095,6 +1134,10 @@ both hands, 4=wearable on head, 7=wearable on neck, 8=wearable on head,
 \subparagraph{weight}amount of weight in "units".
 \subparagraph{pasdefense}amount of passive defense the item has when worn
 \subparagraph{damageresistance}amount of damage it can deflect
+\subparagraph{container}determines wether or not this item can act as a
+repository for other items. If container equals 0, the item is not a
+container/repository. Any other value will depict the number of weight units this
+container can carry (although right now, this has not been implemented yet).
 
 \paragraph{tmp\_itemtable}
 This table, compared to the "itemtable" does not have any differences apart
@@ -1116,7 +1159,23 @@ all. Possiblities are "lefthand", "righthand", "head", "neck", "head",
 \subparagraph{wielding}
 on which hand the item is wielded. An empty field meaning that it isn't
 wielded at all. Possibilities are 1 (right hand) and 2 (left hand)
+\subparagraph{containerid}
+an identification of a container. If the field items.container is not equal
+to 0, this item has the potential to be a container. If the containerid is
+also not equal to 0, it means that this container contains items. The items
+can be found by corroborating this containerid with the field
+containeditems.containedin . One important message is that, if the
+containerid has been set, the amount is automatically 1. 
 
+\paragraph{containeditems}
+This table is used to determine which items are contained in which
+container.
+\subparagraph{id}a unique number which identifies the definition of the
+item. It must equal a unique number used in the items table.
+\subparagraph{amount}the number/amount of this item available
+\subparagraph{containedin}the container identification number. It maps to
+the 'containerid' of the tmp\_itemtable and is the vital link into providing
+which container is carrying which items inside.
 
 \paragraph{commands}
 This table is a part of the tables used by the parser. It can contain
