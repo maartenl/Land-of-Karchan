@@ -64,6 +64,31 @@ alter table items
 add (container int default 0 not null); /* specify weight in units, 0=no
 container */
 
+alter table bottable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie','dragon') default NULL, 
+change sex sex enum('male','female') default
+NULL;
+alter table olduser change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie','dragon') default NULL, 
+change sex sex enum('male','female') default
+NULL;
+alter table tmp_usertable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie','dragon') default NULL, 
+change sex sex enum('male','female') default
+NULL;
+alter table usertable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie','dragon') default NULL, 
+change sex sex enum('male','female') default
+NULL;
+
 
 END_OF_DATA
 
