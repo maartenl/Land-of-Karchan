@@ -77,17 +77,17 @@ int ParseSentence(char *name, int *room, char *parserstring)
 {
 	if (!strcasecmp(parserstring, "end"))
 	{
-		if (parser_debug) {fprintf(getMMudOut(), "end found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "end found...<BR>\n");}
 		return 1;
 	}
 	if (!strcasecmp(parserstring, "else"))
 	{
-		if (parser_debug) {fprintf(getMMudOut(), "else found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "else found...<BR>\n");}
 		return 2;
 	}
 	if (!strcasecmp(parserstring, "return"))
 	{
-		if (parser_debug) {fprintf(getMMudOut(), "return found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "return found...<BR>\n");}
 		return 3;
 	}
 	if (strstr(parserstring, "if sql(")==parserstring)
@@ -100,7 +100,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+8);
 		temp[strlen(temp)-2]=0;
 
-		if (parser_debug) {fprintf(getMMudOut(), "if sql found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "if sql found...<BR>\n");}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -131,45 +131,45 @@ int ParseSentence(char *name, int *room, char *parserstring)
 	if (!strcasecmp(parserstring, "debug"))
 	{
 		parser_debug=1;
-		if (parser_debug) {fprintf(getMMudOut(), "<HR><FONT COLOR=red>debug found, writing messages...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "<HR><FONT COLOR=red>debug found, writing messages...<BR>\n");}
 	}
 	if (!strcasecmp(parserstring, "showstandard"))
 	{
-		if (parser_debug) {fprintf(getMMudOut(), "showstandard found, exiting...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "showstandard found, exiting...<BR>\n");}
 		return 6;
 	}
 	if (!strcasecmp(parserstring, "showstring"))
 	{
-		if (parser_debug) {fprintf(getMMudOut(), "showstring found, exiting...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "showstring found, exiting...<BR>\n");}
 		if (stringbuffer == NULL)
 		{
-			if (parser_debug) {fprintf(getMMudOut(), "showstring skipped, stringbuffer empty...<BR>\n");}
+			if (parser_debug) {send_printf(getMMudOut(), "showstring skipped, stringbuffer empty...<BR>\n");}
 		}
 		else
 		{
-			fprintf(getMMudOut(), "<HTML>\n");
-			fprintf(getMMudOut(), "<HEAD>\n");
-			fprintf(getMMudOut(), "<TITLE>\n");
-			fprintf(getMMudOut(), "Land of Karchan\n");
-			fprintf(getMMudOut(), "</TITLE>\n");
-			fprintf(getMMudOut(), "</HEAD>\n");
+			send_printf(getMMudOut(), "<HTML>\n");
+			send_printf(getMMudOut(), "<HEAD>\n");
+			send_printf(getMMudOut(), "<TITLE>\n");
+			send_printf(getMMudOut(), "Land of Karchan\n");
+			send_printf(getMMudOut(), "</TITLE>\n");
+			send_printf(getMMudOut(), "</HEAD>\n");
 
-			fprintf(getMMudOut(), "<BODY>\n");
+			send_printf(getMMudOut(), "<BODY>\n");
 			if (!getFrames())
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 			}
 			else
 			{
 				if (getFrames()==1)
 				{
-					fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+					send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 				} else
 				{
-					fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+					send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 				}
 			}
-			fprintf(getMMudOut(), "%s", stringbuffer);
+			send_printf(getMMudOut(), "%s", stringbuffer);
 			return 8;
 		}
 	}
@@ -179,7 +179,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		if (parser_debug) {fprintf(getMMudOut(), "show found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "show found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+6);
 		temp[strlen(temp)-2]=0;
@@ -192,30 +192,30 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			if (row != NULL)
 			{
 				/*	row[0] should contain a description to be displayed */
-				fprintf(getMMudOut(), "<HTML>\n");
-				fprintf(getMMudOut(), "<HEAD>\n");
-				fprintf(getMMudOut(), "<TITLE>\n");
-				fprintf(getMMudOut(), "Land of Karchan\n");
-				fprintf(getMMudOut(), "</TITLE>\n");
-				fprintf(getMMudOut(), "</HEAD>\n");
+				send_printf(getMMudOut(), "<HTML>\n");
+				send_printf(getMMudOut(), "<HEAD>\n");
+				send_printf(getMMudOut(), "<TITLE>\n");
+				send_printf(getMMudOut(), "Land of Karchan\n");
+				send_printf(getMMudOut(), "</TITLE>\n");
+				send_printf(getMMudOut(), "</HEAD>\n");
 				
-				fprintf(getMMudOut(), "<BODY>\n");
+				send_printf(getMMudOut(), "<BODY>\n");
 				if (!getFrames())
 				{
-					fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+					send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 				}
 				else
 				{
 					if (getFrames()==1)
 					{
-						fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+						send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 					} else
 					{
-						fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+						send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 					}
 				}
 
-				fprintf(getMMudOut(), "%s", row[0]);
+				send_printf(getMMudOut(), "%s", row[0]);
 				mysql_free_result(res);
 				return 7;
 			}
@@ -228,7 +228,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		if (parser_debug) {fprintf(getMMudOut(), "sql found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "sql found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
@@ -245,7 +245,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		/* says something to yourself */
 		char logname[100];
 		char *temp;
-		if (parser_debug) {fprintf(getMMudOut(), "say found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "say found...<BR>\n");}
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
@@ -258,7 +258,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		/* says something to everyone except to you */
 		char *temp;
 		temp = (char *) malloc(strlen(parserstring)+1);
-		if (parser_debug) {fprintf(getMMudOut(), "sayeveryone found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "sayeveryone found...<BR>\n");}
 		strcpy(temp, parserstring+13);
 		temp[strlen(temp)-2]=0;
 		WriteMessage(name, *room, temp);
@@ -273,7 +273,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-		if (parser_debug) {fprintf(getMMudOut(), "sayto found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "sayto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+7);
 		strcpy(temp2, temp3+2);
@@ -292,7 +292,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
-		if (parser_debug) {fprintf(getMMudOut(), "sayeveryoneto found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "sayeveryoneto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+15);
 		strcpy(temp2, temp3+2);
@@ -312,7 +312,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		  an update statement on the database. So both commands need to be
 		  in tandem if necessary. */
 		/* syntax: set room=30 */
-		if (parser_debug) {fprintf(getMMudOut(), "set room=%s found...<BR>\n", parserstring+9);}
+		if (parser_debug) {send_printf(getMMudOut(), "set room=%s found...<BR>\n", parserstring+9);}
 		*room = atoi(parserstring+9);
 	}
 	if (strstr(parserstring, "getstring(")==parserstring)
@@ -325,7 +325,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
-		if (parser_debug) {fprintf(getMMudOut(), "getstring found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "getstring found...<BR>\n");}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -354,7 +354,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
-		if (parser_debug) {fprintf(getMMudOut(), "addstring [%s]found...<BR>\n", parserstring);}
+		if (parser_debug) {send_printf(getMMudOut(), "addstring [%s]found...<BR>\n", parserstring);}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -385,7 +385,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 					}
 					else
 					{
-						if (parser_debug) {fprintf(getMMudOut(), "addstring: realloc failed...<BR>\n");}
+						if (parser_debug) {send_printf(getMMudOut(), "addstring: realloc failed...<BR>\n");}
 					}
 				}
 			}
@@ -398,7 +398,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		time_t tijd;
 		struct tm datum;
 		char *temp;
-		if (parser_debug) {fprintf(getMMudOut(), "log found...<BR>\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "log found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
@@ -455,19 +455,19 @@ int Parse(char *name, int *room, char *parserstring)
 		{
 			if ((pos>0) && (parserstring[pos-1]=='\\'))
 			{
-//				fprintf(getMMudOut(), "<found double slash>\n");
+//				send_printf(getMMudOut(), "<found double slash>\n");
 				string[strlen(string)-1]=0;
 				memory+=255;
 				string = (char *) realloc(string, memory);
 				if (string == NULL)
 				{
-					fprintf(getMMudOut(), "Error trying realloc...\n");
+					send_printf(getMMudOut(), "Error trying realloc...\n");
 				}
 			}
 			else
 			{
 				char *i;
-//				fprintf(getMMudOut(), "{%i}\n", strstr(string, "%me")-string);
+//				send_printf(getMMudOut(), "{%i}\n", strstr(string, "%me")-string);
 				while ((i = strstr(string, "%me")) != NULL)
 				{
 					char *temp;
@@ -563,7 +563,7 @@ int Parse(char *name, int *room, char *parserstring)
 				/* this is the parsing part, the previous part was just splitting up */
 				if ((state[level]!=1) && (state[level]!=3))
 				{
-					if (parser_debug) {fprintf(getMMudOut(), "[%s]<BR>\n", string);}
+					if (parser_debug) {send_printf(getMMudOut(), "[%s]<BR>\n", string);}
 					switch (ParseSentence(name, room, string))
 					{
 						case 1 : // end found
@@ -639,13 +639,13 @@ int Parse(char *name, int *room, char *parserstring)
 						level++;state[level]=3;
 					}
 				} // end elseif
-				if (parser_debug) {fprintf(getMMudOut(), "[state=%i,level=%i]<BR>\n", state[level], level);}
+				if (parser_debug) {send_printf(getMMudOut(), "[state=%i,level=%i]<BR>\n", state[level], level);}
 				string[0]=0;
 				memory=255;
 				string = (char *) realloc(string, memory);
 				if (string == NULL)
 				{
-					fprintf(getMMudOut(), "Error trying realloc...\n");
+					send_printf(getMMudOut(), "Error trying realloc...\n");
 				}
 			}
 		}
@@ -721,7 +721,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			returnvalue = Parse(name, &myroom, row[4]);
 			row = mysql_fetch_row(res);
 		}
-		if (parser_debug) {fprintf(getMMudOut(), "</FONT><HR>\r\n");}
+		if (parser_debug) {send_printf(getMMudOut(), "</FONT><HR>\r\n");}
 		
 		mysql_free_result(res);
 		if (returnvalue==1)
@@ -737,8 +737,8 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;
 		}
 		if (returnvalue==3)
@@ -748,8 +748,8 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;
 		}
 	}

@@ -24,6 +24,7 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -35,12 +36,16 @@ maartenl@il.fontys.nl
 #include <unistd.h>
 #include <errno.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+
 // include files for the xml library calls
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
 #include "typedefs.h"
+#include "mudnewchar.h"
 
 /*! \file definition file with constants and essential operations
 like database operations, server statistics, configuration and tokenization
@@ -52,10 +57,10 @@ roomstruct room;
 int frames;
 char secretpassword[40];
 /*! property providing where ANY user output of the program should be redirected to. */
-FILE *mmout;
+int mmout;
 
 /*! set/redirect output from a mud command into a filedescriptor */
-void setMMudOut(FILE *aFileDescriptor)
+void setMMudOut(int aFileDescriptor)
 {
 	mmout = aFileDescriptor;
 }
@@ -63,9 +68,40 @@ void setMMudOut(FILE *aFileDescriptor)
 /*! get the redirected output/filedescriptor. This is usually used in conjunction with an fprintf statement
 like fprintf(getMMudOut(), "Message from Karn\n");
 */
-FILE *getMMudOut()
+int getMMudOut()
 {
 	return mmout;
+}
+
+/*! attempts to send data over a socket, if not all information is sent.
+will automatically attempt to send the rest.
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\return return -1 on failure, 0 on success
+*/
+int
+send_socket(int s, char *buf, int *len)
+{
+	int total = 0;	// how many btytes we've sent
+	int bytesleft = *len;	// how many we have left to send
+	int n;
+#if DEBUG==2
+	printf("[message]: %s\n", buf);
+#endif
+	while (total < *len)
+	{
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1)
+		{
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+	}
+	*len = total;	// return number actually sent here
+	
+	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
 MYSQL dbconnection;
@@ -257,6 +293,142 @@ getToken(int i)
 	return tokens[i];
 }
 
+/*! linked list of mudpersonstruct, keeps a list of established
+    connections/personal mud information */
+mudpersonstruct *list = NULL;
+
+//! check to see if list is empty
+/*! check to see if the list of mud connections is empty or not
+ \return int 0 upon non-empty list, 1 if list is empty
+*/
+int
+is_list_empty()
+{
+	return (list == NULL);
+}
+
+//! retrieve the first mud connection of the list. 
+/*! retrieve the first mud connection of the list. This is primarily used to clear the entire list without 
+knowing which socketfds are still open.
+\return mudpersonstruct* the first in the list, returns NULL if the list is empty
+*/
+mudpersonstruct *
+get_first_from_list()
+{
+	return list;
+}
+
+/*! add a new mudpersonstruct with default values to the beginning of the list
+ (i.e. the first member of the list is the newly added socketfd) 
+ \param socketfd int socket descriptor to be added to list of established connections and corresponding mud info
+ \return int always returns 1
+ */
+int
+add_to_list(int socketfd)
+{
+	mudpersonstruct *mine;
+	mine = (mudpersonstruct *) malloc(sizeof(mudpersonstruct));
+	mine->name[0] = 0;
+	mine->password[0] = 0;
+	mine->address[0] = 0;
+	mine->cookie[0] = 0;
+	mine->frames = 0;
+	mine->action = NULL;
+	mine->command = NULL;
+	mine->bufsize = 1;
+	mine->readbuf = (char *) malloc(mine->bufsize);
+	mine->readbuf[0] = 0; // initialized to empty string
+	mine->socketfd = socketfd;
+	mine->newchar = NULL;
+	mine->next = list;
+	list = mine;
+	return 1;
+}
+
+/*!
+ return the mudpersonstruct attached to the socketfd. If not found, return NULL 
+ \param socketfd int socket descriptor used in search
+ \return mudpersonstruct* mudpersonstruct found in linked list, returns NULL if not found
+ */
+mudpersonstruct
+*find_in_list(int socketfd)
+{
+	mudpersonstruct *mine;
+	mine = list;
+	while (mine != NULL)
+	{
+		if (mine->socketfd = socketfd)
+		{
+			return mine;
+		}
+		mine = (mudpersonstruct *) mine->next;
+	}
+	return NULL;
+}
+
+/*! remove the mudpersonstruct from the list based on socketfd. The 'command' char pointer member
+ is freed, then the mudpersonstruct is freed and the list is updated. 
+ \param socketfd int socket descriptor
+ \return 1 upon success, 0 if descriptor not found
+ */
+int
+remove_from_list(int socketfd)
+{
+	mudpersonstruct *mine, *mine2;
+	mine = list;
+	mine2 = NULL;
+	while (mine != NULL)
+	{
+		if (mine->socketfd == socketfd)
+		{
+			if (mine2 == NULL)
+			{
+				list = (mudpersonstruct *) mine->next;
+			}
+			else
+			{
+				mine2->next = mine->next;
+			}
+			if (mine->command != NULL) 
+			{
+				free(mine->command);
+				mine->command = NULL;
+			}
+			if (mine->action != NULL) 
+			{
+				free(mine->action);
+				mine->action = NULL;
+			}
+			if (mine->newchar != NULL) 
+			{
+				mudnewcharstruct *temp = (mudnewcharstruct *) mine->newchar;
+				if (temp->ftitle != NULL)
+				{
+					free(temp->ftitle);
+				}
+				if (temp->frealname != NULL)
+				{
+					free(temp->frealname);
+				}
+				if (temp->femail != NULL)
+				{
+					free(temp->femail);
+				}
+				free(temp);
+				mine->newchar = NULL;
+			}
+			free(mine->readbuf);
+			mine->readbuf = NULL;
+			free(mine);
+			mine = NULL;
+			return 1;
+		}
+		mine2 = mine;
+		mine = (mudpersonstruct *) mine->next;
+	}
+	return 0;
+}
+
 //! print error to screen and exit
 void 
 FatalError(FILE *output, int i, char *description, char *busywith)
@@ -321,6 +493,50 @@ FILE *fp;
 fp = fopen(file, "a");
 fprintf( fp, "<FONT COLOR=red><I>Error</I> %i: %s\n {%s}</FONT><BR>\r\n", exitcode, mysql_error(mysql), sqlstring );
 fclose(fp);
+}
+
+
+//! send a message to a socket
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
+int
+send_printf(const int socketfd, char *fmt,...)
+{
+	/* Guess we need no more than 255 bytes. */
+	int n, size = 255, sentbytes, resulting;
+	char *p;
+	va_list ap;
+	if ((p = malloc (size)) == NULL)
+	{
+		return 0;
+	}
+	while (1) 
+	{
+		/* Try to print in the allocated space. */
+		va_start(ap, fmt);
+		n = vsnprintf (p, size, fmt, ap);
+		va_end(ap);
+		/* If that worked, return the string. */
+		if (n > -1 && n < size)
+		{
+			break;
+		}
+		/* Else try again with more space. */
+		if (n > 1) /* glibc 2.1 */
+			size = n+1; /* precisely what is needed */
+		else /* glibc 2.0 */
+			size *= 2;/* twice the old size */
+		if ((p = realloc (p, size)) == NULL)
+		{
+			return 0;
+		}
+	}
+	sentbytes = strlen(p);
+	resulting = send_socket(socketfd, p, &sentbytes);
+	resulting = resulting & (sentbytes == strlen(p));
+	free(p);
+	return resulting;
 }
 
 //! send sql query to database, deprecated!
@@ -395,7 +611,7 @@ opendbconnection()
 		getParam(MM_DATABASENAME), atoi(getParam(MM_DATABASEPORT)), NULL, 0)))
 	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
-	}   
+	} 
 }
 
 //! close the connection to the database server
@@ -426,7 +642,7 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
  
 	if (!(res = mysql_store_result(&dbconnection)) && mysql_field_count(&dbconnection))
 		exiterr(4, sqlstring, &dbconnection);
-           	
+ 	
 	if (affected_rows!=NULL)
 	{
 		*affected_rows = mysql_affected_rows(&dbconnection);
@@ -694,9 +910,9 @@ char *parameterdefs[24] =
 "DATABASEHeader",
 "CopyrightHeader",
 "DatabaseName",
-"DatabaseLogin",   
+"DatabaseLogin", 
 "DatabasePassword",
-"DatabaseHost",  
+"DatabaseHost",
 "DatabasePort",
 "ServerName",
 "CGIName",
@@ -721,17 +937,17 @@ void writeConfig()
 {
 	int i;
 	i=0;
-	fprintf(getMMudOut(), "<TABLE>\r\n");
+	send_printf(getMMudOut(), "<TABLE>\r\n");
 	while (parameterdefs[i] != NULL)
 	{
 		if ((i+1) != MM_DATABASEPASSWORD)
 		{
-			fprintf(getMMudOut(), "<TR><TD>%i</TD><TD>%s</TD><TD>%s</TD></TR>\r\n",
+			send_printf(getMMudOut(), "<TR><TD>%i</TD><TD>%s</TD><TD>%s</TD></TR>\r\n",
 			i+1, parameterdefs[i], getParam(i+1));
 		}
 		i++;
 	}
-	fprintf(getMMudOut(), "</TABLE>\r\n");
+	send_printf(getMMudOut(), "</TABLE>\r\n");
 }
 	
 

@@ -104,24 +104,52 @@ typedef struct
 	int maxnumber_of_current_connections;
 } mudinfostruct;
 
+/*! struct used for internal purposes, it keeps track of the information
+	regarding the mud (username, password, command) sent during a connection */
+typedef struct
+{
+	char *readbuf; // buffer to read from socket, standard=1024 bytes
+	int bufsize; // buffer size, initialised to 1024
+	char name[22];
+	char password[42];
+	char address[42];
+	char cookie[80];
+	int frames;
+	char *action; // {mud, logon, new}
+	char *command;
+	int socketfd; // socket descriptor
+	void *newchar; // usually NULL, except when action=newchar
+	void *next; // next item in the list
+} mudpersonstruct;
+
+int is_list_empty();
+
+mudpersonstruct *get_first_from_list();
+
+int add_to_list(int socketfd);
+
+mudpersonstruct *find_in_list(int socketfd);
+
+int remove_from_list(int socketfd);
+
 /* sets the FileDescriptor used to output any information to the user 
-   Function usually called at the start of the mudMain call.
+ Function usually called at the start of the mudMain call.
 */
-void setMMudOut(FILE *aFileDescriptor);
+void setMMudOut(int aFileDescriptor);
 
 /* gets the FileDescriptor used to output any information to the user
-   Function usually called ALL the time for any possible output
+ Function usually called ALL the time for any possible output
 */
-FILE *getMMudOut();
+int getMMudOut();
 
 /* returns 0, if not to be shut down
-   returns 1, if to be shut down
-   returns >1, countdown
+ returns 1, if to be shut down
+ returns >1, countdown
 */
 int isShuttingdown();
 
 /* uses an offset, offset is added to shutdown count
-   use setShuttingDown(-1) for countdown
+ use setShuttingDown(-1) for countdown
 */
 void setShutdown(int aOffset);
 
@@ -136,6 +164,10 @@ void setFrames(int i);
    1 = operation with frames
    2 = operation with frames and server push */
 int getFrames();
+
+int send_socket(int s, char *buf, int *len);
+
+int send_printf(const int socketfd, char *fmt,...);
 
 /* return the currently in use database connection handle */
 MYSQL getdbconnection();
@@ -153,6 +185,10 @@ mudinfostruct getMudInfo();
 /* set the structure to something else. The way these methods work is usually, you get the structure, you change
 it and you put it back. */
 void setMudInfo(mudinfostruct amudinfostruct);
+
+char *getCommandString();
+
+void setCommandString(char *fstring);
 
 /* set number of available tokens. Usually only called once in gameMain
 */

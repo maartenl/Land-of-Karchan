@@ -281,18 +281,18 @@ void BannedFromGame(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
-	fprintf(getMMudOut(), "<BODY>\n");
-	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
-	fprintf(getMMudOut(), "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
-	fprintf(getMMudOut(), "Your ip domain is therefore banned from the game.<P>\n");
-	fprintf(getMMudOut(), "If you have not misbehaved or even have never before played the game before, and wish"
+	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
+	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
+	send_printf(getMMudOut(), "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
+	send_printf(getMMudOut(), "Your ip domain is therefore banned from the game.<P>\n");
+	send_printf(getMMudOut(), "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
 	"<A HREF=\"mailto:deputy@%s\">deputy@%s</A> and ask them to make "
 	"an exception in your case. Do <I>not</I> forget to provide your "
 	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n", getParam(MM_SERVERNAME), getParam(MM_SERVERNAME));
-	fprintf(getMMudOut(), "</body>\n");
-	fprintf(getMMudOut(), "</HTML>\n");
+	send_printf(getMMudOut(), "</body>\n");
+	send_printf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -308,14 +308,14 @@ void CookieNotFound(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
-	fprintf(getMMudOut(), "<BODY>\n");
-	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
-	fprintf(getMMudOut(), "When you logon, a cookie is automatically generated. ");
-	fprintf(getMMudOut(), "However, I have been unable to find my cookie.<P>\n");
-	fprintf(getMMudOut(), "Please attempt to relogon.<P>\n");
-	fprintf(getMMudOut(), "</body>\n");
-	fprintf(getMMudOut(), "</HTML>\n");
+	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	send_printf(getMMudOut(), "When you logon, a cookie is automatically generated. ");
+	send_printf(getMMudOut(), "However, I have been unable to find my cookie.<P>\n");
+	send_printf(getMMudOut(), "Please attempt to relogon.<P>\n");
+	send_printf(getMMudOut(), "</body>\n");
+	send_printf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -401,15 +401,15 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		int i;
 		char *temp;
 		
-		fprintf(getMMudOut(), "<HTML>\r\n");
-		fprintf(getMMudOut(), "<HEAD>\r\n");
-		fprintf(getMMudOut(), "<TITLE>\r\n");
-		fprintf(getMMudOut(), "Land of Karchan - General Help\r\n");
-		fprintf(getMMudOut(), "</TITLE>\r\n");
-		fprintf(getMMudOut(), "</HEAD>\r\n");
+		send_printf(getMMudOut(), "<HTML>\r\n");
+		send_printf(getMMudOut(), "<HEAD>\r\n");
+		send_printf(getMMudOut(), "<TITLE>\r\n");
+		send_printf(getMMudOut(), "Land of Karchan - General Help\r\n");
+		send_printf(getMMudOut(), "</TITLE>\r\n");
+		send_printf(getMMudOut(), "</HEAD>\r\n");
 		
-		fprintf(getMMudOut(), "<BODY>\r\n");
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		send_printf(getMMudOut(), "<BODY>\r\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		temp = composeSqlStatement("select contents from help where command='general help'");
 		res=SendSQL2(temp, NULL);
@@ -421,11 +421,11 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 			mysql_free_result(res);
 			res=SendSQL2("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			fprintf(getMMudOut(), "%s",row[0]);
+			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		else
 		{
-			fprintf(getMMudOut(), "%s",row[0]);
+			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
 		PrintForm(name, password);
@@ -439,15 +439,15 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		int i;
 		char *temp;
 		
-		fprintf(getMMudOut(), "<HTML>\r\n");
-		fprintf(getMMudOut(), "<HEAD>\r\n");
-		fprintf(getMMudOut(), "<TITLE>\r\n");
-		fprintf(getMMudOut(), "Land of Karchan - Command %s\r\n", getToken(1));
-		fprintf(getMMudOut(), "</TITLE>\r\n");
-		fprintf(getMMudOut(), "</HEAD>\r\n");
+		send_printf(getMMudOut(), "<HTML>\r\n");
+		send_printf(getMMudOut(), "<HEAD>\r\n");
+		send_printf(getMMudOut(), "<TITLE>\r\n");
+		send_printf(getMMudOut(), "Land of Karchan - Command %s\r\n", getToken(1));
+		send_printf(getMMudOut(), "</TITLE>\r\n");
+		send_printf(getMMudOut(), "</HEAD>\r\n");
 		
-		fprintf(getMMudOut(), "<BODY>\r\n");
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		send_printf(getMMudOut(), "<BODY>\r\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		temp = composeSqlStatement("select contents from help where command='%x'", getToken(1));
 		res=SendSQL2(temp, NULL);
@@ -459,11 +459,11 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 			mysql_free_result(res);
 			res=SendSQL2("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			fprintf(getMMudOut(), "%s",row[0]);
+			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		else
 		{
-			fprintf(getMMudOut(), "%s",row[0]);
+			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
 		PrintForm(name, password);
@@ -1250,105 +1250,105 @@ Admin_Command(char *name, char *password, int room, char *fcommand)
 	}
 	if (!strcasecmp(fcommand, "admin shutdown"))
 	{
-		fprintf(getMMudOut(), "<HTML>\n");
-		fprintf(getMMudOut(), "<HEAD>\n");
-		fprintf(getMMudOut(), "<TITLE>\n");
-		fprintf(getMMudOut(), "Land of Karchan - Admin Shutdown\n");
-		fprintf(getMMudOut(), "</TITLE>\n");
-		fprintf(getMMudOut(), "</HEAD>\n");
+		send_printf(getMMudOut(), "<HTML>\n");
+		send_printf(getMMudOut(), "<HEAD>\n");
+		send_printf(getMMudOut(), "<TITLE>\n");
+		send_printf(getMMudOut(), "Land of Karchan - Admin Shutdown\n");
+		send_printf(getMMudOut(), "</TITLE>\n");
+		send_printf(getMMudOut(), "</HEAD>\n");
 
-		fprintf(getMMudOut(), "<BODY>\n");	
+		send_printf(getMMudOut(), "<BODY>\n");	
 		if (!getFrames())
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (getFrames()==1)
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		fprintf(getMMudOut(), "<H1>Admin Shutdown - Shutting down Game</H1>\n");
-		fprintf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
+		send_printf(getMMudOut(), "<H1>Admin Shutdown - Shutting down Game</H1>\n");
+		send_printf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
 		
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		setShutdown(1);
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin readconfig"))
 	{
-		fprintf(getMMudOut(), "<HTML>\n");
-		fprintf(getMMudOut(), "<HEAD>\n");
-		fprintf(getMMudOut(), "<TITLE>\n");
-		fprintf(getMMudOut(), "Land of Karchan - Admin Readconfig\n");
-		fprintf(getMMudOut(), "</TITLE>\n");
-		fprintf(getMMudOut(), "</HEAD>\n");
+		send_printf(getMMudOut(), "<HTML>\n");
+		send_printf(getMMudOut(), "<HEAD>\n");
+		send_printf(getMMudOut(), "<TITLE>\n");
+		send_printf(getMMudOut(), "Land of Karchan - Admin Readconfig\n");
+		send_printf(getMMudOut(), "</TITLE>\n");
+		send_printf(getMMudOut(), "</HEAD>\n");
 
-		fprintf(getMMudOut(), "<BODY>\n");	
+		send_printf(getMMudOut(), "<BODY>\n");	
 		if (!getFrames())
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (getFrames()==1)
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		fprintf(getMMudOut(), "<H1>Admin Readconfig - Reading Config file</H1>\n");
+		send_printf(getMMudOut(), "<H1>Admin Readconfig - Reading Config file</H1>\n");
 		
-		fprintf(getMMudOut(), "Rereading config files. Please use 'admin config' to view any new settings. "
+		send_printf(getMMudOut(), "Rereading config files. Please use 'admin config' to view any new settings. "
 		"Bear in mind that a change in database info or socket info requires a restart of the server. Please stand by...<P>");
 		readConfigFiles("config.xml");
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin config"))
 	{
-		fprintf(getMMudOut(), "<HTML>\n");
-		fprintf(getMMudOut(), "<HEAD>\n");
-		fprintf(getMMudOut(), "<TITLE>\n");
-		fprintf(getMMudOut(), "Land of Karchan - Admin Config\n");
-		fprintf(getMMudOut(), "</TITLE>\n");
-		fprintf(getMMudOut(), "</HEAD>\n");
+		send_printf(getMMudOut(), "<HTML>\n");
+		send_printf(getMMudOut(), "<HEAD>\n");
+		send_printf(getMMudOut(), "<TITLE>\n");
+		send_printf(getMMudOut(), "Land of Karchan - Admin Config\n");
+		send_printf(getMMudOut(), "</TITLE>\n");
+		send_printf(getMMudOut(), "</HEAD>\n");
 
-		fprintf(getMMudOut(), "<BODY>\n");	
+		send_printf(getMMudOut(), "<BODY>\n");	
 		if (!getFrames())
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (getFrames()==1)
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		fprintf(getMMudOut(), "<H1>Admin Config - Config file</H1>\n");
+		send_printf(getMMudOut(), "<H1>Admin Config - Config file</H1>\n");
 		
-		fprintf(getMMudOut(), "Reading config files. Please stand by...<P>");
+		send_printf(getMMudOut(), "Reading config files. Please stand by...<P>");
 		writeConfig();
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin stats"))
@@ -1356,42 +1356,42 @@ Admin_Command(char *name, char *password, int room, char *fcommand)
 		mudinfostruct mymudinfo;
 		mymudinfo = getMudInfo();
 
-		fprintf(getMMudOut(), "<HTML>\n");
-		fprintf(getMMudOut(), "<HEAD>\n");
-		fprintf(getMMudOut(), "<TITLE>\n");
-		fprintf(getMMudOut(), "Land of Karchan - Admin Stats\n");
-		fprintf(getMMudOut(), "</TITLE>\n");
-		fprintf(getMMudOut(), "</HEAD>\n");
+		send_printf(getMMudOut(), "<HTML>\n");
+		send_printf(getMMudOut(), "<HEAD>\n");
+		send_printf(getMMudOut(), "<TITLE>\n");
+		send_printf(getMMudOut(), "Land of Karchan - Admin Stats\n");
+		send_printf(getMMudOut(), "</TITLE>\n");
+		send_printf(getMMudOut(), "</HEAD>\n");
 
-		fprintf(getMMudOut(), "<BODY>\n");	
+		send_printf(getMMudOut(), "<BODY>\n");	
 		if (!getFrames())
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (getFrames()==1)
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		fprintf(getMMudOut(), "<H1>Admin Stats - Displaying current usage statistics of game</H1>\n");
-		fprintf(getMMudOut(), "Host: %s<BR>\nIp address: %s<BR>\nDomainname: %s<BR>\nProtocol version: %s<BR>\nMmud version: %s %s %s<P>\n", 
+		send_printf(getMMudOut(), "<H1>Admin Stats - Displaying current usage statistics of game</H1>\n");
+		send_printf(getMMudOut(), "Host: %s<BR>\nIp address: %s<BR>\nDomainname: %s<BR>\nProtocol version: %s<BR>\nMmud version: %s %s %s<P>\n", 
 			mymudinfo.hostname, mymudinfo.hostip, mymudinfo.domainname, mymudinfo.protversion, mymudinfo.mmudversion,
 			mymudinfo.mmudtime, mymudinfo.mmuddate);
 
-		fprintf(getMMudOut(), "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
-		fprintf(getMMudOut(), "Total connections: %i<BR>\nTimeouts: %i<BR>\nCurrent connections: %i<BR>\nMax. current connections: %i<BR>\n",
+		send_printf(getMMudOut(), "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
+		send_printf(getMMudOut(), "Total connections: %i<BR>\nTimeouts: %i<BR>\nCurrent connections: %i<BR>\nMax. current connections: %i<BR>\n",
 			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections,
 			mymudinfo.maxnumber_of_current_connections);
 	
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	return 0;
@@ -1636,10 +1636,10 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 	}
 	mysql_free_result(res);
 #ifdef DEBUG
-	fprintf(getMMudOut(), "<HTML>");
+	send_printf(getMMudOut(), "<HTML>");
 	if (!strcmp(name, "Karn")) 
 	{
-		fprintf(getMMudOut(), "Command: %s<BR>Password: %s<BR>", command, password);
+		send_printf(getMMudOut(), "Command: %s<BR>Password: %s<BR>", command, password);
 	}
 #endif
 	if (*name == '\0') 
@@ -1810,8 +1810,8 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 		int pos = theNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], getToken(0));
 		#ifdef DEBUG
-		fprintf(getMMudOut(), "%i\n", theNumberOfFunctions);
-		fprintf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
+		send_printf(getMMudOut(), "%i\n", theNumberOfFunctions);
+		send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
 		#endif
 		while ((i>0) && (equals))
 		{
@@ -1825,7 +1825,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 			if ((pos >= 0) && (pos < theNumberOfFunctions))
 			{
 				#ifdef DEBUG
-				fprintf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
+				send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
 				#endif
 				
 				equals = strcasecmp(gameCommands[pos], getToken(0));

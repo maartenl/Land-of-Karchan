@@ -354,12 +354,12 @@ ReadFile(const char *filenaam)
 	if (fp==NULL)
 	{
 		int i = errno;
-		fprintf(getMMudOut(), "%i: %s (%s)\n", i, strerror(i), filenaam);
+		send_printf(getMMudOut(), "%i: %s (%s)\n", i, strerror(i), filenaam);
 		return 1;
 	}
 	
 	while (fgets(string, 80, fp) != 0) {
-		fprintf(getMMudOut(), "%s", string);
+		send_printf(getMMudOut(), "%s", string);
 	}
 	fclose(fp);
 	return 1;
@@ -371,7 +371,7 @@ PrintForm(char * name, char * password)
 {
 if (!getFrames())
 {
-	fprintf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
+	send_printf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
 			"<!-- In hiding!\r\n"
 			"function setfocus() {\r\n"
 			"       document.CommandForm.command.focus();\r\n"
@@ -379,13 +379,13 @@ if (!getFrames())
 			"	}\r\n"
 			"//-->\r\n"
 			"</SCRIPT>\r\n");
-	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
-	fprintf(getMMudOut(), "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
-	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
-	fprintf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	fprintf(getMMudOut(), "</FORM><P>\n");
+	send_printf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
+	send_printf(getMMudOut(), "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
+	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
+	send_printf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
+	send_printf(getMMudOut(), "</FORM><P>\n");
 }
 }
 
@@ -397,29 +397,29 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	MYSQL_ROW row;
 	char *sqlstring;
 
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan - Inventory\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan - Inventory\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/money.gif\">Inventory</H1>You have", getParam(MM_SERVERNAME));
-	fprintf(getMMudOut(), "<UL>");
+	send_printf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/money.gif\">Inventory</H1>You have", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "<UL>");
 	sqlstring = composeSqlStatement("select tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems"
 		" where (items.id = tmpitems.id) and "
 		" (items.visible <> 0) and "
@@ -438,12 +438,12 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 		{
 			if (atoi(row[0])!=1) 
 			{
-				fprintf(getMMudOut(), "<LI>%s %s, %s %ss.<BR>\r\n",
+				send_printf(getMMudOut(), "<LI>%s %s, %s %ss.<BR>\r\n",
 					row[0], row[2], row[3], row[1]);
 			}
 			else
 			{
-				fprintf(getMMudOut(), "<LI>a %s, %s %s.<BR>\r\n",
+				send_printf(getMMudOut(), "<LI>a %s, %s %s.<BR>\r\n",
 					row[2], row[3], row[1]);
 			}
 		}
@@ -474,22 +474,22 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 		{
 			if (containerid != atoi(row[0]))
 			{
-				fprintf(getMMudOut(), "\r\n<LI>a %s %s, %s containing ",
+				send_printf(getMMudOut(), "\r\n<LI>a %s %s, %s containing ",
 					row[3], row[4], row[2]);
 				containerid = atoi(row[0]);
 			}
 			else
 			{
-				fprintf(getMMudOut(), ", ");
+				send_printf(getMMudOut(), ", ");
 			}
 			if (atoi(row[5])!=1) 
 			{
-				fprintf(getMMudOut(), "%s %s, %s %ss",
+				send_printf(getMMudOut(), "%s %s, %s %ss",
 					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{
-				fprintf(getMMudOut(), "a %s, %s %s",
+				send_printf(getMMudOut(), "a %s, %s %s",
 					row[7], row[8], row[6]);
 			}
 		}
@@ -505,19 +505,19 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 		row = mysql_fetch_row(res);
 		if (row!=NULL) 
 		{
-			fprintf(getMMudOut(), "<LI>%s gold coins</A>\r\n", row[0]);
-			fprintf(getMMudOut(), "<LI>%s silver coins</A>\r\n", row[1]);
-			fprintf(getMMudOut(), "<LI>%s copper coins</A>\r\n", row[2]);
+			send_printf(getMMudOut(), "<LI>%s gold coins</A>\r\n", row[0]);
+			send_printf(getMMudOut(), "<LI>%s silver coins</A>\r\n", row[1]);
+			send_printf(getMMudOut(), "<LI>%s copper coins</A>\r\n", row[2]);
 		}
 	}
 	mysql_free_result(res);
 
-	fprintf(getMMudOut(), "</UL><BR>");
+	send_printf(getMMudOut(), "</UL><BR>");
 	PrintForm(name, password);
 	
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
-	fprintf(getMMudOut(), "</BODY></HTML>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "</BODY></HTML>");
 }
 
 //! small help function for computing what you pay and what you get returned
@@ -633,25 +633,25 @@ RoomTextProc(int z)
 	MYSQL_ROW row;
 	char *temp;
 
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
 
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
@@ -664,11 +664,11 @@ RoomTextProc(int z)
 
 		if (row!=NULL)
 		{
-			fprintf(getMMudOut(), "%s", row[0]);
+			send_printf(getMMudOut(), "%s", row[0]);
 		}
 		else
 		{
-			fprintf(getMMudOut(), "<H1>Cardboard</H1>"
+			send_printf(getMMudOut(), "<H1>Cardboard</H1>"
 			"Everywhere around you you notice cardboard. It seems as if this part"
 			" has either not been finished yet or you encountered an error"
 			" in retrieving the room description from the server.<P>");
@@ -678,7 +678,7 @@ RoomTextProc(int z)
 	else
 	{
 		mysql_free_result(res);
-		fprintf(getMMudOut(), "<H1>Cardboard</H1>"
+		send_printf(getMMudOut(), "<H1>Cardboard</H1>"
 		"Everywhere around you you notice cardboard. It seems as if this part"
 		" has either not been finished yet or you encountered an error"
 		" in retrieving the room description from the server.<P>");
@@ -700,184 +700,184 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 	char *tempsql;
 	RoomTextProc(room);
 
-	fprintf(getMMudOut(), "[");
+	send_printf(getMMudOut(), "[");
 	temproom=GetRoomInfo(room);
 	if (temproom->west) {
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->east) {
 		if (i) {
-			fprintf(getMMudOut(), ", ");
+			send_printf(getMMudOut(), ", ");
 		}
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->north) {
 		if (i) {
-			fprintf(getMMudOut(), ", ");
+			send_printf(getMMudOut(), ", ");
 		}
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->south) {
 		if (i) {
-			fprintf(getMMudOut(), ", ");
+			send_printf(getMMudOut(), ", ");
 		}
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->up) {
 		if (i) {
-			fprintf(getMMudOut(), ", ");
+			send_printf(getMMudOut(), ", ");
 		}
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->down) {
 		if (i) {
-			fprintf(getMMudOut(), ", ");
+			send_printf(getMMudOut(), ", ");
 		}
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
 		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 	}
 	free(temproom);
 	i = 0;
 	
-	fprintf(getMMudOut(), "]<P>\r\n");
+	send_printf(getMMudOut(), "]<P>\r\n");
 
 if (!getFrames()) 
 {
-        fprintf(getMMudOut(),"<TABLE ALIGN=right>\n");
-	fprintf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
+        send_printf(getMMudOut(),"<TABLE ALIGN=right>\n");
+	send_printf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
 	"USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>", getParam(MM_SERVERNAME));
 	if (sleepstatus==1) {
 	
-	fprintf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
+	send_printf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
 
-	fprintf(getMMudOut(), "<!-- In hiding!\r\n");
-	fprintf(getMMudOut(), " browserName = navigator.appName;          \r\n");
-	fprintf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
-	fprintf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-	fprintf(getMMudOut(), "\"n3\";\r\n");
-	fprintf(getMMudOut(), "               else version = \"n2\";\r\n");
+	send_printf(getMMudOut(), "<!-- In hiding!\r\n");
+	send_printf(getMMudOut(), " browserName = navigator.appName;          \r\n");
+	send_printf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
+	send_printf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+	send_printf(getMMudOut(), "\"n3\";\r\n");
+	send_printf(getMMudOut(), "               else version = \"n2\";\r\n");
 	               
-	fprintf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
-	fprintf(getMMudOut(), "               toc1on = new Image;          \r\n");
-	fprintf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
+	send_printf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
+	send_printf(getMMudOut(), "               toc1on = new Image;          \r\n");
+	send_printf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
 	               
 	               
-	fprintf(getMMudOut(), "               toc1off = new Image;\r\n");
-	fprintf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc1off = new Image;\r\n");
+	send_printf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
 	               
-	fprintf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
 	
-	fprintf(getMMudOut(), "function img_act(imgName) {\r\n");
-	fprintf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	fprintf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
-	fprintf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
-	fprintf(getMMudOut(), "        }\r\n");
-	fprintf(getMMudOut(), "}\r\n");
+	send_printf(getMMudOut(), "function img_act(imgName) {\r\n");
+	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
+	send_printf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
+	send_printf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "}\r\n");
 	
-	fprintf(getMMudOut(), "function img_inact(imgName) {\r\n");
-	fprintf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	fprintf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
-	fprintf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
-	fprintf(getMMudOut(), "        }\r\n");
-	fprintf(getMMudOut(), "}\r\n");
+	send_printf(getMMudOut(), "function img_inact(imgName) {\r\n");
+	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
+	send_printf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
+	send_printf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "}\r\n");
 	
-	fprintf(getMMudOut(), "//-->\r\n");
+	send_printf(getMMudOut(), "//-->\r\n");
 	   
 	
-	fprintf(getMMudOut(), "</SCRIPT>\r\n");
+	send_printf(getMMudOut(), "</SCRIPT>\r\n");
 	
-	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=awaken&name=%s&password=%s\" "
+	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=awaken&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 	} else {
-	fprintf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
+	send_printf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
 	
-	fprintf(getMMudOut(), "<!-- In hiding!\r\n");
-	fprintf(getMMudOut(), " browserName = navigator.appName;          \r\n");
-	fprintf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
-	fprintf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-	fprintf(getMMudOut(), "\"n3\";\r\n");
-	fprintf(getMMudOut(), "               else version = \"n2\";\r\n");
+	send_printf(getMMudOut(), "<!-- In hiding!\r\n");
+	send_printf(getMMudOut(), " browserName = navigator.appName;          \r\n");
+	send_printf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
+	send_printf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+	send_printf(getMMudOut(), "\"n3\";\r\n");
+	send_printf(getMMudOut(), "               else version = \"n2\";\r\n");
 	               
-	fprintf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
-	fprintf(getMMudOut(), "               toc1on = new Image;          \r\n");
-	fprintf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
-	fprintf(getMMudOut(), "               toc2on = new Image;          \r\n");
-	fprintf(getMMudOut(), "               toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
-	fprintf(getMMudOut(), "               toc3on = new Image;          \r\n");
-	fprintf(getMMudOut(), "               toc3on.src = \"../images/gif/webpic/new/buttonr.gif\";\r\n");
+	send_printf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
+	send_printf(getMMudOut(), "               toc1on = new Image;          \r\n");
+	send_printf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc2on = new Image;          \r\n");
+	send_printf(getMMudOut(), "               toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc3on = new Image;          \r\n");
+	send_printf(getMMudOut(), "               toc3on.src = \"../images/gif/webpic/new/buttonr.gif\";\r\n");
 	               
 	               
-	fprintf(getMMudOut(), "               toc1off = new Image;\r\n");
-	fprintf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
-	fprintf(getMMudOut(), "               toc2off = new Image;\r\n");
-	fprintf(getMMudOut(), "               toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
-	fprintf(getMMudOut(), "               toc3off = new Image;\r\n");
-	fprintf(getMMudOut(), "               toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc1off = new Image;\r\n");
+	send_printf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc2off = new Image;\r\n");
+	send_printf(getMMudOut(), "               toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
+	send_printf(getMMudOut(), "               toc3off = new Image;\r\n");
+	send_printf(getMMudOut(), "               toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
 	               
-	fprintf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
 	
-	fprintf(getMMudOut(), "function img_act(imgName) {\r\n");
-	fprintf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	fprintf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
-	fprintf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
-	fprintf(getMMudOut(), "        }\r\n");
-	fprintf(getMMudOut(), "}\r\n");
+	send_printf(getMMudOut(), "function img_act(imgName) {\r\n");
+	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
+	send_printf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
+	send_printf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "}\r\n");
 	
-	fprintf(getMMudOut(), "function img_inact(imgName) {\r\n");
-	fprintf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	fprintf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
-	fprintf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
-	fprintf(getMMudOut(), "        }\r\n");
-	fprintf(getMMudOut(), "}\r\n");
+	send_printf(getMMudOut(), "function img_inact(imgName) {\r\n");
+	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
+	send_printf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
+	send_printf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
+	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(getMMudOut(), "}\r\n");
 	
-	fprintf(getMMudOut(), "//-->\r\n");
+	send_printf(getMMudOut(), "//-->\r\n");
 	   
 	
-	fprintf(getMMudOut(), "</SCRIPT>\r\n");
+	send_printf(getMMudOut(), "</SCRIPT>\r\n");
 	
-	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=quit&name=%s&password=%s\" "
+	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=quit&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n", getParam(MM_SERVERNAME));
 	
-	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=sleep&name=%s&password=%s\" "
+	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=sleep&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 
-	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=clear&name=%s&password=%s\" "
+	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=clear&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n", getParam(MM_SERVERNAME));
 	}
-	        fprintf(getMMudOut(),"</TABLE>\n");
+	        send_printf(getMMudOut(),"</TABLE>\n");
 
-	                    fprintf(getMMudOut(), "<MAP NAME=\"roosmap\">\n");
-	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" "
+	                    send_printf(getMMudOut(), "<MAP NAME=\"roosmap\">\n");
+	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" "
 	                    "HREF=\"%s?command=n&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" "
+	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" "
 	                    "HREF=\"%s?command=s&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" "
+	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" "
 	                    "HREF=\"%s?command=w&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" "
+	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" "
 	                    "HREF=\"%s?command=e&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    fprintf(getMMudOut(), "</MAP>\n");
+	                    send_printf(getMMudOut(), "</MAP>\n");
 } /*end if getFrames dude*/
 	/* Print characters in room */
 	tempsql = composeSqlStatement("select "
@@ -905,26 +905,26 @@ if (!getFrames())
 			if (row[2][0]=='3') {strcpy(colorme, "green");}
 	if (atoi(row[3])!=0)
 	{
-		fprintf(getMMudOut(), "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
+		send_printf(getMMudOut(), "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
 			colorme, getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, row[0]);
 	}
 	else
 	{
 			if (atoi(row[1])==0) 
 			{
-				fprintf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
+				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
 					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 			else
 			{
-				fprintf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
+				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
 					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 		}
 	}
 	} 
 	mysql_free_result(res);
-	fprintf(getMMudOut(), "<BR>\r\n");
+	send_printf(getMMudOut(), "<BR>\r\n");
 
 	/* Print items in room */
 	tempsql = composeSqlStatement("select tmpitems.amount, items.adject1, items.adject2, items.name from items, tmp_itemtable tmpitems "
@@ -944,12 +944,12 @@ if (!getFrames())
 		{
 			if (atoi(row[0])>1) 
 			{
-				fprintf(getMMudOut(), "%s %s, %s %ss are here.<BR>\r\n", 
+				send_printf(getMMudOut(), "%s %s, %s %ss are here.<BR>\r\n", 
 					row[0], row[1], row[2], row[3]);
 			}
 			else
 			{
-				fprintf(getMMudOut(), "A %s, %s %s is here.<BR>\r\n", 
+				send_printf(getMMudOut(), "A %s, %s %s is here.<BR>\r\n", 
 					row[1], row[2], row[3]);
 			}
 		}
@@ -982,41 +982,41 @@ if (!getFrames())
 			{
 				if (containerid != 0)
 				{
-					fprintf(getMMudOut(), " is here.<BR>");
+					send_printf(getMMudOut(), " is here.<BR>");
 				}
-				fprintf(getMMudOut(), "\r\nA %s %s, %s containing ",
+				send_printf(getMMudOut(), "\r\nA %s %s, %s containing ",
 					row[3], row[4], row[2]);
 				containerid = atoi(row[0]);
 			}
 			else
 			{	
-				fprintf(getMMudOut(), ", ");
+				send_printf(getMMudOut(), ", ");
 			}
 			if (atoi(row[5])!=1)
 			{
-				fprintf(getMMudOut(), "%s %s, %s %ss",
+				send_printf(getMMudOut(), "%s %s, %s %ss",
 					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{ 
-				fprintf(getMMudOut(), "a %s, %s %s",
+				send_printf(getMMudOut(), "a %s, %s %s",
 					row[7], row[8], row[6]); 
 			}
 		}
 		if (containerid != 0)
 		{
-			fprintf(getMMudOut(), " is here.");
+			send_printf(getMMudOut(), " is here.");
 		}
 	} 
 	mysql_free_result(res);
-	fprintf(getMMudOut(), "<BR>\r\n");
+	send_printf(getMMudOut(), "<BR>\r\n");
 
 	PrintForm(name, password);
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (getFrames()!=2) {ReadFile(logname);}
 
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 //! checks the weight of a person by combining the weights of everything he/she carries

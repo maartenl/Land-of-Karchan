@@ -123,36 +123,6 @@ void CookieNotFound(char *name, char *address)
 	printf("</HTML>\n");
 }
 
-/*! attempts to send data over a socket, if not all information is sent.
-will automatically attempt to send the rest.
-\param s int socket descriptor
-\param buf char* message
-\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
-*/
-int
-send_socket(int s, char *buf, int *len)
-{
-	int total = 0;	// how many btytes we've sent
-	int bytesleft = *len;	// how many we have left to send
-	int n;
-#ifdef DEBUG
-	printf("[message]: %s\n", buf);
-#endif
-	while (total < *len)
-	{
-		n = send(s, buf+total, bytesleft, 0);
-		if (n == -1)
-		{
-			break;
-		}
-		total += n;
-		bytesleft -= n;
-	}
-	*len = total;	// return number actually sent here
-	
-	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
-}
-
 //! create a valid xml document
 /*! created a valid xml document with all the necessary fields to generate a new character on the mud. */
 char *

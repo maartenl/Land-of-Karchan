@@ -27,8 +27,7 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # for instance: '-DDEBUG=1' and consequently recompiling the mud source code
 # will yield a binary with level 1 debug messages added.
 
-DEBUG = 
-#-DDEBUG
+DEBUG = -DDEBUG
 
 #
 #------------------------------------------------------------------
@@ -44,8 +43,8 @@ DEBUG =
 CC = gcc
 # the -g option is to compile debugging info into the object files
 #
-# COPTS = -O2 -m486
-COPTS = -g -m486
+# COPTS = -g -m486 // option for Redhat Linux versions previous to 8.0
+COPTS = -O2 -mcpu=i486
 
 # this header is for RPM installations of mysql
 #

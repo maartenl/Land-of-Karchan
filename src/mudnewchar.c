@@ -70,7 +70,7 @@ gameNewchar(char *name, char *password, char *cookie, char *address, mudnewchars
 	printf("gameNewchar started(%s, %s, %s, %s)!!!\n", name, password, cookie, address);
 #endif
 
-	/* fprintf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
+	/* send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 	generate_password(secretpassword);
 
 	if (SearchBanList(address, name)) 

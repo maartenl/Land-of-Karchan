@@ -330,59 +330,6 @@ close_socket()
 	}
 }
 
-/*! attempts to send data over a socket, if not all information is sent.
-will automatically attempt to send the rest.
-\param s int socket descriptor
-\param buf char* message
-\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
-\return return -1 on failure, 0 on success
-*/
-int
-send_socket(int s, char *buf, int *len)
-{
-	int total = 0;	// how many btytes we've sent
-	int bytesleft = *len;	// how many we have left to send
-	int n;
-#if DEBUG==2
-	printf("[message]: %s\n", buf);
-#endif
-	while (total < *len)
-	{
-		n = send(s, buf+total, bytesleft, 0);
-		if (n == -1)
-		{
-			break;
-		}
-		total += n;
-		bytesleft -= n;
-	}
-	*len = total;	// return number actually sent here
-	
-	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
-}
-
-/*! struct used for internal purposes, it keeps track of the information
-    regarding the mud (username, password, command) sent during a connection */
-typedef struct
-{
-	char *readbuf; // buffer to read from socket, standard=1024 bytes
-	int bufsize; // buffer size, initialised to 1024
-	char name[22];
-	char password[42];
-	char address[42];
-	char cookie[80];
-	int frames;
-	char *action; // {mud, logon, new}
-	char *command; 
-	int socketfd; // socket descriptor
-	mudnewcharstruct *newchar; // usually NULL, except when action=newchar
-	void *next; // next item in the list
-} mudpersonstruct;
-
-/*! linked list of mudpersonstruct, keeps a list of established 
-    connections/personal mud information */
-mudpersonstruct *list = NULL;
-
 /*! parses the Xml document received from the socket and contained in
     mudpersonstruct.readbuf, parsed information is stored in the other
     fields of mudpersonstruct 
@@ -396,7 +343,8 @@ parseXml(mudpersonstruct *fmine)
 	xmlNodePtr cur, cur2;
 	xmlDtdPtr myDtd = NULL;
 	char *temp;
-
+	mudnewcharstruct *newcharstruct;
+	
 	if (fmine == NULL)
 	{
 		return 0;
@@ -580,7 +528,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->frace, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->frace, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -601,7 +550,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fsex, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fsex, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -622,7 +572,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fage, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fage, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -643,7 +594,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->flength, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->flength, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -664,7 +616,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fwidth, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fwidth, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -685,7 +638,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fcomplexion, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fcomplexion, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -706,7 +660,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->feyes, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->feyes, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -727,7 +682,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fface, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fface, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -748,7 +704,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fhair, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fhair, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -769,7 +726,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fbeard, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fbeard, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -790,7 +748,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->farm, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->farm, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -811,7 +770,8 @@ parseXml(mudpersonstruct *fmine)
 				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
 				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-				strcpy(fmine->newchar->fleg, temp);
+				newcharstruct = (mudnewcharstruct *) fmine->newchar;
+				strcpy(newcharstruct->fleg, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -827,13 +787,14 @@ parseXml(mudpersonstruct *fmine)
 				if (fmine->newchar == NULL) 
 				{
 					fmine->newchar = create_mudnewcharstruct();
+					newcharstruct = (mudnewcharstruct *) fmine->newchar;
 				}
 				else
 				{
-					if (fmine->newchar->ftitle != NULL) {free(fmine->newchar->ftitle);}
+					if (newcharstruct->ftitle != NULL) {free(newcharstruct->ftitle);}
 				}
-				fmine->newchar->ftitle = (char *) malloc(strlen(temp)+1);
-				strcpy(fmine->newchar->ftitle, temp);
+				newcharstruct->ftitle = (char *) malloc(strlen(temp)+1);
+				strcpy(newcharstruct->ftitle, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -849,13 +810,14 @@ parseXml(mudpersonstruct *fmine)
 				if (fmine->newchar == NULL) 
 				{
 					fmine->newchar = create_mudnewcharstruct();
+					newcharstruct = (mudnewcharstruct *) fmine->newchar;
 				}
 				else
 				{
-					if (fmine->newchar->frealname != NULL) {free(fmine->newchar->frealname);}
+					if (newcharstruct->frealname != NULL) {free(newcharstruct->frealname);}
 				}
-				fmine->newchar->frealname = (char *) malloc(strlen(temp)+1);
-				strcpy(fmine->newchar->frealname, temp);
+				newcharstruct->frealname = (char *) malloc(strlen(temp)+1);
+				strcpy(newcharstruct->frealname, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -871,13 +833,14 @@ parseXml(mudpersonstruct *fmine)
 				if (fmine->newchar == NULL) 
 				{
 					fmine->newchar = create_mudnewcharstruct();
+					newcharstruct = (mudnewcharstruct *) fmine->newchar;
 				}
 				else
 				{
-					if (fmine->newchar->femail != NULL) {free(fmine->newchar->femail);}
+					if (newcharstruct->femail != NULL) {free(newcharstruct->femail);}
 				}
-				fmine->newchar->femail = (char *) malloc(strlen(temp)+1);
-				strcpy(fmine->newchar->femail, temp);
+				newcharstruct->femail = (char *) malloc(strlen(temp)+1);
+				strcpy(newcharstruct->femail, temp);
 				xmlFree(temp);
 			}
 			temp = NULL;
@@ -889,116 +852,6 @@ parseXml(mudpersonstruct *fmine)
 #endif
 	xmlFreeDoc(doc);
 	return 1;
-}
-
-/*! add a new mudpersonstruct with default values to the beginning of the list
- (i.e. the first member of the list is the newly added socketfd) 
- \param socketfd int socket descriptor to be added to list of established connections and corresponding mud info
- \return int always returns 1
- */
-int
-add_to_list(int socketfd)
-{
-	mudpersonstruct *mine;
-	mine = (mudpersonstruct *) malloc(sizeof(mudpersonstruct));
-	mine->name[0] = 0;
-	mine->password[0] = 0;
-	mine->address[0] = 0;
-	mine->cookie[0] = 0;
-	mine->frames = 0;
-	mine->action = NULL;
-	mine->command = NULL;
-	mine->bufsize = 1;
-	mine->readbuf = (char *) malloc(mine->bufsize);
-	mine->readbuf[0] = 0; // initialized to empty string
-	mine->socketfd = socketfd;
-	mine->newchar = NULL;
-	mine->next = list;
-	list = mine;
-	return 1;
-}
-
-/*!
- return the mudpersonstruct attached to the socketfd. If not found, return NULL 
- \param socketfd int socket descriptor used in search
- \return mudpersonstruct* mudpersonstruct found in linked list, returns NULL if not found
- */
-mudpersonstruct
-*find_in_list(int socketfd)
-{
-	mudpersonstruct *mine;
-	mine = list;
-	while (mine != NULL)
-	{
-		if (mine->socketfd = socketfd)
-		{
-			return mine;
-		}
-		mine = (mudpersonstruct *) mine->next;
-	}
-	return NULL;
-}
-
-/*! remove the mudpersonstruct from the list based on socketfd. The 'command' char pointer member
- is freed, then the mudpersonstruct is freed and the list is updated. 
- \param socketfd int socket descriptor
- \return 1 upon success, 0 if descriptor not found
- */
-int
-remove_from_list(int socketfd)
-{
-	mudpersonstruct *mine, *mine2;
-	mine = list;
-	mine2 = NULL;
-	while (mine != NULL)
-	{
-		if (mine->socketfd == socketfd)
-		{
-			if (mine2 == NULL)
-			{
-				list = (mudpersonstruct *) mine->next;
-			}
-			else
-			{
-				mine2->next = mine->next;
-			}
-			if (mine->command != NULL) 
-			{
-				free(mine->command);
-				mine->command = NULL;
-			}
-			if (mine->action != NULL) 
-			{
-				free(mine->action);
-				mine->action = NULL;
-			}
-			if (mine->newchar != NULL) 
-			{
-				if (mine->newchar->ftitle != NULL)
-				{
-					free(mine->newchar->ftitle);
-				}
-				if (mine->newchar->frealname != NULL)
-				{
-					free(mine->newchar->frealname);
-				}
-				if (mine->newchar->femail != NULL)
-				{
-					free(mine->newchar->femail);
-				}
-				free(mine->newchar);
-				mine->newchar = NULL;
-			}
-			free(mine->readbuf);
-			mine->readbuf = NULL;
-			free(mine);
-			mine = NULL;
-			return 1;
-		}
-		mine2 = mine;
-		mine = (mudpersonstruct *) mine->next;
-	}
-	return 0;
 }
 
 /*! add contents of read buffer to the socketstruct
@@ -1058,13 +911,7 @@ store_in_list(int socketfd, char *buf)
 				
 				WriteSentenceIntoOwnLogFile(getParam(MM_BIGFILE), "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
-				filep = fopen("temp.txt", "w");
-				if (filep == NULL)
-				{
-					syslog(LOG_ERR, "attempting to open file.(%s)..", strerror(errno));
-					exit(7);
-				}
-				setMMudOut(filep);
+				setMMudOut(socketfd);
 				// decide what action to take
 				if (!strcasecmp(mine->action, "logon"))
 				{
@@ -1079,22 +926,7 @@ store_in_list(int socketfd, char *buf)
 				{
 					gameMain(mine->command, mine->name, mine->password, mine->cookie, mine->address); 
 				}
-				fclose(filep);
-				filep = fopen("temp.txt", "r");
-				while (fgets(string, 1023, filep) != 0) 
-				{
-					int i = strlen(string);
-					if (send_socket(socketfd, string, &i) == -1)
-					{
-						syslog(LOG_INFO, "error during send to the socket...");
-					}
-					if (i != strlen(string))
-					{
-						syslog(LOG_INFO, "unable to send all information to the socket...");
-					}
-				}
-				fclose(filep);
-				setMMudOut(stdout);
+				setMMudOut(0);
 				j = strlen("</HTML>");
 				if (send_socket(socketfd, "</HTML>", &j) == -1)
 				{
@@ -1177,7 +1009,7 @@ main(int argc, char **argv)
 	
 	opendbconnection();
 	initGameFunctionIndex(); // initialise command index 
-	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor 
+	setMMudOut(0); // sets the standard output stream of the mud to the filedescriptor 
 	syslog(LOG_INFO, "accepting incoming connections...");
 	while (!isShuttingdown())
 	{
@@ -1285,16 +1117,17 @@ main(int argc, char **argv)
 		syslog(LOG_ERR, "attempting to close main socket...");
 		exit(7);
 	}
-	while (list != NULL)
+	while (!is_list_empty())
 	{
-		FD_CLR(list->socketfd, &master_fds); // remove closed socket from master set
-		if (close(list->socketfd) == -1)
+		mudpersonstruct *temp = get_first_from_list();
+		FD_CLR(temp->socketfd, &master_fds); // remove closed socket from master set
+		if (close(temp->socketfd) == -1)
 		{
 			// do some error checking
 			syslog(LOG_ERR, "attempting to close user socket...");
 			exit(7);
 		}
-		remove_from_list(list->socketfd);
+		remove_from_list(temp->socketfd);
 	}
 	
 	syslog(LOG_INFO, "closing database connection...");

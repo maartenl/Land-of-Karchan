@@ -48,7 +48,7 @@ main(int argc, char *argv[])
 	readConfigFiles("/karchan/config.xml");
 
 	opendbconnection();
-	setMMudOut(stdout);
+	setMMudOut(0);
 
 //	openDatabase();
 	res=SendSQL2("select src, room "

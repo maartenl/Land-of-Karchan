@@ -102,20 +102,20 @@ StrangeName(char *name, char *password, char *address)
 				break;
 			}
 		}
-		fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
-		fprintf(getMMudOut(), "<BODY>\n");
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
-		fprintf(getMMudOut(),"%s<P>\r\n", error2);
+		send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
+		send_printf(getMMudOut(), "<BODY>\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
+		send_printf(getMMudOut(),"%s<P>\r\n", error2);
 
-		fprintf(getMMudOut(),"The following rules need to be followed when filling out a name and password:<P>\r\n");
-		fprintf(getMMudOut(),"<UL><LI>the following characters are valid in a name: {A..Z, a..z, _, ~}");
-		fprintf(getMMudOut(),"<LI>all characters are valid in a password except {\"} and {'}");
-		fprintf(getMMudOut(),"<LI>at least 3 characters are required for a name");
-		fprintf(getMMudOut(),"<LI>at least 5 characters are required for a password");
-		fprintf(getMMudOut(),"</UL><P>These are the rules.<P>\r\n");
-		fprintf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
-		fprintf(getMMudOut(), "</body>\n");
-		fprintf(getMMudOut(), "</HTML>\n");
+		send_printf(getMMudOut(),"The following rules need to be followed when filling out a name and password:<P>\r\n");
+		send_printf(getMMudOut(),"<UL><LI>the following characters are valid in a name: {A..Z, a..z, _, ~}");
+		send_printf(getMMudOut(),"<LI>all characters are valid in a password except {\"} and {'}");
+		send_printf(getMMudOut(),"<LI>at least 3 characters are required for a name");
+		send_printf(getMMudOut(),"<LI>at least 5 characters are required for a password");
+		send_printf(getMMudOut(),"</UL><P>These are the rules.<P>\r\n");
+		send_printf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
+		send_printf(getMMudOut(), "</body>\n");
+		send_printf(getMMudOut(), "</HTML>\n");
 		time(&tijd);
 		datum=*(gmtime(&tijd));
 		WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
@@ -133,13 +133,13 @@ void MultiPlayerDetected(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
-	fprintf(getMMudOut(), "<BODY>\n");
-	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Multiple Player Detected</H1><HR>\n");
-	fprintf(getMMudOut(), "You are already playing this mud under another character's");
-	fprintf(getMMudOut(), " name. You are only allowed to log on once.<P>\n");
-	fprintf(getMMudOut(), "</body>\n");
-	fprintf(getMMudOut(), "</HTML>\n");
+	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
+	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Multiple Player Detected</H1><HR>\n");
+	send_printf(getMMudOut(), "You are already playing this mud under another character's");
+	send_printf(getMMudOut(), " name. You are only allowed to log on once.<P>\n");
+	send_printf(getMMudOut(), "</body>\n");
+	send_printf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
@@ -176,62 +176,62 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(), "Content-type: text/html\r\n");
-	fprintf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", cookie);
+	send_printf(getMMudOut(), "Content-type: text/html\r\n");
+	send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", cookie);
 
 
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
-		fprintf(getMMudOut(), "<BODY>\n");
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
-		fprintf(getMMudOut(), "You tried to start a session which is already in progress. You can't play \n");
-		fprintf(getMMudOut(), "two sessions at the same time! Please check below to try again. In case you \n");
-		fprintf(getMMudOut(), "accidently turned of your computerterminal or Netscape or Lynx without first \n");
-		fprintf(getMMudOut(), "having typed <B>QUIT</B> while you were in the MUD, you can reenter the game \n");
-		fprintf(getMMudOut(), "by using the second link. You have to sit at the same computer as you did \n");
-		fprintf(getMMudOut(), "when you logged in.<P>\n");
-		fprintf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
-		fprintf(getMMudOut(), "retry</A><P>\n");
+		send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+		send_printf(getMMudOut(), "<BODY>\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
+		send_printf(getMMudOut(), "You tried to start a session which is already in progress. You can't play \n");
+		send_printf(getMMudOut(), "two sessions at the same time! Please check below to try again. In case you \n");
+		send_printf(getMMudOut(), "accidently turned of your computerterminal or Netscape or Lynx without first \n");
+		send_printf(getMMudOut(), "having typed <B>QUIT</B> while you were in the MUD, you can reenter the game \n");
+		send_printf(getMMudOut(), "by using the second link. You have to sit at the same computer as you did \n");
+		send_printf(getMMudOut(), "when you logged in.<P>\n");
+		send_printf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
+		send_printf(getMMudOut(), "retry</A><P>\n");
 		
-		fprintf(getMMudOut(),"Do you wish to enter into the active character?<BR><UL><LI>");
-		fprintf(getMMudOut(), "<A HREF=\"%s?command=me+entered+the+game+again...&name=%s&password=%s&frames=%i\">Yes</A>",
+		send_printf(getMMudOut(),"Do you wish to enter into the active character?<BR><UL><LI>");
+		send_printf(getMMudOut(), "<A HREF=\"%s?command=me+entered+the+game+again...&name=%s&password=%s&frames=%i\">Yes</A>",
 			 getParam(MM_MUDCGI), name, password, getFrames()+1);
-		fprintf(getMMudOut(),"<LI><A HREF=\"/karchan/index.html\">No</A></UL>");
-		fprintf(getMMudOut(),"<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		fprintf(getMMudOut(),"<DIV ALIGN=left><P>");
-		fprintf(getMMudOut(), "</body>\n");
-		fprintf(getMMudOut(), "</HTML>\n");
+		send_printf(getMMudOut(),"<LI><A HREF=\"/karchan/index.html\">No</A></UL>");
+		send_printf(getMMudOut(),"<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(getMMudOut(),"<DIV ALIGN=left><P>");
+		send_printf(getMMudOut(), "</body>\n");
+		send_printf(getMMudOut(), "</HTML>\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(getMMudOut(), "<FRAMESET ROWS=\"*,50\">\r\n");
-			fprintf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=\"/karchan/already_active.html\" NAME=\"main\" border=0>\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=%s?name=%s&password=%s NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n", getParam(MM_LEFTFRAMECGI), name, password);
-			fprintf(getMMudOut(), "	</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=%s?name=%s&password=%s NAME=\"logon\" scrolling=\"no\" border=0>\r\n", getParam(MM_LOGONFRAMECGI), name, password);
-			fprintf(getMMudOut(), "</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "</HTML>\r\n");
+			send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
+			send_printf(getMMudOut(), "<FRAMESET ROWS=\"*,50\">\r\n");
+			send_printf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=\"/karchan/already_active.html\" NAME=\"main\" border=0>\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=%s?name=%s&password=%s NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n", getParam(MM_LEFTFRAMECGI), name, password);
+			send_printf(getMMudOut(), "	</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=%s?name=%s&password=%s NAME=\"logon\" scrolling=\"no\" border=0>\r\n", getParam(MM_LOGONFRAMECGI), name, password);
+			send_printf(getMMudOut(), "</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "</HTML>\r\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(getMMudOut(), "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
-			fprintf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(getMMudOut(), "		<FRAMESET ROWS=\"60%,40%\">\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=\"/karchan/already_active.html\" NAME=\"statusFrame\" border=0>\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", getParam(MM_SERVERNAME));
-			fprintf(getMMudOut(), "		</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	</FRAMESET>\r\n\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", getParam(MM_SERVERNAME));
-			fprintf(getMMudOut(), "</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "</HTML>\r\n");
+			send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
+			send_printf(getMMudOut(), "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
+			send_printf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
+			send_printf(getMMudOut(), "		<FRAMESET ROWS=\"60%,40%\">\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=\"/karchan/already_active.html\" NAME=\"statusFrame\" border=0>\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", getParam(MM_SERVERNAME));
+			send_printf(getMMudOut(), "		</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	</FRAMESET>\r\n\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", getParam(MM_SERVERNAME));
+			send_printf(getMMudOut(), "</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "</HTML>\r\n");
 		}
 	}
 
@@ -249,12 +249,12 @@ void WrongPasswd(char *name, char *address, char *error)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(),"<html><head><Title>Error</Title></head>\n");
-	fprintf(getMMudOut(),"<body>\n");
-	fprintf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
-	fprintf(getMMudOut(),"You filled out the wrong password for that particular name! \n");
-	fprintf(getMMudOut(),"Please retry by clicking at the link below:<P>\n");
-	fprintf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(),"<html><head><Title>Error</Title></head>\n");
+	send_printf(getMMudOut(),"<body>\n");
+	send_printf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
+	send_printf(getMMudOut(),"You filled out the wrong password for that particular name! \n");
+	send_printf(getMMudOut(),"Please retry by clicking at the link below:<P>\n");
+	send_printf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i %s by %s (%s)<BR>\n",datum.tm_hour,
@@ -275,14 +275,14 @@ void WriteError(char *name, char *address, char *error)
 //! too many users have attempted to log onto the game, dump error page to user this is for future use right now,
 void ToManyUsers() 
 {
-	fprintf(getMMudOut(),"<head><Title>Error</Title></head>");
-	fprintf(getMMudOut(),"<body>");
-	fprintf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many users</H1><HR>");
-	fprintf(getMMudOut(),"I am sorry, but this game is currently out of space to provide for another");
-	fprintf(getMMudOut()," new character. Please try again tomorrow or so when I make some more room.");
-	fprintf(getMMudOut()," Thank you and sorry for the inconvenience. Please check below to try again,");
-	fprintf(getMMudOut()," although that will probably not function immediately.<P> ");
-	fprintf(getMMudOut(),"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(),"<head><Title>Error</Title></head>");
+	send_printf(getMMudOut(),"<body>");
+	send_printf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many users</H1><HR>");
+	send_printf(getMMudOut(),"I am sorry, but this game is currently out of space to provide for another");
+	send_printf(getMMudOut()," new character. Please try again tomorrow or so when I make some more room.");
+	send_printf(getMMudOut()," Thank you and sorry for the inconvenience. Please check below to try again,");
+	send_printf(getMMudOut()," although that will probably not function immediately.<P> ");
+	send_printf(getMMudOut(),"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
 }
 	
 //! error page for the user, user attempted to enter a name for a player containing spaces.
@@ -291,16 +291,16 @@ void ToManyNames(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(getMMudOut(),"<head><Title>Error</Title></head>\n");
-	fprintf(getMMudOut(),"<body>\n");
-	fprintf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many names</H1><HR>\n");
-	fprintf(getMMudOut(),"I am sorry, but this game will not accept a multitude of names which you \n");
-	fprintf(getMMudOut(),"have filled out in the Name-box of the fillout-form. Please do not type more \n");
-	fprintf(getMMudOut(),"than one name. In the next fillout form you will be asked to type a title, \n");
-	fprintf(getMMudOut(),"there you can type as much as you want.<P>"
+	send_printf(getMMudOut(),"<head><Title>Error</Title></head>\n");
+	send_printf(getMMudOut(),"<body>\n");
+	send_printf(getMMudOut(),"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many names</H1><HR>\n");
+	send_printf(getMMudOut(),"I am sorry, but this game will not accept a multitude of names which you \n");
+	send_printf(getMMudOut(),"have filled out in the Name-box of the fillout-form. Please do not type more \n");
+	send_printf(getMMudOut(),"than one name. In the next fillout form you will be asked to type a title, \n");
+	send_printf(getMMudOut(),"there you can type as much as you want.<P>"
 	               "It is also illegal to use less than 3 characters for a name and "
 	               "less then 5 characters in your password.<P>\n");
-	fprintf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(),"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
@@ -317,16 +317,16 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	char dood[100];
 	sprintf(dood, "%snewchar.html", getParam(MM_HTMLHEADER));
 	ReadFile(dood);
-	fprintf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",fname);
-	fprintf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",fpassword);
-	fprintf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",getFrames()+1);
-	fprintf(getMMudOut(),"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	fprintf(getMMudOut(),"<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n");
-	fprintf(getMMudOut(),"</FORM></BODY></HTML>\n");
+	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",fname);
+	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",fpassword);
+	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",getFrames()+1);
+	send_printf(getMMudOut(),"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
+	send_printf(getMMudOut(),"<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n");
+	send_printf(getMMudOut(),"</FORM></BODY></HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
-]	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
 }
 
 //! start the game appropriately
@@ -369,43 +369,43 @@ void MakeStart(char *name, char *password, char *cookie, char *address)
 
 	if (!getFrames())
 	{
-			fprintf(getMMudOut(), "Content-type: text/html\r\n");
-			fprintf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
+			send_printf(getMMudOut(), "Content-type: text/html\r\n");
+			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
 			gameMain("me has entered the game...<BR>\r\n", name, password, cookie, address);
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "Content-type: text/html\r\n");
-			fprintf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
-			fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(getMMudOut(), "<FRAMESET ROWS=\"*,50\">\r\n");
-			fprintf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=%s?command=me+has+entered+the+game...&name=%s&password=%s&frames=2 NAME=\"main\" border=0>\r\n", getParam(MM_MUDCGI), name, password);
-			fprintf(getMMudOut(), "		<FRAME SRC=%s?name=%s&password=%s NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n", getParam(MM_LEFTFRAMECGI), name, password);
-			fprintf(getMMudOut(), "	</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=%s?name=%s&password=%s NAME=\"logon\" scrolling=\"no\" border=0>\r\n", getParam(MM_LOGONFRAMECGI), name, password);
-			fprintf(getMMudOut(), "</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "</HTML>\r\n");
+			send_printf(getMMudOut(), "Content-type: text/html\r\n");
+			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
+			send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
+			send_printf(getMMudOut(), "<FRAMESET ROWS=\"*,50\">\r\n");
+			send_printf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=%s?command=me+has+entered+the+game...&name=%s&password=%s&frames=2 NAME=\"main\" border=0>\r\n", getParam(MM_MUDCGI), name, password);
+			send_printf(getMMudOut(), "		<FRAME SRC=%s?name=%s&password=%s NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n", getParam(MM_LEFTFRAMECGI), name, password);
+			send_printf(getMMudOut(), "	</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=%s?name=%s&password=%s NAME=\"logon\" scrolling=\"no\" border=0>\r\n", getParam(MM_LOGONFRAMECGI), name, password);
+			send_printf(getMMudOut(), "</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "</HTML>\r\n");
 		} else
 		{
-			fprintf(getMMudOut(), "Content-type: text/html\r\n");
-			fprintf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
-			fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(getMMudOut(), "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
-			fprintf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(getMMudOut(), "		<FRAMESET ROWS=\"60%,40%\">\r\n");
-			fprintf(getMMudOut(), "		<FRAME SRC=%s?command=me+has+entered+the+game...&name=%s&password=%s&frames=3 NAME=\"statusFrame\" border=0>\r\n", getParam(MM_MUDCGI), name, password);
-			fprintf(getMMudOut(), "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", getParam(MM_SERVERNAME));
-			fprintf(getMMudOut(), "		</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	</FRAMESET>\r\n\r\n");
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
-			fprintf(getMMudOut(), "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", getParam(MM_SERVERNAME));
-			fprintf(getMMudOut(), "</FRAMESET>\r\n");
-			fprintf(getMMudOut(), "</HTML>\r\n");
+			send_printf(getMMudOut(), "Content-type: text/html\r\n");
+			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
+			send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
+			send_printf(getMMudOut(), "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
+			send_printf(getMMudOut(), "	<FRAMESET COLS=\"*,180\">\r\n");
+			send_printf(getMMudOut(), "		<FRAMESET ROWS=\"60%,40%\">\r\n");
+			send_printf(getMMudOut(), "		<FRAME SRC=%s?command=me+has+entered+the+game...&name=%s&password=%s&frames=3 NAME=\"statusFrame\" border=0>\r\n", getParam(MM_MUDCGI), name, password);
+			send_printf(getMMudOut(), "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", getParam(MM_SERVERNAME));
+			send_printf(getMMudOut(), "		</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	</FRAMESET>\r\n\r\n");
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", getParam(MM_SERVERNAME), getParam(MM_CGINAME), name, password);
+			send_printf(getMMudOut(), "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", getParam(MM_SERVERNAME));
+			send_printf(getMMudOut(), "</FRAMESET>\r\n");
+			send_printf(getMMudOut(), "</HTML>\r\n");
 		}
 	}
 }
@@ -425,7 +425,7 @@ gameLogon(char *name, char *password, char *cookie, char *address)
 	printf("gameLogon started (%s,%s,%s,%s)!!!\n", name, password, cookie, address);
 #endif
 	
-/*	fprintf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
+/*	send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 	
 	if (strcmp("Karn", name)) 
 	{

@@ -82,53 +82,53 @@ char *temp;
 
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-  	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
+  	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "<H2>List of Mail</H2>");
+	send_printf(getMMudOut(), "<H2>List of Mail</H2>");
 
 temp = composeSqlStatement("SELECT name, haveread, newmail, header FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
 res=SendSQL2(temp, NULL);
 free(temp);temp=NULL;
 
-fprintf(getMMudOut(), "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
+send_printf(getMMudOut(), "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
 while(row = mysql_fetch_row(res)) 
 {
-	fprintf(getMMudOut(), "<TR VALIGN=top><TD>%i.</TD><TD>", j);
-	if (atoi(row[2])>0) {fprintf(getMMudOut(),"N");}
-	if (atoi(row[1])==0) {fprintf(getMMudOut(),"U");}
-	fprintf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
+	send_printf(getMMudOut(), "<TR VALIGN=top><TD>%i.</TD><TD>", j);
+	if (atoi(row[2])>0) {send_printf(getMMudOut(),"N");}
+	if (atoi(row[1])==0) {send_printf(getMMudOut(),"U");}
+	send_printf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
 	"<A HREF=\"%s?command=readmail+%i&name=%s&password=%s&frames=%i\">"
 	"%s</A></TD><TD><A HREF=\"%s?command=deletemail+%i&name=%s&password=%s&frames=%i\">Delete</A></TD>"
 	"</TR>\r\n",row[0], getParam(MM_MUDCGI), j, name, password, getFrames()+1, row[3], getParam(MM_MUDCGI), j, name, password, getFrames()+1);
 	j++;
 }
- fprintf(getMMudOut(), "</TABLE><BR>\r\n");
+ send_printf(getMMudOut(), "</TABLE><BR>\r\n");
 	mysql_free_result(res);
 
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 //! read or delete mail (yeah, I know, confusing)
@@ -203,49 +203,49 @@ strcpy(mailname, row[0]);
 strcpy(mailtoname, row[1]);
 strcpy(maildatetime, row[3]);
 	
-fprintf(getMMudOut(), "<HTML>\n");
-fprintf(getMMudOut(), "<HEAD>\n");
-fprintf(getMMudOut(), "<TITLE>\n");
-fprintf(getMMudOut(), "Land of Karchan\n");
-fprintf(getMMudOut(), "</TITLE>\n");
-fprintf(getMMudOut(), "</HEAD>\n");
+send_printf(getMMudOut(), "<HTML>\n");
+send_printf(getMMudOut(), "<HEAD>\n");
+send_printf(getMMudOut(), "<TITLE>\n");
+send_printf(getMMudOut(), "Land of Karchan\n");
+send_printf(getMMudOut(), "</TITLE>\n");
+send_printf(getMMudOut(), "</HEAD>\n");
 
-fprintf(getMMudOut(), "<BODY>\n");
+send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-fprintf(getMMudOut(), "<H1>Read Mail - %s</H1>", row[2]);
-fprintf(getMMudOut(), "<HR noshade><TABLE BORDER=0>\r\n");
-fprintf(getMMudOut(), "<TR><TD>Mes. Nr:</TD><TD> <B>%i</B></TD></TR>\r\n", messnr);
-fprintf(getMMudOut(), "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n", row[0]);
-fprintf(getMMudOut(), "<TR><TD>Time:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]+11);
+send_printf(getMMudOut(), "<H1>Read Mail - %s</H1>", row[2]);
+send_printf(getMMudOut(), "<HR noshade><TABLE BORDER=0>\r\n");
+send_printf(getMMudOut(), "<TR><TD>Mes. Nr:</TD><TD> <B>%i</B></TD></TR>\r\n", messnr);
+send_printf(getMMudOut(), "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n", row[0]);
+send_printf(getMMudOut(), "<TR><TD>Time:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]+11);
 *(row[3]+10)='\0';
-fprintf(getMMudOut(), "<TR><TD>Date:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]);
-fprintf(getMMudOut(), "<TR><TD>New?:</TD><TD><B>");
-if (atoi(row[5])>0) {fprintf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
-		else {fprintf(getMMudOut(), "No</B></TD></TR>\r\n");}
-fprintf(getMMudOut(), "<TR><TD>Read?:</TD><TD><B>");
-if (atoi(row[4])>0) {fprintf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
-		else {fprintf(getMMudOut(), "No</B></TD></TR>\r\n");}
-fprintf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
-fprintf(getMMudOut(), "<HR noshade>%s", row[6]);
-fprintf(getMMudOut(), "<HR noshade>");
-fprintf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
+send_printf(getMMudOut(), "<TR><TD>Date:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]);
+send_printf(getMMudOut(), "<TR><TD>New?:</TD><TD><B>");
+if (atoi(row[5])>0) {send_printf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
+		else {send_printf(getMMudOut(), "No</B></TD></TR>\r\n");}
+send_printf(getMMudOut(), "<TR><TD>Read?:</TD><TD><B>");
+if (atoi(row[4])>0) {send_printf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
+		else {send_printf(getMMudOut(), "No</B></TD></TR>\r\n");}
+send_printf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
+send_printf(getMMudOut(), "<HR noshade>%s", row[6]);
+send_printf(getMMudOut(), "<HR noshade>");
+send_printf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
 	getParam(MM_MUDCGI), name, password, getFrames()+1);
 PrintForm(name, password);
-fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 
 mysql_free_result(res);
 
@@ -336,41 +336,41 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 	MYSQL_ROW		row;
 	char			*tempsql;
 	
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan - Who\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan - Who\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "<H2>List of All Users</H2>");
+	send_printf(getMMudOut(), "<H2>List of All Users</H2>");
 	tempsql = composeSqlStatement("select count(*) from tmp_usertable where god<1");
 	res=SendSQL2(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
-		fprintf(getMMudOut(), "<I>There are %s persons active in the game.</I><P>", 
+		send_printf(getMMudOut(), "<I>There are %s persons active in the game.</I><P>", 
 			row[0]); 
 	}
 	mysql_free_result(res);
 		
-	fprintf(getMMudOut(), "<UL>");
+	send_printf(getMMudOut(), "<UL>");
 	tempsql = composeSqlStatement("select name, title, "
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable "
@@ -383,23 +383,23 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 		{
 			if (atoi(row[3])==1)
 			{
-				fprintf(getMMudOut(), "<LI>%s, %s, sleeping (%i min, %i sec idle)\r\n", 
+				send_printf(getMMudOut(), "<LI>%s, %s, sleeping (%i min, %i sec idle)\r\n", 
 				row[0], row[1], atoi(row[2]) / 60, atoi(row[2]) % 60);
 			}
 			else
 			{
-				fprintf(getMMudOut(), "<LI>%s, %s (%i min, %i sec idle)\r\n", 
+				send_printf(getMMudOut(), "<LI>%s, %s (%i min, %i sec idle)\r\n", 
 				row[0], row[1], atoi(row[2]) / 60, atoi(row[2]) % 60);
 			}
 		}
 	}
 	mysql_free_result(res);
 	
-	fprintf(getMMudOut(), "</UL>");
+	send_printf(getMMudOut(), "</UL>");
 
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 	return 1;
 }
 
@@ -415,34 +415,34 @@ LookString(char *description, char *name, char *password)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	fprintf(getMMudOut(), "%s", description);
+	send_printf(getMMudOut(), "%s", description);
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 //! find out what you are looking at and display a description (either item, or thing, or person, or something else.)
@@ -457,26 +457,26 @@ LookAtProc(int id, char *name, char *password)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
@@ -488,19 +488,19 @@ LookAtProc(int id, char *name, char *password)
 		row = mysql_fetch_row(res);
 		if (row != NULL)
 		{
-			fprintf(getMMudOut(), "%s", row[0]);
+			send_printf(getMMudOut(), "%s", row[0]);
 		}
 		else
 		{
-			fprintf(getMMudOut(), "[item description not found]");
+			send_printf(getMMudOut(), "[item description not found]");
 		}
 	}
 	mysql_free_result(res);
 
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 //! look at item, either in inventory or on floor or hidden
@@ -601,40 +601,40 @@ LookItem_Command(char *name, char *password, int room)
 			WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s %s %s.<BR>\r\n",
 				row[2], row[3], row[1]);
 	
-			fprintf(getMMudOut(), "<HTML>\n");
-			fprintf(getMMudOut(), "<HEAD>\n");
-			fprintf(getMMudOut(), "<TITLE>\n");
-			fprintf(getMMudOut(), "Land of Karchan\n");
-			fprintf(getMMudOut(), "</TITLE>\n");
-			fprintf(getMMudOut(), "</HEAD>\n");
+			send_printf(getMMudOut(), "<HTML>\n");
+			send_printf(getMMudOut(), "<HEAD>\n");
+			send_printf(getMMudOut(), "<TITLE>\n");
+			send_printf(getMMudOut(), "Land of Karchan\n");
+			send_printf(getMMudOut(), "</TITLE>\n");
+			send_printf(getMMudOut(), "</HEAD>\n");
 		
-			fprintf(getMMudOut(), "<BODY>\n");
+			send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 		
-			fprintf(getMMudOut(), "%s", row[0]);
+			send_printf(getMMudOut(), "%s", row[0]);
 			if (atoi(row[4])!=0)
 			{
 				containerid = atoi(row[5]);
 				if (containerid!=0) 
 				{
-					fprintf(getMMudOut(), "The %s %s %s seems to contain ", row[2], row[3], row[1]);
+					send_printf(getMMudOut(), "The %s %s %s seems to contain ", row[2], row[3], row[1]);
 				}
 				else
 				{
-					fprintf(getMMudOut(), "The %s %s %s is empty.<P>\r\n", row[2], row[3], row[1]);
+					send_printf(getMMudOut(), "The %s %s %s is empty.<P>\r\n", row[2], row[3], row[1]);
 				}
 				
 			}
@@ -662,26 +662,26 @@ LookItem_Command(char *name, char *password, int room)
 						}
 						else
 						{
-							fprintf(getMMudOut(), ", ");
+							send_printf(getMMudOut(), ", ");
 						}
 						if (amount>1)
 						{
-							fprintf(getMMudOut(), "%i %s %s %ss", amount, row[2], row[3], row[1]);
+							send_printf(getMMudOut(), "%i %s %s %ss", amount, row[2], row[3], row[1]);
 						}
 						else
 						{
-							fprintf(getMMudOut(), "a %s %s %s", row[2], row[3], row[1]);
+							send_printf(getMMudOut(), "a %s %s %s", row[2], row[3], row[1]);
 						}
 					}
-					fprintf(getMMudOut(), ".<P>\r\n");
+					send_printf(getMMudOut(), ".<P>\r\n");
 					mysql_free_result(res);
 				}
 			}
 
 			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return ;
 		}
 		mysql_free_result(res);
@@ -782,34 +782,34 @@ LookItem_Command(char *name, char *password, int room)
 				}
 			}
 	
-			fprintf(getMMudOut(), "<HTML>\n");
-			fprintf(getMMudOut(), "<HEAD>\n");
-			fprintf(getMMudOut(), "<TITLE>\n");
-			fprintf(getMMudOut(), "Land of Karchan\n");
-			fprintf(getMMudOut(), "</TITLE>\n");
-			fprintf(getMMudOut(), "</HEAD>\n");
+			send_printf(getMMudOut(), "<HTML>\n");
+			send_printf(getMMudOut(), "<HEAD>\n");
+			send_printf(getMMudOut(), "<TITLE>\n");
+			send_printf(getMMudOut(), "Land of Karchan\n");
+			send_printf(getMMudOut(), "</TITLE>\n");
+			send_printf(getMMudOut(), "</HEAD>\n");
 		
-			fprintf(getMMudOut(), "<BODY>\n");
+			send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 		
-			fprintf(getMMudOut(), "%s", row[0]);
+			send_printf(getMMudOut(), "%s", row[0]);
 			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			mysql_free_result(res);
 			return ;
 		}
@@ -933,21 +933,21 @@ NotActive(char *fname, char *fpassword, int errornr)
 	time_t tijd;
 	struct tm datum;
 	        
-	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
-	fprintf(getMMudOut(), "<BODY>\n");
-	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
-	fprintf(getMMudOut(), "You cannot MUD because you are not logged in (no more)."
+	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
+	send_printf(getMMudOut(), "You cannot MUD because you are not logged in (no more)."
 	    " This might have happened to the following circumstances:<P>");
-	fprintf(getMMudOut(), "<UL><LI>you were kicked out of the game for bad conduct");
-	fprintf(getMMudOut(), "<LI>the game went down for dayly cleanup, killing of all"
+	send_printf(getMMudOut(), "<UL><LI>you were kicked out of the game for bad conduct");
+	send_printf(getMMudOut(), "<LI>the game went down for dayly cleanup, killing of all"
 		"active users");
-	fprintf(getMMudOut(), "<LI>you were deactivated for not responding for over 1 hour");
-	fprintf(getMMudOut(), "<LI>an error occurred</UL>");
-	fprintf(getMMudOut(), "You should be able to relogin by using the usual link below:<P>");
-	fprintf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
-	fprintf(getMMudOut(), "relogin</A><P>\n");
-	fprintf(getMMudOut(), "</body>\n");
-	fprintf(getMMudOut(), "</HTML>\n");
+	send_printf(getMMudOut(), "<LI>you were deactivated for not responding for over 1 hour");
+	send_printf(getMMudOut(), "<LI>an error occurred</UL>");
+	send_printf(getMMudOut(), "You should be able to relogin by using the usual link below:<P>");
+	send_printf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
+	send_printf(getMMudOut(), "relogin</A><P>\n");
+	send_printf(getMMudOut(), "</body>\n");
+	send_printf(getMMudOut(), "</HTML>\n");
 	
 	time(&tijd);
 	datum=*(gmtime(&tijd));
@@ -995,7 +995,7 @@ Quit_Command(char *name, char *password, int room, char *fcommand)
 
 	row = mysql_fetch_row(res);
 
-	fprintf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
 	if (atoi(row[0]) > 0) {
 		WriteMessage(name, atoi(row[2]), "A disgusting toad called ");
 	}
@@ -1116,66 +1116,66 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 
 	row = mysql_fetch_row(res);
 	
-	fprintf(getMMudOut(), "<HTML>\n");
-	fprintf(getMMudOut(), "<HEAD>\n");
-	fprintf(getMMudOut(), "<TITLE>\n");
-	fprintf(getMMudOut(), "Land of Karchan - Character Statistics\n");
-	fprintf(getMMudOut(), "</TITLE>\n");
-	fprintf(getMMudOut(), "</HEAD>\n");
-	fprintf(getMMudOut(), "<BODY>\n");
+	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(getMMudOut(), "<HEAD>\n");
+	send_printf(getMMudOut(), "<TITLE>\n");
+	send_printf(getMMudOut(), "Land of Karchan - Character Statistics\n");
+	send_printf(getMMudOut(), "</TITLE>\n");
+	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "<Center><H1>Character Statistics</H1></Center>");
-	fprintf(getMMudOut(), "<H2>Appearance:</H2>");
-	fprintf(getMMudOut(), "A %s", row[8]); /*age*/
-	if (strcasecmp(row[9], "none")) {fprintf(getMMudOut(), ", %s", row[9]);}
-	if (strcasecmp(row[10], "none")) {fprintf(getMMudOut(), ", %s", row[10]);}
-	if (strcasecmp(row[11], "none")) {fprintf(getMMudOut(), ", %s", row[11]);}
-	if (strcasecmp(row[12], "none")) {fprintf(getMMudOut(), ", %s", row[12]);}
-	if (strcasecmp(row[13], "none")) {fprintf(getMMudOut(), ", %s", row[13]);}
-	if (strcasecmp(row[14], "none")) {fprintf(getMMudOut(), ", %s", row[14]);}
-	if (strcasecmp(row[15], "none")) {fprintf(getMMudOut(), ", %s", row[15]);}
-	if (strcasecmp(row[16], "none")) {fprintf(getMMudOut(), ", %s", row[16]);}
-	if (strcasecmp(row[17], "none")) {fprintf(getMMudOut(), ", %s", row[17]);}/*leg*/
+	send_printf(getMMudOut(), "<Center><H1>Character Statistics</H1></Center>");
+	send_printf(getMMudOut(), "<H2>Appearance:</H2>");
+	send_printf(getMMudOut(), "A %s", row[8]); /*age*/
+	if (strcasecmp(row[9], "none")) {send_printf(getMMudOut(), ", %s", row[9]);}
+	if (strcasecmp(row[10], "none")) {send_printf(getMMudOut(), ", %s", row[10]);}
+	if (strcasecmp(row[11], "none")) {send_printf(getMMudOut(), ", %s", row[11]);}
+	if (strcasecmp(row[12], "none")) {send_printf(getMMudOut(), ", %s", row[12]);}
+	if (strcasecmp(row[13], "none")) {send_printf(getMMudOut(), ", %s", row[13]);}
+	if (strcasecmp(row[14], "none")) {send_printf(getMMudOut(), ", %s", row[14]);}
+	if (strcasecmp(row[15], "none")) {send_printf(getMMudOut(), ", %s", row[15]);}
+	if (strcasecmp(row[16], "none")) {send_printf(getMMudOut(), ", %s", row[16]);}
+	if (strcasecmp(row[17], "none")) {send_printf(getMMudOut(), ", %s", row[17]);}/*leg*/
 
-	fprintf(getMMudOut(), ", %s %s introduces %sself as %s, %s.<BR>\r\n(%s)<BR>", 
+	send_printf(getMMudOut(), ", %s %s introduces %sself as %s, %s.<BR>\r\n(%s)<BR>", 
 	row[7], row[6], HeShe2(row[7]), row[0], row[3], row[4]);/*sex, race*/
 
-	fprintf(getMMudOut(), "<P><H2>Statistics:</H2>");
-	fprintf(getMMudOut(), "%s, %s<BR>\r\nYou seem %s.<BR>\r\n%s\r\nYou seem %s.<BR>\r\n%s%s%s"
+	send_printf(getMMudOut(), "<P><H2>Statistics:</H2>");
+	send_printf(getMMudOut(), "%s, %s<BR>\r\nYou seem %s.<BR>\r\n%s\r\nYou seem %s.<BR>\r\n%s%s%s"
 	,row[0], row[3], ShowString(atoi(row[29])/*vitals*/, atoi(row[52])/*maxvital*/), (extralook == NULL? "" : extralook),
 	ShowMovement(atoi(row[49]), atoi(row[51])),
 	 ShowDrink(atoi(row[32])), ShowEat(atoi(row[33])), ShowBurden(CheckWeight(name)), ShowAlignment(atoi(row[47])));
-	fprintf(getMMudOut(), "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
+	send_printf(getMMudOut(), "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
 	 atoi(row[24]) /*x.experience*/ / 1000, atoi(row[24]) % 1000, 1000 - (atoi(row[24]) % 1000));
-	fprintf(getMMudOut(), "Strength <B>%s</B> Intelligence <B>%s</B> Dexterity <B>%s</B> Constitution <B>%s</B> Wisdom <B>%s</B>"
+	send_printf(getMMudOut(), "Strength <B>%s</B> Intelligence <B>%s</B> Dexterity <B>%s</B> Constitution <B>%s</B> Wisdom <B>%s</B>"
 		" Mana <B>%i (<font color=blue>%i</Font>)</B> Movement <B>%i (<font color=blue>%i</font>)</B><BR>\r\n",
 		row[39] /*strength*/, row[40], row[41], row[42], row[43], atoi(row[50])-atoi(row[48]), atoi(row[50]), 
 		atoi(row[51])-atoi(row[49]), atoi(row[51]));
-	fprintf(getMMudOut(), "You have <B>%s</B> training sessions and <B>%s</B> practice sessions left.<BR>\r\n",
+	send_printf(getMMudOut(), "You have <B>%s</B> training sessions and <B>%s</B> practice sessions left.<BR>\r\n",
 		row[45], row[44]);
 	if (atoi(row[23]) == 0) {
-		fprintf(getMMudOut(), "You are not whimpy at all.<BR>\r\n");
+		send_printf(getMMudOut(), "You are not whimpy at all.<BR>\r\n");
 	} else {
-		fprintf(getMMudOut(), "You are whimpy if you seem %s.<BR>\r\n", ShowString(atoi(row[23]), atoi(row[52])));
+		send_printf(getMMudOut(), "You are whimpy if you seem %s.<BR>\r\n", ShowString(atoi(row[23]), atoi(row[52])));
 	}
 	if (atoi(row[26]) == 1) { /*sleep*/
-		fprintf(getMMudOut(), "You are fast asleep.<BR>\r\n");
+		send_printf(getMMudOut(), "You are fast asleep.<BR>\r\n");
 	}
 	if (atoi(row[26]) >= 100) {
-		fprintf(getMMudOut(), "You are sitting at a table.<BR>\r\n");
+		send_printf(getMMudOut(), "You are sitting at a table.<BR>\r\n");
 	}
 	if (extralook != NULL) 
 	{
@@ -1196,7 +1196,7 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 	{
 		if (row[3][0]!='\0')
 		{
-			fprintf(getMMudOut(), "You are wearing a %s, %s %s on your %s.<BR>\r\n",
+			send_printf(getMMudOut(), "You are wearing a %s, %s %s on your %s.<BR>\r\n",
 			row[0], row[1], row[2], row[3]);
 		}
 		else
@@ -1204,13 +1204,13 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 			char position[20];
 			if (row[4][0]=='1') {strcpy(position, "right hand");}
 				else {strcpy(position, "left hand");}
-			fprintf(getMMudOut(), "You are wielding a %s, %s %s in your %s.<BR>\r\n",
+			send_printf(getMMudOut(), "You are wielding a %s, %s %s in your %s.<BR>\r\n",
 			row[0], row[1], row[2], position);
 		}
 		
 	}
 	mysql_free_result(res);
-	fprintf(getMMudOut(), "<P>");
+	send_printf(getMMudOut(), "<P>");
 
 	temp = composeSqlStatement("select concat('Your skill in ', name, ' is level ', "
 	"skilllevel, '.<BR>\r\n') from skills, skilltable where skilltable.number="
@@ -1223,22 +1223,22 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 		row = mysql_fetch_row(res);
 		if (row==NULL)
 		{
-			fprintf(getMMudOut(), "You currently have no special skills.<BR>\r\n");
+			send_printf(getMMudOut(), "You currently have no special skills.<BR>\r\n");
 		}
 		while (row!=NULL)
 		{
-			fprintf(getMMudOut(), "%s", row[0]);
+			send_printf(getMMudOut(), "%s", row[0]);
 			row = mysql_fetch_row(res);
 		}
 		mysql_free_result(res);
 	}
 	
-	fprintf(getMMudOut(), "<P>");
+	send_printf(getMMudOut(), "<P>");
 	PrintForm(name, password);
 
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
-	fprintf(getMMudOut(), "</BODY></HTML>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "</BODY></HTML>");
 	return 1;
 }
 
@@ -2315,7 +2315,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 			"(wielding = '') and "
 			"(containerid = 0)"
 			, amount, itemid_a, name);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2329,7 +2329,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 			"(wielding = '') and "
 			"(containerid = 0)"
 			, itemid_a, name);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2346,7 +2346,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 			"wielding = '' and "
 			"containerid = 0"
 			, itemid_b, itembelongsto_b, room_b);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2355,7 +2355,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 			"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
 			"values(%i, '', '%x', 1, %i, '', '', %i)"
 			, itemid_b, itembelongsto_b, room_b, maxcontainerid);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2375,7 +2375,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 				"wielding = '' and "
 				"containerid = 0"
 				, maxcontainerid, itemid_b, itembelongsto_b, room_b);
-//			fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
 			res=SendSQL2(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
@@ -2391,7 +2391,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 			"amount > 0 and "
 			"containedin = %i"
 			, itemid_a, maxcontainerid);
-//			fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
 			res=SendSQL2(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			if (res!=NULL) 
@@ -2413,7 +2413,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 		"where id = %i and "
 		"containedin = %i"
 		, amount, itemid_a, maxcontainerid);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2424,7 +2424,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 		"(id, amount, containedin) "
 		"values(%i, %i, %i)"
 		, itemid_a, amount, maxcontainerid);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2587,7 +2587,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	amount,
 	itemname_b, itemadject1_b, itemadject1_b,	itemadject2_b, itemadject2_b,
 	name, room);
-//	fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//	send_printf(getMMudOut(), "[%s]\n", sqlstring);
 	res=SendSQL2(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
@@ -2626,7 +2626,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 			"where (id=%i) and "
 			"(containedin = %i)"
 			, amount, itemid_a, containerid_b);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2638,7 +2638,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 			"where (id=%i) and "
 			"(containedin = %i)"
 			, itemid_a, containerid_b);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2648,7 +2648,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 			"from containeditems "
 			"where containedin = %i"
 			, containerid_b);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res!=NULL) 
@@ -2681,7 +2681,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 				"wielding = '' and "
 				"containerid = %i"
 				, itemid_b, itembelongsto_b, room_b, containerid_b);
-//			fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
 			res=SendSQL2(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
@@ -2700,7 +2700,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	"wielding = '' and "
 	"containerid = 0"
 	, itemid_a, name);
-//	fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//	send_printf(getMMudOut(), "[%s]\n", sqlstring);
 	res=SendSQL2(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL) 
@@ -2726,7 +2726,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 		"wielding = '' and "
 		"containerid = 0"
 		, amount, itemid_a, name);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -2737,7 +2737,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 		"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
 		"values(%i, '', '%x', %i, 0, '', '', 0)"
 		, itemid_a, name, amount);
-//		fprintf(getMMudOut(), "[%s]\n", sqlstring);
+//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
@@ -5104,36 +5104,36 @@ Dead(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
+	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
 	if (!getFrames())
 	{
-		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "You died.<Center><H1>The End</H1></Center><P>");
-	fprintf(getMMudOut(), "You are dead. You are at the moment in a dark room. You can't see anything.");
-	fprintf(getMMudOut(), "You hear sighs.<P>");
-	fprintf(getMMudOut(), "A voice says (behind you): Oh no, not another one...<P>");
-	fprintf(getMMudOut(), "Another voice sighs : They just keep on comin'.<P>");
-	fprintf(getMMudOut(), "Suddenly, in the distance, you see a light which slowly comes closer. As it");
-	fprintf(getMMudOut(), "comes closer, you see that it is a lantern which is being held by somebody");
-	fprintf(getMMudOut(), "(or something you can't really make it out). That someone is getting closer.");
-	fprintf(getMMudOut(), "When he is standing right before you, you have a good view of who he is. You");
-	fprintf(getMMudOut(), "can't see his face, because that is hidden by a cap. He is all in black.<P>");
-	fprintf(getMMudOut(), "You say: Hey, did somebody just die?<P>");
-	fprintf(getMMudOut(), "He is carrying a heavy axe with him. This, you gather, must be Mr. Death");
-	fprintf(getMMudOut(), "himself. He swings back his axe, and you hide your hands behind your face.");
-	fprintf(getMMudOut(), "(That shouldn't however help much) Than the axe comes crushing down.<P>(Type");
-	fprintf(getMMudOut(), "<B>look around</B>)<P>");
+	send_printf(getMMudOut(), "You died.<Center><H1>The End</H1></Center><P>");
+	send_printf(getMMudOut(), "You are dead. You are at the moment in a dark room. You can't see anything.");
+	send_printf(getMMudOut(), "You hear sighs.<P>");
+	send_printf(getMMudOut(), "A voice says (behind you): Oh no, not another one...<P>");
+	send_printf(getMMudOut(), "Another voice sighs : They just keep on comin'.<P>");
+	send_printf(getMMudOut(), "Suddenly, in the distance, you see a light which slowly comes closer. As it");
+	send_printf(getMMudOut(), "comes closer, you see that it is a lantern which is being held by somebody");
+	send_printf(getMMudOut(), "(or something you can't really make it out). That someone is getting closer.");
+	send_printf(getMMudOut(), "When he is standing right before you, you have a good view of who he is. You");
+	send_printf(getMMudOut(), "can't see his face, because that is hidden by a cap. He is all in black.<P>");
+	send_printf(getMMudOut(), "You say: Hey, did somebody just die?<P>");
+	send_printf(getMMudOut(), "He is carrying a heavy axe with him. This, you gather, must be Mr. Death");
+	send_printf(getMMudOut(), "himself. He swings back his axe, and you hide your hands behind your face.");
+	send_printf(getMMudOut(), "(That shouldn't however help much) Than the axe comes crushing down.<P>(Type");
+	send_printf(getMMudOut(), "<B>look around</B>)<P>");
 
 	temp = composeSqlStatement("update tmp_usertable set vitals=0, sleep=0 where name='%x'",name);
 	res=SendSQL2(temp, NULL);
@@ -5141,8 +5141,8 @@ Dead(char *name, char *password, int room)
 	mysql_free_result(res);
 	WriteMessage(name, room, "%s appears from nowhere.<BR>", name);
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 //! change the title of the player
