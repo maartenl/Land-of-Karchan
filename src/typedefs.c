@@ -366,7 +366,7 @@ opendbconnection()
 		getParam(MM_DATABASEHOST), 
 		getParam(MM_DATABASELOGIN),
 		getParam(MM_DATABASEPASSWORD), 
-		getParam(MM_DATABASENAME), 0, NULL, 0)))
+		getParam(MM_DATABASENAME), atoi(getParam(MM_DATABASEPORT)), NULL, 0)))
 	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
 	}   
