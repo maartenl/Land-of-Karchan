@@ -90,7 +90,7 @@ It's a mistake to run any kind of CGIbinary which is accessible from the
 outside setuid root. It gives crackers the opportunity to enter your system
 using this CGI.
 
-{\par\centering \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{sourcecode.pdf}}} \par}
+{\par\centering \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{sourcecode.ps}}} \par}
 
 \subsection{Password Authorisation}
 There are currently two passwords. The first password (the real one) is used
@@ -120,7 +120,7 @@ During gameplay, the cookie is compared to the SessionPassword in the
 database every time. 
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{cookie.pdf}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{cookie.ps}}} \par}
 
 \newpage
 \section{Playing the game}
@@ -367,7 +367,7 @@ Y.fightable = 1;
 \end{itemize}
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{compute_hit.pdf}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{compute_hit.ps}}} \par}
 
 \subsection{Defense}
 Every item that you use in combat has both a passive defense and an active
@@ -521,6 +521,11 @@ user. If the word does not exist (because the command only had 'amount'
 words) the parser will return the number. For example, if you used three
 words, '%04' would give you '04' back. Either use this info to prevent
 problems or use '%amount'.
+\subparagraph{\%*}is related to the parameters described above. Instead
+of one single word from the command given by the current
+user, it substitutes the entire command entered. Usefull when having to
+enter literal text entered by the user into the database, for instance when
+using the public message boards.
 
 \paragraph{Commands}
 
@@ -593,6 +598,10 @@ sent to everyone in the same room except yourself
 \subparagraph{sayeveryoneto("person","sentence")}the sentence between the
 second " (quotes) is sent to everyone in the same room except yourself and
 the person you are speaking to.
+\subparagraph{log("sentence")}the sentence between the
+" (quotes) is sent to the log of the game. The log of the game, for those of
+you not intimately aquainted with the workings of the game is a file called
+"audit.trail".
 
 \paragraph{Examples}
 \subparagraph{"Yawn"}
@@ -616,12 +625,24 @@ return
 \end{verbatim}
 
 \subparagraph{"Fight"}
+This one also provides a good example on how to use the log command.
 \begin{verbatim}
 if sql("select 1 from tmp_usertable where name='%me' and room in [1,3,164]")
   say("Fighting is not allowed in this area.<BR>")
-  sayeveryone("%me yawns.<BR>")
+  log("Warning: Fight command issued by %me in a room where this is not allowed...")
   showstandard
   end
+return
+\end{verbatim}
+
+\subparagraph{"Post message on public board"}
+This one provides a good example on using the parameter \%* in substituting
+the entire command entered by the user.
+\begin{verbatim}
+say("Message posted...<BR>")
+sql("insert into boards values('public','%me',now(), \
+	replace(replace(substring('%*', 8), '<', '&lt;'), '>', '&gt;'))")
+showstandard
 return
 \end{verbatim}
 
@@ -843,7 +864,7 @@ The level provides at which level the if statements are nested. Right now
 there is a physical maximum of 20 nested if statements. 
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{parser_states.pdf}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{parser_states.ps}}} \par}
 
 \section{Logs, Error Codes and Debugging Info}
 \subsection{Introduction}
@@ -1195,7 +1216,7 @@ web.
 \section{Appendix C - Database Structure}
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{database.pdf}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{database.ps}}} \par}
 
 \newpage
 
@@ -1232,7 +1253,7 @@ The DamageRoll determines how much of your hit has been transferred to
 actual damagepoints on the part of your opponent.
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{rolls2.pdf}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{rolls2.ps}}} \par}
 
 \newpage
 \section{Appendix E - Examples of Skills}
