@@ -1587,7 +1587,7 @@ int StartSQL()
 	char sqlstring[1024];
 
 	strcpy(sqlstring, "");
-	if (!(mysql_connect(&mysql,"localhost","root", "")))
+	if (!(mysql_connect(&mysql,"localhost","mud", "42rakah")))
 	{
 		mysqlExitErr("Unable to connect to mysqld, exiting...", &mysql);
 		exit(1);
