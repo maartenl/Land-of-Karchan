@@ -30,11 +30,37 @@ titles.<P>
 <LI>Crime &amp; Punishment
 <LI>The Book of Spells - by H. M. Wordsworth
 <LI>Secrets
+<LI>Diseases through the Ages (Diseases)
+<LI>Dr. Ioxus Compenium of Herbs (Herblore)
 </UL>
 <P>
 You should be able to <B>read</B> the books..<P>
 '
 where id=-69;
+
+update items
+set description='<H1><IMG
+SRC="/images/gif/bib3.gif">
+The Books</H1>
+You look carefully at the bookcase. You can make out the following
+titles.<P>
+<UL>
+<LI>Map to the Castle
+<LI>A Century of Studying the Southern Oracle - by Professor Engywoeck
+<LI>The Red Book of Westernesse - by B. Baggins
+<LI>Some notes on Elvish Languages - by B. Baggins
+<LI>Beowulf - writer unknown
+<LI>War &amp; Peace
+<LI>Crime &amp; Punishment
+<LI>The Book of Spells - by H. M. Wordsworth
+<LI>Secrets
+<LI>Diseases through the Ages (Diseases)
+<LI>Dr. Ioxus Compenium of Herbs (herblore)
+</UL>
+<P>
+You should be able to <B>read</B> the books..<P>
+'
+where id=-70;
 
 update claimed 
 set deity='Karn'
@@ -333,6 +359,17 @@ there.<BR>The bookcase swings shut again.<BR>"")
 	sql(""update tmp_usertable set room=550 where name='%me'"")
 	sayeveryone(""%me enters from the hidden passage in the library.<BR>"")
 	show(""select contents from action where id=18"")
+end
+if sql(""select '%*' = 'read diseases'"")
+	# reading diseases
+	sayeveryone(""%me pulls a book called '<I>Diseases through the \\\\
+Ages</I>' from the bookcase and begins to read.<BR>"")
+	show(""select contents from action where id=21"")
+end
+if sql(""select '%*' = 'read herblore'"")
+	# reading herblore
+	sayeveryone(""%me pulls a book called '<I>Dr. Ioxus Compenium of Herbs</I>' from the bookcase and begins to read.<BR>"")
+	show(""select contents from action where id=22"")
 else
    # reading something else.
 	say(""You cannot read that book from the library.<BR>"")

@@ -116,4 +116,124 @@ sql(""update attributes set value=value-1 where mod(value, 2)=1 and objecttype=1
 return
 ");
 
+replace into action
+values(21, "<Center><H1>Diseases through the Ages</H1></Center>
+You notice quite some information about the most nasty looking diseases
+around along with a historical annotation on when they started to occur for
+the first time and when they stopped, because people found a medicine or
+magic that worked.<P>
+One part in particular seems to catch your eye. A particular virulent
+disease that seemed to be very contagious, causing a large number of
+casualties. Fascinated you read on:
+<P>
+<H2>The Whiteblodge Plague</H2>
+<TABLE ALIGN=top>
+<TR ALIGN=top><TD><B>Parts of Body effected:</B></TD><TD>The Skin and the Lungs, the
+lungs are the most to suffer. Breathing becomes a little more difficult and
+lots of coughing takes place. Besides an itchiness and the appearance of
+nasty white blodges, the skin is relatively unharmed.
+<TR ALIGN=top><TD><B>Internal Characteristics:</B></TD><TD>There are a number of stages that one goes through.
+They are briefly described here:
+<UL><LI>Apparently sudden loss of balance, due to loss of lung capacity
+<LI>coughing, in the last stages this is accompanied with blood
+<LI>sudden bouts of fainting, due to loss of lung capacity
+</UL>
+</TD></TR>
+<TR ALIGN=top><TD><B>External Characteristics:</B></TD><TD>From an external view, a
+number of characteristics can be visible to the carefull observer. These
+are: a distinct paleness, red rimmed, unfocused and feverish eyes, and pale
+white blodges covering the skin of the entire body.
+</TD></TR>
+<TR ALIGN=top><TD><B>History:</B></TD><TD> from year 1342 until 1350 of the Second Age. It has been known to
+reoccur at frequent periods in time, but never so great again as during the
+previous period when the disease first was registered.<BR></TD></TR>
+<TR ALIGN=top><TD><B>Result:</B></TD><TD>Ultimately the result of the disease is
+death. It has a 100% death rate on non-treated people.</TD></TR>
+<TR ALIGN=top	><TD><B>Cure:</B></TD><TD>No cure exists at the moment, though it is
+rumoured that an old witch in the forest has a cure. Nobody has been able to
+retrieve it from her, though.</TD></TR>
+</TABLE>
+");
+
+replace into action
+values(22, "<Center><H1>Dr. Ioxus Compenium of Herbs</H1></Center>
+You notice quite some information about the most interesting of herbs. The
+list is quite extensive, so quickly you leaf through the book towards the
+Reference.<P>
+<P>
+<H2>Astragalus (<I>Astragalus membranaceous</I>)</H2>
+<B>MEDICINAL: </B>Astragalus strengthens metabolism and
+digestion, raises metabolism, aids in strengthening the immune system, and
+is used in the healing of wounds and injuries. It is often
+                   cooked with broths, rice, or beans for a boost to the
+healing energies during those illnesses that prevent one from eating
+normally.
+<P>
+<H2>Blessed Thistle (<I>Cnicus benedictus</I>)</H2>
+<B>MEDICINAL:</B> Blessed Thistle is used to strengthen the
+heart, and is useful in all remedies for lung, kidney, and liver problems.
+It is also used as a brain food for stimulating the memory. It is
+                   used in remedies for menopause and for menstrual
+cramping. Often used by lactating women to stimulate blood flow to the
+mammary glands and increases the flow of milk. <BR>
+
+<B>GROWING:</B> Blessed Thistle is generally found along
+roadsides and in wastelands. It is an annual, and reaches to 2 feet tall.
+Most folks consider this a pesky weed, so cultivation is not
+                   common. Try gathering some for yourself from the wild, if
+you dare the stickers.<P>
+<H2>Burdock (<I>Arctium lappa</I>)</H2>
+<B>MEDICINAL:</B> Burdock Root is used to treat skin diseases,
+boils, fevers, inflammations, hepatitis, swollen glands, some cancers, and
+fluid retention. It is an excellent blood purifier. A tea
+                   made of the leaves of Burdock is also used for
+indigestion. Very useful for building the systems of young women. Helps
+clear persistent teenage acne if taken for three to four weeks. Used   
+                   with dandelion root for a very effective liver cleanser
+and stimulator.<BR>
+<B>RELIGIOUS:</B> Used to ward off all sorts of negativity,
+making it invaluable for protective amulets and sachets. Add to potpourri in
+the house.<P>
+<H2>Hyssop (<I>Hysoppus officinalis</I>)</H2>
+<B>MEDICINAL:</B> Hyssop is used in treating lung ailments. The
+leaves have been applied to wounds to aid in healing. The tea is also used 
+to soothe sore throats. It has been used to inhibit the
+                   growth of the herpes simplex virus. 
+<BR>
+<B>                   RELIGIOUS:</B> Hyssop is used in purification baths and
+rituals, and used to cleanse persons and objects.
+
+<BR><B>                   GROWING:</B> Hyssop prefers dry conditions, tolerates most
+soils, and full sun. It is a member of the mint family. It is a perennial
+shrubby plant growing to 3 feet tall. <P>
+
+<H2>Fenugreek (<I>Trigonella foenum-graecum</I>)</H2>
+<B>
+                   MEDICINAL:</B> Fenugreek is used to soften and expel mucous.
+It has antiseptic properties and will kill infections in the lungs. Used   
+with lemon and honey, it will help reduce a fever and will
+                   soothe and nourish the body during illness. It has been
+used to relax the uterus, and for this reason should not be taken by
+pregnant women.<BR>
+
+                   <B>RELIGIOUS:</B> Adding a few fenugreek seeds to the mop water
+used to clean your household floors will bring money into the household.   
+<BR>
+                   <B>GROWING:</B> Fenugreek likes dry, moderately fertile soil in
+a sunny location. It is an annual, and grows to 1 - 3 feet tall.
+<P>
+<H2>Marshmallow (<I>Althea officinalis</I>)</H2>
+<B>
+                   MEDICINAL:</B> Marshmallow aids in the expectoration of
+difficult mucous and phlegm. It helps to relax and soothe the bronchial
+tubes, making it valuable for all lung ailments. It is an
+                   anti-irritant and anti-inflammatory for joints and the
+digestive system. It is often used externally with cayenne to treat blood
+poisoning, burns, and gangrene.<BR>
+
+<B>                   GROWING:</B> Marshmallow needs marshes and swamps to grow. It
+is a perennial growing to 4 feet tall. <P>
+
+");
+
 END_OF_DATA
