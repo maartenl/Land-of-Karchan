@@ -25,21 +25,20 @@ The current deputies are:
 Kass, Silverblade, Blackfyre, Desdamona, Crissy, Legolas<P>
 
 <HR>
-Saturday, August 09, 12:21<p>
-Well, after compiling a new kernel, the server seems to be stable.<p>
-I think it is safe enough to switch back to <b>DefCon 4</b>.<p>
+Thursday, November 13, 22:20<p>
+Well, the initial problem was a little one. The disk partition was full.
+After deleting some files I restarted the server and suddenly nothing
+worked.
+<P>
+Well, I have no idea what is wrong, but after some god-awful hack I got
+things working for now. I have to get this program redone in Java and rather
+right now, before the whole thing comes crashing down. Anyone care to help?<P>
+In how far would you people mind if I get a preliminary version done in Java
+that works flawlessly, but most of the functionality will be gone? Or would
+you rather have the current situation, a shitty server program that restarts
+itself every 30 minutes but has items and whatnot.<P>
 <I>Karn</I>
 <BR>
-Tuesday, July 22, 21:00<p>
-Wow! The server crashed or something. I asked some people to reboot it,
-and it seems to work again. Do not know how long this will last. Will
-investigate. I suggest you pray.<P>
-<I>Karn</I>
-<HR>
-Tuesday, July 15, 21:00<p>
-I here from Karn that the Karchan will be down for part of the 16th of the
-month. Sounds like he is updating the server. -Kass-
-<hr>
 <I>To contact a Deputy, report a bug, contact Karn, or use email, <A
 HREF=\"/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
