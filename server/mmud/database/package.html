@@ -189,5 +189,46 @@ life of characters and administrators.</TD></TR>
 +---------------------+
 </PRE>
 
+The following tables are not related directly to the mud. They are used
+mainly for information regarding webside scripts. These tables are easily
+recognized because they do not start with the prefix "mm_".<P>
+(<I>* denotes primary key</I>)
+<TABLE>
+<TR><TD>Tablename</TD><TD>Description</TD></TR>
+<TR><TD>characterinfo</TD><TD>contains story information regarding certain
+characters.</TD></TR>
+<TR><TD>family</TD><TD>shows the family relations between characters.</TD></TR>
+<TR><TD>familyvalues</TD><TD>provides a number of possible family relations.
+</TD></TR>
+<TR><TD></TD><TD></TD></TR>
+</TABLE>
+<PRE>
++---------------------+
+| characterinfo       |
++---------------------+
+|*name                |
+| imageurl            |
+| homepageurl         |
+| dateofbirth         |
+| cityofbirth         |
+| storyline           |
++---------------------+
+
++---------------------+
+| family              |
++---------------------+
+|*name                |
+|*toname              |
+| description         |
++---------------------+
+
++---------------------+
+| familyvalues        |
++---------------------+
+|*id                  |
+| description         |
++---------------------+
+</PRE>
+
 </body>
 </html>
