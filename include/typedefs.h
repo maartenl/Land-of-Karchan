@@ -45,9 +45,9 @@ maartenl@il.fontys.nl
 // DATABASEHeader, the place where the original old binary files were kept.
 // Besides some changes this is largely unused because of the database that is
 // currently being used.
-#define HTMLHeader "/karchan2/mud/data/"
-#define USERHeader "/karchan2/mud/tmp/"
-#define DATABASEHeader "/karchan2/mud/data/"
+#define HTMLHeader "/karchan/mud/data/"
+#define USERHeader "/karchan/mud/tmp/"
+#define DATABASEHeader "/karchan/mud/data/"
 
 // Copyright header. Will be displayed on virtually every webpage on the mud.
 //
