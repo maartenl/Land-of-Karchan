@@ -26,6 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include "mudmain.h"
+#include "cgic.h"
 
 int commandlineinterface = 0;
 
@@ -87,11 +88,14 @@ cgiMain()
 		fprintf(cgiOut, "Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
 	}
 	
-	initGameFunctionIndex();
+	/* below starts basically the entire call to the mudEngine */
 	
-	gameMain(command, name, password);
+	initGameFunctionIndex(); // initialise command index 
+	setMMudOut(cgiOut); // sets the standard output stream of the mud to the filedescriptor as provided by cgic.c
 	
-	clearGameFunctionIndex();
+	gameMain(command, name, password, cgiRemoteAddr); // the main function THIS IS IT!!!
 	
-	free(command);
+	clearGameFunctionIndex(); // clear command index
+	
+	free(command); // clear the entered command
 }

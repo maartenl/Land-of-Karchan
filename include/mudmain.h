@@ -30,5 +30,5 @@ int clearGameFunctionIndex();
 
 int initGameFunctionIndex();
 
-int gameMain(char *fcommand, char *fname, char *fpassword);
+int gameMain(char *fcommand, char *fname, char *fpassword, char *faddress);
 

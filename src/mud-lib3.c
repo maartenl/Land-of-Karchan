@@ -345,33 +345,33 @@ BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcom
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - Big Talk\n");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	fprintf(getMMudOut(), "<HTML>\n");
+	fprintf(getMMudOut(), "<HEAD>\n");
+	fprintf(getMMudOut(), "<TITLE>\n");
+	fprintf(getMMudOut(), "Land of Karchan - Big Talk\n");
+	fprintf(getMMudOut(), "</TITLE>\n");
+	fprintf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(cgiOut, "<H1>Big Talk</H1>This is an alternative for typing. "
+	fprintf(getMMudOut(), "<H1>Big Talk</H1>This is an alternative for typing. "
 	"Due to the size of the area, this is where the really big messages are "
 	"typed. This is ideally suited for exampe mudmail.<P>\r\n");
 
-	fprintf(cgiOut, "<SCRIPT language=\"JavaScript\">\r\n"
+	fprintf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
 			"<!-- In hiding!\r\n"
 			"function setfocus() {\r\n"
 			"       document.CommandForm.command.focus();\r\n"
@@ -379,16 +379,16 @@ BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcom
 			"	}\r\n"
 			"//-->\r\n"
 			"</SCRIPT>\r\n");
-	fprintf(cgiOut, "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
-	fprintf(cgiOut, "<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-	fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n", getFrames()+1);
-	fprintf(cgiOut, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	fprintf(cgiOut, "</FORM><P>\n");
+	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
+	fprintf(getMMudOut(), "<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
+	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n", getFrames()+1);
+	fprintf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
+	fprintf(getMMudOut(), "</FORM><P>\n");
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
-	fprintf(cgiOut, "<DIV ALIGN=left><P></BODY></HTML>");
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;
 }				/* endproc */
 
@@ -397,31 +397,31 @@ MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char 
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - Mail to:\rn");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	fprintf(getMMudOut(), "<HTML>\n");
+	fprintf(getMMudOut(), "<HEAD>\n");
+	fprintf(getMMudOut(), "<TITLE>\n");
+	fprintf(getMMudOut(), "Land of Karchan - Mail to:\rn");
+	fprintf(getMMudOut(), "</TITLE>\n");
+	fprintf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(cgiOut, "<H1>Mail To</H1><HR noshade>\r\n");
+	fprintf(getMMudOut(), "<H1>Mail To</H1><HR noshade>\r\n");
 
-	fprintf(cgiOut, "<SCRIPT language=\"JavaScript\">\r\n"
+	fprintf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
 		"<!-- In hiding!\r\n" 
 		"function setfocus() {\r\n"
 		" document.CommandForm.mailto.focus();\r\n"
@@ -430,22 +430,22 @@ MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char 
 		"//-->\r\n"
 		"</SCRIPT>\r\n");
 
-	fprintf(cgiOut, "<TABLE BORDER=0>");
-	fprintf(cgiOut, "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n",name);
-	fprintf(cgiOut, "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
-	fprintf(cgiOut, "<TR><TD>To: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailto\" VALUE=\"\"></TD></TR>\r\n");
-	fprintf(cgiOut, "<TR><TD>Header: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailheader\" SIZE=80 VALUE=\"\"></TD></TR>\r\n");
-	fprintf(cgiOut, "<TR><TD>Body:</TD><TD>\r\n");
-	fprintf(cgiOut, "<TEXTAREA NAME=\"mailbody\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
-	fprintf(cgiOut, "</TD></TR></TABLE><INPUT TYPE=\"hidden\" NAME=\"command\" VALUE=\"sendmail\">\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-	fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	fprintf(cgiOut, "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n");
-	fprintf(cgiOut, "</FORM><P>\r\n");
+	fprintf(getMMudOut(), "<TABLE BORDER=0>");
+	fprintf(getMMudOut(), "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n",name);
+	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
+	fprintf(getMMudOut(), "<TR><TD>To: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailto\" VALUE=\"\"></TD></TR>\r\n");
+	fprintf(getMMudOut(), "<TR><TD>Header: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailheader\" SIZE=80 VALUE=\"\"></TD></TR>\r\n");
+	fprintf(getMMudOut(), "<TR><TD>Body:</TD><TD>\r\n");
+	fprintf(getMMudOut(), "<TEXTAREA NAME=\"mailbody\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
+	fprintf(getMMudOut(), "</TD></TR></TABLE><INPUT TYPE=\"hidden\" NAME=\"command\" VALUE=\"sendmail\">\n");
+	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+	fprintf(getMMudOut(), "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n");
+	fprintf(getMMudOut(), "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n");
+	fprintf(getMMudOut(), "</FORM><P>\r\n");
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
-	fprintf(cgiOut, "<DIV ALIGN=left><P></BODY></HTML>");
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;
 }				/* endproc */
 

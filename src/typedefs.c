@@ -31,6 +31,18 @@ roomstruct room;
 
 int frames;
 char secretpassword[40];
+/* property providing where ANY user output of the program should be redirected to. */
+FILE *mmout;
+
+void setMMudOut(FILE *aFileDescriptor)
+{
+	mmout = aFileDescriptor;
+}
+
+FILE *getMMudOut()
+{
+	return mmout;
+}
 
 MYSQL dbconnection;
 

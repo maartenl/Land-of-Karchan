@@ -45,42 +45,42 @@ MIFList(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - MIF List\n");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	fprintf(getMMudOut(), "<HTML>\n");
+	fprintf(getMMudOut(), "<HEAD>\n");
+	fprintf(getMMudOut(), "<TITLE>\n");
+	fprintf(getMMudOut(), "Land of Karchan - MIF List\n");
+	fprintf(getMMudOut(), "</TITLE>\n");
+	fprintf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	fprintf(cgiOut, "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n");
+	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n");
 	sprintf(temp, "select name, title from usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
 	while (row = mysql_fetch_row(res))
 	{
-		fprintf(cgiOut, "<LI>%s, %s\r\n", row[0], row[1]);
+		fprintf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
 	}
 	mysql_free_result(res);
-	fprintf(cgiOut, "</UL>\r\n");
+	fprintf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
-	fprintf(cgiOut, "<DIV ALIGN=left><P>");
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 void 
@@ -194,42 +194,42 @@ RangerList(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - Ranger List\n");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	fprintf(getMMudOut(), "<HTML>\n");
+	fprintf(getMMudOut(), "<HEAD>\n");
+	fprintf(getMMudOut(), "<TITLE>\n");
+	fprintf(getMMudOut(), "Land of Karchan - Ranger List\n");
+	fprintf(getMMudOut(), "</TITLE>\n");
+	fprintf(getMMudOut(), "</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY>\n");
 	if (!getFrames())
 	{
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	fprintf(cgiOut, "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n");
+	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n");
 	sprintf(temp, "select name, title from usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
 	while (row = mysql_fetch_row(res))
 	{
-		fprintf(cgiOut, "<LI>%s, %s\r\n", row[0], row[1]);
+		fprintf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
 	}
 	mysql_free_result(res);
-	fprintf(cgiOut, "</UL>\r\n");
+	fprintf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
-	fprintf(cgiOut, "<DIV ALIGN=left><P>");
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
 void 

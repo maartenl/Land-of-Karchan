@@ -25,7 +25,6 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include"userlib.h"
-#include"cgic.h"
 
 #define SINGULARIS 0
 #define PLURALIS   1

@@ -25,6 +25,7 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
+#include "cgic.h"
 
 /*name, west, east, north, south, up, down*/
 extern char secretpassword[40];

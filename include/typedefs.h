@@ -116,26 +116,43 @@ maartenl@il.fontys.nl
 #define PerlHeader
 
 typedef struct
-{long		fileposition;
- int		size;
+{
+	long		fileposition;
+	int		size;
 } indexrec;
-typedef struct
-{char   ip[20];
- int	days;
-} banstruct;
-typedef struct
-{char name[20];
- char toname[20];
- char header[100];
- time_t datetime;
- indexrec positie;
-} mailstruct;
-typedef struct {
-       int roomindex;
-       int west,east,north,south,up,down;
-       int light_source;
-       } roomstruct;
 
+typedef struct
+{
+	char   ip[20];
+ 	int	days;
+} banstruct;
+
+typedef struct
+{
+	char name[20];
+ 	char toname[20];
+	 char header[100];
+	 time_t datetime;
+	 indexrec positie;
+} mailstruct;
+
+typedef struct 
+{
+	int roomindex;
+	int west,east,north,south,up,down;
+	int light_source;
+} roomstruct;
+
+
+/* sets the FileDescriptor used to output any information to the user 
+   Function usually called at the start of the mudMain call.
+*/
+void setMMudOut(FILE *aFileDescriptor);
+
+/* gets the FileDescriptor used to output any information to the user
+   Function usually called ALL the time for any possible output
+*/
+FILE *getMMudOut();
 
 void setFrames(int i);
 /* set the Frame variable to a certain value

@@ -263,18 +263,18 @@ void BannedFromGame(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
-	fprintf(cgiOut, "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
-	fprintf(cgiOut, "Your ip domain is therefore banned from the game.<P>\n");
-	fprintf(cgiOut, "If you have not misbehaved or even have never before played the game before, and wish"
+	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
+	fprintf(getMMudOut(), "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
+	fprintf(getMMudOut(), "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
+	fprintf(getMMudOut(), "Your ip domain is therefore banned from the game.<P>\n");
+	fprintf(getMMudOut(), "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
 	"<A HREF=\"mailto:deputy@"ServerName"\">deputy@"ServerName"</A> and ask them to make "
 	"an exception in your case. Do <I>not</I> forget to provide your "
 	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	fprintf(getMMudOut(), "</body>\n");
+	fprintf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -287,14 +287,14 @@ void CookieNotFound(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
-	fprintf(cgiOut, "When you logon, a cookie is automatically generated. ");
-	fprintf(cgiOut, "However, I have been unable to find my cookie.<P>\n");
-	fprintf(cgiOut, "Please attempt to relogon.<P>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	fprintf(getMMudOut(), "<BODY>\n");
+	fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	fprintf(getMMudOut(), "When you logon, a cookie is automatically generated. ");
+	fprintf(getMMudOut(), "However, I have been unable to find my cookie.<P>\n");
+	fprintf(getMMudOut(), "Please attempt to relogon.<P>\n");
+	fprintf(getMMudOut(), "</body>\n");
+	fprintf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -362,15 +362,15 @@ Help_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		int i;
 		char temp[1024];
 		
-		fprintf(cgiOut, "<HTML>\r\n");
-		fprintf(cgiOut, "<HEAD>\r\n");
-		fprintf(cgiOut, "<TITLE>\r\n");
-		fprintf(cgiOut, "Land of Karchan - General Help\r\n");
-		fprintf(cgiOut, "</TITLE>\r\n");
-		fprintf(cgiOut, "</HEAD>\r\n");
+		fprintf(getMMudOut(), "<HTML>\r\n");
+		fprintf(getMMudOut(), "<HEAD>\r\n");
+		fprintf(getMMudOut(), "<TITLE>\r\n");
+		fprintf(getMMudOut(), "Land of Karchan - General Help\r\n");
+		fprintf(getMMudOut(), "</TITLE>\r\n");
+		fprintf(getMMudOut(), "</HEAD>\r\n");
 		
-		fprintf(cgiOut, "<BODY>\r\n");
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		fprintf(getMMudOut(), "<BODY>\r\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		sprintf(temp, "select contents from help where command='general help'");
 		res=SendSQL2(temp, NULL);
@@ -380,11 +380,11 @@ Help_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 			mysql_free_result(res);
 			res=SendSQL2("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			fprintf(cgiOut, "%s",row[0]);
+			fprintf(getMMudOut(), "%s",row[0]);
 		}
 		else
 		{
-			fprintf(cgiOut, "%s",row[0]);
+			fprintf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
 		PrintForm(name, password);
@@ -398,15 +398,15 @@ Help_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		int i;
 		char temp[1024];
 		
-		fprintf(cgiOut, "<HTML>\r\n");
-		fprintf(cgiOut, "<HEAD>\r\n");
-		fprintf(cgiOut, "<TITLE>\r\n");
-		fprintf(cgiOut, "Land of Karchan - Command %s\r\n", tokens[1]);
-		fprintf(cgiOut, "</TITLE>\r\n");
-		fprintf(cgiOut, "</HEAD>\r\n");
+		fprintf(getMMudOut(), "<HTML>\r\n");
+		fprintf(getMMudOut(), "<HEAD>\r\n");
+		fprintf(getMMudOut(), "<TITLE>\r\n");
+		fprintf(getMMudOut(), "Land of Karchan - Command %s\r\n", tokens[1]);
+		fprintf(getMMudOut(), "</TITLE>\r\n");
+		fprintf(getMMudOut(), "</HEAD>\r\n");
 		
-		fprintf(cgiOut, "<BODY>\r\n");
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		fprintf(getMMudOut(), "<BODY>\r\n");
+		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		sprintf(temp, "select contents from help where command='%s'", tokens[1]);
 		res=SendSQL2(temp, NULL);
@@ -416,11 +416,11 @@ Help_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 			mysql_free_result(res);
 			res=SendSQL2("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			fprintf(cgiOut, "%s",row[0]);
+			fprintf(getMMudOut(), "%s",row[0]);
 		}
 		else
 		{
-			fprintf(cgiOut, "%s",row[0]);
+			fprintf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
 		PrintForm(name, password);
@@ -450,10 +450,10 @@ SendMail_Command(char *name, char *password, int room, char **ftokens, char *fco
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
       		
-	mailbody = (char *) malloc(cgiContentLength);
+	mailbody = (char *) malloc(strlen(fcommand)+2);
 	cgiFormString("mailto", mailto, 99);
 	cgiFormString("mailheader", mailheader, 99);
-	cgiFormString("mailbody", mailbody, cgiContentLength - 2);
+	cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
 		
 	sprintf(sqlstring, "select name from usertable where "
 		"name='%s' and god<2", mailto);
@@ -847,8 +847,8 @@ Shout_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 	if ((aantal > 3) && (!strcasecmp("to", tokens[1])))
 	{
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(cgiContentLength + 80);
-		temp2 = (char *) malloc(cgiContentLength + 80);
+		temp1 = (char *) malloc(strlen(fcommand) + 80);
+		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s shouts [to you] </B>: %s<BR>\r\n",
 			name, command + (tokens[3] - tokens[0]));
 		sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
@@ -879,8 +879,8 @@ Ask_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) 
 	{
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(cgiContentLength + 80);
-		temp2 = (char *) malloc(cgiContentLength + 80);
+		temp1 = (char *) malloc(strlen(fcommand) + 80);
+		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s asks you </B>: %s<BR>\r\n",
 			name, command + (tokens[3] - tokens[0]));
 		sprintf(temp2, "%s asks %s : %s<BR>\r\n",
@@ -910,8 +910,8 @@ Whisper_Command(char *name, char *password, int room, char **ftokens, char *fcom
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(cgiContentLength + 80);
-		temp2 = (char *) malloc(cgiContentLength + 80);
+		temp1 = (char *) malloc(strlen(fcommand) + 80);
+		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s whispers [to you]</B> : %s<BR>\r\n",
 			name, command + (tokens[3] - tokens[0]));
 		sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
@@ -1236,7 +1236,7 @@ initGameFunctionIndex()
 }
 
 int
-gameMain(char *fcommand, char *fname, char *fpassword)
+gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 {
 	int             oldroom;
 	int             i;
@@ -1259,9 +1259,9 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	opendbconnection();
 
-	if (SearchBanList(cgiRemoteAddr, name)) 
+	if (SearchBanList(faddress, name)) 
 	{
-		BannedFromGame(name, cgiRemoteAddr);
+		BannedFromGame(name, faddress);
 		free(printstr);
 		closedbconnection();
 		return 0;
@@ -1317,7 +1317,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	mysql_free_result(res);
 	if (DebugOptionsOn) {
 		if (!strcmp(name, "Karn")) {
-			fprintf(cgiOut, "Command: %s<BR>ActivePersonPos: %i<BR>Password: %s<BR>", command, password);
+			fprintf(getMMudOut(), "Command: %s<BR>ActivePersonPos: %i<BR>Password: %s<BR>", command, password);
 		}
 	}
 	if (*name == '\0') 
@@ -1332,7 +1332,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
 	sprintf(sqlstring, "update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
-			"address='%s' where name='%s'",	cgiRemoteAddr, name);
+			"address='%s' where name='%s'",	faddress, name);
 	res=SendSQL2(sqlstring, NULL);
 	
 	mysql_free_result(res);
@@ -1476,8 +1476,8 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		int pos = theNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], tokens[0]);
 		#ifdef DEBUG
-		fprintf(cgiOut, "%i\n", theNumberOfFunctions);
-		fprintf(cgiOut, "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
+		fprintf(getMMudOut(), "%i\n", theNumberOfFunctions);
+		fprintf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
 		#endif
 		while ((i!=0) && (equals))
 		{
@@ -1491,7 +1491,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			if ((pos >= 0) && (pos < theNumberOfFunctions))
 			{
 				#ifdef DEBUG
-				fprintf(cgiOut, "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
+				fprintf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
 				#endif
 				
 				equals = strcasecmp(gameCommands[pos], tokens[0]);
