@@ -865,6 +865,7 @@ parseXml(mudpersonstruct *fmine)
 	return 1;
 }
 
+pthread_mutex_t threadxmlmutex = PTHREAD_MUTEX_INITIALIZER;
 /*! add contents of read buffer to the socketstruct
     \param socketfd int socket descriptor
     \param buf char* buffer read from socket to be added to connection struct
@@ -890,12 +891,16 @@ store_in_list(int socketfd, char *buf)
 		if (temp != NULL)
 		{
 			char t;
+			int returnvalue_xmlparser;
 			t = temp[7];
 			temp[7] = 0;
 #ifdef DEBUG
 			printf(mine->readbuf);
 #endif
-			if (parseXml(mine))
+			pthread_mutex_lock(&threadxmlmutex);
+			returnvalue_xmlparser = parseXml(mine);
+			pthread_mutex_unlock(&threadxmlmutex);
+			if (returnvalue_xmlparser)
 			{
 				char *temp2;
 				int j;
