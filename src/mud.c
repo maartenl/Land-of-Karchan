@@ -170,7 +170,7 @@ cgiMain()
 	}
 	
 	receivebuf[numbytes] = '\0';
-	printf("Received: %s",receivebuf);
+	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
 	sendbuf="<?xml version=\"1.0\"?>\n<!DOCTYPE spec SYSTEM \"mud.dtd\">\n<root>\n<user>\n<name>";numbytes=strlen(sendbuf);
 	send_socket(sockfd, sendbuf, &numbytes);
 	sendbuf=name;numbytes=strlen(sendbuf);
