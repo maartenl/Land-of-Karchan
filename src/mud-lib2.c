@@ -307,8 +307,8 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 }
 	
 
-void 
-ListActivePlayers(char *name, char *password)
+int 
+Who_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	int				i = 0;
 	FILE			*fp;
@@ -378,7 +378,7 @@ ListActivePlayers(char *name, char *password)
 	PrintForm(name, password);
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P>");
-	KillGame();
+	return 1;
 }
 
 void 

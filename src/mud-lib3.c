@@ -341,8 +341,8 @@ Awaken_Command(char *name, char *password, int room)
 	KillGame();
 }
 
-void
-BigTalk_Command(char *name, char *password)
+int
+BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -390,7 +390,7 @@ BigTalk_Command(char *name, char *password)
 	if (getFrames()!=2) {ReadFile(logname);}
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P></BODY></HTML>");
-	KillGame();
+	return 1;
 }				/* endproc */
 
 void
@@ -450,26 +450,26 @@ MailFormDumpOnScreen(char *name, char *password)
  	KillGame();
 }				/* endproc */
 
-void
-Time_Command(char *name, char *password, int room)
+int
+Time_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	WriteSentenceIntoOwnLogFile(logname, "Current time is %i:%i:%i<BR>\r\n",
 		 datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
-void
-Date_Command(char *name, char *password, int room)
+int
+Date_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	WriteSentenceIntoOwnLogFile(logname, "Current date is %i-%i-%i<BR>\r\n",
 		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year+1900);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
 void

@@ -447,17 +447,26 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	/* initialise and fill the Function array */
 	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*10);
 	gameCommands = (char **) malloc(sizeof(char *)*10);
+	gameFunctionArray[myNumberOfFunctions++] = &BigTalk_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Clear_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Date_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Quit_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Sleep_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Time_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Who_Command;
 	myNumberOfFunctions=0;
+	/* abcdefghijklmnopqrstuvwxyz */
+	gameCommands[myNumberOfFunctions++] = "bigtalk";
 	gameCommands[myNumberOfFunctions++] = "clear";
+	gameCommands[myNumberOfFunctions++] = "date";
 	gameCommands[myNumberOfFunctions++] = "i";
 	gameCommands[myNumberOfFunctions++] = "inventory";
 	gameCommands[myNumberOfFunctions++] = "quit";
 	gameCommands[myNumberOfFunctions++] = "sleep";
+	gameCommands[myNumberOfFunctions++] = "time";
+	gameCommands[myNumberOfFunctions++] = "who";
 	{
 		/* binary search in index, if found call function */
 		int i = myNumberOfFunctions / 2;
@@ -568,23 +577,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		KillGame();
 	}
 
-	if (!strcasecmp(command, "who")) {
-		ListActivePlayers(name, password);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}			/* Who_Command */
-	if (!strcasecmp("big talk", command)) 
-	{
-		BigTalk_Command(name, password);
-	}
-	if (!strcasecmp(command, "time")) 
-	{
-		Time_Command(name, password, room);
-	}
-	if (!strcasecmp(command, "date")) 
-	{
-		Date_Command(name, password, room);
-	}
 	if ((!strcasecmp("look at sky", command)) ||
 	   (!strcasecmp("look at clouds", command))) 
 	{
