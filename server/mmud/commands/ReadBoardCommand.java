@@ -37,25 +37,44 @@ import mmud.database.*;
 import mmud.boards.*;
 
 /**
- * Reads the public board in room 3.
+ * Reads a general board.
  */
-public class PostPublicCommand extends PostBoardCommand
+public abstract class ReadBoardCommand extends NormalCommand
 {
+	private String theResult = null;
 
-	public PostPublicCommand(String aRegExpr)
+	public ReadBoardCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+	/**
+	 * Reads a board for a user.
+	 * @param aUser the user reading the board. Used to convey messages.
+	 * @param aBoardName the name of the board. 
+	 * @param aRoomId the identification number of the room where
+	*  this board is active.
+	 */
+	protected boolean readMessage(User aUser, 
+		String aBoardName, int aRoomId)
 	{
-		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (aUser.getRoom().getId() != aRoomId)
 		{
 			return false;
 		}
-		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1).trim());
+		theResult = null;
+		Board myBoard = BoardsDb.getBoard(aBoardName);
+		theResult = myBoard.getDescription() + 
+			myBoard.read() + aUser.printForm();
+		Persons.sendMessage(aUser, "%SNAME read%VERB2 the " + myBoard.getName() 
+			+ " board.<BR>\r\n");
+		return true;
+	}
+
+	public String getResult()
+	{
+		Logger.getLogger("mmud").finer("");
+		return theResult;
 	}
 
 }

@@ -39,7 +39,7 @@ import mmud.boards.*;
 /**
  * Reads the public board in room 3.
  */
-public class ReadPublicCommand extends NormalCommand
+public class ReadPublicCommand extends ReadBoardCommand
 {
 
 	String theResult = null;
@@ -58,16 +58,7 @@ public class ReadPublicCommand extends NormalCommand
 			return false;
 		}
 		// initialise string, important otherwise previous instances will return this
-		theResult = null;
-		if (aUser.getRoom().getId()!=3)
-		{
-			return false;
-		}
-		Board myBoard = BoardsDb.getBoard("public");
-		theResult = myBoard.getDescription() + 
-			myBoard.read() + aUser.printForm();
-		Persons.sendMessage(aUser, "%SNAME read%VERB2 the public board.<BR>\r\n");
-		return true;
+		return readMessage(aUser, "public", 3);
 	}
 
 	public String getResult()

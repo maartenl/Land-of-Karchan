@@ -724,6 +724,7 @@ public final class Constants
 		theCommandStructure.put("put", new PutCommand("put( (\\w)+){1,4} in( (\\w)+){1,4}"));
 		theCommandStructure.put("retrieve", new RetrieveCommand("retrieve( (\\w)+){1,4} from( (\\w)+){1,4}"));
 		theCommandStructure.put("give", new GiveCommand("give( (\\w)+){1,4} to (\\w)+"));
+		theCommandStructure.put("readroleplay", new ReadRpgBoardCommand("readroleplay"));
 		theCommandStructure.put("read", new ReadCommand("read( (\\w)+){1,4}"));
 		theCommandStructure.put("readpublic", new ReadPublicCommand("readpublic"));
 		theCommandStructure.put("public", new PostPublicCommand("public .+"));
@@ -733,6 +734,7 @@ public final class Constants
 		theCommandStructure.put("sell", new SellCommand("sell( (\\w)+){1,4} to (\\w)+"));
 		theCommandStructure.put("title", new TitleCommand("title .+"));
 		theCommandStructure.put("admin", new AdminCommand("admin .+"));
+		theCommandStructure.put("roleplay", new PostRpgBoardCommand("roleplay .+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{

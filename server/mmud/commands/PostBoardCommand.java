@@ -4,16 +4,16 @@ Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
 This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
+modify it under the terms of the GNU General Board License
 as published by the Free Software Foundation; either version 2
 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Board License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU General Board License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
@@ -37,25 +37,37 @@ import mmud.database.*;
 import mmud.boards.*;
 
 /**
- * Reads the public board in room 3.
+ * Reads a generic board.
  */
-public class PostPublicCommand extends PostBoardCommand
+public abstract class PostBoardCommand extends NormalCommand
 {
 
-	public PostPublicCommand(String aRegExpr)
+	public PostBoardCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+    /**
+     * Posts a message of a user to a board.
+     * @param aUser the user posting to the board. Used to convey messages.
+     * @param aBoardName the name of the board. 
+     * @param aRoomId the identification number of the room where
+    *  this board is active.
+     */
+	protected boolean postMessage(User aUser, 
+		String aBoardName, 
+		int aRoomId, 
+		String aMessage)
 	{
-		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (aUser.getRoom().getId() != aRoomId)
 		{
 			return false;
 		}
-		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1).trim());
+		Board myBoard = BoardsDb.getBoard(aBoardName);
+		myBoard.post(aUser, aMessage);
+		Persons.sendMessage(aUser, "%SNAME posted something on the " +
+			myBoard.getName() + " board.<BR>\r\n");
+		return true;
 	}
 
 }
