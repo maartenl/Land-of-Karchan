@@ -96,9 +96,10 @@ public class MailDb
 		}
 		sqlListMailMsg.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return result;
 	}
@@ -227,9 +228,10 @@ public class MailDb
 		}
 		sqlReadMailMsg.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return result;
 	}
@@ -260,9 +262,10 @@ public class MailDb
 		}
 		sqlSendMailUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -296,9 +299,10 @@ public class MailDb
 		}
 		sqlGetMailStatus.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return false;
 	}

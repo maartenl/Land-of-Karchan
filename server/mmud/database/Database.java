@@ -190,9 +190,10 @@ public class Database
 		{
 			aStatement = theConnection.prepareStatement(aQuery);
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return aStatement;
 	}
@@ -221,9 +222,10 @@ public class Database
 				resultSetType, 
 				resultSetConcurrency);
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return aStatement;
 	}
@@ -296,6 +298,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		if (myUser != null)
 		{
@@ -339,9 +342,10 @@ public class Database
 		res.close();
 		sqlAutho.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return false;
 	}
@@ -374,9 +378,10 @@ public class Database
 		}
 		sqlGetUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return myBoolean;
 	}
@@ -416,9 +421,10 @@ public class Database
 		res.close();
 		sqlGetRoom.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return myRoom;
 	}
@@ -453,9 +459,10 @@ public class Database
 		res.close();
 		sqlGetItemAttributes.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return;
 	}
@@ -492,9 +499,10 @@ public class Database
 		res.close();
 		sqlGetCharAttributes.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return;
 	}
@@ -598,9 +606,10 @@ public class Database
 		res.close();
 		sqlGetChars.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return myVector;
 	}
@@ -635,9 +644,10 @@ public class Database
 		}
 		sqlGetErrMsg.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		if (myErrMsg == null)
 		{
@@ -675,9 +685,10 @@ public class Database
 		}
 		sqlGetLogonMsg.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		return result;
 	}
@@ -714,9 +725,10 @@ public class Database
 		}
 		sqlGetHelpMsg.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		if (result == null && (!aCommand.equals("sorry")))
 		{
@@ -801,9 +813,10 @@ public class Database
 		}
 		sqlGetBanStat.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 		Logger.getLogger("mmud").finer("returns false");
 		return false;
@@ -832,9 +845,10 @@ public class Database
 		}
 		sqlSetSessPwd.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -860,9 +874,10 @@ public class Database
 		}
 		sqlActivateUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -887,9 +902,10 @@ public class Database
 		}
 		sqlDeActivateUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -933,9 +949,10 @@ public class Database
 		}
 		sqlCreateUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -961,9 +978,10 @@ public class Database
 		}
 		sqlSetTitleUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -989,9 +1007,10 @@ public class Database
 		}
 		sqlSetDrinkstatsUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1017,9 +1036,10 @@ public class Database
 		}
 		sqlSetEatstatsUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1045,9 +1065,10 @@ public class Database
 		}
 		sqlSetSleepUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1073,9 +1094,10 @@ public class Database
 		}
 		sqlSetRoomUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1101,9 +1123,10 @@ public class Database
 		}
 		sqlSetWhimpyUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1130,9 +1153,10 @@ public class Database
 		}
 		sqlSetPkillUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
 		}
 	}
 
@@ -1167,7 +1191,7 @@ public class Database
 			}
 			sqlWriteLog.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}

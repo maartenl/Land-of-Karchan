@@ -277,7 +277,7 @@ public class MudSocket extends Thread
 			}
 			catch (Exception e)
 			{
-				Database.writeLog(name, "exception: " + e + " msg: " + e.getMessage());
+				Database.writeLog("root", "exception: " + e + " msg: " + e.getMessage());
 				Logger.getLogger("mmud").warning(
 					e.getMessage());
 				myOutputStream.println(e.toString());
@@ -383,6 +383,7 @@ public class MudSocket extends Thread
 			myUser.writeMessage("You have new Mudmail!<P>\r\n");
 		}
 		String returnStuff;
+		Database.writeLog(myUser.getName(), "entered game.");
 		switch (myUser.getFrames())
 		{
 			case 0 :
@@ -438,6 +439,7 @@ public class MudSocket extends Thread
 			// already active user wishes to relogin
 			User user = (User) Persons.retrievePerson(aName);
 			String returnStuff = reloginMud(user, aName, aPassword, aFrames);
+			Database.writeLog(aName, "logonattempt, already playing.");
 			Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
 			return returnStuff;
 		}
@@ -459,6 +461,7 @@ public class MudSocket extends Thread
 			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
 			myString += "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n";
 			myString += "</FORM></BODY></HTML>\n";
+			Database.writeLog(aName, "new character.");
 			return myString;
 		}
 		catch (PersonException e)

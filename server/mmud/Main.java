@@ -57,19 +57,21 @@ public class Main
 			// Log a simple INFO message.
 			Constants.logger.info("Starting server");
 			Database.connect();
+			Database.writeLog("root","Starting server");
 			ServerSocket myServerSocket = null;
 			Constants.logger.info("Retrieving characters...");
 			Persons.init();
 			Constants.logger.info("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
-			for (int i=0;i<100000;i++)
+			while (!Constants.shutdown)
 			{
 				Socket mySocket = myServerSocket.accept();
 				MudSocket myMudSocket = new MudSocket(mySocket);
 				myMudSocket.start();
 			}
-	//		DocumentBuilder myDocumentBuilder = new DocumentBuilder();
 			myServerSocket.close();
+			Thread.sleep(1000);
+			Database.writeLog("root","Stopping server");
 			Database.disconnect();
 			// Log a simple INFO message.
 			Constants.logger.info("Stopping server");

@@ -46,6 +46,7 @@ import mmud.database.*;
  * <li>admin reset characters
  * <li>admin reset itemdefs
  * <li>admin wall &lt;message&gt;
+ * <li>admin shutdown
  * </ul>
  */
 public class AdminCommand extends NormalCommand
@@ -91,6 +92,13 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'reset characters' executed");
 			Persons.init();
 			aUser.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin shutdown"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'shutdown' executed");
+			Constants.shutdown = true;
+			aUser.writeMessage("Shutdown started.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().startsWith("admin wall"))
