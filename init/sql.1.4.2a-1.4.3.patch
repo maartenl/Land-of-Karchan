@@ -1,0 +1,205 @@
+#!/bin/sh
+
+/usr/bin/mysql --user=mmud --password=itsasecret mmud <<END_OF_DATA
+#
+# create a patch for the new version of the mud
+#
+
+#
+# Add a table called "attributes"
+#
+CREATE TABLE attributes (
+  name varchar(32) NOT NULL default '',
+  value text,
+  value_type varchar(20) NOT NULL default 'string',
+  objectid varchar(200) NOT NULL default '0',
+  objecttype int(3) NOT NULL default '0',
+  PRIMARY KEY  (name,objectid,objecttype)
+) TYPE=MyISAM;
+
+#
+# Alter default enumerated tyoes for race and sex
+#
+
+alter table bottable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie') default NULL, change sex sex enum('male','female') default
+NULL;
+alter table olduser change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie') default NULL, change sex sex enum('male','female') default
+NULL;
+alter table tmp_usertable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie') default NULL, change sex sex enum('male','female') default
+NULL;
+alter table usertable change race race 
+enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
+'ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity',
+'chipmunk','buggie') default NULL, change sex sex enum('male','female') default
+NULL;
+
+#
+# Create table 'characterinfo'
+#
+CREATE TABLE characterinfo (
+  name varchar(20) NOT NULL default '',
+  imageurl varchar(255) default NULL,
+  homepageurl varchar(255) default NULL,
+  dateofbirth varchar(255) default NULL,
+  cityofbirth varchar(255) default NULL,
+  storyline blob,
+  PRIMARY KEY  (name)
+);
+
+#
+# Create table 'commands'
+#
+CREATE TABLE commands (
+  id int(11) NOT NULL default '0',
+  name varchar(32) NOT NULL default '',
+  callable int(11) default NULL,
+  command text,
+  method_name varchar(32) default NULL,
+  args text,
+  room int(11) NOT NULL default '0',
+  PRIMARY KEY  (id,name)
+);
+
+#
+# Create table 'events'
+#
+CREATE TABLE events (
+  eventid int(11) NOT NULL default '0',
+  name varchar(32) NOT NULL default '',
+  month int(11) NOT NULL default '-1',
+  dayofmonth int(11) NOT NULL default '-1',
+  hour int(11) NOT NULL default '-1',
+  minute int(11) NOT NULL default '-1',
+  dayofweek int(11) NOT NULL default '-1',
+  callable int(2) NOT NULL default '1',
+  method_name varchar(32) default NULL,
+  args text,
+  room int(11) NOT NULL default '0',
+  PRIMARY KEY  (eventid)
+) TYPE=MyISAM;
+
+#
+# Create table 'family'
+#
+CREATE TABLE family (
+  name varchar(20) NOT NULL default '',
+  toname varchar(20) NOT NULL default '',
+  description int(11) default NULL,
+  PRIMARY KEY  (name,toname)
+) TYPE=MyISAM;
+
+#
+# Create table 'familyvalues'
+#
+CREATE TABLE familyvalues (
+  id int(11) NOT NULL default '0',
+  description varchar(40) default NULL,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+#
+# Table structure for table 'guilds'
+#
+CREATE TABLE guilds (
+  name varchar(255) NOT NULL default '',
+  title varchar(255) default NULL,
+  description varchar(255) default NULL,
+  location varchar(255) default NULL,
+  homepage varchar(255) default NULL,
+  PRIMARY KEY  (name)
+) TYPE=MyISAM;
+
+#
+# Table structure for table 'methods'
+#
+CREATE TABLE methods (
+  id int(11) NOT NULL default '1',
+  name varchar(32) NOT NULL default '',
+  src text NOT NULL,
+  primary key (id)
+);
+
+#
+# Alter defaults of usertable/tmp_usertable
+#
+alter table usertable
+ALTER COLUMN address SET DEFAULT '',
+ALTER COLUMN gold SET DEFAULT 0,
+ALTER COLUMN silver SET DEFAULT 0,
+ALTER COLUMN copper SET DEFAULT 2,
+ALTER COLUMN room SET DEFAULT 1,
+ALTER COLUMN whimpy SET DEFAULT 0,
+ALTER COLUMN experience SET DEFAULT 0,
+ALTER COLUMN fightingwho SET DEFAULT '',
+ALTER COLUMN sleep SET DEFAULT 0,
+ALTER COLUMN punishment SET DEFAULT 0,
+ALTER COLUMN fightable SET DEFAULT 0,
+ALTER COLUMN vitals SET DEFAULT 0,
+ALTER COLUMN fysically SET DEFAULT 0,
+ALTER COLUMN mentally SET DEFAULT 0,
+ALTER COLUMN drinkstats SET DEFAULT 0,
+ALTER COLUMN eatstats  SET DEFAULT 0,
+ALTER COLUMN active SET DEFAULT 0,
+ALTER COLUMN god SET DEFAULT 0,
+ALTER COLUMN guild SET DEFAULT '',
+ALTER COLUMN strength SET DEFAULT 2,
+ALTER COLUMN intelligence SET DEFAULT 2,
+ALTER COLUMN dexterity SET DEFAULT 2,
+ALTER COLUMN constitution SET DEFAULT 2,
+ALTER COLUMN wisdom SET DEFAULT 2,
+ALTER COLUMN practises SET DEFAULT 0,
+ALTER COLUMN training SET DEFAULT 0,
+ALTER COLUMN bandage SET DEFAULT 0,
+ALTER COLUMN alignment SET DEFAULT 0,
+ALTER COLUMN manastats SET DEFAULT 0,
+ALTER COLUMN movementstats SET DEFAULT 0,
+ALTER COLUMN maxmana  SET DEFAULT 118,
+ALTER COLUMN maxmove SET DEFAULT 500,
+ALTER COLUMN maxvital SET DEFAULT 118;
+
+alter table tmp_usertable
+ALTER COLUMN address SET DEFAULT '',
+ALTER COLUMN gold SET DEFAULT 0,
+ALTER COLUMN silver SET DEFAULT 0,
+ALTER COLUMN copper SET DEFAULT 2,
+ALTER COLUMN room SET DEFAULT 1,  
+ALTER COLUMN whimpy SET DEFAULT 0,
+ALTER COLUMN experience SET DEFAULT 0,
+ALTER COLUMN fightingwho SET DEFAULT '',
+ALTER COLUMN sleep SET DEFAULT 0,
+ALTER COLUMN punishment SET DEFAULT 0,
+ALTER COLUMN fightable SET DEFAULT 0, 
+ALTER COLUMN vitals SET DEFAULT 0,    
+ALTER COLUMN fysically SET DEFAULT 0, 
+ALTER COLUMN mentally SET DEFAULT 0,  
+ALTER COLUMN drinkstats SET DEFAULT 0,
+ALTER COLUMN eatstats  SET DEFAULT 0, 
+ALTER COLUMN active SET DEFAULT 0,    
+ALTER COLUMN god SET DEFAULT 0,       
+ALTER COLUMN guild SET DEFAULT '',    
+ALTER COLUMN strength SET DEFAULT 2,  
+ALTER COLUMN intelligence SET DEFAULT 2,
+ALTER COLUMN dexterity SET DEFAULT 2,   
+ALTER COLUMN constitution SET DEFAULT 2,
+ALTER COLUMN wisdom SET DEFAULT 2,
+ALTER COLUMN practises SET DEFAULT 0,
+ALTER COLUMN training SET DEFAULT 0, 
+ALTER COLUMN bandage SET DEFAULT 0,  
+ALTER COLUMN alignment SET DEFAULT 0,
+ALTER COLUMN manastats SET DEFAULT 0,
+ALTER COLUMN movementstats SET DEFAULT 0,
+ALTER COLUMN maxmana  SET DEFAULT 118,   
+ALTER COLUMN maxmove SET DEFAULT 500,    
+ALTER COLUMN maxvital SET DEFAULT 118;   
+
+END_OF_DATA
+
