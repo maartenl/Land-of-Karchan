@@ -3,4 +3,20 @@ export CVSROOT="/karchan2/mud/cvsroot/"
 create directory "cvsroot" in /karchan2/mud/
 alias cvs="/karchan2/cvs/bin/cvs"
 
+Checking out files:
+cvs checkout <directoryname>
+
+Adding files to the directories:
+cvs add <filename>
+cvs commit <filename>
+
+Checking logs and history of certain files:
+cvs log <filename>
+cvs history <filename>
+
+Saving an entire directory and releasing it and removing it:
+/* in order to continue with business */
+cvs commit <directory>
+cvs release -d <directory>
+
 
