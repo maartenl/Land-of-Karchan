@@ -365,7 +365,7 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 	tempsql = composeSqlStatement("select name, title, "
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable "
-	"where god<=1");
+	"where god<1");
 	res=SendSQL2(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
