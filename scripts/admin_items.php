@@ -42,21 +42,29 @@ Item <?php echo $_REQUEST{"item"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select mm_itemtable.id, mm_items.* from mm_items, mm_itemtable ".
+$result = mysql_query("select mm_itemtable.id, mm_itemtable.owner, 
+mm_itemtable.itemid,
+date_format(mm_itemtable.creation, \"%Y-%m-%d %T\") as creation2, 
+concat(adject1, \" \", adject2, \" \", adject3, \" \", name) as description
+from mm_items, mm_itemtable ".
 	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id =
 	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<b>id:</b> %s<BR>", $myrow[0]);
-	printf("<b>itemid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A><BR>", $myrow[1], $myrow[1]);
-	printf("<b>name:</b> %s<BR>", $myrow[2]);
-	printf("<b>adject1:</b> %s<BR>", $myrow[3]);
-	printf("<b>adject2:</b> %s<BR>", $myrow[4]);
-	printf("<b>adject3:</b> %s<BR>", $myrow[5]);
-	printf("<b>description:</b> %s<BR>", $myrow[6]);
-	printf("<b>readdescr:</b> %s<BR>", $myrow[7]);
+	printf("<b>id:</b> %s<BR>", $myrow["id"]);
+	printf("<b>itemid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A><BR>", $myrow["itemid"], $myrow["itemid"]);
+	printf("<b>description:</b> %s<BR>", $myrow["description"]);
+	printf("<b>owner:</b> %s<BR>", $myrow["owner"]);
+	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
+	$owner = false;
+	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
+		$myrow["owner"] == $_COOKIE["karchanadminname"])   
+	{
+		$owner = true;
+	}
+
 }
 
 $result = mysql_query("select containerid ".
@@ -108,6 +116,27 @@ while ($myrow = mysql_fetch_array($result))
 printf("<H2><A HREF=\"/karchan/admin/help/attributes.html\" target=\"_blank\">
 <IMG SRC=\"/images/icons/9pt4a.gif\" BORDER=\"0\"></A>Attributes</H2>");
 
+if (isset($_REQUEST{"item"}) &&
+	isset($_REQUEST{"mm_itemattributes_name"}) &&
+	isset($_REQUEST{"mm_itemattributes_value"}) &&
+	isset($_REQUEST{"mm_itemattributes_value_type"}) &&
+	$owner)
+{
+	$query = "replace into mm_itemattributes
+		(name, value, value_type, id) values(\""
+		.mysql_escape_string($_REQUEST{"mm_itemattributes_name"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"mm_itemattributes_value"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"mm_itemattributes_value_type"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"item"}).
+		"\")";
+	mysql_query($query
+		, $dbhandle)  
+		or die("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Added attribute to ".$_REQUEST{"char"}.".", $query);
+}
 $result = mysql_query("select * ".
 	" from mm_itemattributes".
 	" where id = ".mysql_escape_string($_REQUEST{"item"})
@@ -120,6 +149,27 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>value_type:</b> %s<BR>", $myrow[2]);
 }
 mysql_close($dbhandle);
+if ($owner)
+	{
+?>
+
+<FORM METHOD="GET" ACTION="/scripts/admin_items.php">
+<b>
+<INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $_REQUEST{"item"} ?>">
+<TABLE>
+<TR><TD>name</TD><TD><INPUT TYPE="text" NAME="mm_itemattributes_name" VALUE="" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>value</TD><TD><INPUT TYPE="text" NAME="mm_itemattributes_value" VALUE="" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>value_type</TD><TD><SELECT NAME="mm_itemattributes_value_type" SIZE="2"> 
+<OPTION VALUE="string" selected >string
+<OPTION VALUE="integer">integer
+<OPTION VALUE="boolean">boolean
+</SELECT></TD></TR>   
+</TABLE>
+<INPUT TYPE="submit" VALUE="Add Attribute">
+</b>   
+</FORM>
+<?php
+	}
 ?>
 
 </BODY>
