@@ -54,7 +54,7 @@ public class MeCommand extends NormalCommand
 			return false;
 		}
 		String command = getCommand();
-		Persons.sendMessage(aUser,"%SNAME " + command.substring(3) + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getName() + " " + command.substring(3) + "<BR>\r\n");
 		return true;
 	}
 
