@@ -60,7 +60,7 @@ public class BoardsDb
 		"where mm_boards.name = ?";
 		// boardname
 	public static final String sqlReadBoardMessageString = 
-		"select concat('<HR noshade>From: <B>', mm_boardmessages.iname, '</B><BR>" +
+		"select concat('<HR noshade>From: <B>', mm_boardmessages.name, '</B><BR>" +
 		"Posted: <B>', date_format(posttime, '%W, %M %e, %H:%i:%s'), '</B><P>\r\n', message, " +
 		"'<BR>') as message " +
 		"from mm_boardmessages, mm_boards " + 
