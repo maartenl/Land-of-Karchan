@@ -287,14 +287,14 @@ int Parse(char *name, int room, char *parserstring)
 			{
 				char *i;
 //				fprintf(cgiOut, "{%i}\n", strstr(string, "%me")-string);
-				while ((i=strstr(string, "%me"))!=NULL)
+				while ((i = strstr(string, "%me")) != NULL)
 				{
 					char *temp;
 					temp = (char *) malloc(memory+255);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
 					strcat(temp, name);
-					strcat(temp, i+strlen(name)-1);
+					strcat(temp, i+strlen("%me"));
 					strcpy(string, temp);
 					free(temp);
 				}
