@@ -2974,7 +2974,7 @@ Drink_Command(char *name, char *password, int room)
 	row = mysql_fetch_row(res);
 	mydrinkstats=atoi(row[0]);
 	mysql_free_result(res);
-	if (mydrinkstats > 50) 
+	if (mydrinkstats >= 49) 
 	{
 			WriteSentenceIntoOwnLogFile2(logname, "You have drunk your fill.<BR>\r\n");
 			WriteRoom(name, password, room, 0);

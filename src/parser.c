@@ -373,7 +373,7 @@ int Parse(char *name, int room, char *parserstring)
 				}
 			}
 		}
-		else if (parserstring[pos] != '\t')
+		else if ((parserstring[pos] != '\t') && (parserstring[pos] != '\r'))
 		{
 			string[strlen(string)+1]=0;
 			string[strlen(string)]=parserstring[pos];
