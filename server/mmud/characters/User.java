@@ -525,7 +525,7 @@ public class User extends mmud.characters.Person
 	public String runCommand(String aCommand)
 	throws MudException
 	{
-		Command boguscommand = new BogusCommand(".*");
+		Command boguscommand = new BogusCommand(".+");
 		Command command = boguscommand;
 		if (isaSleep())
 		{
@@ -539,7 +539,7 @@ public class User extends mmud.characters.Person
 			}
 			else
 			{
-				command = new AlreadyAsleepCommand(".*");
+				command = new AlreadyAsleepCommand(".+");
 			}
 		}
 		else
