@@ -61,6 +61,8 @@ not null, answer text not null, primary key(name, question));
 - create table scratchpad (id int not null primary key, scratch longblob not
 null,   owner varchar(20),
   creation timestamp);
+- create table mm_commandlog (stamp timestamp not null, name varchar(20) not
+null, command varchar(255) not null, primary key(stamp, name));
 
 Creating a dupe database
 ------------------------

@@ -28,6 +28,7 @@ package mmud.rooms;
 
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.util.Hashtable;
 
 import mmud.*;
 import mmud.characters.*;
@@ -35,12 +36,19 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+import simkin.*;
+
 /**
  * Collection class containing rooms used.
  */
-public final class Rooms 
+public final class Rooms implements Executable
 {
 	private static Vector theRooms = new Vector();
+
+	public static Rooms create()
+	{
+		return new Rooms();
+	}
 
 	/**
 	 * Creation of collection consisting of an empty list.
@@ -87,6 +95,93 @@ public final class Rooms
 			theRooms.addElement(myRoom);
 		}
 		return myRoom;
+	}
+
+	public void setValue(String field_name, String attrib_name,
+		Object value, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value + "[" + value.getClass() + "]");
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public void setValueAt(Object array_index, 
+		String attrib_name, 
+		Object value, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value);
+	}
+
+	public ExecutableIterator createIterator()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public ExecutableIterator createIterator(String qualifier)
+	{
+		Logger.getLogger("mmud").finer("qualifier=" + qualifier);
+		return createIterator();
+	}
+
+	public Hashtable getAttributes()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public Hashtable getInstanceVariables()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public String getSource(String location)
+	{
+		Logger.getLogger("mmud").finer("location=" + location);
+		return null;
+	}
+
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public Object getValueAt(Object array_index,
+		String attrib_name, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name);
+		return null;
+	}
+
+	public Object method(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("find"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a Integer as argument.");
+				}
+				return getRoom(((Integer) arguments[0]).intValue());
+			}
+		}
+		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
 }

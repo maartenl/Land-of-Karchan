@@ -721,7 +721,7 @@ public final class Constants
 		theCommandStructure.put("drop", new DropCommand("drop( (\\w)+){1,4}"));
 		theCommandStructure.put("get", new GetCommand("get( (\\w)+){1,4}"));
 		theCommandStructure.put("search", new SearchCommand("search( (\\w)+){1,4}"));
-		theCommandStructure.put("put", new PutCommand("put( (\\w)+){1,4} into( (\\w)+){1,4}"));
+		theCommandStructure.put("put", new PutCommand("put( (\\w)+){1,4} in( (\\w)+){1,4}"));
 		theCommandStructure.put("retrieve", new RetrieveCommand("retrieve( (\\w)+){1,4} from( (\\w)+){1,4}"));
 		theCommandStructure.put("give", new GiveCommand("give( (\\w)+){1,4} to (\\w)+"));
 		theCommandStructure.put("read", new ReadCommand("read( (\\w)+){1,4}"));
@@ -767,6 +767,7 @@ public final class Constants
 	 */
 	public static void setUserCommands(Collection aCollection)
 	{
+		logger.finer("aCollection=" + aCollection);
 		theUserCommandStructure = aCollection;
 	}
 		
@@ -782,18 +783,20 @@ public final class Constants
 	 * <li>bogus command (the ultimate failover, "I don't understand
 	 * that.".)
 	 * </ol>It also means that this collection will always carry at least
-	 * one command, the bogys command.
+	 * one command, the bogus command.
 	 */
 	public static Collection getCommand(String aCommand)
 	{
-		logger.finer("");
+		logger.finer("aCommand=" + aCommand);
 		Vector result = new Vector(5);
 		Iterator myI = theUserCommandStructure.iterator();
 		while (myI.hasNext())
 		{
 			UserCommandInfo myCom = (UserCommandInfo) myI.next();
+			logger.finer("retrieved usercommand " + myCom.getCommand());
 			if (aCommand.matches(myCom.getCommand()))
 			{
+				logger.finer("matches " + myCom.getCommand());
 				ScriptCommand scriptCommand;
 				if (myCom.getRoom() == null)
 				{
@@ -804,6 +807,8 @@ public final class Constants
 				else
 				{
 					// for one specific room
+					logger.finer("matches " + myCom.getCommand() + 
+						" with room " + myCom.getRoom());
 					scriptCommand = new ScriptCommand(myCom.getCommand(),
 						myCom.getMethodName(), myCom.getRoom());
 				}

@@ -29,7 +29,7 @@ package mmud.characters;
 
 import java.util.Vector;
 import java.util.logging.Logger;
-
+import java.util.Hashtable;
 
 import mmud.*;
 import mmud.characters.*;
@@ -37,16 +37,23 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+import simkin.*;
+
 /**
  * Collection class containing all persons at the moment active in the game.
  * Can contain not only users, but also bots and the like. As long as the
  * base class is Person.
  * @see mmud.characters.Person
  */
-public final class Persons
+public final class Persons implements Executable
 {
 	private static Vector thePersons = new Vector();
 
+	public static Persons create()
+	{
+		return new Persons();
+	}
+	
 	/**
 	 * Initialise this object by retrieving all persons from the
 	 * database that are playing the game.
@@ -64,7 +71,6 @@ public final class Persons
 	public Persons()
 	{
 		Logger.getLogger("mmud").finer("");
-//		thePersons = new Vector();
 	}
 
 	/**
@@ -503,6 +509,93 @@ public final class Persons
 			}
 		}
 		return myOutput;
+	}
+
+	public void setValue(String field_name, String attrib_name,
+		Object value, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value + "[" + value.getClass() + "]");
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public void setValueAt(Object array_index, 
+		String attrib_name, 
+		Object value, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value);
+	}
+
+	public ExecutableIterator createIterator()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public ExecutableIterator createIterator(String qualifier)
+	{
+		Logger.getLogger("mmud").finer("qualifier=" + qualifier);
+		return createIterator();
+	}
+
+	public Hashtable getAttributes()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public Hashtable getInstanceVariables()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public String getSource(String location)
+	{
+		Logger.getLogger("mmud").finer("location=" + location);
+		return null;
+	}
+
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public Object getValueAt(Object array_index,
+		String attrib_name, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name);
+		return null;
+	}
+
+	public Object method(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("find"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a String as argument.");
+				}
+				return retrievePerson((String) arguments[0]);
+			}
+		}
+		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
 }

@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.Collection;
@@ -75,6 +76,7 @@ public class Database
 	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 
 	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
+	public static String sqlWriteRoomString = "update mm_rooms set north = ?, south = ?, east = ?, west = ?, up = ?, down = ?, contents = ? where id = ?";
 
 	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
 	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
@@ -550,6 +552,80 @@ public class Database
 			Database.writeLog("root", e);
 		}
 		return myRoom;
+	}
+
+	/**
+	 * Writes the room information back to the database based on the roomnumber.
+	 * @param aRoom Room object containing all information.
+	 */
+	public static void writeRoom(Room aRoom)
+	{
+		assert theConnection != null : "theConnection is null";
+		assert aRoom != null : "aRoom is null";
+		Logger.getLogger("mmud").finer("aRoom=" + aRoom);
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statWriteRoom = theConnection.prepareStatement(sqlWriteRoomString);
+			if (aRoom.getNorth() == null)
+			{
+				statWriteRoom.setNull(1, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(1, aRoom.getNorth().getId());
+			}
+			if (aRoom.getSouth() == null)
+			{
+				statWriteRoom.setNull(2, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(2, aRoom.getSouth().getId());
+			}
+			if (aRoom.getEast() == null)
+			{
+				statWriteRoom.setNull(3, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(3, aRoom.getEast().getId());
+			}
+			if (aRoom.getWest() == null)
+			{
+				statWriteRoom.setNull(4, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(4, aRoom.getWest().getId());
+			}
+			if (aRoom.getUp() == null)
+			{
+				statWriteRoom.setNull(5, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(5, aRoom.getUp().getId());
+			}
+			if (aRoom.getDown() == null)
+			{
+				statWriteRoom.setNull(6, Types.INTEGER);
+			}
+			else
+			{
+				statWriteRoom.setInt(6, aRoom.getDown().getId());
+			}
+			statWriteRoom.setString(7, aRoom.getContents());
+			statWriteRoom.setInt(8, aRoom.getId());
+			statWriteRoom.executeUpdate();
+			statWriteRoom.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
 	}
 
 	/**

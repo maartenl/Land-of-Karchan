@@ -36,7 +36,7 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Starts you wielding an item on you.
+ * Starts you wielding an item.
  * Syntax: wield &lt;item&gt; with
  * &lt;lefthand|righthand|both|hands|bothhandsd&gt;
  */

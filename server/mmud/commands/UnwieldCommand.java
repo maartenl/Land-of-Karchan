@@ -36,7 +36,7 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Starts you wearing an item on you.
+ * Stops you wielding an item.
  * Syntax: wear &lt;item&gt; on &lt;body position&gt;
  */
 public class UnwieldCommand extends NormalCommand

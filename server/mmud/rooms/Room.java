@@ -103,6 +103,7 @@ public class Room implements Executable
 	{
 		south = aSouth;
 		intsouth = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -113,6 +114,7 @@ public class Room implements Executable
 	{
 		north = aNorth;
 		intnorth = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -123,6 +125,7 @@ public class Room implements Executable
 	{
 		east = aEast;
 		inteast = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -133,6 +136,7 @@ public class Room implements Executable
 	{
 		west = aWest;
 		intwest = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -143,21 +147,23 @@ public class Room implements Executable
 	{
 		up = aUp;
 		intup = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
-	 * Sets the room that is directly down.
+	 * Sets the room that is directly down. 
 	 * @param aDown the room to the down.
 	 */
 	public void setDown(Room aDown)
 	{
 		down = aDown;
 		intdown = 0;
+		Database.writeRoom(this);
 	}
 
 	/**
 	 * Get the room that is directly south.
-	 * @return Room the roomo to the south.
+	 * @return Room the room to the south. Returns null if no room is south.
 	 */
 	public Room getSouth()
 	{
@@ -167,14 +173,14 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setSouth(Rooms.getRoom(intsouth));
+			south = Rooms.getRoom(intsouth);
 		}
 		return south;
 	}
 
 	/**
 	 * Get the room that is directly north.
-	 * @return Room the roomo to the north.
+	 * @return Room the room to the north. Returns null if no room is north.
 	 */
 	public Room getNorth()
 	{
@@ -184,14 +190,14 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setNorth(Rooms.getRoom(intnorth));
+			north = Rooms.getRoom(intnorth);
 		}
 		return north;
 	}
 
 	/**
 	 * Get the room that is directly east.
-	 * @return Room the roomo to the east.
+	 * @return Room the room to the east. Returns null if no room is east.
 	 */
 	public Room getEast()
 	{
@@ -201,14 +207,14 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setEast(Rooms.getRoom(inteast));
+			east = Rooms.getRoom(inteast);
 		}
 		return east;
 	}
 
 	/**
 	 * Get the room that is directly west.
-	 * @return Room the roomo to the west.
+	 * @return Room the room to the west. Returns null if no room is west.
 	 */
 	public Room getWest()
 	{
@@ -218,14 +224,14 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setWest(Rooms.getRoom(intwest));
+			west = Rooms.getRoom(intwest);
 		}
 		return west;
 	}
 
 	/**
 	 * Get the room that is directly up.
-	 * @return Room the roomo to the up.
+	 * @return Room the room to the up. Returns null if no room is up.
 	 */
 	public Room getUp()
 	{
@@ -235,14 +241,14 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setUp(Rooms.getRoom(intup));
+			up = Rooms.getRoom(intup);
 		}
 		return up;
 	}
 
 	/**
 	 * Get the room that is directly down.
-	 * @return Room the roomo to the down.
+	 * @return Room the room to the down. Returns null if no room is down.
 	 */
 	public Room getDown()
 	{
@@ -252,7 +258,7 @@ public class Room implements Executable
 			{
 				return null;
 			}
-			setDown(Rooms.getRoom(intdown));
+			down = Rooms.getRoom(intdown);
 		}
 		return down;
 	}
@@ -268,6 +274,25 @@ public class Room implements Executable
 	}
 
 	/**
+	 * Sets the contents, also known as the description, of the room.
+	 * @param aContents the new description for the room.
+	 */
+	public void setContents(String aContents)
+	{
+		theContents = aContents;
+		Database.writeRoom(this);
+	}
+
+	/**
+	 * Gets the contents, also known as the description, of the room.
+	 * @return String containing the description for the room.
+	 */
+	public String getContents()
+	{
+		return theContents;
+	}
+
+	/**
 	 * Returns the description of the room, suitable for webbrowsers.
 	 * @param aUser the user who needs to have the webpage.
 	 * @return String containing a full description of the room suitable
@@ -275,12 +300,12 @@ public class Room implements Executable
 	 */
 	public String getDescription(User aUser)
 	{
-		String result = (theContents == null ? 
+		String result = (getContents() == null ? 
 			"<H1>Cardboard</H1>" +
 			"Everywhere around you you notice cardboard. It seems as if this part" +
 			" has either not been finished yet or you encountered an error" +
 			" in retrieving the room description from the server.<P>"
-			: theContents);
+			: getContents());
 		result += "[ ";
 		if (getWest() != null)
 		{
@@ -497,6 +522,8 @@ public class Room implements Executable
 		{
 			// Create an interpreter and a context
 			Interpreter interp=new Interpreter();
+			interp.addGlobalVariable("rooms", Rooms.create());                  
+			interp.addGlobalVariable("persons", Persons.create());                  
 			ExecutableContext ctxt=new ExecutableContext(interp);
 																																							
 			// create an XMLExecutable object with the xml string
@@ -527,7 +554,103 @@ public class Room implements Executable
 		Logger.getLogger("mmud").finer("field_name=" + field_name +
 			", atttrib_name=" + attrib_name + ", value=" +
 			value + "[" + value.getClass() + "]");
-		throw new FieldNotSupportedException(field_name + " not found.");
+		if (field_name.equals("description"))
+		{
+			if (value instanceof Null)
+			{
+				throw new FieldNotSupportedException(field_name + " not set, cannot be null.");
+			}
+			if (value instanceof String)
+			{
+				setContents((String) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not string.");
+		}
+		if (field_name.equals("east"))
+		{
+			if (value instanceof Null)
+			{
+				setEast(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setEast((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
+		if (field_name.equals("west"))
+		{
+			if (value instanceof Null)
+			{
+				setWest(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setWest((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
+		if (field_name.equals("north"))
+		{
+			if (value instanceof Null)
+			{
+				setNorth(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setNorth((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
+		if (field_name.equals("south"))
+		{
+			if (value instanceof Null)
+			{
+				setSouth(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setSouth((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
+		if (field_name.equals("up"))
+		{
+			if (value instanceof Null)
+			{
+				setUp(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setUp((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
+		if (field_name.equals("down"))
+		{
+			if (value instanceof Null)
+			{
+				setDown(null);
+				return;
+			}
+			if (value instanceof Room)
+			{
+				setDown((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
 	}
 
 	public void setValueAt(Object array_index,
@@ -578,6 +701,30 @@ public class Room implements Executable
 		if (field_name.equals("room"))
 		{
 			return new Integer(getId());
+		}
+		if (field_name.equals("east"))
+		{
+			return getEast();
+		}
+		if (field_name.equals("west"))
+		{
+			return getWest();
+		}
+		if (field_name.equals("north"))
+		{
+			return getNorth();
+		}
+		if (field_name.equals("south"))
+		{
+			return getSouth();
+		}
+		if (field_name.equals("up"))
+		{
+			return getUp();
+		}
+		if (field_name.equals("down"))
+		{
+			return getDown();
 		}
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}

@@ -9,6 +9,11 @@ debug in a production environment.
 - remove gold,silver,copper from mm_usertable
 - boards
 - logonmessage
-- wearing
-- wielding
 - add %SLONG, %TLONG
+- fighting
+- open something/close something
+- inserts and deletes of items/rooms/methods/commands/events
+- insert/change/delete attributes
+- look <IN> object
+- search something
+- 

@@ -36,8 +36,8 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Starts you wearing an item on you.
- * Syntax: wear &lt;item&gt; on &lt;body position&gt;
+ * Stop you wearing an item on you.
+ * Syntax: remove &lt;item&gt; from &lt;body position&gt;
  */
 public class UnwearCommand extends NormalCommand
 {

@@ -13,15 +13,17 @@ All fields that can carry a yes/no or true/false bit are stored as an
 integer containing either 0 (no/false) or 1 (yes/true).<P> 
 </PRE>
 
-Database structure is the following:
-<P>(<I>* denotes primary key</I>)
+<H3>List of Database Tables</H3>
 <TABLE>
 <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
 <TR valign=top><TD>mm_answers</TD><TD>Contains questions and answers for
 bots.</TD></TR>
-<TR valign=top><TD>mm_roomattributes</TD><TD>Attributes of a certain room.</TD></TR>
-<TR valign=top><TD>mm_charattributes</TD><TD>Attributes of a certain character (player/non-player).</TD></TR>
-<TR valign=top><TD>mm_itemattributes</TD><TD>Attributes of a certain item.</TD></TR>
+<TR valign=top><TD>mm_roomattributes</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain room.</TD></TR>
+<TR valign=top><TD>mm_charattributes</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain character (player/non-player).</TD></TR>
+<TR valign=top><TD>mm_itemattributes</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain item.</TD></TR>
 <TR valign=top><TD>mm_logonmessage</TD><TD>The logon message provided upon logon.</TD></TR>
 
 <TR valign=top><TD>mm_sillynamestable</TD><TD></TD></TR>
@@ -30,42 +32,72 @@ bots.</TD></TR>
 <TR valign=top><TD>mm_errormessages</TD><TD></TD></TR>
 <TR valign=top><TD>mm_help</TD><TD></TD></TR>
 
-<TR valign=top><TD>mm_items</TD><TD>Provides item definitions. So, basically, if you have 
+<TR valign=top><TD>mm_items</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Provides item definitions. So, basically, if you have 
 a bucket, the definition would be in this table, while actual instances of the 
 bucket being carried around are in the table mm_itemtable. This table should 
 contain characteristics common to all buckets.</TD></TR>
-<TR valign=top><TD>mm_shopkeeperitems</TD><TD>Provides which items a shopkeeper is
+<TR valign=top><TD>mm_shopkeeperitems</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Provides which items a shopkeeper is
 allowed to sell/buy and when the shopkeeper decides to stop buying items
 from characters (i.e. when the shop has plenty of those specific items in
 supply)</TD></TR>
-<TR valign=top><TD>mm_itemtable</TD><TD>Provides instances of item definitions.</TD></TR>
-<TR valign=top><TD>mm_charitemtable</TD><TD>Indicates who is carrying which item instances.</TD></TR>
-<TR valign=top><TD>mm_itemitemtable</TD><TD>Indicates which item instances contain which item instances.</TD></TR>
-<TR valign=top><TD>mm_roomitemtable</TD><TD>Indicates which room contains which item instances </TD></TR>
+<TR valign=top><TD>mm_itemtable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Provides instances of item definitions.</TD></TR>
+<TR valign=top><TD>mm_charitemtable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Indicates who is carrying which item instances.</TD></TR>
+<TR valign=top><TD>mm_itemitemtable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Indicates which item instances contain which item instances.</TD></TR>
+<TR valign=top><TD>mm_roomitemtable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Indicates which room contains which item instances </TD></TR>
 
-<TR valign=top><TD>mm_rooms</TD><TD>Contains room definitions.</TD></TR>
-<TR valign=top><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
+<TR valign=top><TD>mm_rooms</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Contains room definitions.</TD></TR>
+<TR valign=top><TD>mm_area</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Provides an clustering of rooms called an area.
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
-<TR valign=top><TD>mm_usertable</TD><TD>Contains all characters in the game.</TD></TR>
-<TR valign=top><TD>mm_mailtable</TD><TD>Contains mud mail of characters in the game</TD></TR>
+<TR valign=top><TD>mm_usertable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Contains all characters in the game.</TD></TR>
+<TR valign=top><TD>mm_mailtable</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Contains mud mail of characters in the game</TD></TR>
 <TR valign=top><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
 <TR valign=top><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
 message boards.</TD></TR>
 
 <TR valign=top><TD>mm_log</TD><TD>Logging table, for describing important events in the
 life of characters and administrators.</TD></TR>
-<TR valign=top><TD>mm_events</TD><TD>Equal to the linux crontab. Can execute methods
+<TR valign=top><TD>mm_commandlog</TD><TD>Logging table, contains every
+command of every user entered with an appropriate timestamp.</TD></TR>
+<TR valign=top><TD>mm_events</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Equal to the linux crontab. Can execute methods
 at specific recurring times in the game.</TD></TR>
-<TR valign=top><TD>mm_commands</TD><TD>Special commands that have to be programmed
+<TR valign=top><TD>mm_commands</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Special commands that have to be programmed
 in methods.</TD></TR>
-<TR valign=top><TD>mm_methods</TD><TD>Special methods that can be entered in the
+<TR valign=top><TD>mm_methods</TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Special methods that can be entered in the
 database to provide characters with special abilities or to be executed
 periodically. See related tables mm_commands and mm_events.</TD></TR>
 <TR valign=top><TD></TD><TD></TD></TR>
 </TABLE>
+<A NAME="important"><B>Note</B>: these tables are really really important as
+they provide relationships to each other. This effectively means that if
+data changes in one table, there is a chance that this will effect data in
+another table, especially when regarding the foreign key to primary key
+mapping.<P>
+
+<H3>Relationships Between Tables</H3>
+<DIV ALIGN="center">
+<IMG SRC="/images/jpeg/database_schema.jpg">
+<BR>
+<I>Figure 1. Relationships between Primary Tables</I><P>
+A PDF File can be found <A HREF="/images/pdf/database_schema.pdf">here</A>.
+</DIV>
+<H3>List of Fields in Each Table</H3>
+(<I>* denotes primary key</I>)
 </PRE>
-<H3>mm_methods</H3>
+<H4>mm_methods</H4>
 <DL>
 <DT>name
 <DD>the name of the method
@@ -89,7 +121,7 @@ whenever a change takes place on the record in question.
 | creation            |
 +---------------------+
 </PRE>
-<H3>mm_commands</H3>
+<H4>mm_commands</H4>
 <DL>
 <DT>id
 <DD>identification of the command
@@ -122,7 +154,7 @@ whenever a change takes place on the record in question.
 | creation            |
 +---------------------+
 </PRE>
-<H3>mm_events</H3>
+<H4>mm_events</H4>
 <DL>
 <DT>eventid
 <DD>unique identification of the event.
@@ -172,7 +204,7 @@ whenever a change takes place on the record in question.
 | owner               |
 | creation            |
 +---------------------+
-<PRE>
+
 +---------------------+
 | mm_itemattributes   |
 +---------------------+
@@ -201,7 +233,7 @@ whenever a change takes place on the record in question.
 +---------------------+
 
 </PRE>
-<H3>mm_items</H3>
+<H4>mm_items</H4>
 <DL>
 <DT>id
 <DD>identification of this item definition, integer.
@@ -251,7 +283,7 @@ whenever a change takes place on the record in question.
 +---------------------+
 
 </PRE>
-<H3>mm_charitemtable</H3>
+<H4>mm_charitemtable</H4>
 <DL>
 <DT>id
 <DD>identification of this item instance
@@ -312,7 +344,7 @@ is neither being worn nor wielded.
 +---------------------+
 
 </PRE>
-<H3>mm_usertable</H3>
+<H4>mm_usertable</H4>
 <DL>
 <DT>name
 <DD>identification of this character
@@ -346,7 +378,28 @@ default is 1000.
 +---------------------+
 
 </PRE>
-<H3>mm_mailtable</H3>
+<H4>mm_commandlog</H4>
+<DL>
+<DT>stamp
+<DD>timestamp of when the command was entered.
+<DT>name
+<DD>name of the user that entered the command.
+<DT>command
+<DD>the command entered by the user. Has a maximum of 255 characters. This
+limitation 
+should not be a problem unless rather large conversations take place.
+</DL>
+<PRE>
++---------------------+
+| mm_commandlog       |
++---------------------+
+|*stamp               |
+|*name                |
+| command             |
++---------------------+
+
+</PRE>
+<H4>mm_mailtable</H4>
 <DL>
 <DT>haveread
 <DD>if the mail items has been read or not. (read=1, not read=0)
@@ -430,7 +483,7 @@ recognized because they do not start with the prefix "mm_".<P>
 <TABLE>
 <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
 <TR valign=top><TD>scratchpad</TD><TD>contains personal scratch information
-for administration of the game./TD></TR>
+for administration of the game.</TD></TR>
 <TR valign=top><TD>characterinfo</TD><TD>contains story information regarding certain
 characters.</TD></TR>
 <TR valign=top><TD>family</TD><TD>shows the family relations between characters.</TD></TR>

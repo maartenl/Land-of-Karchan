@@ -910,7 +910,6 @@ public class Person implements simkin.Executable
 	 * <li>sendMessageExcl(&lt;message&gt;);
 	 * <li>sendMessageExcl(&lt;person&gt;, &lt;message&gt;);
 	 * <li>personal(&lt;message&gt;);
-	 * <li>person find(&lt;name&gt;);
 	 * </ul>
 	 * The following fields in the script are available:
 	 * <ul>
@@ -938,6 +937,8 @@ public class Person implements simkin.Executable
 		{
 			// Create an interpreter and a context
 			Interpreter interp=new Interpreter();
+			interp.addGlobalVariable("rooms", Rooms.create());
+			interp.addGlobalVariable("persons", Persons.create());
 			ExecutableContext ctxt=new ExecutableContext(interp);
 	
 			// create an XMLExecutable object with the xml string
@@ -1042,7 +1043,7 @@ public class Person implements simkin.Executable
 			", atttrib_name=" + attrib_name);
 		if (field_name.equals("room"))
 		{
-			return new Integer(getRoom().getId());
+			return getRoom();
 		}
 		if (field_name.equals("name"))
 		{
@@ -1124,27 +1125,6 @@ public class Person implements simkin.Executable
 				Persons.sendMessageExcl(this, (Person) arguments[0], 
 					(String) arguments[1]);
 				return null;
-			}
-		}
-		if (method_name.equals("find"))
-		{
-			if (arguments.length == 1)
-			{
-				if (!(arguments[0] instanceof String))
-				{
-					throw new MethodNotSupportedException(method_name + 
-						" does not contain a String as argument.");
-				}
-				Person aPerson = Persons.retrievePerson((String) arguments[0]);
-				if (aPerson == null)
-				{
-					return null;
-				}
-				if (aPerson.getRoom() != this.getRoom())
-				{
-					return null;
-				}
-				return aPerson;
 			}
 		}
 		if (method_name.equals("personal"))
