@@ -53,18 +53,24 @@ changing event:
 - check that name of character (if filled in) exists
 - check that room number (if filled in) exists
 - check that numbers are filled in for times and room
-add event:
+adding event:
 - check that method exists
+deleting event:
+- check that correct owner or owner==null
+- check that eventid is numeric in format
 
 changing command:
-add command:
+adding command:
 - check that method exists
 
 changing method:
 - first check that the change is approved (i.e. owner or null)
 adding method:
 - no check
-
+deleting method:
+- check that no event is using this method
+- check that no command is using this method
+- check that correct owner or owner==null
 /* 
 ------------------------------------------------------------------
 EVENTS
@@ -219,6 +225,25 @@ if (isset($_REQUEST{"addeventmethodname"}))
     writeLogLong($dbhandle, "Added event ".($maxid + 1).
 		" which uses method ".$_REQUEST{"addeventmethodname"}.".", $query);
 }
+if (isset($_REQUEST{"deleteeventid"}))
+{
+	if ( !is_numeric($_REQUEST{"deleteeventid"}))
+	{
+		die("Expected eventid to be an integer, and it wasn't.");
+	}
+        $query = "delete from mm_events where eventid = ".
+		mysql_escape_string($_REQUEST{"deleteeventid"}).
+		" and (owner is null or owner = \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\")";
+	mysql_query($query, $dbhandle)
+		or die("Query (".$query.") failed : " . mysql_error());
+	if (mysql_affected_rows() != 1)
+	{
+		die("Event does not exist or not proper owner.");
+	}
+    writeLogLong($dbhandle, "Removed event ".$_REQUEST{"deleteeventid"}.".", $query);
+}
 
 $result = mysql_query("select date_format(now(), \"%Y-%m-%d %T\") as now"
 	, $dbhandle)
@@ -290,6 +315,12 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<b>
+<INPUT TYPE="hidden" NAME="deleteeventid" VALUE="<?php echo $myrow["eventid"] ?>">
+<INPUT TYPE="submit" VALUE="Delete Event">
+</b>
+</FORM>
 <FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 <INPUT TYPE="hidden" NAME="eventid" VALUE="<?php echo $myrow["eventid"] ?>">
@@ -450,6 +481,25 @@ if (isset($_REQUEST{"addcommandname"}) &&
         or die("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Added command ".$_REQUEST{"addcommandname"}.".", $query);
 }
+if (isset($_REQUEST{"deletecommandid"}))
+{
+	if ( !is_numeric($_REQUEST{"deletecommandid"}))
+	{
+		die("Expected commandid to be an integer, and it wasn't.");
+	}
+        $query = "delete from mm_commands where id = ".
+		mysql_escape_string($_REQUEST{"deletecommandid"}).
+		" and (owner is null or owner = \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\")";
+	mysql_query($query, $dbhandle)
+		or die("Query (".$query.") failed : " . mysql_error());
+	if (mysql_affected_rows() != 1)
+	{
+		die("Command does not exist or not proper owner.");
+	}
+    writeLogLong($dbhandle, "Removed command ".$_REQUEST{"deletecommandid"}.".", $query);
+}
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
 	from mm_commands"
 	, $dbhandle)
@@ -485,6 +535,12 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<b>
+<INPUT TYPE="hidden" NAME="deletecommandid" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="submit" VALUE="Delete Command">
+</b>
+</FORM>
 <FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 <INPUT TYPE="hidden" NAME="commandid" VALUE="<?php echo $myrow["id"] ?>">
@@ -554,6 +610,39 @@ if (isset($_REQUEST{"addmethodname"}))
         or die("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Added method ".$_REQUEST{"addmethodname"}.".", $query);
 }
+if (isset($_REQUEST{"deletemethodname"}))
+{
+  // check if no event is using this method
+  $result = mysql_query("select 1 from mm_events where method_name = \"".
+    mysql_escape_string($_REQUEST{"deletemethodname"}).
+	"\"", $dbhandle);
+        if (mysql_num_rows($result) > 0)
+        {
+            die("There are still events using this method.");
+        }
+        // check if no command is using this method
+  $result = mysql_query("select 1 from mm_commands where method_name = \"".
+    mysql_escape_string($_REQUEST{"deletemethodname"}).
+	"\"", $dbhandle);
+        if (mysql_num_rows($result) > 0)
+        {
+            die("There are still commands using this method.");
+        }
+
+        // make it so
+        $query = "delete from mm_methods where name = \"".
+		mysql_escape_string($_REQUEST{"deletemethodname"}).
+		"\" and (owner is null or owner = \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\")";
+	mysql_query($query, $dbhandle)
+		or die("Query (".$query.") failed : " . mysql_error());
+	if (mysql_affected_rows() != 1)
+	{
+		die("Method does not exist or not proper owner.");
+	}
+    writeLogLong($dbhandle, "Removed method ".$_REQUEST{"deletemethodname"}.".", $query);
+}
 
 $result = mysql_query("select *, 
 replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\") 
@@ -577,6 +666,12 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ",
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<b>
+<INPUT TYPE="hidden" NAME="deletemethodname" VALUE="<?php echo $myrow["name"] ?>">
+<INPUT TYPE="submit" VALUE="Delete Method">
+</b>
+</FORM>
 <FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <I>(Refresh the command list in the game, after changing a method.)</I><BR>
 <b>
