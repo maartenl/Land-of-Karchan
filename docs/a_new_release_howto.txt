@@ -25,3 +25,31 @@ Full Syntax will be
 
 )
 
+How to change all terms in all files in a single go:
+
+ % perl -p -i.bak -e 's#/full/path/to/file##' *.html
+
+     perl -pi.bak -e 's|foo|bar|g' filelist
+
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' *
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' data/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' docs/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' include/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' init/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' sql/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' sql/scripts/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' sql/crontab/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' src/*
+perl -pi -e 's|Land of Karchan|Maartens Mud|g' tmp/*
+
+perl -pi -e 's|karchan|mmud|g' *
+perl -pi -e 's|karchan|mmud|g' data/*
+perl -pi -e 's|karchan|mmud|g' docs/*
+perl -pi -e 's|karchan|mmud|g' include/*
+perl -pi -e 's|karchan|mmud|g' init/*
+perl -pi -e 's|karchan|mmud|g' sql/*
+perl -pi -e 's|karchan|mmud|g' sql/scripts/*
+perl -pi -e 's|karchan|mmud|g' sql/crontab/*
+perl -pi -e 's|karchan|mmud|g' src/*
+perl -pi -e 's|karchan|mmud|g' tmp/*
+
