@@ -1342,7 +1342,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	char	logname[100];
 	char	*junk;
 
-#ifdef DEBUG
+#ifdef DEBUG	
 	printf("gameMain started!!!\n");
 #endif
 	command = fcommand;
@@ -1435,7 +1435,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		junk[strlen(junk)-1]=0;
 	}
 	
-	if (*command == '\0') 
+	if (*junk == '\0') 
 	{
 		WriteRoom(name, password, room, 0);
 		free(junk);
