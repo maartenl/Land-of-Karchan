@@ -147,6 +147,16 @@ $myrow["id"], $myrow["id"]);
 }
 
 printf("<H2>Problems with Items</H2>\r\n");
+$result = mysql_query("select * from mm_items "
+	." where description is null or description = \"\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A> (empty description)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
 $result = mysql_query("select room1.id from mm_roomitemtable as room1 left join"
 	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
 	, $dbhandle)
