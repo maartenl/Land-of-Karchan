@@ -19,6 +19,10 @@ Main Area of Karchan", "Karn", null);
 null, message varchar(255) not null, primary key (creation, name, message));
 - update mm_usertable set password=password(password)
 - alter table mm_log add (addendum text);
+- alter table mm_usertable alter alignment set default 8;
+- update mm_usertable set alignment=8 where alignment=0;
+- alter table mm_usertable alter movementstats set default 1000;
+- update mm_usertable set movementstats=1000 where movementstats=0;
 
 Creating a dupe database
 ------------------------
@@ -130,3 +134,4 @@ create table bugs (title varchar(255) not null, description text, answer
 text, closed int(1) default 0, name varchar(20) not null,
 creation datetime not null
 primary key);
+
