@@ -29,6 +29,8 @@ package mmud.commands;
 import java.util.logging.Logger;
 import java.util.Vector;
 import java.util.Calendar;
+import java.text.DateFormat;
+import java.util.Date;
 
 import mmud.*;
 import mmud.characters.*;
@@ -121,11 +123,20 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'uptime' executed (" +
 				Constants.theGameStartupTime + ")");
 			Calendar time = Calendar.getInstance();
+			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 			Calendar oldtime = Constants.theGameStartupTime;
+			long checkem = time.getTimeInMillis() - oldtime.getTimeInMillis();
+			String uptime = "Game has been online for " + 
+				checkem / 86400000 + " days, " +
+				checkem % 86400000 / 3600000  + " hours, " +
+				checkem % 3600000 / 60000 + " minutes, " +
+				checkem % 60000 / 1000 + " seconds, " +
+				checkem % 1000 + " milliseconds.<BR>\r\n";
 			aUser.writeMessage("Game started on " + 
-				oldtime +
-				".<BR>\r\nCurrent time is " + time + 
-				".<BR>\r\n");
+				df.format(oldtime.getTime()) +
+				".<BR>\r\nCurrent time is " +
+				df.format(time.getTime()) + 
+				".<BR>\r\n" + uptime);
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin help"))
