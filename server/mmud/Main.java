@@ -67,7 +67,7 @@ public class Main
 			Constants.logger.info("Loading user commands...");
 			Constants.setUserCommands(Database.getUserCommands());
 			Constants.logger.info("Creating Server Socket...");
-			myServerSocket = new ServerSocket(3339);
+			myServerSocket = new ServerSocket(Constants.mudportnumber);
 			while (!Constants.shutdown)
 			{
 				Socket mySocket = myServerSocket.accept();

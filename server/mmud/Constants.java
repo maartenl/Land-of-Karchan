@@ -168,6 +168,8 @@ public final class Constants
 	public final static String IDENTITY = "Maartens Mud (MMud) Version " + MMVERSION;
 
 	// the variables, initialised on defaults
+	public static int mudportnumber = 3339;
+
 	public static String dbname = DBNAME;
 	public static boolean shutdown = SHUTDOWN;
 	public static String dbhost = DBHOST;
@@ -666,6 +668,7 @@ public final class Constants
 		theDefaults.setProperty("mudbackground", "");
 		theDefaults.setProperty("mudcopyright", "&copy; Copyright Maarten van Leunen");
 		theDefaults.setProperty("logginglevel", "all");
+		theDefaults.setProperty("portnumber", "3339");
 
 		theCommandStructure.put("bow", new BowCommand("bow( to (\\w)+)?( (\\w)+)?"));
 		theCommandStructure.put("me", new MeCommand("me .+"));
@@ -1041,6 +1044,17 @@ public final class Constants
 		dbpasswd = theValues.getProperty("dbpasswd");
 		dbjdbcclass = theValues.getProperty("dbjdbcclass");
 		dburl = theValues.getProperty("dburl");
+
+		try
+		{
+			mudportnumber =
+				Integer.parseInt(theValues.getProperty("portnumber"));
+		}
+		catch (NumberFormatException e)
+		{
+            System.out.println("Unable to interpret portnumber");
+            e.printStackTrace();
+		}
 
 		mudfilepath = theValues.getProperty("mudfilepath");
 		mudofflinefile = theValues.getProperty("mudofflinefile");
