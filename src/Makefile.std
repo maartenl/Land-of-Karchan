@@ -1,0 +1,222 @@
+#	@cp mud $(INSTALLDIR)mud2.cgi
+#
+# MakeFile -- Maarten's Mud Makefile for compiling the binaries
+#
+
+# Directory for installing the mud-cgi-binaries 
+# 	(enter.cgi, newchar.cgi, mudrelogin.cgi, mud.cgi)
+
+# INSTALLDIR = /home/karchan/.html/cgi-bin/
+INSTALLDIR = /home/httpd/cgi-bin/
+# INSTALLDIR = /karchan2/apache/cgi-bin/
+#
+# Options that can be used to the make command
+#
+# make						(normal compilation of all files)
+# make install		(installation og binaries into the correct dir)
+# make backup			(makes backup of the binaries from *.cgi to *_backup.cgi)
+# make restore		(restores the backup that was created, if the backup was present)
+
+#------------------------------------------------------------------
+# It is not necessary to modify anything below this line,
+# unless you know what you are doing.
+#
+
+# cc -I/usr/include/mysql/ -L/usr/lib/mysql/ prog.c -o prog -lm
+# 			-lmysqlclient
+#
+# $(OPTIONS) $(LIBDIR) $(INCLUDES)
+
+CC = gcc
+COPTS = -O2 -m486
+# INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/
+INCLUDES = -I../include -idirafter /usr/local/include/mysql/
+
+# EXEDIR = /karchan2/apache/cgi-bin
+EXEDIR = /home/httpd/cgi-bin
+# LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
+LIBDIR = -L/usr/local/lib/mysql/
+OPTIONS = -lm -lmysqlclient
+
+TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist clearcharacters
+
+all: $(TARGETS)
+	strip $(TARGETS)
+
+cgic.o: cgic.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c cgic.c
+
+mud.o: mud.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c 
+
+newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c newchar.c 
+
+enter.o: enter.c mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c 
+
+rolls: rolls.o typedefs.o userlib.o rolls.c
+	$(CC) $(COPTS) -o rolls typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
+
+rolls.o: rolls.c userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c rolls.c 
+
+mudrelogin.o: mudrelogin.c mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudrelogin.c 
+
+mud-lib.o: mud-lib.c typedefs.o userlib.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib.c 
+
+guild.o: guild.c mud-lib.o typedefs.o userlib.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c guild.c 
+
+mud-lib2.o: mud-lib2.c guild.o mud-lib.o typedefs.o userlib.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib2.c 
+
+mud-lib3.o: mud-lib3.c mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib3.c
+
+userlib.o: userlib.c typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c userlib.c 
+
+typedefs.o: typedefs.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c typedefs.c 
+
+mudclient.o: cgic.o mudclient.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c
+
+mudserver.o: mudserver.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudserver.c 
+
+#--- Binary executables are compiled below...
+
+mudclient: cgic.o mudclient.o
+	$(CC) $(COPTS) -o mudclient cgic.o mudclient.o
+
+enter: enter.o mud-lib.o typedefs.o userlib.o cgic.o enter.c
+	$(CC) $(COPTS) -o enter cgic.o typedefs.o userlib.o mud-lib.o enter.o $(LIBDIR) $(OPTIONS)
+
+mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
+	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR) $(OPTIONS)
+
+newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c 
+	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR) $(OPTIONS)
+
+mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o guild.c cgic.o mud.c enter newchar 
+	$(CC) $(COPTS) -o mud cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o mud.o $(LIBDIR) $(OPTIONS) 
+
+mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o guild.c cgic.o mudserver.c enter newchar 
+	$(CC) $(COPTS) -o mudserver cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o mudserver.o $(LIBDIR) $(OPTIONS) 
+
+#--- Compilation of frame-binaries
+
+addendumframe.o: addendumframe.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c addendumframe.c  -o addendumframe.o
+
+addendumframe: addendumframe.o cgic.o
+	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) $(OPTIONS) $(INCLUDES)
+
+leftframe.o: leftframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c leftframe.c -o leftframe.o
+
+leftframe: leftframe.o cgic.o typedefs.o
+	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR) $(OPTIONS)
+
+logonframe: logonframe.o cgic.o logonframe.c typedefs.o
+	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR) $(OPTIONS)
+
+#--- Compilation of javascript/serverpush/frame-binaries
+
+nph-addendum: nph-addendum.o cgic.o typedefs.o nph-addendum.c
+	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) $(OPTIONS)
+
+nph-logonframe.o: nph-logonframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-logonframe.c -o nph-logonframe.o
+
+nph-logonframe: nph-logonframe.o cgic.o typedefs.o
+	$(CC) $(COPTS) -o nph-logonframe cgic.o typedefs.o nph-logonframe.o $(LIBDIR) $(OPTIONS)
+
+nph-leftframe.o: nph-leftframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-leftframe.c -o nph-leftframe.o
+
+nph-leftframe: nph-leftframe.o cgic.o typedefs.o
+	$(CC) $(COPTS) -o nph-leftframe cgic.o typedefs.o nph-leftframe.o $(LIBDIR) $(OPTIONS)
+
+nph-javascriptframe.o: nph-javascriptframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-javascriptframe.c -o nph-javascriptframe.o
+
+nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
+	$(CC) $(COPTS) -o nph-javascriptframe cgic.o typedefs.o nph-javascriptframe.o $(LIBDIR) $(OPTIONS)
+
+#--- Compilation and installing of small website binaries like the wholist
+
+wholist: wholist.o wholist.c
+	$(CC) $(COPTS) -o wholist wholist.o $(LIBDIR) $(OPTIONS)
+
+clearcharacters: clearcharacters.o clearcharacters.c
+	$(CC) $(COPTS) -o clearcharacters clearcharacters.o $(LIBDIR) $(OPTIONS)
+
+#--- Clean up the stuff and install as well
+
+clean:
+	rm *.o *~ $(TARGETS)
+
+backup: all
+	@echo "Backing up Mud Binaries..."
+	@echo "  Backing up Central Mud CGI..."
+	@cp $(INSTALLDIR)mud.cgi $(INSTALLDIR)mud_backup.cgi
+	@cp $(INSTALLDIR)mudrelogin.cgi $(INSTALLDIR)mudrelogin_backup.cgi
+	@cp $(INSTALLDIR)enter.cgi $(INSTALLDIR)enter_backup.cgi
+	@cp $(INSTALLDIR)newchar.cgi $(INSTALLDIR)newchar_backup.cgi
+	@echo "  Backing up Frame CGI..."
+	@cp $(INSTALLDIR)leftframe.cgi $(INSTALLDIR)leftframe_backup.cgi
+	@cp $(INSTALLDIR)logonframe.cgi $(INSTALLDIR)logonframe_backup.cgi
+	@echo "  Backing up Frame/Serverpush CGI..."
+	@cp $(INSTALLDIR)nph-addendum.cgi $(INSTALLDIR)nph-addendum_backup.cgi
+	@cp $(INSTALLDIR)nph-logonframe.cgi $(INSTALLDIR)nph-logonframe_backup.cgi
+	@cp $(INSTALLDIR)nph-leftframe.cgi $(INSTALLDIR)nph-leftframe_backup.cgi
+	@cp $(INSTALLDIR)nph-javascriptframe.cgi $(INSTALLDIR)nph-javascriptframe_backup.cgi
+	@echo "Backup done."
+
+restore: all
+	@echo "Restoring backup of Mud Binaries..."
+	@echo "  Restoring backup Central Mud CGI..."
+	@cp $(INSTALLDIR)mud.cgi $(INSTALLDIR)mud_backup.cgi
+	@cp $(INSTALLDIR)mudrelogin.cgi $(INSTALLDIR)mudrelogin_backup.cgi
+	@cp $(INSTALLDIR)enter.cgi $(INSTALLDIR)enter_backup.cgi
+	@cp $(INSTALLDIR)newchar.cgi $(INSTALLDIR)newchar_backup.cgi
+	@echo "  Restoring backup Frame CGI..."
+	@cp $(INSTALLDIR)leftframe.cgi $(INSTALLDIR)leftframe_backup.cgi
+	@cp $(INSTALLDIR)logonframe.cgi $(INSTALLDIR)logonframe_backup.cgi
+	@echo "  Restoring backup Frame/Serverpush CGI..."
+	@cp $(INSTALLDIR)nph-addendum.cgi $(INSTALLDIR)nph-addendum_backup.cgi
+	@cp $(INSTALLDIR)nph-logonframe.cgi $(INSTALLDIR)nph-logonframe_backup.cgi
+	@cp $(INSTALLDIR)nph-leftframe.cgi $(INSTALLDIR)nph-leftframe_backup.cgi
+	@cp $(INSTALLDIR)nph-javascriptframe.cgi $(INSTALLDIR)nph-javascriptframe_backup.cgi
+	@echo "Setting UIDs for Mud Binaries..."
+	@chmod o= $(INSTALLDIR)*
+	@chmod u=rwx $(INSTALLDIR)*        
+	@chmod g=x $(INSTALLDIR)*
+	@echo "Backup restored."
+
+install: all
+	@echo "Installing Mud Binaries..."
+	@echo "  Installing Central Mud CGI..."
+	@cp mud $(INSTALLDIR)mud.cgi
+	@cp mudrelogin $(INSTALLDIR)mudrelogin.cgi
+	@cp enter $(INSTALLDIR)enter.cgi
+	@cp newchar $(INSTALLDIR)newchar.cgi
+	@echo "  Installing Frame CGI..."
+	@cp leftframe $(INSTALLDIR)leftframe.cgi
+	@cp logonframe $(INSTALLDIR)logonframe.cgi
+	@echo "  Installing Frame/Serverpush CGI..."
+	@cp nph-addendum $(INSTALLDIR)nph-addendum.cgi
+	@cp nph-logonframe $(INSTALLDIR)nph-logonframe.cgi
+	@cp nph-leftframe $(INSTALLDIR)nph-leftframe.cgi
+	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe.cgi
+	@echo "Setting UIDs for Mud Binaries..."
+	@chmod o= $(INSTALLDIR)*
+	@chmod u=rwx $(INSTALLDIR)*
+	@chmod g=x $(INSTALLDIR)*
+	@echo "Installation done."
+
