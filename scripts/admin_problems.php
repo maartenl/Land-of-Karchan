@@ -64,6 +64,15 @@ while ($myrow = mysql_fetch_array($result))
 (room does not exist)<BR>",
 $myrow["name"], $myrow["name"]);
 }
+$result = mysql_query("select name from mm_usertable where race is null or race = \"\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A>
+(race is either NULL or empty)<BR>",
+$myrow["name"], $myrow["name"]);
+}
 
 printf("<H2>Problems with Rooms</H2>\r\n");
 $result = mysql_query("select id from mm_rooms "
