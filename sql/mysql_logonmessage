@@ -25,19 +25,10 @@ The current deputies are:
 Kass, Kel, Bladestorm, Legolas, Silverblade, Blackfyre<P>
 
 <HR>
-I am back from Croatia and I am still in one piece. It was a nice two weeks.
-<P>
-I am currently busy with a new implementation of the mud. 
-<P>
-What does not work:
-<UL>
-<LI>sendmail (sending mudmail)
-</UL>
-What works again:
-<UL>
-<LI>HTML tags in commands
-<LI>bigtalk
-</UL>
+I am currently busy debugging the new implementation of the mud. Like,
+most people know this already.<P>
+Some good news: I think I have the <I>mudmail</I> thingy fixed. Send
+in Bugreports if it is still buggy.<P>
 <P>
 One of the little changes that you might have noticed is the extra
 little piece of text at the top of your screen. It
