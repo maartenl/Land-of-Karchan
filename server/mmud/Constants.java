@@ -639,12 +639,12 @@ public final class Constants
 
 		for (int i=0;i<emotions.length;i++)
 		{
-			theCommandStructure.put(emotions[i][0], new EmotionCommand(".*"));
+			theCommandStructure.put(emotions[i][0], new EmotionCommand(".+"));
 			theEmotionStructure.put(emotions[i][0], emotions[i][1]);
 		}
 		for (int i=0;i<emotions2.length;i++)
 		{
-			theCommandStructure.put(emotions2[i][0], new EmotionToCommand(".*"));
+			theCommandStructure.put(emotions2[i][0], new EmotionToCommand(".+"));
 			theEmotion2Structure.put(emotions2[i][0], emotions2[i][1]);
 		}
 		for (int i=0;i<adverb.length;i++)
@@ -667,7 +667,7 @@ public final class Constants
 		Command myCommand = (Command) theCommandStructure.get(key);
 		if (myCommand == null)
 		{
-			return new BogusCommand(".*");
+			return new BogusCommand(".+");
 		}
 		myCommand.setCommand(aCommand);
 		return myCommand;
