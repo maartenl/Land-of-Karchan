@@ -153,6 +153,69 @@ Deputy Rules
        with the game. Karn does have the obligation however of
        communicating these changes with the deps first.
 
+Deputy Rules
+------------
+
+0. Deputies should not misuse their powers. (this is a general rule, and can
+be interpreted in a lot of ways, one of the most common ones is that the
+deps do not obtain private player information unless for solving
+problems/aiding the game)
+
+1. It is ABSOLUTELY FORBIDDEN for deputies to share their passwords/userids
+with other non-dep players. This not only counts for passwords and userids
+but also for other private information or discussions that appear between
+the deps or are stored in the database/logfiles/etc. In general it is
+forbidden to nosy in the logfiles of players (with logfiles I mean the files
+that contain the actions of players of the game, what they have said, what
+they have done.) unless there is reason to believe that one of the players
+was either attempting to crack the game or harassing other players. It is
+okay to share information if this information is relatively harmless or
+concerns what player(s) need to know.
+
+2. In theory every deputy has the priviledge to ban people if they are bad.
+Just mail deputy@egroups.com why you ban them and put it in the ban table as
+well. This in order to make everyone understand why you are banning them.
+There are no strict rules on when to ban them. Most of the time leniency is
+a good thing, except when they are obviously crossing the line. A good
+measure of badness, I think, is when someone else complains about a person.
+
+3. Deputies should not "help" normal players in extravagant ways. (for
+example making them invulnerable, giving them money, telling what to do
+and where to do it, giving them huge battle axes or big hitpoints so nobody
+can kill them)
+
+4. Overall/Global changes to the game should be discussed (through
+for example email) with ALL deputies and Karn. Only afterwards may any
+global/overall change take place. Global changes will only be executed by
+Karn, as they have a huge impact on the game and could make the game
+unstable or even unoperable.
+
+5. Deputies will not react to (complaining) offensive emails, but will
+ignore them with the disdain that these emails deserve.
+
+6. Deputies must leave their feelings and other baggage
+ the mud!!! This game is hard enough to administer
+without letting characters/deputies/Karn get to you. If you cannot control
+your feelings it is better to not be a deputy.
+
+7. Karn has the right to VETO changes if he feels that they do not stroke 
+with the nature of the game. 
+(I found The Stick of Multiple-Target Decimation funny, but
+lets be serious here) However, he should use this right sparingly.
+
+8. Karn has the right to bring in changes to the game, without permission
+from deps, but these changes do need to be in character with the game. Karn
+does have the obligation however of communicating these changes with the deps
+first.
+
+9. A Deputy should, if he/she disagrees with another deputy, resolve the
+entire matter in the deputy group, and not take the disagreement out of the
+group of deputies and onto the game. This is necessary in order for normal
+players to see us as a solid front.
+
+Any other suggestions and ideas?
+I, Elwood have a suggestion regarding security
+Every 30 days deps should be rquired to change their SSH and MUD passwords.
 
 -- 
 Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost Souls)
@@ -165,4 +228,10 @@ e++ h+>* !r>+ y>++
 -----END GEEK CODE BLOCK-----
 ("In the likely event of an accident, put your head between your knees and
 kiss your bum goodbye.")
+
+
+
+
+
+
 
