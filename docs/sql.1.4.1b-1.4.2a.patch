@@ -65,6 +65,32 @@ update bottable set sex = "male" where sex = "";
 alter table olduser change sex sex enum("male", "female");
 update olduser set sex = "male" where sex = "";
 
+# add comments to the different table that are used by the game
+ALTER TABLE bogus_itemtable comment = 'a temporary table for the cleaning up of corpses in the game(mysql_healing)';
+ALTER TABLE action comment = 'descriptions of special actions that are allowed in some room';
+ALTER TABLE answers comment = 'the different answers by bots on questions asked';
+ALTER TABLE bantable comment = 'who is banned, why, by whom, for how long at which time';
+ALTER TABLE bottable comment = 'the bots, gets copied periodically to the tmp_usertable';
+ALTER TABLE bugreportlist comment = 'list of bugs still to be solved';
+ALTER TABLE depalias comment = 'special commands for the deputies to use';
+ALTER TABLE help comment = 'help on commands';
+ALTER TABLE items comment = 'item definitions';
+ALTER TABLE itemtable comment = 'all items';
+ALTER TABLE logonmessage comment = 'the logonmessage when you enter the game';
+ALTER TABLE mailtable comment = 'all mail';
+ALTER TABLE olditem comment = 'archived/deleted items';
+ALTER TABLE oldmail comment = 'archived/deleted mail';
+ALTER TABLE olduser comment = 'archived/deleted users';
+ALTER TABLE respawningitemtable comment = 'items that need to reappear after a certain time';
+ALTER TABLE rooms comment = 'description of all rooms, along with exits';
+ALTER TABLE sillynamestable comment = 'silly names/bad language in order to root out bad logonids in entering the game';
+ALTER TABLE skills comment = 'skill definitions';
+ALTER TABLE skilltable comment = 'all skills';
+ALTER TABLE tmp_itemtable comment = 'items during gameplay';
+ALTER TABLE tmp_mailtable comment = 'mail during gameplay';
+ALTER TABLE tmp_usertable comment = 'users during gameplay';
+ALTER TABLE unbantable comment = '}people that are allowed to login despite that their site/domain is banned';
+ALTER TABLE usertable comment = 'all users';
 
 END_OF_DATA
 
