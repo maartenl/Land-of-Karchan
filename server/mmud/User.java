@@ -24,6 +24,9 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+
+package mmud;
+
 import java.util.Random;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,7 +34,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class User extends Character
+import mmud.database.*;
+import mmud.characters.*;
+import mmud.rooms.*;
+
+public class User extends mmud.characters.Character
 {
 
 	private String thePassword;

@@ -25,6 +25,8 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
+package mmud;
+
 import java.net.Socket;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
@@ -35,6 +37,10 @@ import java.io.File;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.MalformedPatternException;
+
+import mmud.characters.*;
+import mmud.database.*;
+import mmud.commands.*;
 
 public class MudSocket extends Thread
 {

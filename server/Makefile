@@ -1,16 +1,12 @@
 #
-# MakeFile -- Maarten's Mud Makefile for compiling the binaries
+# MakeFile -- Maarten's Mud Makefile for compiling the java server
 #
 # javac -source 1.4 -classpath
 # ../../mysql-connector-java-3.0.6-stable/mysql-connector-java-3.0.6-stable-bin.jar:../../jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar:.
 # *.java
 
-# Directory for installing the mud-cgi-binaries 
-# ---------------------------------------------
-# 	(enter.cgi, newchar.cgi, mudrelogin.cgi, mud.cgi)
-
-# INSTALLDIR = /home/karchan/.html/cgi-bin/
-INSTALLDIR = /home/httpd/cgi-bin/
+HOMEDIR = /home/karchan/cvs2/server
+INSTALLDIR = $(HOMEDIR)/jclasses
 
 #
 # Options that can be used to the make command
@@ -39,11 +35,13 @@ COPTS = -source 1.4 -classpath $(CLASSPATH) -d jclasses
 
 TARGETS = compile
 
-compile: *.java
-	$(CC) $(COPTS) *.java
+compile: mmud/*.java
+	$(CC) $(COPTS) mmud/*.java mmud/items/*.java mmud/commands/*.java \
+    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java \
+    mmud/communication/*.java
 
 javadoc:
-	cd html; javadoc $(COPTS) ../*.java
+	cd html; javadoc $(COPTS) ../mmud/*.java
 
 clean:
 	rm jclasses/* *~
@@ -54,4 +52,4 @@ jars: $(TARGETS)
 	cd jclasses;jar -cvf ../runme.jar -C . .
 
 run:
-	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) Main
+	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) mmud.Main

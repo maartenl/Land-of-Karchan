@@ -24,6 +24,11 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+package mmud.commands;  
+
+import mmud.*;
+import mmud.*;
+import mmud.characters.*;
 
 public interface Command
 {

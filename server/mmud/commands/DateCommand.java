@@ -24,8 +24,15 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+package mmud.commands;
 
 import java.util.Calendar;
+
+import mmud.*;
+import mmud.characters.*;
+import mmud.items.*;
+import mmud.rooms.*;
+import mmud.database.*;
 
 public class DateCommand extends NormalCommand
 {

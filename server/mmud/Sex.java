@@ -25,6 +25,8 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
+package mmud;
+
 /**
  * Enumerated type for the male/female thing: 
  */

@@ -24,6 +24,9 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+package mmud.items;
+
+import mmud.MudException;
 
 public class ItemException extends MudException
 {

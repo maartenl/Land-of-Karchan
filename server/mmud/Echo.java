@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
 
+package mmud;
+
 import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;

@@ -24,6 +24,9 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+
+package mmud;
+
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,8 @@ import java.io.*;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Properties;
+
+import mmud.commands.*;
 
 public final class Constants
 {

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-
+package mmud.database; 
 
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -33,6 +33,11 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
+
+import mmud.*;
+import mmud.characters.*;
+import mmud.items.*;
+import mmud.rooms.*;
 
 public class Database
 {

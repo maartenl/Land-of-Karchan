@@ -25,7 +25,11 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
+package mmud;
+
 import java.util.Vector;
+
+import mmud.items.*;
 
 public class Inventory
 {

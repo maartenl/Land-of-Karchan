@@ -25,6 +25,8 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
+package mmud;
+
 public class MudException extends Exception
 {
 

@@ -25,12 +25,17 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
+package mmud;
+
 /* imports */
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.xml.parsers.DocumentBuilder;
+
+import mmud.database.*;
+import mmud.characters.*;
 
 public class Main
 {

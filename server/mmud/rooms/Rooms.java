@@ -24,8 +24,15 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+package mmud.rooms;
 
 import java.util.Vector;
+
+import mmud.*;
+import mmud.characters.*;
+import mmud.items.*;
+import mmud.rooms.*;
+import mmud.database.*;
 
 public final class Rooms 
 {
