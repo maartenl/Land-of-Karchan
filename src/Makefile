@@ -200,18 +200,18 @@ backup: all
 restore: all
 	@echo "Restoring backup of Mud Binaries..."
 	@echo "  Restoring backup Central Mud CGI..."
-	@cp $(INSTALLDIR)mud.cgi $(INSTALLDIR)mud_backup.cgi
-	@cp $(INSTALLDIR)mudrelogin.cgi $(INSTALLDIR)mudrelogin_backup.cgi
-	@cp $(INSTALLDIR)enter.cgi $(INSTALLDIR)enter_backup.cgi
-	@cp $(INSTALLDIR)newchar.cgi $(INSTALLDIR)newchar_backup.cgi
+	@cp $(INSTALLDIR)mud_backup.cgi $(INSTALLDIR)mud.cgi 
+	@cp $(INSTALLDIR)mudrelogin_backup.cgi $(INSTALLDIR)mudrelogin.cgi 
+	@cp $(INSTALLDIR)enter_backup.cgi $(INSTALLDIR)enter.cgi 
+	@cp $(INSTALLDIR)newchar_backup.cgi $(INSTALLDIR)newchar.cgi 
 	@echo "  Restoring backup Frame CGI..."
-	@cp $(INSTALLDIR)leftframe.cgi $(INSTALLDIR)leftframe_backup.cgi
-	@cp $(INSTALLDIR)logonframe.cgi $(INSTALLDIR)logonframe_backup.cgi
+	@cp $(INSTALLDIR)leftframe_backup.cgi $(INSTALLDIR)leftframe.cgi 
+	@cp $(INSTALLDIR)logonframe_backup.cgi $(INSTALLDIR)logonframe.cgi 
 	@echo "  Restoring backup Frame/Serverpush CGI..."
-	@cp $(INSTALLDIR)nph-addendum.cgi $(INSTALLDIR)nph-addendum_backup.cgi
-	@cp $(INSTALLDIR)nph-logonframe.cgi $(INSTALLDIR)nph-logonframe_backup.cgi
-	@cp $(INSTALLDIR)nph-leftframe.cgi $(INSTALLDIR)nph-leftframe_backup.cgi
-	@cp $(INSTALLDIR)nph-javascriptframe.cgi $(INSTALLDIR)nph-javascriptframe_backup.cgi
+	@cp $(INSTALLDIR)nph-addendum_backup.cgi $(INSTALLDIR)nph-addendum.cgi 
+	@cp $(INSTALLDIR)nph-logonframe_backup.cgi $(INSTALLDIR)nph-logonframe.cgi 
+	@cp $(INSTALLDIR)nph-leftframe_backup.cgi $(INSTALLDIR)nph-leftframe.cgi 
+	@cp $(INSTALLDIR)nph-javascriptframe_backup.cgi $(INSTALLDIR)nph-javascriptframe.cgi 
 	@echo "Setting UIDs for Mud Binaries..."
 	@chmod o= $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*        

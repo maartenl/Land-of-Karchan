@@ -356,7 +356,6 @@ cgiMain()
 	}
 	cgiHeaderContentType("text/html");
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
-  
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
 
 	if (!ExistUser(name)) {

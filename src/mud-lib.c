@@ -345,6 +345,13 @@ ReadFile(char *filenaam)
 	FILE           *fp;
 	char            string[81];
 	fp = fopen(filenaam, "r");
+	if (fp==NULL)
+	{
+		int i = errno;
+		fprintf(cgiOut, "%i: %s (%s)\n", i, strerror(i), filenaam);
+		return 1;
+	}
+	
 	while (fgets(string, 80, fp) != 0) {
 		fprintf(cgiOut, "%s", string);
 	}
