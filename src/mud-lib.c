@@ -913,6 +913,59 @@ if (!getFrames())
 		}
 	} 
 	mysql_free_result(res);
+	/* print special items (containers and such) */
+		sprintf(tempsql, "select items.id, items.name, items.adject1, items.adject2, "
+			"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
+			"from items, tmp_itemtable tmpitems, containeditems, items items2 "
+			" where (items.id = tmpitems.id) and "
+			" (items.visible <> 0) and "
+			" (tmpitems.search = '') and "
+			" (tmpitems.belongsto = '') and "
+			" (tmpitems.amount = 1) and "
+			" (tmpitems.room = %i) and "
+			" (tmpitems.wearing = '') and "
+			" (tmpitems.wielding = '') and " 
+			" (tmpitems.containerid <> 0) and "
+			" (tmpitems.containerid = containeditems.containedin) and "
+			" (containeditems.id = items2.id) "
+			" order by items.name, items.adject1, items.adject2", room);
+	res=SendSQL2(tempsql, NULL);
+	if (res!=NULL)
+	{
+		int itemid = 0;
+		while ((row = mysql_fetch_row(res))!=NULL)
+		{
+			if (itemid != atoi(row[0]))
+			{
+				if (itemid != 0)
+				{
+					fprintf(cgiOut, " is here.<BR>");
+				}
+				fprintf(cgiOut, "\r\nA %s %s, %s containing ",
+					row[2], row[3], row[1]);
+				itemid = atoi(row[0]);
+			}
+			else
+			{	
+				fprintf(cgiOut, ", ");
+			}
+			if (atoi(row[4])!=1)
+			{
+				fprintf(cgiOut, "%s %s, %s %ss",
+					row[4], row[6], row[7], row[5]);
+			}
+			else
+			{ 
+				fprintf(cgiOut, "a %s, %s %s",
+					row[6], row[7], row[5]); 
+			}
+		}
+		if (itemid != 0)
+		{
+			fprintf(cgiOut, " is here.");
+		}
+	} 
+	mysql_free_result(res);
 	fprintf(cgiOut, "<BR>\r\n");
 
 	PrintForm(name, password);
