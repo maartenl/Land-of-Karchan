@@ -91,12 +91,12 @@ public class MudSocket extends Thread
 			
 		} catch (UnknownHostException e) 
 		{
-			System.err.println("Don't know about host.");
+			Logger.getLogger("mmud").warning("Don't know about host.");
 			theSuccess = false;
 			return;
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for "
-			+ "the connection to: taranis.");
+			Logger.getLogger("mmud").warning("Couldn't get I/O for "
+			+ "the connection.");
 			theSuccess = false;
 			return;
 		}

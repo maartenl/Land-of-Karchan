@@ -73,7 +73,7 @@ public class Main
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			Constants.logger.log(Level.WARNING, "exception", e);
+			Constants.logger.log(Level.WARNING, "exception {0}", e);
 			return;
 		}
 	}
