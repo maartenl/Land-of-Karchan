@@ -2402,6 +2402,11 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	{
 		return 0;
 	}
+	if (getTokenIndex("from") == -1)
+	{
+		/* command does not contain a 'from' word */
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
