@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE spec SYSTEM "mud.dtd">
 <root>
+<action>mud</action>
 <user>
 <name>Karn</name>
 <password>4796812706958040329412082</password>
+<cookie>4796812706958040329412082</cookie>
 <frames>1</frames>
 </user>
 <command>look around</command>
