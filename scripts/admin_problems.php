@@ -193,8 +193,8 @@ $result = mysql_query("select room1.id from mm_itemtable as room1 left join"
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<b>item:</b> %s (item definition does not exist)<BR>",
-$myrow["id"]);
+	printf("<b>item:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> (item definition does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
 }
 
 
