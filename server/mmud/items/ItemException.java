@@ -28,7 +28,7 @@ package mmud.items;
 
 import mmud.MudException;
 
-public class ItemException extends MudException
+abstract public class ItemException extends MudException
 {
 
 	public ItemException(String aString)

@@ -92,7 +92,7 @@ public final class Persons
 		{
 			// found, but no user
 			Logger.getLogger("mmud").info("thrown: " + Constants.NOTAUSERERROR);
-			throw new PersonException(Constants.NOTAUSERERROR);
+			throw new NotAUserException();
 		}
 		User myUser = (myChar == null ? null : (User) myChar);
 		if (myUser == null)
@@ -101,7 +101,7 @@ public final class Persons
 			if (myUser == null)
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.USERNOTFOUNDERROR);
-				throw new PersonException(Constants.USERNOTFOUNDERROR);
+				throw new UserNotFoundException();
 			}
 		}
 		else
@@ -111,20 +111,20 @@ public final class Persons
 				!aCookie.equals("") )
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.MULTIUSERERROR);
-				throw new PersonException(Constants.MULTIUSERERROR);
+				throw new MultiUserException();
 			}
 			if (!myUser.getPassword().equals(aPassword))
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
-				throw new PersonException(Constants.PWDINCORRECTERROR);
+				throw new PwdIncorrectException();
 			}
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
-			throw new PersonException(Constants.USERALREADYACTIVEERROR);
+			throw new UserAlreadyActiveException();
 		}
 		if (!myUser.getPassword().equals(aPassword))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
-			throw new PersonException(Constants.PWDINCORRECTERROR);
+			throw new PwdIncorrectException();
 		}
 		// everything seems to be okay
 		Database.activateUser(myUser);
@@ -193,7 +193,7 @@ public final class Persons
 		if (Database.existsUser(aName))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYEXISTSERROR);
-			throw new PersonException(Constants.USERALREADYEXISTSERROR);
+			throw new UserAlreadyExistsException();
 		}
 		// everything seems to be okay
 		User myUser = new User(aName, aPassword, anAddress,

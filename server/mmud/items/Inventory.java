@@ -78,7 +78,7 @@ public class Inventory
 		if (!theItems.remove(anItem))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.ITEMDOESNOTEXISTERROR);
-			throw new ItemException(Constants.ITEMDOESNOTEXISTERROR);
+			throw new ItemDoesNotExistException();
 		}
 	}
 

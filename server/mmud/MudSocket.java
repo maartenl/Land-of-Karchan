@@ -395,42 +395,42 @@ public class MudSocket extends Thread
 			default :
 			{
 				Logger.getLogger("mmud").info("thrown " + Constants.INVALIDFRAMEERROR);
-				throw new PersonException(Constants.INVALIDFRAMEERROR);
+				throw new InvalidFrameException();
 			}
 		}
 		Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
 		return returnStuff;
 		}
+		catch (UserAlreadyActiveException e)
+		{
+			// already active user wishes to relogin
+			User user = (User) Persons.retrievePerson(aName);
+			String returnStuff = reloginMud(user, aName, aPassword, aFrames);
+			Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
+			return returnStuff;
+		}
+		catch (UserNotFoundException e)
+		{
+			// new user
+			String myString = "";
+			try
+			{
+			myString = Constants.readFile(Constants.mudnewcharfile);
+			}
+			catch (IOException f)
+			{
+				throw new MudException(f.getMessage());
+			}
+			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + aName + "\">\n";
+			myString += "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + aPassword + "\">\n";
+			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + (aFrames + 1) + "\">\n";
+			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
+			myString += "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n";
+			myString += "</FORM></BODY></HTML>\n";
+			return myString;
+		}
 		catch (PersonException e)
 		{
-			if (e.getMessage().equals(Constants.USERALREADYACTIVEERROR))
-			{
-				// already active user wishes to relogin
-				User user = (User) Persons.retrievePerson(aName);
-				String returnStuff = reloginMud(user, aName, aPassword, aFrames);
-				Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
-				return returnStuff;
-			}
-			if (e.getMessage().equals(Constants.USERNOTFOUNDERROR))
-			{
-				// new user
-				String myString = "";
-				try
-				{
-				myString = Constants.readFile(Constants.mudnewcharfile);
-				}
-				catch (IOException f)
-				{
-					throw new MudException(f.getMessage());
-				}
-				myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + aName + "\">\n";
-				myString += "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + aPassword + "\">\n";
-				myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + (aFrames + 1) + "\">\n";
-				myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
-				myString += "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n";
-				myString += "</FORM></BODY></HTML>\n";
-				return myString;
-			}
 			return Database.getErrorMessage(e.getMessage());
 		}
 		catch (MudException e)
@@ -737,7 +737,7 @@ public class MudSocket extends Thread
 			default :
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDFRAMEERROR);
-				throw new PersonException(Constants.INVALIDFRAMEERROR);
+				throw new InvalidFrameException();
 			}
 		}
 		return returnStuff;
@@ -794,7 +794,7 @@ public class MudSocket extends Thread
 			default :
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDFRAMEERROR);
-				throw new PersonException(Constants.INVALIDFRAMEERROR);
+				throw new InvalidFrameException();
 			}
 		} // end switch 
 		int i = aCommand.indexOf(' ');

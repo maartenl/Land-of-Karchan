@@ -32,7 +32,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
-public class RoomException extends MudException
+abstract public class RoomException extends MudException
 {
 
 	public RoomException(String aString)

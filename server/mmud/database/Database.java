@@ -896,7 +896,7 @@ parameter
 		if (messagenr <= 0)
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-			throw new MailException(Constants.INVALIDMAILERROR);
+			throw new InvalidMailException();
 		}
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
@@ -914,7 +914,7 @@ parameter
 			if (!res.absolute(messagenr))
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-				throw new MailException(Constants.INVALIDMAILERROR);
+				throw new InvalidMailException();
 			}
 			result += "<H1>Read Mail - " + res.getString("header") + "</H1>";
 			result += "<HR noshade><TABLE BORDER=0>\r\n";
@@ -969,7 +969,7 @@ parameter
 		{
 			sqlReadMailMsg.close();
 			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-			throw new MailException(Constants.INVALIDMAILERROR);
+			throw new InvalidMailException();
 		}
 		sqlReadMailMsg.close();
 		}

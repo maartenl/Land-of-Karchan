@@ -67,7 +67,7 @@ public class SendMailCommand extends NormalCommand
 				catch (NumberFormatException e)
 				{
 					Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-					throw new MailException(Constants.INVALIDMAILERROR);
+					throw new InvalidMailException();
 				}
 				Logger.getLogger("mmud").finer("");
 				start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;

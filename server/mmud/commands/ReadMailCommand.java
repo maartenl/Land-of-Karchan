@@ -55,7 +55,7 @@ public class ReadMailCommand implements Command
 			catch (NumberFormatException e)
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-				throw new MailException(Constants.INVALIDMAILERROR);
+				throw new InvalidMailException();
 			}
 			return true;
 		}
