@@ -386,6 +386,7 @@ parseXml(mudpersonstruct *fmine)
 			if (strlen(temp)>19)
 			{
 				free(temp);
+				temp = NULL;
 				xmlFreeDoc(doc);
 				return 0;
 			}
@@ -557,6 +558,7 @@ store_in_list(int socketfd, char *buf)
 				filep = fopen("temp.txt", "w");
 				setMMudOut(filep);
 				gameMain(mine->command, mine->name, mine->password, "127.0.0.1"); 
+				//fprintf(filep,"This is a test.<BR>, %s, %s, %s, %i\n", mine->command, mine->name, mine->password, mine->frames);
 				fclose(filep);
 				filep = fopen("temp.txt", "r");
 				while (fgets(string, 1023, filep) != 0) 
@@ -586,12 +588,7 @@ store_in_list(int socketfd, char *buf)
 int 
 main(int argc, char **argv)
 {
-	char *command;
-	char name[22];
-	char password[40];
-	char frames[10];
-	char cookiepassword[40];
-	struct rusage usage;
+//	struct rusage usage;
 	int i;
 
 	// socket variables
@@ -615,33 +612,13 @@ main(int argc, char **argv)
 	sigemptyset(&(myEmergencySig.sa_mask));
 	myEmergencySig.sa_flags = 0;
 	sigaction(SIGSEGV, &myEmergencySig, NULL);
-	
-	/*command = (char *) malloc(cgiContentLength);
-	cgiFormString("command", command, cgiContentLength - 2);
-	if (command[0]==0) {strcpy(command,"l");}
-	cgiFormString("name", name, 20);
-	cgiFormString("password", password, 40);
-	getCookie("Karchan", cookiepassword);
-	if (strcmp(cookiepassword, password))
-	{
-		cgiHeaderContentType("text/html");
-		NotActive(name, password,3);
-	}
-	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
-	{
-		strcpy(frames, "none");
-		setFrames(0);
-	}
-	if (!strcmp(frames,"1")) {setFrames(0);}
-	if (!strcmp(frames,"2")) {setFrames(1);}
-	if (!strcmp(frames,"3")) {setFrames(2);}*/
 
 	/* do socket stuff */
 
 	FD_ZERO(&master_fds); // clear master file descriptor set
 	FD_ZERO(&read_fds); // clear the read file descriptor set
 	
-	openlog("mmud", LOG_CONS || LOG_PERROR || LOG_PID, LOG_USER);
+	openlog("mmserver", LOG_CONS || LOG_PERROR || LOG_PID, LOG_USER);
 
 	syslog(LOG_INFO, "%s: Started.", IDENTITY);
 	
@@ -660,9 +637,9 @@ main(int argc, char **argv)
 	fdmax = sockfd;
 	
 	/* below starts basically the entire call to the mudEngine */
+	opendbconnection();
 	initGameFunctionIndex(); // initialise command index 
 	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor as provided by cgic.c
-	command = (char *) malloc(1024);
 	while (1)
 	{
 		/* more socket stuff */
@@ -672,7 +649,7 @@ main(int argc, char **argv)
 			int i = errno;
 			if (i != EINTR)
 			{
-				fprintf(stderr, "select : %s\n", strerror(i));
+				syslog(LOG_ERR, "select : %s\n", strerror(i));
 				exit(8);
 			}
 		}
@@ -770,23 +747,9 @@ main(int argc, char **argv)
 				}
 			}
 		}
-/*		*command = 0;
-		printf("Name:");
-		fgets(name, 21, stdin);name[strlen(name)-1]=0;
-		printf("Password:");
-		fgets(password, 39, stdin);password[strlen(password)-1]=0;
-		printf("Frames:");
-		setFrames(2);
-		printf("Command:");
-		fgets(command, 1023, stdin);command[strlen(command)-1]=0;
-		WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", name, password, command);
-		gameMain(command, name, password, "127.0.0.1"); 
-		printf(",%s,%s,%s,\n",name, password, command);
-*/	
 	}
 	clearGameFunctionIndex(); // clear command index
-	
-	free(command); // clear the entered command
+	closedbconnection();
 
 	if (close(sockfd) == -1)
 	{

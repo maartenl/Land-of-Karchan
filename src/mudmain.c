@@ -299,8 +299,6 @@ void CookieNotFound(char *name, char *address)
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-	closedbconnection();
-	exit(0);
 }
 
 int
@@ -962,7 +960,8 @@ Look_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		return 1;
 	}
 	
-	if (aantal > 1) {
+	if (aantal > 2) 
+	{
 		LookItem_Command(name, password, room);
 		return 1;
 	}
@@ -1238,12 +1237,12 @@ initGameFunctionIndex()
 int
 gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 {
-	int             oldroom;
-	int             i;
-	char				frames[10];
-	char           *temp;
-	char            logname[100];
-	char 				*junk;
+	int		oldroom;
+	int		i;
+	char	frames[10];
+	char	*temp;
+	char	logname[100];
+	char	*junk;
 
 
 	command = fcommand;
@@ -1257,20 +1256,16 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
 
-	opendbconnection();
-
 	if (SearchBanList(faddress, name)) 
 	{
 		BannedFromGame(name, faddress);
 		free(printstr);
-		closedbconnection();
 		return 0;
 	}
 
 	if (!ExistUser(name)) {
 		NotActive(name,password,1);
 		free(printstr);
-		closedbconnection();
 		return 0;
 	}
 
@@ -1283,7 +1278,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	{
 		NotActive(name, password,2);
 		free(printstr);
-		closedbconnection();
 		return 0;
 	}
 	row = mysql_fetch_row(res);
@@ -1291,7 +1285,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	{
 		NotActive(name, password,3);
 		free(printstr);
-		closedbconnection();
 		return 0;
 	}
 	
@@ -1304,7 +1297,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		mysql_free_result(res);
 		Dead(name, password, room);
 		free(printstr);
-		closedbconnection();
 		return 0;
 	}
 	strcpy(guildstatus	, row[9]);
@@ -1349,7 +1341,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	   	closedbconnection();
 		return 1;
 	}
 	
@@ -1360,7 +1351,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	   closedbconnection();
 		return 1;
 	}
 
@@ -1371,14 +1361,12 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			Awaken2_Command(name, password, room);
 			free(junk);
 			free(printstr);
-	   	closedbconnection();
 			return 1;
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
 		WriteRoom(name, password, room, 1);
 		free(junk);
 		free(printstr);
-	   closedbconnection();
 		return 1;
 	}
 	
@@ -1403,7 +1391,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	   closedbconnection();
 		return 1;
 		}
 		if ((*command == '\0') ||
@@ -1413,7 +1400,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			WriteRoom(name, password, room, 0);
 			free(junk);
 			free(printstr);
-	   	closedbconnection();
 			return 1;
 		}
 		if ((!strcasecmp(command, "go west")) ||
@@ -1450,12 +1436,11 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			Quit_Command(name, password, room, tokens, command);
 		}
 
-	WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
-	WriteRoom(name, password, room, 0);
-	free(junk);
-	free(printstr);
-  	closedbconnection();
-	return 1;
+		WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		free(junk);
+		free(printstr);
+		return 1;
 	}
 
 	tokens[0] = junk;
@@ -1481,7 +1466,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	{
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}
 	
@@ -1520,7 +1504,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 				/* command executed successfully, kill this session */
 				free(junk);
 				free(printstr);
-			   closedbconnection();
 				return 1;
 			}
 			{
@@ -1540,7 +1523,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}
 	/* smile engagingly */
@@ -1551,7 +1533,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}
 	/* smile to bill */
@@ -1566,7 +1547,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}
 	/* smile(0) engagingly(1) to(2) Bill(3) */
@@ -1581,7 +1561,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}
 	/* multiple person emotions */
@@ -1601,7 +1580,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}			/* end of multiple persons emotions */
 	/* caress bill absentmindedly */
@@ -1621,7 +1599,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		WriteRoom(name, password, room, 0);
 		free(junk);
 		free(printstr);
-	  	closedbconnection();
 		return 1;
 	}			/* end of multiple persons emotions */
 
@@ -1633,7 +1610,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			SWTalk(name, password, room);
 			free(junk);
 			free(printstr);
-	  		closedbconnection();
 			return 1;
 		}
 
@@ -1647,7 +1623,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			BKTalk(name, password, room);
 			free(junk);
 			free(printstr);
-	  		closedbconnection();
 			return 1;
 		}
 
@@ -1661,7 +1636,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			VampTalk(name, password, room);
 			free(junk);
 			free(printstr);
-	  		closedbconnection();
 			return 1;
 		}
 
@@ -1675,7 +1649,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			KnightTalk(name, password, room);
 			free(junk);
 			free(printstr);
-	  		closedbconnection();
 			return 1;
 		}
 
@@ -1689,7 +1662,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			CoDTalk(name, password, room);
 			free(junk);
 			free(printstr);
-	  		closedbconnection();
 			return 1;
 		}
 
