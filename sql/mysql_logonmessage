@@ -9,7 +9,7 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 # update logonmessage
 #
 
-UPDATE logonmessage set message="<B>Logonmessage</B>
+UPDATE mm_logonmessage set message="<B>Logonmessage</B>
 <BR>
 <IMG SRC=\"/images/gif/letters/w.gif\"
 ALT=\"W\" ALIGN=left>
