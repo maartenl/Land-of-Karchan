@@ -39,17 +39,58 @@ of the first thirty seconds is available <A
 HREF=\"/sound/wav/echoes.wav\">here</A>. Ofcourse, the mp3 has much better
 quality.<P>
 
-At my place of work I know a
+Where did I get this? At my place of work I know a
 person who calls himself <FONT COLOR=\"red\">Redheat</FONT>, who makes
 Synthesizer music. He was kind enough to license two of his tracks to me for
 free distribution on my karchan.org website. You can find his website at
-<A HREF=\"http://www.red-heat.com\">http://www.red-heat.com</A>.<P>
+<A HREF=\"http://www.red-heat.com\">http://www.red-heat.com</A>. He has
+more scrumptious music to be downloaded there.<P>
 
 Bear in mind that I have licensed his music so I am allowed to
 distribute these two tracks through my website. If you wish to use these
-sound tracks as well, you will have to contact him.<P>
+sound tracks as well, you will have to contact him yourself.<P>
 
-I hope you all like the music.
+I hope you all like the music.<P>
+<I>What did you think of the LOK Main Soundtrack?</I><P>
+<FORM>
+<input
+type=\"radio\" name=\"poll\" value=\"1\" onClick=\"doClick(1)\">Yes, Cool!
+<BR><input type=\"radio\" name=\"poll\" value=\"2\"
+onClick=\"doClick(2)\">'Sokay.
+<BR><input type=\"radio\" name=\"poll\" value=\"3\"
+onClick=\"doClick(3)\">No, Bad!
+<BR><input type=\"radio\" name=\"poll\" value=\"4\"
+onClick=\"doClick(4)\">I didn't listen to it.
+<BR><input type=\"radio\" name=\"poll\" value=\"5\"
+onClick=\"doClick(5)\">I don't think Land of Karchan should have a
+Main Soundtrack.
+<BR><input type=\"radio\" name=\"poll\" value=\"6\"
+onClick=\"doClick(6)\">I don't like synthesizer music.
+<BR><input type=\"radio\" name=\"poll\" value=\"7\"
+onClick=\"doClick(7)\">D00D! You should have picked ... as soundtrack!
+(put name of soundtrack in the comments)
+<BR><input type=\"radio\" name=\"poll\" value=\"8\"
+onClick=\"doClick(8)\">Uhhh, fighting?
+<P>
+</FORM>
+<SCRIPT>
+<!-- Begin to hide sript contents from old browsers.
+function doClick(number)
+{
+// window.alert(number)
+   document.CommandForm.command.value=\"poll \" + number
+
+}
+// End the hiding here. -->
+</SCRIPT>
+<hr>
+<IMG SRC=\"/images/christmas/noel5.gif\">
+Tuesday, Dec 10 2002, 13:58<p>
+In light of recent events, I would like to remind everyone to
+read and abide by the Laws of Karchan. The Laws can be accessed by the
+link on the main page. Any severe disobeyment of these laws can, and
+probably will, result in a term of banishment that may
+extend until the end of time.<br>Regards,<br>Kel, Deputy to Karn<br>
 <HR>
 <IMG SRC=\"/images/christmas/xbow.gif\">
 Sunday, Nov 24 2002, 15:11<P>
