@@ -301,29 +301,41 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 
 roomstruct *GetRoomInfo(int room)
 {
-MYSQL_RES *res;
-MYSQL_ROW row;
-roomstruct *roomstr;
-int i;
-char temp[1024];
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	roomstruct *roomstr;
+	int i;
+	char temp[1024];
+	
+	roomstr = (roomstruct *)malloc(sizeof(*roomstr));
+	
+	roomstr->west=0;
+	roomstr->east=0;
+	roomstr->north=0;
+	roomstr->south=0;
+	roomstr->up=0;
+	roomstr->down=0;
+	
+	sprintf(temp, "select west, east, north, south, up, down from rooms where id=%i", room);
+	res=SendSQL2(temp, NULL);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+	
+		if (row != NULL)
+		{
+			roomstr->west=atoi(row[0]);
+			roomstr->east=atoi(row[1]);
+			roomstr->north=atoi(row[2]);
+			roomstr->south=atoi(row[3]);
+			roomstr->up=atoi(row[4]);
+			roomstr->down=atoi(row[5]);
+		}
+	
+		mysql_free_result(res);
+	}
 
-sprintf(temp, "select west, east, north, south, up, down from rooms where id=%i", room);
-res=SendSQL2(temp, NULL);
-
-row = mysql_fetch_row(res);
-
-roomstr = (roomstruct *)malloc(sizeof(*roomstr));
-
-roomstr->west=atoi(row[0]);
-roomstr->east=atoi(row[1]);
-roomstr->north=atoi(row[2]);
-roomstr->south=atoi(row[3]);
-roomstr->up=atoi(row[4]);
-roomstr->down=atoi(row[5]);
-
-mysql_free_result(res);
-
-return roomstr;
+	return roomstr;
 }
 
 char *generate_password(char *fpassword)
