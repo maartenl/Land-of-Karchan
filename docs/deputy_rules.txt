@@ -37,6 +37,7 @@ from deps, but these changes do need to be in character with the game. Karn
 does have the obligation however of communicating these changes with the deps
 first.
 
+9. A Deputy should, if he/she disagrees with another deputy, resolve the entire matter in the deputy group, and not take the disagreement out of the group of deputies and onto the game. This is necessary in order for normal players to see us as a solid front.
 
 Any other suggestions and ideas?
 I, Elwood have a suggestion regarding security
