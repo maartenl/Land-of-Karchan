@@ -308,7 +308,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + myInventory);
+		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
@@ -357,7 +357,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + myInventory);
+		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
@@ -406,7 +406,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + myInventory);
+		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
@@ -764,7 +764,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + items);
+		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
 	}
 
@@ -811,7 +811,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + items);
+		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
 	}
 
@@ -868,7 +868,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + items);
+		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
 	}
 
@@ -910,7 +910,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + items);
+		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
 	}
 
@@ -971,7 +971,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + items);
+		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
 	}
 
@@ -1014,7 +1014,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
-		Logger.getLogger("mmud").info("returns: " + myInventory);
+		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
