@@ -27,7 +27,6 @@ maartenl@il.fontys.nl
 #include "mud-lib2.h"
 
 extern roomstruct room;
-char           *troep;
 char           *command;
 char           *junk;
 char           *printstr;
@@ -58,7 +57,6 @@ KillGame()
 {
 //	closeDatabase();
 	closedbconnection();
-	free(troep);
 	free(junk);
 	free(printstr);
 	exit(0);
@@ -931,7 +929,7 @@ DeputyAlias(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	sprintf(temp, "select * from depalias where \"%s\" like id and \"%s\" like names",
-			troep, name);
+			command, name);
 	res=SendSQL2(temp, NULL);
 	if (res!=NULL)
 	{
@@ -990,7 +988,7 @@ Root_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
-	if ((*troep == 'a') && (*(troep + 1) == 'l') && (*(troep + 2) == 'l')) {
+	if ((*command == 'a') && (*(command + 1) == 'l') && (*(command + 2) == 'l')) {
 		SayToAll(command + 4);
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -1028,7 +1026,7 @@ Evil_Command(char *name, char *password, int room)
 {
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader, name);
-	if ((*troep == 'a') && (*(troep + 1) == 'l') && (*(troep + 2) == 'l')) {
+	if ((*command == 'a') && (*(command + 1) == 'l') && (*(command + 2) == 'l')) {
 		SayToAll(command + 4);
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -4573,7 +4571,7 @@ Search_Command(char *name, char *password, int room)
 	"(tmpitems.belongsto='') and "
 	"(tmpitems.room = %i) and "
 	"(tmpitems.search = '%s')"
-	, room, troep+(tokens[1]-tokens[0]));
+	, room, command+(tokens[1]-tokens[0]));
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
@@ -4584,7 +4582,7 @@ Search_Command(char *name, char *password, int room)
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", troep+(tokens[1]-tokens[0]));
+			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", command+(tokens[1]-tokens[0]));
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -4609,7 +4607,7 @@ Search_Command(char *name, char *password, int room)
 				"(wielding = '') and "
 				"(containerid = %i) and "
 				"(tmpitems.search = '%s')"
-				, name, itemid, containerid, troep+(tokens[1]-tokens[0]));
+				, name, itemid, containerid, command+(tokens[1]-tokens[0]));
 			res=SendSQL2(sqlstring, &changedrows);
 			mysql_free_result(res);
 	
@@ -4654,7 +4652,7 @@ Search_Command(char *name, char *password, int room)
 			"(search='%s') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, troep+(tokens[1]-tokens[0]), room);
+			, itemid, command+(tokens[1]-tokens[0]), room);
 		}
 		else
 		{
@@ -4664,16 +4662,16 @@ Search_Command(char *name, char *password, int room)
 			"(search='%s') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, troep+(tokens[1]-tokens[0]), room);
+			, itemid, command+(tokens[1]-tokens[0]), room);
 		}
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 	}
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You search %s and you find a %s, %s %s.<BR>\r\n", 
-		troep+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
+		command+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
-		name, troep+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
+		name, command+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }

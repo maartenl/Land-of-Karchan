@@ -29,11 +29,11 @@ maartenl@il.fontys.nl
 char            ItemDescr[100];
 
 void 
-Error(int i, char *troep)
+Error(int i, char *description)
 {
 	FILE           *fp;
 	fp = fopen(ErrorFile, "a");
-	fprintf(fp, "error %i: %s\n", i, troep);
+	fprintf(fp, "error %i: %s\n", i, description);
 	fclose(fp);
 }
 

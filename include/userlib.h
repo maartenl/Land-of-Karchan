@@ -26,7 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "typedefs.h"
 
-void Error(int i, char *troep);
+void Error(int i, char *description);
 /* Pre: i contains valid error values
    Post:ErrorFile(new) = ErrorFile(old) + Error(i)
 */

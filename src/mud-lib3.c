@@ -28,7 +28,6 @@ maartenl@il.fontys.nl
 #include "mud-lib3.h"
 
 extern roomstruct room;
-extern char    *troep;
 extern char    *command;
 extern char    *junk;
 extern char    *printstr;

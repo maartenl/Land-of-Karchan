@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "parser.h"
 
-extern char *troep;
 extern int      aantal;
 extern char    *tokens[100];
 extern char *command;
@@ -639,9 +638,9 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	int myroom = room;
 	
 	stuff = getdbconnection();
-	troep2 = (char *) malloc(strlen(troep)*2+3);
+	troep2 = (char *) malloc(strlen(command)*2+3);
 	// unsigned int mysql_real_escape_string(MYSQL *mysql, char *to, const char *from, unsigned int length) 
-	mysql_real_escape_string(&stuff, troep2, troep, strlen(troep));
+	mysql_real_escape_string(&stuff, troep2, command, strlen(command));
 	temp = (char *) malloc(strlen(troep2)+7*100+strlen(name));
 	sprintf(temp, "select commands.id, commands.name, commands.method_name, commands.args, methods.src"
 	" from commands, tmp_usertable user, methods"
