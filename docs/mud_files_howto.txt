@@ -1,0 +1,12 @@
+Files:
+------
+
+Some of the files that are important are located in the directory /karchan2/mud/data
+These are:
+- audit.trail
+- board.txt
+- bigfile
+
+These files are backed up weekly, (Sundays) and put in the files in dir /karchan/secret_docs
+For instance audit.trail/2000/audit.trail.04.30.2000.gz
+
