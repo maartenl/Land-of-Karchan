@@ -52,6 +52,11 @@ maartenl@il.fontys.nl
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
+char *current_name;
+char *current_password;
+int current_frames;
+char *current_command; 
+
 int signal_caught = 0;
 
 /**
@@ -72,6 +77,17 @@ void signalhandler(int signum)
 {
 	syslog(LOG_INFO, "signal %i caught.", signum);
 	signal_caught = signum;
+}
+
+/**
+ * this function will be run when the process receives a SIGTERM signal
+ * and will attempt to write the current command,username,frames to the syslog
+ * for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
+ */
+void emergency_signalhandler(int signum)
+{
+	syslog(LOG_INFO, "SIGSEGV signal caught. (%s, %s, %i)", current_name, current_command, current_frames);
+	abort();
 }
 
 int
@@ -532,6 +548,10 @@ store_in_list(int socketfd, char *buf)
 				printf("%s/%s/%i/%s\n", mine->name, mine->password, mine->frames, mine->command);
 				fflush(stdout);
 #endif
+				current_name = mine->name;
+				current_password = mine->password;
+				current_frames = mine->frames;
+				current_command = mine->command;
 				WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
 				filep = fopen("temp.txt", "w");
@@ -582,14 +602,19 @@ main(int argc, char **argv)
 	char buf[256]; // buffer for receiving info from socket
 		
 	// signal catching variables
-	struct sigaction mySig;
+	struct sigaction mySig, myEmergencySig;
 	mySig.sa_handler = &signalhandler;
+	myEmergencySig.sa_handler = &emergency_signalhandler;
 
 	sigemptyset(&(mySig.sa_mask));
 	mySig.sa_flags = 0;
 	sigaction(SIGHUP, &mySig, NULL);
 	sigaction(SIGUSR1, &mySig, NULL);
 	sigaction(SIGUSR2, &mySig, NULL);
+	
+	sigemptyset(&(myEmergencySig.sa_mask));
+	myEmergencySig.sa_flags = 0;
+	sigaction(SIGSEGV, &myEmergencySig, NULL);
 	
 	/*command = (char *) malloc(cgiContentLength);
 	cgiFormString("command", command, cgiContentLength - 2);
