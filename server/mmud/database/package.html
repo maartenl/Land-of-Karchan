@@ -110,6 +110,12 @@ windowdressing for rooms. In this case the field value is ignored by the mud.
 <DT>visible
 <DD>will make the item visible or invisible when in a room or in an
 inventory. The default is <I>visible</I>. 
+<DT>owner
+<DD>the owner of the object, i.e. the one that is allowed to make changes.
+If this is NULL, the first one to make any changes owns the item.
+<DT>creation
+<DD>timestamp, is updated with the current datetime 
+whenever a change takes place on the record in question.
 </DL>
 <PRE>
 +---------------------+
