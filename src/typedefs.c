@@ -91,6 +91,45 @@ void setShutdown(int aOffset)
 	}
 }
 
+char    **tokens;
+int		tokenamount;
+
+/* set number of available tokens. Usually only called once in gameMain
+*/
+void
+setTokenAmount(int amount)
+{
+	tokenamount = amount;
+}
+
+/* retrieve number of available tokens
+*/
+int
+getTokenAmount()
+{
+	return tokenamount;
+}
+
+/* set the token array, usually only called once in gameMaine
+*/
+void
+setTokens(char **ftokens)
+{
+	tokens = ftokens;
+}
+
+/* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
+*/
+char *
+getToken(int i)
+{
+	if (i >= tokenamount)
+	{
+		return "";
+	}
+	return tokens[i];
+}
+
 void 
 FatalError(FILE *output, int i, char *description, char *busywith)
 {         

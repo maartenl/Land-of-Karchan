@@ -29,8 +29,6 @@ maartenl@il.fontys.nl
 extern roomstruct room;
 char           *command;
 char           *printstr;
-char           *tokens[100];
-int             aantal;
 struct tm       datumtijd;
 time_t          datetime;
 
@@ -90,7 +88,7 @@ free(temp);
 }
 
 int 
-ListMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+ListMail_Command(char *name, char *password, int room, char *fcommand)
 {
 	int             i = 1,j;
 	FILE           *fp;
@@ -288,7 +286,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	
 
 int 
-Who_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Who_Command(char *name, char *password, int room, char *fcommand)
 {
 	int				i = 0;
 	FILE			*fp;
@@ -461,7 +459,7 @@ LookItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	if (aantal==3)
+	if (getTokenAmount()==3)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -470,9 +468,9 @@ LookItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.belongsto = '') and "
-			"(items.name = '%s')",room, tokens[2]);
+			"(items.name = '%s')",room, getToken(2));
 	}
-	if (aantal==4)
+	if (getTokenAmount()==4)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -485,28 +483,9 @@ LookItem_Command(char *name, char *password, int room)
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') )",
-			room, tokens[3], tokens[2], tokens[2], tokens[2]);
+			room, getToken(3), getToken(2), getToken(2), getToken(2));
 	}
-	if (aantal==5)
-	{
-		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
-			"items.container, tmpitems.containerid from items, "
-			"tmp_itemtable tmpitems where "
-			"(items.id = tmpitems.id) and "
-			"(tmpitems.room = %i) and "
-			"(tmpitems.search = '') and "
-			"(tmpitems.belongsto = '') and "
-			"(items.name = '%s') and "
-			"( (items.adject1='%s') or "
-			"  (items.adject2='%s') or "
-			"  (items.adject3='%s') ) and "
-			"( (items.adject1='%s') or "
-			"  (items.adject2='%s') or "
-			"  (items.adject3='%s') )",
-			room, tokens[4], tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3]);
-	}
-	if (aantal==6)
+	if (getTokenAmount()==5)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -521,13 +500,32 @@ LookItem_Command(char *name, char *password, int room)
 			"  (items.adject3='%s') ) and "
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
+			"  (items.adject3='%s') )",
+			room, getToken(4), getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3));
+	}
+	if (getTokenAmount()==6)
+	{
+		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
+			"items.container, tmpitems.containerid from items, "
+			"tmp_itemtable tmpitems where "
+			"(items.id = tmpitems.id) and "
+			"(tmpitems.room = %i) and "
+			"(tmpitems.search = '') and "
+			"(tmpitems.belongsto = '') and "
+			"(items.name = '%s') and "
+			"( (items.adject1='%s') or "
+			"  (items.adject2='%s') or "
+			"  (items.adject3='%s') ) and "
+			"( (items.adject1='%s') or "
+			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') ) and "
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') )",
-			room, tokens[5], tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
-			tokens[4], tokens[4], tokens[4]);
+			room, getToken(5), getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
+			getToken(4), getToken(4), getToken(4));
 	}
 	res=SendSQL2(temp, NULL);
 	if (res!=NULL)
@@ -629,7 +627,7 @@ LookItem_Command(char *name, char *password, int room)
 
 	}
 
-	if (aantal==3)
+	if (getTokenAmount()==3)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -637,9 +635,9 @@ LookItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.belongsto = '%s') and "
-			"(items.name = '%s')",name, tokens[2]);
+			"(items.name = '%s')",name, getToken(2));
 	}
-	if (aantal==4)
+	if (getTokenAmount()==4)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -651,27 +649,9 @@ LookItem_Command(char *name, char *password, int room)
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') )",
-			name, tokens[3], tokens[2], tokens[2], tokens[2]);
+			name, getToken(3), getToken(2), getToken(2), getToken(2));
 	}
-	if (aantal==5)
-	{
-		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
-			"tmp_itemtable tmpitems where "
-			"(items.id = tmpitems.id) and "
-			"(tmpitems.room = 0) and "
-			"(tmpitems.search = '') and "
-			"(tmpitems.belongsto = '%s') and "
-			"(items.name = '%s') and "
-			"( (items.adject1='%s') or "
-			"  (items.adject2='%s') or "
-			"  (items.adject3='%s') ) and "
-			"( (items.adject1='%s') or "
-			"  (items.adject2='%s') or "
-			"  (items.adject3='%s') )",
-			name, tokens[4], tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3]);
-	}
-	if (aantal==6)
+	if (getTokenAmount()==5)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -685,13 +665,31 @@ LookItem_Command(char *name, char *password, int room)
 			"  (items.adject3='%s') ) and "
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
+			"  (items.adject3='%s') )",
+			name, getToken(4), getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3));
+	}
+	if (getTokenAmount()==6)
+	{
+		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
+			"tmp_itemtable tmpitems where "
+			"(items.id = tmpitems.id) and "
+			"(tmpitems.room = 0) and "
+			"(tmpitems.search = '') and "
+			"(tmpitems.belongsto = '%s') and "
+			"(items.name = '%s') and "
+			"( (items.adject1='%s') or "
+			"  (items.adject2='%s') or "
+			"  (items.adject3='%s') ) and "
+			"( (items.adject1='%s') or "
+			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') ) and "
 			"( (items.adject1='%s') or "
 			"  (items.adject2='%s') or "
 			"  (items.adject3='%s') )",
-			name, tokens[5], tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
-			tokens[4], tokens[4], tokens[4]);
+			name, getToken(5), getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
+			getToken(4), getToken(4), getToken(4));
 	}
 	res=SendSQL2(temp, NULL);
 	if (res!=NULL)
@@ -757,7 +755,7 @@ LookItem_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 	}
 
-	if (aantal==3)
+	if (getTokenAmount()==3)
 	{
 		char *extralook;
 		extralook = NULL;
@@ -765,7 +763,7 @@ LookItem_Command(char *name, char *password, int room)
 			"where name='look' and "
 			"objectid='%s' and "
 			"objecttype=1",
-			tokens[2]);
+			getToken(2));
 		res=SendSQL2(temp, NULL);
 		if (res!=NULL)
 		{
@@ -782,7 +780,7 @@ LookItem_Command(char *name, char *password, int room)
 			"where (room = %i) and "
 			"(tmp_usertable.name<>'%s') and "
 			"(tmp_usertable.name='%s')",
-			room, name, tokens[2]);
+			room, name, getToken(2));
 		res=SendSQL2(temp, NULL);
 		if (res!=NULL)
 		{
@@ -909,7 +907,7 @@ return j;
 }
 
 int 
-Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Quit_Command(char *name, char *password, int room, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -939,18 +937,18 @@ Quit_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 }
 
 /*
- * tokens[1..aantal]
+ * tokens[1..getTokenAmount()]
  * 
- * aantal=1 tokens[1]=noun
+ * getTokenAmount()=1 getToken(1)=noun
  * 
- * aantal=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
+ * getTokenAmount()=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
  * tokens[1..2]=adject3 noun
  * 
- * aantal=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
+ * getTokenAmount()=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
  * tokens[1..3]=adject2 adject1 noun tokens[1..3]=adject2 adject3 noun
  * tokens[1..3]=adject3 adject1 noun tokens[1..3]=adject3 adject2 noun
  * 
- * aantal=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
+ * getTokenAmount()=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
  * adject2 noun tokens[1..4]=adject2 adject1 adject3 noun tokens[1..4]=adject2
  * adject3 adject1 noun tokens[1..4]=adject3 adject1 adject2 noun
  * tokens[1..4]=adject3 adject2 adject1 noun
@@ -966,7 +964,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 
 	sprintf(dude, "select id from items where");
 
-	switch (aantal) {
+	switch (getTokenAmount()) {
 		/* noun */
 	case 1:{
 		sprintf(temp, "%s items.name='%s'", dude, tok1);
@@ -1005,7 +1003,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 }				/* endproc */
 
 int 
-Stats_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Stats_Command(char *name, char *password, int room, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -1180,7 +1178,7 @@ GetMoney_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1206,7 +1204,7 @@ GetMoney_Command(char *name, char *password, int room)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(tmpitems.containerid = 0)"
-		, tokens[numberfilledout+1],
+		, getToken(numberfilledout+1),
 		amount, room);
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
@@ -1310,7 +1308,7 @@ DropMoney_Command(char *name, char *password, int room)
 	mygold = atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1323,7 +1321,7 @@ DropMoney_Command(char *name, char *password, int room)
 		return;
 	}
 
-	if (!strcasecmp(tokens[aantal-2],"copper"))
+	if (!strcasecmp(getToken(getTokenAmount()-2),"copper"))
 	{
 		if (mycopper<amount)
 		{
@@ -1340,7 +1338,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=36;
 	}
-	if (!strcasecmp(tokens[aantal-2],"silver"))
+	if (!strcasecmp(getToken(getTokenAmount()-2),"silver"))
 	{
 		if (mysilver<amount)
 		{
@@ -1357,7 +1355,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=37;
 	}
-	if (!strcasecmp(tokens[aantal-2],"gold"))
+	if (!strcasecmp(getToken(getTokenAmount()-2),"gold"))
 	{
 		if (mygold<amount)
 		{
@@ -1407,17 +1405,17 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop a %s coin.<BR>\r\n", 
-		tokens[aantal-2]);
+		getToken(getTokenAmount()-2));
 	WriteMessage(name, room, "%s drops a %s coin.<BR>\r\n",
-		name, tokens[aantal-2]);
+		name, getToken(getTokenAmount()-2));
 	}
 	else
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop %i %s coins.<BR>\r\n", 
-		amount, tokens[aantal-2]);
+		amount, getToken(getTokenAmount()-2));
 	WriteMessage(name, room, "%s drops %i %s coins.<BR>\r\n",
-		name, amount, tokens[aantal-2]);
+		name, amount, getToken(getTokenAmount()-2));
 	}
 	WriteRoom(name, password, room, 0);
 }
@@ -1443,7 +1441,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	sprintf(sqlstring, 
 		"select name from tmp_usertable where (name = '%s') and "
 		"(name <> '%s') and "
-		"(room = %i)",tokens[aantal-1], name, room);
+		"(room = %i)",getToken(getTokenAmount()-1), name, room);
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
@@ -1471,7 +1469,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	mycopper=atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1484,7 +1482,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		return ;
 	}
 
-	if (!strcasecmp(tokens[numberfilledout+1],"copper"))
+	if (!strcasecmp(getToken(numberfilledout+1),"copper"))
 	{
 		if (amount>mycopper) 
 		{
@@ -1493,7 +1491,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			return ;
 		}
 	}
-	if (!strcasecmp(tokens[numberfilledout+1],"silver"))
+	if (!strcasecmp(getToken(numberfilledout+1),"silver"))
 	{
 		if (amount>mysilver) 
 		{
@@ -1502,7 +1500,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			return ;
 		}
 	}
-	if (!strcasecmp(tokens[numberfilledout+1],"gold"))
+	if (!strcasecmp(getToken(numberfilledout+1),"gold"))
 	{
 		if (amount>mygold) 
 		{
@@ -1516,13 +1514,13 @@ GiveMoney_Command(char *name, char *password, int room)
 	sprintf(sqlstring, 
 		"update tmp_usertable set %s=%s-%i "
 		"where (name='%s')"
-		, tokens[numberfilledout+1], tokens[numberfilledout+1], amount, name);
+		, getToken(numberfilledout+1), getToken(numberfilledout+1), amount, name);
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 	sprintf(sqlstring, 
 		"update tmp_usertable set %s=%s+%i "
 		"where (name='%s')"
-		, tokens[numberfilledout+1], tokens[numberfilledout+1], amount, toname);
+		, getToken(numberfilledout+1), getToken(numberfilledout+1), amount, toname);
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
@@ -1530,21 +1528,21 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You give a %s coin to %s.<BR>\r\n", 
-		tokens[numberfilledout+1], toname);
+		getToken(numberfilledout+1), toname);
 	WriteMessageTo(toname, name, room, "%s gives a %s coin to %s.<BR>\r\n",
-		name, tokens[numberfilledout+1], toname);
+		name, getToken(numberfilledout+1), toname);
 	WriteSayTo(toname, name, room, "%s gives a %s coin to you.<BR>\r\n",
-		name, tokens[numberfilledout+1]);
+		name, getToken(numberfilledout+1));
 	}
 	else
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You give %i %s coins to %s.<BR>\r\n", 
-		amount, tokens[numberfilledout+1] ,toname);
+		amount, getToken(numberfilledout+1) ,toname);
 	WriteMessageTo(toname, name, room, "%s gives %i %s coins to %s.<BR>\r\n",
-		name, amount, tokens[numberfilledout+1], toname);
+		name, amount, getToken(numberfilledout+1), toname);
 	WriteSayTo(toname, name, room, "%s gives %i %s coins to you.<BR>\r\n",
-		name, amount, tokens[numberfilledout+1]);
+		name, amount, getToken(numberfilledout+1));
 	}
 	WriteRoom(name, password, room, 0);
 }
@@ -1565,7 +1563,7 @@ GetItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1577,7 +1575,7 @@ GetItem_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-		if (aantal==2+numberfilledout) 
+		if (getTokenAmount()==2+numberfilledout) 
 		{
 			/*get pick*/
 			sprintf(sqlstring, 
@@ -1590,9 +1588,9 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			, tokens[1+numberfilledout], amount, room);
+			, getToken(1+numberfilledout), amount, room);
 		}
-		if (aantal==3+numberfilledout) 
+		if (getTokenAmount()==3+numberfilledout) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -1608,11 +1606,13 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,tokens[numberfilledout+2], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
+			,getToken(numberfilledout+2), 
+			getToken(numberfilledout+1), 
+			getToken(numberfilledout+1), 
+			getToken(numberfilledout+1),
 			amount, room);
 		}
-		if (aantal==4+numberfilledout) 
+		if (getTokenAmount()==4+numberfilledout) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -1631,12 +1631,12 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,tokens[numberfilledout+3], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
+			,getToken(numberfilledout+3), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, room);
 		}
-		if (aantal==5+numberfilledout) 
+		if (getTokenAmount()==5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -1658,10 +1658,10 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,tokens[numberfilledout+4], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
-			tokens[numberfilledout+3], tokens[numberfilledout+3], tokens[numberfilledout+3],
+			,getToken(numberfilledout+4), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
 			amount, room);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -1791,7 +1791,7 @@ DropItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1803,7 +1803,7 @@ DropItem_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-		if (aantal==2+numberfilledout) 
+		if (getTokenAmount()==2+numberfilledout) 
 		{
 			/*put pick*/
 			sprintf(sqlstring, 
@@ -1817,9 +1817,9 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '')"
-			, tokens[1+numberfilledout], amount, name);
+			, getToken(1+numberfilledout), amount, name);
 		}
-		if (aantal==3+numberfilledout) 
+		if (getTokenAmount()==3+numberfilledout) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -1837,11 +1837,11 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,tokens[numberfilledout+2], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
+			,getToken(numberfilledout+2), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
 			amount, name);
 		}
-		if (aantal==4+numberfilledout) 
+		if (getTokenAmount()==4+numberfilledout) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -1862,12 +1862,12 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,tokens[numberfilledout+3], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
+			,getToken(numberfilledout+3), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, name);
 		}
-		if (aantal==5+numberfilledout) 
+		if (getTokenAmount()==5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -1891,10 +1891,10 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,tokens[numberfilledout+4], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
-			tokens[numberfilledout+3], tokens[numberfilledout+3], tokens[numberfilledout+3],
+			,getToken(numberfilledout+4), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
 			amount, name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -2016,7 +2016,7 @@ DropItem_Command(char *name, char *password, int room)
 }
 
 int
-Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Put_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* put [amount] <item> in <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2037,8 +2037,11 @@ Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 	char *checkerror;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
-	
-	amount = strtol(tokens[1], &checkerror, 10);
+	if (getTokenAmount()<4)
+	{
+		return 0;
+	}
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	/* item_a = item to be put into container
 	   item_b = container */
@@ -2053,61 +2056,65 @@ Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-	if (!strcasecmp(tokens[2+numberfilledout], "in"))
+	if ((getTokenAmount() > 2+numberfilledout) && (!strcasecmp(getToken(2+numberfilledout), "in")))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[1+numberfilledout]);
+		strcpy(itemname_a, getToken(1+numberfilledout));
 		*itemadject1_a = 0;
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>4+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>4+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>5+numberfilledout)
+		if (getTokenAmount()>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
 	}
 	else
-	if (!strcasecmp(tokens[3+numberfilledout], "in"))
+	if ((getTokenAmount() > 3+numberfilledout) && (!strcasecmp(getToken(3+numberfilledout), "in")))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[2+numberfilledout]);
-		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		strcpy(itemname_a, getToken(2+numberfilledout));
+		strcpy(itemadject1_a, getToken(1+numberfilledout));
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>5+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>6+numberfilledout)
+		if (getTokenAmount()>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
 	}
 	else
-	if (!strcasecmp(tokens[4+numberfilledout], "in"))
+	if ((getTokenAmount() > 4+numberfilledout) && (!strcasecmp(getToken(4+numberfilledout), "in")))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[3+numberfilledout]);
-		strcpy(itemadject1_a, tokens[1+numberfilledout]);
-		strcpy(itemadject2_a, tokens[2+numberfilledout]);
+		strcpy(itemname_a, getToken(3+numberfilledout));
+		strcpy(itemadject1_a, getToken(1+numberfilledout));
+		strcpy(itemadject2_a, getToken(2+numberfilledout));
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>6+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>7+numberfilledout)
+		if (getTokenAmount()>7+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
+	}
+	else
+	{
+		return 0;
 	}
 	/* retrieve info to find out if item to be put into container exists */
 	sprintf(sqlstring, 
@@ -2362,7 +2369,7 @@ Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 }
 
 int
-Retrieve_Command(char *name, char *password, int room, char **ftokens, char *command)
+Retrieve_Command(char *name, char *password, int room, char *command)
 {
 	/*
 	* retrieve [amount] <item> from <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2384,7 +2391,7 @@ Retrieve_Command(char *name, char *password, int room, char **ftokens, char *com
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	/* item_a = item to retrieve from container
 	   item_b = container */
@@ -2399,60 +2406,60 @@ Retrieve_Command(char *name, char *password, int room, char **ftokens, char *com
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-	if (!strcasecmp(tokens[2+numberfilledout], "from"))
+	if (!strcasecmp(getToken(2+numberfilledout), "from"))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[1+numberfilledout]);
+		strcpy(itemname_a, getToken(1+numberfilledout));
 		*itemadject1_a = 0;
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>4+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>4+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>5+numberfilledout)
+		if (getTokenAmount()>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
 	}
 	else
-	if (!strcasecmp(tokens[3+numberfilledout], "from"))
+	if (!strcasecmp(getToken(3+numberfilledout), "from"))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[2+numberfilledout]);
-		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		strcpy(itemname_a, getToken(2+numberfilledout));
+		strcpy(itemadject1_a, getToken(1+numberfilledout));
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>5+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>6+numberfilledout)
+		if (getTokenAmount()>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
 	}
 	else
-	if (!strcasecmp(tokens[4+numberfilledout], "from"))
+	if (!strcasecmp(getToken(4+numberfilledout), "from"))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, tokens[3+numberfilledout]);
-		strcpy(itemadject1_a, tokens[1+numberfilledout]);
-		strcpy(itemadject2_a, tokens[2+numberfilledout]);
+		strcpy(itemname_a, getToken(3+numberfilledout));
+		strcpy(itemadject1_a, getToken(1+numberfilledout));
+		strcpy(itemadject2_a, getToken(2+numberfilledout));
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, tokens[aantal-1]);
-		if (aantal>6+numberfilledout)
+		strcpy(itemname_b, getToken(getTokenAmount()-1));
+		if (getTokenAmount()>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-2]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
 		}
-		if (aantal>7+numberfilledout)
+		if (getTokenAmount()>7+numberfilledout)
 		{
-			strcpy(itemadject1_b, tokens[aantal-3]);
+			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
 		}
 	}
 	/* retrieve info to find out if item to be retrieved from container exist */
@@ -2662,7 +2669,7 @@ Retrieve_Command(char *name, char *password, int room, char **ftokens, char *com
 }
 
 int
-Wear_Command(char *name, char *password, int room, char **ftokens, char *command)
+Wear_Command(char *name, char *password, int room, char *command)
 {
 	/*
 	* wear <item> on <position>; 
@@ -2678,15 +2685,23 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
+	if (getTokenAmount()<4)
+	{
+		return 0;
+	}
+	if (strcasecmp(getToken(getTokenAmount()-2), "on"))
+	{
+		return 0;
+	}
 	itemwearable=-1;
-	if (!strcasecmp(tokens[aantal-1],"lefthand")) {itemwearable=1;}
-	if (!strcasecmp(tokens[aantal-1],"righthand")) {itemwearable=2;}
-	if (!strcasecmp(tokens[aantal-1],"head")) {itemwearable=4;}
-	if (!strcasecmp(tokens[aantal-1],"neck")) {itemwearable=7;}
-	if (!strcasecmp(tokens[aantal-1],"head")) {itemwearable=8;}
-	if (!strcasecmp(tokens[aantal-1],"body")) {itemwearable=9;}
-	if (!strcasecmp(tokens[aantal-1],"legs")) {itemwearable=10;}
-	if (!strcasecmp(tokens[aantal-1],"feet")) {itemwearable=11;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"lefthand")) {itemwearable=1;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"righthand")) {itemwearable=2;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"head")) {itemwearable=4;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"neck")) {itemwearable=7;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"head")) {itemwearable=8;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"body")) {itemwearable=9;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"legs")) {itemwearable=10;}
+	if (!strcasecmp(getToken(getTokenAmount()-1),"feet")) {itemwearable=11;}
 	
 	if ((itemwearable==1) || (itemwearable==2)) 
 	{
@@ -2703,7 +2718,7 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 		"from tmp_itemtable "
 		"where belongsto = '%s' and "
 		"wearing = '%s'"
-		, name, tokens[aantal-1]);
+		, name, getToken(getTokenAmount()-1));
 	res=SendSQL2(sqlstring, NULL);
 	if (res != NULL)
 	{
@@ -2726,7 +2741,7 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*wear pick*/
 			sprintf(sqlstring, 
@@ -2740,9 +2755,9 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1], name, sqlcomposite);
+			, getToken(1), name, sqlcomposite);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -2759,11 +2774,11 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name, sqlcomposite);
 		}
-		if (aantal==6) 
+		if (getTokenAmount()==6) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -2783,12 +2798,12 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems_containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name, sqlcomposite);
 		}
-		if (aantal==7) 
+		if (getTokenAmount()==7) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -2811,10 +2826,10 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name, sqlcomposite);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -2854,7 +2869,7 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 		sprintf(sqlstring, 
 		"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 		" values(%i, '', '%s', 1, 0, '%s', '')"
-		, itemid, name, tokens[aantal-1]);
+		, itemid, name, getToken(getTokenAmount()-1));
 	}
 	else
 	{
@@ -2865,22 +2880,22 @@ Wear_Command(char *name, char *password, int room, char **ftokens, char *command
 		"(wielding='') and "
 		"(wearing='') and "
 		"(containerid = 0)"
-		, tokens[aantal-1], itemid, name);
+		, getToken(getTokenAmount()-1), itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You wear a %s, %s %s on your %s.<BR>\r\n", 
-		itemadject1, itemadject2, itemname, tokens[aantal-1]);
+		itemadject1, itemadject2, itemname, getToken(getTokenAmount()-1));
 	WriteMessage(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
-		name, itemadject1, itemadject2, itemname, HeShe3(mysex), tokens[aantal-1]);
+		name, itemadject1, itemadject2, itemname, HeShe3(mysex), getToken(getTokenAmount()-1));
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
 
 int
-Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Unwear_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* wear <item> on <position>; 
@@ -2905,7 +2920,7 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (aantal==2) 
+		if (getTokenAmount()==2) 
 		{
 			/*wear pick*/
 			sprintf(sqlstring, 
@@ -2918,9 +2933,9 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1], name );
+			, getToken(1), name );
 		}
-		if (aantal==3) 
+		if (getTokenAmount()==3) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -2936,11 +2951,11 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name);
 		}
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -2959,12 +2974,12 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -2986,10 +3001,10 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3060,7 +3075,7 @@ Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 }
 
 int
-Wield_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Wield_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* wield <item>; 
@@ -3114,7 +3129,7 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (aantal==2) 
+		if (getTokenAmount()==2) 
 		{
 			/*wear pick*/
 			sprintf(sqlstring, 
@@ -3128,9 +3143,9 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"			
-			, tokens[1], name);
+			, getToken(1), name);
 		}
-		if (aantal==3) 
+		if (getTokenAmount()==3) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -3147,11 +3162,11 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name);
 		}
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -3171,12 +3186,12 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3199,10 +3214,10 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3268,7 +3283,7 @@ Wield_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 }
 
 int
-Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Unwield_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* unwield <item>; 
@@ -3293,7 +3308,7 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (aantal==2) 
+		if (getTokenAmount()==2) 
 		{
 			/*wear pick*/
 			sprintf(sqlstring, 
@@ -3306,9 +3321,9 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1], name );
+			, getToken(1), name );
 		}
-		if (aantal==3) 
+		if (getTokenAmount()==3) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -3324,11 +3339,11 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name);
 		}
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -3347,12 +3362,12 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3374,10 +3389,10 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3450,7 +3465,7 @@ Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcom
 }
 
 int
-Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Eat_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* eat <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3478,7 +3493,7 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 			WriteRoom(name, password, room, 0);
 			return 1;
 	} /* too much to eat */
-		if (aantal==2) 
+		if (getTokenAmount()==2) 
 		{
 			/*eat pick*/
 			sprintf(sqlstring, 
@@ -3493,9 +3508,9 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 			"(tmpitems.wielding = '') and "
 			"(items.eatable <> '') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1], name);
+			, getToken(1), name);
 		}
-		if (aantal==3) 
+		if (getTokenAmount()==3) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -3513,11 +3528,11 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name);
 		}
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -3538,12 +3553,12 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3567,10 +3582,10 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3637,7 +3652,7 @@ Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand
 }
 
 int
-Drink_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Drink_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3673,7 +3688,7 @@ Drink_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			WriteRoom(name, password, room, 0);
 			return 1;
 	} /* too much to drink spiritual like */
-		if (aantal==2) 
+		if (getTokenAmount()==2) 
 		{
 			/*put pick*/
 			sprintf(sqlstring, 
@@ -3688,9 +3703,9 @@ Drink_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1], name);
+			, getToken(1), name);
 		}
-		if (aantal==3) 
+		if (getTokenAmount()==3) 
 		{
 			/*get iron pick*/
 			sprintf(sqlstring, 
@@ -3708,11 +3723,11 @@ Drink_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[2], 
-			tokens[1], tokens[1], tokens[1],
+			,getToken(2), 
+			getToken(1), getToken(1), getToken(1),
 			name);
 		}
-		if (aantal==4) 
+		if (getTokenAmount()==4) 
 		{
 			/*get iron strong pick*/
 			sprintf(sqlstring, 
@@ -3733,12 +3748,12 @@ Drink_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[3], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
+			,getToken(3), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (aantal==5) 
+		if (getTokenAmount()==5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3762,10 +3777,10 @@ Drink_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[4], 
-			tokens[1], tokens[1], tokens[1],
-			tokens[2], tokens[2], tokens[2],
-			tokens[3], tokens[3], tokens[3],
+			,getToken(4), 
+			getToken(1), getToken(1), getToken(1),
+			getToken(2), getToken(2), getToken(2),
+			getToken(3), getToken(3), getToken(3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3918,7 +3933,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	mygold = atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -3930,7 +3945,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-		if (aantal==2+numberfilledout) 
+		if (getTokenAmount()==2+numberfilledout) 
 		{
 			/*give pick to Karn*/
 			sprintf(sqlstring, 
@@ -3941,9 +3956,9 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.containerid = 0)"
-			, tokens[1+numberfilledout], amount, fromname);
+			, getToken(1+numberfilledout), amount, fromname);
 		}
-		if (aantal==3+numberfilledout) 
+		if (getTokenAmount()==3+numberfilledout) 
 		{
 			/*give iron pick to Karn*/
 			sprintf(sqlstring, 
@@ -3957,11 +3972,11 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[numberfilledout+2], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
+			,getToken(numberfilledout+2), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
 			amount, fromname);
 		}
-		if (aantal==4+numberfilledout) 
+		if (getTokenAmount()==4+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -3978,12 +3993,12 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[numberfilledout+3], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
+			,getToken(numberfilledout+3), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, fromname);
 		}
-		if (aantal==5+numberfilledout) 
+		if (getTokenAmount()==5+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -4003,10 +4018,10 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.containerid = 0)"
-			,tokens[numberfilledout+4], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
-			tokens[numberfilledout+3], tokens[numberfilledout+3], tokens[numberfilledout+3],
+			,getToken(numberfilledout+4), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
 			amount, fromname);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -4135,7 +4150,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -4147,7 +4162,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-	if (aantal==2+numberfilledout) 
+	if (getTokenAmount()==2+numberfilledout) 
 	{
 		/*sell pick to Karn*/
 		sprintf(sqlstring, 
@@ -4160,9 +4175,9 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		, tokens[1+numberfilledout], amount, name);
+		, getToken(1+numberfilledout), amount, name);
 	}
-	if (aantal==3+numberfilledout) 
+	if (getTokenAmount()==3+numberfilledout) 
 	{
 		/*give iron pick to Karn*/
 		sprintf(sqlstring, 
@@ -4178,11 +4193,11 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,tokens[numberfilledout+2], 
-		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
+		,getToken(numberfilledout+2), 
+		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
 		amount, name);
 	}
-	if (aantal==4+numberfilledout) 
+	if (getTokenAmount()==4+numberfilledout) 
 	{
 		/*give iron strong pick to Karn*/
 		sprintf(sqlstring, 
@@ -4201,12 +4216,12 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,tokens[numberfilledout+3], 
-		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-		tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
+		,getToken(numberfilledout+3), 
+		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+		getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 		amount, name);
 	}
-	if (aantal==5+numberfilledout) 
+	if (getTokenAmount()==5+numberfilledout) 
 	{
 		/*give iron strong pick to Karn*/
 		sprintf(sqlstring, 
@@ -4228,10 +4243,10 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,tokens[numberfilledout+4], 
-		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-		tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
-		tokens[numberfilledout+3], tokens[numberfilledout+3], tokens[numberfilledout+3],
+		,getToken(numberfilledout+4), 
+		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+		getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+		getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
 		amount, name);
 	}
 	res=SendSQL2(sqlstring, &changedrows);
@@ -4334,7 +4349,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 }
 
 int
-Search_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Search_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* search <object>
@@ -4358,7 +4373,7 @@ Search_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 	"(tmpitems.belongsto='') and "
 	"(tmpitems.room = %i) and "
 	"(tmpitems.search = '%s')"
-	, room, command+(tokens[1]-tokens[0]));
+	, room, command+(getToken(1)-getToken(0)));
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
@@ -4369,7 +4384,7 @@ Search_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", command+(tokens[1]-tokens[0]));
+			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", command+(getToken(1)-getToken(0)));
 			WriteRoom(name, password, room, 0);
 			return 1;
 		}
@@ -4394,7 +4409,7 @@ Search_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 				"(wielding = '') and "
 				"(containerid = %i) and "
 				"(tmpitems.search = '%s')"
-				, name, itemid, containerid, command+(tokens[1]-tokens[0]));
+				, name, itemid, containerid, command+(getToken(1)-getToken(0)));
 			res=SendSQL2(sqlstring, &changedrows);
 			mysql_free_result(res);
 	
@@ -4439,7 +4454,7 @@ Search_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(search='%s') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, command+(tokens[1]-tokens[0]), room);
+			, itemid, command+(getToken(1)-getToken(0)), room);
 		}
 		else
 		{
@@ -4449,21 +4464,21 @@ Search_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"(search='%s') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, command+(tokens[1]-tokens[0]), room);
+			, itemid, command+(getToken(1)-getToken(0)), room);
 		}
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 	}
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You search %s and you find a %s, %s %s.<BR>\r\n", 
-		command+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
+		command+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
-		name, command+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
+		name, command+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
 
-void
+int
 GiveItem_Command(char *name, char *password, int room)
 {
 	/*
@@ -4479,29 +4494,38 @@ GiveItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
+	if (getTokenAmount() < 4)
+	{
+		return 0;
+	}
+	if (strcasecmp(getToken(getTokenAmount()-2), "to"))
+	{
+		return 0;
+	}
+
 	/* look for specific person */
 	sprintf(sqlstring, 
 		"select name from tmp_usertable where (name = '%s') and "
 		"(name <> '%s') and "
-		"(room = %i)",tokens[aantal-1], name, room);
+		"(room = %i)",getToken(getTokenAmount()-1), name, room);
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		return ;
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		return ;
+		return 1;
 	}
 	strcpy(toname, row[0]);
 	mysql_free_result(res);
 
-	amount = strtol(tokens[1], &checkerror, 10);
+	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -4511,9 +4535,9 @@ GiveItem_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		return ;
+		return 1;
 	}
-		if (aantal==4+numberfilledout) 
+		if (getTokenAmount()==4+numberfilledout) 
 		{
 			/*give pick to Karn*/
 			sprintf(sqlstring, 
@@ -4525,9 +4549,9 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			, tokens[1+numberfilledout], amount, name);
+			, getToken(1+numberfilledout), amount, name);
 		}
-		if (aantal==5+numberfilledout) 
+		if (getTokenAmount()==5+numberfilledout) 
 		{
 			/*give iron pick to Karn*/
 			sprintf(sqlstring, 
@@ -4542,11 +4566,11 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,tokens[numberfilledout+2], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
+			,getToken(numberfilledout+2), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
 			amount, name);
 		}
-		if (aantal==6+numberfilledout) 
+		if (getTokenAmount()==6+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -4564,12 +4588,12 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,tokens[numberfilledout+3], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
+			,getToken(numberfilledout+3), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, name);
 		}
-		if (aantal==7+numberfilledout) 
+		if (getTokenAmount()==7+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -4590,10 +4614,10 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,tokens[numberfilledout+4], 
-			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
-			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
-			tokens[numberfilledout+3], tokens[numberfilledout+3], tokens[numberfilledout+3],
+			,getToken(numberfilledout+4), 
+			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
 			amount, name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -4601,14 +4625,14 @@ GiveItem_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			return ;
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			return ;
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -4660,7 +4684,7 @@ GiveItem_Command(char *name, char *password, int room)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
-					return ;
+					return 1;
 				}
 				mysql_free_result(res);
 		}
@@ -4715,7 +4739,7 @@ GiveItem_Command(char *name, char *password, int room)
 }
 
 int
-Read_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Read_Command(char *name, char *password, int room, char *fcommand)
 {
 	/*
 	* read <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4736,7 +4760,7 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 	
-	if (aantal==2) 
+	if (getTokenAmount()==2) 
 	{
 		/*put pick*/
 		sprintf(sqlstring, 
@@ -4748,9 +4772,9 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		, tokens[1], room);
+		, getToken(1), room);
 	}
-	if (aantal==3) 
+	if (getTokenAmount()==3) 
 	{
 		/*get iron pick*/
 		sprintf(sqlstring, 
@@ -4765,11 +4789,11 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[2], 
-		tokens[1], tokens[1], tokens[1],
+		,getToken(2), 
+		getToken(1), getToken(1), getToken(1),
 		room);
 	}
-	if (aantal==4) 
+	if (getTokenAmount()==4) 
 	{
 		/*get iron strong pick*/
 		sprintf(sqlstring, 
@@ -4787,12 +4811,12 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[3], 
-		tokens[1], tokens[1], tokens[1],
-		tokens[2], tokens[2], tokens[2],
+		,getToken(3), 
+		getToken(1), getToken(1), getToken(1),
+		getToken(2), getToken(2), getToken(2),
 		room);
 	}
-	if (aantal==5) 
+	if (getTokenAmount()==5) 
 	{
 		/*get iron strong strong pick*/
 		sprintf(sqlstring, 
@@ -4813,10 +4837,10 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[4], 
-		tokens[1], tokens[1], tokens[1],
-		tokens[2], tokens[2], tokens[2],
-		tokens[3], tokens[3], tokens[3],
+		,getToken(4), 
+		getToken(1), getToken(1), getToken(1),
+		getToken(2), getToken(2), getToken(2),
+		getToken(3), getToken(3), getToken(3),
 		room);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -4837,7 +4861,7 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 	
 	mysql_free_result(res);
 
-	if (aantal==2) 
+	if (getTokenAmount()==2) 
 	{
 		/*put pick*/
 		sprintf(sqlstring, 
@@ -4849,9 +4873,9 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		, tokens[1], name);
+		, getToken(1), name);
 	}
-	if (aantal==3) 
+	if (getTokenAmount()==3) 
 	{
 		/*get iron pick*/
 		sprintf(sqlstring, 
@@ -4866,11 +4890,11 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[2], 
-		tokens[1], tokens[1], tokens[1],
+		,getToken(2), 
+		getToken(1), getToken(1), getToken(1),
 		name);
 	}
-	if (aantal==4) 
+	if (getTokenAmount()==4) 
 	{
 		/*get iron strong pick*/
 		sprintf(sqlstring, 
@@ -4888,12 +4912,12 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[3], 
-		tokens[1], tokens[1], tokens[1],
-		tokens[2], tokens[2], tokens[2],
+		,getToken(3), 
+		getToken(1), getToken(1), getToken(1),
+		getToken(2), getToken(2), getToken(2),
 		name);
 	}
-	if (aantal==5) 
+	if (getTokenAmount()==5) 
 	{
 		/*get iron strong strong pick*/
 		sprintf(sqlstring, 
@@ -4914,10 +4938,10 @@ Read_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,tokens[4], 
-		tokens[1], tokens[1], tokens[1],
-		tokens[2], tokens[2], tokens[2],
-		tokens[3], tokens[3], tokens[3],
+		,getToken(4), 
+		getToken(1), getToken(1), getToken(1),
+		getToken(2), getToken(2), getToken(2),
+		getToken(3), getToken(3), getToken(3),
 		name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -5018,7 +5042,7 @@ Dead(char *name, char *password, int room)
 }
 
 int
-ChangeTitle_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+ChangeTitle_Command(char *name, char *password, int room, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -5026,7 +5050,7 @@ ChangeTitle_Command(char *name, char *password, int room, char **ftokens, char *
 	char logname[100];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
-	title = command+(tokens[1]-tokens[0]);
+	title = command+(getToken(1)-getToken(0));
 	safetitle = (char *) malloc(strlen(title)*2+2);
 	mysql_escape_string(safetitle, title, strlen(title));
 	temp = (char *) malloc(80 + strlen(safetitle) + strlen(name));

@@ -263,7 +263,7 @@ return 1;
 }
 
 char * 
-ExistUserByDescription(char **ftokens, int beginning, int amount, int room, char **returndesc)
+ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -287,11 +287,11 @@ ExistUserByDescription(char **ftokens, int beginning, int amount, int room, char
 	"' ', sex, ' ', race)"
 	" from tmp_usertable where room = %i and '%s' in "
 	"(race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg) ",
-		room, ftokens[beginning]);
+		room, getToken(beginning));
 	for (i=beginning+1;i<beginning+amount;i++)
 	{
 		strcat(temp, " and '");
-		strcat(temp, ftokens[i]);
+		strcat(temp, getToken(i));
 		strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
 	}
 	res=SendSQL2(temp, NULL);

@@ -27,8 +27,7 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # for instance: '-DDEBUG=1' and consequently recompiling the mud source code
 # will yield a binary with level 1 debug messages added.
 
-DEBUG = 
-#-DDEBUG
+DEBUG = -DDEBUG
 
 #
 #------------------------------------------------------------------

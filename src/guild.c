@@ -29,8 +29,6 @@ maartenl@il.fontys.nl
 extern roomstruct room;
 char           *command;
 char           *printstr;
-char           *tokens[100];
-int             aantal;
 struct tm       datumtijd;
 time_t          datetime;
 
@@ -169,7 +167,7 @@ MIFTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
@@ -319,7 +317,7 @@ RangerTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
@@ -347,7 +345,7 @@ SWTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='SW'");
 	res=SendSQL2(temp, NULL);
@@ -375,7 +373,7 @@ DepTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where god=1");
 	res=SendSQL2(temp, NULL);
@@ -402,7 +400,7 @@ BKTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='BKIC'");
 	res=SendSQL2(temp, NULL);
@@ -429,7 +427,7 @@ VampTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='Kindred'");
 	res=SendSQL2(temp, NULL);
@@ -456,7 +454,7 @@ KnightTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='Knights'");
 	res=SendSQL2(temp, NULL);
@@ -483,7 +481,7 @@ CoDTalk(char *name, char *password, int room)
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",
-	name, command + (tokens[2] - tokens[0]));
+	name, command + (getToken(2) - getToken(0)));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='CoD'");
 	res=SendSQL2(temp, NULL);

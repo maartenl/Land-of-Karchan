@@ -26,8 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "parser.h"
 
-extern int      aantal;
-extern char    *tokens[100];
 extern char *command;
 char *stringbuffer;
 
@@ -490,7 +488,7 @@ int Parse(char *name, int *room, char *parserstring)
 					temp = (char *) malloc(memory+255);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
-					sprintf(change, "%i", aantal);
+					sprintf(change, "%i", getTokenAmount());
 					strcat(temp, change);
 					strcat(temp, i+strlen("%amount"));
 					free(string);
@@ -506,12 +504,12 @@ int Parse(char *name, int *room, char *parserstring)
 					number[1]=i[2];
 					number[2]=0;
 					integer = atoi(number);
-					if ((integer > 0) && (integer <= aantal))
+					if ((integer > 0) && (integer <= getTokenAmount()))
 					{
 						temp = (char *) malloc(memory+255);
 						temp[i-string]=0;
 						strncpy(temp, string, i-string);
-						strcat(temp, tokens[integer-1]);
+						strcat(temp, getToken(integer-1));
 						strcat(temp, i+3);
 						free(string);
 						string=temp;

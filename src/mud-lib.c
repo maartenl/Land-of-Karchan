@@ -383,7 +383,7 @@ if (!getFrames())
 }
 
 int
-Inventory_Command(char * name, char * password, int room, char **ftokens, char *fcommand)
+Inventory_Command(char * name, char * password, int room, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;

@@ -30,13 +30,11 @@ maartenl@il.fontys.nl
 extern roomstruct room;
 extern char    *command;
 extern char    *printstr;
-extern char    *tokens[100];
-extern int      aantal;
 extern struct tm datumtijd;
 extern time_t   datetime;
 
 int
-GoWest_Command(char *name, char *password, int room, char **ftokens, char *command)
+GoWest_Command(char *name, char *password, int room, char *command)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -102,7 +100,7 @@ GoWest_Command(char *name, char *password, int room, char **ftokens, char *comma
 }				/* endproc */
 
 int
-GoEast_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+GoEast_Command(char *name, char *password, int room, char *fcommand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -169,7 +167,7 @@ GoEast_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 }				/* endproc */
 
 int
-GoNorth_Command(char *name, char *password, int room, char **ftokens, char *fcommmand)
+GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -236,7 +234,7 @@ GoNorth_Command(char *name, char *password, int room, char **ftokens, char *fcom
 }				/* endproc */
 
 int
-GoSouth_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+GoSouth_Command(char *name, char *password, int room, char *fcommand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -302,7 +300,7 @@ GoSouth_Command(char *name, char *password, int room, char **ftokens, char *fcom
 }				/* endproc */
 
 int
-Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Sleep_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
 	MYSQL_RES *res;
@@ -341,7 +339,7 @@ Awaken2_Command(char *name, char *password, int room)
 }
 
 int
-BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+BigTalk_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -393,7 +391,7 @@ BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcom
 }				/* endproc */
 
 int
-MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char *fcommand)
+MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -450,7 +448,7 @@ MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char 
 }				/* endproc */
 
 int
-Time_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Time_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -461,7 +459,7 @@ Time_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 }				/* endproc */
 
 int
-Date_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+Date_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
