@@ -38,4 +38,13 @@ Saving an entire directory and releasing it and removing it:
 cvs commit <directory>
 cvs release -d <directory>
 
+Accessing CVS files remotely:
+-----------------------------
+
+First login:
+cvs -d :pserver:karn@linux706.dn.net:/karchan2/mud/cvsroot login         
+
+Then use all the old standard cvs commands as explained above:
+cvs -d :pserver:karn@linux706.dn.net:/karchan2/mud/cvsroot checkout docs
+
 
