@@ -580,10 +580,6 @@ store_in_list(int socketfd, char *buf)
 				}
 				setMMudOut(filep);
 				gameMain(mine->command, mine->name, mine->password, "127.0.0.1"); 
-				if (!strcasecmp(mine->command, "admin shutdown"))
-				{
-					setShutdown(1);
-				}
 				fclose(filep);
 				filep = fopen("temp.txt", "r");
 				while (fgets(string, 1023, filep) != 0) 
@@ -667,6 +663,7 @@ main(int argc, char **argv)
 	opendbconnection();
 	initGameFunctionIndex(); // initialise command index 
 	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor 
+	syslog(LOG_INFO, "accepting incoming connections...");
 	while (!isShuttingdown())
 	{
 #ifdef DEBUG
