@@ -12,6 +12,4 @@ debug in a production environment.
 - wearing
 - wielding
 - remove news.html
-- write Stacktrace into mm_logs, new writeException in Database, change
-table
 - add %SLONG, %TLONG
