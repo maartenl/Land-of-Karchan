@@ -72,6 +72,16 @@ null, command varchar(255) not null, primary key(stamp, name));
 'buggie','dragon') not null default "human";
 - ALTER TABLE mm_usertable MODIFY sex enum('male','female')
 not null default "male";
+- ALTER TABLE mm_rooms MODIFY contents TEXT not null;
+- ALTER TABLE characterinfo MODIFY storyline TEXT;
+- ALTER TABLE mm_help MODIFY contents TEXT not null;
+- ALTER TABLE mm_items MODIFY eatable TEXT;
+- ALTER TABLE mm_items MODIFY drinkable TEXT;
+- ALTER TABLE mm_items MODIFY description TEXT not null;
+- ALTER TABLE mm_items MODIFY readdescr TEXT;
+- ALTER TABLE mm_logonmessage MODIFY message TEXT not null;
+- ALTER TABLE mm_mailtable MODIFY message TEXT not null;
+
 
 Creating a dupe database
 ------------------------
