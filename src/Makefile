@@ -34,7 +34,7 @@ EXEDIR = /home/httpd/cgi-bin
 LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
 OPTIONS = -lm -lmysqlclient -lcookies
 
-TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
+TARGETS = mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
 wholist personal_info clearcharacters
 
@@ -46,6 +46,9 @@ cgic.o: cgic.c
 
 mud.o: mud.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c 
+
+events.o: events.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c events.c 
 
 newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c newchar.c 
@@ -105,6 +108,9 @@ newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c
 
 mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
 	$(CC) $(COPTS) -o mud cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
+
+events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o events.c
+	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(OPTIONS) 
 
 mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mudserver.c enter newchar 
 	$(CC) $(COPTS) -o mudserver cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mudserver.o $(LIBDIR) $(OPTIONS) 
