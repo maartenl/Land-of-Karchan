@@ -14,6 +14,14 @@ return
 " where id = 2;
 
 update methods
+set src = "debug
+if sql(\"select 1 from tmp_usertable where name='%me' and room in (1,3,164)\")
+	say(\"Fighting is not allowed in this area.<BR>\")
+	showstandard
+return
+" where id = 4;
+
+update methods
 set src = "if sql(""select 1 from rooms where id=20 and south=0"")
 	say(""You succeed in opening the door of the cupboard. \\\\
 		 [<A HREF=""http://www.karchan.org/images/mpeg/her.mpg"">\\\\
@@ -83,6 +91,87 @@ else
 end
 return
 " where id=3;
+
+update methods
+set src = "sayeveryone(""%me says [to Kainian] :  Please heal me, good priest.<BR>"")
+if sql(""select 1 from tmp_usertable where name='%me' and \\\\
+	copper+silver*10+gold*100>=10000"")
+	sayeveryone(""Kainian prays to the Almighty Karn for his divine influence \\\\
+	in the restoration of the health of %me. Suddenly %me is struck with an \\\\
+	unearthly light!<BR>"")
+	say(""Kainian prays to the Almighty Karn for his divine influence in the \\\\
+	restoration of your health. Suddenly you feel yourself full of new \\\\
+	energy!<BR>"")
+	sql(""update tmp_usertable set gold=gold-100 where name='%me'"")
+	sql(""update tmp_usertable set silver=silver+gold*10, gold=0 where \\\\
+	name='%me' and gold<0"")
+	sql(""update tmp_usertable set copper=copper+silver*10, silver=0 where \\\\
+	 name='%me' and silver<0"")
+	sql(""update tmp_usertable set vitals=vitals-125 where name='%me'"")
+	sql(""update tmp_usertable set vitals=0 where name='%me' and vitals<0"")
+else
+	say(""Kainian says [to you] : You do not have enough money.<BR>"")
+	sayeveryone(""Kainian says [to %me] : You do not have enough money.<BR>"")
+end
+showstandard
+" where id = 5;
+
+update methods
+set src = "sayeveryone(""%me says [to Kainian] :  Please heal me, good priest.<BR>"")
+if sql(""select 1 from tmp_usertable where name='%me' and \\\\
+	copper+silver*10+gold*100>=2500"")
+	sayeveryone(""Kainian prays to the Almighty Karn for his divine influence \\\\
+	in the restoration of the health of %me. Suddenly %me is struck with an \\\\
+	unearthly light!<BR>"")
+	say(""Kainian prays to the Almighty Karn for his divine influence in the \\\\
+	restoration of your health. Suddenly you feel yourself full of new \\\\
+	energy!<BR>"")
+	sql(""update tmp_usertable set gold=gold-25 where name='%me'"")
+	sql(""update tmp_usertable set silver=silver+gold*10, gold=0 where \\\\
+	name='%me' and gold<0"")
+	sql(""update tmp_usertable set copper=copper+silver*10, silver=0 where \\\\
+	 name='%me' and silver<0"")
+	sql(""update tmp_usertable set vitals=vitals-40 where name='%me'"")
+	sql(""update tmp_usertable set vitals=0 where name='%me' and vitals<0"")
+else
+	say(""Kainian says [to you] : You do not have enough money.<BR>"")
+	sayeveryone(""Kainian says [to %me] : You do not have enough money.<BR>"")
+end
+showstandard
+" where id = 6;
+
+update methods
+set src = "if sql(""select 1 from items where id=-3 and adject3!='loose'"")
+	sql(""update items set adject3='loose' where id=-3"")
+	say(""You let go of the chain, wondering what that was all about.<BR>"")
+	sayeveryone(""%me pulls at the chain in the wall. You hear the ominous \\\\
+	sounds of wheels churning and rope snapping, yet the sound suddenly stops \\\\
+	again.<BR>"")
+	show(""select contents from action where id=1"")
+else
+	say(""You pull vehemently, but nothing exciting happens.<BR>"")
+	sayeveryone(""%me pulls vehemently on a chain in the wall.<BR>"")
+	showstandard
+end
+return
+" where id = 7;
+
+update methods
+set src = "debug
+if sql(""select 1 from items where id=-3 and adject3!='loose'"")
+	say(""You appear from nowhere.<BR>"")
+	sayeveryone(""%me appears from nowhere.<BR>"")
+	show(""select contents from action where id=2"")
+else
+	say(""You crawl out of the lake, dripping wet.<BR>"")
+	sayeveryone(""%me jumps into the lake.<BR>"")
+	# This part needs to be fixed, attention
+	sql(""update tmp_usertable set room=17 where name='%me'"")
+	sayeveryone(""%me crawls out of the lake.<BR>"")
+	show(""select contents from action where id=3"")
+end
+return
+" where id = 8;
 
 END_OF_DATA
 
