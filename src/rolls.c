@@ -874,7 +874,7 @@ int AttackRoll(int whichskill, int *critical)
 				modifiercount = 0;
 				break;
 		}
-		j = atoi(row2[SSKILLLEVEL + SKILLTOTAL] + modifiercount);
+		j = atoi(row2[SSKILLLEVEL + SKILLTOTAL]) + modifiercount;
 		fprintf(outputfile, "(dice %i from %i) ", i, j);
 		fflush(outputfile);
 		mysql_free_result(res2);

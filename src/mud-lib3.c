@@ -2064,47 +2064,115 @@ SwitchRoomCheck(char *name, char *password, int room)
 		{
 			if ((aantal>1) && (!strcmp("learn", tokens[0])))
 			{
-				if (!strcmp("learn bare-handed combat", troep))
+				int i, skillid;
+				skillid = -1;
+				sprintf(temp, "select number from skills"
+				" where name='%s'",
+				troep + (tokens[1] - tokens[0]));
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				if (row != NULL)
 				{
-					int i;
-					sprintf(temp, "select count(*) from skilltable"
-					" where number=0 and forwhom='%s'",
-					name);
-					res=SendSQL2(temp, NULL);
-					row = mysql_fetch_row(res);
-					i = atoi(row[0]);
-					mysql_free_result(res);
-					if (i!=0)
-					{
-						WriteSentenceIntoOwnLogFile2(logname, "You have already learned that skill.<BR>\r\n");
-						WriteRoom(name, password, room, 0);
-						KillGame();
-					}
-					sprintf(temp, "select practises from tmp_usertable where name='%s'",
-					name);
-					res=SendSQL2(temp, NULL);
-					row = mysql_fetch_row(res);
-					i = atoi(row[0]);
-					mysql_free_result(res);
-					if (i==0)
-					{
-						WriteSentenceIntoOwnLogFile2(logname, "You do not have enough practise sessions to learn that skill.<BR>\r\n");
-						WriteRoom(name, password, room, 0);
-						KillGame();
-					}
-					sprintf(temp, "insert into skilltable values(0, '%s', 0)", name);
-					res=SendSQL2(temp, NULL);
-					mysql_free_result(res);
-					sprintf(temp, "update tmp_usertable set practises=practises-1 where name='%s'",
-					name);
-					res=SendSQL2(temp, NULL);
-					mysql_free_result(res);
-					WriteSentenceIntoOwnLogFile2(logname, "You %s.<BR>\r\n", troep);
-					WriteMessage2(name, room, "%s learns bare-handed combat.<BR>\r\n", name);
+					skillid = atoi(row[0]);
+				}
+				mysql_free_result(res);
+				if (skillid==-1)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "That particular skill is unknown.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
 					KillGame();
 				}
-				WriteSentenceIntoOwnLogFile2(logname, "Unable to locate skill.<BR>\r\n");
+				sprintf(temp, "select count(*) from skilltable"
+				" where number=%i and forwhom='%s'",
+				skillid, name);
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				i = atoi(row[0]);
+				mysql_free_result(res);
+				if (i!=0)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "You have already learned that skill.<BR>\r\n");
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				sprintf(temp, "select practises from tmp_usertable where name='%s'",
+				name);
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				i = atoi(row[0]);
+				mysql_free_result(res);
+				if (i==0)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "You do not have enough practise sessions to learn that skill.<BR>\r\n");
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				sprintf(temp, "insert into skilltable values(%i, '%s', 0)", skillid, name);
+				res=SendSQL2(temp, NULL);
+				mysql_free_result(res);
+				sprintf(temp, "update tmp_usertable set practises=practises-1 where name='%s'",
+				name);
+				res=SendSQL2(temp, NULL);
+				mysql_free_result(res);
+				WriteSentenceIntoOwnLogFile2(logname, "You %s.<BR>\r\n", troep);
+				WriteMessage2(name, room, "%s learns %s.<BR>\r\n", name, troep + (tokens[1] - tokens[0]));
+				WriteRoom(name, password, room, 0);
+				KillGame();
+			}
+			if ((aantal>1) && (!strcmp("practise", tokens[0])))
+			{
+				int i, skillid;
+				skillid = -1;
+				sprintf(temp, "select number from skills"
+				" where name='%s'",
+				troep + (tokens[1] - tokens[0]));
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				if (row != NULL)
+				{
+					skillid = atoi(row[0]);
+				}
+				mysql_free_result(res);
+				if (skillid==-1)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "That particular skill is unknown.<BR>\r\n");
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				sprintf(temp, "select count(*) from skilltable"
+				" where number=%i and forwhom='%s'",
+				skillid, name);
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				i = atoi(row[0]);
+				mysql_free_result(res);
+				if (i==0)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "You do not have that skill.<BR>\r\n");
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				sprintf(temp, "select practises from tmp_usertable where name='%s'",
+				name);
+				res=SendSQL2(temp, NULL);
+				row = mysql_fetch_row(res);
+				i = atoi(row[0]);
+				mysql_free_result(res);
+				if (i==0)
+				{
+					WriteSentenceIntoOwnLogFile2(logname, "You do not have enough practise sessions to practise that skill.<BR>\r\n");
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				sprintf(temp, "update skilltable set skilllevel = skilllevel + 1 where number = %i and forwhom = '%s'", skillid, name);
+				res=SendSQL2(temp, NULL);
+				mysql_free_result(res);
+				sprintf(temp, "update tmp_usertable set practises=practises-1 where name='%s'",
+				name);
+				res=SendSQL2(temp, NULL);
+				mysql_free_result(res);
+				WriteSentenceIntoOwnLogFile2(logname, "You %s.<BR>\r\n", troep);
+				WriteMessage2(name, room, "%s practises %s.<BR>\r\n", name, troep + (tokens[1] - tokens[0]));
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
