@@ -22,35 +22,34 @@ Where one can change into a hero with a single swipe of his
 sword.<P>
 
 The current deputies are: 
-Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Nate<P>
+Kass, Kel, Bladestorm, Blackfyre, Legolas, Silverblade<P>
 
-<FONT COLOR=\"red\">The quest is
-ready</Font>. Meaning that there is now a cure for the disease that everyone
-is suffering from. For the first clue, I suggest that you visit the castle.<P>
-I would like to know what everyone thinks about the Whiteblodge Plague (as
-it is called.) Therefore, I invented something called <I>polls</I>. It is a
+I invented something called <I>polls</I>. It is a
 bit complicated, but it will sort itself out. There are two commands:
 <UL>
 <LI>poll &lt;number&gt;
 <LI>poll &lt;comments&gt;
 </UL>
-<HR><I>What did You think of the Whiteblodge
-Plague?</I><P>
+<HR><I>What happened to you when the mud went down?</I><P>
 <FORM>   
-<input type=\"radio\" name=\"poll\" value=\"1\" onClick=\"doClick(1)\">Way
-cool! Do more of those!
+<input
+type=\"radio\" name=\"poll\" value=\"1\" onClick=\"doClick(1)\">Didn't
+effect me much, not like I enjoy the game anyway
 <BR><input type=\"radio\" name=\"poll\" value=\"2\"
-onClick=\"doClick(2)\">Was fun.
+onClick=\"doClick(2)\">Fellt a small twinge inside.
 <BR><input type=\"radio\" name=\"poll\" value=\"3\"
-onClick=\"doClick(3)\">Was okay, I guess.
+onClick=\"doClick(3)\">I have lots of other muds I play, I simply switched.
 <BR><input type=\"radio\" name=\"poll\" value=\"4\"
-onClick=\"doClick(4)\">Didn't like it.   
+onClick=\"doClick(4)\">Shivers down my back, sweating, paleness. First
+withdrawal symptoms.
 <BR><input type=\"radio\" name=\"poll\" value=\"5\"
-onClick=\"doClick(5)\">Dude, you suck!   
+onClick=\"doClick(5)\">Cowered beneath the staircase, because the end
+of the world could not be far behind.
 <BR><input type=\"radio\" name=\"poll\" value=\"6\"
-onClick=\"doClick(6)\">What Plague?      
+onClick=\"doClick(6)\">Dude, you suck!
 <BR><input type=\"radio\" name=\"poll\" value=\"7\"
-onClick=\"doClick(7)\">Huh? Polls?       
+onClick=\"doClick(7)\">Forget this! When is the fighting finally
+coming back?
 <P>
 </FORM>
 <SCRIPT>
