@@ -41,6 +41,7 @@ Item <?php echo $_REQUEST{"item"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select mm_itemtable.id, mm_items.* from mm_items, mm_itemtable ".
 	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id = ".$_REQUEST{"item"}
 	, $dbhandle)

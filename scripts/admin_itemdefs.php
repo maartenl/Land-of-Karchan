@@ -41,6 +41,7 @@ Item Definition <?php echo $_REQUEST{"item"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select id from mm_itemtable where itemid = ".
 		$_REQUEST{"item"}
 	, $dbhandle)

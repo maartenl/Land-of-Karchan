@@ -41,6 +41,7 @@ Attribute <?php echo $_REQUEST{"name"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_charattributes ".
 	"where name = \"".$_REQUEST{"name"}."\""
 	, $dbhandle)

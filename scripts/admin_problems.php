@@ -41,6 +41,7 @@ Land of Karchan - Admin
 <H1>Unconnected items</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select mm_itemtable.id from mm_itemtable ".
 	" LEFT JOIN mm_roomitemtable ON mm_roomitemtable.id = mm_itemtable.id where mm_roomitemtable.id is null ".
 	" LEFT JOIN mm_charitemtable ON mm_charitemtable.id = mm_itemtable.id where mm_charitemtable.id is null ".

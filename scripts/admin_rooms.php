@@ -41,6 +41,7 @@ Room <?php echo $_REQUEST{"room"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_rooms where id = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());

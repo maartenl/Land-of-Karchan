@@ -43,7 +43,7 @@ Land of Karchan - Admin
 <IMG SRC="/images/gif/dragon.gif">
 Cookie Set</H1>
 Cookie will expire in 2 hours.
-
+<P>
 <a HREF="/karchan/admin/index.html">
 <img SRC="/images/gif/webpic/buttono.gif"  
 BORDER="0"></a><p>

@@ -41,6 +41,7 @@ Char <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_usertable where name = \"".$_REQUEST{"char"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());

@@ -27,15 +27,24 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
+include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 $result = mysql_query("select \"yes\" from mm_admin where name = \"".
-        $_REQUEST{"karchanname"}."\" and passwd = \"".
-		$_REQUEST{"karchanpassword"}."\" and validuntil >= now()"
+        $_COOKIE["karchanname"]."\" and passwd = password(\"".
+		$_COOKIE["karchanpassword"]."\") and validuntil >= now()"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
+$good = "no";
 while ($myrow = mysql_fetch_row($result))
 {
-    printf("<b>id:</b> <A
-HREF=\"/scripts/admin_items.php?item=%s\">%s<A><BR> "
+	if ($myrow[0] == "yes")
+	{
+		$good = "yes";
+	}
+}
+
+if ($good == "no")
+{
+	die("You are not authorized!");
 }
 
 ?>

@@ -41,6 +41,7 @@ Item Definitions</H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select id, adject1, adject2, adject3, name from mm_items order by id"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
