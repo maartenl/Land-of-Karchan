@@ -114,7 +114,7 @@ mud.cgi:
 4. upon "quit", remove cookie from system
 
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{cookie.ps}}} \par}
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{cookie.ps}}} \par}
 
 \newpage
 \section{Playing the game}
@@ -407,6 +407,259 @@ the following commands are available: generate dvi (latex mmud.tex),
 generate pdf (pdflatex mmud.tex), generate ps (pdf2ps mmud.pdf). This would
 generate four different format files: .tex, .dvi, .pdf, .ps .
 
+\section{The Parser}
+\subsection{Introduction}
+The Parser is a part of the program that is able to download source code
+from the database and interpret the commands and execute them immediately.
+The setup is quite simple and not meant to do anything drastic, but suffices
+in most cases to execute special actions in rooms or for persons.
+
+What follows first is a thorough explanation/reference guide for this new
+scripting language. I am sorry to say that this is a quick hack, and
+therefore does not work according to standard programming or scripting
+languages that are currently in use for muds.
+
+All source code is retrieved from the database. In order to be able to do
+that the database has to have a number of tables. See for more information
+the section on databasetables.
+
+\paragraph{Databasetables}
+The following tables are available:
+
+\subparagraph{commands}commands contain the commands that a user is allowed
+to enter, with references to the method that needs to be executed upon
+entering one of these commands.
+\subparagraph{methods}contains the id,name and sourcecode of a method to be
+executed.
+
+Commands have a number of requirements before they can be executed, I will
+attempt to name them here:
+\begin{itemize}
+\item the command entered by the user is compared to the value in 
+\item callable needs to be unequal to 0, otherwise the command is disabled.
+\item room needs to be either the same room the user is in or 0. If the room
+in the commands table equals zero, this means that the command can be
+executed from any other room.
+\item the method\_name refers to the method in the methods table to be
+executed
+\end{itemize}
+
+Hint: it is much easier to simply use an update statement as described below
+instead of putting the source code into the insert statement as well.
+
+Examples:
+\begin{itemize}
+\item insert into commands values(2, "yawn", 1, "yawn", "yawn", "", 0)
+\item insert into methods values(2,"yawn","")
+\item update methods set src = "say(\"You yawn.<BR>\")
+sayeveryone(\"%me yawns.<BR>\")
+showstandard
+return
+" where id = 2;
+
+\end{itemize}
+
+\subsection{Reference Guide}
+
+\paragraph{General Principles}
+The programming language is quite simply setup and therefore is not that
+powerful. Here is some general stuff that should be applicable anywhere.
+
+\begin{itemize}
+\item if the parser does not recognize the first few syllables in the string, it
+is discarded
+\item following the rule above it is quite simple to add comments, but the
+guideline is to make comments by prefixing them with the
+\# (hash) sign.
+\item indenting your code is fine, the interpreter has no problem with this, as
+long as you use the tab to do this. All tabs at the beginning of each line
+are discarded. (DO NOT USE SPACES!) I urge you to make good use of
+indenting, it clarifies code immensely.
+\item sometimes you would wish to wrap one command over multiple lines. This is
+possible by appending a \ (slash) at the end of the line.
+\item a new command has to start at a new line
+\item for god's sake, be careful with SQL statements. The QUOTES are totally
+screwed up. Meaning that you have to use double quotes in an sql
+statement to make it absolutely clear that you want to store a QUOTE in a
+text field instead of terminating a string. See also the little note at the
+beginning of the examples.
+\end{itemize}
+
+\paragraph{Parameters}
+
+Currently there is only one, but it will be expanded on quite quickly. What
+I am talking about is substituting environment variables. The following is
+available right now:
+
+\subparagraph{\%me}is substituted for the username of the current user.
+
+\paragraph{Commands}
+
+\subparagraph{return}
+this statement instantly exits the parser. It is
+obligatory to use this statement when attemting to exit the method. It is
+perfectly possible to have more then one return statement in a method.
+\subparagraph{debug}in case of debugging source code, put this keyword at
+the top of your source code. All following messages will be output to your
+webbrowser.
+\subparagraph{showstandard}this statement should be put immediately before
+the return statement, if you choose to use it. It makes sure that at the end
+of the method, your standard screen is displayed (room, users, logfile,
+etc). If you omit this part, you are likely to get messages after everything
+has been processed like "I don't think I understand that". This is due to
+the fact that if you omit this part, the mud continues processing with
+regular commands.
+\subparagraph{show("query")}this one works approximately the same as
+"showstandard" except for the fact that now you are able to specify the text
+that you would like to have put onto the screen. This is instead of the
+standard Roomdescription. This might be convenient in the case of rather
+large areas of text that contain information vital for the user or for a
+quest. Make sure that the first field returned by the query is the
+description.
+\subparagraph{if sql("query") [else] end}this is one of the most important statements
+currently implemented in the parser. It makes it possible to have the parser
+make decisions regarding certain actions. The idea is to create an sql query
+that returns either a 1 value or something else. If the resultset is a 1
+value the if evaluates to true, and will start executing the rest of the
+statements and skip all the statements of the "else" clause. If the
+resultset does not yield a 1 value, the if evaluates to false, and all
+following commands are skipped until it reaches an else clause. After that
+it will execute all commands in the else clause. It is quite possible to
+have nested if statements. This means that the body of an if statement can 
+contain an if statement.
+\subparagraph{sql("query")}the query between the " (quotes) is executed by
+the database
+\subparagraph{say("sentence")}the sentence between the " (quotes) is sent to
+the current user.
+\subparagraph{sayeveryone("sentence")}the sentence between the " (quotes) is
+sent to everyone in the same room except yourself
+\subparagraph{sayto("person","sentence")}the sentence between the second "
+(quotes) is sent to the person whose name is surrounded by the first two "
+(quotes). Nobody else notices anything.
+\subparagraph{sayeveryoneto("person","sentence")}the sentence between the
+second " (quotes) is sent to everyone in the same room except yourself and
+the person you are speaking to.
+
+\paragraph{Examples}
+\subparagraph{"Yawn"}
+\begin{verbatim}
+say("You yawn.<BR>")
+sayeveryone("%me yawns.<BR>")
+showstandard
+return
+\end{verbatim}
+
+\subparagraph{"Fight"}
+\begin{verbatim}
+if sql("select 1 from tmp_usertable where name='%me' and room in [1,3,164]")
+  say("Fighting is not allowed in this area.<BR>")
+  sayeveryone("%me yawns.<BR>")
+  showstandard
+  end
+return
+\end{verbatim}
+
+\subparagraph{"Go Down in Karcas Shop"}
+\begin{verbatim}
+if sql("select 1 from tmp_usertable where name='Karcas' and room=16")
+  say("You try to move behind the counter, but Karcas immediately\
+    intervenes.<BR>")
+  sayeveryone("%me tries to move behind the counter, but Karcas immediately\
+    intervenes.<BR>")
+else
+  # if second adject = "wooden" then the hatch is closed
+  # if second adject = "open" then the hatch is open
+  if sql("select 1 from items where adject2="wooden" and id=-50")
+    say("You can't go that way.<BR>)
+  else
+    say("You go down the hatch.<BR>")
+    sayeveryone("%me goes down the hatch.<BR>")
+    sql("update tmp_usertable set room=26 where name='%me'")
+    sayeveryone("%me appears from the hatch above you.<BR>")
+  end
+end
+showstandard
+return
+\end{verbatim}
+
+\subparagraph{"Heal Critical Wounds"}
+\begin{verbatim}
+sayeveryone("%me says [to Kainian] :  Please heal me, good priest.<BR>")
+if sql("select 1 from tmp_usertable where name='%me' and \
+    copper+silver*10+gold*100>=100")
+  sayeveryone("Kainian prays to the Almighty Karn for his divine influence \
+    in the restoration of the health of %s. Suddenly %s is struck with an
+    unearthly light!<BR>")
+  say("Kainian prays to the Almighty Karn for his divine influence in the
+    restoration of your health. Suddenly you feel yourself full of new
+    energy!<BR>")
+  sql("update tmp_usertable set gold=gold-100 where name='%me'")
+  sql("update tmp_usertable set silver=silver+gold*10, gold=0 where \
+    name='%me' and gold<0")
+  sql("update tmp_usertable set copper=copper+silver*10, silver=0 where \
+     name='%me' and silver<0")
+  sql("update tmp_usertable set vitals=vitals-125 where name='%me'")
+  sql("update tmp_usertable set vitals=0 where name='%me' and vitals<0")
+else
+  say("Kainian says [to you] : You do not have enough money.<BR>")
+  sayeveryone("Kainian says [to %me] : You do not have enough money.<BR>")
+end
+\end{verbatim}
+
+\subparagraph{"Open Cupboard"}
+\begin{verbatim}
+debug
+if sql("select 1 from rooms where id=20 and south=0")
+  say("You succeed in opening the door of the cupboard. \
+     [<A HREF=""http://www.karchan.org/images/mpeg/her.mpg"">\
+    MPEG</A>]<BR>")
+  sayeveryone("%me  opens the door of the cupboard.<BR>")
+  sql("update items set description='<H1><IMG SRC=""http://www.karchan.org/images/gif/\
+    herberg5.gif"">The Cupboard</H1><HR>\
+    You look at the cupboard. It is very old and wormeaten. With one\
+    knock you could probably knock it down, but I doubt if the barman would appreciate \
+    this much. It is open. Both doors of the cupboard are ajar. In it you can \
+    see, amazingly, a staircase leading to the north and up into a hidden\
+    room.<P>', adject1='comparatively',\
+    adject2='big', name='cupboard' where id=-32")
+  sql("update rooms set contents='<IMG SRC=""http://www.karchan.org/images/gif/\
+    herberg4.gif"" ALIGN=CENTER> \
+    <H1>The Taverne &quot;The Twisted Dwarf&quot;</H1>\
+    <IMG SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>\
+    ou are now in the Inn &quot;The Twisted Dwarf&quot; . It is \
+    dark, as always in these places. The windows are of a dark blue color, which \
+    doesn\'t allow any light to enter the room. A lot of woodwork, wooden tables, \
+    chairs and a rather large bar on the right of you is situated almost against the \
+    the back of the room a comparatively big cupboard is visible. The cupboard \
+    appears to be open. Behind the bar a norse small ugly dwarf is cleaning some \
+    glasses at the bar. On the same bar you see a sign on a piece of wood, \
+    apparently this is the menu for the day.<BR> Scattered among the tables are \
+    groups of people, playing what seems to be a dwarfish version of Poker.You\
+    see a sign on the wall behind the counter.<P>', north=20 where id=9")
+  sql("update rooms set south=9 where id=20")
+showstandard
+#       show("select contents from action where id=7")
+else
+  say("The cupboard is already open.<BR>")
+  showstandard
+end
+return
+\end{verbatim}
+
+\subsection{How it works}
+
+The diagram below shows how the different states of the browser interact. Of
+importance are the current state and the current level. Every time a new
+level is entered, the begin state is 0 again.
+
+States change upon encountering statements like end/else/if.
+
+The level provides at which level the if statements are nested. Right now
+there is a physical maximum of 20 nested if statements. 
+
+{\par\centering
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{parser_states.ps}}} \par}
+
 \newpage
 \section{Appendix A  - Table Description}
 
@@ -445,6 +698,8 @@ root out bad logonids in entering the game
 \subparagraph{unbantable}people that are allowed to login despite the fact
 that their site/domain is banned
 \subparagraph{usertable}all users
+\subparagraph{commands}contains special commands
+\subparagraph{methods}contains source code to perform by the mud
 
 \newpage
 
@@ -624,6 +879,27 @@ all. Possiblities are "lefthand", "righthand", "head", "neck", "head",
 \subparagraph{wielding}
 on which hand the item is wielded. An empty field meaning that it isn't
 wielded at all. Possibilities are 1 (right hand) and 2 (left hand)
+
+
+\paragraph{commands}
+This table is a part of the tables used by the parser. It can contain
+special commands performed by users during gameplay.
+\subparagraph{id}a unique number with which this command can be identified
+\subparagraph{name}a unique name with which this command can be identified
+\subparagraph{callable}an integer, if it is 0 the command has been disabled
+\subparagraph{command}contains the command to be entered by the user to
+activate the method, can contain wildcards
+\subparagraph{method\_name}name of the method, points to the "methods" table
+\subparagraph{args}currently not used, hope to have that changed soon.
+\subparagraph{room}contains the room to be in if the command is to be
+effective. When the room is 0, the command is available in every room.
+
+\paragraph{methods}
+\subparagraph{id}a unique number to identify the method
+\subparagraph{name}a unique name to identify the method, is currently used
+by the commands table
+\subparagraph{src}the source code, this field can contain quite a bit of
+text. See for examples the chapter "The Parser".
 
 \newpage
 
