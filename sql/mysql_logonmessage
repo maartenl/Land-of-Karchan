@@ -26,6 +26,10 @@ Kass, Kel, Bladestorm, Silverblade, Blackfyre<P>
 
 <HR>
 Friday, Oct 25 2002, 20:26<P>
+Several people reported that <I>creating new characters</I> did not seem
+to work. I checked it out, and they were right. It seems
+that the mud had some problems dealing with <I>empty</I> fields. Fixed it.
+Mail me if it happens again.<P>
 I usually only accept requests for deputyship via my
 official email address maarten_l@yahoo.com.<BR>
 Current list of people interested in becoming deputy:
