@@ -286,6 +286,7 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>value_type</TD><TD><SELECT NAME="mm_charattributes_value_type" SIZE="2"> 
 <OPTION VALUE="string" selected >string
 <OPTION VALUE="integer">integer
+<OPTION VALUE="boolean">boolean
 </SELECT></TD></TR>   
 </TABLE>
 <INPUT TYPE="submit" VALUE="Add Attribute">
