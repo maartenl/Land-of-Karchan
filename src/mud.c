@@ -28,8 +28,6 @@ maartenl@il.fontys.nl
 #include "mudmain.h"
 #include "cgic.h"
 
-int commandlineinterface = 1;
-
 int 
 cgiMain()
 {
@@ -37,47 +35,40 @@ cgiMain()
 	char name[22];
 	char password[40];
 	char frames[10];
-
-	if (commandlineinterface) {
-		command = (char *) malloc(1024);
-	} else {
-		command = (char *) malloc(cgiContentLength);
-	}
-
-	if (commandlineinterface) {
-		printf("Command:");
-		fgets(command, 1023, stdin);
-		printf("Name:");
-		fgets(name, 21, stdin);
-		printf("Password:");
-		fgets(password, 39, stdin);
-		setFrames(2);
-	}
-	else 
+	char cookiepassword[40];
+	
+#ifdef DEBUG
+	command = (char *) malloc(1024);
+	printf("Command:");
+	fgets(command, 1023, stdin);
+	printf("Name:");
+	fgets(name, 21, stdin);
+	printf("Password:");
+	fgets(password, 39, stdin);
+	setFrames(2);
+#else
+	command = (char *) malloc(cgiContentLength);
+	cgiFormString("command", command, cgiContentLength - 2);
+	if (command[0]==0) {strcpy(command,"l");}
+	cgiFormString("name", name, 20);
+	cgiFormString("password", password, 40);
+	getCookie("Karchan", cookiepassword);
+	if (strcmp(cookiepassword, password))
 	{
-		char cookiepassword[40];
-		cgiFormString("command", command, cgiContentLength - 2);
-		if (command[0]==0) {strcpy(command,"l");}
-		cgiFormString("name", name, 20);
-		cgiFormString("password", password, 40);
-		getCookie("Karchan", cookiepassword);
-		if (strcmp(cookiepassword, password))
-		{
-			cgiHeaderContentType("text/html");
-			NotActive(name, password,3);
-		}
-		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
-		{
-			strcpy(frames, "none");
-			setFrames(0);
-		}
-		if (!strcmp(frames,"1")) {setFrames(0);}
-		if (!strcmp(frames,"2")) {setFrames(1);}
-		if (!strcmp(frames,"3")) {setFrames(2);}
-		WriteSentenceIntoOwnLogFile(BigFile,
-				     "%s (%s): |%s|\n", name, password, command);
-
+		cgiHeaderContentType("text/html");
+		NotActive(name, password,3);
 	}
+	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
+	{
+		strcpy(frames, "none");
+		setFrames(0);
+	}
+	if (!strcmp(frames,"1")) {setFrames(0);}
+	if (!strcmp(frames,"2")) {setFrames(1);}
+	if (!strcmp(frames,"3")) {setFrames(2);}
+	WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", name, password, command);
+#endif	
+
 	if (strcasecmp("quit", command))
 	{
 		cgiHeaderContentType("text/html");

@@ -111,7 +111,6 @@ maartenl@il.fontys.nl
 #define FirstNormalChar     25648
 #define FirstNormalItem     91584
 /*#define FirstNormalItem     0*/
-#define DebugOptionsOn	    0
 
 #define PerlHeader
 

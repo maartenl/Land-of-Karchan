@@ -215,29 +215,26 @@ cgiMain()
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
   	opendbconnection();
 	setMMudOut(cgiOut);
-	if (0)
+#ifdef DEBUG
+	fprintf(cgiOut, "Name:");
+	fgets(name, 20, stdin);
+	fprintf(cgiOut, "Password:");
+	fgets(password, 40, stdin);
+	strcpy(ageText, "yes");
+	setFrames(0);
+#else
+	cgiFormString("choice", ageText, 10);
+	cgiFormString("name", name, 20);
+	cgiFormString("password", password, 40);
+	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
 	{
-		fprintf(cgiOut, "Name:");
-		fgets(name, 20, stdin);
-		fprintf(cgiOut, "Password:");
-		fgets(password, 40, stdin);
-		strcpy(ageText, "yes");
+		strcpy(frames, "none");
 		setFrames(0);
 	}
-	else
-	{
-		cgiFormString("choice", ageText, 10);
-		cgiFormString("name", name, 20);
-		cgiFormString("password", password, 40);
-		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
-		{
-			strcpy(frames, "none");
-			setFrames(0);
-		}
-		if (!strcmp(frames,"1")) {setFrames(0);}
-		if (!strcmp(frames,"2")) {setFrames(1);}
-		if (!strcmp(frames,"3")) {setFrames(2);}
-	}
+	if (!strcmp(frames,"1")) {setFrames(0);}
+	if (!strcmp(frames,"2")) {setFrames(1);}
+	if (!strcmp(frames,"3")) {setFrames(2);}
+#endif
 	if (!strcasecmp(ageText, "no")) {
 		NoNewActivate();
 	}

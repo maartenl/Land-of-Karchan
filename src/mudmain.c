@@ -1314,11 +1314,12 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			NotActive(name, password,4);
 	}
 	mysql_free_result(res);
-	if (DebugOptionsOn) {
-		if (!strcmp(name, "Karn")) {
-			fprintf(getMMudOut(), "Command: %s<BR>ActivePersonPos: %i<BR>Password: %s<BR>", command, password);
-		}
+#ifdef DEBUG
+	if (!strcmp(name, "Karn")) 
+	{
+		fprintf(getMMudOut(), "Command: %s<BR>Password: %s<BR>", command, password);
 	}
+#endif
 	if (*name == '\0') 
 	{ 
 		NotActive(name, password,5);

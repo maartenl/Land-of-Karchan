@@ -33,8 +33,6 @@ maartenl@il.fontys.nl
 #include <sys/file.h>
 #include "mysql.h"
 
-#define debuggin 0
-
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
 {
 printf("Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
