@@ -516,14 +516,17 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Runs a specific command. If this person appears to be asleep,
-	 * the only possible commands are "quit" and "awaken".
+	 * the only possible commands are "quit" and "awaken". If the command
+	 * found returns a false, i.e. nothing is executed, the method will call
+	 * the standard BogusCommand.
 	 * @param aCommand the command to be run
 	 * @return String containing the result of the command executed.
 	 */
 	public String runCommand(String aCommand)
 	throws MudException
 	{
-		Command command = new BogusCommand(".*");
+		Command boguscommand = new BogusCommand(".*");
+		Command command = boguscommand;
 		if (isaSleep())
 		{
 			if (aCommand.trim().equalsIgnoreCase("awaken"))
@@ -544,7 +547,12 @@ public class User extends mmud.characters.Person
 			command = Constants.getCommand(aCommand);
 		}
 		command.setCommand(aCommand);
-		command.run(this);
+		if (!command.run(this))
+		{
+			boguscommand.setCommand(aCommand);
+			boguscommand.run(this);
+			command = boguscommand;
+		}
 		return command.getResult();
 	}
 }
