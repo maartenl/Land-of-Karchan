@@ -81,7 +81,43 @@ not null default "male";
 - ALTER TABLE mm_items MODIFY readdescr TEXT;
 - ALTER TABLE mm_logonmessage MODIFY message TEXT not null;
 - ALTER TABLE mm_mailtable MODIFY message TEXT not null;
+- ALTER TABLE bugs engine=InnoDB;
+- ALTER TABLE characterinfo engine=InnoDB;
+- ALTER TABLE family engine=InnoDB;
+- ALTER TABLE familyvalues engine=InnoDB;
+- ALTER TABLE links engine=InnoDB;
+- ALTER TABLE poll_choices engine=InnoDB;
+- ALTER TABLE poll_values engine=InnoDB;
+- ALTER TABLE polls engine=InnoDB;
+- ALTER TABLE scratchpad engine=InnoDB;
 
+ALTER TABLE mm_admin engine=InnoDB;
+ALTER TABLE mm_answers engine=InnoDB;
+ALTER TABLE mm_area engine=InnoDB;
+ALTER TABLE mm_bantable engine=InnoDB;
+ALTER TABLE mm_boardmessages engine=InnoDB;
+ALTER TABLE mm_boards engine=InnoDB;
+ALTER TABLE mm_charattributes engine=InnoDB;
+ALTER TABLE mm_charitemtable engine=InnoDB;
+ALTER TABLE mm_commands engine=InnoDB;
+ALTER TABLE mm_errormessages engine=InnoDB;
+ALTER TABLE mm_events engine=InnoDB;
+ALTER TABLE mm_help engine=InnoDB;
+ALTER TABLE mm_itemattributes engine=InnoDB;
+ALTER TABLE mm_itemitemtable engine=InnoDB;
+ALTER TABLE mm_items engine=InnoDB;
+ALTER TABLE mm_itemtable engine=InnoDB;
+ALTER TABLE mm_log engine=InnoDB;
+ALTER TABLE mm_logonmessage engine=InnoDB;
+ALTER TABLE mm_mailtable engine=InnoDB;
+ALTER TABLE mm_methods engine=InnoDB;
+ALTER TABLE mm_roomattributes engine=InnoDB;
+ALTER TABLE mm_roomitemtable engine=InnoDB;
+ALTER TABLE mm_rooms engine=InnoDB;
+ALTER TABLE mm_shopkeeperitems engine=InnoDB;
+ALTER TABLE mm_sillynamestable engine=InnoDB;
+ALTER TABLE mm_unbantable engine=InnoDB;
+ALTER TABLE mm_usertable engine=InnoDB;
 
 Creating a dupe database
 ------------------------
