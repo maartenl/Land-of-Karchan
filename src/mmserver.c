@@ -123,6 +123,7 @@ init_mudinfo()
 	mymudinfo.number_of_connections = 0;
 	mymudinfo.number_of_timeouts = 0;
 	mymudinfo.number_of_current_connections = 0;
+	mymudinfo.maxnumber_of_current_connections = 0;
 	setMudInfo(mymudinfo);	
 }
 
@@ -134,6 +135,10 @@ addconnection_mudinfo()
 	mymudinfo = getMudInfo();
 	mymudinfo.number_of_connections++;
 	mymudinfo.number_of_current_connections++;
+	if (mymudinfo.number_of_current_connections > mymudinfo.maxnumber_of_current_connections)
+	{
+			mymudinfo.maxnumber_of_current_connections = mymudinfo.number_of_current_connections;
+	}
 	setMudInfo(mymudinfo);
 }
 
@@ -157,8 +162,9 @@ display_mudinfo()
 	printf("Host: %s\nIp address: %s\nDomainname: %s\nProtocol version: %s\nMmud version: %s %s %s\n", 
 	mymudinfo.hostname, mymudinfo.hostip, mymudinfo.domainname, mymudinfo.protversion, mymudinfo.mmudversion,
 	mymudinfo.mmudtime, mymudinfo.mmuddate);
-	printf("Number of connections: %i\nNumber of timeouts: %i\nNumber of current connections: %i\n",
-	mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections);
+	printf("Number of connections: %i\nNumber of timeouts: %i\nNumber of current connections: %i\nNumber of max cur connections: %i\n",
+	mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections,
+	mymudinfo.maxnumber_of_current_connections);
 }
 
 /**
