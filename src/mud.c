@@ -56,15 +56,6 @@ MYSQL_RES *res;
 MYSQL_ROW row;
 char sqlstring[1024];
 
-void 
-InitVar(char *fcommand)
-{
-	printstr = (char *) malloc(strlen(fcommand)+500);
-	time(&datetime);
-	datumtijd = *(gmtime(&datetime));
-	srandom(datetime);
-}				/* endproc */
-
 int
 GoDown_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
@@ -445,7 +436,7 @@ Whimpy_Command(char *name, char *password, int room, char **ftokens, char *fcomm
 			"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
 			"<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		if (!strcasecmp("feeling well", command + (tokens[1] - tokens[0]))) {
 			strcpy(number,"10");
@@ -1123,7 +1114,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 {
 	int             oldroom;
 	int             i;
-	char						frames[10];
+	char				frames[10];
 	char           *temp;
 	char            logname[100];
 	char 				*junk;
@@ -1137,7 +1128,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	umask(0000);
 
-	InitVar(command);
+	printstr = (char *) malloc(strlen(fcommand)+500);
+	time(&datetime);
+	datumtijd = *(gmtime(&datetime));
+	srandom(datetime);
 
 	opendbconnection();
 
@@ -1469,17 +1463,23 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			if (gameFunctionArray[pos](name, password, room, tokens, command))
 			{
 				/* command executed successfully, kill this session */
-				KillGame();
+				free(gameFunctionArray);
+				free(gameCommands);
+				free(junk);
+				free(printstr);
+			   closedbconnection();
+				return 1;
 			}
 			{
 				/* do nothing, the game will in time find out that there is no appropriate response to the bogus command and will produce an error message. Darnit people, why do these damn comment lines sometimes have to be so long! And who turned off my word wrap anyway!!! */
 			}
 		}
 	}
+	free(gameFunctionArray);
+	free(gameCommands);
 	
 	if (godstatus==1) {Root_Command(name, password, room);}
 	if (godstatus==2) {Evil_Command(name, password, room);}
-
 
 /*	if (!strcasecmp(command, "introduce me")) {
 		IntroduceMe_Command(logname);
@@ -1628,18 +1628,18 @@ cgiMain()
 	char frames[10];
 
 	if (commandlineinterface) {
-		command = (char *) malloc(1000);
+		command = (char *) malloc(1024);
 	} else {
 		command = (char *) malloc(cgiContentLength);
 	}
 
 	if (commandlineinterface) {
 		printf("Command:");
-		gets(command);
+		fgets(command, 1023, stdin);
 		printf("Name:");
-		gets(name);
+		fgets(name, 21, stdin);
 		printf("Password:");
-		gets(password);
+		fgets(password, 39, stdin);
 		setFrames(0);
 	}
 	else 
