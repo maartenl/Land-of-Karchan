@@ -66,23 +66,6 @@ while ($myrow = mysql_fetch_array($result))
 mysql_close($dbhandle);
 ?>
 
-<?php
-if ((isset($_COOKIE{"karchanpassword"})) &&
-    (isset($_COOKIE["karchanname"])))
-{   
-?>
-Add Bug Report:<P>
-<FORM METHOD="GET" ACTION="/scripts/bugs.php">
-Title: <INPUT TYPE="text" NAME="title" VALUE="" SIZE="60"><BR>
-Description:<BR>
-<TEXTAREA NAME="description" VALUE="" ROWS="30" COLS="85"></TEXTAREA><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<?php
-} 
-?>
-
 </UL>
 <P>
 
