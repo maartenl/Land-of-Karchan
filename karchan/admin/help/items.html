@@ -1,0 +1,34 @@
+<HTML>
+<TITLE>Help on Items
+</TITLE>
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
+<H1>Help on Items</H1>
+
+<H2>Introduction</H2>
+Items are split up into itemdefinitions and items. Every item has exactly
+one item definition, but one item definition can be applied to multiple
+items.<P>
+And example would be the item definition of a bucket, but there could be 10
+buckets in the game, all with the same item definition.
+<H2>Containers</H2>
+Some special items are <I>containers</I>, that can contain other items.
+There are two ways of defining an itemcontainer:
+<UL><LI>in the item itself
+<LI>in the item definition (in which case all items that use this item
+definition are containers)
+</UL>
+
+<H2>Container Definition</H2>
+
+First of all, and this is important, the container field must be set to
+<I>yes</I> or all other fields regarding containers are ignored.<P>
+The other fields are capacity, isopenable and keyid. Capacity is used to
+indicate how much a container can carry. Isopenable indicates whether the
+open and close command will work. Keyid is the item definition identification
+number of the item that can be used to unlock/lock the lock of the
+container.
+
+<H2>Container</H2>
+
+</BODY>
+</HTML>
