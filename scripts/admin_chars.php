@@ -54,8 +54,9 @@ if (!isset($_REQUEST{"char"}))
 /* the following constraints need to be checked before any kind of update is
 to take place:
 
-changing room:
+changing character:
 - first check that the change is approved (i.e. owner or null)
+- check that sex is male or female
 - does room exist
 - check if sex is correct
 deleting character:   
@@ -77,6 +78,7 @@ if (isset($_REQUEST{"race"}))
 		or die("Query(1) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
+		die("You are not the owner of this character.");
 	}
 	if ( ($_REQUEST{"sex"} != "female") &&
 		($_REQUEST{"sex"} != "male") )
