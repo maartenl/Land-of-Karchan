@@ -1,0 +1,27 @@
+1. copy everything from the original working directory of the mud
+
+2. change the init.sql script if necessary.
+
+3. change the include/typedefs.h to use database "mmud", the username and
+password "mmud", "itsasecret".
+
+4. change the sql commands text files to use the appropriate
+username/password
+
+5. change the newchar.html file (check the data directory)
+
+6. change the file mud-lib3.c to exclude the specifics about pulling stuff
+and everything.
+
+(In case of an emergency use the command "sed" in the following way:
+
+	sed --expression=s/"Land of Karchan"/"Maarten's Mud"/ filename | sed --expression=s/karchan/mmmud/ >filename2
+
+alias form:
+	alias parsem='sed --expression=s/"Land of Karchan"/"Maartens Mud"/ | sed
+	--expression=s/karchan/mmmud/'
+
+Full Syntax will be
+
+)
+
