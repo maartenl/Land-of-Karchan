@@ -58,27 +58,47 @@ adding itemdef:
 */
 if (isset($_REQUEST{"name"}))
 {
-   // check it.
-   $result = mysql_query("select id from mm_items where id = \"".
+	// check it.
+	$result = mysql_query("select id from mm_items where id = \"".
 	  mysql_escape_string($_REQUEST{"item"}).
 	  "\" and (owner is null or owner = \"".
 	  mysql_escape_string($_COOKIE["karchanadminname"]).
 	  "\")"
 	  , $dbhandle)
 	  or die("Query(1) failed : " . mysql_error());
-   if (mysql_num_rows($result) != 1)
-   {
+	if (mysql_num_rows($result) != 1)
+	{
 	  die("You are not the owner of this itemdefinition.");
-   }
-   $result = mysql_query("select id from mm_items where id = \"".
+	}
+	$result = mysql_query("select id from mm_items where id = \"".
 	  mysql_escape_string($_REQUEST{"item"})."\""
 	  , $dbhandle)
 	  or die("Query(2) failed : " . mysql_error());
-   if (mysql_num_rows($result) != 1)
-   {
+	if (mysql_num_rows($result) != 1)
+	{
 	  die("Item Definition does not exist.");
-   }
-   $result = mysql_query("select 1 
+	}
+	if (($_REQUEST["container"] != "1") &&
+	   ($_REQUEST["container"] != "0"))
+	{
+		die("Container value must be either 0 (no) or 1 (yes).");
+	}
+	if (($_REQUEST["getable"] != "1") &&
+	   ($_REQUEST["getable"] != "0"))
+	{
+		die("Getable value must be either 0 (no) or 1 (yes).");
+	}
+	if (($_REQUEST["dropable"] != "1") &&
+	   ($_REQUEST["dropable"] != "0"))
+	{
+		die("Dropable value must be either 0 (no) or 1 (yes).");
+	}
+	if (($_REQUEST["visible"] != "1") &&
+	   ($_REQUEST["visible"] != "0"))
+	{
+		die("Visible value must be either 0 (no) or 1 (yes).");
+	}
+	$result = mysql_query("select 1 
 	from mm_itemtable, mm_charitemtable 
 	where mm_itemtable.id = mm_charitemtable.id and
 	mm_charitemtable.wearing is not null and
@@ -86,21 +106,21 @@ if (isset($_REQUEST{"name"}))
 	  mysql_escape_string($_REQUEST{"item"})
 	  , $dbhandle)
 	  or die("Query(2) failed : " . mysql_error());
-   if (mysql_num_rows($result) != 0)
-   {
+	if (mysql_num_rows($result) != 0)
+	{
 	  die("Characters are wearing the item, cannot change wearable.");
-   }
+	}
 
-   $wearable2 = 0;
-   for ($i = 0; $i < count($_REQUEST{"wearable"}); $i++)
-   {
-      $wearable2 += $_REQUEST{"wearable"}[$i];
-   }
-   $eatable = $_REQUEST["eatable"];
-   $drinkable = $_REQUEST["drinkable"];
-   $readdescr = $_REQUEST["readdescr"];
-   // make that change.
-   $query = "update mm_items set name=\"".
+	$wearable2 = 0;
+	for ($i = 0; $i < count($_REQUEST{"wearable"}); $i++)
+	{
+		$wearable2 += $_REQUEST{"wearable"}[$i];
+	}
+	$eatable = $_REQUEST["eatable"];
+	$drinkable = $_REQUEST["drinkable"];
+	$readdescr = $_REQUEST["readdescr"];
+	// make that change.
+	$query = "update mm_items set name=\"".
 	  mysql_escape_string($_REQUEST{"name"}).
 	  "\", adject1=\"".
 	  mysql_escape_string($_REQUEST{"adject1"}).
@@ -128,15 +148,21 @@ if (isset($_REQUEST{"name"}))
 	  mysql_escape_string($_REQUEST["weight"]).
 	  ", container=".
 	  mysql_escape_string($_REQUEST["container"]).
+	  ", getable=".
+	  mysql_escape_string($_REQUEST["getable"]).
+	  ", dropable=".
+	  mysql_escape_string($_REQUEST["dropable"]).
+	  ", visible=".
+	  mysql_escape_string($_REQUEST["visible"]).
 	  ", owner=\"".
 	  mysql_escape_string($_COOKIE["karchanadminname"]).
 	  "\" where id = \"".
 	  mysql_escape_string($_REQUEST{"item"}).
 	  "\"";
-   mysql_query($query
+	mysql_query($query
 	  , $dbhandle)
 	  or die("Query(8) failed : " . mysql_error());
-   writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
+	writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
 }
 																																							
 $result = mysql_query("select * from mm_items where id = ".
@@ -275,6 +301,12 @@ ROWS="10" COLS="85">
 <TR><TD>weight</TD><TD><INPUT TYPE="text" NAME="weight" VALUE="<?php echo $myrow["weight"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>container</TD><TD><INPUT TYPE="radio" NAME="container" VALUE="1" <?php echo ($myrow["container"] == 1? "checked" : "") ?>>yes
 <BR><INPUT TYPE="radio" NAME="container" VALUE="0" <?php echo ($myrow["container"] == 0? "checked" : "") ?>>no</TD></TR>
+<TR><TD>getable</TD><TD><INPUT TYPE="radio" NAME="getable" VALUE="1" <?php echo ($myrow["getable"] == 1? "checked" : "") ?>>yes
+<BR><INPUT TYPE="radio" NAME="getable" VALUE="0" <?php echo ($myrow["getable"] == 0? "checked" : "") ?>>no</TD></TR>
+<TR><TD>dropable</TD><TD><INPUT TYPE="radio" NAME="dropable" VALUE="1" <?php echo ($myrow["dropable"] == 1? "checked" : "") ?>>yes
+<BR><INPUT TYPE="radio" NAME="dropable" VALUE="0" <?php echo ($myrow["dropable"] == 0? "checked" : "") ?>>no</TD></TR>
+<TR><TD>visible</TD><TD><INPUT TYPE="radio" NAME="visible" VALUE="1" <?php echo ($myrow["visible"] == 1? "checked" : "") ?>>yes
+<BR><INPUT TYPE="radio" NAME="visible" VALUE="0" <?php echo ($myrow["visible"] == 0? "checked" : "") ?>>no</TD></TR>
 <TR><TD>wearable/wieldable</TD><TD><SELECT MULTIPLE NAME="wearable[] " SIZE="20">
 <OPTION VALUE="1" <?php if ($myrow["wearable"] & 1) {printf("selected");} ?>>head
 <OPTION VALUE="2" <?php if ($myrow["wearable"] & 2) {printf("selected");} ?>>neck
