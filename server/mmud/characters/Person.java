@@ -1125,6 +1125,7 @@ public class Person implements Executable, AttributeContainer
 						" does not contain a String as argument.");
 				}
 				Persons.sendMessageExcl(this, (String) arguments[0]);
+				return null;
 			}
 			if (arguments.length == 2)
 			{
