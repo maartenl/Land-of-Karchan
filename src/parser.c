@@ -345,19 +345,25 @@ int Parse(char *name, int *room, char *parserstring)
 					strcpy(string, temp);
 					free(temp);
 				}
-				if (stringbuffer != NULL)
+				while ((i = strstr(string, "%string")) != NULL)
 				{
-					while ((i = strstr(string, "%string")) != NULL)
+					char *temp;
+					char *mybuffer;
+					if (stringbuffer==NULL)
 					{
-						char *temp;
-						temp = (char *) malloc(memory+255+strlen(stringbuffer));
-						temp[i-string]=0;
-						strncpy(temp, string, i-string);
-						strcat(temp, stringbuffer);
-						strcat(temp, i+strlen("%string"));
-						strcpy(string, temp);
-						free(temp);
+						mybuffer = "NULL";
 					}
+					else
+					{
+						mybuffer = stringbuffer;
+					}
+					temp = (char *) malloc(memory+255+strlen(mybuffer));
+					temp[i-string]=0;
+					strncpy(temp, string, i-string);
+					strcat(temp, mybuffer);
+					strcat(temp, i+strlen("%string"));
+					strcpy(string, temp);
+					free(temp);
 				}
 				while ((i = strstr(string, "%amount")) != NULL)
 				{
