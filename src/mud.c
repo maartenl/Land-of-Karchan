@@ -135,13 +135,13 @@ GoDown_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
 
 	if (!temproom->down)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted.<BR>\r\n");
 		}
 		else   
 		{
@@ -151,20 +151,20 @@ GoDown_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves down.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves down.<BR>\r\n", name);
 				room = temproom->down;
 				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	}
@@ -201,13 +201,13 @@ GoUp_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
 
 	if (!temproom->up)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted.<BR>\r\n");
 		}
 		else   
 		{
@@ -217,20 +217,20 @@ GoUp_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves up.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves up.<BR>\r\n", name);
 				room = temproom->up;
 				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	}
@@ -259,7 +259,7 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	exit(0);
 }
@@ -279,7 +279,7 @@ void CookieNotFound(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	closedbconnection();
 	exit(0);
@@ -324,7 +324,7 @@ cgiMain()
 		if (!strcmp(frames,"1")) {setFrames(0);}
 		if (!strcmp(frames,"2")) {setFrames(1);}
 		if (!strcmp(frames,"3")) {setFrames(2);}
-		WriteSentenceIntoOwnLogFile2(BigFile,
+		WriteSentenceIntoOwnLogFile(BigFile,
 				     "%s (%s): |%s|\n", name, password, command);
 
 	}
@@ -416,7 +416,7 @@ cgiMain()
 
 	if ((strstr(troep,"<applet")!=NULL) || (strstr(troep,"<script")!=NULL)
 		|| (strstr(troep,"java-script")!=NULL) || (strstr(troep,"CommandForm")!=NULL)) { 
-		WriteSentenceIntoOwnLogFile2(logname, "I am afraid, I do not understand that.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 		}
@@ -427,7 +427,7 @@ cgiMain()
 		{
 			Awaken_Command(name, password, room);
 		}
-		WriteSentenceIntoOwnLogFile2(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
 		WriteRoom(name, password, room, 1);
 		KillGame();
 	}
@@ -436,13 +436,13 @@ cgiMain()
 	{
 		if (!strcmp(troep, "say rrribbit"))
 		{
-		WriteMessage2(name, room, "The toad called %s says : <I>rrrrrribbit.</I><BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile2(logname, "You say : <I>rrrrrribbit.</I><BR>\r\n"
+		WriteMessage(name, room, "The toad called %s says : <I>rrrrrribbit.</I><BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You say : <I>rrrrrribbit.</I><BR>\r\n"
 			"You still have %i ribbits to go...<BR>\r\n", punishment-1);
 		if (punishment == 1)
 		{
-		WriteMessage2(name, room, "The toad called %s changes back into it's old self.<BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile2(logname, "You change back into your old self.<BR>\r\n"
+		WriteMessage(name, room, "The toad called %s changes back into it's old self.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You change back into your old self.<BR>\r\n"
 			 "Do not do again what you did to become this.<BR>\r\n");
 		
 		}
@@ -494,7 +494,7 @@ cgiMain()
 			Quit_Command(name);
 		}
 
-	WriteSentenceIntoOwnLogFile2(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	KillGame();
 	}
@@ -508,7 +508,7 @@ cgiMain()
 	
 	if (!strcmp(troep, "awaken"))
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "You aren't asleep, silly.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You aren't asleep, silly.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -608,7 +608,7 @@ cgiMain()
 	        sprintf(logname, "%s%s.log", USERHeader, name);
 		WriteRoom(name, password, room, 0);
 		ClearLogFile(logname);
-		WriteSentenceIntoOwnLogFile2(logname, "You cleared your mind.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You cleared your mind.<BR>\r\n");
 		KillGame();
 	}			/* Clear_Command */
 	if (!strcmp(troep, "who")) {
@@ -637,50 +637,50 @@ cgiMain()
 		IntroduceMe_Command(logname);
 	}*/
 	if (!strcmp(troep, "bow")) {
-		WriteSentenceIntoOwnLogFile2(logname, "You bow gracefully.<BR>\r\n");
-		WriteMessage2(name, room, "%s bows gracefully.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You bow gracefully.<BR>\r\n");
+		WriteMessage(name, room, "%s bows gracefully.<BR>\r\n", name);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (aantal == 3 && (!strcmp(tokens[0], "bow")) && (!strcmp(tokens[1], "to"))) {
-		if (WriteMessageTo2(tokens[2], name, room, "%s bows gracefully to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		if (WriteMessageTo(tokens[2], name, room, "%s bows gracefully to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[2], name, room, "%s bows gracefully to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile2(logname, "You bow gracefully to %s.<BR>\r\n", tokens[2]);
+			WriteSentenceIntoOwnLogFile(logname, "You bow gracefully to %s.<BR>\r\n", tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (!strcmp(troep, "eyebrow")) {
-		WriteSentenceIntoOwnLogFile2(logname, "You raise an eyebrow.<BR>\r\n");
-		WriteMessage2(name, room, "%s raises an eyebrow.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You raise an eyebrow.<BR>\r\n");
+		WriteMessage(name, room, "%s raises an eyebrow.<BR>\r\n", name);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	/* smile */
 	if ((temp = get_pluralis(troep)) != NULL) {
-		WriteSentenceIntoOwnLogFile2(logname, "You %s.<BR>\r\n", troep);
-		WriteMessage2(name, room, "%s %s.<BR>\r\n", name, temp);
+		WriteSentenceIntoOwnLogFile(logname, "You %s.<BR>\r\n", troep);
+		WriteMessage(name, room, "%s %s.<BR>\r\n", name, temp);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	/* smile engagingly */
 	if ( (aantal==2) && ((temp = get_pluralis(tokens[0])) != NULL) &&
 		 (exist_adverb(tokens[1])) ) {
-		WriteSentenceIntoOwnLogFile2(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
-		WriteMessage2(name, room, "%s %s %s.<BR>\r\n", name, temp, tokens[1]);
+		WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
+		WriteMessage(name, room, "%s %s %s.<BR>\r\n", name, temp, tokens[1]);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	/* smile to bill */
 	if ((aantal == 3) && ((temp = get_pluralis(tokens[0])) != NULL) && 
 		(!strcmp(tokens[1], "to")) ) {
-		if (WriteMessageTo2(tokens[2], name, room, "%s %s to %s.<BR>\r\n", name, temp, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		if (WriteMessageTo(tokens[2], name, room, "%s %s to %s.<BR>\r\n", name, temp, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[2], name, room, "%s %s to you.<BR>\r\n", name, temp);
-			WriteSentenceIntoOwnLogFile2(logname, "You %s to %s.</BR>\r\n", tokens[0], tokens[2]);
+			WriteSentenceIntoOwnLogFile(logname, "You %s to %s.</BR>\r\n", tokens[0], tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -688,43 +688,43 @@ cgiMain()
 	/* smile(0) engagingly(1) to(2) Bill(3) */
 	if ((aantal == 4) && ((temp = get_pluralis(tokens[0])) != NULL) && 
 		(!strcmp(tokens[2], "to")) && (exist_adverb(tokens[1])) ) {
-		if (WriteMessageTo2(tokens[3], name, room, "%s %s %s to %s.<BR>\r\n", name, temp, tokens[1], tokens[3]) == 0) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		if (WriteMessageTo(tokens[3], name, room, "%s %s %s to %s.<BR>\r\n", name, temp, tokens[1], tokens[3]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[3], name, room, "%s %s %s to you.<BR>\r\n", name, temp, tokens[1]);
-			WriteSentenceIntoOwnLogFile2(logname, "You %s %s to %s.</BR>\r\n", tokens[0], tokens[1], tokens[3]);
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s to %s.</BR>\r\n", tokens[0], tokens[1], tokens[3]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (!strcmp(troep, "curtsey")) {
-		WriteSentenceIntoOwnLogFile2(logname, "You drop a curtsey.<BR>\r\n");
-		WriteMessage2(name, room, "%s drops a curtsey.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey.<BR>\r\n");
+		WriteMessage(name, room, "%s drops a curtsey.<BR>\r\n", name);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (aantal == 3 && (!strcmp(tokens[0], "curtsey")) && (!strcmp(tokens[1], "to"))) {
-		if (WriteMessageTo2(tokens[2], name, room, "%s drops a curtsey to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		if (WriteMessageTo(tokens[2], name, room, "%s drops a curtsey to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[2], name, room, "%s drops a curtsey to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile2(logname, "You drop a curtsey to %s.</BR>\r\n", tokens[2]);
+			WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey to %s.</BR>\r\n", tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (!strcmp(troep, "flinch")) {
-		WriteSentenceIntoOwnLogFile2(logname, "You flinch.<BR>\r\n");
-		WriteMessage2(name, room, "%s flinches.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You flinch.<BR>\r\n");
+		WriteMessage(name, room, "%s flinches.<BR>\r\n", name);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	if (aantal == 3 && (!strcmp(tokens[0], "flinch")) && (!strcmp(tokens[1], "to"))) {
-		if (WriteMessageTo2(tokens[2], name, room, "%s flinches to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		if (WriteMessageTo(tokens[2], name, room, "%s flinches to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[2], name, room, "%s flinches to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile2(logname, "You flinch to %s.</BR>\r\n", tokens[2]);
+			WriteSentenceIntoOwnLogFile(logname, "You flinch to %s.</BR>\r\n", tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -772,8 +772,8 @@ cgiMain()
 		Look_Command(name, password, room);
 	}
 	if ((aantal > 1) && (!strcmp(tokens[0], "me"))) {
-		WriteMessage2(name, room, "%s %s<BR>\r\n", name, command + 3);
-		WriteSentenceIntoOwnLogFile2(logname, "%s %s<BR>\r\n", name, command + 3);
+		WriteMessage(name, room, "%s %s<BR>\r\n", name, command + 3);
+		WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	} /* endme */
@@ -788,9 +788,9 @@ cgiMain()
 				name, datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
 				datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year, command + 7);
 			fclose(fp);
-			WriteSentenceIntoOwnLogFile2(logname, "Public Mail Message Sent.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Public Mail Message Sent.<BR>\r\n");
 		} else {
-			WriteSentenceIntoOwnLogFile2(logname, "Error: Forbidden HTML codes used.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Error: Forbidden HTML codes used.<BR>\r\n");
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -804,37 +804,37 @@ cgiMain()
 	if ((aantal > 3) && (!strcmp("tell", tokens[0])) && (!strcmp("to", tokens[1]))) {
 		if (!WriteLinkTo(tokens[2], name, "<B>%s tells you </B>: %s<BR>\r\n",
 					    name, command + (tokens[3] - tokens[0]))) {
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSentenceIntoOwnLogFile2(logname, "<B>You tell %s</B> : %s<BR>\r\n",
+			WriteSentenceIntoOwnLogFile(logname, "<B>You tell %s</B> : %s<BR>\r\n",
 			      tokens[2], command + (tokens[3] - tokens[0]));
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 //	if ((aantal > 1) && (!strcmp("me", tokens[0]))) {
-//		WriteSentenceIntoOwnLogFile2(logname, "%s %s<BR>\r\n", name, command + 3);
+//		WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
 //		WriteRoom(name, password, room, 0);
 //		KillGame();
 //	}			/* endme */
 	if ((!strcmp("say", tokens[0])) && (aantal > 1)) {
 		if ((!strcmp("to", tokens[1])) && (aantal > 3)) {
-			if (!WriteMessageTo2(tokens[2], name, room, "%s says [to %s] : %s<BR>\r\n",
+			if (!WriteMessageTo(tokens[2], name, room, "%s says [to %s] : %s<BR>\r\n",
 					    name, tokens[2], command + (tokens[3] - tokens[0]))) {
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 			}
 			 /* person not found */ 
 			else {
 				WriteSayTo(tokens[2], name, room, 
 					   "<B>%s says [to you]</B> : %s<BR>\r\n", name, command + (tokens[3] - tokens[0]));
-				WriteSentenceIntoOwnLogFile2(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", tokens[2], command + (tokens[3] - tokens[0]));
+				WriteSentenceIntoOwnLogFile(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", tokens[2], command + (tokens[3] - tokens[0]));
 				ReadBill(tokens[2], troep + (tokens[3] - tokens[0]), name, room);
 			}
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
-		WriteSentenceIntoOwnLogFile2(logname, "<B>You say </B>: %s<BR>\r\n", command + 4);
-		WriteMessage2(name, room, "%s says : %s<BR>\r\n", name, command + 4);
+		WriteSentenceIntoOwnLogFile(logname, "<B>You say </B>: %s<BR>\r\n", command + 4);
+		WriteMessage(name, room, "%s says : %s<BR>\r\n", name, command + 4);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -847,11 +847,11 @@ cgiMain()
 				name, command + (tokens[3] - tokens[0]));
 			sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
 				name, tokens[2], command + (tokens[3] - tokens[0]));
-			if (!WriteMessageTo2(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 			} else {
 				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile2(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
+				WriteSentenceIntoOwnLogFile(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
 							     tokens[2], command + (tokens[3] - tokens[0]));
 			}
 			free(temp2);
@@ -859,8 +859,8 @@ cgiMain()
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
-		WriteSentenceIntoOwnLogFile2(logname, "<B>You shout</B> : %s<BR>\r\n", command + 6);
-		WriteMessage2(name, room, "%s shouts : %s<BR>\r\n", name, command + 6);
+		WriteSentenceIntoOwnLogFile(logname, "<B>You shout</B> : %s<BR>\r\n", command + 6);
+		WriteMessage(name, room, "%s shouts : %s<BR>\r\n", name, command + 6);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -873,11 +873,11 @@ cgiMain()
 				name, command + (tokens[3] - tokens[0]));
 			sprintf(temp2, "%s asks %s : %s<BR>\r\n",
 				name, tokens[2], command + (tokens[3] - tokens[0]));
-			if (!WriteMessageTo2(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 			} else {
 				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile2(logname, "<B>You ask %s</B> : %s<BR>\r\n",
+				WriteSentenceIntoOwnLogFile(logname, "<B>You ask %s</B> : %s<BR>\r\n",
 							     tokens[2], command + (tokens[3] - tokens[0]));
 			}
 			free(temp2);
@@ -885,8 +885,8 @@ cgiMain()
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
-		WriteSentenceIntoOwnLogFile2(logname, "<B>You ask</B> : %s<BR>\r\n", command + 4);
-		WriteMessage2(name, room, "%s asks : %s<BR>\r\n", name, command + 4);
+		WriteSentenceIntoOwnLogFile(logname, "<B>You ask</B> : %s<BR>\r\n", command + 4);
+		WriteMessage(name, room, "%s asks : %s<BR>\r\n", name, command + 4);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -899,11 +899,11 @@ cgiMain()
 				name, command + (tokens[3] - tokens[0]));
 			sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
 				name, tokens[2]);
-			if (!WriteMessageTo2(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 			} else {
 				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile2(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
+				WriteSentenceIntoOwnLogFile(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
 							     tokens[2], command + (tokens[3] - tokens[0]));
 			}
 			free(temp2);
@@ -911,8 +911,8 @@ cgiMain()
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
-		WriteSentenceIntoOwnLogFile2(logname, "<B>You whisper </B>: %s<BR>\r\n", command + 8);
-		WriteMessage2(name, room, "%s whispers : %s<BR>\r\n", name, command + 8);
+		WriteSentenceIntoOwnLogFile(logname, "<B>You whisper </B>: %s<BR>\r\n", command + 8);
+		WriteMessage(name, room, "%s whispers : %s<BR>\r\n", name, command + 8);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -956,14 +956,14 @@ cgiMain()
 			mysql_free_result(res);
 			if (myFightingName != tokens[1]) {free(myFightingName);}
 			if (myDescription != tokens[1]) {free(myDescription);}
-			WriteSentenceIntoOwnLogFile2(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		if (row!=NULL)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You start to fight against %s.<BR>\r\n", myDescription);
-			WriteMessageTo2(myFightingName, name, room, "%s starts fighting against %s.<BR>\r\n",
+			WriteSentenceIntoOwnLogFile(logname, "You start to fight against %s.<BR>\r\n", myDescription);
+			WriteMessageTo(myFightingName, name, room, "%s starts fighting against %s.<BR>\r\n",
 				    name, myDescription);
 			WriteSayTo(myDescription, name, room, 
 				   "%s starts fighting against you.<BR>\r\n", name);
@@ -978,7 +978,7 @@ cgiMain()
 		}
 		else
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		}
 		mysql_free_result(res);
 		if (myFightingName != tokens[1]) {free(myFightingName);}
@@ -995,7 +995,7 @@ cgiMain()
 		if (row[0][0]==0)
 		{
 			mysql_free_result(res);
-			WriteSentenceIntoOwnLogFile2(logname, "You are not fighting anyone.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You are not fighting anyone.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1005,8 +1005,8 @@ cgiMain()
 			, name);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
-		WriteMessage2(name, room, "%s stops fighting.<BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile2(logname, "You stop fighting.<BR>\r\n");
+		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -1019,7 +1019,7 @@ cgiMain()
 		if (row[0][0]!=0)
 		{
 			mysql_free_result(res);
-			WriteSentenceIntoOwnLogFile2(logname, "You cannot change your pkill status during combat.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You cannot change your pkill status during combat.<BR>\r\n");
 		}
 		else
 		{
@@ -1030,7 +1030,7 @@ cgiMain()
 					"name='%s'", name);
 				res=SendSQL2(sqlstring, NULL);
 				mysql_free_result(res);
-				WriteSentenceIntoOwnLogFile2(logname, "Pkill is now on.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
 			} /* pkill is turned on */
 			else
 			{
@@ -1038,7 +1038,7 @@ cgiMain()
 					"name='%s'", name);
 				res=SendSQL2(sqlstring, NULL);
 				mysql_free_result(res);
-				WriteSentenceIntoOwnLogFile2(logname, "Pkill is now off.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
 			} /* pkill is turned of */
 		} /* if indeed the person is not already fighting */
 		WriteRoom(name, password, room, 0);
@@ -1050,7 +1050,7 @@ cgiMain()
 			strcpy(number,"0");
 		} else {
 			if (!strcmp("help", troep + (tokens[1] - tokens[0]))) {
-				WriteSentenceIntoOwnLogFile2(logname, 
+				WriteSentenceIntoOwnLogFile(logname, 
 				"Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
 				"<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
 				"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
@@ -1111,7 +1111,7 @@ cgiMain()
 			mysql_free_result(res);
 		}
 		
-		WriteSentenceIntoOwnLogFile2(logname, "<I>Whimpy set.</I><BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "<I>Whimpy set.</I><BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}			/* endwhimpy */
@@ -1260,13 +1260,13 @@ cgiMain()
 		char            temp1[50], temp2[50];
 		sprintf(temp1, "%s %s you.<BR>\r\n", name, temp);
 		sprintf(temp2, "%s %s %s.<BR>\r\n", name, temp, tokens[1]);
-		if (!WriteMessageTo2(tokens[1], name, room, "%s %s %s.<BR>\r\n",
+		if (!WriteMessageTo(tokens[1], name, room, "%s %s %s.<BR>\r\n",
 					    name, temp, tokens[1])) {
-			WriteSentenceIntoOwnLogFile2(logname, "That user doesn't exist.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "That user doesn't exist.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[1], name, room,
 				"%s %s you.<BR>\r\n", name, temp);
-			WriteSentenceIntoOwnLogFile2(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -1277,13 +1277,13 @@ cgiMain()
 		char            temp1[50], temp2[50];
 		sprintf(temp1, "%s %s you, %s.<BR>\r\n", name, temp, tokens[2]);
 		sprintf(temp2, "%s %s %s, %s.<BR>\r\n", name, temp, tokens[1], tokens[2]);
-		if (!WriteMessageTo2(tokens[1], name, room, "%s %s %s, %s.<BR>\r\n",
+		if (!WriteMessageTo(tokens[1], name, room, "%s %s %s, %s.<BR>\r\n",
 					    name, temp, tokens[1], tokens[2])) {
-			WriteSentenceIntoOwnLogFile2(logname, "That user doesn't exist.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "That user doesn't exist.<BR>\r\n");
 		} else {
 			WriteSayTo(tokens[1], name, room,
 				"%s %s you, %s.<BR>\r\n", name, temp, tokens[2]);
-			WriteSentenceIntoOwnLogFile2(logname, "You %s %s, %s.<BR>\r\n", tokens[0], tokens[1], tokens[2]);
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s, %s.<BR>\r\n", tokens[0], tokens[1], tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -1359,16 +1359,16 @@ cgiMain()
 			if (row!=NULL) 
 			{
 				WriteMail(name, row[0], mailheader, mailbody);
-				WriteSentenceIntoOwnLogFile2(logname, "Mail sent.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Mail sent.<BR>\r\n");
 			}  /* endif real user */ 
 			else 
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Mail not sent! User not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
 			}
 		}
 		else
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Mail not sent! User not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
 		}
 		mysql_free_result(res);
 		
@@ -1387,6 +1387,6 @@ cgiMain()
 		ListMail(name, password, logname);
 		KillGame();
 	}			/* endoflistmail */
-	WriteSentenceIntoOwnLogFile2(logname, "I am afraid, I do not understand that.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 }

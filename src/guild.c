@@ -108,12 +108,12 @@ MIFEntryIn(char *name, char *password, int room)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-	WriteMessage2(name, room, "You notice %s waving %s hand in front of the south-wall. "
+	WriteMessage(name, room, "You notice %s waving %s hand in front of the south-wall. "
 	"At first you wonder what %s is waving at, then suddenly the entire wall disappears! "
 	" %s leaves to the south and behind %s the wall immediately appears again as before.<BR>\r\n",
 	name, HeShe3(mysex), name, name, HeShe2(mysex));
 	room = 143;
-	WriteMessage2(name, room, "You notice that the wall in the north disappears, %s appears, and the wall replaces itself.<BR>\r\n",
+	WriteMessage(name, room, "You notice that the wall in the north disappears, %s appears, and the wall replaces itself.<BR>\r\n",
 	name);
 
 	sprintf(temp, "update tmp_usertable set room=143 where name='%s'", name);
@@ -145,12 +145,12 @@ MIFEntryOut(char *name, char *password, int room)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-	WriteMessage2(name, room, "You notice %s waving %s hand in front of the north-wall. "
+	WriteMessage(name, room, "You notice %s waving %s hand in front of the north-wall. "
 	"At first you wonder what %s is waving at, then suddenly the entire wall disappears! "
 	" %s leaves to the north and behind %s the wall immediately appears again as before.<BR>\r\n", 
 	name, HeShe3(mysex), name, name, HeShe2(mysex));
 	room = 142;
-	WriteMessage2(name, room, "You notice that the wall in the south of this chamber suddenly disappears. "
+	WriteMessage(name, room, "You notice that the wall in the south of this chamber suddenly disappears. "
 	" %s appears from behind the wall, where you can see another room, and the wall "
 	"represents itself. You are pretty amazed.<BR>\r\n", name);
 
@@ -260,13 +260,13 @@ RangerEntryIn(char *name, char *password, int room)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-	WriteMessage2(name, room, "%s walks into the calm, crystal-clear, water, and "
+	WriteMessage(name, room, "%s walks into the calm, crystal-clear, water, and "
 	 "steps up to the waterfall. %s then makes the sound of a bird and the"
 	 " water slowy parts and %s passes through the solid stone wall"
 	 " without a trace, leaving you baffled.<BR>\r\n",
 	name, HeSheSmall(mysex), name);
 	room = 216;
-	WriteMessage2(name, room, "You notice that the waterfall parts in two streams, "
+	WriteMessage(name, room, "You notice that the waterfall parts in two streams, "
 	 "%s appears, and the waterfall flows back together.<BR>\r\n",
 	name);
 
@@ -299,12 +299,12 @@ RangerEntryOut(char *name, char *password, int room)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-	WriteMessage2(name, room, "%s steps up to the waterfall. %s then makes the sound of a bird and the"
+	WriteMessage(name, room, "%s steps up to the waterfall. %s then makes the sound of a bird and the"
 	" water slowy parts and %s passes through the solid stone wall"
 	" without a trace.<BR>\r\n",
 	name, HeSheSmall(mysex));
 	room = 43;
-	WriteMessage2(name, room, "You hear the rustling water change in sound, Before your eye's"
+	WriteMessage(name, room, "You hear the rustling water change in sound, Before your eye's"
 	" %s slowly appears through the seemingly solid waterfall without a trace.<BR>\r\n", name);
 
 	sprintf(temp, "update tmp_usertable set room=43 where name='%s'", name);

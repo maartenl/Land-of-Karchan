@@ -58,11 +58,11 @@ MakeStart(char *name, char *password, int room, char *address)
 	struct tm datum;
 	time(&tijd);
 	datum = *(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile, "%i:%i:%i %i-%i-19%i%s (%s) entered the game, again.<BR>\n", datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-19%i%s (%s) entered the game, again.<BR>\n", datum.tm_hour,
 				 datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year, name, address);
 	sprintf(printstr, "%s has entered the game, again...<BR>\r\n", name);
 	sprintf(printstr, USERHeader "%s.log", name);
-	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
 
 	if (!getFrames())
 	{
@@ -140,7 +140,7 @@ fprintf(cgiOut,"Please retry by clicking at the link below:<P>\n");
 fprintf(cgiOut,"<A HREF=\"http://"ServerName"/karchan/enter.html\">Click here to retry</A></body>\n");
 time(&tijd);
 datum=*(gmtime(&tijd));
-WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Password Fault by %s (%s) (mudrelogin)<BR>\n",datum.tm_hour, 
+WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Password Fault by %s (%s) (mudrelogin)<BR>\n",datum.tm_hour, 
 datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
 	closedbconnection();
 exit(0);
@@ -167,7 +167,7 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	closedbconnection();
 	exit(0);
@@ -190,7 +190,7 @@ void CookieNotFound(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	closedbconnection();
 	exit(0);

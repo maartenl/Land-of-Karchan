@@ -84,27 +84,6 @@ int SearchUser(char *name);
        x !exists=> return 0
 */
        
-void ReadEvents();
-
-void CleanEvents();
-
-void WriteEvents();
-
-void ReadGuildLists();
-/*Pre: -
-  Post: reads three lists (MIF, Knights, Rangers) in three arrays
-*/
-  
-int SearchGuildMember(int item);
-/*Pre: item = valid
-  Post: return Knights = 1 + MIF = 2 + Rangers = 4
-*/
-
-void WriteGuildLists();
-/*Pre: -
-  Post: writes three lists (MIF, Knights, Rangers) from three arrays in file
-*/
-
 int
 SearchBanList(char *item, char *username);
 /*Pre: -
@@ -115,17 +94,11 @@ char *ItemDescription(char *name);
 
 void ClearLogFile(char *filenaam);
 
-void WriteSentenceIntoOwnLogFile(char *string, char *filenaam);
+void WriteSentenceIntoOwnLogFile(char *filenaam, char *fmt, ...);
 
-void WriteSentenceIntoOwnLogFile2(char *filenaam, char *fmt, ...);
+void WriteMessage(char *name, int roomnr, char *fmt, ...);
 
-void WriteMessage(char *to, char *name, int roomnr);
-
-void WriteMessage2(char *name, int roomnr, char *fmt, ...);
-
-int WriteMessageTo(char *to, char *second, char *toname);
-
-int WriteMessageTo2(char *toname, char *name, int roomnr, char *fmt, ...);
+int WriteMessageTo(char *toname, char *name, int roomnr, char *fmt, ...);
 
 int WriteSayTo(char *toname, char *name, int roomnr, char *fmt, ...);
 

@@ -321,82 +321,6 @@ mysql_free_result(res);
 return returnvalue;
 }
 
-void 
-ReadEvents()
-{
-	FILE *fp;
-	fp = fopen(EventFile, "rb");
-	fread(events, sizeof(events), 1, fp);
-	fclose(fp);
-}
-
-void 
-CleanEvents()
-{
-	FILE *fp;
-	int i;
-	fp = fopen(EventFile, "wb");
-	for (i = 0; i != 50; i++) {
-		events[i] = 0;
-	}
-	fwrite(events, sizeof(events), 1, fp);
-	fclose(fp);
-}
-
-void 
-WriteEvents()
-{
-	FILE *fp;
-	fp = fopen(EventFile, "wb");
-	fwrite(events, sizeof(events), 1, fp);
-	fclose(fp);
-}
-
-void 
-ReadGuildLists()
-{
-	FILE *fp;
-	fp = fopen(GuildListFile, "rb");
-	fread(knightlist, sizeof(knightlist), 1, fp);
-	fread(miflist, sizeof(miflist), 1, fp);
-	fread(rangerlist, sizeof(rangerlist), 1, fp);
-	fclose(fp);
-}
-
-int 
-SearchGuildLists(int item)
-{
-	int i,j;	
-	i=0;
-	for ( j=0; knightlist[j]!=0 && knightlist[j]!=item; j++) {}
-	if ( knightlist[j]==item ) {i+=1;}
-	for ( j=0; miflist[j]!=0 && miflist[j]!=item; j++) {}
-	if ( miflist[j]==item ) {i+=2;}
-	for ( j=0; rangerlist[j]!=0 && rangerlist[j]!=item; j++) {}
-	if ( rangerlist[j]==item ) {i+=4;}
-	return i;
-}
-
-void 
-WriteGuildLists()
-{
-	FILE *fp;
-	fp = fopen(GuildListFile, "wb");
-	fwrite(knightlist, sizeof(knightlist), 1, fp);
-	fwrite(miflist, sizeof(miflist), 1, fp);
-	fwrite(rangerlist, sizeof(rangerlist), 1, fp);
-	fclose(fp);
-}
-
-void 
-ReadBanList()
-{
-	FILE *fp;
-	fp = fopen(BanListFile, "rb");
-	fread(banlist, sizeof(banlist), 1, fp);
-	fclose(fp);
-}
-
 int 
 SearchBanList(char *item, char *username)
 {
@@ -452,15 +376,6 @@ return 0;
 	return 0;*/
 }
 
-void 
-WriteBanList()
-{
-	FILE *fp;
-	fp = fopen(BanListFile, "wb");
-	fwrite(banlist, sizeof(banlist), 1, fp);
-	fclose(fp);
-}
-
 char *
 ItemDescription(char *name)
 {
@@ -507,16 +422,7 @@ ClearLogFile(char *filenaam)
 }
 
 void 
-WriteSentenceIntoOwnLogFile(char *string, char *filenaam)
-{
-	FILE *filep;
-	filep = fopen(filenaam, "a");
-	fprintf(filep, "%s", string);
-	fclose(filep);
-}
-
-void 
-WriteSentenceIntoOwnLogFile2(char *filenaam, char *fmt,...)
+WriteSentenceIntoOwnLogFile(char *filenaam, char *fmt,...)
 {
 	FILE *filep;
 	va_list ap;
@@ -532,12 +438,7 @@ WriteSentenceIntoOwnLogFile2(char *filenaam, char *fmt,...)
 }
 
 void 
-WriteMessage(char *to, char *name, int roomnr)
-{
-}
-
-void 
-WriteMessage2(char *name, int roomnr, char *fmt,...)
+WriteMessage(char *name, int roomnr, char *fmt,...)
 {
 FILE *fp;
 char troep[100];
@@ -570,12 +471,7 @@ while((row = mysql_fetch_row(res))) {
 }
 
 int 
-WriteMessageTo(char *to, char *second, char *toname)
-{
-}
-
-int 
-WriteMessageTo2(char *toname, char *name, int roomnr, char *fmt,...)
+WriteMessageTo(char *toname, char *name, int roomnr, char *fmt,...)
 {
 	char *save;
 	char troep[100], naamxx1[22], naamxx2[22];
@@ -710,8 +606,8 @@ while ((row = mysql_fetch_row(res))) {
 	strcpy(troep, USERHeader);
 	strcat(troep, row[0]);
 	strcat(troep, ".log");
-	WriteSentenceIntoOwnLogFile(to, troep);
-	WriteSentenceIntoOwnLogFile("<P>\r\n", troep);
+	WriteSentenceIntoOwnLogFile(troep, to);
+	WriteSentenceIntoOwnLogFile(troep, "<P>\r\n");
 	}
 
 mysql_free_result(res);

@@ -113,7 +113,7 @@ void StrangeName(char *name, char *password, char *address)
 		fprintf(cgiOut, "</HTML>\n");
 		time(&tijd);
 		datum=*(gmtime(&tijd));
-		WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
+		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
 		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 		closedbconnection();
 				exit(0);
@@ -142,7 +142,7 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	closedbconnection();
 	exit(0);
@@ -164,7 +164,7 @@ void MultiPlayerDetected(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 	closedbconnection();
 	exit(0);
@@ -225,7 +225,7 @@ void AlreadyActive(char *name, char *password, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-//	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Already Active Fault by %s (%s)<BR>\n",datum.tm_hour,
+//	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Already Active Fault by %s (%s)<BR>\n",datum.tm_hour,
 //	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
 	closedbconnection();
 	exit(0);
@@ -245,7 +245,7 @@ void WrongPasswd(char *name, char *address, char *error)
 	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,error,name,address);
 	closedbconnection();
 	exit(0);
@@ -257,7 +257,7 @@ void WriteError(char *name, char *address, char *error)
 	struct tm datum;
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,error,name,address);
 }
 
@@ -292,7 +292,7 @@ void ToManyNames(char *name, char *address)
 	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
 	closedbconnection();
 	exit(0);
@@ -313,7 +313,7 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	fprintf(cgiOut,"</FORM></BODY></HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,fname, address);
 	closedbconnection();
 	exit(0);
@@ -332,7 +332,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
 //	printf("Dude4!\n");
 	sprintf(printstr,"%s has entered the game...<BR>\r\n",name);
@@ -344,7 +344,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 		row = mysql_fetch_row(res);
 		if (row != NULL)
 		{
-			WriteSentenceIntoOwnLogFile2(printstr, row[0]);
+			WriteSentenceIntoOwnLogFile(printstr, row[0]);
 		}
 		mysql_free_result(res);
 	}
@@ -374,7 +374,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 	cgiUserAgent, cgiRemoteAddr, name); 
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
-	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
 
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
 	sprintf(temp, "SELECT count(*) FROM tmp_mailtable"
@@ -383,8 +383,8 @@ void MakeStart(char *name, char *password, char *address, int room)
 	res=SendSQL2(temp, NULL);
 	                        
 	row = mysql_fetch_row(res);
-	if (*row[0]=='0') {WriteSentenceIntoOwnLogFile2(printstr, "You have no new MudMail...<P>\r\n");}
-		else {WriteSentenceIntoOwnLogFile2(printstr, "You have new MudMail!<P>\r\n");}
+	if (*row[0]=='0') {WriteSentenceIntoOwnLogFile(printstr, "You have no new MudMail...<P>\r\n");}
+		else {WriteSentenceIntoOwnLogFile(printstr, "You have new MudMail!<P>\r\n");}
 	mysql_free_result(res);
 
 	if (!getFrames())

@@ -196,7 +196,7 @@ j=1;
 while((row = mysql_fetch_row(res)) && (messnr!=j)) {j++;}
 if (messnr!=j) 
 {
-	WriteSentenceIntoOwnLogFile2(logname, "No mail with that number!<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
@@ -304,11 +304,11 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	res=SendSQL2(temp, NULL);
 
 	if (row = mysql_fetch_row(res)) {
-	WriteSentenceIntoOwnLogFile2(logname, "%s says [to you]: %s<BR>\r\n", botname, row[0]);
-	WriteMessage2(name, room, "%s says [to %s]: %s<BR>\r\n", botname, name, row[0]);
+	WriteSentenceIntoOwnLogFile(logname, "%s says [to you]: %s<BR>\r\n", botname, row[0]);
+	WriteMessage(name, room, "%s says [to %s]: %s<BR>\r\n", botname, name, row[0]);
 	} else {
-	WriteSentenceIntoOwnLogFile2(logname, "%s ignores you.<BR>\r\n", botname);
-	WriteMessage2(name, room, "%s ignores %s.<BR>\r\n", botname, name);
+	WriteSentenceIntoOwnLogFile(logname, "%s ignores you.<BR>\r\n", botname);
+	WriteMessage(name, room, "%s ignores %s.<BR>\r\n", botname, name);
 	fp = fopen(ErrorFile, "a");
 	fprintf(fp, "No response: %s says [to %s]: %s\n", name, botname, vraag);
 	fclose(fp);
@@ -563,7 +563,7 @@ Look_Command(char *name, char *password, int room)
 
 		if (row!=NULL)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You look carefully at the %s %s %s.<BR>\r\n",
+			WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s %s %s.<BR>\r\n",
 				row[2], row[3], row[1]);
 	
 			fprintf(cgiOut, "<HTML>\n");
@@ -680,18 +680,18 @@ Look_Command(char *name, char *password, int room)
 		{
 			if (row[4][0]!='\0')
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "You look carefully at the %s, %s %s, you are wearing on your %s.<BR>\r\n",
+				WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s, %s %s, you are wearing on your %s.<BR>\r\n",
 					row[2], row[3], row[1], row[4]);
 			} else
 			{
 				if (row[5][0]!='\0')
 				{
-					WriteSentenceIntoOwnLogFile2(logname, "You look carefully at the %s, %s %s, you are wielding in your %s.<BR>\r\n",
+					WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s, %s %s, you are wielding in your %s.<BR>\r\n",
 						row[2], row[3], row[1], row[5]);
 				}
 				else
 				{
-					WriteSentenceIntoOwnLogFile2(logname, "You look carefully at the %s, %s %s, you are carrying.<BR>\r\n",
+					WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s, %s %s, you are carrying.<BR>\r\n",
 						row[2], row[3], row[1]);
 				}
 			}
@@ -752,18 +752,18 @@ Look_Command(char *name, char *password, int room)
 			if (row!=NULL)
 			{
 				int i;
-				WriteSentenceIntoOwnLogFile2(logname, "You look carefully at the %s, ", row[8]);
-				if (strcmp(row[9], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[9]);}
-				if (strcmp(row[10], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[10]);}
-				if (strcmp(row[11], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[11]);}
-				if (strcmp(row[12], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[12]);}
-				if (strcmp(row[13], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[13]);}
-				if (strcmp(row[14], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[14]);}
-				if (strcmp(row[15], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[15]);}
-				if (strcmp(row[16], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[16]);}
-				if (strcmp(row[17], "none")) {WriteSentenceIntoOwnLogFile2(logname, "%s, ", row[17]);}
-				WriteSentenceIntoOwnLogFile2(logname, "%s %s", row[7], row[6]);
-				WriteSentenceIntoOwnLogFile2(logname, " who calls %sself \r\n"
+				WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s, ", row[8]);
+				if (strcmp(row[9], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[9]);}
+				if (strcmp(row[10], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[10]);}
+				if (strcmp(row[11], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[11]);}
+				if (strcmp(row[12], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[12]);}
+				if (strcmp(row[13], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[13]);}
+				if (strcmp(row[14], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[14]);}
+				if (strcmp(row[15], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[15]);}
+				if (strcmp(row[16], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[16]);}
+				if (strcmp(row[17], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[17]);}
+				WriteSentenceIntoOwnLogFile(logname, "%s %s", row[7], row[6]);
+				WriteSentenceIntoOwnLogFile(logname, " who calls %sself \r\n"
 					"%s (%s).<BR>\r\n", /*sex*/ HeShe2(row[7]), row[0], row[3]);
 				sprintf(temp, "select '%s', '%s', items.adject1, items.adject2, items.name,"
 				" tmpitems.wearing, tmpitems.wielding from tmp_itemtable tmpitems, items where "
@@ -771,19 +771,19 @@ Look_Command(char *name, char *password, int room)
 				"((wearing <> '') or "
 				" (wielding <> '')) and "
 				" (items.id = tmpitems.id)",row[0], row[7], row[0]);
-				WriteSentenceIntoOwnLogFile2(logname, "%s seems %s.<BR>\r\n", HeShe(row[7]), ShowString(atoi(row[29]), atoi(row[52])));
+				WriteSentenceIntoOwnLogFile(logname, "%s seems %s.<BR>\r\n", HeShe(row[7]), ShowString(atoi(row[29]), atoi(row[52])));
 				if (!strcmp(row[26],"1")) 
 				{
-					WriteSentenceIntoOwnLogFile2(logname, "%s is fast asleep.<BR>\r\n", row[0]);
+					WriteSentenceIntoOwnLogFile(logname, "%s is fast asleep.<BR>\r\n", row[0]);
 				}
-				WriteMessageTo2(row[0], name, room, "%s is looking at %s.<BR>\r\n",name, row[0]);
+				WriteMessageTo(row[0], name, room, "%s is looking at %s.<BR>\r\n",name, row[0]);
 				WriteSayTo(row[0], name, room, "You notice %s looking at you.<BR>", name);
 				res=SendSQL2(temp, &i);
 				while ((row = mysql_fetch_row(res))!=NULL)
 				{
 					if (row[5][0]!='\0')
 					{
-						WriteSentenceIntoOwnLogFile2(logname, "%s is wearing a %s, %s %s on %s %s.<BR>\r\n",
+						WriteSentenceIntoOwnLogFile(logname, "%s is wearing a %s, %s %s on %s %s.<BR>\r\n",
 						row[0], row[2], row[3], row[4], HeShe3(row[1]), row[5]);
 					}
 					else
@@ -791,7 +791,7 @@ Look_Command(char *name, char *password, int room)
 						char position[40];
 						if (row[6][0]=='1') {strcpy(position, "right hand");}
 							else {strcpy(position, "left hand");}
-						WriteSentenceIntoOwnLogFile2(logname, "%s is wielding a %s, %s %s in %s %s.<BR>\r\n",
+						WriteSentenceIntoOwnLogFile(logname, "%s is wielding a %s, %s %s in %s %s.<BR>\r\n",
 						row[0], row[2], row[3], row[4], HeShe3(row[1]), position);
 					}
 					
@@ -811,7 +811,7 @@ Look_Command(char *name, char *password, int room)
 		}
 	}
 	
-	WriteSentenceIntoOwnLogFile2(logname, "You see nothing special.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
@@ -840,7 +840,7 @@ NotActive(char *fname, char *fpassword, int errornr)
 	
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,fname, fpassword, errornr);
 
 	KillGame();
@@ -914,7 +914,7 @@ Root_Command(char *name, char *password, int room)
 	if ((aantal == 2) && (!strcmp(tokens[0], "deactivate")))
 	{
 		RemoveUser(tokens[1]);
-		WriteSentenceIntoOwnLogFile2(logname, "%s deactivated.<BR>\r\n", tokens[1]);
+		WriteSentenceIntoOwnLogFile(logname, "%s deactivated.<BR>\r\n", tokens[1]);
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -958,11 +958,11 @@ Evil_Command(char *name, char *password, int room)
 	}
 	if ((aantal == 3) &&
 	    (!strcmp("beam", tokens[0])) && (!CheckRoom(atoi(tokens[2])))) {
-		WriteMessage2(name, room, "%s's eyes light up red for a few seconds, then black smoke begins to "
+		WriteMessage(name, room, "%s's eyes light up red for a few seconds, then black smoke begins to "
 		"surround him. When the black smoke clears he appears to be gone.<BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile2(logname, "You disappear and reappear in a cloud of smoke.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You disappear and reappear in a cloud of smoke.<BR>\r\n");
 		// x.room = atoi(tokens[2]);
-		WriteMessage2(name, room, "A black smokey cloud appears, when the smoke clears %s is standing"
+		WriteMessage(name, room, "A black smokey cloud appears, when the smoke clears %s is standing"
 		" there, grinning evilly at your surprised face.<BR>\r\n", name);
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -993,10 +993,10 @@ Quit_Command(char *name)
 
 	fprintf(cgiOut, "<HTML>\n");
 	if (atoi(row[0]) > 0) {
-		WriteMessage2(name, atoi(row[2]), "A disgusting toad called ");
+		WriteMessage(name, atoi(row[2]), "A disgusting toad called ");
 	}
-	WriteMessage2(name, atoi(row[2]), "%s left the game...<BR>\r\n", name);
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile,
+	WriteMessage(name, atoi(row[2]), "%s left the game...<BR>\r\n", name);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,
 	"%i:%i:%i %i-%i-%i  %s (%s) has left the game<BR>\n", datumtijd.tm_hour,
 				     datumtijd.tm_min, datumtijd.tm_sec, datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year+1900, name, row[1]);
 	mysql_free_result(res);
@@ -1015,19 +1015,19 @@ HelpHint_Command(char *name, char *password, int room)
 	switch (room) {
 		case 1:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Look very carefully at everything.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 9:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Look very carefully at everything.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 239:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Only your pride seems to be hurt as you stand "
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Only your pride seems to be hurt as you stand "
 			"in soggy clothing at the foot of a small slope. You notice a small object floating upstream to the north. It"
 			" looks strangely familiar... .<BR>\r\n");
 			WriteRoom(name, password, room, 0);
@@ -1035,36 +1035,36 @@ HelpHint_Command(char *name, char *password, int room)
 		}
 	case 16:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Look very carefully at everything.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 3:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Read sign to see how to mail messages.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Read sign to see how to mail messages.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 8:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Talk to Karaoke, give him what he needs most.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Talk to Karaoke, give him what he needs most.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 5:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Try to climb down the well.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Try to climb down the well.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	case 20:
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Hint: Open the chest with the key.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Hint: Open the chest with the key.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 	}
-	WriteSentenceIntoOwnLogFile2(logname, "This room is exceptionally boring.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "This room is exceptionally boring.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
@@ -1308,14 +1308,14 @@ GetMoney_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Coins not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Coins not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1357,18 +1357,18 @@ GetMoney_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You pick up a %s coin.<BR>\r\n", 
 		itemadject2);
-	WriteMessage2(name, room, "%s picks up a %s coin.<BR>\r\n",
+	WriteMessage(name, room, "%s picks up a %s coin.<BR>\r\n",
 		name, itemadject2);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You pick up %i %s coins.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s picks up %i %s coins.<BR>\r\n",
+	WriteMessage(name, room, "%s picks up %i %s coins.<BR>\r\n",
 		name, amount, itemadject2);
 	}
 	WriteRoom(name, password, room, 0);
@@ -1417,7 +1417,7 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 		if (mycopper<amount)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough copper coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1434,7 +1434,7 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 		if (mysilver<amount)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough silver coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1451,7 +1451,7 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 		if (mygold<amount)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough gold coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1484,7 +1484,7 @@ DropMoney_Command(char *name, char *password, int room)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Copper coins not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Copper coins not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -1493,18 +1493,18 @@ DropMoney_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop a %s coin.<BR>\r\n", 
 		tokens[aantal-2]);
-	WriteMessage2(name, room, "%s drops a %s coin.<BR>\r\n",
+	WriteMessage(name, room, "%s drops a %s coin.<BR>\r\n",
 		name, tokens[aantal-2]);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop %i %s coins.<BR>\r\n", 
 		amount, tokens[aantal-2]);
-	WriteMessage2(name, room, "%s drops %i %s coins.<BR>\r\n",
+	WriteMessage(name, room, "%s drops %i %s coins.<BR>\r\n",
 		name, amount, tokens[aantal-2]);
 	}
 	WriteRoom(name, password, room, 0);
@@ -1536,14 +1536,14 @@ GiveMoney_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -1571,7 +1571,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		if (amount>mycopper) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough copper coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1580,7 +1580,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		if (amount>mysilver) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough silver coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1589,7 +1589,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		if (amount>mygold) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough gold coins.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1611,20 +1611,20 @@ GiveMoney_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You give a %s coin to %s.<BR>\r\n", 
 		tokens[numberfilledout+1], toname);
-	WriteMessageTo2(toname, name, room, "%s gives a %s coin to %s.<BR>\r\n",
+	WriteMessageTo(toname, name, room, "%s gives a %s coin to %s.<BR>\r\n",
 		name, tokens[numberfilledout+1], toname);
 	WriteSayTo(toname, name, room, "%s gives a %s coin to you.<BR>\r\n",
 		name, tokens[numberfilledout+1]);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You give %i %s coins to %s.<BR>\r\n", 
 		amount, tokens[numberfilledout+1] ,toname);
-	WriteMessageTo2(toname, name, room, "%s gives %i %s coins to %s.<BR>\r\n",
+	WriteMessageTo(toname, name, room, "%s gives %i %s coins to %s.<BR>\r\n",
 		name, amount, tokens[numberfilledout+1], toname);
 	WriteSayTo(toname, name, room, "%s gives %i %s coins to you.<BR>\r\n",
 		name, amount, tokens[numberfilledout+1]);
@@ -1741,14 +1741,14 @@ Get_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1781,7 +1781,7 @@ Get_Command(char *name, char *password, int room)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -1809,18 +1809,18 @@ Get_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You pick up a %s, %s %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s picks up a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s picks up a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You pick up %i %s, %s %ss.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s picks up %i %ss, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s picks up %i %ss, %s %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
@@ -1942,14 +1942,14 @@ Drop_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -1980,7 +1980,7 @@ Drop_Command(char *name, char *password, int room)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -2012,18 +2012,18 @@ Drop_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop a %s, %s %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s drops a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s drops a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop %i %s, %s %ss.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s drops %i %ss, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s drops %i %ss, %s %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
@@ -2165,14 +2165,14 @@ Wear_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You try to wear it, and fail.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You try to wear it, and fail.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -2212,10 +2212,10 @@ Wear_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You wear a %s, %s %s on your %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, tokens[aantal-1]);
-	WriteMessage2(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), tokens[aantal-1]);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -2333,14 +2333,14 @@ Unwear_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You try to remove it, and fail.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You try to remove it, and fail.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -2385,10 +2385,10 @@ Unwear_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You remove a %s, %s %s from your %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, itemwearing);
-	WriteMessage2(name, room, "%s removes a %s, %s %s from %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s removes a %s, %s %s from %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), itemwearing);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -2431,7 +2431,7 @@ Wield_Command(char *name, char *password, int room)
 			row = mysql_fetch_row(res);
 			if (row!=NULL)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "You are already wielding two items.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "You are already wielding two items.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -2538,14 +2538,14 @@ Wield_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have that item.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have that item.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -2585,10 +2585,10 @@ Wield_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You wield a %s, %s %s in your %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, position2);
-	WriteMessage2(name, room, "%s wears a %s, %s %s in %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s wears a %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position2);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -2706,14 +2706,14 @@ Unwield_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You fail to stop wielding it.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You fail to stop wielding it.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -2760,10 +2760,10 @@ Unwield_Command(char *name, char *password, int room)
 
 	if (itemwielding[0]=='1') {strcpy(position, "right hand");}
 		else {strcpy(position, "left hand");}
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You stop wielding the %s, %s %s in your %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, position);
-	WriteMessage2(name, room, "%s stops wielding the %s, %s %s in %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s stops wielding the %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -2794,7 +2794,7 @@ Eat_Command(char *name, char *password, int room)
 	mysql_free_result(res);
 	if (myeatstats > 50) 
 	{
-			WriteSentenceIntoOwnLogFile2(logname, "You are full, and cannot eat any more.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You are full, and cannot eat any more.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 	} /* too much to eat */
@@ -2892,14 +2892,14 @@ Eat_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You cannot eat that.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You cannot eat that.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -2942,10 +2942,10 @@ Eat_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You eat a %s, %s %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s eats a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s eats a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	KillGame();
 }
@@ -2976,13 +2976,13 @@ Drink_Command(char *name, char *password, int room)
 	mysql_free_result(res);
 	if (mydrinkstats >= 49) 
 	{
-			WriteSentenceIntoOwnLogFile2(logname, "You have drunk your fill.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You have drunk your fill.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 	} /* too much to drink */
 	if (mydrinkstats < -59) 
 	{
-			WriteSentenceIntoOwnLogFile2(logname, "You are already dangerously intoxicated, "
+			WriteSentenceIntoOwnLogFile(logname, "You are already dangerously intoxicated, "
 			"and another drop might just possibly kill you.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
@@ -3081,14 +3081,14 @@ Drink_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You cannot drink that.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You cannot drink that.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -3146,10 +3146,10 @@ Drink_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You drink a %s, %s %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s drinks a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s drinks a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	KillGame();
 }
@@ -3309,14 +3309,14 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You fail to buy the item.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You fail to buy the item.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -3332,7 +3332,7 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 		if (!PayUp(amount*itemgold, amount*itemsilver, amount*itemcopper,
 			&mygold, &mysilver, &mycopper))
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You do not have enough money.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "You do not have enough money.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -3382,7 +3382,7 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -3393,18 +3393,18 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You buy a %s, %s %s from %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, fromname);
-	WriteMessage2(name, room, "%s buys a %s, %s %s from %s.<BR>\r\n",
+	WriteMessage(name, room, "%s buys a %s, %s %s from %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, fromname);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You buy %i %s, %s %ss from %s.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname, fromname);
-	WriteMessage2(name, room, "%s buys %i %ss, %s %s from %s.<BR>\r\n",
+	WriteMessage(name, room, "%s buys %i %ss, %s %s from %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname, fromname);
 	}
 	WriteRoom(name, password, room, 0);
@@ -3521,14 +3521,14 @@ Sell_Command(char *name, char *password, int room, char *toname)
 	res=SendSQL2(sqlstring, &changedrows);
 	if (res==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "You fail to sell the item.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "You fail to sell the item.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -3596,18 +3596,18 @@ Sell_Command(char *name, char *password, int room, char *toname)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You sell a %s, %s %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s sells a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s sells a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You sell %i %s, %s %ss.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s sells %i %ss, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s sells %i %ss, %s %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
@@ -3642,14 +3642,14 @@ Search_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Object not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Object not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", troep+(tokens[1]-tokens[0]));
+			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", troep+(tokens[1]-tokens[0]));
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -3682,7 +3682,7 @@ Search_Command(char *name, char *password, int room)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -3710,10 +3710,10 @@ Search_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You search %s and you find a %s, %s %s.<BR>\r\n", 
 		troep+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
-	WriteMessage2(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
 		name, troep+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -3743,14 +3743,14 @@ Give_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -3845,14 +3845,14 @@ Give_Command(char *name, char *password, int room)
 		res=SendSQL2(sqlstring, &changedrows);
 		if (res==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
@@ -3885,7 +3885,7 @@ Give_Command(char *name, char *password, int room)
 
 			if (!changedrows2)
 			{
-				WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
 				KillGame();
 			}
@@ -3917,20 +3917,20 @@ Give_Command(char *name, char *password, int room)
 
 	if (amount == 1)
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You give a %s, %s %s to %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, toname);
-	WriteMessageTo2(toname, name, room, "%s gives a %s, %s %s to %s.<BR>\r\n",
+	WriteMessageTo(toname, name, room, "%s gives a %s, %s %s to %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, toname);
 	WriteSayTo(toname, name, room, "%s gives a %s, %s %s to you.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
 	}
 	else
 	{
-	WriteSentenceIntoOwnLogFile2(logname, 
+	WriteSentenceIntoOwnLogFile(logname, 
 		"You give %i %s, %s %ss to %s.<BR>\r\n", 
 		amount, itemadject1, itemadject2, itemname, toname);
-	WriteMessageTo2(toname, name, room, "%s gives %i %ss, %s %s to %s.<BR>\r\n",
+	WriteMessageTo(toname, name, room, "%s gives %i %ss, %s %s to %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname, toname);
 	WriteSayTo(toname, name, room, "%s gives %i %s, %s %ss to you.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
@@ -4050,10 +4050,10 @@ Read_Command(char *name, char *password, int room)
 		row = mysql_fetch_row(res);
 		if (row!=NULL) 
 		{
-			WriteSentenceIntoOwnLogFile2(logname, 
+			WriteSentenceIntoOwnLogFile(logname, 
 				"You read the %s, %s %s.<BR>\r\n", 
 				row[1], row[2], row[0]);
-			WriteMessage2(name, room, "%s reads the %s, %s %s.<BR>\r\n",
+			WriteMessage(name, room, "%s reads the %s, %s %s.<BR>\r\n",
 				name, row[1], row[2], row[0]);
 			LookString(row[3], name, password);
 			KillGame();
@@ -4148,14 +4148,14 @@ Read_Command(char *name, char *password, int room)
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, "Item not found.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
@@ -4164,28 +4164,28 @@ Read_Command(char *name, char *password, int room)
 
 	if (row[3][0]!='\0') 
 	{
-		WriteSentenceIntoOwnLogFile2(logname, 
+		WriteSentenceIntoOwnLogFile(logname, 
 			"You read the %s, %s %s, you are wearing.<BR>\r\n", 
 			row[1], row[2], row[0]);
-		WriteMessage2(name, room, "%s reads the %s, %s %s, %s is wearing.<BR>\r\n",
+		WriteMessage(name, room, "%s reads the %s, %s %s, %s is wearing.<BR>\r\n",
 			name, row[1], row[2], row[0], HeSheSmall(mysex));
 	}
 	else
 	{
 		if (row[4][0]!='\0')
 		{
-			WriteSentenceIntoOwnLogFile2(logname, 
+			WriteSentenceIntoOwnLogFile(logname, 
 				"You read the %s, %s %s, you are wielding.<BR>\r\n", 
 				row[1], row[2], row[0]);
-			WriteMessage2(name, room, "%s reads the %s, %s %s, %s is wielding.<BR>\r\n",
+			WriteMessage(name, room, "%s reads the %s, %s %s, %s is wielding.<BR>\r\n",
 				name, row[1], row[2], row[0], HeSheSmall(mysex));
 		}
 		else
 		{
-			WriteSentenceIntoOwnLogFile2(logname, 
+			WriteSentenceIntoOwnLogFile(logname, 
 				"You read the %s, %s %s, you are carrying.<BR>\r\n", 
 				row[1], row[2], row[0]);
-			WriteMessage2(name, room, "%s reads the %s, %s %s, %s is carrying.<BR>\r\n",
+			WriteMessage(name, room, "%s reads the %s, %s %s, %s is carrying.<BR>\r\n",
 				name, row[1], row[2], row[0], HeSheSmall(mysex));
 		}
 	}
@@ -4237,7 +4237,7 @@ Dead(char *name, char *password, int room)
 	sprintf(temp, "update tmp_usertable set vitals=0, sleep=0 where name='%s'",name);
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
-	WriteMessage2(name, room, "%s appears from nowhere.<BR>", name);
+	WriteMessage(name, room, "%s appears from nowhere.<BR>", name);
 	PrintForm(name, password);
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P>");
@@ -4254,7 +4254,7 @@ ChangeTitle_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	WriteSentenceIntoOwnLogFile2(logname, "Title changed to : %s<BR>\n", command+(tokens[1]-tokens[0]));
+	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", command+(tokens[1]-tokens[0]));
 	sprintf(temp, "update tmp_usertable set title='%s' where name='%s'",
 		command+(tokens[1]-tokens[0]),name);
 	res=SendSQL2(temp, NULL);

@@ -854,10 +854,10 @@ int embraceDeath()
 	int level_range, base_exp, align, changealign;
 	
 	/* write down death message from victim */
-	WriteMessage2(row[YNAME], atoi(row[XROOM]), 
+	WriteMessage(row[YNAME], atoi(row[XROOM]), 
 	"%s dies a terrible death.<BR>\r\n", row[YNAME]);
 	sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-	WriteSentenceIntoOwnLogFile2(logname, "You die.<BR>\r\n");
+	WriteSentenceIntoOwnLogFile(logname, "You die.<BR>\r\n");
 	fprintf(outputfile, "%s dies at the hands of %s.\n", row[YNAME], row[XNAME]);
 	fflush(outputfile);
 
@@ -1020,7 +1020,7 @@ int embraceDeath()
 			" where name='%s'"
 			, row[YNAME]);
 		sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-		WriteSentenceIntoOwnLogFile2(logname, "You lose %i experience points.<BR>\r\n", (atoi(row[YEXPERIENCE]) % 1000)/2);
+		WriteSentenceIntoOwnLogFile(logname, "You lose %i experience points.<BR>\r\n", (atoi(row[YEXPERIENCE]) % 1000)/2);
 	}
 	else
 	{
@@ -1066,7 +1066,7 @@ int embraceDeath()
 		
 		/* add experience to user but first check for levelling information */
 		sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-		WriteSentenceIntoOwnLogFile2(logname, "You gain %i experience points.<BR>\r\n", base_exp);
+		WriteSentenceIntoOwnLogFile(logname, "You gain %i experience points.<BR>\r\n", base_exp);
 		if (atoi(row[XEXPERIENCE]) / 1000< (atoi(row[XEXPERIENCE])+base_exp)/1000)
 		{
 			/* person has levelled */
@@ -1083,10 +1083,10 @@ int embraceDeath()
 				exit(1);
 			}
 			/* write down that person has levelled */
-			WriteMessage2(row[XNAME], atoi(row[XROOM]), 
+			WriteMessage(row[XNAME], atoi(row[XROOM]), 
 			"%s has levelled!<BR>\r\n", row[XNAME]);
 			sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-			WriteSentenceIntoOwnLogFile2(logname, "You have levelled. You are now level %i.<BR>\r\n", (atoi(row[XEXPERIENCE])+base_exp)/1000);
+			WriteSentenceIntoOwnLogFile(logname, "You have levelled. You are now level %i.<BR>\r\n", (atoi(row[XEXPERIENCE])+base_exp)/1000);
 			fprintf(outputfile, "%s levels to %i.\n", row[YNAME], row[XNAME],  (atoi(row[XEXPERIENCE])+base_exp)/1000);
 			fflush(outputfile);
 		} /* person has levelled */
@@ -1162,8 +1162,8 @@ int fleeNow(char *fname, int froom)
 			if (!strcmp(row2[dirint],"0"))
 			{
 				/* you try to flee but fail, no exit that way. */
-				WriteSentenceIntoOwnLogFile2(logname, "You try to flee %s, but fail!<BR>\r\n", direction);
-				WriteMessage2(fname, froom, "%s tries to flee %s, but fails!!!<BR>\r\n", fname, direction);
+				WriteSentenceIntoOwnLogFile(logname, "You try to flee %s, but fail!<BR>\r\n", direction);
+				WriteMessage(fname, froom, "%s tries to flee %s, but fails!!!<BR>\r\n", fname, direction);
 				fprintf(outputfile, "%s fails to flee %s (%s).\n", fname, direction, row2[dirint]);
 				fflush(outputfile);
 				fled=0;
@@ -1171,8 +1171,8 @@ int fleeNow(char *fname, int froom)
 			else
 			{
 				/* you flee successfully */
-				WriteSentenceIntoOwnLogFile2(logname, "You flee %s!<BR>\r\n", direction);
-				WriteMessage2(fname, froom, "%s flees to the %s!!!<BR>\r\n", fname, direction);
+				WriteSentenceIntoOwnLogFile(logname, "You flee %s!<BR>\r\n", direction);
+				WriteMessage(fname, froom, "%s flees to the %s!!!<BR>\r\n", fname, direction);
 				sprintf(sqlstring, 
 					"update tmp_usertable set room=%s, experience=experience - abs((experience % 1000)-20) "
 					"where name = '%s'"
@@ -1182,7 +1182,7 @@ int fleeNow(char *fname, int froom)
 					mysqlExitErr("Unable to send sql statement, exiting...", &mysql);
 					exit(1);
 				}
-				WriteMessage2(fname, atoi(row2[dirint]), "%s appears, running and looking over his shoulder.<BR>\r\n", fname, direction);
+				WriteMessage(fname, atoi(row2[dirint]), "%s appears, running and looking over his shoulder.<BR>\r\n", fname, direction);
 				fprintf(outputfile, "%s flees %s (%s).\n", fname, direction, row2[dirint]);
 				fflush(outputfile);
 				fled=1;
@@ -1254,8 +1254,8 @@ void terriblyWrong()
 	switch(wrongtype)
 	{
 		case 1:
-		WriteSentenceIntoOwnLogFile2(logname, "You accidently hit yourself on the foot.<BR>\r\n");
-		WriteMessage2(row[XNAME], atoi(row[XROOM]), "%s, in %s clumsiness, hits %sself on the foot.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]), HeShe2(row[XSEX]));
+		WriteSentenceIntoOwnLogFile(logname, "You accidently hit yourself on the foot.<BR>\r\n");
+		WriteMessage(row[XNAME], atoi(row[XROOM]), "%s, in %s clumsiness, hits %sself on the foot.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]), HeShe2(row[XSEX]));
 		/* diminish damage */
 		sprintf(sqlstring, 
 			"update tmp_usertable set vitals = vitals + 2 "
@@ -1267,8 +1267,8 @@ void terriblyWrong()
 		}
 			break;
 		case 2:
-		WriteSentenceIntoOwnLogFile2(logname, "You accidentally sprain your wrist.<BR>\r\n");
-		WriteMessage2(row[XNAME], atoi(row[XROOM]), "%s sprains %s wrist when attempting a particularly nasty move.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]));
+		WriteSentenceIntoOwnLogFile(logname, "You accidentally sprain your wrist.<BR>\r\n");
+		WriteMessage(row[XNAME], atoi(row[XROOM]), "%s sprains %s wrist when attempting a particularly nasty move.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]));
 		/* diminish damage */
 		sprintf(sqlstring, 
 			"update tmp_usertable set vitals = vitals + 2 "
@@ -1280,8 +1280,8 @@ void terriblyWrong()
 		}
 			break;
 		default:
-			WriteSentenceIntoOwnLogFile2(logname, "You accidentally lose your balance and you miss completely.<BR>\r\n");
-			WriteMessage2(row[XNAME], atoi(row[XROOM]), "%s accidentally loses %s balance completely, and misses big time.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]));
+			WriteSentenceIntoOwnLogFile(logname, "You accidentally lose your balance and you miss completely.<BR>\r\n");
+			WriteMessage(row[XNAME], atoi(row[XROOM]), "%s accidentally loses %s balance completely, and misses big time.<BR>\r\n", row[XNAME], HeShe3(row[XSEX]));
 			break;
 	}
 	closedbconnection();
@@ -1308,38 +1308,38 @@ void terriblyGood()
 		switch(wrongtype)
 		{
 			case 1:
-				WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+				WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 				"%s seems to have hit %s headon.<BR>\r\n", row[XNAME], row[YNAME]);
-				WriteSentenceIntoOwnLogFile2(logname, 
+				WriteSentenceIntoOwnLogFile(logname, 
 				"You seem to have hit %s headon.<BR>\r\n", row[YNAME]);
-				WriteSentenceIntoOwnLogFile2(logname2, 
+				WriteSentenceIntoOwnLogFile(logname2, 
 				"%s hits you headon, leaving you groggy and disoriented.<BR>\r\n", row[XNAME]);
 				break;
 			case 2:
-				WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+				WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 				"%s seems to have hit %s a lot stronger, knocking %s senseless.<BR>\r\n", row[XNAME], row[YNAME], HeShe2(row[YSEX]));
-				WriteSentenceIntoOwnLogFile2(logname, 
+				WriteSentenceIntoOwnLogFile(logname, 
 				"You hit %s headon, leaving %s groggy and disoriented.<BR>\r\n", row[YNAME], HeShe2(row[YSEX]));
-				WriteSentenceIntoOwnLogFile2(logname2, 
+				WriteSentenceIntoOwnLogFile(logname2, 
 				"%s hits you headon, leaving you groggy and disoriented.<BR>\r\n", row[XNAME]);
 				break;
 			default:
-				WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+				WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 				"%s hits %s and you hear bones crushing.<BR>\r\n", row[XNAME], row[YNAME]);
-				WriteSentenceIntoOwnLogFile2(logname, 
+				WriteSentenceIntoOwnLogFile(logname, 
 				"You hit %s and you hear bones crushing.<BR>\r\n", row[YNAME]);
-				WriteSentenceIntoOwnLogFile2(logname2, 
+				WriteSentenceIntoOwnLogFile(logname2, 
 				"%s hits you and you hear your bones crushing from the impact.<BR>\r\n", row[XNAME]);
 				break;
 		}
 	}
 	else
 	{
-		WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+		WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 		"%s makes the %s, %s %s whistle through the air with great speed, heading towards %s.<BR>\r\n", row[XNAME], combat.adject1, combat.adject2, combat.name, row[YNAME]);
-		WriteSentenceIntoOwnLogFile2(logname, 
+		WriteSentenceIntoOwnLogFile(logname, 
 		"You make the %s, %s %s whistle through the air with great speed, heading towards your opponent.<BR>\r\n", combat.adject1, combat.adject2, combat.name);
-		WriteSentenceIntoOwnLogFile2(logname2, 
+		WriteSentenceIntoOwnLogFile(logname2, 
 		"%s makes the %s, %s %s whistle through the air heading with great speed towards you.<BR>\r\n", row[XNAME], combat.adject1, combat.adject2, combat.name);
 	}
 	closedbconnection();
@@ -1552,28 +1552,28 @@ int StartSQL()
 					{
 						/* we are fighting with nothing in our hand */
 						strcpy(message, "%s %s to %s %s with %s %s %s but %s %s.<BR>\r\n");
-						WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+						WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 						message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], row[YNAME],  HeShe3(row[XSEX]), combat.adject1, combat.name, row[YNAME], "dodges");
 						closedbconnection();
 						sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, "You", "attempt", strikeweaponarray[combat.verb][1], row[YNAME], "your", combat.adject1, combat.name, HeSheSmall(row[YSEX]), "dodges");
 						sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], "you", HeShe3(row[XSEX]), combat.adject1, combat.name, "you", "dodge");
 					}
 					else
 					{
 						/* we are fighting with something in our hand */
 						strcpy(message, "%s %s to %s %s with %s %s, %s %s but %s %s.<BR>\r\n");
-						WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+						WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 						message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], row[YNAME], HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name, row[YNAME], "dodges");
 						closedbconnection();
 						sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, "You", "attempt", strikeweaponarray[combat.verb][1], row[YNAME], "your", combat.adject1, combat.adject2, combat.name, HeSheSmall(row[YSEX]), "dodges");
 						sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], "you", HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name, "you", "dodge");
 					}
 				}
@@ -1583,36 +1583,36 @@ int StartSQL()
 					{
 						/* we are fighting with nothing in our hand */
 						strcpy(message, "%s %s %s on %s %s with %s %s %s.<BR>\r\n");
-						WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+						WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 						message, row[XNAME], strikeweaponarray[combat.verb][2], row[YNAME],  HeShe3(row[YSEX]), positionarray[combat.onposition][1], HeShe3(row[XSEX]), combat.adject1, combat.name);
 						sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, "You", strikeweaponarray[combat.verb][1], row[YNAME], HeShe3(row[YSEX]), positionarray[combat.onposition][1], "your", combat.adject1, combat.name);
 						sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, row[XNAME], strikeweaponarray[combat.verb][2], "you", "your", positionarray[combat.onposition][1], HeShe3(row[XSEX]), combat.adject1, combat.name);
 					}
 					else
 					{
 						/* we are fighting with something in our hand */
 						strcpy(message, "%s %s %s on %s %s with %s %s, %s %s.<BR>\r\n");
-						WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+						WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 						message, row[XNAME], strikeweaponarray[combat.verb][2], row[YNAME], HeShe3(row[YSEX]), positionarray[combat.onposition][1], HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name);
 						sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, "You", strikeweaponarray[combat.verb][1], row[YNAME], HeShe3(row[YSEX]), positionarray[combat.onposition][1], "your", combat.adject1, combat.adject2, combat.name);
 						sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						message, row[XNAME], strikeweaponarray[combat.verb][2], "you", "your", positionarray[combat.onposition][1], HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name);
 					}
 					if (strcmp(ShowString(atoi(row[YVITALS]), atoi(row[YMAXVITAL])),
 						ShowString(atoi(row[YVITALS])+combat.damage, atoi(row[YMAXVITAL]))))
 					{
 						/* write down change in vitals for person attacked */
-						WriteMessage2(row[YNAME], atoi(row[XROOM]), 
+						WriteMessage(row[YNAME], atoi(row[XROOM]), 
 						"%s seems to be %s.<BR>\r\n", row[YNAME], ShowString(atoi(row[YVITALS])+combat.damage, atoi(row[YMAXVITAL])));
 						sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-						WriteSentenceIntoOwnLogFile2(logname, 
+						WriteSentenceIntoOwnLogFile(logname, 
 						"You seem to be %s.<BR>\r\n", ShowString(atoi(row[YVITALS])+combat.damage, atoi(row[YMAXVITAL])));
 					}
 					if (atoi(row[YVITALS])+combat.damage > atoi(row[YMAXVITAL]))
@@ -1630,28 +1630,28 @@ int StartSQL()
 				{
 					/* we are fighting with nothing in our hand */
 					strcpy(message, "%s %s to %s %s with %s %s %s but %s.<BR>\r\n");
-					WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+					WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 					message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], row[YNAME],  HeShe3(row[XSEX]), combat.adject1, combat.name, "misses");
 					closedbconnection();
 					sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-					WriteSentenceIntoOwnLogFile2(logname, 
+					WriteSentenceIntoOwnLogFile(logname, 
 					message, "You", "attempt", strikeweaponarray[combat.verb][1], row[YNAME], "your", combat.adject1, combat.name, "miss");
 					sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-					WriteSentenceIntoOwnLogFile2(logname, 
+					WriteSentenceIntoOwnLogFile(logname, 
 					message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], "you", HeShe3(row[XSEX]), combat.adject1, combat.name, "misses");
 				}
 				else
 				{
 					/* we are fighting with something in our hand */
 					strcpy(message, "%s %s to %s %s with %s %s, %s %s but %s.<BR>\r\n");
-					WriteMessageTo2(row[XNAME], row[YNAME], atoi(row[XROOM]), 
+					WriteMessageTo(row[XNAME], row[YNAME], atoi(row[XROOM]), 
 					message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], row[YNAME], HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name, "misses");
 					closedbconnection();
 					sprintf(logname, "%s%s.log",USERHeader,row[XNAME]);
-					WriteSentenceIntoOwnLogFile2(logname, 
+					WriteSentenceIntoOwnLogFile(logname, 
 					message, "You", "attempt", strikeweaponarray[combat.verb][1], row[YNAME], "your", combat.adject1, combat.adject2, combat.name, "miss");
 					sprintf(logname, "%s%s.log",USERHeader,row[YNAME]);
-					WriteSentenceIntoOwnLogFile2(logname, 
+					WriteSentenceIntoOwnLogFile(logname, 
 					message, row[XNAME], "attempts", strikeweaponarray[combat.verb][1], "you", HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name, "misses");
 				}
 			} /* if not successfull */

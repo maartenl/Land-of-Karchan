@@ -196,7 +196,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
-		WriteSentenceIntoOwnLogFile2(logname, temp);
+		WriteSentenceIntoOwnLogFile(logname, temp);
 		free(temp);
 	}
 	if (strstr(parserstring, "sayeveryone(")==parserstring)
@@ -207,7 +207,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		if (debug) {fprintf(cgiOut, "sayeveryone found...<BR>\n");}
 		strcpy(temp, parserstring+13);
 		temp[strlen(temp)-2]=0;
-		WriteMessage2(name, *room, temp);
+		WriteMessage(name, *room, temp);
 		free(temp);
 	}
 	if (strstr(parserstring, "sayto(")==parserstring)
@@ -244,9 +244,9 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp2, temp3+2);
 		temp[temp3-parserstring-16]=0;
 		temp2[strlen(temp2)-2]=0;
-		if (!WriteMessageTo2(temp, name, *room, temp2))
+		if (!WriteMessageTo(temp, name, *room, temp2))
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		}
 		free(temp);
 		free(temp2);

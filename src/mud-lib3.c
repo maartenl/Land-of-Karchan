@@ -70,13 +70,13 @@ GoWest_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
                                 
 	if (!temproom->west)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>\r\n");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave west, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted, and can't move.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave west, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted, and can't move.<BR>\r\n");
 		}
 		else   
 		{
@@ -86,20 +86,20 @@ GoWest_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave west, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave west, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves west.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves west.<BR>\r\n", name);
 				room = temproom->west;
 				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	}
@@ -136,13 +136,13 @@ GoEast_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
                                 
 	if (!temproom->east)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>\r\n");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave east, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted, and can't move.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave east, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted, and can't move.<BR>\r\n");
 		}
 		else
 		{
@@ -152,21 +152,21 @@ GoEast_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave east, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave east, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves east.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves east.<BR>\r\n", name);
 				room = temproom->east;
 				sprintf(temp, "update tmp_usertable set room=%i, "
 				"movementstats=%i where name='%s'"
 				, room, movementstats, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	} 
@@ -203,13 +203,13 @@ GoNorth_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
 
 	if (!temproom->north)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>\r\n");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted, and can't move.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted, and can't move.<BR>\r\n");
 		}
 		else
 		{
@@ -219,21 +219,21 @@ GoNorth_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves north.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves north.<BR>\r\n", name);
 				room = temproom->north;
 				sprintf(temp, "update tmp_usertable set room=%i, "
 					"movementstats=%i where name='%s'"
 								, room, movementstats, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	}
@@ -270,13 +270,13 @@ GoSouth_Command(char *name, char *password, int room)
 	temproom=GetRoomInfo(room);
                                 
 	if (!temproom->south)  {
-		WriteSentenceIntoOwnLogFile2(logname, "You can't go that way.<BR>\r\n");
+		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>\r\n");
 	} else {
 		if (movementstats >= maxmove)
 		{
 			/* if exhausted */
-			WriteMessage2(name, room, "%s attempts to leave south, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile2(logname, "You are exhausted, and can't move.<BR>\r\n");
+			WriteMessage(name, room, "%s attempts to leave south, but is exhausted.<BR>\r\n", name, name);
+			WriteSentenceIntoOwnLogFile(logname, "You are exhausted, and can't move.<BR>\r\n");
 		}
 		else   
 		{
@@ -286,20 +286,20 @@ GoSouth_Command(char *name, char *password, int room)
 			/* if burden too heavy to move */
 			if (computeEncumberance(burden, strength) == -1)
 			{
-				WriteMessage2(name, room, "%s attempts to leave south, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
+				WriteMessage(name, room, "%s attempts to leave south, but is too heavily burdened.<BR>\r\n", name, name);
+				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
 			}
 			else /* if burden NOT too heavy to move */
 			{
 				movementstats = movementstats + computeEncumberance(burden, strength);
 				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage2(name, room, "%s leaves south.<BR>\r\n", name);
+				WriteMessage(name, room, "%s leaves south.<BR>\r\n", name);
 				room = temproom->south;
 				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
 				mysql_free_result(res);
-				WriteMessage2(name, room, "%s appears.<BR>\r\n", name);
+				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
 		} /* if NOT exhausted */
 	}
@@ -322,8 +322,8 @@ Sleep_Command(char *name, char *password, int room)
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, "You go to sleep.<BR>\n");
-	WriteMessage2(name, room, "%s goes to sleep.<BR>\n", name);
+	WriteSentenceIntoOwnLogFile(logname, "You go to sleep.<BR>\n");
+	WriteMessage(name, room, "%s goes to sleep.<BR>\n", name);
 	WriteRoom(name, password, room, 1);
 	KillGame();
 }
@@ -342,8 +342,8 @@ Awaken_Command(char *name, char *password, int room)
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
 
-	WriteSentenceIntoOwnLogFile2(logname, "You wake up.<BR>\n");
-	WriteMessage2(name, room, "%s wakes up. %s is now wide awake.<BR>\n", name, name);
+	WriteSentenceIntoOwnLogFile(logname, "You wake up.<BR>\n");
+	WriteMessage(name, room, "%s wakes up. %s is now wide awake.<BR>\n", name, name);
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
@@ -462,7 +462,7 @@ Time_Command(char *name, char *password, int room)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	WriteSentenceIntoOwnLogFile2(logname, "Current time is %i:%i:%i<BR>\r\n",
+	WriteSentenceIntoOwnLogFile(logname, "Current time is %i:%i:%i<BR>\r\n",
 		 datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec);
 	WriteRoom(name, password, room, 0);
 	KillGame();
@@ -473,7 +473,7 @@ Date_Command(char *name, char *password, int room)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	WriteSentenceIntoOwnLogFile2(logname, "Current date is %i-%i-%i<BR>\r\n",
+	WriteSentenceIntoOwnLogFile(logname, "Current date is %i-%i-%i<BR>\r\n",
 		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year);
 	WriteRoom(name, password, room, 0);
 	KillGame();
