@@ -386,6 +386,41 @@ from a container and for putting an item into a container.
 {\par\centering
 \resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{containers2.ps}}} \par}
 
+\section{Quests}
+\subsection{Normal Quests}
+With the help of the Parser (see below) it is possible to create unique
+quests for people to participate in.
+
+You receive a number of experience points for completing a quest. The
+maximum number of points awared for completion of a quest is 100. It is
+allowed for a player to participate in a quest multiple times. However,
+he/she should only once, i.e. the first time, receive the experience points.
+This can be done using the tmp\_attributes table to store if a person has
+done a certain quest or not.
+
+When dealing with quests it is sometimes necessary to change the description
+of rooms to allow for the quest. This is not necessary. It is much easier to
+simply create a new room and have the room exits of the neighbouring rooms
+point to this new room instead of the old one. This will allow you to be
+able to fully customize your special room, without having to change the old
+one. It will also enable you to change back to the old environment rather
+simple and quickly.
+
+\subsection{Special Quests}
+The difference between normal quests and special quests is quite simple.
+Where a normal quest is a quest specific to a certain area, a special quest
+has a profound effect on all players in the game.
+This also usually means that this quest is temporary. Usually the quest is
+initiated at a certain time, is allowed to run a certain period and then is
+deactivated again.
+
+The amount of points awarded for a special quest can be anything from 0
+experience points (as in this case) to 500 experience points (half a level).
+
+\paragraph{Example}
+A good example of a special quest is the 'Whiteblodge Plague' that roamed
+accross the Land of Karchan recently. It contained a disease that was
+hyper-contagious therefore effecting everyone in the game.
 
 \section{Combat}
 \subsection{Who is fighting who?}
