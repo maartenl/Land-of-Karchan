@@ -442,7 +442,7 @@ WriteInventoryList(char * name, char * password)
 	mysql_free_result(res);
 
 	sprintf(sqlstring, 
-		"select items.id, items.name, items.adject1, items.adject2, "
+		"select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
 		"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
 		"from items, tmp_itemtable tmpitems, containeditems, items items2 "
 		" where (items.id = tmpitems.id) and "
@@ -456,32 +456,32 @@ WriteInventoryList(char * name, char * password)
 		" (tmpitems.containerid <> 0) and "
 		" (tmpitems.containerid = containeditems.containedin) and "
 		" (containeditems.id = items2.id) "
-		" order by items.name, items.adject1, items.adject2", name);
+		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", name);
 	res=SendSQL2(sqlstring, NULL);
 	if (res!=NULL)
 	{
-		int itemid=0;
+		int containerid=0;
 		while ((row = mysql_fetch_row(res))!=NULL)
 		{
-			if (itemid != atoi(row[0]))
+			if (containerid != atoi(row[0]))
 			{
 				fprintf(cgiOut, "\r\n<LI>a %s %s, %s containing ",
-					row[2], row[3], row[1]);
-				itemid = atoi(row[0]);
+					row[3], row[4], row[2]);
+				containerid = atoi(row[0]);
 			}
 			else
 			{
 				fprintf(cgiOut, ", ");
 			}
-			if (atoi(row[4])!=1) 
+			if (atoi(row[5])!=1) 
 			{
 				fprintf(cgiOut, "%s %s, %s %ss",
-					row[4], row[6], row[7], row[5]);
+					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{
 				fprintf(cgiOut, "a %s, %s %s",
-					row[6], row[7], row[5]);
+					row[7], row[8], row[6]);
 			}
 		}
 	}
@@ -914,7 +914,7 @@ if (!getFrames())
 	} 
 	mysql_free_result(res);
 	/* print special items (containers and such) */
-		sprintf(tempsql, "select items.id, items.name, items.adject1, items.adject2, "
+		sprintf(tempsql, "select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
 			"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
 			"from items, tmp_itemtable tmpitems, containeditems, items items2 "
 			" where (items.id = tmpitems.id) and "
@@ -928,39 +928,39 @@ if (!getFrames())
 			" (tmpitems.containerid <> 0) and "
 			" (tmpitems.containerid = containeditems.containedin) and "
 			" (containeditems.id = items2.id) "
-			" order by items.name, items.adject1, items.adject2", room);
+			" order by tmpitems.containerid, items.name, items.adject1, items.adject2", room);
 	res=SendSQL2(tempsql, NULL);
 	if (res!=NULL)
 	{
-		int itemid = 0;
+		int containerid = 0;
 		while ((row = mysql_fetch_row(res))!=NULL)
 		{
-			if (itemid != atoi(row[0]))
+			if (containerid != atoi(row[0]))
 			{
-				if (itemid != 0)
+				if (containerid != 0)
 				{
 					fprintf(cgiOut, " is here.<BR>");
 				}
 				fprintf(cgiOut, "\r\nA %s %s, %s containing ",
-					row[2], row[3], row[1]);
-				itemid = atoi(row[0]);
+					row[3], row[4], row[2]);
+				containerid = atoi(row[0]);
 			}
 			else
 			{	
 				fprintf(cgiOut, ", ");
 			}
-			if (atoi(row[4])!=1)
+			if (atoi(row[5])!=1)
 			{
 				fprintf(cgiOut, "%s %s, %s %ss",
-					row[4], row[6], row[7], row[5]);
+					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{ 
 				fprintf(cgiOut, "a %s, %s %s",
-					row[6], row[7], row[5]); 
+					row[7], row[8], row[6]); 
 			}
 		}
-		if (itemid != 0)
+		if (containerid != 0)
 		{
 			fprintf(cgiOut, " is here.");
 		}
