@@ -1,6 +1,8 @@
 #!/bin/sh
 
-/usr/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` mud <<END_OF_DATA
+. ./mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
 #
 # select statement
 #
