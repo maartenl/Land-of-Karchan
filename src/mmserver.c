@@ -48,7 +48,7 @@ maartenl@il.fontys.nl
 #include "mudnewchar.h"
 
 /*! default hostname used by the mmserver */
-#define MMHOST "zeus" // the hostname users will be connecting to
+#define MMHOST "karchan.org" // the hostname users will be connecting to
 /*! default port number used by the mmserver */
 #define MMPORT 3339 // the port users will be connecting to
 /*! version number of mmserver */
@@ -1017,7 +1017,10 @@ store_in_list(int socketfd, char *buf)
 				while (fgets(string, 1023, filep) != 0) 
 				{
 					int i = strlen(string);
-					send_socket(socketfd, string, &i);
+					if (send_socket(socketfd, string, &i) == -1)
+					{
+						syslog(LOG_INFO, "error during send to the socket...");
+					}
 					if (i != strlen(string))
 					{
 						syslog(LOG_INFO, "unable to send all information to the socket...");
@@ -1191,6 +1194,8 @@ main(int argc, char **argv)
 							if (getFrames() < 4)
 							{
 								// close socket from our side as well
+								char top[10];
+//								recv(i, top, 2, 0);
 								if (close(i) == -1)
 								{
 									syslog(LOG_WARNING, "attempting to close user socket");
