@@ -88,17 +88,6 @@ void LookItem_Command(char *name, char *password, int room);
 void NotActive(char *fname, char *fpassword, int errornr);
 /* print error message due to inactivity */
 
-void Root_Command(char *name, char *password, int room);
-/* access root command, following rootcommands currently present:
-		- sendsql
-		- deactivate
-		- deputyboard <message>
-		- read deputyboard
-		- read audit trail
-		- read map
-		- all <message>
-*/
-
 int CheckRoom(int i);
 /* unable to beam to the following chambers */
 
