@@ -83,8 +83,8 @@ $result = mysql_query("select mm_itemtable.id, mm_itemtable.owner,
 mm_itemtable.itemid,
 date_format(mm_itemtable.creation, \"%Y-%m-%d %T\") as creation2, 
 concat(adject1, \" \", adject2, \" \", adject3, \" \", name) as description
-from mm_items, mm_itemtable ".
-	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id =
+from mm_itemtable left join mm_items ".
+	" on mm_items.id = mm_itemtable.itemid where mm_itemtable.id =
 	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -169,6 +169,25 @@ if (isset($_REQUEST{"removeitemfromitem"}))
 		die("Item is not stored in a container.");
 	}
 	writeLogLong($dbhandle, "Removed item ".$_REQUEST{"removeitemfromitem"}." from container(s).", $query);
+}
+if (isset($_REQUEST{"removeitemtotally"}))
+{
+	// check numeric stuff
+	if (!is_numeric($_REQUEST{"removeitemtotally"}))
+	{
+		die("Expected field to be an integer, and it wasn't.");
+	}
+	// check if owner is correct
+	if (!$owner)
+	{
+		die("You are not the owner of this item instance.");
+	}
+	
+	$query = "delete from mm_itemtable where id = ".
+	mysql_escape_string($_REQUEST{"removeitemtotally"});
+	mysql_query($query, $dbhandle)
+	or die("Query (".$query.") failed : " . mysql_error());
+	writeLogLong($dbhandle, "Removed item instance ".$_REQUEST{"removeitemtotally"}.".", $query);
 }
 if (isset($_REQUEST{"additemtoroom"}))
 {
@@ -369,6 +388,11 @@ Charactername: <INPUT TYPE="text" NAME="additemtochar_charname" VALUE="" SIZE="4
 <INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $_REQUEST{"item"} ?>">
 <INPUT TYPE="submit" VALUE="Add To Container">
 Containerid: <INPUT TYPE="text" NAME="additemtocontainer_containerid" VALUE="" SIZE="40" MAXLENGTH="40">
+</FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_items.php">
+<INPUT TYPE="hidden" NAME="removeitemtotally" VALUE="<?php echo $_REQUEST{"item"} ?>">
+<INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $_REQUEST{"item"} ?>">
+<INPUT TYPE="submit" VALUE="Remove Item Instance">
 </FORM>
 <?php
 }
