@@ -35,6 +35,13 @@ maarten_l@yahoo.com
 /*! \file mud-lib2.c
 	\brief  server file providing extentions and commands to the mud */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //! write mail to another person
 /*! \param name char*, name of sender
 	\param toname char*, name of receiver
@@ -61,7 +68,7 @@ temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
 	 message);
 res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+mud_free(temp);temp=NULL;
 mysql_free_result(res);
 temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	"'%i-%i-%i %i:%i:%i',0,1, '%x')", 
@@ -70,7 +77,7 @@ temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
 	message);
 res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 }
@@ -123,7 +130,7 @@ ListMail_Command(mudpersonstruct *fmudstruct)
 temp = composeSqlStatement("SELECT name, haveread, newmail, header FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
 res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+mud_free(temp);temp=NULL;
 
 send_printf(fmudstruct->socketfd, "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
 while ( (row = mysql_fetch_row(res)) )
@@ -166,7 +173,7 @@ sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
 	" WHERE toname='%x' ", name);
 res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+mud_free(temp);temp=NULL;
 if (res != NULL)
 {
 	row = mysql_fetch_row(res);
@@ -196,7 +203,7 @@ else
 temp = composeSqlStatement("SELECT * FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
 res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+mud_free(temp);temp=NULL;
 if (res==NULL)
 {
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
@@ -267,12 +274,12 @@ if (erasehem)
 	temp = composeSqlStatement("DELETE FROM %s WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"tmp_mailtable", mailname, mailtoname, maildatetime);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 	temp = composeSqlStatement("DELETE FROM %s WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"mailtable", mailname, mailtoname, maildatetime);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 } 
 else 
@@ -280,12 +287,12 @@ else
 	temp = composeSqlStatement("UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"tmp_mailtable", mailname, mailtoname, maildatetime);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 	temp = composeSqlStatement("UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"mailtable", mailname, mailtoname, maildatetime);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 	}
 return 1;
@@ -307,7 +314,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	
 	temp = composeSqlStatement("select god from tmp_usertable where name = \"%s\" ", botname);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res==NULL)
 	{
 		return 0;
@@ -328,7 +335,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	temp = composeSqlStatement("select answer from answers where \"%x\" like question and "
 			"name = \"%x\" ", vraag, botname);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	if ( (row = mysql_fetch_row(res)) ) {
 	WriteSentenceIntoOwnLogFile(logname, "%s says [to you]: %s<BR>\r\n", botname, row[0]);
@@ -389,7 +396,7 @@ Who_Command(mudpersonstruct *fmudstruct)
 	send_printf(fmudstruct->socketfd, "<H2>List of All Users</H2>");
 	tempsql = composeSqlStatement("select count(*) from tmp_usertable where god<1");
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -404,7 +411,7 @@ Who_Command(mudpersonstruct *fmudstruct)
 	", sleep from tmp_usertable "
 	"where god<1");
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		while ((row = mysql_fetch_row(res)))
@@ -519,7 +526,7 @@ LookAtProc(int id, mudpersonstruct *fmudstruct)
 
 	temp = composeSqlStatement("select description from items where id=%i",	id);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -646,7 +653,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -704,7 +711,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 					"tmpitems.containedin = %i",
 					containerid);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				if (res!=NULL)
 				{
 					int firsttime=1;
@@ -812,7 +819,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -886,13 +893,13 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			"objecttype=1",
 			getToken(fmudstruct, 2));
 		res=sendQuery(temp, NULL);
-		free(temp);temp=NULL;
+		mud_free(temp);temp=NULL;
 		if (res!=NULL)
 		{
 			row = mysql_fetch_row(res);
 			if (row != NULL)
 			{
-				extralook = (char *)malloc(strlen(row[1])+2);
+				extralook = (char *)mud_malloc(strlen(row[1])+2, __LINE__, __FILE__);
 				strcpy(extralook, row[1]);
 			}
 			mysql_free_result(res);
@@ -904,7 +911,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			"(tmp_usertable.name='%x')",
 			room, name, getToken(fmudstruct, 2));
 		res=sendQuery(temp, NULL);
-		free(temp);temp=NULL;
+		mud_free(temp);temp=NULL;
 		if (res!=NULL)
 		{
 			row = mysql_fetch_row(res);
@@ -936,7 +943,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 				if (extralook != NULL)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "%s is %s<BR>\r\n", HeShe(row[7]), extralook);
-					free(extralook);
+					mud_free(extralook);
 				}
 				if (!strcasecmp(row[26],"1")) 
 				{
@@ -945,7 +952,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 				WriteMessageTo(row[0], name, room, "%s is looking at %s.<BR>\r\n",name, row[0]);
 				WriteSayTo(row[0], name, room, "You notice %s looking at you.<BR>", name);
 				res=sendQuery(temp, &i);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				while ((row = mysql_fetch_row(res))!=NULL)
 				{
 					if (row[5][0]!='\0')
@@ -1039,7 +1046,7 @@ Quit_Command(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select punishment, address, room  from tmp_usertable where name='%x'",
 			name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 
@@ -1118,7 +1125,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 		}		/* end4 */
 	}			/* endswitch */
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -1169,13 +1176,13 @@ Stats_Command(mudpersonstruct *fmudstruct)
 		"objecttype=1",
 		name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
 		if (row != NULL)
 		{
-			extralook = (char *)malloc(strlen(row[0])+2);
+			extralook = (char *)mud_malloc(strlen(row[0])+2, __LINE__, __FILE__);
 			strcpy(extralook, row[0]);
 		}
 		mysql_free_result(res);
@@ -1185,7 +1192,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	"from tmp_usertable "
 	" where tmp_usertable.name='%x'",name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 	
@@ -1252,7 +1259,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	}
 	if (extralook != NULL) 
 	{
-		free(extralook);
+		mud_free(extralook);
 	}
 	mysql_free_result(res);
 
@@ -1264,7 +1271,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	" (containerid = 0) and "
 	" (items.id = tmpitems.id)",name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ((row = mysql_fetch_row(res))!=NULL)
 	{
 		if (row[3][0]!='\0')
@@ -1289,7 +1296,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	"skilllevel, '.<BR>\r\n') from skills, skilltable where skilltable.number="
 	"skills.number and forwhom='%x'",name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	if (res!=NULL)
 	{
@@ -1370,7 +1377,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 		, getToken(fmudstruct, numberfilledout+1),
 		amount, room);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
@@ -1399,7 +1406,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 			"where (name='%x')"
 			, itemadject2, itemadject2, amount, name);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
 	if (amountitems>amount)
@@ -1421,7 +1428,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 		, itemid, room);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	if (amount == 1)
@@ -1481,7 +1488,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select copper, silver, gold from tmp_usertable where (name = '%x')", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mycopper = atoi(row[0]);
 	mysilver = atoi(row[1]);
@@ -1514,7 +1521,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			" where (name = '%x')"
 			,amount, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=36;
 	}
@@ -1531,7 +1538,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			" where (name = '%x')"
 			,amount, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=37;
 	}
@@ -1548,7 +1555,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			" where (name = '%x')"
 			,amount, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=38;
 	}
@@ -1560,7 +1567,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, amount, itemid, room);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
 		if (!changedrows) 
@@ -1570,7 +1577,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			" values(%i,'','',%i,%i,'','')"
 			, itemid, amount, room);
 			res=sendQuery(sqlstring, &changedrows2);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 
 			if (!changedrows2)
 			{
@@ -1628,7 +1635,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 		"(name <> '%x') and "
 		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
@@ -1648,7 +1655,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select gold, silver, copper from tmp_usertable where (name = '%x')"
 		,name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mygold=atoi(row[0]);
 	mysilver=atoi(row[1]);
@@ -1701,13 +1708,13 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 		"where (name='%x')"
 		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	sqlstring = composeSqlStatement("update tmp_usertable set %s=%s+%i "
 		"where (name='%x')"
 		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, toname);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	if (amount == 1)
@@ -1856,7 +1863,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 			amount, room);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -1892,7 +1899,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				"containerid = %i"
 				, name, itemid, room, containerid);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
 		else
@@ -1906,7 +1913,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				"(containerid = 0)"
 				, amount, itemid, name);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 			if (!changedrows) 
@@ -1916,7 +1923,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				" values(%i,'','%x',%i,0,'','')"
 				, itemid, name, amount);
 				res=sendQuery(sqlstring, &changedrows2);
-				free(sqlstring);sqlstring=NULL;
+				mud_free(sqlstring);sqlstring=NULL;
 	
 				if (!changedrows2)
 				{
@@ -1944,7 +1951,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 			, itemid, room);
 		}
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	if (amount == 1)
@@ -2091,7 +2098,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 			amount, name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -2127,7 +2134,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				"containerid = %i"
 				, room, itemid, name, containerid);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 		}
@@ -2143,7 +2150,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				"(containerid = 0)"
 				, amount, itemid, room);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 			if (!changedrows) 
@@ -2153,7 +2160,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				" values(%i,'','',%i,%i,'','')"
 				, itemid, amount, room);
 				res=sendQuery(sqlstring, &changedrows2);
-				free(sqlstring);sqlstring=NULL;
+				mud_free(sqlstring);sqlstring=NULL;
 	
 				if (!changedrows2)
 				{
@@ -2185,7 +2192,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 			, itemid, name);
 		}
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	
@@ -2340,7 +2347,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 	itemadject2_a, itemadject2_a,
 	amount, name);
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -2380,7 +2387,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 	, itemname_b, itemadject1_b, itemadject1_b, 
 	itemadject2_b, itemadject2_b, name, room);
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
@@ -2410,7 +2417,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select ifnull(max(containedin)+1,1) "
 	"from containeditems");
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
@@ -2439,7 +2446,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			, amount, itemid_a, name);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -2453,7 +2460,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			, itemid_a, name);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 
@@ -2470,7 +2477,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			, itemid_b, itembelongsto_b, room_b);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		/* retrieve maxcontainerid */
 		sqlstring = composeSqlStatement("insert into tmp_itemtable "
@@ -2479,7 +2486,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			, itemid_b, itembelongsto_b, room_b, maxcontainerid);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -2499,7 +2506,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 				, maxcontainerid, itemid_b, itembelongsto_b, room_b);
 //			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
 		else
@@ -2515,7 +2522,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			, itemid_a, maxcontainerid);
 //			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			if (res!=NULL) 
 			{
 				row = mysql_fetch_row(res);
@@ -2537,7 +2544,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 		, amount, itemid_a, maxcontainerid);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -2548,7 +2555,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 		, itemid_a, amount, maxcontainerid);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	if (amount == 1)
@@ -2722,7 +2729,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	name, room);
 //	send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
@@ -2761,7 +2768,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			, amount, itemid_a, containerid_b);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -2773,7 +2780,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			, itemid_a, containerid_b);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
 		/* step 2: if container is empty */
@@ -2783,7 +2790,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			, containerid_b);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res!=NULL) 
 		{
 			row = mysql_fetch_row(res);
@@ -2816,7 +2823,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 				, itemid_b, itembelongsto_b, room_b, containerid_b);
 //			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
 	}
@@ -2835,7 +2842,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	, itemid_a, name);
 //	send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL) 
 	{
 		row = mysql_fetch_row(res);
@@ -2861,7 +2868,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 		, amount, itemid_a, name);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -2872,7 +2879,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 		, itemid_a, name, amount);
 //		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 
@@ -2963,7 +2970,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"wearing = '%x'"
 		, name, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -2980,7 +2987,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -3073,7 +3080,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			name, sqlcomposite);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
@@ -3105,7 +3112,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 		" values(%i, '', '%x', 1, 0, '%x', '')"
@@ -3122,7 +3129,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		, getToken(fmudstruct, getTokenAmount(fmudstruct)-1), itemid, name);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -3171,7 +3178,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -3260,7 +3267,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
@@ -3291,7 +3298,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		if (!changedrows) 
 		{
@@ -3314,7 +3321,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			, itemid, name, itemwearing);
 		}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -3369,7 +3376,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	"(tmpitems.containerid = 0)"
 	, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -3392,7 +3399,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -3485,7 +3492,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
@@ -3517,7 +3524,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 		" values(%i, '', '%x', 1, 0, '', '%i')"
@@ -3534,7 +3541,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 		, position, itemid, name);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -3583,7 +3590,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -3672,7 +3679,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
@@ -3703,7 +3710,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		if (!changedrows) 
 		{
@@ -3726,7 +3733,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 		, itemid, name, itemwielding);
 		}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	if (itemwielding[0]=='1') {strcpy(position, "right hand");}
@@ -3776,7 +3783,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select eatstats from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	myeatstats=atoi(row[0]);
 	mysql_free_result(res);
@@ -3878,7 +3885,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
@@ -3906,7 +3913,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 		"where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	if (amountitems>1)
 	{
@@ -3929,7 +3936,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 		, itemid, name);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -3977,7 +3984,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select drinkstats from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mydrinkstats=atoi(row[0]);
 	mysql_free_result(res);
@@ -4086,7 +4093,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
@@ -4117,7 +4124,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 		sqlstring = composeSqlStatement("update tmp_usertable set drinkstats=drinkstats-10 where (name = '%x')"
 			, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -4127,7 +4134,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			"where (name = '%x')"
 			, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 
@@ -4152,7 +4159,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 		, itemid, name);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -4182,7 +4189,7 @@ RemapShoppingList_Command(char *name)
 	"<IMG SRC=\\\"http://%s/images/gif/scroll.gif\\\">"
 	"The List</H1><HR>Items:<UL>' where id=%i", getParam(MM_SERVERNAME), number);
 	sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 
 	sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.copper, items.silver, items.gold"
 	" from items, tmp_itemtable tmpitems where "
@@ -4191,14 +4198,14 @@ RemapShoppingList_Command(char *name)
 	"(tmpitems.containerid = 0)"
 	, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		sqlstring = composeSqlStatement("update items set readdescr=CONCAT(readdescr, "
 		"'<LI>%s, %s %s (%s gold, %s silver, %s copper a piece)') "
 		"where id=%i",row[1],row[2], row[0], row[5], row[4], row[3], number);
 		sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 	}
 	mysql_free_result(res);
 
@@ -4206,7 +4213,7 @@ RemapShoppingList_Command(char *name)
 	"<P>"
 	"') where id=%i",number);
 	sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 
 }
 
@@ -4242,7 +4249,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 	sqlstring = composeSqlStatement("select copper, silver, gold from tmp_usertable where (name = '%x')"
 		, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mycopper = atoi(row[0]);
 	mysilver = atoi(row[1]);
@@ -4337,7 +4344,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			amount, fromname);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
@@ -4373,7 +4380,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			" where (name = '%x')"
 			,mycopper, mysilver, mygold, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		
 		if (!strcasecmp(fromname, "Karcas"))
@@ -4384,7 +4391,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 				"(containerid = 0)"
 				, amount, itemid, fromname);
 			res=sendQuery(sqlstring, NULL);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			sqlstring = composeSqlStatement("delete from tmp_itemtable where (amount=0) "
 				"and (id=%i) and "
@@ -4392,7 +4399,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 				"(containerid = 0)"
 				, itemid, fromname);
 			res=sendQuery(sqlstring, NULL);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
 
@@ -4403,7 +4410,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			"(containerid = 0)"
 			, amount, itemid, name);
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
 		if (!changedrows) 
@@ -4413,7 +4420,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			" values(%i,'','%x',%i,0,'','')"
 			, itemid, name, amount);
 			res=sendQuery(sqlstring, &changedrows2);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 
 			if (!changedrows2)
 			{
@@ -4569,7 +4576,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		amount, name);
 	}
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
@@ -4596,7 +4603,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		" where (name = '%x')"
 		, amount*itemcopper, amount*itemsilver, amount*itemgold, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	
 	if (amount == amountitems)
@@ -4609,7 +4616,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(containerid = 0)"
 		, itemid, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	else
@@ -4622,7 +4629,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(containerid = 0)"
 		, amount, itemid, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 
@@ -4634,7 +4641,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(containerid = 0)"
 		, amount, itemid, toname);
 	res=sendQuery(sqlstring, &changedrows);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	if (!changedrows)
@@ -4643,7 +4650,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		" values(%i,'','%x',%i,0,'','')"
 		, itemid, toname, amount);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 
@@ -4709,7 +4716,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 	"(tmpitems.search = '%x')"
 	, room, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Object not found.<BR>\r\n");
@@ -4745,7 +4752,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				"(tmpitems.search = '%x')"
 				, name, itemid, containerid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 		}
@@ -4760,7 +4767,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				"(containerid = 0)"
 				, itemid, name);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 			if (!changedrows) 
@@ -4770,7 +4777,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				" values(%i,'','%x',1,0,'','')"
 				, itemid, name);
 				res=sendQuery(sqlstring, &changedrows2);
-				free(sqlstring);sqlstring=NULL;
+				mud_free(sqlstring);sqlstring=NULL;
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -4799,7 +4806,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 			, itemid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), room);
 		}
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	WriteSentenceIntoOwnLogFile(logname, 
@@ -4850,7 +4857,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 		"(name <> '%x') and "
 		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
@@ -4959,7 +4966,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 			amount, name);
 		}
 		res=sendQuery(sqlstring, &changedrows);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -4993,7 +5000,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				"(containerid = %i)"
 				, toname, itemid, name, containerid);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
 		else
@@ -5007,7 +5014,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				"(containerid = 0)"
 				, amount, itemid, toname);
 			res=sendQuery(sqlstring, &changedrows);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
 			if (!changedrows) 
@@ -5017,7 +5024,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				" values(%i,'','%x',%i,0,'','')"
 				, itemid, toname, amount);
 				res=sendQuery(sqlstring, &changedrows2);
-				free(sqlstring);sqlstring=NULL;
+				mud_free(sqlstring);sqlstring=NULL;
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
@@ -5048,7 +5055,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 			, itemid, name);
 		}
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
 	
@@ -5109,7 +5116,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 	, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -5194,7 +5201,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 		room);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL) 
 	{
 		row = mysql_fetch_row(res);
@@ -5292,7 +5299,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 		name);
 	}
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
@@ -5383,7 +5390,7 @@ Dead(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("update tmp_usertable set vitals=0, sleep=0 where name='%x'",name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 	WriteMessage(name, room, "%s appears from nowhere.<BR>", name);
 	PrintForm(name, password, frames, socketfd);
@@ -5418,7 +5425,7 @@ ChangeTitle_Command(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("update tmp_usertable set title='%x' where name='%x'",
 		title, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 	WriteRoom(fmudstruct);
 	return 1;

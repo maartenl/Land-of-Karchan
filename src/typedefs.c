@@ -47,6 +47,8 @@ maarten_l@yahoo.com
 // include file for threading, database calls need a mutex
 #include <pthread.h>
 
+#include <syslog.h>
+
 #include "typedefs.h"
 #include "mudnewchar.h"
 
@@ -54,6 +56,13 @@ maarten_l@yahoo.com
 	\brief  definition file with constants and essential operations
 like database operations, server statistics, configuration and tokenization
 */
+
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
 
 char secretpassword[40];
 
@@ -179,7 +188,7 @@ void freeParam()
 	int i;
 	for (i = 0; i < 24; i++)
 	{
-		free(parameters[i]);
+		mud_free(parameters[i]);
 		parameters[i] = NULL;
 	}
 }
@@ -209,11 +218,11 @@ void setParam(int i, char *parameter)
 {
 	if (parameters[i] != NULL) 
 	{
-		free(parameters[i]);
+		mud_free(parameters[i]);
 	}
 	if (parameter != NULL)
 	{
-		parameters[i] = strdup(parameter);
+		parameters[i] = mud_strdup(parameter, __LINE__, __FILE__);
 	}
 }
 
@@ -295,7 +304,7 @@ add_to_list(int socketfd)
 {
 	mudpersonstruct *mine;
 	int i;
-	mine = (mudpersonstruct *) malloc(sizeof(mudpersonstruct));
+	mine = (mudpersonstruct *) mud_malloc(sizeof(mudpersonstruct), __LINE__, __FILE__);
 	if (mine == NULL)
 	{
 		return 0;
@@ -309,7 +318,7 @@ add_to_list(int socketfd)
 	mine->command = NULL;
 	mine->bufsize = 1;
 	mine->room = -1;
-	mine->readbuf = (char *) malloc(mine->bufsize);
+	mine->readbuf = (char *) mud_malloc(mine->bufsize, __LINE__, __FILE__);
 	mine->readbuf[0] = 0; // initialized to empty string
 	mine->socketfd = socketfd;
 	mine->newchar = NULL;
@@ -370,17 +379,17 @@ remove_from_list(int socketfd)
 			}
 			if (mine->command != NULL) 
 			{
-				free(mine->command);
+				mud_free(mine->command);
 				mine->command = NULL;
 			}
 			if (mine->memblock != NULL) 
 			{
-				free(mine->memblock);
+				mud_free(mine->memblock);
 				mine->memblock = NULL;
 			}
 			if (mine->action != NULL) 
 			{
-				free(mine->action);
+				mud_free(mine->action);
 				mine->action = NULL;
 			}
 			if (mine->newchar != NULL) 
@@ -388,22 +397,22 @@ remove_from_list(int socketfd)
 				mudnewcharstruct *temp = (mudnewcharstruct *) mine->newchar;
 				if (temp->ftitle != NULL)
 				{
-					free(temp->ftitle);
+					mud_free(temp->ftitle);
 				}
 				if (temp->frealname != NULL)
 				{
-					free(temp->frealname);
+					mud_free(temp->frealname);
 				}
 				if (temp->femail != NULL)
 				{
-					free(temp->femail);
+					mud_free(temp->femail);
 				}
-				free(temp);
+				mud_free(temp);
 				mine->newchar = NULL;
 			}
-			free(mine->readbuf);
+			mud_free(mine->readbuf);
 			mine->readbuf = NULL;
-			free(mine);
+			mud_free(mine);
 			mine = NULL;
 			return 1;
 		}
@@ -468,7 +477,7 @@ send_printf(const int socketfd, char *fmt,...)
 	int n, size = 255, sentbytes, resulting;
 	char *p;
 	va_list ap;
-	if ((p = malloc (size)) == NULL)
+	if ((p = mud_malloc (size, __LINE__, __FILE__)) == NULL)
 	{
 		return 0;
 	}
@@ -488,7 +497,7 @@ send_printf(const int socketfd, char *fmt,...)
 			size = n+1; /* precisely what is needed */
 		else /* glibc 2.0 */
 			size *= 2;/* twice the old size */
-		if ((p = realloc (p, size)) == NULL)
+		if ((p = mud_realloc (p, size)) == NULL)
 		{
 			return 0;
 		}
@@ -496,7 +505,7 @@ send_printf(const int socketfd, char *fmt,...)
 	sentbytes = strlen(p);
 	resulting = send_socket(socketfd, p, &sentbytes);
 	resulting = resulting & (sentbytes == strlen(p));
-	free(p);
+	mud_free(p);
 	return resulting;
 }
 
@@ -571,7 +580,7 @@ MYSQL_RES *sendQuery(char *sqlstring, int *affected_rows)
 	Example: composeSqlStatement("select * from tmp_usertable where name='\%x', name);
 	\param sqlstring the format string (with options as displayed above)
 	\param ... the unknown list of parameters to be used
-	\return a char pointer to the composed string (memory has been allocated, do not forget to use free())
+	\return a char pointer to the composed string (memory has been allocated, do not forget to use mud_free())
 	\sa sendQuery
 */
 char *
@@ -583,7 +592,7 @@ composeSqlStatement(char *sqlstring, ...)
 	char temp[20];
 
 	my_size = strlen(sqlstring);
-	my_sqlstring = (char *) malloc(my_size+1);
+	my_sqlstring = (char *) mud_malloc(my_size+1, __LINE__, __FILE__);
 	*my_sqlstring = 0;
 	my_length = 0;
 	va_start(ap, sqlstring);
@@ -598,20 +607,20 @@ composeSqlStatement(char *sqlstring, ...)
 					if (s == NULL) {s = "";}
 					my_size += strlen(s);
 					my_length += strlen(s);
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, s);
 					sqlstring++;
 					break;
 				case 'x': /* mysql_string */
 					s = va_arg(ap, char *);
 					if (s == NULL) {s = "";}
-					special_s = (char *) malloc(strlen(s)*2+1);
+					special_s = (char *) mud_malloc(strlen(s)*2+1, __LINE__, __FILE__);
 					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
 					my_size += i;
 					my_length += i;
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, special_s);
-					free(special_s);special_s=NULL;
+					mud_free(special_s);special_s=NULL;
 					sqlstring++;
 					break;
 				case 'i': /* int */
@@ -620,7 +629,7 @@ composeSqlStatement(char *sqlstring, ...)
 					s = temp;
 					my_size += strlen(s);
 					my_length += strlen(s);
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, s);
 					sqlstring++;
 					break;
@@ -671,7 +680,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 	MYSQL_RES *myResultSet;
 
 	my_size = strlen(sqlstring);
-	my_sqlstring = (char *) malloc(my_size+1);
+	my_sqlstring = (char *) mud_malloc(my_size+1, __LINE__, __FILE__);
 	*my_sqlstring = 0;
 	my_length = 0;
 
@@ -695,20 +704,20 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 					if (s == NULL) {s = "";}
 					my_size += strlen(s);
 					my_length += strlen(s);
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, s);
 					sqlstring++;
 					break;
 				case 'x': /* mysql_string */
 					s = va_arg(ap, char *);
 					if (s == NULL) {s = "";}
-					special_s = (char *) malloc(strlen(s)*2+1);
+					special_s = (char *) mud_malloc(strlen(s)*2+1, __LINE__, __FILE__);
 					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
 					my_size += i;
 					my_length += i;
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, special_s);
-					free(special_s);special_s=NULL;
+					mud_free(special_s);special_s=NULL;
 					sqlstring++;
 					break;
 				case 'i': /* int */
@@ -717,7 +726,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 					s = temp;
 					my_size += strlen(s);
 					my_length += strlen(s);
-					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					my_sqlstring = mud_realloc(my_sqlstring, my_size+1);
 					strcat(my_sqlstring, s);
 					sqlstring++;
 					break;
@@ -739,7 +748,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 	va_end(ap);
 	
 	myResultSet = sendQuery(my_sqlstring, affected_rows);
-	free(my_sqlstring);
+	mud_free(my_sqlstring);
 
 	return myResultSet;
 }
@@ -875,15 +884,161 @@ int readConfigFiles(char *filename)
 	return 1;
 }
 
+// only code below is activated when memory needs checking
+#ifdef MEMMAN
 
-int memory_check = 0;
-
-void addMemory(int i)
+typedef struct memoryinfostruct
 {
-	memory_check += i;
+	void *pointer;
+	size_t size;
+	char *filename;
+	int line;
+} memoryinfostruct;
+
+int memoryused = 0;
+memoryinfostruct pointerarray[100];
+int pointerarrayindex=0;
+
+void *mud_malloc(size_t size, int line, char *filename)
+{
+	memoryinfostruct *mystruct;
+	int i = 0;
+	memoryused+=size;
+	mystruct = &pointerarray[0];
+	while ((mystruct->pointer != NULL) && (i<pointerarrayindex))
+	{
+		i++;
+		mystruct = &pointerarray[i];
+	}
+	if (i==pointerarrayindex) 
+	{
+		pointerarrayindex++;
+	}
+	mystruct = &pointerarray[i];
+	mystruct->pointer = malloc(size);
+	mystruct->size = size;
+	mystruct->line = line;
+	mystruct->filename = filename;
+	return mystruct->pointer;
 }
 
-int getMemory()
+char *mud_strdup(const char *s, int line, char *filename)
 {
-	return memory_check;
+	size_t size;
+	char *stuff;
+	size = strlen(s)+1;
+	stuff = (char *) mud_malloc(size, line, filename);
+	strcpy(stuff, s);
+	return stuff;
 }
+
+void mud_free(void *ptr)
+{
+	memoryinfostruct *mystruct;
+	int result = 0;
+	int i;
+	i=0;
+	while (i<pointerarrayindex)
+	{
+		mystruct = &pointerarray[i];
+		if ((mystruct->pointer) == ptr)
+		{
+			mystruct->pointer = NULL;
+			memoryused-=mystruct->size;
+			mystruct->size = 0;
+		} else
+		if ((mystruct->pointer < ptr) && (mystruct->pointer + mystruct->size >= ptr))
+		{
+			char *stuff;
+			int j;
+			stuff = (char *) malloc (mystruct->size+1);
+			memcpy(stuff, mystruct->pointer, mystruct->size);
+			stuff[mystruct->size]=0;
+			syslog(LOG_INFO, "   Memory pointer %i found: size= %i\n", i, mystruct->size);
+			syslog(LOG_INFO, "                       contents=\" ");
+			for (j=0;j<mystruct->size;j++)
+			{
+				syslog(LOG_INFO, "%.2i ",(unsigned int)stuff[j]);
+			}
+			syslog(LOG_INFO,"   Found in: line=%i, file=%s\n", mystruct->line, mystruct->filename);
+			free(stuff);
+		}
+		i++;
+	}
+	if (result == 0)
+	{
+		        syslog(LOG_INFO, "unable to find allocated memory (%s).", (char *) ptr);
+	}
+	free((void *)ptr);
+}
+
+void *mud_realloc(void *ptr, size_t size)
+{
+	memoryinfostruct *mystruct;
+	int i;
+	i=0;
+	while (i<pointerarrayindex)
+	{
+		mystruct = &pointerarray[i];
+		if ((mystruct->pointer) == ptr)
+		{
+			mystruct->pointer = realloc(ptr, size);
+			memoryused-=mystruct->size;
+			memoryused+=size;
+			mystruct->size = size;
+			return mystruct->pointer;
+		}
+		i++;
+	}
+	return NULL;
+}
+
+void InitMem()
+{
+	memoryinfostruct *mystruct;
+	int i;
+	memoryused=0;
+	printf("   Memory manager initialized...\n");
+	for (i=0;i<100;i++)
+	{
+		mystruct = &pointerarray[i];
+		mystruct->pointer = NULL;
+		mystruct->size = 0;
+		mystruct->line = 0;
+		mystruct->filename = "unknown";
+	}
+}
+
+void DeinitMem()
+{
+	memoryinfostruct *mystruct;
+	int i;
+	printf("   Memory still in use: %i\n", memoryused);
+	for (i=0;i<100;i++)
+	{
+		mystruct = &pointerarray[i];
+		if (mystruct->pointer != NULL)
+		{
+			char *stuff;
+			int j;
+			stuff = (char *) malloc (mystruct->size+1);
+			memcpy(stuff, mystruct->pointer, mystruct->size);
+			stuff[mystruct->size]=0;
+			printf("   Memory pointer %i found: size= %i\n", i, mystruct->size);
+			printf("                       contents=\" ");
+			for (j=0;j<mystruct->size;j++)
+			{
+				printf("%.2i ",(unsigned int)stuff[j]);
+			}
+			printf("\"\n");
+			printf("   Found in: line=%i, file=%s\n", mystruct->line, mystruct->filename);
+			free(stuff);
+		}
+		free(mystruct->pointer);
+		mystruct->pointer = NULL;
+		mystruct->size = 0;
+	}
+}
+
+#endif
+// end of memory checking

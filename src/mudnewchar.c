@@ -37,6 +37,13 @@ maarten_l@yahoo.com
 	\brief  part of the server that takes care of creating a new character.
 */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //extern char secretpassword[40];
 
 //! create a new structure for containing the information for creating a new character
@@ -44,7 +51,7 @@ mudnewcharstruct *create_mudnewcharstruct()
 {
 	mudnewcharstruct *mynewstruct;
 	
-	mynewstruct = (mudnewcharstruct *) malloc(sizeof(mudnewcharstruct));
+	mynewstruct = (mudnewcharstruct *) mud_malloc(sizeof(mudnewcharstruct), __LINE__, __FILE__);
 	if (mynewstruct == NULL)
 	{
 		printf("Fatal - Unable to allocate memory for mudnewcharstruct...\n");

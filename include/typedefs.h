@@ -180,5 +180,12 @@ char *generate_password(char *fpassword);
 void writeConfig(int socketfd);
 int readConfigFiles(char *filename);
 
-void addMemory(int i);
-int getMemory();
+#ifdef MEMMAN
+void *mud_malloc(size_t size, int line, char *filename);
+void mud_free(void *ptr);
+char *mud_strdup(const char *s, int line, char *filename);
+void *mud_realloc(void *ptr, size_t size);
+
+void InitMem();
+void DeinitMem();
+#endif

@@ -38,6 +38,13 @@ maarten_l@yahoo.com
 /*! \file mudmain.c
 	\brief  server file containing the gameMain function that is used to parse and execute issued commands */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 // type-definition: 'gameFunction' now can be used as type
 // parameters: mudpersonstruct *
 typedef int (*gameFunction)(mudpersonstruct *);
@@ -114,7 +121,7 @@ int				theNumberOfFunctions = 0;
 int
 clearGameFunctionIndex()
 {
-	free(gameFunctionArray);
+	mud_free(gameFunctionArray);
 	return 1;
 }
 
@@ -279,7 +286,7 @@ Help_Command(mudpersonstruct *fmudstruct)
 	
 		temp = composeSqlStatement("select contents from help where command='general help'");
 		res=sendQuery(temp, NULL);
-		free(temp);temp=NULL;
+		mud_free(temp);temp=NULL;
 
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
@@ -316,7 +323,7 @@ Help_Command(mudpersonstruct *fmudstruct)
 	
 		temp = composeSqlStatement("select contents from help where command='%x'", getToken(fmudstruct, 1));
 		res=sendQuery(temp, NULL);
-		free(temp);temp=NULL;
+		mud_free(temp);temp=NULL;
 
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
@@ -417,7 +424,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 	{
 		return 0;
 	}
-	mailheader = (char *) malloc(thelength+2);
+	mailheader = (char *) mud_malloc(thelength+2, __LINE__, __FILE__);
 	strncpy(mailheader, fcommand + (getToken(fmudstruct, 3)-getToken(fmudstruct, 0)), thelength);
 	mailheader[thelength+1]=0;
 	mailbody = fcommand + (getToken(fmudstruct, 3)-getToken(fmudstruct, 0)) + thelength + 1;
@@ -428,7 +435,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select name from usertable where "
 		"name='%x' and god<2", mailto);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	
 	if (res!=NULL)
 	{
@@ -449,7 +456,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 		WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
 	}
 	mysql_free_result(res);
-	free(mailheader);
+	mud_free(mailheader);
 	WriteRoom(fmudstruct);
 	return 1;
 }
@@ -534,7 +541,7 @@ Whimpy_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("update tmp_usertable set whimpy=%s "
 		" where name='%x'", number, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		mysql_free_result(res);
@@ -570,7 +577,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
 		"name='%x'", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if (row[0][0]!=0)
 	{
@@ -585,7 +592,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 			sqlstring = composeSqlStatement("update tmp_usertable set fightable=1 where "
 				"name='%x'", name);
 			res=sendQuery(sqlstring, NULL);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
 		} /* pkill is turned on */
@@ -594,7 +601,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 			sqlstring = composeSqlStatement("update tmp_usertable set fightable=0 where "
 				"name='%x'", name);
 			res=sendQuery(sqlstring, NULL);
-			free(sqlstring);sqlstring=NULL;
+			mud_free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
 		} /* pkill is turned of */
@@ -649,7 +656,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 		sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
 			"name='%x'", name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		row = mysql_fetch_row(res);
 		if (row[0][0]==0)
 		{
@@ -663,7 +670,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 			"name='%x'"
 			, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
 		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
@@ -697,7 +704,7 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select fightable from tmp_usertable where "
 		"name='%x'", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	myFightable = atoi(row[0]);
 	mysql_free_result(res);
@@ -718,13 +725,13 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	"room=%i"
 	, name, myFightingName, room);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if ((myFightable!=1) && (atoi(row[1])!=3))
 	{
 		mysql_free_result(res);
-		if (myFightingName != getToken(fmudstruct, 1)) {free(myFightingName);}
-		if (myDescription != getToken(fmudstruct, 1)) {free(myDescription);}
+		if (myFightingName != getToken(fmudstruct, 1)) {mud_free(myFightingName);}
+		if (myDescription != getToken(fmudstruct, 1)) {mud_free(myDescription);}
 		WriteSentenceIntoOwnLogFile(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
 		WriteRoom(fmudstruct);
 		return 1;
@@ -740,20 +747,20 @@ Fight_Command(mudpersonstruct *fmudstruct)
 		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		myFightingName, name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		name, myFightingName);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 	}
 	else
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 	}
 	mysql_free_result(res);
-	if (myFightingName != getToken(fmudstruct, 1)) {free(myFightingName);}
-	if (myDescription != getToken(fmudstruct, 1)) {free(myDescription);}
+	if (myFightingName != getToken(fmudstruct, 1)) {mud_free(myFightingName);}
+	if (myDescription != getToken(fmudstruct, 1)) {mud_free(myDescription);}
 	WriteRoom(fmudstruct);
 	return 1;
 }
@@ -975,8 +982,8 @@ Shout_Command(mudpersonstruct *fmudstruct)
 	if ((getTokenAmount(fmudstruct) > 3) && (!strcasecmp("to", getToken(fmudstruct, 1))))
 	{
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(strlen(fcommand) + 80);
-		temp2 = (char *) malloc(strlen(fcommand) + 80);
+		temp1 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
+		temp2 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
 		sprintf(temp1, "<B>%s shouts [to you] </B>: %s<BR>\r\n",
 			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
@@ -988,8 +995,8 @@ Shout_Command(mudpersonstruct *fmudstruct)
 			WriteSentenceIntoOwnLogFile(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
 						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
-		free(temp2);
-		free(temp1);
+		mud_free(temp2);
+		mud_free(temp1);
 		WriteRoom(fmudstruct);
 		return 1;
 	}
@@ -1023,8 +1030,8 @@ Ask_Command(mudpersonstruct *fmudstruct)
 	if ((!strcasecmp("to", getToken(fmudstruct, 1))) && (getTokenAmount(fmudstruct) > 3)) 
 	{
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(strlen(fcommand) + 80);
-		temp2 = (char *) malloc(strlen(fcommand) + 80);
+		temp1 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
+		temp2 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
 		sprintf(temp1, "<B>%s asks you </B>: %s<BR>\r\n",
 			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s asks %s : %s<BR>\r\n",
@@ -1036,8 +1043,8 @@ Ask_Command(mudpersonstruct *fmudstruct)
 			WriteSentenceIntoOwnLogFile(logname, "<B>You ask %s</B> : %s<BR>\r\n",
 						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
-		free(temp2);
-		free(temp1);
+		mud_free(temp2);
+		mud_free(temp1);
 		WriteRoom(fmudstruct);
 		return 1;
 	}
@@ -1070,8 +1077,8 @@ Whisper_Command(mudpersonstruct *fmudstruct)
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if ((!strcasecmp("to", getToken(fmudstruct, 1))) && (getTokenAmount(fmudstruct) > 3)) {
 		char           *temp1, *temp2;
-		temp1 = (char *) malloc(strlen(fcommand) + 80);
-		temp2 = (char *) malloc(strlen(fcommand) + 80);
+		temp1 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
+		temp2 = (char *) mud_malloc(strlen(fcommand) + 80, __LINE__, __FILE__);
 		sprintf(temp1, "<B>%s whispers [to you]</B> : %s<BR>\r\n",
 			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
@@ -1083,8 +1090,8 @@ Whisper_Command(mudpersonstruct *fmudstruct)
 			WriteSentenceIntoOwnLogFile(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
 						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
-		free(temp2);
-		free(temp1);
+		mud_free(temp2);
+		mud_free(temp1);
 		WriteRoom(fmudstruct);
 		return 1;
 	}
@@ -1671,7 +1678,7 @@ int
 initGameFunctionIndex()
 {
 	/* initialise and fill the Function array */
-	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*100);
+	gameFunctionArray = (gameFunction *) mud_malloc(sizeof(gameFunction)*100, __LINE__, __FILE__);
 	gameFunctionArray[theNumberOfFunctions++] = &Admin_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Ask_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Awaken_Command;
@@ -1738,6 +1745,47 @@ initGameFunctionIndex()
 	return 1;
 }
 
+//! tokenizes the main command into seperate words
+/*! tokenises the main command into separate words, space (" ") is used
+    as the separator. Multiple spaces are interpreted as a single space.
+    The way this works is that elements of the tokenarray will point to
+    the start of the new words in the 'commandstring'. This means that
+    the commandstring contains a string with multiple \0 breaks.
+    The first token (tokenarray[0]) will always point to the first word
+    in the commandstring, which is always the same address as commandstring.
+    <P>
+    Why not strtok? Strtok is dangerous and is not thread safe.
+\param commandstring char* containing the command. Attention! This variable
+will be changed!!!
+\param tokenarray char** containing the different words, will never exceed 50 words.
+\return int containing the amount of tokens entered into the array
+*/
+int tokenizer(char *commandstring, char **tokenarray)
+{
+	char *index;
+	int number;
+	tokenarray[0] = commandstring;
+	number = 1;
+	index = commandstring;
+	while (*index != 0)
+	{
+		if (*index == ' ')
+		{
+			*index=0;
+			if ((*(index+1) != ' ') && (*(index+1) != 0))
+			{
+				tokenarray[number++] = index+1;
+				if (number == 50)
+				{
+					return number;
+				}
+			}
+		}
+		index++;
+	}
+	return number;
+}
+
 //! main command parsing and executing body
 /*! executes commands issued in the mud as a regular player
 \param socketfd integer containing the socket descriptor, used to retrieve the mudpersonstruct
@@ -1748,7 +1796,6 @@ gameMain(int socketfd)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int room;
-	int i, amount = 0;
 	char *name;
 	char *password;
 	char	*temp;
@@ -1796,7 +1843,7 @@ gameMain(int socketfd)
 		"from tmp_usertable "
 		"where name='%x' and lok<>''", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res==NULL)
 	{
 		NotActive(name, password,2,mymudstruct->socketfd);
@@ -1843,16 +1890,16 @@ gameMain(int socketfd)
 	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
 			"address='%x' where name='%x'",	mymudstruct->address, name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 #ifdef DEBUG
 	printf("create memblock!!!\n");
 #endif
-	junk = strdup(command);
+	junk = mud_strdup(command, __LINE__, __FILE__);
 	if (mymudstruct->memblock != NULL)
 	{
-		free(mymudstruct->memblock);
+		mud_free(mymudstruct->memblock);
 	}
 	mymudstruct->memblock = junk;
 	while ((strlen(junk)>0) && (junk[strlen(junk)-1]==' ')) 
@@ -1906,7 +1953,7 @@ gameMain(int socketfd)
 		sqlstring = composeSqlStatement("update tmp_usertable set punishment=punishment-1 where name='%x'",
 			name);
 		res=sendQuery(sqlstring, NULL);
-		free(sqlstring);sqlstring=NULL;
+		mud_free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteRoom(mymudstruct);
 		return 1;
@@ -1960,24 +2007,7 @@ gameMain(int socketfd)
 #ifdef DEBUG
 	printf("tokenizer started!!!\n");
 #endif
-	myTokens[0] = junk;
-	myTokens[0] = strtok(junk, " ");
-	if (myTokens[0] != NULL) {
-		i = 1;
-		while (i != -1) {
-			myTokens[i] = strtok(NULL, " ");
-			i++;
-			if (myTokens[i - 1] == NULL) {
-				amount = i - 1;
-				i = -1;
-			}	/* endif */
-			if (i>45) {
-				amount = i - 1;
-				i = -1;
-			}	/* endif */
-		}		/* endwhile */
-	}			/* endif */
-	mymudstruct->tokenamount = amount;
+	mymudstruct->tokenamount = tokenizer(junk, myTokens);
 
 #ifdef DEBUG
 	printf("parser started!!!\n");

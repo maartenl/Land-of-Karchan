@@ -37,6 +37,13 @@ maarten_l@yahoo.com
 	\brief  part of the server that does the whole guild thing as well as
 some "talk lines". */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //! list of guildmembers of the MIF
 void 
 MIFList(char *name, char *password, int room, int frames, int socketfd)
@@ -75,7 +82,7 @@ MIFList(char *name, char *password, int room, int frames, int socketfd)
 	send_printf(socketfd, "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='mif'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
+	mud_free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
@@ -102,7 +109,7 @@ MIFEntryIn(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -117,7 +124,7 @@ MIFEntryIn(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("update tmp_usertable set room=143 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=sendQuery("select contents from action where id=9", NULL);
@@ -141,7 +148,7 @@ MIFEntryOut(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -157,7 +164,7 @@ MIFEntryOut(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("update tmp_usertable set room=142 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=sendQuery("select contents from action where id=10", NULL);
@@ -188,20 +195,20 @@ MIFTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='mif'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 
@@ -243,7 +250,7 @@ RangerList(char *name, char *password, int room, int frames, int socketfd)
 	send_printf(socketfd, "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='rangers'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
@@ -270,7 +277,7 @@ RangerEntryIn(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -287,7 +294,7 @@ RangerEntryIn(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("update tmp_usertable set room=216 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=sendQuery("select contents from action where id=13", NULL);
@@ -311,7 +318,7 @@ RangerEntryOut(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -326,7 +333,7 @@ RangerEntryOut(char *name, char *password, int room, int frames, int socketfd)
 
 	temp = composeSqlStatement("update tmp_usertable set room=43 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=sendQuery("select contents from action where id=14", NULL);
@@ -358,20 +365,20 @@ RangerTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='rangers'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 
@@ -397,20 +404,20 @@ SWTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='SW'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 
@@ -436,20 +443,20 @@ DepTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where god=1");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }	
 /*! add BKTalk */
@@ -474,20 +481,20 @@ BKTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='BKIC'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 /*! add VampTalk */
@@ -512,20 +519,20 @@ VampTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Kindred'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 /*! add KnightTalk */
@@ -550,20 +557,20 @@ KnightTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Knights'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 /*! add CoDTalk */
@@ -588,20 +595,20 @@ CoDTalk(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	temp2 = (char *) malloc(strlen(command) + 80);
+	temp2 = (char *) mud_malloc(strlen(command) + 80, __LINE__, __FILE__);
 	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='CoD'");
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
 	mysql_free_result(res);
 	
-	free(temp2);
+	mud_free(temp2);
 	WriteRoom(fmudstruct);
 }
 

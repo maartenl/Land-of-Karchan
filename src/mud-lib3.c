@@ -34,6 +34,13 @@ maarten_l@yahoo.com
 /*! \file mud-lib3.c
 	\brief  part of the server that takes care of extended commands */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //! have the character proceed downwards
 int
 GoDown_Command(mudpersonstruct *fmudstruct)
@@ -62,7 +69,7 @@ GoDown_Command(mudpersonstruct *fmudstruct)
 		"where name='%x'"
 		, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
@@ -112,7 +119,7 @@ GoDown_Command(mudpersonstruct *fmudstruct)
 				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 					,room, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
@@ -151,7 +158,7 @@ GoUp_Command(mudpersonstruct *fmudstruct)
 		"where name='%x'"
 		, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
@@ -199,7 +206,7 @@ GoUp_Command(mudpersonstruct *fmudstruct)
 				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
@@ -235,7 +242,7 @@ GoWest_Command(mudpersonstruct *fmudstruct)
 		"where name='%x'"
 		, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -282,7 +289,7 @@ GoWest_Command(mudpersonstruct *fmudstruct)
 				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -318,7 +325,7 @@ GoEast_Command(mudpersonstruct *fmudstruct)
 	"where name='%x'"
 	, name);
 	res=sendQuery(temp, NULL);  
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -366,7 +373,7 @@ GoEast_Command(mudpersonstruct *fmudstruct)
 				"movementstats=%i where name='%x'"
 				, room, movementstats, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -400,7 +407,7 @@ GoNorth_Command(mudpersonstruct *fmudstruct)
 	"where name='%x'"
 	, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -448,7 +455,7 @@ GoNorth_Command(mudpersonstruct *fmudstruct)
 					"movementstats=%i where name='%x'"
 								, room, movementstats, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -484,7 +491,7 @@ GoSouth_Command(mudpersonstruct *fmudstruct)
 		"where name='%x'"
 		, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -531,7 +538,7 @@ GoSouth_Command(mudpersonstruct *fmudstruct)
 				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=sendQuery(temp, NULL);
-				free(temp);temp=NULL;
+				mud_free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -560,7 +567,7 @@ Sleep_Command(mudpersonstruct *fmudstruct)
 
 	temp = composeSqlStatement("update tmp_usertable set sleep=1, jumpmana=jumpmana+1, jumpmove=jumpmove+2, jumpvital=jumpvital+3 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, "You go to sleep.<BR>\n");
@@ -587,7 +594,7 @@ Awaken2_Command(mudpersonstruct *fmudstruct)
 
 	temp = composeSqlStatement("update tmp_usertable set sleep=0, jumpmana=jumpmana-1, jumpmove=jumpmove-2, jumpvital=jumpvital-3 where name='%x'", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, "You wake up.<BR>\n");

@@ -1,7 +1,7 @@
 #
 # MakeFile -- Maarten's Mud Makefile for compiling the binaries
 #
-# gcc mmserver.c `/usr/bin/xml-config --cflags` `/usr/bin/xml-config --libs` -I/usr/include/mysql/ -I../include/ -lm -lmysqlclient -lefence 
+# gcc mmserver.c `/usr/bin/xml-config --cflags` `/usr/bin/xml-config --libs` -I/usr/include/mysql/ -I../include/ -lm -l$(MYSQLLIB) -lefence 
 
 # Directory for installing the mud-cgi-binaries 
 # ---------------------------------------------
@@ -9,6 +9,12 @@
 
 # INSTALLDIR = /home/karchan/.html/cgi-bin/
 INSTALLDIR = /home/httpd/cgi-bin/
+
+# MYSQL CLIENT LIBRARY
+# 
+# MYSQLLIB = mysqlclient
+# (do NOT use the value above! It is not thread safe)
+MYSQLLIB = mysqlclient_r
 
 #
 # Options that can be used to the make command
@@ -26,8 +32,13 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # the DEBUG can be set to an integer value.
 # for instance: '-DDEBUG=1' and consequently recompiling the mud source code
 # will yield a binary with level 1 debug messages added.
-
+#
+# the MEMMAN can be set to indicate that memory checking should be active
+# when the program is terminated, a list is dumped on standard output
+# on which variables are still available in memory and have not cleared
+# properly.
 DEBUG = -DDEBUG
+# -DMEMMAN
 
 #
 #------------------------------------------------------------------
@@ -36,7 +47,7 @@ DEBUG = -DDEBUG
 #
 
 # cc -I/usr/include/mysql/ -L/usr/lib/mysql/ prog.c -o prog -lm
-# 			-lmysqlclient
+# 			-l$(MYSQLLIB)
 #
 # $(OPTIONS) $(LIBDIR) $(INCLUDES)
 
@@ -57,14 +68,14 @@ XMLINCLUDES = `/usr/bin/xml2-config --cflags`
 EXEDIR = /home/httpd/cgi-bin
 # this header is for RPM installations of mysql
 #
-# LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient
+# LIBDIR = -L/usr/lib/mysql/ -lm -l$(MYSQLLIB)
 # this header is for Source installations of mysql
 #
 # the -lefence option is strictly for debugging purposes
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
 #
-LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence -lpthread
+LIBDIR = -L/usr/lib/mysql/ -lm -l$(MYSQLLIB) -lz -lefence -lpthread
 # you can use xml-config, however, when two xml libs exists, it will
 # pick the oldest one
 XMLLIBDIR = `/usr/bin/xml2-config --libs`

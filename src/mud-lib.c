@@ -34,6 +34,13 @@ maarten_l@yahoo.com
 /*! \file mud-lib.c
 	\brief  server file containing the import game extentions like ReadFile and WriteRoom and standard communication */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 char           *emotions[][2] = {
 	{"agree", "agrees"},
 	{"apologize", "apologizes"},
@@ -444,7 +451,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		" (tmpitems.wielding = '') and "
 		" (tmpitems.containerid = 0)", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		while ((row = mysql_fetch_row(res))!=NULL)
@@ -479,7 +486,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		" (containeditems.id = items2.id) "
 		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		int containerid=0;
@@ -512,7 +519,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select gold, silver, copper from tmp_usertable"
 		" where name = '%x'", name);
 	res=sendQuery(sqlstring, NULL);
-	free(sqlstring);sqlstring=NULL;
+	mud_free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -915,7 +922,7 @@ if (!fmudstruct->frames)
 	"' ', sex, ' ', race),name)"
 	", sleep, god, punishment, name from tmp_usertable where (room=%i) and (name<>'%x')",room,name);
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		char colorme[10];
@@ -958,7 +965,7 @@ if (!fmudstruct->frames)
 			"      (tmpitems.containerid=0)"
 			"      ",room);
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		while ((row = mysql_fetch_row(res))!=NULL)
@@ -993,7 +1000,7 @@ if (!fmudstruct->frames)
 		" (containeditems.id = items2.id) "
 		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", room);
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		int containerid = 0;
@@ -1058,7 +1065,7 @@ CheckWeight(char * name)
 	"+ tmp_usertable.copper from tmp_usertable where "
 	"tmp_usertable.name='%x'", name);
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	row = mysql_fetch_row(res);
 	totalgold = atoi(row[0]); 
 	mysql_free_result(res);
@@ -1068,7 +1075,7 @@ CheckWeight(char * name)
 	"tmp_itemtable, items where tmp_itemtable.belongsto='%x' and "
 	"tmp_itemtable.id=items.id and tmp_itemtable.containerid=0", name);
 	res=sendQuery(tempsql, NULL);
-	free(tempsql);tempsql=NULL;
+	mud_free(tempsql);tempsql=NULL;
 	totalitems=0;
 	if (res!=NULL)
 	{

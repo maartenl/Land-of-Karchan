@@ -37,6 +37,13 @@ maarten_l@yahoo.com
 	\brief  contains the parser, finds appropriate methods that correspond
 to a users input and interprets and executes them. */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //extern char *command;
 char *stringbuffer;
 
@@ -100,13 +107,13 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+8);
 		temp[strlen(temp)-2]=0;
 
 		if (parser_debug) {send_printf(socketfd, "if sql found...<BR>\n");}
 		res=sendQuery(temp, NULL);
-		free(temp);
+		mud_free(temp);
 		if (res != NULL)
 		{
 			row = mysql_fetch_row(res);
@@ -184,12 +191,12 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		MYSQL_RES *res;
 		MYSQL_ROW row;
 		if (parser_debug) {send_printf(socketfd, "show found...<BR>\n");}
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+6);
 		temp[strlen(temp)-2]=0;
 
 		res=sendQuery(temp, NULL);
-		free(temp);
+		mud_free(temp);
 		if (res != NULL)
 		{
 			row = mysql_fetch_row(res);
@@ -232,12 +239,12 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp;
 		MYSQL_RES *res;
 		if (parser_debug) {send_printf(socketfd, "sql found...<BR>\n");}
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
 
 		res=sendQuery(temp, NULL);
-		free(temp);
+		mud_free(temp);
 		if (res != NULL)
 		{
 			mysql_free_result(res);
@@ -250,22 +257,22 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp;
 		if (parser_debug) {send_printf(socketfd, "say found...<BR>\n");}
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
 		WriteSentenceIntoOwnLogFile(logname, temp);
-		free(temp);
+		mud_free(temp);
 	}
 	if (strstr(parserstring, "sayeveryone(")==parserstring)
 	{
 		/* says something to everyone except to you */
 		char *temp;
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		if (parser_debug) {send_printf(socketfd, "sayeveryone found...<BR>\n");}
 		strcpy(temp, parserstring+13);
 		temp[strlen(temp)-2]=0;
 		WriteMessage(name, *room, temp);
-		free(temp);
+		mud_free(temp);
 	}
 	if (strstr(parserstring, "sayto(")==parserstring)
 	{
@@ -273,8 +280,8 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		/* syntax: sayto("Bill","Howdie!<BR>") */
 		char *temp, *temp2, *temp3;
 		char logname[100];
-		temp = (char *) malloc(strlen(parserstring)+1);
-		temp2 = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
+		temp2 = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		if (parser_debug) {send_printf(socketfd, "sayto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
@@ -283,8 +290,8 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		temp[temp3-parserstring-8]=0;
 		temp2[strlen(temp2)-2]=0;
 		WriteSayTo(temp, name, *room, temp2);
-		free(temp);
-		free(temp2);
+		mud_free(temp);
+		mud_free(temp2);
 	}
 	if (strstr(parserstring, "sayeveryoneto(")==parserstring)
 	{
@@ -293,8 +300,8 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp, *temp2, *temp3;
 		char logname[100];
 		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-		temp = (char *) malloc(strlen(parserstring)+1);
-		temp2 = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
+		temp2 = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		if (parser_debug) {send_printf(socketfd, "sayeveryoneto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+15);
@@ -305,8 +312,8 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		}
-		free(temp);
-		free(temp2);
+		mud_free(temp);
+		mud_free(temp2);
 	}
 	if (strstr(parserstring, "set room=")==parserstring)
 	{
@@ -324,13 +331,13 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
 		if (parser_debug) {send_printf(socketfd, "getstring found...<BR>\n");}
 		res=sendQuery(temp, NULL);
-		free(temp);
+		mud_free(temp);
 		if (res != NULL)
 		{
 			row = mysql_fetch_row(res);
@@ -339,9 +346,9 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 				/*	row[0] should contain a string */
 				if (stringbuffer != NULL)
 				{
-					free(stringbuffer);
+					mud_free(stringbuffer);
 				}
-				stringbuffer = (char *) malloc(strlen(row[0])+1);
+				stringbuffer = (char *) mud_malloc(strlen(row[0])+1, __LINE__, __FILE__);
 				strcpy(stringbuffer, row[0]);
 			}
 			mysql_free_result(res);
@@ -353,19 +360,19 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
 		if (parser_debug) {send_printf(socketfd, "addstring [%s]found...<BR>\n", parserstring);}
 		res=sendQuery(temp, NULL);
-		free(temp);
+		mud_free(temp);
 		if (res != NULL)
 		{
 			int stringbuffersize;
 			if (stringbuffer == NULL)
 			{
-				stringbuffer = (char *) malloc(2);
+				stringbuffer = (char *) mud_malloc(2, __LINE__, __FILE__);
 				stringbuffer[0]=0;
 				stringbuffersize=2;
 			}
@@ -380,7 +387,7 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 				{
 					char *temp;
 					stringbuffersize += strlen(row[0])+2;
-					temp = (char *) realloc(stringbuffer, stringbuffersize);
+					temp = (char *) mud_realloc(stringbuffer, stringbuffersize);
 					if (temp != NULL)
 					{
 						stringbuffer=temp;
@@ -402,7 +409,7 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		struct tm datum;
 		char *temp;
 		if (parser_debug) {send_printf(socketfd, "log found...<BR>\n");}
-		temp = (char *) malloc(strlen(parserstring)+1);
+		temp = (char *) mud_malloc(strlen(parserstring)+1, __LINE__, __FILE__);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
 		time(&tijd);
@@ -410,7 +417,7 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE), "%i:%i:%i %i-%i-%i %s\n",
 		datum.tm_hour, datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,
 		temp);
-		free(temp);
+		mud_free(temp);
 	}
 	return 0;
 }
@@ -438,7 +445,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 	if (stringbuffer!=NULL)
 	{
 		/* clear stringbuffer for new parser method */
-		free(stringbuffer);
+		mud_free(stringbuffer);
 		stringbuffer = NULL;
 	}
 	/*provides us with what has to be read	
@@ -450,7 +457,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 	*/
 	for (pos=0;pos<20;pos++) {state[pos]=0;}
 	pos=0;memory=255;
-	string = (char *) malloc(memory);
+	string = (char *) mud_malloc(memory, __LINE__, __FILE__);
 	string[0]=0;
 	level=0; //provides us with the level of the if statements (nesting level)
 	while (pos < strlen(parserstring))
@@ -462,7 +469,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 //				send_printf(fmudstruct->socketfd, "<found double slash>\n");
 				string[strlen(string)-1]=0;
 				memory+=255;
-				string = (char *) realloc(string, memory);
+				string = (char *) mud_realloc(string, memory);
 				if (string == NULL)
 				{
 					send_printf(fmudstruct->socketfd, "Error trying realloc...\n");
@@ -475,29 +482,29 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 				while ((i = strstr(string, "%me")) != NULL)
 				{
 					char *temp;
-					temp = (char *) malloc(memory+255);
+					temp = (char *) mud_malloc(memory+255, __LINE__, __FILE__);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
 					strcat(temp, name);
 					strcat(temp, i+strlen("%me"));
-					free(string);
+					mud_free(string);
 					string=temp;
 					memory+=255;
 				}
 				while ((i = strstr(string, "%*")) != NULL)
 				{
 					char *temp, *temp2;
-					temp2 = (char *) malloc(strlen(command)*2+4);
+					temp2 = (char *) mud_malloc(strlen(command)*2+4, __LINE__, __FILE__);
 					mysql_escape_string(temp2, command, strlen(command));
-					temp = (char *) malloc(memory+strlen(temp2)+2);
+					temp = (char *) mud_malloc(memory+strlen(temp2)+2, __LINE__, __FILE__);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
 					strcat(temp, temp2);
 					strcat(temp, i+strlen("%*"));
-					free(string);
+					mud_free(string);
 					string=temp;
 					memory+=strlen(temp2)+2;
-					free(temp2);
+					mud_free(temp2);
 				}
 				while ((i = strstr(string, "%string")) != NULL)
 				{
@@ -511,25 +518,25 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 					{
 						mybuffer = stringbuffer;
 					}
-					temp = (char *) malloc(memory+255+strlen(mybuffer));
+					temp = (char *) mud_malloc(memory+255+strlen(mybuffer), __LINE__, __FILE__);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
 					strcat(temp, mybuffer);
 					strcat(temp, i+strlen("%string"));
-					free(string);
+					mud_free(string);
 					string=temp;
 					memory+=255+strlen(mybuffer);
 				}
 				while ((i = strstr(string, "%amount")) != NULL)
 				{
 					char *temp, change[20];
-					temp = (char *) malloc(memory+255);
+					temp = (char *) mud_malloc(memory+255, __LINE__, __FILE__);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
 					sprintf(change, "%i", getTokenAmount(fmudstruct));
 					strcat(temp, change);
 					strcat(temp, i+strlen("%amount"));
-					free(string);
+					mud_free(string);
 					string=temp;
 					memory+=255;
 				}
@@ -544,22 +551,22 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 					integer = atoi(number);
 					if ((integer > 0) && (integer <= getTokenAmount(fmudstruct)))
 					{
-						temp = (char *) malloc(memory+255);
+						temp = (char *) mud_malloc(memory+255, __LINE__, __FILE__);
 						temp[i-string]=0;
 						strncpy(temp, string, i-string);
 						strcat(temp, getToken(fmudstruct, integer-1));
 						strcat(temp, i+3);
-						free(string);
+						mud_free(string);
 						string=temp;
 						memory+=255;
 					}
 					else
 					{
-						temp = (char *) malloc(memory+255);
+						temp = (char *) mud_malloc(memory+255, __LINE__, __FILE__);
 						temp[i-string]=0;
 						strncpy(temp, string, i-string);
 						strcat(temp, i+1);
-						free(string);
+						mud_free(string);
 						string=temp;
 						memory+=255;
 					}
@@ -592,7 +599,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 						}
 						case 3 : // return found
 						{
-							free(string);
+							mud_free(string);
 							return 0;
 						}
 						case 4 : // if found, if true
@@ -609,19 +616,19 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 						}
 						case 6 : // showstandard found, exiting
 						{
-							free(string);
+							mud_free(string);
 							return 1;
 							break;
 						}
 						case 7 : // show found, exiting
 						{
-							free(string);
+							mud_free(string);
 							return 2;
 							break;
 						}
 						case 8 : // showstring found, exiting
 						{
-							free(string);
+							mud_free(string);
 							return 3;
 							break;
 						}
@@ -653,7 +660,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 				if (parser_debug) {send_printf(fmudstruct->socketfd, "[state=%i,level=%i]<BR>\n", state[level], level);}
 				string[0]=0;
 				memory=255;
-				string = (char *) realloc(string, memory);
+				string = (char *) mud_realloc(string, memory);
 				if (string == NULL)
 				{
 					send_printf(fmudstruct->socketfd, "Error trying realloc...\n");
@@ -667,7 +674,7 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 		}
 		pos++;
 	}
-	free(string);
+	mud_free(string);
 	return 0;
 }
 
@@ -717,7 +724,7 @@ int SearchForSpecialCommand(mudpersonstruct *fmudstruct, char *name, char *passw
 	" and methods.name = commands.method_name "
 	,command, name);
 	res=sendQuery(tempstr, NULL);
-	free(tempstr);
+	mud_free(tempstr);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);

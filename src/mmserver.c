@@ -71,6 +71,13 @@ like gameMain, gameLogon and gameNewchar */
     the client connects */
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 int signal_caught = 0;
 
 /*! this function returns true if a SIGHUP/SIGUSR1/SIGUSR2 signal was caught 
@@ -103,6 +110,9 @@ void signalhandler(int signum)
 void emergency_signalhandler(int signum)
 {
 	syslog(LOG_INFO, "SIGSEGV signal caught.");
+#ifdef MEMMAN	
+	DeinitMem();
+#endif
 	abort();
 }
 
@@ -385,7 +395,7 @@ parseXml(mudpersonstruct *fmine)
 			temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (temp != NULL)
 			{
-				fmine->action = strdup(temp);
+				fmine->action = mud_strdup(temp, __LINE__, __FILE__);
 				xmlFree(temp);
 			}
 #ifdef DEBUG
@@ -397,7 +407,7 @@ parseXml(mudpersonstruct *fmine)
 			temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 			if (temp != NULL)
 			{
-				fmine->command = strdup(temp);
+				fmine->command = mud_strdup(temp, __LINE__, __FILE__);
 				xmlFree(temp);
 			}
 #ifdef DEBUG	
@@ -792,9 +802,9 @@ parseXml(mudpersonstruct *fmine)
 				}
 				else
 				{
-					if (newcharstruct->ftitle != NULL) {free(newcharstruct->ftitle);}
+					if (newcharstruct->ftitle != NULL) {mud_free(newcharstruct->ftitle);}
 				}
-				newcharstruct->ftitle = (char *) malloc(strlen(temp)+1);
+				newcharstruct->ftitle = (char *) mud_malloc(strlen(temp)+1, __LINE__, __FILE__);
 				strcpy(newcharstruct->ftitle, temp);
 				xmlFree(temp);
 			}
@@ -815,9 +825,9 @@ parseXml(mudpersonstruct *fmine)
 				}
 				else
 				{
-					if (newcharstruct->frealname != NULL) {free(newcharstruct->frealname);}
+					if (newcharstruct->frealname != NULL) {mud_free(newcharstruct->frealname);}
 				}
-				newcharstruct->frealname = (char *) malloc(strlen(temp)+1);
+				newcharstruct->frealname = (char *) mud_malloc(strlen(temp)+1, __LINE__, __FILE__);
 				strcpy(newcharstruct->frealname, temp);
 				xmlFree(temp);
 			}
@@ -838,9 +848,9 @@ parseXml(mudpersonstruct *fmine)
 				}
 				else
 				{
-					if (newcharstruct->femail != NULL) {free(newcharstruct->femail);}
+					if (newcharstruct->femail != NULL) {mud_free(newcharstruct->femail);}
 				}
-				newcharstruct->femail = (char *) malloc(strlen(temp)+1);
+				newcharstruct->femail = (char *) mud_malloc(strlen(temp)+1, __LINE__, __FILE__);
 				strcpy(newcharstruct->femail, temp);
 				xmlFree(temp);
 			}
@@ -867,7 +877,7 @@ store_in_list(int socketfd, char *buf)
 	mine = find_in_list(socketfd);
 	if (mine != NULL)	{
 		char *temp;
-		temp = realloc(mine->readbuf, mine->bufsize + strlen(buf));
+		temp = mud_realloc(mine->readbuf, mine->bufsize + strlen(buf));
 		if (temp == NULL)
 		{
 			syslog(LOG_ERR, "attempting to realloc storage...");
@@ -890,14 +900,14 @@ store_in_list(int socketfd, char *buf)
 				char *temp2;
 				int j;
 				temp[7] = t;
-				temp2 = (char *) malloc(strlen(temp+7)+1);
+				temp2 = (char *) mud_malloc(strlen(temp+7)+1, __LINE__, __FILE__);
 				if (temp2 == NULL)
 				{
-					syslog(LOG_ERR, "attempting to malloc storage...");
+					syslog(LOG_ERR, "attempting to mud_malloc storage...");
 					exit(7);
 				}
 				strcpy(temp2, temp+7);
-				free(mine->readbuf);
+				mud_free(mine->readbuf);
 				mine->readbuf = temp2;
 				mine->bufsize = strlen(temp2)+1;
 #ifdef DEBUG
@@ -972,7 +982,7 @@ void *cleanupthread_function(void *arg)
 			cleanup = cleanup->next;
 			pthread_join(stuff->mythread, NULL);
 			stuff->next = NULL;
-			free(stuff);
+			mud_free(stuff);
 #ifdef DEBUG
 			printf("cleanupthread: back to sleep\n");
 #endif
@@ -992,7 +1002,7 @@ void *thread_function(void *arg)
 	int nbytes;
 	
 	// necessary for mysql to initialize thread specific variables
-//	my_thread_init();
+	my_thread_init();
 
 	mycontrol = (thread_control *) arg;
 	socketfd = mycontrol->socketfd;
@@ -1056,10 +1066,10 @@ void *thread_function(void *arg)
 	cleanup = mycontrol;
 	pthread_mutex_unlock(&threadlistmutex);
 	pthread_cond_broadcast(&threadcond);
-	// free(mycontrol)
+	// mud_free(mycontrol)
 
 	// deinitialize the mysql thread-specific variables
-//	my_thread_end();
+	my_thread_end();
 	pthread_exit(NULL);
 	return NULL;
 }
@@ -1078,6 +1088,9 @@ main(int argc, char **argv)
 		
 	// signal catching variables
 	struct sigaction mySig, myEmergencySig;
+#ifdef MEMMAN	
+	InitMem();
+#endif
 	mySig.sa_handler = &signalhandler;
 	myEmergencySig.sa_handler = &emergency_signalhandler;
 
@@ -1160,7 +1173,7 @@ main(int argc, char **argv)
 			}
 		}
 		/* we now have a new connection socket!!! */
-		newthread = (thread_control *) malloc(sizeof(thread_control));
+		newthread = (thread_control *) mud_malloc(sizeof(thread_control), __LINE__, __FILE__);
 		newthread->socketfd = newconnectionsocket;
 		newthread->active = 1;
 		pthread_mutex_lock(&threadlistmutex);
@@ -1197,6 +1210,9 @@ main(int argc, char **argv)
 	syslog(LOG_INFO, "%s: Stopped.", IDENTITY);
 	
 	closelog();
-	
+#ifdef MEMMAN	
+	DeinitMem();
+#endif
 	return 0;
+	
 }

@@ -36,6 +36,13 @@ maarten_l@yahoo.com
 /*! \file mudlogon.c
 	\brief  part of the server that takes care of entering characters in the game */
 
+#ifndef MEMMAN
+#define mud_malloc(A,B,C)	malloc(A)
+#define mud_free(A)		free(A)
+#define mud_strdup(A,B,C)	strdup(A)
+#define mud_realloc(A,B)	realloc(A,B)
+#endif
+
 //extern char secretpassword[40];
 
 //! dump page to user explaining that his/her name or password are illegal according to validation rules
@@ -356,7 +363,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int fram
 	temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
 		" WHERE toname='%x' and newmail=1", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	                        
 	row = mysql_fetch_row(res);
 	if (*row[0]=='0') {WriteSentenceIntoOwnLogFile(printstr, "You have no new MudMail...<P>\r\n");}
@@ -375,9 +382,9 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int fram
 			mystruct->frames = frames;
 			if (mystruct->command != NULL) 
 			{
-				free(mystruct->command);
+				mud_free(mystruct->command);
 			}
-			mystruct->command = strdup("me has entered the game...<BR>\r\n");
+			mystruct->command = mud_strdup("me has entered the game...<BR>\r\n", __LINE__, __FILE__);
 			gameMain(socketfd);
 	}
 	else
@@ -484,7 +491,7 @@ gameLogon(int socketfd)
 	generate_password(secretpassword);
 	temp = composeSqlStatement("update usertable set lok='%x' where name='%x'", secretpassword, name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res!=NULL) 
 	{
 		mysql_free_result(res);
@@ -493,7 +500,7 @@ gameLogon(int socketfd)
 	/* ExistUser */
 	temp = composeSqlStatement("select name, password, god, lok from tmp_usertable where name='%x' and lok<>''", name);
 	res=sendQuery(temp, NULL);
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 
 	if (res!=NULL) 
 	{
@@ -550,7 +557,7 @@ gameLogon(int socketfd)
 	/* SearchUser */
 	temp = composeSqlStatement("select name, password from usertable where name='%x'", name);
 	res=sendQuery(temp, NULL); 
-	free(temp);temp=NULL;
+	mud_free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
