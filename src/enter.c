@@ -327,9 +327,15 @@ void MakeStart(char *name, char *password, char *address, int room)
 	sprintf(printstr,USERHeader"%s.log",name);
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
 	res=SendSQL2("SELECT message FROM logonmessage WHERE id=0", NULL);
-	row = mysql_fetch_row(res);
-	WriteSentenceIntoOwnLogFile2(printstr, row[0]);
-	mysql_free_result(res);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row != NULL)
+		{
+			WriteSentenceIntoOwnLogFile2(printstr, row[0]);
+		}
+		mysql_free_result(res);
+	}
 	
 	sprintf(temp, "UPDATE tmp_usertable SET "
 	"cgiServerSoftware='%s', "
