@@ -70,7 +70,7 @@ while ($myrow = mysql_fetch_row($result))
 	}
 	if ($myrow[6]<>0)
 	{
-		printf("<b>down:</b> %s<BR>", $myrow[6]);
+		printf("<b>down:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[6], $myrow[6]);
 	}
 	printf("<b>contents:</b> %s<BR>", $myrow[7]);
 	printf("<b>owner:</b> %s<BR>", $myrow[8]);
@@ -126,6 +126,17 @@ while ($myrow = mysql_fetch_row($result))
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
+
+printf("<b>Referenced in the following rooms:</b><BR>");
+$result = mysql_query("select id from mm_rooms where ".$_REQUEST{"room"}.
+	" in (west, east, north, south, up, down) "
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_row($result)) 
+{
+	printf("<b>id:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[0], $myrow[0]);
+}
+
 
 mysql_close($dbhandle);
 ?>

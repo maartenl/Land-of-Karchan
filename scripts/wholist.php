@@ -43,10 +43,10 @@ List of All Active Users</H2>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select name, title, sleep, 
-	floor((time_to_sec(NOW())-time_to_sec(lastlogin)) / 60) as min,
-	((time_to_sec(NOW())-time_to_sec(lastlogin)) % 60) as sec
-	from tmp_usertable 
-	where god<=1"
+	(unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60 as min,
+	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec
+	from mm_usertable 
+	where god<=1 and active=1"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 printf("<I>There are %s persons active in the game.</I><P><UL>\r\n", 
@@ -55,12 +55,12 @@ while ($myrow = mysql_fetch_row($result))
 {
 	if ($myrow[2] == "1")
 	{
-		printf("<li>%s, %s, sleeping (%s min, %s sec idle)\r\n",
+		printf("<li>%s, %s, sleeping (logged on %s min, %s sec ago)\r\n",
 		$myrow[0], $myrow[1], $myrow[3], $myrow[4]);
 	}
 	else
 	{
-		printf("<li>%s, %s (%s min, %s sec idle)\r\n",
+		printf("<li>%s, %s (logged on %s min, %s sec ago)\r\n",
 		$myrow[0], $myrow[1], $myrow[3], $myrow[4]);
 	}
 
