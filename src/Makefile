@@ -64,7 +64,7 @@ EXEDIR = /home/httpd/cgi-bin
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
 #
-LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence
+LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence -lpthread
 # you can use xml-config, however, when two xml libs exists, it will
 # pick the oldest one
 XMLLIBDIR = `/usr/bin/xml2-config --libs`

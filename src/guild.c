@@ -34,7 +34,7 @@ some "talk lines". */
 
 //! list of guildmembers of the MIF
 void 
-MIFList(char *name, char *password, int room, int frames)
+MIFList(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -44,48 +44,48 @@ MIFList(char *name, char *password, int room, int frames)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan - MIF List\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(socketfd, "<HTML>\n");
+	send_printf(socketfd, "<HEAD>\n");
+	send_printf(socketfd, "<TITLE>\n");
+	send_printf(socketfd, "Land of Karchan - MIF List\n");
+	send_printf(socketfd, "</TITLE>\n");
+	send_printf(socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	send_printf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
+	send_printf(socketfd, "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='mif'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
 	while (row = mysql_fetch_row(res))
 	{
-		send_printf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
+		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
 	}
 	mysql_free_result(res);
-	send_printf(getMMudOut(), "</UL>\r\n");
-	PrintForm(name, password);
-	if (frames!=2) {ReadFile(logname);}
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(socketfd, "</UL>\r\n");
+	PrintForm(name, password, frames, socketfd);
+	if (frames!=2) {ReadFile(logname, socketfd);}
+	send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! make a member of the mif enter the mif domicile
 void 
-MIFEntryIn(char *name, char *password, int room)
+MIFEntryIn(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -96,7 +96,7 @@ MIFEntryIn(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
-	res = SendSQL2(temp, NULL);
+	res = sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -111,20 +111,20 @@ MIFEntryIn(char *name, char *password, int room)
 	name);
 
 	temp = composeSqlStatement("update tmp_usertable set room=143 where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 
-	res=SendSQL2("select contents from action where id=9", NULL);
+	res=sendQuery("select contents from action where id=9", NULL);
 	row = mysql_fetch_row(res);
-	LookString(row[0], name, password);
+	LookString(row[0], name, password, frames, socketfd);
 	mysql_free_result(res);
 
 }
 
 //! make a member leave the mif domicile
 void 
-MIFEntryOut(char *name, char *password, int room)
+MIFEntryOut(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -135,7 +135,7 @@ MIFEntryOut(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
-	res = SendSQL2(temp, NULL);
+	res = sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -151,13 +151,13 @@ MIFEntryOut(char *name, char *password, int room)
 	"represents itself. You are pretty amazed.<BR>\r\n", name);
 
 	temp = composeSqlStatement("update tmp_usertable set room=142 where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 
-	res=SendSQL2("select contents from action where id=10", NULL);
+	res=sendQuery("select contents from action where id=10", NULL);
 	row = mysql_fetch_row(res);
-	LookString(row[0], name, password);
+	LookString(row[0], name, password, frames, socketfd);
 	mysql_free_result(res);
 
 }
@@ -188,7 +188,7 @@ MIFTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='mif'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -197,12 +197,12 @@ MIFTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! list ranger members
 void 
-RangerList(char *name, char *password, int room, int frames)
+RangerList(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -212,48 +212,48 @@ RangerList(char *name, char *password, int room, int frames)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan - Ranger List\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(socketfd, "<HTML>\n");
+	send_printf(socketfd, "<HEAD>\n");
+	send_printf(socketfd, "<TITLE>\n");
+	send_printf(socketfd, "Land of Karchan - Ranger List\n");
+	send_printf(socketfd, "</TITLE>\n");
+	send_printf(socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	send_printf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
+	send_printf(socketfd, "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='rangers'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
-		send_printf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
+		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
 	}
 	mysql_free_result(res);
-	send_printf(getMMudOut(), "</UL>\r\n");
-	PrintForm(name, password);
-	if (frames!=2) {ReadFile(logname);}
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(socketfd, "</UL>\r\n");
+	PrintForm(name, password, frames, socketfd);
+	if (frames!=2) {ReadFile(logname, socketfd);}
+	send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! make a member enter the ranger guild room
 void 
-RangerEntryIn(char *name, char *password, int room)
+RangerEntryIn(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -264,7 +264,7 @@ RangerEntryIn(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
-	res = SendSQL2(temp, NULL);
+	res = sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -281,20 +281,20 @@ RangerEntryIn(char *name, char *password, int room)
 	name);
 
 	temp = composeSqlStatement("update tmp_usertable set room=216 where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 
-	res=SendSQL2("select contents from action where id=13", NULL);
+	res=sendQuery("select contents from action where id=13", NULL);
 	row = mysql_fetch_row(res);
-	LookString(row[0], name, password);
+	LookString(row[0], name, password, frames, socketfd);
 	mysql_free_result(res);
 
 }
 
 //! make a ranger leave the guild room
 void 
-RangerEntryOut(char *name, char *password, int room)
+RangerEntryOut(char *name, char *password, int room, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -305,7 +305,7 @@ RangerEntryOut(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -320,13 +320,13 @@ RangerEntryOut(char *name, char *password, int room)
 	" %s slowly appears through the seemingly solid waterfall without a trace.<BR>\r\n", name);
 
 	temp = composeSqlStatement("update tmp_usertable set room=43 where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 
-	res=SendSQL2("select contents from action where id=14", NULL);
+	res=sendQuery("select contents from action where id=14", NULL);
 	row = mysql_fetch_row(res);
-	LookString(row[0], name, password);
+	LookString(row[0], name, password, frames, socketfd);
 	mysql_free_result(res);
 
 }
@@ -358,7 +358,7 @@ RangerTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='rangers'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -367,7 +367,7 @@ RangerTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 /*! add SWTalk */
@@ -397,7 +397,7 @@ SWTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='SW'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -406,7 +406,7 @@ SWTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 /*! add DepTalk */
@@ -436,7 +436,7 @@ DepTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where god=1");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -445,7 +445,7 @@ DepTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }	
 /*! add BKTalk */
 void 
@@ -474,7 +474,7 @@ BKTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='BKIC'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -483,7 +483,7 @@ BKTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 /*! add VampTalk */
 void 
@@ -512,7 +512,7 @@ VampTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Kindred'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -521,7 +521,7 @@ VampTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 /*! add KnightTalk */
 void 
@@ -550,7 +550,7 @@ KnightTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Knights'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -559,7 +559,7 @@ KnightTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 /*! add CoDTalk */
 void 
@@ -588,7 +588,7 @@ CoDTalk(mudpersonstruct *fmudstruct)
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='CoD'");
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
@@ -597,6 +597,6 @@ CoDTalk(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 	
 	free(temp2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 

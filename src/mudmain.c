@@ -107,9 +107,6 @@ char				*gameCommands[] =
 	"wield", NULL}; /* string array */
 int				theNumberOfFunctions = 0;
 	
-//MYSQL_RES *res;
-//MYSQL_ROW row;
-
 //! remove gamefunctionarray from memory, to be called at the end of mmserver
 int
 clearGameFunctionIndex()
@@ -117,184 +114,24 @@ clearGameFunctionIndex()
 	free(gameFunctionArray);
 }
 
-//! have the character proceed downwards
-int
-GoDown_Command(mudpersonstruct *fmudstruct)
-{
-	roomstruct*temproom;
-	int i=0;
-	char logname[100];
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-	int strength, movementstats, maxmove;
-	char *name;
-	char *password;
-	char *fcommand;
-	int room;
-	
-	name = fmudstruct->name;
-	password = fmudstruct->cookie;
-	room = fmudstruct->room;
-	fcommand = fmudstruct->command;
-
-//	RoomTextProc(room);
-
-	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-
-	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%x'"
-		, name);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-
-	row = mysql_fetch_row(res);
-	strength = atoi(row[0]);
-	movementstats = atoi(row[1]);
-	maxmove = atoi(row[2]);
-	mysql_free_result(res);
-
-	temproom=GetRoomInfo(room);
-
-	if (!temproom->down)  {
-		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>");
-	} else {
-		if (movementstats >= maxmove)
-		{
-			/* if exhausted */
-			WriteMessage(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile(logname, "You are exhausted.<BR>\r\n");
-		}
-		else   
-		{
-			/* if NOT exhausted */
-			int burden;
-			burden = CheckWeight(name);
-			/* if burden too heavy to move */
-			if (computeEncumberance(burden, strength) == -1)
-			{
-				WriteMessage(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
-			}
-			else /* if burden NOT too heavy to move */
-			{
-				movementstats = movementstats + computeEncumberance(burden, strength);
-				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage(name, room, "%s leaves down.<BR>\r\n", name);
-				room = temproom->down;
-				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
-								, room, name);
-				res=SendSQL2(temp, NULL);
-				free(temp);temp=NULL;
-
-				mysql_free_result(res);
-				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
-			} /* if burden NOT too heavy to move */
-		} /* if NOT exhausted */
-	}
-	free(temproom);
-	WriteRoom(fmudstruct);
-	return 1;
-} 				/* endproc */
-
-//! have the character proceed upwards
-int
-GoUp_Command(mudpersonstruct *fmudstruct)
-{
-	roomstruct*temproom;
-	int i=0;
-	char logname[100];
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-	int strength, movementstats, maxmove;
-	char *name;
-	char *password;
-	char *fcommand;
-	int room;
-	
-	name = fmudstruct->name;
-	password = fmudstruct->cookie;
-	room = fmudstruct->room;
-	fcommand = fmudstruct->command;
-	
-//	RoomTextProc(room);
-
-	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-
-	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%x'"
-		, name);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-
-	row = mysql_fetch_row(res);
-	strength = atoi(row[0]);
-	movementstats = atoi(row[1]);
-	maxmove = atoi(row[2]);
-	mysql_free_result(res);
-
-	temproom=GetRoomInfo(room);
-
-	if (!temproom->up)  {
-		WriteSentenceIntoOwnLogFile(logname, "You can't go that way.<BR>");
-	} else {
-		if (movementstats >= maxmove)
-		{
-			/* if exhausted */
-			WriteMessage(name, room, "%s attempts to leave north, but is exhausted.<BR>\r\n", name, name);
-			WriteSentenceIntoOwnLogFile(logname, "You are exhausted.<BR>\r\n");
-		}
-		else   
-		{
-			/* if NOT exhausted */
-			int burden;
-			burden = CheckWeight(name);
-			/* if burden too heavy to move */
-			if (computeEncumberance(burden, strength) == -1)
-			{
-				WriteMessage(name, room, "%s attempts to leave north, but is too heavily burdened.<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile(logname, "You are carrying <I>way</I> too many items to move.<BR>\r\n");
-			}
-			else /* if burden NOT too heavy to move */
-			{
-				movementstats = movementstats + computeEncumberance(burden, strength);
-				if (movementstats > maxmove) {movementstats = maxmove;}
-				WriteMessage(name, room, "%s leaves up.<BR>\r\n", name);
-				room = temproom->up;
-				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
-								, room, name);
-				res=SendSQL2(temp, NULL);
-				free(temp);temp=NULL;
-
-				mysql_free_result(res);
-				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
-			} /* if burden NOT too heavy to move */
-		} /* if NOT exhausted */
-	}
-	free(temproom);
-	WriteRoom(fmudstruct);
-	return 1;
-} 				/* endproc */
-
 //! throw standard banned-from-game page to user
-void BannedFromGame(char *name, char *address)
+void BannedFromGame(char *name, char *address, int socketfd)
 {
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
-	send_printf(getMMudOut(), "<BODY>\n");
-	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
-	send_printf(getMMudOut(), "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
-	send_printf(getMMudOut(), "Your ip domain is therefore banned from the game.<P>\n");
-	send_printf(getMMudOut(), "If you have not misbehaved or even have never before played the game before, and wish"
+	send_printf(socketfd, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
+	send_printf(socketfd, "<BODY>\n");
+	send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
+	send_printf(socketfd, "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
+	send_printf(socketfd, "Your ip domain is therefore banned from the game.<P>\n");
+	send_printf(socketfd, "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
 	"<A HREF=\"mailto:deputy@%s\">deputy@%s</A> and ask them to make "
 	"an exception in your case. Do <I>not</I> forget to provide your "
 	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n", getParam(MM_SERVERNAME), getParam(MM_SERVERNAME));
-	send_printf(getMMudOut(), "</body>\n");
-	send_printf(getMMudOut(), "</HTML>\n");
+	send_printf(socketfd, "</body>\n");
+	send_printf(socketfd, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -305,19 +142,19 @@ void BannedFromGame(char *name, char *address)
 /*! cookie is not found if the webbrowser has disabled cookie support, or the person in question is trying something
 nasty. The cookie in question should be the same as the session password the person is logging in
 */
-void CookieNotFound(char *name, char *address)
+void CookieNotFound(char *name, char *address, int socketfd)
 {
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
-	send_printf(getMMudOut(), "<BODY>\n");
-	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
-	send_printf(getMMudOut(), "When you logon, a cookie is automatically generated. ");
-	send_printf(getMMudOut(), "However, I have been unable to find my cookie.<P>\n");
-	send_printf(getMMudOut(), "Please attempt to relogon.<P>\n");
-	send_printf(getMMudOut(), "</body>\n");
-	send_printf(getMMudOut(), "</HTML>\n");
+	send_printf(socketfd, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	send_printf(socketfd, "<BODY>\n");
+	send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	send_printf(socketfd, "When you logon, a cookie is automatically generated. ");
+	send_printf(socketfd, "However, I have been unable to find my cookie.<P>\n");
+	send_printf(socketfd, "Please attempt to relogon.<P>\n");
+	send_printf(socketfd, "</body>\n");
+	send_printf(socketfd, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
@@ -429,35 +266,35 @@ Help_Command(mudpersonstruct *fmudstruct)
 		int i;
 		char *temp;
 		
-		send_printf(getMMudOut(), "<HTML>\r\n");
-		send_printf(getMMudOut(), "<HEAD>\r\n");
-		send_printf(getMMudOut(), "<TITLE>\r\n");
-		send_printf(getMMudOut(), "Land of Karchan - General Help\r\n");
-		send_printf(getMMudOut(), "</TITLE>\r\n");
-		send_printf(getMMudOut(), "</HEAD>\r\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\r\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\r\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\r\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - General Help\r\n");
+		send_printf(fmudstruct->socketfd, "</TITLE>\r\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\r\n");
 		
-		send_printf(getMMudOut(), "<BODY>\r\n");
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		send_printf(fmudstruct->socketfd, "<BODY>\r\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		temp = composeSqlStatement("select contents from help where command='general help'");
-		res=SendSQL2(temp, NULL);
+		res=sendQuery(temp, NULL);
 		free(temp);temp=NULL;
 
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			mysql_free_result(res);
-			res=SendSQL2("select contents from help where command='sorry'", NULL);
+			res=sendQuery("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			send_printf(getMMudOut(), "%s",row[0]);
+			send_printf(fmudstruct->socketfd, "%s",row[0]);
 		}
 		else
 		{
-			send_printf(getMMudOut(), "%s",row[0]);
+			send_printf(fmudstruct->socketfd, "%s",row[0]);
 		}
 		mysql_free_result(res);
-		PrintForm(name, password, fmudstruct->frames);
-		if (fmudstruct->frames!=2) {ReadFile(logname);}
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		if (fmudstruct->frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
 		return 1;
 	}
 	if ((getTokenAmount(fmudstruct) >= 2) && (!strcasecmp(getToken(fmudstruct, 0),"help"))) 
@@ -467,35 +304,35 @@ Help_Command(mudpersonstruct *fmudstruct)
 		int i;
 		char *temp;
 		
-		send_printf(getMMudOut(), "<HTML>\r\n");
-		send_printf(getMMudOut(), "<HEAD>\r\n");
-		send_printf(getMMudOut(), "<TITLE>\r\n");
-		send_printf(getMMudOut(), "Land of Karchan - Command %s\r\n", getToken(fmudstruct, 1));
-		send_printf(getMMudOut(), "</TITLE>\r\n");
-		send_printf(getMMudOut(), "</HEAD>\r\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\r\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\r\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\r\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - Command %s\r\n", getToken(fmudstruct, 1));
+		send_printf(fmudstruct->socketfd, "</TITLE>\r\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\r\n");
 		
-		send_printf(getMMudOut(), "<BODY>\r\n");
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+		send_printf(fmudstruct->socketfd, "<BODY>\r\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
 		temp = composeSqlStatement("select contents from help where command='%x'", getToken(fmudstruct, 1));
-		res=SendSQL2(temp, NULL);
+		res=sendQuery(temp, NULL);
 		free(temp);temp=NULL;
 
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			mysql_free_result(res);
-			res=SendSQL2("select contents from help where command='sorry'", NULL);
+			res=sendQuery("select contents from help where command='sorry'", NULL);
 			row = mysql_fetch_row(res);
-			send_printf(getMMudOut(), "%s",row[0]);
+			send_printf(fmudstruct->socketfd, "%s",row[0]);
 		}
 		else
 		{
-			send_printf(getMMudOut(), "%s",row[0]);
+			send_printf(fmudstruct->socketfd, "%s",row[0]);
 		}
 		mysql_free_result(res);
-		PrintForm(name, password, fmudstruct->frames);
-		if (fmudstruct->frames!=2) {ReadFile(logname);}
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		if (fmudstruct->frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
 		return 1;
 	}
 }
@@ -520,7 +357,10 @@ ReadMail_Command(mudpersonstruct *fmudstruct)
 	{
 		return 0;
 	}
-	ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 0);
+	if (!ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 0, fmudstruct->socketfd))
+	{
+		WriteRoom(fmudstruct);
+	};
 	return 1;
 }
 
@@ -538,7 +378,10 @@ DeleteMail_Command(mudpersonstruct *fmudstruct)
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
-	ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 2);
+	if (!ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 2, fmudstruct->socketfd))
+	{
+		WriteRoom(fmudstruct);
+	}
 	return 1;
 }
 
@@ -583,7 +426,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 		
 	sqlstring = composeSqlStatement("select name from usertable where "
 		"name='%x' and god<2", mailto);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	
 	if (res!=NULL)
@@ -689,7 +532,7 @@ Whimpy_Command(mudpersonstruct *fmudstruct)
 	}
 	sqlstring = composeSqlStatement("update tmp_usertable set whimpy=%s "
 		" where name='%x'", number, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
@@ -725,7 +568,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
 		"name='%x'", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if (row[0][0]!=0)
@@ -740,7 +583,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 		{
 			sqlstring = composeSqlStatement("update tmp_usertable set fightable=1 where "
 				"name='%x'", name);
-			res=SendSQL2(sqlstring, NULL);
+			res=sendQuery(sqlstring, NULL);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
@@ -749,7 +592,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 		{
 			sqlstring = composeSqlStatement("update tmp_usertable set fightable=0 where "
 				"name='%x'", name);
-			res=SendSQL2(sqlstring, NULL);
+			res=sendQuery(sqlstring, NULL);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
@@ -804,7 +647,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 	{
 		sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
 			"name='%x'", name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		row = mysql_fetch_row(res);
 		if (row[0][0]==0)
@@ -818,7 +661,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='' where "
 			"name='%x'"
 			, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
@@ -852,7 +695,7 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	sqlstring = composeSqlStatement("select fightable from tmp_usertable where "
 		"name='%x'", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	myFightable = atoi(row[0]);
@@ -873,7 +716,7 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	"god<>2 and "
 	"room=%i"
 	, name, myFightingName, room);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if ((myFightable!=1) && (atoi(row[1])!=3))
@@ -895,12 +738,12 @@ Fight_Command(mudpersonstruct *fmudstruct)
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		myFightingName, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		name, myFightingName);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 	}
 	else
@@ -1289,12 +1132,6 @@ Look_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if ((!strcasecmp("look at sky", fcommand)) ||
-	   (!strcasecmp("look at clouds", fcommand))) 
-	{
-		LookSky_Command(name, password);
-		return 1;
-	}
 	if ((*fcommand == '\0') ||
 	    (!strcasecmp(fcommand, "look around")) ||
 	    (!strcasecmp(fcommand, "look")) ||
@@ -1498,7 +1335,7 @@ Admin_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	res = executeQuery(NULL, "select godstatus from tmp_usertable where name='%x'", name);
+	res = executeQuery(NULL, "select god from tmp_usertable where name='%x'", name);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -1523,105 +1360,105 @@ Admin_Command(mudpersonstruct *fmudstruct)
 	}
 	if (!strcasecmp(fcommand, "admin shutdown"))
 	{
-		send_printf(getMMudOut(), "<HTML>\n");
-		send_printf(getMMudOut(), "<HEAD>\n");
-		send_printf(getMMudOut(), "<TITLE>\n");
-		send_printf(getMMudOut(), "Land of Karchan - Admin Shutdown\n");
-		send_printf(getMMudOut(), "</TITLE>\n");
-		send_printf(getMMudOut(), "</HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - Admin Shutdown\n");
+		send_printf(fmudstruct->socketfd, "</TITLE>\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-		send_printf(getMMudOut(), "<BODY>\n");	
+		send_printf(fmudstruct->socketfd, "<BODY>\n");	
 		if (!fmudstruct->frames)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (fmudstruct->frames==1)
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		send_printf(getMMudOut(), "<H1>Admin Shutdown - Shutting down Game</H1>\n");
-		send_printf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
+		send_printf(fmudstruct->socketfd, "<H1>Admin Shutdown - Shutting down Game</H1>\n");
+		send_printf(fmudstruct->socketfd, "Shutting down of game initiated. Please stand by...<P>");
 		
-		PrintForm(name, password, fmudstruct->frames);
-		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 		setShutdown(1);
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin readconfig"))
 	{
-		send_printf(getMMudOut(), "<HTML>\n");
-		send_printf(getMMudOut(), "<HEAD>\n");
-		send_printf(getMMudOut(), "<TITLE>\n");
-		send_printf(getMMudOut(), "Land of Karchan - Admin Readconfig\n");
-		send_printf(getMMudOut(), "</TITLE>\n");
-		send_printf(getMMudOut(), "</HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - Admin Readconfig\n");
+		send_printf(fmudstruct->socketfd, "</TITLE>\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-		send_printf(getMMudOut(), "<BODY>\n");	
+		send_printf(fmudstruct->socketfd, "<BODY>\n");	
 		if (!fmudstruct->frames)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (fmudstruct->frames==1)
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		send_printf(getMMudOut(), "<H1>Admin Readconfig - Reading Config file</H1>\n");
+		send_printf(fmudstruct->socketfd, "<H1>Admin Readconfig - Reading Config file</H1>\n");
 		
-		send_printf(getMMudOut(), "Rereading config files. Please use 'admin config' to view any new settings. "
+		send_printf(fmudstruct->socketfd, "Rereading config files. Please use 'admin config' to view any new settings. "
 		"Bear in mind that a change in database info or socket info requires a restart of the server. Please stand by...<P>");
 		readConfigFiles("config.xml");
-		PrintForm(name, password, fmudstruct->frames);
-		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin config"))
 	{
-		send_printf(getMMudOut(), "<HTML>\n");
-		send_printf(getMMudOut(), "<HEAD>\n");
-		send_printf(getMMudOut(), "<TITLE>\n");
-		send_printf(getMMudOut(), "Land of Karchan - Admin Config\n");
-		send_printf(getMMudOut(), "</TITLE>\n");
-		send_printf(getMMudOut(), "</HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - Admin Config\n");
+		send_printf(fmudstruct->socketfd, "</TITLE>\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-		send_printf(getMMudOut(), "<BODY>\n");	
+		send_printf(fmudstruct->socketfd, "<BODY>\n");	
 		if (!fmudstruct->frames)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (fmudstruct->frames==1)
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		send_printf(getMMudOut(), "<H1>Admin Config - Config file</H1>\n");
+		send_printf(fmudstruct->socketfd, "<H1>Admin Config - Config file</H1>\n");
 		
-		send_printf(getMMudOut(), "Reading config files. Please stand by...<P>");
-		writeConfig();
-		PrintForm(name, password, fmudstruct->frames);
-		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+		send_printf(fmudstruct->socketfd, "Reading config files. Please stand by...<P>");
+		writeConfig(fmudstruct->socketfd);
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin stats"))
@@ -1629,42 +1466,42 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		mudinfostruct mymudinfo;
 		mymudinfo = getMudInfo();
 
-		send_printf(getMMudOut(), "<HTML>\n");
-		send_printf(getMMudOut(), "<HEAD>\n");
-		send_printf(getMMudOut(), "<TITLE>\n");
-		send_printf(getMMudOut(), "Land of Karchan - Admin Stats\n");
-		send_printf(getMMudOut(), "</TITLE>\n");
-		send_printf(getMMudOut(), "</HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<HTML>\n");
+		send_printf(fmudstruct->socketfd, "<HEAD>\n");
+		send_printf(fmudstruct->socketfd, "<TITLE>\n");
+		send_printf(fmudstruct->socketfd, "Land of Karchan - Admin Stats\n");
+		send_printf(fmudstruct->socketfd, "</TITLE>\n");
+		send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-		send_printf(getMMudOut(), "<BODY>\n");	
+		send_printf(fmudstruct->socketfd, "<BODY>\n");	
 		if (!fmudstruct->frames)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
 			if (fmudstruct->frames==1)
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
 			{
-				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			}
 		}
 
-		send_printf(getMMudOut(), "<H1>Admin Stats - Displaying current usage statistics of game</H1>\n");
-		send_printf(getMMudOut(), "Host: %s<BR>\nIp address: %s<BR>\nDomainname: %s<BR>\nProtocol version: %s<BR>\nMmud version: %s %s %s<P>\n", 
+		send_printf(fmudstruct->socketfd, "<H1>Admin Stats - Displaying current usage statistics of game</H1>\n");
+		send_printf(fmudstruct->socketfd, "Host: %s<BR>\nIp address: %s<BR>\nDomainname: %s<BR>\nProtocol version: %s<BR>\nMmud version: %s %s %s<P>\n", 
 			mymudinfo.hostname, mymudinfo.hostip, mymudinfo.domainname, mymudinfo.protversion, mymudinfo.mmudversion,
 			mymudinfo.mmudtime, mymudinfo.mmuddate);
 
-		send_printf(getMMudOut(), "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
-		send_printf(getMMudOut(), "Total connections: %i<BR>\nTimeouts: %i<BR>\nCurrent connections: %i<BR>\nMax. current connections: %i<BR>\n",
+		send_printf(fmudstruct->socketfd, "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
+		send_printf(fmudstruct->socketfd, "Total connections: %i<BR>\nTimeouts: %i<BR>\nCurrent connections: %i<BR>\nMax. current connections: %i<BR>\n",
 			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections,
 			mymudinfo.maxnumber_of_current_connections);
 	
-		PrintForm(name, password, fmudstruct->frames);
-		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+		PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+		send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	return 0;
@@ -1746,22 +1583,22 @@ RangerGuild_Command(mudpersonstruct *fmudstruct)
 	{
 		if (!strcasecmp("nature list", fcommand))
 		{
-			RangerList(name, password, room);
+			RangerList(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (!strcasecmp("nature call", fcommand)) && (room==43) )
 		{
-			RangerEntryIn(name, password, room);	
+			RangerEntryIn(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (!strcasecmp("nature call", fcommand)) && (room==216) )
 		{
-			RangerEntryOut(name, password, room);
+			RangerEntryOut(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (getTokenAmount(fmudstruct) > 2) && (!strcasecmp("nature", getToken(fmudstruct, 0))) && (!strcasecmp("talk", getToken(fmudstruct, 1))) )
 		{
-			RangerTalk(name, password, room);
+			RangerTalk(fmudstruct);
 			return 1;
 		}
 	}
@@ -1804,22 +1641,22 @@ MifGuild_Command(mudpersonstruct *fmudstruct)
 	{
 		if (!strcasecmp("magic list", fcommand))
 		{
-			MIFList(name, password, room);
+			MIFList(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (!strcasecmp("magic wave", fcommand)) && (room==142) )
 		{
-			MIFEntryIn(name, password, room);
+			MIFEntryIn(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (!strcasecmp("magic wave", fcommand)) && (room==143) )
 		{
-			MIFEntryOut(name, password, room);
+			MIFEntryOut(name, password, room, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 		if ( (getTokenAmount(fmudstruct) > 2) && (!strcasecmp("magic", getToken(fmudstruct, 0))) && (!strcasecmp("talk", getToken(fmudstruct, 1))) )
 		{
-			MIFTalk(name, password, room);
+			MIFTalk(fmudstruct);
 			return 1;
 		}
 	}
@@ -1942,12 +1779,12 @@ gameMain(int socketfd)
 	
 	if (SearchBanList(mymudstruct->address, name)) 
 	{
-		BannedFromGame(name, mymudstruct->address);
+		BannedFromGame(name, mymudstruct->address, mymudstruct->socketfd);
 		return 0;
 	}
 
 	if (!ExistUser(name)) {
-		NotActive(name,password,1);
+		NotActive(name,password,1,mymudstruct->socketfd);
 		return 0;
 	}
 
@@ -1955,22 +1792,23 @@ gameMain(int socketfd)
 	sqlstring = composeSqlStatement("select name, lok, sleep, room, lastlogin, god, sex, vitals, maxvital, guild, punishment "
 		"from tmp_usertable "
 		"where name='%x' and lok<>''", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL)
 	{
-		NotActive(name, password,2);
+		NotActive(name, password,2,mymudstruct->socketfd);
 		return 0;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL)
 	{
-		NotActive(name, password,3);
+		NotActive(name, password,3, mymudstruct->socketfd);
 		return 0;
 	}
 	
 	strcpy(name, row[0]); /* copy name to name from database */
-	mymudstruct->room = room=atoi(row[3]); /* copy roomnumber to room from database */
+	mymudstruct->room = room = atoi(row[3]); /* copy roomnumber to room from database */
+	
 	sleepstatus=atoi(row[2]); /* copy sleep to sleepstatus from database */
 	godstatus=atoi(row[5]); /* copy godstatus of player from database */
 	strcpy(sexstatus,row[6]); /* sex status (male, female) */
@@ -1978,40 +1816,36 @@ gameMain(int socketfd)
 	{ 
 		/* check vitals along with maxvital */
 		mysql_free_result(res);
-		Dead(name, password, room, mymudstruct->frames);
+		Dead(name, password, room, mymudstruct->frames, mymudstruct->socketfd);
 		return 0;
 	}
 	strcpy(guildstatus	, row[9]);
 	punishment = atoi(row[10]);
 	if (strcmp(row[1], password)) 
 	{
-			NotActive(name, password,4);
+			NotActive(name, password,4, mymudstruct->socketfd);
 	}
 	mysql_free_result(res);
-#ifdef DEBUG
-	send_printf(getMMudOut(), "<HTML>");
-	if (!strcmp(name, "Karn")) 
-	{
-		send_printf(getMMudOut(), "Command: %s<BR>Password: %s<BR>", command, password);
-	}
-#endif
 	if (*name == '\0') 
 	{ 
-		NotActive(name, password,5);
+		NotActive(name, password,5, mymudstruct->socketfd);
 	}
 	if (godstatus==2) 
 	{
-		NotActive(name, password,6);
+		NotActive(name, password,6, mymudstruct->socketfd);
 	}
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
 	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
 			"address='%x' where name='%x'",	mymudstruct->address, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
+#ifdef DEBUG
+	printf("create memblock!!!\n");
+#endif
 	junk = strdup(command);
 	if (mymudstruct->memblock != NULL)
 	{
@@ -2029,8 +1863,11 @@ gameMain(int socketfd)
 		return 1;
 	}
 	
-		if ((strstr(command,"<applet")!=NULL) || (strstr(command,"<script")!=NULL)
-		|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) 
+#ifdef DEBUG
+	printf("end of create memblock!!!\n");
+#endif
+	if ((strstr(command,"<applet")!=NULL) || (strstr(command,"<script")!=NULL)
+	|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) 
 	{ 
 		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 		WriteRoom(mymudstruct);
@@ -2041,7 +1878,7 @@ gameMain(int socketfd)
 	{
 		if (!strcasecmp(command, "awaken"))
 		{
-			Awaken2_Command(name, password, room);
+			Awaken2_Command(mymudstruct);
 			return 1;
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
@@ -2065,7 +1902,7 @@ gameMain(int socketfd)
 		}
 		sqlstring = composeSqlStatement("update tmp_usertable set punishment=punishment-1 where name='%x'",
 			name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteRoom(mymudstruct);
@@ -2117,6 +1954,9 @@ gameMain(int socketfd)
 		return 1;
 	}
 
+#ifdef DEBUG
+	printf("tokenizer started!!!\n");
+#endif
 	myTokens[0] = junk;
 	myTokens[0] = strtok(junk, " ");
 	if (myTokens[0] != NULL) {
@@ -2136,6 +1976,9 @@ gameMain(int socketfd)
 	}			/* endif */
 	mymudstruct->tokenamount = amount;
 
+#ifdef DEBUG
+	printf("parser started!!!\n");
+#endif
 	if (SearchForSpecialCommand(mymudstruct, name, password, command, room, mymudstruct->frames)==1)
 	{
 		return 1;
@@ -2150,8 +1993,8 @@ gameMain(int socketfd)
 		int pos = theNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
 		#ifdef DEBUG
-		send_printf(getMMudOut(), "%i\n", theNumberOfFunctions);
-		send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
+		send_printf(mymudstruct->socketfd, "%i\n", theNumberOfFunctions);
+		send_printf(mymudstruct->socketfd, "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
 		#endif
 		while ((i>0) && (equals))
 		{
@@ -2165,7 +2008,7 @@ gameMain(int socketfd)
 			if ((pos >= 0) && (pos < theNumberOfFunctions))
 			{
 				#ifdef DEBUG
-				send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
+				send_printf(mymudstruct->socketfd, "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
 				#endif
 				
 				equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
@@ -2186,6 +2029,9 @@ gameMain(int socketfd)
 			{
 				/* do nothing, the game will in time find out that there is no appropriate response to the bogus command and will produce an error message. Darnit people, why do these damn comment lines sometimes have to be so long! And who turned off my word wrap anyway!!! */
 			}
+#ifdef DEBUG
+			printf("command finished (%s)\n", gameCommands[pos]);
+#endif
 		}
 	}
 

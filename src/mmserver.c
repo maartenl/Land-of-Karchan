@@ -39,6 +39,7 @@ maarten_l@yahoo.com
 
 #include <unistd.h>
 #include <string.h>
+
 // include file for using the syslogd system calls
 #include <syslog.h>
 
@@ -46,6 +47,9 @@ maarten_l@yahoo.com
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+
+// include file for multi threading
+#include <pthread.h>
 
 #include "typedefs.h"
 #include "mudmain.h"
@@ -388,7 +392,7 @@ parseXml(mudpersonstruct *fmine)
 				fmine->action = strdup(temp);
 				xmlFree(temp);
 			}
-#ifdef DEBUG	
+#ifdef DEBUG
 			printf("action: %s\n", fmine->action);
 #endif
 		}
@@ -911,7 +915,6 @@ store_in_list(int socketfd, char *buf)
 				if (!strcmp(mine->action, "mud")) {current_command = mine->command;}
 				
 				WriteSentenceIntoOwnLogFile(getParam(MM_BIGFILE), "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
-				setMMudOut(socketfd);
 				// decide what action to take
 				if (!strcasecmp(mine->action, "logon"))
 				{
@@ -926,7 +929,6 @@ store_in_list(int socketfd, char *buf)
 				{
 					gameMain(socketfd); 
 				}
-				setMMudOut(0);
 				j = strlen("</HTML>");
 				if (send_socket(socketfd, "</HTML>", &j) == -1)
 				{
@@ -949,13 +951,136 @@ store_in_list(int socketfd, char *buf)
 	return 0;
 }
 
+typedef struct thread_control
+{
+	int socketfd;
+	int active;
+	pthread_t mythread;
+	struct thread_control *next;
+} thread_control;
+
+thread_control *head = NULL;
+thread_control *cleanup = NULL;
+pthread_mutex_t threadlistmutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t threadcond;
+
+void *cleanupthread_function(void *arg)
+{
+	thread_control *stuff;
+
+	while (!isShuttingdown())
+	{
+		pthread_mutex_lock(&threadlistmutex);
+		pthread_cond_wait(&threadcond, &threadlistmutex);
+		while (cleanup != NULL)
+		{
+#ifdef DEBUG
+			printf("cleanupthread: awoken\n");
+#endif
+			stuff = cleanup;
+			cleanup = cleanup->next;
+			pthread_join(stuff->mythread, NULL);
+			stuff->next = NULL;
+			free(stuff);
+#ifdef DEBUG
+			printf("cleanupthread: back to sleep\n");
+#endif
+		}
+		pthread_mutex_unlock(&threadlistmutex);
+	}
+	pthread_exit(NULL);
+	return NULL;
+}
+
+void *thread_function(void *arg)
+{
+	int socketfd;
+	int msglength;
+	thread_control *mycontrol, *checklist;
+	char buf[1024];
+	
+	// necessary for mysql to initialize thread specific variables
+//	my_thread_init();
+
+	mycontrol = (thread_control *) arg;
+	socketfd = mycontrol->socketfd;
+	addconnection_mudinfo();
+	add_to_list(socketfd);
+	printf("Starting thread with socket %i...\n", socketfd);
+	msglength = strlen(IDENTITY);
+	send_socket(socketfd, IDENTITY, &msglength);
+	if (msglength != strlen(IDENTITY))
+	{
+		perror("Unable to send entire message...");
+	}
+	// handle data from a client
+	int nbytes;
+	while ((nbytes = recv(socketfd, buf, sizeof(buf), 0)) > 0)
+	{
+		// we got some data from a client
+		buf[nbytes]=0;
+		if (store_in_list(socketfd, buf) == 1)
+		{
+			// do nothing
+		}
+	}
+	// got error or connection closed by client
+	if (nbytes == 0)
+	{
+		// connection closed
+		printf("Connection %i closed\n", socketfd);
+	}
+	else
+	{
+		syslog(LOG_WARNING, "attempting to receive data from socket");
+	}
+	// close socket from our side as well
+	if (close(socketfd) == -1)
+	{
+		syslog(LOG_WARNING, "attempting to close user socket");
+	}
+	else
+	{
+		remove_from_list(socketfd);
+		removeconnection_mudinfo();
+	}
+	
+	pthread_mutex_lock(&threadlistmutex);
+	checklist = head;
+	if (checklist != mycontrol)
+	{
+		while (checklist->next != mycontrol)
+		{
+			checklist = checklist->next;
+		}
+		checklist->next = mycontrol->next;
+	}
+	else
+	{
+		head = mycontrol->next;
+	}
+
+	mycontrol->active = 0;
+	mycontrol->next = cleanup;
+	cleanup = mycontrol;
+	pthread_mutex_unlock(&threadlistmutex);
+	pthread_cond_broadcast(&threadcond);
+	// free(mycontrol)
+
+	// deinitialize the mysql thread-specific variables
+//	my_thread_end();
+	pthread_exit(NULL);
+	return NULL;
+}
+
 /*! main function */
 int 
 main(int argc, char **argv)
 {
 //	struct rusage usage;
 	int i;
-
+	pthread_t cleanupthread;
+        
 	// socket variables
 	fd_set master_fds;	// master file descriptor list
 	fd_set read_fds;	// temp file descriptorlist for select()
@@ -1013,126 +1138,62 @@ main(int argc, char **argv)
 		syslog(LOG_INFO, getdberror());
 		return 1;
 	}
+	if (mysql_thread_safe() != 1)
+	{
+		syslog(LOG_WARNING, "Mysql Client not Thread Safe...");
+	}
 	initGameFunctionIndex(); // initialise command index 
-	setMMudOut(0); // sets the standard output stream of the mud to the filedescriptor 
 	syslog(LOG_INFO, "accepting incoming connections...");
+	syslog(LOG_INFO, "starting cleanup thread...");
+	if (pthread_create( &cleanupthread, NULL, cleanupthread_function, NULL) )	
+	{
+		printf("error creating cleanup thread...\n");
+		abort();
+	}
 	while (!isShuttingdown())
 	{
 #ifdef DEBUG
 		printf("[Listening on socket...]\n");
 #endif
 		/* more socket stuff */
-		read_fds = master_fds; // copy it
-		if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1)
-		{
-			int i = errno;
-			if (i != EINTR)
-			{
-				syslog(LOG_ERR, "select : %s\n", strerror(i));
-				exit(8);
-			}
-		}
+		int newconnectionsocket;
+		thread_control *newthread;
 		if (isSignalCaught())
 		{
 			rereadConfigFiles();
 		}
-		// run through the existing connections looking for data to read
-		for (i = 0; i <= fdmax; i++)
+		if ((newconnectionsocket = accept(sockfd, NULL, NULL)) == -1)
 		{
-			if (FD_ISSET(i, &read_fds))
+			int i = errno;
+			if (i != EINTR)
 			{
-				// found one
-				if (i == sockfd)
-				{
-					// handle new connections
-					int newfd;
-					int addrlen;
-					int msglength;
-					addrlen = sizeof(their_addr);
-					if ((newfd = accept(sockfd, (struct sockaddr *)&their_addr, &addrlen)) == -1)
-					{
-						perror("accept");
-					}
-					else
-					{
-						FD_SET(newfd, &master_fds);	 // add to master set
-						addconnection_mudinfo();
-						if (newfd > fdmax) 
-						{
-							// keep track of the maximum file descriptor value
-							fdmax = newfd;
-						}
-						// print stuff
-						printf("New connection setup %i\n", newfd);
-						msglength = strlen(IDENTITY);
-						send_socket(newfd, IDENTITY, &msglength);
-						if (msglength != strlen(IDENTITY))
-						{
-							perror("Unable to send entire message...");
-						}
-						add_to_list(newfd);
-					}
-				}
-				else
-				{
-					// handle data from a client
-					int nbytes;
-					if ((nbytes = recv(i, buf, sizeof(buf), 0)) <= 0)
-					{
-						// got error or connection closed by client
-						if (nbytes == 0)
-						{
-							// connection closed
-							printf("Connection %i closed\n", i);
-						}
-						else
-						{
-							syslog(LOG_WARNING, "attempting to receive data from socket");
-						}
-						// close socket from our side as well
-						if (close(i) == -1)
-						{
-							syslog(LOG_WARNING, "attempting to close user socket");
-						}
-						else
-						{
-							FD_CLR(i, &master_fds); // remove closed socket from master set
-							remove_from_list(i);
-							removeconnection_mudinfo();
-						}
-					}
-					else
-					{
-						// we got some data from a client
-						buf[nbytes]=0;
-						if (store_in_list(i, buf) == 1)
-						{
-							// do nothing
-						}
-					}
-				}
+				syslog(LOG_ERR, "accept : %s\n", strerror(i));
+				exit(8);
 			}
+		}
+		/* we now have a new connection socket!!! */
+		newthread = (thread_control *) malloc(sizeof(thread_control));
+		newthread->socketfd = newconnectionsocket;
+		newthread->active = 1;
+		pthread_mutex_lock(&threadlistmutex);
+		newthread->next = head;
+		head = newthread;
+		pthread_mutex_unlock(&threadlistmutex);
+		if (pthread_create( &(newthread->mythread), NULL, thread_function, newthread) )
+		{
+			printf("error creating thread...\n");
+			abort();
 		}
 	}
 	syslog(LOG_INFO, "shutdown initiated...");
+	syslog(LOG_INFO, "waiting for ending cleanup thread...");
+	pthread_join(cleanupthread, NULL);
 	clearGameFunctionIndex(); // clear command index
 	if (close(sockfd) == -1)
 	{
 		// do some error checking
 		syslog(LOG_ERR, "attempting to close main socket...");
 		exit(7);
-	}
-	while (!is_list_empty())
-	{
-		mudpersonstruct *temp = get_first_from_list();
-		FD_CLR(temp->socketfd, &master_fds); // remove closed socket from master set
-		if (close(temp->socketfd) == -1)
-		{
-			// do some error checking
-			syslog(LOG_ERR, "attempting to close user socket...");
-			exit(7);
-		}
-		remove_from_list(temp->socketfd);
 	}
 	
 	syslog(LOG_INFO, "closing database connection...");

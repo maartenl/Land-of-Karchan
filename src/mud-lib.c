@@ -346,7 +346,7 @@ NULL};
 /*! \return int 0 upon failure, 1 upon success
 */
 int 
-ReadFile(const char *filenaam)
+ReadFile(const char *filenaam, const int socketfd)
 {
 	FILE           *fp;
 	char            string[81];
@@ -354,13 +354,13 @@ ReadFile(const char *filenaam)
 	if (fp==NULL)
 	{
 		int i = errno;
-		send_printf(getMMudOut(), "%i: %s (%s)\n", i, strerror(i), filenaam);
+		send_printf(socketfd, "%i: %s (%s)\n", i, strerror(i), filenaam);
 		return 0;
 	}
 	
 	while (fgets(string, 80, fp) != 0) 
 	{
-		send_printf(getMMudOut(), "%s", string);
+		send_printf(socketfd, "%s", string);
 	}
 	fclose(fp);
 	return 1;
@@ -368,11 +368,11 @@ ReadFile(const char *filenaam)
 
 //! print the standard command form for filling in commands
 int
-PrintForm(char * name, char * password, int frames)
+PrintForm(char * name, char * password, int frames, int socketfd)
 {
 if (!frames)
 {
-	send_printf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
+	send_printf(socketfd, "<SCRIPT language=\"JavaScript\">\r\n"
 			"<!-- In hiding!\r\n"
 			"function setfocus() {\r\n"
 			"       document.CommandForm.command.focus();\r\n"
@@ -380,13 +380,13 @@ if (!frames)
 			"	}\r\n"
 			"//-->\r\n"
 			"</SCRIPT>\r\n");
-	send_printf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
-	send_printf(getMMudOut(), "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
-	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
-	send_printf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	send_printf(getMMudOut(), "</FORM><P>\n");
+	send_printf(socketfd, "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
+	send_printf(socketfd, "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
+	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
+	send_printf(socketfd, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
+	send_printf(socketfd, "</FORM><P>\n");
 }
 }
 
@@ -407,29 +407,29 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 	command = fmudstruct->command;
 	room = fmudstruct->room;
 	
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan - Inventory\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(fmudstruct->socketfd, "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<TITLE>\n");
+	send_printf(fmudstruct->socketfd, "Land of Karchan - Inventory\n");
+	send_printf(fmudstruct->socketfd, "</TITLE>\n");
+	send_printf(fmudstruct->socketfd, "</HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!fmudstruct->frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (fmudstruct->frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	send_printf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/money.gif\">Inventory</H1>You have", getParam(MM_SERVERNAME));
-	send_printf(getMMudOut(), "<UL>");
+	send_printf(fmudstruct->socketfd, "<H1><IMG SRC=\"http://%s/images/gif/money.gif\">Inventory</H1>You have", getParam(MM_SERVERNAME));
+	send_printf(fmudstruct->socketfd, "<UL>");
 	sqlstring = composeSqlStatement("select tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems"
 		" where (items.id = tmpitems.id) and "
 		" (items.visible <> 0) and "
@@ -440,7 +440,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		" (tmpitems.wearing = '') and "
 		" (tmpitems.wielding = '') and "
 		" (tmpitems.containerid = 0)", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
@@ -448,12 +448,12 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		{
 			if (atoi(row[0])!=1) 
 			{
-				send_printf(getMMudOut(), "<LI>%s %s, %s %ss.<BR>\r\n",
+				send_printf(fmudstruct->socketfd, "<LI>%s %s, %s %ss.<BR>\r\n",
 					row[0], row[2], row[3], row[1]);
 			}
 			else
 			{
-				send_printf(getMMudOut(), "<LI>a %s, %s %s.<BR>\r\n",
+				send_printf(fmudstruct->socketfd, "<LI>a %s, %s %s.<BR>\r\n",
 					row[2], row[3], row[1]);
 			}
 		}
@@ -475,7 +475,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		" (tmpitems.containerid = containeditems.containedin) and "
 		" (containeditems.id = items2.id) "
 		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
@@ -484,22 +484,22 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 		{
 			if (containerid != atoi(row[0]))
 			{
-				send_printf(getMMudOut(), "\r\n<LI>a %s %s, %s containing ",
+				send_printf(fmudstruct->socketfd, "\r\n<LI>a %s %s, %s containing ",
 					row[3], row[4], row[2]);
 				containerid = atoi(row[0]);
 			}
 			else
 			{
-				send_printf(getMMudOut(), ", ");
+				send_printf(fmudstruct->socketfd, ", ");
 			}
 			if (atoi(row[5])!=1) 
 			{
-				send_printf(getMMudOut(), "%s %s, %s %ss",
+				send_printf(fmudstruct->socketfd, "%s %s, %s %ss",
 					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{
-				send_printf(getMMudOut(), "a %s, %s %s",
+				send_printf(fmudstruct->socketfd, "a %s, %s %s",
 					row[7], row[8], row[6]);
 			}
 		}
@@ -508,26 +508,26 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 
 	sqlstring = composeSqlStatement("select gold, silver, copper from tmp_usertable"
 		" where name = '%x'", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
 		if (row!=NULL) 
 		{
-			send_printf(getMMudOut(), "<LI>%s gold coins</A>\r\n", row[0]);
-			send_printf(getMMudOut(), "<LI>%s silver coins</A>\r\n", row[1]);
-			send_printf(getMMudOut(), "<LI>%s copper coins</A>\r\n", row[2]);
+			send_printf(fmudstruct->socketfd, "<LI>%s gold coins</A>\r\n", row[0]);
+			send_printf(fmudstruct->socketfd, "<LI>%s silver coins</A>\r\n", row[1]);
+			send_printf(fmudstruct->socketfd, "<LI>%s copper coins</A>\r\n", row[2]);
 		}
 	}
 	mysql_free_result(res);
 
-	send_printf(getMMudOut(), "</UL><BR>");
-	PrintForm(name, password, fmudstruct->frames);
+	send_printf(fmudstruct->socketfd, "</UL><BR>");
+	PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
 	
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
-	send_printf(getMMudOut(), "</BODY></HTML>");
+	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
+	send_printf(fmudstruct->socketfd, "</BODY></HTML>");
 }
 
 //! small help function for computing what you pay and what you get returned
@@ -631,70 +631,6 @@ exist_adverb(char *s)
 	return adverb[i]!=NULL;
 }
 
-//! writes the text of a room to output
-/*!
-\param z int, roomnumber
-*/
-void 
-RoomTextProc(int z, int frames)
-{
-	FILE           *fp;
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
-
-	if (!frames)
-	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
-	}
-	else
-	{
-		if (frames==1)
-		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
-		} else
-		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
-		}
-	}
-
-	temp = composeSqlStatement("select contents from rooms where id=%i", z);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-	if (res!=NULL)
-	{
-		row = mysql_fetch_row(res);
-
-		if (row!=NULL)
-		{
-			send_printf(getMMudOut(), "%s", row[0]);
-		}
-		else
-		{
-			send_printf(getMMudOut(), "<H1>Cardboard</H1>"
-			"Everywhere around you you notice cardboard. It seems as if this part"
-			" has either not been finished yet or you encountered an error"
-			" in retrieving the room description from the server.<P>");
-		}
-		mysql_free_result(res);
-	}
-	else
-	{
-		mysql_free_result(res);
-		send_printf(getMMudOut(), "<H1>Cardboard</H1>"
-		"Everywhere around you you notice cardboard. It seems as if this part"
-		" has either not been finished yet or you encountered an error"
-		" in retrieving the room description from the server.<P>");
-	}
-}
-
 //! write entire room to output, ending function
 /*! this function is used quite often. It is used as the last thing to execute. Once a command has been executed
 it is usually this method that is called last, in order to print the appropriate text
@@ -707,7 +643,7 @@ WriteRoom(mudpersonstruct *fmudstruct)
 	int room;
 	int frames;
 	int sleepstatus = 0;
-	roomstruct	*temproom;
+
 	int i=0;
 	char logname[100];
 	MYSQL_RES *res;
@@ -727,186 +663,238 @@ WriteRoom(mudpersonstruct *fmudstruct)
 		}
 		mysql_free_result(res);
 	}
-	RoomTextProc(room, frames);
 
-	send_printf(getMMudOut(), "[");
-	temproom=GetRoomInfo(room);
-	if (temproom->west) {
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
-		i++;
+	send_printf(fmudstruct->socketfd, "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<TITLE>\n");
+	send_printf(fmudstruct->socketfd, "Land of Karchan\n");
+	send_printf(fmudstruct->socketfd, "</TITLE>\n");
+	send_printf(fmudstruct->socketfd, "</HEAD>\n");
+
+	if (!frames)
+	{
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
-	if (temproom->east) {
-		if (i) {
-			send_printf(getMMudOut(), ", ");
+	else
+	{
+		if (frames==1)
+		{
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+		} else
+		{
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
-		i++;
 	}
-	if (temproom->north) {
-		if (i) {
-			send_printf(getMMudOut(), ", ");
+
+	res = executeQuery(NULL, "select contents from rooms where id=%i", room);
+	if (res!=NULL)
+	{
+		row = mysql_fetch_row(res);
+
+		if (row!=NULL)
+		{
+			send_printf(fmudstruct->socketfd, "%s", row[0]);
 		}
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
-		i++;
-	}
-	if (temproom->south) {
-		if (i) {
-			send_printf(getMMudOut(), ", ");
+		else
+		{
+			send_printf(fmudstruct->socketfd, "<H1>Cardboard</H1>"
+			"Everywhere around you you notice cardboard. It seems as if this part"
+			" has either not been finished yet or you encountered an error"
+			" in retrieving the room description from the server.<P>");
 		}
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
-		i++;
+		mysql_free_result(res);
 	}
-	if (temproom->up) {
-		if (i) {
-			send_printf(getMMudOut(), ", ");
+	else
+	{
+		mysql_free_result(res);
+		send_printf(fmudstruct->socketfd, "<H1>Cardboard</H1>"
+		"Everywhere around you you notice cardboard. It seems as if this part"
+		" has either not been finished yet or you encountered an error"
+		" in retrieving the room description from the server.<P>");
+	}
+
+	send_printf(fmudstruct->socketfd, "[");
+	res = executeQuery(NULL, "select west, east, north, south, up, down from rooms where id=%i", room);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (atoi(row[0])) {
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+			i++;
 		}
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
-		i++;
-	}
-	if (temproom->down) {
-		if (i) {
-			send_printf(getMMudOut(), ", ");
+		if (atoi(row[1])) {
+			if (i) {
+				send_printf(fmudstruct->socketfd, ", ");
+			}
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+			i++;
 		}
-		send_printf(getMMudOut(), "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
-		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+		if (atoi(row[2])) {
+			if (i) {
+				send_printf(fmudstruct->socketfd, ", ");
+			}
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+			i++;
+		}
+		if (atoi(row[3])) {
+			if (i) {
+				send_printf(fmudstruct->socketfd, ", ");
+			}
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+			i++;
+		}
+		if (atoi(row[4])) {
+			if (i) {
+				send_printf(fmudstruct->socketfd, ", ");
+			}
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+			i++;
+		}
+		if (atoi(row[5])) {
+			if (i) {
+				send_printf(fmudstruct->socketfd, ", ");
+			}
+			send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
+			                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
+		}
 	}
-	free(temproom);
+	mysql_free_result(res);
 	i = 0;
 	
-	send_printf(getMMudOut(), "]<P>\r\n");
+	send_printf(fmudstruct->socketfd, "]<P>\r\n");
 
 if (!fmudstruct->frames) 
 {
-        send_printf(getMMudOut(),"<TABLE ALIGN=right>\n");
-	send_printf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
+        send_printf(fmudstruct->socketfd,"<TABLE ALIGN=right>\n");
+	send_printf(fmudstruct->socketfd,"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
 	"USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>", getParam(MM_SERVERNAME));
 	if (sleepstatus==1) {
 	
-	send_printf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
+	send_printf(fmudstruct->socketfd, "<script language=\"JavaScript\">\r\n");
 
-	send_printf(getMMudOut(), "<!-- In hiding!\r\n");
-	send_printf(getMMudOut(), " browserName = navigator.appName;          \r\n");
-	send_printf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
-	send_printf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-	send_printf(getMMudOut(), "\"n3\";\r\n");
-	send_printf(getMMudOut(), "               else version = \"n2\";\r\n");
+	send_printf(fmudstruct->socketfd, "<!-- In hiding!\r\n");
+	send_printf(fmudstruct->socketfd, " browserName = navigator.appName;          \r\n");
+	send_printf(fmudstruct->socketfd, "           browserVer = parseInt(navigator.appVersion);\r\n");
+	send_printf(fmudstruct->socketfd, "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+	send_printf(fmudstruct->socketfd, "\"n3\";\r\n");
+	send_printf(fmudstruct->socketfd, "               else version = \"n2\";\r\n");
 	               
-	send_printf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
-	send_printf(getMMudOut(), "               toc1on = new Image;          \r\n");
-	send_printf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               if (version == \"n3\") {                \r\n");
+	send_printf(fmudstruct->socketfd, "               toc1on = new Image;          \r\n");
+	send_printf(fmudstruct->socketfd, "               toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
 	               
 	               
-	send_printf(getMMudOut(), "               toc1off = new Image;\r\n");
-	send_printf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc1off = new Image;\r\n");
+	send_printf(fmudstruct->socketfd, "               toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
 	               
-	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
 	
-	send_printf(getMMudOut(), "function img_act(imgName) {\r\n");
-	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	send_printf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
-	send_printf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
-	send_printf(getMMudOut(), "        }\r\n");
-	send_printf(getMMudOut(), "}\r\n");
+	send_printf(fmudstruct->socketfd, "function img_act(imgName) {\r\n");
+	send_printf(fmudstruct->socketfd, "        if (version == \"n3\") {\r\n");
+	send_printf(fmudstruct->socketfd, "        imgOn = eval(imgName + \"on.src\");\r\n");
+	send_printf(fmudstruct->socketfd, "        document [imgName].src = imgOn;\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
+	send_printf(fmudstruct->socketfd, "}\r\n");
 	
-	send_printf(getMMudOut(), "function img_inact(imgName) {\r\n");
-	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	send_printf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
-	send_printf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
-	send_printf(getMMudOut(), "        }\r\n");
-	send_printf(getMMudOut(), "}\r\n");
+	send_printf(fmudstruct->socketfd, "function img_inact(imgName) {\r\n");
+	send_printf(fmudstruct->socketfd, "        if (version == \"n3\") {\r\n");
+	send_printf(fmudstruct->socketfd, "        imgOff = eval(imgName + \"off.src\");\r\n");
+	send_printf(fmudstruct->socketfd, "        document [imgName].src = imgOff;\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
+	send_printf(fmudstruct->socketfd, "}\r\n");
 	
-	send_printf(getMMudOut(), "//-->\r\n");
+	send_printf(fmudstruct->socketfd, "//-->\r\n");
 	   
 	
-	send_printf(getMMudOut(), "</SCRIPT>\r\n");
+	send_printf(fmudstruct->socketfd, "</SCRIPT>\r\n");
 	
-	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=awaken&name=%s&password=%s\" "
+	send_printf(fmudstruct->socketfd, "<TR><TD><A HREF=\"%s?command=awaken&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(fmudstruct->socketfd, "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 	} else {
-	send_printf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
+	send_printf(fmudstruct->socketfd, "<script language=\"JavaScript\">\r\n");
 	
-	send_printf(getMMudOut(), "<!-- In hiding!\r\n");
-	send_printf(getMMudOut(), " browserName = navigator.appName;          \r\n");
-	send_printf(getMMudOut(), "           browserVer = parseInt(navigator.appVersion);\r\n");
-	send_printf(getMMudOut(), "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-	send_printf(getMMudOut(), "\"n3\";\r\n");
-	send_printf(getMMudOut(), "               else version = \"n2\";\r\n");
+	send_printf(fmudstruct->socketfd, "<!-- In hiding!\r\n");
+	send_printf(fmudstruct->socketfd, " browserName = navigator.appName;          \r\n");
+	send_printf(fmudstruct->socketfd, "           browserVer = parseInt(navigator.appVersion);\r\n");
+	send_printf(fmudstruct->socketfd, "               if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+	send_printf(fmudstruct->socketfd, "\"n3\";\r\n");
+	send_printf(fmudstruct->socketfd, "               else version = \"n2\";\r\n");
 	               
-	send_printf(getMMudOut(), "               if (version == \"n3\") {                \r\n");
-	send_printf(getMMudOut(), "               toc1on = new Image;          \r\n");
-	send_printf(getMMudOut(), "               toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
-	send_printf(getMMudOut(), "               toc2on = new Image;          \r\n");
-	send_printf(getMMudOut(), "               toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
-	send_printf(getMMudOut(), "               toc3on = new Image;          \r\n");
-	send_printf(getMMudOut(), "               toc3on.src = \"../images/gif/webpic/new/buttonr.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               if (version == \"n3\") {                \r\n");
+	send_printf(fmudstruct->socketfd, "               toc1on = new Image;          \r\n");
+	send_printf(fmudstruct->socketfd, "               toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc2on = new Image;          \r\n");
+	send_printf(fmudstruct->socketfd, "               toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc3on = new Image;          \r\n");
+	send_printf(fmudstruct->socketfd, "               toc3on.src = \"../images/gif/webpic/new/buttonr.gif\";\r\n");
 	               
 	               
-	send_printf(getMMudOut(), "               toc1off = new Image;\r\n");
-	send_printf(getMMudOut(), "               toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
-	send_printf(getMMudOut(), "               toc2off = new Image;\r\n");
-	send_printf(getMMudOut(), "               toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
-	send_printf(getMMudOut(), "               toc3off = new Image;\r\n");
-	send_printf(getMMudOut(), "               toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc1off = new Image;\r\n");
+	send_printf(fmudstruct->socketfd, "               toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc2off = new Image;\r\n");
+	send_printf(fmudstruct->socketfd, "               toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
+	send_printf(fmudstruct->socketfd, "               toc3off = new Image;\r\n");
+	send_printf(fmudstruct->socketfd, "               toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
 	               
-	send_printf(getMMudOut(), "        }\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
 	
-	send_printf(getMMudOut(), "function img_act(imgName) {\r\n");
-	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	send_printf(getMMudOut(), "        imgOn = eval(imgName + \"on.src\");\r\n");
-	send_printf(getMMudOut(), "        document [imgName].src = imgOn;\r\n");
-	send_printf(getMMudOut(), "        }\r\n");
-	send_printf(getMMudOut(), "}\r\n");
+	send_printf(fmudstruct->socketfd, "function img_act(imgName) {\r\n");
+	send_printf(fmudstruct->socketfd, "        if (version == \"n3\") {\r\n");
+	send_printf(fmudstruct->socketfd, "        imgOn = eval(imgName + \"on.src\");\r\n");
+	send_printf(fmudstruct->socketfd, "        document [imgName].src = imgOn;\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
+	send_printf(fmudstruct->socketfd, "}\r\n");
 	
-	send_printf(getMMudOut(), "function img_inact(imgName) {\r\n");
-	send_printf(getMMudOut(), "        if (version == \"n3\") {\r\n");
-	send_printf(getMMudOut(), "        imgOff = eval(imgName + \"off.src\");\r\n");
-	send_printf(getMMudOut(), "        document [imgName].src = imgOff;\r\n");
-	send_printf(getMMudOut(), "        }\r\n");
-	send_printf(getMMudOut(), "}\r\n");
+	send_printf(fmudstruct->socketfd, "function img_inact(imgName) {\r\n");
+	send_printf(fmudstruct->socketfd, "        if (version == \"n3\") {\r\n");
+	send_printf(fmudstruct->socketfd, "        imgOff = eval(imgName + \"off.src\");\r\n");
+	send_printf(fmudstruct->socketfd, "        document [imgName].src = imgOff;\r\n");
+	send_printf(fmudstruct->socketfd, "        }\r\n");
+	send_printf(fmudstruct->socketfd, "}\r\n");
 	
-	send_printf(getMMudOut(), "//-->\r\n");
+	send_printf(fmudstruct->socketfd, "//-->\r\n");
 	   
 	
-	send_printf(getMMudOut(), "</SCRIPT>\r\n");
+	send_printf(fmudstruct->socketfd, "</SCRIPT>\r\n");
 	
-	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=quit&name=%s&password=%s\" "
+	send_printf(fmudstruct->socketfd, "<TR><TD><A HREF=\"%s?command=quit&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(fmudstruct->socketfd, "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n", getParam(MM_SERVERNAME));
 	
-	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=sleep&name=%s&password=%s\" "
+	send_printf(fmudstruct->socketfd, "<TR><TD><A HREF=\"%s?command=sleep&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(fmudstruct->socketfd, "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 
-	send_printf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=clear&name=%s&password=%s\" "
+	send_printf(fmudstruct->socketfd, "<TR><TD><A HREF=\"%s?command=clear&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n",
 	                getParam(MM_MUDCGI), name, password);
-	send_printf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n", getParam(MM_SERVERNAME));
+	send_printf(fmudstruct->socketfd, "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n", getParam(MM_SERVERNAME));
 	}
-	        send_printf(getMMudOut(),"</TABLE>\n");
+	        send_printf(fmudstruct->socketfd,"</TABLE>\n");
 
-	                    send_printf(getMMudOut(), "<MAP NAME=\"roosmap\">\n");
-	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" "
+	                    send_printf(fmudstruct->socketfd, "<MAP NAME=\"roosmap\">\n");
+	                    send_printf(fmudstruct->socketfd, "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" "
 	                    "HREF=\"%s?command=n&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" "
+	                    send_printf(fmudstruct->socketfd, "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" "
 	                    "HREF=\"%s?command=s&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" "
+	                    send_printf(fmudstruct->socketfd, "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" "
 	                    "HREF=\"%s?command=w&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    send_printf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" "
+	                    send_printf(fmudstruct->socketfd, "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" "
 	                    "HREF=\"%s?command=e&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
-	                    send_printf(getMMudOut(), "</MAP>\n");
+	                    send_printf(fmudstruct->socketfd, "</MAP>\n");
 } /*end if fmudstruct->frames dude*/
 	/* Print characters in room */
 	tempsql = composeSqlStatement("select "
@@ -922,7 +910,7 @@ if (!fmudstruct->frames)
 	"if(leg = 'none', '', concat(', ',leg)),"
 	"' ', sex, ' ', race),name)"
 	", sleep, god, punishment, name from tmp_usertable where (room=%i) and (name<>'%x')",room,name);
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
@@ -934,26 +922,26 @@ if (!fmudstruct->frames)
 			if (row[2][0]=='3') {strcpy(colorme, "green");}
 	if (atoi(row[3])!=0)
 	{
-		send_printf(getMMudOut(), "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
+		send_printf(fmudstruct->socketfd, "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
 			colorme, getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, row[0]);
 	}
 	else
 	{
 			if (atoi(row[1])==0) 
 			{
-				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
+				send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
 					getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, colorme, row[0]);
 			}
 			else
 			{
-				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
+				send_printf(fmudstruct->socketfd, "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
 					getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, colorme, row[0]);
 			}
 		}
 	}
 	} 
 	mysql_free_result(res);
-	send_printf(getMMudOut(), "<BR>\r\n");
+	send_printf(fmudstruct->socketfd, "<BR>\r\n");
 
 	/* Print items in room */
 	tempsql = composeSqlStatement("select tmpitems.amount, items.adject1, items.adject2, items.name from items, tmp_itemtable tmpitems "
@@ -965,7 +953,7 @@ if (!fmudstruct->frames)
 			"      (items.visible <> 0) and "
 			"      (tmpitems.containerid=0)"
 			"      ",room);
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
@@ -973,12 +961,12 @@ if (!fmudstruct->frames)
 		{
 			if (atoi(row[0])>1) 
 			{
-				send_printf(getMMudOut(), "%s %s, %s %ss are here.<BR>\r\n", 
+				send_printf(fmudstruct->socketfd, "%s %s, %s %ss are here.<BR>\r\n", 
 					row[0], row[1], row[2], row[3]);
 			}
 			else
 			{
-				send_printf(getMMudOut(), "A %s, %s %s is here.<BR>\r\n", 
+				send_printf(fmudstruct->socketfd, "A %s, %s %s is here.<BR>\r\n", 
 					row[1], row[2], row[3]);
 			}
 		}
@@ -1000,7 +988,7 @@ if (!fmudstruct->frames)
 		" (tmpitems.containerid = containeditems.containedin) and "
 		" (containeditems.id = items2.id) "
 		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", room);
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
@@ -1011,41 +999,41 @@ if (!fmudstruct->frames)
 			{
 				if (containerid != 0)
 				{
-					send_printf(getMMudOut(), " is here.<BR>");
+					send_printf(fmudstruct->socketfd, " is here.<BR>");
 				}
-				send_printf(getMMudOut(), "\r\nA %s %s, %s containing ",
+				send_printf(fmudstruct->socketfd, "\r\nA %s %s, %s containing ",
 					row[3], row[4], row[2]);
 				containerid = atoi(row[0]);
 			}
 			else
 			{	
-				send_printf(getMMudOut(), ", ");
+				send_printf(fmudstruct->socketfd, ", ");
 			}
 			if (atoi(row[5])!=1)
 			{
-				send_printf(getMMudOut(), "%s %s, %s %ss",
+				send_printf(fmudstruct->socketfd, "%s %s, %s %ss",
 					row[5], row[7], row[8], row[6]);
 			}
 			else
 			{ 
-				send_printf(getMMudOut(), "a %s, %s %s",
+				send_printf(fmudstruct->socketfd, "a %s, %s %s",
 					row[7], row[8], row[6]); 
 			}
 		}
 		if (containerid != 0)
 		{
-			send_printf(getMMudOut(), " is here.");
+			send_printf(fmudstruct->socketfd, " is here.");
 		}
 	} 
 	mysql_free_result(res);
-	send_printf(getMMudOut(), "<BR>\r\n");
+	send_printf(fmudstruct->socketfd, "<BR>\r\n");
 
-	PrintForm(name, password, frames);
+	PrintForm(name, password, frames, fmudstruct->socketfd);
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if (fmudstruct->frames!=2) {ReadFile(logname);}
+	if (fmudstruct->frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
 
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! checks the weight of a person by combining the weights of everything he/she carries
@@ -1065,7 +1053,7 @@ CheckWeight(char * name)
 	tempsql = composeSqlStatement("select tmp_usertable.gold*3 + tmp_usertable.silver*2 "
 	"+ tmp_usertable.copper from tmp_usertable where "
 	"tmp_usertable.name='%x'", name);
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	row = mysql_fetch_row(res);
 	totalgold = atoi(row[0]); 
@@ -1075,7 +1063,7 @@ CheckWeight(char * name)
 	tempsql = composeSqlStatement("select sum(items.weight*tmp_itemtable.amount) from "
 	"tmp_itemtable, items where tmp_itemtable.belongsto='%x' and "
 	"tmp_itemtable.id=items.id and tmp_itemtable.containerid=0", name);
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	totalitems=0;
 	if (res!=NULL)

@@ -44,6 +44,9 @@ maarten_l@yahoo.com
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+// include file for threading, database calls need a mutex
+#include <pthread.h>
+
 #include "typedefs.h"
 #include "mudnewchar.h"
 
@@ -52,26 +55,7 @@ maarten_l@yahoo.com
 like database operations, server statistics, configuration and tokenization
 */
 
-/*roomindex, west, east, north, south, up, down, light_source*/
-roomstruct room;
-
 char secretpassword[40];
-/*! property providing where ANY user output of the program should be redirected to. */
-int mmout;
-
-/*! set/redirect output from a mud command into a filedescriptor */
-void setMMudOut(int aFileDescriptor)
-{
-	mmout = aFileDescriptor;
-}
-
-/*! get the redirected output/filedescriptor. This is usually used in conjunction with an fprintf statement
-like fprintf(getMMudOut(), "Message from Karn\n");
-*/
-int getMMudOut()
-{
-	return mmout;
-}
 
 /*! attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
@@ -105,6 +89,7 @@ send_socket(int s, char *buf, int *len)
 }
 
 MYSQL dbconnection;
+pthread_mutex_t mysqlmutex=PTHREAD_MUTEX_INITIALIZER;
 
 //! returns dbconnection variable
 /*! this returns the dbconnection as setup by opendbconnection and used by
@@ -452,29 +437,6 @@ FatalError(FILE *output, int i, char *description, char *busywith)
   exit(0);
 }         
 
-/*! initialize rooms, basically retrieves information about one current room */
-void InitializeRooms(int roomint)
-{
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-
-	temp = composeSqlStatement("select west, east, north, south, up, down from rooms where id=%i", roomint);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-
-	row = mysql_fetch_row(res);
-
-	room.west=atoi(row[0]);
-	room.east=atoi(row[1]);
-	room.north=atoi(row[2]);
-	room.south=atoi(row[3]);
-	room.up=atoi(row[4]);
-	room.down=atoi(row[5]);
-
-	mysql_free_result(res);
-}
-
 //! write error to file
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
 {
@@ -538,62 +500,6 @@ send_printf(const int socketfd, char *fmt,...)
 	return resulting;
 }
 
-//! send sql query to database, deprecated!
-int SendSQL(char *file, char *name, char *password, char *sqlstring)
-{
-	MYSQL mysql;
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	FILE *fp;
-	uint i = 0;
- 
-	if (!(mysql_connect(&mysql,"localhost",name,password))) 
-	{
-		exiterr(1, sqlstring, &mysql);
-		exiterr2(1, sqlstring, &mysql, file);
-	}
- 
-	if (mysql_select_db(&mysql,getParam(MM_DATABASENAME)))
-	{
-		exiterr(2, sqlstring, &mysql);
-		exiterr2(2, sqlstring, &mysql, file);
-	}
- 
-	if (mysql_query(&mysql,sqlstring))
-	{
-		exiterr(3, sqlstring, &mysql);
-		exiterr2(3, sqlstring, &mysql, file);
-	}
- 
-	if (!(res = mysql_store_result(&mysql)))
-		{
-		exiterr(4, sqlstring, &mysql);
-		exiterr2(4, "Unable to retrieve rows, probably insert of update"
-		" query...", &mysql, file);
-		exiterr2(4, sqlstring, &mysql, file);
-		} else {
- 
-		fp=fopen(file, "a");
-		fprintf(fp, "<HR><CENTER><TABLE BORDER=1>\r\n");
-		while((row = mysql_fetch_row(res))) {
-			fprintf(fp, "<TR>");
-			 for (i=0 ; i < mysql_num_fields(res); i++) 
-				fprintf(fp, "<TD>%s</TD>\r\n",row[i]);
-			fprintf(fp, "</TR>\r\n");
-		}
-		fprintf(fp, "</TABLE></CENTER><HR><BR>\r\n");
-		fclose(fp);
-	 
-	if (!mysql_eof(res))
-	{
-		exiterr(5, sqlstring, &mysql);
-		exiterr2(5, sqlstring, &mysql, file);
-	}
- 
-	mysql_free_result(res);}
-	mysql_close(&mysql);
-}
-
 //! open the connection to the database server
 /*! uses the parameters from the configuration file (config.xml) to connect.
 	\sa closedbconnection
@@ -634,17 +540,19 @@ closedbconnection()
 	\return the resultset, please do not forget to call mysql_free_result!
 	\sa composeSqlStatement, getdbconnection, closedbconnection
 */
-MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
+MYSQL_RES *sendQuery(char *sqlstring, int *affected_rows)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	uint i = 0;
  
+	pthread_mutex_lock(&mysqlmutex);
 	if (mysql_query(&dbconnection,sqlstring))
 		exiterr(3, sqlstring, &dbconnection);
  
 	if (!(res = mysql_store_result(&dbconnection)) && mysql_field_count(&dbconnection))
 		exiterr(4, sqlstring, &dbconnection);
+	pthread_mutex_unlock(&mysqlmutex);
  	
 	if (affected_rows!=NULL)
 	{
@@ -666,7 +574,7 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 	\param sqlstring the format string (with options as displayed above)
 	\param ... the unknown list of parameters to be used
 	\return a char pointer to the composed string (memory has been allocated, do not forget to use free())
-	\sa SendSQL2
+	\sa sendQuery
 */
 char *
 composeSqlStatement(char *sqlstring, ...)
@@ -753,7 +661,7 @@ composeSqlStatement(char *sqlstring, ...)
 	\param sqlstring the format string (with options as displayed above)
 	\param ... the unknown list of parameters to be used
 	\return the resultset, please do not forget to call mysql_free_result
-	\sa SendSQL2
+	\sa sendQuery
 */
 MYSQL_RES *
 executeQuery(int *affected_rows, char *sqlstring, ...)
@@ -832,51 +740,10 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 	}
 	va_end(ap);
 	
-	myResultSet = SendSQL2(my_sqlstring, affected_rows);
+	myResultSet = sendQuery(my_sqlstring, affected_rows);
 	free(my_sqlstring);
 
 	return myResultSet;
-}
-
-//! get room infor about a certain room
-roomstruct *GetRoomInfo(int room)
-{
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	roomstruct *roomstr;
-	int i;
-	char *temp;
-	
-	roomstr = (roomstruct *)malloc(sizeof(*roomstr));
-	
-	roomstr->west=0;
-	roomstr->east=0;
-	roomstr->north=0;
-	roomstr->south=0;
-	roomstr->up=0;
-	roomstr->down=0;
-	
-	temp = composeSqlStatement("select west, east, north, south, up, down from rooms where id=%i", room);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-	if (res != NULL)
-	{
-		row = mysql_fetch_row(res);
-	
-		if (row != NULL)
-		{
-			roomstr->west=atoi(row[0]);
-			roomstr->east=atoi(row[1]);
-			roomstr->north=atoi(row[2]);
-			roomstr->south=atoi(row[3]);
-			roomstr->up=atoi(row[4]);
-			roomstr->down=atoi(row[5]);
-		}
-	
-		mysql_free_result(res);
-	}
-
-	return roomstr;
 }
 
 //! generate a session password to be used by player during game session
@@ -940,21 +807,21 @@ NULL};
 /*! dumps the contents of the configuration to the screen. THe
 	databasepassword is skipped for security reasons. 
 */
-void writeConfig()
+void writeConfig(int socketfd)
 {
 	int i;
 	i=0;
-	send_printf(getMMudOut(), "<TABLE>\r\n");
+	send_printf(socketfd, "<TABLE>\r\n");
 	while (parameterdefs[i] != NULL)
 	{
 		if ((i+1) != MM_DATABASEPASSWORD)
 		{
-			send_printf(getMMudOut(), "<TR><TD>%i</TD><TD>%s</TD><TD>%s</TD></TR>\r\n",
+			send_printf(socketfd, "<TR><TD>%i</TD><TD>%s</TD><TD>%s</TD></TR>\r\n",
 			i+1, parameterdefs[i], getParam(i+1));
 		}
 		i++;
 	}
-	send_printf(getMMudOut(), "</TABLE>\r\n");
+	send_printf(socketfd, "</TABLE>\r\n");
 }
 	
 

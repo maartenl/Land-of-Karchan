@@ -83,7 +83,7 @@ MakeStart(char *name, char *password, int room, char *address)
 			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);        
 //			cgiHeaderContentType("text/html");
 //getCookie(cgiOut, "Karchan","");
-   		WriteRoom(name, password, room, 0);
+   		WriteRoom(fmudstruct);
 	}
 	else
 	{
@@ -270,7 +270,7 @@ cgiMain()
 	temp = composeSqlStatement("select name, lok, room, sleep "
 		"from tmp_usertable "
 		"where name='%x' and lok<>''", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
@@ -307,7 +307,7 @@ cgiMain()
 	temp = composeSqlStatement("update tmp_usertable "
 		"set lok='%x' "
 		"where name='%x'", secretpassword, name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res!=NULL) 
 	{

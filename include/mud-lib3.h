@@ -29,12 +29,12 @@ int GoWest_Command(mudpersonstruct *fmudstruct);
 int GoEast_Command(mudpersonstruct *fmudstruct);
 int GoNorth_Command(mudpersonstruct *fmudstruct);
 int GoSouth_Command(mudpersonstruct *fmudstruct);
+int GoUp_Command(mudpersonstruct *fmudstruct);
+int GoDown_Command(mudpersonstruct *fmudstruct);
 int Sleep_Command(mudpersonstruct *fmudstruct);
-void Awaken2_Command(char *name, char *password, int room);
+void Awaken2_Command(mudpersonstruct *fmudstruct);
 int BigTalk_Command(mudpersonstruct *fmudstruct);
 int MailFormDumpOnScreen(mudpersonstruct *fmudstruct);
 int Time_Command(mudpersonstruct *fmudstruct);
 int Date_Command(mudpersonstruct *fmudstruct);
-void LookSky_Command(char *name, char *password);
 
-void SwitchRoomCheck(char *name, char *password, int room);

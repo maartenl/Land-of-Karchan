@@ -28,9 +28,9 @@ maarten_l@yahoo.com
 #define SINGULARIS 0
 #define PLURALIS   1
 
-int ReadFile(const char *filenaam);
+int ReadFile(const char *filenaam, int socketfd);
       
-int PrintForm(char * name, char * password, int frames);
+int PrintForm(char * name, char * password, int frames, int socketfd);
 
 int Inventory_Command(mudpersonstruct *fmudstruct);
 

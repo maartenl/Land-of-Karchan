@@ -47,10 +47,9 @@ main(int argc, char *argv[])
 	readConfigFiles("/karchan/config.xml");
 
 	opendbconnection();
-	setMMudOut(0);
 
 //	openDatabase();
-	res=SendSQL2("select src, room "
+	res=sendQuery("select src, room "
 	"from events, methods "
 	"where callable = 1 "
 	"and methods.name = events.method_name "

@@ -79,13 +79,6 @@ void freeParam();
 const char *getParam(int i);
 void setParam(int i, char *parameter);
 
-typedef struct 
-{
-	int roomindex;
-	int west,east,north,south,up,down;
-	int light_source;
-} roomstruct;
-
 /* this structure is used to provide valuable information about the current status of both the socket as well as the daemon
 */
 typedef struct
@@ -143,16 +136,6 @@ mudpersonstruct *find_in_list(int socketfd);
 
 int remove_from_list(int socketfd);
 
-/* sets the FileDescriptor used to output any information to the user 
- Function usually called at the start of the mudMain call.
-*/
-void setMMudOut(int aFileDescriptor);
-
-/* gets the FileDescriptor used to output any information to the user
- Function usually called ALL the time for any possible output
-*/
-int getMMudOut();
-
 int isShuttingdown();
 
 void setShutdown(int aOffset);
@@ -182,23 +165,17 @@ char *getToken(mudpersonstruct *fmudstruct, int i);
 void 
 FatalError(FILE *output, int i, char *description, char *busywith);
 
-void InitializeRooms();
-
 int transfertime(time_t datetime, char *stringrepresentation);
 
 int transfertimeback(time_t *datetime, char *stringrepresentation);
 
-int SendSQL(char *file, char *name, char *password, char *sqlstring);
-   
-MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows);
+MYSQL_RES *sendQuery(char *sqlstring, int *affected_rows);
 
 char *composeSqlStatement(char *sqlstring, ...);
 
 MYSQL_RES *executeQuery(int *affected_rows, char *sqlstring, ...);
 
-roomstruct *GetRoomInfo(int room);
-
 char *generate_password(char *fpassword);
 
-void writeConfig();
+void writeConfig(int socketfd);
 int readConfigFiles(char *filename);

@@ -29,19 +29,19 @@ void WriteMail(char *name, char *toname, char *header, char *message);
    			
 int ListMail_Command(mudpersonstruct *fmudstruct);
 
-void ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem);
+int ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem, int socketfd);
 
 int ReadBill(char *botname, char *vraag, char *name, int room);
 
 int Who_Command(mudpersonstruct *fmudstruct);
 
-void LookString(char *description, char *name, char *password, int frames);
+void LookString(char *description, char *name, char *password, int frames, int socketfd);
 
-void LookAtProc(int id, char *name, char *password, int frames);
+void LookAtProc(int id, mudpersonstruct *fmudstruct);
 
 void LookItem_Command(mudpersonstruct *fmudstruct);
 
-void NotActive(char *fname, char *fpassword, int errornr);
+void NotActive(char *fname, char *fpassword, int errornr, int socketfd);
 
 int Quit_Command(mudpersonstruct *fmudstruct);
 
@@ -85,6 +85,6 @@ int Search_Command(mudpersonstruct *fmudstruct);
 
 int Read_Command(mudpersonstruct *fmudstruct);
 
-void Dead(char *name, char *password, int room, int frames);
+void Dead(char *name, char *password, int room, int frames, int socketfd);
 
 int ChangeTitle_Command(mudpersonstruct *fmudstruct);

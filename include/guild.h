@@ -25,14 +25,14 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-void MIFList(char *name, char *password, int room, int frames);
-void MIFEntryIn(char *name, char *password, int room);
-void MIFEntryOut(char *name, char *password, int room);
+void MIFList(char *name, char *password, int room, int frames, int socketfd);
+void MIFEntryIn(char *name, char *password, int room, int frames, int socketfd);
+void MIFEntryOut(char *name, char *password, int room, int frames, int socketfd);
 void MIFTalk(mudpersonstruct *fmudstruct);
 
-void RangerList(char *name, char *password, int room, int frames);
-void RangerEntryIn(char *name, char *password, int room);
-void RangerEntryOut(char *name, char *password, int room);
+void RangerList(char *name, char *password, int room, int frames, int socketfd);
+void RangerEntryIn(char *name, char *password, int room, int frames, int socketfd);
+void RangerEntryOut(char *name, char *password, int room, int frames, int socketfd);
 void RangerTalk(mudpersonstruct *fmudstruct);
 
 void SWTalk(mudpersonstruct *fmudstruct);

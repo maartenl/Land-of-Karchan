@@ -59,7 +59,7 @@ temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	datumtijd.tm_year+1900, datumtijd.tm_mon+1, datumtijd.tm_mday,
 	datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
 	 message);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 mysql_free_result(res);
 temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
@@ -68,7 +68,7 @@ temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	datumtijd.tm_year+1900, datumtijd.tm_mon+1, datumtijd.tm_mday,
 	datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
 	message);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 	mysql_free_result(res);
 
@@ -96,61 +96,62 @@ ListMail_Command(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-  	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+  	send_printf(fmudstruct->socketfd, "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<TITLE>\n");
+	send_printf(fmudstruct->socketfd, "Land of Karchan\n");
+	send_printf(fmudstruct->socketfd, "</TITLE>\n");
+	send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!fmudstruct->frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (fmudstruct->frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	send_printf(getMMudOut(), "<H2>List of Mail</H2>");
+	send_printf(fmudstruct->socketfd, "<H2>List of Mail</H2>");
 
 temp = composeSqlStatement("SELECT name, haveread, newmail, header FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
-send_printf(getMMudOut(), "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
+send_printf(fmudstruct->socketfd, "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
 while(row = mysql_fetch_row(res)) 
 {
-	send_printf(getMMudOut(), "<TR VALIGN=top><TD>%i.</TD><TD>", j);
-	if (atoi(row[2])>0) {send_printf(getMMudOut(),"N");}
-	if (atoi(row[1])==0) {send_printf(getMMudOut(),"U");}
-	send_printf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
+	send_printf(fmudstruct->socketfd, "<TR VALIGN=top><TD>%i.</TD><TD>", j);
+	if (atoi(row[2])>0) {send_printf(fmudstruct->socketfd,"N");}
+	if (atoi(row[1])==0) {send_printf(fmudstruct->socketfd,"U");}
+	send_printf(fmudstruct->socketfd,"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
 	"<A HREF=\"%s?command=readmail+%i&name=%s&password=%s&frames=%i\">"
 	"%s</A></TD><TD><A HREF=\"%s?command=deletemail+%i&name=%s&password=%s&frames=%i\">Delete</A></TD>"
 	"</TR>\r\n",row[0], getParam(MM_MUDCGI), j, name, password, fmudstruct->frames+1, row[3], getParam(MM_MUDCGI), j, name, password, fmudstruct->frames+1);
 	j++;
 }
- send_printf(getMMudOut(), "</TABLE><BR>\r\n");
+ send_printf(fmudstruct->socketfd, "</TABLE><BR>\r\n");
 	mysql_free_result(res);
 
-	PrintForm(name, password);
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! read or delete mail (yeah, I know, confusing)
 /*! \param messnr integer containing the number of the message to read/delete
 	\param erasehem integer, 1 if needs to be deleted, 0 otherwise, message is always displayed
+	\param int 1 on success, 0 on failure. If 0, WriteRoom needs to be called in calling method.
 */
-void 
-ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem)
+int 
+ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem, int socketfd)
 {
 	int             i = 1,j;
 	FILE           *fp;
@@ -164,7 +165,7 @@ sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
 	" WHERE toname='%x' ", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 if (res != NULL)
 {
@@ -175,35 +176,31 @@ if (res != NULL)
 		{
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			return;
+			return 0;
 		}
 	}
 	else
 	{
 		mysql_free_result(res);
 		WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
-		WriteRoom(name, password, room, 0);
-		return;
+		return 0;
 	}
 	mysql_free_result(res);
 }
 else
 {
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
-	WriteRoom(name, password, room, 0);
-	return;
+	return 0;
 }
 
 temp = composeSqlStatement("SELECT * FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 if (res==NULL)
 {
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
-	WriteRoom(name, password, room, 0);
-	return;
+	return 0;
 }
 j=1;
 while((row = mysql_fetch_row(res)) && (messnr!=j)) {j++;}
@@ -211,8 +208,7 @@ if (messnr!=j)
 {
 	mysql_free_result(res);
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
-	WriteRoom(name, password, room, 0);
-	return;
+	return 0;
 }
 
 
@@ -220,75 +216,79 @@ strcpy(mailname, row[0]);
 strcpy(mailtoname, row[1]);
 strcpy(maildatetime, row[3]);
 	
-send_printf(getMMudOut(), "<HTML>\n");
-send_printf(getMMudOut(), "<HEAD>\n");
-send_printf(getMMudOut(), "<TITLE>\n");
-send_printf(getMMudOut(), "Land of Karchan\n");
-send_printf(getMMudOut(), "</TITLE>\n");
-send_printf(getMMudOut(), "</HEAD>\n");
+send_printf(socketfd, "<HTML>\n");
+send_printf(socketfd, "<HEAD>\n");
+send_printf(socketfd, "<TITLE>\n");
+send_printf(socketfd, "Land of Karchan\n");
+send_printf(socketfd, "</TITLE>\n");
+send_printf(socketfd, "</HEAD>\n");
 
-send_printf(getMMudOut(), "<BODY>\n");
+send_printf(socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-send_printf(getMMudOut(), "<H1>Read Mail - %s</H1>", row[2]);
-send_printf(getMMudOut(), "<HR noshade><TABLE BORDER=0>\r\n");
-send_printf(getMMudOut(), "<TR><TD>Mes. Nr:</TD><TD> <B>%i</B></TD></TR>\r\n", messnr);
-send_printf(getMMudOut(), "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n", row[0]);
-send_printf(getMMudOut(), "<TR><TD>Time:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]+11);
+send_printf(socketfd, "<H1>Read Mail - %s</H1>", row[2]);
+send_printf(socketfd, "<HR noshade><TABLE BORDER=0>\r\n");
+send_printf(socketfd, "<TR><TD>Mes. Nr:</TD><TD> <B>%i</B></TD></TR>\r\n", messnr);
+send_printf(socketfd, "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n", row[0]);
+send_printf(socketfd, "<TR><TD>Time:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]+11);
 *(row[3]+10)='\0';
-send_printf(getMMudOut(), "<TR><TD>Date:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]);
-send_printf(getMMudOut(), "<TR><TD>New?:</TD><TD><B>");
-if (atoi(row[5])>0) {send_printf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
-		else {send_printf(getMMudOut(), "No</B></TD></TR>\r\n");}
-send_printf(getMMudOut(), "<TR><TD>Read?:</TD><TD><B>");
-if (atoi(row[4])>0) {send_printf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
-		else {send_printf(getMMudOut(), "No</B></TD></TR>\r\n");}
-send_printf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
-send_printf(getMMudOut(), "<HR noshade>%s", row[6]);
-send_printf(getMMudOut(), "<HR noshade>");
-send_printf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
+send_printf(socketfd, "<TR><TD>Date:</TD><TD><B>%s</B></TD></TR>\r\n", row[3]);
+send_printf(socketfd, "<TR><TD>New?:</TD><TD><B>");
+if (atoi(row[5])>0) {send_printf(socketfd, "Yes</B></TD></TR>\r\n");}
+		else {send_printf(socketfd, "No</B></TD></TR>\r\n");}
+send_printf(socketfd, "<TR><TD>Read?:</TD><TD><B>");
+if (atoi(row[4])>0) {send_printf(socketfd, "Yes</B></TD></TR>\r\n");}
+		else {send_printf(socketfd, "No</B></TD></TR>\r\n");}
+send_printf(socketfd, "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
+send_printf(socketfd, "<HR noshade>%s", row[6]);
+send_printf(socketfd, "<HR noshade>");
+send_printf(socketfd,"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
 	getParam(MM_MUDCGI), name, password, frames+1);
-PrintForm(name, password);
-send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+PrintForm(name, password, frames, socketfd);
+send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+send_printf(socketfd, "<DIV ALIGN=left><P>");
 
 mysql_free_result(res);
 
-if (erasehem) {
+if (erasehem) 
+{
 	temp = composeSqlStatement("DELETE FROM %s WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"tmp_mailtable", mailname, mailtoname, maildatetime);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 	temp = composeSqlStatement("DELETE FROM %s WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"mailtable", mailname, mailtoname, maildatetime);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
- } else {
+} 
+else 
+{
 	temp = composeSqlStatement("UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"tmp_mailtable", mailname, mailtoname, maildatetime);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 	temp = composeSqlStatement("UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"mailtable", mailname, mailtoname, maildatetime);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 	}
+return 1;
 }
 
 //! get some answers from bots, for example Bill but is not only Bill
@@ -306,7 +306,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	temp = composeSqlStatement("select god from tmp_usertable where name = \"%s\" ", botname);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res==NULL)
 	{
@@ -327,7 +327,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 
 	temp = composeSqlStatement("select answer from answers where \"%x\" like question and "
 			"name = \"%x\" ", vraag, botname);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 
 	if (row = mysql_fetch_row(res)) {
@@ -366,46 +366,46 @@ Who_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 		
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan - Who\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<TITLE>\n");
+	send_printf(fmudstruct->socketfd, "Land of Karchan - Who\n");
+	send_printf(fmudstruct->socketfd, "</TITLE>\n");
+	send_printf(fmudstruct->socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!fmudstruct->frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (fmudstruct->frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	send_printf(getMMudOut(), "<H2>List of All Users</H2>");
+	send_printf(fmudstruct->socketfd, "<H2>List of All Users</H2>");
 	tempsql = composeSqlStatement("select count(*) from tmp_usertable where god<1");
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
-		send_printf(getMMudOut(), "<I>There are %s persons active in the game.</I><P>", 
+		send_printf(fmudstruct->socketfd, "<I>There are %s persons active in the game.</I><P>", 
 			row[0]); 
 	}
 	mysql_free_result(res);
 		
-	send_printf(getMMudOut(), "<UL>");
+	send_printf(fmudstruct->socketfd, "<UL>");
 	tempsql = composeSqlStatement("select name, title, "
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable "
 	"where god<1");
-	res=SendSQL2(tempsql, NULL);
+	res=sendQuery(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
@@ -413,23 +413,23 @@ Who_Command(mudpersonstruct *fmudstruct)
 		{
 			if (atoi(row[3])==1)
 			{
-				send_printf(getMMudOut(), "<LI>%s, %s, sleeping (%i min, %i sec idle)\r\n", 
+				send_printf(fmudstruct->socketfd, "<LI>%s, %s, sleeping (%i min, %i sec idle)\r\n", 
 				row[0], row[1], atoi(row[2]) / 60, atoi(row[2]) % 60);
 			}
 			else
 			{
-				send_printf(getMMudOut(), "<LI>%s, %s (%i min, %i sec idle)\r\n", 
+				send_printf(fmudstruct->socketfd, "<LI>%s, %s (%i min, %i sec idle)\r\n", 
 				row[0], row[1], atoi(row[2]) / 60, atoi(row[2]) % 60);
 			}
 		}
 	}
 	mysql_free_result(res);
 	
-	send_printf(getMMudOut(), "</UL>");
+	send_printf(fmudstruct->socketfd, "</UL>");
 
-	PrintForm(name, password);
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
+	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 	return 1;
 }
 
@@ -438,7 +438,7 @@ Who_Command(mudpersonstruct *fmudstruct)
 	\param description char* that contains the (large) amount of text to be displayed
 */
 void 
-LookString(char *description, char *name, char *password, int frames)
+LookString(char *description, char *name, char *password, int frames, int socketfd)
 {
 	char 		logname[100];
 
@@ -448,94 +448,102 @@ LookString(char *description, char *name, char *password, int frames)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(socketfd, "<HTML>\n");
+	send_printf(socketfd, "<HEAD>\n");
+	send_printf(socketfd, "<TITLE>\n");
+	send_printf(socketfd, "Land of Karchan\n");
+	send_printf(socketfd, "</TITLE>\n");
+	send_printf(socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
-	send_printf(getMMudOut(), "%s", description);
-	PrintForm(name, password);
-	if (frames!=2) {ReadFile(logname);}
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	send_printf(socketfd, "%s", description);
+	PrintForm(name, password, frames, socketfd);
+	if (frames!=2) {ReadFile(logname, socketfd);}
+	send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! displays the description of an item properly
 /*! \param id int, contains the id number of the item of which the description needs to be displayed
 */
 void 
-LookAtProc(int id, char *name, char *password, int frames)
+LookAtProc(int id, mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
+	char *name;
+	char *password;
+	int frames;
+	int socketfd;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	frames = fmudstruct->frames;
+	socketfd = fmudstruct->socketfd;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
+	send_printf(socketfd, "<HTML>\n");
+	send_printf(socketfd, "<HEAD>\n");
+	send_printf(socketfd, "<TITLE>\n");
+	send_printf(socketfd, "Land of Karchan\n");
+	send_printf(socketfd, "</TITLE>\n");
+	send_printf(socketfd, "</HEAD>\n");
 
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 
 	temp = composeSqlStatement("select description from items where id=%i",	id);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
 		if (row != NULL)
 		{
-			send_printf(getMMudOut(), "%s", row[0]);
+			send_printf(socketfd, "%s", row[0]);
 		}
 		else
 		{
-			send_printf(getMMudOut(), "[item description not found]");
+			send_printf(socketfd, "[item description not found]");
 		}
 	}
 	mysql_free_result(res);
 
-	PrintForm(name, password);
-	if (frames!=2) {ReadFile(logname);}
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	PrintForm(name, password, frames, socketfd);
+	if (frames!=2) {ReadFile(logname, socketfd);}
+	send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! look at item, either in inventory or on floor or hidden or at a person in the room
@@ -572,7 +580,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 	if ((getTokenAmount(fmudstruct)<3) || (getTokenAmount(fmudstruct)>6))
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return;
 	}
 	if (getTokenAmount(fmudstruct)==3)
@@ -643,7 +651,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
@@ -654,40 +662,40 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s %s %s.<BR>\r\n",
 				row[2], row[3], row[1]);
 	
-			send_printf(getMMudOut(), "<HTML>\n");
-			send_printf(getMMudOut(), "<HEAD>\n");
-			send_printf(getMMudOut(), "<TITLE>\n");
-			send_printf(getMMudOut(), "Land of Karchan\n");
-			send_printf(getMMudOut(), "</TITLE>\n");
-			send_printf(getMMudOut(), "</HEAD>\n");
+			send_printf(fmudstruct->socketfd, "<HTML>\n");
+			send_printf(fmudstruct->socketfd, "<HEAD>\n");
+			send_printf(fmudstruct->socketfd, "<TITLE>\n");
+			send_printf(fmudstruct->socketfd, "Land of Karchan\n");
+			send_printf(fmudstruct->socketfd, "</TITLE>\n");
+			send_printf(fmudstruct->socketfd, "</HEAD>\n");
 		
-			send_printf(getMMudOut(), "<BODY>\n");
+			send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 		
-			send_printf(getMMudOut(), "%s", row[0]);
+			send_printf(fmudstruct->socketfd, "%s", row[0]);
 			if (atoi(row[4])!=0)
 			{
 				containerid = atoi(row[5]);
 				if (containerid!=0) 
 				{
-					send_printf(getMMudOut(), "The %s %s %s seems to contain ", row[2], row[3], row[1]);
+					send_printf(fmudstruct->socketfd, "The %s %s %s seems to contain ", row[2], row[3], row[1]);
 				}
 				else
 				{
-					send_printf(getMMudOut(), "The %s %s %s is empty.<P>\r\n", row[2], row[3], row[1]);
+					send_printf(fmudstruct->socketfd, "The %s %s %s is empty.<P>\r\n", row[2], row[3], row[1]);
 				}
 				
 			}
@@ -701,7 +709,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 					"items.id = tmpitems.id and "
 					"tmpitems.containedin = %i",
 					containerid);
-				res=SendSQL2(temp, NULL);
+				res=sendQuery(temp, NULL);
 				free(temp);temp=NULL;
 				if (res!=NULL)
 				{
@@ -715,26 +723,26 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 						}
 						else
 						{
-							send_printf(getMMudOut(), ", ");
+							send_printf(fmudstruct->socketfd, ", ");
 						}
 						if (amount>1)
 						{
-							send_printf(getMMudOut(), "%i %s %s %ss", amount, row[2], row[3], row[1]);
+							send_printf(fmudstruct->socketfd, "%i %s %s %ss", amount, row[2], row[3], row[1]);
 						}
 						else
 						{
-							send_printf(getMMudOut(), "a %s %s %s", row[2], row[3], row[1]);
+							send_printf(fmudstruct->socketfd, "a %s %s %s", row[2], row[3], row[1]);
 						}
 					}
-					send_printf(getMMudOut(), ".<P>\r\n");
+					send_printf(fmudstruct->socketfd, ".<P>\r\n");
 					mysql_free_result(res);
 				}
 			}
 
-			PrintForm(name, password);
-			if (frames!=2) {ReadFile(logname);}
-			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+			PrintForm(name, password, frames, fmudstruct->socketfd);
+			if (frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
+			send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 			return ;
 		}
 		mysql_free_result(res);
@@ -809,7 +817,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
@@ -835,34 +843,34 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 				}
 			}
 	
-			send_printf(getMMudOut(), "<HTML>\n");
-			send_printf(getMMudOut(), "<HEAD>\n");
-			send_printf(getMMudOut(), "<TITLE>\n");
-			send_printf(getMMudOut(), "Land of Karchan\n");
-			send_printf(getMMudOut(), "</TITLE>\n");
-			send_printf(getMMudOut(), "</HEAD>\n");
+			send_printf(fmudstruct->socketfd, "<HTML>\n");
+			send_printf(fmudstruct->socketfd, "<HEAD>\n");
+			send_printf(fmudstruct->socketfd, "<TITLE>\n");
+			send_printf(fmudstruct->socketfd, "Land of Karchan\n");
+			send_printf(fmudstruct->socketfd, "</TITLE>\n");
+			send_printf(fmudstruct->socketfd, "</HEAD>\n");
 		
-			send_printf(getMMudOut(), "<BODY>\n");
+			send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
 		
-			send_printf(getMMudOut(), "%s", row[0]);
-			PrintForm(name, password);
-			if (frames!=2) {ReadFile(logname);}
-			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+			send_printf(fmudstruct->socketfd, "%s", row[0]);
+			PrintForm(name, password, frames, fmudstruct->socketfd);
+			if (frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
+			send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+			send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 			mysql_free_result(res);
 			return ;
 		}
@@ -883,7 +891,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			"objectid='%x' and "
 			"objecttype=1",
 			getToken(fmudstruct, 2));
-		res=SendSQL2(temp, NULL);
+		res=sendQuery(temp, NULL);
 		free(temp);temp=NULL;
 		if (res!=NULL)
 		{
@@ -901,7 +909,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 			"(tmp_usertable.name<>'%x') and "
 			"(tmp_usertable.name='%x')",
 			room, name, getToken(fmudstruct, 2));
-		res=SendSQL2(temp, NULL);
+		res=sendQuery(temp, NULL);
 		free(temp);temp=NULL;
 		if (res!=NULL)
 		{
@@ -942,7 +950,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 				}
 				WriteMessageTo(row[0], name, room, "%s is looking at %s.<BR>\r\n",name, row[0]);
 				WriteSayTo(row[0], name, room, "You notice %s looking at you.<BR>", name);
-				res=SendSQL2(temp, &i);
+				res=sendQuery(temp, &i);
 				free(temp);temp=NULL;
 				while ((row = mysql_fetch_row(res))!=NULL)
 				{
@@ -963,7 +971,7 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 				}
 				mysql_free_result(res);
 
-				WriteRoom(name, password, room, 0);
+				WriteRoom(fmudstruct);
 				return ;
 			}
 			mysql_free_result(res);
@@ -976,31 +984,31 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 	}
 	
 	WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! throw standard error page to user regarding not being active.
 void 
-NotActive(char *fname, char *fpassword, int errornr)
+NotActive(char *fname, char *fpassword, int errornr, int socketfd)
 {
 	time_t tijd;
 	struct tm datum;
 	        
-	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
-	send_printf(getMMudOut(), "<BODY>\n");
-	send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
-	send_printf(getMMudOut(), "You cannot MUD because you are not logged in (no more)."
+	send_printf(socketfd, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+	send_printf(socketfd, "<BODY>\n");
+	send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
+	send_printf(socketfd, "You cannot MUD because you are not logged in (no more)."
 	    " This might have happened to the following circumstances:<P>");
-	send_printf(getMMudOut(), "<UL><LI>you were kicked out of the game for bad conduct");
-	send_printf(getMMudOut(), "<LI>the game went down for dayly cleanup, killing of all"
+	send_printf(socketfd, "<UL><LI>you were kicked out of the game for bad conduct");
+	send_printf(socketfd, "<LI>the game went down for dayly cleanup, killing of all"
 		"active users");
-	send_printf(getMMudOut(), "<LI>you were deactivated for not responding for over 1 hour");
-	send_printf(getMMudOut(), "<LI>an error occurred</UL>");
-	send_printf(getMMudOut(), "You should be able to relogin by using the usual link below:<P>");
-	send_printf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
-	send_printf(getMMudOut(), "relogin</A><P>\n");
-	send_printf(getMMudOut(), "</body>\n");
-	send_printf(getMMudOut(), "</HTML>\n");
+	send_printf(socketfd, "<LI>you were deactivated for not responding for over 1 hour");
+	send_printf(socketfd, "<LI>an error occurred</UL>");
+	send_printf(socketfd, "You should be able to relogin by using the usual link below:<P>");
+	send_printf(socketfd, "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
+	send_printf(socketfd, "relogin</A><P>\n");
+	send_printf(socketfd, "</body>\n");
+	send_printf(socketfd, "</HTML>\n");
 	
 	time(&tijd);
 	datum=*(gmtime(&tijd));
@@ -1037,12 +1045,12 @@ time(&datetime);
 
 	temp = composeSqlStatement("select punishment, address, room  from tmp_usertable where name='%x'",
 			name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 
-	send_printf(getMMudOut(), "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HTML>\n");
 	if (atoi(row[0]) > 0) {
 		WriteMessage(name, atoi(row[2]), "A disgusting toad called ");
 	}
@@ -1052,7 +1060,7 @@ time(&datetime);
 				     datumtijd.tm_min, datumtijd.tm_sec, datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year+1900, name, row[1]);
 	mysql_free_result(res);
 	sprintf(logname, "%sgoodbye.html", getParam(MM_HTMLHEADER));
-	ReadFile(logname);
+	ReadFile(logname, fmudstruct->socketfd);
 	RemoveUser(name);
 	return 1;
 }
@@ -1116,7 +1124,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 		break;
 		}		/* end4 */
 	}			/* endswitch */
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res != NULL)
 	{
@@ -1167,7 +1175,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 		"objectid='%x' and "
 		"objecttype=1",
 		name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
@@ -1183,71 +1191,71 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select tmp_usertable.* "
 	"from tmp_usertable "
 	" where tmp_usertable.name='%x'",name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 
 	row = mysql_fetch_row(res);
 	
-	send_printf(getMMudOut(), "<HTML>\n");
-	send_printf(getMMudOut(), "<HEAD>\n");
-	send_printf(getMMudOut(), "<TITLE>\n");
-	send_printf(getMMudOut(), "Land of Karchan - Character Statistics\n");
-	send_printf(getMMudOut(), "</TITLE>\n");
-	send_printf(getMMudOut(), "</HEAD>\n");
-	send_printf(getMMudOut(), "<BODY>\n");
+	send_printf(fmudstruct->socketfd, "<HTML>\n");
+	send_printf(fmudstruct->socketfd, "<HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<TITLE>\n");
+	send_printf(fmudstruct->socketfd, "Land of Karchan - Character Statistics\n");
+	send_printf(fmudstruct->socketfd, "</TITLE>\n");
+	send_printf(fmudstruct->socketfd, "</HEAD>\n");
+	send_printf(fmudstruct->socketfd, "<BODY>\n");
 	if (!fmudstruct->frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (fmudstruct->frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(fmudstruct->socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	send_printf(getMMudOut(), "<Center><H1>Character Statistics</H1></Center>");
-	send_printf(getMMudOut(), "<H2>Appearance:</H2>");
-	send_printf(getMMudOut(), "A %s", row[8]); /*age*/
-	if (strcasecmp(row[9], "none")) {send_printf(getMMudOut(), ", %s", row[9]);}
-	if (strcasecmp(row[10], "none")) {send_printf(getMMudOut(), ", %s", row[10]);}
-	if (strcasecmp(row[11], "none")) {send_printf(getMMudOut(), ", %s", row[11]);}
-	if (strcasecmp(row[12], "none")) {send_printf(getMMudOut(), ", %s", row[12]);}
-	if (strcasecmp(row[13], "none")) {send_printf(getMMudOut(), ", %s", row[13]);}
-	if (strcasecmp(row[14], "none")) {send_printf(getMMudOut(), ", %s", row[14]);}
-	if (strcasecmp(row[15], "none")) {send_printf(getMMudOut(), ", %s", row[15]);}
-	if (strcasecmp(row[16], "none")) {send_printf(getMMudOut(), ", %s", row[16]);}
-	if (strcasecmp(row[17], "none")) {send_printf(getMMudOut(), ", %s", row[17]);}/*leg*/
+	send_printf(fmudstruct->socketfd, "<Center><H1>Character Statistics</H1></Center>");
+	send_printf(fmudstruct->socketfd, "<H2>Appearance:</H2>");
+	send_printf(fmudstruct->socketfd, "A %s", row[8]); /*age*/
+	if (strcasecmp(row[9], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[9]);}
+	if (strcasecmp(row[10], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[10]);}
+	if (strcasecmp(row[11], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[11]);}
+	if (strcasecmp(row[12], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[12]);}
+	if (strcasecmp(row[13], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[13]);}
+	if (strcasecmp(row[14], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[14]);}
+	if (strcasecmp(row[15], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[15]);}
+	if (strcasecmp(row[16], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[16]);}
+	if (strcasecmp(row[17], "none")) {send_printf(fmudstruct->socketfd, ", %s", row[17]);}/*leg*/
 
-	send_printf(getMMudOut(), ", %s %s introduces %sself as %s, %s.<BR>\r\n(%s)<BR>", 
+	send_printf(fmudstruct->socketfd, ", %s %s introduces %sself as %s, %s.<BR>\r\n(%s)<BR>", 
 	row[7], row[6], HeShe2(row[7]), row[0], row[3], row[4]);/*sex, race*/
 
-	send_printf(getMMudOut(), "<P><H2>Statistics:</H2>");
-	send_printf(getMMudOut(), "%s, %s<BR>\r\nYou seem %s.<BR>\r\n%s\r\nYou seem %s.<BR>\r\n%s%s%s"
+	send_printf(fmudstruct->socketfd, "<P><H2>Statistics:</H2>");
+	send_printf(fmudstruct->socketfd, "%s, %s<BR>\r\nYou seem %s.<BR>\r\n%s\r\nYou seem %s.<BR>\r\n%s%s%s"
 	,row[0], row[3], ShowString(atoi(row[29])/*vitals*/, atoi(row[52])/*maxvital*/), (extralook == NULL? "" : extralook),
 	ShowMovement(atoi(row[49]), atoi(row[51])),
 	 ShowDrink(atoi(row[32])), ShowEat(atoi(row[33])), ShowBurden(CheckWeight(name)), ShowAlignment(atoi(row[47])));
-	send_printf(getMMudOut(), "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
+	send_printf(fmudstruct->socketfd, "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
 	 atoi(row[24]) /*x.experience*/ / 1000, atoi(row[24]) % 1000, 1000 - (atoi(row[24]) % 1000));
-	send_printf(getMMudOut(), "Strength <B>%s</B> Intelligence <B>%s</B> Dexterity <B>%s</B> Constitution <B>%s</B> Wisdom <B>%s</B>"
+	send_printf(fmudstruct->socketfd, "Strength <B>%s</B> Intelligence <B>%s</B> Dexterity <B>%s</B> Constitution <B>%s</B> Wisdom <B>%s</B>"
 		" Mana <B>%i (<font color=blue>%i</Font>)</B> Movement <B>%i (<font color=blue>%i</font>)</B><BR>\r\n",
 		row[39] /*strength*/, row[40], row[41], row[42], row[43], atoi(row[50])-atoi(row[48]), atoi(row[50]), 
 		atoi(row[51])-atoi(row[49]), atoi(row[51]));
-	send_printf(getMMudOut(), "You have <B>%s</B> training sessions and <B>%s</B> practice sessions left.<BR>\r\n",
+	send_printf(fmudstruct->socketfd, "You have <B>%s</B> training sessions and <B>%s</B> practice sessions left.<BR>\r\n",
 		row[45], row[44]);
 	if (atoi(row[23]) == 0) {
-		send_printf(getMMudOut(), "You are not whimpy at all.<BR>\r\n");
+		send_printf(fmudstruct->socketfd, "You are not whimpy at all.<BR>\r\n");
 	} else {
-		send_printf(getMMudOut(), "You are whimpy if you seem %s.<BR>\r\n", ShowString(atoi(row[23]), atoi(row[52])));
+		send_printf(fmudstruct->socketfd, "You are whimpy if you seem %s.<BR>\r\n", ShowString(atoi(row[23]), atoi(row[52])));
 	}
 	if (atoi(row[26]) == 1) { /*sleep*/
-		send_printf(getMMudOut(), "You are fast asleep.<BR>\r\n");
+		send_printf(fmudstruct->socketfd, "You are fast asleep.<BR>\r\n");
 	}
 	if (atoi(row[26]) >= 100) {
-		send_printf(getMMudOut(), "You are sitting at a table.<BR>\r\n");
+		send_printf(fmudstruct->socketfd, "You are sitting at a table.<BR>\r\n");
 	}
 	if (extralook != NULL) 
 	{
@@ -1262,13 +1270,13 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	" (wielding <> '')) and "
 	" (containerid = 0) and "
 	" (items.id = tmpitems.id)",name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	while ((row = mysql_fetch_row(res))!=NULL)
 	{
 		if (row[3][0]!='\0')
 		{
-			send_printf(getMMudOut(), "You are wearing a %s, %s %s on your %s.<BR>\r\n",
+			send_printf(fmudstruct->socketfd, "You are wearing a %s, %s %s on your %s.<BR>\r\n",
 			row[0], row[1], row[2], row[3]);
 		}
 		else
@@ -1276,18 +1284,18 @@ Stats_Command(mudpersonstruct *fmudstruct)
 			char position[20];
 			if (row[4][0]=='1') {strcpy(position, "right hand");}
 				else {strcpy(position, "left hand");}
-			send_printf(getMMudOut(), "You are wielding a %s, %s %s in your %s.<BR>\r\n",
+			send_printf(fmudstruct->socketfd, "You are wielding a %s, %s %s in your %s.<BR>\r\n",
 			row[0], row[1], row[2], position);
 		}
 		
 	}
 	mysql_free_result(res);
-	send_printf(getMMudOut(), "<P>");
+	send_printf(fmudstruct->socketfd, "<P>");
 
 	temp = composeSqlStatement("select concat('Your skill in ', name, ' is level ', "
 	"skilllevel, '.<BR>\r\n') from skills, skilltable where skilltable.number="
 	"skills.number and forwhom='%x'",name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 
 	if (res!=NULL)
@@ -1295,22 +1303,22 @@ Stats_Command(mudpersonstruct *fmudstruct)
 		row = mysql_fetch_row(res);
 		if (row==NULL)
 		{
-			send_printf(getMMudOut(), "You currently have no special skills.<BR>\r\n");
+			send_printf(fmudstruct->socketfd, "You currently have no special skills.<BR>\r\n");
 		}
 		while (row!=NULL)
 		{
-			send_printf(getMMudOut(), "%s", row[0]);
+			send_printf(fmudstruct->socketfd, "%s", row[0]);
 			row = mysql_fetch_row(res);
 		}
 		mysql_free_result(res);
 	}
 	
-	send_printf(getMMudOut(), "<P>");
-	PrintForm(name, password);
+	send_printf(fmudstruct->socketfd, "<P>");
+	PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
 
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
-	send_printf(getMMudOut(), "</BODY></HTML>");
+	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
+	send_printf(fmudstruct->socketfd, "</BODY></HTML>");
 	return 1;
 }
 
@@ -1350,7 +1358,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return;
 	}
 
@@ -1368,19 +1376,19 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.containerid = 0)"
 		, getToken(fmudstruct, numberfilledout+1),
 		amount, room);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return;
 		}
 		itemid = atoi(row[0]);
@@ -1397,7 +1405,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 			"%s=%s+%i "
 			"where (name='%x')"
 			, itemadject2, itemadject2, amount, name);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
@@ -1419,7 +1427,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, room);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -1439,7 +1447,7 @@ GetMoney_Command(mudpersonstruct *fmudstruct)
 	WriteMessage(name, room, "%s picks up %i %s coins.<BR>\r\n",
 		name, amount, itemadject2);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! drop money onto the floor
@@ -1473,13 +1481,13 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 	
 	if (getTokenAmount(fmudstruct)==1)
 	{
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return;
 	}
 	
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select copper, silver, gold from tmp_usertable where (name = '%x')", name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mycopper = atoi(row[0]);
@@ -1496,7 +1504,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return;
 	}
 
@@ -1505,14 +1513,14 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 		if (mycopper<amount)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return;
 		}
 		/* look for specific person */
 			sqlstring = composeSqlStatement("update tmp_usertable set copper=copper-%i "
 			" where (name = '%x')"
 			,amount, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=36;
@@ -1522,14 +1530,14 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 		if (mysilver<amount)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return;
 		}
 		/* look for specific person */
 			sqlstring = composeSqlStatement("update tmp_usertable set silver=silver-%i "
 			" where (name = '%x')"
 			,amount, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=37;
@@ -1539,14 +1547,14 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 		if (mygold<amount)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		/* look for specific person */
 		sqlstring = composeSqlStatement("update tmp_usertable set gold=gold-%i "
 			" where (name = '%x')"
 			,amount, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		itemid=38;
@@ -1558,7 +1566,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			"(room=%i) and "
 			"(containerid = 0)"
 			, amount, itemid, room);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
@@ -1568,13 +1576,13 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 			sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 			" values(%i,'','',%i,%i,'','')"
 			, itemid, amount, room);
-			res=SendSQL2(sqlstring, &changedrows2);
+			res=sendQuery(sqlstring, &changedrows2);
 			free(sqlstring);sqlstring=NULL;
 
 			if (!changedrows2)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "Copper coins not found.<BR>\r\n");
-				WriteRoom(name, password, room, 0);
+				WriteRoom(fmudstruct);
 				return;
 			}
 			mysql_free_result(res);
@@ -1596,7 +1604,7 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 	WriteMessage(name, room, "%s drops %i %s coins.<BR>\r\n",
 		name, amount, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! give an amount of money to someone else.
@@ -1627,19 +1635,19 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select name from tmp_usertable where (name = '%x') and "
 		"(name <> '%x') and "
 		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 	strcpy(toname, row[0]);
@@ -1647,7 +1655,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 
 	sqlstring = composeSqlStatement("select gold, silver, copper from tmp_usertable where (name = '%x')"
 		,name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mygold=atoi(row[0]);
@@ -1664,7 +1672,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 
@@ -1673,7 +1681,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 		if (amount>mycopper) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 	}
@@ -1682,7 +1690,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 		if (amount>mysilver) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 	}
@@ -1691,7 +1699,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 		if (amount>mygold) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 	}
@@ -1700,13 +1708,13 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("update tmp_usertable set %s=%s-%i "
 		"where (name='%x')"
 		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	sqlstring = composeSqlStatement("update tmp_usertable set %s=%s+%i "
 		"where (name='%x')"
 		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, toname);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -1730,7 +1738,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	WriteSayTo(toname, name, room, "%s gives %i %s coins to you.<BR>\r\n",
 		name, amount, getToken(fmudstruct, numberfilledout+1));
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! retrieve an item from the floor.
@@ -1767,7 +1775,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
@@ -1855,19 +1863,19 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, room);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		itemid = atoi(row[0]);
@@ -1891,7 +1899,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				"(wielding = '') and "
 				"containerid = %i"
 				, name, itemid, room, containerid);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
@@ -1905,7 +1913,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				"(wielding = '') and "
 				"(containerid = 0)"
 				, amount, itemid, name);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -1915,13 +1923,13 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 				sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 				" values(%i,'','%x',%i,0,'','')"
 				, itemid, name, amount);
-				res=SendSQL2(sqlstring, &changedrows2);
+				res=sendQuery(sqlstring, &changedrows2);
 				free(sqlstring);sqlstring=NULL;
 	
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
+					WriteRoom(fmudstruct);
 					return ;
 				}
 				mysql_free_result(res);
@@ -1943,7 +1951,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, itemid, room);
 		}
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -1963,7 +1971,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 	WriteMessage(name, room, "%s picks up %i %ss, %s %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! drop an item on the floor
@@ -1997,7 +2005,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
@@ -2090,19 +2098,19 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return ;
 		}
 		itemid = atoi(row[0]);
@@ -2126,7 +2134,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				"wielding = '' and "
 				"containerid = %i"
 				, room, itemid, name, containerid);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -2142,7 +2150,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				"wielding = '' and "
 				"(containerid = 0)"
 				, amount, itemid, room);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -2152,13 +2160,13 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 				sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 				" values(%i,'','',%i,%i,'','')"
 				, itemid, amount, room);
-				res=SendSQL2(sqlstring, &changedrows2);
+				res=sendQuery(sqlstring, &changedrows2);
 				free(sqlstring);sqlstring=NULL;
 	
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
+					WriteRoom(fmudstruct);
 					return ;
 				}
 				mysql_free_result(res);
@@ -2184,7 +2192,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, itemid, name);
 		}
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2205,7 +2213,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 		WriteMessage(name, room, "%s drops %i %ss, %s %s.<BR>\r\n",
 			name, amount, itemadject1, itemadject2, itemname);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! put an item into a container
@@ -2259,7 +2267,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	if ((getTokenAmount(fmudstruct) > 2+numberfilledout) && (!strcasecmp(getToken(fmudstruct, 2+numberfilledout), "in")))
@@ -2339,19 +2347,19 @@ Put_Command(mudpersonstruct *fmudstruct)
 	, itemname_a, itemadject1_a, itemadject1_a,
 	itemadject2_a, itemadject2_a,
 	amount, name);
-	res=SendSQL2(sqlstring, &changedrows);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	itemid_a = atoi(row[0]);
@@ -2379,19 +2387,19 @@ Put_Command(mudpersonstruct *fmudstruct)
 	"order by room asc, containerid desc"
 	, itemname_b, itemadject1_b, itemadject1_b, 
 	itemadject2_b, itemadject2_b, name, room);
-	res=SendSQL2(sqlstring, &changedrows);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	itemid_b = atoi(row[0]);
@@ -2409,19 +2417,19 @@ Put_Command(mudpersonstruct *fmudstruct)
 		just in case */
 	sqlstring = composeSqlStatement("select ifnull(max(containedin)+1,1) "
 	"from containeditems");
-	res=SendSQL2(sqlstring, &changedrows);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	maxcontainerid = atoi(row[0]);
@@ -2437,8 +2445,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 			"(wielding = '') and "
 			"(containerid = 0)"
 			, amount, itemid_a, name);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2451,8 +2459,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 			"(wielding = '') and "
 			"(containerid = 0)"
 			, itemid_a, name);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2468,8 +2476,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 			"wielding = '' and "
 			"containerid = 0"
 			, itemid_b, itembelongsto_b, room_b);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		/* retrieve maxcontainerid */
@@ -2477,8 +2485,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 			"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
 			"values(%i, '', '%x', 1, %i, '', '', %i)"
 			, itemid_b, itembelongsto_b, room_b, maxcontainerid);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2497,8 +2505,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 				"wielding = '' and "
 				"containerid = 0"
 				, maxcontainerid, itemid_b, itembelongsto_b, room_b);
-//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
-			res=SendSQL2(sqlstring, &changedrows);
+//			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
@@ -2513,8 +2521,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 			"amount > 0 and "
 			"containedin = %i"
 			, itemid_a, maxcontainerid);
-//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
-			res=SendSQL2(sqlstring, &changedrows);
+//			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			if (res!=NULL) 
 			{
@@ -2535,8 +2543,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 		"where id = %i and "
 		"containedin = %i"
 		, amount, itemid_a, maxcontainerid);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2546,8 +2554,8 @@ Put_Command(mudpersonstruct *fmudstruct)
 		"(id, amount, containedin) "
 		"values(%i, %i, %i)"
 		, itemid_a, amount, maxcontainerid);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2571,7 +2579,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 			name, amount, itemadject1_a, itemadject2_a, itemname_a,
 			itemadject1_b, itemadject2_b, itemname_b);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -2632,7 +2640,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	if ((numberfilledout) && (!strcasecmp(getToken(fmudstruct, 2), "from")))
@@ -2721,20 +2729,20 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	amount,
 	itemname_b, itemadject1_b, itemadject1_b,	itemadject2_b, itemadject2_b,
 	name, room);
-//	send_printf(getMMudOut(), "[%s]\n", sqlstring);
-	res=SendSQL2(sqlstring, &changedrows);
+//	send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	itemid_a = atoi(row[0]);
@@ -2760,8 +2768,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			"where (id=%i) and "
 			"(containedin = %i)"
 			, amount, itemid_a, containerid_b);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2772,8 +2780,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			"where (id=%i) and "
 			"(containedin = %i)"
 			, itemid_a, containerid_b);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
@@ -2782,8 +2790,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			"from containeditems "
 			"where containedin = %i"
 			, containerid_b);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res!=NULL) 
 		{
@@ -2815,8 +2823,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 				"wielding = '' and "
 				"containerid = %i"
 				, itemid_b, itembelongsto_b, room_b, containerid_b);
-//			send_printf(getMMudOut(), "[%s]\n", sqlstring);
-			res=SendSQL2(sqlstring, &changedrows);
+//			send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
@@ -2834,8 +2842,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	"wielding = '' and "
 	"containerid = 0"
 	, itemid_a, name);
-//	send_printf(getMMudOut(), "[%s]\n", sqlstring);
-	res=SendSQL2(sqlstring, &changedrows);
+//	send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL) 
 	{
@@ -2860,8 +2868,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 		"wielding = '' and "
 		"containerid = 0"
 		, amount, itemid_a, name);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2871,8 +2879,8 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 		"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
 		"values(%i, '', '%x', %i, 0, '', '', 0)"
 		, itemid_a, name, amount);
-//		send_printf(getMMudOut(), "[%s]\n", sqlstring);
-		res=SendSQL2(sqlstring, &changedrows);
+//		send_printf(fmudstruct->socketfd, "[%s]\n", sqlstring);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -2897,7 +2905,7 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 			name, amount, itemadject1_a, itemadject2_a, itemname_a,
 			itemadject1_b, itemadject2_b, itemname_b);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -2963,7 +2971,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"where belongsto = '%x' and "
 		"wearing = '%x'"
 		, name, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res != NULL)
 	{
@@ -2971,7 +2979,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		if (row != NULL)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You are already wearing something there!<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		mysql_free_result(res);
@@ -2980,7 +2988,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -3073,19 +3081,19 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name, sqlcomposite);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -3105,7 +3113,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, itemid, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
@@ -3122,7 +3130,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, getToken(fmudstruct, getTokenAmount(fmudstruct)-1), itemid, name);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -3131,7 +3139,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		itemadject1, itemadject2, itemname, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	WriteMessage(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -3171,7 +3179,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -3260,19 +3268,19 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -3291,7 +3299,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, itemid, name);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		if (!changedrows) 
@@ -3314,7 +3322,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, itemid, name, itemwearing);
 		}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -3323,7 +3331,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 		itemadject1, itemadject2, itemname, itemwearing);
 	WriteMessage(name, room, "%s removes a %s, %s %s from %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), itemwearing);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -3369,7 +3377,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	"(tmpitems.wielding <> '') and "
 	"(tmpitems.containerid = 0)"
 	, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
@@ -3382,7 +3390,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			if (row!=NULL)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "You are already wielding two items.<BR>\r\n");
-				WriteRoom(name, password, room, 0);
+				WriteRoom(fmudstruct);
 				return 1;
 			}
 		}
@@ -3392,7 +3400,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -3485,19 +3493,19 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -3517,7 +3525,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, itemid, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
@@ -3534,7 +3542,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, position, itemid, name);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -3543,7 +3551,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 		itemadject1, itemadject2, itemname, position2);
 	WriteMessage(name, room, "%s wields a %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position2);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -3583,7 +3591,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -3672,19 +3680,19 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -3703,7 +3711,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, itemid, name);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		if (!changedrows) 
@@ -3726,7 +3734,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name, itemwielding);
 		}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -3737,7 +3745,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 		itemadject1, itemadject2, itemname, position);
 	WriteMessage(name, room, "%s stops wielding the %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -3776,7 +3784,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 	/* check drinkstats of specific person */
 	sqlstring = composeSqlStatement("select eatstats from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	myeatstats=atoi(row[0]);
@@ -3784,7 +3792,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 	if (myeatstats > 50) 
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You are full, and cannot eat any more.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 	} /* too much to eat */
 		if (getTokenAmount(fmudstruct)==2) 
@@ -3878,19 +3886,19 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -3898,7 +3906,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 		strcpy(itemname, row[2]);
 		strcpy(itemadject1, row[3]);
 		strcpy(itemadject2, row[4]);
-		LookString(row[5], name, password, fmudstruct->frames);
+		LookString(row[5], name, password, fmudstruct->frames, fmudstruct->socketfd);
 		
 		mysql_free_result(res);
 
@@ -3906,7 +3914,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("update tmp_usertable set eatstats=eatstats+10 "
 		"where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	if (amountitems>1)
@@ -3929,7 +3937,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -3977,7 +3985,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 	/* check drinkstats of specific person */
 	sqlstring = composeSqlStatement("select drinkstats from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mydrinkstats=atoi(row[0]);
@@ -3985,14 +3993,14 @@ Drink_Command(mudpersonstruct *fmudstruct)
 	if (mydrinkstats >= 49) 
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You have drunk your fill.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 	} /* too much to drink */
 	if (mydrinkstats < -59) 
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You are already dangerously intoxicated, "
 			"and another drop might just possibly kill you.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 	} /* too much to drink spiritual like */
 		if (getTokenAmount(fmudstruct)==2) 
@@ -4086,23 +4094,23 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
-	LookString(row[5], name, password, fmudstruct->frames);
+	LookString(row[5], name, password, fmudstruct->frames, fmudstruct->socketfd);
 		amountitems = atoi(row[1]);
 		strcpy(itemname, row[2]);
 		strcpy(itemadject1, row[3]);
@@ -4117,7 +4125,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 		/* check drinkstats of specific person */
 		sqlstring = composeSqlStatement("update tmp_usertable set drinkstats=drinkstats-10 where (name = '%x')"
 			, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4127,7 +4135,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 		sqlstring = composeSqlStatement("update tmp_usertable set drinkstats=drinkstats+10 "
 			"where (name = '%x')"
 			, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4152,7 +4160,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 		"(containerid = 0)"
 		, itemid, name);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -4182,7 +4190,7 @@ RemapShoppingList_Command(char *name)
 	sqlstring = composeSqlStatement("update items set readdescr='<H1>"
 	"<IMG SRC=\\\"http://%s/images/gif/scroll.gif\\\">"
 	"The List</H1><HR>Items:<UL>' where id=%i", getParam(MM_SERVERNAME), number);
-	SendSQL2(sqlstring, NULL);
+	sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 
 	sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.copper, items.silver, items.gold"
@@ -4191,14 +4199,14 @@ RemapShoppingList_Command(char *name)
 	"(tmpitems.belongsto='%x') and "
 	"(tmpitems.containerid = 0)"
 	, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		sqlstring = composeSqlStatement("update items set readdescr=CONCAT(readdescr, "
 		"'<LI>%s, %s %s (%s gold, %s silver, %s copper a piece)') "
 		"where id=%i",row[1],row[2], row[0], row[5], row[4], row[3], number);
-		SendSQL2(sqlstring, NULL);
+		sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 	}
 	mysql_free_result(res);
@@ -4206,7 +4214,7 @@ RemapShoppingList_Command(char *name)
 	sqlstring = composeSqlStatement("update items set readdescr=CONCAT(readdescr, '</UL>"
 	"<P>"
 	"') where id=%i",number);
-	SendSQL2(sqlstring, NULL);
+	sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 
 }
@@ -4242,7 +4250,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select copper, silver, gold from tmp_usertable where (name = '%x')"
 		, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	mycopper = atoi(row[0]);
@@ -4259,7 +4267,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
@@ -4337,19 +4345,19 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, fromname);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -4365,7 +4373,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			&mygold, &mysilver, &mycopper))
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough money.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 
@@ -4373,7 +4381,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 		sqlstring = composeSqlStatement("update tmp_usertable set copper=%i, silver=%i, gold=%i "
 			" where (name = '%x')"
 			,mycopper, mysilver, mygold, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		
@@ -4384,7 +4392,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 				"(belongsto='%x') and "
 				"(containerid = 0)"
 				, amount, itemid, fromname);
-			res=SendSQL2(sqlstring, NULL);
+			res=sendQuery(sqlstring, NULL);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			sqlstring = composeSqlStatement("delete from tmp_itemtable where (amount=0) "
@@ -4392,7 +4400,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 				"(belongsto='%x') and "
 				"(containerid = 0)"
 				, itemid, fromname);
-			res=SendSQL2(sqlstring, NULL);
+			res=sendQuery(sqlstring, NULL);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
@@ -4403,7 +4411,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			"(belongsto='%x') and "
 			"(containerid = 0)"
 			, amount, itemid, name);
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 
@@ -4413,13 +4421,13 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 			sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 			" values(%i,'','%x',%i,0,'','')"
 			, itemid, name, amount);
-			res=SendSQL2(sqlstring, &changedrows2);
+			res=sendQuery(sqlstring, &changedrows2);
 			free(sqlstring);sqlstring=NULL;
 
 			if (!changedrows2)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-				WriteRoom(name, password, room, 0);
+				WriteRoom(fmudstruct);
 				return 1;
 			}
 			mysql_free_result(res);
@@ -4443,7 +4451,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 	WriteMessage(name, room, "%s buys %i %ss, %s %s from %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname, fromname);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -4484,7 +4492,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 	if (getTokenAmount(fmudstruct)==2+numberfilledout) 
@@ -4570,19 +4578,19 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 		amount, name);
 	}
-	res=SendSQL2(sqlstring, &changedrows);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return ;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return;
 	}
 	itemid = atoi(row[0]);
@@ -4597,7 +4605,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 	sqlstring = composeSqlStatement("update tmp_usertable set copper=copper+%i, silver=silver+%i, gold=gold+%i "
 		" where (name = '%x')"
 		, amount*itemcopper, amount*itemsilver, amount*itemgold, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	
@@ -4610,7 +4618,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, itemid, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4623,7 +4631,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, amount, itemid, name);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4635,7 +4643,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		"(wielding='') and "
 		"(containerid = 0)"
 		, amount, itemid, toname);
-	res=SendSQL2(sqlstring, &changedrows);
+	res=sendQuery(sqlstring, &changedrows);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
@@ -4644,7 +4652,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 		" values(%i,'','%x',%i,0,'','')"
 		, itemid, toname, amount);
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4667,7 +4675,7 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 	WriteMessage(name, room, "%s sells %i %ss, %s %s.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! search for an item among the stuff in a room
@@ -4711,19 +4719,19 @@ Search_Command(mudpersonstruct *fmudstruct)
 	"(tmpitems.room = %i) and "
 	"(tmpitems.search = '%x')"
 	, room, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Object not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -4747,7 +4755,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				"(containerid = %i) and "
 				"(tmpitems.search = '%x')"
 				, name, itemid, containerid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -4762,7 +4770,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				"(wielding = '') and "
 				"(containerid = 0)"
 				, itemid, name);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -4772,12 +4780,12 @@ Search_Command(mudpersonstruct *fmudstruct)
 				sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 				" values(%i,'','%x',1,0,'','')"
 				, itemid, name);
-				res=SendSQL2(sqlstring, &changedrows2);
+				res=sendQuery(sqlstring, &changedrows2);
 				free(sqlstring);sqlstring=NULL;
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
+					WriteRoom(fmudstruct);
 					return 1;
 				}
 				mysql_free_result(res);
@@ -4801,7 +4809,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, itemid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), room);
 		}
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -4810,7 +4818,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 		fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
 		name, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), itemadject1, itemadject2, itemname);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -4852,19 +4860,19 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 	sqlstring = composeSqlStatement("select name from tmp_usertable where (name = '%x') and "
 		"(name <> '%x') and "
 		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	strcpy(toname, row[0]);
@@ -4879,7 +4887,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 	if (amount<1) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 		if (getTokenAmount(fmudstruct)==4+numberfilledout) 
@@ -4961,19 +4969,19 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, name);
 		}
-		res=SendSQL2(sqlstring, &changedrows);
+		res=sendQuery(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
 		if (res==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		itemid = atoi(row[0]);
@@ -4995,7 +5003,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				"(wielding='') and "
 				"(containerid = %i)"
 				, toname, itemid, name, containerid);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 		}
@@ -5009,7 +5017,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				"(wielding='') and "
 				"(containerid = 0)"
 				, amount, itemid, toname);
-			res=SendSQL2(sqlstring, &changedrows);
+			res=sendQuery(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 	
@@ -5019,12 +5027,12 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 				sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 				" values(%i,'','%x',%i,0,'','')"
 				, itemid, toname, amount);
-				res=SendSQL2(sqlstring, &changedrows2);
+				res=sendQuery(sqlstring, &changedrows2);
 				free(sqlstring);sqlstring=NULL;
 				if (!changedrows2)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
+					WriteRoom(fmudstruct);
 					return 1;
 				}
 				mysql_free_result(res);
@@ -5050,7 +5058,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 			"(containerid = 0)"
 			, itemid, name);
 		}
-		res=SendSQL2(sqlstring, NULL);
+		res=sendQuery(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 	}
@@ -5075,7 +5083,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 	WriteSayTo(toname, name, room, "%s gives %i %s, %s %ss to you.<BR>\r\n",
 		name, amount, itemadject1, itemadject2, itemname);
 	}
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 }
 
 //! read an item, hidden or otherwise
@@ -5110,7 +5118,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
 	, name);
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
@@ -5195,7 +5203,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 		getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 		room);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL) 
 	{
@@ -5207,7 +5215,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 				row[1], row[2], row[0]);
 			WriteMessage(name, room, "%s reads the %s, %s %s.<BR>\r\n",
 				name, row[1], row[2], row[0]);
-			LookString(row[3], name, password, fmudstruct->frames);
+			LookString(row[3], name, password, fmudstruct->frames, fmudstruct->socketfd);
 			return 1;
 		}
 	}
@@ -5293,19 +5301,19 @@ Read_Command(mudpersonstruct *fmudstruct)
 		getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 		name);
 	}
-	res=SendSQL2(sqlstring, NULL);
+	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	
@@ -5336,7 +5344,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 				name, row[1], row[2], row[0], HeSheSmall(mysex));
 		}
 	}
-	LookString(row[5], name, password, fmudstruct->frames);
+	LookString(row[5], name, password, fmudstruct->frames, fmudstruct->socketfd);
 	mysql_free_result(res);
 	return 1;
 }
@@ -5344,7 +5352,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 //! execute the dead
 /*! show dead screen */
 void 
-Dead(char *name, char *password, int room, int frames)
+Dead(char *name, char *password, int room, int frames, int socketfd)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -5353,45 +5361,45 @@ Dead(char *name, char *password, int room, int frames)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
+	send_printf(socketfd, "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
 	if (!frames)
 	{
-		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
 		if (frames==1)
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
 		{
-			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			send_printf(socketfd, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	send_printf(getMMudOut(), "You died.<Center><H1>The End</H1></Center><P>");
-	send_printf(getMMudOut(), "You are dead. You are at the moment in a dark room. You can't see anything.");
-	send_printf(getMMudOut(), "You hear sighs.<P>");
-	send_printf(getMMudOut(), "A voice says (behind you): Oh no, not another one...<P>");
-	send_printf(getMMudOut(), "Another voice sighs : They just keep on comin'.<P>");
-	send_printf(getMMudOut(), "Suddenly, in the distance, you see a light which slowly comes closer. As it");
-	send_printf(getMMudOut(), "comes closer, you see that it is a lantern which is being held by somebody");
-	send_printf(getMMudOut(), "(or something you can't really make it out). That someone is getting closer.");
-	send_printf(getMMudOut(), "When he is standing right before you, you have a good view of who he is. You");
-	send_printf(getMMudOut(), "can't see his face, because that is hidden by a cap. He is all in black.<P>");
-	send_printf(getMMudOut(), "You say: Hey, did somebody just die?<P>");
-	send_printf(getMMudOut(), "He is carrying a heavy axe with him. This, you gather, must be Mr. Death");
-	send_printf(getMMudOut(), "himself. He swings back his axe, and you hide your hands behind your face.");
-	send_printf(getMMudOut(), "(That shouldn't however help much) Than the axe comes crushing down.<P>(Type");
-	send_printf(getMMudOut(), "<B>look around</B>)<P>");
+	send_printf(socketfd, "You died.<Center><H1>The End</H1></Center><P>");
+	send_printf(socketfd, "You are dead. You are at the moment in a dark room. You can't see anything.");
+	send_printf(socketfd, "You hear sighs.<P>");
+	send_printf(socketfd, "A voice says (behind you): Oh no, not another one...<P>");
+	send_printf(socketfd, "Another voice sighs : They just keep on comin'.<P>");
+	send_printf(socketfd, "Suddenly, in the distance, you see a light which slowly comes closer. As it");
+	send_printf(socketfd, "comes closer, you see that it is a lantern which is being held by somebody");
+	send_printf(socketfd, "(or something you can't really make it out). That someone is getting closer.");
+	send_printf(socketfd, "When he is standing right before you, you have a good view of who he is. You");
+	send_printf(socketfd, "can't see his face, because that is hidden by a cap. He is all in black.<P>");
+	send_printf(socketfd, "You say: Hey, did somebody just die?<P>");
+	send_printf(socketfd, "He is carrying a heavy axe with him. This, you gather, must be Mr. Death");
+	send_printf(socketfd, "himself. He swings back his axe, and you hide your hands behind your face.");
+	send_printf(socketfd, "(That shouldn't however help much) Than the axe comes crushing down.<P>(Type");
+	send_printf(socketfd, "<B>look around</B>)<P>");
 
 	temp = composeSqlStatement("update tmp_usertable set vitals=0, sleep=0 where name='%x'",name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
 	WriteMessage(name, room, "%s appears from nowhere.<BR>", name);
-	PrintForm(name, password);
-	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
-	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
+	PrintForm(name, password, frames, socketfd);
+	send_printf(socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+	send_printf(socketfd, "<DIV ALIGN=left><P>");
 }
 
 //! change the title of the player
@@ -5421,10 +5429,10 @@ ChangeTitle_Command(mudpersonstruct *fmudstruct)
 	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", title);
 	temp = composeSqlStatement("update tmp_usertable set title='%x' where name='%x'",
 		title, name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }				/* endproc */
 

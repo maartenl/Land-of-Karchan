@@ -25,7 +25,7 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-int ParseSentence(char *name, int *room, char *parserstring, int frames);
+int ParseSentence(char *name, int *room, char *parserstring, int frames, int socketfd);
 
 int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, char *parserstring, int frames);
 

@@ -94,7 +94,7 @@ ActivateUser(char *name)
 	/* ------------------------------- Mail ------------------------------ */
 	
 	temp = composeSqlStatement("insert into tmp_mailtable select * from mailtable where toname='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
@@ -103,13 +103,13 @@ ActivateUser(char *name)
 	
 	temp = composeSqlStatement("update usertable set active=1, "
 	"lastlogin=date_sub(now(), interval 2 hour) where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 	
 	temp = composeSqlStatement("insert into tmp_usertable select * from usertable where name='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
@@ -117,7 +117,7 @@ ActivateUser(char *name)
 	/* -------------------------------------- Attributes --------------------------- */
 	
 	temp = composeSqlStatement("insert into tmp_attributes select * from attributes where objectid='%x' and objecttype=1", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
@@ -131,7 +131,7 @@ ActivateUser(char *name)
 	
 	/* Copy all items of the user to tmp_itemstable */
 	temp = composeSqlStatement("insert into tmp_itemtable select * from itemtable where belongsto='%x'", name);
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
@@ -159,12 +159,12 @@ char *temp;
 
 /* Remove mail of user in temp_mailtable */
 temp = composeSqlStatement("delete from tmp_mailtable where toname='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 temp = composeSqlStatement("update mailtable SET newmail=0 WHERE toname='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
@@ -173,27 +173,27 @@ mysql_free_result(res);
 
 /* make certain nobody is fighting against this removed person */
 temp = composeSqlStatement("update tmp_usertable set fightingwho='' where fightingwho='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 mysql_free_result(res);
 
 /* set active to 0 on name in temp_usertable */
 temp = composeSqlStatement("update tmp_usertable set lok='', active=0, fightingwho='' where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* replace name in temp_usertable in usertable */
 temp = composeSqlStatement("replace into usertable select * from tmp_usertable where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* delete name from temp_usertable */
 temp = composeSqlStatement("delete from tmp_usertable where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
@@ -202,20 +202,20 @@ mysql_free_result(res);
 
 /* Remove attributes of user in attributes table */
 temp = composeSqlStatement("delete from attributes where objectid='%x' and objecttype=1", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 /* replace tmp_attributes in attributes */
 temp = composeSqlStatement("replace into attributes select * from tmp_attributes where objectid='%x' and objecttype=1", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* delete name from temp_usertable */
 temp = composeSqlStatement("delete from tmp_attributes where objectid='%x' and objecttype=1", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
@@ -227,20 +227,20 @@ mysql_free_result(res);
 
 /* Remove items of user in itemtable */
 temp = composeSqlStatement("delete from itemtable where belongsto='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 /* Copy items of user in tmp_itemtable to itemtable */
 temp = composeSqlStatement("replace into itemtable select * from tmp_itemtable where belongsto='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* Remove items of user in tmp_itemtable */
 temp = composeSqlStatement("delete from tmp_itemtable where belongsto='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 mysql_free_result(res);
@@ -260,7 +260,7 @@ char *temp;
 
 /* Check if user exists in temp_usertable */
 temp = composeSqlStatement("select count(*) from tmp_usertable where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 if (res==NULL)
@@ -289,7 +289,7 @@ char *temp;
 
 /* Check if user exists in temp_usertable in room roomnr */
 temp = composeSqlStatement("select count(*) from tmp_usertable where name='%x' and room=%i", name, roomnr);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 if (res==NULL)
 {
@@ -347,7 +347,7 @@ ExistUserByDescription(mudpersonstruct *fmudstruct, int beginning, int amount, i
 		strcat(temp, getToken(fmudstruct, i));
 		strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
 	}
-	res=SendSQL2(temp, NULL);
+	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 	if (res==NULL)
 	{
@@ -382,7 +382,7 @@ int returnvalue;
 
 /* Check if user exists in usertable */
 temp = composeSqlStatement("select count(*) from usertable where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 if (res==NULL)
 {
@@ -416,7 +416,7 @@ int i;
 char *temp;
 
 temp = composeSqlStatement("select count(name) from sillynamestable where '%x' like name", username);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
@@ -429,7 +429,7 @@ if (strcmp(row[0],"0"))
 mysql_free_result(res);
 
 temp = composeSqlStatement("select count(name) from unbantable where name='%x'", username);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
@@ -442,7 +442,7 @@ if (strcmp(row[0],"0"))
 mysql_free_result(res);
 
 temp = composeSqlStatement("select count(address) from bantable where '%x' like address", item);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
@@ -468,7 +468,7 @@ char *ItemDescr;
 
 /* Get description of item from items */
 temp = composeSqlStatement("select adject1, adject2, adject3, name from items where name='%x'", name);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
@@ -545,7 +545,7 @@ MYSQL_ROW row;
 char *temp;
 
 temp = composeSqlStatement("select name from tmp_usertable where name<>'%x' and room=%i", name, roomnr);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 save = fmt;
@@ -579,7 +579,7 @@ int i;
 char *temp;
 
 temp = composeSqlStatement("select name, room from tmp_usertable where name='%x' and room=%i", toname, roomnr);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 if (!mysql_fetch_row(res)) 
@@ -590,7 +590,7 @@ if (!mysql_fetch_row(res))
 mysql_free_result(res);
 
 temp = composeSqlStatement("select name from tmp_usertable where name<>'%x' and name<>'%x' and room=%i", name, toname, roomnr);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 save = fmt;
@@ -637,7 +637,7 @@ MYSQL_ROW row;
 char *temp;
 
 temp = composeSqlStatement("select name from tmp_usertable where name='%x' and room=%i", toname, roomnr);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 if (!(row = mysql_fetch_row(res))) 
@@ -678,7 +678,7 @@ MYSQL_ROW row;
 char *temp;
 
 temp = composeSqlStatement("select name from tmp_usertable where name='%x'", toname);
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 if (!(row = mysql_fetch_row(res))) 
@@ -710,7 +710,7 @@ MYSQL_ROW row;
 char *temp;
 
 temp = composeSqlStatement("select name from tmp_usertable");
-res=SendSQL2(temp, NULL);
+res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 while ((row = mysql_fetch_row(res))) {

@@ -36,14 +36,13 @@ int checkPassword(char *name, char *password)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-roomstruct *roomstr;
 int i;
 char *tempsql, temp[1024];
 
 opendbconnection();
 
 tempsql = composeSqlStatement("select lok from tmp_usertable where name='%x' and lok<>''", name);
-res=SendSQL2(tempsql, NULL);
+res=sendQuery(tempsql, NULL);
 free(tempsql);
 if (res==NULL)
 {
