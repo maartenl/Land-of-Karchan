@@ -1,4 +1,18 @@
+Todo list for changing the docs directory:
+------------------------------------------
+
+1. Ssh to my server.
+2. create a working-directory (for example: mkdir working_directory) in your homedir
+3. go to the working-directory (cd working-directory)
+4. type "cvs checkout docs" to retrieve the directory with all docs concerning the mud
+5. go to the docs directory (cd docs)
+6. look at and change anything you like (using vi)
+7. go to working-directory (cd ..)
+8. type "cvs commit docs" to commit any and all changes you made to the documents (it will ask for some comments concerning the changes you made)
+9. type "cvs release -d docs" to release the docs directory and remove it from the "working-directory"
+
 Building the repository:
+------------------------
 export CVSROOT="/karchan2/mud/cvsroot/"
 create directory "cvsroot" in /karchan2/mud/
 alias cvs="/karchan2/cvs/bin/cvs"
