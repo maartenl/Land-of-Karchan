@@ -40,7 +40,7 @@ supply)</TD></TR>
 <TR><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
-<TR><TD>mm_usertable</TD><TD></TD></TR>
+<TR><TD>mm_usertable</TD><TD>Contains all characters in the game.</TD></TR>
 <TR><TD>mm_mailtable</TD><TD>Contains mud mail of characters in the game</TD></TR>
 <TR><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
 <TR><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
@@ -106,6 +106,18 @@ life of characters and administrators.</TD></TR>
 | itemid              |
 +---------------------+
 
+</PRE>
+<H3>mm_charitemtable</H3>
+<DL>
+<DT>id
+<DD>identification of this item instance
+<DT>belongsto
+<DD>who owns this item instance
+<DT>wearing
+<DD>are you wearing or wielding the item. wearing==null means that the item
+is neither being worn nor wielded.
+</DL>
+<PRE>
 +---------------------+
 | mm_charitemtable    |
 +---------------------+
@@ -155,10 +167,21 @@ life of characters and administrators.</TD></TR>
 | creation            |
 +---------------------+
 
+</PRE>
+<H3>mm_usertable</H3>
+<DL>
+<DT>name
+<DD>identification of this character
+<DT>god
+<DD>what this character is, 0=default user, 1=god user (not used currently),
+2=bot, 3=mob
+</DL>
+<PRE>
 +---------------------+
 | mm_usertable        |
 +---------------------+
 |*name                |
+| god                 |
 +---------------------+
 
 +---------------------+
