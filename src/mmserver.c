@@ -989,6 +989,7 @@ void *thread_function(void *arg)
 	int msglength;
 	thread_control *mycontrol, *checklist;
 	char buf[1024];
+	int nbytes;
 	
 	// necessary for mysql to initialize thread specific variables
 //	my_thread_init();
@@ -1005,7 +1006,6 @@ void *thread_function(void *arg)
 		perror("Unable to send entire message...");
 	}
 	// handle data from a client
-	int nbytes;
 	while ((nbytes = recv(socketfd, buf, sizeof(buf), 0)) > 0)
 	{
 		// we got some data from a client
@@ -1143,12 +1143,12 @@ main(int argc, char **argv)
 	}
 	while (!isShuttingdown())
 	{
-#ifdef DEBUG
-		printf("[Listening on socket...]\n");
-#endif
 		/* more socket stuff */
 		int newconnectionsocket;
 		thread_control *newthread;
+#ifdef DEBUG
+		printf("[Listening on socket...]\n");
+#endif
 		if (isSignalCaught())
 		{
 			rereadConfigFiles();

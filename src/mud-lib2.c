@@ -565,16 +565,16 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 	int room;
 	int frames;
 	
-	name = fmudstruct->name;
-	password = fmudstruct->password;
-	room = fmudstruct->room;
-	frames = fmudstruct->frames;
-
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
 	int i, containerid = 0;
 	
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	frames = fmudstruct->frames;
+
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	if ((getTokenAmount(fmudstruct)<3) || (getTokenAmount(fmudstruct)>6))
@@ -1025,7 +1025,6 @@ Quit_Command(mudpersonstruct *fmudstruct)
 	MYSQL_RES *res;
 	struct tm       datumtijd;
 	time_t   datetime;
-time(&datetime);
 	MYSQL_ROW row;
 	char *temp;
 	char logname[100];

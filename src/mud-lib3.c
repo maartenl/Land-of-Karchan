@@ -731,7 +731,6 @@ Time_Command(mudpersonstruct *fmudstruct)
 	char *name, *password;
 	struct tm datumtijd;
 	time_t   datetime;
-time(&datetime);
 	int room;
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
