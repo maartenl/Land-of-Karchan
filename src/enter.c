@@ -51,6 +51,7 @@ maartenl@il.fontys.nl
 
 #include "cgic.h"
 
+#define MMHOST "localhost" // the hostname users will be connecting to
 #define MMPORT 3339 // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
@@ -186,6 +187,7 @@ int cgiMain()
 	char frames[10];
 	char *temp = NULL;
 	char *mudtitle = NULL;
+	char myhostname[80], myport[10];
 	
 	int sockfd, numbytes;
 	int first;
@@ -218,13 +220,25 @@ int cgiMain()
 		strcpy(frames, "none");
 		setFrames(0);
 	}
+	if (cgiFormString("hostname", myhostname, 80)!=cgiFormSuccess) 
+	{
+		strcpy(myhostname, MMHOST);
+	}
+	if (cgiFormString("port", myport, 10)!=cgiFormSuccess) 
+	{
+		strcpy(myport, "MMPORT");
+	}
+	if (atoi(myport) == 0)
+	{
+		strcpy(myport, "MMPORT");
+	}
 	if (!strcmp(frames,"1")) {setFrames(0);}
 	if (!strcmp(frames,"2")) {setFrames(1);}
 	if (!strcmp(frames,"3")) {setFrames(2);}
 #endif
 	
 	/* setup socket stuff*/
-	if ((he = gethostbyname("localhost")) == NULL)
+	if ((he = gethostbyname(myhostname)) == NULL)
 	{
 		displayError("gethostbyname", errno);
 	}
@@ -235,7 +249,7 @@ int cgiMain()
 	}
 	
 	their_addr.sin_family = AF_INET;	// host byte order
-	their_addr.sin_port = htons(MMPORT);	// short, network byte order
+	their_addr.sin_port = htons(atoi(myport));	// short, network byte order
 	their_addr.sin_addr = *((struct in_addr *)he->h_addr);
 	memset(&(their_addr.sin_zero), '\0', 8);	//zero the rest of the struct
 	

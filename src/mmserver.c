@@ -47,6 +47,8 @@ maartenl@il.fontys.nl
 
 #include "mudnewchar.h"
 
+/*! default hostname used by the mmserver */
+#define MMHOST "localhost" // the hostname users will be connecting to
 /*! default port number used by the mmserver */
 #define MMPORT 3339 // the port users will be connecting to
 /*! version number of mmserver */
@@ -198,7 +200,14 @@ int
 init_socket()
 {
 	struct sockaddr_in my_addr; // my address information
+	struct hostent *he;
 	int yes = 1;
+	
+	if ((he = gethostbyname(MMHOST)) == NULL)
+	{
+		perror("gethostbyname");
+		exit(1);
+	}
 	
 	// get socket descriptor
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -217,8 +226,9 @@ init_socket()
 	
 	my_addr.sin_family = AF_INET; // host byte order
 	my_addr.sin_port = htons(MMPORT); // short, network byte order
-	//my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	my_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//	my_addr.sin_addr.s_addr = inet_addr(MMHOST);
+	my_addr.sin_addr = *((struct in_addr *)he->h_addr);
 	memset(&(my_addr.sin_zero), '\0', 8); // zero the rest of the struct
 	
 	// bind port/ip to socket descriptor
