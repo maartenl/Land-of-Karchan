@@ -177,6 +177,23 @@ void Drop_Command(char *name, char *password, int room);
 	Post: item(s) dropped from inventory onto floor
 */
 
+void Put_Command(char *name, char *password, int room);
+/* put item into container
+	Pre: put [amount] <item> in <item>; 
+	     <item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
+			second item must be container and (in room) V (in inventory) ^
+			first item must be in inventory.
+	Post: item(s) added to container if possible
+*/
+
+void Retrieve_Command(char *name, char *password, int room);
+/* retrieve item from container
+	Pre: retrieve [amount] <item> from <item>; 
+			<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
+			second item must be container and (in room) V (in inventory)
+	Post: item(s) retrieved from container and put into inventory if possible
+*/
+
 void Buy_Command(char *name, char *password, int room, char *fromname);
 /* buy item from shop
 	Pre: buy [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name

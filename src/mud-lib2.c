@@ -2059,6 +2059,641 @@ Drop_Command(char *name, char *password, int room)
 }
 
 void
+Put_Command(char *name, char *password, int room)
+{
+	/*
+	* put [amount] <item> in <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
+	*/
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char sqlstring[1024];
+	char logname[100];
+	int already_in_there = 0;
+	int maxcontainerid;
+	int itemid_a, amountitems_a;
+	char itemname_a[40], itemadject1_a[40], itemadject2_a[40];
+	int itemid_b, amountitems_b;
+	char itemname_b[40], itemadject1_b[40], itemadject2_b[40];
+	char itembelongsto_b[40];
+	int containerid_b, room_b;
+	int amount, changedrows, itemid, amountitems, numberfilledout;
+	char *checkerror;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+	
+	amount = strtol(tokens[1], &checkerror, 10);
+	numberfilledout=1;
+	/* item_a = item to be put into container
+	   item_b = container */
+	if (*checkerror!='\0')
+	{
+		amount=1;
+		numberfilledout=0;
+	}
+	if (!strcmp(tokens[2+numberfilledout], "in"))
+	{
+		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[1+numberfilledout]);
+		*itemadject1_a = 0;
+		*itemadject2_a = 0;
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>4+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>5+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	else
+	if (!strcmp(tokens[3+numberfilledout], "in"))
+	{
+		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[2+numberfilledout]);
+		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		*itemadject2_a = 0;
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>5+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>6+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	else
+	if (!strcmp(tokens[4+numberfilledout], "in"))
+	{
+		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[3+numberfilledout]);
+		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		strcpy(itemadject2_a, tokens[2+numberfilledout]);
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>6+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>7+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	/* retrieve info to find out if item to be put into container exists */
+	sprintf(sqlstring, 
+	"select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 "
+	"from items, tmp_itemtable tmpitems "
+	"where (items.name='%s') and "
+	"(('%s' in (items.adject1, items.adject2, items.adject3)) or '%s'='') and "
+	"(('%s' in (items.adject1, items.adject2, items.adject3)) or '%s'='') and "
+	"(items.id=tmpitems.id) and "
+	"(tmpitems.amount>=%i) and " /* amount is bigger/equal to amount requested */
+	"(tmpitems.belongsto='%s') and " /* belongsto user */
+	"(tmpitems.room = 0) and " /* belongsto/ not in room */
+	"(tmpitems.search = '') and " /* not hidden */
+	"(tmpitems.wearing = '') and " /* not worn */
+	"(tmpitems.wielding = '') and " /* not wielding */
+	"(tmpitems.containerid=0)" /* is not a container or empty container */
+	, itemname_a, itemadject1_a, itemadject1_a,
+	itemadject2_a, itemadject2_a,
+	amount, name);
+	res=SendSQL2(sqlstring, &changedrows);
+	if (res==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	row = mysql_fetch_row(res);
+	if (row==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	itemid_a = atoi(row[0]);
+	amountitems_a = atoi(row[1]);
+	strcpy(itemname_a, row[2]);
+	strcpy(itemadject1_a, row[3]);
+	strcpy(itemadject2_a, row[4]);
+	
+	mysql_free_result(res);
+
+	/* retrieve info to find out if container exists */
+	sprintf(sqlstring, 
+	"select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
+	"tmpitems.containerid, tmpitems.belongsto, tmpitems.room "
+	"from items, tmp_itemtable tmpitems "
+	"where (items.name='%s') and "
+	"(('%s' in (items.adject1, items.adject2, items.adject3)) or '%s'='') and "
+	"(('%s' in (items.adject1, items.adject2, items.adject3)) or '%s'='') and "
+	"(items.id=tmpitems.id) and "
+	"((tmpitems.belongsto='%s') or "
+	"(tmpitems.room = %i)) and "
+	"(tmpitems.search = '') and "
+	"(tmpitems.wearing = '') and "
+	"(tmpitems.wielding = '') and "
+	"(items.container<>0) "
+	"order by room asc, containerid desc"
+	, itemname_b, itemadject1_b, itemadject1_b, 
+	itemadject2_b, itemadject2_b, name, room);
+	res=SendSQL2(sqlstring, &changedrows);
+	if (res==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	row = mysql_fetch_row(res);
+	if (row==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	itemid_b = atoi(row[0]);
+	amountitems_b = atoi(row[1]);
+	strcpy(itemname_b, row[2]);
+	strcpy(itemadject1_b, row[3]);
+	strcpy(itemadject2_b, row[4]);
+	containerid_b = atoi(row[5]);
+	strcpy(itembelongsto_b, row[6]);
+	room_b = atoi(row[7]);
+	
+	mysql_free_result(res);
+
+	/* retrieve maxcontainerid (sometimes not used, but gathered anyway
+		just in case */
+	sprintf(sqlstring, "select ifnull(max(containedin)+1,1) "
+	"from containeditems");
+	res=SendSQL2(sqlstring, &changedrows);
+	if (res==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	row = mysql_fetch_row(res);
+	if (row==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	maxcontainerid = atoi(row[0]);
+	mysql_free_result(res);
+
+	fprintf(cgiOut, "Debug!\n");
+	/* step 1: if amount of item requested is smaller then item found */
+	if (amount < amountitems_a)
+	{
+		sprintf(sqlstring, 
+			"update tmp_itemtable set amount=amount-%i "
+			"where (id=%i) and "
+			"(belongsto='%s') and "
+			"(wearing = '') and "
+			"(wielding = '') and "
+			"(containerid = 0)"
+			, amount, itemid_a, name);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	else
+	{
+		sprintf(sqlstring, 
+			"delete from tmp_itemtable "
+			"where (id=%i) and "
+			"(belongsto='%s') and "
+			"(wearing = '') and "
+			"(wielding = '') and "
+			"(containerid = 0)"
+			, itemid_a, name);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+
+	/* step 2: if we have more then one 'potential' container */
+	if (amountitems_b>1)
+	{
+		sprintf(sqlstring, 
+			"update tmp_itemtable set amount=amount-1 "
+			"where (id=%i) and "
+			"belongsto='%s' and "
+			"room=%i and "
+			"wearing = '' and "
+			"wielding = '' and "
+			"containerid = 0"
+			, itemid_b, itembelongsto_b, room_b);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+		/* retrieve maxcontainerid */
+		sprintf(sqlstring, 
+			"insert into tmp_itemtable "
+			"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
+			"values(%i, '', '%s', 1, %i, '', '', %i)"
+			, itemid_b, itembelongsto_b, room_b, maxcontainerid);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	else
+	{
+		/* exactly one container available */
+		/* step 3 : is the container empty? */
+		if (containerid_b == 0)
+		{
+			/* retrieve maxcontainerid */
+			sprintf(sqlstring, 
+				"update tmp_itemtable set containerid = %i "
+				"where (id=%i) and "
+				"belongsto='%s' and "
+				"room=%i and "
+				"wearing = '' and "
+				"wielding = '' and "
+				"containerid = 0"
+				, maxcontainerid, itemid_b, itembelongsto_b, room_b);
+//			fprintf(cgiOut, "[%s]\n", sqlstring);
+			res=SendSQL2(sqlstring, &changedrows);
+			mysql_free_result(res);
+		}
+		else
+		{
+			/* single container found, but container was not empty */
+			maxcontainerid = containerid_b;
+			/* step 4: does the item already exist in this container? */
+			sprintf(sqlstring, 
+			"select 1 "
+			"from containeditems "
+			"where id = %i and "
+			"amount > 0 and "
+			"containedin = %i"
+			, itemid_a, maxcontainerid);
+//			fprintf(cgiOut, "[%s]\n", sqlstring);
+			res=SendSQL2(sqlstring, &changedrows);
+			if (res!=NULL) 
+			{
+				row = mysql_fetch_row(res);
+				if (row!=NULL) 
+				{
+					/* darnit! there's already a bunch of items of this type in there! */
+					already_in_there = 1;
+				}
+				mysql_free_result(res);
+			}
+		}
+	}
+	
+	if (already_in_there)
+	{
+		sprintf(sqlstring, 
+		"update containeditems set amount = amount + %i "
+		"where id = %i and "
+		"containedin = %i"
+		, amount, itemid_a, maxcontainerid);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	else
+	{
+		sprintf(sqlstring, 
+		"insert into containeditems "
+		"(id, amount, containedin) "
+		"values(%i, %i, %i)"
+		, itemid_a, amount, maxcontainerid);
+//		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	if (amount == 1)
+	{
+		WriteSentenceIntoOwnLogFile(logname, 
+			"You put a %s, %s %s in the %s, %s %s.<BR>\r\n", 
+			itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+		WriteMessage(name, room, "%s puts a %s, %s %s in the %s, %s %s.<BR>\r\n",
+			name, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+	}
+	else
+	{
+		WriteSentenceIntoOwnLogFile(logname, 
+			"You put %i %s, %s %ss in the %s, %s %s.<BR>\r\n", 
+			amount, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+		WriteMessage(name, room, "%s puts %i %s, %s %ss in the %s, %s %s.<BR>\r\n",
+			name, amount, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+	}
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}
+
+void
+Retrieve_Command(char *name, char *password, int room)
+{
+	/*
+	* retrieve [amount] <item> from <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
+	*/
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char sqlstring[2048];
+	char logname[100];
+	int already_in_inventory = 0;
+	int maxcontainerid;
+	int itemid_a, amountitems_a;
+	char itemname_a[40], itemadject1_a[40], itemadject2_a[40];
+	int itemid_b, amountitems_b;
+	char itemname_b[40], itemadject1_b[40], itemadject2_b[40];
+	char itembelongsto_b[40];
+	int containerid_b, room_b;
+	int amount, changedrows, itemid, amountitems, numberfilledout;
+	char *checkerror;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+	
+	amount = strtol(tokens[1], &checkerror, 10);
+	numberfilledout=1;
+	/* item_a = item to retrieve from container
+	   item_b = container */
+	if (*checkerror!='\0')
+	{
+		amount=1;
+		numberfilledout=0;
+	}
+	if (!strcmp(tokens[2+numberfilledout], "from"))
+	{
+		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[1+numberfilledout]);
+		*itemadject1_a = 0;
+		*itemadject2_a = 0;
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>4+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>5+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	else
+	if (!strcmp(tokens[3+numberfilledout], "from"))
+	{
+		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[2+numberfilledout]);
+		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		*itemadject2_a = 0;
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>5+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>6+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	else
+	if (!strcmp(tokens[4+numberfilledout], "from"))
+	{
+		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
+		strcpy(itemname_a, tokens[3+numberfilledout]);
+		strcpy(itemadject1_a, tokens[1+numberfilledout]);
+		strcpy(itemadject2_a, tokens[2+numberfilledout]);
+		*itemadject1_b = 0;
+		*itemadject2_b = 0;
+		strcpy(itemname_b, tokens[aantal-1]);
+		if (aantal>6+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-2]);
+		}
+		if (aantal>7+numberfilledout)
+		{
+			strcpy(itemadject1_b, tokens[aantal-3]);
+		}
+	}
+	/* retrieve info to find out if item to be retrieved from container exist */
+	sprintf(sqlstring, 
+	"select items1.id, tmpitems1.amount, items1.name, items1.adject1, items1.adject2, "
+	"items2.id, items2.name, items2.adject1, items2.adject2, tmpitems2.containerid, tmpitems2.belongsto, tmpitems2.room "
+	"from items items1, containeditems tmpitems1, items items2, tmp_itemtable tmpitems2 "
+	"where (items1.name='%s') and "
+	"(('%s' in (items1.adject1, items1.adject2, items1.adject3)) or '%s'='') and "
+	"(('%s' in (items1.adject1, items1.adject2, items1.adject3)) or '%s'='') and "
+	"(items1.id=tmpitems1.id) and "
+	"(tmpitems1.amount>=%i) and " /* amount is bigger/equal to amount requested */
+	"(tmpitems1.containedin<>0) and " /* is present in a container */
+	"(tmpitems1.containedin = tmpitems2.containerid) and " /* item is in container */
+	"(items2.name='%s') and "
+	"(('%s' in (items2.adject1, items2.adject2, items2.adject3)) or '%s'='') and "
+	"(('%s' in (items2.adject1, items2.adject2, items2.adject3)) or '%s'='') and "
+	"(items2.id=tmpitems2.id) and "
+	"(tmpitems2.amount=1) and " /* amount has to be one, because it is ONE container */
+	"((tmpitems2.belongsto='%s') or " /* either belongsto user */
+	"(tmpitems2.room = %i)) and " /* or in room */
+	"(tmpitems2.search = '') and " /* not hidden */
+	"(tmpitems2.wearing = '') and " /* not worn */
+	"(tmpitems2.wielding = '') and " /* not wielding */
+	"(tmpitems2.containerid<>0)", 
+	itemname_a, itemadject1_a, itemadject1_a,	itemadject2_a, itemadject2_a,
+	amount,
+	itemname_b, itemadject1_b, itemadject1_b,	itemadject2_b, itemadject2_b,
+	name, room);
+	fprintf(cgiOut, "[%s]\n", sqlstring);
+	res=SendSQL2(sqlstring, &changedrows);
+	if (res==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	row = mysql_fetch_row(res);
+	if (row==NULL) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+	itemid_a = atoi(row[0]);
+	amountitems_a = atoi(row[1]);
+	strcpy(itemname_a, row[2]);
+	strcpy(itemadject1_a, row[3]);
+	strcpy(itemadject2_a, row[4]);
+	
+	itemid_b = atoi(row[5]);
+	strcpy(itemname_b, row[6]);
+	strcpy(itemadject1_b, row[7]);
+	strcpy(itemadject2_b, row[8]);
+	containerid_b = atoi(row[9]);
+	strcpy(itembelongsto_b, row[10]);
+	room_b = atoi(row[11]);
+	
+	mysql_free_result(res);
+
+	/* step 1: if amount of item requested is smaller then item found */
+	if (amount < amountitems_a)
+	{
+		sprintf(sqlstring, 
+			"update containeditems set amount=amount-%i "
+			"where (id=%i) and "
+			"(containedin = %i)"
+			, amount, itemid_a, containerid_b);
+		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	else
+	{
+		int containerempty = 0;
+		sprintf(sqlstring, 
+			"delete from containeditems "
+			"where (id=%i) and "
+			"(containedin = %i)"
+			, itemid_a, containerid_b);
+		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+
+		/* step 2: if container is empty */
+		sprintf(sqlstring, 
+			"select 1 "
+			"from containeditems "
+			"where containedin = %i"
+			, containerid_b);
+		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		if (res!=NULL) 
+		{
+			row = mysql_fetch_row(res);
+			if (row==NULL) 
+			{
+				containerempty = 1;
+			}
+			else
+			{
+				containerempty = 0;
+			}
+			mysql_free_result(res);
+		}
+		else
+		{
+			containerempty = 1;
+		}
+		if (containerempty)
+		{
+			sprintf(sqlstring, 
+				"update tmp_itemtable "
+				"set containerid = 0 "
+				"where id = %i and "
+				"search = '' and "
+				"belongsto = '%s' and "
+				"amount = 1 and "
+				"room = %i  and "
+				"wearing = '' and "
+				"wielding = '' and "
+				"containerid = %i"
+				, itemid_b, itembelongsto_b, room_b, containerid_b);
+			fprintf(cgiOut, "[%s]\n", sqlstring);
+			res=SendSQL2(sqlstring, &changedrows);
+			mysql_free_result(res);
+		}
+	}
+
+	/* step 3: does the item already exist in the inventory? */
+	sprintf(sqlstring, 
+	"select 1 "
+	"from tmp_itemtable "
+	"where id = %i and "
+	"search = '' and "
+	"belongsto = '%s' and "
+	"amount > 0 and "
+	"room = 0 and "
+	"wearing = '' and "
+	"wielding = '' and "
+	"containerid = 0"
+	, itemid_a, name);
+	fprintf(cgiOut, "[%s]\n", sqlstring);
+	res=SendSQL2(sqlstring, &changedrows);
+	if (res!=NULL) 
+	{
+		row = mysql_fetch_row(res);
+		if (row!=NULL) 
+		{
+			/* darnit! there's already a bunch of items of this type in the inventory! */
+			already_in_inventory = 1;
+		}
+		mysql_free_result(res);
+	}
+	
+	if (already_in_inventory)
+	{
+		sprintf(sqlstring, 
+		"update tmp_itemtable set amount = amount + %i "
+		"where id = %i and "
+		"search = '' and "
+		"belongsto = '%s' and "
+		"amount > 0 and "
+		"room = 0 and "
+		"wearing = '' and "
+		"wielding = '' and "
+		"containerid = 0"
+		, amount, itemid_a, name);
+		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+	else
+	{
+		sprintf(sqlstring, 
+		"insert into tmp_itemtable "
+		"(id, search, belongsto, amount, room, wearing, wielding, containerid) "
+		"values(%i, '', '%s', %i, 0, '', '', 0)"
+		, itemid_a, name, amount);
+		fprintf(cgiOut, "[%s]\n", sqlstring);
+		res=SendSQL2(sqlstring, &changedrows);
+		mysql_free_result(res);
+	}
+
+	if (amount == 1)
+	{
+		WriteSentenceIntoOwnLogFile(logname, 
+			"You pull a %s, %s %s out of the %s, %s %s.<BR>\r\n", 
+			itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+		WriteMessage(name, room, "%s pulls a %s, %s %s out of the %s, %s %s.<BR>\r\n",
+			name, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+	}
+	else
+	{
+		WriteSentenceIntoOwnLogFile(logname, 
+			"You pull %i %s, %s %ss out of the %s, %s %s.<BR>\r\n", 
+			amount, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+		WriteMessage(name, room, "%s pulls %i %s, %s %ss out of %s, %s %s.<BR>\r\n",
+			name, amount, itemadject1_a, itemadject2_a, itemname_a,
+			itemadject1_b, itemadject2_b, itemname_b);
+	}
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}
+
+void
 Wear_Command(char *name, char *password, int room)
 {
 	/*

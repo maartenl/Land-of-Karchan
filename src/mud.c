@@ -27,6 +27,8 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include "mud-lib3.h"
 
+int commandlineinterface = 0;
+
 extern int      hellroom;
 extern int      events[50];
 extern int      knightlist[50];
@@ -59,7 +61,7 @@ char sqlstring[1024];
 void 
 InitVar()
 {
-	if (0) {
+	if (commandlineinterface) {
 		printstr = (char *) malloc(1000);
 		troep = (char *) malloc(1000);
 		command = (char *) malloc(1000);
@@ -300,7 +302,7 @@ cgiMain()
 
 	opendbconnection();
 
-	if (0) {
+	if (commandlineinterface) {
 		printf("Command:");
 		gets(command);
 		printf("Name:");
@@ -376,7 +378,10 @@ cgiMain()
 	strcpy(guildstatus	, row[9]);
 	punishment = atoi(row[10]);
 	if (strcmp(row[1], password)) {
-		NotActive(name, password,4);
+		if (!commandlineinterface) 
+		{
+			NotActive(name, password,4);
+		}
 	}
 	mysql_free_result(res);
 	if (DebugOptionsOn) {
@@ -384,7 +389,9 @@ cgiMain()
 			fprintf(cgiOut, "Command: %s<BR>ActivePersonPos: %i<BR>Password: %s<BR>", command, password);
 		}
 	}
-	if (*name == '\0') { NotActive(name, password,5);
+	if (*name == '\0') 
+	{ 
+		NotActive(name, password,5);
 	}
 	if (godstatus==2) 
 	{
@@ -1139,6 +1146,20 @@ cgiMain()
 	if ((aantal >= 2) && (!strcmp("drop", tokens[0]))) 
 	{
 		Drop_Command(name, password, room);
+	}
+	if ((aantal >= 4) && (!strcmp("put", tokens[0]))) 
+	{
+		/* put [amount] <item> in <item> ;
+		    <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
+	   */
+		Put_Command(name, password, room);
+	}
+	if ((aantal >= 4) && (!strcmp("retrieve", tokens[0]))) 
+	{
+		/* retrieve [amount] <item> from <item> ;
+	       <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
+		*/
+		Retrieve_Command(name, password, room);
 	}
 	if ((aantal >= 2) && (!strcmp("eat", tokens[0]))) 
 	{
