@@ -64,7 +64,13 @@ A command is created using the defaults. The defaults are:
 <LI>default not callable (i.e. is not <I>active</I>)
 </UL>  
 Make sure that the method that this command is to call exists, or an error       
-message will occur.
+message will occur.<P>
+<B>Note:</B> When entering a regular expression to match what any one person
+will enter as a command, make certain that the regular expression is
+appropriate. This includes but is not limited to : the same number of
+closing parenthesis as opening parenthesis. Otherwise an exception will be
+generated in the log, and perhaps people will not be able to play the game
+any more.<P>
 </BODY>
 
 </HTML>
