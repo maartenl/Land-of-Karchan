@@ -25,6 +25,18 @@ The current deputies are:
 Kass, Silverblade, Blackfyre, Desdamona, Crissy, Legolas<P>
 
 <HR>
+Thursday, November 27, 22:45<p>
+Well, I got the emailaccounts up and running again. 
+(you know, <A HREF=\"mailto:deputy@karchan.org\">deputy@karchan.org</A>
+ and all that stuff.) I cannot make any promises about answering emails
+ofcourse.<P>Also added PHP support
+to the Apache server. If this does not mean anything to you, well, let me
+tell you it is damn cool stuff. I am redoing the whole cgi-script thingy in
+php as it takes way too much time to maintain. Check out the who list on the
+main page for an example.
+<P>
+<I>Karn</I>
+<HR>
 Thursday, November 13, 22:20<p>
 Well, the initial problem was a little one. The disk partition was full.
 After deleting some files I restarted the server and suddenly nothing
@@ -38,7 +50,7 @@ that works flawlessly, but most of the functionality will be gone? Or would
 you rather have the current situation, a shitty server program that restarts
 itself every 30 minutes but has items and whatnot.<P>
 <I>Karn</I>
-<BR>
+<HR>
 <I>To contact a Deputy, report a bug, contact Karn, or use email, <A
 HREF=\"/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
