@@ -25,6 +25,12 @@ The current deputies are:
 Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Silverblade<P>
 
 <HR>
+Well, that was quite a scare, wasn\'t it? Apparently the database received
+too many connections resulting in new connections not being accepted any
+more.<P>
+I rebooted the database server and everything seems to work again, though I
+did have to put a backup of the tmp_usertable back. All other information
+should be in tact for as far as I know. <P>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
