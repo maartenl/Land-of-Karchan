@@ -1992,10 +1992,6 @@ gameMain(int socketfd)
 		int i = (theNumberOfFunctions / 2) + (theNumberOfFunctions % 2);
 		int pos = theNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
-		#ifdef DEBUG
-		send_printf(mymudstruct->socketfd, "%i\n", theNumberOfFunctions);
-		send_printf(mymudstruct->socketfd, "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
-		#endif
 		while ((i>0) && (equals))
 		{
 			if (i==1) 
@@ -2007,10 +2003,6 @@ gameMain(int socketfd)
 			if (equals < 0) {pos += i;}
 			if ((pos >= 0) && (pos < theNumberOfFunctions))
 			{
-				#ifdef DEBUG
-				send_printf(mymudstruct->socketfd, "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
-				#endif
-				
 				equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
 			}
 		}
