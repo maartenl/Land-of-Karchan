@@ -84,7 +84,7 @@ if (isset($_REQUEST{"race"}))
 		die("You are not the owner of this character.");
 	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
-		mysql_escape_string($_REQUEST{"room"})."\"
+		mysql_escape_string($_REQUEST{"room"})."\""
 		, $dbhandle)
 		or die("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
