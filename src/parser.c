@@ -639,6 +639,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	int returnvalue = 0;
 	
 	int myroom = room;
+	parser_debug = 0;
 	
 	stuff = getdbconnection();
 	tempstr = composeSqlStatement("select commands.id, commands.name, commands.method_name, commands.args, methods.src"
