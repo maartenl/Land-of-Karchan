@@ -5062,6 +5062,10 @@ ChangeTitle_Command(char *name, char *password, int room, char *fcommand)
 	char *temp, *safetitle, *title;
 	char logname[100];
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	title = command+(getToken(1)-getToken(0));
 	safetitle = (char *) malloc(strlen(title)*2+2);
