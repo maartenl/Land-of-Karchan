@@ -1,7 +1,7 @@
 #
 # MakeFile -- Maarten's Mud Makefile for compiling the binaries
 #
-# gcc mmserver.c `/usr/bin/xml-config --cflags` `/usr/bin/xml-config --libs` -I/usr/local/include/mysql/ -I../include/ -lm -lmysqlclient -lefence 
+# gcc mmserver.c `/usr/bin/xml-config --cflags` `/usr/bin/xml-config --libs` -I/usr/include/mysql/ -I../include/ -lm -lmysqlclient -lefence 
 
 # Directory for installing the mud-cgi-binaries 
 # ---------------------------------------------
@@ -27,7 +27,8 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # for instance: '-DDEBUG=1' and consequently recompiling the mud source code
 # will yield a binary with level 1 debug messages added.
 
-DEBUG = -DDEBUG
+DEBUG = 
+#-DDEBUG
 
 #
 #------------------------------------------------------------------
@@ -51,20 +52,21 @@ COPTS = -g -m486
 # INCLUDES = -I../include -idirafter /usr/include/mysql/ 
 # this header is for Source installations of mysql
 #
-INCLUDES = -I../include -I/usr/local/include/mysql/ 
+INCLUDES = -I../include -I/usr/include/mysql/ 
 XMLINCLUDES = `/usr/bin/xml-config --cflags`
 
 EXEDIR = /home/httpd/cgi-bin
 # this header is for RPM installations of mysql
 #
-# LIBDIR = -L/usr/local/lib/mysql/ -lm -lmysqlclient
+# LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient
 # this header is for Source installations of mysql
 #
 # the -lefence option is strictly for debugging purposes
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
-#-L/usr/local/lib/mysql/ 
-LIBDIR = -lm -lmysqlclient -lefence
+#
+LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz
+# -lefence
 XMLLIBDIR = `/usr/bin/xml-config --libs`
 
 TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
@@ -276,18 +278,18 @@ restore: all
 install: all
 	@echo "Installing Mud Binaries..."
 	@echo "  Installing Central Mud CGI..."
-	@cp mud $(INSTALLDIR)mud2.cgi
-	@cp mudrelogin $(INSTALLDIR)mudrelogin2.cgi
-	@cp enter $(INSTALLDIR)enter2.cgi
-	@cp newchar $(INSTALLDIR)newchar2.cgi
+	@cp mud $(INSTALLDIR)mud.cgi
+	@cp mudrelogin $(INSTALLDIR)mudrelogin.cgi
+	@cp enter $(INSTALLDIR)enter.cgi
+	@cp newchar $(INSTALLDIR)newchar.cgi
 	@echo "  Installing Frame CGI..."
-	@cp leftframe $(INSTALLDIR)leftframe2.cgi
-	@cp logonframe $(INSTALLDIR)logonframe2.cgi
+	@cp leftframe $(INSTALLDIR)leftframe.cgi
+	@cp logonframe $(INSTALLDIR)logonframe.cgi
 	@echo "  Installing Frame/Serverpush CGI..."
-	@cp nph-addendum $(INSTALLDIR)nph-addendum2.cgi
-	@cp nph-logonframe $(INSTALLDIR)nph-logonframe2.cgi
-	@cp nph-leftframe $(INSTALLDIR)nph-leftframe2.cgi
-	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe2.cgi
+	@cp nph-addendum $(INSTALLDIR)nph-addendum.cgi
+	@cp nph-logonframe $(INSTALLDIR)nph-logonframe.cgi
+	@cp nph-leftframe $(INSTALLDIR)nph-leftframe.cgi
+	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe.cgi
 	@echo "Setting UIDs for Mud Binaries..."
 	@chmod o=x $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*
