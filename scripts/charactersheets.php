@@ -55,7 +55,7 @@ fill out, and change later in the same way.<P>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select concat(\"<A
-	HREF=\\\"charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") 
+	HREF=\\\"/cgi-bin/charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") 
 	, usertable.name from characterinfo, usertable 
 	where usertable.name=characterinfo.name"
 	, $dbhandle)
