@@ -34,11 +34,18 @@ import java.io.*;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.Handler;
 
 import mmud.commands.*;
 
 public final class Constants
 {
+	/**
+	 * the logger for logging messages
+	 */
+    public final static Logger logger = Logger.getLogger("mmud");
 
 	// the defaults
 	public final static boolean SHUTDOWN = false;
@@ -492,10 +499,7 @@ public final class Constants
 	public static String readFile(File aFile)
 		throws IOException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.readFile");
-		}
+		logger.finer("");
 		FileReader myFileReader = new FileReader(aFile);
 		String myResult = new String();
 		char[] myArray = new char[1024];
@@ -513,10 +517,7 @@ public final class Constants
 	public static String readFile(String aFilename)
 		throws IOException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.readFile");
-		}
+		logger.finer("aFilename=" + aFilename);
 		return readFile(new File(aFilename));
 	}
 
@@ -527,10 +528,7 @@ public final class Constants
 
 	public static void init()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.init");
-		}
+		logger.finer("");
 
 		theDefaults = new Properties();
 		theDefaults.setProperty("logging", (LOGGING ? "true" : "false"));
@@ -557,6 +555,7 @@ public final class Constants
 		theDefaults.setProperty("mudtitle", "Maarten's Mud");
 		theDefaults.setProperty("mudbackground", "");
 		theDefaults.setProperty("mudcopyright", "&copy; Copyright Maarten van Leunen");
+		theDefaults.setProperty("logginglevel", "all");
 		theValues = new Properties(theDefaults);
 		loadInfo();
 
@@ -626,47 +625,32 @@ public final class Constants
 
 	public static Command getCommand(String key)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.getCommand");
-		}
+		logger.finer("");
 		Command myCommand = (Command) theCommandStructure.get(key);
 		return (myCommand != null ? myCommand : new BogusCommand());
 	}
 
 	public static String[] parseCommand(String aCommand)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.parseCommand");
-		}
+		logger.finer("aCommand=" + aCommand);
 		return aCommand.split("( )+", 50);
 	}
 
 	public static String returnEmotion(String anEmotion)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.returnEmotion");
-		}
+		logger.finer("anEmotion=" + anEmotion);
 		return (String) theEmotionStructure.get(anEmotion);
 	}
 
 	public static String returnEmotionTo(String anEmotion)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.returnEmotion");
-		}
+		logger.finer("anEmotion=" + anEmotion);
 		return (String) theEmotion2Structure.get(anEmotion);
 	}
 
 	public static boolean existsAdverb(String anAdverb)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.anAdverb: " + anAdverb);
-		}
+		logger.finer("anAdverb=" + anAdverb);
 		return theAdverbStructure.contains(anAdverb.toLowerCase());
 	}
 
@@ -691,10 +675,7 @@ public final class Constants
 	 */
 	public static void loadInfo(String aFilename)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Constants.loadInfo");
-		}
+		logger.finer("aFilename=" + aFilename);
 		try
 		{
 			FileInputStream reader = new FileInputStream(aFilename);
@@ -740,6 +721,63 @@ public final class Constants
 		mudbackground = theValues.getProperty("mudbackground");
 		mudcopyright = theValues.getProperty("mudcopyright");
 
+		// set the logging level
+		String level = theValues.getProperty("logginglevel");
+		Level logLevel = Level.ALL;
+		if (level.equalsIgnoreCase("all"))
+		{
+			logLevel = Level.ALL;
+		}	
+		else if (level.equalsIgnoreCase("off"))
+		{
+			logLevel = Level.OFF;
+		}
+		else if (level.equalsIgnoreCase("severe"))
+		{
+			logLevel = Level.SEVERE;
+		}
+		else if (level.equalsIgnoreCase("warning"))
+		{
+			logLevel = Level.WARNING;
+		}
+		else if (level.equalsIgnoreCase("info"))
+		{
+			logLevel = Level.INFO;
+		}
+		else if (level.equalsIgnoreCase("config"))
+		{
+			logLevel = Level.CONFIG;
+		}
+		else if (level.equalsIgnoreCase("fine"))
+		{
+			logLevel = Level.FINE;
+		}
+		else if (level.equalsIgnoreCase("finer"))
+		{
+			logLevel = Level.FINER;
+		}
+		else if (level.equalsIgnoreCase("finer"))
+		{
+			logLevel = Level.FINEST;
+		}
+		// The root logger's handlers default to INFO. We have to
+		// crank them up. We could crank up only some of them
+		// if we wanted, but we will turn them all up.
+		Handler[] handlers =
+			Logger.getLogger( "" ).getHandlers();
+		for ( int index = 0; index < handlers.length; index++ ) {
+			handlers[index].setLevel( logLevel );
+		}
+		logger.setLevel(logLevel);
+		logger.info("Logging level set to " + level);
+		logger.finest(
+			"\nsevere :" + logger.isLoggable(Level.SEVERE) +
+			"\nwarning:" + logger.isLoggable(Level.WARNING) +
+			"\nconfig :" + logger.isLoggable(Level.CONFIG) +
+			"\nfinest :" + logger.isLoggable(Level.INFO) +
+			"\nfine   :" + logger.isLoggable(Level.FINE) +
+			"\nfiner  :" + logger.isLoggable(Level.FINER) +
+			"\nfinest :" + logger.isLoggable(Level.FINEST));
 	}
 
 	/**
@@ -755,10 +793,7 @@ public final class Constants
      */
     public static void saveInfo()
     {
-		if (Constants.logging)
-		{
-			System.err.println("Constants.saveInfo");
-		}
+		logger.finer("");
         try
         {
             FileOutputStream writer = new FileOutputStream(CONFIG_FILE);

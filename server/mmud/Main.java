@@ -40,8 +40,6 @@ import mmud.characters.*;
 
 public class Main
 {
-	private static Logger logger = Logger.getLogger("mmud");
-
 	public Main()
 	{
 		
@@ -49,18 +47,16 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		// Request that every detail gets logged.
-		logger.setLevel(Level.ALL);
-		// Log a simple INFO message.
-		logger.info("doing stuff");
 		try
 		{
 			Constants.init();
+			// Log a simple INFO message.
+			Constants.logger.info("Starting server");
 			Database.connect();
 			ServerSocket myServerSocket = null;
-			System.out.println("Retrieving characters...");
+			Constants.logger.info("Retrieving characters...");
 			Persons.init();
-			System.out.println("Creating Server Socket...");
+			Constants.logger.info("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
 			for (int i = 1; i < 100; i++)
 			{
@@ -72,12 +68,12 @@ public class Main
 			myServerSocket.close();
 			Database.disconnect();
 			// Log a simple INFO message.
-			logger.info("finished doing stuff");
+			Constants.logger.info("Stopping server");
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			logger.log(Level.WARNING, "exception", e);
+			Constants.logger.log(Level.WARNING, "exception", e);
 			return;
 		}
 	}
