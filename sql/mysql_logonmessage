@@ -25,12 +25,18 @@ The current deputies are:
 Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Silverblade<P>
 
 <HR>
-Well, that was quite a scare, wasn\'t it? Apparently the database received
-too many connections resulting in new connections not being accepted any
-more.<P>
-I rebooted the database server and everything seems to work again, though I
-did have to put a backup of the tmp_usertable back. All other information
-should be in tact for as far as I know. <P>
+Well, that was quite a scare, wasn\'t it? The server had crashed
+approximately Tuesday, the 26th of March 2002. I
+went and had a look. Apparently there were some
+hardware problems, but after
+some fiddling, dustblowing and shaking the little server seemed to
+be functioning again.<P>
+I did make use of the opportunity to install a new version
+of the OS, and the thing seems to be stable. Let us hope it stays that
+way, and that this hardware failure was just an accident. Otherwise
+we might be in trouble.<P>
+Suffice to say that I have not fixed everything yet, most
+of the basic stuff should work, I think.<P>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
