@@ -162,7 +162,7 @@ int Retrieve_Command(char *name, char *password, int room, char *fcommand);
 	Post: item(s) retrieved from container and put into inventory if possible
 */
 
-void BuyItem_Command(char *name, char *password, int room, char *fromname);
+int BuyItem_Command(char *name, char *password, int room, char *fromname);
 /* buy item from shop
 	Pre: buy [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
 	Post: item(s) added to inventory
