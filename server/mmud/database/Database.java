@@ -51,14 +51,14 @@ public class Database
 
 	private static Connection theConnection = null;
 
-	public static String sqlGetUserString = "select * from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=now() where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
-		"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
+		"values(?, ?, password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
 	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
 	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
 	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
@@ -232,13 +232,16 @@ public class Database
 	 * Retrieve a character from the database.
 	 * @param aName the name of the character. This uniquely identifies
 	 * any character in the database.
+	 * @param aPassword the password of the character. Used to verify the
+	 * encrypted password in the database.
 	 * @return User containing all information
 	 * DEBUG!! Why returns User, why not Person?
 	 */
-	public static User getUser(String aName)
+	public static User getUser(String aName, String aPassword)
 	{
 		assert theConnection != null : "theConnection is null";
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aName=" + aName + 
+			",aPassword=" + aPassword);
 		ResultSet res;
 		User myUser = null;
 		try
@@ -247,7 +250,8 @@ public class Database
 		PreparedStatement sqlGetUser = theConnection.prepareStatement(sqlGetUserString);
 //		sqlGetUser.setBigDecimal
 //		sqlGetUser.setInt
-		sqlGetUser.setString(1, aName);
+		sqlGetUser.setString(1, aPassword);
+		sqlGetUser.setString(2, aName);
 		res = sqlGetUser.executeQuery();
 		if (res == null)
 		{
@@ -258,7 +262,9 @@ public class Database
 		{
 			myUser  = new User(
 				res.getString("name"), 
-				res.getString("password"),
+				(res.getString("encrypted").equals(res.getString("password")) ? 
+					aPassword:
+					null),
 				res.getString("address"),
 				res.getString("title"),
 				res.getString("realname"),
@@ -287,11 +293,14 @@ public class Database
 		res.close();
 		sqlGetUser.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-		getCharAttributes(myUser);
+		if (myUser != null)
+		{
+			getCharAttributes(myUser);
+		}
 		return myUser;
 	}
 
@@ -460,7 +469,7 @@ public class Database
 	 */
 	public static void getCharAttributes(Person aPerson)
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer(aPerson + "");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		try
@@ -524,7 +533,7 @@ public class Database
 			if (res.getInt("god") < 2)
 			{
 				User myRealUser = new User(myName, 
-					myPasswd,
+					null,
 					res.getString("address"),
 					res.getString("realname"),
 					res.getString("email"),

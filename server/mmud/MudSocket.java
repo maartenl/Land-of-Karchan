@@ -166,6 +166,7 @@ public class MudSocket extends Thread
 					}
 					catch (Exception e)
 					{
+						Database.writeLog(name, "exception: " + e + " msg: " + e.getMessage());
 						Logger.getLogger("mmud").warning(
 							e.getMessage());
 						myOutputStream.println("\n" + e.toString());
@@ -276,6 +277,7 @@ public class MudSocket extends Thread
 			}
 			catch (Exception e)
 			{
+				Database.writeLog(name, "exception: " + e + " msg: " + e.getMessage());
 				Logger.getLogger("mmud").warning(
 					e.getMessage());
 				myOutputStream.println(e.toString());

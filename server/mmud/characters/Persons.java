@@ -117,7 +117,7 @@ public final class Persons
 		User myUser = (myChar == null ? null : (User) myChar);
 		if (myUser == null)
 		{
-			myUser = Database.getUser(aName);
+			myUser = Database.getUser(aName, aPassword);
 			if (myUser == null)
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.USERNOTFOUNDERROR);
@@ -126,6 +126,11 @@ public final class Persons
 		}
 		else
 		{
+			if (myUser.getPassword() == null)
+			{
+				User tempUser = Database.getUser(aName, aPassword);
+				myUser.setPassword(aPassword);
+			}
 			if ((aCookie != null) &&
 				(!aCookie.equals(myUser.getSessionPassword())) &&
 				!aCookie.equals("") )

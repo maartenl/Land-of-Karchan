@@ -54,7 +54,6 @@ public class ItemsDb
 		+ "mm_charitemtable.id = mm_itemtable.id and "
 		+ "mm_charitemtable.belongsto = ? and "
 		+ "mm_charitemtable.wearing is null and "
-		+ "mm_charitemtable.wielding is null and "
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 	public static String sqlGetInventoryRoomString =

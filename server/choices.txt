@@ -215,3 +215,4 @@ characters for exploring and learning about the way the game works.", "The
 Main Area of Karchan", "Karn", null);
 - create table mm_log (creation timestamp not null, name varchar(20) not
 null, message varchar(255) not null, primary key (creation, name, message));
+- update mm_usertable set password=password(password)

@@ -231,12 +231,28 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Returns the password
-	 * @param String containing password
+	 * @return String containing password
 	 */
 	public String getPassword()
 	{
 		Logger.getLogger("mmud").finer("");
 		return thePassword;
+	}
+
+	/**
+	 * Sets the password. The password can only be set, if it has not been
+	 * previously set, i.e. when the password provided in the constructor
+	 * is the null value.
+	 * @param aPassword String containing password
+	 */
+	public void setPassword(String aPassword)
+	{
+		Logger.getLogger("mmud").finer("");
+		if (thePassword != null)
+		{
+			throw new RuntimeException("Password has already been set.");
+		}
+		thePassword = aPassword;
 	}
 
 	/**
