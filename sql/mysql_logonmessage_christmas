@@ -9,9 +9,9 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 # update logonmessage
 #
 
-UPDATE logonmessage set message='<B>Logonmessage</B>
+UPDATE logonmessage set message="<B>Logonmessage</B>
 <BR>
-<IMG SRC=\"http://lok.il.fontys.nl/pictures/gif/letters/w.gif\"
+<IMG SRC=\"http://www.karchan.org/images/gif/letters/w.gif\"
 ALT=\"W\" ALIGN=left>
 elcome to the Land of Karchan MUD, a land filled with mystery 
 and enchantment, where weapons, magic, intelligence, and common 
@@ -19,35 +19,36 @@ sense play key roles in the realm. Where love and war can be one
 and the same. Where elves coexist peacefully with the humans, and 
 make war with the dwarves. Where the sun rises, and the moon falls. 
 Where one can change into a hero with a single swipe of his 
-sword.<P><P>
+sword.<P>
 
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel7.gif\">The process that takes care of the fighting and everything has been
-temporarily disabled. Busy developing a new way of fighing.<P>
+<IMG SRC=\"/images/christmas/noel5.gif\" ALT=\"Christmas\">
+The current deputies are: 
+Kass, Milady, Kel, Bladestorm, Blackfyre<P>
 
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel6.gif\">Yep, some of the deps, (notably Milady and Blackfyre as far as I know) did
-some booboo\'s and I haven\'t had the time yet to fix everything. Sorry \'bout
-that.<P>
-
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel7.gif\">Me and the deps wish everyone on the game a Merry Christmas and a Happy New
-Year!!!<P><Center><IMG
-SRC=\"http://lok.il.fontys.nl/pictures/christmas/Xmas1a.gif\"></Center><P><I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
+<IMG SRC=\"/images/christmas/noel6.gif\" ALT=\"Christmas\">
+Me and the deps wish everyone on the game a Merry Christmas and a Happy New
+Year!!!<P><Center><IMG SRC=\"/images/christmas/Xmas1a.gif\"></Center><P>
+<I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
 
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel6.gif\"><I>To contact a Deputy, report a bug, contact Karn, or use email, <A
-HREF="http://lok.il.fontys.nl/karchan/help/faq.html#38">click here</A>.</I>
+<IMG SRC=\"/images/christmas/noel7.gif\" ALT=\"Christmas\">
+<I>To contact a Deputy, report a bug, contact Karn, or use email, <A
+HREF=\"http://www.karchan.org/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
 
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel7.gif\"><I>Please read <A
-HREF="http://lok.il.fontys.nl/karchan/help/thelaw.html"><FONT
+<IMG SRC=\"/images/christmas/noel5.gif\" ALT=\"Christmas\">
+<I>Please read <A
+HREF=\"http://www.karchan.org/karchan/help/thelaw.html\" TARGET=\"_blank\"><FONT
 COLOR=red>The LAW (the most important Rules and Regulations of the game)</FONT></A>.</I>
 <P>
 
-<IMG SRC="\http://lok.il.fontys.nl/pictures/christmas/noel6.gif\">If you are new to this game, and need help, please type <B>help</B> for a
+<IMG SRC=\"/images/christmas/noel6.gif\" ALT=\"Christmas\">
+If you are new to this game, and need help, please type <B>help</B> for a
 listing 
 of the commands, and <B>help &lt;command&gt;</B> for help on a specific 
 command or subject. <P>
 
-' where id=0;
+" where id=0;
 
 END_OF_DATA
 
