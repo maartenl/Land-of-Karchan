@@ -431,8 +431,11 @@ parseXml(mudpersonstruct *fmine)
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"action"))
 		{
 			temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			fmine->action = strdup(temp);
-			xmlFree(temp);
+			if (temp != NULL)
+			{
+				fmine->action = strdup(temp);
+				xmlFree(temp);
+			}
 #ifdef DEBUG	
 			printf("action: %s\n", fmine->action);
 #endif
@@ -440,8 +443,11 @@ parseXml(mudpersonstruct *fmine)
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"command"))
 		{
 			temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			fmine->command = strdup(temp);
-			xmlFree(temp);
+			if (temp != NULL)
+			{
+				fmine->command = strdup(temp);
+				xmlFree(temp);
+			}
 #ifdef DEBUG	
 			printf("%s,%s\n", cur->name, fmine->command);
 #endif
@@ -459,304 +465,352 @@ parseXml(mudpersonstruct *fmine)
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"name"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>19)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp = NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
-			strcpy(fmine->name, temp);
+				if (strlen(temp)>19)
+				{
+					xmlFree(temp);
+					temp = NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
+				strcpy(fmine->name, temp);
 #ifdef DEBUG	
-			printf("%s,%s\n", cur2->name, temp);
+				printf("%s,%s\n", cur2->name, temp);
 #endif
-			xmlFree(temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"password"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>39)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
-			strcpy(fmine->password, temp);
+				if (strlen(temp)>39)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
+				strcpy(fmine->password, temp);
 #ifdef DEBUG	
-			printf("%s,%s\n", cur2->name, fmine->password); //temp);
+				printf("%s,%s\n", cur2->name, fmine->password); //temp);
 #endif
-			xmlFree(temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"address"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>39)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
-			strcpy(fmine->address, temp);
+				if (strlen(temp)>39)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
+				strcpy(fmine->address, temp);
 #ifdef DEBUG	
-			printf("%s,%s\n", cur2->name, fmine->address); //temp);
+				printf("%s,%s\n", cur2->name, fmine->address); //temp);
 #endif
-			xmlFree(temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"cookie"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>79)
+			if (temp != NULL)
 			{
+				if (strlen(temp)>79)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
+				strcpy(fmine->cookie, temp);
+#ifdef DEBUG	
+				printf("%s,%s\n", cur2->name, temp);
+#endif
 				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
-			if (temp == NULL)
-			{
-				fmine->cookie[0]=0;
 			}
 			else
 			{
-				strcpy(fmine->cookie, temp);
+				fmine->cookie[0]=0;
 			}
-#ifdef DEBUG	
-			printf("%s,%s\n", cur2->name, temp);
-#endif
-			xmlFree(temp);
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"frames"))
 		{
 			int i;
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			i = atoi(temp);
-			fmine->frames = i;
+			if (temp != NULL)
+			{
+				i = atoi(temp);
+				fmine->frames = i;
 #ifdef DEBUG	
-			printf("%s,%s\n", cur2->name, temp);
+				printf("%s,%s\n", cur2->name, temp);
 #endif
-			xmlFree(temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"frace"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>9)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>9)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->frace, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->frace, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fsex"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>9)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>9)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fsex, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fsex, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fage"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>14)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>14)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fage, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fage, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"flength"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>14)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>14)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->flength, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->flength, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fwidth"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>15)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>15)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fwidth, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fwidth, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fcomplexion"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>15)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>15)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fcomplexion, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fcomplexion, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"feyes"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>15)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>15)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->feyes, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->feyes, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fface"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>18)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>18)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fface, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fface, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fhair"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>18)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>18)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fhair, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fhair, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fbeard"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>18)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>18)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fbeard, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fbeard, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"farm"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>18)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>18)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->farm, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->farm, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"fleg"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
-			if (strlen(temp)>18)
+			if (temp != NULL)
 			{
-				xmlFree(temp);
-				temp=NULL;
-				xmlFreeDoc(doc);
-				return 0;
-			}
+				if (strlen(temp)>18)
+				{
+					xmlFree(temp);
+					temp=NULL;
+					xmlFreeDoc(doc);
+					return 0;
+				}
 #ifdef DEBUG	
-			printf("newchar: %s, %s\n", cur2->name, temp);
+				printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
-			strcpy(fmine->newchar->fleg, temp);
-			xmlFree(temp);
+				if (fmine->newchar == NULL) {fmine->newchar = create_mudnewcharstruct();}
+				strcpy(fmine->newchar->fleg, temp);
+				xmlFree(temp);
+			}
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"ftitle"))
@@ -765,17 +819,20 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) 
+			if (temp != NULL)
 			{
-				fmine->newchar = create_mudnewcharstruct();
+				if (fmine->newchar == NULL) 
+				{
+					fmine->newchar = create_mudnewcharstruct();
+				}
+				else
+				{
+					if (fmine->newchar->ftitle != NULL) {free(fmine->newchar->ftitle);}
+				}
+				fmine->newchar->ftitle = (char *) malloc(strlen(temp)+1);
+				strcpy(fmine->newchar->ftitle, temp);
+				xmlFree(temp);
 			}
-			else
-			{
-				if (fmine->newchar->ftitle != NULL) {free(fmine->newchar->ftitle);}
-			}
-			fmine->newchar->ftitle = (char *) malloc(strlen(temp)+1);
-			strcpy(fmine->newchar->ftitle, temp);
-			xmlFree(temp);
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"frealname"))
@@ -784,17 +841,20 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) 
+			if (temp != NULL)
 			{
-				fmine->newchar = create_mudnewcharstruct();
+				if (fmine->newchar == NULL) 
+				{
+					fmine->newchar = create_mudnewcharstruct();
+				}
+				else
+				{
+					if (fmine->newchar->frealname != NULL) {free(fmine->newchar->frealname);}
+				}
+				fmine->newchar->frealname = (char *) malloc(strlen(temp)+1);
+				strcpy(fmine->newchar->frealname, temp);
+				xmlFree(temp);
 			}
-			else
-			{
-				if (fmine->newchar->frealname != NULL) {free(fmine->newchar->frealname);}
-			}
-			fmine->newchar->frealname = (char *) malloc(strlen(temp)+1);
-			strcpy(fmine->newchar->frealname, temp);
-			xmlFree(temp);
 			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"femail"))
@@ -803,17 +863,20 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("newchar: %s, %s\n", cur2->name, temp);
 #endif
-			if (fmine->newchar == NULL) 
+			if (temp != NULL)
 			{
-				fmine->newchar = create_mudnewcharstruct();
+				if (fmine->newchar == NULL) 
+				{
+					fmine->newchar = create_mudnewcharstruct();
+				}
+				else
+				{
+					if (fmine->newchar->femail != NULL) {free(fmine->newchar->femail);}
+				}
+				fmine->newchar->femail = (char *) malloc(strlen(temp)+1);
+				strcpy(fmine->newchar->femail, temp);
+				xmlFree(temp);
 			}
-			else
-			{
-				if (fmine->newchar->femail != NULL) {free(fmine->newchar->femail);}
-			}
-			fmine->newchar->femail = (char *) malloc(strlen(temp)+1);
-			strcpy(fmine->newchar->femail, temp);
-			xmlFree(temp);
 			temp = NULL;
 		}
 		cur2 = cur2->next;	
