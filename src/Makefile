@@ -40,7 +40,7 @@ OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
-wholist personal_info clearcharacters cookies/libcookies.a
+wholist personal_info clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -48,7 +48,7 @@ all: $(TARGETS)
 cgic.o: cgic.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c cgic.c
 
-mud.o: mud.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
+mud.o: mud.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c 
 
 newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
@@ -75,8 +75,11 @@ guild.o: guild.c mud-lib.o typedefs.o userlib.o
 mud-lib2.o: mud-lib2.c guild.o mud-lib.o typedefs.o userlib.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib2.c 
 
-mud-lib3.o: mud-lib3.c mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
+mud-lib3.o: mud-lib3.c parser.o mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib3.c
+
+parser.o: parser.c mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c parser.c
 
 userlib.o: userlib.c typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c userlib.c 
@@ -87,7 +90,7 @@ typedefs.o: typedefs.c
 mudclient.o: cgic.o mudclient.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c
 
-mudserver.o: mudserver.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
+mudserver.o: mudserver.c mud-lib2.o parser.o mud-lib3.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudserver.c 
 
 #--- Binary executables are compiled below...
@@ -99,16 +102,16 @@ enter: enter.o mud-lib.o typedefs.o userlib.o cgic.o enter.c
 	$(CC) $(COPTS) -o enter cgic.o typedefs.o userlib.o mud-lib.o enter.o $(LIBDIR) $(OPTIONS)
 
 mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
-	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR) $(INCLUDES) $(OPTIONS)
 
 newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c 
 	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR) $(OPTIONS)
 
-mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o guild.c cgic.o mud.c enter newchar 
-	$(CC) $(COPTS) -o mud cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o mud.o $(LIBDIR) $(OPTIONS) 
+mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
+	$(CC) $(COPTS) -o mud cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
 
-mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o guild.c cgic.o mudserver.c enter newchar 
-	$(CC) $(COPTS) -o mudserver cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o mudserver.o $(LIBDIR) $(OPTIONS) 
+mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mudserver.c enter newchar 
+	$(CC) $(COPTS) -o mudserver cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mudserver.o $(LIBDIR) $(OPTIONS) 
 
 #--- Compilation of frame-binaries
 
@@ -238,6 +241,6 @@ install: all
 	@chmod o= $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*
 	@chmod g=x $(INSTALLDIR)*
-  @chown karchan:karchan $(INSTALLDIR)*
+   @chown karchan:karchan $(INSTALLDIR)*
 	@echo "Installation done."
 
