@@ -29,6 +29,7 @@ package mmud;
 
 /* imports */
 import java.net.ServerSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -67,7 +68,14 @@ public class Main
 			Constants.logger.info("Loading user commands...");
 			Constants.setUserCommands(Database.getUserCommands());
 			Constants.logger.info("Creating Server Socket...");
-			myServerSocket = new ServerSocket(Constants.mudportnumber);
+			InetAddress myAddress = 
+				("all".equals(Constants.mudhost) ? null :
+				InetAddress.getByName(Constants.mudhost));
+			myServerSocket = new ServerSocket(
+				Constants.mudportnumber,
+				0, // default
+				myAddress
+				);
 			while (!Constants.shutdown)
 			{
 				Socket mySocket = myServerSocket.accept();

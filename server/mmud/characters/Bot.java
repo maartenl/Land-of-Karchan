@@ -152,8 +152,8 @@ public class Bot extends Person implements CommunicationListener
 		{
 			Persons.sendMessage(this, aPerson, "%SNAME ignore%VERB2 %TNAME.<BR>");
 			Database.writeLog(aPerson.getName(), 
-				new MudException("unknown comm to bot " + this.getName() +
-				", sentence was \"" + aSentence + "\"."));
+				"unknown comm to bot " + this.getName() +
+				", sentence was \"" + aSentence + "\".");
 		}
 		else
 		{

@@ -11,5 +11,4 @@ debug in a production environment.
 - logonmessage
 - wearing
 - wielding
-- remove news.html
 - add %SLONG, %TLONG

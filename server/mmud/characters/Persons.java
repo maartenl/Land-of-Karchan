@@ -367,7 +367,8 @@ public final class Persons
 	/**
 	 * room communication method to everyone in the room. The message
 	 * is not parsed.
-	 * @param aRoom the room that is to display the message
+	 * @param aRoom the room that is to display the message. If the room is
+	 * null, do not do anything.
 	 * @param aMessage the message
 	 * @see mmud.characters.Person#writeMessage(java.lang.String) 
 	 */
@@ -375,6 +376,10 @@ public final class Persons
 	{
 		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
 			",aMessage=" + aMessage);
+		if (aRoom == null)
+		{
+			return;
+		}
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);

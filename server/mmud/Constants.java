@@ -166,9 +166,12 @@ public final class Constants
 	/*! identity string of mmserver, sent immediately to client when
 		the client connects */
 	public final static String IDENTITY = "Maartens Mud (MMud) Version " + MMVERSION;
+	public final static int MUDPORTNUMBER = 3339;
+	public final static String MUDHOST = "127.0.0.1";
 
 	// the variables, initialised on defaults
-	public static int mudportnumber = 3339;
+	public static int mudportnumber = MUDPORTNUMBER;
+	public static String mudhost = MUDHOST;
 
 	public static String dbname = DBNAME;
 	public static boolean shutdown = SHUTDOWN;
@@ -1055,6 +1058,7 @@ public final class Constants
             System.out.println("Unable to interpret portnumber");
             e.printStackTrace();
 		}
+		mudhost = theValues.getProperty("host");
 
 		mudfilepath = theValues.getProperty("mudfilepath");
 		mudofflinefile = theValues.getProperty("mudofflinefile");

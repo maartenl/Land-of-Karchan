@@ -35,7 +35,10 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Shout to someone "shout Help!".
+ * Shout to someone "shout Help!". Or just shout in general.
+ * The interesting part about this command is, because shouting is
+ * louder in general than simple talking, that the shout can be heard
+ * in neighbouring rooms.
  */
 public class ShoutCommand extends NormalCommand
 {
@@ -72,6 +75,12 @@ public class ShoutCommand extends NormalCommand
 				Persons.sendMessageExcl(aUser, toChar, "%SNAME shout%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
+				Persons.sendMessage(aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
 				if (toChar instanceof CommunicationListener)
 				{
 					((CommunicationListener) toChar).commEvent(aUser, 
@@ -84,6 +93,12 @@ public class ShoutCommand extends NormalCommand
 			String message = command.substring(5 + 1).trim();
 			Persons.sendMessageExcl(aUser, "%SNAME shout%VERB2 : " + message + "<BR>\r\n");
 			aUser.writeMessage(aUser, "<B>%SNAME shout%VERB2</B> : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
 		}
 		return true;
 	}
