@@ -66,6 +66,7 @@ else
 ?>
 
 <TABLE WIDTH=100%><TR><TD><A HREF="/scripts/admin_problems.php">Report Problems</A>
+</TD><TD><A HREF="/scripts/admin_bugs.php">Bug List</A>
 </TD><TD><A HREF="/scripts/admin_itemlist.php">Item List</A>
 </TD><TD><A HREF="/scripts/admin_banned.php">Banned People</A>
 </TD></TR></TABLE>
