@@ -163,7 +163,7 @@ public class MudSocket extends Thread
 					}
 					catch (Exception e)
 					{
-						Database.writeLog(name, "exception: " + e + " msg: " + e.getMessage());
+						Database.writeLog(name, e + "");
 						Logger.getLogger("mmud").warning(
 							e.getMessage());
 						myOutputStream.println("\n" + e.toString());
@@ -274,7 +274,7 @@ public class MudSocket extends Thread
 			}
 			catch (Exception e)
 			{
-				Database.writeLog("root", "exception: " + e + " msg: " + e.getMessage());
+				Database.writeLog("root", e + "");
 				Logger.getLogger("mmud").warning(
 					e.getMessage());
 				myOutputStream.println(e.toString());
@@ -818,7 +818,7 @@ public class MudSocket extends Thread
 		}
 		catch (MudException e)
 		{
-			Database.writeLog(aUser.getName(), "command: " + aCommand + " exception: " + e + " msg: " + e.getMessage());
+			Database.writeLog(aUser.getName(), "command: " + aCommand + e);
 			throw e;
 		}
 		if (result == null)
