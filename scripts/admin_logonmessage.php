@@ -47,7 +47,7 @@ if (get_cfg_var("magic_quotes_gpc") == "1")
 	$_REQUEST{"message"} = stripslashes($_REQUEST{"message"});
 }
 $result = mysql_query("replace into mm_boardmessages 
-	values(2, \"".$_COOKIE["karchanadminname"]."\", now(),\"".
+	values(2, \"".mysql_escape_string($_COOKIE["karchanadminname"])."\", now(),\"".
 	mysql_escape_string($_REQUEST{"message"})."\")"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());

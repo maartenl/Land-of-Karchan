@@ -50,8 +50,8 @@ function writeLogLong ($dbhandle, $arg, $addendum)
 }
 
 $result = mysql_query("select \"yes\" from mm_admin where name = \"".
-        $_COOKIE["karchanadminname"]."\" and passwd = password(\"".
-		$_COOKIE["karchanadminpassword"]."\") and validuntil >= now()"
+        mysql_escape_string($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
+	mysql_escape_string($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 $good = "no";
@@ -64,8 +64,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 $result = mysql_query("select \"invalid\" from mm_admin where name = \"".
-        $_COOKIE["karchanadminname"]."\" and passwd = password(\"".
-		$_COOKIE["karchanadminpassword"]."\") and validuntil < now()"
+        mysql_escape_string($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
+	mysql_escape_string($_COOKIE["karchanadminpassword"])."\") and validuntil < now()"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))

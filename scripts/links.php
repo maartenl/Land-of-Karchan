@@ -54,8 +54,6 @@ if ((isset($_REQUEST{"linkname"})) &&
 		die("Wrong link type!");
 	}
 
-        $_REQUEST{"url"} = stripslashes($_REQUEST{"url"});
-        $_REQUEST{"linkname"} = stripslashes($_REQUEST{"linkname"});
 	$query = "replace into links 
 		(linkname, url, type, name)
 		select \"".

@@ -42,10 +42,6 @@ Select Statement</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-if (get_cfg_var("magic_quotes_gpc") == "1")
-{
-	$_REQUEST{"select"} = stripslashes($_REQUEST{"select"});
-}
 printf("<PRE>".$_REQUEST{"select"}."</PRE>");
 if (strstr($_REQUEST{"select"}, "mysq") <> false)
 {

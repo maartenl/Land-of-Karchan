@@ -41,7 +41,7 @@ Land of Karchan - Poll
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 // show results
 $result = mysql_query("select * from polls where id=".
-	$_REQUEST{"number"}
+	mysql_escape_string($_REQUEST{"number"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -73,7 +73,7 @@ if ($closed == "1")
 {
 	$result = mysql_query("select count(*) as count 
 		from poll_values 
-		where id=".$_REQUEST{"number"}
+		where id=".mysql_escape_string($_REQUEST{"number"})
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
 	$count = 1;
@@ -84,7 +84,7 @@ if ($closed == "1")
 	printf($count." people voted.<BR>");
 	$result = mysql_query("select count(poll_values.id) as count, poll_choices.choice 
 		from poll_choices, poll_values 
-		where pollid=".$_REQUEST{"number"}." and 
+		where pollid=".mysql_escape_string($_REQUEST{"number"})." and 
 		pollid = poll_values.id and
 		poll_choices.id = poll_values.value 
 		group by poll_choices.id 
@@ -109,7 +109,7 @@ else
 	// show form
 	$result = mysql_query("select * 
 		from poll_choices 
-		where pollid=".$_REQUEST{"number"}."
+		where pollid=".mysql_escape_string($_REQUEST{"number"})."
 		order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
