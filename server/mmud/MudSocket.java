@@ -517,12 +517,16 @@ public class MudSocket extends Thread
 			Logger.getLogger("mmud").info("invalid name " + aName);
 			return Constants.logoninputerrormessage;
 		}
-/*			if (aCommand.matches("(.)*([<applet|<script|java-script|CommandForm])+(.)*"))
-			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDCOMMANDERROR);
-				throw new MudException(Constants.INVALIDCOMMANDERROR);
-			}
-*/
+		if ( (aCommand.toUpperCase().matches("(.)*<APPLET(.)*")) ||
+		   (aCommand.toUpperCase().matches("(.)*<SCRIPT(.)*")) ||
+		   (aCommand.toUpperCase().matches("(.)*JAVA-SCRIPT(.)*")) ||
+		   (aCommand.toUpperCase().matches("(.)*JAVASCRIPT(.)*")) ||
+		   (aCommand.toUpperCase().matches("(.)*COMMANDFORM(.)*")) )
+		{
+			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDCOMMANDERROR);
+			throw new MudException(Constants.INVALIDCOMMANDERROR);
+		}
+
 		if (Database.isUserBanned(aName, aAddress))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERBANNEDERROR);
