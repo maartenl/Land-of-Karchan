@@ -49,7 +49,7 @@ $result = mysql_query("select mm_itemtable.id, mm_items.* from mm_items, mm_item
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow[0]);
-	printf("<b>itemid:</b> %s<BR>", $myrow[1]);
+	printf("<b>itemid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A><BR>", $myrow[1], $myrow[1]);
 	printf("<b>name:</b> %s<BR>", $myrow[2]);
 	printf("<b>adject1:</b> %s<BR>", $myrow[3]);
 	printf("<b>adject2:</b> %s<BR>", $myrow[4]);

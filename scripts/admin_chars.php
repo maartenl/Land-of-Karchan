@@ -47,11 +47,33 @@ $result = mysql_query("select * from mm_usertable where name = \"".$_REQUEST{"ch
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<b>name:</b> %s<BR>", $myrow[0]);
-	printf("<b>address:</b> %s<BR>", $myrow[1]);
-	printf("<b>password:</b> %s<BR>", $myrow[2]);
-	printf("<b>title:</b> %s<BR>", $myrow[3]);
-	printf("<b>realname:</b> %s<BR>", $myrow[4]);
+	printf("<b>name:</b> %s<BR>", $myrow["name"]);
+	printf("<b>address:</b> %s<BR>", $myrow["address"]);
+	printf("<b>password:</b> %s<BR>", $myrow["password"]);
+	printf("<b>title:</b> %s<BR>", $myrow["title"]);
+	printf("<b>realname:</b> %s<BR>", $myrow["realname"]);
+	printf("<b>email:</b> %s<BR>", $myrow["email"]);
+	printf("<b>race:</b> %s<BR>", $myrow["race"]);
+	printf("<b>sex:</b> %s<BR>", $myrow["sex"]);
+	printf("<b>age:</b> %s<BR>", $myrow["age"]);
+	printf("<b>length:</b> %s<BR>", $myrow["length"]);
+	printf("<b>width:</b> %s<BR>", $myrow["width"]);
+	printf("<b>complexion:</b> %s<BR>", $myrow["complexion"]);
+	printf("<b>eyes:</b> %s<BR>", $myrow["eyes"]);
+	printf("<b>face:</b> %s<BR>", $myrow["face"]);
+	printf("<b>hair:</b> %s<BR>", $myrow["hair"]);
+	printf("<b>beard:</b> %s<BR>", $myrow["beard"]);
+	printf("<b>arm:</b> %s<BR>", $myrow["arm"]);
+	printf("<b>leg:</b> %s<BR>", $myrow["leg"]);
+	printf("<b>lok:</b> %s<BR>", $myrow["lok"]);
+	printf("<b>whimpy:</b> %s<BR>", $myrow["whimpy"]);
+	printf("<b>sleep:</b> %s<BR>", $myrow["sleep"]);
+	printf("<b>god:</b> %s<BR>", $myrow["god"]);
+	printf("<b>active:</b> %s<BR>", $myrow["active"]);
+	printf("<b>lastlogin:</b> %s<BR>", $myrow["lastlogin"]);
+	printf("<b>birth:</b> %s<BR>", $myrow["birth"]);
+	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
+	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[21], $myrow[21]);
 }
 
@@ -67,6 +89,20 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
     printf("<b>value:</b> %s ", $myrow[1]);
     printf("<b>value_type:</b> %s<BR>", $myrow[2]);
+}
+
+$result = mysql_query("select * ".
+    " from characterinfo".
+    " where name = \"".$_REQUEST{"char"}."\""
+    , $dbhandle)
+    or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+    printf("<b>imageurl:</b> %s<BR>", $myrow["imageurl"]);
+    printf("<b>homepageurl:</b> %s<BR>", $myrow["homepageurl"]);
+    printf("<b>dateofbirth:</b> %s<BR>", $myrow["dateofbirth"]);
+    printf("<b>cityofbirth:</b> %s<BR>", $myrow["cityofbirth"]);
+    printf("<b>storyline:</b> %s<BR>", $myrow["storyline"]);
 }
 
 printf("<P>");
