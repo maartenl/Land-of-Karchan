@@ -61,6 +61,21 @@ MYSQL getdbconnection()
 	return dbconnection;
 }
 
+mudinfostruct mudinfo;
+
+mudinfostruct 
+getMudInfo()
+{
+	return mudinfo;
+}
+
+void 
+setMudInfo(mudinfostruct amudinfostruct)
+{
+	mudinfo = amudinfostruct;
+}
+
+
 void 
 FatalError(FILE *output, int i, char *description, char *busywith)
 {         

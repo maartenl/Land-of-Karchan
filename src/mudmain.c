@@ -451,9 +451,9 @@ SendMail_Command(char *name, char *password, int room, char **ftokens, char *fco
 	sprintf(logname, "%s%s.log",USERHeader,name);
       		
 	mailbody = (char *) malloc(strlen(fcommand)+2);
-	cgiFormString("mailto", mailto, 99);
-	cgiFormString("mailheader", mailheader, 99);
-	cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
+	//cgiFormString("mailto", mailto, 99);
+	//cgiFormString("mailheader", mailheader, 99);
+	//cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
 		
 	sprintf(sqlstring, "select name from usertable where "
 		"name='%s' and god<2", mailto);
@@ -1339,25 +1339,21 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 
 	junk = (char *) malloc(strlen(command));
 	strcpy(junk, command);
-	tokens[0] = junk;
-	tokens[0] = strtok(junk, " ");
-	if (tokens[0] != NULL) {
-		i = 1;
-		while (i != -1) {
-			tokens[i] = strtok(NULL, " ");
-			i++;
-			if (tokens[i - 1] == NULL) {
-				aantal = i - 1;
-				i = -1;
-			}	/* endif */
-			if (i>95) {
-				aantal = i - 1;
-				i = -1;
-			}	/* endif */
-		}		/* endwhile */
-	}			/* endif */
-
-	if ((strstr(command,"<applet")!=NULL) || (strstr(command,"<script")!=NULL)
+	while ((strlen(junk)>0) && (junk[strlen(junk)-1]==' ')) 
+	{
+		junk[strlen(junk)-1]=0;
+	}
+	
+	if (*command == '\0') 
+	{
+		WriteRoom(name, password, room, 0);
+		free(junk);
+		free(printstr);
+	   	closedbconnection();
+		return 1;
+	}
+	
+		if ((strstr(command,"<applet")!=NULL) || (strstr(command,"<script")!=NULL)
 		|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) 
 	{ 
 		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
@@ -1461,6 +1457,25 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
   	closedbconnection();
 	return 1;
 	}
+
+	tokens[0] = junk;
+	tokens[0] = strtok(junk, " ");
+	if (tokens[0] != NULL) {
+		i = 1;
+		while (i != -1) {
+			tokens[i] = strtok(NULL, " ");
+			i++;
+			if (tokens[i - 1] == NULL) {
+				aantal = i - 1;
+				i = -1;
+			}	/* endif */
+			if (i>95) {
+				aantal = i - 1;
+				i = -1;
+			}	/* endif */
+		}		/* endwhile */
+	}			/* endif */
+
 
 	if (SearchForSpecialCommand(name, password, room)==1)
 	{

@@ -1,15 +1,17 @@
-#	@cp mud $(INSTALLDIR)mud2.cgi
 #
 # MakeFile -- Maarten's Mud Makefile for compiling the binaries
 #
 
 # Directory for installing the mud-cgi-binaries 
+# ---------------------------------------------
 # 	(enter.cgi, newchar.cgi, mudrelogin.cgi, mud.cgi)
 
 # INSTALLDIR = /home/karchan/.html/cgi-bin/
 INSTALLDIR = /home/httpd/cgi-bin/
+
 #
 # Options that can be used to the make command
+# --------------------------------------------
 #
 # make						(normal compilation of all files)
 # make install		(installation og binaries into the correct dir)
@@ -17,6 +19,17 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # make restore		(restores the backup that was created, if the backup was present)
 # make install_scripts    (created the scripts used on the web and installs them)
 
+# 
+# Option for debugging
+# --------------------
+# the DEBUG can be set to an integer value.
+# for instance: '-DDEBUG=1' and consequently recompiling the mud source code
+# will yield a binary with level 1 debug messages added.
+
+DEBUG =
+# -DDEBUG
+
+#
 #------------------------------------------------------------------
 # It is not necessary to modify anything below this line,
 # unless you know what you are doing.
@@ -35,6 +48,7 @@ COPTS = -O2 -m486
 # this header is for Source installations of mysql
 #
 INCLUDES = -I../include -idirafter /usr/local/include/mysql/ 
+XMLINCLUDES = `/usr/bin/xml-config --cflags`
 
 EXEDIR = /home/httpd/cgi-bin
 # this header is for RPM installations of mysql
@@ -43,9 +57,11 @@ EXEDIR = /home/httpd/cgi-bin
 # this header is for Source installations of mysql
 #
 LIBDIR = -L/usr/local/lib/mysql/ 
+XMLLIBDIR = `/usr/bin/xml-config --libs`
+
 OPTIONS = -lm -lmysqlclient 
 
-TARGETS = mud events mudrelogin newchar enter addendumframe leftframe logonframe \
+TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
 wholist charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
 
@@ -56,52 +72,55 @@ cgic.o: cgic.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c cgic.c
 
 mudmain.o: mudmain.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudmain.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudmain.c $(DEBUG)
 
 mud.o: mud.c mudmain.o mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c $(DEBUG)
+
+#mmserver.o: mmserver.c mudmain.o mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
+	#$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mmserver.c 
 
 events.o: events.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c events.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c events.c $(DEBUG)
 
 newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c newchar.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c newchar.c $(DEBUG)
 
 enter.o: enter.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c $(DEBUG)
 
 rolls2: rolls.o typedefs.o userlib.o rolls.c
 	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
 
 rolls.o: rolls.c userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c rolls.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c rolls.c $(DEBUG)
 
 mudrelogin.o: mudrelogin.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudrelogin.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudrelogin.c $(DEBUG)
 
 mud-lib.o: mud-lib.c typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib.c $(DEBUG)
 
 guild.o: guild.c mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c guild.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c guild.c $(DEBUG)
 
 mud-lib2.o: mud-lib2.c guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib2.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib2.c $(DEBUG)
 
 mud-lib3.o: mud-lib3.c parser.o mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib3.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib3.c $(DEBUG)
 
 parser.o: parser.c mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c parser.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c parser.c $(DEBUG)
 
 userlib.o: userlib.c typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c userlib.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c userlib.c $(DEBUG)
 
 typedefs.o: typedefs.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c typedefs.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c typedefs.c $(DEBUG)
 
 mudclient.o: cgic.o mudclient.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c $(DEBUG)
 
 #--- Binary executables are compiled below...
 
@@ -119,6 +138,9 @@ newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c
 
 mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
 	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
+
+mmserver: mmserver.c mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c 
+	$(CC) $(COPTS) -o mmserver mmserver.c mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(OPTIONS) $(INCLUDES) $(XMLINCLUDES) $(XMLLIBDIR)  $(DEBUG)
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o events.c
 	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(OPTIONS) 
@@ -254,18 +276,18 @@ restore: all
 install: all
 	@echo "Installing Mud Binaries..."
 	@echo "  Installing Central Mud CGI..."
-	@cp mud $(INSTALLDIR)mud.cgi
-	@cp mudrelogin $(INSTALLDIR)mudrelogin.cgi
-	@cp enter $(INSTALLDIR)enter.cgi
-	@cp newchar $(INSTALLDIR)newchar.cgi
+	@cp mud $(INSTALLDIR)mud2.cgi
+	@cp mudrelogin $(INSTALLDIR)mudrelogin2.cgi
+	@cp enter $(INSTALLDIR)enter2.cgi
+	@cp newchar $(INSTALLDIR)newchar2.cgi
 	@echo "  Installing Frame CGI..."
-	@cp leftframe $(INSTALLDIR)leftframe.cgi
-	@cp logonframe $(INSTALLDIR)logonframe.cgi
+	@cp leftframe $(INSTALLDIR)leftframe2.cgi
+	@cp logonframe $(INSTALLDIR)logonframe2.cgi
 	@echo "  Installing Frame/Serverpush CGI..."
-	@cp nph-addendum $(INSTALLDIR)nph-addendum.cgi
-	@cp nph-logonframe $(INSTALLDIR)nph-logonframe.cgi
-	@cp nph-leftframe $(INSTALLDIR)nph-leftframe.cgi
-	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe.cgi
+	@cp nph-addendum $(INSTALLDIR)nph-addendum2.cgi
+	@cp nph-logonframe $(INSTALLDIR)nph-logonframe2.cgi
+	@cp nph-leftframe $(INSTALLDIR)nph-leftframe2.cgi
+	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe2.cgi
 	@echo "Setting UIDs for Mud Binaries..."
 	@chmod o=x $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*

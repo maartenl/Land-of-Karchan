@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!ELEMENT root (user, command+)>
+<!ELEMENT user (name, password, frames)>
+<!ELEMENT name (#CDATA)>
+<!ELEMENT password (#CDATA)>
+<!ELEMENT frames (#CDATA)>
+<!ELEMENT command (#CDATA)>
+

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE spec SYSTEM "mud.dtd">
+<root>
+<user>
+<name>Karn</name>
+<password>4796812706958040329412082</password>
+<frames>1</frames>
+</user>
+<command>look around</command>
+</root>

@@ -25,8 +25,63 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
-#include "mudmain.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+
+// include files for socket communication#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+
+// include file for using the syslogd system calls
+#include <syslog.h>
+
 #include "cgic.h"
+
+#define MMPORT 3339 // the port users will be connecting to
+#define MMVERSION "4.01b" // the mmud version in general
+#define MMPROTVERSION "1.0" // the protocol version used in this mud 
+#define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
+
+
+/* attempts to send data over a socket, if not all information is sent.
+will automatically attempt to send the rest.
+@param int socket descriptor
+@param char* message
+@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+*/
+int
+send_socket(int s, char *buf, int *len)
+{
+	int total = 0;	// how many btytes we've sent
+	int bytesleft = *len;	// how many we have left to send
+	int n;
+#ifdef DEBUG
+	printf("[message]: %s\n", buf);
+#endif
+	while (total < *len)
+	{
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1)
+		{
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+	}
+	*len = total;	// return number actually sent here
+	
+	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
+}
+
+
 
 int 
 cgiMain()
@@ -36,6 +91,11 @@ cgiMain()
 	char password[40];
 	char frames[10];
 	char cookiepassword[40];
+	
+	int sockfd, numbytes;
+	char receivebuf[1024], *sendbuf;
+	struct hostent *he;
+	struct sockaddr_in their_addr; // connector's address information
 	
 #ifdef DEBUG
 	command = (char *) malloc(1024);
@@ -66,7 +126,7 @@ cgiMain()
 	if (!strcmp(frames,"1")) {setFrames(0);}
 	if (!strcmp(frames,"2")) {setFrames(1);}
 	if (!strcmp(frames,"3")) {setFrames(2);}
-	WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", name, password, command);
+	//WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", name, password, command);
 #endif	
 
 	if (strcasecmp("quit", command))
@@ -79,14 +139,66 @@ cgiMain()
 		fprintf(cgiOut, "Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
 	}
 	
-	/* below starts basically the entire call to the mudEngine */
+	/* setup socket stuff*/
+	if ((he = gethostbyname("localhost")) == NULL)
+	{
+		perror("gethostbyname");
+		exit(1);
+	}
 	
-	initGameFunctionIndex(); // initialise command index 
-	setMMudOut(cgiOut); // sets the standard output stream of the mud to the filedescriptor as provided by cgic.c
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	{
+		perror("socket");
+		exit(1);
+	}
 	
-	gameMain(command, name, password, cgiRemoteAddr); // the main function THIS IS IT!!!
+	their_addr.sin_family = AF_INET;	// host byte order
+	their_addr.sin_port = htons(MMPORT);	// short, network byte order
+	their_addr.sin_addr = *((struct in_addr *)he->h_addr);
+	memset(&(their_addr.sin_zero), '\0', 8);	//  zero the rest of the struct
 	
-	clearGameFunctionIndex(); // clear command index
+	if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1)
+	{
+		perror("connect");
+		exit(1);
+	}
 	
+	if ((numbytes=recv(sockfd, receivebuf, 1024-1, 0)) == -1)
+	{
+		perror("recv");
+		exit(1);
+	}
+	
+	receivebuf[numbytes] = '\0';
+	printf("Received: %s",receivebuf);
+	sendbuf="<?xml version=\"1.0\"?>\n<!DOCTYPE spec SYSTEM \"mud.dtd\">\n<root>\n<user>\n<name>";numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf=name;numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf="</name>\n<password>";numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf=password;numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf="</password>\n<frames>";numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	
+	sprintf(frames, "%i", getFrames());
+	sendbuf=frames;numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+
+	sendbuf="</frames>\n</user>\n<command>";numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf=command;numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	sendbuf="</command>\n</root>\n";numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+
+	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
+	{
+		receivebuf[numbytes]=0;
+		fprintf(cgiOut, "%s", receivebuf);
+	}
+	close(sockfd);
+
 	free(command); // clear the entered command
 }

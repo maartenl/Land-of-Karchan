@@ -122,6 +122,103 @@ database every time.
 {\par\centering
 \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{cookie.ps}}} \par}
 
+\subsection{MMud Configuration File}
+
+\subsection{Indexed Function Array}
+
+In the old situation the source code consisted of a rather large number of if-functions, 
+in the main method (cgiMain). Each if-function was evaluated, and if found true acted upon, otherwise
+the program would proceed to the next if-function. Once an if function was evaluated to true, 
+it usually happened that that body was executed and followed by a 'KillGame' command that effectively
+stopped executing the program and terminated immediately. This was rather ugly.
+
+In the new situation, we have a new file called mudmain.c, containing the startup 
+method (called gameMain) that returns a neat-o 1 upon success and 0 upon failure. 
+It no longer makes use of if-functions (well, not many of them any way) but makes use of two arrays.
+The one array contains function-pointers (i.e. addresses where functions start in the program code)
+and the second array contains strings. The latter array is alphabetised. This is IMPORTANT!!! It must
+remain alphabetised or the search method will not work correctly.
+
+The search method used on the second array, basically works the same as your average phonebook. 
+You start in the middle and check if you are too far in the book or not far enough. Depending on that 
+evaluation you decide to jump in the middle of the first part, or in the middle of the second part and 
+repeat the process. This enables you to quickly find the appropriate page, without having to go 
+through all the pages individually.
+
+\subsection{Communication Setup}
+Recently the game has been changed to make use of the the wonderfull world 
+of socket programming. It offers a number of advantages to make use of
+my own sockets, instead of relying on apache to start the CGI binaries
+again and again. This is a brief description of how the sockets work.
+
+First of all, we open a 'general socket', which is used to accept incoming
+connections. This socket is bound to the current ip address of the server
+and is running standard on port 3339, unless configured differently in
+the configuration file.
+
+Form then on, every accepted connection will run on it's own. I use the
+command select to keep a list of active sockets that are either waiting,
+reading or writing. Every active socket has a timeout value of about
+2 minutes, unless the frame=4, in which case the timeout value is infinite. 
+
+As it is possible however unlikely that some sockets will be kept alive, it 
+should be possible to deactivate certain sockets from within the game in a sort of
+administration part.
+
+\subsection{Communication Protocol Definition}
+You can verify the entire Protol Definition as put here by simply
+telnetting to my server on port 3339.
+
+Communication Channel has been established...
+\begin{itemize}
+\item send identification string to client
+(contains the name, abbreviation, version number, and datetime of compilation.)
+\item receive XML document from client (see next paragraph)
+\item send entire HTML file back
+\end{itemize}
+Communication Channel has been closed...
+
+\paragraph{MUD DTD}
+
+\begin{verbatim}
+<?xml version="1.0"?>
+<!ELEMENT root (user, command+)>
+<!ELEMENT user (name, password, frames)>
+<!ELEMENT name (#CDATA)>
+<!ELEMENT password (#CDATA)>
+<!ELEMENT frames (#CDATA)>
+<!ELEMENT command (#CDATA)>
+\end{verbatim}
+
+Frames contains a frame number. Possible frame numbers are: 
+
+\begin{itemize}
+\item 1. normal game display (one html file contains everything) 
+\item 2. framed game display (one html file with form input excluded)
+\item 3. serverpush game display (one html file with only room/or other description)
+\item 4. socket game display (dynamic output!!! can keep sending new messages. New descriptions are clearly marked as such)
+\end{itemize}
+
+\paragraph{MUD XML Example}
+
+First tag provides information regarding the version of XML that is being used and the start of the document. 
+The second tag means that this XML adheres to its Document Type Definition called mud.dtd. (Both files are 
+available in this here same docs section). This Mud will always start a document with a <root> tag and always
+end with a </root> tag.
+
+\begin{verbatim}
+<?xml version="1.0"?>
+<!DOCTYPE spec SYSTEM "mud.dtd">
+<root>
+<user>
+<name>Karn</name>
+<password>karnssecretcookiepassword</password>
+<frames>1</frames>
+</user>
+<command>look around</command>
+</root>
+\end{verbatim}
+
 \newpage
 \section{Playing the game}
 \subsection{Character Defaults}
@@ -1439,6 +1536,11 @@ changes on the source code of the mud by using Version Control.
 \subparagraph{database}information storage and retrieval. Information is
 stored within tables inside the database.
 
+\subparagraph{DTD}Document Type Definition, a document that describes how a 
+certain XML document is build. Contains both structure information (what tags
+follow that tags in which sequence) as well as contents types and attributes
+(what kind of information a tag may contain, what attributes a tag can have).
+
 \subparagraph{field}a database object, is contained in a record, has a
 possible value.
 
@@ -1545,6 +1647,10 @@ table can be identified by its primary key.
 \subparagraph{Telnet}A protocol or program to connect to a remote computer,
 called a server, for remote administration/management. See also Secure Shell,
 for it's more robust counterpart
+
+\subparagraph{XML}eXtended Markup Language. Sort of like HTML but more dynamic. 
+It is used in the mud to easily and transparantly communicate between client
+and server.
 
 ... your text goes here ...
 \end{document}

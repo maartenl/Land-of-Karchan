@@ -65,11 +65,11 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-//#define ServerName "www.karchan.org"
-//#define CGIName    "/cgi-bin/"
-
-#define ServerName "zeus"
+#define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
+
+//#define ServerName "zeus"
+//#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
 #define UserFile            USERHeader"users.txt"
@@ -101,12 +101,12 @@ maartenl@il.fontys.nl
 #define NewcharExe          "http://www.il.fontys.nl/usr-bin/newchar"
 #define MudreloginExe       "http://www.il.fontys.nl/usr-bin/mudrelogin"*/
 
-#define MudExe              "http://"ServerName CGIName"mud.cgi"
-#define EnterExe            "http://"ServerName CGIName"enter.cgi"
-#define NewcharExe          "http://"ServerName CGIName"newchar.cgi"
-#define MudreloginExe       "http://"ServerName CGIName"mudrelogin.cgi"
-#define LogonframeExe       "http://"ServerName CGIName"logonframe.cgi"
-#define LeftframeExe       "http://"ServerName CGIName"leftframe.cgi"
+#define MudExe              "http://"ServerName CGIName"mud2.cgi"
+#define EnterExe            "http://"ServerName CGIName"enter2.cgi"
+#define NewcharExe          "http://"ServerName CGIName"newchar2.cgi"
+#define MudreloginExe       "http://"ServerName CGIName"mudrelogin2.cgi"
+#define LogonframeExe       "http://"ServerName CGIName"logonframe2.cgi"
+#define LeftframeExe       "http://"ServerName CGIName"leftframe2.cgi"
 
 #define FirstNormalChar     25648
 #define FirstNormalItem     91584
@@ -142,6 +142,22 @@ typedef struct
 	int light_source;
 } roomstruct;
 
+/* this structure is used to provide valuable information about the current status of both the socket as well as the daemon
+*/
+typedef struct
+{
+	char hostname[256];
+	char hostip[256];
+	char domainname[256];
+	char protversion[10];
+	char mmudversion[10];
+	char mmudtime[20];
+	char mmuddate[20];
+	time_t mmudstartuptime;
+	int number_of_connections;
+	int number_of_timeouts;
+	int number_of_current_connections;
+} mudinfostruct;
 
 /* sets the FileDescriptor used to output any information to the user 
    Function usually called at the start of the mudMain call.
@@ -153,27 +169,34 @@ void setMMudOut(FILE *aFileDescriptor);
 */
 FILE *getMMudOut();
 
-void setFrames(int i);
 /* set the Frame variable to a certain value
    0 = normal operation
    1 = operation with frames
    2 = operation with frames and server push */
+void setFrames(int i);
    
-int getFrames();
 /* get the Frame currently in use
    0 = normal operation
    1 = operation with frames
    2 = operation with frames and server push */
+int getFrames();
 
-MYSQL getdbconnection();
 /* return the currently in use database connection handle */
+MYSQL getdbconnection();
 
-void opendbconnection();
 /* open a connection to the database DatabaseName 
    using DatabaseLogin and DatabasePassword */
+void opendbconnection();
    
-void closedbconnection();
 /* close the connection to the database */
+void closedbconnection();
+
+/* return the structure that contains all the mud information (either for mutating or for displaying) */
+mudinfostruct getMudInfo();
+
+/* set the structure to something else. The way these methods work is usually, you get the structure, you change
+it and you put it back. */
+void setMudInfo(mudinfostruct amudinfostruct);
 
 void 
 FatalError(FILE *output, int i, char *description, char *busywith);
