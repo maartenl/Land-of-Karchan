@@ -69,7 +69,7 @@ public class AskCommand extends NormalCommand
 			else
 			{
 				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				Persons.sendMessage(aUser, toChar, "%SNAME ask%VERB2 %TNAME: " + message + "<BR>\r\n");
+				Persons.sendMessageExcl(aUser, toChar, "%SNAME ask%VERB2 %TNAME: " + message + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
 				toChar.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
 			}
