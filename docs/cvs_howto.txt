@@ -47,4 +47,7 @@ cvs -d :pserver:karn@linux706.dn.net:/karchan2/mud/cvsroot login
 Then use all the old standard cvs commands as explained above:
 cvs -d :pserver:karn@linux706.dn.net:/karchan2/mud/cvsroot checkout docs
 
+Then use the following command to log out again:
+cvs -d :pserver:karn@linux706.dn.net:/karchan2/mud/cvsroot logout         
+(very important!!! otherwise some files with your password for your host might be mistakenly left behind)
 
