@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/mysql --password=pagedown mud <<END_OF_DATA
+/usr/bin/mysql --password=`cat /karchan2/mud/sql/password.sql` mud <<END_OF_DATA
 
 update rooms set contents='<H1><IMG
 SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/kamer.gif\">Karn and

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/karchan2/servers/mysql/bin/mysql -h 216.167.59.38 -u karn --password=pagedown -s mud <<END_OF_DATA
+/karchan2/servers/mysql/bin/mysql -h 216.167.59.38 -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
 #
 # optimize all tables
 #

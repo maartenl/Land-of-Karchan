@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/mysql --password=pagedown -s mud <<END_OF_DATA
+/usr/bin/mysql --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
 #
 # update logonmessage
 #
