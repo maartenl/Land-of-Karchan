@@ -10,6 +10,10 @@ Adding files to the directories:
 cvs add <filename>
 cvs commit <filename>
 
+Removing files from directory:
+cvs remove <filename>
+cvs commit <filename>
+
 Checking logs and history of certain files:
 cvs log <filename>
 cvs history <filename>
