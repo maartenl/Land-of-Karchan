@@ -32,7 +32,8 @@ I have recently started a project at
 better facilities to anyone wishing to contribute. You may find my specific
 project (called MMud) both
 <A HREF=\"http://mmud.sourceforge.net\">here</A> and 
-<A HREF=\"http://sourceforge.net/projects/mmud\">here</A>.<P>
+<A HREF=\"http://sourceforge.net/projects/mmud\">here</A>. One
+of the facilities is for example to submit <I>bug reports</I>.<P>
 Several people reported that <I>creating new characters</I> did not seem
 to work. I checked it out, and they were right. It seems
 that the mud had some problems dealing with <I>empty</I> fields. Fixed it.
