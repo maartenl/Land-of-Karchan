@@ -77,7 +77,7 @@ char				*gameCommands[] =
 	"inventory",
 	"l",
 	"listmail",
-	//"look", commented out until clear what the problem is.
+	"look", 
 	"magic",
 	"mail",
 	"me",
@@ -1194,7 +1194,7 @@ initGameFunctionIndex()
 	gameFunctionArray[theNumberOfFunctions++] = &Help_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Inventory_Command;
-	//gameFunctionArray[theNumberOfFunctions++] = &Look_Command; commented out until clear what the probkem is.
+	gameFunctionArray[theNumberOfFunctions++] = &Look_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &ListMail_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Look_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &MifGuild_Command;
@@ -1255,7 +1255,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
-
+	
 	if (SearchBanList(faddress, name)) 
 	{
 		BannedFromGame(name, faddress);
@@ -1329,7 +1329,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	
 	mysql_free_result(res);
 
-	junk = (char *) malloc(strlen(command));
+	junk = (char *) malloc(strlen(command)+1);
 	strcpy(junk, command);
 	while ((strlen(junk)>0) && (junk[strlen(junk)-1]==' ')) 
 	{

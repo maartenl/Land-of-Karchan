@@ -1,4 +1,4 @@
-/*----------------------------------p---------------------------------------
+/*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
@@ -83,6 +83,7 @@ void signalhandler(int signum)
  * this function will be run when the process receives a SIGTERM signal
  * and will attempt to write the current command,username,frames to the syslog
  * for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
+ * This function also immediately terminates this process by means of abort()
  */
 void emergency_signalhandler(int signum)
 {

@@ -40,7 +40,11 @@ DEBUG = -DDEBUG
 # $(OPTIONS) $(LIBDIR) $(INCLUDES)
 
 CC = gcc
-COPTS = -O2 -m486
+# the -g option is to compile debugging info into the object files
+#
+# COPTS = -O2 -m486
+COPTS = -g -m486
+
 # this header is for RPM installations of mysql
 #
 # INCLUDES = -I../include -idirafter /usr/include/mysql/ 
@@ -58,7 +62,12 @@ EXEDIR = /home/httpd/cgi-bin
 LIBDIR = -L/usr/local/lib/mysql/ 
 XMLLIBDIR = `/usr/bin/xml-config --libs`
 
-OPTIONS = -lm -lmysqlclient 
+# the -lefence option is strictly for debugging purposes
+# it enables ElectricFence which is used to detect
+# general memory allocation errors (malloc)
+#
+# OPTIONS = -lm -lmysqlclient
+OPTIONS = -lm -lmysqlclient -lefence
 
 TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
