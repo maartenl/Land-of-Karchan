@@ -18,11 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Maarten van Leunen
-Driek van Erpstraat 9
-5341 AK Oss
+Appelhof 27
+5345 KA Oss
 Nederland
 Europe
-maartenl@il.fontys.nl
+maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 /*
 V 1. implement TERRIBLE DEGREE incidents.
@@ -2034,7 +2034,7 @@ main(int cntp, char **prm)
 		printf("  -l <filename>            redirect all logging output to <filename>\n");
 		printf("                           (default stdout)\n");
 		printf("  -h/--help                display this help and exit\n\n");
- 		printf("Report bugs to maartenl@il.fontys.nl\n");
+ 		printf("Report bugs to maarten_l@yahoo.com\n");
  		return 0;
 	}
 	

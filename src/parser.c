@@ -18,11 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA02111-1307, USA.
 
 Maarten van Leunen
-Driek van Erpstraat 9
-5341 AK Oss
-ederland
+Appelhof 27
+5345 KA Oss
+Nederland
 Europe 
-maartenl@il.fontys.nl
+maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include <string.h>
