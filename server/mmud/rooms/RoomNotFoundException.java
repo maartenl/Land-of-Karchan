@@ -52,7 +52,7 @@ public class RoomNotFoundException extends RoomException
 
 	/**
 	 * constructor for creating a exception with a message.
-	 * @param aString the string containing the message
+	 * @param aMessage the string containing the message
 	 */
 	public RoomNotFoundException(String aMessage)
 	{

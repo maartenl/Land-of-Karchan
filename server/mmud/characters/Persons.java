@@ -217,7 +217,7 @@ public final class Persons
 	 * @param aEmail an email address of the person
 	 * @param aTitle the title of the character
 	 * @param aRace the race of the character
-	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aSex the gender of the character (male or female)
 	 * @param aAge the age of the character (young, very young, old,
 	 * very old, etc.)
 	 * @param aLength the length of the character (ex. tall)

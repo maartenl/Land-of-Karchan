@@ -107,7 +107,7 @@ public class Room implements Executable
 
 	/**
 	 * Sets the room that is directly north.
-	 * @param aSouth the room to the north.
+	 * @param aNorth the room to the north.
 	 */
 	public void setNorth(Room aNorth)
 	{
@@ -117,7 +117,7 @@ public class Room implements Executable
 
 	/**
 	 * Sets the room that is directly east.
-	 * @param aSouth the room to the east.
+	 * @param aEast the room to the east.
 	 */
 	public void setEast(Room aEast)
 	{
@@ -127,7 +127,7 @@ public class Room implements Executable
 
 	/**
 	 * Sets the room that is directly west.
-	 * @param aSouth the room to the west.
+	 * @param aWest the room to the west.
 	 */
 	public void setWest(Room aWest)
 	{
@@ -137,7 +137,7 @@ public class Room implements Executable
 
 	/**
 	 * Sets the room that is directly up.
-	 * @param aSouth the room to the up.
+	 * @param aUp the room to the up.
 	 */
 	public void setUp(Room aUp)
 	{
@@ -147,7 +147,7 @@ public class Room implements Executable
 
 	/**
 	 * Sets the room that is directly down.
-	 * @param aSouth the room to the down.
+	 * @param aDown the room to the down.
 	 */
 	public void setDown(Room aDown)
 	{

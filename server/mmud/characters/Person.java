@@ -83,7 +83,7 @@ public class Person implements simkin.Executable
 	 * @param aName the name of the character
 	 * @param aTitle the title of the character
 	 * @param aRace the race of the character
-	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aSex the gender of the character (male or female)
 	 * @param aAge the age of the character (young, very young, old,
 	 * very old, etc.)
 	 * @param aLength the length of the character (ex. tall)

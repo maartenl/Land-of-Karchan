@@ -34,8 +34,7 @@ public class InvalidMailException extends MailException
 {
 
 	/**
-	 * constructor for creating a exception with a message.
-	 * @param aString the string containing the message
+	 * constructor for creating a exception.
 	 */
 	public InvalidMailException()
 	{

@@ -43,7 +43,7 @@ public class MethodDoesNotExistException extends MudException
 
 	/**
 	 * constructor for creating a exception with a message.
-	 * @param aString the string containing the message
+	 * @param aMessage the string containing the message
 	 */
 	public MethodDoesNotExistException(String aMessage)
 	{

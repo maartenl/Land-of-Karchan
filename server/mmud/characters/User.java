@@ -72,7 +72,7 @@ public class User extends mmud.characters.Person
 	 * @param aEmail an email address of the person
 	 * @param aTitle the title of the character
 	 * @param aRace the race of the character
-	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aSex the gender of the character (male or female)
 	 * @param aAge the age of the character (young, very young, old,
 	 * very old, etc.)
 	 * @param aLength the length of the character (ex. tall)
@@ -91,7 +91,7 @@ public class User extends mmud.characters.Person
 	 * @param aWhimpy the boundary of the general condition of the
 	 * character. If the condition worsens beyond this, the character will
 	 * automatically flee from a fight.
-	 * @param boolean aPkill wether or not this character is allowed
+	 * @param aPkill wether or not this character is allowed
 	 * to kill other players or be killed by other players.
 	 * @param aDrinkstats describes the state of thirst, negative values
 	 * usually mean intoxication.
@@ -183,7 +183,7 @@ public class User extends mmud.characters.Person
 	 * @param aEmail an email address of the person
 	 * @param aTitle the title of the character
 	 * @param aRace the race of the character
-	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aSex the gender of the character (male or female)
 	 * @param aAge the age of the character (young, very young, old,
 	 * very old, etc.)
 	 * @param aLength the length of the character (ex. tall)

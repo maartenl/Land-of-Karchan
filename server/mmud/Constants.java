@@ -667,7 +667,7 @@ public final class Constants
 		theDefaults.setProperty("mudcopyright", "&copy; Copyright Maarten van Leunen");
 		theDefaults.setProperty("logginglevel", "all");
 
-		theCommandStructure.put("bow", new BowCommand("bow( to (\\w)+)?"));
+		theCommandStructure.put("bow", new BowCommand("bow( to (\\w)+)?( (\\w)+)?"));
 		theCommandStructure.put("me", new MeCommand("me .+"));
 		theCommandStructure.put("quit", new QuitCommand("quit"));
 		theCommandStructure.put("sleep", new SleepCommand("sleep"));

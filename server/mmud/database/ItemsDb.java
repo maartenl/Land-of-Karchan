@@ -309,7 +309,7 @@ public class ItemsDb
 	/**
 	 * Returns a bulleted list of all items visible in a room.
 	 * @param aRoom room object that has a number of visible items.
-	 * @param String containing a list of items visible in the room.
+	 * @return String containing a list of items visible in the room.
 	 */
 	public static String getInventory(Room aRoom)
 	{
@@ -358,7 +358,7 @@ public class ItemsDb
 	/**
 	 * Returns a bulleted list of all items visible in a container.
 	 * @param aContainer item object that has a number of visible items.
-	 * @param String containing a list of items visible in the room.
+	 * @return String containing a list of items visible in the room.
 	 */
 	public static String getInventory(Item aContainer)
 	{
@@ -666,7 +666,7 @@ public class ItemsDb
 	 * Attention! No checking takes place
 	 * wether or not the item is suitable to be transferred.
 	 * @param anItem the item to be transferred
-	 * @param aUser the user who needs to receive the item in his/her
+	 * @param aPerson the person who needs to receive the item in his/her
 	 * inventory.
 	 * @throws ItemDoesNotExistException when we were unable to transfer the item.
 	 */
