@@ -75,19 +75,19 @@ setMudInfo(mudinfostruct amudinfostruct)
 	mudinfo = amudinfostruct;
 }
 
-int shutdown = 0;
+int game_shutdown = 0;
 
 int isShuttingdown()
 {
-	return shutdown;
+	return game_shutdown;
 }
 
 void setShutdown(int aOffset)
 {
-	shutdown += aOffset;
-	if (shutdown < 0) 
+	game_shutdown += aOffset;
+	if (game_shutdown < 0) 
 	{			
-		shutdown = 0;
+		game_shutdown = 0;
 	}
 }
 
@@ -214,7 +214,7 @@ opendbconnection()
 	if (!(mysql_real_connect(&dbconnection, "localhost", DatabaseLogin,DatabasePassword, DatabaseName, 0, NULL, 0)))
 	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
-	}
+	}   
 }
 
 void
@@ -229,28 +229,17 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 	MYSQL_ROW row;
 	uint i = 0;
  
-//	if (!(mysql_connect(&dbconnection,"localhost",DatabaseLogin,DatabasePassword))) 
-//		exiterr(1, "error establishing connection with mysql", &dbconnection);
- 
-//	if (mysql_select_db(&dbconnection,DatabaseName))
-//		exiterr(2, "error opening database", &dbconnection);
-
 	if (mysql_query(&dbconnection,sqlstring))
 		exiterr(3, sqlstring, &dbconnection);
  
 	if (!(res = mysql_store_result(&dbconnection)) && mysql_field_count(&dbconnection))
 		exiterr(4, sqlstring, &dbconnection);
-                    
-//	if (!mysql_eof(res))
-//		exiterr(5, sqlstring, &dbconnection);
- 
+           	
 	if (affected_rows!=NULL)
 	{
 		*affected_rows = mysql_affected_rows(&dbconnection);
 	}
 
-	//mysql_free_result(res);
-//	mysql_close(&dbconnection);
 	return res;
 }
 
