@@ -36,7 +36,7 @@ OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
-wholist personal_info clearcharacters
+wholist charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -169,11 +169,29 @@ wholist.o: wholist.c
 wholist: wholist.o
 	$(CC) $(COPTS) -o wholist wholist.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
 
-personal_info.o: personal_info.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c personal_info.c 
+charactersheet.o: charactersheet.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c charactersheet.c 
 
-personal_info: personal_info.o cgic.o
-	$(CC) $(COPTS) -o personal_info cgic.o personal_info.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+charactersheet: charactersheet.o cgic.o
+	$(CC) $(COPTS) -o charactersheet cgic.o charactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+
+charactersheets.o: charactersheets.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c charactersheets.c 
+
+charactersheets: charactersheets.o cgic.o
+	$(CC) $(COPTS) -o charactersheets cgic.o charactersheets.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+
+editcharactersheet.o: editcharactersheet.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c editcharactersheet.c 
+
+editcharactersheet: editcharactersheet.o cgic.o
+	$(CC) $(COPTS) -o editcharactersheet cgic.o editcharactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+
+submitcharactersheet.o: submitcharactersheet.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c submitcharactersheet.c 
+
+submitcharactersheet: submitcharactersheet.o cgic.o
+	$(CC) $(COPTS) -o submitcharactersheet cgic.o submitcharactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
 
 clearcharacters.o: clearcharacters.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c clearcharacters.c 
