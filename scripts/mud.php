@@ -53,7 +53,20 @@ maarten_l@yahoo.com
 		fgets ($fp,128); //  frames
 		fputs ($fp, $_REQUEST{"frames"}."\n");
 		fgets ($fp,128); // command
-		fputs ($fp, $_REQUEST{"command"}."\n");
+		if ($_REQUEST{"command"} == "sendmail")
+		{
+			$foo = strlen($_REQUEST{"mailheader"});
+			fputs ($fp, "sendmail "
+				.$_REQUEST{"mailto"}." "
+				.$foo." "
+				.$_REQUEST{"mailheader"}." "
+				.$_REQUEST{"mailbody"}
+				."\n");
+		}
+		else
+		{
+			fputs ($fp, $_REQUEST{"command"}."\n");
+		}
 		fputs ($fp, ".\n");
 		$cookie = fgets ($fp,128);
 		if (strstr($cookie, "sessionpassword=") != FALSE)
