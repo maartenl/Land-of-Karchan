@@ -25,6 +25,16 @@ The current deputies are:
 Kass, Desdamona, Crissy, Legolas<P>
 
 <HR>
+Thursday, May 20, 00:27<p>
+Following stuff has been fixed (I hope):
+<ul><li>cannot send mudmail to persons active in the game
+<li>communication used to have different layout
+<li>the titles do not work
+<li>slashes are added when people use \'.
+<li>the external wholist doesn\'t work.
+</ul>
+<I>Karn</I>
+<HR>
 Monday, May 3, 23:59<p>
 Am about to go on holiday to visit my brother in Italy. When I get back
 I plan on installing the new Java version of the mud, wether it is 
