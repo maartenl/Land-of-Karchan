@@ -65,10 +65,10 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-//#define ServerName "www.karchan.org"
+#define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
 
-#define ServerName "zeus"
+//#define ServerName "zeus"
 //#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
@@ -195,6 +195,11 @@ int getTokenAmount();
 */
 void setTokens(char **ftokens);
 
+/* get the index of the token matching the description
+	returns -1 if not found
+*/
+int getTokenIndex(char *ftoken);
+   
 /* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
 */
 char *getToken(int i);

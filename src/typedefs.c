@@ -118,6 +118,23 @@ setTokens(char **ftokens)
 	tokens = ftokens;
 }
 
+/* get the index of the token matching the description
+	returns -1 if not found
+*/
+int
+getTokenIndex(char *ftoken)
+{
+	int i;
+	for (i=0; i<tokenamount; i++)
+	{
+		if (!strcasecmp(ftoken, tokens[i]))
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 /* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
 */
 char *
