@@ -640,9 +640,9 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	tempstr = composeSqlStatement("select commands.id, commands.name, commands.method_name, commands.args, methods.src"
 	" from commands, tmp_usertable user, methods"
 	" where commands.callable != 0 "
-	" and \"%s\" like commands.command "
+	" and \"%x\" like commands.command "
 	" and (commands.room = 0 or commands.room = user.room)"
-	" and user.name = \"%s\" "
+	" and user.name = \"%x\" "
 	" and methods.name = commands.method_name "
 	,command, name);
 	res=SendSQL2(tempstr, NULL);
