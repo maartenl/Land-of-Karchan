@@ -96,20 +96,20 @@ int isSignalCaught()
  */
 void signalhandler(int signum)
 {
-	syslog(LOG_INFO, "signal %i caught.", signum);
+	//syslog(LOG_INFO, "signal %i caught.", signum);
 	signal_caught = signum;
 }
 
 /*!
  this function will be run when the process receives a SIGTERM signal
- and will attempt to write the current command,username,frames to the syslog
+ and will attempt to write the current command,username,frames to the //syslog
  for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
  This function also immediately terminates this process by means of abort()
  \param signum int the signal received, standard parameter required for catching signals
  */
 void emergency_signalhandler(int signum)
 {
-	syslog(LOG_INFO, "SIGSEGV signal caught.");
+	//syslog(LOG_INFO, "SIGSEGV signal caught.");
 #ifdef MEMMAN	
 	DeinitMem();
 #endif
@@ -201,7 +201,7 @@ display_mudinfo()
 int
 rereadConfigFiles()
 {
-	syslog(LOG_INFO,"rereading config files.");
+	//syslog(LOG_INFO,"rereading config files.");
 	display_mudinfo();
 	return 1;
 }
@@ -881,7 +881,7 @@ store_in_list(int socketfd, char *buf)
 		temp = mud_realloc(mine->readbuf, mine->bufsize + strlen(buf));
 		if (temp == NULL)
 		{
-			syslog(LOG_ERR, "attempting to realloc storage...");
+			//syslog(LOG_ERR, "attempting to realloc storage...");
 			exit(7);
 		}
 		mine->bufsize += strlen(buf);
@@ -908,7 +908,7 @@ store_in_list(int socketfd, char *buf)
 				temp2 = (char *) mud_malloc(strlen(temp+7)+1, __LINE__, __FILE__);
 				if (temp2 == NULL)
 				{
-					syslog(LOG_ERR, "attempting to mud_malloc storage...");
+					//syslog(LOG_ERR, "attempting to mud_malloc storage...");
 					exit(7);
 				}
 				strcpy(temp2, temp+7);
@@ -938,11 +938,11 @@ store_in_list(int socketfd, char *buf)
 				j = strlen("</HTML>");
 				if (send_socket(socketfd, "</HTML>", &j) == -1)
 				{
-					syslog(LOG_INFO, "error during send to the socket...");
+					//syslog(LOG_INFO, "error during send to the socket...");
 				}
 				if (j != strlen("</HTML>"))
 				{
-					syslog(LOG_INFO, "unable to send all information to the socket...");
+					//syslog(LOG_INFO, "unable to send all information to the socket...");
 				}
 				return 1;
 			}
@@ -1007,6 +1007,9 @@ void *thread_function(void *arg)
 	int nbytes;
 	
 	// necessary for mysql to initialize thread specific variables
+#ifdef DEBUG
+	printf("Starting thread...\n");
+#endif
 	my_thread_init();
 
 	mycontrol = (thread_control *) arg;
@@ -1042,12 +1045,18 @@ void *thread_function(void *arg)
 	}
 	else
 	{
-		syslog(LOG_WARNING, "attempting to receive data from socket");
+#ifdef DEBUG
+		printf("attempting to receive data from socket\n");
+#endif
+		//syslog(LOG_WARNING, "attempting to receive data from socket");
 	}
 	// close socket from our side as well
 	if (close(socketfd) == -1)
 	{
-		syslog(LOG_WARNING, "attempting to close user socket");
+#ifdef DEBUG
+		printf("attempting to close user socket\n");
+#endif
+		//syslog(LOG_WARNING, "attempting to close user socket");
 	}
 	else
 	{
@@ -1076,10 +1085,10 @@ void *thread_function(void *arg)
 	pthread_mutex_unlock(&threadlistmutex);
 	pthread_cond_broadcast(&threadcond);
 	// mud_free(mycontrol)
-
 	// deinitialize the mysql thread-specific variables
 	my_thread_end();
-	pthread_exit(NULL);
+//	pthread_exit(NULL);
+
 	return NULL;
 }
 
@@ -1123,8 +1132,8 @@ main(int argc, char **argv)
 	
 	openlog("mmserver", LOG_CONS || LOG_PERROR || LOG_PID, LOG_USER);
 
-	syslog(LOG_INFO, "%s: Started.", IDENTITY);
-	syslog(LOG_INFO, "reading config file");
+	//syslog(LOG_INFO, "%s: Started.", IDENTITY);
+	//syslog(LOG_INFO, "reading config file");
 	initParam();
 	readConfigFiles("config.xml");
 	
@@ -1143,21 +1152,21 @@ main(int argc, char **argv)
 	fdmax = sockfd;
 	
 	/* below starts basically the entire call to the mudEngine */
-	syslog(LOG_INFO, "opening database connection....");
+	//syslog(LOG_INFO, "opening database connection....");
 	
 	if (!opendbconnection())
 	{
-		syslog(LOG_INFO, "Unable to open database connection...");
-		syslog(LOG_INFO, getdberror());
+		//syslog(LOG_INFO, "Unable to open database connection...");
+		//syslog(LOG_INFO, getdberror());
 		return 1;
 	}
 	if (mysql_thread_safe() != 1)
 	{
-		syslog(LOG_WARNING, "Mysql Client not Thread Safe...");
+		//syslog(LOG_WARNING, "Mysql Client not Thread Safe...");
 	}
 	initGameFunctionIndex(); // initialise command index 
-	syslog(LOG_INFO, "accepting incoming connections...");
-	syslog(LOG_INFO, "starting cleanup thread...");
+	//syslog(LOG_INFO, "accepting incoming connections...");
+	//syslog(LOG_INFO, "starting cleanup thread...");
 	if (pthread_create( &cleanupthread, NULL, cleanupthread_function, NULL) )	
 	{
 		printf("error creating cleanup thread...\n");
@@ -1180,7 +1189,7 @@ main(int argc, char **argv)
 			int i = errno;
 			if (i != EINTR)
 			{
-				syslog(LOG_ERR, "accept : %s\n", strerror(i));
+				//syslog(LOG_ERR, "accept : %s\n", strerror(i));
 				exit(8);
 			}
 		}
@@ -1192,34 +1201,38 @@ main(int argc, char **argv)
 		newthread->next = head;
 		head = newthread;
 		pthread_mutex_unlock(&threadlistmutex);
-		if (pthread_create( &(newthread->mythread), NULL, thread_function, newthread) )
-		{
-			printf("error creating thread...\n");
-			abort();
-		}
+		thread_function(newthread);
+//		if (pthread_create( &(newthread->mythread), NULL, thread_function, newthread) )
+//		{
+//			printf("error creating thread...\n");
+//			abort();
+//		}
+#ifdef DEBUG
+		printf("[Finished with a socket...]\n");
+#endif
 	}
-	syslog(LOG_INFO, "shutdown initiated...");
-	syslog(LOG_INFO, "waiting for threads...");
+	//syslog(LOG_INFO, "shutdown initiated...");
+	//syslog(LOG_INFO, "waiting for threads...");
 	while (head !=NULL)
 	{
 		pthread_join(head->mythread, NULL);
 	}
-	syslog(LOG_INFO, "waiting for ending cleanup thread...");
+	//syslog(LOG_INFO, "waiting for ending cleanup thread...");
 	pthread_join(cleanupthread, NULL);
 	clearGameFunctionIndex(); // clear command index
 	if (close(sockfd) == -1)
 	{
 		// do some error checking
-		syslog(LOG_ERR, "attempting to close main socket...");
+		//syslog(LOG_ERR, "attempting to close main socket...");
 		exit(7);
 	}
 	
-	syslog(LOG_INFO, "closing database connection...");
+	//syslog(LOG_INFO, "closing database connection...");
 	closedbconnection();
 	
 	freeParam();
 
-	syslog(LOG_INFO, "%s: Stopped.", IDENTITY);
+	//syslog(LOG_INFO, "%s: Stopped.", IDENTITY);
 	
 	closelog();
 #ifdef MEMMAN	

@@ -955,20 +955,20 @@ void mud_free(void *ptr)
 			stuff = (char *) malloc (mystruct->size+1);
 			memcpy(stuff, mystruct->pointer, mystruct->size);
 			stuff[mystruct->size]=0;
-			syslog(LOG_INFO, "   Memory pointer %i found: size= %i\n", i, mystruct->size);
-			syslog(LOG_INFO, "                       contents=\" ");
+			//syslog(LOG_INFO, "   Memory pointer %i found: size= %i\n", i, mystruct->size);
+			//syslog(LOG_INFO, "                       contents=\" ");
 			for (j=0;j<mystruct->size;j++)
 			{
-				syslog(LOG_INFO, "%.2i ",(unsigned int)stuff[j]);
+				//syslog(LOG_INFO, "%.2i ",(unsigned int)stuff[j]);
 			}
-			syslog(LOG_INFO,"   Found in: line=%i, file=%s\n", mystruct->line, mystruct->filename);
+			//syslog(LOG_INFO,"   Found in: line=%i, file=%s\n", mystruct->line, mystruct->filename);
 			free(stuff);
 		}
 		i++;
 	}
 	if (result == 0)
 	{
-		        syslog(LOG_INFO, "unable to find allocated memory (%s).", (char *) ptr);
+		        //syslog(LOG_INFO, "unable to find allocated memory (%s).", (char *) ptr);
 	}
 	free((void *)ptr);
 }
