@@ -178,7 +178,7 @@ MIFTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=red>Magitalk</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='mif'");
@@ -331,7 +331,7 @@ RangerTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=green>Naturetalk</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='rangers'");
@@ -360,7 +360,7 @@ SWTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=brown>Pow Wow</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='SW'");
@@ -389,7 +389,7 @@ DepTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=purple>Deputy Line</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where god=1");
@@ -417,7 +417,7 @@ BKTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=#CC0000>Chaos Murmur</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='BKIC'");
@@ -445,7 +445,7 @@ VampTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=#666666>Misty Whisper</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='Kindred'");
@@ -473,7 +473,7 @@ KnightTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=blue>Knight Talk</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='Knights'");
@@ -501,7 +501,7 @@ JusticeTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<span style=background:white><B><Font color=orange>Justice Talk</font></B></span>[%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=orange>Justice Talk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
 	sprintf(temp, "select name from tmp_usertable where guild='Justice'");

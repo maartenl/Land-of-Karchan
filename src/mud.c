@@ -1399,6 +1399,7 @@ cgiMain()
 	}
 
 	/* End Guilds */
+
 	if (!strcmp("mail", troep))
 	{
 		MailFormDumpOnScreen(name, password);
