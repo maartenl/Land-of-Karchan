@@ -248,7 +248,7 @@ forest and the mountains or you can retreat back to the south.<P>
 ' where id=117;
 
 replace into items
-values(145, 'building','small','derilict','slightly',
+values(-166, 'building','small','derilict','slightly',
 0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG SRC="/images/gif/mielikki/house8.gif">
 The Hut</H1> <IMG
 SRC="/images/gif/letters/a.gif" ALIGN=left> slightly derilict, small
@@ -258,17 +258,17 @@ The entire shack seems to be made of decaying grey wood, except for the
 oldfashioned wooden door and the small rectangular glass windows. You might be
 able to look inside or open the door.<P>
 ','', 0,0,0,0,0,0,0,0);
-replace into tmp_itemtable values(145, '','',1,117,'','',0);
+replace into tmp_itemtable values(-166, '','',1,117,'','',0);
 replace into items
-values(146, 'door','oldfashioned','wooden','old',
+values(-167, 'door','oldfashioned','wooden','old',
 0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Door</H1> <IMG
 SRC="/images/gif/letters/t.gif" ALIGN=left>he door seems to be closed. It is
 made of a different wood than the walls of the shack and a brass doorknob is
 visible which can probably be used to <I>open</I> the door.<P>
 ','', 0,0,0,0,0,0,0,0);
-replace into tmp_itemtable values(146, '','',1,117,'','',0);
+replace into tmp_itemtable values(-167, '','',1,117,'','',0);
 replace into items
-values(147, 'windows','small','rectangular','glass',
+values(-168, 'windows','small','rectangular','glass',
 0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Windows</H1> <IMG
 SRC="/images/gif/letters/w.gif" ALIGN=left>indows are visible on both sides
 of the door. They are of the typical rectangular sort, with two small beams
@@ -276,7 +276,7 @@ through the middle probably for support. The glass pane of the windows seems
 to be extremely dirty, and you can hardly make out what is inside, however,
 you might be able to <I>look through</I> the windows.<P>
 ','', 0,0,0,0,0,0,0,0);
-replace into tmp_itemtable values(147, '','',1,117,'','',0);
+replace into tmp_itemtable values(-168, '','',1,117,'','',0);
 
 replace into action
 values(23, "<H1>Looking Through The Windows</H1>
@@ -387,9 +387,9 @@ replace into rooms values(562, 0, 0, 0, 0, 0, 0, '<H1>The
 Room</H1> 
 <IMG SRC="/images/gif/letters/y.gif" ALIGN=left>ou are standing in the
 living room as well as the only room of the residence of the old crone.<P>
-A lot of mess adorns the walls and the tables and the floor all around you.
-Everything from evil looking potions to books to strange implements of which
-you do not know the use. It seems the old crone has forgotten about you.<P>
+A lot of mess adorns the wooden walls and the old low tables and the 
+dirty floor all around you.
+It seems the old crone has forgotten about you.<P>
 To the south is the door that you entered through that would enable you to
 <I>leave</I>.<P>
 ');
@@ -413,5 +413,127 @@ beard, arm, leg, room, god)
 values("Korinase", "Old Crone", "human", "female", "very old", "small",
 "thin", "none", "black-eyed", "none", "black-haired", "none", "none",
 "none", 562, 2);
+
+replace into answers values("Korinase","whiteblodge plague","The Whiteblodge
+Plague, now there is something to tell. Very contagious, that one, and as
+far as I knows, I have the only cure in my posession.");
+replace into answers values("Korinase","diseases","I have all sorts of
+knowledge of diseases. On most of 'em from <I>Whiteblodge Plague</I> to the
+<I>common cold</I> and back again.");
+replace into answers values("Korinase","cure","I have some cures for the
+plagues, however, I don't make cures. I only have receipes. You'll have to
+take it up with Vimrilad. Give my regards to the old codger.");
+replace into answers values("Korinase","vimrilad","Vimlirad? You don't know
+Vimlirad? He's an old Wizard who creates potions on receipe for people. He
+has a magic shop in the City of Pendulis. He's old, but he still knows his
+stuff.");
+replace into answers values("Korinase","i want cure","Sure, deary. Everyone
+wants a cure for this and that. Always they come to me, as if I am not busy
+enough. Well? What do <I>you</I> want a cure for?");
+replace into answers values("Korinase","cure to whiteblodge plague","Ahhh,
+now we're gettin' somewhere. A cure for the Whiteblodge Plague, it is you
+want, is it? I suppose I could do that... Oh, I don't see why not, but
+you'd better look for yourself. The receipe for the cure is in here
+somewhere.<BR>Korinase points at the random mess all around.");
+replace into answers values("Korinase","hello","Hmmm?");
+replace into answers values("Korinase","who are you", "I am Korinase. I live
+here in this house, all by myself, and dedicate myself to the healing powers
+of plants and fungi found in nature\'s rich surroundings.");
+
+/* tables, walls and floor */
+replace into items
+values(-169, 'tables','old','low','wooden',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Tables</H1> <IMG
+SRC="/images/gif/letters/d.gif" ALIGN=left>ifferent tables are scattered
+throughout the room. Each and every one of which is packed with all sorts of
+stuff.<P>
+Upon closer examination, the <I>stuff</I> referred to seems to be evil
+looking potions, old and dusty books, as well as different items that
+facilitate the creation of potions as well. The old woman seems to be a
+regular medicine woman. One of the older books seems to catch your
+attention. It is a leather-bound large heavy old book.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(-169, '','',1,562,'','',0);
+replace into items
+values(-170, 'walls','wooden','simple','wooden',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Walls</H1> <IMG
+SRC="/images/gif/letters/h.gif" ALIGN=left>anging on the walls are different
+utensils for creating potions. Besides that the walls look quite common.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(-170, '','',1,562,'','',0);
+
+replace into items
+values(-171, 'floor','dirty','wooden','old',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Floor</H1> <IMG
+SRC="/images/gif/letters/a.gif" ALIGN=left>pparently the different tables do
+not provide enough surface for everything, and a lot of evil looking
+potions, old and dusty books, as well as different items that facilitate the
+creation of potions are scattered across said floor.<P>
+One of the older books seems to catch your
+attention. It is a leather-bound large heavy old book.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(-171, '','',1,562,'','',0);
+
+replace into items
+values(-172, 'book','leather-bound','large','heavy',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Leather-bound Book</H1> <IMG
+SRC="/images/gif/letters/y.gif" ALIGN=left>ou gently pick up the book,
+looking askance at Korinase to see if that is all righty. She doesn\'t
+appear to pay attention though. It is a leather-bound large heavy old book.
+In large letters on the cover of the book it says "<I>Diseases and
+Cures</I>".<P>
+You should be able to read it.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(-172, '','',1,562,'','',0);
+
+replace into items
+values(53, 'recipe','paper','medicine','old',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1>The Medicine Recipe</H1> <IMG
+SRC="/images/gif/letters/y.gif" ALIGN=left>es! This appears to be just what
+you need. It contains detailed instructions on how to create a potion that
+is said to cure the contagious Whiteblodge Plague. All you need to do is get
+this thing to a responsible Wizard that knows a thing or two and get him or
+her to create the potion for you.<P>
+Too bad you cannot make it yourself. 
+You should be able to read it.<P>
+',' <H1>Reading The Medicine Recipe</H1> <IMG
+SRC="/images/gif/letters/y.gif" ALIGN=left>ou make a valid attempt to read
+the instructions on the paper in order to understand how to make the potion.
+You cannot make out what the language is, probably Latin and ofcourse this
+sort of complicates matters. The only thing you are able to read is a list
+of ingredients required:<P>
+<I><UL>
+<LI>4 leaves Astragalus membranaceous
+<LI>7 leaves of Blessed Thistle
+<LI>2 leaves of Burdock
+<LI>3 leaves of Hyssop
+<LI>7 Fenugreek seeds
+<LI>some Marshmallow
+<li>water
+<LI>vinegar
+<LI>a little lemon juice (in order to stomach the potion)
+</UL></I>
+Besides that the recipe has no knowledge for your eyes.
+You cannot make it yourself. <P>', 0,0,0,0,1,0,0,0);
+
+replace into commands values(806, 'readspecialbook',1,'read % book',
+'readspecialbook','',562);
+replace into methods values(99, 'readspecialbook',
+"sayeveryone(""%me attempts to read an old book called &quot; \\\\
+<I>Diseases and Cures</I>&quot;.<BR>"") 
+say(""You open the book &quot;<I>Diseases and Cures</I>&quot;."")
+if sql(""select 1 from tmp_itemtable where id=53 and belongsto='%me'"")
+	say(""It doesn't seem to contain anything interesting and you toss it \\\\
+down on the table again.<BR>"")
+else
+	say(""Instead of starting to read you notice that there is a loose page \\\\
+in the book and you take it out. It appears to be a recipe for a cure \\\\
+against the Whiteblodge Plague.<BR>"")
+	sql(""insert into tmp_itemtable values(53, '', '%me', 1, 0, '', '', 0)"")
+end
+showstandard
+return
+");
+
 
 END_OF_DATA
