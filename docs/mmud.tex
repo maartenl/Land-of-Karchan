@@ -90,9 +90,7 @@ It's a mistake to run any kind of CGIbinary which is accessible from the
 outside setuid root. It gives crackers the opportunity to enter your system
 using this CGI.
 
-\vspace{0.3cm}
 {\par\centering \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{sourcecode.ps}}} \par}
-\vspace{0.3cm}
 
 \newpage
 \section{Playing the game}
@@ -338,72 +336,14 @@ X.fightable = 1 and
 Y.fightable = 1;
 \end{itemize}
 
-\vspace{0.3cm}
 {\par\centering
 \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{compute_hit.ps}}} \par}
-\vspace{0.3cm}
 
 \subsection{Defense}
 Every item that you use in combat has both a passive defense and an active
 defense. The passive defense is the defence the item gives you without you
 having to do anything (for example, making you hard to hit), the active
 defense is when you actively do something with the item (like parry).
-
-\begin{verbatim}
-Combat Mathmatics
------------------
-						Easy	Most	Hard	VH
-Terrible		-2		-1		0			1
-Poor				-1		0			1			2
-Mediocre		0			1			2			3
-Fair				1			2			3			4
-Good				2			3			4			5
-Great				3			4			5			6
-Superb			4			5			6			7
-
-Terrible	-3
-Poor			-2
-Mediocre	-1
-Fair			0
-Good			1
-Great			2
-Superb		3
-
-- Three die roll
-- Select median (the middle rolled value)
-	Mediocre	Good	Great		=>	Good
-	Poor	Great	Great				=>	Great
-- decides which trait to use
-- modifier from -3,0,+3, depending on armour, wounds, special abilities
-etcetera, modifier, so {(current skill of player + modifier) = total}
--
-
-HURT = > -1 to all actions
-
-Critical Result:
-When throwing dice really badly, one could make the following critical
-table;
-2. blinded for next combat round
-3. fall down
-4. off balance
-5. lose/drop weapon
-6. weapon breaks -> gone forever.
-
-
-Compute Hit
-
-Difficulty
-
-Character has skill-level
-Object has skill-level
-If char.skilllevel>=obj.skillevel => succeed
-if char.skillevel<obj.skilllevel => rolldice
-"appraise" command
-
-Magic
------
-
-- niet cumulatief
 
 Melee:	any combat that involves striking the opponent with a fist or
 hand-held weapon. Any attack from further away is a Ranged attack.
@@ -425,37 +365,23 @@ of a received blow: Scale, armor, and possibly Damage Capacity.
 Total damage factor (or simply damage factor): the attacker's offensive
 damage factor minus the defender's defensive damage factor.
 
-Damage:
-
-- weapon-type
--
-
-relative degree 0 :
-- nobody gets hurt
-- blow on shield
-
-- Opposed action
-- Unopposed action
-
-- Shield
-- Dodge
-- Parry
-
-- All-out attack
-- All-out defense
-
-- bad footing, lower elevation, light in his eyes, kneeling
-
-\end{verbatim}
-
-
-
 \subsection{Illness, injury and Fatigue}
 
 \subsection{Magic}
 
-\section{Maps}
+\section{Generating Miscellaneous Files}
+\subsection{Maps}
 Maps will be created using Gimp. The text contained on the map is "times" and the size = 12.
+
+\subsection{Documentation}
+All documentation of the game will be done in the format of "Latex" (.tex)
+Diagrams will be written with XFIG and included using either the .ps format
+or the .pdf format.
+
+In order to generate the different formats for viewing of the documentation,
+the following commands are available: generate dvi (latex mmud.tex),
+generate pdf (pdflatex mmud.tex), generate ps (pdf2ps mmud.pdf). This would
+generate four different format files: .tex, .dvi, .pdf, .ps .
 
 \newpage
 \section{Appendix A  - Table Description}
@@ -466,7 +392,8 @@ are allowed in some rooms
 questions asked
 \subparagraph{bantable}table containing who is banned, why, by whom, for how
 long at which time, etc.
-\subparagraph{bogus\_itemtable}this is a very strange table that is currently being used as a temporary table for the cleaning up of corpses in the game. (see also the script mysql_healing)
+\subparagraph{bogus\_itemtable}this is a very strange table that is currently being used as a temporary table for the cleaning up of corpses in the game. (see also the script
+mysql\_healing)
 \subparagraph{bottable}table containing the bots, gets copied periodically
 to the tmp\_usertable by a crontab entry in order to add bots that people
 have fought against and killed
@@ -495,85 +422,109 @@ root out bad logonids in entering the game
 that their site/domain is banned
 \subparagraph{usertable}all users
 
+\newpage
+
 \section{Appendix B  - Field Description}
 
 \paragraph{usertable}
 \subparagraph{name}the uniquely identifying name of a player character
 \subparagraph{address}the ip address or host name from where the character
 is being controlled
-\subparagraph{password}
-\subparagraph{title}
-\subparagraph{realname}
-\subparagraph{email}
-\subparagraph{race}
-\subparagraph{sex}
-\subparagraph{age}
-\subparagraph{length}
-\subparagraph{width}
-\subparagraph{complexion}
-\subparagraph{eyes}
-\subparagraph{face}
-\subparagraph{hair}
-\subparagraph{beard}
-\subparagraph{arm}
-\subparagraph{leg}
-\subparagraph{gold}
-\subparagraph{silver}
-\subparagraph{copper}
-\subparagraph{room}
-\subparagraph{lokwhimpy}
-\subparagraph{experience}
-\subparagraph{fightingwho}
-\subparagraph{sleep }
-\subparagraph{punishment}
-\subparagraph{fightable }
-\subparagraph{vitals}
-\subparagraph{fysically }
-\subparagraph{mentally}
-\subparagraph{drinkstats}
-\subparagraph{eatstats}
-\subparagraph{active}
-\subparagraph{lastlogin datetime}
-\subparagraph{birth datetime}
-\subparagraph{god }
-\subparagraph{guild}
-\subparagraph{strength}
-\subparagraph{intelligence}
-\subparagraph{dexterity }
-\subparagraph{constitution}
-\subparagraph{wisdom}
-\subparagraph{practises }
-\subparagraph{training}
-\subparagraph{bandage }
-\subparagraph{alignment }
-\subparagraph{manastats }
-\subparagraph{movementstats }
-\subparagraph{maxmana }
-\subparagraph{maxmove }
-\subparagraph{maxvital}
-\subparagraph{cgiServerSoftware}
-\subparagraph{cgiServerName}
-\subparagraph{cgiGatewayInterface}
-\subparagraph{cgiServerProtocol}
-\subparagraph{cgiServerPort}
-\subparagraph{cgiRequestMethod}
-\subparagraph{cgiPathInfo}
-\subparagraph{cgiPathTranslated}
-\subparagraph{cgiScriptName}
-\subparagraph{cgiRemoteHost}
-\subparagraph{cgiRemoteAddr}
-\subparagraph{cgiAuthType}
-\subparagraph{cgiRemoteUser}
-\subparagraph{cgiRemoteIdent}
-\subparagraph{cgiContentType}
-\subparagraph{cgiAccept}
-\subparagraph{cgiUserAgent}
-\subparagraph{jumpmanaint}
-\subparagraph{jumpmoveint}
-\subparagraph{jumpvital}
+\subparagraph{password}the password of the person attempting to log on
+\subparagraph{title}full title, can contain 254 characters
+\subparagraph{realname}contains real name of player, field is optional
+\subparagraph{email}contains email address of player, field is optional
+\subparagraph{race}contains a race, there are a specific amount of races
+available. They are: fox,
+zombie, wyvern, wolf, turtle, troll, spider, slug, ropegnaw, rabbit, orc, ooze, human, elf, dwarf, duck, deity, chipmunk,
+buggie. Currently the ones that are supported by the logon screen are Dwarf,
+Human and Elf.
+\subparagraph{sex}male or female
+\subparagraph{age}description of age
+\subparagraph{length}description
+\subparagraph{width}description
+\subparagraph{complexion}description
+\subparagraph{eyes}description
+\subparagraph{face}description
+\subparagraph{hair}description
+\subparagraph{beard}description
+\subparagraph{arm}description
+\subparagraph{leg}description
+\subparagraph{gold}amount of gold coins person is carrying
+\subparagraph{silver}amount of silver coins person is carrying
+\subparagraph{copper}amount of copper coins person is carrying
+\subparagraph{room}roomnumber person is staying in at the moment
+\subparagraph{lok}not used
+\subparagraph{whimpy}contains the damage level at which a person will flee from a
+fight. Depends on the current level of damage, and the maximum level of
+damage necessary to kill the person.
+\subparagraph{experience}number providing experience points, 1000 points is
+a level. So: 1324 would mean level 1, 324 experience points and 676 points
+away from levelling to level 2.
+\subparagraph{fightingwho}name of person this person is fighing against
+(attention, if this is person is actually fighting depends on a few factors
+like 'is the enemy in the game', 'is the enemy in the same room', 'is the
+enemy not asleep' etc)
+\subparagraph{sleep}1=asleep, 0=awake
+\subparagraph{punishment}number of ribbits away from normal self, should be
+0
+\subparagraph{fightable}1=cannot be fought by other person(only bot) 0=can
+be fought by anyone
+\subparagraph{vitals}level of damage, see also maxvital
+\subparagraph{fysically}not used
+\subparagraph{mentally}not used
+\subparagraph{drinkstats}level of thirst (negative amounts=drunk) bigger
+then 50 equals full of drink, smaller -59 equals full of alcohol
+\subparagraph{eatstats}level of hunger <=50 otherwise full
+\subparagraph{active}not used anymore
+\subparagraph{lastlogin}last time command in game issued
+\subparagraph{birth}first time logon
+\subparagraph{god}god mode, 0=normal player, 1=god, 2=non-killable bot,
+3=killable bot
+\subparagraph{guild}description of guild, provides a means of ascertaining
+wether or not person has a right to do certain guild commands (known guilds:
+ds, knight, mif, rangers)
+\subparagraph{strength}obvious?
+\subparagraph{intelligence}obvious?
+\subparagraph{dexterity}obvious?
+\subparagraph{constitution}obvious?
+\subparagraph{wisdom}obvious?
+\subparagraph{practises}practise points to practise stuff like
+fighting/swordplay/swimming/etc
+\subparagraph{training}training points for upping the previous 5 stats
+strength, intelligence, dexterity, constitution, wisdom (has immediate
+influence on most skills)
+\subparagraph{bandage}not used yet
+\subparagraph{alignment}negative=bad, positive=good, 0=neutral, changes when
+issueing fight
+\subparagraph{manastats}magic stats
+\subparagraph{movementstats}movements stats
+\subparagraph{maxmana}maximum magic
+\subparagraph{maxmove}maximum movement
+\subparagraph{maxvital}maximum damager (death imminent)
+\subparagraph{cgiServerSoftware}environment variables
+\subparagraph{cgiServerName}environment variable
+\subparagraph{cgiGatewayInterface}environment variable
+\subparagraph{cgiServerProtocol}environment variable
+\subparagraph{cgiServerPort}environment variable
+\subparagraph{cgiRequestMethod}environment variable
+\subparagraph{cgiPathInfo}environment variable
+\subparagraph{cgiPathTranslated}environment variable
+\subparagraph{cgiScriptName}environment variable
+\subparagraph{cgiRemoteHost}environment variable
+\subparagraph{cgiRemoteAddr}environment variable
+\subparagraph{cgiAuthType}environment variable
+\subparagraph{cgiRemoteUser}environment variable
+\subparagraph{cgiRemoteIdent}environment variable
+\subparagraph{cgiContentType}environment variable
+\subparagraph{cgiAccept}environment variable
+\subparagraph{cgiUserAgent}environment variable
+\subparagraph{jumpmanaint}increase on magic when healing
+\subparagraph{jumpmoveint}increase on movement when healing
+\subparagraph{jumpvital}increase on damage when healing
 
 \paragraph{skills}
-\subparagraph{id}the id number of the skill (connection with skilltable
+\subparagraph{number}the id number of the skill (connection with skilltable
 \subparagraph{name}the name of the skill, for example, \emph{Swordplay}
 \subparagraph{inlevel}level needed at which the skill becomes available and can be learned
 \subparagraph{outlevel}level at which the skill becomes to basic and is erased from memory
@@ -586,20 +537,48 @@ is being controlled
 \subparagraph{type}1=normal skill, 2=fight skill, 3=magic skill, 4=cleric skill
 
 \paragraph{skilltable}
-\subparagraph{id}reference to skills-table
+\subparagraph{number}reference to skills-table
 \subparagraph{forwhom}reference to tmpusertable/usertable
 \subparagraph{skilllevel}
 
 \paragraph{items}
-\subparagraph{id}
-id number of the item
+\subparagraph{id}id number of the item
+\subparagraph{name}noun
+\subparagraph{adject1}first adjective
+\subparagraph{adject2}second adjective
+\subparagraph{adject3}third adjective (valid though never displayed)
+\subparagraph{manaincrease}increases magic level by possession
+\subparagraph{hitincrease}increases amount of damage done by fighting by
+posession
+\subparagraph{vitalincrease}increases damage resistance level by posession
+(higher maxvital)
+\subparagraph{movementincrease}increases the amount of movement possible
+(higher maxmovement)
+\subparagraph{eatable}description of what happens if the thing is eatable (if
+description is empty, the object is not eatable)
+\subparagraph{drinkable}description of what happens if the thing is drinkable (if
+description is empty, the object is not drinkable)
+\subparagraph{room}current room where the item resides (currently not used)
+\subparagraph{lightable}not used
+\subparagraph{getable}may be picked up
+\subparagraph{dropable}may be dropped
+\subparagraph{visible}is visible=1, is not visible=0
 \subparagraph{wieldable}wether or not the item can be wielded in hand. 0=not
 wieldable, 1=wieldable right hand, 2=wieldable left hand, 3=wieldable both
 hands
+\subparagraph{description}description of the item when looking upon it
+\subparagraph{readdescr}description of item when attempting to read it (if
+description is empty, the object is not readable)
 \subparagraph{wearable}wether or not the item can be worn on body. 0=not
 wearable, 1=wearable on lefthand, 2=wearable on right hand, 3=wearable on
 both hands, 4=wearable on head, 7=wearable on neck, 8=wearable on head,
 9=wearable on body, 10=wearable on legs, 11=wearable on feet
+\subparagraph{gold}amount of gold coins the item costs
+\subparagraph{silver}amount of silver coins the item costs
+\subparagraph{copper}amount of copper coins the item costs
+\subparagraph{weight}amount of weight in "units".
+\subparagraph{pasdefense}amount of passive defense the item has when worn
+\subparagraph{damageresistance}amount of damage it can deflect
 
 \paragraph{tmp\_itemtable}
 This table, compared to the "itemtable" does not have any differences apart
@@ -608,6 +587,12 @@ game. The "itemtable" contains the items that are saved upon quitting the
 game and are retrieved upon (re)entering the game.
 \subparagraph{id}
 id number of the item, foreign key to "items"
+\subparagraph{search}where to search for the item, for example "rocks"
+\subparagraph{belongsto}to whom the item(s) belongs (foreign key to name of
+usertable)
+\subparagraph{amount}number of items references here
+\subparagraph{room}room number where the item is residing (0=not in a room,
+belongs to someone)
 \subparagraph{wearing}
 where on body the item is worn. An empty string means that it isn't worn at
 all. Possiblities are "lefthand", "righthand", "head", "neck", "head",
@@ -620,10 +605,10 @@ wielded at all. Possibilities are 1 (right hand) and 2 (left hand)
 
 \section{Appendix C - Database Structure}
 
-\vspace{0.3cm}
 {\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{database.ps}}} \par}
-\vspace{0.3cm}
+\resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{database.ps}}} \par}
+
+\newpage
 
 \section{Appendix D - Rolls Analysis}
 
@@ -657,10 +642,8 @@ If your opponent fails to defend himself, you have to have a "DamageRoll".
 The DamageRoll determines how much of your hit has been transferred to
 actual damagepoints on the part of your opponent.
 
-\vspace{0.3cm}
 {\par\centering
 \resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{rolls2.ps}}} \par}
-\vspace{0.3cm}
 
 \newpage
 \section{Appendix E - Examples of Skills}
