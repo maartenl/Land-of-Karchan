@@ -488,9 +488,9 @@ KnightTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
-/* add JusticeTalk */
+/* add CoDTalk */
 void 
-JusticeTalk(char *name, char *password, int room)
+CoDTalk(char *name, char *password, int room)
 {
 	char 		logname[100];
 
@@ -501,10 +501,10 @@ JusticeTalk(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	temp2 = (char *) malloc(strlen(troep) + 80);
-	sprintf(temp2, "<B><Font color=orange>Justice Talk</font></B> [%s] : %s<BR>\r\n",
+	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",
 	name, command + (tokens[2] - tokens[0]));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='Justice'");
+	sprintf(temp, "select name from tmp_usertable where guild='CoD'");
 	res=SendSQL2(temp, NULL);
 	while (row = mysql_fetch_row(res))
 	{
@@ -516,3 +516,4 @@ JusticeTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
+

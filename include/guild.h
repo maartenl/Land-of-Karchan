@@ -52,5 +52,5 @@ void VampTalk(char *name, char *password, int room);
 /* add Knight chat line */
 void KnightTalk(char *name, char *password, int room);
 
-/* add Justice chat line */
-void JusticeTalk(char *name, char *password, int room);
+/* add CoD chat line */
+void CoDTalk(char *name, char *password, int room);

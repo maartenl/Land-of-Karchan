@@ -1384,12 +1384,12 @@ cgiMain()
 
 	}
 
-/* add JusticeTalk */		
-	if (!strcmp("Justice", guildstatus))
+/* add CoDTalk */		
+	if (!strcmp("CoD", guildstatus))
 	{
-		if ( (!strcmp("justice", tokens[0])) && (!strcmp("talk", tokens[1])) )
+		if ( (!strcmp("mogob", tokens[0])) && (!strcmp("burz", tokens[1])) )
 		{
-			JusticeTalk(name, password, room);
+			CoDTalk(name, password, room);
 			KillGame();
 		}
 
