@@ -56,6 +56,7 @@ public class QuitCommand extends NormalCommand
 		try
 		{
 			Persons.deactivateUser(aUser);
+			Database.writeLog(aUser.getName(), "left the game.");
 		}
 		catch (Exception e)
 		{
