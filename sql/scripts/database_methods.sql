@@ -14,8 +14,7 @@ return
 " where id = 2;
 
 update methods
-set src = "debug
-if sql(\"select 1 from tmp_usertable where name='%me' and room in (1,3,164)\")
+set src = "if sql(\"select 1 from tmp_usertable where name='%me' and room in (1,3,164)\")
 	say(\"Fighting is not allowed in this area.<BR>\")
 	showstandard
 return
@@ -173,13 +172,70 @@ return
 " where id = 8;
 
 update methods
-set src = "debug
+set src = "# Karcas travels from shop to square
 if sql(""select 1 from tmp_usertable where room = 16 and name='Karcas'"")
 	sayeveryone(""Karcas leaves west.<BR>"")
+	sql(""update tmp_usertable set room=5 where name='Karcas'"")
+	set room=5
 	sayeveryone(""Karcas appears from nowhere.<BR>"")
 end
 return
 " where id = 9;
+
+update methods
+set src = "# Karcas travels from square to road
+if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas'"")
+	sayeveryone(""Karcas leaves south.<BR>"")
+	sql(""update tmp_usertable set room=3 where name='Karcas'"")
+	set room=3
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 10;
+
+update methods
+set src = "# Karcas travels from road to mountains
+if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas'"")
+	sayeveryone(""Karcas leaves south.<BR>"")
+	sql(""update tmp_usertable set room=4 where name='Karcas'"")
+	set room=4
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 11;
+
+update methods
+set src = "# Karcas travels from mountains back to road
+if sql(""select 1 from tmp_usertable where room = 4 and name='Karcas'"")
+	sayeveryone(""Karcas leaves north.<BR>"")
+	sql(""update tmp_usertable set room=3 where name='Karcas'"")
+	set room=3
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 12;
+
+update methods
+set src = "# Karcas travels from road back to square
+if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas'"")
+	sayeveryone(""Karcas leaves north.<BR>"")
+	sql(""update tmp_usertable set room=5 where name='Karcas'"")
+	set room=5
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 13;
+
+update methods
+set src = "# Karcas travels from square back to shop
+if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas'"")
+	sayeveryone(""Karcas leaves west.<BR>"")
+	sql(""update tmp_usertable set room=16 where name='Karcas'"")
+	set room=16
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 14;
 
 END_OF_DATA
 
