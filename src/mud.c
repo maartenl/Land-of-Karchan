@@ -51,7 +51,7 @@ maartenl@il.fontys.nl
 
 #include "cgi-util.h"
 
-#define MMHOST "zeus"	// the hostname users will be connecting to
+#define MMHOST "karchan.org"	// the hostname users will be connecting to
 #define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
@@ -236,7 +236,7 @@ main(int argc, char * argv[])
 	fgets(password, 39, stdin);password[strlen(password)-1]=0;
 	printf("Cookie:");
 	fgets(cookiepassword, 39, stdin);cookiepassword[strlen(cookiepassword)-1]=0;
-	setFrames(2);
+	setFrames(0);
 	myhostname = strdup(MMHOST);
 	myport = strdup(MMPORT);
 #else
@@ -249,7 +249,8 @@ main(int argc, char * argv[])
 	}
 	if (cgi_getentrystr("command") == NULL)
 	{
-		printf("Content-type: text/html\n\n");
+		displayError("Error #: command field required but not found<P>\n", 0);
+		//printf("Content-type: text/html\n\n");
 		printf("Error #: command field required but not found<P>\n");
 		exit(1);
 	}
@@ -390,12 +391,25 @@ main(int argc, char * argv[])
 
 	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
 	{
-		receivebuf[numbytes]='\0';
-		printf("%s", receivebuf);
+		if (numbytes==-1)
+		{
+			int i = errno;
+			printf("[An error occurred receiving information: %s]", strerror(i));
+		}
+		else
+		{
+			receivebuf[numbytes]='\0';
+			printf("%s", receivebuf);
+		}
 	}
+	numbytes=strlen("OK");
+	send_socket(sockfd, "OK", &numbytes);
+
 	close(sockfd);
 
 	cgi_quit();
+
+	fflush(stdout);
 	free(command); // clear the entered command
 	free(myhostname);
 	free(myport);
