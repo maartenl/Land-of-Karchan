@@ -8,17 +8,19 @@ class, in order to keep database specific code isolated from other parts of
 the game.<p>
 All database centric methods have "default" package scope, so they can be
 used only within this package. All public methods will never return database
-objects. This keeps the database part separate from the mud.
+objects. This keeps the database part separate from the mud.<P>
+All fields that can carry a yes/no or true/false bit are stored as an 
+integer containing either 0 (no/false) or 1 (yes/true).<P> 
 </PRE>
 
 Database structure is the following:
 <P>(<I>* denotes primary key</I>)
 <TABLE>
 <TR><TD>Tablename</TD><TD>Description</TD></TR>
-<TR><TD>mm_roomattributes</TD><TD></TD></TR>
-<TR><TD>mm_charattributes</TD><TD></TD></TR>
-<TR><TD>mm_itemattributes</TD><TD></TD></TR>
-<TR><TD>mm_logonmessage</TD><TD></TD></TR>
+<TR><TD>mm_roomattributes</TD><TD>Attributes of a certain room.</TD></TR>
+<TR><TD>mm_charattributes</TD><TD>Attributes of a certain character (player/non-player).</TD></TR>
+<TR><TD>mm_itemattributes</TD><TD>Attributes of a certain item.</TD></TR>
+<TR><TD>mm_logonmessage</TD><TD>The logon message provided upon logon.</TD></TR>
 
 <TR><TD>mm_sillynamestable</TD><TD></TD></TR>
 <TR><TD>mm_unbantable</TD><TD></TD></TR>
@@ -26,17 +28,20 @@ Database structure is the following:
 <TR><TD>mm_errormessages</TD><TD></TD></TR>
 <TR><TD>mm_help</TD><TD></TD></TR>
 
-<TR><TD>mm_items</TD><TD></TD></TR>
+<TR><TD>mm_items</TD><TD>Provides item definitions. So, basically, if you have 
+a bucket, the definition would be in this table, wile actual instances of the 
+bucket being carried around are in the table mm_itemtable. This table should 
+contain characteristics common to all buckets.</TD></TR>
 <TR><TD>mm_shopkeeperitems</TD><TD>Provides wich items a shopkeeper is
 allowed to sell/buy and when the shopkeeper decides to stop buying items
 from characters (i.e. when the shop has plenty of those specific items in
 supply)</TD></TR>
-<TR><TD>mm_itemtable</TD><TD></TD></TR>
-<TR><TD>mm_charitemtable</TD><TD></TD></TR>
-<TR><TD>mm_itemitemtable</TD><TD></TD></TR>
-<TR><TD>mm_roomitemtable</TD><TD></TD></TR>
+<TR><TD>mm_itemtable</TD><TD>Provides instances of item definitions.</TD></TR>
+<TR><TD>mm_charitemtable</TD><TD>Indicates who is carrying which item instances.</TD></TR>
+<TR><TD>mm_itemitemtable</TD><TD>Indicates which item instances contain which item instances.</TD></TR>
+<TR><TD>mm_roomitemtable</TD><TD>Indicates which room contains which item instances </TD></TR>
 
-<TR><TD>mm_rooms</TD><TD></TD></TR>
+<TR><TD>mm_rooms</TD><TD>Contains room definitions.</TD></TR>
 <TR><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
@@ -94,11 +99,17 @@ life of characters and administrators.</TD></TR>
 <DT>container
 <DD>wether or not this item can server as a container for other items.
 Possible values are 0 (no container) or 1 (container).
+<DT>getable
+<DD>wether or not the item can be picked up from the floor. <B>Important:</B> items with a
+negative id number, are <I>never</I> getable and are mostly used as
+windowdressing for rooms. In this case the field value is ignored by the mud.
+<DT>dropable
+<DD>wether or not the item can be dropped unto the floor. <B>Important:</B> items with a
+negative id number, are <I>never</I> dropable and are mostly used as
+windowdressing for rooms. In this case the field value is ignored by the mud.
 <DT>visible
 <DD>will make the item visible or invisible when in a room or in an
-inventory. The default is <I>visible</I>. <B>Important:</B> items with a
-negative id number, are <I>always</I> invisible and are mostly used as
-windowdressing for rooms.
+inventory. The default is <I>visible</I>. 
 </DL>
 <PRE>
 +---------------------+
