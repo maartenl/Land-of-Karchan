@@ -127,7 +127,7 @@ void Evil_Command(char *name, char *password, int room);
 		- beam <number>
 */
 
-void Quit_Command();
+int Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 /* deactivate and save player, then exit player, and show message */
 
 void HelpHint_Command(char *name, char *password, int room);

@@ -1048,8 +1048,8 @@ Evil_Command(char *name, char *password, int room)
 	}
 } /*endproc*/
 
-void 
-Quit_Command(char *name)
+int 
+Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -1075,7 +1075,7 @@ Quit_Command(char *name)
 	mysql_free_result(res);
 	ReadFile(HTMLHeader "goodbye.html");
 	RemoveUser(name);
-	KillGame();
+	return 1;
 }
 
 void 

@@ -30,7 +30,7 @@ void GoWest_Command(char *name, char *password, int room);
 void GoEast_Command(char *name, char *password, int room);
 void GoNorth_Command(char *name, char *password, int room);
 void GoSouth_Command(char *name, char *password, int room);
-void Sleep_Command(char *name, char *password, int room);
+int Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 void Awaken_Command(char *name, char *password, int room);
 void BigTalk_Command(char *name, char *password);
 void MailFormDumpOnScreen(char *name, char *password);

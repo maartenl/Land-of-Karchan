@@ -47,6 +47,11 @@ int sleepstatus;	/* contains the sleepstatus of the character */
 char guildstatus[10];		/* contains the guild a person belongsto */
 int punishment;	/* contains wether or not you are normal, are a frog, or are a rat. */
 
+// type-definition: 'gameFunction' now can be used as type
+// parameters: name, password, room, tokens, command
+typedef int (*gameFunction)(char *, char *, int, char **, char *);
+
+
 MYSQL_RES *res;
 MYSQL_ROW row;
 char sqlstring[1024];
@@ -247,6 +252,9 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	char           *temp;
 	char            logname[100];
 	char 				*junk;
+	gameFunction	*gameFunctionArray; /* array of function types */
+	char				**gameCommands; /* string array */
+	int				myNumberOfFunctions = 0;
 
 	command = fcommand;
 	name = fname;
@@ -415,7 +423,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		}
 		if (!strcasecmp(command, "quit")) 
 		{
-			Quit_Command(name);
+			Quit_Command(name, password, room, tokens, command);
 		}
 
 	WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
@@ -425,9 +433,38 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	SearchForSpecialCommand(name, password, room);
 	
-	if (!strcasecmp(command, "sleep"))
+	/* initialise and fill the Function array */
+	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*10);
+	gameCommands = (char **) malloc(sizeof(char *)*10);
+	gameFunctionArray[myNumberOfFunctions++] = &Quit_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Sleep_Command;
+	myNumberOfFunctions=0;
+	gameCommands[myNumberOfFunctions++] = "quit";
+	gameCommands[myNumberOfFunctions++] = "sleep";
 	{
-		Sleep_Command(name, password, room);
+		/* binary search in index, if found call function */
+		int i = myNumberOfFunctions / 2;
+		int pos = myNumberOfFunctions / 2;
+		int equals = strcasecmp(gameCommands[pos], tokens[0]);
+//0 quit
+//1 sleep 
+//i=1;pos=1;equals=-1;
+		while ((i!=0) && (equals))
+		{
+			if (equals > 0) {pos -= i;}
+			if (equals < 0) {pos += i;}
+			i = i / 2;
+			equals = strcasecmp(gameCommands[pos], tokens[0]);
+		}
+		if (!equals)
+		{
+			/* string has been found */
+			if (gameFunctionArray[pos](name, password, room, tokens, command))
+			{
+				/* command executed successfully, kill this session */
+				KillGame();
+			}
+		}
 	}
 	
 	if (!strcasecmp(command, "awaken"))
@@ -437,11 +474,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		KillGame();
 	}
 	
-	if (!strcasecmp(command, "quit")) 
-	{
-		Quit_Command(name);
-	}
-
 	if (godstatus==1) {Root_Command(name, password, room);}
 	if (godstatus==2) {Evil_Command(name, password, room);}
 

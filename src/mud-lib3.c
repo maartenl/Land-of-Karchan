@@ -301,8 +301,8 @@ GoSouth_Command(char *name, char *password, int room)
 	KillGame();
 }				/* endproc */
 
-void
-Sleep_Command(char *name, char *password, int room)
+int
+Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];  
 	MYSQL_RES *res;
@@ -318,7 +318,7 @@ Sleep_Command(char *name, char *password, int room)
 	WriteSentenceIntoOwnLogFile(logname, "You go to sleep.<BR>\n");
 	WriteMessage(name, room, "%s goes to sleep.<BR>\n", name);
 	WriteRoom(name, password, room, 1);
-	KillGame();
+	return 1;
 }
 
 void
