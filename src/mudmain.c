@@ -25,6 +25,11 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <string.h>
+#include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
+#include "mud-lib2.h"
 #include "mud-lib3.h"
 
 /* three strings destined for parsing the commands */

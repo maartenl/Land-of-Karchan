@@ -24,6 +24,8 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
+#include <stdarg.h>
+#include "typedefs.h"
 #include "userlib.h"
 
 char            ItemDescr[100];

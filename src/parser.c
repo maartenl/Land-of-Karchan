@@ -24,6 +24,10 @@ ederland
 Europe 
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
+#include <time.h>
+#include <string.h>
+#include "mysql.h"
+#include "typedefs.h"
 #include "parser.h"
 
 extern char *command;

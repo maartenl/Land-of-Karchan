@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mudlogon.h"
 
 /* this structure is used only to provide information regarding a <I>new</I>
 character

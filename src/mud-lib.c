@@ -24,6 +24,9 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
+#include <errno.h>
+#include "typedefs.h"
+#include "userlib.h"
 #include "mud-lib.h"
 
 extern roomstruct room;

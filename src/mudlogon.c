@@ -25,6 +25,9 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <string.h>
+#include "typedefs.h"
+#include "mudlogon.h"
 #include "mudmain.h"
 
 extern char secretpassword[40];

@@ -24,11 +24,23 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "typedefs.h"
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <time.h>
+#include <stdarg.h>
+#include <sys/file.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
+
 // include files for the xml library calls
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+
+#include "typedefs.h"
 
 /*roomindex, west, east, north, south, up, down, light_source*/
 roomstruct room;

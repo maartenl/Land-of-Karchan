@@ -24,8 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include <time.h>
-#include "guild.h"
 
 void WriteMail(char *name, char *toname, char *header, char *message);
 /* inserts a new mudmail

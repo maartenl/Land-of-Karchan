@@ -25,7 +25,8 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
-#include "mud-lib3.h"
+#include "typedefs.h"
+#include "parser.h"
 
 int 
 main(int argc, char *argv[])

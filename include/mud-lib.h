@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include"userlib.h"
 
 #define SINGULARIS 0
 #define PLURALIS   1

@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mud-lib2.h"
 
 int ParseSentence(char *name, int *room, char *parserstring);
 /* Pre: 	name = name current user

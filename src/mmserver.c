@@ -29,7 +29,8 @@ maartenl@il.fontys.nl
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/types.h>
-
+#include <errno.h>
+       
 // include files for socket communication
 #include <netdb.h>
 #include <sys/socket.h>
@@ -37,6 +38,7 @@ maartenl@il.fontys.nl
 #include <arpa/inet.h>
 
 #include <unistd.h>
+#include <string.h>
 // include file for using the syslogd system calls
 #include <syslog.h>
 
@@ -45,6 +47,8 @@ maartenl@il.fontys.nl
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "typedefs.h"
+#include "mudmain.h"
 #include "mudnewchar.h"
 
 /*! version number of mmserver */

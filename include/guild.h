@@ -24,8 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include <time.h>
-#include "mud-lib.h"
 
 void MIFList(char *name, char *password, int room);
 void MIFEntryIn(char *name, char *password, int room);

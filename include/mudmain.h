@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mud-lib3.h"
 
 int clearGameFunctionIndex();
 

@@ -25,6 +25,7 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include "typedefs.h"
 #include "mud-lib3.h"
 
 extern roomstruct room;

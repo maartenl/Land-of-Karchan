@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mudmain.h"
 
 int gameLogon(char *fname, char *fpassword, char *fcookie, char *faddress);
 

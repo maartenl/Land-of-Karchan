@@ -24,7 +24,6 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mud-lib2.h"
 
 int GoWest_Command(char *name, char *password, int room, char *fcommand);
 int GoEast_Command(char *name, char *password, int room, char *fcommand);

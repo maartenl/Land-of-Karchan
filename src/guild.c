@@ -24,6 +24,8 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
+#include <time.h>
+#include "typedefs.h"
 #include "guild.h"
 
 extern roomstruct room;
