@@ -662,6 +662,8 @@ main(int argc, char **argv)
 	fdmax = sockfd;
 	
 	/* below starts basically the entire call to the mudEngine */
+	syslog(LOG_INFO, "opening database connection....");
+	
 	opendbconnection();
 	initGameFunctionIndex(); // initialise command index 
 	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor 
