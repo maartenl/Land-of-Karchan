@@ -58,7 +58,8 @@ public final class ItemDefs
 	}
 
 	/**
-	 * Return the itemdefinition from the list.
+	 * Return the itemdefinition from the list. Returns a null
+	 * if the item definition could not be found.
 	 * @param aItemDefNr identification number of an itemdefinition.
 	 * @return ItemDef the found Item Definition.
 	 */

@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.rooms;
 
 import java.util.Vector;
+import java.util.TreeMap;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 import java.io.StringReader;
@@ -43,13 +44,14 @@ import mmud.database.*;
  * Data class containing all the information with regards to a room in the
  * mud.
  */
-public class Room implements Executable
+public class Room implements Executable, AttributeContainer
 {
 	private int theId;
 	private String theTitle;
 	private String theDescription;
 	private Room south, north, east, west, up, down;
 	private int intsouth, intnorth, inteast, intwest, intup, intdown;
+	private TreeMap theAttributes = new TreeMap();
 
 	/**
 	 * Create a new room.
@@ -782,7 +784,182 @@ public class Room implements Executable
 					));
 			}
 		}
+		if (method_name.equals("addItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain an Integer as argument.");
+				}
+				ItemDef myItemDef = ItemDefs.getItemDef(
+					((Integer) arguments[0]).intValue());
+				if (myItemDef == null)
+				{
+					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
+				}
+				Item myItem = ItemsDb.addItem(myItemDef);
+				try
+				{
+					ItemsDb.addItemToRoom(myItem, this);
+				}
+				catch (ItemDoesNotExistException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
+				return myItem;
+			}
+		}
+		return methodAttribute(method_name, arguments, ctxt);
+//		throw new MethodNotSupportedException(method_name + " not found.");
+	}
+
+	public Object methodAttribute(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("getAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				Attribute mAttrib = getAttribute((String) arguments[0]);
+				if (mAttrib == null)
+				{
+					return null;
+				}
+				if (mAttrib.getValueType().equals("string"))
+				{
+					return mAttrib.getValue();
+				}
+				if (mAttrib.getValueType().equals("boolean"))
+				{
+					return new Boolean(mAttrib.getValue());
+				}
+				if (mAttrib.getValueType().equals("integer"))
+				{
+					try
+					{
+						return new Integer(mAttrib.getValue());
+					}
+					catch (NumberFormatException e)
+					{
+						throw new MethodNotSupportedException(method_name +
+						" attribute " + mAttrib.getName() + " does not contain expected number.");
+					}
+				}
+				throw new MethodNotSupportedException(method_name +
+					" unknown value type in attribute " + 
+					mAttrib.getName() + ". (" + 
+					mAttrib.getValueType() + ")");
+			}
+		}
+		if (method_name.equals("removeAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				removeAttribute((String) arguments[0]);
+				return null;
+			}
+		}
+		if (method_name.equals("setAttribute"))
+		{
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				String mType = "object";
+				if (arguments[1] instanceof String)
+				{
+					mType = "string";
+				}
+				if (arguments[1] instanceof Integer)
+				{
+					mType = "integer";
+				}
+				if (arguments[1] instanceof Boolean)
+				{
+					mType = "boolean";
+				}
+				Attribute mAttrib = new Attribute((String) arguments[0],
+					arguments[1] + "", 
+					mType);
+				setAttribute(mAttrib);
+				return null;
+			}
+		}
+		if (method_name.equals("isAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				return new Boolean(isAttribute((String) arguments[0]));
+			}
+		}
 		throw new MethodNotSupportedException(method_name + " not found.");
+	}
+
+	/**
+	 * Set or add an attribute of this item.
+	 * @param anAttribute the attribute to be added/set.
+	 */
+	public void setAttribute(Attribute anAttribute)
+	{
+		theAttributes.put(anAttribute.getName(), anAttribute);
+		AttributeDb.setAttribute(anAttribute, this);
+	}
+
+	/**
+	 * returns the attribute found with name aName or null
+	 * if it does not exist.
+	 * @param aName the name of the attribute to search for
+	 * @return Attribute object containing the attribute foudn or null.
+	 */
+	public Attribute getAttribute(String aName)
+	{
+		Attribute myAttrib = (Attribute) theAttributes.get(aName);
+		return myAttrib;
+	}
+
+	/**
+	 * Remove a specific attribute from the item.
+	 * @param aName the name of the attribute to be removed.
+	 */
+	public void removeAttribute(String aName)
+	{
+		theAttributes.remove(aName);
+		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
+	}
+
+	/**
+	 * returns true if the attribute with name aName
+	 * exists.
+	 * @param aName the name of the attribute to check
+	 * @return boolean, true if the attribute exists for this item,
+	 * otherwise returns false.
+	 */
+	public boolean isAttribute(String aName)
+	{
+		return theAttributes.containsKey(aName);
 	}
 
 }

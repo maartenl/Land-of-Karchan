@@ -579,6 +579,9 @@ public class ItemsDb
 	 * Create a new item. Item is not used automatically.
 	 * @param anItemDef the item definition to use as a template
 	 * @return Item containing the id of the new item.
+	 * @see ItemsDb#addItemToRoom
+	 * @see ItemsDb#addItemToChar
+	 * @see ItemsDb#addItemToContainer
 	 */
 	public static Item addItem(ItemDef anItemDef)
 	{

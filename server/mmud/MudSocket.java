@@ -28,6 +28,7 @@ maarten_l@yahoo.com
 package mmud;
 
 import java.net.Socket;
+import java.net.SocketException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -280,7 +281,7 @@ public class MudSocket extends Thread
 						legs, cookie, frame-1) + "\n.\n");
 				}
 			}
-			catch (Exception e)
+			catch (SocketException e)
 			{
 				Database.writeLog("root", e);
 				Logger.getLogger("mmud").warning(

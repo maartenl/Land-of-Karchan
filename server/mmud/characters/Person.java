@@ -1142,6 +1142,137 @@ public class Person implements Executable, AttributeContainer
 				return null;
 			}
 		}
+		if (method_name.equals("addItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a Integer as argument.");
+				}
+				ItemDef myItemDef = ItemDefs.getItemDef(
+					((Integer) arguments[0]).intValue());
+				if (myItemDef == null)
+				{
+					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
+				}
+				Item myItem = ItemsDb.addItem(myItemDef);
+				try
+				{
+					ItemsDb.addItemToChar(myItem, this);
+				}
+				catch (ItemDoesNotExistException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
+				return myItem;
+			}
+		}
+//		throw new MethodNotSupportedException(method_name + " not found.");
+		return methodAttribute(method_name, arguments, ctxt);
+	}
+
+	public Object methodAttribute(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("getAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				Attribute mAttrib = getAttribute((String) arguments[0]);
+				if (mAttrib == null)
+				{
+					return null;
+				}
+				if (mAttrib.getValueType().equals("string"))
+				{
+					return mAttrib.getValue();
+				}
+				if (mAttrib.getValueType().equals("boolean"))
+				{
+					return new Boolean(mAttrib.getValue());
+				}
+				if (mAttrib.getValueType().equals("integer"))
+				{
+					try
+					{
+						return new Integer(mAttrib.getValue());
+					}
+					catch (NumberFormatException e)
+					{
+						throw new MethodNotSupportedException(method_name +
+						" attribute " + mAttrib.getName() + " does not contain expected number.");
+					}
+				}
+				throw new MethodNotSupportedException(method_name +
+					" unknown value type in attribute " + 
+					mAttrib.getName() + ". (" + 
+					mAttrib.getValueType() + ")");
+			}
+		}
+		if (method_name.equals("removeAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				removeAttribute((String) arguments[0]);
+				return null;
+			}
+		}
+		if (method_name.equals("setAttribute"))
+		{
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				String mType = "object";
+				if (arguments[1] instanceof String)
+				{
+					mType = "string";
+				}
+				if (arguments[1] instanceof Integer)
+				{
+					mType = "integer";
+				}
+				if (arguments[1] instanceof Boolean)
+				{
+					mType = "boolean";
+				}
+				Attribute mAttrib = new Attribute((String) arguments[0],
+					arguments[1] + "", 
+					mType);
+				setAttribute(mAttrib);
+				return null;
+			}
+		}
+		if (method_name.equals("isAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				return new Boolean(isAttribute((String) arguments[0]));
+			}
+		}
 		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 

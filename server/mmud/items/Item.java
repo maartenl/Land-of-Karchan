@@ -447,6 +447,10 @@ public class Item implements Executable, AttributeContainer
 				{
 					return mAttrib.getValue();
 				}
+				if (mAttrib.getValueType().equals("boolean"))
+				{
+					return new Boolean(mAttrib.getValue());
+				}
 				if (mAttrib.getValueType().equals("integer"))
 				{
 					try
@@ -496,11 +500,27 @@ public class Item implements Executable, AttributeContainer
 				{
 					mType = "integer";
 				}
+				if (arguments[1] instanceof Boolean)
+				{
+					mType = "boolean";
+				}
 				Attribute mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
 				setAttribute(mAttrib);
 				return null;
+			}
+		}
+		if (method_name.equals("isAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				return new Boolean(isAttribute((String) arguments[0]));
 			}
 		}
 		throw new MethodNotSupportedException(method_name + " not found.");
@@ -512,6 +532,33 @@ public class Item implements Executable, AttributeContainer
 	{
 		Logger.getLogger("mmud").finer("method_name=" + method_name +
 			", arguments=" + arguments);
+		if (method_name.equals("addItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a Integer as argument.");
+				}
+				ItemDef myItemDef = ItemDefs.getItemDef( 
+					((Integer) arguments[0]).intValue());
+				if (myItemDef == null)
+				{
+					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
+				}
+				Item myItem = ItemsDb.addItem(myItemDef);
+				try
+				{
+					ItemsDb.addItemToContainer(myItem, this);
+				}
+				catch (ItemDoesNotExistException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
+				return myItem;
+			}
+		}
 		return methodAttribute(method_name, arguments, ctxt);
 //		throw new MethodNotSupportedException(method_name + " not found.");
 	}
