@@ -351,10 +351,10 @@ int Parse(char *name, int *room, char *parserstring)
 						free(temp);
 					}
 				}
-				if (debug) {fprintf(cgiOut, "[%s]<BR>\n", string);}
 				/* this is the parsing part, the previous part was just splitting up */
 				if ((state[level]!=1) && (state[level]!=3))
 				{
+					if (debug) {fprintf(cgiOut, "[%s]<BR>\n", string);}
 					switch (ParseSentence(name, room, string))
 					{
 						case 1 : // end found
