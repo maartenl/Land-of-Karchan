@@ -51,7 +51,8 @@ maarten_l@yahoo.com
 #include "mudmain.h"
 #include "mudnewchar.h"
 
-/*! \file the main server executable file, takes care of socket communication and calling the appropriate other methods
+/*! \file mmserver.c
+	\brief  the main server executable file, takes care of socket communication and calling the appropriate other methods
 like gameMain, gameLogon and gameNewchar */
 
 /*! version number of mmserver */
@@ -915,16 +916,16 @@ store_in_list(int socketfd, char *buf)
 				// decide what action to take
 				if (!strcasecmp(mine->action, "logon"))
 				{
-					gameLogon(mine->name, mine->password, mine->cookie, mine->address);
+					gameLogon(socketfd);
 				}
 				else
 				if (!strcasecmp(mine->action, "newchar"))
 				{
-					gameNewchar(mine->name, mine->password, mine->cookie, mine->address, mine->newchar);
+					gameNewchar(socketfd);
 				}
 				else
 				{
-					gameMain(mine->command, mine->name, mine->password, mine->cookie, mine->address); 
+					gameMain(socketfd); 
 				}
 				setMMudOut(0);
 				j = strlen("</HTML>");
@@ -1007,7 +1008,12 @@ main(int argc, char **argv)
 	/* below starts basically the entire call to the mudEngine */
 	syslog(LOG_INFO, "opening database connection....");
 	
-	opendbconnection();
+	if (!opendbconnection())
+	{
+		syslog(LOG_INFO, "Unable to open database connection...");
+		syslog(LOG_INFO, getdberror());
+		return 1;
+	}
 	initGameFunctionIndex(); // initialise command index 
 	setMMudOut(0); // sets the standard output stream of the mud to the filedescriptor 
 	syslog(LOG_INFO, "accepting incoming connections...");

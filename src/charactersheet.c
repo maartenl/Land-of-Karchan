@@ -34,7 +34,8 @@ maarten_l@yahoo.com
 #include "cgi-util.h"
 #include "typedefs.h"
 
-/*! \file cgi-binary to show the character sheet of a player */
+/*! \file charactersheet.c
+	\brief  cgi-binary to show the character sheet of a player */
 
 #define debuggin 0
 

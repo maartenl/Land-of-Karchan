@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file simple cgi-binary used for the right frame in server push in mudinterface 3. */
+/*! \file nph-leftframe.c
+	\brief  simple cgi-binary used for the right frame in server push in mudinterface 3. */
 
 int main(int argc, char *argv[])
 {

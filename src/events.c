@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "parser.h"
 
-/*! \file simple executable that starts up events depending on information 
+/*! \file events.c
+	\brief  simple executable that starts up events depending on information 
 in the database table "events". Will start up "methods" in the "methods" 
 table. Usually this executable is put into your crontab. */
 

@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "mud-lib3.h"
 
-/*! \file part of the server that takes care of extended commands */
+/*! \file mud-lib3.c
+	\brief  part of the server that takes care of extended commands */
 
 extern roomstruct room;
 extern char    *command;

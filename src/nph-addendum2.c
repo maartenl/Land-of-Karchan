@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file cgi-binary that works together with nph-addendum.c in order to make mud interface 3 work correctly */
+/*! \file nph-addendum2.c
+	\brief  cgi-binary that works together with nph-addendum.c in order to make mud interface 3 work correctly */
 
 int main(int argc, char * argv[])
 {

@@ -52,7 +52,8 @@ maarten_l@yahoo.com
 #include "cgi-util.h"
 #include "typedefs.h"
 
-/*! \file simple cgi-binary used for entering the game as a character. Automatically
+/*! \file enter.c
+	\brief  simple cgi-binary used for entering the game as a character. Automatically
 does the appropriate checks.*/
 
 #define MMVERSION "4.01b" // the mmud version in general

@@ -29,7 +29,8 @@ maarten_l@yahoo.com
 #include "cgi-util.h"
 #include "typedefs.h"
 
-/*! \file simple cgi-binary used for server push in mudinterface 3. */
+/*! \file nph-addendum.c
+	\brief  simple cgi-binary used for server push in mudinterface 3. */
 
 int checkPassword(char *name, char *password)
 {

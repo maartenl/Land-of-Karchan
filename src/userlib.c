@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "userlib.h"
 
-/*! \file definition file with basic user/item/etc operations */
+/*! \file userlib.c
+	\brief  definition file with basic user/item/etc operations */
 
 char            ItemDescr[100];
 

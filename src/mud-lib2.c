@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "mud-lib2.h"
 
-/*! \file server file providing extentions and commands to the mud */
+/*! \file mud-lib2.c
+	\brief  server file providing extentions and commands to the mud */
 
 extern roomstruct room;
 char           *command;

@@ -56,7 +56,8 @@ maarten_l@yahoo.com
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
-/*! \file simple cgi-binary used for creating a new character. */
+/*! \file newchar.c
+	\brief  simple cgi-binary used for creating a new character. */
 
 char frace[10];
 char fsex[10];

@@ -25,10 +25,12 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include "typedefs.h"
 #include "mudlogon.h"
 #include "mudnewchar.h"
 
-/*! \file part of the server that takes care of creating a new character.
+/*! \file mudnewchar.c
+	\brief  part of the server that takes care of creating a new character.
 */
 
 extern char secretpassword[40];
@@ -51,24 +53,29 @@ mudnewcharstruct *create_mudnewcharstruct()
 
 //! main function for creating a new character
 /*! function will create a new character from data provided in the parameter list
-\param name char* containing the new name of the player character
-\param password char* password, the real one, of the new player
-\param cookie char* the session password, as stored in the cookie 'karchan' and as resent upon 
-transmitting a command for verification of the user.
-\param address char* containing the address from which the person is connecting
-\param infostruct mudnewcharstruct* pointer to the structure containing the information for adding a new player
+\param socketfd int, contains the socket descriptior, can be used to retrieve information about the current player
+by means of get_from_list
+\see get_from_list
 \returns int containing success (!=0) or failure (0).
 */
 int 
-gameNewchar(char *name, char *password, char *cookie, char *address, mudnewcharstruct *infostruct)
+gameNewchar(int socketfd)
 {
 	time_t          currenttime;
 	int i;
-
-
+	char *name;
+	char *address;
+	char *password;
+	mudpersonstruct *mymudstruct;
+	mudnewcharstruct *infostruct;
+	
 #ifdef DEBUG
 	printf("gameNewchar started(%s, %s, %s, %s)!!!\n", name, password, cookie, address);
 #endif
+	mymudstruct = find_in_list(socketfd);
+	name = mymudstruct->name;
+	password = mymudstruct->password;
+	infostruct = (mudnewcharstruct *) mymudstruct->newchar;
 
 	/* send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 	generate_password(secretpassword);

@@ -52,7 +52,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "cgi-util.h"
 
-/*! \file simple cgi-binary used for entering a command as a character in the game
+/*! \file mud.c
+	\brief  simple cgi-binary used for entering a command as a character in the game
 */
 
 #define MMVERSION "4.01b" // the mmud version in general

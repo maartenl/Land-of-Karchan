@@ -36,7 +36,8 @@ maarten_l@yahoo.com
 
 #define debuggin 0
 
-/*! \file simple cgi-binary used for editing your charactersheet. */
+/*! \file editcharactersheet.c
+	\brief  simple cgi-binary used for editing your charactersheet. */
 
 void showFamilyValues(const char *name, const char *password)
 {

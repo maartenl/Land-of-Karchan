@@ -36,7 +36,9 @@ maarten_l@yahoo.com
 
 #define debuggin 0
 
-/*! \file simple cgi-binary used for displaying all charactersheets. */
+/*! \file charactersheets.c
+	\brief  simple cgi-binary used for displaying a html page with all characters that have filled out a charactersheet.
+*/
 
 void listSheets()
 {

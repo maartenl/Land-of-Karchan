@@ -172,9 +172,11 @@ int send_printf(const int socketfd, char *fmt,...);
 /* return the currently in use database connection handle */
 MYSQL getdbconnection();
 
+const char *getdberror();
+
 /* open a connection to the database DatabaseName 
    using DatabaseLogin and DatabasePassword */
-void opendbconnection();
+int opendbconnection();
    
 /* close the connection to the database */
 void closedbconnection();

@@ -32,7 +32,8 @@ maarten_l@yahoo.com
 #include "mud-lib2.h"
 #include "mud-lib3.h"
 
-/*! \file server file containing the gameMain function that is used to parse and execute issued commands */
+/*! \file mudmain.c
+	\brief  server file containing the gameMain function that is used to parse and execute issued commands */
 
 /* three strings destined for parsing the commands */
 extern char    *command;
@@ -1560,33 +1561,38 @@ initGameFunctionIndex()
 }
 
 //! main command parsing and executing body
+/*! executes commands issued in the mud as a regular player
+\param socketfd integer containing the socket descriptor, used to retrieve the mudpersonstruct
+containing the essential information regarding the current player. */
 int
-gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *faddress)
+gameMain(int socketfd)
 {
-	int		oldroom;
+	int		oldroom, room;
 	int		i, amount;
 	char	frames[10];
 	char	*temp;
 	char *sqlstring;
 	char	logname[100];
 	char	*junk;
+	mudpersonstruct *mymudstruct;
 
 #ifdef DEBUG	
 	printf("gameMain started!!!\n");
 #endif
-	command = fcommand;
-	name = fname;
-	password = fpassword;
+	mymudstruct = find_in_list(socketfd);
+	command = mymudstruct->command;
+	name = mymudstruct->name;
+	password = mymudstruct->password;
 	umask(0000);
 
-	printstr = (char *) malloc(strlen(fcommand)+500);
+	printstr = (char *) malloc(strlen(mymudstruct->command)+500);
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
 	
-	if (SearchBanList(faddress, name)) 
+	if (SearchBanList(mymudstruct->address, name)) 
 	{
-		BannedFromGame(name, faddress);
+		BannedFromGame(name, mymudstruct->address);
 		free(printstr);
 		return 0;
 	}
@@ -1617,12 +1623,14 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 		return 0;
 	}
 	
-	strcpy(name, row[0]); /* copy name to name from database */
+	name = strdup(row[0]); /* copy name to name from database */
 	room=atoi(row[3]); /* copy roomnumber to room from database */
 	sleepstatus=atoi(row[2]); /* copy sleep to sleepstatus from database */
 	godstatus=atoi(row[5]); /* copy godstatus of player from database */
 	strcpy(sexstatus,row[6]); /* sex status (male, female) */
-	if (atoi(row[7])>atoi(row[8])) { /* check vitals along with maxvital */
+	if (atoi(row[7])>atoi(row[8])) 
+	{ 
+		/* check vitals along with maxvital */
 		mysql_free_result(res);
 		Dead(name, password, room);
 		free(printstr);
@@ -1654,7 +1662,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
 	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
-			"address='%x' where name='%x'",	faddress, name);
+			"address='%x' where name='%x'",	mymudstruct->address, name);
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);

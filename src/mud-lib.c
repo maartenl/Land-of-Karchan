@@ -29,7 +29,8 @@ maarten_l@yahoo.com
 #include "userlib.h"
 #include "mud-lib.h"
 
-/*! \file server file containing the import game extentions like ReadFile and WriteRoom and standard communication */
+/*! \file mud-lib.c
+	\brief  server file containing the import game extentions like ReadFile and WriteRoom and standard communication */
 
 extern roomstruct room;
 extern int      events[50];
@@ -344,7 +345,7 @@ char           *adverb[] = {
 "wistfully",
 NULL};
 
-//! reads a file and dimps it straight onto the output
+//! reads a file and dumps it straight onto the output
 int 
 ReadFile(const char *filenaam)
 {
@@ -358,7 +359,8 @@ ReadFile(const char *filenaam)
 		return 1;
 	}
 	
-	while (fgets(string, 80, fp) != 0) {
+	while (fgets(string, 80, fp) != 0) 
+	{
 		send_printf(getMMudOut(), "%s", string);
 	}
 	fclose(fp);

@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file simple cgi-binary showing the frame where commands can be entered. */
+/*! \file logonframe.c
+	\brief  simple cgi-binary showing the frame where commands can be entered. */
 
 int main(int argc, char *argv[])
 {

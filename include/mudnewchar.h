@@ -49,5 +49,5 @@ typedef struct
 
 mudnewcharstruct *create_mudnewcharstruct();
 
-int gameNewchar(char *name, char *password, char *cookie, char *address, mudnewcharstruct *infostruct);
+int gameNewchar(int socketfd);
 

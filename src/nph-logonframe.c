@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file cgi-binary showing the logon frame/html page on which it is possible to submit commands */
+/*! \file nph-logonframe.c
+	\brief  cgi-binary showing the logon frame/html page on which it is possible to submit commands */
 
 int main(int argc, char *argv[])
 {

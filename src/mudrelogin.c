@@ -27,7 +27,8 @@ maarten_l@yahoo.com
 #include "mud-lib.h"
 #include "cgic.h"
 
-/*! \file no longer actively used as far as I know */
+/*! \file mudrelogin.c
+	\brief  no longer actively used as far as I know */
 
 /* name, west, east, north, south, up, down */
 extern char secretpassword[40];

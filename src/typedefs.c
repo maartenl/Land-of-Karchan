@@ -47,7 +47,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "mudnewchar.h"
 
-/*! \file definition file with constants and essential operations
+/*! \file typedefs.c
+	\brief  definition file with constants and essential operations
 like database operations, server statistics, configuration and tokenization
 */
 
@@ -138,6 +139,15 @@ int getFrames()
 MYSQL getdbconnection()
 {
 	return dbconnection;
+}
+
+//! returns the error of the last mysql call
+/*!
+	\return char* containing the error message, empty string ("") in case no error occurred.
+*/
+const char *getdberror()
+{
+	return mysql_error(&dbconnection);
 }
 
 mudinfostruct mudinfo;
@@ -599,7 +609,7 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring)
 /*! uses the constants as defined in typedefs.h to connect, needs to be changed.
 	\sa closedbconnection
 */
-void
+int 
 opendbconnection()
 {
 	mysql_init(&dbconnection);
@@ -611,7 +621,10 @@ opendbconnection()
 		getParam(MM_DATABASENAME), atoi(getParam(MM_DATABASEPORT)), NULL, 0)))
 	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
+		return 0;
 	} 
+	
+	return 1;
 }
 
 //! close the connection to the database server

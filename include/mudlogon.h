@@ -25,5 +25,5 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-int gameLogon(char *fname, char *fpassword, char *fcookie, char *faddress);
+int gameLogon(int socketfd);
 

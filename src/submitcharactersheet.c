@@ -34,7 +34,8 @@ maarten_l@yahoo.com
 #include "cgi-util.h"
 #include "typedefs.h"
 
-/*! \file cgi-binary for submitting a character sheet */
+/*! \file submitcharactersheet.c
+	\brief  cgi-binary for submitting a character sheet */
 
 #define debuggin 0
 

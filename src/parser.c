@@ -30,7 +30,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "parser.h"
 
-/*! \file contains the parser, finds appropriate methods that correspond
+/*! \file parser.c
+	\brief  contains the parser, finds appropriate methods that correspond
 to a users input and interprets and executes them. */
 
 extern char *command;

@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include "typedefs.h"
 #include "guild.h"
 
-/*! \file part of the server that does the whole guild thing as well as
+/*! \file guild.c
+	\brief  part of the server that does the whole guild thing as well as
 some "talk lines". */
 
 extern char* command;

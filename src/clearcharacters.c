@@ -33,7 +33,8 @@ maarten_l@yahoo.com
 #include <sys/file.h>
 #include "typedefs.h"
 
-/*! \file executable to clear users that have been idling for more than an hour */
+/*! \file clearcharacters.c
+	\brief  executable to clear users that have been idling for more than an hour */
 
 #define debuggin 0
 

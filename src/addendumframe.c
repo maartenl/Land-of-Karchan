@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file simple cgi-binary used for server push in mudinterface 3. */
+/*! \file addendumframe.c
+	\brief  simple cgi-binary used for server push in mudinterface 3. */
 
 int main(int argc, char * argv[])
 {

@@ -28,7 +28,8 @@ maarten_l@yahoo.com
 #include <string.h>
 #include "cgi-util.h"
 
-/*! \file cgi-binary for creating the neccessary server push for mud interface 3 */
+/*! \file nph-javascriptframe.c
+	\brief  cgi-binary for creating the neccessary server push for mud interface 3 */
 
 int main(int argc, char * argv[])
 {

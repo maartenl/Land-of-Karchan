@@ -30,7 +30,8 @@ maarten_l@yahoo.com
 #include "mudlogon.h"
 #include "mudmain.h"
 
-/*! \file part of the server that takes care of entering characters in the game */
+/*! \file mudlogon.c
+	\brief  part of the server that takes care of entering characters in the game */
 
 extern char secretpassword[40];
 
@@ -371,7 +372,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address)
 	{
 			send_printf(getMMudOut(), "Content-type: text/html\r\n");
 			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
-			gameMain("me has entered the game...<BR>\r\n", name, password, cookie, address);
+//			gameMain("me has entered the game...<BR>\r\n", name, password, cookie, address);
 	}
 	else
 	{
@@ -411,21 +412,37 @@ void MakeStart(char *name, char *password, char *cookie, char *address)
 }
 
 //! main function for logging into the game 
+/*! 
+\param socketfd int, is the socketdescriptor of the communication channel, can be used to look up information regarding the connection
+using find_in_list for example.
+\see find_in_list
+\see remove_from_list
+\returns integer with the success code, 0 is bad, 1 is good
+*/
 int
-gameLogon(char *name, char *password, char *cookie, char *address)
+gameLogon(int socketfd)
 {
 	char frames[10];
+	char *name;
+	char *password;
+	char *cookie;
+	char *address;
 	int i;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
+	mudpersonstruct *mymudstruct;
 	
 	umask(0000);
 #ifdef DEBUG
 	printf("gameLogon started (%s,%s,%s,%s)!!!\n", name, password, cookie, address);
 #endif
 	
-/*	send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
+	mymudstruct = find_in_list(socketfd);
+	cookie = mymudstruct->cookie;
+	name = mymudstruct->name;
+	password = mymudstruct->password;
+	/*	send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 	
 	if (strcmp("Karn", name)) 
 	{
@@ -495,16 +512,16 @@ gameLogon(char *name, char *password, char *cookie, char *address)
 			if ((cookie != NULL) && (strcmp(cookie, "")) && (strcmp(cookie, " ")))
 			{
 				/* cookie exists, check if cookie corresponds with current user 
-				   in that case, the user is attempting to relogon after a browser
-				   crash
+				 in that case, the user is attempting to relogon after a browser
+				 crash
 				*/
 				if (strcmp(fcookie, fsecretpassword))
 				{
 					/* cookie does not correspond with the lok-value in the usertable
-					   in this case, the user is attempting to relogon a character
-					   for which the cookie does not match. In the case of an error,
-					   he will be required to close and restart his webbrowser 
-				   */
+					 in this case, the user is attempting to relogon a character
+					 for which the cookie does not match. In the case of an error,
+					 he will be required to close and restart his webbrowser 
+				 */
 					MultiPlayerDetected(name, address);
 					return 0;
 				}
