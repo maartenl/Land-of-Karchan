@@ -65,7 +65,6 @@ KillGame()
 //	closeDatabase();
 	closedbconnection();
 	free(troep);
-	free(command);
 	free(junk);
 	free(printstr);
 	exit(0);

@@ -30,10 +30,6 @@ maartenl@il.fontys.nl
 int commandlineinterface = 0;
 
 extern int      hellroom;
-extern int      events[50];
-extern int      knightlist[50];
-extern int      miflist[50];
-extern int      rangerlist[50];
 /* three strings destined for parsing the commands */
 extern char    *troep;
 extern char    *command;
@@ -45,8 +41,8 @@ extern struct tm datumtijd;
 extern time_t   datetime;
 extern char secretpassword[40];
 
-char name[20];		/* contains the name derived from the forms */
-char password[40];	/* contains the password derived from the forms */
+char *name;		/* contains the name derived from the forms */
+char *password;	/* contains the password derived from the forms */
 int room;		/* contains the room where the character is located */
 int godstatus;		/* contains the godstatus of the character */
 char sexstatus[8];
@@ -59,54 +55,14 @@ MYSQL_ROW row;
 char sqlstring[1024];
 
 void 
-InitVar()
+InitVar(char *fcommand)
 {
-	if (commandlineinterface) {
-		printstr = (char *) malloc(1000);
-		troep = (char *) malloc(1000);
-		command = (char *) malloc(1000);
-		junk = (char *) malloc(1000);
-	} else {
-		printstr = (char *) malloc(cgiContentLength + 500);
-		troep = (char *) malloc(cgiContentLength);
-		command = (char *) malloc(cgiContentLength);
-		junk = (char *) malloc(cgiContentLength);
-	}
+	printstr = (char *) malloc(strlen(fcommand)+500);
+	troep = (char *) malloc(strlen(fcommand));
+	junk = (char *) malloc(strlen(fcommand));
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
-
-/*	if (events[2]) {
-		room[9].roomindex = 30;
-		room[9].north = 20;
-		room[20].south = 9;
-	}
-	if (events[4]) {
-		room[4].roomindex = 47;
-		room[4].south = 23;
-		room[23].roomindex = 68;
-		room[23].north = 4;
-	}
-	if (events[5]) {
-		room[20].roomindex = 163;
-	}
-	if (events[6]) {
-		room[5].down = 24;
-		room[24].up = 5;
-	}
-	if (events[8]) {
-		room[16].down = 26;
-		room[26].up = 16;
-	}
-	if (events[9]) {
-		room[61].roomindex = 33;
-	}
-	if (events[12]) {
-		room[253].roomindex = 293;
-		room[254].roomindex = 294;
-		room[253].west=0;
-		room[254].east=0;
-	}*/
 }				/* endproc */
 
 void
@@ -288,7 +244,7 @@ void CookieNotFound(char *name, char *address)
 }
 
 int 
-cgiMain()
+gameMain(char *fcommand, char *fname, char *fpassword)
 {
 	int             oldroom;
 	int             i;
@@ -296,46 +252,16 @@ cgiMain()
 	char           *temp;
 	char            logname[100];
 
+	command = fcommand;
+	name = fname;
+	password = fpassword;
+
 	umask(0000);
 
-	InitVar();
+	InitVar(command);
 
 	opendbconnection();
 
-	if (commandlineinterface) {
-		printf("Command:");
-		gets(command);
-		printf("Name:");
-		gets(name);
-		printf("Password:");
-		gets(password);
-		setFrames(0);
-	}
-	else 
-	{
-		char cookiepassword[40];
-		cgiFormString("command", command, cgiContentLength - 2);
-		if (command[0]==0) {strcpy(command,"l");}
-		cgiFormString("name", name, 0);
-		cgiFormString("password", password, 40);
-		getCookie("Karchan", cookiepassword);
-		if (strcmp(cookiepassword, password))
-		{
-			cgiHeaderContentType("text/html");
-			NotActive(name, password,3);
-		}
-		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
-		{
-			strcpy(frames, "none");
-			setFrames(0);
-		}
-		if (!strcmp(frames,"1")) {setFrames(0);}
-		if (!strcmp(frames,"2")) {setFrames(1);}
-		if (!strcmp(frames,"3")) {setFrames(2);}
-		WriteSentenceIntoOwnLogFile(BigFile,
-				     "%s (%s): |%s|\n", name, password, command);
-
-	}
 	if (strcasecmp("quit", command))
 	{
 		cgiHeaderContentType("text/html");
@@ -1450,4 +1376,56 @@ cgiMain()
 	}			/* endoflistmail */
 	WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
+}
+
+int 
+cgiMain()
+{
+	char *command;
+	char name[22];
+	char password[40];
+	char frames[10];
+
+	if (commandlineinterface) {
+		command = (char *) malloc(1000);
+	} else {
+		command = (char *) malloc(cgiContentLength);
+	}
+
+	if (commandlineinterface) {
+		printf("Command:");
+		gets(command);
+		printf("Name:");
+		gets(name);
+		printf("Password:");
+		gets(password);
+		setFrames(0);
+	}
+	else 
+	{
+		char cookiepassword[40];
+		cgiFormString("command", command, cgiContentLength - 2);
+		if (command[0]==0) {strcpy(command,"l");}
+		cgiFormString("name", name, 20);
+		cgiFormString("password", password, 40);
+		getCookie("Karchan", cookiepassword);
+		if (strcmp(cookiepassword, password))
+		{
+			cgiHeaderContentType("text/html");
+			NotActive(name, password,3);
+		}
+		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
+		{
+			strcpy(frames, "none");
+			setFrames(0);
+		}
+		if (!strcmp(frames,"1")) {setFrames(0);}
+		if (!strcmp(frames,"2")) {setFrames(1);}
+		if (!strcmp(frames,"3")) {setFrames(2);}
+		WriteSentenceIntoOwnLogFile(BigFile,
+				     "%s (%s): |%s|\n", name, password, command);
+
+	}
+	gameMain(command, name, password);
+	free(command);
 }
