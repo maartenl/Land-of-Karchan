@@ -58,7 +58,7 @@ int showWhoList()
 	printf("List of All Active Users</H2>\r\n");
 	opendbconnection();
 	res = executeQuery(NULL, "select name, title, "
-	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
+	"time_to_sec(NOW())-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable where god<=1");
 
 	if (res != NULL)

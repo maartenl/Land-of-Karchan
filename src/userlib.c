@@ -96,7 +96,7 @@ ActivateUser(char *name)
 	/* ------------------------------ User -------------------------------- */
 	
 	temp = composeSqlStatement("update usertable set active=1, "
-	"lastlogin=date_sub(now(), interval 2 hour) where name='%x'", name);
+	"lastlogin=now() where name='%x'", name);
 	res=sendQuery(temp, NULL);
 	mud_free(temp);temp=NULL;
 	

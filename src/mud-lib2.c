@@ -407,7 +407,7 @@ Who_Command(mudpersonstruct *fmudstruct)
 		
 	send_printf(fmudstruct->socketfd, "<UL>");
 	tempsql = composeSqlStatement("select name, title, "
-	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
+	"time_to_sec(NOW())-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable "
 	"where god<1");
 	res=sendQuery(tempsql, NULL);

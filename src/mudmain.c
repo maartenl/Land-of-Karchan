@@ -1894,7 +1894,7 @@ gameMain(int socketfd)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
-	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
+	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=NOW(), "
 			"address='%x' where name='%x'",	mymudstruct->address, name);
 	res=sendQuery(sqlstring, NULL);
 	mud_free(sqlstring);sqlstring=NULL;

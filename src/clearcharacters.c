@@ -46,8 +46,8 @@ void clearInactiveCharacters()
 	opendbconnection();
 	
 	res = executeQuery(NULL, " select name, lastlogin, "
-	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin) "
-	"from tmp_usertable where lastlogin < date_sub(NOW(), INTERVAL 3 HOUR) "
+	"time_to_sec(NOW())-time_to_sec(lastlogin) "
+	"from tmp_usertable where lastlogin < date_sub(NOW(), INTERVAL 1 HOUR) "
 	"and god=0");
 
 	if (res != NULL)
@@ -73,7 +73,7 @@ void clearInactiveCharacters()
 		mysql_free_result(res);
 
 		mysql_free_result(executeQuery(NULL, "delete from tmp_usertable where "
-		"god = 0 and lastlogin < date_sub(NOW(), INTERVAL 3 HOUR)"));
+		"god = 0 and lastlogin < date_sub(NOW(), INTERVAL 1 HOUR)"));
 
 	}
 	
