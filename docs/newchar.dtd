@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!ELEMENT root (action, user)>
+<!ELEMENT action (#CDATA)>
+<!ELEMENT user (name, password, cookie, frames, frace, fsex, fage, flength, fwidth,
+fcomplexion, feyes, fface, fhair, fbeard, ftitle, frealname, femail)>
+<!ELEMENT name (#CDATA)>
+<!ELEMENT password (#CDATA)>
+<!ELEMENT cookie (#CDATA)>
+<!ELEMENT frames (#CDATA)>
+<!ELEMENT frace (#CDATA)>
+<!ELEMENT fsex (#CDATA)>
+<!ELEMENT fage (#CDATA)>
+<!ELEMENT flength (#CDATA)>
+<!ELEMENT fwidth (#CDATA)>
+<!ELEMENT fcomplexion (#CDATA)>
+<!ELEMENT feyes (#CDATA)>
+<!ELEMENT fface (#CDATA)>
+<!ELEMENT fhair (#CDATA)>
+<!ELEMENT fbeard (#CDATA)>
+<!ELEMENT farm (#CDATA)>
+<!ELEMENT fleg (#CDATA)>
+<!ELEMENT ftitle (#CDATA)>
+<!ELEMENT frealname (#CDATA)>
+<!ELEMENT femail (#CDATA)>
+
