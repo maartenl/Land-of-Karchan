@@ -25,6 +25,32 @@ The current deputies are:
 Kass, Kel, Bladestorm, Legolas, Silverblade, Blackfyre<P>
 
 <HR>
+Sunday, Oct 20 2002, 15:18<P>
+Seeing as important and possibly security sensitive information has
+been removed from the source code and put into a nice config file, I
+don\'t see why I cannot provide people (read) access
+to the CVS Repository. The CVS Repository is the place where I work
+(and the deps, when they feel like it) on the source code. As such it
+always carries the latest and greatest changes. How this works can
+be found at www.cvshome.org .
+<P>
+Here is the info for you to access my source code through CVS:
+<UL>
+<LI>username: anonymous
+<LI>password: no password, just don't fill out anything
+<LI>proper commandline: <I>cvs
+-d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot
+&lt;command&gt;</I>
+<LI>(You are ofcourse free to use another program to access
+my sourcecode. I hear WinCVS and TurtleCVS are quite nice Windows GUIs)
+</UL>
+For example getting the latest documentation:<BR>
+<I>
+cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot login<BR>
+cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot checkout docs<BR>
+cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot logout<BR>
+</I>
+<HR>
 Sunday, Oct 20 2002, 01:22<P>
 Darnit, still not sleepy. Anyway, the latest addition to the mud is the
 fact that no longer are important information hard coded. The mud runs now
