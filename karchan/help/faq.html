@@ -346,7 +346,7 @@ anyone says.</I><P>
 pay anything and you can play whenever you like. However, if you decide to
 send me money I won't stop you. *grin*</I><P>
 <LI><A NAME="23">Do you require extra software to play the game?<BR><I>No, just a
-WWW-Browser (a good one) like Netscape will do.</I><P>
+WWW-Browser (a good one) like Mozilla will do.</I><P>
 <LI><A NAME="24">I am unable to reach your HomePage! Now what!<BR><I>Possible, due to really bad
 connection or my computer is down again as usual.</I><P>
 <LI><A NAME="25">Whenever I type an already used command, I get an old page
@@ -357,7 +357,7 @@ every time</B> on or something like that. If you are using <B>Lynx</B> as
 browser, then in stead of pressing Enter when you have selected the Submit
 button, press 'x'. In case this all doesn't work, try something really
 dirty, like putting the Cache space of the Browser to 0.</I><P>
-<LI><A NAME="26">What is the use of the Chronicles and Vowels and all?<BR><I>I am trying
+<LI><A NAME="26">What is the use of the Chronicles and all?<BR><I>I am trying
 to get some story into the game and this is one of my imperfect
 attempts.</I><P>
 <LI><A NAME="27">What's a husky?<BR><I>A husky is someone who has killed or deactivated
@@ -370,14 +370,30 @@ been inactive from something like, 45 minutes or so.</I><P>
 <U>R</U>ight <U>B</U>ack.</I><P>
 <LI><A NAME="29">What's the goal of the game?<BR><I>The game is to find a magic book
 called Kyragem. If you find this you will be able to become an operator of
-the game with unlimited powers.</I><P>
-<LI><A NAME="30">In which programming language is the game written?<BR><I>Ansi C, with
-the use of a library from Thomas Boutell for the CGI-Interface.</I><P>
-<LI><A NAME="31">Where is the game-server located?<BR><I>Europe, The Netherlands,
-Eindhoven, Eindhoven Institute of Technology (for as long as it lasts)
+the game with unlimited powers. Unfortunately, due to my lagging behind in
+my programming it is not possible to reach this yet.</I><P>
+<LI><A NAME="30">In which programming language is the game written?<BR><I>
+The server accepting connections is written in Java, the client is basically
+an apache daemon with php support that you connect to using your browser.<P>
+The old version was written in
+Ansi C, with
+the use of a library from Thomas Boutell for the CGI-Interface, but as time
+progressed this was more and more a hassle to maintain.</I><P>
+<LI><A NAME="31">Where is the game-server located?<BR><I>
+This used to be Europe, The Netherlands,
+Eindhoven, Eindhoven Institute of Technology when I was still studying
+there.<P>
+After I graduated, there was the problem of what to do with my server. I
+hired a server together with one of my friends in the US at one time (this
+was the first time that www.karchan.org became registered) but it was too
+expensive. After a year I switched to WideXS, an ISP in Hoofddorp (near
+Amsterdam) in the Netherlands. Right now this little server is in a 19" rack
+with a lot of other servers, in a server room in Hoofddorp, quietly chugging
+away at your websiterequests.
 </I><P>
 <LI><A NAME="32">Was this game a school project?<BR><I>No, it was my personal project and
-I am still wondering why everyone keeps asking me this.</I><P>
+I am still wondering why everyone keeps asking me this. Possibly because the
+entire project started in college, where bandwith was cheap.</I><P>
 <LI><A NAME="33">What's Lag?<BR><I>Lag just means that you are having very long response
 times, which means that your connection with the game-server and the
 Internet in general isn't one of the quickest.</I><P>
@@ -396,8 +412,10 @@ don't want to play the game.</I><P>
 
 <LI><A NAME="37">How do I build a mud?<I><BR>I get these questions in my
 mail in a regular and frequent way. I usually point them on their way. For
-myself, I used Ansi C and Java Script and HTML and a database called MySQL and
-some other even less known stuff. There's a description below.<P>
+myself, I used Java for the server and HTML/Javascript/PHP for the client
+connections. And a database called MySQL and
+some other even less known stuff. The old way was in Ansi C, but that has
+gone the way of the dodo. There's a description below.<P>
 
 I build the entire thing from scratch, without looking at source code from
 other muds. Perhaps you outta check that out, though. I find I'm doing a
@@ -447,7 +465,12 @@ HREF="http://www.mysql.com">MySQL</A>, at www.mysql.com) for speed. Had to adapt
 entire C code into working with SQL statements (SQL=Standard Query Language)
 MySQL came along with C-libraries I could use in my program to access the
 database properly.
-<LI>Had finished with school for about a year, was working, and had to relocate my mud to a commercial server and requested an appropriate domain name called <A HREF="http://www.karchan.org">http://www.karchan.org</A>.
+<LI>Had finished with school for about a year, was working, and had to
+relocate my mud to a commercial server and requested an appropriate domain
+name called <A HREF="http://www.karchan.org">http://www.karchan.org</A>.
+<LI>fifth implementation of mud (version 4), the entire thing was rewritten
+from C into Java, because of the expertise I had gotten in java and ease of
+use.
 </UL>
 And that's the current situation for now.<P>
 
@@ -456,8 +479,8 @@ And that's the current situation for now.<P>
 I've got my own little server connected to the Internet. It's running
 Linux, with <A
 HREF="http://www.apache.org">Apache</A> as WWW Daemon. The client side 
-of the mud is basic HTML with a little Java Script for some extra 
-functionality. The server side is plain C, along with the MySQL Database.<P>
+of the mud is basic HTML and PHP with a little Java Script for some extra 
+functionality. The server side is Java, along with the MySQL Database.<P>
 A friendly word of warning, though it's a challenge to start with, and    
 it's exciting to do, it will either consume a large amount of your (spare)
 time or won't become full-grown. It took me approx. 3 years to come where
