@@ -130,6 +130,7 @@ typedef struct
 	int number_of_connections;
 	int number_of_timeouts;
 	int number_of_current_connections;
+	int maxnumber_of_current_connections;
 } mudinfostruct;
 
 /* sets the FileDescriptor used to output any information to the user 
