@@ -101,6 +101,7 @@ public class AdminCommand extends NormalCommand
 		{
 			Database.writeLog(aUser.getName(), "admin command 'reset rooms' executed");
 			Rooms.init();
+			Persons.init();
 			aUser.writeMessage("Rooms have been reset.<BR>\r\n");
 			return true;
 		}
@@ -164,11 +165,15 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'help' executed");
 			aUser.writeMessage("Possible commands are:<DL>" +
 				"<DT>admin help<DD>this help text" +
-				"<DT>admin kick &lt;character name&gt;<DD>kicks the character of the game immediately." +
-				"<DT>admin reset characters<DD>reset the cached rooms, required every time you make a change to a room" +
-				"<DT>admin reset itemdefs<DD>reset the cached item definitions, required every time you make a change to an itemdefinition" +
-				"<DT>admin reset rooms<DD>reset the cached characters, required every time you make a change to a character." +
+				"<DT>admin kick &lt;character name&gt;<DD>kicks the character off the game immediately." +
+				"<DT>admin reset characters<DD>reset the cached characters, required every time you make a change to a character. " +
 				"Already active characters are reloaded into the cache from the database." +
+				"<DT>admin reset itemdefs<DD>reset the cached item definitions, required every time you make a change to an itemdefinition" +
+				"<DT>admin reset rooms<DD>reset the cached rooms, required every time"
+				+ " you make a change to a room. Also implicitly runs " +
+				"<I>admin reset characters</I>." +
+				"<DT>admin reset commands<DD>reset the cached <I>special</I> commands. " +
+				"Necessary if a command has been deleted, added or changed." +
 				"<DT>admin shutdown<DD>Shuts down the game. Carefull! The game is not automatically restarted!" +
 				"<DT>admin wall &lt;message&gt;<DD>pages all users with the message entered" +
 				"<DT>admin uptime<DD>show the datetime when the game was started and the current datetime " +
