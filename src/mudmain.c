@@ -304,6 +304,10 @@ void CookieNotFound(char *name, char *address)
 int
 Go_Command(char *name, char *password, int room, char *command)
 {
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	if (!strcasecmp(getToken(1), "west")) 
 	{
 		GoWest_Command(name, password, room, command);	
@@ -565,6 +569,10 @@ int
 PKill_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	sprintf(sqlstring, "select fightingwho from tmp_usertable where "
 		"name='%s'", name);
