@@ -165,6 +165,8 @@ int main(int argc, char * argv[])
 	char name[20];
 	char password[40];
 	char cookie[80];
+	int res;
+	char frames[10];
 	char *mudtitle = NULL;
 	char *myhostname = NULL, *myport = NULL;
 	
@@ -188,6 +190,8 @@ int main(int argc, char * argv[])
 	fgets(cookie, 40, stdin);
 	password[strlen(cookie)-1]=0;
 	setFrames(0);
+	res = 0;
+	strcpy(frames, "0");
 #else
 	res = cgi_init();
 	if (res != CGIERR_NONE)

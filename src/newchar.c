@@ -197,6 +197,8 @@ int main(int argc, char *argv[])
 	char name[20];
 	char password[40];
 	char cookie[80];
+	int res;
+	char frames[10];
 	char *myhostname = NULL, *myport = NULL;
 	char *mudtitle = NULL;
 	
@@ -213,6 +215,8 @@ int main(int argc, char *argv[])
 	strcpy(name, "Karn");
 	strcpy(password, "tryout");
 	setFrames(0);
+	strcpy(frames, "0");
+	res=0;
 #else
 	res = cgi_init();
 	if (res != CGIERR_NONE)
@@ -327,7 +331,7 @@ int main(int argc, char *argv[])
 	if (cgi_getentrystr("eyes") != NULL)
 	{
 		strncpy(feyes, cgi_getentrystr("eyes"), 15);
-		feyes[15];
+		feyes[15] = 0;
 	}
 	if (cgi_getentrystr("face") != NULL)
 	{

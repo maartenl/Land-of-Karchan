@@ -199,8 +199,10 @@ main(int argc, char * argv[])
 	char name[22];
 	char password[40];
 	char cookiepassword[40];
+	char frames[10];
 	char *myhostname, *myport;
 	char *mudtitle = NULL;
+	int res;
 		
 	int sockfd, numbytes, totalnumbytes;
 	char receivebuf[1024], *sendbuf, *checkbuf;
@@ -221,8 +223,10 @@ main(int argc, char * argv[])
 	printf("Cookie:");
 	fgets(cookiepassword, 39, stdin);cookiepassword[strlen(cookiepassword)-1]=0;
 	setFrames(0);
+	strcpy(frames, "0");
 	myhostname = strdup(getParam(MM_HOST));
 	myport = strdup(getParam(MM_PORT));
+	res = 0;
 #else
 	res = cgi_init();
 	if (res != CGIERR_NONE)
