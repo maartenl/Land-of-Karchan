@@ -96,6 +96,9 @@ if (isset($_REQUEST{"name"}))
    {
       $wearable2 += $_REQUEST{"wearable"}[$i];
    }
+   $eatable = $_REQUEST["eatable"];
+   $drinkable = $_REQUEST["drinkable"];
+   $readdescr = $_REQUEST["readdescr"];
    // make that change.
    $query = "update mm_items set name=\"".
 	  mysql_escape_string($_REQUEST{"name"}).
@@ -107,7 +110,25 @@ if (isset($_REQUEST{"name"}))
 	  mysql_escape_string($_REQUEST{"adject3"}).
 	  "\", wearable=\"".
 	  mysql_escape_string($wearable2).
-	  "\", owner=\"".
+	  "\", description=\"".
+	  mysql_escape_string($_REQUEST["description"]).
+	  "\", eatable=". ($eatable==""?"null": 
+			"\"".mysql_escape_string($eatable)."\"").
+	  ", drinkable=". ($drinkable==""?"null": 
+			"\"".mysql_escape_string($drinkable)."\"").
+	  ", readdescr=". ($readdescr==""?"null": 
+			"\"".mysql_escape_string($readdescr)."\"").
+	  ", gold=".
+	  mysql_escape_string($_REQUEST["gold"]).
+	  ", silver=".
+	  mysql_escape_string($_REQUEST["silver"]).
+	  ", copper=".
+	  mysql_escape_string($_REQUEST["copper"]).
+	  ", weight=".
+	  mysql_escape_string($_REQUEST["weight"]).
+	  ", container=".
+	  mysql_escape_string($_REQUEST["container"]).
+	  ", owner=\"".
 	  mysql_escape_string($_COOKIE["karchanadminname"]).
 	  "\" where id = \"".
 	  mysql_escape_string($_REQUEST{"item"}).
@@ -135,11 +156,10 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>movementincrease:</b> %s<BR>", $myrow["movementincrease"]);
 	printf("<b>eatable:</b> %s<BR>", $myrow["eatable"]);
 	printf("<b>drinkable:</b> %s<BR>", $myrow["drinkable"]);
-	printf("<b>lightable:</b> %s<BR>", $myrow["lightable"]);
-	printf("<b>getable:</b> %s<BR>", $myrow["getable"]);
-	printf("<b>dropable:</b> %s<BR>", $myrow["dropable"]);
-	printf("<b>visible:</b> %s<BR>", $myrow["visible"]);
-	printf("<b>wieldable:</b> %s<BR>", $myrow["wieldable"]);
+	printf("<b>lightable:</b> %s<BR>", ($myrow["lightable"]==1? "yes":"no"));
+	printf("<b>getable:</b> %s<BR>", ($myrow["getable"]==1? "yes":"no"));
+	printf("<b>dropable:</b> %s<BR>", ($myrow["dropable"]==1? "yes":"no"));
+	printf("<b>visible:</b> %s<BR>", ($myrow["visible"]==1? "yes":"no"));
 	printf("<b>description:</b> %s<BR>", $myrow["description"]);
 	printf("<b>readdescr:</b> %s<BR>", $myrow["readdescr"]);
 	printf("<b>wearable:</b> <UL>");
@@ -225,7 +245,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>weight:</b> %s<BR>", $myrow["weight"]);
 	printf("<b>pasdefense:</b> %s<BR>", $myrow["pasdefense"]);
 	printf("<b>damageresistance:</b> %s<BR>", $myrow["damageresistance"]);
-	printf("<b>container:</b> %s<BR>", $myrow["container"]);
+	printf("<b>container:</b> %s<BR>", ($myrow["container"]==1? "yes":"no"));
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
@@ -240,6 +260,21 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>adject1</TD><TD><INPUT TYPE="text" NAME="adject1" VALUE="<?php echo $myrow["adject1"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>adject2</TD><TD><INPUT TYPE="text" NAME="adject2" VALUE="<?php echo $myrow["adject2"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>adject3</TD><TD><INPUT TYPE="text" NAME="adject3" VALUE="<?php echo $myrow["adject3"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>description</TD><TD><TEXTAREA NAME="description" ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["description"]) ?></TEXTAREA><P></TD></TR>
+<TR><TD>eatable</TD><TD><TEXTAREA NAME="eatable" 
+ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["eatable"]) ?></TEXTAREA><P></TD></TR>
+<TR><TD>drinkable</TD><TD><TEXTAREA NAME="drinkable" ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["drinkable"]) ?></TEXTAREA><P></TD></TR>
+<TR><TD>readdescr</TD><TD><TEXTAREA NAME="readdescr" ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["readdescr"]) ?></TEXTAREA><P></TD></TR>
+<TR><TD>gold</TD><TD><INPUT TYPE="text" NAME="gold" VALUE="<?php echo $myrow["gold"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>silver</TD><TD><INPUT TYPE="text" NAME="silver" VALUE="<?php echo $myrow["silver"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>copper</TD><TD><INPUT TYPE="text" NAME="copper" VALUE="<?php echo $myrow["copper"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>weight</TD><TD><INPUT TYPE="text" NAME="weight" VALUE="<?php echo $myrow["weight"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>container</TD><TD><INPUT TYPE="radio" NAME="container" VALUE="1" <?php echo ($myrow["container"] == 1? "checked" : "") ?>>yes
+<BR><INPUT TYPE="radio" NAME="container" VALUE="0" <?php echo ($myrow["container"] == 0? "checked" : "") ?>>no</TD></TR>
 <TR><TD>wearable/wieldable</TD><TD><SELECT MULTIPLE NAME="wearable[] " SIZE="20">
 <OPTION VALUE="1" <?php if ($myrow["wearable"] & 1) {printf("selected");} ?>>head
 <OPTION VALUE="2" <?php if ($myrow["wearable"] & 2) {printf("selected");} ?>>neck
