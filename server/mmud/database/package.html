@@ -272,7 +272,9 @@ whenever a change takes place on the record in question.
 131072=wield righthand,262144=wielding both hands
 <DT>container
 <DD>wether or not this item can server as a container for other items.
-Possible values are 0 (no container) or 1 (container).
+Possible values are 0 (no container) or 1 (container). Bear in mind that the
+following fields are only relevant if container is set to 1: <I>capacity,
+isopenable, keyid, containtype</I>.
 <DT>getable
 <DD>wether or not the item can be picked up from the floor. <B>Important:</B> items with a
 negative id number, are <I>never</I> getable and are mostly used as
@@ -290,6 +292,22 @@ If this is NULL, the first one to make any changes owns the item.
 <DT>creation
 <DD>timestamp, is updated with the current datetime 
 whenever a change takes place on the record in question.
+
+<DT>capacity
+<DD>the maximum weight a container can contain. Only relevant if
+container=1.
+<DT>isopenable
+<DD>wether or not the container can be opened (i.e. has a lid). openable=1,
+not openable = 0. Only relevant if
+container=1.
+<DT>keyid
+<DD>the item definition id of the item that can be used to lock and unlock
+the container. If the item definition is 0, the container does not have a
+lock. Only relevant if
+container=1.
+<DT>containtype
+<DD>the type of items that are allowed to be stored in the container. Only relevant if
+container=1. (TODO)
 </DL>
 <PRE>
 <A NAME="mm_shopkeeperitems">
@@ -378,7 +396,7 @@ is neither being worn nor wielded.
 <H4><A HREF="#contents"><A NAME="mm_usertable">mm_usertable</A></H4>
 <DL>
 <DT>name
-<DD>identification of this character
+<DD>identification of this character. May only contain [A-z_a-z].
 <DT>race
 <DD>The different races are limited in the game. This is because different
 races have different implementations and characteristics. 

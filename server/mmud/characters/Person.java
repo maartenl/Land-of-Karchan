@@ -875,6 +875,19 @@ public class Person implements Executable, AttributeContainer
 	}
 
 	/**
+	 * Checks to see if this person is wearing something in a particular
+	 * place.
+	 * @return the Item that is being worn. Returns a null if there
+	 * is nothing being worn at that place.
+	 * @param aPlace is the place on the person that needs to be searched.
+	 * @see ItemDb#getWornItemFromChar
+	 */
+	public Item isWorn(PersonPositionEnum aPlace)
+	{
+		return ItemsDb.getWornItemFromChar(this, aPlace);
+	}
+
+	/**
 	 * Display statistics .
 	 * @return String containing all the statistics in html format.
 	 */
@@ -901,6 +914,8 @@ public class Person implements Executable, AttributeContainer
 //		Skill
 
 	}
+
+	
 
 	/**
 	 * Executes a script with this person as the focus point.
@@ -1182,6 +1197,22 @@ public class Person implements Executable, AttributeContainer
 				Database.writeLog("root", "created item (" + myItem + ") for person " +
 					getName());
 				return myItem;
+			}
+		}
+		if (method_name.equals("wornItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a Integer as argument.");
+				}
+				return isWorn(
+					PersonPositionEnum.get(
+					((Integer) arguments[0]).intValue()
+					)
+					);
 			}
 		}
 //		throw new MethodNotSupportedException(method_name + " not found.");

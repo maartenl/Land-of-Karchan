@@ -269,4 +269,21 @@ public class ItemDef implements AttributeContainer
 		return theAttributes.containsKey(aName);
 	}
 
+	/**
+	 * default equals implementation.
+	 */
+	public boolean equals(Object r)
+	{
+		if (r == null)
+		{
+			return false;
+		}
+		if (!(r instanceof ItemDef))
+		{
+			return false;
+		}
+		ItemDef u = (ItemDef) r;
+		return u.getId() == getId();
+	}
+
 }

@@ -247,6 +247,22 @@ public class Item implements Executable, AttributeContainer
 		return (Constants.isQwerty(getAdjective1().charAt(0)) ? "an " : "a ") + getAdjective1() + ", " + getAdjective2() + " " + getVerb();
 	}
 
+	private String getStringForWearing(PersonPositionEnum aPos)
+	{
+		if (aPos == null)
+		{
+			return "";
+		}
+		if (isWearable(aPos))
+		{
+			return ("You can " + (aPos.isWielding()?"wield":"wear") +
+				" it " + 
+				aPos + 
+				".<BR>").replaceAll("%SHISHER", "your");
+		}
+		return "";
+	}
+
 	/**
 	 * get the description of the item (the long one). If the attribute
 	 * <I>description</I> exists, than this one is used instead.
@@ -254,9 +270,28 @@ public class Item implements Executable, AttributeContainer
 	 */
 	public String getLongDescription()
 	{
-		return (isAttribute("description") ? 
+		StringBuffer myString = new StringBuffer(isAttribute("description") ? 
 				getAttribute("description").getValue() : 
 				theItemDef.getLongDescription());
+		myString.append(getStringForWearing(PersonPositionEnum.WIELD_RIGHT));
+		myString.append(getStringForWearing(PersonPositionEnum.WIELD_LEFT));
+		myString.append(getStringForWearing(PersonPositionEnum.WIELD_BOTH));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_HEAD));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_NECK));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_TORSO));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_ARMS));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_LEFT_WRIST));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_RIGHT_WRIST));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_LEFT_FINGER));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_RIGHT_FINGER));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_FEET));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_HANDS));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_WAIST));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_LEGS));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_EYES));
+		myString.append(getStringForWearing(PersonPositionEnum.ON_EARS));
+		myString.append(getStringForWearing(PersonPositionEnum.ABOUT_BODY));
+		return myString.toString();
 	}
 
 	/**
@@ -316,21 +351,6 @@ public class Item implements Executable, AttributeContainer
 		return theAttributes.containsKey(aName) ||
 			getItemDef().isAttribute(aName);
 	}
-
-	/**
-	 * Retrieve items from this container.
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @return Vector containing item objects found.
-	 * @see mmud.database.ItemsDb#getItemsFromContainer
-	 */
-	public Vector getItems(String adject1, String adject2, String adject3, String name) 
-	{
-		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name, this);
-	}
-
 
 //	public boolean isWorn
 //	public boolean isWielded

@@ -74,6 +74,7 @@ public class PersonPositionEnum
 	 * is a part of it.
 	 * @param aVal the integer corresponding to a number of
 	 * PersonPositionEnums
+	 * @param aPos the PersonPositionEnum for which to check.
 	 * @return boolean, true if the integer contains the
 	 * PersonPositionEnum.
 	 */

@@ -176,8 +176,8 @@ public class WearCommand extends NormalCommand
 			{
 				// transfer item to other person
 				myItem.setWearing(position);
-				Database.writeLog(aUser.getName(), "wears " + myItem + " on " + position);
-				Persons.sendMessage(aUser, "%SNAME wear%VERB2 " + myItem.getDescription() + " on " + position + ".<BR>\r\n");
+				Database.writeLog(aUser.getName(), "wears " + myItem + " " + position);
+				Persons.sendMessage(aUser, "%SNAME wear%VERB2 " + myItem.getDescription() + " " + position + ".<BR>\r\n");
 				return true;
 			}
 		}

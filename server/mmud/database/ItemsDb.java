@@ -142,6 +142,12 @@ public class ItemsDb
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
         + "belongsto = ? and mm_charitemtable.wearing is not null";
+	public static String sqlGetWearingItemAtPositionString =
+		"select mm_itemtable.itemid, mm_charitemtable.* "
+		+ "from mm_charitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_charitemtable.id and "
+        + "belongsto = ? and mm_charitemtable.wearing = ?";
 
 	/**
 	 * Makes one specific item either being worn or not being worn
@@ -195,16 +201,30 @@ public class ItemsDb
 			return null;
 		}
 		res.first();
-		myItemDef  = new ItemDef(
-			itemdefnr,
-			res.getString("adject1"),
-			res.getString("adject2"), res.getString("adject3"),
-			res.getString("name"), res.getString("description"),
-			res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
-			res.getInt("wearable"));
+		if (res.getInt("container") == 1)
+		{
+			myItemDef  = new ContainerDef(
+				itemdefnr,
+				res.getString("adject1"),
+				res.getString("adject2"), res.getString("adject3"),
+				res.getString("name"), res.getString("description"),
+				res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
+				res.getInt("wearable"),
+				res.getInt("capacity"), res.getInt("isopenable") == 1, 
+				ItemDefs.getItemDef(res.getInt("keyid")) );
+		}
+		else
+		{
+			myItemDef  = new ItemDef(
+				itemdefnr,
+				res.getString("adject1"),
+				res.getString("adject2"), res.getString("adject3"),
+				res.getString("name"), res.getString("description"),
+				res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
+				res.getInt("wearable"));
+		}
 		// do stuff with attributes.
 		String drinkable = res.getString("drinkable");
-		int container = res.getInt("container");
 		String eatable = res.getString("eatable");
 		String readable = res.getString("readdescr");
 		int visible = res.getInt("visible");
@@ -215,10 +235,6 @@ public class ItemsDb
 		// dressing
 		int dropable = (itemdefnr < 0 ? 0 : res.getInt("dropable"));
 		int getable = (itemdefnr < 0 ? 0 : res.getInt("getable"));
-		if (container != 0)
-		{
-			myItemDef.setAttribute(new Attribute("container", "true", "boolean"));
-		}
 		if ( (drinkable != null) && (!drinkable.trim().equals("")) )
 		{
 			myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
@@ -387,15 +403,15 @@ public class ItemsDb
 			int amount = res.getInt("amount");
 			if (amount > 1)
 			{
-				myInventory.append(amount + " " + res.getString("adject1")
+				myInventory.append("<LI>" + amount + " " + res.getString("adject1")
 					+ ", " + res.getString("adject2") + " "
-					+ res.getString("name") + "s are here.<BR>\r\n");
+					+ res.getString("name") + "s.<BR>\r\n");
 			}
 			else
 			{
-				myInventory.append("A " + res.getString("adject1")
+				myInventory.append("<LI>A " + res.getString("adject1")
 					+ ", " + res.getString("adject2") + " "
-					+ res.getString("name") + " is here.<BR>\r\n");
+					+ res.getString("name") + ".<BR>\r\n");
 			}
 		}
 		res.close();
@@ -596,7 +612,14 @@ public class ItemsDb
 			System.out.println(res);
 			if (res.next())
 			{
-				myItem = new Item(anItemDef, res.getInt(1));
+				if (anItemDef instanceof ContainerDef)
+				{
+					myItem = new StdItemContainer((ContainerDef) anItemDef, res.getInt(1));
+				}
+				else
+				{
+					myItem = new Item(anItemDef, res.getInt(1));
+				}
 			}
 			sqlAddItem.close();
 		}
@@ -752,7 +775,16 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId);
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId);
+				}
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -799,7 +831,15 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId);
+				}
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -856,7 +896,16 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId);
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId);
+				}
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -898,7 +947,16 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId);
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId);
+				}
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -958,8 +1016,20 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = new Item(anItemId, anItemInstanceId,
-					PersonPositionEnum.get(res.getInt("wearing")));
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef,
+						anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				
 				Database.getItemAttributes(anItem);
 				items.add(anItem);
 			}
@@ -973,6 +1043,72 @@ public class ItemsDb
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
+	}
+
+	/**
+	 * Returns the item that is being worn at a specific place on the body
+	 * of a character.
+	 * @param aPlace the place on a character that needs to be searched. Not
+	 * null.
+	 * @param aChar the character who has the item in his/her inventory.
+	 * @return Item being worn, or a null if no item is being worn at that
+	 * place. Only returns the first item found, if more items are found
+	 * at the same place.
+	 */
+	public static Item getWornItemFromChar(Person aChar, 
+		PersonPositionEnum aPlace)
+	{
+		Logger.getLogger("mmud").finer("aChar=" + aChar + 
+			",aPlace=" + aPlace);
+		ResultSet res;
+		try
+		{
+			PreparedStatement sqlGetItem =
+				Database.prepareStatement(sqlGetWearingItemAtPositionString);
+			sqlGetItem.setString(1, aChar.getName()+"");
+			sqlGetItem.setInt(2, aPlace.toInt());
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef,
+						anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				
+				Database.getItemAttributes(anItem);
+				Logger.getLogger("mmud").finer("returns: " + anItem);
+				res.close();
+				sqlGetItem.close();
+				return anItem;
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").finer("returns: null");
+		return null;
 	}
 
 	/**

@@ -93,6 +93,87 @@ public class WieldCommand extends NormalCommand
 		}
 
 		Logger.getLogger("mmud").finer("position=" + position);
+		// we need to seriously do something about this.
+		// oh well, works for now I guess.
+		/* check to see if something is already being wielded there. */
+		Item alreadyWieldedItem = null;
+		Item alreadyWieldedItem1 =
+			aUser.isWorn(PersonPositionEnum.WIELD_LEFT);
+		Item alreadyWieldedItem2 =
+			aUser.isWorn(PersonPositionEnum.WIELD_RIGHT);
+		Item alreadyWieldedItem3 = 
+			aUser.isWorn(PersonPositionEnum.WIELD_BOTH);
+		PersonPositionEnum alreadyPosition = null;
+		if (position == PersonPositionEnum.WIELD_BOTH)
+		{
+			// if we wish to wield something in both hands
+			// we need to check that neither hand is occupied
+			// nor both are occupied.
+			if (alreadyWieldedItem1 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in lefthand");
+				alreadyWieldedItem = alreadyWieldedItem1;
+				alreadyPosition = PersonPositionEnum.WIELD_LEFT;
+			}
+			if (alreadyWieldedItem2 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in righthand");
+				alreadyWieldedItem = alreadyWieldedItem2;
+				alreadyPosition = PersonPositionEnum.WIELD_RIGHT;
+			}
+			if (alreadyWieldedItem3 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				alreadyWieldedItem = alreadyWieldedItem3;
+				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
+			}
+		}
+		if (position == PersonPositionEnum.WIELD_LEFT)
+		{
+			// if we wish to wield something in left hand
+			// we need to check that left hand nor both hands
+			// are occupied
+			if (alreadyWieldedItem1 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in lefthand");
+				alreadyWieldedItem = alreadyWieldedItem1;
+				alreadyPosition = PersonPositionEnum.WIELD_LEFT;
+			}
+			if (alreadyWieldedItem3 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				alreadyWieldedItem = alreadyWieldedItem3;
+				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
+			}
+		}
+		if (position == PersonPositionEnum.WIELD_RIGHT)
+		{
+			// if we wish to wield something in right hand
+			// we need to check that right hand nor both hands
+			// are occupied
+			if (alreadyWieldedItem2 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in righthand");
+				alreadyWieldedItem = alreadyWieldedItem2;
+				alreadyPosition = PersonPositionEnum.WIELD_RIGHT;
+			}
+			if (alreadyWieldedItem3 != null)
+			{
+				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				alreadyWieldedItem = alreadyWieldedItem3;
+				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
+			}
+		}
+
+		if (alreadyWieldedItem != null)
+		{
+			String stuff2 = "You are already wielding " +
+				alreadyWieldedItem.getDescription() + " " + 
+				alreadyPosition + ".<BR>\r\n";
+			stuff2 = stuff2.replaceAll("%SHISHER","your"); 
+			aUser.writeMessage(stuff2);
+			return true;
+		}
 		// check for item in posession
 		Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
 		int amount = ((Integer) stuff.elementAt(0)).intValue();
@@ -121,8 +202,6 @@ public class WieldCommand extends NormalCommand
 			{
 				success = false;
 			}
-			// TODO: check to see if something is already being worn at that
-			//	place.
 			if (success)
 			{
 				// transfer item to other person

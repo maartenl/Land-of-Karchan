@@ -36,14 +36,14 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Put an item into a container: "put ring into sack".
+ * Put an item into a container: "put ring in sack".
  * Requirements for it to be successfull:
  * <ul><li>the item to put must be in your inventory
  * <li>the container must be in your inventory or in the room
  * <li>the container must be a container
  * </ul>
- * The possible syntax can range from: "put ring into sack" to
- * "put 8 old gold shiny ring into new leather beaten sack".
+ * The possible syntax can range from: "put ring in sack" to
+ * "put 8 old gold shiny ring in new leather beaten sack".
  */
 public class PutCommand extends NormalCommand
 {
@@ -78,9 +78,9 @@ public class PutCommand extends NormalCommand
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			// check for into.
+			// check for in.
 			int intopos = 0;
-			while (!myParsed[intopos].equalsIgnoreCase("into")) 
+			while (!myParsed[intopos].equalsIgnoreCase("in")) 
 			{
 				intopos++;
 			}
@@ -127,9 +127,16 @@ public class PutCommand extends NormalCommand
 				}
 			}
 			Item aContainer = (Item) myContainers.elementAt(0);
-			if (!aContainer.isAttribute("container"))
+			if (!(aContainer instanceof Container))
 			{
 				aUser.writeMessage(aContainer.getDescription() + " is not a container.<BR>\r\n");
+				return true;
+			}
+
+			Container myCon = (Container) aContainer;
+			if (!myCon.isOpen())
+			{
+				aUser.writeMessage(aContainer.getDescription() + " is closed.<BR>\r\n");
 				return true;
 			}
 
@@ -139,10 +146,10 @@ public class PutCommand extends NormalCommand
 				// here needs to be a check for validity of the item
 				boolean success = true;
 				Item myItem = (Item) myItems.elementAt(i);
-				Database.writeLog(aUser.getName(), "put " + myItem + " into container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
+				Database.writeLog(aUser.getName(), "put " + myItem + " in container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
 				ItemsDb.deleteItemFromChar(myItem);
 				ItemsDb.addItemToContainer(myItem, aContainer);
-				Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " into " + aContainer.getDescription() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " in " + aContainer.getDescription() + ".<BR>\r\n");
 				j++;
 			}
 			return true;

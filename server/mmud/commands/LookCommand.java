@@ -28,6 +28,7 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.Iterator;
 
 import mmud.*;
 import mmud.characters.*;
@@ -66,6 +67,33 @@ public class LookCommand extends NormalCommand
 		return true;
 	}
 
+	private boolean LookInItem(User aUser, Vector aItems)
+	throws ItemException
+	{
+		Iterator myIterator = aItems.iterator();
+		while (myIterator.hasNext())
+		{
+			Item myItem = (Item) myIterator.next();
+			if (myItem instanceof Container)
+			{
+				Container myCon = (Container) myItem;
+				if (!myCon.isOpen())
+				{
+					Persons.sendMessage(aUser, "%SNAME attempt%VERB2 to look in " + myItem.getDescription() + 
+						", but unfortunately it seems closed.<BR>\r\n");
+					return true;
+				}
+				Persons.sendMessage(aUser, "%SNAME look%VERB2 in " + myItem.getDescription() + ".<BR>\r\n");
+				theResult = "<H1>" + myItem.getDescription() + "</H1>" +
+					"You look in " + myItem.getDescription() + 
+					".<P>You see :<UL>";
+				theResult += ItemsDb.getInventory(myItem) + "</UL>" + aUser.printForm();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean run(User aUser)
 	throws ItemException, MudException
 	{
@@ -81,6 +109,7 @@ public class LookCommand extends NormalCommand
 		{
 			if (myParsed[1].equalsIgnoreCase("at"))
 			{
+				Logger.getLogger("mmud").finer("if looking at");
 				Vector stuff = Constants.parseItemDescription(myParsed, 2, myParsed.length - 2);
 				int amount = 1;
 				String adject1 = (String) stuff.elementAt(1);
@@ -114,7 +143,30 @@ public class LookCommand extends NormalCommand
 				aUser.writeMessage(stuff2);
 				return true;
 			}
-			return true;
+			if (myParsed[1].equalsIgnoreCase("in"))
+			{
+				Logger.getLogger("mmud").finer("if looking in");
+				Vector stuff = Constants.parseItemDescription(myParsed, 2, myParsed.length - 2);
+				int amount = 1;
+				String adject1 = (String) stuff.elementAt(1);
+				String adject2 = (String) stuff.elementAt(2);
+				String adject3 = (String) stuff.elementAt(3);
+				String name = (String) stuff.elementAt(4);
+
+				Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+				if (myItems.size() != 0)
+				{
+					return LookInItem(aUser, myItems);
+				}
+				myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
+				if (myItems.size() != 0)
+				{
+					return LookInItem(aUser, myItems);	
+				}
+				aUser.writeMessage("You cannot look in that item.<BR>\r\n");
+				return true;
+			}
+			return false;
 		}
 		if (getCommand().equalsIgnoreCase("l"))
 		{

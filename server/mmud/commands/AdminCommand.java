@@ -44,13 +44,6 @@ import mmud.database.*;
  * <li>characters
  * <li>itemdefs
  * </ul>
- * The following commands are possible:
- * <ul><li>admin reset rooms
- * <li>admin reset characters
- * <li>admin reset itemdefs
- * <li>admin wall &lt;message&gt;
- * <li>admin shutdown
- * </ul>
  */
 public class AdminCommand extends NormalCommand
 {

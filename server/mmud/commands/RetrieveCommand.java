@@ -105,12 +105,20 @@ public class RetrieveCommand extends NormalCommand
 					return true;
 				}
 			}
-			Item aContainer = (Item) myContainers.elementAt(0);
-			if (!aContainer.isAttribute("container"))
+			Item aContainer2 = (Item) myContainers.elementAt(0);
+			if (!(aContainer2 instanceof Container))
 			{
-				aUser.writeMessage(aContainer.getDescription() + " is not a container.<BR>\r\n");
+				aUser.writeMessage(aContainer2.getDescription() + " is not a container.<BR>\r\n");
 				return true;
 			}
+			StdItemContainer aContainer = (StdItemContainer) aContainer2;
+			if (!aContainer.isOpen())
+			{
+				aUser.writeMessage(aContainer.getDescription() + " is closed.<BR>\r\n");
+				return true;
+			}
+
+
 
 			stuff = Constants.parseItemDescription(myParsed, 1, frompos - 1);
 			amount = ((Integer) stuff.elementAt(0)).intValue();
