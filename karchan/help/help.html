@@ -270,6 +270,23 @@ around', however, to find hidden items, see <I>search, drop, inventory</I>.
 <DD>this will make your character drop something on the ground. Be careful
 though. If one of the other persons picks it up and doesn't give it back to
 you, there is no way you can get it back. See also <I>search, get, inventory</I>.
+<DT><A NAME="retrieve">retrieve &lt;something&gt; from &lt;container&gt;</A>
+<DD>makes your character retrieve one of his/her items
+from
+a container. A container is simply another item but with the added
+possiblity of storing other items. The container in question may be in your
+inventory or might be lying on the floor in the current room somewhere.<P>
+You should be able to look at the container to see what it contains.<P>
+Be aware that not all items are containers.
+See also <I>put</I>.
+<DT><A NAME="put">put &lt;something&gt; in &lt;container&gt;</A>
+<DD>makes your character put one of his/her items into
+a container. A container is simply another item but with the added
+possiblity of storing other items. The container in question may be in your
+inventory or might be lying on the floor in the current room somewhere.<P>
+You should be able to look at the container to see what it contains.<P>
+Be aware that not all items are containers.
+See also <I>retrieve</I>.
 <DT><A NAME="give">give &lt;something&gt; to &lt;person&gt;</A>
 <DD>this will make your character give an item to another character. Very
 nice to pass objects like beer around. See also <I>search, get, inventory</I>.
@@ -488,13 +505,15 @@ standardly set to "off".
 <A HREF="#caress">poke</A><BR>
 <A HREF="#public">public</A><BR>
 <A HREF="#agree">purr</A><BR>
+<A HREF="#put">put</A><BR>
 
 <BR><FONT SIZE=+3><DIV ALIGN=top>Q<P><FONT SIZE=-1>
 <A HREF="#quit">quit</A><BR>
 
-<BR><FONT SIZE=+3><DIV ALIGN=top>E<P><FONT SIZE=-1>
+<BR><FONT SIZE=+3><DIV ALIGN=top>R<P><FONT SIZE=-1>
 <A HREF="#read">read</A><BR>
 <A HREF="#readpublic">read public</A><BR>
+<A HREF="#retrieve">retrieve</A><BR>
 
 <BR><FONT SIZE=+3><DIV ALIGN=top>S<P><FONT SIZE=-1>
 <A HREF="#say">say</A><BR>
@@ -831,9 +850,6 @@ http://www.homewood.net/savages/<P>
 Credits<P>
 The cgic-library used to interpret the Common Gateway Interface<BR>
 cgic, copyright 1996 by Thomas Boutell.<P>
-JRR Tolkien, for using his linguistic things as a basis for my game.<P>
-Oh! My Godess (Ah! Megamisama!!!), for using the images of Gods and
-Godesses for my Chronicles page.<P>
 
 <A NAME="appE"><H2><A HREF="#TABLE">Appendix E. Thanks go to the following
 people</A></H2>
@@ -846,8 +862,6 @@ safe place
 programming advice I need
 <LI>Joris van Liempd<BR><BR>Jiros<BR>For
 taking an interest in my exertions.
-<LI>Marco Groeneboer<BR>mb503@hi.ft.hse.nl<BR>-<BR>For taking an interest in
-my MUD.
 <LI>and anybody else I might have forgotten (Sorry)
 </OL>
 
