@@ -1,0 +1,10 @@
+#!/bin/sh
+
+/usr/bin/mysql --user=mmud --password=itsasecret mmud <<END_OF_DATA
+#
+# create a patch for the new version of the mud
+#
+
+
+END_OF_DATA
+
