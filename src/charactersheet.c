@@ -184,7 +184,11 @@ void showCharacterSheet()
 				int i;
 				for (i=0;i<num_fields;i++)
 				{
-					fprintf(cgiOut, "<B>%s</B> %s<BR>",databaseitems[i],row[i]);
+					if ((strcmp("<IMG SRC=\"http://\">", row[i])) &&
+					   (strcmp("<IMG SRC=\"\">", row[i]))) 
+					{
+						fprintf(cgiOut, "<B>%s</B> %s<BR>",databaseitems[i],row[i]);
+					}
 					if (i==9) 
 					{
 						showFamilyValues(mysql, sqlformstring);
