@@ -83,12 +83,22 @@ life of characters and administrators.</TD></TR>
 <DL>
 <DT>id
 <DD>identification of this item definition, integer.
+<DT>wieldable
+<DD>no longer used
 <DT>wearable
 <DD>how this item is to be worn as a bitmask, integer. Values :
 1=head,2=neck,4=torso,8=arms,16=leftwrist,32=rightwrist,64=leftfinger,
 128=rightfinger,256=feet,512=hands,1024=floating,2048=waist,
 4096=legs,8192=eyes,16384=ears,32768=body,65536=wield lefthand,
 131072=wield righthand,262144=wielding both hands
+<DT>container
+<DD>wether or not this item can server as a container for other items.
+Possible values are 0 (no container) or 1 (container).
+<DT>visible
+<DD>will make the item visible or invisible when in a room or in an
+inventory. The default is <I>visible</I>. <B>Important:</B> items with a
+negative id number, are <I>always</I> invisible and are mostly used as
+windowdressing for rooms.
 </DL>
 <PRE>
 +---------------------+
