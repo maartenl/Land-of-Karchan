@@ -22,12 +22,13 @@ Where one can change into a hero with a single swipe of his
 sword.<P>
 
 The current deputies are: 
-Kass, Torko<P>
+Kass, Torko, Milady, Manatoba<P>
 
 Okay, I implemented a parser type thingy for the mud. I had to rewrite all
 the existing special commands to this new parser, and that is why the
 special commands were temporarily disabled.<P>
 They work again, now. If you find any bugs, please report them to me.<P>
+<FONT COLOR=green>Oh, and by the way, what do you all think of the <B><I>new colour</I></B>?<P></FONT>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
