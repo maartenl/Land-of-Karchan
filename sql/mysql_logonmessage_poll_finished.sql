@@ -34,43 +34,43 @@ Plague?</I><P>
    </TR><TD></TD><TD>209 people voted</TD></TR>
 	<TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Way cool! Do more of those!</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Way cool! Do more of those!</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"133\" ALT=\"39%\">62 / <FONT COLOR=red>39%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Was fun.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Was fun.</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"62\" ALT=\"13%\">29 / <FONT COLOR=red>13%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Was okay, I guess.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Was okay, I guess.</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"71\" ALT=\"15%\">33 / <FONT COLOR=red>15%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Didn't like it.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Didn't like it.</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Dude, you suck!</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Dude, you suck!</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">What Plague?</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">What Plague?</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"94\" ALT=\"21%\">44 / <FONT COLOR=red>21%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Huh? Polls?</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Huh? Polls?</TD>
       <TD WIDTH=\"450\"><NOBR>
       <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"26\" ALT=\"6%\">12 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
