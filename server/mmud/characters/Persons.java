@@ -130,7 +130,7 @@ public final class Persons
 			if (myUser.getPassword() == null)
 			{
 				User tempUser = Database.getUser(aName, aPassword);
-				if (!tempUser.verifyPassword(aPassword))
+				if( (tempUser == null) || (!tempUser.verifyPassword(aPassword)))
 				{
 					Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 					throw new PwdIncorrectException();
