@@ -96,6 +96,7 @@ public class TickerThread extends Thread
 				Database.writeLog("root", e);
 				e.printStackTrace();
 			}
+			Database.runEvents();
 		} // neverending loop.
 	}
 

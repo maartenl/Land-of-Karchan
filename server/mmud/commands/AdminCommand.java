@@ -83,6 +83,20 @@ public class AdminCommand extends NormalCommand
 			aUser.writeMessage("You are not an administrator.<BR>\r\n");
 			return true;
 		}
+		if (getCommand().toLowerCase().startsWith("admin kick "))
+		{
+			Person myPerson = 
+				Persons.retrievePerson(getCommand().substring(11));
+			if ((myPerson == null) || (!(myPerson instanceof User)))
+			{
+				aUser.writeMessage("Person not found.<BR>\r\n");
+				return true;
+			}
+			Persons.deactivateUser((User) myPerson);
+			Database.writeLog(aUser.getName(), "admin command 'kick' executed on " + myPerson.getName());
+			Persons.sendMessage(aUser, myPerson, "%SNAME boot%VERB2 %TNAME from the game.<BR>\r\n");
+			return true;
+		}
 		if (getCommand().equalsIgnoreCase("admin reset rooms"))
 		{
 			Database.writeLog(aUser.getName(), "admin command 'reset rooms' executed");
@@ -144,6 +158,7 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'help' executed");
 			aUser.writeMessage("Possible commands are:<DL>" +
 				"<DT>admin help<DD>this help text" +
+				"<DT>admin kick &lt;character name&gt;<DD>kicks the character of the game immediately." +
 				"<DT>admin reset characters<DD>reset the cached rooms, required every time you make a change to a room" +
 				"<DT>admin reset itemdefs<DD>reset the cached item definitions, required every time you make a change to an itemdefinition" +
 				"<DT>admin reset rooms<DD>reset the cached characters, required every time you make a change to a character." +

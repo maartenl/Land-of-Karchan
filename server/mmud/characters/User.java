@@ -298,6 +298,16 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
+	 * Sets the address
+	 * @param anAddress String containing the address
+	 */
+	public void setAddress(String anAddress)
+	{
+		Logger.getLogger("mmud").finer("");
+		theAddress = anAddress;
+	}
+
+	/**
 	 * generate a session password to be used by player during game session
 	 * Use getSessionPassword to return a String containing 25 random
 	 * digits, capitals and smallcaps.

@@ -204,6 +204,9 @@ public class ItemsDb
 		int visible = res.getInt("visible");
 		int wearable = res.getInt("wearable");
 		int wieldable = res.getInt("wieldable");
+		// negative ids implies that the item is not
+		// gettable or dropable, usually used for window/room
+		// dressing
 		int dropable = (itemdefnr < 0 ? 0 : res.getInt("dropable"));
 		int getable = (itemdefnr < 0 ? 0 : res.getInt("getable"));
 		if (container != 0)

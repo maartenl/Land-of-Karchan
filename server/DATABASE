@@ -23,6 +23,39 @@ null, message varchar(255) not null, primary key (creation, name, message));
 - update mm_usertable set alignment=8 where alignment=0;
 - alter table mm_usertable alter movementstats set default 1000;
 - update mm_usertable set movementstats=1000 where movementstats=0;
+- CREATE TABLE mm_commands (
+  id int(11) NOT NULL default '0',
+  callable int(1) default 0,
+  command varchar(255) NOT NULL,
+  method_name varchar(52) NOT NULL,
+  room int(11) NULL,
+  owner varchar(20),
+  creation timestamp,
+  PRIMARY KEY  (id, command)
+);
+- CREATE TABLE mm_methods (
+  name varchar(52) NOT NULL,
+  src text NOT NULL,
+  owner varchar(20),
+  creation timestamp,
+  PRIMARY KEY  (name)
+);
+// - mm_action
+- CREATE TABLE mm_events (
+  eventid int(11) NOT NULL,
+  name varchar(32) NULL,
+  month int(11) NOT NULL default '-1',
+  dayofmonth int(11) NOT NULL default '-1',
+  hour int(11) NOT NULL default '-1',
+  minute int(11) NOT NULL default '-1',
+  dayofweek int(11) NOT NULL default '-1',
+  callable int(2) NOT NULL default '1',
+  method_name varchar(52) NOT NULL,
+  room int(11),
+  owner varchar(20),
+  creation timestamp,
+  PRIMARY KEY  (eventid)
+);
 
 Creating a dupe database
 ------------------------

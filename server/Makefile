@@ -32,8 +32,8 @@ CC = /usr/java/j2sdk1.4.1_02/bin/javac
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:runme.jar
-CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar
+CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:Simkin.jar:runme.jar
+CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar:Simkin.jar
 COPTS = -source 1.4 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
 
 TARGETS = compile javadoc release

@@ -135,6 +135,8 @@ public class MudSocket extends Thread
 					Logger.getLogger("mmud").finest("received from socket: name=[" + name + "]");
 					myOutputStream.println("Password:");
 					String password = myInputStream.readLine();
+					myOutputStream.println("Address:");
+					String address = myInputStream.readLine();
 					Logger.getLogger("mmud").finest("received from socket: password=[" + password + "]");
 					myOutputStream.println("Cookie:");
 					String cookie = myInputStream.readLine();
@@ -151,13 +153,13 @@ public class MudSocket extends Thread
 					{
 						Logger.getLogger("mmud").warning(
 							"unable to interpret frame information, defaulting to 0.");
-			e.printStackTrace();
+						e.printStackTrace();
 					}
 					try
 					{
 		 				myOutputStream.println(
 							enterMud(name, password, 
-								theSocket.getInetAddress().getCanonicalHostName(),
+								address,
 								cookie, frame-1) + "\n.\n");
 					}
 					catch (Exception e)
@@ -336,6 +338,10 @@ public class MudSocket extends Thread
 			",aAddress=" + aAddress + 
 			",aCookie=" + aCookie + 
 			",aFrames=" + aFrames);
+		if ( (aAddress == null) || ("".equals(aAddress.trim())) )
+		{
+			throw new MudException("address unknown");
+		}
 		try
 		{
 		try
@@ -365,7 +371,7 @@ public class MudSocket extends Thread
 			Logger.getLogger("mmud").info("thrown " + Constants.USERBANNEDERROR);
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
-		User myUser = Persons.activateUser(aName, aPassword, aCookie);
+		User myUser = Persons.activateUser(aName, aPassword, aAddress, aCookie);
 		myUser.generateSessionPassword();
 		myUser.setFrames(aFrames);
 		myUser.writeMessage(Database.getLogonMessage());

@@ -121,6 +121,8 @@ public final class Persons
 	 * @throws PersonException if something is wrong
 	 * @param aName String containing the name of the Person
 	 * @param aPassword String containing the password of the Person
+	 * @param anAddress String containing the ip address (more likely the
+	 * hostname) of the user logging in.
 	 * @param aCookie String containing the session password. It is
 	 * possible that this is "null", if the user was not logged in
 	 * before.
@@ -128,7 +130,8 @@ public final class Persons
 	 * be user but a Person, it means that it is not a valid player in
 	 * the game, but more likely a bot.
 	 */
- 	public static User activateUser(String aName, String aPassword, String aCookie)
+ 	public static User activateUser(String aName, String aPassword, 
+		String anAddress, String aCookie)
 	throws PersonException
 	{
 		Logger.getLogger("mmud").finer("aName=" + aName +
@@ -185,6 +188,7 @@ public final class Persons
 			throw new PwdIncorrectException();
 		}
 		// everything seems to be okay
+		myUser.setAddress(anAddress);
 		Database.activateUser(myUser);
 		thePersons.addElement(myUser);
 		return myUser;
@@ -344,6 +348,7 @@ public final class Persons
 	 * is parsed, based on who is sending the message.
 	 * @param aPerson the person who is the source of the message.
 	 * @param aMessage the message
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String) 
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)
 	{
@@ -365,6 +370,7 @@ public final class Persons
 	 * is parsed, based on who is sending the message.
 	 * @param aPerson the person who is the source of the message.
 	 * @param aMessage the message
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String) 
 	 */
 	public static void sendMessageExcl(Person aPerson, String aMessage)
 	{
@@ -389,6 +395,7 @@ public final class Persons
 	 * @param aPerson the person doing the communicatin'.
 	 * @param aSecondPerson the person communicated to.
 	 * @param aMessage the message to be sent
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person, mmud.characters.Person,java.lang.String) 
 	 */
 	public static void sendMessage(Person aPerson, Person aSecondPerson, String aMessage)
 	{
@@ -412,6 +419,7 @@ public final class Persons
 	 * @param aPerson the person doing the communicatin'.
 	 * @param aSecondPerson the person communicated to.
 	 * @param aMessage the message to be sent
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person, mmud.characters.Person,java.lang.String)
 	 */
 	public static void sendMessageExcl(Person aPerson, Person aSecondPerson, String aMessage)
 	{

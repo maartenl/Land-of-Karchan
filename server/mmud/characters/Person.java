@@ -34,6 +34,10 @@ import java.io.IOException;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.Vector;
+import java.io.StringReader;
+import java.util.Hashtable;
+
+import simkin.*;
 
 import mmud.*;
 import mmud.characters.*;
@@ -46,7 +50,7 @@ import mmud.commands.Command;
  * Class containing all the information of a person in the game. (Not
  * necessarily a user playing)
  */
-public class Person
+public class Person implements Executable
 {
 	private String theName;
 	private Room theRoom;
@@ -888,6 +892,176 @@ public class Person
 		stuff;
 //		Skill
 
+	}
+
+	/**
+	 * Entry point - executes the script
+	 */ 
+	public void runScript(String aScript)
+	throws MudException
+	{
+		try
+		{
+			// Create an interpreter and a context
+			Interpreter interp=new Interpreter();
+			ExecutableContext ctxt=new ExecutableContext(interp);
+	
+			// create an XMLExecutable object with the xml string
+			XMLExecutable executable = 
+				new XMLExecutable(getName(), new StringReader(aScript));
+	
+			// call the "main" method with the person as an argument
+			Object args[]={this};
+			executable.method("main",args,ctxt);
+		}
+		catch (simkin.ParseException aParseException)
+		{
+			System.out.println("Unable to parse command.");
+			aParseException.printStackTrace();
+			throw new MudException("Unable to parse command.");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new MudException("Unable to run script.");
+		}
+	}
+
+	public void setValue(String field_name, String attrib_name, 
+		Object value, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value + "[" + value.getClass() + "]");
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+	 
+	public void setValueAt(Object array_index, 
+		String attrib_name, 
+		Object value, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name + ", value=" + 
+			value);
+	}
+
+	public ExecutableIterator createIterator()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public ExecutableIterator createIterator(String qualifier)
+	{
+		Logger.getLogger("mmud").finer("qualifier=" + qualifier);
+		return createIterator();
+	}
+
+	public Hashtable getAttributes()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public Hashtable getInstanceVariables()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+
+	public String getSource(String location)
+	{
+		Logger.getLogger("mmud").finer("location=" + location);
+		return null;
+	}
+
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		if (field_name.equals("room"))
+		{
+			return new Integer(getRoom().getId());
+		}
+		if (field_name.equals("sex"))
+		{
+			return getSex().toString();
+		}
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public Object getValueAt(Object array_index,
+		String attrib_name, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name);
+		return null;
+	}
+
+	public Object method(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("sendMessage"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a String as argument.");
+				}
+				Persons.sendMessage(this, (String) arguments[0]);
+			}
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof Person))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a (Person,String) as argument.");
+				}
+				if (!(arguments[1] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a (Person,String) as argument.");
+				}
+				Persons.sendMessage(this, (Person) arguments[0], 
+					(String) arguments[1]);
+			}
+		}
+		if (method_name.equals("sendMessageExcl"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a String as argument.");
+				}
+				Persons.sendMessageExcl(this, (String) arguments[0]);
+			}
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof Person))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a (Person,String) as argument.");
+				}
+				if (!(arguments[1] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a (Person,String) as argument.");
+				}
+				Persons.sendMessageExcl(this, (Person) arguments[0], 
+					(String) arguments[1]);
+			}
+		}
+		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
 }

@@ -59,7 +59,7 @@ public class Database
 	public static String sqlGetActiveUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
-	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=now() where name = ?";
+	public static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
@@ -84,6 +84,16 @@ public class Database
 	public static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
 	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
 	public static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
+
+	public static String sqlGetEvents = "select mm_methods.name as method_name, " +
+		"mm_events.name, src, room from mm_events, mm_methods " +
+		"where callable = 1 " +
+		"and mm_methods.name = mm_events.method_name " +
+		"and ( month = -1 or month = MONTH(NOW()) ) " + 
+		"and ( dayofmonth = -1 or dayofmonth = DAYOFMONTH(NOW()) ) " +
+		"and ( hour = -1 or hour = HOUR(NOW()) ) " +
+		"and ( minute = -1 or minute = MINUTE(NOW()) ) " +
+		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )";
 
 	public static String sqlGetCharAttributesString =
 		"select * from mm_charattributes "
@@ -409,7 +419,7 @@ public class Database
 
 	/**
 	 * Retrieve a true or false regarding the god like status of the 
-	 *character
+	 * character
 	 * @param aName the name of the character. This uniquely identifies
 	 * any character in the database.
 	 * @return boolean, true if it is an administrator.
@@ -680,7 +690,7 @@ public class Database
 			}
 			else
 			{
-				Person myNewChar = new Person(myName,
+				Bot myNewChar = new Bot(myName,
 					res.getString("title"),
 					res.getString("race"),
 					Sex.createFromString(res.getString("sex")),
@@ -716,6 +726,59 @@ public class Database
 			Database.writeLog("root", e);
 		}
 		return myVector;
+	}
+
+	/**
+	 * Retrieves all events from the database that are to take place and,
+	 * if possible, executes them. Events can take place originating
+	 * from a certain character or originating in a certain room,
+	 * or originating in a global game event type thingy.
+	 * This method is usually called from a separate thread dealing
+	 * with events.
+	 */
+	public static void runEvents()
+	{
+		Logger.getLogger("mmud").finer("");
+		assert theConnection != null : "theConnection is null";
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetEvents = theConnection.prepareStatement(sqlGetEvents);
+			res = statGetEvents.executeQuery();
+			if (res == null)
+			{
+				return;
+			}
+			while (res.next())
+			{
+				String myName = res.getString("name");
+				String myRoom = res.getString("room");
+				String mySource = res.getString("src");
+				Logger.getLogger("mmud").info("method_name=" +
+					res.getString("method_name"));
+				if (myName != null)
+				{
+					// character detected
+				}
+				else
+				if (myRoom != null)
+				{
+					// room detected
+				}
+				else
+				{
+					// neither detected, overall game executing.
+				}
+			}
+			res.close();
+			statGetEvents.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
 	}
 
 	/**
@@ -824,10 +887,13 @@ public class Database
 	}
 
 	/**
-	 * search for the username amongst the banned users list in the database
-	 * first checks the mm_sillynamestable in the database, then checks the
-	 * mm_unbantable and
-	 *  as last check checks the mm_bantable
+	 * search for the username amongst the banned users list in the
+	 * database.
+	 * First checks the mm_sillynamestable in the database, if found returns
+	 * true. Then checks the
+	 * mm_unbantable, if ound returns false. And
+	 * as last check checks the mm_bantable, if found returns true,
+	 * otherwise returns false.
 	 * @return boolean, true if found, false if not found
 	 * @param username String, name of the playercharacter 
 	 * @param address String, the address of the player 
@@ -951,7 +1017,8 @@ public class Database
 		{
 
 		PreparedStatement sqlActivateUser = theConnection.prepareStatement(sqlActivateUserString);
-		sqlActivateUser.setString(1, aUser.getName());
+		sqlActivateUser.setString(1, aUser.getAddress());
+		sqlActivateUser.setString(2, aUser.getName());
 		int res = sqlActivateUser.executeUpdate();
 		if (res != 1)
 		{
