@@ -110,6 +110,7 @@ void showCharacterSheet()
 		"Born:",
 		"Born When:",
 		"Born Where:",
+		"Last logged on:",
 		"Storyline:",
 		NULL};
 	
@@ -147,7 +148,7 @@ void showCharacterSheet()
 	"concat('<IMG SRC=\"',imageurl,'\">'), "
 	"guild, "
 	"concat('<A HREF=\"',homepageurl,'\">',homepageurl,'</A>'), "
-	"\"Yes\", dateofbirth, cityofbirth, storyline "
+	"\"Yes\", dateofbirth, cityofbirth, usertable.lastlogin, storyline "
 	"from usertable, characterinfo "
 	"where usertable.name = '%s' and "
 	"usertable.name = characterinfo.name", sqlformstring);
