@@ -26,7 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "cgic.h"
+#include <cgic.h>
 
 int cgiMain()
 {

@@ -113,10 +113,16 @@ mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o guil
 
 #--- Compilation of frame-binaries
 
-addendumframe: addendumframe.o cgic.o addendumframe.c
-	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) $(OPTIONS)
+addendumframe.o: addendumframe.c 
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c addendumframe.c  -o addendumframe.o
 
-leftframe: leftframe.o cgic.o leftframe.c typedefs.o
+addendumframe: addendumframe.o cgic.o
+	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) $(OPTIONS) $(INCLUDES)
+
+leftframe.o: leftframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c leftframe.c -o leftframe.o
+
+leftframe: leftframe.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR) $(OPTIONS)
 
 logonframe: logonframe.o cgic.o logonframe.c typedefs.o
@@ -127,13 +133,22 @@ logonframe: logonframe.o cgic.o logonframe.c typedefs.o
 nph-addendum: nph-addendum.o cgic.o typedefs.o nph-addendum.c
 	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) $(OPTIONS)
 
-nph-logonframe: nph-logonframe.o cgic.o nph-logonframe.c typedefs.o
+nph-logonframe.o: nph-logonframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-logonframe.c -o nph-logonframe.o
+
+nph-logonframe: nph-logonframe.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o nph-logonframe cgic.o typedefs.o nph-logonframe.o $(LIBDIR) $(OPTIONS)
 
-nph-leftframe: nph-leftframe.o cgic.o nph-leftframe.c typedefs.o
+nph-leftframe.o: nph-leftframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-leftframe.c -o nph-leftframe.o
+
+nph-leftframe: nph-leftframe.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o nph-leftframe cgic.o typedefs.o nph-leftframe.o $(LIBDIR) $(OPTIONS)
 
-nph-javascriptframe: nph-javascriptframe.o cgic.o nph-javascriptframe.c typedefs.o
+nph-javascriptframe.o: nph-javascriptframe.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-javascriptframe.c -o nph-javascriptframe.o
+
+nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o nph-javascriptframe cgic.o typedefs.o nph-javascriptframe.o $(LIBDIR) $(OPTIONS)
 
 #--- Compilation and installing of small website binaries like the wholist
