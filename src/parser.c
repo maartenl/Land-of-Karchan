@@ -29,6 +29,7 @@ maartenl@il.fontys.nl
 extern char *troep;
 extern int      aantal;
 extern char    *tokens[100];
+extern char *command;
 char *stringbuffer;
 
 //char *replace = 
@@ -374,6 +375,23 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			mysql_free_result(res);
 		}
 	}
+	if (strstr(parserstring, "log(")==parserstring)
+	{
+		/* logs something onto the audit trail */
+		time_t tijd;
+		struct tm datum;
+		char *temp;
+		if (debug) {fprintf(cgiOut, "log found...<BR>\n");}
+		temp = (char *) malloc(strlen(parserstring)+1);
+		strcpy(temp, parserstring+5);
+		temp[strlen(temp)-2]=0;
+		time(&tijd);
+		datum=*(gmtime(&tijd));
+		WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-%i %s\n",
+		datum.tm_hour, datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,
+		temp);
+		free(temp);
+	}
 	return 0;
 }
 
@@ -429,6 +447,21 @@ int Parse(char *name, int *room, char *parserstring)
 					free(string);
 					string=temp;
 					memory+=255;
+				}
+				while ((i = strstr(string, "%*")) != NULL)
+				{
+					char *temp, *temp2;
+					temp2 = (char *) malloc(strlen(command)*2+4);
+					mysql_escape_string(temp2, command, strlen(command));
+					temp = (char *) malloc(memory+strlen(temp2)+2);
+					temp[i-string]=0;
+					strncpy(temp, string, i-string);
+					strcat(temp, temp2);
+					strcat(temp, i+strlen("%*"));
+					free(string);
+					string=temp;
+					memory+=strlen(temp2)+2;
+					free(temp2);
 				}
 				while ((i = strstr(string, "%string")) != NULL)
 				{

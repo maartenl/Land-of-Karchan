@@ -783,30 +783,6 @@ cgiMain()
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	} /* endme */
-	if ((aantal > 1) && (!strcmp(tokens[0], "public")) && (room == 3)) {
-		FILE           *fp;
-		if (strstr(command, "<") == NULL) {
-			fp = fopen(MessageBoardFile, "a");
-			fprintf(fp, "<HR noshade>From: <B>%s</B><BR>"
-				"Time: <B>%i:%i:%i</B><BR>"
-				"Date: <B>%i-%i-%i</B><BR>"
-				"<HR>%s<HR noshade><BR>\r\n",
-				name, datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
-				datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year, command + 7);
-			fclose(fp);
-			WriteSentenceIntoOwnLogFile(logname, "Public Mail Message Sent.<BR>\r\n");
-		} else {
-			WriteSentenceIntoOwnLogFile(logname, "Error: Forbidden HTML codes used.<BR>\r\n");
-		}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((room == 3) && (!strcmp(troep, "read public"))) {
-		ReadFile(MessageBoardFile);
-		PrintForm(name, password);
-		if (getFrames()!=2) {ReadFile(logname);}
-		KillGame();
-	}
 	if ((aantal > 3) && (!strcmp("tell", tokens[0])) && (!strcmp("to", tokens[1]))) {
 		if (!WriteLinkTo(tokens[2], name, "<B>%s tells you </B>: %s<BR>\r\n",
 					    name, command + (tokens[3] - tokens[0]))) {
