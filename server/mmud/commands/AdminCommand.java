@@ -133,6 +133,13 @@ public class AdminCommand extends NormalCommand
 			aUser.writeMessage("Wall message sent.<BR>\r\n");
 			return true;
 		}
+		if (getCommand().equalsIgnoreCase("admin reload"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'reload' executed");
+			Constants.loadInfo();
+			aUser.writeMessage("Reload done.<BR>\r\n");
+			return true;
+		}
 		if (getCommand().equalsIgnoreCase("admin uptime"))
 		{
 			Database.writeLog(aUser.getName(), "admin command 'uptime' executed");
@@ -167,6 +174,9 @@ public class AdminCommand extends NormalCommand
 				"<I>admin reset characters</I>." +
 				"<DT>admin reset commands<DD>reset the cached <I>special</I> commands. " +
 				"Necessary if a command has been deleted, added or changed." +
+				"<DT>admin reload<DD>reloads the settings from the config" +
+				"file. Used when the config file has changed. Database connection changes " +
+				"require a reboot." +
 				"<DT>admin shutdown<DD>Shuts down the game. Carefull! The game is not automatically restarted!" +
 				"<DT>admin wall &lt;message&gt;<DD>pages all users with the message entered" +
 				"<DT>admin uptime<DD>show the datetime when the game was started and the current datetime " +
