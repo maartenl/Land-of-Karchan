@@ -65,7 +65,7 @@ public class BowCommand extends NormalCommand
 			}
 			else
 			{
-				Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB to %TNAME.<BR>\r\n");
+				Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB1 to %TNAME.<BR>\r\n");
 			}
 		}
 		else
