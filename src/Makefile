@@ -55,7 +55,10 @@ all: $(TARGETS)
 cgic.o: cgic.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c cgic.c
 
-mud.o: mud.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
+mudmain.o: mudmain.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudmain.c 
+
+mud.o: mud.c mudmain.o mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c 
 
 events.o: events.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
@@ -114,8 +117,8 @@ mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
 newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c 
 	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR) $(OPTIONS)
 
-mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
-	$(CC) $(COPTS) -o mud cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
+mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
+	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o events.c
 	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(OPTIONS) 
