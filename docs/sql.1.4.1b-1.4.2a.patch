@@ -1,0 +1,72 @@
+#!/bin/sh
+
+/usr/bin/mysql --password=pagedown -s mud <<END_OF_DATA
+#
+# create a patch for the new version of the mud
+#
+
+#
+# Alter the Items table in order to put in a new field called "pasdefense"
+# This is necessary in order to make the calculations during defense of a
+# person during combat.
+#
+# armour - 1..6 points
+# shields - 1..4 points
+#
+ALTER TABLE items ADD pasdefense int(2), damageresistance int(2);
+UPDATE items SET pasdefense = 0, damageresistance = 0;
+
+#
+# add the tables "skills" and "skilltable"
+#
+CREATE TABLE skills (
+	id int(4) DEFAULT 0 NOT NULL,
+	name varchar(20),
+	inlevel int(5),
+	outlevel int(5),
+	manacost int(5),
+	begineffect blob,
+	endeffect blob,
+	modifiername int(2),
+	difficulty int(2),
+	type int(2),
+	activedefense int(1),
+	primary key (id));
+
+insert into skills values(0,'barehand combat', 0, 100000, 0, '', '', 0, 0, 0);
+insert into skills values(1,'pick', 0, 10, 0, '', '', 0, 0, 0);
+
+CREATE TABLE skilltable (
+	id int(4) DEFAULT 0 NOT NULL,
+	forwhom varchar(20) NOT NULL,
+	skilllevel int(5),
+	primary key (id, forwhom));
+
+insert into skilltable values(0, 'Karn', 10);
+insert into skilltable values(1, 'Karn', 10);
+
+# defense of black, leather jerkin
+update items set pasdefense=4 where id=25;
+
+# something to think about
+alter table usertable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+update usertable set race = "human" where race = "";
+alter table tmp_usertable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+update tmp_usertable set race = "human" where race = "";
+alter table bottable change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+update bottable set race = "human" where race = "";
+alter table olduser change race race enum("zombie","wyvern","wolf","turtle","troll","spider","slug","ropegnaw","rabbit","orc","ooze","human","elf","dwarf","duck","deity","chipmunk","buggie");
+update olduser set race = "human" where race = "";
+
+alter table usertable change sex sex enum("male", "female");
+update usertable set sex = "male" where sex = "";
+alter table tmp_usertable change sex sex enum("male", "female");
+update tmp_usertable set sex = "male" where sex = "";
+alter table bottable change sex sex enum("male", "female");
+update bottable set sex = "male" where sex = "";
+alter table olduser change sex sex enum("male", "female");
+update olduser set sex = "male" where sex = "";
+
+
+END_OF_DATA
+
