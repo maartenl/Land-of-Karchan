@@ -185,6 +185,31 @@ V	changeWearing(item)
 V- sqlTransferItemString
 V 	transferItem(item, person)
 
+Events
+------
+
+The best way to be able to program inside the mud, and be able to do stuff,
+is by creating an events system. This means that every action in the game
+triggers a number of events to the mud objects that are a part of that
+action.
+
+Inventory of events:
+- person enters room
+- person exits room
+- person talks to person
+- person talks
+- person drops item
+- person picks up item
+- person wears item
+- person wields item
+- etc.
+
+Events can influence:
+- rooms
+- characters
+- items
+- attributes of previous three
+
 
 Game Behaviour
 ==============
