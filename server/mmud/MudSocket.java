@@ -57,20 +57,16 @@ public class MudSocket extends Thread
 	public String isOffline()
 		throws IOException, MudException
 	{
-		if (Constants.offline)
+		File myFile = new File(Constants.mudofflinefile);
+		if (!myFile.exists())
 		{
-			File myFile = new File(Constants.mudofflinefile);
-			if (!myFile.exists())
-			{
-				throw new MudException("mudofflinefile '" + Constants.mudofflinefile +"' not found.");
-			}
-			if (!myFile.canRead())
-			{
-				throw new MudException("mudofflinefile '" + Constants.mudofflinefile + "' unreadable.");
-			}
-			return Constants.readFile(Constants.mudofflinefile);
+			return null;
 		}
-		return null;
+		if (!myFile.canRead())
+		{
+			return null;
+		}
+		return Constants.readFile(Constants.mudofflinefile);
 	}
 
 	/**

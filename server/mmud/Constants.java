@@ -57,7 +57,6 @@ public final class Constants
 
 	// the defaults
 	public final static boolean SHUTDOWN = false;
-	public final static boolean OFFLINE = false;
 
 	public final static String CONFIG_FILE = "config";
 	public final static String config_file = CONFIG_FILE;
@@ -116,8 +115,6 @@ public final class Constants
 	public static String dbpasswd = DBPASSWD;
 	public static String dbjdbcclass = DBJDBCCLASS;
 	public static String dburl = DBURL;
-
-	public static boolean offline = OFFLINE;
 
 	public static String mudfilepath = MUDFILEPATH;
 	public static String mudofflinefile = "offline.txt";
