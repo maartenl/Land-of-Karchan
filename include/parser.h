@@ -26,15 +26,32 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib2.h"
 
-int ParseSentence(char *name, int room, char *parserstring);
+int ParseSentence(char *name, int *room, char *parserstring);
+/* Pre: 	name = name current user
+			room = room current user currently occupies
+			parserstring = single line string with one command in it
+			the reason for making room a pointer, is because it needs to be able
+			to be changed in the parser by the command "set room="
+ Post:   returns 0 -> continue operation as normal
+			1 -> end found
+			2 -> else found
+			3 -> return found
+			4 -> if found, if true
+			5 -> if found, if false (so skip first sequence of actions)
+			6 -> showstandard found, skip everything and dump output
+			7 -> show found, dump description and skip everything else
+*/			
 
-int Parse(char *name, int room, char *parserstring);
+int Parse(char *name, int *room, char *parserstring);
 /* Pre:	name = name current user
 			room = room current user currently occupies
 			parserstring = string belonging to special command downloaded from database
+			the reason for making room a pointer, is because it needs to be able
+			to be changed in the parser by the command "set room=", because
+			room is not refreshed after an update on the database.
    Post: returns 0 if nothing happened
-  			returns 1 if needs to display standard bull shit and exit.
-*/  			
+			returns 1 if needs to display standard bull shit and exit.
+*/			
 
 int SearchForSpecialCommand(char *name, char *password, int room);
 
