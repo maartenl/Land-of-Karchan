@@ -1238,6 +1238,23 @@ Stats_Command(char *name, char *password)
 		
 	}
 	mysql_free_result(res);
+	fprintf(cgiOut, "<P>");
+
+	sprintf(temp, "select concat('Your skill in ', name, ' is level ', "
+	"skilllevel, '.<BR>\r\n') from skills, skilltable where skilltable.number="
+	"skills.number and forwhom='%s'",name);
+	res=SendSQL2(temp, NULL);
+
+	if (res!=NULL)
+	{
+		row = mysql_fetch_row(res);
+		while (row!=NULL)
+		{
+			fprintf(cgiOut, "%s", row[0]);
+			row = mysql_fetch_row(res);
+		}
+		mysql_free_result(res);
+	}
 	
 	fprintf(cgiOut, "<P>");
 	PrintForm(name, password);
