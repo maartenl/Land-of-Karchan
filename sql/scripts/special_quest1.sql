@@ -6,19 +6,6 @@ cd /karchan/mud/sql
 
 ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
 
-/* some notes concerning the plague
-
-Plague in attributes: plague, 100, integer, playername, 1
-Cure in attributes: plaguecure, true, string, playername, 1
-
-First manner of business-> make tmp_attributes, done
-
-Provide somebody with the plague:
-insert into tmp_attributes values("plague","100","integer","tanth",1)
-
-
-*/
-
 replace into commclaimed
 values(11,"800 - 899",'Karn');
 
@@ -28,6 +15,44 @@ values(800, "plague1", 1, "%", "plague1", "", 0);
 replace into methods 
 values(92, "plague1", "# if you look at the appropriate command in the table
 # commands you will see that this particular method will ALWAYS be performed!
+
+# every minute, check to see if person is below 50, and minute is the same.
+
+if sql(""select 1 from tmp_attributes \\\\
+where name ='plague' \\\\
+and objectid='%me' \\\\
+and objecttype=1"")
+	getstring(""select tmp_attributes.value from tmp_attributes \\\\
+	where name ='plague' \\\\
+	and objectid='%me' \\\\
+	and objecttype=1"")
+	if sql(""select %string <= 50 and rand()<=0.02"")
+		if sql(""select %string >=40"")
+			say(""You feel temporarily faint and have to take care not to fall down.<BR>"")
+			sayeveryone(""You notice %me suddenly swaying uncertainly. With some effort %me seems to refind the balance.<BR>"")
+		end
+		if sql(""select %string < 40 and %string >= 30"")
+			if sql(""select rand()<0.5"")
+				say(""You cough suddenly.<BR>"")
+				sayeveryone(""%me coughs suddenly.<BR>"")
+			else
+				say(""You moan painfully.<BR>"")
+				sayeveryone(""%me moans painfully.<BR>"")
+			end
+		end
+		if sql(""select %string < 30 and %string >= 20"")
+			say(""Black spots appear before your eyes and you faint.<BR>"")
+			sayeveryone(""You see %me crash down to the ground in a dead faint.<BR>"")
+		end
+		if sql(""select %string < 20"")
+			say(""You fold double from chestpains, coughing up blood.<BR>"")
+			sayeveryone(""%s suddenly folds almost double, and has a nasty fit of coughing. Blood seems to dribble from %mes mouth.<BR>"")
+		end
+		sql(""update tmp_usertable set vitals=maxvital-%string where name='%me'"")
+		return
+	end
+end
+
 if sql(""select 1 \\\\
 from tmp_usertable tmp1, tmp_usertable tmp2, tmp_attributes attr1 \\\\
 where tmp2.name = '%me' \\\\
@@ -62,7 +87,7 @@ return
 ");
 
 replace into events
-values(19, "plague1", -1, -1, 12, 00, -1, 1, "plague3", "", 0);
+values(19, "plague1", -1, -1, 12, 0, -1, 1, "plague3", "", 0);
 replace into methods
 values(94,"plague3",
 "# once a day, diminish plague by one if user logged on today
