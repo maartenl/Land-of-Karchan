@@ -560,10 +560,12 @@ public class MudSocket extends Thread
 		}
 		catch (PersonException e)
 		{
+			e.printStackTrace();
 			return Database.getErrorMessage(e.getMessage());
 		}
 		catch (MudException e)
 		{
+			e.printStackTrace();
 			return Database.getErrorMessage(e.getMessage());
 		}
 	}
