@@ -27,11 +27,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-if (isset($_REQUEST{"username"}))
-{
-	setcookie("karchanadminname", $_REQUEST{"username"}, time() + 7200);
-	setcookie("karchanadminpassword", $_REQUEST{"userpassword"}, time() + 7200);
-}
+	setcookie("karchanadminname", "", time() - 3600);
+	setcookie("karchanadminpassword", "", time() - 3600);
 ?>
 
 <HTML>
@@ -49,32 +46,8 @@ Land of Karchan - Admin
 <P>
 Click <A HREF="/karchan/admin/admin.html" TARGET="_top">here</A> to return to the menu.
 
-<?php
-if ( (!isset($_COOKIE["karchanadminname"])) &&
-	(!isset($_REQUEST{"username"})) )
-{
-?>
-<FORM METHOD="GET" ACTION="/scripts/admin.php">
-Administrator name:<BR>
-<INPUT TYPE="text" NAME="username" VALUE="" SIZE="39" MAXLENGTH="39"><P>
-Administrator password:<BR>
-<INPUT TYPE="password" NAME="userpassword" VALUE="" SIZE="38" MAXLENGTH="38"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<?php
-}
-else
-{
-?>
-
-You are logged on.<P>
-Your logon information will expire in 2 hours.
+You are logged off.
 <P>
-<?php
-}
-?>
-
 </BODY>
 </HTML>
 
