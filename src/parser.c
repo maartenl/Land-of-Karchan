@@ -42,22 +42,35 @@ char *stringbuffer;
 //{NULL,NULL}
 //}
 
+//! turns debugging of parser on or off
+/*! turns debugging of a parser command on and off, where 0 is off
+and any other value is on.
+
+Can be turned on in the parser by issueing a command 'debug' in the method
+source of a method in the database table methods. Is always reset to 0
+upon executing the next command in the server.
+*/
 int parser_debug = 0;
 
-int ParseSentence(char *name, int *room, char *parserstring)
-/* Pre: name = the name of the person executing the command
-		parserstring = single string containing a command or the beginning of an if statement
-	Post:returns int, possible values
-			0 -> continue operation as normal
-			1 -> end found
-			2 -> else found
-			3 -> return found
-			4 -> if found, if true
-			5 -> if found, if false (so skip first sequence of actions)
-			6 -> showstandard found, skip everything and dump output
-			7 -> show found, dump description and skip everything else
-			8 -> showstring found, dump string and skip everything else
+//! parses exactly one entire sentence appropriately.
+/*! parses exactly one entire sentence appropriately.
+\return int, possible values<UL>
+<LI>			0 -> continue operation as normal
+<LI>			1 -> end found
+<LI>			2 -> else found
+<LI>			3 -> return found
+<LI>			4 -> if found, if true
+<LI>			5 -> if found, if false (so skip first sequence of actions)
+<LI>			6 -> showstandard found, skip everything and dump output
+<LI>			7 -> show found, dump description and skip everything else
+<LI>			8 -> showstring found, dump string and skip everything else
+</UL>
+\param char* name of the person executing the command
+\param int room person is occuping
+\param char* parserstring single string containing a command or the beginning of an if statement
+\sa Parse
 */
+int ParseSentence(char *name, int *room, char *parserstring)
 {
 	if (!strcasecmp(parserstring, "end"))
 	{
@@ -396,6 +409,20 @@ int ParseSentence(char *name, int *room, char *parserstring)
 	return 0;
 }
 
+//! parses an antire method appropriately.
+/*! parses an entire method appropriately. The method may be split up into
+multiple lines.
+\return int, possible values<UL>
+<LI>			0 -> returned upon finding 'return' statement
+<LI>			1 -> returned upon finding 'showstandard' statement
+<LI>			2 -> returned upon finding 'show' statement
+<LI>			3 -> returned upon finding 'showstring' statement
+</UL>
+\param char* name of the person executing the command
+\param int room person is occuping
+\param char* parserstring string containing an entire method
+\sa ParseSentence
+*/
 int Parse(char *name, int *room, char *parserstring)
 {
 	char *string;
@@ -630,6 +657,30 @@ int Parse(char *name, int *room, char *parserstring)
 	return 0;
 }
 
+//! searches for an appropriate method to call
+/*! searches in the database table 'commands' to see if any of the commands
+match. If it does, gets the appropriate source code from the 'methods' table
+and provides that source code to the Parse method for parsing.<P>
+It is also possible that multiple methods provide a match. In this case, each
+method is parsed and executed, unless one method creates a 'show', 'showstring' 
+'showstandard'.
+\return int, possible values<UL>
+<LI>0 -> method parsing has ended, and either a
+ (couple of) methods were parsed or no methods were parsed. This basically 
+ means that the server continues executing the current command!<P>
+ This is convenient when wanting the parser to do something without 
+ interrupting the usual flow or for validation. In the latter case, if validation
+ succeeds the parser lets the process continue as usual.
+<LI>1 -> either a 'show', 'showstring' or 'showstandard' was found, indicating
+that after parsing the method, no more processing is to take place and the
+user received the result. Also means that the server does no more additional
+processing.
+</UL>
+\param char* name of the person executing the command
+\param char* password of the person executing the command
+\param char int room person is occuping
+\sa Parse
+*/
 int SearchForSpecialCommand(char *name, char *password, int room)
 {
 	MYSQL_RES *res;
