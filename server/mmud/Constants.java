@@ -505,7 +505,7 @@ public final class Constants
 		int i = myFileReader.read(myArray, 0, myArray.length);
 		while (i>0)
 		{
-			myResult.append(new String(myArray, 0, myArray.length));
+			myResult.append(new String(myArray, 0, i));
 			i = myFileReader.read(myArray, 0, myArray.length);
 		}
 		myFileReader.close();
@@ -544,7 +544,7 @@ public final class Constants
 		theDefaults.setProperty("mudbigfile", "bigfile.txt");
 		theDefaults.setProperty("muderrorfile", "error.txt");
 		theDefaults.setProperty("mudnewcharfile", "newchar.html");
-		theDefaults.setProperty("goodbyefile", "goodbe.html");
+		theDefaults.setProperty("goodbyefile", "goodbye.html");
 		theDefaults.setProperty("mudcgi", "/cgi-bin/mud.cgi");
 		theDefaults.setProperty("leftframecgi", "/cgi-bin/leftframe.cgi");
 		theDefaults.setProperty("logonframecgi", "/cgi-bin/logonframe.cgi");
