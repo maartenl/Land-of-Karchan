@@ -290,7 +290,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 <INPUT TYPE="hidden" NAME="eventid" VALUE="<?php echo $myrow["eventid"] ?>">
 <TABLE>
@@ -315,7 +315,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 	}
 }
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 Method name: <INPUT TYPE="text" NAME="addeventmethodname" VALUE="">
 <INPUT TYPE="submit" VALUE="Add Event">
@@ -485,7 +485,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 <INPUT TYPE="hidden" NAME="commandid" VALUE="<?php echo $myrow["id"] ?>">
 <TABLE>
@@ -504,7 +504,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 	}
 }
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 Command name: <INPUT TYPE="text" NAME="addcommandname" VALUE="">
 <BR>
@@ -577,7 +577,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ",
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <I>(Refresh the command list in the game, after changing a method.)</I><BR>
 <b>
 <INPUT TYPE="hidden" NAME="methodname" VALUE="<?php echo $myrow["name"] ?>">
@@ -595,7 +595,7 @@ $myrow["src2"] ?></TEXTAREA></TD></TR>
 mysql_close($dbhandle);
 ?>
 
-<FORM METHOD="GET" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
 <b>
 Method name: <INPUT TYPE="text" NAME="addmethodname" VALUE="">
 <INPUT TYPE="submit" VALUE="Add Method">
