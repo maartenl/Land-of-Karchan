@@ -52,7 +52,8 @@ typedef int (*gameFunction)(char *, char *, int, char **, char *);
 // the two indexes to be used for searching for commands rather quickly.
 gameFunction	*gameFunctionArray; /* array of function types */
 char				*gameCommands[] =
-{"ask",
+{"admin",
+	"ask",
 	"awaken",
 	"bigtalk",
 	"bow",
@@ -1079,6 +1080,92 @@ Sell_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 }
 
 int
+Admin_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if (godstatus != 1)
+	{
+		return 0;
+	}
+	if (!strcasecmp(fcommand, "admin shutdown"))
+	{
+		fprintf(getMMudOut(), "<HTML>\n");
+		fprintf(getMMudOut(), "<HEAD>\n");
+		fprintf(getMMudOut(), "<TITLE>\n");
+		fprintf(getMMudOut(), "Land of Karchan - Admin Shutdown\n");
+		fprintf(getMMudOut(), "</TITLE>\n");
+		fprintf(getMMudOut(), "</HEAD>\n");
+
+		fprintf(getMMudOut(), "<BODY>\n");	
+		if (!getFrames())
+		{
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		}
+		else
+		{
+			if (getFrames()==1)
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			} else
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			}
+		}
+
+		fprintf(getMMudOut(), "<H1>Admin Shutdown - Shutting down Game</H1>\n");
+		fprintf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
+		
+		PrintForm(name, password);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		setShutdown(1);
+		return 1;
+	}
+	if (!strcasecmp(fcommand, "admin stats"))
+	{
+		mudinfostruct mymudinfo;
+		mymudinfo = getMudInfo();
+
+		fprintf(getMMudOut(), "<HTML>\n");
+		fprintf(getMMudOut(), "<HEAD>\n");
+		fprintf(getMMudOut(), "<TITLE>\n");
+		fprintf(getMMudOut(), "Land of Karchan - Admin Stats\n");
+		fprintf(getMMudOut(), "</TITLE>\n");
+		fprintf(getMMudOut(), "</HEAD>\n");
+
+		fprintf(getMMudOut(), "<BODY>\n");	
+		if (!getFrames())
+		{
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		}
+		else
+		{
+			if (getFrames()==1)
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			} else
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			}
+		}
+
+		fprintf(getMMudOut(), "<H1>Admin Stats - Displaying current usage statistics of game</H1>\n");
+		fprintf(getMMudOut(), "Host: %s<BR>\nIp address: %s<BR>\nDomainname: %s<BR>\nProtocol version: %s<BR>\nMmud version: %s %s %s<P>\n", 
+			mymudinfo.hostname, mymudinfo.hostip, mymudinfo.domainname, mymudinfo.protversion, mymudinfo.mmudversion,
+			mymudinfo.mmudtime, mymudinfo.mmuddate);
+
+		fprintf(getMMudOut(), "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
+		fprintf(getMMudOut(), "Number of connections: %i<BR>\nNumber of timeouts: %i<BR>\nNumber of current connections: %i<BR>\n",
+			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections);
+	
+		PrintForm(name, password);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		return 1;
+	}
+	return 0;
+}
+
+int
 Give_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	if ( ((aantal==5) || (aantal==6)) && (!strcasecmp("give", tokens[0])) )
@@ -1170,6 +1257,7 @@ initGameFunctionIndex()
 {
 	/* initialise and fill the Function array */
 	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*100);
+	gameFunctionArray[theNumberOfFunctions++] = &Admin_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Ask_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Awaken_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &BigTalk_Command;
