@@ -236,6 +236,8 @@ public class Database
 	 * any character in the database.
 	 * @param aPassword the password of the character. Used to verify the
 	 * encrypted password in the database.
+	 * If the password does not match, the record is still returned,
+	 * but with the password set to the null pointer.
 	 * @return User containing all information
 	 * DEBUG!! Why returns User, why not Person?
 	 */

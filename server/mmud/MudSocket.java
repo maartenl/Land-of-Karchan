@@ -34,9 +34,6 @@ import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.io.IOException;
 import java.io.File;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.MalformedPatternException;
 import java.util.logging.Logger;
 
 import mmud.characters.*;
@@ -345,25 +342,15 @@ public class MudSocket extends Thread
 		{
 			throw new MudException(e.getMessage());
 		}
-		Perl5Compiler myCompiler = new Perl5Compiler();
-		Perl5Matcher myMatcher = new Perl5Matcher();
-		try
+		if (!aName.matches("[A-Z|_|a-z]{3,}"))
 		{
-			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
-			{
-				Logger.getLogger("mmud").info("invalid name " + aName);
-				return Constants.logoninputerrormessage;
-			}
-			if (aPassword.length() < 5)
-			{
-				Logger.getLogger("mmud").info("password too short " + aPassword);
-				return Constants.logoninputerrormessage;
-			}
+			Logger.getLogger("mmud").info("invalid name " + aName);
+			return Constants.logoninputerrormessage;
 		}
-		catch (MalformedPatternException e)
+		if (aPassword.length() < 5)
 		{
-			// this should not happen
-			e.printStackTrace();
+			Logger.getLogger("mmud").info("password too short " + aPassword);
+			return Constants.logoninputerrormessage;
 		}
 		if (Database.isUserBanned(aName, aAddress))
 		{
@@ -515,27 +502,17 @@ public class MudSocket extends Thread
 		{
 			throw new MudException(e.getMessage());
 		}
-		Perl5Compiler myCompiler = new Perl5Compiler();
-		Perl5Matcher myMatcher = new Perl5Matcher();
-		try
+		if (!aName.matches("[A-Z|_|a-z]{3,}"))
 		{
-			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
-			{
-				Logger.getLogger("mmud").info("invalid name " + aName);
-				return Constants.logoninputerrormessage;
-			}
-/*			if (myMatcher.matches(aCommand, myCompiler.compile("(.)*([<applet|<script|java-script|CommandForm])+(.)*")))
+			Logger.getLogger("mmud").info("invalid name " + aName);
+			return Constants.logoninputerrormessage;
+		}
+/*			if (aCommand.matches("(.)*([<applet|<script|java-script|CommandForm])+(.)*"))
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDCOMMANDERROR);
 				throw new MudException(Constants.INVALIDCOMMANDERROR);
 			}
 */
-		}
-		catch (MalformedPatternException e)
-		{
-			// this should not happen
-			e.printStackTrace();
-		}
 		if (Database.isUserBanned(aName, aAddress))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERBANNEDERROR);
@@ -688,25 +665,15 @@ public class MudSocket extends Thread
 		{
 			throw new MudException(e.getMessage());
 		}
-		Perl5Compiler myCompiler = new Perl5Compiler();
-		Perl5Matcher myMatcher = new Perl5Matcher();
-		try
+		if (!aName.matches("[A-Z|_|a-z]{3,}"))
 		{
-			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
-			{
-				Logger.getLogger("mmud").info("invalid name " + aName);
-				return Constants.logoninputerrormessage;
-			}
-			if (aPassword.length() < 5)
-			{
-				Logger.getLogger("mmud").info("password too short " + aPassword);
-				return Constants.logoninputerrormessage;
-			}
+			Logger.getLogger("mmud").info("invalid name " + aName);
+			return Constants.logoninputerrormessage;
 		}
-		catch (MalformedPatternException e)
+		if (aPassword.length() < 5)
 		{
-			// this should not happen
-			e.printStackTrace();
+			Logger.getLogger("mmud").info("password too short " + aPassword);
+			return Constants.logoninputerrormessage;
 		}
 		if (Database.isUserBanned(aName, anAddress))
 		{

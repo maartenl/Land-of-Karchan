@@ -60,33 +60,32 @@ public class SendMailCommand extends NormalCommand
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 4)
 		{
-			Person toChar = Persons.retrievePerson(myParsed[1]);
+			Person toChar = Database.getUser(myParsed[1], "");
 			if ((toChar == null) || (!(toChar instanceof User)))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				return true;
 			}
-			else
+			User toUser = (User) toChar;
+			int size = 0, start = 0;
+			String header;
+			String message;
+			try
 			{
-				User toUser = (User) toChar;
-				int size = 0, start = 0;
-				String header;
-				String message;
-				try
-				{
-					size = Integer.parseInt(myParsed[2]);
-				}
-				catch (NumberFormatException e)
-				{
-					Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-					throw new InvalidMailException();
-				}
-				Logger.getLogger("mmud").finer("");
-				start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;
-				header = command.substring(start, size + start);
-				message = command.substring(start + size + 1 - 1);
-				MailDb.sendMail(aUser, toUser, header, message);
-				aUser.writeMessage("Mail sent.<BR>\r\n");
+				size = Integer.parseInt(myParsed[2]);
 			}
+			catch (NumberFormatException e)
+			{
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
+				throw new InvalidMailException();
+			}
+			Logger.getLogger("mmud").finer("");
+			start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;
+			header = command.substring(start, size + start);
+			message = command.substring(start + size + 1 - 1);
+			MailDb.sendMail(aUser, toUser, header, message);
+			aUser.writeMessage("Mail sent.<BR>\r\n");
+			return true;
 		}
 		return false;
 	}

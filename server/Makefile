@@ -2,7 +2,7 @@
 # MakeFile -- Maarten's Mud Makefile for compiling the java server
 #
 # javac -source 1.4 -classpath
-# ../../mysql-connector-java-3.0.6-stable/mysql-connector-java-3.0.6-stable-bin.jar:../../jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar:.
+# ../../mysql-connector-java-3.0.6-stable/mysql-connector-java-3.0.6-stable-bin.jar:.
 # *.java
 
 HOMEDIR = /home/karchan/cvs2/server
@@ -30,8 +30,8 @@ CC = /usr/java/j2sdk1.4.1_02/bin/javac
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar:runme.jar
-CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar
+CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:runme.jar
+CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar
 COPTS = -source 1.4 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
 
 TARGETS = compile javadoc release

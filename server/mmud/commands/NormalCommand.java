@@ -28,10 +28,6 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.MalformedPatternException;
-
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -67,12 +63,19 @@ public abstract class NormalCommand implements Command
 	public boolean run(User aUser)
 	throws MudException
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("theRegExpr=" + theRegExpr);
 		aUser.setNow();
-		Perl5Compiler myCompiler = new Perl5Compiler();
-		Perl5Matcher myMatcher = new Perl5Matcher();
 		String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
-		boolean result = (getCommand().matches(myregexpr));
+		boolean result = true;
+		if (myregexpr.endsWith(".+") && getCommand().indexOf('\n')!=-1)
+		{
+			String stuff = getCommand().substring(0, getCommand().indexOf('\n'));
+			result = stuff.matches(myregexpr);
+		}
+		else
+		{
+			result = (getCommand().matches(myregexpr));
+		}
 		Logger.getLogger("mmud").finer("returns " + result);
 		return result;
 	}
