@@ -48,26 +48,10 @@ to take place:
 
 changing room:
 - first check that the change is approved (i.e. owner or null)
-- does room south exist
-- does room north exist
-- does room east exist 
-- does room west exist 
-- does room up exist   
-- does room down exist 
-- does area exist
+- does room exist
+- check if sex is correct
 deleting room:   
-- first check that the change is approved (i.e. owner or null)
-- check persons in room
-- check items in room  
-- check references to this room in other rooms
 adding room:
-- all information filled out correctly?
-- does area exist?
-todo:
-- update room
-- update owner
-- insert into log
-
 */
 if (isset($_REQUEST{"race"}))
 {
@@ -81,7 +65,11 @@ if (isset($_REQUEST{"race"}))
 		or die("Query(1) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("You are not the owner of this character.");
+	}
+	if ( ($_REQUEST{"sex"} != "female") &&
+		($_REQUEST{"sex"} != "male") )
+	{
+		die("Gender should be either male or female.");
 	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
 		mysql_escape_string($_REQUEST{"room"})."\""
@@ -178,8 +166,32 @@ while ($myrow = mysql_fetch_array($result))
 <b>
 <INPUT TYPE="hidden" NAME="char" VALUE="<?php echo $myrow["name"] ?>">
 <TABLE>
-<TR><TD>race</TD><TD><INPUT TYPE="text" NAME="race" VALUE="<?php echo $myrow["race"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>   
-<TR><TD>sex</TD><TD><INPUT TYPE="text" NAME="sex" VALUE="<?php echo $myrow["sex"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>   
+<TR><TD>race</TD><TD><SELECT NAME="race" SIZE="20"> 
+<OPTION VALUE="fox" <?php if ($myrow["race"] == "fox") {printf("selected");} ?>>fox
+<OPTION VALUE="zombie" <?php if ($myrow["race"] == "zombie") {printf("selected");} ?>>zombie
+<OPTION VALUE="wyvern" <?php if ($myrow["race"] == "wyvern") {printf("selected");} ?>>wyvern
+<OPTION VALUE="wolf" <?php if ($myrow["race"] == "wolf") {printf("selected");} ?>>wolf
+<OPTION VALUE="turtle" <?php if ($myrow["race"] == "turtle") {printf("selected");} ?>>turtle
+<OPTION VALUE="troll" <?php if ($myrow["race"] == "troll") {printf("selected");} ?>>troll
+<OPTION VALUE="spider" <?php if ($myrow["race"] == "spider") {printf("selected");} ?>>spider
+<OPTION VALUE="slug" <?php if ($myrow["race"] == "slug") {printf("selected");} ?>>slug
+<OPTION VALUE="ropegnaw" <?php if ($myrow["race"] == "ropegnaw") {printf("selected");} ?>>ropegnaw
+<OPTION VALUE="rabbit" <?php if ($myrow["race"] == "rabbit") {printf("selected");} ?>>rabbit
+<OPTION VALUE="orc" <?php if ($myrow["race"] == "orc") {printf("selected");} ?>>orc
+<OPTION VALUE="ooze" <?php if ($myrow["race"] == "ooze") {printf("selected");} ?>>ooze
+<OPTION VALUE="human" <?php if ($myrow["race"] == "human") {printf("selected");} ?>>human
+<OPTION VALUE="elf" <?php if ($myrow["race"] == "elf") {printf("selected");} ?>>elf
+<OPTION VALUE="dwarf" <?php if ($myrow["race"] == "dwarf") {printf("selected");} ?>>dwarf
+<OPTION VALUE="duck" <?php if ($myrow["race"] == "duck") {printf("selected");} ?>>duck
+<OPTION VALUE="deity" <?php if ($myrow["race"] == "deity") {printf("selected");} ?>>deity
+<OPTION VALUE="chipmunk" <?php if ($myrow["race"] == "chipmunk") {printf("selected");} ?>>chipmunk
+<OPTION VALUE="buggie" <?php if ($myrow["race"] == "buggie") {printf("selected");} ?>>buggie
+<OPTION VALUE="dragon" <?php if ($myrow["race"] == "dragon") {printf("selected");} ?>>dragon
+</SELECT></TD></TR>   
+<TR><TD>sex</TD><TD><SELECT NAME="sex" SIZE="2"> 
+<OPTION VALUE="male" <?php if ($myrow["sex"] == "male") {printf("selected");} ?>>male
+<OPTION VALUE="female" <?php if ($myrow["sex"] == "female") {printf("selected");} ?>>female
+</SELECT></TD></TR>   
 <TR><TD>age</TD><TD><INPUT TYPE="text" NAME="age" VALUE="<?php echo $myrow["age"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>length</TD><TD><INPUT TYPE="text" NAME="length" VALUE="<?php echo $myrow["length"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>width</TD><TD><INPUT TYPE="text" NAME="width" VALUE="<?php echo $myrow["width"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>

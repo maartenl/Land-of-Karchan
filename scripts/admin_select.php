@@ -43,6 +43,10 @@ Select Statement</H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 printf("<PRE>".$_REQUEST{"select"}."</PRE>");
+if (!isset($_REQUEST{"select"}))
+{
+	die("Form field &lt;select&gt; has not been set.");
+}
 if (strstr($_REQUEST{"select"}, "mysq") <> false)
 {
 	die("Only select and show statements are allowed!");

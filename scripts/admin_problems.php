@@ -37,21 +37,169 @@ Land of Karchan - Admin
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">Problems</H1>
-
-<H1>Unconnected items</H1>
+<H2><A HREF="/karchan/admin/help/problems.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select mm_itemtable.id from mm_itemtable ".
-	" LEFT JOIN mm_roomitemtable ON mm_roomitemtable.id = mm_itemtable.id where mm_roomitemtable.id is null ".
-	" LEFT JOIN mm_charitemtable ON mm_charitemtable.id = mm_itemtable.id where mm_charitemtable.id is null ".
-	" LEFT JOIN mm_itemitemtable ON mm_itemitemtable.id = mm_itemtable.id where mm_itemitemtable.id is null "
+
+printf("<H2>Problems with Users</H2>\r\n");
+$result = mysql_query("select name from mm_usertable ".
+	" where sex not in (\"male\", \"female\")"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A><BR>", $myrow[0], $myrow[0]);
+	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A>
+(wrong gender)<BR>",
+$myrow["name"], $myrow["name"]);
 }
+$result = mysql_query("select name from mm_usertable left join mm_rooms ".
+	" on mm_usertable.room = mm_rooms.id where mm_rooms.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A>
+(room does not exist)<BR>",
+$myrow["name"], $myrow["name"]);
+}
+
+printf("<H2>Problems with Rooms</H2>\r\n");
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.south = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(south exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.north = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(north exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.east = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(east exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.west = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(west exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.up = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(up exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select room1.id from mm_rooms as room1 left join"
+	." mm_rooms as room2 on room1.down = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(down exit does not exist)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
+printf("<H2>Problems with Items</H2>\r\n");
+$result = mysql_query("select room1.id from mm_roomitemtable as room1 left join"
+	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> %s (item instance does not exist)<BR>",
+$myrow["id"]);
+}
+
+$result = mysql_query("select room1.id from mm_charitemtable as room1 left join"
+	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> %s (item instance does not exist)<BR>",
+$myrow["id"]);
+}
+
+$result = mysql_query("select room1.id from mm_itemitemtable as room1 left join"
+	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> %s (item instance does not exist)<BR>",
+$myrow["id"]);
+}
+
+$result = mysql_query("select room1.id from mm_itemtable as room1 left join"
+	." mm_items as room2 on room1.itemid = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> %s (item definition does not exist)<BR>",
+$myrow["id"]);
+}
+
+
+printf("<H2>Problems with Attributes</H2>\r\n");
+$result = mysql_query("select room1.name, room1.id from mm_roomattributes as room1 left join"
+	." mm_rooms as room2 on room1.id = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>attribute:</b> %s (room %s does not exist)<BR>",
+$myrow["name"], $myrow["id"]);
+}
+
+$result = mysql_query("select room1.name, room1.charname from mm_charattributes as room1 left join"
+	." mm_usertable as room2 on room1.charname = room2.name where room2.name is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>attribute:</b> %s (character %s does not exist)<BR>",
+$myrow["name"], $myrow["charname"]);
+}
+
+$result = mysql_query("select room1.name, room1.id from mm_itemattributes as room1 left join"
+	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>attribute:</b> %s (item %s does not exist)<BR>",
+$myrow["name"], $myrow["id"]);
+}
+
 mysql_close($dbhandle);
 ?>
 
