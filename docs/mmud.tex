@@ -431,6 +431,10 @@ to enter, with references to the method that needs to be executed upon
 entering one of these commands.
 \subparagraph{methods}contains the id,name and sourcecode of a method to be
 executed.
+\subparagraph{events}contains events that run source code in the methods
+table at specific times
+\subparagraph{attributes}can contain 'special' attributes for characters,items,
+rooms or even the game
 
 Commands have a number of requirements before they can be executed, I will
 attempt to name them here:
@@ -456,6 +460,9 @@ sayeveryone(\"%me yawns.<BR>\")
 showstandard
 return
 " where id = 2;
+
+See below for more information concerning the events table and the attributes
+table.
 
 \end{itemize}
 
@@ -487,11 +494,20 @@ beginning of the examples.
 
 \paragraph{Parameters}
 
-Currently there is only one, but it will be expanded on quite quickly. What
+What
 I am talking about is substituting environment variables. The following is
 available right now:
 
 \subparagraph{\%me}is substituted for the username of the current user.
+\subparagraph{\%amount}is the number of words used to in the command given
+by the current user.
+\subparagraph{\%01}is the first word in the command given by the current
+user.
+\subparagraph{\%02}is the second word in the command given by the current
+user. If the word does not exist (because the command only had 'amount'
+words) the parser will return the number. For example, if you used three
+words, '%04' would give you '04' back. Either use this info to prevent
+problems or use '%amount'.
 
 \paragraph{Commands}
 
@@ -499,6 +515,9 @@ available right now:
 this statement instantly exits the parser. It is
 obligatory to use this statement when attemting to exit the method. It is
 perfectly possible to have more then one return statement in a method.
+Attention! If this statement is encountered before a 'showstandard' or
+'show()', the parser hands control back to the mud and the mud proceeds
+processing of the user command as normal.
 \subparagraph{debug}in case of debugging source code, put this keyword at
 the top of your source code. All following messages will be output to your
 webbrowser.
@@ -646,6 +665,112 @@ end
 return
 \end{verbatim}
 
+\subsection{Events}
+It is also possible that, instead of a user issuing a command that starts up
+a method, you would wish to have a method started at a particular time.
+
+For this possibility there is the 'events' table. See for more information
+on its structure appendix B. The events table has been inspired on the
+command "crontab" in Unix. (Look it up, 'man crontab -a')
+
+The way it works, is that there is a number of fields that contain time
+information. These are month, dayofmonth, hour, minute and dayofweek. They
+can contain appropriate values or -1. If they contain -1 they are ignored.
+
+\paragraph{Examples}
+
+Run a method every minute.
+\begin{verbatim}
+insert into events values(1, 'an\_event', -1, -1, -1, -1, -1, 1,
+'a\_method','',0);
+\end{verbatim}
+
+Run a method on the hour.
+\begin{verbatim}
+insert into events values(1, 'an\_event', -1, -1, -1, 0, -1, 1,
+'a\_method','',0);
+\end{verbatim}
+
+Run a method at the beginning of the month, at 9 o'clock.
+\begin{verbatim}
+insert into events values(1, 'an\_event', -1, 1, 9, 0, -1, 1,
+'a\_method','',0);
+\end{verbatim}
+
+Run a method at 10 o'clock on Sunday.
+\begin{verbatim}
+insert into events values(1, 'an\_event', -1, -1, 10, 0, 1, 1,
+'a\_method','',0);
+\end{verbatim}
+
+Run a method every 10 minutes.
+\begin{verbatim}
+insert into events values(1, 'an\_event', -1, -1, -1, 0, -1, 1, 'a\_method','',0);
+insert into events values(2, 'an\_event', -1, -1, -1, 10, -1, 1, 'a\_method','',0);
+insert into events values(3, 'an\_event', -1, -1, -1, 20, -1, 1, 'a\_method','',0);
+insert into events values(4, 'an\_event', -1, -1, -1, 30, -1, 1, 'a\_method','',0);
+insert into events values(5, 'an\_event', -1, -1, -1, 40, -1, 1, 'a\_method','',0);
+insert into events values(6, 'an\_event', -1, -1, -1, 50, -1, 1, 'a\_method','',0);
+\end{verbatim}
+
+\subsection{Attributes}
+The table 'attributes' comes in handy when it is necessary to add a special
+value to a certain item, character or room without wanting to or having to
+change the table definition of the item-, character- or room table.
+
+It can be used effectively to store special abilities in characters, store
+special magical characteristics in items, or special actions in rooms.
+
+The table is big enough, and can contain quite large values for attributes,
+whole descriptions if necessary.
+
+To know to which object an attribute refers there are three fields in the
+table that should uniquely identify that object.
+\subparagraph{name}the name of the attribute, because an object can have
+many different attributes.
+\subparagraph{objectid}the id (in either string of integer form) of the
+object in question
+\subparagraph{objecttype}the object type of the object. This is an important
+field for the very simple reason that it depends on the object type in which
+table you need to look. Right now the possible values are 0=general attrib,
+1=character attrib (couple this table with tmp\_usertable), 2=room attrib
+(couple this table with 'tables'), 3=item definition attrib (couple this
+with 'items'), 4=iteminstance attrib (couple this with tmp\_itemtable)
+
+Note: there is a problem with coupling the attribute to an iteminstance. The
+table tmp\_itemtable contains a very complex primary key, due to the very
+complex setup of items. The only way, right now, to fix this, as far as I
+can tell, is by using a concatenated field as described in one of the
+examples below.
+
+\paragraph{Examples}
+
+Is a latch in a room raised or not?
+\begin{verbatim}
+insert into attributes values('latch_raised', 'no', 'string', 6, 2);
+\end{verbatim}
+
+A character with a contagious disease. Ick!
+\begin{verbatim}
+insert into attributes values('disease', 'plague', 'string', 'Karn', 1);
+\end{verbatim}
+
+An item that gives you luck.
+\begin{verbatim}
+insert into attributes values('luck', '10', 'integer', 13, 3);
+\end{verbatim}
+
+An item containing a haflife value. (for deteriorating items like fruit)
+\begin{verbatim}
+insert into attributes values('halflife', '10', 'integer', '3,,Karn,0,,,', 4);
+select *
+from attributes, tmp_itemtable i
+where attributes.name = 'halflife'
+and attributes.objecttype = 4
+and attributes.objectid = concat(i.id, ',', i.search ,',',
+i.belongsto,',',i.room,',',i.wearing,',',i.wielding);
+\end{verbatim}
+
 \subsection{How it works}
 
 The diagram below shows how the different states of the browser interact. Of
@@ -659,6 +784,25 @@ there is a physical maximum of 20 nested if statements.
 
 {\par\centering
 \resizebox*{1\textwidth}{!}{\rotatebox{0}{\includegraphics{parser_states.ps}}} \par}
+
+\section{Logs, Error Codes and Debugging Info}
+\subsection{Introduction}
+The entire mud keeps all error codes and actions in a number of files in
+great detail. These come in quite handy when debugging certain problems.
+\paragraph{Error Codes}
+\begin{itemize}
+\item sql error codes
+\item combat error codes
+\item file io error codes
+\end{itemize}
+
+\paragraph{Log Files}
+\begin{itemize}
+\item error.txt, contains sql error codes
+\item bigfile, contains all user input ever generated by all users
+chronically
+\item file error.log, contains all output from the combat system
+\end{itemize}
 
 \newpage
 \section{Appendix A  - Table Description}
@@ -700,6 +844,10 @@ that their site/domain is banned
 \subparagraph{usertable}all users
 \subparagraph{commands}contains special commands
 \subparagraph{methods}contains source code to perform by the mud
+\subparagraph{events}contains events that run source code in the methods
+table at specific times
+\subparagraph{attributes}can contain 'special' attributes for characters,items,
+rooms or even the game
 
 \newpage
 
@@ -900,6 +1048,42 @@ effective. When the room is 0, the command is available in every room.
 by the commands table
 \subparagraph{src}the source code, this field can contain quite a bit of
 text. See for examples the chapter "The Parser".
+
+\paragraph{events}
+\subparagraph{eventid}a unique number to identify the event
+\subparagraph{name}a unique name to identify the event
+\subparagraph{month}the month in which this event must be run. Allowed
+values are 1-12. (if the field contains value -1, month is ignored)
+\subparagraph{dayofmonth}the dayofmonth on which this event must be run. Allowed
+values are 1-31. (if the field contains value -1, dayofmonth is ignored)
+\subparagraph{hour}the hour in which this event must be run. Allowed
+values are 0-23. (if the field contains value -1, hour is ignored)
+\subparagraph{minute}the minute at which this event must be run. Allowed
+values are 0-59. (if the field contains value -1, minute is ignored)
+\subparagraph{dayofweek}the dayofweek on which this event must be run. Allowed
+values are 1-7, where 1 equals Sunday. (if the field contains value -1, dayofweek is ignored)
+\subparagraph{callable}an integer, if it is 0 the event has been disabled
+\subparagraph{method\_name}name of the method, points to the "methods" table
+\subparagraph{args}currently not used, hope to have that changed soon.
+\subparagraph{room}contains the room number. 
+When
+the room is not 0, 'say'-command and 'sayeveryone'-command and all other 
+output commands are directed to persons in that room.
+
+\paragraph{attributes}
+\subparagraph{name}a name for the attribute, it is perfectly possible to
+have lots of the same names. To uniquely identify an attribute, use its
+name,objectid and objecttype.
+\subparagraph{value}the value of the attribute, this is a string by default,
+however, the exact type is available in 'value\_type'
+\subparagraph{value\_type}contains information on what kind of type the value
+is. Possibilities are: string (simple text form) and integer (number form)
+\subparagraph{objectid}contains uniquely identifying name for the object to
+which an attribute belongs
+\subparagraph{objecttype}contains the type of the object to which an
+attribute belongs. 0=general game attribute, 1=character/user attribute,
+2=room attribute, 3=item definition attribute, 4=iteminstance attribute
+
 
 \newpage
 
