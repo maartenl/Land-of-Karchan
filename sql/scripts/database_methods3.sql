@@ -91,7 +91,7 @@ values(17, "replenish_rope",-1,-1,-1,1, -1, 1,
 
 replace into items values(58, 'rope','thick','piece of'
 ,'long',0,0,0,0,'','',0,0,1,1,1,0,'<H1>Piece of thick Rope</H1>
-<IMG SRC="http://www.karchan.org/images/gif/letters/t.gif" ALIGN=left>
+<IMG SRC="/images/gif/letters/t.gif" ALIGN=left>
 his seems to be a thick piece of rope, white, and made to carry a lot of 
 weight. It is approximately 10 meters long. It is excellently made by a
 master roper. It contains of three different strands all interwoven with
@@ -139,7 +139,7 @@ return
 
 replace into action
 values(15, "<H1>Down the well</H1>
-<IMG SRC=""http://www.karchan.org/images/gif/letters/f.gif"" ALIGN=left>
+<IMG SRC=""/images/gif/letters/f.gif"" ALIGN=left>
 rom here it is impossible to discern the bottom of the well. It is quite
 dark down there, yet you should have enough light due to the opening of the
 well. However, from up here nothing remarkable can be discerned below.<P>
@@ -147,9 +147,9 @@ You do notice, however, that the well seems to have been standing dry
 for quite some time.<P>");
 
 update rooms set up=0, contents="<H1>
-<IMG SRC=""http://www.karchan.org/images/gif/donwell.gif"">At
+<IMG SRC=""/images/gif/donwell.gif"">At
 the bottom of the Well</H1> <IMG
-SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>ou are
+SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou are
 presently at the bottom of the well. It is very dark in here. 
 To the north, south and west corridors the darkness seems to stretch
 towards some strange unknown destiny.<P>
@@ -182,9 +182,9 @@ belongsto='%me' and wearing='' and wielding='' and search='' and room=0"")
 belongsto='%me' and wearing='' and wielding='' and search='' and room=0"")
 			# fix room description 5
 			sql(""update rooms set contents='<H1>\\\\
-	<IMG SRC=""http://www.karchan.org/images/gif/well.gif"">\\\\
+	<IMG SRC=""/images/gif/well.gif"">\\\\
 	The Village</H1> <IMG\\\\
-	 SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
+	 SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
 	 standing in the middle of what seems to be the village square. In the middle\\\\
 	 of this square is a dried up well which hasn\\\'t been used for quite some\\\\
 	 time. There is a rope attached to the well, and it seems to provide a way\\\\
@@ -195,9 +195,9 @@ belongsto='%me' and wearing='' and wielding='' and search='' and room=0"")
 	 seated. In the south there is a road that seems to lead nowhere.<P>' where id=5"")
 			# fix room description 24
 			sql(""update rooms set contents='<H1>\\\\
-	<IMG SRC=""http://www.karchan.org/images/gif/donwell.gif"">At\\\\
+	<IMG SRC=""/images/gif/donwell.gif"">At\\\\
 	 the bottom of the Well</H1> <IMG\\\\
-	 SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
+	 SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
 	 presently at the bottom of the well. It is very dark in here. \\\\
 	 To the north, south and west corridors the darkness seems to stretch\\\\
 	 towards some strange unknown destiny. Right in front of you, \\\\
@@ -206,7 +206,7 @@ belongsto='%me' and wearing='' and wielding='' and search='' and room=0"")
 	' where id=24"")
 			# fix look/at/well description
 			sql(""update items set description='<H1><IMG\\\\
-	 SRC=""http://www.karchan.org/images/gif/well1.gif"">\\\\
+	 SRC=""/images/gif/well1.gif"">\\\\
 	The Well</H1><HR>\\\\
 	 In the middle of the square is a dryed up well which hasn\\\'t been used for\\\\
 	 quite some time. It is made of rough rocks put together, and although it\\\\
@@ -249,9 +249,9 @@ values(58, '', '%me', 1, 0, '', '')"")
 			end
 		# fix room description 5
 		sql(""update rooms set contents='<H1>\\\\
-<IMG SRC=""http://www.karchan.org/images/gif/well.gif"">\\\\
+<IMG SRC=""/images/gif/well.gif"">\\\\
 The Village</H1> <IMG\\\\
- SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
+ SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
  standing in the middle of what seems to be the village square. In the middle\\\\
  of this square is a dried up well which hasn\\\\'t been used for quite some\\\\
  time. To the north there is an old dirty tavern called ""The Twisted Dwarf""\\\\
@@ -261,16 +261,16 @@ The Village</H1> <IMG\\\\
  seated. In the south there is a road that seems to lead nowhere.<P>' where id=5"")
 		# fix room description 24
 		sql(""update rooms set contents='<H1>\\\\
-<IMG SRC=""http://www.karchan.org/images/gif/donwell.gif"">At\\\\
+<IMG SRC=""/images/gif/donwell.gif"">At\\\\
  the bottom of the Well</H1> <IMG\\\\
- SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
+ SRC=""/images/gif/letters/y.gif"" ALIGN=left>ou are\\\\
  presently at the bottom of the well. It is very dark in here. \\\\
  To the north, south and west corridors the darkness seems to stretch\\\\
  towards some strange unknown destiny.<P>\\\\
 ' where id=24"")
 		# fix look/at/well description
 		sql(""update items set description='<H1><IMG\\\\
- SRC=""http://www.karchan.org/images/gif/well1.gif"">\\\\
+ SRC=""/images/gif/well1.gif"">\\\\
 The Well</H1><HR>\\\\
  In the middle of the square is a dryed up well which hasn\\\\'t been used for\\\\
  quite some time. It is made of rough rocks put together, and although it\\\\
@@ -311,7 +311,7 @@ return
 
 replace into action
 values(16,"<H1>You climb down the well.</H1>
-<IMG SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>
+<IMG SRC=""/images/gif/letters/y.gif"" ALIGN=left>
 ou take the rope in both hands and sit on the edge of the well. After one
 last look at where the rope is attached to the well, in order to make sure
 that it is fastened securely, you transfer all of your weight onto the rope.
@@ -345,7 +345,7 @@ return
 
 replace into action
 values(17,"<H1>You climb out of the well.</H1>
-<IMG SRC=""http://www.karchan.org/images/gif/letters/t.gif"" ALIGN=left>
+<IMG SRC=""/images/gif/letters/t.gif"" ALIGN=left>
 he rope is apparently still attached to the well, as you see is in front of
 you, leading upwards. With both hands you take hold of the rope and give it
 a good tug, just to make sure.<P>
