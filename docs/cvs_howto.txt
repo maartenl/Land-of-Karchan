@@ -1,0 +1,6 @@
+Building the repository:
+export CVSROOT="/karchan2/mud/cvsroot/"
+create directory "cvsroot" in /karchan2/mud/
+alias cvs="/karchan2/cvs/bin/cvs"
+
+
