@@ -34,14 +34,18 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Show help regarding possible commands: "help".
+ */
 public class HelpCommand implements Command
 {
 
 	String theHelp;
 	User theUser;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
 		if (command.equalsIgnoreCase("help"))
@@ -76,5 +80,10 @@ public class HelpCommand implements Command
 		}
 		return "";
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

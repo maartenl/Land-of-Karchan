@@ -34,11 +34,15 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Raises your eyebrow.
+ */
 public class EyebrowCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 1)

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Read a mudmail : "readmail 2".
+ */
 public class ReadMailCommand implements Command
 {
 
@@ -69,4 +72,8 @@ public class ReadMailCommand implements Command
 		return theString;
 	}
 
+
+    public void setCommand(String aCommand)
+    {
+    }
 }

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Provide a list of who is currently logged onto the game: "who".
+ */
 public class WhoCommand implements Command
 {
 
@@ -52,4 +55,8 @@ public class WhoCommand implements Command
 		return theString;
 	}
 
+
+    public void setCommand(String aCommand)
+    {
+    }
 }

@@ -34,6 +34,11 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Moves the character to the room above: "up".
+ * Is the same as "go up".
+ * @see DownCommand
+ */
 public class UpCommand extends NormalCommand
 {
 

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Makes your character fall asleep: "sleep".
+ */
 public class SleepCommand extends NormalCommand
 {
 

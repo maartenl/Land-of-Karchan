@@ -34,6 +34,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * The definition of an item. The analogy with Java would be the difference
+ * between a class and an object.
+ */
 public class ItemDef
 {
 	private String theVerb;
@@ -47,6 +51,18 @@ public class ItemDef
 	private int theCopper;
 	private TreeMap theAttributes = new TreeMap();
 
+	/**
+	 * Create an item definition.
+	 * @param anId identification of the item definition
+	 * @param anAdjective1 the first adjective of the item
+	 * @param anAdjective2 the second adjective of the item
+	 * @param anAdjective3 the third adjective of the item
+	 * @param aVerb the verb/name of the item
+	 * @param aDescription a long description of the item
+	 * @param aGold the number of gold coins the item costs
+	 * @param aSilver the number of silver coins the item costs
+	 * @param aCopper the number of copper coins the item costs 
+	 */
 	public ItemDef(int anId, String anAdjective1, String anAdjective2, String anAdjective3, String aVerb, String aDescription, int aGold, int aSilver, int aCopper)
 	{
 		theId = anId;
@@ -60,6 +76,10 @@ public class ItemDef
 		theCopper = aCopper;
 	} 
 
+	/**
+	 * Standard copy constructor.
+	 * @param anItemDef the original Item Definition.
+	 */
 	public ItemDef(ItemDef anItemDef)
 	{
 		theId = anItemDef.getId();
@@ -73,46 +93,87 @@ public class ItemDef
 		theCopper = anItemDef.getCopper();
 	} 
 
+	/**
+	 * Return the id.
+	 * @return integer containing the identification number of the item
+	 * definition.
+	 */
 	public int getId()
 	{
 		return theId;
 	}
 
+	/**
+	 * Return the verb.
+	 * @return String containing the verb of the item
+	 * definition.
+	 */
 	public String getVerb()
 	{
 		return theVerb;
 	}
 
+	/**
+	 * Return the first adjective.
+	 * @return String containing the first adjective of the item
+	 * definition.
+	 */
 	public String getAdjective1()
 	{
 		return theAdjective1;
 	}
 
+	/**
+	 * Return the second adjective.
+	 * @return String containing the second adjective of the item
+	 * definition.
+	 */
 	public String getAdjective2()
 	{
 		return theAdjective2;
 	}
 
+	/**
+	 * Return the third adjective.
+	 * @return String containing the third adjective of the item
+	 * definition.
+	 */
 	public String getAdjective3()
 	{
 		return theAdjective3;
 	}
 	
+	/**
+	 * Return the amount of gold it costs.
+	 * @return integer containing number of gold coins.
+	 */
 	public int getGold()
 	{
 		return theGold;
 	}
 	
+	/**
+	 * Return the amount of silver it costs.
+	 * @return integer containing number of silver coins.
+	 */
 	public int getSilver()
 	{
 		return theSilver;
 	}
 	
+	/**
+	 * Return the amount of copper it costs.
+	 * @return integer containing number of copper coins.
+	 */
 	public int getCopper()
 	{
 		return theCopper;
 	}
 	
+	/**
+	 * standard to string implementation.
+	 * @return String in format id+adject1+adject2+adject3+verb.
+	 */
 	public String toString()
 	{
 		return theId + " " + theAdjective1 + " " +
@@ -121,26 +182,48 @@ public class ItemDef
 			theVerb;
 	}
 
+	/**
+	 * Return the long description.
+	 * @return String containing the long description.
+	 */
 	public String getLongDescription()
 	{
 		return theDescription;
 	}
 
+	/**
+	 * Set or add an attribute for this itemdefinition.
+	 * @param anAttribute the attribute to be set or added.
+	 */
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
 	}
 
+	/**
+	 * Retrieve an attribute for this itemdefinition.
+	 * @param aName the name of the attribute.
+	 * @return Attribute object if found, otherwise null.
+	 */
 	public Attribute getAttribute(String aName)
 	{
 		return (Attribute) theAttributes.get(aName);
 	}
 
+	/**
+	 * Remove an attribute for this itemdefinition.
+	 * @param aName the name of the attribute.
+	 */
 	public void removeAttribute(String aName)
 	{
 		theAttributes.remove(aName);
 	}
 
+	/**
+	 * Check if an attribute exists.
+	 * @param aName the name of the attribute to search for.
+	 * @return boolean, true if the attribute exists.
+	 */
 	public boolean isAttribute(String aName)
 	{
 		return theAttributes.containsKey(aName);

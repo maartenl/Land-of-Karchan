@@ -34,6 +34,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Go south: "south".
+ * @see GoCommand
+ */
 public class SouthCommand extends NormalCommand
 {
 

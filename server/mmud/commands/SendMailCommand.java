@@ -35,6 +35,7 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
+ * Send a mudmail to someone.
  * expected command something like :<P>
  * <B>sendmail [to] [header length] [header] [body]
  * </B>

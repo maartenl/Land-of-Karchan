@@ -27,8 +27,16 @@ maarten_l@yahoo.com
 
 package mmud;
 
+/**
+ * Invalid mail exception regarding the mail system of the mud.
+ */
 public class InvalidMailException extends MailException
 {
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public InvalidMailException()
 	{
 		super(Constants.INVALIDMAILERROR);

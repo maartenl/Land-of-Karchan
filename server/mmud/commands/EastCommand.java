@@ -34,11 +34,16 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Proceed east: "east".
+ * @see GoCommand
+ */
 public class EastCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getEast() != null)

@@ -34,10 +34,15 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * An abstract class for the most normal commands.
+ */
 public abstract class NormalCommand implements Command
 {
 
-	abstract public boolean run(User aUser, String command)
+	private String theCommand;
+
+	abstract public boolean run(User aUser)
 		throws MudException;
 
 	public String getResult()
@@ -45,4 +50,15 @@ public abstract class NormalCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return null;
 	}
+
+	public void setCommand(String aCommand)
+	{
+		theCommand = aCommand;
+	}
+
+	public String getCommand()
+	{
+		return theCommand;
+	}
+
 }

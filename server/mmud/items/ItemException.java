@@ -28,9 +28,16 @@ package mmud.items;
 
 import mmud.MudException;
 
+/**
+ * Exception thrown when dealing with items.
+ */
 abstract public class ItemException extends MudException
 {
 
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public ItemException(String aString)
 	{
 		super(aString);

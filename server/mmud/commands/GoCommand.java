@@ -34,38 +34,42 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Go in a specific direction: "go south".
+ */
 public class GoCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 2)
 		{
 			if (myParsed[1].equalsIgnoreCase("south"))
 			{
-				return (new SouthCommand()).run(aUser, command);
+				return (new SouthCommand()).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("north"))
 			{
-				return (new NorthCommand()).run(aUser, command);
+				return (new NorthCommand()).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("west"))
 			{
-				return (new WestCommand()).run(aUser, command);
+				return (new WestCommand()).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("east"))
 			{
-				return (new EastCommand()).run(aUser, command);
+				return (new EastCommand()).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("up"))
 			{
-				return (new UpCommand()).run(aUser, command);
+				return (new UpCommand()).run(aUser);
 			}
 			if (myParsed[1].equalsIgnoreCase("down"))
 			{
-				return (new DownCommand()).run(aUser, command);
+				return (new DownCommand()).run(aUser);
 			}
 		}
 		return false;

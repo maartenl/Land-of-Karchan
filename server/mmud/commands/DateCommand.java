@@ -35,11 +35,15 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Shows the current date in the game: "date".
+ */
 public class DateCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current date is " 

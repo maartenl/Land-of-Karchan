@@ -32,11 +32,49 @@ import mmud.*;
 import mmud.*;
 import mmud.characters.*;
 
+/**
+ * The interface used for all commands to be executed. Commands are executed
+ * by characters.
+ */
 public interface Command
 {
-
-	public boolean run(User aUser, String command)
+	/**
+	 * Runs the command. The usual sequence of events is:
+	 * <UL><LI>parsing the command string
+	 * <LI>retrieving the appropriate information
+	 * items/rooms/characters/etc)
+	 * <LI>doing the action
+	 * <LI>composing a return message for the user.
+	 * </UL>
+	 * @param aUser the user that is executing the command
+	 * @return boolean, wether or not the command was
+	 * successfull.
+	 * @throw MudException if something goes wrong.
+	 */
+	public boolean run(User aUser)
 		throws MudException;
 
+	/**
+	 * Returns the String that should be communicated to the user
+	 * accessing the game. Basically, this is the output. It can
+	 * contain, and usually does, the room description, appropriate form for new
+	 * information and the logfile.
+	 * @return String containing the description of the result of the
+	 * action for the user playing.
+	 */
 	public String getResult();
+
+	/**
+	 * Sets the command originally used to execute this command. Useful
+	 * for parsing.
+	 * @param aCommand String containing the original command.
+	 */
+	public void setCommand(String aCommand);
+
+	/**
+	 * Gets the command originally used to execute this command. Useful
+	 * for parsing.
+	 * @return String containing the original command.
+	 */
+	public String getCommand();
 }

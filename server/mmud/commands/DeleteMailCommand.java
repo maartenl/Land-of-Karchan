@@ -34,14 +34,18 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Delete an existing mail from the mail list of the current user.
+ */
 public class DeleteMailCommand implements Command
 {
 
 	String theString;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws MailException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 	        String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 2)
@@ -67,5 +71,10 @@ public class DeleteMailCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

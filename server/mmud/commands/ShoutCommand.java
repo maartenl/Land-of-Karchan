@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Shout to someone "shout Help!".
+ */
 public class ShoutCommand extends NormalCommand
 {
 

@@ -34,6 +34,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Drop an item onto the floor: "drop bucket".
+ * @see GetCommand
+ */
 public class DropCommand extends NormalCommand
 {
     private String name;
@@ -42,9 +46,10 @@ public class DropCommand extends NormalCommand
     private String adject3;
     private int amount;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		String[] myParsed = Constants.parseCommand(command);

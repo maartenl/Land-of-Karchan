@@ -34,12 +34,15 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Clear up your log file.
+ */
 public class ClearCommand implements Command
 {
 
 	private User theUser;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
@@ -64,5 +67,10 @@ public class ClearCommand implements Command
 		}
 		return null;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

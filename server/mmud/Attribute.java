@@ -27,12 +27,23 @@ maarten_l@yahoo.com
 
 package mmud;
 
+/**
+ * An attri ute data class, containing name, value, valuetype.
+ * This class is ummutable.
+ */
 public class Attribute
 {
 	private String theName;
 	private String theValue;
 	private String theValueType;
 
+	/**
+	 * constructor for Attribute with parameter values.
+	 * @param aName string containing the name.
+	 * @param aValue string containing the value
+	 * @param aValueType string containing a description of the
+	 * type of value (string, number, boolean, etc)
+	 */
 	public Attribute(String aName, String aValue, String aValueType)
 	{
 		theName = aName;
@@ -40,27 +51,47 @@ public class Attribute
 		theValueType = aValueType;
 	} 
 
-	public static Attribute createAttribute(Attribute anAttribute)
+	/**
+	 * standard copy constructor.
+	 * @param anAttribute the attribute to be copied.
+	 */
+	public Attribute(Attribute anAttribute)
 	{
-		return new Attribute(anAttribute.getName(),
-			anAttribute.getValue(),anAttribute.getValueType());
+		this(anAttribute.getName(),
+			anAttribute.getValue(), anAttribute.getValueType());
 	} 
 
+	/**
+	 * returns the name.
+	 * @return String containing the name.
+	 */
 	public String getName()
 	{
 		return theName;
 	}
 
+	/**
+	 * returns the value.
+	 * @return String containing the value.
+	 */
 	public String getValue()
 	{
 		return theValue;
 	}
 
+	/**
+	 * returns the valuetype.
+	 * @return String containing the valuetype.
+	 */
 	public String getValueType()
 	{
 		return theValueType;
 	}
 
+	/**
+	 * standard tostring implementation.
+	 * @return String with format [name]:[value]:[valuetype]
+	 */
 	public String toString()
 	{
 		return getName() + ":" + getValue() + ":" + getValueType();

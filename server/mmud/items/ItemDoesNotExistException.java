@@ -29,11 +29,26 @@ package mmud.items;
 import mmud.MudException;
 import mmud.Constants;
 
+/**
+ * Exception thrown when the item does not exist.
+ */
 public class ItemDoesNotExistException extends ItemException
 {
 
+	/**
+	 * constructor for creating an exception with a default message.
+	 */
 	public ItemDoesNotExistException()
 	{
 		super(Constants.ITEMDOESNOTEXISTERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public ItemDoesNotExistException(String aString)
+	{
+		super(Constants.ITEMDOESNOTEXISTERROR + " " + aString);
 	}
 }

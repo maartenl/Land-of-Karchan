@@ -39,7 +39,12 @@ import mmud.characters.*;
 import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
+import mmud.commands.Command;
 
+/**
+ * Class containing all the information of a person in the game. (Not
+ * necessarily a user playing)
+ */
 public class Person
 {
 	private String theName;
@@ -62,8 +67,36 @@ public class Person
 	private int theWhimpy;
 	private int theDrinkstats;
 	private int theEatstats;
-    private TreeMap theAttributes = new TreeMap();
+	private TreeMap theAttributes = new TreeMap();
 
+	/**
+	 * Constructor. Create a person.
+	 * @param aName the name of the character
+	 * @param aTitle the title of the character
+	 * @param aRace the race of the character
+	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aAge the age of the character (young, very young, old,
+	 * very old, etc.)
+	 * @param aLength the length of the character (ex. tall)
+	 * @param aWidth the width of the character (ex. athletic)
+	 * @param aComplexion the complexion of the character (ex.
+	 * dark-skinned)
+	 * @param aEyes the eye colour of the character (ex. blue-eyed)
+	 * @param aFace the face of the character (ex. dimple-faced)
+	 * @param aHair the hair of the character (ex. black-haired)
+	 * @param aBeard the beard of the character (ex. with ponytail)
+	 * @param aArms the arms of the character (ex. long-armed)
+	 * @param aLegs the legs of the character (ex. long-legged)
+	 * @param aSleep the status of the character, either asleep
+	 * or awake.
+	 * @param aWhimpy the boundary of the general condition of the
+	 * character. If the condition worsens beyond this, the character will
+	 * automatically flee from a fight.
+	 * @param aDrinkstats describes the state of thirst, negative values
+	 * usually mean intoxication.
+	 * @param aEatstats describes the state of nourishment/hunger
+	 * @param aRoom the room where this character is.
+	 */
 	public Person(String aName, 
 		String aTitle,
 		String aRace,
@@ -107,43 +140,75 @@ public class Person
 		createLog();
 	}
 
+	/**
+	 * standard tostring implementation.
+	 * @return a String containing the name.
+	 */
 	public String toString()
 	{
 		return theName;
 	}
 
+	/**
+	 * returns the name of the character.
+	 * @return String containing the name
+	 */
 	public String getName()
 	{
 		return theName;
 	}
 
+	/**
+	 * returns the title of the character.
+	 * @return String containing the title
+	 */
 	public String getTitle()
 	{
 		return theTitle;
 	}
 
+	/**
+	 * sets the title of the character.
+	 * @param aNewTitle String containing the title
+	 */
 	public void setTitle(String aNewTitle)
 	{
 		theTitle = aNewTitle;
 		Database.setTitle(this);
 	}
 
+	/**
+	 * get the setting for when to flee the fight.
+	 * @return integer containing the setting
+	 */
 	public int getWhimpy()
 	{
 		return theWhimpy;
 	}
 
+	/**
+	 * sets the whimpy of the character.
+	 * @param aWhimpy Integer containing the whimpy
+	 */
 	public void setWhimpy(int aWhimpy)
 	{
 		theWhimpy = aWhimpy;
 		Database.setWhimpy(this);
 	}
 
+	/**
+	 * Returns the thirst of the character
+	 * @return integer containing thirst.
+	 */
 	public int getDrinkstats()
 	{
 		return theDrinkstats;
 	}
 
+	/**
+	 * returns a description of the thirst of the character.
+	 * @return String containing the description
+	 */
 	public String getDrinkstatsDesc()
 	{
 		int i = theDrinkstats;
@@ -183,11 +248,19 @@ public class Person
 		return "You cannot drink anymore.<BR>";
 	}
 
+	/**
+	 * returns wether or not the person can still drink something.
+	 * @return boolean, true if it is possible still to drink.
+	 */
 	public boolean canDrink()
 	{
 		return (( theDrinkstats < 49) && ( theDrinkstats >= 0 ));
 	}
 
+	/**
+	 * sets the thirst of the character.
+	 * @param i Integer containing the thirst
+	 */
 	public void setDrinkstats(int i)
 	{
 		if (!canDrink()) return;
@@ -195,11 +268,19 @@ public class Person
 		Database.setDrinkstats(this);
 	}
 
+	/**
+	 * returns the integer providing hunger of the character.
+	 * @return integer containing the hunger
+	 */
 	public int getEatstats()
 	{
 		return theEatstats;
 	}
 
+	/**
+	 * returns the hunger description of the character.
+	 * @return String containing the hunger
+	 */
 	public String getEatstatsDesc()
 	{
 		int i = theEatstats;
@@ -221,11 +302,19 @@ public class Person
 		return "You are full.<BR>";
 	}
 
+	/**
+	 * returns wether or not the person can still eat something.
+	 * @return boolean, true if it is possible still to eat.
+	 */
 	public boolean canEat()
 	{
 		return (( theEatstats < 49) && ( theEatstats >= 0 ));
 	}
 
+	/**
+	 * sets the hunger of the character.
+	 * @param i Integer containing the hunger
+	 */
 	public void setEatstats(int i)
 	{
 		if (!canEat()) return;
@@ -233,88 +322,155 @@ public class Person
 		Database.setEatstats(this);
 	}
 
+	/**
+	 * returns the race of the character.
+	 * @return String containing the race
+	 */
 	public String getRace()
 	{
 		return theRace;
 	}
 
+	/**
+	 * returns what gender the character is.
+	 * @return Sex containing either male or female.
+	 */
 	public Sex getSex()
 	{
 		return theSex;
 	}
 
+	/**
+	 * returns the age of the character.
+	 * @return String containing the age
+	 */
 	public String getAge()
 	{
 		return theAge;
 	}
 
+	/**
+	 * returns the length of the character.
+	 * @return String containing the length
+	 */
 	public String getLength()
 	{
 		return theLength;
 	}
 
+	/**
+	 * returns the width of the character.
+	 * @return String containing the width
+	 */
 	public String getWidth()
 	{
 		return theWidth;
 	}
 
+	/**
+	 * returns the complexion of the character.
+	 * @return String containing the complexion
+	 */
 	public String getComplexion()
 	{
 		return theComplexion;
 	}
 
+	/**
+	 * returns the eyes of the character.
+	 * @return String containing the eyes
+	 */
 	public String getEyes()
 	{
 		return theEyes;
 	}
 
+	/**
+	 * returns the face of the character.
+	 * @return String containing the face
+	 */
 	public String getFace()
 	{
 		return theFace;
 	}
 
+	/**
+	 * returns the hair of the character.
+	 * @return String containing the hair
+	 */
 	public String getHair()
 	{
 		return theHair;
 	}
 
+	/**
+	 * returns the beard of the character.
+	 * @return String containing the beard
+	 */
 	public String getBeard()
 	{
 		return theBeard;
 	}
 
+	/**
+	 * returns the arms of the character.
+	 * @return String containing the arms
+	 */
 	public String getArms()
 	{
 		return theArms;
 	}
 
+	/**
+	 * returns the legs of the character.
+	 * @return String containing the legs
+	 */
 	public String getLegs()
 	{
 		return theLegs;
 	}
 
+	/**
+	 * returns wether or not the character is asleep.
+	 * @return boolean, true if character is asleep.
+	 */
 	public boolean isaSleep()
 	{
 		return theSleep;
 	}
 
+	/**
+	 * sets the sleep status of the character.
+	 * @param aSleep boolean containing the sleep status
+	 */
 	public void setSleep(boolean aSleep)
 	{
 		theSleep = aSleep;
 		Database.setSleep(this);
 	}
 
+	/**
+	 * returns in which Room the character is.
+	 * @return Room the room that the character is currently occupying.
+	 */
 	public Room getRoom()
 	{
 		return theRoom;
 	}
 
+	/**
+	 * sets the room of the character.
+	 * @param aRoom Room containing the current room of the character
+	 */
 	public void setRoom(Room aRoom)
 	{
 		theRoom = aRoom;
 		Database.setRoom(this);
 	}
 
+	/**
+	 * creates a new log file and deletes the old one.
+	 */
 	public void createLog()
 	{
 		if (theLogFile.exists())
@@ -331,6 +487,11 @@ public class Person
 		}
 	}
 
+	/**
+	 * returns the description of the character. All characteristics, if
+	 * possible, are taken into account.
+	 * @return String containing the description
+	 */
 	public String getLongDescription()
 	{
 		String result = (getAge().equals("none") ? "" : getAge() + ", ");
@@ -348,6 +509,11 @@ public class Person
 		return result;
 	}
 
+	/**
+	 * writes a message to the log file of the character that contains
+	 * all communication and messages.
+	 * @param aMessage the message to be written to the logfile.
+	 */
 	public void writeMessage(String aMessage)
 	{
 		Logger.getLogger("mmud").finer("");
@@ -365,6 +531,7 @@ public class Person
 
 	/**
 	 * Sends a message to the other people in the room
+	 * @param aMessage the message to communicate
 	 */
 	public void sendMessage(String aMessage)
 	{
@@ -374,7 +541,10 @@ public class Person
 
 	/**
 	 * Sends a message to the other people in the room, except
-	 * for one other character
+	 * for one other character.
+	 * @param aPerson the person that must be excluded from the
+	 * communication.
+	 * @param aMessage the message to send to characters in the room
 	 */
 	public void sendMessage(Person aPerson, String aMessage)
 	{
@@ -382,6 +552,10 @@ public class Person
 		Persons.sendMessage(this, aPerson, aMessage);
 	}
 
+	/**
+	 * read the entire log,
+	 * @return String containing the entire logfile.
+	 */
 	public String readLog()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -474,6 +648,11 @@ public class Person
 	 */
 	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
 
+	/**
+	 * Set the attribute. Adds the attribute, if the attribute does not
+	 * exist yet.
+	 * @param anAttribute the attribute to be set.
+	 */
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
@@ -482,6 +661,8 @@ public class Person
 	/**
 	 * returns the attribute found with name aName or null
 	 * if it does not exist.
+	 * @param aName the string with the name to search for
+	 * @return Attribute with the specific name
 	 */
 	public Attribute getAttribute(String aName)
 	{
@@ -489,6 +670,12 @@ public class Person
 		return myAttrib;
 	}
 
+	/**
+	 * Remove an attribute with a specific name from the list of
+	 * attributes.
+	 * @param aName the string with the name of the attribute to be
+	 * removed.
+	 */
 	public void removeAttribute(String aName)
 	{
 		theAttributes.remove(aName);
@@ -497,6 +684,8 @@ public class Person
 	/**
 	 * returns true if the attribute with name aName
 	 * exists.
+	 * @param aName the name of the attribute to search for
+	 * @return boolean, true if found otherwise false
 	 */
 	public boolean isAttribute(String aName)
 	{
@@ -515,6 +704,12 @@ public class Person
 	/**
 	 * Pick up an item lying on the floor, visible, and
 	 * gettable.
+	 * @param amount the number of items
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @return int somestuff.
 	 */
 	public int pickupItems(int amount, 
 				String adject1, 
@@ -527,6 +722,12 @@ public class Person
 
 	/**
 	 * Drop an item onto the floor, from your inventory.
+	 * @param amount the number of items
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @return int somestuff.
 	 */
 	public int dropItems(int amount, 
 				String adject1, 
@@ -539,5 +740,4 @@ public class Person
 //		return Database.dropItem(amount, adject1, adject2, adject3, name, this);
 	}
 
-	
 }

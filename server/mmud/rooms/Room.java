@@ -32,6 +32,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Data class containing all the information with regards to a room in the
+ * mud.
+ */
 public class Room
 {
 	private int theId;
@@ -40,6 +44,24 @@ public class Room
 	private Room south, north, east, west, up, down;
 	private int intsouth, intnorth, inteast, intwest, intup, intdown;
 
+	/**
+	 * Create a new room.
+	 * @param anId the identification number of the room
+	 * @param aTitle the title of the room.
+	 * @param aContents the contents/description of the room.
+	 * @param asouth identification of the room to the south (0 if not
+	 * applicable)
+	 * @param anorth identification of the room to the north (0 if not
+	 * applicable)
+	 * @param aeast identification of the room to the east (0 if not
+	 * applicable)
+	 * @param awest identification of the room to the west (0 if not
+	 * applicable)
+	 * @param aup identification of the room up (0 if not
+	 * applicable)
+	 * @param adown identification of the room down (0 if not
+	 * applicable)
+	 */
 	public Room(int anId, String aTitle, String aContents, int asouth, int anorth, int aeast, int awest, int aup, int adown)
 	{
 		theId = anId;
@@ -57,47 +79,79 @@ public class Room
 		intdown = adown;
 	}
 	
+	/**
+	 * Returns the id of the room.
+	 * @return integer containing the id of the room.
+	 */
 	public int getId()
 	{
 		return theId;
 	}
 
+	/**
+	 * Sets the room that is directly south.
+	 * @param aSouth the room to the south.
+	 */
 	public void setSouth(Room aSouth)
 	{
 		south = aSouth;
 		intsouth = 0;
 	}
 
+	/**
+	 * Sets the room that is directly north.
+	 * @param aSouth the room to the north.
+	 */
 	public void setNorth(Room aNorth)
 	{
 		north = aNorth;
 		intnorth = 0;
 	}
 
+	/**
+	 * Sets the room that is directly east.
+	 * @param aSouth the room to the east.
+	 */
 	public void setEast(Room aEast)
 	{
 		east = aEast;
 		inteast = 0;
 	}
 
+	/**
+	 * Sets the room that is directly west.
+	 * @param aSouth the room to the west.
+	 */
 	public void setWest(Room aWest)
 	{
 		west = aWest;
 		intwest = 0;
 	}
 
+	/**
+	 * Sets the room that is directly up.
+	 * @param aSouth the room to the up.
+	 */
 	public void setUp(Room aUp)
 	{
 		up = aUp;
 		intup = 0;
 	}
 
+	/**
+	 * Sets the room that is directly down.
+	 * @param aSouth the room to the down.
+	 */
 	public void setDown(Room aDown)
 	{
 		down = aDown;
 		intdown = 0;
 	}
 
+	/**
+	 * Get the room that is directly south.
+	 * @return Room the roomo to the south.
+	 */
 	public Room getSouth()
 	{
 		if (south == null)
@@ -111,6 +165,10 @@ public class Room
 		return south;
 	}
 
+	/**
+	 * Get the room that is directly north.
+	 * @return Room the roomo to the north.
+	 */
 	public Room getNorth()
 	{
 		if (north == null)
@@ -124,6 +182,10 @@ public class Room
 		return north;
 	}
 
+	/**
+	 * Get the room that is directly east.
+	 * @return Room the roomo to the east.
+	 */
 	public Room getEast()
 	{
 		if (east == null)
@@ -137,6 +199,10 @@ public class Room
 		return east;
 	}
 
+	/**
+	 * Get the room that is directly west.
+	 * @return Room the roomo to the west.
+	 */
 	public Room getWest()
 	{
 		if (west == null)
@@ -150,6 +216,10 @@ public class Room
 		return west;
 	}
 
+	/**
+	 * Get the room that is directly up.
+	 * @return Room the roomo to the up.
+	 */
 	public Room getUp()
 	{
 		if (up == null)
@@ -163,6 +233,10 @@ public class Room
 		return up;
 	}
 
+	/**
+	 * Get the room that is directly down.
+	 * @return Room the roomo to the down.
+	 */
 	public Room getDown()
 	{
 		if (down == null)
@@ -176,11 +250,22 @@ public class Room
 		return down;
 	}
 
+	/**
+	 * standard to string implementation.
+	 * @return String containing both the identification number and the
+	 * title.
+	 */
 	public String toString()
 	{
 		return theId + ":" + theTitle;
 	}
 
+	/**
+	 * Returns the description of the room, suitable for webbrowsers.
+	 * @param aUser the user who needs to have the webpage.
+	 * @return String containing a full description of the room suitable
+	 * for webbrowsing.
+	 */
 	public String getDescription(User aUser)
 	{
 		String result = (theContents == null ? 
@@ -334,11 +419,26 @@ public class Room
 		return result;
 	}
 
+	/**
+ 	 * Return the inventory of this room. I.e. all items currently
+	 * present in the room.
+	 * @return String a string representation of a HTML bulleted list
+	 * of all items.
+	 * @see Database#getInventory
+	 */
 	public String inventory()
 	{
 		return Database.getInventory(this);
 	}
 
+	/**
+	 * Retrieve an item from this room.
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @return Item object containing the item found.
+	 */
 	public Item getItem(String adject1, String adject2, String adject3, String name)
 	{
 		return Database.getItem(adject1, adject2, adject3, name, this);

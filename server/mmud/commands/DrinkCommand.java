@@ -34,14 +34,18 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Drink an item: "drink beer".
+ */
 public class DrinkCommand implements Command
 {
 
 	String theResult = null;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		theResult = null;
@@ -85,5 +89,10 @@ public class DrinkCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

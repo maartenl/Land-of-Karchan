@@ -34,14 +34,19 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Eat an item from inventory. "eat apple pie".
+ * Should improve your eat stats.
+ */
 public class EatCommand implements Command
 {
 
 	String theResult = null;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		theResult = null;
@@ -76,5 +81,10 @@ public class EatCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

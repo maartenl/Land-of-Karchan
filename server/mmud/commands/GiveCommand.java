@@ -35,14 +35,16 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
+ * Give an item in your inventory to another character.
  * Syntax: give &lt;item&gt; to &lt;character&gt;
  */
 public class GiveCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		String[] myParsed = Constants.parseCommand(command);

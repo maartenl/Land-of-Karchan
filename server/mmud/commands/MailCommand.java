@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Mail something to someone.
+ */
 public class MailCommand implements Command
 {
 
@@ -78,5 +81,10 @@ public class MailCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

@@ -35,7 +35,7 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * syntax : buy from &lt;character&gt; &lt;item&gt;
+ * Buying an item from a bot. Syntax : buy from &lt;character&gt; &lt;item&gt;
  */
 public class BuyCommand extends NormalCommand
 {
@@ -55,10 +55,11 @@ public class BuyCommand extends NormalCommand
 	 */
 	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
 		Logger.getLogger("mmud").finer("");
+		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
 		{

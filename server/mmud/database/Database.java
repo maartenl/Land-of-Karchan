@@ -40,6 +40,12 @@ import mmud.characters.*;
 import mmud.items.*;
 import mmud.rooms.*;
 
+/**
+ * The central class that takes care of all the commands that are to be
+ * transmitted to the MySQL database server. This database class is
+ * basically the class that effectively hides the database side of things
+ * and only provides standard mud functions to the rest of the mud.
+ */
 public class Database
 {
 
@@ -114,8 +120,22 @@ public class Database
 	public static String sqlGetItemDefString = "select * from items where id = ?";
 
 	/**
-	 *"jdbc:mysql://localhost.localdomain/mud?user=root&password=");
-	 *
+	 * Connects to the database using an url like 
+	 * "jdbc:mysql://localhost.localdomain/mud?user=root&password=".
+	 * Uses the classname in Constants.dbjdbcclass to get the right class
+	 * for interfacing with the database server. If the database used
+	 * is changed (or to be more specific the jdbc driver is changed)
+	 * change the constant.
+	 * @throw InstantiationException happens when it is impossible to
+	 * instantiate the proper database class, from the class name
+	 * as provided by Constants.dbjdbcclass.
+	 * @throw ClassNotFoundException happens when it is impossible to 	
+	 * find the proper database class, from the class name
+	 * as provided by Constants.dbjdbcclass.
+	 * @throw IllegalAccessException happens when it is not possible
+	 * to create the database class because access restrictions apply.
+	 * @throw SQLException happens when a connection to the database
+	 * Server could not be established.
 	 */
 	public static void connect()
 		throws SQLException,
@@ -145,17 +165,32 @@ public class Database
 		theConnection = DriverManager.getConnection(theUrl);
 	}
 
+	/**
+	 * Closes the connection to the database.
+	 * @throw SQLException occurs when something goes wrong.
+	 */
 	public static void disconnect()
-		throws SQLException,
-			InstantiationException,
-			ClassNotFoundException,
-			IllegalAccessException
+		throws SQLException
 	{
 		Logger.getLogger("mmud").finer("");
 		theConnection.close();
 		theConnection = null;
 	}
 
+	/**
+	 * Refresh the connection to the database. Basically performs a
+	 * disconnect/reconnect.
+	 * @throw InstantiationException happens when it is impossible to
+	 * instantiate the proper database class, from the class name
+	 * as provided by Constants.dbjdbcclass.
+	 * @throw ClassNotFoundException happens when it is impossible to 	
+	 * find the proper database class, from the class name
+	 * as provided by Constants.dbjdbcclass.
+	 * @throw IllegalAccessException happens when it is not possible
+	 * to create the database class because access restrictions apply.
+	 * @throw SQLException happens when a connection to the database
+	 * Server could not be established.
+	 */
 	public static void refresh()
 		throws SQLException,
 			InstantiationException,
@@ -170,6 +205,13 @@ public class Database
 		connect();
 	}
 
+	/**
+	 * Retrieve a character from the database.
+	 * @param aName the name of the character. This uniquely identifies
+	 * any character in the database.
+	 * @return User containing all information
+	 * DEBUG!! Why returns User, why not Person?
+	 */
 	public static User getUser(String aName)
 	{
 		assert theConnection != null : "theConnection is null";
@@ -229,6 +271,11 @@ public class Database
 		return myUser;
 	}
 
+	/**
+	 * Checks to see that a user exists in the database.
+	 * @param aName the name that uniquely identifies the character.
+	 * @return boolean, true if found, false otherwise.
+	 */
 	public static boolean existsUser(String aName)
 	{
 		assert theConnection != null : "theConnection is null";
@@ -259,6 +306,11 @@ public class Database
 		return myBoolean;
 	}
 
+	/**
+	 * Returns the room information based on the roomnumber.
+	 * @param roomnr integer containing the number of the room.
+	 * @return Room object containing all information.
+	 */
 	public static Room getRoom(int roomnr)
 	{
 		assert theConnection != null : "theConnection is null";
@@ -296,6 +348,11 @@ public class Database
 		return myRoom;
 	}
 
+	/**
+	 * Returns the itemdefinition based on the itemdefinition id.
+	 * @param itemdefnr item definition identification number
+	 * @return ItemDef object containing all information.
+	 */
 	public static ItemDef getItemDef(int itemdefnr)
 	{
 		assert theConnection != null : "theConnection is null";
@@ -364,6 +421,12 @@ public class Database
 		return myItemDef;
 	}
 
+	/**
+	 * Returns the inventory of a person in the form of a bulleted list.
+	 * @param aPerson the person whos inventory we are interested in.
+	 * @return String containing the bulleted list of items the
+	 * person is carrying.
+	 */
 	public static String getInventory(Person aPerson)
 	{
 		Logger.getLogger("mmud").finer("");
@@ -411,6 +474,11 @@ public class Database
 		return myInventory.toString();
 	}
 
+	/**
+	 * Returns a bulleted list of all items visible in a room.
+	 * @param aRoom room object that has a number of visible items.
+	 * @param String containing a list of items visible in the room.
+	 */
 	public static String getInventory(Room aRoom)
 	{
 		Logger.getLogger("mmud").finer("");
@@ -455,6 +523,16 @@ public class Database
 		return myInventory.toString();
 	}
 
+	/**
+	 * Pick up an item off the floor.
+	 * @param amount the number of items
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @param aPerson the person who wishes to pick up the item.
+	 * @return 0 when no items are picked up, 1 otherwise.
+	 */
 	public static int pickupItem(int amount,
 								String adject1,
 								String adject2,
@@ -484,6 +562,12 @@ public class Database
 		return res;
 	}
 
+	/**
+	 * Add all attributes found in the database regarding a certain item to
+	 * that item object. Basically fills up the attribute list of the item.
+	 * @param anItem item object
+	 * @param anId the item id.
+	 */
 	public static void getItemAttributes(int anId, Item anItem)
 	{
 		Logger.getLogger("mmud").finer("");
@@ -516,6 +600,15 @@ public class Database
 		return;
 	}
 
+	/**
+	 * Retrieve the item from the room.
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @param aRoom the room where said item should be located
+	 * @return Item object containing all information regarding the item.
+	 */
 	public static Item getItem(String adject1,
 								String adject2,
 								String adject3,
@@ -561,6 +654,16 @@ public class Database
 		return anItem;
 	}
 
+	/**
+	 * Retrieve the item from the inventory of a character.
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @param aChar the character who has the item in his/her inventory.
+	 * @return Item object containing all information regarding the found
+	 * item.
+	 */
 	public static Item getItem(String adject1,
 								String adject2,
 								String adject3,
@@ -606,6 +709,12 @@ public class Database
 		return anItem;
 	}
 
+	/**
+	 * Returns all currently active persons in the game. This method is
+	 * usually used only when starting the server, as during server time
+	 * the adding and deleting of users is handled by the server itself.
+	 * @return Vector containing all currently active persons in the game.
+	 */
 	public static Vector getPersons()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -704,6 +813,14 @@ public class Database
 		return myVector;
 	}
 
+	/**
+	 * Retrieves a proper description to be presented to the user
+	 * based on an exception text.
+	 * @param originalErr String containing the exception text.
+	 * Something like, for example, "invalid user".
+	 * @return String containing a description of what the user
+	 * should see. Usually this is in the format of a web page.
+	 */
 	public static String getErrorMessage(String originalErr)
 	{
 		assert theConnection != null : "theConnection is null";
@@ -743,7 +860,7 @@ public class Database
 
 	/**
 	 * returns the logonmessage when logging into the game
-	 *
+	 * @return String containing the logon message.
 	 */
 	public static String getLogonMessage()
 	{
@@ -775,7 +892,9 @@ public class Database
 
 	/**
 	 * returns a helpmessage on the current command, or general help
-	 *
+	 * @param aCommand the command to enlist help for. If this is a null
+	 * pointer, general help will be requested.
+	 * @return String containing the man page of the command.
 	 */
 	public static String getHelp(String aCommand)
 	{
@@ -815,8 +934,9 @@ public class Database
 	}
 
 	/**
-	 * returns a list of emails
-	 *
+	 * returns a list of mudmails
+	 * @param aUser the user to list the mudmails for
+	 * @return String containing a bulleted list of mudmails.
 	 */
 	public static String getListOfMail(User aUser)
 	{
@@ -862,8 +982,11 @@ public class Database
 	}
 
 	/**
-	 * reads a mail
-	 *
+	 * reads a mail from a user.
+	 * @param aUser the user whos mudmail should be read
+	 * @param messagenr the identification of the message, usually a number
+	 * where "1" represents the first message, "2" the second, etc.
+	 * @return String properly HTML formatted containing the mudmail.
 	 */
 	public static String readMail(User aUser, int messagenr)
 		throws MailException
@@ -873,8 +996,13 @@ public class Database
 	}
 
 	/**
-	 * deletes a mail
-	 *
+	 * deletes a mail. Returns the mudmail that has been erased.
+	 * @param aUser the user whos mudmail must be erased.
+	 * @param messagenr the message number identifying the mudmail
+	 * where "1" represents the first message, "2" the second, etc.
+	 * @return String properly HTML formatted containing the mudmail.
+	 * @throw MailException if the message with messagenumber could
+	 * not be found. (for example the message number was illegal)
 	 */
 	public static String deleteMail(User aUser, int messagenr)
 		throws MailException
@@ -885,9 +1013,14 @@ public class Database
 
 	/**
 	 * does either of two things with mail, dependant of the boolean
-parameter
+	 * parameter
+	 * @param aUser the user whos mudmail we wish to mutate
+	 * @param messagenr the identification number of the message
+	 * where "1" represents the first message, "2" the second, etc.
 	 * @param deleteIt boolean, <UL><LI>true = delete mail<LI>false = do not
 	 * delete mail, but update <I>haveread</I></UL>
+	 * @return String containing the mail in question.
+	 * @throw MailException if the messagenumber is invalid.
 	 */
 	private static String doStuffWithMail(User aUser, int messagenr, boolean deleteIt)
 		throws MailException
@@ -981,7 +1114,11 @@ parameter
 	}
 
 	/**
-	 * send mud mail
+	 * send mud mail.
+	 * @param aUser the user who wishes to send mudmail.
+	 * @param toUser the user who has to receive the send mudmail.
+	 * @param header the header of the mudmail
+	 * @param message the body of the mudmail
 	 */
 	public static void sendMail(User aUser, User toUser, String header, String message)
 	{
@@ -1092,7 +1229,7 @@ parameter
 	/**
 	 * see if the person has new mail
 	 * @return boolean, true if found, false if not found
-	 * @param aUser User
+	 * @param aUser User whos mail must be checked.
 	 */
 	public static boolean hasUserNewMail(User aUser)
 	{
@@ -1157,7 +1294,7 @@ parameter
 	}
 
 	/**
-	 * activate user
+	 * activate user.
 	 * This is done by copying the record over to tmp_usertable
 	 * @param aUser User wishing to be active
 	 */

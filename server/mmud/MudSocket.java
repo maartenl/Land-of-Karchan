@@ -43,11 +43,20 @@ import mmud.characters.*;
 import mmud.database.*;
 import mmud.commands.*;
 
+/**
+ * the class that takes care of all the socket communication. Is basically
+ * a thread that terminates when the socket communication is terminated.
+ */
 public class MudSocket extends Thread
 {
 	private Socket theSocket = null;
 	private boolean theSuccess = true;
 
+	/**
+	 * Checks to see if the mud is temporarily offline or not. 
+	 * @return String containing a description to print if the mud is
+	 * offline. Returns a null pointer if the mud is not offline at all.
+	 */
 	public String isOffline()
 		throws IOException, MudException
 	{
@@ -67,18 +76,31 @@ public class MudSocket extends Thread
 		return null;
 	}
 
+	/**
+	 * Indicates if the mud call was successfull.
+	 * @return boolean, true if successfull, false otherwise
+	 */
 	public boolean isSuccessfull()
 	{
 		Logger.getLogger("mmud").finer("");
 		return theSuccess;
 	}
 
+	/**
+	 * Constructor
+	 * @param aSocket the (already open) socket through which
+	 * communication has to take place.
+	 */
 	public MudSocket(Socket aSocket)
 	{
 		Logger.getLogger("mmud").finer("");
 		theSocket = aSocket;
 	}
 
+	/**
+	 * Run method of the thread. This is started when the start method
+	 * is called.
+	 */
 	public void run()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -285,11 +307,19 @@ public class MudSocket extends Thread
 	 * <LI>check if user is banned
 	 * <LI>create new sessionpassword
 	 * </OL>
-	 * @param socketfd int, is the socketdescriptor of the communication channel,
-	 * can using find_in_list for example. 
-	 * @see find_in_list
-	 * @see remove_from_list
-	 * @returns integer with the success code, 0 is bad, 1 is good
+	 * @param aName the name of the character to logon.
+	 * @param aPassword password of the character to logon.
+	 * @param aAddress the address of the person connecting.
+	 * @param aCookie the sessionpassword to verify the current
+	 * session.
+	 * @param aFrames the user interface to use 
+	 * <ul><li>0 = single window
+	 * <li>1 = multiple windows (frames)
+	 * <li>2 = multiple windows with serverpush and javascript and all
+	 * sorts of other stuff.
+	 * </ul>
+	 * @returns String containing the text to be sent to the user
+	 * @throws MudException in case something goes wrong.
 	 */
 	private String enterMud(String aName, String aPassword, String aAddress, String aCookie, int aFrames)
 		throws MudException
@@ -447,6 +477,17 @@ public class MudSocket extends Thread
 	 * <LI>validate input using perl reg exp.
 	 * <LI>check if user is banned
 	 * </OL>
+	 * @param aName the name of the character
+	 * @param aAddress the address of the computer connecting 
+	 * @param aCookie the session password
+	 * @param aFrames the user interface to use 
+	 * <ul><li>0 = single window
+	 * <li>1 = multiple windows (frames)
+	 * <li>2 = multiple windows with serverpush and javascript and all
+	 * sorts of other stuff.
+	 * </ul>
+	 * @param aCommand the command to be executed
+	 * @return the text to be sent back to the user connecting
 	 */
 	private String executeMud(String aName, String aAddress, String aCookie, int aFrames, String aCommand)
 	{
@@ -758,6 +799,7 @@ public class MudSocket extends Thread
 	 * @param aUser User who wishes to execute a command.
 	 * @param aCommand String containing the command entered
 	 * @return returns a string containing the answer.
+	 * @throws MudException when something goes wrong.
 	 */
 	public String gameMain(User aUser, String aCommand)
 		throws MudException
@@ -797,10 +839,9 @@ public class MudSocket extends Thread
 				throw new InvalidFrameException();
 			}
 		} // end switch 
-		int i = aCommand.indexOf(' ');
-		Command myCommand = 
-			Constants.getCommand( (i != -1 ? aCommand.substring(0, i) : aCommand) );
-		myCommand.run(aUser, aCommand);
+		Command myCommand = Constants.getCommand(aCommand);
+		myCommand.setCommand(aCommand);
+		myCommand.run(aUser);
 		if (myCommand.getResult() == null)
 		{
 			returnStuff += aUser.getRoom().getDescription(aUser);

@@ -35,11 +35,28 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception thrown because the user that is to be created already exists by
+ * that name.
+ */
 public class UserAlreadyExistsException extends PersonException
 {
+
+	/**
+	 * constructor for creating an exception with a default message.
+	 */
 	public UserAlreadyExistsException()
 	{
 		super(Constants.USERALREADYEXISTSERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public UserAlreadyExistsException(String aMessage)
+	{
+		super(Constants.USERALREADYEXISTSERROR + " " + aMessage);
 	}
 
 }

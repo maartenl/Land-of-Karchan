@@ -34,6 +34,11 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Tell to someone something. The difference with normal communication
+ * commands, is that this one is mandatory to a person and the person does
+ * not need to be in the same room: "tell to Karn Help!".
+ */
 public class TellCommand extends NormalCommand
 {
 

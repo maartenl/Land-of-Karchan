@@ -38,13 +38,17 @@ import java.util.logging.*;
 import mmud.database.*;
 import mmud.characters.*;
 
+/**
+ * Main class, used for starting the main method.
+ */
 public class Main
 {
-	public Main()
-	{
-		
-	}
 
+	/**
+	 * the default method that is called when the server is started.
+	 * @param args The arguments provided when attempting to start the
+	 * program.
+	 */
 	public static void main(String[] args)
 	{
 		try
@@ -58,7 +62,7 @@ public class Main
 			Persons.init();
 			Constants.logger.info("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
-			for (int i = 1; i < 100; i++)
+			for (int i=0;i<100000;i++)
 			{
 				Socket mySocket = myServerSocket.accept();
 				MudSocket myMudSocket = new MudSocket(mySocket);

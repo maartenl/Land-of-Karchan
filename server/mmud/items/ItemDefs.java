@@ -35,20 +35,34 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Collection class containing all the item definitions.
+ */
 public final class ItemDefs 
 {
 	private static Vector theItemDefs = new Vector();
 
+	/**
+	 * Create a new itemdefs object with an empty list.
+	 */
 	public ItemDefs()
 	{
 		theItemDefs = new Vector();
 	}
 
+	/**
+	 * Initialise this object with an empty list.
+	 */
 	public static void init()
 	{
 		theItemDefs = new Vector();
 	}
 
+	/**
+	 * Return the itemdefinition from the list.
+	 * @param aItemDefNr identification number of an itemdefinition.
+	 * @return ItemDef the found Item Definition.
+	 */
 	public static ItemDef getItemDef(int aItemDefNr)
 	{
 		ItemDef myItemDef = null;

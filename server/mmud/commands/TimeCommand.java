@@ -36,6 +36,9 @@ import mmud.database.*;
 
 import java.util.Calendar;
 
+/**
+ * Displays the current time: "time".
+ */
 public class TimeCommand extends NormalCommand
 {
 

@@ -34,12 +34,16 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Sometimes the space in the fillout form is not enough, than this command
+ * will show a bigger entry form : "bigtalk".
+ */
 public class BigTalkCommand implements Command
 {
 
 	User theUser;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
@@ -76,6 +80,10 @@ public class BigTalkCommand implements Command
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void setCommand(String aCommand)
+	{
 	}
 
 }

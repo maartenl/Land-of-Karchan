@@ -35,8 +35,16 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception indication that the user is already active in the mud.
+ * Used when attempting to logon to the game.
+ */
 public class UserAlreadyActiveException extends PersonException
 {
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public UserAlreadyActiveException()
 	{
 		super(Constants.USERALREADYACTIVEERROR);

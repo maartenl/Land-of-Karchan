@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Whisper something : "whisper Anybody here?"
+ */
 public class WhisperCommand extends NormalCommand
 {
 

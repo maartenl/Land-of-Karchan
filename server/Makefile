@@ -7,7 +7,7 @@
 
 HOMEDIR = /home/karchan/cvs2/server
 INSTALLDIR = $(HOMEDIR)/jclasses
-
+SOURCEDIR = $(HOMEDIR)
 #
 # Options that can be used to the make command
 # --------------------------------------------
@@ -30,8 +30,8 @@ CC = /usr/java/j2sdk1.4.1_02/bin/javac
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-CLASSPATH = ../../mysql-connector-java-3.0.6-stable/mysql-connector-java-3.0.6-stable-bin.jar:../../jakarta-oro-2.0.7/jakarta-oro-2.0.7.jar:jclasses
-COPTS = -source 1.4 -classpath $(CLASSPATH) -d jclasses
+CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar:jclasses
+COPTS = -source 1.4 -classpath $(CLASSPATH) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
 
 TARGETS = compile
 
@@ -50,8 +50,8 @@ clean:
 
 all: $(TARGETS)
 
-jars: $(TARGETS)
-	cd jclasses;jar -cvf ../runme.jar -C . .
+jar:
+	cd jclasses;jar -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
 run:
-	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) mmud.Main
+	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) -jar runme.jar

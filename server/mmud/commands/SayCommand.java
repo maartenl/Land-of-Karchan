@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Say something : "say Good morning, everyone."
+ */
 public class SayCommand extends NormalCommand
 {
 

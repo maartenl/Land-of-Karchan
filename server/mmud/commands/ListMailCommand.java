@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * List the current mudmails of a character.
+ */
 public class ListMailCommand implements Command
 {
 
@@ -53,5 +56,10 @@ public class ListMailCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

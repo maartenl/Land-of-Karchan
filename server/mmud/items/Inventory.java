@@ -32,10 +32,16 @@ import java.util.logging.Logger;
 
 import mmud.items.*;
 
+/**
+ * Collection class for storing of items.
+ */
 public class Inventory
 {
 	private Vector theItems;
 
+	/**
+	 * Creates an inventory object with an empty list.
+	 */
 	public Inventory()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -45,6 +51,7 @@ public class Inventory
 	/**
 	 * appends an item to the list of items in this inventory
 	 * (use with care)
+	 * @param anItem the item to be added.
 	 */
 	public void append(Item anItem)
 	{
@@ -54,13 +61,15 @@ public class Inventory
 	/**
 	 * deletes an item from the list of items in this inventory
 	 * (use with care)
+	 * @param anItem the item to be deleted.
 	 */
 	public void delete(Item anItem)
 	{
 	}
 
 	/** 
-	 * 
+	 * Add an item.
+	 * @param anItem the item to be added.
 	 */
 	public void add(Item anItem)
 	{
@@ -69,7 +78,8 @@ public class Inventory
 	}
 
 	/** 
-	 * 
+	 * Remove an item from the list.
+	 * @param anItem the item to be removed.
 	 */
 	public void remove(Item anItem)
 		throws ItemException
@@ -84,7 +94,10 @@ public class Inventory
 
 	/**
 	 * returns the item existing in the inventory that fits
-	 * the required array parsedarray[startpos..endpos-1].
+	 * the desription.
+	 * @param parsedarray required array parsedarray[startpos..endpos-1].
+	 * @param startpos first required part of the description of the item.
+	 * @param endpos last required part of the description of the item.
 	 * endpos must be <I>at least</I> startpos+1.
 	 */
 	public Item getItem(String[] parsedarray, int startpos, int endpos)
@@ -120,8 +133,14 @@ public class Inventory
 
 	/**
 	 * returns the number of items existing in the inventory that fits
-	 * the required array parsedarray[startpos..endpos-1].
+	 * the description.
+	 * @param parsedarray the required array parsedarray[startpos..endpos-1].
+	 * @param startpos the first required part of the description of the
+	 * item.
+	 * @param endpos the last required part of the description of the item.
 	 * endpos must be <I>at least</I> startpos+1.
+	 * @return integer providing the number of items available in the
+	 * inventory list.
 	 */
 	public int getItemCount(String[] parsedarray, int startpos, int endpos)
 	{
@@ -155,6 +174,11 @@ public class Inventory
 		return myCount;
 	}
 
+	/**
+	 * Attempts to create a description of all items in the inventory.
+	 * @return String containing description of all items in the inventory
+	 * in the form of a bulleted html list.
+	 */
 	public String returnItemList()
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");
@@ -169,6 +193,11 @@ public class Inventory
 		return myStringBuffer.toString();
 	}
 
+	/**
+	 * Attempts to create a decsription of all items in a room.
+	 * @return String containing description of all items in the room
+	 * in the form of a bulleted html list.
+	 */
 	public String returnRoomItemList()
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");
@@ -183,6 +212,11 @@ public class Inventory
 		return myStringBuffer.toString();
 	}
 
+	/**
+	 * Standard tostring implementation.
+	 * @return String containing a description of all items.
+	 * @see Item#toString
+	 */
 	public String toString()
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");

@@ -35,11 +35,28 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception thrown when the password is incorrect. This can be both the
+ * normal password as well as the sessionpassword.
+ */
 public class PwdIncorrectException extends PersonException
 {
+
+	/**
+	 * constructor for creating an exception with a default message.
+	 */
 	public PwdIncorrectException()
 	{
 		super(Constants.PWDINCORRECTERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public PwdIncorrectException(String aString)
+	{
+		super(Constants.PWDINCORRECTERROR + " " + aString);
 	}
 
 }

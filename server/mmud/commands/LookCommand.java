@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Look at stuff: "look at well".
+ */
 public class LookCommand implements Command
 {
 
@@ -83,6 +86,11 @@ public class LookCommand implements Command
 	{
 		Logger.getLogger("mmud").finer("");
 		return theResult;
+	}
+
+
+	public void setCommand(String aCommand)
+	{
 	}
 
 }

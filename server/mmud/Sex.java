@@ -41,6 +41,12 @@ public final class Sex
 		theSex = aSex;
 	}
 
+	/**
+	 * Little factory method for creating a Sex object.
+	 * @param aString string describing the sex object
+	 * to be created: "female" or "male".
+	 * @return Sex object, either male of female.
+	 */
 	public static Sex createFromString(String aString)
 	{
 		if (aString.equals("female")) return FEMALE;
@@ -49,6 +55,7 @@ public final class Sex
 
 	/**
 	 * returns either "male" or "female"
+	 * @return returns either "male" or "female"
 	 */
 	public String toString()
 	{
@@ -57,6 +64,7 @@ public final class Sex
 
 	/**
 	 * returns either "his" or "her"
+	 * @return returns either "his" or "her"
 	 */
 	public String posession()
 	{
@@ -65,6 +73,7 @@ public final class Sex
 
 	/**
 	 * returns either "him" or "her"
+	 * @return returns either "him" or "her"
 	 */
 	public String indirect()
 	{
@@ -73,12 +82,16 @@ public final class Sex
 
 	/**
 	 * returns either "he" or "she"
+	 * @return returns either "he" or "she"
 	 */
 	public String direct()
 	{
 		return (theSex.equals("male") ? "he" : "she");
 	}
 
+	/**
+	 * default equals implementation.
+	 */
 	public boolean equals(Object r)
 	{
 		if (!(r instanceof Sex))

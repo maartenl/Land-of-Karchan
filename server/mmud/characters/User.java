@@ -25,7 +25,7 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-package mmud;
+package mmud.characters;
 
 import java.util.Random;
 import java.io.File;
@@ -38,7 +38,14 @@ import java.util.logging.Logger;
 import mmud.database.*;
 import mmud.characters.*;
 import mmud.rooms.*;
+import mmud.commands.*;
+import mmud.Sex;
+import mmud.Constants;
+import mmud.MudException;
 
+/**
+ * Class containing all the information of a user connecting to the game.
+ */
 public class User extends mmud.characters.Person
 {
 
@@ -56,15 +63,40 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * create an instance of User, based on Database data. 
-	 * @param aName String containing the name of the user
-	 * @param aPassword String containing the password of the User
-	 * @param anAddress String containing the address from whence the
-	 * usr is connecting to the game.
+	 * @param aName the name of the character
+	 * @param aPassword the password of the character
+	 * @param anAddress the address of the computer connecting
+	 * @param aRealName the real name of the person behind the keyboard.
+	 * @param aEmail an email address of the person
+	 * @param aTitle the title of the character
+	 * @param aRace the race of the character
+	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aAge the age of the character (young, very young, old,
+	 * very old, etc.)
+	 * @param aLength the length of the character (ex. tall)
+	 * @param aWidth the width of the character (ex. athletic)
+	 * @param aComplexion the complexion of the character (ex.
+	 * dark-skinned)
+	 * @param aEyes the eye colour of the character (ex. blue-eyed)
+	 * @param aFace the face of the character (ex. dimple-faced)
+	 * @param aHair the hair of the character (ex. black-haired)
+	 * @param aBeard the beard of the character (ex. with ponytail)
+	 * @param aArms the arms of the character (ex. long-armed)
+	 * @param aLegs the legs of the character (ex. long-legged)
+	 * @param aSleep the status of the character, either asleep
+	 * or awake.
+	 * @param aCookie the sessionpassword
+	 * @param aWhimpy the boundary of the general condition of the
+	 * character. If the condition worsens beyond this, the character will
+	 * automatically flee from a fight.
+	 * @param boolean aPkill wether or not this character is allowed
+	 * to kill other players or be killed by other players.
+	 * @param aDrinkstats describes the state of thirst, negative values
+	 * usually mean intoxication.
+	 * @param aEatstats describes the state of nourishment/hunger
+	 * @param aRoom the room where this character is.
 	 * @param aGod boolean, indicates wether or not the User has special
 	 * privileges; also known as <I>Administrator</I>.
-	 * @param aCookie String containing the cookie or <I>Session
-	 * Password</I> used during gameplay.
-	 * @param aRoom Room, containing the room of the user.
 	 */
 	public User(String aName, 
 		String aPassword, 
@@ -126,15 +158,27 @@ public class User extends mmud.characters.Person
 	 * create an instance of User. Usually used if you need a standard User
 	 * created. Use the other constructor when you need to load a User
 	 * from the database.
-	 * @param aName String containing the name of the user
-	 * @param aPassword String containing the password of the User
-	 * @param anAddress String containing the address from whence the
-	 * usr is connecting to the game.
-	 * @param aGod boolean, indicates wether or not the User has special
-	 * privileges; also known as <I>Administrator</I>.
-	 * @param aCookie String containing the cookie or <I>Session
-	 * Password</I> used during gameplay.
-	 * @param aRoom Room, containing the room of the user.
+	 * @param aName the name of the character
+	 * @param aPassword the password of the character
+	 * @param anAddress the address of the computer connecting
+	 * @param aRealName the real name of the person behind the keyboard.
+	 * @param aEmail an email address of the person
+	 * @param aTitle the title of the character
+	 * @param aRace the race of the character
+	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aAge the age of the character (young, very young, old,
+	 * very old, etc.)
+	 * @param aLength the length of the character (ex. tall)
+	 * @param aWidth the width of the character (ex. athletic)
+	 * @param aComplexion the complexion of the character (ex.
+	 * dark-skinned)
+	 * @param aEyes the eye colour of the character (ex. blue-eyed)
+	 * @param aFace the face of the character (ex. dimple-faced)
+	 * @param aHair the hair of the character (ex. black-haired)
+	 * @param aBeard the beard of the character (ex. with ponytail)
+	 * @param aArms the arms of the character (ex. long-armed)
+	 * @param aLegs the legs of the character (ex. long-legged)
+	 * @param aCookie the sessionpassword
 	 */
 	public User(String aName, 
 		String aPassword, 
@@ -185,18 +229,32 @@ public class User extends mmud.characters.Person
 		rightNow = Calendar.getInstance();
 	}
 
+	/**
+	 * Returns the password
+	 * @param String containing password
+	 */
 	public String getPassword()
 	{
 		Logger.getLogger("mmud").finer("");
 		return thePassword;
 	}
 
+	/**
+	 * Verifies the password
+	 * @return boolean, returns true if password provided is an exact
+	 * match.
+	 * @param aPassword the password that needs to be verified.
+	 */
 	public boolean verifyPassword(String aPassword)
 	{
 		Logger.getLogger("mmud").finer("");
 		return thePassword.equals(aPassword);
 	}
 
+	/**
+	 * Returns the address
+	 * @return String containing the address
+	 */
 	public String getAddress()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -205,8 +263,8 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * generate a session password to be used by player during game session
-	 * @return a String containing 25 random
-	 * digits, capitals and smallcaps
+	 * Use getSessionPassword to return a String containing 25 random
+	 * digits, capitals and smallcaps.
 	 */
 	public void generateSessionPassword()
 	{
@@ -228,7 +286,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * retrieve sessionpassword
-	 *
+	 * @return String containing the session password
 	 */
 	public String getSessionPassword()
 	{
@@ -238,7 +296,9 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * verify sessionpassword
-	 *
+	 * @param aSessionPassword the sessionpassword to be verified.
+	 * @return boolean, true if the sessionpassword provided is an exact
+	 * match with the original sessionpassword.
 	 */
 	public boolean verifySessionPassword(String aSessionPassword)
 	{
@@ -248,7 +308,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * set sessionpassword
-	 *
+	 * @param aSessionPassword sets the session password.
 	 */
 	public void setSessionPassword(String aSessionPassword)
 	{
@@ -259,6 +319,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * retrieve the frame number<P>
+	 * @return integer,
 	 * <UL><LI>0 = normal operation
 	 * <LI>1 = operation with frames
 	 * <LI>2 = operation with frames and server push
@@ -270,38 +331,70 @@ public class User extends mmud.characters.Person
 		return theFrames;
 	}
 
+	/**
+	 * set the frame number to be used.
+	 * @param i 
+	 * <UL><LI>0 = normal operation
+	 * <LI>1 = operation with frames
+	 * <LI>2 = operation with frames and server push
+	 * </UL>
+	 */
 	public void setFrames(int i)
 	{
 		Logger.getLogger("mmud").finer("");
 		theFrames  = i;
 	}
 
+	/**
+	 * Is this character an administrator?
+	 * @return boolean, true if administrator
+	 */
 	public boolean isGod()
 	{
 		Logger.getLogger("mmud").finer("");
 		return theGod;
 	}
 
+	/**
+	 * Get the real name of the person playing.
+	 * @return String containing the real name.
 	public String getRealname()
 	{
 		return theRealName;
 	}
 
+	/**
+	 * Get the email of the person playing.
+	 * @return String containing the email address
+	 */
 	public String getEmail()
 	{
 		return theEmail;
 	}
 
+	/**
+	 * Is the player allowed to kill other players or be killed.
+	 * @return boolean, true if playerkill is allowed.
+	 */
 	public boolean isPkill()
 	{
 		return thePkill;
 	}
 
+	/**
+	 * Set the pkill of the player.
+	 * @param newPkill the new value of the pkill status.
+	 */
 	public void setPkill(boolean newPkill)
 	{
 		thePkill = newPkill;
 	}
 
+	/**
+	 * print the standard form for accepting input from the user.
+	 * @return String containing the form to be printed on the browser
+	 * screen.
+	 */
 	public String printForm()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -326,12 +419,22 @@ public class User extends mmud.characters.Person
 		return myString;
 	}
 
+	/**
+	 * Set the date/time of the user to "now". It means that this is 
+	 * a good indication of when the user was last active.
+	 */
 	public void setNow()
 	{
 		Logger.getLogger("mmud").finer("");
 		rightNow = Calendar.getInstance();
 	}
 
+	/**
+	 * Returns the time that a user was inactive.
+	 * @return String the number of minutes and seconds that the player
+	 * has been idle in the following format: "(<min> min, <sec> sec
+	 * idle".
+	 */
 	public String getIdleTime()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -341,9 +444,16 @@ public class User extends mmud.characters.Person
 			setNow();
 		}
 		long myTemp = (tempNow.getTimeInMillis() - rightNow.getTimeInMillis())/1000;
-		return "(" + myTemp / 60 + "min, " + myTemp % 60 + " sec idle)";
+		return "(" + myTemp / 60 + " min, " + myTemp % 60 + " sec idle)";
 	}
 
+	/**
+	 * Get an url containing the name, command and frames.
+	 * @param aCommand the command that has to be changed
+	 * into a valid URL.
+	 * @return String containing an url in the format:
+	 * "/cgi-bin/mud.cgi?command=<command>&name=<name>&frames=<frames>"
+	 */
 	public String getUrl(String aCommand)
 	{
 		Logger.getLogger("mmud").finer("");
@@ -352,12 +462,22 @@ public class User extends mmud.characters.Person
 			(getFrames() + 1);
 	}
 
+	/**
+	 * Returns a list of mudmails.
+	 * @return String containing list of mails.
+	 * @see mmud.Database#getListOfMail
+	 */
 	public String getListOfMail()
 	{
 		Logger.getLogger("mmud").finer("");
 		return Database.getListOfMail(this);
 	}
 
+	/**
+	 * Reads the log of the user from file. Returns an empty string
+	*  if the frame setting is 2.
+	 * @return String containing the entire log of the user.
+	 */
 	public String readLog()
 	{
 		if (getFrames()==2)
@@ -367,4 +487,13 @@ public class User extends mmud.characters.Person
 		return super.readLog();
 	}
 
+	/**
+	 * Runs a specific command.
+	 * @param aCommand the command to be run
+	 */
+	public void runCommand(Command aCommand)
+	throws MudException
+	{
+		aCommand.run(this);
+	}
 }

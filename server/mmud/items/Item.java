@@ -34,91 +34,156 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * An item in the mud.
+ * Basically consists of an ItemDefinition and a number of Attributes
+ * specific to this item.
+ */
 public class Item
 {
 	private ItemDef theItemDef;
 	private TreeMap theAttributes = new TreeMap();
 
-
+	/**
+	 * Create this item object with a default Item Definition.
+	 */
 	public Item(ItemDef anItemDef)
 	{
 		theItemDef = anItemDef;
 	} 
 
-	public static Item Item(Item anItem)
+	/**
+	 * Create this item object as a copy of an existing item.
+	 */
+	public Item(Item anItem)
 	{
-		return new Item(anItem.getItemDef());
+		this(anItem.getItemDef());
 	} 
 
+	/**
+	 * Returns the id of the Item Definition.
+	 * @return integer identifying the Item Definition.
+	 */
 	public int getId()
 	{
 		return theItemDef.getId();
 	}
 
+	/**
+	 * get the verb of the item.
+	 * @return String containing the verb.
+	 */
 	public String getVerb()
 	{
 		return theItemDef.getVerb();
 	}
 
+	/**
+	 * get the first adjective of the item.
+	 * @return String containing the first adjective.
+	 */
 	public String getAdjective1()
 	{
 		return theItemDef.getAdjective1();
 	}
 
+	/**
+	 * get the second adjective of the item.
+	 * @return String containing the second adjective.
+	 */
 	public String getAdjective2()
 	{
 		return theItemDef.getAdjective2();
 	}
 
+	/**
+	 * get the third adjective of the item.
+	 * @return String containing the third adjective.
+	 */
 	public String getAdjective3()
 	{
 		return theItemDef.getAdjective3();
 	}
 	
+	/**
+	 * get the gold coins part of the value of the item.
+	 * @return integer containing the number of gold coins.
+	 */
 	public int getGold()
 	{
 		return theItemDef.getGold();
 	}
 
+	/**
+	 * get the silver coins part of the value of the item.
+	 * @return integer containing the number of silver coins.
+	 */
 	public int getSilver()
 	{
 		return theItemDef.getSilver();
 	}
 
+	/**
+	 * get the copper coins part of the value of the item.
+	 * @return integer containing the number of copper coins.
+	 */
 	public int getCopper()
 	{
 		return theItemDef.getCopper();
 	}
 
+	/**
+	 * get the item definition belonging to this item.
+	 * @return ItemDef object containing the item definition.
+	 */
 	public ItemDef getItemDef()
 	{
 		return theItemDef;
 	}
 
+	/**
+	 * get a description of the item.
+	 * @return String containing the description in the format: "an/a
+	 * [adject1], [adject2] [verb]".
+	 */
 	public String getDescription()
 	{
 		return (Constants.isQwerty(getAdjective1().charAt(0)) ? "an " : "a ") + getAdjective1() + ", " + getAdjective2() + " " + getVerb();
 	}
 
+	/**
+	 * get the description of the item (the long one).
+	 * @return String containing the description.
+	 */
 	public String getLongDescription()
 	{
 		return theItemDef.getLongDescription();
 	}
 
+	/**
+	 * standard tostring implementation.
+	 * @return String containing the super.tostring + : + item def.
+	 */
 	public String toString()
 	{
 		return super.toString() + ":" + getItemDef();
 	}
 
+	/**
+	 * Set or add an attribute of this item.
+	 * @param anAttribute the attribute to be added/set.
+	 */
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
 	}
 
-    /**
-     * returns the attribute found with name aName or null
-     * if it does not exist.
-     */
+	/**
+	 * returns the attribute found with name aName or null
+	 * if it does not exist.
+	 * @param aName the name of the attribute to search for
+	 * @return Attribute object containing the attribute foudn or null.
+	 */
 	public Attribute getAttribute(String aName)
 	{
 		Attribute myAttrib = (Attribute) theAttributes.get(aName);
@@ -129,15 +194,22 @@ public class Item
 		return myAttrib;
 	}
 
+	/**
+	 * Remove a specific attribute from the item.
+	 * @param aName the name of the attribute to be removed.
+	 */
 	public void removeAttribute(String aName)
 	{
 		theAttributes.remove(aName);
 	}
 
 	/**
-     * returns true if the attribute with name aName
-     * exists.
-     */
+	 * returns true if the attribute with name aName
+	 * exists.
+	 * @param aName the name of the attribute to check
+	 * @return boolean, true if the attribute exists for this item,
+	 * otherwise returns false.
+	 */
 	public boolean isAttribute(String aName)
 	{
 		return theAttributes.containsKey(aName) ||

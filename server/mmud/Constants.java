@@ -40,6 +40,11 @@ import java.util.logging.Handler;
 
 import mmud.commands.*;
 
+/**
+ * Used constants in the game. Constants might have been read from a
+ * properties file, or be default values. Also contains some simple global
+ * functions we can use.
+ */
 public final class Constants
 {
 	/**
@@ -487,6 +492,10 @@ public final class Constants
 	"wistfully"};
 
 
+	/**
+	 * standard tostring implementation.
+	 * @return String in the format Values(dbname=...
+	 */
 	public String toString()
 	{
 		return "Values(dbname=" + dbname + ",shutdown=" + shutdown
@@ -495,6 +504,11 @@ public final class Constants
 			+ ",identity=" + IDENTITY + ")";
 	}
 
+	/**
+	 * reads a file.
+	 * @param aFile file to be read
+	 * @return String containing the entire file.
+	 */
 	public static String readFile(File aFile)
 		throws IOException
 	{
@@ -514,6 +528,11 @@ public final class Constants
 		return returnResult;
 	}
 
+	/**
+	 * reads a file.
+	 * @param aFilename the name of the file to be read.
+	 * @return String containing the entire file.
+	 */
 	public static String readFile(String aFilename)
 		throws IOException
 	{
@@ -526,6 +545,10 @@ public final class Constants
 	private static TreeMap theEmotion2Structure = new TreeMap();
 	private static TreeSet theAdverbStructure = new TreeSet();
 
+	/**
+	 * initialise this class. Sets default properties, load properties
+	 * from file if possible, initializes command structure.
+	 */
 	public static void init()
 	{
 		logger.finer("");
@@ -622,37 +645,80 @@ public final class Constants
 		}
 	}
 
-	public static Command getCommand(String key)
+	/**
+	 * Returns the command to be used, based on the first word in the
+	 * command entered by the user.
+	 * @param aCommand String containing the command entered by the user.
+	 * @return Command to be used.
+	 */
+	public static Command getCommand(String aCommand)
 	{
 		logger.finer("");
+		int i = aCommand.indexOf(' ');
+		String key = (i != -1 ? aCommand.substring(0, i) : aCommand);
 		Command myCommand = (Command) theCommandStructure.get(key);
-		return (myCommand != null ? myCommand : new BogusCommand());
+		if (myCommand == null)
+		{
+			return new BogusCommand();
+		}
+		myCommand.setCommand(aCommand);
+		return myCommand;
 	}
 
+	/**
+	 * split up the command into different words.
+	 * @param aCommand String containing the command
+	 * @return String array where each String contains a word
+	 * from the command.
+	 */
 	public static String[] parseCommand(String aCommand)
 	{
 		logger.finer("aCommand=" + aCommand);
 		return aCommand.split("( )+", 50);
 	}
 
+	/**
+	 * returns the appropriate emotion for a third person view.
+	 * @param anEmotion the emotion, for example "whistle".
+	 * @return the third person grammer, for example "whistles".
+	 * @see #returnEmotionTo
+	 */
 	public static String returnEmotion(String anEmotion)
 	{
 		logger.finer("anEmotion=" + anEmotion);
 		return (String) theEmotionStructure.get(anEmotion);
 	}
 
+	/**
+	 * returns the appropriate emotion for a third person view. The
+	 * difference with returnEmotion is that this has a target.
+	 * @param anEmotion the emotion, for example "caress".
+	 * @return the third person grammer, for example "caresses".
+	 * @see #returnEmotion
+	 */
 	public static String returnEmotionTo(String anEmotion)
 	{
 		logger.finer("anEmotion=" + anEmotion);
 		return (String) theEmotion2Structure.get(anEmotion);
 	}
 
+	/**
+	 * Checks to see that an adverb is valid.
+	 * @param anAdverb String containing the adverb to check, for example
+	 * "aimlessly".
+	 * @return boolean which is true if the adverb is real.
+	 */
 	public static boolean existsAdverb(String anAdverb)
 	{
 		logger.finer("anAdverb=" + anAdverb);
 		return theAdverbStructure.contains(anAdverb.toLowerCase());
 	}
 
+	/**
+	 * Returns wether or not a character is a vowel.
+	 * @param aChar the character to check
+	 * @return boolean which is true if the character is a vowel.
+	 */
 	public static boolean isQwerty(char aChar)
 	{
 		return aChar == 'a' ||
@@ -763,7 +829,8 @@ public final class Constants
 		// if we wanted, but we will turn them all up.
 		Handler[] handlers =
 			Logger.getLogger( "" ).getHandlers();
-		for ( int index = 0; index < handlers.length; index++ ) {
+		for ( int index = 0; index < handlers.length; index++ ) 
+		{
 			handlers[index].setLevel( logLevel );
 		}
 		logger.setLevel(logLevel);

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Read an item: "read old scroll".
+ */
 public class ReadCommand implements Command
 {
 
@@ -77,5 +80,10 @@ public class ReadCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

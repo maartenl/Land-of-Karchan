@@ -27,8 +27,16 @@ maarten_l@yahoo.com
 
 package mmud;
 
+/**
+ * Exception thrown regarding the mail system in the mud.
+ */
 public class MailException extends MudException
 {
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public MailException(String aString)
 	{
 		super(aString);

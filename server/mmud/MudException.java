@@ -27,9 +27,16 @@ maarten_l@yahoo.com
 
 package mmud;
 
+/**
+ * The main exception of the mud.
+ */ 
 public class MudException extends Exception
 {
 
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public MudException(String aString)
 	{
 		super(aString);

@@ -43,8 +43,9 @@ import mmud.database.*;
 public class EmotionCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		String[] plural = {myParsed[0].toLowerCase(), Constants.returnEmotion(myParsed[0])};

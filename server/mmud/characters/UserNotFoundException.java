@@ -35,11 +35,28 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception thrown when the user is not found (either in the entire
+ * database, or in the list of active users.
+ */
 public class UserNotFoundException extends PersonException
 {
+
+	/**
+	 * constructor for creating an exception with a default message.
+	 */
 	public UserNotFoundException()
 	{
 		super(Constants.USERNOTFOUNDERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public UserNotFoundException(String aMessage)
+	{
+		super(Constants.USERNOTFOUNDERROR + " " + aMessage);
 	}
 
 }

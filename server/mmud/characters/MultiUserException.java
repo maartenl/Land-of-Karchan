@@ -35,11 +35,28 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception thrown when someone attempts to enter the game, is already
+ * playing, and whos sessionpassword does not match.
+ */
 public class MultiUserException extends PersonException
 {
+
+	/**
+	 * constructor for creating a exception with a default message.
+	 */
 	public MultiUserException()
 	{
 		super(Constants.MULTIUSERERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public MultiUserException(String aMessage)
+	{
+		super(Constants.MULTIUSERERROR + " " + aMessage);
 	}
 
 }

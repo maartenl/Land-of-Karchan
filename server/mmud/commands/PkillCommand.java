@@ -34,6 +34,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Turn the player killing option on or off or displays the current setting:
+ * "pkill".
+ */
 public class PkillCommand extends NormalCommand
 {
 

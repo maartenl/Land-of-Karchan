@@ -35,11 +35,29 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception indication that an illegal frame has been selected. Framenumber
+ * should be a number between 0 and 2 inclusive.
+ * Used when attempting to logon to the game.
+ */
 public class InvalidFrameException extends PersonException
 {
+
+	/**
+	 * constructor for creating a exception
+	 */
 	public InvalidFrameException()
 	{
 		super(Constants.INVALIDFRAMEERROR);
+	}
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
+	public InvalidFrameException(String aString)
+	{
+		super(Constants.INVALIDFRAMEERROR + " " + aString);
 	}
 
 }

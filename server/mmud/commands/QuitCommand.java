@@ -67,4 +67,9 @@ public class QuitCommand implements Command
 		return Constants.goodbyemessage;
 	}
 
+
+    public void setCommand(String aCommand)
+    {
+    }
+
 }

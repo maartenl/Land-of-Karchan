@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Show the inventory: "inventory".
+ */
 public class InventoryCommand implements Command
 {
 
@@ -52,5 +55,10 @@ public class InventoryCommand implements Command
 		return "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You have<UL>" +
 			theResult + "<\\UL>";
 	}
+
+
+    public void setCommand(String aCommand)
+    {
+    }
 
 }

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * The Me Command: "me closes the fridge.".
+ */
 public class MeCommand extends NormalCommand
 {
 

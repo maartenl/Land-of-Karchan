@@ -34,6 +34,10 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Proceed to the room in the north, if possible : "north".
+ * @see GoCommand
+ */
 public class NorthCommand extends NormalCommand
 {
 

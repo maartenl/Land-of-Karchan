@@ -35,20 +35,34 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Collection class containing rooms used.
+ */
 public final class Rooms 
 {
 	private static Vector theRooms = new Vector();
 
+	/**
+	 * Creation of collection consisting of an empty list.
+	 */
 	public Rooms()
 	{
 		theRooms = new Vector();
 	}
 
+	/**
+	 * Initialises this object with an empty list.
+	 */
 	public static void init()
 	{
 		theRooms = new Vector();
 	}
 
+	/**
+	 * retrieves a room based on the roomnumber.
+	 * @param aRoomNr the number of the room to retrieve
+	 * @return Room object containing the room requested.
+	 */
 	public static Room getRoom(int aRoomNr)
 	{
 		Room myRoom = null;

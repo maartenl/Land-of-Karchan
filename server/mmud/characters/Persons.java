@@ -37,16 +37,30 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Collection class containing all persons at the moment active in the game.
+ * Can contain not only users, but also bots and the like. As long as the
+ * base class is Person.
+ * @see mmud.characters.Person
+ */
 public final class Persons
 {
 	private static Vector thePersons = new Vector();
 
+	/**
+	 * Initialise this object by retrieving all persons from the
+	 * database that are playing the game.
+	 * @see mmud.Database#getPersons
+	 */
 	public static void init()
 	{
 		Logger.getLogger("mmud").finer("");
 		thePersons = Database.getPersons();
 	}
 
+	/**
+	 * Default constructor.
+	 */
 	public Persons()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -56,6 +70,9 @@ public final class Persons
 	/**
 	 * retrieve the character from the list of characters currently active in
 	 * the game.
+	 * @param aName name of the character to search for.
+	 * @return Person object containing all relevant information of the
+	 * character.
 	 */
 	public static Person retrievePerson(String aName)
 	{
@@ -77,9 +94,12 @@ public final class Persons
 	 * @throws PersonException if something is wrong
 	 * @param aName String containing the name of the Person
 	 * @param aPassword String containing the password of the Person
-	 * @param aCookie String containing the cookie that was set in the
-	 * browser. It is possible that this is "null", if the user was not
-	 * logged in before.
+	 * @param aCookie String containing the session password. It is
+	 * possible that this is "null", if the user was not logged in
+	 * before.
+	 * @return User containing all information. If the class would not
+	 * be user but a Person, it means that it is not a valid player in
+	 * the game, but more likely a bot.
 	 */
  	public static User activateUser(String aName, String aPassword, String aCookie)
 	throws PersonException
@@ -133,7 +153,8 @@ public final class Persons
 	}
 
 	/**
-	 * deactivate a character
+	 * deactivate a character (usually because someone typed quit.)
+	 * @param aUser the player to be deactivated
 	 * @throws PersonException if something is wrong
 	 */
  	public static void deactivateUser(User aUser)
@@ -145,11 +166,30 @@ public final class Persons
 	}
 
 	/**
-	 * create a character
+	 * create a new character
 	 * @throws PersonException if something is wrong
-	 * @param aName String containing the name of the new Person
-	 * @param aPassword String containing the password of the new Person
-	 * @param aCookie String containing the cookie
+	 * @param aName the name of the character
+	 * @param aPassword the password of the character
+	 * @param anAddress the address of the computer connecting
+	 * @param aRealName the real name of the person behind the keyboard.
+	 * @param aEmail an email address of the person
+	 * @param aTitle the title of the character
+	 * @param aRace the race of the character
+	 * @param Sex aSex the gender of the character (male or female)
+	 * @param aAge the age of the character (young, very young, old,
+	 * very old, etc.)
+	 * @param aLength the length of the character (ex. tall)
+	 * @param aWidth the width of the character (ex. athletic)
+	 * @param aComplexion the complexion of the character (ex.
+	 * dark-skinned)
+	 * @param aEyes the eye colour of the character (ex. blue-eyed)
+	 * @param aFace the face of the character (ex. dimple-faced)
+	 * @param aHair the hair of the character (ex. black-haired)
+	 * @param aBeard the beard of the character (ex. with ponytail)
+	 * @param aArms the arms of the character (ex. long-armed)
+	 * @param aLegs the legs of the character (ex. long-legged)
+	 * @param aCookie the sessionpassword
+	 * @return User object
 	 */
 	public static User createUser(String aName, String aPassword, String anAddress,
 		String aRealName,
@@ -218,6 +258,14 @@ public final class Persons
 		return myUser;
 	}
 
+	/**
+	 * Returns a description of everyone visible in a room.
+	 * @param aRoom the room of which the description is required.
+	 * @param aUser the user (in most cases we want a description of
+	 * everyone in the room, except ourselves.
+	 * @return String containing the description of everyone visible in
+	 * the room.
+	 */
 	public static String descriptionOfPersonsInRoom(Room aRoom, User aUser)
 	{
 		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
@@ -238,6 +286,7 @@ public final class Persons
 
 	/**
 	 * paging all users
+	 * @param aMessage message to be sent to all users.
 	 */
 	public static void sendWall(String aMessage)
 	{
@@ -251,6 +300,8 @@ public final class Persons
 
 	/**
 	 * character communication method to one specific user
+	 * @param aPerson the person to send a message to.
+	 * @param aMessage the message
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)
 	{
@@ -269,7 +320,10 @@ public final class Persons
 
 	/**
 	 * character communication method to everyone in the room except 
-	 * the two characters entered in the parameter list
+	 * the two characters entered in the parameter list.
+	 * @param aPerson the person doing the communicatin'
+	 * @param aSecondPerson the person communicated to.
+	 * @param aMessage the message to be sent
 	 */
 	public static void sendMessage(Person aPerson, Person aSecondPerson, String aMessage)
 	{
@@ -290,6 +344,7 @@ public final class Persons
 
 	/**
 	 * returns a list of persons currently playing the game
+	 * @return String containing who's who.
 	 */
 	public static String getWhoList()
 	{
@@ -312,6 +367,10 @@ public final class Persons
 		return myString;
 	}
 
+	/**
+	 * Standard tostring implementation.
+	 * @return String containing the characters in the list.
+	 */
 	public String toString()
 	{
 		String myOutput = new String();

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Change your current title : "title Ruler of the Land".
+ */
 public class TitleCommand extends NormalCommand
 {
 

@@ -34,6 +34,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Sets the whimpy or displays the whimpy of the user: "whimpy".
+ */
 public class WhimpyCommand extends NormalCommand
 {
 

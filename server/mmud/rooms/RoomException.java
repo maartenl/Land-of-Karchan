@@ -32,9 +32,16 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Exception thrown when dealing with rooms.
+ */
 abstract public class RoomException extends MudException
 {
 
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public RoomException(String aString)
 	{
 		super(aString);

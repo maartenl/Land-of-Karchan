@@ -34,11 +34,17 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Go down below: "down".
+ * This is the same command as the command "go down", except the other
+ * way to execute it.
+ */
 public class DownCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getDown() != null)

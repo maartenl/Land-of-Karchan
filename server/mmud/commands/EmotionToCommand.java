@@ -37,13 +37,14 @@ import mmud.database.*;
 /**
  * Provides an emotional response to a person. Acceptable format is:
  * <TT>[emotion] to [person]</TT><P>
- * For example: <UL><LI>lick Karn<LI>nudge Westril<LI></UL>
+ * For example: <UL><LI>lick Karn<LI>nudge Westril</UL>
  */ 
 public class EmotionToCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		String[] plural = {myParsed[0].toLowerCase(), Constants.returnEmotionTo(myParsed[0])};

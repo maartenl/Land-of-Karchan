@@ -34,10 +34,15 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * Command used if none of the other commands match.
+ * Does nothing but send an "I don't understand." message
+ * to the user.
+ */
 public class BogusCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		aUser.writeMessage("I am afraid I do not understand that.<BR>\r\n");

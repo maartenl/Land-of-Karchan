@@ -35,8 +35,16 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+/**
+ * The exception thrown because of a user error.
+ */
 public class PersonException extends MudException
 {
+
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 */
 	public PersonException(String aString)
 	{
 		super(aString);
