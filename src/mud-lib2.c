@@ -144,6 +144,7 @@ if (res != NULL)
 	{
 		if ( (atoi(row[0])<messnr) || (messnr < 1))
 		{
+			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			return;
@@ -169,7 +170,12 @@ temp = composeSqlStatement("SELECT * FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
 res=SendSQL2(temp, NULL);
 free(temp);temp=NULL;
-
+if (res==NULL)
+{
+	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
+	WriteRoom(name, password, room, 0);
+	return;
+}
 j=1;
 while((row = mysql_fetch_row(res)) && (messnr!=j)) {j++;}
 if (messnr!=j) 
