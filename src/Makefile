@@ -7,8 +7,8 @@
 # 	(enter.cgi, newchar.cgi, mudrelogin.cgi, mud.cgi)
 
 # INSTALLDIR = /home/karchan/.html/cgi-bin/
-# INSTALLDIR = /home/httpd/cgi-bin/
-INSTALLDIR = /karchan2/apache/cgi-bin/
+INSTALLDIR = /home/httpd/cgi-bin/
+# INSTALLDIR = /karchan2/apache/cgi-bin/
 #
 # Options that can be used to the make command
 #
@@ -29,15 +29,18 @@ INSTALLDIR = /karchan2/apache/cgi-bin/
 
 CC = gcc
 COPTS = -O2 -m486
-INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/ -idirafter ./cookies/
+# INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/
+INCLUDES = -I../include -idirafter /usr/include/mysql/ -idirafter ./cookies/
 
-EXEDIR = /karchan2/apache/cgi-bin
-LIBDIR = -L/karchan2/servers/mysql/lib/mysql/ -L./cookies/
+# EXEDIR = /karchan2/apache/cgi-bin
+EXEDIR = /home/httpd/cgi-bin
+# LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
+LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
 OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
-nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 wholist \
-personal_info clearcharacters 
+nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
+wholist personal_info clearcharacters cookies/libcookies.a
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -124,15 +127,15 @@ leftframe: leftframe.o cgic.o typedefs.o
 logonframe.o: cgic.o logonframe.c typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c logonframe.c -o logonframe.o
 
-logonframe: logonframe.o cgic.o typedefs.o
+logonframe: logonframe.o cgic.o logonframe.c typedefs.o
 	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR) $(OPTIONS)
 
 #--- Compilation of javascript/serverpush/frame-binaries
 
 nph-addendum.o: cgic.o typedefs.o nph-addendum.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-addendum.c -o nph-addendum.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-addendum.c -o nph-addendum.o 
 
-nph-addendum: nph-addendum.o cgic.o typedefs.c
+nph-addendum: nph-addendum.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) $(OPTIONS)
 
 nph-logonframe.o: nph-logonframe.c
@@ -158,11 +161,11 @@ nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
 wholist.o: wholist.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c wholist.c 
 
-wholist: wholist.o 
-	$(CC) $(COPTS) -o wholist wholist.o $(LIBDIR) $(OPTIONS)
+wholist: wholist.o
+	$(CC) $(COPTS) -o wholist wholist.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
 
 personal_info.o: personal_info.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c personal_info.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c personal_info.c 
 
 personal_info: personal_info.o cgic.o
 	$(CC) $(COPTS) -o personal_info cgic.o personal_info.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
@@ -176,7 +179,7 @@ clearcharacters: clearcharacters.o clearcharacters.c
 #--- Clean up the stuff and install as well
 
 clean:
-	rm -f *.o *~ *.backup $(TARGETS)
+	rm -f *.o *.backup *~ $(TARGETS)
 
 backup: all
 	@echo "Backing up Mud Binaries..."
@@ -235,5 +238,6 @@ install: all
 	@chmod o= $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*
 	@chmod g=x $(INSTALLDIR)*
+  @chown karchan:karchan $(INSTALLDIR)*
 	@echo "Installation done."
 
