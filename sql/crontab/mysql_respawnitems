@@ -1,5 +1,10 @@
-/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
+#!/bin/sh
 
+cd /karchan/mud/sql/crontab
+
+. ./../mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
 #
 # Dumping data for items into table 'tmp_itemtable'
 #
