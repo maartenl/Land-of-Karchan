@@ -151,7 +151,7 @@ public class User extends mmud.characters.Person
 		theGod = aGod;
 		setSessionPassword(aCookie);
 		thePkill = aPkill;
-		rightNow = Calendar.getInstance();
+		setNow();
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class User extends mmud.characters.Person
 		theGod = false;
 		thePkill = true;
 		setSessionPassword(aCookie);
-		rightNow = Calendar.getInstance();
+		setNow();
 	}
 
 	/**
@@ -437,6 +437,21 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
+	 * Get the date/time of the last command the user executed.
+	 * Used for computing the idle time of the user.
+	 * @return Calendar containing the date/time when the last command
+	 * was executed.
+	 */
+	public Calendar getNow()
+	{
+		if (rightNow == null) 
+		{
+			setNow();
+		}
+		return rightNow;
+	}
+
+	/**
 	 * Set the date/time of the user to "now". It means that this is 
 	 * a good indication of when the user was last active.
 	 */
@@ -456,12 +471,21 @@ public class User extends mmud.characters.Person
 	{
 		Logger.getLogger("mmud").finer("");
 		Calendar tempNow = Calendar.getInstance();
-		if (rightNow == null) 
-		{
-			setNow();
-		}
-		long myTemp = (tempNow.getTimeInMillis() - rightNow.getTimeInMillis())/1000;
+		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis())/1000;
 		return "(" + myTemp / 60 + " min, " + myTemp % 60 + " sec idle)";
+	}
+
+	/**
+	 * Check to see if the User was inactive for more than an hour.
+	 * @return boolean, true if the User was inactive (i.e. has not entered
+	 * a command) for more than an hour.
+	 */
+	public boolean isIdleTooLong()
+	{
+//		Logger.getLogger("mmud").finer("");
+		Calendar tempNow = Calendar.getInstance();
+		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis())/1000;
+		return myTemp > 3600;
 	}
 
 	/**

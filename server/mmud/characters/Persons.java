@@ -91,6 +91,32 @@ public final class Persons
 	}
 
 	/**
+	 * clean all characters from the list of active players that have been
+	 * inactive for more than an hour.
+	 */
+	public static void removeIdleUsers()
+	throws PersonException
+	{
+		assert thePersons != null : "thePersons vector is null";
+		Logger.getLogger("mmud").finer("");
+		for (int i=0;i < thePersons.size(); i++)
+		{
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ((myChar != null) && (myChar instanceof User))
+			{
+				User myUser = (User) myChar;
+				if (myUser.isIdleTooLong())
+				{
+					myUser.sendMessage(myUser.getName() + 
+						" fades slowly from existence.<BR>\r\n");
+					deactivateUser(myUser);
+					Database.writeLog(myUser.getName(), "idled out.");
+				}
+			}
+		}
+	}
+
+	/**
 	 * activate a character
 	 * @throws PersonException if something is wrong
 	 * @param aName String containing the name of the Person
@@ -311,8 +337,9 @@ public final class Persons
 	}
 
 	/**
-	 * character communication method to one specific user
-	 * @param aPerson the person to send a message to.
+	 * character communication method to everyone in the room
+	 * except one specific user.
+	 * @param aPerson the person not to send a message to.
 	 * @param aMessage the message
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)

@@ -61,6 +61,9 @@ public class Main
 			ServerSocket myServerSocket = null;
 			Constants.logger.info("Retrieving characters...");
 			Persons.init();
+			Constants.logger.info("Starting tickerthread...");
+			TickerThread myTicker = new TickerThread();
+			myTicker.start();
 			Constants.logger.info("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
 			while (!Constants.shutdown)

@@ -211,6 +211,10 @@ public class MudSocket extends Thread
 						readem = myInputStream.readLine();
 					}
 					Logger.getLogger("mmud").finest("received from socket: command=[" + command + "]");
+					if (command.toString().trim().equals(""))
+					{
+						command = new StringBuffer("l");
+					}
 					myOutputStream.println(
 						executeMud(name, 
 						theSocket.getInetAddress().getCanonicalHostName(),
