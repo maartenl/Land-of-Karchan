@@ -744,53 +744,6 @@ SwitchRoomCheck(char *name, char *password, int room)
 		}
 		case 9:
 		{
-			if (!strcmp(troep, "open cupbo2ard")) 
-			{
-				sprintf(temp, "select south from rooms where id=20");
-				res=SendSQL2(temp, NULL);
-				row = mysql_fetch_row(res);
-				if (atoi(row[0])!=0)
-				{
-					WriteSentenceIntoOwnLogFile2(logname, "The cupboard is already open.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
-					KillGame();
-				}
-				mysql_free_result(res);
-
-				WriteSentenceIntoOwnLogFile2(logname, "You succeed in opening the door of the cupboard. "
-				" [<A HREF=\"http://"ServerName"/images/mpeg/her.mpg\">MPEG</A>]<BR>\r\n");
-				WriteMessage2(name, room, "%s opens the door of the cupboard.<BR>\r\n", name);
-
-				res=SendSQL2("update items set description='<H1><IMG "
-				"SRC=\\\"http://"ServerName"/images/gif/herberg5.gif\\\">The Cupboard</H1><HR> "
-				"You look at the cupboard. It is very old and wormeaten. With one knock "
-				"you could probably knock it down, but I doubt if the barman would appreciate "
-				"this much. It is open. Both doors of the cupboard are ajar. In it you can "
-				"see, amazingly, a staircase leading to the north and up into a hidden room.<P>"
-				"', adject1='comparatively', adject2='big', name='cupboard' where id=-32", NULL);
-				mysql_free_result(res);
-
-				res=SendSQL2("update rooms set contents='"
-				"<IMG SRC=\\\"http://"ServerName"/images/gif/herberg4.gif\\\" ALIGN=CENTER> "
-				"<H1>The Taverne &quot;The Twisted Dwarf&quot;</H1>"
-				"<IMG SRC=\\\"http://"ServerName"/images/gif/letters/y.gif\\\" ALIGN=left>"
-				"ou are now in the Inn &quot;The Twisted Dwarf&quot; . It is "
-				"dark, as always in these places. The windows are of a dark blue color, which "
-				"doesn\\'t allow any light to enter the room. A lot of woodwork, wooden tables, "
-				"chairs and a rather large bar on the right of you is situated almost against the "
-				"the back of the room a comparatively big cupboard is visible. The cupboard "
-				"appears to be open. Behind the bar a norse small ugly dwarf is cleaning some "
-				"glasses at the bar. On the same bar you see a sign on a piece of wood, "
-				"apparently this is the menu for the day.<BR> Scattered among the tables are "
-				"groups of people, playing what seems to be a dwarfish version of Poker. You "
-				"see a sign on the wall behind the counter.<P>"
-				"', north=20 where id=9", NULL);
-				mysql_free_result(res);
-				res=SendSQL2("update rooms set south=9 where id=20", NULL);
-				mysql_free_result(res);
-				WriteRoom(name, password, room, 0);
-				KillGame();
-			}
 			if (!strcmp(troep, "close cupboard")) 
 			{
 				sprintf(temp, "select south from rooms where id=20");
