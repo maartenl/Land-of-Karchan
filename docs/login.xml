@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE spec SYSTEM "login.dtd">
 <root>
-<action>login</action>
+<action>logon</action>
 <user>
 <name>Karn</name>
 <password>itsasecret</password>
