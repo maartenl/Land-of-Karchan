@@ -1008,7 +1008,9 @@ void *thread_function(void *arg)
 	socketfd = mycontrol->socketfd;
 	addconnection_mudinfo();
 	add_to_list(socketfd);
+#ifdef DEBUG
 	printf("Starting thread with socket %i...\n", socketfd);
+#endif
 	msglength = strlen(IDENTITY);
 	send_socket(socketfd, IDENTITY, &msglength);
 	if (msglength != strlen(IDENTITY))
@@ -1029,7 +1031,9 @@ void *thread_function(void *arg)
 	if (nbytes == 0)
 	{
 		// connection closed
-		printf("Connection %i closed\n", socketfd);
+#ifdef DEBUG
+			printf("Connection %i closed\n", socketfd);
+#endif
 	}
 	else
 	{
