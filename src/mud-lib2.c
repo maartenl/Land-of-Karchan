@@ -4249,15 +4249,20 @@ ChangeTitle_Command(char *name, char *password, int room)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp, *safetitle, *title;
 	char logname[100];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
-
-	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", command+(tokens[1]-tokens[0]));
+	title = command+(tokens[1]-tokens[0]);
+	safetitle = (char *) malloc(strlen(title)*2+2);
+	mysql_escape_string(safetitle, title, strlen(title));
+	temp = (char *) malloc(80 + strlen(safetitle) + strlen(name));
+	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", title);
 	sprintf(temp, "update tmp_usertable set title='%s' where name='%s'",
-		command+(tokens[1]-tokens[0]),name);
+		safetitle, name);
 	res=SendSQL2(temp, NULL);
+	free(safetitle);
+	free(temp);
 	mysql_free_result(res);
 	WriteRoom(name, password, room, 0);
 	KillGame();
