@@ -20,62 +20,63 @@ and the same. Where elves coexist peacefully with the humans, and
 make war with the dwarves. Where the sun rises, and the moon falls. 
 Where one can change into a hero with a single swipe of his 
 sword.<P>
-Poll:<P>
+
+The current deputies are: 
+Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Nate<P>
+
+<FONT COLOR=\"red\">The quest is \"closed\".</Font>. People will no longer contract the
+Whiteblodge Plague. However, people that are currently suffering from the
+disease will still die if they do not find the cure! Now it is waiting until 
+the next quest.
+<HR>Results: <I>What did You think of the Whiteblodge
+Plague?</I><P>
 <TABLE>
+   </TR><TD></TD><TD>209 people voted</TD></TR>
+	<TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Way cool! Do more of those!</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="351" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Way cool! Do more of those!</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"133\" ALT=\"39%\">62 / <FONT COLOR=red>39%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Was fun.</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Was fun.</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"62\" ALT=\"13%\">29 / <FONT COLOR=red>13%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Was okay, I guess.</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Was okay, I guess.</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"71\" ALT=\"15%\">33 / <FONT COLOR=red>15%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Didn't like it.</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Didn't like it.</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Dude, you suck!</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Dude, you suck!</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">What Plague?</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">What Plague?</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"94\" ALT=\"21%\">44 / <FONT COLOR=red>21%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Huh? Polls?</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
+      <TD WIDTH=\"100\" ALIGN=\"RIGHT\">Huh? Polls?</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"26\" ALT=\"6%\">12 / <FONT COLOR=red>6%</FONT>
       </NOBR></TD>
-   </TR>
-   <TR>
-      <TD WIDTH="100" ALIGN="RIGHT">Was fun.</TD>
-      <TD WIDTH="450"><NOBR>
-      <IMG SRC="mainbar2.jpg" HEIGHT=20 width="251" ALT="37%">4522 / <FONT COLOR=red>37%</FONT>
-      </NOBR></TD>
-   </TR>
 </TABLE>
 
-
-
-<P>
-
+<HR>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
@@ -93,7 +94,6 @@ If you are new to this game, and need help, please type <B>help</B> for a
 listing 
 of the commands, and <B>help &lt;command&gt;</B> for help on a specific 
 command or subject. <P>
-
 " where id=0;
 
 END_OF_DATA
