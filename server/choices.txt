@@ -281,7 +281,9 @@ insert into mm_roomitemtable
 (id, room, search)
 select mm_itemtable.id, tmp.room, null
 from mm_itemtable, mud.tmp_itemtable as tmp
-where tmp.room <> 0 and (tmp.search = null or tmp.search = "");
+where mm_itemtable.itemid = tmp.itemid
+amd tmp.room <> 0 
+and (tmp.search = null or tmp.search = "");
 
 retrieving someones inventory
 -----------------------------
