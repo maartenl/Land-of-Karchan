@@ -57,7 +57,8 @@ cgiMain()
 		row = mysql_fetch_row(res);
 		while (row != NULL)
 		{
-			Parse("anonymous", atoi(row[1]), row[0]);
+			room =  atoi(row[1]);
+			Parse("anonymous", &room, row[0]);
 			row = mysql_fetch_row(res);
 		}
 		mysql_free_result(res);

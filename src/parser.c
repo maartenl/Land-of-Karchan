@@ -295,8 +295,11 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		  an update statement on the database. So both commands need to be
 		  in tandem if necessary. */
 		/* syntax: set room=30 */
-		if (debug) {fprintf(cgiOut, "set room= found...<BR>\n");}
+		if (debug) {fprintf(cgiOut, "set room=%s found...<BR>\n", parserstring+9);}
+		//*room = 4;
+		if (debug) {fprintf(cgiOut, "set room=%i found...<BR>\n", *room);}
 		*room = atoi(parserstring+9);
+		if (debug) {fprintf(cgiOut, "set room=%i found...<BR>\n", *room);}
 	}
 	if (strstr(parserstring, "getstring(")==parserstring)
 	{
@@ -636,6 +639,8 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	char *temp, *troep2;
 	int returnvalue = 0;
 	
+	int myroom = room;
+	
 	stuff = getdbconnection();
 	troep2 = (char *) malloc(strlen(troep)*2+3);
 	// unsigned int mysql_real_escape_string(MYSQL *mysql, char *to, const char *from, unsigned int length) 
@@ -664,7 +669,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 				row[3] = command.args
 				row[4] = method.src
 			*/
-			returnvalue = Parse(name, &room, row[4]);
+			returnvalue = Parse(name, &myroom, row[4]);
 			row = mysql_fetch_row(res);
 		}
 		if (debug) {fprintf(cgiOut, "</FONT><HR>\r\n");}
@@ -672,7 +677,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		if (returnvalue==1)
 		{
 			/* showstandard command found */
-			WriteRoom(name, password, room, 0);
+			WriteRoom(name, password, myroom, 0);
 			KillGame();
 		}
 		if (returnvalue==2)
