@@ -27,7 +27,8 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # for instance: '-DDEBUG=1' and consequently recompiling the mud source code
 # will yield a binary with level 1 debug messages added.
 
-DEBUG = -DDEBUG
+DEBUG = 
+#-DDEBUG
 
 #
 #------------------------------------------------------------------
@@ -82,6 +83,12 @@ cgic.o: cgic.c
 mudmain.o: mudmain.c
 	$(CC) $(COPTS) $(INCLUDES) -c mudmain.c $(DEBUG)
 
+mudlogon.o: mudlogon.c
+	$(CC) $(COPTS) $(INCLUDES) -c mudlogon.c $(DEBUG)
+
+mudnewchar.o: mudnewchar.c
+	$(CC) $(COPTS) $(INCLUDES) -c mudnewchar.c $(DEBUG)
+
 mud.o: mud.c
 	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c mud.c $(DEBUG)
 
@@ -89,10 +96,10 @@ events.o: events.c
 	$(CC) $(COPTS) $(INCLUDES) -c events.c $(DEBUG)
 
 newchar.o: newchar.c
-	$(CC) $(COPTS) $(INCLUDES) -c newchar.c $(DEBUG)
+	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c newchar.c $(DEBUG)
 
 enter.o: enter.c
-	$(CC) $(COPTS) $(INCLUDES) -c enter.c $(DEBUG)
+	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c enter.c $(DEBUG)
 
 mmserver.o: mmserver.c
 	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c mmserver.c $(DEBUG)
@@ -129,20 +136,20 @@ typedefs.o: typedefs.c
 rolls2: rolls.o typedefs.o userlib.o
 	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
 
-enter: enter.o mud-lib.o typedefs.o userlib.o cgic.o enter.c
-	$(CC) $(COPTS) -o enter cgic.o typedefs.o userlib.o mud-lib.o enter.o $(LIBDIR)
+enter: enter.o cgic.o
+	$(CC) $(COPTS) -o enter cgic.o enter.o $(LIBDIR) $(XMLLIBDIR) 
 
 mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
 	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
 
-newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c 
-	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR)
+newchar: newchar.o cgic.o newchar.c 
+	$(CC) $(COPTS) -o newchar cgic.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
 
-mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o cgic.o 
-	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(XMLLIBDIR) 
+mud: mud.o cgic.o 
+	$(CC) $(COPTS) -o mud cgic.o mud.o $(LIBDIR) $(XMLLIBDIR) 
 
-mmserver: mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
-	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
+mmserver: mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
+	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o 
 	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)

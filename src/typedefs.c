@@ -416,7 +416,9 @@ composeSqlStatement(char *sqlstring, ...)
 	</UL>
 	If you need a % sign, literally, try '%\i' for instance.
 	Example: composeSqlStatement("select * from tmp_usertable where name='\%x', name);
-	\param int* the integere returning the number of rows affected by the query
+	\param int* the integer returning the number of rows affected by the query
+	(if NULL pointer provided, the function does not return the number of
+	affected rows (obviously) )
 	\param sqlstring the format string (with options as displayed above)
 	\param ... the unknown list of parameters to be used
 	\return the resultset, please do not forget to call mysql_free_result
@@ -435,6 +437,15 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 	my_sqlstring = (char *) malloc(my_size+1);
 	*my_sqlstring = 0;
 	my_length = 0;
+
+//	va_start(ap, sqlstring);
+//	for (i=1;i++;i<15)
+//	{
+//		s = va_arg(ap, char *);
+//		printf("%s\n", s);
+//	}
+//	va_end(ap);
+
 	va_start(ap, sqlstring);
 	while (*sqlstring)
 	{
@@ -560,35 +571,3 @@ fpassword[25]=0;
 return fpassword;
 }
 
-int getCookie(char *name, char *value)
-{
-	char *environmentvar;
-	char *found;
-	char *ending;
-	environmentvar = getenv("HTTP_COOKIE");
-	if (environmentvar == NULL)
-	{
-		/* Problems: Environment var containing cookies not found */
-		return 0;
-	}
-//	fprintf(fp, "[%s]", environmentvar);
-	if ((found = strstr(environmentvar, name)) == NULL)
-	{
-		/* Problems: Cookie not found! */
-		return 0;
-	}
-	if ((ending = strstr(found, ";")) == NULL)
-	{
-		/* Hmmm, probably last cookie in the string of cookies */
-		found += strlen(name)+1;
-		strcpy(value, found);
-	}
-	else
-	{
-		/* Hmmm, everything seems to be in order, copying until ; */
-		found += strlen(name)+1;
-		strncpy(value, found+strlen(name)+1, ending-found);
-		value[ending-found]='\0';
-	}
-	return 1;
-}

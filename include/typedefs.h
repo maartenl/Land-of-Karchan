@@ -68,6 +68,9 @@ maartenl@il.fontys.nl
 #define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
 
+//#define ServerName "libretto"
+//#define CGIName    "/cgi-bin/"
+
 //#define ServerName "zeus"
 //#define CGIName    "/cgi-bin/"
 
@@ -233,10 +236,3 @@ char *generate_password(char *fpassword);
    Returns: the pointer to fpassword
 */
 
-int getCookie(char *name, char *value);
-/* Post: name = a string describing the name of the cookie
-			value = a string that shall contain the value if the cookie exists
-	Pre:  returnvalue true upon success, otherwise false
-			if returnvalue true then 'value' contains the value 
-			of the cookie with name 'name'
-*/

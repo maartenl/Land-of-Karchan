@@ -92,7 +92,7 @@ int cgiMain()
 	fprintf(cgiOut, "\r\n");
 	fprintf(cgiOut, "\r\n");
 	fprintf(cgiOut, "<A HREF=\"%s?command=quit&name=%s&password=%s&frames=2\" ", MudExe, name, password);
-	fprintf(cgiOut, "TARGET=\"main\" ");
+	fprintf(cgiOut, "TARGET=_top ");
 	fprintf(cgiOut, "onMouseOver=\"img_act('toc2')\" ");
 	fprintf(cgiOut, "onMouseOut=\"img_inact('toc2')\">\r\n");
 	fprintf(cgiOut, "<IMG SRC=\"http://"ServerName"/images/gif/webpic/buttonj.gif\" ");

@@ -56,6 +56,44 @@ maartenl@il.fontys.nl
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
+/* Post: name = a string describing the name of the cookie
+			value = a string that shall contain the value if the cookie exists
+	Pre:  returnvalue true upon success, otherwise false
+			if returnvalue true then 'value' contains the value 
+			of the cookie with name 'name'
+*/
+int getCookie(char *name, char *value)
+{
+	char *environmentvar;
+	char *found;
+	char *ending;
+	environmentvar = getenv("HTTP_COOKIE");
+	if (environmentvar == NULL)
+	{
+		/* Problems: Environment var containing cookies not found */
+		return 0;
+	}
+//	fprintf(fp, "[%s]", environmentvar);
+	if ((found = strstr(environmentvar, name)) == NULL)
+	{
+		/* Problems: Cookie not found! */
+		return 0;
+	}
+	if ((ending = strstr(found, ";")) == NULL)
+	{
+		/* Hmmm, probably last cookie in the string of cookies */
+		found += strlen(name)+1;
+		strcpy(value, found);
+	}
+	else
+	{
+		/* Hmmm, everything seems to be in order, copying until ; */
+		found += strlen(name)+1;
+		strncpy(value, found+strlen(name)+1, ending-found);
+		value[ending-found]='\0';
+	}
+	return 1;
+}
 
 /* attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
@@ -88,7 +126,7 @@ send_socket(int s, char *buf, int *len)
 }
 
 char *
-createXmlString(char *fcommand, char *fname, char *fpassword, int fframes)
+createXmlString(char *fcommand, char *fname, char *fpassword, char *fcookie, int fframes)
 {
 	xmlDocPtr doc;
 	xmlNodePtr tree, subtree;
@@ -99,16 +137,55 @@ createXmlString(char *fcommand, char *fname, char *fpassword, int fframes)
 	doc = xmlNewDoc("1.0");
 	doc->children = xmlNewDocNode(doc, NULL, "root", NULL);
 	//xmlSetProp(doc->children, "prop1", "gnome is great");
+	tree = xmlNewChild(doc->children, NULL, "action", "mud");
 	tree = xmlNewChild(doc->children, NULL, "user", NULL);
 	subtree = xmlNewChild(tree, NULL, "name", fname);
 	//tree = xmlNewChild(doc->children, NULL, "chapter", NULL);
 	subtree = xmlNewChild(tree, NULL, "password", fpassword);
+	if ( (fcookie != NULL) && (strcmp(fcookie, "")) && (strcmp(fcookie, " ")) )
+	{
+		subtree = xmlNewChild(tree, NULL, "cookie", fcookie);
+	}
 	subtree = xmlNewChild(tree, NULL, "frames", frames);
 	tree = xmlNewChild(doc->children, NULL, "command", fcommand);
 	//xmlSaveFile("myxmlfile.xml", doc);
-	xmlDocDumpMemory(doc, &myBuffer, &mySize);
+
+	//void xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size)
+	xmlDocDumpMemory(doc, (xmlChar **) &myBuffer, &mySize);
 
 	return myBuffer;
+}
+
+int theFrames = 0;
+
+int getFrames()
+{
+	return theFrames;
+}
+
+void setFrames(int i)
+{
+	theFrames = i;
+}
+
+void 
+NotActive(char *fname, char *fpassword, int errornr)
+{
+	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+	fprintf(cgiOut, "<BODY>\n");
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
+	fprintf(cgiOut, "You cannot MUD because you are not logged in (no more)."
+	    " This might have happened to the following circumstances:<P>");
+	fprintf(cgiOut, "<UL><LI>you were kicked out of the game for bad conduct");
+	fprintf(cgiOut, "<LI>the game went down for dayly cleanup, killing of all"
+		"active users");
+	fprintf(cgiOut, "<LI>you were deactivated for not responding for over 1 hour");
+	fprintf(cgiOut, "<LI>an error occurred</UL>");
+	fprintf(cgiOut, "You should be able to relogin by using the usual link below:<P>");
+	fprintf(cgiOut, "<A HREF=\"/karchan/enter.html\">Click here to\n");
+	fprintf(cgiOut, "relogin</A><P>\n");
+	fprintf(cgiOut, "</body>\n");
+	fprintf(cgiOut, "</HTML>\n");
 }
 
 int 
@@ -140,11 +217,15 @@ cgiMain()
 	if (command[0]==0) {strcpy(command,"l");}
 	cgiFormString("name", name, 20);
 	cgiFormString("password", password, 40);
-	getCookie("Karchan", cookiepassword);
+	if (getCookie("Karchan", cookiepassword) == 0)
+	{
+		strcpy(cookiepassword, " ");
+	}
 	if (strcmp(cookiepassword, password))
 	{
 		cgiHeaderContentType("text/html");
 		NotActive(name, password,3);
+		return 0;
 	}
 	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
 	{
@@ -219,7 +300,7 @@ cgiMain()
 	
 	receivebuf[numbytes] = '\0';
 	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
-	sendbuf = createXmlString(command, name, password, getFrames());
+	sendbuf = createXmlString(command, name, password, cookiepassword, getFrames());
 //	printf("[%s]", sendbuf);
 	numbytes=strlen(sendbuf);
 	send_socket(sockfd, sendbuf, &numbytes);

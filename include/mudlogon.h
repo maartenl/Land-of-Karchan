@@ -24,11 +24,7 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mud-lib3.h"
+#include "mudmain.h"
 
-int clearGameFunctionIndex();
-
-int initGameFunctionIndex();
-
-int gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *faddress);
+int gameLogon(char *fname, char *fpassword, char *fcookie, char *faddress);
 

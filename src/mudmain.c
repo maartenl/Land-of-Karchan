@@ -1403,7 +1403,7 @@ initGameFunctionIndex()
 }
 
 int
-gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
+gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *faddress)
 {
 	int		oldroom;
 	int		i, amount;
@@ -1478,6 +1478,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	}
 	mysql_free_result(res);
 #ifdef DEBUG
+	fprintf(getMMudOut(), "<HTML>");
 	if (!strcmp(name, "Karn")) 
 	{
 		fprintf(getMMudOut(), "Command: %s<BR>Password: %s<BR>", command, password);

@@ -24,444 +24,195 @@ Nederland
 Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
-#include "mud-lib.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+
+// include files for socket communication
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+
+// include file for using the syslogd system calls
+#include <syslog.h>
+
+// include files for the xml library calls
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
 #include "cgic.h"
 
-/*name, west, east, north, south, up, down*/
-extern char secretpassword[40];
+#define MMPORT 3339 // the port users will be connecting to
+#define MMVERSION "4.01b" // the mmud version in general
+#define MMPROTVERSION "1.0" // the protocol version used in this mud
+#define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
-void StrangeName(char *name, char *password, char *address)
+/* attempts to send data over a socket, if not all information is sent.
+will automatically attempt to send the rest.
+@param int socket descriptor
+@param char* message
+@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+*/
+int
+send_socket(int s, char *buf, int *len)
 {
-	int i=0, j=0;
-	while (i<strlen(password)) 
+	int total = 0;	// how many btytes we've sent
+	int bytesleft = *len;	// how many we have left to send
+	int n;
+#ifdef DEBUG
+	printf("[message]: %s\n", buf);
+#endif
+	while (total < *len)
 	{
-		/*' and " forbidden*/
-		if ( (password[i]=='\'') || (password[i]=='"') ) {j=3;}
-		i++;
-	} /*endwhile*/
-	i=0;
-	while (i<strlen(name)) 
-	{
-		/*65..90 = A..Z, 97..122 = a..z, 95 = _, 126 = ~*/
-		if (name[i]<'A') {j=2;}
-		if (name[i]>'z' && name[i]!='~') {j=2;}
-		if ((name[i]>'Z') && (name[i]<'a') && (name[i]!='_')) {j=2;}
-		if (name[i]==32) {j=1;}
-		i++;
-	} /*endwhile*/
-	if (strlen(name)<3) {j=4;}
-	if (strlen(password)<5) {j=5;}
-	if (j)
-	{
-		char printstr[512];
-		char *error1,*error2;
-		time_t tijd;
-		struct tm datum;
-		switch (j)
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1)
 		{
-			case (1) :
-			{
-				error1="Multiple Names";
-				error2="This game does not accept a multitude of names. Please"
-				" fill out just one (<I>1</I>) name in the Name-field.";
-				break;
-			}
-			case (2) :
-			{
-				error1="Funny Characters in Name";
-				error2="This game does not accept strange characters in a name."
-				" See for characters that are allowed, below.";
-				break;
-			}
-			case (3) :
-			{
-				error1="Funny Characters in Password";
-				error2="Do not fill out a <B>\"</B> or a <B>'</B> in a password."
-				" Strange characters are accepted in a password, except these two."
-				" See for characters that are allowed, below.";
-				break;
-			}
-			case (4) :
-			{
-				error1="Name too short";
-				error2="The name you filled out has to be a minimum of three"
-				" characters.";
-				break;
-			}
-			case (5) :
-			{
-				error1="Password too short";
-				error2="The password you filled out has to be a minimum of five characters.";
-				break;
-			}
+			break;
 		}
-		cgiHeaderContentType("text/html");
-		fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
-		fprintf(cgiOut, "<BODY>\n");
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
-		fprintf(cgiOut,"%s<P>\r\n", error2);
-
-		fprintf(cgiOut,"The following rules need to be followed when filling out a name and password:<P>\r\n");
-		fprintf(cgiOut,"<UL><LI>the following characters are valid in a name: {A..Z, a..z, _, ~}");
-		fprintf(cgiOut,"<LI>all characters are valid in a password except {\"} and {'}");
-		fprintf(cgiOut,"<LI>at least 3 characters are required for a name");
-		fprintf(cgiOut,"<LI>at least 5 characters are required for a password");
-		fprintf(cgiOut,"</UL><P>These are the rules.<P>\r\n");
-		fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
-		fprintf(cgiOut, "</body>\n");
-		fprintf(cgiOut, "</HTML>\n");
-		time(&tijd);
-		datum=*(gmtime(&tijd));
-		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
-		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-		closedbconnection();
-				exit(0);
+		total += n;
+		bytesleft -= n;
 	}
-} /*endproc*/
-
-void BannedFromGame(char *name, char *address)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-
-	cgiHeaderContentType("text/html");
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
-	fprintf(cgiOut, "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
-	fprintf(cgiOut, "Your ip domain is therefore banned from the game.<P>\n");
-	fprintf(cgiOut, "If you have not misbehaved or even have never before played the game before, and wish"
-	" to play with your current IP address, email to "
-	"<A HREF=\"mailto:deputy@%s\">deputy@%s</A> and ask them to make "
-	"an exception in your case. Do <I>not</I> forget to provide your "
-	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n", ServerName, ServerName);
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-	closedbconnection();
-	exit(0);
+	*len = total;	// return number actually sent here
+	
+	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
-void MultiPlayerDetected(char *name, char *address)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	cgiHeaderContentType("text/html");
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Multiple Player Detected</H1><HR>\n");
-	fprintf(cgiOut, "You are already playing this mud under another character's");
-	fprintf(cgiOut, " name. You are only allowed to log on once.<P>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-	closedbconnection();
-	exit(0);
-}
 
-void CheckForOfflineMud()
+int getCookie(char *name, char *value)
 {
-FILE *fp;
-
-fp = fopen(MudOffLineFile, "r");
-if (fp==NULL)
+	char *environmentvar;
+	char *found;
+	char *ending;
+	environmentvar = getenv("HTTP_COOKIE");
+	if (environmentvar == NULL)
 	{
-	// Everything fine...
-	} else
-	{
-	fclose(fp);
-	cgiHeaderContentType("text/html");
-	ReadFile(MudOffLineFile);
-	closedbconnection();
-	exit(0);
+		/* Problems: Environment var containing cookies not found */
+		return 0;
 	}
-}
-
-void AlreadyActive(char *name, char *password, char *address)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	cgiHeaderContentType("text/html");
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
-	fprintf(cgiOut, "You tried to start a session which is already in progress. You can't play \n");
-	fprintf(cgiOut, "two sessions at the same time! Please check below to try again. In case you \n");
-	fprintf(cgiOut, "accidently turned of your computerterminal or Netscape or Lynx without first \n");
-	fprintf(cgiOut, "having typed <B>QUIT</B> while you were in the MUD, you can reenter the game \n");
-	fprintf(cgiOut, "by using the second link. You have to sit at the same computer as you did \n");
-	fprintf(cgiOut, "when you logged in.<P>\n");
-	fprintf(cgiOut, "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", ServerName);
-	fprintf(cgiOut, "retry</A><P>\n");
-	
-	fprintf(cgiOut,"<FORM METHOD=\"POST\" ACTION=\"%s\">", MudreloginExe);
-	fprintf(cgiOut,"Do you wish to enter into the active character?<BR>");
-	fprintf(cgiOut,"<input type=\"radio\" name=\"choice\" value=\"yes\">yes<BR>");
-	fprintf(cgiOut,"<input type=\"radio\" name=\"choice\" value=\"no\" checked>no<P>");
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",name);
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",password);
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",getFrames()+1);
-	fprintf(cgiOut,"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	fprintf(cgiOut,"<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n");
-	fprintf(cgiOut,"</FORM>\n");
-	
-	fprintf(cgiOut,"<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
-	fprintf(cgiOut,"<DIV ALIGN=left><P>");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-//	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Already Active Fault by %s (%s)<BR>\n",datum.tm_hour,
-//	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
-	closedbconnection();
-	exit(0);
-}
-
-void WrongPasswd(char *name, char *address, char *error)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	cgiHeaderContentType("text/html");
-	fprintf(cgiOut,"<html><head><Title>Error</Title></head>\n");
-	fprintf(cgiOut,"<body>\n");
-	fprintf(cgiOut,"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
-	fprintf(cgiOut,"You filled out the wrong password for that particular name! \n");
-	fprintf(cgiOut,"Please retry by clicking at the link below:<P>\n");
-	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i %s by %s (%s)<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
-	closedbconnection();
-	exit(0);
-}
-
-void WriteError(char *name, char *address, char *error)
-{
-	time_t tijd;
-	struct tm datum;
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i %s by %s (%s)<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
-}
-
-void ToManyUsers() 
-{
-	fprintf(cgiOut,"<head><Title>Error</Title></head>");
-	fprintf(cgiOut,"<body>");
-	fprintf(cgiOut,"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many users</H1><HR>");
-	fprintf(cgiOut,"I am sorry, but this game is currently out of space to provide for another");
-	fprintf(cgiOut," new character. Please try again tomorrow or so when I make some more room.");
-	fprintf(cgiOut," Thank you and sorry for the inconvenience. Please check below to try again,");
-	fprintf(cgiOut," although that will probably not function immediately.<P> ");
-	fprintf(cgiOut,"<A HREF=\"http:///karchan/enter.html\">Click here to retry</A></body>\n"), ServerName;
-	closedbconnection();
-	exit(0);
-}
-	
-void ToManyNames(char *name, char *address) 
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	fprintf(cgiOut,"<head><Title>Error</Title></head>\n");
-	fprintf(cgiOut,"<body>\n");
-	fprintf(cgiOut,"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>To many names</H1><HR>\n");
-	fprintf(cgiOut,"I am sorry, but this game will not accept a multitude of names which you \n");
-	fprintf(cgiOut,"have filled out in the Name-box of the fillout-form. Please do not type more \n");
-	fprintf(cgiOut,"than one name. In the next fillout form you will be asked to type a title, \n");
-	fprintf(cgiOut,"there you can type as much as you want.<P>"
-	               "It is also illegal to use less than 3 characters for a name and "
-	               "less then 5 characters in your password.<P>\n");
-	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
-	closedbconnection();
-	exit(0);
-}
-
-void NewPlayer(char *fname, char *address, char *fpassword)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	cgiHeaderContentType("text/html");
-	ReadFile(HTMLHeader"newchar.html");
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",fname);
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",fpassword);
-	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",getFrames()+1);
-	fprintf(cgiOut,"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	fprintf(cgiOut,"<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n");
-	fprintf(cgiOut,"</FORM></BODY></HTML>\n");
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
-	closedbconnection();
-	exit(0);
-}
-
-void MakeStart(char *name, char *password, char *address, int room)
-{
-	char printstr[512];
-	time_t tijd;
-	struct tm datum;
-	int             i = 1,j;
-	FILE           *fp; 
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-	time(&tijd);
-	datum=*(gmtime(&tijd));
-//	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-//	printf("Dude4!\n");
-	sprintf(printstr,"%s has entered the game...<BR>\r\n",name);
-	sprintf(printstr,USERHeader"%s.log",name);
-//	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	res=SendSQL2("SELECT message FROM logonmessage WHERE id=0", NULL);
-	if (res != NULL)
+//	fprintf(fp, "[%s]", environmentvar);
+	if ((found = strstr(environmentvar, name)) == NULL)
 	{
-		row = mysql_fetch_row(res);
-		if (row != NULL)
-		{
-			WriteSentenceIntoOwnLogFile(printstr, row[0]);
-		}
-		mysql_free_result(res);
+		/* Problems: Cookie not found! */
+		return 0;
 	}
-	
-	temp = composeSqlStatement("UPDATE tmp_usertable SET "
-	"cgiServerSoftware='%x', "
-	"cgiServerName='%x', "
-	"cgiGatewayInterface='%x', "
-	"cgiServerProtocol='%x', "
-	"cgiServerPort='%x', "
-	"cgiRequestMethod='%x', "
-	"cgiPathInfo='%x', "
-	"cgiPathTranslated='%x', "
-	"cgiScriptName='%x', "
-	"cgiRemoteHost='%x', "
-	"cgiRemoteAddr='%x', "
-	"cgiAuthType='%x', "
-	"cgiRemoteUser='%x', "
-	"cgiRemoteIdent='%x', "
-	"cgiContentType='%x', "
-	"cgiAccept='%x', "
-	"cgiUserAgent='%x', address='%x' "
-	"WHERE name='%x'", cgiServerSoftware, cgiServerName, cgiGatewayInterface, 
-	cgiServerProtocol, cgiServerPort, cgiRequestMethod, cgiPathInfo, 
-	cgiPathTranslated, cgiScriptName, cgiRemoteHost, cgiRemoteAddr,
-	cgiAuthType, cgiRemoteUser, cgiRemoteIdent, cgiContentType, cgiAccept,
-	cgiUserAgent, cgiRemoteAddr, name); 
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-	mysql_free_result(res);
-	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
-
-	temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
-		" WHERE toname='%x' and newmail=1", name);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-	                        
-	row = mysql_fetch_row(res);
-	if (*row[0]=='0') {WriteSentenceIntoOwnLogFile(printstr, "You have no new MudMail...<P>\r\n");}
-		else {WriteSentenceIntoOwnLogFile(printstr, "You have new MudMail!<P>\r\n");}
-	mysql_free_result(res);
-
-	if (!getFrames())
+	if ((ending = strstr(found, ";")) == NULL)
 	{
-//			cgiHeaderContentType("text/html");
-			fprintf(cgiOut, "Content-type: text/html\r\n");
-			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
-   		WriteRoom(name, password, room, 0);
+		/* Hmmm, probably last cookie in the string of cookies */
+		found += strlen(name)+1;
+		strcpy(value, found);
 	}
 	else
 	{
-		if (getFrames()==1)
-		{
-			fprintf(cgiOut, "Content-type: text/html\r\n");
-			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
-//			cgiHeaderContentType("text/html");
-			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50\">\r\n");
-			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(cgiOut, "		<FRAME SRC=%s?command=l&name=%s&password=%s&frames=2 NAME=\"main\" border=0>\r\n", MudExe, name, password);
-			fprintf(cgiOut, "		<FRAME SRC=%s?name=%s&password=%s NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n", LeftframeExe, name, password);
-			fprintf(cgiOut, "	</FRAMESET>\r\n");
-			fprintf(cgiOut, "	<FRAME SRC=%s?name=%s&password=%s NAME=\"logon\" scrolling=\"no\" border=0>\r\n", LogonframeExe, name, password);
-			fprintf(cgiOut, "</FRAMESET>\r\n");
-			fprintf(cgiOut, "</HTML>\r\n");
-		} else
-		{
-			fprintf(cgiOut, "Content-type: text/html\r\n");
-			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
-//			cgiHeaderContentType("text/html");
-			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
-			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
-			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
-			fprintf(cgiOut, "		<FRAMESET ROWS=\"60%,40%\">\r\n");
-			fprintf(cgiOut, "		<FRAME SRC=%s?command=l&name=%s&password=%s&frames=3 NAME=\"statusFrame\" border=0>\r\n", MudExe, name, password);
-			fprintf(cgiOut, "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", ServerName);
-			fprintf(cgiOut, "		</FRAMESET>\r\n");
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", ServerName, CGIName, name, password);
-			fprintf(cgiOut, "	</FRAMESET>\r\n\r\n");
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", ServerName, CGIName, name, password);
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", ServerName, CGIName, name, password);
-			fprintf(cgiOut, "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", ServerName);
-			fprintf(cgiOut, "</FRAMESET>\r\n");
-			fprintf(cgiOut, "</HTML>\r\n");
-		}
+		/* Hmmm, everything seems to be in order, copying until ; */
+		found += strlen(name)+1;
+		strncpy(value, found+strlen(name)+1, ending-found);
+		value[ending-found]='\0';
 	}
+	return 1;
 }
 
-void checkcookie(char *name, char *address)
+char *
+createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 {
-	char cookie[100];
-	if (getCookie("Karchan", cookie))
+	xmlDocPtr doc;
+	xmlNodePtr tree, subtree;
+	char frames[10], *myBuffer;
+	int mySize;
+	
+	sprintf(frames, "%i", fframes);
+	doc = xmlNewDoc("1.0");
+	doc->children = xmlNewDocNode(doc, NULL, "root", NULL);
+	//xmlSetProp(doc->children, "prop1", "gnome is great");
+	tree = xmlNewChild(doc->children, NULL, "action", "logon");
+	tree = xmlNewChild(doc->children, NULL, "user", NULL);
+	subtree = xmlNewChild(tree, NULL, "name", fname);
+	//tree = xmlNewChild(doc->children, NULL, "chapter", NULL);
+	subtree = xmlNewChild(tree, NULL, "password", fpassword);
+	if ( (fcookie != NULL) && (strcmp(fcookie, "")) && (strcmp(fcookie, " ")) )
 	{
-		MultiPlayerDetected(name, address);
+		subtree = xmlNewChild(tree, NULL, "cookie", fcookie);
 	}
+	subtree = xmlNewChild(tree, NULL, "frames", frames);
+	//xmlSaveFile("myxmlfile.xml", doc);
+
+	//void xmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size)
+	xmlDocDumpMemory(doc, (xmlChar **) &myBuffer, &mySize);
+
+	return myBuffer;
+}
+
+int theFrames = 0;
+
+int getFrames()
+{
+	return theFrames;
+}
+
+void setFrames(int i)
+{
+	theFrames = i;
+}
+
+void displayError(char *message, int i)
+{
+	fprintf(cgiOut, "Content-type: text/html\r\n\r\n");
+	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", strerror(i));
+	fprintf(cgiOut, "<BODY>\n");
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
+	fprintf(cgiOut, "Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
+	fprintf(cgiOut, " to report the error.<P>\r\n", strerror(i));
+	
+	fprintf(cgiOut,"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
+	fprintf(cgiOut, "</body>\n");
+	fprintf(cgiOut, "</HTML>\n");
+	fflush(cgiOut);
+	exit(1);
 }
 
 int cgiMain()
 {
 	char name[20];
 	char password[40];
+	char cookie[80];
 	char frames[10];
-	int room;
-	int i;
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
+	char *temp = NULL;
+	char *mudtitle = NULL;
 	
+	int sockfd, numbytes;
+	int first;
+	char receivebuf[1024], *sendbuf;
+	struct hostent *he;
+	struct sockaddr_in their_addr; // connector's address information
+
 	umask(0000);
-	
-	opendbconnection();
-	setMMudOut(cgiOut);
 	
 #ifdef DEBUG
 	fprintf(cgiOut, "Name:");
 	fgets(name, 20, stdin);
+	name[strlen(name)-1]=0;
 	fprintf(cgiOut, "Password:");
 	fgets(password, 40, stdin);
+	password[strlen(password)-1]=0;
+	fprintf(cgiOut, "Cookie:");
+	fgets(cookie, 40, stdin);
+	password[strlen(cookie)-1]=0;
 	setFrames(0);
 #else
 	cgiFormString("name", name, 20);
 	cgiFormString("password", password, 40);
+	if (!getCookie("Karchan", cookie))
+	{
+		strcpy(cookie," ");
+	}
 	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess) 
 	{
 		strcpy(frames, "none");
@@ -471,118 +222,71 @@ int cgiMain()
 	if (!strcmp(frames,"2")) {setFrames(1);}
 	if (!strcmp(frames,"3")) {setFrames(2);}
 #endif
-/*	fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
 	
-	if (strcmp("Karn", name)) {CheckForOfflineMud();}
-
-	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
-
-	StrangeName(name, password, cgiRemoteAddr);
-	
-	if (strstr(name," ")!=NULL) {ToManyNames(name, cgiRemoteAddr);}
-	if (strstr(password," ")!=NULL) {ToManyNames(name, cgiRemoteAddr);}
-	if (strlen(password)<5) {ToManyNames(name, cgiRemoteAddr);}
-	if (strlen(name)<3) {ToManyNames(name, cgiRemoteAddr);}
-	
-	/* set the secret password */
-	generate_password(secretpassword);
-	temp = composeSqlStatement("update usertable set lok='%x' where name='%x'", secretpassword, name);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-	if (res!=NULL) 
+	/* setup socket stuff*/
+	if ((he = gethostbyname("localhost")) == NULL)
 	{
-		mysql_free_result(res);
-	} 
+		displayError("gethostbyname", errno);
+	}
 	
-	/* ExistUser */
-	temp = composeSqlStatement("select name, password, god, lok from tmp_usertable where name='%x' and lok<>''", name);
-	res=SendSQL2(temp, NULL);
-	free(temp);temp=NULL;
-
-	if (res!=NULL) 
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
-		row = mysql_fetch_row(res);
-		if (row!=NULL) 
+		displayError("socket", errno);
+	}
+	
+	their_addr.sin_family = AF_INET;	// host byte order
+	their_addr.sin_port = htons(MMPORT);	// short, network byte order
+	their_addr.sin_addr = *((struct in_addr *)he->h_addr);
+	memset(&(their_addr.sin_zero), '\0', 8);	//zero the rest of the struct
+	
+	if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1)
+	{
+		displayError("connect", errno);
+	}
+	
+	if ((numbytes=recv(sockfd, receivebuf, 1024-1, 0)) == -1)
+	{
+		displayError("recv", errno);
+	}
+	
+	receivebuf[numbytes] = '\0';
+	mudtitle = (char *) malloc(strlen(receivebuf)+1);
+	strcpy(mudtitle, receivebuf);
+	sendbuf = createXmlString(name, password, cookie, getFrames());
+//	printf("[%s]", sendbuf);
+	numbytes=strlen(sendbuf);
+	send_socket(sockfd, sendbuf, &numbytes);
+	free(sendbuf);
+//	send_socket(sockfd, "\n", &numbytes);
+
+	first = 1;
+	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
+	{
+		receivebuf[numbytes]=0;
+		if (first)
 		{
-			char fpassword[40], fname[40], fsecretpassword[40], fcookie[40];
-			strcpy(fname, row[0]);
-			strcpy(fpassword, row[1]);
-			strcpy(fsecretpassword, row[3]);
-			if (!strcmp(row[2],"2")) 
+			if (strstr(receivebuf, "Content") != receivebuf)
 			{
-				mysql_free_result(res);
-				WrongPasswd(name, cgiRemoteAddr, "Bot attempted logon detected");
-			}
-			mysql_free_result(res);
-			if (strcmp(fpassword, password)!=0) 
-			{
-				WrongPasswd(name, cgiRemoteAddr, "Wrong Password detected during relogin");
-			}
-			if (getCookie("Karchan", fcookie))
-			{
-				/* cookie exists, check if cookie corresponds with current user 
-				   in that case, the user is attempting to relogon after a browser
-				   crash
-				*/
-				if (strcmp(fcookie, fsecretpassword))
+//				cgiHeaderContentType("text/html");
+				fprintf(cgiOut, "Content-type: text/html\r\n\r\n");
+				if (mudtitle != NULL)
 				{
-					/* cookie does not correspond with the lok-value in the usertable
-					   in this case, the user is attempting to relogon a character
-					   for which the cookie does not match. In the case of an error,
-					   he will be required to close and restart his webbrowser 
-				   */
-					MultiPlayerDetected(name, cgiRemoteAddr);
+					printf("<FONT Size=1>%s</FONT><HR>",mudtitle);
+					free(mudtitle);
+					mudtitle = NULL;
 				}
 			}
-			AlreadyActive(fname, fsecretpassword, cgiRemoteAddr);
+			first = 0;
 		}
-		else
-		{
-			mysql_free_result(res);
-		}
-	} 
-	else
-	{
-		mysql_free_result(res);
+		fprintf(cgiOut, "%s", receivebuf);
 	}
-	
-	/* SearchUser */
-	temp = composeSqlStatement("select name, password, room from usertable where name='%x'", name);
-	res=SendSQL2(temp, NULL); 
-	free(temp);temp=NULL;
-	if (res!=NULL)
+	close(sockfd);
+
+	if (mudtitle != NULL) 
 	{
-		row = mysql_fetch_row(res);
-	
-		if (row!=NULL)
-		{
-			if (strcmp(row[1], password)!=0) 
-			{
-				mysql_free_result(res);
-				WrongPasswd(name, cgiRemoteAddr, "Wrong Password detected during logon");
-			}
-		}
-		else
-		{
-			mysql_free_result(res);
-			NewPlayer(name,cgiRemoteAddr, password);
-		}
+		free(mudtitle);
+		mudtitle = NULL;
 	}
-	else
-	{
-		NewPlayer(name,cgiRemoteAddr, password);
-	}
-	
-	/* the user is attempting to logon to the game, yet he already has a cookie
-		in this case this is not allowed, and a multiplayer log entry will appear.
-		In some cases this is erroneous, namely in the fact that the user might be
-		deactivated after an hour, but his cookie will remain.
-	*/
-	checkcookie(name, cgiRemoteAddr);
-	strcpy(name, row[0]);
-	ActivateUser(name);
-	MakeStart(name, secretpassword, cgiRemoteAddr, atoi(row[2]));
-	mysql_free_result(res);
-	closedbconnection();
+
 	return 0;
 }
