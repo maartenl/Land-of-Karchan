@@ -1,7 +1,11 @@
 #!/bin/sh
 # ./mysql_talk "Karn was here.<BR>" 9 | grep -v concat | /bin/sh
 
-( /usr//bin/mysql -h karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
+cd /karchan/mud/sql/crontab
+
+. ./../mysql_constants
+
+(${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
 
 select concat("echo \"$1\" >>/karchan/mud/tmp/",name,".log") from tmp_usertable where
 room=$2;
