@@ -29,7 +29,7 @@ maartenl@il.fontys.nl
 #define SINGULARIS 0
 #define PLURALIS   1
 
-int ReadFile(char *filenaam);
+int ReadFile(const char *filenaam);
 /* Read file and dumps it onto standard output
 	Pre: filename must exist
 	Post: return true 

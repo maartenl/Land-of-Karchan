@@ -93,7 +93,7 @@ char *ItemDescription(char *name);
 
 void ClearLogFile(char *filenaam);
 
-void WriteSentenceIntoOwnLogFile(char *filenaam, char *fmt, ...);
+void WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt, ...);
 
 void WriteMessage(char *name, int roomnr, char *fmt, ...);
 

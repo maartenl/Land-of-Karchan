@@ -45,74 +45,49 @@ maartenl@il.fontys.nl
 // DATABASEHeader, the place where the original old binary files were kept.
 // Besides some changes this is largely unused because of the database that is
 // currently being used.
-#define HTMLHeader "/karchan/mud/data/"
-#define USERHeader "/karchan/mud/tmp/"
-#define DATABASEHeader "/karchan/mud/data/"
+#define MM_HTMLHEADER 1
+#define MM_USERHEADER 2
+#define MM_DATABASEHEADER 3
 
 // Copyright header. Will be displayed on virtually every webpage on the mud.
 //
-#define CopyrightHeader "&copy; Copyright Maarten van Leunen"
+#define MM_COPYRIGHTHEADER 4
 
 // Databasename, Login and password that are to be used for the correct
 // access to the database in order for the mud to mutate the data in the
 // correct way. Make certain that it has the appropriate rights to access
 // the database.
 
-#define DatabaseName "mmud"
-#define DatabaseLogin "mmud"
-#define DatabasePassword "42rakah"
+#define MM_DATABASENAME 5
+#define MM_DATABASELOGIN 6
+#define MM_DATABASEPASSWORD 7
+#define MM_DATABASEHOST 8
+#define MM_DATABASEPORT 9
 
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-#define ServerName "www.karchan.org"
-#define CGIName    "/cgi-bin/"
+#define MM_SERVERNAME 10
+#define MM_CGINAME    11
 
-//#define ServerName "libretto"
-//#define CGIName    "/cgi-bin/"
+#define MM_MUDOFFLINEFILE		12
+#define MM_STDHELPFILE        13
+#define MM_AUDITTRAILFILE     14
+#define MM_BIGFILE            15
+#define MM_ERRORFILE          16
 
-//#define ServerName "zeus"
-//#define CGIName    "/cgi-bin/"
+#define MM_MUDCGI             17
+#define MM_ENTERCGI           18
+#define MM_NEWCHARCGI         19
+#define MM_LOGONFRAMECGI      20
+#define MM_LEFTFRAMECGI       21
+#define MM_HOST 22
+#define MM_PORT 23
 
-//#define ServerName "libretto"
-//#define CGIName    "/cgi-bin/"
-
-#define ActiveUserFile      USERHeader"users.active.txt"
-#define UserFile            USERHeader"users.txt"
-#define UserSecFile         USERHeader"users.bak"
-#define MudOffLineFile		DATABASEHeader"offline.txt"
-#define ActiveItemFile      DATABASEHeader"items.active.bin"
-#define ItemFile            DATABASEHeader"items.bin"
-#define EventFile           DATABASEHeader"events.txt"
-#define GuildListFile       DATABASEHeader"guildlists.txt"
-#define BanListFile         DATABASEHeader"banlist.txt"
-#define MIFLogFile          DATABASEHeader"mifguild.log"
-#define RangerLogFile       DATABASEHeader"mifguild.log"
-#define MailMessageFile     DATABASEHeader"mail.txt"
-#define MailStructFile      DATABASEHeader"mail.bin"
-#define LookMessageFile     DATABASEHeader"lookat.txt"
-#define LookStructFile      DATABASEHeader"lookat.bin"
-#define RoomTextFile        DATABASEHeader"room.txt"
-#define RoomStructFile      DATABASEHeader"room.bin"
-#define MessageBoardFile    DATABASEHeader"board.txt"
-#define StdHelpFile         DATABASEHeader"help.txt"
-#define DeputyBoardFile     DATABASEHeader"deputyboard.txt"
-#define AuditTrailFile      DATABASEHeader"audit.trail"
-#define BigFile             DATABASEHeader"bigfile"
-#define ErrorFile           DATABASEHeader"error.txt"
-#define JunkFile            USERHeader"junk0"
-
-/*#define MudExe              "http://www.il.fontys.nl/usr-bin/mud"
-#define EnterExe            "http://www.il.fontys.nl/usr-bin/enter"
-#define NewcharExe          "http://www.il.fontys.nl/usr-bin/newchar"
-#define MudreloginExe       "http://www.il.fontys.nl/usr-bin/mudrelogin"*/
-
-#define MudExe              "http://"ServerName CGIName"mud.cgi"
-#define EnterExe            "http://"ServerName CGIName"enter.cgi"
-#define NewcharExe          "http://"ServerName CGIName"newchar.cgi"
-#define MudreloginExe       "http://"ServerName CGIName"mudrelogin.cgi"
-#define LogonframeExe       "http://"ServerName CGIName"logonframe.cgi"
-#define LeftframeExe       "http://"ServerName CGIName"leftframe.cgi"
+void initParam();
+void freeParam();
+const char *getParam(int i);
+void setParam(int i, char *parameter);
 
 typedef struct 
 {
@@ -236,3 +211,5 @@ char *generate_password(char *fpassword);
    Returns: the pointer to fpassword
 */
 
+void writeConfig();
+int readConfigFiles(char *filename);
