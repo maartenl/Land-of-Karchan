@@ -100,9 +100,6 @@ typedefs.o: typedefs.c
 mudclient.o: cgic.o mudclient.c
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c
 
-mudserver.o: mudserver.c mud-lib2.o parser.o mud-lib3.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudserver.c 
-
 #--- Binary executables are compiled below...
 
 mudclient: cgic.o mudclient.o
@@ -122,9 +119,6 @@ mud: mud.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o events.c
 	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(OPTIONS) 
-
-mudserver: mudserver.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mudserver.c enter newchar 
-	$(CC) $(COPTS) -o mudserver cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mudserver.o $(LIBDIR) $(OPTIONS) 
 
 #--- Compilation of frame-binaries
 
