@@ -265,3 +265,17 @@ install: all
 	@chmod a+s $(INSTALLDIR)*
 	@echo "Installation done."
 
+install_scripts: all
+	@echo "Installing Mud Script Binaries..."
+	@echo "  (these are small scripts that add some functionality to the website)"
+	@cp charactersheet $(INSTALLDIR)charactersheet.cgi
+	@cp charactersheets $(INSTALLDIR)charactersheets.cgi
+	@cp editcharactersheet $(INSTALLDIR)editcharactersheet.cgi
+	@cp submitcharactersheet $(INSTALLDIR)submitcharactersheet.cgi
+	@echo "Setting UIDs for Mud Script Binaries..."
+	@chmod o=x $(INSTALLDIR)*
+	@chmod u=rwx $(INSTALLDIR)*
+	@chmod g= $(INSTALLDIR)*
+	@chmod a+s $(INSTALLDIR)*
+	@echo "Installation of Single Mud Scripts done."
+
