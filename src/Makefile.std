@@ -39,7 +39,7 @@ LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
 OPTIONS = -lm -lmysqlclient -lcookies
 
 TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
-nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls \
+nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
 wholist clearcharacters cookies/libcookies.a
 
 all: $(TARGETS)
@@ -57,8 +57,8 @@ newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
 enter.o: enter.c mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c 
 
-rolls: rolls.o typedefs.o userlib.o rolls.c
-	$(CC) $(COPTS) -o rolls typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
+rolls2: rolls.o typedefs.o userlib.o rolls.c
+	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
 
 rolls.o: rolls.c userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c rolls.c 
