@@ -96,7 +96,6 @@ void StrangeName(char *name, char *password, char *address)
 			}
 		}
 		cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 		fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
 		fprintf(cgiOut, "<BODY>\n");
 		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
@@ -127,7 +126,6 @@ void BannedFromGame(char *name, char *address)
 	struct tm datum;
 
 	cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
@@ -154,7 +152,6 @@ void MultiPlayerDetected(char *name, char *address)
 	time_t tijd;
 	struct tm datum;
 	cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Multiple Player Detected</H1><HR>\n");
@@ -182,7 +179,6 @@ if (fp==NULL)
 	{
 	fclose(fp);
 	cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 	ReadFile(MudOffLineFile);
 	closedbconnection();
 	exit(0);
@@ -195,7 +191,6 @@ void AlreadyActive(char *name, char *password, char *address)
 	time_t tijd;
 	struct tm datum;
 	cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
@@ -392,7 +387,6 @@ void MakeStart(char *name, char *password, char *address, int room)
 //			cgiHeaderContentType("text/html");
 			fprintf(cgiOut, "Content-type: text/html\r\n");
 			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
-//getCookie(cgiOut, "Karchan","");
    		WriteRoom(name, password, room, 0);
 	}
 	else
@@ -402,7 +396,6 @@ void MakeStart(char *name, char *password, char *address, int room)
 			fprintf(cgiOut, "Content-type: text/html\r\n");
 			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
 //			cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
@@ -417,7 +410,6 @@ void MakeStart(char *name, char *password, char *address, int room)
 			fprintf(cgiOut, "Content-type: text/html\r\n");
 			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
 //			cgiHeaderContentType("text/html");
-//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
