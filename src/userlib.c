@@ -98,6 +98,13 @@ ActivateUser(char *name)
 	
 	mysql_free_result(res);
 	
+	/* -------------------------------------- Attributes --------------------------- */
+	
+	sprintf(temp, "insert into tmp_attributes select * from attributes where objectid='%s' and objecttype=1", name);
+	res=SendSQL2(temp, NULL);
+	
+	mysql_free_result(res);
+	
 		umask(0000);
 		sprintf(filenaam, USERHeader "%s.log", name);
 		fp = fopen(filenaam, "w");
@@ -159,6 +166,25 @@ mysql_free_result(res);
 
 /* delete name from temp_usertable */
 sprintf(temp, "delete from tmp_usertable where name='%s'", name);
+res=SendSQL2(temp, NULL);
+
+mysql_free_result(res);
+
+/* -------------------------------------- Attributes ----------------------- */
+
+/* Remove attributes of user in attributes table */
+sprintf(temp, "delete from attributes where objectid='%s' and objecttype=1", name);
+res=SendSQL2(temp, NULL);
+
+mysql_free_result(res);
+/* replace tmp_attributes in attributes */
+sprintf(temp, "replace into attributes select * from tmp_attributes where objectid='%s' and objecttype=1", name);
+res=SendSQL2(temp, NULL);
+
+mysql_free_result(res);
+
+/* delete name from temp_usertable */
+sprintf(temp, "delete from tmp_attributes where objectid='%s' and objecttype=1", name);
 res=SendSQL2(temp, NULL);
 
 mysql_free_result(res);
