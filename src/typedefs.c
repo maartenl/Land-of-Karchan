@@ -50,7 +50,7 @@ MYSQL getdbconnection()
 }
 
 void 
-FatalError(FILE *output, int i, char *troep, char *busywith)
+FatalError(FILE *output, int i, char *description, char *busywith)
 {         
   FILE           *fp;
 
@@ -61,13 +61,13 @@ FatalError(FILE *output, int i, char *troep, char *busywith)
 	fprintf(output, "</TITLE>\n");
 	fprintf(output, "</HEAD>\n");
 	fprintf(output, "<BODY BGCOLOR=#FFFFFF>\n");
-	fprintf(output, "<H1>Fatal Error %i : %s</H1>\r\n", i, troep);
+	fprintf(output, "<H1>Fatal Error %i : %s</H1>\r\n", i, description);
 	fprintf(output, "An fatal error was received while %s. Please mail the "
 	"error you received to <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>.<P>\r\n", busywith);
 	fprintf(output, "</BODY></HTML>\r\n");
 
   fp = fopen(ErrorFile, "a");
-  fprintf(fp, "fatal error %i: %s, %s\n", i, troep, busywith);
+  fprintf(fp, "fatal error %i: %s, %s\n", i, description, busywith);
   fclose(fp);
   exit(0);
 }         

@@ -65,11 +65,11 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-#define ServerName "www.karchan.org"
-#define CGIName    "/cgi-bin/"
-
-//#define ServerName "localhost.localdomain"
+//#define ServerName "www.karchan.org"
 //#define CGIName    "/cgi-bin/"
+
+#define ServerName "zeus"
+#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
 #define UserFile            USERHeader"users.txt"
@@ -160,7 +160,7 @@ void closedbconnection();
 /* close the connection to the database */
 
 void 
-FatalError(FILE *output, int i, char *troep, char *busywith);
+FatalError(FILE *output, int i, char *description, char *busywith);
 /* prints an error on "output" and into the error file */
 
 void InitializeRooms();
