@@ -488,11 +488,13 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		mysql_free_result(res);
 		if (returnvalue==1)
 		{
+			/* showstandard command found */
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		if (returnvalue==2)
 		{
+			/* show() command found */
 			char logname[100];
 			sprintf(logname, "%s%s.log",USERHeader,name);
  			PrintForm(name, password);
