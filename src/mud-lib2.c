@@ -87,20 +87,6 @@ res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
 free(temp);
 
-/*	mailstruct      mailrec;
-	FILE           *fp;
-	fp = fopen(MailMessageFile, "ab");
-	mailrec.positie.fileposition = ftell(fp);
-	mailrec.positie.size = strlen(message) + 2;
-	fwrite(message, strlen(message) + 2, 1, fp);
-	fclose(fp);
-	fp = fopen(MailStructFile, "ab");
-	strcpy(mailrec.name, name);
-	strcpy(mailrec.toname, toname);
-	strcpy(mailrec.header, header);
-	time(&(mailrec.datetime));
-	fwrite(&mailrec, sizeof(mailrec), 1, fp);
-	fclose(fp);*/
 }
 
 int 
