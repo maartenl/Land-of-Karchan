@@ -102,11 +102,14 @@ public class GetCommand extends NormalCommand
 			{
 				// here needs to be a check for validity of the item
 				Item myItem = (Item) myItems.elementAt(i);
-				ItemsDb.deleteItemFromRoom(myItem);
-				ItemsDb.addItemToChar(myItem, aUser);
-				aUser.sendMessage(aUser.getName() + " gets " + myItem.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You get " + myItem.getDescription() + ".<BR>\r\n");
-				j++;
+				if (!myItem.isAttribute("notgetable"))
+				{
+					ItemsDb.deleteItemFromRoom(myItem);
+					ItemsDb.addItemToChar(myItem, aUser);
+					aUser.sendMessage(aUser.getName() + " gets " + myItem.getDescription() + ".<BR>\r\n");
+					aUser.writeMessage("You get " + myItem.getDescription() + ".<BR>\r\n");
+					j++;
+				}
 			}
 			return true;
 		}

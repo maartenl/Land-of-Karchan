@@ -28,6 +28,7 @@ package mmud.items;
 
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -248,6 +249,20 @@ public class Item
 	{
 		return theAttributes.containsKey(aName) ||
 			getItemDef().isAttribute(aName);
+	}
+
+	/**
+	 * Retrieve items from this container.
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @return Vector containing item objects found.
+	 * @see mmud.database.ItemsDb#getItemsFromContainer
+	 */
+	public Vector getItems(String adject1, String adject2, String adject3, String name) 
+	{
+		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name, this);
 	}
 
 }

@@ -69,16 +69,16 @@ public class ShoutCommand extends NormalCommand
 			else
 			{
 				String message = command.substring(command.indexOf(myParsed[3], 5 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				aUser.writeMessage("You shout [to " + toChar.getName() + "] : " + message + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " shouts [to you] : " + message + ".<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " shouts [to " + toChar.getName() + "] : " + message + ".<BR>\r\n");
+				aUser.writeMessage("You shout [to " + toChar.getName() + "] : " + message + "<BR>\r\n");
+				toChar.writeMessage(aUser.getName() + " shouts [to you] : " + message + "<BR>\r\n");
+				aUser.sendMessage(toChar, aUser.getName() + " shouts [to " + toChar.getName() + "] : " + message + "<BR>\r\n");
 			}
 		}
 		else
 		{
 			String message = command.substring(5 + 1).trim();
-			aUser.writeMessage("You shout : " + message + ".<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " shouts : " + message + ".<BR>\r\n");
+			aUser.writeMessage("You shout : " + message + "<BR>\r\n");
+			aUser.sendMessage(aUser.getName() + " shouts : " + message + "<BR>\r\n");
 		}
 		return true;
 	}

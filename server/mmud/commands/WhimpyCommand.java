@@ -64,7 +64,14 @@ public class WhimpyCommand extends NormalCommand
 			return true;
 
 		}
-		String myString = (command.equalsIgnoreCase("whimpy") ? "" : command.substring(7));
+		if (command.equalsIgnoreCase("whimpy"))
+		{
+			aUser.writeMessage("Current whimpy setting: <B>" +
+				Constants.whimpy[aUser.getWhimpy()/10] + "</B>.<BR>\r\n");
+			return true;
+
+		}
+		String myString = command.substring(7);
 		for (int i=0;i<Constants.whimpy.length;i++)
 		{
 			if (myString.equalsIgnoreCase(Constants.whimpy[i]))

@@ -68,10 +68,6 @@ public final class ItemDefs
 		ItemDef myItemDef = null;
 		assert theItemDefs != null : "theItemDefs vector is null";
 		Logger.getLogger("mmud").finer("");
-		if (aItemDefNr <= 0) 
-		{
-			return null;
-		}
 		for (int i=0;i < theItemDefs.size(); i++)
 		{
 			myItemDef = (ItemDef) theItemDefs.elementAt(i);

@@ -56,30 +56,33 @@ public class GoCommand extends NormalCommand
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
+			Command newCommand = new BogusCommand(".*");
 			if (myParsed[1].equalsIgnoreCase("south"))
 			{
-				return (new SouthCommand(".*")).run(aUser);
+				newCommand = new SouthCommand(".*");
 			}
 			if (myParsed[1].equalsIgnoreCase("north"))
 			{
-				return (new NorthCommand(".*")).run(aUser);
+				newCommand = new NorthCommand(".*");
 			}
 			if (myParsed[1].equalsIgnoreCase("west"))
 			{
-				return (new WestCommand(".*")).run(aUser);
+				newCommand = new WestCommand(".*");
 			}
 			if (myParsed[1].equalsIgnoreCase("east"))
 			{
-				return (new EastCommand(".*")).run(aUser);
+				newCommand = new EastCommand(".*");
 			}
 			if (myParsed[1].equalsIgnoreCase("up"))
 			{
-				return (new UpCommand(".*")).run(aUser);
+				newCommand = new UpCommand(".*");
 			}
 			if (myParsed[1].equalsIgnoreCase("down"))
 			{
-				return (new DownCommand(".*")).run(aUser);
+				newCommand = new DownCommand(".*");
 			}
+			newCommand.setCommand(getCommand());
+			return newCommand.run(aUser);
 		}
 		return false;
 	}

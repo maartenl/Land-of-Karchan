@@ -48,8 +48,12 @@ public class TitleCommand extends NormalCommand
 	public boolean run(User aUser)
 	throws MudException
 	{
-		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
+		if (!super.run(aUser))
+		{
+			return false;
+		}
+		String command = getCommand();
 		aUser.setTitle(command.substring(6));
 		aUser.writeMessage("Changed your title to : '" + aUser.getTitle() + "'.<BR>\r\n");
 		return true;

@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -35,7 +36,11 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Look at stuff: "look at well".
+ * Look at stuff: "look at well". There are three different possibilities:
+ * <ul><li>look at something in your inventory.
+ * <li>look at something in the room that you occupy
+ * <li>look at a person in the same room as you
+ * </ul>
  */
 public class LookCommand extends NormalCommand
 {
@@ -45,6 +50,21 @@ public class LookCommand extends NormalCommand
 	public LookCommand(String aRegExpr)
 	{
 		super(aRegExpr);
+	}
+
+	private boolean LookItem(User aUser, Vector aItems)
+	throws ItemException
+	{
+		Item myItem = (Item) aItems.elementAt(0);
+		if (myItem == null)
+		{
+			throw new ItemDoesNotExistException("item not found... BUG!");
+		}
+		theResult = myItem.getLongDescription();
+		theResult += aUser.printForm();
+		aUser.sendMessage(aUser.getName() + " looks at " + myItem.getDescription() + ".<BR>\r\n");
+		aUser.writeMessage("You look at " + myItem.getDescription() + ".<BR>\r\n");
+		return true;
 	}
 
 	public boolean run(User aUser)
@@ -62,33 +82,37 @@ public class LookCommand extends NormalCommand
 		{
 			if (myParsed[1].equalsIgnoreCase("at"))
 			{
-				Item myItem = null;// = aUser.getItem(myParsed, 2, myParsed.length);
-				if (myItem == null)
+				Vector stuff = Constants.parseItemDescription(myParsed, 2, myParsed.length - 2);
+				int amount = 1;
+				String adject1 = (String) stuff.elementAt(1);
+				String adject2 = (String) stuff.elementAt(2);
+				String adject3 = (String) stuff.elementAt(3);
+				String name = (String) stuff.elementAt(4);
+
+				Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+				if (myItems.size() != 0)
 				{
-//					myItem = aUser.getRoom().getItem(myParsed, 2, myParsed.length);
+					return LookItem(aUser, myItems);
 				}
-				if (myItem == null)
-				{	
-					Person toChar = Persons.retrievePerson(myParsed[2]);
-					if (toChar == null)
-					{
-						aUser.writeMessage("You cannot look at that.<BR>\r\n");
-						return true;
-					}
-					aUser.writeMessage("You look at the " + toChar.getLongDescription() + ".<BR>\r\n");
-					toChar.writeMessage(aUser.getName() + " looks at you.<BR>\r\n");
-					aUser.sendMessage(toChar, aUser.getName() + " looks at " + toChar.getName() + ".<BR>\r\n");
+				myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
+				if (myItems.size() != 0)
+				{
+					return LookItem(aUser, myItems);	
+				}
+				Person toChar = Persons.retrievePerson(myParsed[2]);
+				if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+				{
+					aUser.writeMessage("You cannot see that.<BR>\r\n");
 					return true;
 				}
-				aUser.sendMessage(aUser.getName() + " looks at " + myItem.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You look at " + myItem.getDescription() + ".<BR>\r\n");
-				theResult = myItem.getLongDescription();
-				theResult += aUser.printForm();
+				aUser.writeMessage("You look at the " + toChar.getLongDescription() + ".<BR>\r\n");
+				toChar.writeMessage(aUser.getName() + " looks at you.<BR>\r\n");
+				aUser.sendMessage(toChar, aUser.getName() + " looks at " + toChar.getName() + ".<BR>\r\n");
 				return true;
 			}
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public String getResult()

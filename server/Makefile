@@ -42,7 +42,7 @@ compile: mmud/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc: compile
-	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -d ./html \
+	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -private -d ./html \
 	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database
 
 clean:

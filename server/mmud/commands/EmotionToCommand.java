@@ -64,7 +64,7 @@ public class EmotionToCommand extends NormalCommand
 			{
 				// cuddle Karn
 				Person toChar = Persons.retrievePerson(myParsed[1]);
-				if (toChar == null)
+				if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
 				{
 					aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				}
@@ -80,7 +80,7 @@ public class EmotionToCommand extends NormalCommand
 			{
 				// cuddle Karn evilly
 				Person toChar = Persons.retrievePerson(myParsed[1]);
-				if (toChar == null)
+				if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
 				{
 					aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				}
@@ -89,7 +89,7 @@ public class EmotionToCommand extends NormalCommand
 					if (Constants.existsAdverb(myParsed[2]))
 					{
 						aUser.writeMessage("You " + plural[0] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
-						toChar.writeMessage(aUser.getName() + " " + plural[1] + " you " + myParsed[2].toLowerCase() + ">\r\n");
+						toChar.writeMessage(aUser.getName() + " " + plural[1] + " you " + myParsed[2].toLowerCase() + ".<BR>\r\n");
 						aUser.sendMessage(toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
 					}
 					else

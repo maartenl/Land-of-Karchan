@@ -66,7 +66,18 @@ public class ItemsDb
 		+ "search is null and "
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
+	public static String sqlGetInventoryContainerString =
+		  "select count(*) as amount, adject1, adject2, adject3, name "
+		+ "from mm_itemitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemitemtable.id = mm_itemtable.id and "
+		+ "mm_itemitemtable.containerid = ? and "
+		+ "visible = 1 "
+		+ "group by adject1, adject2, adject3, name";
 
+	public static String sqlDeleteItemCharString =
+		"delete from mm_charitemtable "
+		+ "where id = ?";
 	public static String sqlDeleteItemRoomString =
 		"delete from mm_roomitemtable "
 		+ "where id = ?";
@@ -77,12 +88,13 @@ public class ItemsDb
 		"insert into mm_charitemtable "
 		+ "(id, belongsto) "
 		+ "values(?, ?)";
-	public static String sqlDeleteItemCharString =
-		"delete from mm_charitemtable "
-		+ "where id = ?";
 	public static String sqlAddItemRoomString =
 		"insert into mm_roomitemtable "
 		+ "(id, room) "
+		+ "values(?, ?)";
+	public static String sqlAddItemItemString =
+		"insert into mm_itemitemtable "
+		+ "(id, containerid) "
 		+ "values(?, ?)";
 	public static String sqlGetItemRoomString =
 		"select mm_itemtable.* "
@@ -99,11 +111,27 @@ public class ItemsDb
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
-        + "belongsto = ? "
-		+ "and name = ? and "
+        + "belongsto = ? and "
+		+ "name = ? and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlGetItemContainerString =
+		"select mm_itemtable.itemid, mm_itemitemtable.* "
+		+ "from mm_itemitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_itemitemtable.id and "
+        + "containerid = ? and "
+		+ "name = ? and "
+		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
+		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
+		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlGetAllItemContainerString =
+		"select mm_itemtable.itemid, mm_itemitemtable.* "
+		+ "from mm_itemitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_itemitemtable.id and "
+        + "containerid = ?";
 	public static String sqlTransferItemString =
 		"update mm_charitemtable "
 		+ "set belongsto = ? "
@@ -150,11 +178,16 @@ public class ItemsDb
 			res.getInt("gold"), res.getInt("silver"), res.getInt("copper"));
 		// do stuff with attributes.
 		String drinkable = res.getString("drinkable");
+		int container = res.getInt("container");
 		String eatable = res.getString("eatable");
 		String readable = res.getString("readdescr");
 		int visible = res.getInt("visible");
-		int dropable = res.getInt("dropable");
-		int getable = res.getInt("getable");
+		int dropable = (itemdefnr < 0 ? 0 : res.getInt("dropable"));
+		int getable = (itemdefnr < 0 ? 0 : res.getInt("getable"));
+		if (container != 0)
+		{
+			myItemDef.setAttribute(new Attribute("container", "true", "boolean"));
+		}
 		if ( (drinkable != null) && (!drinkable.trim().equals("")) )
 		{
 			myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
@@ -291,6 +324,54 @@ public class ItemsDb
 	}
 
 	/**
+	 * Returns a bulleted list of all items visible in a container.
+	 * @param aContainer item object that has a number of visible items.
+	 * @param String containing a list of items visible in the room.
+	 */
+	public static String getInventory(Item aContainer)
+	{
+		Logger.getLogger("mmud").finer("");
+		StringBuffer myInventory = new StringBuffer();
+		ResultSet res;
+		try
+		{
+
+		PreparedStatement sqlGetInventories = Database.prepareStatement(sqlGetInventoryContainerString);
+		sqlGetInventories.setInt(1, aContainer.getId());
+		res = sqlGetInventories.executeQuery();
+		if (res == null)
+		{
+			Logger.getLogger("mmud").info("resultset null");
+			return null;
+		}
+		while (res.next())
+		{
+			int amount = res.getInt("amount");
+			if (amount > 1)
+			{
+				myInventory.append(amount + " " + res.getString("adject1")
+					+ ", " + res.getString("adject2") + " "
+					+ res.getString("name") + "s are here.<BR>\r\n");
+			}
+			else
+			{
+				myInventory.append("A " + res.getString("adject1")
+					+ ", " + res.getString("adject2") + " "
+					+ res.getString("name") + " is here.<BR>\r\n");
+			}
+		}
+		res.close();
+		sqlGetInventories.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		Logger.getLogger("mmud").info("returns: " + myInventory);
+		return myInventory.toString();
+	}
+
+	/**
 	 * Remove item from inventory of room.
 	 * @param anItem the item to be removed.
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
@@ -379,7 +460,7 @@ public class ItemsDb
 	 * @param anItem the item to be removed
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
-	public static void deleteItemFromItem(Item anItem)
+	public static void deleteItemFromContainer(Item anItem)
 	throws ItemDoesNotExistException
 	{
 		Logger.getLogger("mmud").finer("");
@@ -430,7 +511,7 @@ public class ItemsDb
 			}
 			try
 			{
-				deleteItemFromItem(anItem);
+				deleteItemFromContainer(anItem);
 			}
 			catch (ItemException e)
 			{
@@ -496,6 +577,35 @@ public class ItemsDb
 			PreparedStatement sqlAddItem = Database.prepareStatement(sqlAddItemRoomString);
 			sqlAddItem.setInt(1, anItem.getId());
 			sqlAddItem.setInt(2, aRoom.getId());
+			res = sqlAddItem.executeUpdate();
+			sqlAddItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Add an item to an item.
+	 * @param anItem the item to be added
+	 * @param aContainer the item to act as a container
+	 * @throws ItemDoesNotExistException when we were unable to add the item.
+	 */
+	public static void addItemToContainer(Item anItem, Item aContainer)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlAddItem = Database.prepareStatement(sqlAddItemItemString);
+			sqlAddItem.setInt(1, anItem.getId());
+			sqlAddItem.setInt(2, aContainer.getId());
 			res = sqlAddItem.executeUpdate();
 			sqlAddItem.close();
 		}
@@ -576,6 +686,103 @@ public class ItemsDb
 			sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
 			sqlGetItem.setString(4, (adject2!=null ? adject2 :""));
 			sqlGetItem.setString(5, (adject3!=null ? adject3 :""));
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				Item anItem = new Item(anItemId, anItemInstanceId);
+				Database.getItemAttributes(anItem);
+				items.add(anItem);
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		Logger.getLogger("mmud").info("returns: " + items);
+		return items;
+	}
+
+	/**
+	 * Retrieve specific items from a container.
+	 * @param adject1 the first adjective. Null value means first adjective
+	 * not relevant, i.e. only name of the item.
+	 * @param adject2 the second adjective. Null value means second adjective
+	 * not relevant, i.e. only name and first adjective of the item.
+	 * @param adject3 the third adjective. Null value means first adjective
+	 * not relevant, i.e. only first and second adjective and name of the item.
+	 * @param name the name of the item
+	 * @param aContainer the item where said item(s) should be located
+	 * @return Vector containing all Item objects found.
+	 */
+	public static Vector getItemsFromContainer(String adject1,
+								String adject2,
+								String adject3,
+								String name,
+								Item aContainer)
+	{
+		Logger.getLogger("mmud").finer("");
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement sqlGetItem = Database.prepareStatement(sqlGetItemContainerString);
+			sqlGetItem.setString(1, aContainer.getId()+"");
+			sqlGetItem.setString(2, name);
+			sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
+			sqlGetItem.setString(4, (adject2!=null ? adject2 :""));
+			sqlGetItem.setString(5, (adject3!=null ? adject3 :""));
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				Item anItem = new Item(anItemId, anItemInstanceId);
+				Database.getItemAttributes(anItem);
+				items.add(anItem);
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		Logger.getLogger("mmud").info("returns: " + items);
+		return items;
+	}
+
+	/**
+	 * Retrieve all items from a container.
+	 * @param aContainer the item where said items are located
+	 * @return Vector containing all Item objects found.
+	 */
+	public static Vector getItemsFromContainer(Item aContainer)
+	{
+		Logger.getLogger("mmud").finer("");
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement sqlGetItem = Database.prepareStatement(sqlGetAllItemContainerString);
+			sqlGetItem.setString(1, aContainer.getId()+"");
 			res = sqlGetItem.executeQuery();
 			if (res == null)
 			{

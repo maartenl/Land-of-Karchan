@@ -37,6 +37,8 @@ import mmud.database.*;
 public class QuitCommand extends NormalCommand
 {
 
+	private String theResult;
+
 	public QuitCommand(String aRegExpr)
 	{
 		super(aRegExpr);
@@ -59,22 +61,22 @@ public class QuitCommand extends NormalCommand
 		{
 			e.printStackTrace();
 		}
+		try
+		{
+			theResult = Constants.readFile(Constants.goodbyefile);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			theResult = Constants.goodbyemessage;
+		}
 		return true;
 	}
 
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
-		try
-		{
-			String aString = Constants.readFile(Constants.goodbyefile);
-			return aString;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return Constants.goodbyemessage;
+		return theResult;
 	}
 
 

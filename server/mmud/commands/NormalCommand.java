@@ -68,10 +68,13 @@ public abstract class NormalCommand implements Command
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		aUser.setNow();
 		Perl5Compiler myCompiler = new Perl5Compiler();
 		Perl5Matcher myMatcher = new Perl5Matcher();
 		String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
-		return (getCommand().matches(myregexpr));
+		boolean result = (getCommand().matches(myregexpr));
+		Logger.getLogger("mmud").finer("returns " + result);
+		return result;
 	}
 
 	public String getResult()

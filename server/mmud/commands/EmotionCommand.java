@@ -51,9 +51,8 @@ public class EmotionCommand extends NormalCommand
 	public boolean run(User aUser)
 	throws MudException
 	{
-		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
-		String[] myParsed = Constants.parseCommand(command);
+		String[] myParsed = getParsedCommand();
 		String[] plural = {myParsed[0].toLowerCase(), Constants.returnEmotion(myParsed[0])};
 		Logger.getLogger("mmud").finer("");
 		if (plural == null)
@@ -89,7 +88,7 @@ public class EmotionCommand extends NormalCommand
 				if (myParsed[1].equalsIgnoreCase("to"))
 				{
 					Person toChar = Persons.retrievePerson(myParsed[2]);
-					if (toChar == null)
+					if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
 					{
 						aUser.writeMessage("Cannot find that person.<BR>\r\n");
 					}

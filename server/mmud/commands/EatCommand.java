@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -61,24 +62,39 @@ public class EatCommand extends NormalCommand
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Item myItem = null;// = aUser.getItem(myParsed, 1, myParsed.length);
-			if (myItem == null)
+			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			int amount = 1;
+			String adject1 = (String) stuff.elementAt(1);
+			String adject2 = (String) stuff.elementAt(2);
+			String adject3 = (String) stuff.elementAt(3);
+			String name = (String) stuff.elementAt(4);
+
+			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			if (myItems.size() == 0)
 			{
 				aUser.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
 				return true;
 			}
+			Item myItem = (Item) myItems.elementAt(0);
 			if (!myItem.isAttribute("eatable"))
 			{
 				aUser.writeMessage("You cannot eat that.<BR>\r\n");
 				return true;
 			}
 			theResult = myItem.getItemDef().getAttribute("eatable").getValue();
+			if (theResult == null)
+			{
+				aUser.writeMessage("You cannot eat that.<BR>\r\n");
+				return true;
+			}
+			theResult += aUser.printForm();
+
+			ItemsDb.deleteItem(myItem);
 			aUser.sendMessage(aUser.getName() + " eats " + myItem.getDescription() + ".<BR>\r\n");
 			aUser.writeMessage("You eat " + myItem.getDescription() + ".<BR>\r\n");
 
 			// increase eat stats
 
-//			aUser.removeFromInventory(new Item(myItem.getItemDef()));
 			return true;
 		}
 		return false;

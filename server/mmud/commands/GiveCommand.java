@@ -61,7 +61,7 @@ public class GiveCommand extends NormalCommand
 		{
 			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
-			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
+			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
@@ -81,13 +81,12 @@ public class GiveCommand extends NormalCommand
 				if (amount == 1)
 				{
 					aUser.writeMessage("You do not have that item.<BR>\r\n");
-					return true;
 				}
 				else
 				{
 					aUser.writeMessage("You do not have that many items.<BR>\r\n");
-					return true;
 				}
+				return true;
 			}
 			int j = 0;
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)

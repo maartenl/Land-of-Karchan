@@ -471,7 +471,7 @@ public class User extends mmud.characters.Person
 	public String getListOfMail()
 	{
 		Logger.getLogger("mmud").finer("");
-		return Database.getListOfMail(this);
+		return MailDb.getListOfMail(this);
 	}
 
 	/**

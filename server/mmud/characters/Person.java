@@ -506,7 +506,7 @@ public class Person
 		result += (getArms().equals("none") ? "" : getArms() + ", ");
 		result += (getLegs().equals("none") ? "" : getLegs() + ", ");
 		result += getSex() + " " + getRace() + " who calls " + getSex().indirect();
-		result += "self " + getName() + " (" + getTitle() + ").<BR>\r\n";
+		result += "self " + getName() + " (" + getTitle() + ")";
 		return result;
 	}
 

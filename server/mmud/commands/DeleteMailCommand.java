@@ -60,7 +60,7 @@ public class DeleteMailCommand extends NormalCommand
 		{
 			try
 			{
-				theString = Database.deleteMail(aUser, Integer.parseInt(myParsed[1]));
+				theString = MailDb.deleteMail(aUser, Integer.parseInt(myParsed[1]));
 				theString += aUser.printForm();
 			}
 			catch (NumberFormatException e)

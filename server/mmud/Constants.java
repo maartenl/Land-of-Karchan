@@ -588,11 +588,11 @@ public final class Constants
 		theCommandStructure.put("quit", new QuitCommand("quit"));
 		theCommandStructure.put("sleep", new SleepCommand("sleep"));
 		theCommandStructure.put("awaken", new AwakenCommand("awaken"));
-		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+)?.+"));
+		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
-		theCommandStructure.put("say", new SayCommand("say (to (\\w)+)?.+"));
-		theCommandStructure.put("shout", new ShoutCommand("shout (to (\\w)+)?.+"));
-		theCommandStructure.put("whisper", new WhisperCommand("whisper (to (\\w)+)?.+"));
+		theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
+		theCommandStructure.put("shout", new ShoutCommand("shout (to (\\w )+)?.+"));
+		theCommandStructure.put("whisper", new WhisperCommand("whisper (to (\\w)+ )?.+"));
 		theCommandStructure.put("clear", new ClearCommand("clear"));
 		theCommandStructure.put("time", new TimeCommand("time"));
 		theCommandStructure.put("date", new DateCommand("date"));
@@ -606,12 +606,12 @@ public final class Constants
 		theCommandStructure.put("w", new WestCommand("w"));
 		theCommandStructure.put("up", new UpCommand("up"));
 		theCommandStructure.put("down", new DownCommand("down"));
-		theCommandStructure.put("go", new GoCommand("go (\\w)?"));
+		theCommandStructure.put("go", new GoCommand("go (up|down|north|south|east|west)?"));
 		theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
 		theCommandStructure.put("bigtalk", new BigTalkCommand("bigtalk"));
-		theCommandStructure.put("curtsey", new CurtseyCommand("curtsey (to (\\w)+)?"));
+		theCommandStructure.put("curtsey", new CurtseyCommand("curtsey( to (\\w)+)?"));
 		theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
-		theCommandStructure.put("whimpy", new WhimpyCommand("whimpy( (\\w)+)?"));
+		theCommandStructure.put("whimpy", new WhimpyCommand("whimpy( .+|help)?"));
 		theCommandStructure.put("who", new WhoCommand("who"));
 		theCommandStructure.put("deletemail", new DeleteMailCommand("deletemail (\\d)+"));
 		theCommandStructure.put("listmail", new ListMailCommand("listmail"));
@@ -625,12 +625,17 @@ public final class Constants
 		theCommandStructure.put("eat", new EatCommand("eat( (\\w)+){1,4}"));
 		theCommandStructure.put("drop", new DropCommand("drop( (\\w)+){1,4}"));
 		theCommandStructure.put("get", new GetCommand("get( (\\w)+){1,4}"));
+		theCommandStructure.put("search", new SearchCommand("search( (\\w)+){1,4}"));
+		theCommandStructure.put("put", new PutCommand("put( (\\w)+){1,4} into( (\\w)+){1,4}"));
+		theCommandStructure.put("retrieve", new RetrieveCommand("retrieve( (\\w)+){1,4} from( (\\w)+){1,4}"));
 		theCommandStructure.put("give", new GiveCommand("give( (\\w)+){1,4} to (\\w)+"));
 		theCommandStructure.put("read", new ReadCommand("read( (\\w)+){1,4}"));
 		theCommandStructure.put("l", new LookCommand("l"));
 		theCommandStructure.put("look", new LookCommand("look at( (\\w)+){1,4}"));
 		theCommandStructure.put("buy", new BuyCommand("buy( (\\w)+){1,4} from (\\w)+"));
 		theCommandStructure.put("sell", new SellCommand("sell( (\\w)+){1,4} to (\\w)+"));
+		theCommandStructure.put("title", new TitleCommand("title .+"));
+		theCommandStructure.put("admin", new AdminCommand("admin .+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{

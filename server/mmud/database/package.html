@@ -37,9 +37,14 @@ supply)</TD></TR>
 <TR><TD>mm_roomitemtable</TD><TD></TD></TR>
 
 <TR><TD>mm_rooms</TD><TD></TD></TR>
+<TR><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
+Every room is identified as belonging to a area, the main area being
+called "<I>Main</I>".</TD></TR>
 <TR><TD>mm_usertable</TD><TD></TD></TR>
 <TR><TD>mm_mailtable</TD><TD></TD></TR>
 
+<TR><TD>mm_log</TD><TD>Logging table, for describing important events in the
+life of characters and administrators.</TD></TR>
 <TR><TD></TD><TD></TD></TR>
 </TABLE>
 <PRE>
@@ -98,7 +103,6 @@ supply)</TD></TR>
 |*id                  |
 | belongsto           |
 | wearing             |
-| wielding            |
 +---------------------+
 
 +---------------------+
@@ -127,6 +131,19 @@ supply)</TD></TR>
 | up                  |
 | down                |
 | contents            |
+| owner               |
+| creation            |
+| area                |
++---------------------+
+
++---------------------+
+| mm_area             |
++---------------------+
+|*area                |
+| description         |
+| shortdesc           |
+| owner               |
+| creation            |
 +---------------------+
 
 +---------------------+
@@ -163,6 +180,13 @@ supply)</TD></TR>
 | mm_help             |
 +---------------------+
 
++---------------------+
+| mm_log              |
++---------------------+
+|*creation            |
+|*name                |
+| message             |
++---------------------+
 </PRE>
 
 </body>

@@ -69,16 +69,16 @@ public class AskCommand extends NormalCommand
 			else
 			{
 				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				aUser.writeMessage("You ask " + toChar.getName() + " : " + message + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " asks you : " + message + ".<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " asks " + toChar.getName() + " : " + message + ".<BR>\r\n");
+				aUser.writeMessage("You ask " + toChar.getName() + " : " + message + "<BR>\r\n");
+				toChar.writeMessage(aUser.getName() + " asks you : " + message + "<BR>\r\n");
+				aUser.sendMessage(toChar, aUser.getName() + " asks " + toChar.getName() + " : " + message + "<BR>\r\n");
 			}
 		}
 		else
 		{
 			String message = command.substring(3 + 1).trim();
-			aUser.writeMessage("You ask : " + message + ".<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " asks : " + message + ".<BR>\r\n");
+			aUser.writeMessage("You ask : " + message + "<BR>\r\n");
+			aUser.sendMessage(aUser.getName() + " asks : " + message + "<BR>\r\n");
 		}
 		return true;
 	}

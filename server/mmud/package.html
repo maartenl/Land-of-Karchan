@@ -11,6 +11,8 @@ Currently the relationships between objects in the game is as follows:
 <li> characters can contain items
 <li> rooms can contain characters
 <li> rooms can contain items
+<li> areas contain rooms
+<li> every room is a member of exactly one area
 <li> characters can execute commands
 <li> items can contain attributes
 <li> characters can contain attributes
@@ -28,20 +30,20 @@ In a schematic, it would look something like this:
                                       | can execute
                                       |
      +------------+ n         1 +------------+
-     | attributes |<------------| characters |---+
-     +------------+\            +------------+   |
-            ^       \ n               ^          |         
-            | n      \                | n        |
-            |         \               |          |
-            | 1        \              | 1        |
-     +------------+     \     1 +------------+   |
-n +->|   items    |      -------|   rooms    |   |
-  |  +-+---+--+---+             +------------+   |
-  |    | 1 ^  ^ n                   1 |          |
-  +----+   |  |                       |          |
-           |  +-----------------------+          |
-           | n                                 1 |
-           +-------------------------------------+
+     | attributes |<------------| characters |---------------+
+     +------------+\            +------------+               |
+            ^       \ n               ^                      |         
+            | n      \                | n                    |
+            |         \               |                      |
+            | 1        \              | 1                    |
+     +------------+     \     1 +------------+ n  1 +------+ |
+n +->|   items    |      -------|   rooms    |<-----| area | |
+  |  +-+---+--+---+             +------------+      +------+ |
+  |    | 1 ^  ^ n                   1 |                      |
+  +----+   |  |                       |                      |
+           |  +-----------------------+                      |
+           | n                                             1 |
+           +-------------------------------------------------+
 </PRE>
 
 </body>

@@ -136,7 +136,7 @@ the table over to another table, it is best to:
 - Create some nice typesafe enumerated classes with specific behaviour
 designed per instance. (HEME~ (HIMHER) (ETC)
 
--
+- wielding and wearing are both stored in the wearing field.
 
 Game Behaviour
 --------------
@@ -179,6 +179,20 @@ database information, we are unable at this time to add them using the
 "attributes". It will require a different interface to be implemented on top
 of the default Character class. A good example is ShopKeeper.
 
+- Searching for items, using the command "search", should be implemented by
+examining INSIDE other items. So, say, "search shrubbery", it means that we
+examine what is INSIDE the shrubbery, and take the first object that we come
+across. In other words, a shrubbery is an item that can contain other items
+but cannot be picked up like a bag.
+
+- All mutations and administration of everything inside the database is
+going to take place using PHP. It is the most secure solution.
+
+- Items can contain items. An item that can contain items is called a
+container. Containers are identified in two ways:
+1. a specific iteminstance has an attribute called "container" (boolean,true)
+2. an item definition has "container" set to value other than 0.
+
 TODO
 ----
 
@@ -188,3 +202,16 @@ Changes to the database
 -----------------------
 
 - changes " valuable" to "valuable" for 36,37,38.
+- update mm_items set description = replace(description,
+"http://www.karchan.org/","/") where description like "%karchan.org%";
+- added help for eyebrow command
+- alter table mm_rooms add (area varchar(49) not null default "Main");    
+- create table mm_area (area varchar(49) not null primary key, description
+text not null, shortdesc varchar(255) not null, owner varchar(20) , creation
+timestamp);
+- insert into mm_area values("Main", "The Land of Karchan is split up onto
+different areas. This is the main area, and the area that is used by new
+characters for exploring and learning about the way the game works.", "The
+Main Area of Karchan", "Karn", null);
+- create table mm_log (creation timestamp not null, name varchar(20) not
+null, message varchar(255) not null, primary key (creation, name, message));

@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -35,7 +36,10 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Read an item: "read old scroll".
+ * Read stuff: "read sign". There are two different possibilities:
+ * <ul><li>read something in your inventory.
+ * <li>read something in the room that you occupy
+ * </ul>
  */
 public class ReadCommand extends NormalCommand
 {
@@ -45,6 +49,35 @@ public class ReadCommand extends NormalCommand
 	public ReadCommand(String aRegExpr)
 	{
 		super(aRegExpr);
+	}
+
+	private boolean ReadItem(User aUser, Vector aItems)
+	throws ItemException
+	{
+		int i = 0;
+		Item myItem = (Item) aItems.elementAt(0);
+		if (myItem == null)
+		{
+			throw new ItemDoesNotExistException("item not found... BUG!");
+		}
+		while (!myItem.isAttribute("readable"))
+		{
+			if (i == aItems.size() - 1)
+			{
+				return false;
+			}
+			myItem = (Item) aItems.elementAt(++i);
+			if (myItem == null)
+			{
+				throw new ItemDoesNotExistException("item not found... BUG!");
+			}
+		}
+		Attribute attrib = myItem.getAttribute("readable");
+		theResult = attrib.getValue();
+		theResult += aUser.printForm();
+		aUser.sendMessage(aUser.getName() + " reads " + myItem.getDescription() + ".<BR>\r\n");
+		aUser.writeMessage("You read " + myItem.getDescription() + ".<BR>\r\n");
+		return true;
 	}
 
 	public boolean run(User aUser)
@@ -60,26 +93,23 @@ public class ReadCommand extends NormalCommand
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Item myItem = null;// = aUser.getItem(myParsed, 1, myParsed.length);
-			if (myItem == null)
+			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			int amount = 1;
+			String adject1 = (String) stuff.elementAt(1);
+			String adject2 = (String) stuff.elementAt(2);
+			String adject3 = (String) stuff.elementAt(3);
+			String name = (String) stuff.elementAt(4);
+
+			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			if (myItems.size() != 0)
 			{
-//				myItem = aUser.getRoom().getItem(myParsed, 1, myParsed.length);
+				return ReadItem(aUser, myItems);
 			}
-			if (myItem == null)
-			{	
-				aUser.writeMessage("You cannot read that.<BR>\r\n");
-				return true;
-			}
-			if (!myItem.isAttribute("readable"))
+			myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
+			if (myItems.size() != 0)
 			{
-				aUser.writeMessage("You cannot read that.<BR>\r\n");
-				return true;
+				return ReadItem(aUser, myItems);	
 			}
-			aUser.sendMessage(aUser.getName() + " reads " + myItem.getDescription() + ".<BR>\r\n");
-			aUser.writeMessage("You read " + myItem.getDescription() + ".<BR>\r\n");
-			theResult = myItem.getAttribute("readable").getValue();
-			theResult += aUser.printForm();
-			return true;
 		}
 		return false;
 	}

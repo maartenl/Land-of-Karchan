@@ -84,7 +84,7 @@ public class SendMailCommand extends NormalCommand
 				start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;
 				header = command.substring(start, size + start);
 				message = command.substring(start + size + 1 - 1);
-				Database.sendMail(aUser, toUser, header, message);
+				MailDb.sendMail(aUser, toUser, header, message);
 				aUser.writeMessage("Mail sent.<BR>\r\n");
 			}
 		}

@@ -62,7 +62,7 @@ public class CurtseyCommand extends NormalCommand
 				return true;
 			}
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if (toChar == null)
+			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			}

@@ -54,8 +54,8 @@ public class Database
 	public static String sqlGetUserString = "select * from mm_usertable where name = ? and active = 0 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
-	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=date_sub(now(), interval 2 hour) where name = ?";
-	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=date_sub(now(), interval 2 hour) where name = ?";
+	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=now() where name = ?";
+	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
@@ -68,15 +68,6 @@ public class Database
 	public static String sqlSetWhimpyString = "update mm_usertable set whimpy = ? where name = ?";
 	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 
-	public static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
-	public static String sqlListMailString = "select name, haveread, newmail, header from mm_mailtable where toname = ? order by whensent asc";
-	public static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
-	public static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
-	public static String sqlUpdateMailString = "update mm_mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
-	public static String sqlSendMailString = "insert into mm_mailtable " +
-		"(name, toname, header, whensent, haveread, newmail, message) " +
-		"values (?, ?, ?, now(), 0, 1, ?)";
-
 	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
 
 	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
@@ -84,7 +75,9 @@ public class Database
 	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
 	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
 	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
+	public static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
 	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
+	public static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
 
 	public static String sqlGetCharAttributesString =
 		"select * from mm_charattributes "
@@ -187,8 +180,6 @@ public class Database
 	 * @param aQuery the sql query used to create the statement.
 	 * @return PreparedStatement object, can be used to add variables and 
 	 * do a query.
-	 * @see executeUpdate
-	 * @see executeQuery
 	 */
 	static PreparedStatement prepareStatement(String aQuery)
 	{
@@ -198,6 +189,37 @@ public class Database
 		try
 		{
 			aStatement = theConnection.prepareStatement(aQuery);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return aStatement;
+	}
+
+	/**
+	 * Create a prepared statement with some added options.
+	 * @param aQuery the sql query used to create the statement.
+	 * @param resultSetType a result set type; one of
+	 * ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, or
+	 * ResultSet.TYPE_SCROLL_SENSITIVE
+	 * @param resultSetConcurrency a concurrency type; one of
+	 * ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
+	 * @return PreparedStatement object, can be used to add variables and 
+	 * do a query.
+	 */
+	static PreparedStatement prepareStatement(String aQuery, 
+		int resultSetType, 
+		int resultSetConcurrency)
+	{
+		assert theConnection != null : "theConnection is null";
+		Logger.getLogger("mmud").finer("");
+		PreparedStatement aStatement = null;
+		try
+		{
+			aStatement = theConnection.prepareStatement(aQuery,
+				resultSetType, 
+				resultSetConcurrency);
 		}
 		catch (Exception e)
 		{
@@ -254,7 +276,7 @@ public class Database
 				res.getString("arm"),
 				res.getString("leg"),
 				res.getInt("sleep") == 1,
-				res.getInt("god") == 1,
+				isAuthorizedGod(res.getString("name")),
 				res.getString("lok"),
 				res.getInt("whimpy"),
 				res.getInt("fightable")==1,
@@ -271,6 +293,48 @@ public class Database
 		}
 		getCharAttributes(myUser);
 		return myUser;
+	}
+
+	/**
+	 * Retrieve a true or false regarding the god like status of the 
+	 *character
+	 * @param aName the name of the character. This uniquely identifies
+	 * any character in the database.
+	 * @return boolean, true if it is an administrator.
+	 */
+	public static boolean isAuthorizedGod(String aName)
+	{
+		assert theConnection != null : "theConnection is null";
+		Logger.getLogger("mmud").finer("");
+		ResultSet res;
+		User myUser = null;
+		try
+		{
+
+		PreparedStatement sqlAutho = theConnection.prepareStatement(sqlAuthorizeString);
+		sqlAutho.setString(1, aName);
+		res = sqlAutho.executeQuery();
+		if (res == null)
+		{
+			return false;
+		}
+		if (res.next())
+		{
+			if (res.getString(1).equals("yes"))
+			{
+				res.close();
+				sqlAutho.close();
+				return true;
+			}
+		}
+		res.close();
+		sqlAutho.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -478,7 +542,7 @@ public class Database
 					res.getString("arm"),
 					res.getString("leg"),
 					res.getInt("sleep") == 1,
-					res.getInt("god") == 1, 
+					isAuthorizedGod(myName),
 					res.getString("lok"),
 					res.getInt("whimpy"),
 					res.getInt("fightable")==1,
@@ -653,219 +717,6 @@ public class Database
 	}
 
 	/**
-	 * returns a list of mudmails
-	 * @param aUser the user to list the mudmails for
-	 * @return String containing a bulleted list of mudmails.
-	 */
-	public static String getListOfMail(User aUser)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		ResultSet res;
-		int j = 1;
-		String result = "<TABLE BORDER=0 VALIGN=top>\r\n";
-		try
-		{
-
-		PreparedStatement sqlListMailMsg = theConnection.prepareStatement(sqlListMailString);
-		sqlListMailMsg.setString(1, aUser.getName());
-		res = sqlListMailMsg.executeQuery();
-		if (res != null)
-		{
-			while (res.next())
-			{
-				result += "<TR VALIGN=TOP><TD>" + j + ".</TD><TD>";
-				if (res.getInt("newmail") > 0) 
-				{
-					result += "N";
-				}
-				if (res.getInt("haveread") > 0) 
-				{
-					result += "U";
-				}
-				result += "</TD><TD><B>From: </B>" + res.getString("name") + "</TD>";
-				result += "<TD><B>Header: </B><A HREF=\"" + aUser.getUrl("readmail+" + j) + "\">";
-				result += res.getString("header") + "</A></TD><TD><A HREF=\"" + aUser.getUrl("deletemail+" + j) + "\">Delete</A></TD></TR>\r\n";
-				j++;
-			}
-			res.close();
-			result += "</TABLE><BR>\r\n";
-		}
-		sqlListMailMsg.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * reads a mail from a user.
-	 * @param aUser the user whos mudmail should be read
-	 * @param messagenr the identification of the message, usually a number
-	 * where "1" represents the first message, "2" the second, etc.
-	 * @return String properly HTML formatted containing the mudmail.
-	 */
-	public static String readMail(User aUser, int messagenr)
-		throws MailException
-	{
-		Logger.getLogger("mmud").finer("");
-		return doStuffWithMail(aUser, messagenr, false);
-	}
-
-	/**
-	 * deletes a mail. Returns the mudmail that has been erased.
-	 * @param aUser the user whos mudmail must be erased.
-	 * @param messagenr the message number identifying the mudmail
-	 * where "1" represents the first message, "2" the second, etc.
-	 * @return String properly HTML formatted containing the mudmail.
-	 * @throws MailException if the message with messagenumber could
-	 * not be found. (for example the message number was illegal)
-	 */
-	public static String deleteMail(User aUser, int messagenr)
-		throws MailException
-	{
-		Logger.getLogger("mmud").finer("");
-		return doStuffWithMail(aUser, messagenr, true);
-	}
-
-	/**
-	 * does either of two things with mail, dependant of the boolean
-	 * parameter
-	 * @param aUser the user whos mudmail we wish to mutate
-	 * @param messagenr the identification number of the message
-	 * where "1" represents the first message, "2" the second, etc.
-	 * @param deleteIt boolean, <UL><LI>true = delete mail<LI>false = do not
-	 * delete mail, but update <I>haveread</I></UL>
-	 * @return String containing the mail in question.
-	 * @throws MailException if the messagenumber is invalid.
-	 */
-	private static String doStuffWithMail(User aUser, int messagenr, boolean deleteIt)
-		throws MailException
-	{
-		Logger.getLogger("mmud").finer("");
-		if (messagenr <= 0)
-		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-			throw new InvalidMailException();
-		}
-		assert theConnection != null : "theConnection is null";
-		ResultSet res;
-		int j = 1;
-		String result = "<TABLE BORDER=0 VALIGN=top>\r\n";
-		try
-		{
-		PreparedStatement sqlReadMailMsg =
-			theConnection.prepareStatement(sqlReadMailString,
-			ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		sqlReadMailMsg.setString(1, aUser.getName());
-		res = sqlReadMailMsg.executeQuery();
-		if (res != null)
-		{
-			if (!res.absolute(messagenr))
-			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-				throw new InvalidMailException();
-			}
-			result += "<H1>Read Mail - " + res.getString("header") + "</H1>";
-			result += "<HR noshade><TABLE BORDER=0>\r\n";
-			result += "<TR><TD>Mes. Nr:</TD><TD> <B>" + messagenr + "</B></TD></TR>\r\n";
-			result += "<TR><TD>From:</TD><TD><B>" + res.getString("name") + "</B></TD></TR>\r\n";
-			result += "<TR><TD>On:</TD><TD><B>" + res.getDate("whensent") + " " + res.getTime("whensent") + "</B></TD></TR>\r\n";
-			result += "<TR><TD>New?:</TD><TD><B>";
-			if (res.getInt("newmail")>0) 
-			{				
-				result += "Yes</B></TD></TR>\r\n";
-			}
-			else 
-			{
-				result += "No</B></TD></TR>\r\n";
-			}
-			result += "<TR><TD>Read?:</TD><TD><B>";
-			if (res.getInt("haveread")>0) 
-			{
-				result += "Yes</B></TD></TR>\r\n";
-			}
-			else 
-			{				
-				result += "No</B></TD></TR>\r\n";
-			}
-			result += "<TR><TD>Header:</TD><TD><B>" + res.getString("header") + "</B></TABLE>\r\n";
-			result += "<HR noshade>" + res.getString("message");
-			result += "<HR noshade><A HREF=\"" + aUser.getUrl("listmail") + "\">ListMail</A><P>";
-
-			if (deleteIt)
-			{
-				PreparedStatement sqlDeleteMail = theConnection.prepareStatement(sqlDeleteMailString);
-				sqlDeleteMail.setString(1, res.getString("name"));
-				sqlDeleteMail.setString(2, aUser.getName());
-				sqlDeleteMail.setTimestamp(3, res.getTimestamp("whensent"));
-				sqlDeleteMail.executeUpdate();
-				sqlDeleteMail.close();
-			}
-			else
-			{
-				PreparedStatement sqlUpdateMail = theConnection.prepareStatement(sqlUpdateMailString);
-				sqlUpdateMail.setString(1, res.getString("name"));
-				sqlUpdateMail.setString(2, aUser.getName());
-				sqlUpdateMail.setTimestamp(3, res.getTimestamp("whensent"));
-				sqlUpdateMail.executeUpdate();
-				sqlUpdateMail.close();
-			}
-
-			res.close();
-			result += "</TABLE><BR>\r\n";
-		}
-		else
-		{
-			sqlReadMailMsg.close();
-			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
-			throw new InvalidMailException();
-		}
-		sqlReadMailMsg.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * send mud mail.
-	 * @param aUser the user who wishes to send mudmail.
-	 * @param toUser the user who has to receive the send mudmail.
-	 * @param header the header of the mudmail
-	 * @param message the body of the mudmail
-	 */
-	public static void sendMail(User aUser, User toUser, String header, String message)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		try
-		{
-
-		PreparedStatement sqlSendMailUser = theConnection.prepareStatement(sqlSendMailString);
-		sqlSendMailUser.setString(1, aUser.getName());
-		sqlSendMailUser.setString(2, toUser.getName());
-		sqlSendMailUser.setString(3, header);
-		sqlSendMailUser.setString(4, message);
-		int res = sqlSendMailUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSendMailUser.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * search for the username amongst the banned users list in the database
 	 * first checks the mm_sillynamestable in the database, then checks the
 	 * mm_unbantable and
@@ -950,44 +801,6 @@ public class Database
 	}
 
 	/**
-	 * see if the person has new mail
-	 * @return boolean, true if found, false if not found
-	 * @param aUser User whos mail must be checked.
-	 */
-	public static boolean hasUserNewMail(User aUser)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		ResultSet res;
-		try
-		{
-
-		PreparedStatement sqlGetMailStatus = theConnection.prepareStatement(sqlYouHaveNewMailString);
-		sqlGetMailStatus.setString(1, aUser.getName());
-		res = sqlGetMailStatus.executeQuery();
-		if (res != null)
-		{
-			if (res.next())
-			{
-				if (res.getInt("count") > 0) 
-				{
-					res.close();
-					sqlGetMailStatus.close();
-					return true;
-				}
-			}
-			res.close();
-		}
-		sqlGetMailStatus.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
 	 * set the session password of a user into the mm_usertable
 	 * @param username String, name of the playercharacter 
 	 * @param sesspwd String, the session password of the player 
@@ -1017,8 +830,8 @@ public class Database
 	}
 
 	/**
-	 * activate user.
-	 * This is done by copying the record over to tmp_mm_usertable
+	 * activate user for game play. This is done by setting
+	 * the flag <I>active</I>.
 	 * @param aUser User wishing to be active
 	 */
 	public static void activateUser(User aUser)
@@ -1307,6 +1120,43 @@ public class Database
 			// TOBEDONE
 		}
 		sqlSetPkillUser.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * write a log message to the database. This log facility is primarily
+	 * used to keep a record of what kind of important mutations are done
+	 * or attempted by both characters as well as administrators.
+	 * Some examples:
+	 * <ul><li>an item is picked up off the floor by a character
+	 * <li>an item is eaten
+	 * <li>an administrator creates a new item/room/character
+	 * </ul>
+	 * @param aName the name of the person to be inscribed in the log table
+	 * @param aMessage the message to be written in the log, may not be
+	 * larger than 255 characters.
+	 */
+	public static void writeLog(String aName, String aMessage)
+	{
+		Logger.getLogger("mmud").finer("");
+		assert aMessage.length() <= 255 : "aMessage is supposed to be <255";
+		assert theConnection != null : "theConnection is null";
+		try
+		{
+			PreparedStatement sqlWriteLog = theConnection.prepareStatement(sqlWriteLogString);
+			sqlWriteLog.setString(1, aName);
+			sqlWriteLog.setString(2, aMessage);
+			int res = sqlWriteLog.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				// TOBEDONE
+			}
+			sqlWriteLog.close();
 		}
 		catch (Exception e)
 		{

@@ -59,7 +59,7 @@ public class EyebrowCommand extends NormalCommand
 			aUser.writeMessage("You raise an eyebrow.<BR>\r\n");
 			aUser.sendMessage(aUser.getName() + " raises an eyebrow.<BR>\r\n");
 		}
-		return true;
+		return false;
 	}
 
 }

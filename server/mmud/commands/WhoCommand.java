@@ -51,6 +51,7 @@ public class WhoCommand extends NormalCommand
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		theString = null;
 		if (!super.run(aUser))
 		{
 			return false;

@@ -108,8 +108,9 @@ public class BuyCommand extends NormalCommand
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
-			if (!"shopkeeper".equals(
-				toChar.getAttribute("occupation").getValue()))
+			if ( (!toChar.isAttribute("occupation")) || 
+				(!"shopkeeper".equals(
+				toChar.getAttribute("occupation").getValue())) )
 			{
 				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;

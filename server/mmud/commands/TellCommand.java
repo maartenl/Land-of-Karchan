@@ -67,8 +67,8 @@ public class TellCommand extends NormalCommand
 			else
 			{
 				String message = command.substring(command.indexOf(myParsed[3], 4 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				aUser.writeMessage("You tell " + toChar.getName() + " : " + message + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " tells you : " + message + ".<BR>\r\n");
+				aUser.writeMessage("You tell " + toChar.getName() + " : " + message + "<BR>\r\n");
+				toChar.writeMessage(aUser.getName() + " tells you : " + message + "<BR>\r\n");
 			}
 			return true;
 		}

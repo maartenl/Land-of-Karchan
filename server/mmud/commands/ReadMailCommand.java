@@ -61,7 +61,7 @@ public class ReadMailCommand extends NormalCommand
 			
 			try
 			{
-				theString = Database.readMail(aUser, Integer.parseInt(myParsed[1]));
+				theString = MailDb.readMail(aUser, Integer.parseInt(myParsed[1]));
 				theString += aUser.printForm();
 			}
 			catch (NumberFormatException e)

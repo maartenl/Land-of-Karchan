@@ -300,7 +300,7 @@ public class MudSocket extends Thread
 	}
 
 	/**
-	 * main function for logging into the game<P>
+	 * main function for logging into the game.<P>
 	 * The following checks and tasks are performed:
 	 * <OL><LI>check if mud is enabled/disabled
 	 * <LI>validate input using perl reg exp.
@@ -318,7 +318,7 @@ public class MudSocket extends Thread
 	 * <li>2 = multiple windows with serverpush and javascript and all
 	 * sorts of other stuff.
 	 * </ul>
-	 * @returns String containing the text to be sent to the user
+	 * @return String containing the text to be sent to the user
 	 * @throws MudException in case something goes wrong.
 	 */
 	private String enterMud(String aName, String aPassword, String aAddress, String aCookie, int aFrames)
@@ -372,7 +372,7 @@ public class MudSocket extends Thread
 		myUser.generateSessionPassword();
 		myUser.setFrames(aFrames);
 		myUser.writeMessage(Database.getLogonMessage());
-		if (Database.hasUserNewMail(myUser)) 
+		if (MailDb.hasUserNewMail(myUser)) 
 		{
 			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
 		}
@@ -471,7 +471,7 @@ public class MudSocket extends Thread
 
 
 	/**
-	 * main function for executing a command in the game<P>
+	 * main function for executing a command in the game.<P>
 	 * The following checks and tasks are performed:
 	 * <OL><LI>check if mud is enabled/disabled
 	 * <LI>validate input using perl reg exp.
@@ -728,7 +728,7 @@ public class MudSocket extends Thread
 		myUser.generateSessionPassword();
 		myUser.setFrames(aFrames);
 		myUser.writeMessage(Database.getLogonMessage());
-		if (Database.hasUserNewMail(myUser)) 
+		if (MailDb.hasUserNewMail(myUser)) 
 		{
 			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
 		}
