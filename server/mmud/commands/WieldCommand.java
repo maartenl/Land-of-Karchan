@@ -36,8 +36,9 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Starts you wearing an item on you.
- * Syntax: wear &lt;item&gt; on &lt;body position&gt;
+ * Starts you wielding an item on you.
+ * Syntax: wield &lt;item&gt; with
+ * &lt;lefthand|righthand|both|hands|bothhandsd&gt;
  */
 public class WieldCommand extends NormalCommand
 {
