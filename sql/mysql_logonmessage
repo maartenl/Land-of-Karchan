@@ -25,39 +25,13 @@ The current deputies are:
 Kass, Kel, Bladestorm, Silverblade, Blackfyre<P>
 
 <HR>
-Tuesday, Nov 05 2002, 00:49<P>
-Noticed that the game was acting wonky and been unable to reboot
-it properly. Got an email from my database telling me a database table was
-corrupt. Fixed it. Game should run stable now at least for a while.<P>
-We do not seem to have lost any data though.
-<HR>
-Friday, Nov 01 2002, 20:50<P>
-For the past two years I have yearned for a permanent Internet connection
-at home, but been unable to get it at this backwater village
-in nowhere-country.<P>
-This summer, my cable company replaced most of the cable in the vicinity.<P>
-Took a telephone yesterday and called to my local Cable company asking for
-CableInternet Access. Turns out it will be available in December of this
-year. Then I will have a dedicated 1-2 Mbit/s line. That day will be a day
-of celebration and probably one of the best Christmas gifts ever.<P>
-If they have the heart to postpone it (again) I will fall into a deep pit
-of despair, plotting the demise of Cable TV Executives as I plummet down.
+Monday, Nov 11 2002, 15:13<P>
+THe database was shot down by the operating system because it was taking
+up too much memory. Ah, well, that happens
+when any one program keeps running for approximately 200 days straight.<P>
+Restarted and now we have plenty of free memory again.
 <HR>
 Friday, Oct 25 2002, 20:26<P>
-Dammit! It\'s 23:56 and still not sleepy.<P>
-I have recently started a project at
-<A href=\"http://sourceforge.net\">SourceForge</A>, in order to provide
-better facilities to anyone wishing to contribute. You may find my specific
-project (called MMud) both
-<A HREF=\"http://mmud.sourceforge.net\">here</A> and 
-<A HREF=\"http://sourceforge.net/projects/mmud\">here</A>. One
-of the facilities is for example to submit <I>bug reports</I>.<P>
-Several people reported that <I>creating new characters</I> did not seem
-to work. I checked it out, and they were right. It seems
-that the mud had some problems dealing with <I>empty</I> fields. Fixed it.
-Mail me if it happens again.<P>
-I usually only accept requests for deputyship via my
-official email address maarten_l@yahoo.com.<BR>
 Current list of people interested in becoming <B>deputy</B>:
 <UL>
 <LI>Desdamona
@@ -69,33 +43,6 @@ Current list of people interested in becoming <B>deputy</B>:
 <LI>Kobi
 <LI>Rienn Iriydgrayne
 </UL>
-<HR>
-Sunday, Oct 20 2002, 15:18<P>
-Seeing as important and possibly security sensitive information has
-been removed from the source code and put into a nice config file, I
-don\'t see why I cannot provide people (read) access
-to the CVS Repository. The CVS Repository is the place where I work
-(and the deps, when they feel like it) on the source code. As such it
-always carries the latest and greatest changes. How this works can
-be found at www.cvshome.org .
-<P>
-Here is the info for you to access my source code through CVS:
-<UL>
-<LI>username: anonymous
-<LI>password: no password, just don't fill out anything
-<LI>proper commandline: <I>cvs
--d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot
-&lt;command&gt;</I>
-<LI>(You are ofcourse free to use another program to access
-my sourcecode. I hear WinCVS and TurtleCVS are quite nice Windows GUIs)
-</UL>
-For example getting the latest documentation:<BR>
-<I>
-cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot login<BR>
-cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot checkout docs<BR>
-cvs -d :pserver:anonymous@www.karchan.org:/karchan/mud/cvsroot logout<BR>
-</I>
-<HR>
 <HR>
 Regards,<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
