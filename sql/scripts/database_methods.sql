@@ -305,4 +305,61 @@ sayeveryone(""Kainian kneels down before the altar and prays a little.<BR>"")
 return
 " where id=54;
 
+insert into methods values(55,'pickstones1','');
+update methods
+set src="debug
+if sql(""select 1 from tmp_itemtable tmpitems "where (tmpitems.id=2) and "
+(tmpitems.room = 0) and \\\\
+(tmpitems.search = '') and \\\\
+(tmpitems.belongsto = '%me') and \\\\
+(tmpitems.wearing = '') and \\\\
+tmpitems.wielding <> ''), name)"")
+	if sql(""select 1 from rooms where id=4 and south!=0"")
+		say(""There are only small pebbles present.<BR>"")
+	else
+		say(""You are hacking away at the rocks, using your pickaxe with \\\\
+			a skill of which most people can only dream.<BR>"")
+		sql(""update items set description='<H1>The Pebbles</H1><HR>\\\\
+			You look at the pebbles. They are solid and very small and \\\\
+			they are not blocking your entrance to the south. \\\\
+			Somebody apparently has been hacking away at them, or \\\\
+			they wouldn\\\\'t have this small a size.<P>""\\\\
+  			, adject1='small', adject2='light', name='pebbles' where id=-16"")
+		sql(""update items set description='<H1>The Pebbles</H1><HR>\\\\
+			You look at the pebbles. They are solid and very small and \\\\
+			they are not blocking your entrance to the north. \\\\
+			Somebody apparently has been hacking away at them, or \\\\
+			they wouldn\\\\'t have this small a size.<P>""\\\\
+  			, adject1='small', adject2=\'ight', name='pebbles' where id=-40"")
+		sql(""update rooms set contents='<H1>The Other Side</H1><Center>\\\\
+			<IMG ALT=""Mountain""\\\\
+			SRC=""http://www.karchan.org/images/jpeg/berg.jpg""></Center><BR> You \\\\
+			appear to be on the other side of a big range of mountains, which \\\\
+			make out a lonely valley. This appears to be a whole range of \\\\
+			mountains, shutting the people out from the outside world. At \\\\
+			least, that would be the case if the passage you see to the north \\\\
+			was blocked. Now, however, is seems to provide a clear exit to the \\\\
+			north. Only some insignificant little pebbles bar your way.<P>' \\\\
+			, north=4 where id=23"")
+		sql(""update rooms set contents='<H1>The Road</H1> <Center><IMG \\\\
+			ALT=""Mountain""" \\\\
+			SRC=""http://www.karchan.org/images/jpeg/berg.jpg""></Center><BR>\\\\
+			<IMG SRC=""http://www.karchan.org/images/gif/letters/y.gif"" \\\\
+			ALIGN=left>ou are standing on a road with leads North and \\\\
+			South. Towards the south the road used to be blocked by heavy \\\\
+			stones, but now there are only little light pebbles visible. You \\\\
+			have a clear way towards the south now. Towards the north the \\\\
+			road is tolerably well and would make travelling an easy matter. \\\\
+			To the west a forest stretches out. It is impossible to go to \\\\
+			the east due to the large mountains that are that way. <P>',
+			south=23 where id=4"")
+		show(""select contents from action where id=0"")
+	end
+else
+	say(""You are not wielding a pick.<BR>"")
+end
+showstandard
+return
+"
+
 END_OF_DATA
