@@ -68,7 +68,7 @@ while ($myrow = mysql_fetch_row($result))
 	if ($myrow[1]{0} != $beginstuff)
 	{
 		$beginstuff = $myrow[1]{0};
-		printf("</UL><H1>%c</H1><UL>\r\n", $beginstuff);
+		printf("</UL><H1>%s</H1><UL>\r\n", $beginstuff);
 	}
 	printf("%s<BR>", $myrow[0]);
 	if ($counter++ > $numrows)
