@@ -793,10 +793,29 @@ Look_Command(char *name, char *password, int room)
 
 	if (aantal==3)
 	{
+		char *extralook;
+		extralook = NULL;
+		sprintf(temp, "select * from tmp_attributes "
+			"where name='look' and "
+			"objectid='%s' and "
+			"objecttype=1",
+			tokens[2]);
+		res=SendSQL2(temp, NULL);
+		if (res!=NULL)
+		{
+			row = mysql_fetch_row(res);
+			if (row != NULL)
+			{
+				extralook = (char *)malloc(strlen(row[1])+2);
+				strcpy(extralook, row[1]);
+			}
+			mysql_free_result(res);
+		}
+		
 		sprintf(temp, "select * from tmp_usertable "
 			"where (room = %i) and "
-			"(name<>'%s') and "
-			"(name='%s')",
+			"(tmp_usertable.name<>'%s') and "
+			"(tmp_usertable.name='%s')",
 			room, name, tokens[2]);
 		res=SendSQL2(temp, NULL);
 		if (res!=NULL)
@@ -827,6 +846,11 @@ Look_Command(char *name, char *password, int room)
 				" (containerid = 0) and "
 				" (items.id = tmpitems.id)",row[0], row[7], row[0]);
 				WriteSentenceIntoOwnLogFile(logname, "%s seems %s.<BR>\r\n", HeShe(row[7]), ShowString(atoi(row[29]), atoi(row[52])));
+				if (extralook != NULL)
+				{
+					WriteSentenceIntoOwnLogFile(logname, "%s is %s<BR>\r\n", HeShe(row[7]), extralook);
+					free(extralook);
+				}
 				if (!strcmp(row[26],"1")) 
 				{
 					WriteSentenceIntoOwnLogFile(logname, "%s is fast asleep.<BR>\r\n", row[0]);
@@ -1202,10 +1226,31 @@ Stats_Command(char *name, char *password)
 	MYSQL_ROW row;
 	char temp[1024];
 	char logname[100];
+	char *extralook; 
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
-	sprintf(temp, "select * from tmp_usertable where name='%s'",name);
+	extralook = NULL;
+	sprintf(temp, "select concat('You are ',value,'<BR>') from tmp_attributes "
+		"where name='look' and "
+		"objectid='%s' and "
+		"objecttype=1",
+		name);
+	res=SendSQL2(temp, NULL);
+	if (res!=NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row != NULL)
+		{
+			extralook = (char *)malloc(strlen(row[0])+2);
+			strcpy(extralook, row[0]);
+		}
+		mysql_free_result(res);
+	}
+
+	sprintf(temp, "select tmp_usertable.* "
+	"from tmp_usertable "
+	" where tmp_usertable.name='%s'",name);
 	res=SendSQL2(temp, NULL);
 
 	row = mysql_fetch_row(res);
@@ -1248,8 +1293,8 @@ Stats_Command(char *name, char *password)
 	row[7], row[6], HeShe2(row[7]), row[0], row[3], row[4]);/*sex, race*/
 
 	fprintf(cgiOut, "<P><H2>Statistics:</H2>");
-	fprintf(cgiOut, "%s, %s<BR>\r\nYou seem %s<BR>\r\nYou seem %s<BR>\r\n%s%s%s%s"
-	,row[0], row[3], ShowString(atoi(row[29])/*vitals*/, atoi(row[52])/*maxvital*/),
+	fprintf(cgiOut, "%s, %s<BR>\r\nYou seem %s.<BR>\r\n%s\r\nYou seem %s.<BR>\r\n%s%s%s"
+	,row[0], row[3], ShowString(atoi(row[29])/*vitals*/, atoi(row[52])/*maxvital*/), (extralook == NULL? "" : extralook),
 	ShowMovement(atoi(row[49]), atoi(row[51])),
 	 ShowDrink(atoi(row[32])), ShowEat(atoi(row[33])), ShowBurden(CheckWeight(name)), ShowAlignment(atoi(row[47])));
 	fprintf(cgiOut, "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
@@ -1270,6 +1315,10 @@ Stats_Command(char *name, char *password)
 	}
 	if (atoi(row[26]) >= 100) {
 		fprintf(cgiOut, "You are sitting at a table.<BR>\r\n");
+	}
+	if (extralook != NULL) 
+	{
+		free(extralook);
 	}
 	mysql_free_result(res);
 
