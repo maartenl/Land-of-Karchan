@@ -542,7 +542,9 @@ public class Character
 				String adject3,
 				String name)
 	{
-		return Database.dropItem(amount, adject1, adject2, adject3, name, this);
+		return 0;
+		// DEBUG
+//		return Database.dropItem(amount, adject1, adject2, adject3, name, this);
 	}
 
 	

@@ -107,7 +107,8 @@ public class DropCommand extends NormalCommand
                     break;
                 }
             }
-            Item myItem = aUser.getItem(adject1, adject2, adject3, name);
+			// DEBUG
+            Item myItem = null; //aUser.getItem(adject1, adject2, adject3, name);
             int result = aUser.dropItems(amount, adject1, adject2, adject3, name);
 			if (result == 0)
 			{

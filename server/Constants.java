@@ -27,8 +27,10 @@ maarten_l@yahoo.com
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.*;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Properties;
 
 public final class Constants
 {
@@ -39,7 +41,20 @@ public final class Constants
 
 	public final static boolean LOGGING = true;
 
+	public final static String CONFIG_FILE = "config";
+	public final static String config_file = CONFIG_FILE;
+
 	public final static String MUDFILEPATH = "/home/karchan/mud";
+
+	/**
+	 * a property list with the default values
+	 */
+	private static Properties theDefaults;
+
+	/**
+	 * a property list with the actual configuration values
+	 */
+	private static Properties theValues;
 
 	public final static String DBNAME = "mud";
 	public final static String DBHOST = "localhost";
@@ -151,77 +166,77 @@ public final class Constants
 		"at death's door"};
 
 	public static final String[][] emotions = {
-    {"agree", "agrees"},
-    {"apologize", "apologizes"},
-    {"blink", "blinks"},
-    {"cheer", "cheers"},
-    {"chuckle", "chuckles"},
-    {"cough", "coughs"},
-    {"dance", "dances"},
-    {"disagree", "disagrees"},
-    {"flinch", "flinches"},
-    {"flirt", "flirts"},
-    {"frown", "frowns"},
-    {"giggle", "giggles"},
-    {"glare", "glares"},
-    {"grin", "grins"},
-    {"groan", "groans"},
-    {"growl", "growls"},
-    {"grumble", "grumbles"},
-    {"grunt", "grunts"},
-    {"hmm", "hmms"},
-    {"howl", "howls"},
-    {"hum", "hums"},
-    {"kneel", "kneels"},
-    {"kneel", "kneels"},
-    {"listen", "listens"},
-    {"melt", "melts"},
-    {"mumble", "mumbles"},
-    {"mutter", "mutters"},
-    {"nod", "nods"},
-    {"purr", "purrs"},
-    {"shrug", "shrugs"},
-    {"sigh", "sighs"},
-    {"smile", "smiles"},
-    {"smirk", "smirks"},
-    {"snarl", "snarls"},
-    {"sneeze", "sneezes"},
-    {"stare", "stares"},
-    {"think", "thinks"},
-    {"wave", "waves"},
-    {"whistle", "whistles"},
-    {"wink", "winks"},
-    {"laugh", "laughs out loud"},
-    {"wonder", "wonders"}};
+	{"agree", "agrees"},
+	{"apologize", "apologizes"},
+	{"blink", "blinks"},
+	{"cheer", "cheers"},
+	{"chuckle", "chuckles"},
+	{"cough", "coughs"},
+	{"dance", "dances"},
+	{"disagree", "disagrees"},
+	{"flinch", "flinches"},
+	{"flirt", "flirts"},
+	{"frown", "frowns"},
+	{"giggle", "giggles"},
+	{"glare", "glares"},
+	{"grin", "grins"},
+	{"groan", "groans"},
+	{"growl", "growls"},
+	{"grumble", "grumbles"},
+	{"grunt", "grunts"},
+	{"hmm", "hmms"},
+	{"howl", "howls"},
+	{"hum", "hums"},
+	{"kneel", "kneels"},
+	{"kneel", "kneels"},
+	{"listen", "listens"},
+	{"melt", "melts"},
+	{"mumble", "mumbles"},
+	{"mutter", "mutters"},
+	{"nod", "nods"},
+	{"purr", "purrs"},
+	{"shrug", "shrugs"},
+	{"sigh", "sighs"},
+	{"smile", "smiles"},
+	{"smirk", "smirks"},
+	{"snarl", "snarls"},
+	{"sneeze", "sneezes"},
+	{"stare", "stares"},
+	{"think", "thinks"},
+	{"wave", "waves"},
+	{"whistle", "whistles"},
+	{"wink", "winks"},
+	{"laugh", "laughs out loud"},
+	{"wonder", "wonders"}};
 
 	public static final String[][] emotions2 = {
-    {"caress", "caresses"},
-    {"comfort", "comforts"},
-    {"confuse", "confuses"},
-    {"congratulate", "congratulates"},
-    {"cuddle", "cuddles"},
-    {"fondle", "fondles"},
-    {"greet", "greets"},
-    {"hug", "hugs"},
-    {"ignore", "ignores"},
-    {"kick", "kicks"},
-    {"kiss", "kisses"},
-    {"knee", "knees"},
-    {"lick", "licks"},
-    {"like", "likes"},
-    {"love", "loves"},
-    {"nudge", "nudges"},
-    {"pat", "pats"},
-    {"pinch", "pinches"},
-    {"poke", "pokes"},
-    {"slap", "slaps"},
-    {"smooch", "smooches"},
-    {"sniff", "sniffes"},
-    {"squeeze", "squeezes"},
-    {"tackle", "tackles"},
-    {"thank", "thanks"},
-    {"tickle", "tickles"},
-    {"worship", "worships"}};
+	{"caress", "caresses"},
+	{"comfort", "comforts"},
+	{"confuse", "confuses"},
+	{"congratulate", "congratulates"},
+	{"cuddle", "cuddles"},
+	{"fondle", "fondles"},
+	{"greet", "greets"},
+	{"hug", "hugs"},
+	{"ignore", "ignores"},
+	{"kick", "kicks"},
+	{"kiss", "kisses"},
+	{"knee", "knees"},
+	{"lick", "licks"},
+	{"like", "likes"},
+	{"love", "loves"},
+	{"nudge", "nudges"},
+	{"pat", "pats"},
+	{"pinch", "pinches"},
+	{"poke", "pokes"},
+	{"slap", "slaps"},
+	{"smooch", "smooches"},
+	{"sniff", "sniffes"},
+	{"squeeze", "squeezes"},
+	{"tackle", "tackles"},
+	{"thank", "thanks"},
+	{"tickle", "tickles"},
+	{"worship", "worships"}};
 
 	public final static String[] adverb = {
 	"absentmindedly",
@@ -511,6 +526,35 @@ public final class Constants
 		{
 			System.err.println("Constants.init");
 		}
+
+		theDefaults = new Properties();
+		theDefaults.setProperty("logging", (LOGGING ? "true" : "false"));
+		theDefaults.setProperty("mudfilepath", MUDFILEPATH);
+		theDefaults.setProperty("dbname", DBNAME);
+		theDefaults.setProperty("dbhost", DBHOST);
+		theDefaults.setProperty("dbuser", DBUSER);
+		theDefaults.setProperty("dbpasswd", DBPASSWD);
+		theDefaults.setProperty("dbjdbcclass", DBJDBCCLASS);
+		theDefaults.setProperty("dburl", DBURL);
+		theDefaults.setProperty("mudofflinefile", "offline.txt");
+		theDefaults.setProperty("mudhelpfile", "help.txt");
+		theDefaults.setProperty("mudauditfile", "audit.trail.txt");
+		theDefaults.setProperty("mudbigfile", "bigfile.txt");
+		theDefaults.setProperty("muderrorfile", "error.txt");
+		theDefaults.setProperty("mudnewcharfile", "newchar.html");
+		theDefaults.setProperty("goodbyefile", "goodbe.html");
+		theDefaults.setProperty("mudcgi", "/cgi-bin/mud.cgi");
+		theDefaults.setProperty("leftframecgi", "/cgi-bin/leftframe.cgi");
+		theDefaults.setProperty("logonframecgi", "/cgi-bin/logonframe.cgi");
+		theDefaults.setProperty("nph_leftframecgi", "/cgi-bin/nph-leftframe.cgi");
+		theDefaults.setProperty("nph_logonframecgi", "/cgi-bin/nph-logonframe.cgi");
+		theDefaults.setProperty("nph_javascriptframecgi", "/cgi-bin/nph-javascriptframe.cgi");
+		theDefaults.setProperty("mudtitle", "Maarten's Mud");
+		theDefaults.setProperty("mudbackground", "");
+		theDefaults.setProperty("mudcopyright", "&copy; Copyright Maarten van Leunen");
+		theValues = new Properties(theDefaults);
+		loadInfo();
+
 		theCommandStructure.put("bow", new BowCommand());
 		theCommandStructure.put("me", new MeCommand());
 		theCommandStructure.put("quit", new QuitCommand());
@@ -634,5 +678,102 @@ public final class Constants
 				aChar == 'I' ||
 				aChar == 'O';
 	}
+
+	/**
+	 * load properties from file.
+	 * @param aFilename the name of the file containing the property
+	 * settings.
+	 */
+	public static void loadInfo(String aFilename)
+	{
+		if (Constants.logging)
+		{
+			System.err.println("Constants.loadInfo");
+		}
+		try
+		{
+			FileInputStream reader = new FileInputStream(aFilename);
+			theValues.load(reader);
+			reader.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("File not found (" + aFilename + ")...");
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error reading file (" + aFilename + ")...");
+            e.printStackTrace();
+        }
+		dbname = theValues.getProperty("dbname");
+		dbhost = theValues.getProperty("dbhost");
+		dbdomain = theValues.getProperty("dbdomain");
+		dbuser = theValues.getProperty("dbuser");
+		dbpasswd = theValues.getProperty("dbpasswd");
+		dbjdbcclass = theValues.getProperty("dbjdbcclass");
+		dburl = theValues.getProperty("dburl");
+		logging = (theValues.getProperty("logging").equals("true") ? true : false);
+
+		mudfilepath = theValues.getProperty("mudfilepath");
+		mudofflinefile = theValues.getProperty("mudofflinefile");
+		mudhelpfile = theValues.getProperty("mudhelpfile");
+		mudauditfile = theValues.getProperty("mudauditfile");
+		mudbigfile = theValues.getProperty("mudbigfile");
+		muderrorfile = theValues.getProperty("muderrorfile");
+		mudnewcharfile = theValues.getProperty("mudnewcharfile");
+		goodbyefile = theValues.getProperty("goodbyefile");
+
+		mudcgi = theValues.getProperty("mudcgi");
+		leftframecgi = theValues.getProperty("leftframecgi");
+		logonframecgi = theValues.getProperty("logonframecgi");
+		nph_leftframecgi = theValues.getProperty("nph_leftframecgi");
+		nph_logonframecgi = theValues.getProperty("nph_logonframecgi");
+		nph_javascriptframecgi = theValues.getProperty("nph_javascriptframecgi");
+
+		mudtitle = theValues.getProperty("mudtitle");
+		mudbackground = theValues.getProperty("mudbackground");
+		mudcopyright = theValues.getProperty("mudcopyright");
+
+	}
+
+	/**
+	 * load properties from file. Default filename is "config".
+	 */
+	public static void loadInfo()
+	{
+		loadInfo(config_file);
+	}
+
+    /**
+     * save properties to file.
+     */
+    public static void saveInfo()
+    {
+		if (Constants.logging)
+		{
+			System.err.println("Constants.saveInfo");
+		}
+        try
+        {
+            FileOutputStream writer = new FileOutputStream(CONFIG_FILE);
+            theValues.store(writer,
+            " contains persistent configuration information for server\n" +
+            "# this file is generated, do not edit unless you really want to.");
+            writer.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("File not found...");
+            e.printStackTrace();
+            return;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+    }
+
 
 }
