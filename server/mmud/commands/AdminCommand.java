@@ -95,6 +95,13 @@ public class AdminCommand extends NormalCommand
 			aUser.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
 			return true;
 		}
+		if (getCommand().equalsIgnoreCase("admin reset itemdefs"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'reset itemdefs' executed");
+			ItemDefs.init();
+			aUser.writeMessage("Item Definitions have been reset.<BR>\r\n");
+			return true;
+		}
 		if (getCommand().equalsIgnoreCase("admin shutdown"))
 		{
 			Database.writeLog(aUser.getName(), "admin command 'shutdown' executed");
@@ -127,6 +134,7 @@ public class AdminCommand extends NormalCommand
 			aUser.writeMessage("Possible commands are:<DL>" +
 				"<DT>admin help<DD>this help text" +
 				"<DT>admin reset characters<DD>reset the cached rooms, required every time you make a change to a room" +
+				"<DT>admin reset itemdefs<DD>reset the cached item definitions, required every time you make a change to an itemdefinition" +
 				"<DT>admin reset rooms<DD>reset the cached characters, required every time you make a change to a character." +
 				"Already active characters are reloaded into the cache from the database." +
 				"<DT>admin shutdown<DD>Shuts down the game. Carefull! The game is not automatically restarted!" +
