@@ -145,7 +145,8 @@ void validateUser()
 	sprintf(sqlstring, "select * "
 	"from usertable "
 	"where usertable.name = '%s' and "
-	"usertable.password = '%s'", name, password);
+	"usertable.password = '%s' and "
+	"usertable.god<2", name, password);
 	fprintf(cgiOut, "Content-type: text/html\n\n");
 	fprintf(cgiOut, "<HTML>\n");
 	fprintf(cgiOut, "<HEAD>\n");

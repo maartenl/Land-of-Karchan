@@ -41,6 +41,7 @@ void listSheets()
 	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
+	int i;
 	
 	fprintf(cgiOut, "Content-type: text/html\n\n");
 	fprintf(cgiOut, "<HTML>\n");
@@ -67,7 +68,9 @@ void listSheets()
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
 	}
  
-	if (mysql_query(&mysql,"select concat(\"<LI><A HREF=\\\"/cgi-bin/charactersheet.cgi?name=\",name,\"\\\">\",name,\"</A>\") from characterinfo"))
+	if (mysql_query(&mysql,"select concat(\"<LI><A HREF=\\\"/cgi-bin/charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") "
+	"from characterinfo, usertable "
+	"where usertable.name=characterinfo.name"))
 	{
 		// error
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
@@ -79,14 +82,9 @@ void listSheets()
 		{
 			int num_fields = mysql_num_fields(res);
 			// retrieve rows, then call mysql_free_result(result)
-			row = mysql_fetch_row(res);
-			if (row != NULL)
+			while ((row = mysql_fetch_row(res))!=NULL)
 			{
-				int i;
-				for (i=0;i<num_fields;i++)
-				{
-					fprintf(cgiOut, "%s",row[i]);
-				}
+				fprintf(cgiOut, "%s",row[0]);
 			}
 			mysql_free_result(res);
 		}

@@ -350,7 +350,6 @@ cgiMain()
 		KillGame();
 	}
 
-	SwitchRoomCheck(name, password, room);
     if ((!strcmp(troep, "inventory")) || (!strcmp(troep, "i"))) 
     {
 		WriteInventoryList(name, password);
