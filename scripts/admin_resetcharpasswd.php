@@ -43,11 +43,15 @@ Char <?php echo $_REQUEST{"char"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
-$possibilities = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-$password = "";
-for ($i = 1; $i < 14 ; $i++)
+if ( (!isset($_REQUEST{"char"})) ||
+     (!isset($_REQUEST{"newpassword"})) )
 {
-	$password = $password.substr($possibilities, rand(0,61), 1);
+	die("Form information missing.");
+}
+$password = $_REQUEST{"newpassword"};
+if (strlen($password) < 5)
+{
+	die("Password should be at least 5 characters long.");
 }
 // make that change.
 $query = "update mm_usertable set password = password(\"".
