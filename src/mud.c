@@ -33,7 +33,8 @@ maartenl@il.fontys.nl
 #include <sys/resource.h>
 #include <sys/time.h>
 
-// include files for socket communication#include <netdb.h>
+// include files for socket communication
+#include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -42,6 +43,11 @@ maartenl@il.fontys.nl
 
 // include file for using the syslogd system calls
 #include <syslog.h>
+
+// include files for the xml library calls
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include "cgic.h"
 
@@ -81,7 +87,29 @@ send_socket(int s, char *buf, int *len)
 	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
+char *
+createXmlString(char *fcommand, char *fname, char *fpassword, int fframes)
+{
+	xmlDocPtr doc;
+	xmlNodePtr tree, subtree;
+	char frames[10], *myBuffer;
+	int mySize;
+	
+	sprintf(frames, "%i", fframes);
+	doc = xmlNewDoc("1.0");
+	doc->children = xmlNewDocNode(doc, NULL, "root", NULL);
+	//xmlSetProp(doc->children, "prop1", "gnome is great");
+	tree = xmlNewChild(doc->children, NULL, "user", NULL);
+	subtree = xmlNewChild(tree, NULL, "name", fname);
+	//tree = xmlNewChild(doc->children, NULL, "chapter", NULL);
+	subtree = xmlNewChild(tree, NULL, "password", fpassword);
+	subtree = xmlNewChild(tree, NULL, "frames", frames);
+	tree = xmlNewChild(doc->children, NULL, "command", fcommand);
+	//xmlSaveFile("myxmlfile.xml", doc);
+	xmlDocDumpMemory(doc, &myBuffer, &mySize);
 
+	return myBuffer;
+}
 
 int 
 cgiMain()
@@ -171,27 +199,12 @@ cgiMain()
 	
 	receivebuf[numbytes] = '\0';
 	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
-	sendbuf="<?xml version=\"1.0\"?>\n<!DOCTYPE spec SYSTEM \"mud.dtd\">\n<root>\n<user>\n<name>";numbytes=strlen(sendbuf);
+	sendbuf = createXmlString(command, name, password, getFrames());
+//	printf("[%s]", sendbuf);
+	numbytes=strlen(sendbuf);
 	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf=name;numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf="</name>\n<password>";numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf=password;numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf="</password>\n<frames>";numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	
-	sprintf(frames, "%i", getFrames());
-	sendbuf=frames;numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-
-	sendbuf="</frames>\n</user>\n<command>";numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf=command;numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
-	sendbuf="</command>\n</root>\n";numbytes=strlen(sendbuf);
-	send_socket(sockfd, sendbuf, &numbytes);
+	free(sendbuf);
+//	send_socket(sockfd, "\n", &numbytes);
 
 	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
 	{
