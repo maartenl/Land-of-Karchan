@@ -29,6 +29,7 @@ maartenl@il.fontys.nl
 extern char *troep;
 extern int      aantal;
 extern char    *tokens[100];
+char *stringbuffer;
 
 //char *replace = 
 //{
@@ -260,6 +261,35 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		if (debug) {fprintf(cgiOut, "set room= found...<BR>\n");}
 		*room = atoi(parserstring+9);
 	}
+	if (strstr(parserstring, "getstring(")==parserstring)
+	{
+		/* compute string return value */
+		char *temp;
+		MYSQL_RES *res;
+		MYSQL_ROW row;
+		temp = (char *) malloc(strlen(parserstring)+1);
+		strcpy(temp, parserstring+11);
+		temp[strlen(temp)-2]=0;
+
+		if (debug) {fprintf(cgiOut, "getstring found...<BR>\n");}
+		res=SendSQL2(temp, NULL);
+		free(temp);
+		if (res != NULL)
+		{
+			row = mysql_fetch_row(res);
+			if (row != NULL)
+			{
+				/*	row[0] should contain a string */
+				if (stringbuffer != NULL)
+				{
+					free(stringbuffer);
+				}
+				stringbuffer = (char *) malloc(strlen(row[0])+1);
+				strcpy(stringbuffer, row[0]);
+			}
+			mysql_free_result(res);
+		}
+	}
 	return 0;
 }
 
@@ -268,6 +298,11 @@ int Parse(char *name, int *room, char *parserstring)
 	char *string;
 	int pos, memory, level, state[20];
 	
+	if (stringbuffer!=NULL)
+	{
+		/* clear stringbuffer for new parser method */
+		free(stringbuffer);
+	}
 	/*provides us with what has to be read	
 	Perhaps needs a little more explanations:
 	0 : state normal, normal operation, => 1/2
@@ -309,6 +344,20 @@ int Parse(char *name, int *room, char *parserstring)
 					strcat(temp, i+strlen("%me"));
 					strcpy(string, temp);
 					free(temp);
+				}
+				if (stringbuffer != NULL)
+				{
+					while ((i = strstr(string, "%string")) != NULL)
+					{
+						char *temp;
+						temp = (char *) malloc(memory+255+strlen(stringbuffer));
+						temp[i-string]=0;
+						strncpy(temp, string, i-string);
+						strcat(temp, stringbuffer);
+						strcat(temp, i+strlen("%string"));
+						strcpy(string, temp);
+						free(temp);
+					}
 				}
 				while ((i = strstr(string, "%amount")) != NULL)
 				{
