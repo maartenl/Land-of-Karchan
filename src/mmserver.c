@@ -1097,6 +1097,9 @@ main(int argc, char **argv)
 		
 	// signal catching variables
 	struct sigaction mySig, myEmergencySig;
+
+	// initialise the xml library in order to guarantee thread safety
+	xmlInitParser();
 #ifdef MEMMAN	
 	InitMem();
 #endif
