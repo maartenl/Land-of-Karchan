@@ -360,6 +360,7 @@ composeSqlStatement(char *sqlstring, ...)
 			{
 				case 's': /* common_string */
 					s = va_arg(ap, char *);
+					if (s == NULL) {s = "";}
 					my_size += strlen(s);
 					my_length += strlen(s);
 					my_sqlstring = realloc(my_sqlstring, my_size+1);
@@ -368,6 +369,7 @@ composeSqlStatement(char *sqlstring, ...)
 					break;
 				case 'x': /* mysql_string */
 					s = va_arg(ap, char *);
+					if (s == NULL) {s = "";}
 					special_s = (char *) malloc(strlen(s)*2+1);
 					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
 					my_size += i;
@@ -455,6 +457,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 			{
 				case 's': /* common_string */
 					s = va_arg(ap, char *);
+					if (s == NULL) {s = "";}
 					my_size += strlen(s);
 					my_length += strlen(s);
 					my_sqlstring = realloc(my_sqlstring, my_size+1);
@@ -463,6 +466,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 					break;
 				case 'x': /* mysql_string */
 					s = va_arg(ap, char *);
+					if (s == NULL) {s = "";}
 					special_s = (char *) malloc(strlen(s)*2+1);
 					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
 					my_size += i;
