@@ -445,7 +445,7 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 int
 ReadMail_Command(char *name, char *password, int room, char *fcommand)
 {
-	if (getTokenAmount()<2)
+	if (getTokenAmount()!=2)
 	{
 		return 0;
 	}
