@@ -63,13 +63,13 @@ int ExistUser(char *name);
 */  
 
 int ExistUserRoom(int roomnr, char *name);
-/*Pre: x = geldig ^ x exists
+/*Pre: x = valid ^ x exists
   Post:x active => return pos x in ActiveUserFile ^ x=x in ActiveUserFile ^ x in room roomnr
        x !active=> return 0 
 */  
 
 int SearchUser(char *name);
-/*Pre: x = geldig
+/*Pre: x = valid
   Post:x exists => return pos x in UserFile ^
        x !exists=> return 0
 */
