@@ -14,8 +14,7 @@ return
 " where id = 2;
 
 update methods
-set src = "debug
-if sql(""select 1 from rooms where id=20 and south=0"")
+set src = "if sql(""select 1 from rooms where id=20 and south=0"")
 	say(""You succeed in opening the door of the cupboard. \\\\
 		 [<A HREF=""http://www.karchan.org/images/mpeg/her.mpg"">\\\\
 		MPEG</A>]<BR>"")
@@ -49,6 +48,41 @@ else
 end
 return
 " where id=1;
+
+update methods
+set src = "if sql(""select 1 from rooms where id=20 and south=9"")
+	say(""You succeed in closing the door of the cupboard. \\\\
+		 [<A HREF=""http://www.karchan.org/images/mpeg/her2.mpg"">\\\\
+		MPEG</A>]<BR>"")
+	sayeveryone(""%me  closes the door of the cupboard.<BR>"")
+	sql(""update items set description='<H1><IMG SRC=""http://www.karchan.org/images/gif/herberg3.gif"">The Cupboard</H1><HR>\\\\
+		You look at the cupboard. It is very old and wormeaten. With one\\\\
+		knock you could probably knock it down, but I doubt if the barman would appreciate \\\\
+		this much. It hasn\\\\'t got a lock so you could open it, I doubt if the barman \\\\
+		would mind.<P>', adject1='comparatively',\\\\
+		adject2='big', name='cupboard' where id=-32"")
+	sql(""update rooms set contents='<IMG SRC=""http://www.karchan.org/images/gif/herberg1.gif"" ALIGN=CENTER> \\\\
+		<H1>The Taverne &quot;The Twisted Dwarf&quot;</H1>\\\\
+		<IMG SRC=""http://www.karchan.org/images/gif/letters/y.gif"" ALIGN=left>\\\\
+		ou are now in the Inn &quot;The Twisted Dwarf&quot; . It is \\\\
+		dark, as always in these places. The windows are of a dark blue color, which \\\\
+		doesn\\\\'t allow any light to enter the room. A lot of woodwork, wooden tables, \\\\
+		chairs and a rather large bar on the right of you is situated almost against the \\\\
+		the back of the room a comparatively big cupboard is visible. \\\\
+		Behind the bar a norse small ugly dwarf is cleaning some \\\\
+		glasses at the bar. On the same bar you see a sign on a piece of wood, \\\\
+		apparently this is the menu for the day.<BR> Scattered among the tables are \\\\
+		groups of people, playing what seems to be a dwarfish version of Poker.You\\\\
+		see a sign on the wall behind the counter.<P>', north=0 where id=9"")
+	sql(""update rooms set south=0 where id=20"")
+	showstandard
+#	show(""select contents from action where id=7"")
+else
+	say(""The cupboard is already closed.<BR>"")
+	showstandard
+end
+return
+" where id=3;
 
 END_OF_DATA
 
