@@ -453,7 +453,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
-		if (row != NULL)
+		while ((row != NULL) && (returnvalue==0))
 		{
 			/* this is where it all begins 
 				row[0] = command.id
@@ -463,6 +463,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 				row[4] = method.src
 			*/
 			returnvalue = Parse(name, room, row[4]);
+			row = mysql_fetch_row(res);
 		}
 		if (debug) {fprintf(cgiOut, "</FONT><HR>\r\n");}
 		mysql_free_result(res);
