@@ -173,7 +173,7 @@ return
 
 update methods
 set src = "# Karcas travels from shop to square
-if sql(""select 1 from tmp_usertable where room = 16 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 16 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves west.<BR>"")
 	sql(""update tmp_usertable set room=5 where name='Karcas'"")
 	set room=5
@@ -184,7 +184,7 @@ return
 
 update methods
 set src = "# Karcas travels from square to road
-if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves south.<BR>"")
 	sql(""update tmp_usertable set room=3 where name='Karcas'"")
 	set room=3
@@ -195,7 +195,7 @@ return
 
 update methods
 set src = "# Karcas travels from road to mountains
-if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves south.<BR>"")
 	sql(""update tmp_usertable set room=4 where name='Karcas'"")
 	set room=4
@@ -206,7 +206,7 @@ return
 
 update methods
 set src = "# Karcas travels from mountains back to road
-if sql(""select 1 from tmp_usertable where room = 4 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 4 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves north.<BR>"")
 	sql(""update tmp_usertable set room=3 where name='Karcas'"")
 	set room=3
@@ -217,7 +217,7 @@ return
 
 update methods
 set src = "# Karcas travels from road back to square
-if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves north.<BR>"")
 	sql(""update tmp_usertable set room=5 where name='Karcas'"")
 	set room=5
@@ -228,7 +228,7 @@ return
 
 update methods
 set src = "# Karcas travels from square back to shop
-if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas'"")
+if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves west.<BR>"")
 	sql(""update tmp_usertable set room=16 where name='Karcas'"")
 	set room=16
