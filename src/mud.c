@@ -33,6 +33,7 @@ extern int      events[50];
 extern int      knightlist[50];
 extern int      miflist[50];
 extern int      rangerlist[50];
+/* three strings destined for parsing the commands */
 extern char    *troep;
 extern char    *command;
 extern char    *junk;
