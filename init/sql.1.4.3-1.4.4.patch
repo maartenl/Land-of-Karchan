@@ -11,7 +11,7 @@ boardname varchar(20) NOT NULL default 'public',
 name varchar(20) NOT NULL default '',
 posttime datetime NOT NULL,
 message text NOT NULL,
-primary key (name, posttime)
+primary key (boardname, name, posttime)
 );
 
 
