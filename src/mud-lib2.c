@@ -280,7 +280,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	temp = composeSqlStatement(temp, "select god from tmp_usertable where name = \"%s\" ", botname);
+	temp = composeSqlStatement("select god from tmp_usertable where name = \"%s\" ", botname);
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
 	if (res==NULL)
@@ -300,8 +300,8 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 		return 0;
 	}
 
-	temp = composeSqlStatement("select answer from answers where \"%s\" like question and "
-			"name = \"%s\" ", vraag, botname);
+	temp = composeSqlStatement("select answer from answers where \"%x\" like question and "
+			"name = \"%x\" ", vraag, botname);
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
 
