@@ -388,9 +388,15 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	MYSQL stuff;
+	char *temp, *troep2;
 	int returnvalue = 0;
 	
+	stuff = getdbconnection();
+	troep2 = (char *) malloc(strlen(troep)*2+3);
+	// unsigned int mysql_real_escape_string(MYSQL *mysql, char *to, const char *from, unsigned int length) 
+	mysql_real_escape_string(&stuff, troep2, troep, strlen(troep));
+	temp = (char *) malloc(strlen(troep2)+7*100+strlen(name));
 	sprintf(temp, "select commands.id, commands.name, commands.method_name, commands.args, methods.src"
 	" from commands, tmp_usertable user, methods"
 	" where commands.callable != 0 "
@@ -398,8 +404,10 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	" and (commands.room = 0 or commands.room = user.room)"
 	" and user.name = \"%s\" "
 	" and methods.name = commands.method_name "
-	,troep, name);
+	,troep2, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);
+	free(troep2);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
