@@ -1,0 +1,9 @@
+This directory contains the initialisation scripts to setup the database.
+
+It also contains patch scripts to change the database into being compatible
+with a new version, without loss (I hope) of information.
+
+Regards,
+
+Maarten van Leunen
+maarten_l@yahoo.com
