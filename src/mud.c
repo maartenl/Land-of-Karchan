@@ -29,7 +29,6 @@ maartenl@il.fontys.nl
 
 int commandlineinterface = 0;
 
-extern int      hellroom;
 /* three strings destined for parsing the commands */
 extern char    *troep;
 extern char    *command;

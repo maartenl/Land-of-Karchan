@@ -27,12 +27,6 @@ maartenl@il.fontys.nl
 #include "guild.h"
 
 extern roomstruct room;
-extern int      hellroom;
-extern int      events[50];
-extern int      knightlist[50];
-extern int      miflist[50];
-extern int      rangerlist[50];
-extern banstruct banlist[50];
 char           *troep;
 char           *command;
 char           *junk;

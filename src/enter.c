@@ -27,7 +27,6 @@ maartenl@il.fontys.nl
 #include "mud-lib.h"
 
 /*name, west, east, north, south, up, down*/
-extern int hellroom;
 extern char secretpassword[40];
 
 void StrangeName(char *name, char *password, char *address)

@@ -28,11 +28,6 @@ maartenl@il.fontys.nl
 #include "mud-lib3.h"
 
 extern roomstruct room;
-extern int      hellroom;
-extern int      events[50];
-extern int      knightlist[50];
-extern int      miflist[50];
-extern int      rangerlist[50];
 extern char    *troep;
 extern char    *command;
 extern char    *junk;

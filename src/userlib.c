@@ -26,11 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "userlib.h"
 
-extern int      events[50];
-extern int      knightlist[50];
-extern int      miflist[50];
-extern int      rangerlist[50];
-extern banstruct banlist[50];
 char            ItemDescr[100];
 
 void 
@@ -392,14 +387,6 @@ if (strcmp(row[0],"0"))
 mysql_free_result(res);
 
 return 0;
-
-/*	int i,j;	
-	i=0;
-	for ( j=0; j<45 ; j++) {
-		if ( (strstr(item, banlist[j].ip)!=NULL) &&
-			(banlist[j].days>0) ) {return 1;}
-		}
-	return 0;*/
 }
 
 char *

@@ -29,17 +29,10 @@ maartenl@il.fontys.nl
 /*roomindex, west, east, north, south, up, down, light_source*/
 roomstruct room;
 
-int hellroom=164;
 int frames;
 char secretpassword[40];
 
 MYSQL dbconnection;
-
-int events[50];
-int knightlist[50];
-int miflist[50];
-int rangerlist[50];
-banstruct banlist[50];
 
 void setFrames(int i)
 {
