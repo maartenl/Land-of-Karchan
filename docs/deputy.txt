@@ -1,0 +1,168 @@
+New Deputies
+
+Howdie, People of Karchan...
+
+Recently I have received through various sources multiple applications for
+deputy ship. Seeing as about Kass is the only one actually doing anything
+I think there is room for this.
+
+I need to know who wants to be a deputy. 
+
+The information below is necessary for you to decide if you wish to be a
+deputy or not. I mean, it entails quite a bit.
+
+Advantages
+----------
+
+- you become a deputy with certain special commands at your disposal
+- you will be yelled at and generally abused by nasty and unpolite
+players, it's imperative that you do not lose your temper
+- you will have access to the database
+- you may make changes (within certain context) to the database
+- you will be able to store pictures (for use on mud) onto the server
+- you will receive an ssh account (Secure Shell account, ask Kass for more
+info)
+- you will follow a certain set of rules that are in the documentation
+- you will be able to make changes to the source code by means of CVS
+(Concurrent Version Control System), Kass also knows about this
+- you will be responsible for keeping players in line (decision on wether
+player is out of line or not are defined by rules in documentation)
+
+Requirements
+------------
+
+- UNIX/Linux abilities are a plus
+- Database abilities are a plus
+- if you are a windows user you will need the Artronics Client for
+connecting to the database and Putty for SSHing to the server, don't ask
+me how these work, I'm a UNIX User.
+- programming experience (C/HTML/scripting) is a plus
+- if you are a Linux/UNIX user, ask me anything about the MYSQL client for
+connecting to the database and the SSH client for connecting to the server
+- uploading of pictures currently does not take place directly. You can
+upload pictures to your account using SSH and then request me to move them
+onto the website space.
+
+Disadvantages
+-------------
+
+The fee:
+- 10$ administration costs
+- 20$ per month deputy membership
+
+I request that you pay the money one month in advance, this because it
+takes some time to filter down through the International Banking
+System. And it shows dependability.
+
+I recently aquired an account at PayPal. Seeing as this is the most
+costeffective way for me to aquire money, I would appreciate it if you
+would use the PayPal way to giving me money.
+
+For those of you who have qualms,doubts and fear of the PayPal way, you
+can also send me a check. If you send me a check, please add 10$ for
+moneytransfercosts. (This in itself justifies using
+PayPal.)
+Once I receive all applications for deputie-ship, I'll send out an email
+again announcing the new deputies and providing the necessary info as
+well as instructions for payment.
+
+Regards,
+
+P.S. Seeing as these rules are kinda important I will ask if they be put
+onto deouty@yahoogroups.com
+
+P.P.S. These rules, ofcourse, are subject to change and I will try and be
+prompt to make these changes known.
+
+P.P.P.S. This list is by no means comprehensive, look onto the deputy
+mailinglist or CVS for more info.
+
+Annoying Users
+--------------
+ This game will always have annoying users. All games have these users
+   and they are very hard to get rid off. It is also slightly vague what
+   constitutes a "annoying user". I'll try to make clear what to do when
+   a certain character does something annoying.
+
+   About the "Action" part, the numbers go up in intensity. Give the
+   player time to repent his ungodly ways.
+
+    1. Profanity
+       It is forbidden to use profane names for characters. Be careful
+       how to define profane, if you find it offensive, others will too
+       and that give you a good reason.
+       Action: These characters are to be immediately banned from the
+       game.
+ 2. Cursing
+       Cursing is allowed, as long as it is in moderation. Cursing
+       against one or more players specially, continually is forbidden.
+      Action:
+         1. Tell them in a friendly yet firm way to stop swearing.
+         2. Tell them that you will put them in hell if they do not stop
+            swearing.
+         3. Put them in hell.
+         4. If they continue still, frog them.
+         5. If they get onto the game as another character, ban the IP
+            address in question.
+    3. Harassment
+       Harassment of other players is actually quite simple. A player is
+       harassing another player if that player complains about it.
+       Action:
+         1. Tell the player to ask the harassing player to stop
+         2. If the harassing continues, you tell the harassing player to
+            stop.
+         3. If the harassing continues, tell the harassing player to stop
+            or you'll beam him in hell
+         4. Beam him in hell
+         5. Frog him
+         6. Ban his IP Address.
+
+Deputy Rules
+------------
+1. Deputies should not "help" normal players in extravagant ways.
+       (for example making them invulnerable, giving them money, telling
+       what to do and where to do it, giving them huge battle axes or big
+       hitpoints so nobody can kill them)
+    2. Overall/Global changes to the game should be discussed (through
+       for example email) with ALL deputies and Karn. Only afterwards may
+       any global/overall change take place. Global changes will only be
+       executed by Karn, as they have a huge impact on the game and could
+       make the game unstable or even unoperable.
+    3. Deputies will not interfere with guilds, as long as these guilds
+       stick by the general rules of the game. They are allowed to make
+       changes to the game/guild if the guild-headman/woman has asked for
+       these changes.
+       (Not, for instance, punishing people for leaving a guild. They do
+       that of their own free will. If people are to be punished for
+       leaving a guild by paying, or losing spells/mana or something,
+       they ought to be warned in advance, perferably before joining)
+   4. Deputies will not react to (complaining) offensive emails, but
+       will ignore them with the disdain that these emails deserve.
+    5. Deputies must always be polite.
+    6. Deputies must always remain impartial.
+    7. Deputies must leave their feelings and other baggage outside the
+       mud!!! This game is hard enough to administer without letting
+       characters/deputies/Karn get to you. If you cannot control your
+       feelings it is better to not be a deputy.
+    8. Karn has the right to VETO changes if he feels that they do not
+       stroke with the nature of the game. (I found The Stick of
+       Multiple-Target Decimation funny, but lets be serious here)
+       However, he should use this right sparingly.
+    9. Karn has the right to bring in changes to the game, without
+       permission from deps, but these changes do need to be in character
+       with the game. Karn does have the obligation however of
+       communicating these changes with the deps first.
+
+
+-- 
+Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost Souls)
+Maarten van Leunen
+-----BEGIN GEEK CODE BLOCK-----
+Version 3.12
+GCS$ dpu(-) s+++:++ a->? C+++(++++)$ UL++++(BS)$ P-- L+++>++++ E--- W+++ N--
+o? K? w---$ O---- M-- !V PS+ PE Y PGP-- t+ 5-- X++ R+ !tv b++ DI++ D++ G--
+e++ h+>* !r>+ y>++
+-----END GEEK CODE BLOCK-----
+("In the likely event of an accident, put your head between your knees and
+kiss your bum goodbye.")
+
