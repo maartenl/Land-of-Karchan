@@ -1,0 +1,24 @@
+#!/bin/sh
+
+cd /karchan/mud/sql   
+
+. ./mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+
+update rooms set contents='<h1>The Training Room</h1>
+<IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/letters/t.gif\"
+ALIGN=left>he 
+large room in which you are standing contains many maps of the land of
+Karchan, with 
+many key areas outlined for defendability.  In the center of the room, you
+notice a
+table with many miniature figures on it in various combat positionings. This
+must be 
+the troop movement monitoring and planning board.  A large guard makes you
+decide not 
+to examine things any more carefully.<p>
+' where id=459;
+
+END_OF_DATA
+
