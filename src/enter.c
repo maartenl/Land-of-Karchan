@@ -49,10 +49,10 @@ maartenl@il.fontys.nl
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "cgic.h"
+#include "cgi-util.h"
 
-#define MMHOST "localhost" // the hostname users will be connecting to
-#define MMPORT 3339 // the port users will be connecting to
+#define MMHOST "zeus" // the hostname users will be connecting to
+#define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
@@ -165,29 +165,31 @@ void setFrames(int i)
 
 void displayError(char *message, int i)
 {
-	fprintf(cgiOut, "Content-type: text/html\r\n\r\n");
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", strerror(i));
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
-	fprintf(cgiOut, "Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
-	fprintf(cgiOut, " to report the error.<P>\r\n", strerror(i));
+	printf("Content-type: text/html\r\n\r\n");
+	printf("<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", strerror(i));
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
+	printf("Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
+	printf(" to report the error.<P>\r\n", strerror(i));
 	
-	fprintf(cgiOut,"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
-	fflush(cgiOut);
+	printf("<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
+	printf("</body>\n");
+	printf("</HTML>\n");
+	fflush(stdout);
+	cgi_quit();
 	exit(1);
 }
 
-int cgiMain()
+int main(int argc, char * argv[])
 {
+	int res;
 	char name[20];
 	char password[40];
 	char cookie[80];
 	char frames[10];
 	char *temp = NULL;
 	char *mudtitle = NULL;
-	char myhostname[80], myport[10];
+	char *myhostname, *myport;
 	
 	int sockfd, numbytes;
 	int first;
@@ -198,39 +200,79 @@ int cgiMain()
 	umask(0000);
 	
 #ifdef DEBUG
-	fprintf(cgiOut, "Name:");
+	printf("Name:");
 	fgets(name, 20, stdin);
 	name[strlen(name)-1]=0;
-	fprintf(cgiOut, "Password:");
+	printf("Password:");
 	fgets(password, 40, stdin);
 	password[strlen(password)-1]=0;
-	fprintf(cgiOut, "Cookie:");
+	printf("Cookie:");
 	fgets(cookie, 40, stdin);
 	password[strlen(cookie)-1]=0;
 	setFrames(0);
 #else
-	cgiFormString("name", name, 20);
-	cgiFormString("password", password, 40);
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+	if (cgi_getentrystr("name") == NULL)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error #: name field required but not found<P>\n");
+		cgi_quit();
+		exit(1);
+	}
+	strncpy(name, cgi_getentrystr("name"), 19);
+	name[19]=0;
+	if (cgi_getentrystr("password") == NULL)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error #: password field required but not found<P>\n");
+		cgi_quit();
+		exit(1);
+	}
+	strncpy(password, cgi_getentrystr("password"), 39);
+	password[39]=0;
 	if (!getCookie("Karchan", cookie))
 	{
 		strcpy(cookie," ");
 	}
-	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess) 
+	if (cgi_getentrystr("frames") == NULL)
 	{
 		strcpy(frames, "none");
 		setFrames(0);
 	}
-	if (cgiFormString("hostname", myhostname, 80)!=cgiFormSuccess) 
+	else
 	{
-		strcpy(myhostname, MMHOST);
+		strncpy(frames, cgi_getentrystr("frames"), 9);
+		frames[9]=0;
 	}
-	if (cgiFormString("port", myport, 10)!=cgiFormSuccess) 
+	if (cgi_getentrystr("hostname") == NULL) 
 	{
-		strcpy(myport, "MMPORT");
+		myhostname = strdup(MMHOST);
 	}
-	if (atoi(myport) == 0)
+	else
 	{
-		strcpy(myport, "MMPORT");
+		myhostname = strdup(cgi_getentrystr("hostname"));
+	}
+	if (cgi_getentrystr("port") == NULL)
+	{
+		myport = strdup(MMPORT);
+	}
+	else
+	{
+		if (atoi(cgi_getentrystr("port"))==0)
+		{
+			myport = strdup(MMPORT);
+		}
+		else
+		{
+			myport = strdup(cgi_getentrystr("port"));
+		}
 	}
 	if (!strcmp(frames,"1")) {setFrames(0);}
 	if (!strcmp(frames,"2")) {setFrames(1);}
@@ -255,6 +297,8 @@ int cgiMain()
 	
 	if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1)
 	{
+		printf("Content-type: text/html\r\n\r\n");
+		printf("%s, %s\n", myhostname, myport);
 		displayError("connect", errno);
 	}
 	
@@ -281,8 +325,7 @@ int cgiMain()
 		{
 			if (strstr(receivebuf, "Content") != receivebuf)
 			{
-//				cgiHeaderContentType("text/html");
-				fprintf(cgiOut, "Content-type: text/html\r\n\r\n");
+				printf("Content-type: text/html\r\n\r\n");
 				if (mudtitle != NULL)
 				{
 					printf("<FONT Size=1>%s</FONT><HR>",mudtitle);
@@ -292,7 +335,7 @@ int cgiMain()
 			}
 			first = 0;
 		}
-		fprintf(cgiOut, "%s", receivebuf);
+		printf("%s", receivebuf);
 	}
 	close(sockfd);
 
@@ -301,6 +344,8 @@ int cgiMain()
 		free(mudtitle);
 		mudtitle = NULL;
 	}
-
+	free(myhostname);
+	free(myport);
+	cgi_quit();
 	return 0;
 }

@@ -31,7 +31,7 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "typedefs.h"
 
 #define debuggin 0
@@ -67,19 +67,19 @@ void showFamilyValues(char *name, char *password)
 			if (row != NULL)
 			{
 				// full character sheet
-				fprintf(cgiOut, "(<I>Make sure you spell the name of the ");
-				fprintf(cgiOut, "familymember correctly, otherwise the corresponding ");
-				fprintf(cgiOut, "charactersheet can not be obtained.</I>)<BR>");
-				fprintf(cgiOut, "Add family relation:\r\n");
-				fprintf(cgiOut, "<SELECT NAME=\"family\">\r\n");
-				fprintf(cgiOut, "<option selected value=\"0\">None");
+				printf("(<I>Make sure you spell the name of the ");
+				printf("familymember correctly, otherwise the corresponding ");
+				printf("charactersheet can not be obtained.</I>)<BR>");
+				printf("Add family relation:\r\n");
+				printf("<SELECT NAME=\"family\">\r\n");
+				printf("<option selected value=\"0\">None");
 				while (row != NULL)
 				{
-					fprintf(cgiOut, "<option value=\"%s\">%s", row[0], row[1]);
+					printf("<option value=\"%s\">%s", row[0], row[1]);
 					row = mysql_fetch_row(res);
 				}
-				fprintf(cgiOut, "</SELECT>of ");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"familyname\" VALUE=\"\" SIZE=\"50\" MAXLENGTH=\"40\"><P>");
+				printf("</SELECT>of ");
+				printf("<INPUT TYPE=\"text\" NAME=\"familyname\" VALUE=\"\" SIZE=\"50\" MAXLENGTH=\"40\"><P>");
 			}
 			else
 			{
@@ -118,7 +118,7 @@ void showCharacterSheet(char *name, char *password)
 	sprintf(sqlstring, "select *, replace(replace(replace(storyline, '&','&amp;'),'<', '&lt;'), '>', '&gt;') "
 	"from characterinfo "
 	"where name = '%s'", name);
-	//fprintf(cgiOut, "[%s]\n", sqlstring);
+	//printf("[%s]\n", sqlstring);
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -145,47 +145,47 @@ void showCharacterSheet(char *name, char *password)
 			if (row != NULL)
 			{
 				// full character sheet
-				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
-				fprintf(cgiOut, "<HR>");
-				fprintf(cgiOut, "Homepage Url:<BR>");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"%s\" SIZE=\"50\" MAXLENGTH=\"253\"><P>", row[2]);
-				fprintf(cgiOut, "Image Url:<BR>");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"imageurl\" VALUE=\"%s\" SIZE=\"50\" MAXLENGTH=\"253\"><P>", row[1]);
-				fprintf(cgiOut, "Date of Birth: ");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"dateofbirth\" VALUE=\"%s\" SIZE=\"20\" MAXLENGTH=\"253\"><P>", row[3]);
-				fprintf(cgiOut, "City of Birth:");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"cityofbirth\" VALUE=\"%s\" SIZE=\"20\" MAXLENGTH=\"253\"><P>", row[4]);
-				fprintf(cgiOut, "Original storyline was...<BR><TABLE><TR><TD><TT>%s</TT></TD></TR></TABLE>\r\n", row[6]);
-				fprintf(cgiOut, "Storyline:<BR>");
-				fprintf(cgiOut, "<TEXTAREA NAME=\"storyline\" VALUE=\"\" ROWS=\"30\" COLS=\"85\"></TEXTAREA><P>");
+				printf("<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
+				printf("<HR>");
+				printf("Homepage Url:<BR>");
+				printf("<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"%s\" SIZE=\"50\" MAXLENGTH=\"253\"><P>", row[2]);
+				printf("Image Url:<BR>");
+				printf("<INPUT TYPE=\"text\" NAME=\"imageurl\" VALUE=\"%s\" SIZE=\"50\" MAXLENGTH=\"253\"><P>", row[1]);
+				printf("Date of Birth: ");
+				printf("<INPUT TYPE=\"text\" NAME=\"dateofbirth\" VALUE=\"%s\" SIZE=\"20\" MAXLENGTH=\"253\"><P>", row[3]);
+				printf("City of Birth:");
+				printf("<INPUT TYPE=\"text\" NAME=\"cityofbirth\" VALUE=\"%s\" SIZE=\"20\" MAXLENGTH=\"253\"><P>", row[4]);
+				printf("Original storyline was...<BR><TABLE><TR><TD><TT>%s</TT></TD></TR></TABLE>\r\n", row[6]);
+				printf("Storyline:<BR>");
+				printf("<TEXTAREA NAME=\"storyline\" VALUE=\"\" ROWS=\"30\" COLS=\"85\"></TEXTAREA><P>");
 				showFamilyValues(name, password);
- 				fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-				fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
- 				fprintf(cgiOut, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\r\n");
-				fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\r\n");
-				fprintf(cgiOut, "</FORM>\r\n");
+ 				printf("<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+				printf("<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+ 				printf("<INPUT TYPE=\"submit\" VALUE=\"Submit\">\r\n");
+				printf("<INPUT TYPE=\"reset\" VALUE=\"Clear\">\r\n");
+				printf("</FORM>\r\n");
 			}
 			else
 			{
 				// empty character sheet
-				fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
-				fprintf(cgiOut, "<HR>");
-				fprintf(cgiOut, "Homepage Url:<BR>");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"http://\" SIZE=\"50\" MAXLENGTH=\"253\"><P>");
-				fprintf(cgiOut, "Image Url:<BR>");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"imageurl\" VALUE=\"http://\" SIZE=\"50\" MAXLENGTH=\"253\"><P>");
-				fprintf(cgiOut, "Date of Birth: ");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"dateofbirth\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"253\"><P>");
-				fprintf(cgiOut, "City of Birth:");
-				fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"cityofbirth\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"253\"><P>");
-				fprintf(cgiOut, "Storyline:<BR>");
-				fprintf(cgiOut, "<TEXTAREA NAME=\"storyline\" VALUE=\"\" ROWS=\"30\" COLS=\"85\"></TEXTAREA><P>");
+				printf("<FORM METHOD=\"GET\" ACTION=\"submitcharactersheet.cgi\">");
+				printf("<HR>");
+				printf("Homepage Url:<BR>");
+				printf("<INPUT TYPE=\"text\" NAME=\"homepageurl\" VALUE=\"http://\" SIZE=\"50\" MAXLENGTH=\"253\"><P>");
+				printf("Image Url:<BR>");
+				printf("<INPUT TYPE=\"text\" NAME=\"imageurl\" VALUE=\"http://\" SIZE=\"50\" MAXLENGTH=\"253\"><P>");
+				printf("Date of Birth: ");
+				printf("<INPUT TYPE=\"text\" NAME=\"dateofbirth\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"253\"><P>");
+				printf("City of Birth:");
+				printf("<INPUT TYPE=\"text\" NAME=\"cityofbirth\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"253\"><P>");
+				printf("Storyline:<BR>");
+				printf("<TEXTAREA NAME=\"storyline\" VALUE=\"\" ROWS=\"30\" COLS=\"85\"></TEXTAREA><P>");
 				showFamilyValues(name, password);
- 				fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-				fprintf(cgiOut, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
- 				fprintf(cgiOut, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\r\n");
-				fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\r\n");
-				fprintf(cgiOut, "</FORM>\r\n");
+ 				printf("<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+				printf("<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+ 				printf("<INPUT TYPE=\"submit\" VALUE=\"Submit\">\r\n");
+				printf("<INPUT TYPE=\"reset\" VALUE=\"Clear\">\r\n");
+				printf("</FORM>\r\n");
 			}
 			mysql_free_result(res);
 		}
@@ -226,16 +226,16 @@ void validateUser()
 		- add sqlformstring to sqlstring
 		- free everything and add to sqlsize
 	*/
-	cgiFormStringSpaceNeeded("name", &textlength);
-	formstring = (char *) malloc(textlength);
-	cgiFormString("name", formstring, textlength);
+	textlength = strlen(cgi_getentrystr("name"));
+	formstring = (char *) malloc(textlength+1);
+	strcpy(formstring, cgi_getentrystr("name"));
 	name = (char *) malloc(2*textlength+1+2);
 	mysql_escape_string(name,formstring,strlen(formstring));
 	textlength = strlen(name);
 
-	cgiFormStringSpaceNeeded("password", &textlength);
-	formstring = (char *) malloc(textlength);
-	cgiFormString("password", formstring, textlength);
+	textlength = strlen(cgi_getentrystr("password"));
+	formstring = (char *) malloc(textlength+1);
+	strcpy(formstring, cgi_getentrystr("password"));
 	password = (char *) malloc(2*textlength+1+2);
 	mysql_escape_string(password,formstring,strlen(formstring));
 	textlength = strlen(password);
@@ -245,20 +245,20 @@ void validateUser()
 	"from usertable "
 	"where usertable.name = '%s' and "
 	"usertable.password = '%s'", name, password);
-	fprintf(cgiOut, "Content-type: text/html\n\n");
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - %s\n", name);
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	printf("Content-type: text/html\n\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - %s\n", name);
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF  BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
-	fprintf(cgiOut, "<H1>\n");
-	fprintf(cgiOut, "<IMG SRC=\"/images/gif/dragon.gif\">Edit Character Sheet of %s</H1>\n", name);
-	fprintf(cgiOut, "\n");
+	printf("<BODY BGCOLOR=#FFFFFF  BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
+	printf("<H1>\n");
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">Edit Character Sheet of %s</H1>\n", name);
+	printf("\n");
 	
-	//fprintf(cgiOut, "[%s]\n", sqlstring);
+	//printf("[%s]\n", sqlstring);
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -285,7 +285,7 @@ void validateUser()
 			if (row == NULL)
 			{
 				success = 0;
-				fprintf(cgiOut, "Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
+				printf("Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
 			}
 			else
 			{
@@ -314,14 +314,26 @@ void validateUser()
 		showCharacterSheet(name, password);
 	}
 	free(name);free(password);
-	fprintf(cgiOut, "<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
-	fprintf(cgiOut, "</BODY>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
+	printf("</BODY>\n");
+	printf("</HTML>\n");
 }
 
 int
-cgiMain()
+main(int argc, char *argv[])
 {
+	int res;
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+	
 	validateUser();
+
+	cgi_quit();
 	return 0;
 }

@@ -49,10 +49,10 @@ maartenl@il.fontys.nl
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "cgic.h"
+#include "cgi-util.h"
 
-#define MMHOST "localhost" // the hostname users will be connecting to
-#define MMPORT 3339 // the port users will be connecting to
+#define MMHOST "zeus" // the hostname users will be connecting to
+#define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
@@ -108,16 +108,16 @@ int getCookie(char *name, char *value)
 
 void CookieNotFound(char *name, char *address)
 {
-	cgiHeaderContentType("text/html");
+	printf("Content-type: text/html\n\n");
 //getCookie(cgiOut, "Karchan","");
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
-	fprintf(cgiOut, "When you logon, a cookie is automatically generated. ");
-	fprintf(cgiOut, "However, I have been unable to find my cookie.<P>\n");
-	fprintf(cgiOut, "Please attempt to relogon.<P>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	printf("When you logon, a cookie is automatically generated. ");
+	printf("However, I have been unable to find my cookie.<P>\n");
+	printf("Please attempt to relogon.<P>\n");
+	printf("</body>\n");
+	printf("</HTML>\n");
 }
 
 /* attempts to send data over a socket, if not all information is sent.
@@ -207,21 +207,22 @@ void setFrames(int i)
 	theFrames = i;
 }
 
-int cgiMain()
+int main(int argc, char *argv[])
 {
+	int res;
 	char name[20];
 	char password[40];
 	char cookie[80];
 	char frames[10];
 	char *temp;
-	char myhostname[80], myport[10];
+	char *myhostname, *myport;
 	
 	int sockfd, numbytes;
 	int first;
 	char receivebuf[1024], *sendbuf;
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
-          
+         
 	umask(0000);
 	
 #ifdef DEBUG
@@ -229,49 +230,86 @@ int cgiMain()
 	strcpy(password, "tryout");
 	setFrames(0);
 #else
-	cgiFormString("name", name, 20);
-	cgiFormString("password", password, 40);
-	if (cgiFormString("hostname", myhostname, 80)!=cgiFormSuccess)
+	res = cgi_init();
+	if (res != CGIERR_NONE)
 	{
-		strcpy(myhostname, MMHOST);
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		exit(1);
 	}
-	if (cgiFormString("port", myport, 10)!=cgiFormSuccess)
+	if (cgi_getentrystr("name") == NULL)
 	{
-		strcpy(myport, "MMPORT");
+		printf("Content-type: text/html\n\n");
+		printf("Error #: name field required but not found<P>\n");
+		exit(1);
 	}
-	if (atoi(myport) == 0)
+	strncpy(name, cgi_getentrystr("name"), 19);
+	name[19]=0;
+	if (cgi_getentrystr("password") == NULL)
 	{
-		strcpy(myport, "MMPORT");
+		printf("Content-type: text/html\n\n");
+		printf("Error #: password field required but not found<P>\n");
+		exit(1);
 	}
+	strncpy(password, cgi_getentrystr("password"), 39);
+	password[39]=0;
 	if (!getCookie("Karchan", cookie))
 	{
-		strcpy(cookie, " ");
+		strcpy(cookie," ");
 	}
-	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess) 
+	if (cgi_getentrystr("frames") == NULL)
 	{
 		strcpy(frames, "none");
 		setFrames(0);
+	}
+	else
+	{
+		strncpy(frames, cgi_getentrystr("frames"), 9);
+		frames[9]=0;
+	}
+	if (cgi_getentrystr("hostname") == NULL)
+	{
+		myhostname = strdup(MMHOST);
+	}
+	else
+	{
+		myhostname = strdup(cgi_getentrystr("hostname"));
+	}
+	if (cgi_getentrystr("port") == NULL)
+	{
+		myport = strdup(MMPORT);
+	}
+	else
+	{
+		if (atoi(cgi_getentrystr("port")) == 0)
+		{
+			myport = strdup(MMPORT);
+		}
+		else
+		{
+			myport = strdup(cgi_getentrystr("port"));
+		}
 	}
 	if (!strcmp(frames,"1")) {setFrames(0);}
 	if (!strcmp(frames,"2")) {setFrames(1);}
 	if (!strcmp(frames,"3")) {setFrames(2);}
 	*ftitle=*frealname=*femail=*frace=*fsex=*fage=*flength=0;
 	*fwidth=*fcomplexion=*feyes=*fface=*fhair=*fbeard=*farm=*fleg=0;
-	cgiFormString("title", ftitle, 80);
-	cgiFormString("RealName", frealname, 80);
-	cgiFormString("EMAIL", femail, 40);
-	cgiFormString("race", frace, 10);
-	cgiFormString("sex", fsex, 10);
-	cgiFormString("age", fage, 15);
-	cgiFormString("length", flength, 16);
-	cgiFormString("width", fwidth, 16);
-	cgiFormString("complexion", fcomplexion, 16);
-	cgiFormString("eyes", feyes, 16);
-	cgiFormString("face", fface, 19);
-	cgiFormString("hair", fhair, 19);
-	cgiFormString("beard", fbeard, 19);
-	cgiFormString("arms", farm, 16);
-	cgiFormString("legs", fleg, 16);
+	strncpy(ftitle, cgi_getentrystr("title"), 79);ftitle[79]=0;
+	strncpy(frealname, cgi_getentrystr("RealName"), 79);frealname[79]=0;
+	strncpy(femail, cgi_getentrystr("EMAIL"), 39);femail[39]=0;
+	strncpy(frace, cgi_getentrystr("race"), 9);frace[9]=0;
+	strncpy(fsex, cgi_getentrystr("sex"), 9);fsex[9]=0;
+	strncpy(fage, cgi_getentrystr("age"), 14);fage[14]=0;
+	strncpy(flength, cgi_getentrystr("length"), 15);flength[15]=0;
+	strncpy(fwidth, cgi_getentrystr("width"), 15);fwidth[15]=0;
+	strncpy(fcomplexion, cgi_getentrystr("complexion"), 15);fcomplexion[15]=0;
+	strncpy(feyes, cgi_getentrystr("eyes"), 15);feyes[15];
+	strncpy(fface, cgi_getentrystr("face"), 18);fface[18]=0;
+	strncpy(fhair, cgi_getentrystr("hair"), 18);fhair[18]=0;
+	strncpy(fbeard, cgi_getentrystr("beard"), 18);fbeard[18]=0;
+	strncpy(farm, cgi_getentrystr("arms"), 15);farm[15]=0;
+	strncpy(fleg, cgi_getentrystr("legs"), 15);fleg[15]=0;
 #endif
 	
 	/* setup socket stuff*/
@@ -322,11 +360,11 @@ int cgiMain()
 			if (strstr(receivebuf, "Content") != receivebuf)
 			{
 //				cgiHeaderContentType("text/html");
-				fprintf(cgiOut, "Content-type: text/html\r\n\r\n");
+				printf("Content-type: text/html\n\n");
 			}
 			first = 0;
 		}
-		fprintf(cgiOut, "%s", receivebuf);
+		printf("%s", receivebuf);
 	}
 	close(sockfd);
 

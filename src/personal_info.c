@@ -31,14 +31,14 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "mysql.h"
 
 #define debuggin 0
 
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
 {
-fprintf(cgiOut, "Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
+printf("Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
 }
 
 int SendSQL(char *sqlstring)
@@ -93,9 +93,9 @@ void InsertPersonalInfo()
 			- add sqlformstring to sqlstring
 			- free everything and add to sqlsize
 		*/
-		cgiFormStringSpaceNeeded(formitems[i], &textlength);
+		textlength = strlen(cgi_getentrystr(formitems[i]))+1;
 		formstring = (char *) malloc(textlength);
-		cgiFormString(formitems[i], formstring, textlength);
+		strcpy(formstring, cgi_getentrystr(formitems[i]));
 		sqlformstring = (char *) malloc(2*textlength+1+2);
 		mysql_escape_string(sqlformstring,formstring,strlen(formstring));
 		if (formitems[i+1] == NULL)
@@ -110,38 +110,51 @@ void InsertPersonalInfo()
 		sqlstring = (char *) realloc(sqlstring, sqlsize + textlength);
 		strcat(sqlstring, sqlformstring);
 		sqlsize += textlength;
-		//fprintf(cgiOut, "[%s][%s]<BR>\n", formstring, sqlformstring);
+		//printf("[%s][%s]<BR>\n", formstring, sqlformstring);
 		free(formstring);free(sqlformstring);
 	}
-//	fprintf(cgiOut, "[%s]", sqlstring);
+//	printf("[%s]", sqlstring);
 	SendSQL(sqlstring);
 	free(sqlstring);
 }
 
 void WriteExitScreen()
 {
-	fprintf(cgiOut, "Content-type: text/html\n\n");
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - Thank you\n");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	printf("Content-type: text/html\n\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - Thank you\n");
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
 	
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" >\n");
-	fprintf(cgiOut, "<H1>");
-	fprintf(cgiOut, "<IMG SRC=\"http://www.karchan.org/images/gif/dragon.gif\">");
-	fprintf(cgiOut, "Thank you for your info</H1>\r\n");
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" >\n");
+	printf("<H1>");
+	printf("<IMG SRC=\"http://www.karchan.org/images/gif/dragon.gif\">");
+	printf("Thank you for your info</H1>\r\n");
 
-	fprintf(cgiOut, "</BODY>\r\n");
-	fprintf(cgiOut, "</HTML>\r\n");
+	printf("</BODY>\r\n");
+	printf("</HTML>\r\n");
+	fflush(stdout);
 }
 
 int
-cgiMain()
+main(int argc, char *argv[])
 {
+	int res;
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+	
+	
 	InsertPersonalInfo();
 	WriteExitScreen();
+	cgi_quit();
 	return 0;
 }

@@ -48,7 +48,7 @@ maartenl@il.fontys.nl
 #include "mudnewchar.h"
 
 /*! default hostname used by the mmserver */
-#define MMHOST "localhost" // the hostname users will be connecting to
+#define MMHOST "zeus" // the hostname users will be connecting to
 /*! default port number used by the mmserver */
 #define MMPORT 3339 // the port users will be connecting to
 /*! version number of mmserver */

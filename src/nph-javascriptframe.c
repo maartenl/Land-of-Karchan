@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
-Copyright (C) 1998  Maarten van Leunen
+Copyright (C) 1998Maarten van Leunen
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -10,12 +10,12 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA02111-1307, USA.
 
 Maarten van Leunen
 Driek van Erpstraat 9
@@ -27,15 +27,24 @@ maartenl@il.fontys.nl
 #include <stdio.h>
 #include <string.h>
 #include "typedefs.h"
-#include "cgic.h"
+#include "cgi-util.h"
 
-int cgiMain()
+int main(int argc, char * argv[])
 {
 	char name[20];
 	char password[40];
-	int i;
+	int i, res;
 
 //	cgiHeaderContentType("text/html");
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+	
 	
 	if (0) 
 	{
@@ -44,56 +53,56 @@ int cgiMain()
 	}
 	else 
 	{
-		cgiFormString("name", name, 20);
-		cgiFormString("password", password, 40);
+		strncpy(name, cgi_getentrystr("name"), 19);name[19]=0;
+		strncpy(password, cgi_getentrystr("password"), 39);password[39]=0;
 	}
 
-	fprintf(cgiOut, "<HTML>\r\n");
-	fprintf(cgiOut, "<HEAD>\r\n");
-	fprintf(cgiOut, "<TITLE>Karchan</TITLE>\r\n");
-	fprintf(cgiOut, "</HEAD>\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF OnLoad=\"top.frames[5].location='/cgi-bin/nph-addendum.cgi?name=%s&password=%s'\">\r\n", name, password);
-	fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\r\n");
-	fprintf(cgiOut, "<!-- Hide script from older browsers\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "var string = \"Spul!<BR>\"\r\n");
-	fprintf(cgiOut, "var nieuw = 0\r\n");
-	fprintf(cgiOut, "var d = top.frames[1].document\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "function stuffString(fstring)\r\n");
-	fprintf(cgiOut, "{\r\n");
-	fprintf(cgiOut, "	string+=fstring\r\n");
-	fprintf(cgiOut, "	nieuw = 1\r\n");
-	fprintf(cgiOut, "}\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "function givemessage()\r\n");
-	fprintf(cgiOut, "{\r\n");
-	fprintf(cgiOut, "	alert (\"Hoihoihoi!\")\r\n");
-	fprintf(cgiOut, "}\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "function test()\r\n");
-	fprintf(cgiOut, "{\r\n");
-	fprintf(cgiOut, "	if (nieuw == 1) {\r\n");
-	fprintf(cgiOut, "	d.writeln(string)\r\n");
-	fprintf(cgiOut, "	nieuw = 0\r\n");
-	fprintf(cgiOut, "	string = \"\"\r\n");
-	fprintf(cgiOut, "	}\r\n");
-	fprintf(cgiOut, "	setTimeout(\"test()\", 1000)\r\n");
-	fprintf(cgiOut, "}\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "d.open()\r\n");
-	fprintf(cgiOut, "string = \"\"\r\n");
-	fprintf(cgiOut, "nieuw = 0\r\n");
-	fprintf(cgiOut, "test()\r\n");
-	fprintf(cgiOut, "// End  the hiding here. -->\r\n");
-	fprintf(cgiOut, "</SCRIPT>\r\n");
-	fprintf(cgiOut, "<P>That's all, folks.\r\n");
-	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "</HTML>\r\n");
-	fflush(cgiOut);
-	
+	printf("<HTML>\r\n");
+	printf("<HEAD>\r\n");
+	printf("<TITLE>Karchan</TITLE>\r\n");
+	printf("</HEAD>\r\n");
+	printf("\r\n");
+	printf("<BODY BGCOLOR=#FFFFFF OnLoad=\"top.frames[5].location='/cgi-bin/nph-addendum.cgi?name=%s&password=%s'\">\r\n", name, password);
+	printf("<SCRIPT LANGUAGE=\"JavaScript1.2\">\r\n");
+	printf("<!-- Hide script from older browsers\r\n");
+	printf("\r\n");
+	printf("var string = \"Spul!<BR>\"\r\n");
+	printf("var nieuw = 0\r\n");
+	printf("var d = top.frames[1].document\r\n");
+	printf("\r\n");
+	printf("\r\n");
+	printf("function stuffString(fstring)\r\n");
+	printf("{\r\n");
+	printf("	string+=fstring\r\n");
+	printf("	nieuw = 1\r\n");
+	printf("}\r\n");
+	printf("\r\n");
+	printf("function givemessage()\r\n");
+	printf("{\r\n");
+	printf("	alert (\"Hoihoihoi!\")\r\n");
+	printf("}\r\n");
+	printf("\r\n");
+	printf("function test()\r\n");
+	printf("{\r\n");
+	printf("	if (nieuw == 1) {\r\n");
+	printf("	d.writeln(string)\r\n");
+	printf("	nieuw = 0\r\n");
+	printf("	string = \"\"\r\n");
+	printf("	}\r\n");
+	printf("	setTimeout(\"test()\", 1000)\r\n");
+	printf("}\r\n");
+	printf("\r\n");
+	printf("\r\n");
+	printf("d.open()\r\n");
+	printf("string = \"\"\r\n");
+	printf("nieuw = 0\r\n");
+	printf("test()\r\n");
+	printf("// End the hiding here. -->\r\n");
+	printf("</SCRIPT>\r\n");
+	printf("<P>That's all, folks.\r\n");
+	printf("\r\n");
+	printf("</HTML>\r\n");
+	fflush(stdout);
+	cgi_quit();
 	return 0;
 }

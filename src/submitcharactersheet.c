@@ -31,7 +31,7 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "typedefs.h"
 
 #define debuggin 0
@@ -40,12 +40,13 @@ char *retrieveCgiValue(const char *fieldname)
 {
 	char *result, *formstring;
 	int textlength;
-	cgiFormStringSpaceNeeded(fieldname, &textlength);
+	textlength = strlen(cgi_getentrystr(fieldname))+1;
 	formstring = (char *) malloc(textlength);
-	cgiFormString(fieldname, formstring, textlength);
+	strcpy(formstring, cgi_getentrystr(fieldname));
 	result = (char *) malloc(2*textlength+1+2);
 	mysql_escape_string(result,formstring,strlen(formstring));
 	textlength = strlen(result);
+	free(formstring);
 	return result;
 }
 
@@ -77,7 +78,7 @@ void updateCharacterSheet(char *name, char *password)
 	sqlstring = (char *) malloc(200+strlen(name)+strlen(image)+strlen(homepage)+strlen(dateofbirth)+strlen(cityofbirth)+strlen(storyline));
 	sprintf(sqlstring, "replace into characterinfo "
 		"values(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")", name, image, homepage, dateofbirth, cityofbirth, storyline);
-	// fprintf(cgiOut, "[%s]\n", sqlstring);
+	// printf("[%s]\n", sqlstring);
 	free(image);free(homepage);free(dateofbirth);free(cityofbirth);free(storyline);
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
@@ -127,18 +128,10 @@ void validateUser()
 		- add sqlformstring to sqlstring
 		- free everything and add to sqlsize
 	*/
-	cgiFormStringSpaceNeeded("name", &textlength);
-	formstring = (char *) malloc(textlength);
-	cgiFormString("name", formstring, textlength);
-	name = (char *) malloc(2*textlength+1+2);
-	mysql_escape_string(name,formstring,strlen(formstring));
+	name = retrieveCgiValue("name");
 	textlength = strlen(name);
 
-	cgiFormStringSpaceNeeded("password", &textlength);
-	formstring = (char *) malloc(textlength);
-	cgiFormString("password", formstring, textlength);
-	password = (char *) malloc(2*textlength+1+2);
-	mysql_escape_string(password,formstring,strlen(formstring));
+	password = retrieveCgiValue("password");
 	textlength = strlen(password);
 
 	sqlstring = (char *) malloc(100+strlen(name)+strlen(password));
@@ -147,19 +140,19 @@ void validateUser()
 	"where usertable.name = '%s' and "
 	"usertable.password = '%s' and "
 	"usertable.god<2", name, password);
-	fprintf(cgiOut, "Content-type: text/html\n\n");
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - %s\n", name);
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	printf("Content-type: text/html\n\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - %s\n", name);
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
-	fprintf(cgiOut, "<H1>\n");
-	fprintf(cgiOut, "<IMG SRC=\"/images/gif/dragon.gif\">Character Sheets</H1>\n");
-	fprintf(cgiOut, "\n");
-	//fprintf(cgiOut, "[%s]\n", sqlstring);
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
+	printf("<H1>\n");
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">Character Sheets</H1>\n");
+	printf("\n");
+	//printf("[%s]\n", sqlstring);
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -186,7 +179,7 @@ void validateUser()
 			if (row == NULL)
 			{
 				success = 0;
-				fprintf(cgiOut, "Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
+				printf("Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
 			}
 			else
 			{
@@ -214,18 +207,30 @@ void validateUser()
 	{
 		updateCharacterSheet(name, password);
 	}
-	fprintf(cgiOut, "Form information has been submitted.<P>\n");
-	fprintf(cgiOut, "Please click <A HREF=\"charactersheet.cgi?name=%s\">", name);
-	fprintf(cgiOut, "Character Sheet Info</A> to view the submitted information.<P>");
+	printf("Form information has been submitted.<P>\n");
+	printf("Please click <A HREF=\"charactersheet.cgi?name=%s\">", name);
+	printf("Character Sheet Info</A> to view the submitted information.<P>");
 	free(name);free(password);
-	fprintf(cgiOut, "<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
-	fprintf(cgiOut, "</BODY>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
+	printf("</BODY>\n");
+	printf("</HTML>\n");
 }
 
 int
-cgiMain()
+main(int argc, char *argv[])
 {
+	int res;
+
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+	 
 	validateUser();
+	cgi_quit();
 	return 0;
 }

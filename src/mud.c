@@ -49,10 +49,10 @@ maartenl@il.fontys.nl
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "cgic.h"
+#include "cgi-util.h"
 
-#define MMHOST "localhost"	// the hostname users will be connecting to
-#define MMPORT 3339 // the port users will be connecting to
+#define MMHOST "zeus"	// the hostname users will be connecting to
+#define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
@@ -94,6 +94,23 @@ int getCookie(char *name, char *value)
 		value[ending-found]='\0';
 	}
 	return 1;
+}
+
+void displayError(char *message, int i)
+{
+	printf("Content-type: text/html\r\n\r\n");
+	printf("<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", strerror(i));
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
+	printf("Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
+	printf(" to report the error.<P>\r\n", strerror(i));
+	
+	printf("<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
+	printf("</body>\n");
+	printf("</HTML>\n");
+	fflush(stdout);
+	cgi_quit();
+	exit(1);
 }
 
 /* attempts to send data over a socket, if not all information is sent.
@@ -172,32 +189,33 @@ void setFrames(int i)
 void 
 NotActive(char *fname, char *fpassword, int errornr)
 {
-	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
-	fprintf(cgiOut, "<BODY>\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
-	fprintf(cgiOut, "You cannot MUD because you are not logged in (no more)."
-	    " This might have happened to the following circumstances:<P>");
-	fprintf(cgiOut, "<UL><LI>you were kicked out of the game for bad conduct");
-	fprintf(cgiOut, "<LI>the game went down for dayly cleanup, killing of all"
+	printf("<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>You are no longer active</H1><HR>\n");
+	printf("You cannot MUD because you are not logged in (no more)."
+	" This might have happened to the following circumstances:<P>");
+	printf("<UL><LI>you were kicked out of the game for bad conduct");
+	printf("<LI>the game went down for dayly cleanup, killing of all"
 		"active users");
-	fprintf(cgiOut, "<LI>you were deactivated for not responding for over 1 hour");
-	fprintf(cgiOut, "<LI>an error occurred</UL>");
-	fprintf(cgiOut, "You should be able to relogin by using the usual link below:<P>");
-	fprintf(cgiOut, "<A HREF=\"/karchan/enter.html\">Click here to\n");
-	fprintf(cgiOut, "relogin</A><P>\n");
-	fprintf(cgiOut, "</body>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("<LI>you were deactivated for not responding for over 1 hour");
+	printf("<LI>an error occurred</UL>");
+	printf("You should be able to relogin by using the usual link below:<P>");
+	printf("<A HREF=\"/karchan/enter.html\">Click here to\n");
+	printf("relogin</A><P>\n");
+	printf("</body>\n");
+	printf("</HTML>\n");
 }
 
 int 
-cgiMain()
+main(int argc, char * argv[])
 {
+	int res;
 	char *command;
 	char name[22];
 	char password[40];
 	char frames[10];
 	char cookiepassword[40];
-	char myhostname[80], myport[10];
+	char *myhostname, *myport;
 		
 	int sockfd, numbytes;
 	char receivebuf[1024], *sendbuf;
@@ -207,44 +225,113 @@ cgiMain()
 #ifdef DEBUG
 	command = (char *) malloc(1024);
 	printf("Command:");
-	fgets(command, 1023, stdin);
+	fgets(command, 1023, stdin);command[strlen(command)-1]=0;
 	printf("Name:");
-	fgets(name, 21, stdin);
+	fgets(name, 21, stdin);name[strlen(name)-1]=0;
 	printf("Password:");
-	fgets(password, 39, stdin);
+	fgets(password, 39, stdin);password[strlen(password)-1]=0;
+	printf("Cookie:");
+	fgets(cookiepassword, 39, stdin);cookiepassword[strlen(cookiepassword)-1]=0;
 	setFrames(2);
+	myhostname = strdup(MMHOST);
+	myport = strdup(MMPORT);
 #else
-	command = (char *) malloc(cgiContentLength);
-	cgiFormString("command", command, cgiContentLength - 2);
-	if (command[0]==0) {strcpy(command,"l");}
-	cgiFormString("name", name, 20);
-	cgiFormString("password", password, 40);
-	if (cgiFormString("hostname", myhostname, 80)!=cgiFormSuccess)
+	res = cgi_init();
+	if (res != CGIERR_NONE)
 	{
-		strcpy(myhostname, MMHOST);
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		exit(1);
 	}
-	if (cgiFormString("port", myport, 10)!=cgiFormSuccess)
+	if (cgi_getentrystr("command") == NULL)
 	{
-		strcpy(myport, "MMPORT");
+		printf("Content-type: text/html\n\n");
+		printf("Error #: command field required but not found<P>\n");
+		exit(1);
 	}
-	if (atoi(myport) == 0)
+	command = (char *) malloc(strlen(cgi_getentrystr("command"))+1);
+	strcpy(command, cgi_getentrystr("command"));
+	if (command[0]==0) 
 	{
-		strcpy(myport, "MMPORT");
+		free(command);
+		command = strdup("l");
 	}
- 	if (getCookie("Karchan", cookiepassword) == 0)
+	if (cgi_getentrystr("name") == NULL)
 	{
-		strcpy(cookiepassword, " ");
+		printf("Content-type: text/html\n\n");
+		printf("Error #: name field required but not found<P>\n");
+		exit(1);
 	}
-	if (strcmp(cookiepassword, password))
+	strncpy(name, cgi_getentrystr("name"), 19);
+	name[19]=0;
+	if (cgi_getentrystr("password") == NULL)
 	{
-		cgiHeaderContentType("text/html");
-		NotActive(name, password,3);
-		return 0;
+		printf("Content-type: text/html\n\n");
+		printf("Error #: password field required but not found<P>\n");
+		exit(1);
 	}
-	if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
+	strncpy(password, cgi_getentrystr("password"), 39);
+	password[39]='\0';
+	if (cgi_getentrystr("frames") == NULL)
 	{
 		strcpy(frames, "none");
 		setFrames(0);
+	}
+	else
+	{
+		strncpy(frames, cgi_getentrystr("frames"), 9);
+		frames[9]='\0';
+	}
+	if (cgi_getentrystr("hostname") == NULL)
+	{
+		myhostname = strdup(MMHOST);
+	}
+	else
+	{
+		myhostname = strdup(cgi_getentrystr("hostname"));
+	}
+	if (cgi_getentrystr("port") == NULL)
+	{
+		myport = strdup(MMPORT);
+	}
+	else
+	{
+		if (atoi(cgi_getentrystr("port")) == 0)
+		{
+			myport = strdup(MMPORT);
+		}
+		else
+		{
+			myport = strdup(cgi_getentrystr("port"));
+		}
+	}
+	if (!strcasecmp("sendmail", command))
+	{
+		int i;
+		if ( (cgi_getentrystr("mailheader") == NULL) ||
+			(cgi_getentrystr("mailbody") == NULL) ||
+			(cgi_getentrystr("mailto") == NULL) )
+		{
+			printf("Content-type: text/html\n\n");
+			printf("Error #: mail form fields required but not found<P>\n");
+			exit(1);
+		}
+		i = strlen(cgi_getentrystr("mailto")) + strlen(cgi_getentrystr("mailheader")) 
+			+ strlen(cgi_getentrystr("mailbody")) + 40;
+		free(command);
+		command = (char *) malloc(i);
+		sprintf(command, "sendmail %s %i %s %s", 
+			cgi_getentrystr("mailto"), strlen(cgi_getentrystr("mailheader")), cgi_getentrystr("mailheader"), cgi_getentrystr("mailbody"));
+	}
+	if (getCookie("Karchan", cookiepassword) == 0)
+	{
+			strcpy(cookiepassword, " ");
+	}
+	if (strcmp(cookiepassword, password))
+	{
+		printf("Content-type: text/html\n\n");
+			NotActive(name, password,3);
+			return 0;
 	}
 	if (!strcmp(frames,"1")) {setFrames(0);}
 	if (!strcmp(frames,"2")) {setFrames(1);}
@@ -254,45 +341,23 @@ cgiMain()
 
 	if (strcasecmp("quit", command))
 	{
-		cgiHeaderContentType("text/html");
+		printf("Content-type: text/html\n\n");
 	}
 	else
 	{
-		fprintf(cgiOut, "Content-type: text/html\r\n");
-		fprintf(cgiOut, "Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
-	}
-	
-	if (!strcasecmp("sendmail", command))
-	{
-		char *mailheader;
-		char *mailbody;
-		char *mailto;
-		mailto = (char *) malloc(cgiContentLength);
-		mailheader = (char *) malloc(cgiContentLength);
-		mailbody = (char *) malloc(cgiContentLength);
-		if ((cgiFormString("mailto", mailto, 99) == cgiFormSuccess)
-			&& (cgiFormString("mailheader", mailheader, 99) == cgiFormSuccess)
-			&& (cgiFormString("mailbody", mailbody, cgiContentLength - 2) == cgiFormSuccess))
-		{
-			sprintf(command, "sendmail %s %i %s %s", 
-				mailto, strlen(mailheader), mailheader, mailbody);
-		}
-		free(mailheader);
-		free(mailbody);
-		free(mailto);
+		printf("Content-type: text/html\r\n");
+		printf("Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
 	}
 	
 	/* setup socket stuff*/
 	if ((he = gethostbyname(myhostname)) == NULL)
 	{
-		perror("gethostbyname");
-		exit(1);
+		displayError("gethostbyname", errno);
 	}
 	
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
-		perror("socket");
-		exit(1);
+		displayError("socket", errno);
 	}
 	
 	their_addr.sin_family = AF_INET;	// host byte order
@@ -302,14 +367,12 @@ cgiMain()
 	
 	if (connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1)
 	{
-		perror("connect");
-		exit(1);
+		displayError("connect", errno);
 	}
 	
 	if ((numbytes=recv(sockfd, receivebuf, 1024-1, 0)) == -1)
 	{
-		perror("recv");
-		exit(1);
+		displayError("recv", errno);
 	}
 	
 	receivebuf[numbytes] = '\0';
@@ -323,10 +386,15 @@ cgiMain()
 
 	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
 	{
-		receivebuf[numbytes]=0;
-		fprintf(cgiOut, "%s", receivebuf);
+		receivebuf[numbytes]='\0';
+		printf("%s", receivebuf);
 	}
 	close(sockfd);
 
+	cgi_quit();
 	free(command); // clear the entered command
+	free(myhostname);
+	free(myport);
+	
+	return 0;
 }

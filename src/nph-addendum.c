@@ -26,7 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "typedefs.h"
 
 int checkPassword(char *name, char *password)
@@ -62,26 +62,34 @@ return !strcmp(temp, password);
 
 void WrongPasswd()
 {
-	fprintf(cgiOut,"<html><head><Title>Error</Title></head>\n");
-	fprintf(cgiOut,"<body>\n");
-	fprintf(cgiOut,"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
-	fprintf(cgiOut,"You filled out the wrong password for that particular name! \n");
-	fprintf(cgiOut,"Please retry by clicking at the link below:<P>\n");
-	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
+	printf("<html><head><Title>Error</Title></head>\n");
+	printf("<body>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
+	printf("You filled out the wrong password for that particular name! \n");
+	printf("Please retry by clicking at the link below:<P>\n");
+	printf("<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
 	exit(0);
 }
 
-int cgiMain()
+int main(int argc, char * argv[])
 {
 	char name[20];
 	char password[40];
-	int i;
+	int i, res;
 	
 	FILE *fp;
 	char logstring[80];
 	char logname[90];
 
 //	cgiHeaderContentType("text/html");
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
 	
 	if (0) 
 	{
@@ -90,29 +98,29 @@ int cgiMain()
 	}
 	else 
 	{
-		cgiFormString("name", name, 20);
-		cgiFormString("password", password, 40);
+		strncpy(name, cgi_getentrystr("name"), 19);name[19]=0;
+		strncpy(password, cgi_getentrystr("password"), 39);password[39]=0;
 	}
 
 	if (!checkPassword(name, password)) {WrongPasswd();}
 
 	i = 0;
-	fprintf(cgiOut, "HTTP/1.0 200\n");
-	cgiHeaderContentType("multipart/mixed;boundary=---blaat---");
-//	fprintf(cgiOut, "Content-type: multipart/mixed;boundary=---blaat---\n\n");
-	fprintf(cgiOut, "---blaat---\n");
-	fprintf(cgiOut, "Content-type: text/html\n\n");
+	printf("HTTP/1.0 200\n");
+//	cgiHeaderContentType("multipart/mixed;boundary=---blaat---");
+	printf("Content-type: multipart/mixed;boundary=---blaat---\n\n");
+	printf("---blaat---\n");
+	printf("Content-type: text/html\n\n");
 
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
-	fprintf(cgiOut, "<!-- Hide script from older browsers\n\n");
+	printf("<HTML>\n");
+	printf("<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
+	printf("<!-- Hide script from older browsers\n\n");
 
-	fprintf(cgiOut, "top.frames[4].stuffString(\"<HTML><BODY BGCOLOR=#FFFFFF>\")\n");
+	printf("top.frames[4].stuffString(\"<HTML><BODY BGCOLOR=#FFFFFF>\")\n");
 	
-	fprintf(cgiOut, "// End the hiding here. -->\n");
-	fprintf(cgiOut, "</SCRIPT>\n");
-	fprintf(cgiOut, "<P>That's all, folks %i.\n");
-	fprintf(cgiOut, "---blaat---\n");
+	printf("// End the hiding here. -->\n");
+	printf("</SCRIPT>\n");
+	printf("<P>That's all, folks %i.\n");
+	printf("---blaat---\n");
 	fflush(stdout);
 	sleep(1);
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -144,17 +152,17 @@ int cgiMain()
 					}
 				}
 			}
-			fprintf(cgiOut, "Content-type: text/html\n\n");
+			printf("Content-type: text/html\n\n");
 
-			fprintf(cgiOut, "<HTML>\n");
-			fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
-			fprintf(cgiOut, "<!-- Hide script from older browsers\n\n");
+			printf("<HTML>\n");
+			printf("<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
+			printf("<!-- Hide script from older browsers\n\n");
 	
-			fprintf(cgiOut, "top.frames[4].stuffString(\"%s\")\n",temp);
-			fprintf(cgiOut, "// End the hiding here. -->\n");
-			fprintf(cgiOut, "</SCRIPT>\n");
-			fprintf(cgiOut, "<P>That's all, folks.\n");
-			fprintf(cgiOut, "---blaat---\n");
+			printf("top.frames[4].stuffString(\"%s\")\n",temp);
+			printf("// End the hiding here. -->\n");
+			printf("</SCRIPT>\n");
+			printf("<P>That's all, folks.\n");
+			printf("---blaat---\n");
 		}
 		else
 		{
@@ -162,6 +170,7 @@ int cgiMain()
 			sleep(1);
 		}
 	}
+	cgi_quit();
 	
 	fclose(fp);
 	return 0;

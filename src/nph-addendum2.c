@@ -26,19 +26,26 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "cgic.h"
+#include "cgi-util.h"
 
-int cgiMain()
+int main(int argc, char * argv[])
 {
 	char name[20];
 	char password[40];
-	int i;
+	int i, res;
 	
 	FILE *fp;
 	char logstring[80];
 	char logname[90];
 
-//	cgiHeaderContentType("text/html");
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
 	
 	if (0) 
 	{
@@ -47,27 +54,27 @@ int cgiMain()
 	}
 	else 
 	{
-		cgiFormString("name", name, 20);
-		cgiFormString("password", password, 40);
+		strncpy(name, cgi_getentrystr("name"), 19);name[19]=0;
+		strncpy(password, cgi_getentrystr("password"), 39);password[39]=0;
 	}
 
 	i = 0;
-	fprintf(cgiOut, "HTTP/1.0 200\n");
-	cgiHeaderContentType("multipart/mixed;boundary=---blaat---");
-//	fprintf(cgiOut, "Content-type: multipart/mixed;boundary=---blaat---\n\n");
-	fprintf(cgiOut, "---blaat---\n");
-	fprintf(cgiOut, "Content-type: text/html\n\n");
+	printf("HTTP/1.0 200\n");
+//	cgiHeaderContentType("multipart/mixed;boundary=---blaat---");
+	printf("Content-type: multipart/mixed;boundary=---blaat---\n\n");
+	printf("---blaat---\n");
+	printf("Content-type: text/html\n\n");
 
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
-	fprintf(cgiOut, "<!-- Hide script from older browsers\n\n");
+	printf("<HTML>\n");
+	printf("<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
+	printf("<!-- Hide script from older browsers\n\n");
 
-	fprintf(cgiOut, "top.frames[1].stuffString(\"<HTML><BODY BGCOLOR=#FFFFFF>\")\n");
+	printf("top.frames[1].stuffString(\"<HTML><BODY BGCOLOR=#FFFFFF>\")\n");
 	
-	fprintf(cgiOut, "// End the hiding here. -->\n");
-	fprintf(cgiOut, "</SCRIPT>\n");
-	fprintf(cgiOut, "<P>That's all, folks %i.\n");
-	fprintf(cgiOut, "---blaat---\n");
+	printf("// End the hiding here. -->\n");
+	printf("</SCRIPT>\n");
+	printf("<P>That's all, folks %i.\n");
+	printf("---blaat---\n");
 	fflush(stdout);
 	sleep(1);
 	sprintf(logname, "%s%s.log","/home/karchan/mud/tmp/",name);
@@ -98,22 +105,23 @@ int cgiMain()
 				}
 			}
 		}
-			fprintf(cgiOut, "Content-type: text/html\n\n");
+			printf("Content-type: text/html\n\n");
 
-			fprintf(cgiOut, "<HTML>\n");
-			fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
-			fprintf(cgiOut, "<!-- Hide script from older browsers\n\n");
+			printf("<HTML>\n");
+			printf("<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
+			printf("<!-- Hide script from older browsers\n\n");
 
-			fprintf(cgiOut, "top.frames[1].stuffString(\"%s\")\n",temp);
-			fprintf(cgiOut, "// End the hiding here. -->\n");
-			fprintf(cgiOut, "</SCRIPT>\n");
-			fprintf(cgiOut, "<P>That's all, folks.\n");
-			fprintf(cgiOut, "---blaat---\n");
+			printf("top.frames[1].stuffString(\"%s\")\n",temp);
+			printf("// End the hiding here. -->\n");
+			printf("</SCRIPT>\n");
+			printf("<P>That's all, folks.\n");
+			printf("---blaat---\n");
 			fflush(stdout);
 		}
 		sleep(1);
 	}
 
 	fclose(fp);
+	cgi_quit();
 	return 0;
 }

@@ -31,7 +31,7 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "typedefs.h"
 
 #define debuggin 0
@@ -43,14 +43,14 @@ void showFamilyValues(MYSQL mysql, char *name)
 	int textlength, sqlsize, i;
 	char *sqlstring;
 	
-	sqlstring = (char *) malloc(1400+textlength);
+	sqlstring = (char *) malloc(1400 + strlen(name) + 1);
 	sprintf(sqlstring, "select familyvalues.description, toname, characterinfo.name "
 	"from family, familyvalues "
 		"left join characterinfo "
 		"on characterinfo.name = family.toname "
 	"where family.name = '%s' and "
 	"family.description = familyvalues.id", name);
-	fprintf(cgiOut, "<B>Family Relations:</B><BR><UL>\n");
+	printf("<B>Family Relations:</B><BR><UL>\n");
 	if (mysql_query(&mysql,sqlstring))
 	{
 		// error
@@ -66,11 +66,11 @@ void showFamilyValues(MYSQL mysql, char *name)
 			{
 				if (row[2] == NULL)
 				{
-					fprintf(cgiOut, "<LI>%s of %s<BR>",row[0], row[1]);
+					printf("<LI>%s of %s<BR>",row[0], row[1]);
 				}
 				else
 				{
-					fprintf(cgiOut, "<LI>%s of <A HREF=\"charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
+					printf("<LI>%s of <A HREF=\"charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
 				}
 			}
 			mysql_free_result(res);
@@ -90,7 +90,7 @@ void showFamilyValues(MYSQL mysql, char *name)
 		}	
 	}
 	free(sqlstring);
-	fprintf(cgiOut, "</UL>");
+	printf("</UL>");
 }
                  
 void showCharacterSheet()
@@ -126,14 +126,14 @@ void showCharacterSheet()
 		- add sqlformstring to sqlstring
 		- free everything and add to sqlsize
 	*/
-	cgiFormStringSpaceNeeded("name", &textlength);
-	formstring = (char *) malloc(textlength);
-	cgiFormString("name", formstring, textlength);
+	textlength = strlen(cgi_getentrystr("name"));
+	formstring = (char *) malloc(textlength+1);
+	strcpy(formstring, cgi_getentrystr("name"));
 	sqlformstring = (char *) malloc(2*textlength+1+2);
 	mysql_escape_string(sqlformstring,formstring,strlen(formstring));
 	textlength = strlen(sqlformstring);
 
-	sqlstring = (char *) malloc(1400+textlength);
+	sqlstring = (char *) malloc(1400 + textlength);
 	sprintf(sqlstring, "select usertable.name, title, sex, concat(age,"
 	"if(length = 'none', '', concat(', ',length)),"
 	"if(width = 'none', '', concat(', ',width)),"
@@ -152,20 +152,20 @@ void showCharacterSheet()
 	"from usertable, characterinfo "
 	"where usertable.name = '%s' and "
 	"usertable.name = characterinfo.name", sqlformstring);
-	fprintf(cgiOut, "Content-type: text/html\n\n");
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - %s\n", formstring);
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	printf("Content-type: text/html\n\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - %s\n", formstring);
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
-	fprintf(cgiOut, "<H1>\n");
-	fprintf(cgiOut, "<IMG SRC=\"/images/gif/dragon.gif\">Character Sheet of %s</H1>\n", sqlformstring);
-	fprintf(cgiOut, "<HR>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
+	printf("<H1>\n");
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">Character Sheet of %s</H1>\n", sqlformstring);
+	printf("<HR>\n");
 	
-	//fprintf(cgiOut, "[%s]\n", sqlstring);
+	//printf("[%s]\n", sqlstring);
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -197,7 +197,7 @@ void showCharacterSheet()
 					if ((strcmp("<IMG SRC=\"http://\">", row[i])) &&
 					   (strcmp("<IMG SRC=\"\">", row[i]))) 
 					{
-						fprintf(cgiOut, "<B>%s</B> %s<BR>",databaseitems[i],row[i]);
+						printf("<B>%s</B> %s<BR>",databaseitems[i],row[i]);
 					}
 					if (i==9) 
 					{
@@ -224,14 +224,26 @@ void showCharacterSheet()
  	mysql_close(&mysql);
 	free(formstring);free(sqlformstring);
 	free(sqlstring);
-	fprintf(cgiOut, "<HR><P><A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
-	fprintf(cgiOut, "</BODY>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("<HR><P><A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
+	printf("</BODY>\n");
+	printf("</HTML>\n");
 }
 
 int
-cgiMain()
+main(int argc, char * argv[])
 {
+	int res;
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+
 	showCharacterSheet();
+	
+	cgi_quit();
 	return 0;
 }

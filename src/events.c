@@ -28,7 +28,7 @@ maartenl@il.fontys.nl
 #include "mud-lib3.h"
 
 int 
-cgiMain()
+main(int argc, char *argv[])
 {
 	struct tm datumtijd;
 	time_t   datetime;

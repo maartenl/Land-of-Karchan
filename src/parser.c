@@ -38,7 +38,7 @@ char *stringbuffer;
 //{NULL,NULL}
 //}
 
-int debug = 0;
+int parser_debug = 0;
 
 int ParseSentence(char *name, int *room, char *parserstring)
 /* Pre: name = the name of the person executing the command
@@ -57,17 +57,17 @@ int ParseSentence(char *name, int *room, char *parserstring)
 {
 	if (!strcasecmp(parserstring, "end"))
 	{
-		if (debug) {fprintf(getMMudOut(), "end found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "end found...<BR>\n");}
 		return 1;
 	}
 	if (!strcasecmp(parserstring, "else"))
 	{
-		if (debug) {fprintf(getMMudOut(), "else found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "else found...<BR>\n");}
 		return 2;
 	}
 	if (!strcasecmp(parserstring, "return"))
 	{
-		if (debug) {fprintf(getMMudOut(), "return found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "return found...<BR>\n");}
 		return 3;
 	}
 	if (strstr(parserstring, "if sql(")==parserstring)
@@ -80,7 +80,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+8);
 		temp[strlen(temp)-2]=0;
 
-		if (debug) {fprintf(getMMudOut(), "if sql found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "if sql found...<BR>\n");}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -110,20 +110,20 @@ int ParseSentence(char *name, int *room, char *parserstring)
 	}
 	if (!strcasecmp(parserstring, "debug"))
 	{
-		debug=1;
-		if (debug) {fprintf(getMMudOut(), "<HR><FONT COLOR=red>debug found, writing messages...<BR>\n");}
+		parser_debug=1;
+		if (parser_debug) {fprintf(getMMudOut(), "<HR><FONT COLOR=red>debug found, writing messages...<BR>\n");}
 	}
 	if (!strcasecmp(parserstring, "showstandard"))
 	{
-		if (debug) {fprintf(getMMudOut(), "showstandard found, exiting...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "showstandard found, exiting...<BR>\n");}
 		return 6;
 	}
 	if (!strcasecmp(parserstring, "showstring"))
 	{
-		if (debug) {fprintf(getMMudOut(), "showstring found, exiting...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "showstring found, exiting...<BR>\n");}
 		if (stringbuffer == NULL)
 		{
-			if (debug) {fprintf(getMMudOut(), "showstring skipped, stringbuffer empty...<BR>\n");}
+			if (parser_debug) {fprintf(getMMudOut(), "showstring skipped, stringbuffer empty...<BR>\n");}
 		}
 		else
 		{
@@ -159,7 +159,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		if (debug) {fprintf(getMMudOut(), "show found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "show found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+6);
 		temp[strlen(temp)-2]=0;
@@ -208,7 +208,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char *temp;
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		if (debug) {fprintf(getMMudOut(), "sql found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "sql found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
@@ -225,7 +225,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		/* says something to yourself */
 		char logname[100];
 		char *temp;
-		if (debug) {fprintf(getMMudOut(), "say found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "say found...<BR>\n");}
 		sprintf(logname, "%s%s.log",USERHeader,name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
@@ -238,7 +238,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		/* says something to everyone except to you */
 		char *temp;
 		temp = (char *) malloc(strlen(parserstring)+1);
-		if (debug) {fprintf(getMMudOut(), "sayeveryone found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "sayeveryone found...<BR>\n");}
 		strcpy(temp, parserstring+13);
 		temp[strlen(temp)-2]=0;
 		WriteMessage(name, *room, temp);
@@ -253,7 +253,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
 		sprintf(logname, "%s%s.log",USERHeader,name);
-		if (debug) {fprintf(getMMudOut(), "sayto found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "sayto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+7);
 		strcpy(temp2, temp3+2);
@@ -272,7 +272,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		sprintf(logname, "%s%s.log",USERHeader,name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
-		if (debug) {fprintf(getMMudOut(), "sayeveryoneto found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "sayeveryoneto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+15);
 		strcpy(temp2, temp3+2);
@@ -292,7 +292,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		  an update statement on the database. So both commands need to be
 		  in tandem if necessary. */
 		/* syntax: set room=30 */
-		if (debug) {fprintf(getMMudOut(), "set room=%s found...<BR>\n", parserstring+9);}
+		if (parser_debug) {fprintf(getMMudOut(), "set room=%s found...<BR>\n", parserstring+9);}
 		*room = atoi(parserstring+9);
 	}
 	if (strstr(parserstring, "getstring(")==parserstring)
@@ -305,7 +305,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
-		if (debug) {fprintf(getMMudOut(), "getstring found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "getstring found...<BR>\n");}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -334,7 +334,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		strcpy(temp, parserstring+11);
 		temp[strlen(temp)-2]=0;
 
-		if (debug) {fprintf(getMMudOut(), "addstring [%s]found...<BR>\n", parserstring);}
+		if (parser_debug) {fprintf(getMMudOut(), "addstring [%s]found...<BR>\n", parserstring);}
 		res=SendSQL2(temp, NULL);
 		free(temp);
 		if (res != NULL)
@@ -365,7 +365,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 					}
 					else
 					{
-						if (debug) {fprintf(getMMudOut(), "addstring: realloc failed...<BR>\n");}
+						if (parser_debug) {fprintf(getMMudOut(), "addstring: realloc failed...<BR>\n");}
 					}
 				}
 			}
@@ -378,7 +378,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		time_t tijd;
 		struct tm datum;
 		char *temp;
-		if (debug) {fprintf(getMMudOut(), "log found...<BR>\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "log found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
@@ -529,7 +529,7 @@ int Parse(char *name, int *room, char *parserstring)
 				/* this is the parsing part, the previous part was just splitting up */
 				if ((state[level]!=1) && (state[level]!=3))
 				{
-					if (debug) {fprintf(getMMudOut(), "[%s]<BR>\n", string);}
+					if (parser_debug) {fprintf(getMMudOut(), "[%s]<BR>\n", string);}
 					switch (ParseSentence(name, room, string))
 					{
 						case 1 : // end found
@@ -605,7 +605,7 @@ int Parse(char *name, int *room, char *parserstring)
 						level++;state[level]=3;
 					}
 				} // end elseif
-				if (debug) {fprintf(getMMudOut(), "[state=%i,level=%i]<BR>\n", state[level], level);}
+				if (parser_debug) {fprintf(getMMudOut(), "[state=%i,level=%i]<BR>\n", state[level], level);}
 				string[0]=0;
 				memory=255;
 				string = (char *) realloc(string, memory);
@@ -662,7 +662,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			returnvalue = Parse(name, &myroom, row[4]);
 			row = mysql_fetch_row(res);
 		}
-		if (debug) {fprintf(getMMudOut(), "</FONT><HR>\r\n");}
+		if (parser_debug) {fprintf(getMMudOut(), "</FONT><HR>\r\n");}
 		
 		mysql_free_result(res);
 		if (returnvalue==1)

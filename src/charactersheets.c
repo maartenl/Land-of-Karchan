@@ -31,7 +31,7 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "cgic.h"
+#include "cgi-util.h"
 #include "typedefs.h"
 
 #define debuggin 0
@@ -43,29 +43,29 @@ void listSheets()
 	MYSQL_ROW row;
 	int i;
 	
-	fprintf(cgiOut, "Content-type: text/html\n\n");
-	fprintf(cgiOut, "<HTML>\n");
-	fprintf(cgiOut, "<HEAD>\n");
-	fprintf(cgiOut, "<TITLE>\n");
-	fprintf(cgiOut, "Land of Karchan - Character Sheets\n");
-	fprintf(cgiOut, "</TITLE>\n");
-	fprintf(cgiOut, "</HEAD>\n");
+	printf("Content-type: text/html\n\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - Character Sheets\n");
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
 
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
-	fprintf(cgiOut, "<H1>\n");
-	fprintf(cgiOut, "<IMG SRC=\"/images/gif/dragon.gif\">Character Sheets</H1>\n");
-	fprintf(cgiOut, "	I feel the following needs a little explanation. Below you see a list of");
-	fprintf(cgiOut, " available Character Sheets. They contain personal information like name,");
-	fprintf(cgiOut, " title, place of birth, and the story line of characters, and references to");
-	fprintf(cgiOut, " other characters. In each case these");
-	fprintf(cgiOut, " are put together by the people that originally created the character on the");
-	fprintf(cgiOut, " game.<P>");
-	fprintf(cgiOut, "It provides valuable insights into the story behind this Game.<P>");
-	fprintf(cgiOut, "Now you can add your piece of information as well. Just fill in your name");
-	fprintf(cgiOut, " and password of the character you created on the mud, and you will be");
-	fprintf(cgiOut, " presented with a form that you can fill out, and change later in the same");
-	fprintf(cgiOut, " way.<P>");
-	fprintf(cgiOut, "\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
+	printf("<H1>\n");
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">Character Sheets</H1>\n");
+	printf("	I feel the following needs a little explanation. Below you see a list of");
+	printf(" available Character Sheets. They contain personal information like name,");
+	printf(" title, place of birth, and the story line of characters, and references to");
+	printf(" other characters. In each case these");
+	printf(" are put together by the people that originally created the character on the");
+	printf(" game.<P>");
+	printf("It provides valuable insights into the story behind this Game.<P>");
+	printf("Now you can add your piece of information as well. Just fill in your name");
+	printf(" and password of the character you created on the mud, and you will be");
+	printf(" presented with a form that you can fill out, and change later in the same");
+	printf(" way.<P>");
+	printf("\n");
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
 	{
@@ -97,23 +97,23 @@ void listSheets()
 			int counter = 1;
 			num_rows = num_rows / 5;
 			// retrieve rows, then call mysql_free_result(result);
-			fprintf(cgiOut, "<TABLE ALIGN=top BORDER=1><TR><TD>");
+			printf("<TABLE ALIGN=top BORDER=1><TR><TD>");
 			while ((row = mysql_fetch_row(res))!=NULL)
 			{
 				if (toupper(row[1][0]) != beginstuff)
 				{
 					beginstuff = toupper(row[1][0]);
-					fprintf(cgiOut, "</UL><H1>%c</H1><UL>\r\n", beginstuff);
+					printf("</UL><H1>%c</H1><UL>\r\n", beginstuff);
 				}
-				fprintf(cgiOut, "%s<BR>",row[0]);
+				printf("%s<BR>",row[0]);
 				if (counter++>num_rows)
 				{
-					fprintf(cgiOut, "</TD>\r\n<TD>");
+					printf("</TD>\r\n<TD>");
 					counter=1;
 				}
 				
 			}
-			fprintf(cgiOut, "</TR></TABLE>\r\n");
+			printf("</TR></TABLE>\r\n");
 			mysql_free_result(res);
 		}
 		else// mysql_store_result() returned nothing; should it have?
@@ -131,29 +131,40 @@ void listSheets()
 		}	
 	}
  	mysql_close(&mysql);
-	fprintf(cgiOut, "</UL>");
-	fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"editcharactersheet.cgi\">\n");
-	fprintf(cgiOut, "<HR>\r\n");
-	fprintf(cgiOut, "(Fictional) Name:<BR>\r\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"name\" VALUE=\"\" SIZE=\"19\"\r\n");
-	fprintf(cgiOut, "MAXLENGTH=\"19\"><P>\r\n");
-	fprintf(cgiOut, "Password:<BR>\r\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"password\" NAME=\"password\" VALUE=\"\" SIZE=\"10\"\r\n");
-	fprintf(cgiOut, "MAXLENGTH=\"39\"><P>\r\n");
-	fprintf(cgiOut, "<P>\r\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"submit\" VALUE=\"Edit\">\r\n");
-	fprintf(cgiOut, "<INPUT TYPE=\"reset\" VALUE=\"Clear\"><P>\r\n");
-	fprintf(cgiOut, "</FORM>\r\n");
+	printf("</UL>");
+	printf("<FORM METHOD=\"GET\" ACTION=\"editcharactersheet.cgi\">\n");
+	printf("<HR>\r\n");
+	printf("(Fictional) Name:<BR>\r\n");
+	printf("<INPUT TYPE=\"text\" NAME=\"name\" VALUE=\"\" SIZE=\"19\"\r\n");
+	printf("MAXLENGTH=\"19\"><P>\r\n");
+	printf("Password:<BR>\r\n");
+	printf("<INPUT TYPE=\"password\" NAME=\"password\" VALUE=\"\" SIZE=\"10\"\r\n");
+	printf("MAXLENGTH=\"39\"><P>\r\n");
+	printf("<P>\r\n");
+	printf("<INPUT TYPE=\"submit\" VALUE=\"Edit\">\r\n");
+	printf("<INPUT TYPE=\"reset\" VALUE=\"Clear\"><P>\r\n");
+	printf("</FORM>\r\n");
 
-	fprintf(cgiOut, "<A HREF=\"/karchan/chronicles/chronicles2.html\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
+	printf("<A HREF=\"/karchan/chronicles/chronicles2.html\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
 
-	fprintf(cgiOut, "</BODY>\n");
-	fprintf(cgiOut, "</HTML>\n");
+	printf("</BODY>\n");
+	printf("</HTML>\n");
 }
 
 int
-cgiMain()
+main(int argc, char * argv[])
 {
+	int res;
+	res = cgi_init();
+	if (res != CGIERR_NONE)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
+		cgi_quit();
+		exit(1);
+	}
+
 	listSheets();
+	cgi_quit();
 	return 0;
 }
