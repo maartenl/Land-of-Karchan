@@ -4758,7 +4758,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 	char sqlstring[1024];
 	char logname[100], mysex[10];
 	
-	if (getTokenAmount() =< 2)
+	if (getTokenAmount() < 2)
 	{
 		return 0;
 	}
