@@ -1354,17 +1354,6 @@ cgiMain()
 
 	}		
 
-/* add KnightTalk */		
-	if (!strcmp("Knights", guildstatus))
-	{
-		if ( (!strcmp("honor", tokens[0])) && (!strcmp("thread", tokens[1])) )
-		{
-			KnightTalk(name, password, room);
-			KillGame();
-		}
-
-	}
-
 /* add BKTalk */		
 	if (!strcmp("BKIC", guildstatus))
 	{

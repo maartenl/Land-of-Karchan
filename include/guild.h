@@ -43,9 +43,6 @@ void SWTalk(char *name, char *password, int room);
 /* add deputy chat line */
 void DepTalk(char *name, char *password, int room);
 
-/* add Knight chat line */
-void KnightTalk(char *name, char *password, int room);
-
 /* add Blood Knight chat line */
 void BKTalk(char *name, char *password, int room);
 
