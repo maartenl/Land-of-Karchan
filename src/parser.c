@@ -415,6 +415,14 @@ int Parse(char *name, int *room, char *parserstring)
 					{
 						level--;
 					}
+					if ( (state[level]==1) && (strstr(string, "if sql(")==string) )
+					{
+						level++;state[level]=3;
+					}
+					if ( (state[level]==3) && (strstr(string, "if sql(")==string) )
+					{
+						level++;state[level]=3;
+					}
 				} // end elseif
 				if (debug) {fprintf(cgiOut, "[state=%i,level=%i]<BR>\n", state[level], level);}
 				string[0]=0;
