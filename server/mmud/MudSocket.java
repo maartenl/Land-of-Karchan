@@ -377,11 +377,11 @@ public class MudSocket extends Thread
 		myUser.writeMessage(Database.getLogonMessage());
 		if (MailDb.hasUserNewMail(myUser)) 
 		{
-			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
+			myUser.writeMessage("You have new Mudmail!<P>\r\n");
 		}
 		else
 		{
-			myUser.writeMessage("You have new Mudmail!<P>\r\n");
+			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
 		}
 		String returnStuff;
 		Database.writeLog(myUser.getName(), "entered game.");
