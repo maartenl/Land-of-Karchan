@@ -58,17 +58,17 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			8 -> showstring found, dump string and skip everything else
 */
 {
-	if (!strcmp(parserstring, "end"))
+	if (!strcasecmp(parserstring, "end"))
 	{
 		if (debug) {fprintf(cgiOut, "end found...<BR>\n");}
 		return 1;
 	}
-	if (!strcmp(parserstring, "else"))
+	if (!strcasecmp(parserstring, "else"))
 	{
 		if (debug) {fprintf(cgiOut, "else found...<BR>\n");}
 		return 2;
 	}
-	if (!strcmp(parserstring, "return"))
+	if (!strcasecmp(parserstring, "return"))
 	{
 		if (debug) {fprintf(cgiOut, "return found...<BR>\n");}
 		return 3;
@@ -92,7 +92,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			if (row != NULL)
 			{
 				/*	row[0] should contain a 1 */
-				int success = !strcmp("1", row[0]);
+				int success = !strcasecmp("1", row[0]);
 				mysql_free_result(res);
 				if (success)
 				{
@@ -111,17 +111,17 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		}
 		return 5; /* false, due to no resultset */
 	}
-	if (!strcmp(parserstring, "debug"))
+	if (!strcasecmp(parserstring, "debug"))
 	{
 		debug=1;
 		if (debug) {fprintf(cgiOut, "<HR><FONT COLOR=red>debug found, writing messages...<BR>\n");}
 	}
-	if (!strcmp(parserstring, "showstandard"))
+	if (!strcasecmp(parserstring, "showstandard"))
 	{
 		if (debug) {fprintf(cgiOut, "showstandard found, exiting...<BR>\n");}
 		return 6;
 	}
-	if (!strcmp(parserstring, "showstring"))
+	if (!strcasecmp(parserstring, "showstring"))
 	{
 		if (debug) {fprintf(cgiOut, "showstring found, exiting...<BR>\n");}
 		if (stringbuffer == NULL)
@@ -586,15 +586,15 @@ int Parse(char *name, int *room, char *parserstring)
 				} // end if
 				else
 				{
-					if ((state[level]==1) && (!strcmp(string, "else")))
+					if ((state[level]==1) && (!strcasecmp(string, "else")))
 					{
 						state[level]=0;
 					}
-					if ((state[level]==1) && (!strcmp(string, "end")))
+					if ((state[level]==1) && (!strcasecmp(string, "end")))
 					{
 						level--;
 					}
-					if ((state[level]==3) && (!strcmp(string, "end")))
+					if ((state[level]==3) && (!strcasecmp(string, "end")))
 					{
 						level--;
 					}

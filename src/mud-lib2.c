@@ -825,15 +825,15 @@ Look_Command(char *name, char *password, int room)
 			{
 				int i;
 				WriteSentenceIntoOwnLogFile(logname, "You look carefully at the %s, ", row[8]);
-				if (strcmp(row[9], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[9]);}
-				if (strcmp(row[10], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[10]);}
-				if (strcmp(row[11], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[11]);}
-				if (strcmp(row[12], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[12]);}
-				if (strcmp(row[13], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[13]);}
-				if (strcmp(row[14], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[14]);}
-				if (strcmp(row[15], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[15]);}
-				if (strcmp(row[16], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[16]);}
-				if (strcmp(row[17], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[17]);}
+				if (strcasecmp(row[9], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[9]);}
+				if (strcasecmp(row[10], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[10]);}
+				if (strcasecmp(row[11], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[11]);}
+				if (strcasecmp(row[12], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[12]);}
+				if (strcasecmp(row[13], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[13]);}
+				if (strcasecmp(row[14], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[14]);}
+				if (strcasecmp(row[15], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[15]);}
+				if (strcasecmp(row[16], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[16]);}
+				if (strcasecmp(row[17], "none")) {WriteSentenceIntoOwnLogFile(logname, "%s, ", row[17]);}
 				WriteSentenceIntoOwnLogFile(logname, "%s %s", row[7], row[6]);
 				WriteSentenceIntoOwnLogFile(logname, " who calls %sself \r\n"
 					"%s (%s).<BR>\r\n", /*sex*/ HeShe2(row[7]), row[0], row[3]);
@@ -850,7 +850,7 @@ Look_Command(char *name, char *password, int room)
 					WriteSentenceIntoOwnLogFile(logname, "%s is %s<BR>\r\n", HeShe(row[7]), extralook);
 					free(extralook);
 				}
-				if (!strcmp(row[26],"1")) 
+				if (!strcasecmp(row[26],"1")) 
 				{
 					WriteSentenceIntoOwnLogFile(logname, "%s is fast asleep.<BR>\r\n", row[0]);
 				}
@@ -984,12 +984,12 @@ Root_Command(char *name, char *password, int room)
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader, name);
 	if (tokens[0][0]=='x') {DeputyAlias(name, password, room);}
-	if (!strcmp("s endsql",tokens[0])) {
+	if (!strcasecmp("s endsql",tokens[0])) {
 		SendSQL(logname, name, password, command+(tokens[1]-tokens[0]));
 		WriteRoom(name, password, room, 0);
 		KillGame();
 		}
-	if ((aantal == 2) && (!strcmp(tokens[0], "deactivate")))
+	if ((aantal == 2) && (!strcasecmp(tokens[0], "deactivate")))
 	{
 		RemoveUser(tokens[1]);
 		WriteSentenceIntoOwnLogFile(logname, "%s deactivated.<BR>\r\n", tokens[1]);
@@ -1001,7 +1001,7 @@ Root_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
-	if ( (!strcmp("dep", tokens[0])) && (!strcmp("chat", tokens[1])) )
+	if ( (!strcasecmp("dep", tokens[0])) && (!strcasecmp("chat", tokens[1])) )
 	{
 		DepTalk(name, password, room);
 		KillGame();
@@ -1040,7 +1040,7 @@ Evil_Command(char *name, char *password, int room)
 		KillGame();
 	}
 	if ((aantal == 3) &&
-	    (!strcmp("beam", tokens[0])) && (!CheckRoom(atoi(tokens[2])))) {
+	    (!strcasecmp("beam", tokens[0])) && (!CheckRoom(atoi(tokens[2])))) {
 		WriteMessage(name, room, "%s's eyes light up red for a few seconds, then black smoke begins to "
 		"surround him. When the black smoke clears he appears to be gone.<BR>\r\n", name);
 		WriteSentenceIntoOwnLogFile(logname, "You disappear and reappear in a cloud of smoke.<BR>\r\n");
@@ -1051,7 +1051,7 @@ Evil_Command(char *name, char *password, int room)
 		KillGame();
 	}
 	if ((aantal == 4) &&
-	    (!strcmp("beam", tokens[0]))  && (!CheckRoom(atoi(tokens[2])))) {
+	    (!strcasecmp("beam", tokens[0]))  && (!CheckRoom(atoi(tokens[2])))) {
 //		y.room = atoi(tokens[3]);
 		WriteRoom(name, password, room, 0);
 		KillGame();
@@ -1278,15 +1278,15 @@ Stats_Command(char *name, char *password)
 	fprintf(cgiOut, "<Center><H1>Character Statistics</H1></Center>");
 	fprintf(cgiOut, "<H2>Appearance:</H2>");
 	fprintf(cgiOut, "A %s", row[8]); /*age*/
-	if (strcmp(row[9], "none")) {fprintf(cgiOut, ", %s", row[9]);}
-	if (strcmp(row[10], "none")) {fprintf(cgiOut, ", %s", row[10]);}
-	if (strcmp(row[11], "none")) {fprintf(cgiOut, ", %s", row[11]);}
-	if (strcmp(row[12], "none")) {fprintf(cgiOut, ", %s", row[12]);}
-	if (strcmp(row[13], "none")) {fprintf(cgiOut, ", %s", row[13]);}
-	if (strcmp(row[14], "none")) {fprintf(cgiOut, ", %s", row[14]);}
-	if (strcmp(row[15], "none")) {fprintf(cgiOut, ", %s", row[15]);}
-	if (strcmp(row[16], "none")) {fprintf(cgiOut, ", %s", row[16]);}
-	if (strcmp(row[17], "none")) {fprintf(cgiOut, ", %s", row[17]);}/*leg*/
+	if (strcasecmp(row[9], "none")) {fprintf(cgiOut, ", %s", row[9]);}
+	if (strcasecmp(row[10], "none")) {fprintf(cgiOut, ", %s", row[10]);}
+	if (strcasecmp(row[11], "none")) {fprintf(cgiOut, ", %s", row[11]);}
+	if (strcasecmp(row[12], "none")) {fprintf(cgiOut, ", %s", row[12]);}
+	if (strcasecmp(row[13], "none")) {fprintf(cgiOut, ", %s", row[13]);}
+	if (strcasecmp(row[14], "none")) {fprintf(cgiOut, ", %s", row[14]);}
+	if (strcasecmp(row[15], "none")) {fprintf(cgiOut, ", %s", row[15]);}
+	if (strcasecmp(row[16], "none")) {fprintf(cgiOut, ", %s", row[16]);}
+	if (strcasecmp(row[17], "none")) {fprintf(cgiOut, ", %s", row[17]);}/*leg*/
 
 	fprintf(cgiOut, ", %s %s introduces %sself as %s, %s.<BR>\r\n(%s)<BR>", 
 	row[7], row[6], HeShe2(row[7]), row[0], row[3], row[4]);/*sex, race*/
@@ -1538,7 +1538,7 @@ DropMoney_Command(char *name, char *password, int room)
 		KillGame();
 	}
 
-	if (!strcmp(tokens[aantal-2],"copper"))
+	if (!strcasecmp(tokens[aantal-2],"copper"))
 	{
 		if (mycopper<amount)
 		{
@@ -1555,7 +1555,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=36;
 	}
-	if (!strcmp(tokens[aantal-2],"silver"))
+	if (!strcasecmp(tokens[aantal-2],"silver"))
 	{
 		if (mysilver<amount)
 		{
@@ -1572,7 +1572,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=37;
 	}
-	if (!strcmp(tokens[aantal-2],"gold"))
+	if (!strcasecmp(tokens[aantal-2],"gold"))
 	{
 		if (mygold<amount)
 		{
@@ -1700,7 +1700,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		KillGame();
 	}
 
-	if (!strcmp(tokens[numberfilledout+1],"copper"))
+	if (!strcasecmp(tokens[numberfilledout+1],"copper"))
 	{
 		if (amount>mycopper) 
 		{
@@ -1709,7 +1709,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			KillGame();
 		}
 	}
-	if (!strcmp(tokens[numberfilledout+1],"silver"))
+	if (!strcasecmp(tokens[numberfilledout+1],"silver"))
 	{
 		if (amount>mysilver) 
 		{
@@ -1718,7 +1718,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			KillGame();
 		}
 	}
-	if (!strcmp(tokens[numberfilledout+1],"gold"))
+	if (!strcasecmp(tokens[numberfilledout+1],"gold"))
 	{
 		if (amount>mygold) 
 		{
@@ -2272,7 +2272,7 @@ Put_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
-	if (!strcmp(tokens[2+numberfilledout], "in"))
+	if (!strcasecmp(tokens[2+numberfilledout], "in"))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[1+numberfilledout]);
@@ -2291,7 +2291,7 @@ Put_Command(char *name, char *password, int room)
 		}
 	}
 	else
-	if (!strcmp(tokens[3+numberfilledout], "in"))
+	if (!strcasecmp(tokens[3+numberfilledout], "in"))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[2+numberfilledout]);
@@ -2310,7 +2310,7 @@ Put_Command(char *name, char *password, int room)
 		}
 	}
 	else
-	if (!strcmp(tokens[4+numberfilledout], "in"))
+	if (!strcasecmp(tokens[4+numberfilledout], "in"))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[3+numberfilledout]);
@@ -2618,7 +2618,7 @@ Retrieve_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
-	if (!strcmp(tokens[2+numberfilledout], "from"))
+	if (!strcasecmp(tokens[2+numberfilledout], "from"))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[1+numberfilledout]);
@@ -2637,7 +2637,7 @@ Retrieve_Command(char *name, char *password, int room)
 		}
 	}
 	else
-	if (!strcmp(tokens[3+numberfilledout], "from"))
+	if (!strcasecmp(tokens[3+numberfilledout], "from"))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[2+numberfilledout]);
@@ -2656,7 +2656,7 @@ Retrieve_Command(char *name, char *password, int room)
 		}
 	}
 	else
-	if (!strcmp(tokens[4+numberfilledout], "from"))
+	if (!strcasecmp(tokens[4+numberfilledout], "from"))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
 		strcpy(itemname_a, tokens[3+numberfilledout]);
@@ -2898,14 +2898,14 @@ Wear_Command(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	itemwearable=-1;
-	if (!strcmp(tokens[aantal-1],"lefthand")) {itemwearable=1;}
-	if (!strcmp(tokens[aantal-1],"righthand")) {itemwearable=2;}
-	if (!strcmp(tokens[aantal-1],"head")) {itemwearable=4;}
-	if (!strcmp(tokens[aantal-1],"neck")) {itemwearable=7;}
-	if (!strcmp(tokens[aantal-1],"head")) {itemwearable=8;}
-	if (!strcmp(tokens[aantal-1],"body")) {itemwearable=9;}
-	if (!strcmp(tokens[aantal-1],"legs")) {itemwearable=10;}
-	if (!strcmp(tokens[aantal-1],"feet")) {itemwearable=11;}
+	if (!strcasecmp(tokens[aantal-1],"lefthand")) {itemwearable=1;}
+	if (!strcasecmp(tokens[aantal-1],"righthand")) {itemwearable=2;}
+	if (!strcasecmp(tokens[aantal-1],"head")) {itemwearable=4;}
+	if (!strcasecmp(tokens[aantal-1],"neck")) {itemwearable=7;}
+	if (!strcasecmp(tokens[aantal-1],"head")) {itemwearable=8;}
+	if (!strcasecmp(tokens[aantal-1],"body")) {itemwearable=9;}
+	if (!strcasecmp(tokens[aantal-1],"legs")) {itemwearable=10;}
+	if (!strcasecmp(tokens[aantal-1],"feet")) {itemwearable=11;}
 	
 	if ((itemwearable==1) || (itemwearable==2)) 
 	{
@@ -4009,10 +4009,10 @@ Drink_Command(char *name, char *password, int room)
 		strcpy(itemadject2, row[4]);
 		mysql_free_result(res);
 
-	if ((!strcmp(itemname,"beer")) ||
-		(!strcmp(itemname,"ale")) ||
-		(!strcmp(itemname,"whisky")) ||
-		(!strcmp(itemname,"vodka"))) 
+	if ((!strcasecmp(itemname,"beer")) ||
+		(!strcasecmp(itemname,"ale")) ||
+		(!strcasecmp(itemname,"whisky")) ||
+		(!strcasecmp(itemname,"vodka"))) 
 	{
 		/* check drinkstats of specific person */
 		sprintf(sqlstring, 
@@ -4076,7 +4076,7 @@ RemapShoppingList_Command(char *name)
 	char sqlstring[1024];
 	int number=0;
 	
-	if (!strcmp(name, "Karcas")) {number=-49;}
+	if (!strcasecmp(name, "Karcas")) {number=-49;}
 	if (number==0) {return;}
 
 	sprintf(sqlstring,"update items set readdescr='<H1>"
@@ -4267,7 +4267,7 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 		
-		if (!strcmp(fromname, "Karcas"))
+		if (!strcasecmp(fromname, "Karcas"))
 		{
 			sprintf(sqlstring, 
 				"update tmp_itemtable set amount=amount-%i "

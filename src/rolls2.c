@@ -492,12 +492,12 @@ int checkWeaponSkill(char *itemname, int *skillid)
 	MYSQL_ROW row2;
 	char sqlstring[1024];
 	*skillid = 0;
-	if (!strcmp(itemname,"pick"))
+	if (!strcasecmp(itemname,"pick"))
 	{
 		/*axe/mace skill*/
 		*skillid = 1;
 	}
-	if (!strcmp(itemname,"knife"))
+	if (!strcasecmp(itemname,"knife"))
 	{
 		/*knife skill*/
 		*skillid = 2;
@@ -544,7 +544,7 @@ int checkBestHand(int *skillid)
 	/* put a position into combat */
 	position = random() % 6;
 	i=0;
-	while (strcmp(row[YRACE], positionarray[i][0])) {i++;}
+	while (strcasecmp(row[YRACE], positionarray[i][0])) {i++;}
 	position+=i;combat.onposition=position;
 
 	/*check for item in hands*/
@@ -578,10 +578,10 @@ int checkBestHand(int *skillid)
 		strcpy(combat.adject3, row2[TMPITEMTOTAL + IADJECT3]);
 		strcpy(combat.name, row2[TMPITEMTOTAL + INAME]);
 		i = 0;
-		while (strcmp(combat.name, strikeweaponarray[i][0])) {i++;}
+		while (strcasecmp(combat.name, strikeweaponarray[i][0])) {i++;}
 		i += random() % 7;
 		combat.verb = i;
-		return !strcmp(row2[IWIELDING],"1");
+		return !strcasecmp(row2[IWIELDING],"1");
 	}
 
 	if (mysql_num_rows(res2)==2)
@@ -594,7 +594,7 @@ int checkBestHand(int *skillid)
 		strcpy(combat.adject3, row2[TMPITEMTOTAL + IADJECT3]);
 		strcpy(combat.name, row2[TMPITEMTOTAL + INAME]);
 		i = 0;
-		while (strcmp(combat.name, strikeweaponarray[i][0])) {i++;}
+		while (strcasecmp(combat.name, strikeweaponarray[i][0])) {i++;}
 		i += random() % 7;
 		combat.verb = i;
 		strcpy(temp, row2[TMPITEMTOTAL + INAME]);
@@ -616,7 +616,7 @@ int checkBestHand(int *skillid)
 			strcpy(combat.adject3, row2[TMPITEMTOTAL + IADJECT3]);
 			strcpy(combat.name, row2[TMPITEMTOTAL + INAME]);
 			i = 0;
-			while (strcmp(combat.name, strikeweaponarray[i][0])) {i++;}
+			while (strcasecmp(combat.name, strikeweaponarray[i][0])) {i++;}
 			i += random() % 7;
 			combat.verb = i;
 		}
@@ -628,7 +628,7 @@ int checkBestHand(int *skillid)
 			*skillid = skillid2;
 			strcpy(temp, row2[IWIELDING]);
 			mysql_free_result(res2);
-			return strcmp(temp,"1");
+			return strcasecmp(temp,"1");
 		} 
 		else 
 		{ 
@@ -637,7 +637,7 @@ int checkBestHand(int *skillid)
 			/* hand of the second row*/
 			strcpy(temp, row2[IWIELDING]);
 			mysql_free_result(res2);
-			return !strcmp(temp,"1");
+			return !strcasecmp(temp,"1");
 		}
 	} 
 	else
@@ -651,14 +651,14 @@ int checkBestHand(int *skillid)
 	fflush(outputfile);
 	*skillid = 0;
 	i = 0;
-	while (strcmp(row[XRACE], strikewitharray[i][0])) {i++;}
+	while (strcasecmp(row[XRACE], strikewitharray[i][0])) {i++;}
 	i += random() % 4;
 	strcpy(combat.adject1, strikewitharray[i][1]);
 	strcpy(combat.adject2, strikewitharray[i][2]);
 	strcpy(combat.adject3, "");
 	strcpy(combat.name, strikewitharray[i][3]);
 	i = 0;
-	while (strcmp(combat.name, strikeweaponarray[i][0])) {i++;}
+	while (strcasecmp(combat.name, strikeweaponarray[i][0])) {i++;}
 	i += random() % 7;
 	combat.verb = i;
 	return 1;
@@ -1021,7 +1021,7 @@ int embraceDeath()
 
 	/* remove person back to Cave and reset fighting unless /*
 	/* person in question is a bot */
-	if (strcmp(row[YGOD], "3"))
+	if (strcasecmp(row[YGOD], "3"))
 	{
 		/* is not a bot */
 		sprintf(sqlstring, 
@@ -1169,7 +1169,7 @@ int fleeNow(char *fname, int froom)
 			case 2 : {dirint=REAST;strcpy(direction, "east");break;}
 			case 3 : {dirint=RWEST;strcpy(direction, "west");break;}
 			}
-			if (!strcmp(row2[dirint],"0"))
+			if (!strcasecmp(row2[dirint],"0"))
 			{
 				/* you try to flee but fail, no exit that way. */
 				WriteSentenceIntoOwnLogFile(logname, "You try to flee %s, but fail!<BR>\r\n", direction);
@@ -1615,7 +1615,7 @@ int StartSQL()
 						WriteSentenceIntoOwnLogFile(logname, 
 						message, row[XNAME], strikeweaponarray[combat.verb][2], "you", "your", positionarray[combat.onposition][1], HeShe3(row[XSEX]), combat.adject1, combat.adject2, combat.name);
 					}
-					if (strcmp(ShowString(atoi(row[YVITALS]), atoi(row[YMAXVITAL])),
+					if (strcasecmp(ShowString(atoi(row[YVITALS]), atoi(row[YMAXVITAL])),
 						ShowString(atoi(row[YVITALS])+combat.damage, atoi(row[YMAXVITAL]))))
 					{
 						/* write down change in vitals for person attacked */
@@ -1694,7 +1694,7 @@ an array of characterstrings containing the parameters
 	int i=0;
 	while (i<cnt)
 	{
-		if (!strcmp(prm[i],term)) {return i;}
+		if (!strcasecmp(prm[i],term)) {return i;}
 		i++;
 	}
 	return 0;

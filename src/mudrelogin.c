@@ -232,7 +232,7 @@ cgiMain()
 		if (!strcmp(frames,"2")) {setFrames(1);}
 		if (!strcmp(frames,"3")) {setFrames(2);}
 	}
-	if (!strcmp(ageText, "no")) {
+	if (!strcasecmp(ageText, "no")) {
 		NoNewActivate();
 	}
 //	printf("Dude! %s", ageText);

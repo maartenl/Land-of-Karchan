@@ -561,7 +561,7 @@ get_pluralis(char *s)
 	int             i;
 
 	for (i = 0; emotions[i][SINGULARIS] != NULL &&
-	     strcmp(emotions[i][SINGULARIS], s) != 0; i++);
+	     strcasecmp(emotions[i][SINGULARIS], s) != 0; i++);
 
 	return emotions[i][PLURALIS];
 }
@@ -572,7 +572,7 @@ get_pluralis2(char *s)
 	int             i;
 
 	for (i = 0; emotions2[i][SINGULARIS] != NULL &&
-	     strcmp(emotions2[i][SINGULARIS], s) != 0; i++);
+	     strcasecmp(emotions2[i][SINGULARIS], s) != 0; i++);
 
 	return emotions2[i][PLURALIS];
 }
@@ -583,7 +583,7 @@ exist_adverb(char *s)
 	int             i;
 
 	for (i = 0; adverb[i] != NULL &&
-	     strcmp(adverb[i], s) != 0; i++);
+	     strcasecmp(adverb[i], s) != 0; i++);
 
 	return adverb[i]!=NULL;
 }
