@@ -284,7 +284,7 @@ public class Database
 			"title as yet unknown", 
 			res.getString("contents"),
 			res.getInt("south"), res.getInt("north"),
-			res.getInt("west"), res.getInt("east"),
+			res.getInt("east"), res.getInt("west"), 
 			res.getInt("up"), res.getInt("down"));
 		res.close();
 		sqlGetRoom.close();
