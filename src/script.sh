@@ -1,15 +1,15 @@
 #!/bin/sh
 
-echo "Started"
-echo "Started" >>/karchan/mud/data/audit.trail
-echo "Started" >>/karchan/mud/data/bigfile
+echo "Started `date`"
+echo "Started `date`" >>/karchan/mud/data/audit.trail
+echo "Started `date`" >>/karchan/mud/data/bigfile
 ./mmserver
-while (sleep 10) do
-	echo "Restarted"
-	echo "Restarted" >>/karchan/mud/data/audit.trail
-	echo "Restarted" >>/karchan/mud/data/bigfile
+while (sleep 1) do
+	echo "Restarted `date`"
+	echo "Restarted `date`" >>/karchan/mud/data/audit.trail
+	echo "Restarted `date`" >>/karchan/mud/data/bigfile
 	./mmserver
 done
-echo "Stopped"
-echo "Stopped" >>/karchan/mud/data/audit.trail
+echo "Stopped `date`"
+echo "Stopped `date`" >>/karchan/mud/data/audit.trail
 
