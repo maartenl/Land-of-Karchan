@@ -5158,8 +5158,6 @@ Read_Command(char *name, char *password, int room)
 		KillGame();
 	}
 	
-	mysql_free_result(res);
-
 	if (row[3][0]!='\0') 
 	{
 		WriteSentenceIntoOwnLogFile(logname, 
@@ -5188,6 +5186,8 @@ Read_Command(char *name, char *password, int room)
 		}
 	}
 	LookString(row[5], name, password);
+	mysql_free_result(res);
+
 	KillGame();
 }
 
