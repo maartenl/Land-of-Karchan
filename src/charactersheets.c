@@ -54,6 +54,17 @@ void listSheets()
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
 	fprintf(cgiOut, "<H1>\n");
 	fprintf(cgiOut, "<IMG SRC=\"/images/gif/dragon.gif\">Character Sheets</H1>\n");
+	fprintf(cgiOut, "	I feel the following needs a little explanation. Below you see a list of");
+	fprintf(cgiOut, " available Character Sheets. They contain personal information like name,");
+	fprintf(cgiOut, " title, place of birth, and the story line of characters, and references to");
+	fprintf(cgiOut, " other characters. In each case these");
+	fprintf(cgiOut, " are put together by the people that originally created the character on the");
+	fprintf(cgiOut, " game.<P>");
+	fprintf(cgiOut, "It provides valuable insights into the story behind this Game.<P>");
+	fprintf(cgiOut, "Now you can add your piece of information as well. Just fill in your name");
+	fprintf(cgiOut, " and password of the character you created on the mud, and you will be");
+	fprintf(cgiOut, " presented with a form that you can fill out, and change later in the same");
+	fprintf(cgiOut, " way.<P>");
 	fprintf(cgiOut, "<UL>\n");
  	
 	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 

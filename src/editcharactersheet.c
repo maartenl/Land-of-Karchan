@@ -67,6 +67,9 @@ void showFamilyValues(char *name, char *password)
 			if (row != NULL)
 			{
 				// full character sheet
+				fprintf(cgiOut, "(<I>Make sure you spell the name of the ");
+				fprintf(cgiOut, "familymember correctly, otherwise the corresponding ");
+				fprintf(cgiOut, "charactersheet can not be obtained.</I>)<BR>");
 				fprintf(cgiOut, "Add family relation:\r\n");
 				fprintf(cgiOut, "<SELECT NAME=\"family\">\r\n");
 				fprintf(cgiOut, "<option selected value=\"0\">None");

@@ -44,9 +44,11 @@ void showFamilyValues(MYSQL mysql, char *name)
 	char *sqlstring;
 	
 	sqlstring = (char *) malloc(1400+textlength);
-	sprintf(sqlstring, "select familyvalues.description, toname "
+	sprintf(sqlstring, "select familyvalues.description, toname, characterinfo.name "
 	"from family, familyvalues "
-	"where name = '%s' and "
+		"left join characterinfo "
+		"on characterinfo.name = family.toname "
+	"where family.name = '%s' and "
 	"family.description = familyvalues.id", name);
 	fprintf(cgiOut, "<B>Family Relations:</B><BR><UL>\n");
 	if (mysql_query(&mysql,sqlstring))
@@ -62,7 +64,14 @@ void showFamilyValues(MYSQL mysql, char *name)
 			// retrieve rows, then call mysql_free_result(result)
 			while ((row = mysql_fetch_row(res))!=NULL) 
 			{
-				fprintf(cgiOut, "<LI>%s of <A HREF=\"/cgi-bin/charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
+				if (row[2] == NULL)
+				{
+					fprintf(cgiOut, "<LI>%s of %s<BR>",row[0], row[1]);
+				}
+				else
+				{
+					fprintf(cgiOut, "<LI>%s of <A HREF=\"/cgi-bin/charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
+				}
 			}
 			mysql_free_result(res);
 		}
