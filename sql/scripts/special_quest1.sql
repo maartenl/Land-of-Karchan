@@ -26,7 +26,7 @@ and objecttype=1"")
 	where name ='plague' \\\\
 	and objectid='%me' \\\\
 	and objecttype=1"")
-	if sql(""select %string <= 50 and rand()<=0.02"")
+	if sql(""select %string <= 50 and rand()<=0.005"")
 		if sql(""select %string >=40"")
 			say(""You feel temporarily faint and have to take care not to fall down.<BR>"")
 			sayeveryone(""You notice %me suddenly swaying uncertainly. With some effort %me seems to refind the balance.<BR>"")
