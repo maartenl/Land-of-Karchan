@@ -1300,7 +1300,7 @@ GetMoney_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 		"select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
 		"where (items.name='coin') and "
-		"(items.adject1='valuable') and "
+		"(items.adject1=' valuable') and "
 		"(items.adject2='%s') and "
 		"(items.adject3='shiny') and "
 		"(items.id=tmpitems.id) and "
