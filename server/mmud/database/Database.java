@@ -45,7 +45,7 @@ public class Database
 	private static Connection theConnection = null;
 	public static String sqlGetUserString = "select * from usertable where name = ? and active = 0 and god < 2";
 	public static String sqlGetRoomString = "select * from rooms where id = ?";
-	public static String sqlGetCharactersString = "select * from usertable where active = 1";
+	public static String sqlGetPersonsString = "select * from usertable where active = 1";
 	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
 	public static String sqlGetBan1String = "select count(name) as count from sillynamestable where ? like name";
 	public static String sqlGetBan2String = "select count(name) as count from unbantable where name = ?";
@@ -74,7 +74,7 @@ public class Database
 		"(name, toname, header, whensent, haveread, newmail, message) " +
 		"values (?, ?, ?, now(), 0, 1, ?)";
 	public static String sqlUpdatePkillString = "update usertable set fightable = ? where name = ?";
-	public static String sqlGetInventoryCharacterString = 
+	public static String sqlGetInventoryPersonString = 
 		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, items "
 		+ "where mm_itemtable.itemid = items.id and owner = ? and ownertype = 1 "
 		+ "and visible = 1 "
@@ -98,7 +98,7 @@ public class Database
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 "
 		+ "limit 1";
-	public static String sqlGetItemCharacterString =
+	public static String sqlGetItemPersonString =
 		"select * from mm_itemtable, items "
 		+ "where mm_itemtable.itemid = items.id and "
         + "owner = ? and ownertype = 1 "
@@ -111,35 +111,6 @@ public class Database
 		"select * from mm_itemattributes "
 		+ "where id = ?";
 	public static String sqlGetItemDefString = "select * from items where id = ?";
-
-	public static void runMethod()
-		throws SQLException,
-			InstantiationException,
-			ClassNotFoundException,
-			IllegalAccessException
-	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.runMethod ");
-		}
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			Connection conn;
-		ResultSet res;
-		Statement myStatement;
-	
-//		DriverManager.setLogWriter(System.out);
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost.localdomain/mud?user=root&password=");
-		myStatement = conn.createStatement();
-		res = myStatement.executeQuery("select 2+2 as result");
-		res.first();
-		System.out.println("Answer: " + res.getInt("result"));
-	
-		res.close();
-		myStatement.close();
-	
-		conn.close();
-	}
 
 	/**
 	 *"jdbc:mysql://localhost.localdomain/mud?user=root&password=");
@@ -432,11 +403,11 @@ public class Database
 		return myItemDef;
 	}
 
-	public static String getInventory(Character aCharacter)
+	public static String getInventory(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.getInventory: " + aCharacter.getName());
+			System.err.println("Database.getInventory: " + aPerson.getName());
 		}
 		assert theConnection != null : "theConnection is null";
 		StringBuffer myInventory = new StringBuffer("<UL>");
@@ -444,8 +415,8 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetInventories = theConnection.prepareStatement(sqlGetInventoryCharacterString);
-		sqlGetInventories.setString(1, aCharacter.getName());
+		PreparedStatement sqlGetInventories = theConnection.prepareStatement(sqlGetInventoryPersonString);
+		sqlGetInventories.setString(1, aPerson.getName());
 		res = sqlGetInventories.executeQuery();
 		if (res == null)
 		{
@@ -546,7 +517,7 @@ public class Database
 								String adject2,
 								String adject3,
 								String name,
-								Character aCharacter)
+								Person aPerson)
 	{
 		if (Constants.logging)
 		{
@@ -554,17 +525,17 @@ public class Database
 								" " + adject1 + 
 								" " + adject2 +
 								" " + adject3 +
-								" " + name + " " + aCharacter.getName());
+								" " + name + " " + aPerson.getName());
 		}
 		assert theConnection != null : "theConnection is null";
 		int res = 0;
-		Item myItem = getItem(adject1, adject2, adject3, name, aCharacter);
+		Item myItem = getItem(adject1, adject2, adject3, name, aPerson);
 		try
 		{
 		PreparedStatement sqlPickItem = theConnection.prepareStatement(sqlPickupItemString);
-		sqlPickItem.setString(1, aCharacter.getName());
+		sqlPickItem.setString(1, aPerson.getName());
 		sqlPickItem.setInt(2, myItem.getId());
-		sqlPickItem.setInt(3, aCharacter.getRoom().getId());
+		sqlPickItem.setInt(3, aPerson.getRoom().getId());
 		sqlPickItem.setInt(4, amount);
 		res = sqlPickItem.executeUpdate();
 		sqlPickItem.close();
@@ -680,7 +651,7 @@ public class Database
 								String adject2,
 								String adject3,
 								String name,
-								Character aChar)
+								Person aChar)
 	{
 		if (Constants.logging)
 		{
@@ -694,7 +665,7 @@ public class Database
 		Item anItem = null;
 		try
 		{
-		PreparedStatement sqlGetItem = theConnection.prepareStatement(sqlGetItemCharacterString);
+		PreparedStatement sqlGetItem = theConnection.prepareStatement(sqlGetItemPersonString);
 		sqlGetItem.setString(1, aChar.getName()+"");
 		sqlGetItem.setString(2, name);
 		sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
@@ -733,11 +704,11 @@ public class Database
 		return anItem;
 	}
 
-	public static Vector getCharacters()
+	public static Vector getPersons()
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.getCharacters: ");
+			System.err.println("Database.getPersons: ");
 		}
 		assert theConnection != null : "theConnection is null";
 		Vector myVector = new Vector(50);
@@ -746,7 +717,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetChars =theConnection.prepareStatement(sqlGetCharactersString);
+		PreparedStatement sqlGetChars =theConnection.prepareStatement(sqlGetPersonsString);
 		res = sqlGetChars.executeQuery();
 		if (res == null)
 		{
@@ -804,7 +775,7 @@ public class Database
 			}
 			else
 			{
-				Character myNewChar = new Character(myName,
+				Person myNewChar = new Person(myName,
 					res.getString("title"),
 					res.getString("race"),
 					Sex.createFromString(res.getString("sex")),
@@ -1445,21 +1416,21 @@ parameter
 
 	/**
 	 * set the title of a character
-	 * @param aCharacter Character with changed title
+	 * @param aPerson Person with changed title
 	 */
-	public static void setTitle(Character aCharacter)
+	public static void setTitle(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setTitle: " + aCharacter + "," + aCharacter.getTitle());
+			System.err.println("Database.setTitle: " + aPerson + "," + aPerson.getTitle());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetTitleUser = theConnection.prepareStatement(sqlSetTitleString);
-		sqlSetTitleUser.setString(1, aCharacter.getTitle());
-		sqlSetTitleUser.setString(2, aCharacter.getName());
+		sqlSetTitleUser.setString(1, aPerson.getTitle());
+		sqlSetTitleUser.setString(2, aPerson.getName());
 		int res = sqlSetTitleUser.executeUpdate();
 		if (res != 1)
 		{
@@ -1476,21 +1447,21 @@ parameter
 
 	/**
 	 * set the drinkstats of a character
-	 * @param aCharacter Character with changed drinkstats
+	 * @param aPerson Person with changed drinkstats
 	 */
-	public static void setDrinkstats(Character aCharacter)
+	public static void setDrinkstats(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setDrinkstats: " + aCharacter + "," + aCharacter.getDrinkstats());
+			System.err.println("Database.setDrinkstats: " + aPerson + "," + aPerson.getDrinkstats());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetDrinkstatsUser = theConnection.prepareStatement(sqlSetDrinkstatsString);
-		sqlSetDrinkstatsUser.setInt(1, aCharacter.getDrinkstats());
-		sqlSetDrinkstatsUser.setString(2, aCharacter.getName());
+		sqlSetDrinkstatsUser.setInt(1, aPerson.getDrinkstats());
+		sqlSetDrinkstatsUser.setString(2, aPerson.getName());
 		int res = sqlSetDrinkstatsUser.executeUpdate();
 		if (res != 1)
 		{
@@ -1507,21 +1478,21 @@ parameter
 
 	/**
 	 * set the eatstats of a character
-	 * @param aCharacter Character with changed eatstats
+	 * @param aPerson Person with changed eatstats
 	 */
-	public static void setEatstats(Character aCharacter)
+	public static void setEatstats(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setEatstats: " + aCharacter + "," + aCharacter.getEatstats());
+			System.err.println("Database.setEatstats: " + aPerson + "," + aPerson.getEatstats());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetEatstatsUser = theConnection.prepareStatement(sqlSetEatstatsString);
-		sqlSetEatstatsUser.setInt(1, aCharacter.getEatstats());
-		sqlSetEatstatsUser.setString(2, aCharacter.getName());
+		sqlSetEatstatsUser.setInt(1, aPerson.getEatstats());
+		sqlSetEatstatsUser.setString(2, aPerson.getName());
 		int res = sqlSetEatstatsUser.executeUpdate();
 		if (res != 1)
 		{
@@ -1538,21 +1509,21 @@ parameter
 
 	/**
 	 * set the sleep status of a character
-	 * @param aCharacter Character with changed sleep
+	 * @param aPerson Person with changed sleep
 	 */
-	public static void setSleep(Character aCharacter)
+	public static void setSleep(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setSleep: " + aCharacter + "," + aCharacter.isaSleep());
+			System.err.println("Database.setSleep: " + aPerson + "," + aPerson.isaSleep());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetSleepUser = theConnection.prepareStatement(sqlSetSleepString);
-		sqlSetSleepUser.setInt(1, (aCharacter.isaSleep() ? 1 : 0));
-		sqlSetSleepUser.setString(2, aCharacter.getName());
+		sqlSetSleepUser.setInt(1, (aPerson.isaSleep() ? 1 : 0));
+		sqlSetSleepUser.setString(2, aPerson.getName());
 		int res = sqlSetSleepUser.executeUpdate();
 		if (res != 1)
 		{
@@ -1569,21 +1540,21 @@ parameter
 
 	/**
 	 * set the room of a character
-	 * @param aCharacter Character with changed room
+	 * @param aPerson Person with changed room
 	 */
-	public static void setRoom(Character aCharacter)
+	public static void setRoom(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setRoom: " + aCharacter + "," + aCharacter.getRoom());
+			System.err.println("Database.setRoom: " + aPerson + "," + aPerson.getRoom());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetRoomUser = theConnection.prepareStatement(sqlSetRoomString);
-		sqlSetRoomUser.setInt(1, aCharacter.getRoom().getId());
-		sqlSetRoomUser.setString(2, aCharacter.getName());
+		sqlSetRoomUser.setInt(1, aPerson.getRoom().getId());
+		sqlSetRoomUser.setString(2, aPerson.getName());
 		int res = sqlSetRoomUser.executeUpdate();
 		if (res != 1)
 		{
@@ -1600,21 +1571,21 @@ parameter
 
 	/**
 	 * set the whimpy of a character
-	 * @param aCharacter Character with new whimpy setting
+	 * @param aPerson Person with new whimpy setting
 	 */
-	public static void setWhimpy(Character aCharacter)
+	public static void setWhimpy(Person aPerson)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Database.setWhimpy: " + aCharacter + "," + aCharacter.getWhimpy());
+			System.err.println("Database.setWhimpy: " + aPerson + "," + aPerson.getWhimpy());
 		}
 		assert theConnection != null : "theConnection is null";
 		try
 		{
 
 		PreparedStatement sqlSetWhimpyUser = theConnection.prepareStatement(sqlSetWhimpyString);
-		sqlSetWhimpyUser.setInt(1, aCharacter.getWhimpy());
-		sqlSetWhimpyUser.setString(2, aCharacter.getName());
+		sqlSetWhimpyUser.setInt(1, aPerson.getWhimpy());
+		sqlSetWhimpyUser.setString(2, aPerson.getName());
 		int res = sqlSetWhimpyUser.executeUpdate();
 		if (res != 1)
 		{

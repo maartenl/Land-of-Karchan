@@ -61,7 +61,7 @@ public class EmotionToCommand extends NormalCommand
 			case 2:
 			{
 				// cuddle Karn
-				Character toChar = Characters.retrieveCharacter(myParsed[1]);
+				Person toChar = Persons.retrievePerson(myParsed[1]);
 				if (toChar == null)
 				{
 					aUser.writeMessage("Cannot find that person.<BR>\r\n");
@@ -77,7 +77,7 @@ public class EmotionToCommand extends NormalCommand
 			case 3:
 			{
 				// cuddle Karn evilly
-				Character toChar = Characters.retrieveCharacter(myParsed[1]);
+				Person toChar = Persons.retrievePerson(myParsed[1]);
 				if (toChar == null)
 				{
 					aUser.writeMessage("Cannot find that person.<BR>\r\n");

@@ -38,7 +38,7 @@ import mmud.database.*;
 import mmud.characters.*;
 import mmud.rooms.*;
 
-public class User extends mmud.characters.Character
+public class User extends mmud.characters.Person
 {
 
 	private String thePassword;

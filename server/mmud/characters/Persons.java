@@ -35,38 +35,38 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
-public final class Characters
+public final class Persons
 {
-	private static Vector theCharacters = new Vector();
+	private static Vector thePersons = new Vector();
 
 	public static void init()
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.init");
+			System.err.println("Persons.init");
 		}
-		theCharacters = Database.getCharacters();
+		thePersons = Database.getPersons();
 	}
 
-	public Characters()
+	public Persons()
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.Characters");
+			System.err.println("Persons.Persons");
 		}
-//		theCharacters = new Vector();
+//		thePersons = new Vector();
 	}
 
-	public static Character retrieveCharacter(String aName)
+	public static Person retrievePerson(String aName)
 	{
-		assert theCharacters != null : "theCharacters vector is null";
+		assert thePersons != null : "thePersons vector is null";
 		if (Constants.logging)
 		{
-			System.err.println("Characters.retrieveCharacter: " + aName);
+			System.err.println("Persons.retrievePerson: " + aName);
 		}
-		for (int i=0;i < theCharacters.size(); i++)
+		for (int i=0;i < thePersons.size(); i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
+			Person myChar = (Person) thePersons.elementAt(i);
 			if ((myChar != null) && (myChar.getName().compareToIgnoreCase(aName) == 0))
 			{
 				return myChar;
@@ -77,21 +77,21 @@ public final class Characters
 
 	/**
 	 * activate a character
-	 * @throws CharacterException if something is wrong
-	 * @param aName String containing the name of the Character
-	 * @param aPassword String containing the password of the Character
+	 * @throws PersonException if something is wrong
+	 * @param aName String containing the name of the Person
+	 * @param aPassword String containing the password of the Person
 	 * @param aCookie String containing the cookie that was set in the
 	 * browser. It is possible that this is "null", if the user was not
 	 * logged in before.
 	 */
 	 	public static User activateUser(String aName, String aPassword, String aCookie)
-		throws CharacterException
+		throws PersonException
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.activateUser: " + aName + "," + aPassword + "," + aCookie);
+			System.err.println("Persons.activateUser: " + aName + "," + aPassword + "," + aCookie);
 		}
-		Character myChar = retrieveCharacter(aName);
+		Person myChar = retrievePerson(aName);
 		if ((myChar != null) && (!(myChar instanceof User)))
 		{
 			// found, but no user
@@ -99,7 +99,7 @@ public final class Characters
 			{
 				System.err.println("thrown: " + Constants.NOTAUSERERROR);
 			}
-			throw new CharacterException(Constants.NOTAUSERERROR);
+			throw new PersonException(Constants.NOTAUSERERROR);
 		}
 		User myUser = (myChar == null ? null : (User) myChar);
 		if (myUser == null)
@@ -111,7 +111,7 @@ public final class Characters
 				{
 					System.err.println("thrown: " + Constants.USERNOTFOUNDERROR);
 				}
-				throw new CharacterException(Constants.USERNOTFOUNDERROR);
+				throw new PersonException(Constants.USERNOTFOUNDERROR);
 			}
 		}
 		else
@@ -124,13 +124,13 @@ public final class Characters
 				{
 					System.err.println("thrown: " + Constants.MULTIUSERERROR);
 				}
-				throw new CharacterException(Constants.MULTIUSERERROR);
+				throw new PersonException(Constants.MULTIUSERERROR);
 			}
 			if (Constants.logging)
 			{
 				System.err.println("thrown: " + Constants.USERALREADYACTIVEERROR);
 			}
-			throw new CharacterException(Constants.USERALREADYACTIVEERROR);
+			throw new PersonException(Constants.USERALREADYACTIVEERROR);
 		}
 		if (!myUser.getPassword().equals(aPassword))
 		{
@@ -138,34 +138,34 @@ public final class Characters
 			{
 				System.err.println("thrown: " + Constants.PWDINCORRECTERROR);
 			}
-			throw new CharacterException(Constants.PWDINCORRECTERROR);
+			throw new PersonException(Constants.PWDINCORRECTERROR);
 		}
 		// everything seems to be okay
 		Database.activateUser(myUser);
-		theCharacters.addElement(myUser);
+		thePersons.addElement(myUser);
 		return myUser;
 	}
 
 	/**
 	 * deactivate a character
-	 * @throws CharacterException if something is wrong
+	 * @throws PersonException if something is wrong
 	 */
  	public static void deactivateUser(User aUser)
-	throws CharacterException
+	throws PersonException
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.deactivateUser: " + aUser.getName());
+			System.err.println("Persons.deactivateUser: " + aUser.getName());
 		}
 		Database.deactivateUser(aUser);
-		theCharacters.remove(aUser);
+		thePersons.remove(aUser);
 	}
 
 	/**
 	 * create a character
-	 * @throws CharacterException if something is wrong
-	 * @param aName String containing the name of the new Character
-	 * @param aPassword String containing the password of the new Character
+	 * @throws PersonException if something is wrong
+	 * @param aName String containing the name of the new Person
+	 * @param aPassword String containing the password of the new Person
 	 * @param aCookie String containing the cookie
 	 */
 	public static User createUser(String aName, String aPassword, String anAddress,
@@ -185,11 +185,11 @@ public final class Characters
 		String aArms,
 		String aLegs,
 		String aCookie)
-		throws CharacterException
+		throws PersonException
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.createUser: " + aName + "," + aPassword + "," + anAddress + "," + aCookie);
+			System.err.println("Persons.createUser: " + aName + "," + aPassword + "," + anAddress + "," + aCookie);
 		}
 		if (Database.existsUser(aName))
 		{
@@ -197,7 +197,7 @@ public final class Characters
 			{
 				System.err.println("thrown: " + Constants.USERALREADYEXISTSERROR);
 			}
-			throw new CharacterException(Constants.USERALREADYEXISTSERROR);
+			throw new PersonException(Constants.USERALREADYEXISTSERROR);
 		}
 		// everything seems to be okay
 		User myUser = new User(aName, aPassword, anAddress,
@@ -218,21 +218,21 @@ public final class Characters
 			aLegs,
 			aCookie);
 		Database.createUser(myUser);
-		theCharacters.addElement(myUser);
+		thePersons.addElement(myUser);
 		return myUser;
 	}
 
-	public static String descriptionOfCharactersInRoom(Room aRoom, User aUser)
+	public static String descriptionOfPersonsInRoom(Room aRoom, User aUser)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.descriptionOfCharactersInRoom: " + aRoom + "," + aUser);
+			System.err.println("Persons.descriptionOfPersonsInRoom: " + aRoom + "," + aUser);
 		}
 		String myOutput = new String();
 		
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
+			Person myChar = (Person) thePersons.elementAt(i);
 			if ( (myChar.getRoom() == aRoom) &&
 				(myChar != aUser) )
 			{
@@ -249,11 +249,11 @@ public final class Characters
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.sendWall: " + aMessage);
+			System.err.println("Persons.sendWall: " + aMessage);
 		}
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
+			Person myChar = (Person) thePersons.elementAt(i);
 			myChar.writeMessage(aMessage);
 		}
 	}
@@ -261,17 +261,17 @@ public final class Characters
 	/**
 	 * character communication method to one specific user
 	 */
-	public static void sendMessage(Character aCharacter, String aMessage)
+	public static void sendMessage(Person aPerson, String aMessage)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.sendMessage: " + aCharacter + " " + aMessage);
+			System.err.println("Persons.sendMessage: " + aPerson + " " + aMessage);
 		}
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
-			if ( (myChar.getRoom() == aCharacter.getRoom()) &&
-				(myChar != aCharacter) )
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aPerson.getRoom()) &&
+				(myChar != aPerson) )
 			{
 				myChar.writeMessage(aMessage);
 			}
@@ -282,18 +282,18 @@ public final class Characters
 	 * character communication method to everyone in the room except 
 	 * the two characters entered in the parameter list
 	 */
-	public static void sendMessage(Character aCharacter, Character aSecondCharacter, String aMessage)
+	public static void sendMessage(Person aPerson, Person aSecondPerson, String aMessage)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.sendMessage: " + aCharacter + " " + aSecondCharacter + " " + aMessage);
+			System.err.println("Persons.sendMessage: " + aPerson + " " + aSecondPerson + " " + aMessage);
 		}
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
-			if ( (myChar.getRoom() == aCharacter.getRoom()) &&
-				(myChar != aSecondCharacter) &&
-				(myChar != aCharacter) )
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aPerson.getRoom()) &&
+				(myChar != aSecondPerson) &&
+				(myChar != aPerson) )
 			{
 				myChar.writeMessage(aMessage);
 			}
@@ -307,17 +307,17 @@ public final class Characters
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Characters.getWhoList ");
+			System.err.println("Persons.getWhoList ");
 		}
 		String myString = "<UL>";
 		int count = 0;
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
-			System.err.println("Characters.getWhoList " + myChar);
+			Person myChar = (Person) thePersons.elementAt(i);
+			System.err.println("Persons.getWhoList " + myChar);
 			if (myChar instanceof User)
 			{
-			System.err.println("Characters.getWhoList " + myChar);
+			System.err.println("Persons.getWhoList " + myChar);
 				User myUser = (User) myChar;
 				myString += "<LI>" + myUser.getName() + ", " + myUser.getTitle() + (myUser.isaSleep()?", sleeping ":" ") + myUser.getIdleTime() + "\r\n";
 				count++;
@@ -331,9 +331,9 @@ public final class Characters
 	{
 		String myOutput = new String();
 		
-		for (int i=0;i < theCharacters.size();i++)
+		for (int i=0;i < thePersons.size();i++)
 		{
-			Character myChar = (Character) theCharacters.elementAt(i);
+			Person myChar = (Person) thePersons.elementAt(i);
 			if (myChar != null)
 			{
 				myOutput = myOutput + myChar + ",";

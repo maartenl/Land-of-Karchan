@@ -33,9 +33,9 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
-public class CharacterException extends MudException
+public class PersonException extends MudException
 {
-	public CharacterException(String aString)
+	public PersonException(String aString)
 	{
 		super(aString);
 	}

@@ -60,7 +60,7 @@ public class GiveCommand extends NormalCommand
 				aUser.writeMessage("You cannot give that item.<BR>\r\n");
 				return true;
 			}
-			Character toChar = Characters.retrieveCharacter(myParsed[myParsed.length - 1]);
+			Person toChar = Persons.retrievePerson(myParsed[myParsed.length - 1]);
 			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");

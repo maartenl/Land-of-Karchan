@@ -43,7 +43,7 @@ public class WhoCommand implements Command
 		{
 			System.err.println("WhoCommand.run " + aUser + "," + command);
 		}
-		theString = Characters.getWhoList() + aUser.printForm();
+		theString = Persons.getWhoList() + aUser.printForm();
 		return true;
 	}
 

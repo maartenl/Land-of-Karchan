@@ -63,7 +63,7 @@ public class BuyCommand extends NormalCommand
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
 		{
-			Character toChar = Characters.retrieveCharacter(myParsed[myParsed.length-1]);
+			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
 			if ((toChar == null) || (!toChar.isAttribute("shopkeeper")))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");

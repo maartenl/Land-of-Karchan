@@ -328,7 +328,7 @@ public class Room
 		} /*end if fmudstruct->frames dude*/
 
 		// print characters in room
-		result += Characters.descriptionOfCharactersInRoom(this, aUser);
+		result += Persons.descriptionOfPersonsInRoom(this, aUser);
 		// print items in room
 		result += inventory();
 		return result;

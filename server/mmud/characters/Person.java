@@ -39,7 +39,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
-public class Character
+public class Person
 {
 	private String theName;
 	private Room theRoom;
@@ -63,7 +63,7 @@ public class Character
 	private int theEatstats;
     private TreeMap theAttributes = new TreeMap();
 
-	public Character(String aName, 
+	public Person(String aName, 
 		String aTitle,
 		String aRace,
 		Sex aSex,
@@ -351,7 +351,7 @@ public class Character
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Character.writeMessage " + getName() + "," + aMessage);
+			System.err.println("Person.writeMessage " + getName() + "," + aMessage);
 		}
 		try
 		{
@@ -372,29 +372,29 @@ public class Character
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Character.sendMessage " + aMessage);
+			System.err.println("Person.sendMessage " + aMessage);
 		}
-		Characters.sendMessage(this, aMessage);
+		Persons.sendMessage(this, aMessage);
 	}
 
 	/**
 	 * Sends a message to the other people in the room, except
 	 * for one other character
 	 */
-	public void sendMessage(Character aCharacter, String aMessage)
+	public void sendMessage(Person aPerson, String aMessage)
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Character.sendMessage " + aMessage);
+			System.err.println("Person.sendMessage " + aMessage);
 		}
-		Characters.sendMessage(this, aCharacter, aMessage);
+		Persons.sendMessage(this, aPerson, aMessage);
 	}
 
 	public String readLog()
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Character.readLog");
+			System.err.println("Person.readLog");
 		}
 		try
 		{
@@ -414,12 +414,12 @@ public class Character
 	 * @param silver how many silver coins need to be moved
 	 * @param copper how many copper coins need to be moved
 	 */
-/*	public void moveCoins(Character toChar, int gold, int silver, int copper)
+/*	public void moveCoins(Person toChar, int gold, int silver, int copper)
 		throws ItemException
 	{
 		if (Constants.logging)
 		{
-			System.err.println("Character.moveCoins "+toChar+","+gold+","+silver+","+copper);
+			System.err.println("Person.moveCoins "+toChar+","+gold+","+silver+","+copper);
 		}
 		int mygold = getItemCount(goldcoin, 0, goldcoin.length);
 		int mysilver = getItemCount(silvercoin, 0, silvercoin.length);

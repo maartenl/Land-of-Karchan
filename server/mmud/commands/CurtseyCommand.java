@@ -44,7 +44,7 @@ public class CurtseyCommand extends NormalCommand
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
-			Character toChar = Characters.retrieveCharacter(myParsed[2]);
+			Person toChar = Persons.retrievePerson(myParsed[2]);
 			if (toChar == null)
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");

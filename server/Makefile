@@ -37,14 +37,16 @@ TARGETS = compile
 
 compile: mmud/*.java
 	$(CC) $(COPTS) mmud/*.java mmud/items/*.java mmud/commands/*.java \
-    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java \
-    mmud/communication/*.java
+    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
+#    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc:
-	cd html; javadoc $(COPTS) ../mmud/*.java
+	cd html; javadoc $(COPTS) ../mmud/*.java 
 
 clean:
-	rm jclasses/* *~
+	rm -rf jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
+    mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
+    mmud/communication/*~ mmud/configuration/*~
 
 all: $(TARGETS)
 

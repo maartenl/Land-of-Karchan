@@ -274,7 +274,7 @@ public class MudSocket extends Thread
 			}
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
-		User myUser = Characters.activateUser(aName, aPassword, aCookie);
+		User myUser = Persons.activateUser(aName, aPassword, aCookie);
 		if (myUser == null)
 		{
 			// new user
@@ -357,12 +357,12 @@ public class MudSocket extends Thread
 				{
 					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
 				}
-				throw new CharacterException(Constants.INVALIDFRAMEERROR);
+				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		}
 		return returnStuff;
 		}
-		catch (CharacterException e)
+		catch (PersonException e)
 		{
 			if (e.getMessage().equals(Constants.USERALREADYACTIVEERROR))
 			{
@@ -441,7 +441,7 @@ public class MudSocket extends Thread
 			}
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
-		Character myChar = Characters.retrieveCharacter(aName);
+		Person myChar = Persons.retrievePerson(aName);
 		if (myChar == null)
 		{
 			if (Constants.logging)
@@ -475,7 +475,7 @@ public class MudSocket extends Thread
 		returnStuff += "</BODY></HTML>";
 		return returnStuff;
 		}
-		catch (CharacterException e)
+		catch (PersonException e)
 		{
 			return Database.getErrorMessage(e.getMessage());
 		}
@@ -631,7 +631,7 @@ public class MudSocket extends Thread
 			}
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
-		User myUser = Characters.createUser(aName,
+		User myUser = Persons.createUser(aName,
 			aPassword, anAddress, aRealName,
 			aEmail,
 			aTitle,
@@ -710,12 +710,12 @@ public class MudSocket extends Thread
 				{
 					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
 				}
-				throw new CharacterException(Constants.INVALIDFRAMEERROR);
+				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		}
 		return returnStuff;
 		}
-		catch (CharacterException e)
+		catch (PersonException e)
 		{
 			return Database.getErrorMessage(e.getMessage());
 		}
@@ -768,7 +768,7 @@ public class MudSocket extends Thread
 				{
 					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
 				}
-				throw new CharacterException(Constants.INVALIDFRAMEERROR);
+				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		} // end switch 
 		int i = aCommand.indexOf(' ');

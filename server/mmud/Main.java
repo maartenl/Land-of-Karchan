@@ -33,12 +33,14 @@ import java.net.Socket;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.xml.parsers.DocumentBuilder;
+import java.util.logging.*;
 
 import mmud.database.*;
 import mmud.characters.*;
 
 public class Main
 {
+	private static Logger logger = Logger.getLogger("mmud");
 
 	public Main()
 	{
@@ -47,13 +49,17 @@ public class Main
 
 	public static void main(String[] args)
 	{
+		// Request that every detail gets logged.
+		logger.setLevel(Level.ALL);
+		// Log a simple INFO message.
+		logger.info("doing stuff");
 		try
 		{
 			Constants.init();
 			Database.connect();
 			ServerSocket myServerSocket = null;
 			System.out.println("Retrieving characters...");
-			Characters.init();
+			Persons.init();
 			System.out.println("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
 			for (int i = 1; i < 100; i++)
@@ -65,19 +71,14 @@ public class Main
 	//		DocumentBuilder myDocumentBuilder = new DocumentBuilder();
 			myServerSocket.close();
 			Database.disconnect();
+			// Log a simple INFO message.
+			logger.info("finished doing stuff");
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			logger.log(Level.WARNING, "exception", e);
 			return;
-		}
-		try
-		{
-			Database.runMethod();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 }

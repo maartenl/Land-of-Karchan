@@ -85,7 +85,7 @@ public class EmotionCommand extends NormalCommand
 				// agree to Karn
 				if (myParsed[1].equalsIgnoreCase("to"))
 				{
-					Character toChar = Characters.retrieveCharacter(myParsed[2]);
+					Person toChar = Persons.retrievePerson(myParsed[2]);
 					if (toChar == null)
 					{
 						aUser.writeMessage("Cannot find that person.<BR>\r\n");
@@ -108,7 +108,7 @@ public class EmotionCommand extends NormalCommand
 				// agree evilly to Karn
 				if (myParsed[2].equalsIgnoreCase("to"))
 				{
-					Character toChar = Characters.retrieveCharacter(myParsed[3]);
+					Person toChar = Persons.retrievePerson(myParsed[3]);
 					if (toChar == null)
 					{
 						aUser.writeMessage("Cannot find that person.<BR>\r\n");

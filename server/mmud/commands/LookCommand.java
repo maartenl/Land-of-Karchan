@@ -58,7 +58,7 @@ public class LookCommand implements Command
 				}
 				if (myItem == null)
 				{	
-					Character toChar = Characters.retrieveCharacter(myParsed[2]);
+					Person toChar = Persons.retrievePerson(myParsed[2]);
 					if (toChar == null)
 					{
 						aUser.writeMessage("You cannot look at that.<BR>\r\n");

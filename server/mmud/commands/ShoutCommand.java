@@ -48,7 +48,7 @@ public class ShoutCommand extends NormalCommand
 		}
 		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
-			Character toChar = Characters.retrieveCharacter(myParsed[2]);
+			Person toChar = Persons.retrievePerson(myParsed[2]);
 			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");

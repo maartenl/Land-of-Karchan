@@ -44,7 +44,7 @@ public class QuitCommand implements Command
 		aUser.sendMessage(aUser.getName() + " left the game.<BR>\r\n");
 		try
 		{
-			Characters.deactivateUser(aUser);
+			Persons.deactivateUser(aUser);
 		}
 		catch (Exception e)
 		{
