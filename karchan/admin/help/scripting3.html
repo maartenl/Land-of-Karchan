@@ -8,6 +8,50 @@ Methods in the database are quite simple and exist of a method name and the
 method source. The method name is used to refer to by special commands and
 events. The source is the tricky part.<P>
 
+<H2>Objects, methods and fields</H2>
+Here follows a summary of the diffent objects that are supported and the
+methods and fields they contain:<P>
+
+Legend:<DL><DT>[ro]<DD>read only field</DL><P>
+<UL><B>Object</B>
+<LI>room
+	<UL><B>Fields</B>
+	<LI>int room [ro]
+	<LI>room west
+	<LI>room east
+	<LI>room north
+	<LI>room south
+	<LI>room up
+	<LI>room down
+	<LI>string description
+	</UL>
+	<UL><B>Methods</B>
+	<LI>sendMessage(string)
+	</UL>
+<LI>person
+	<UL><B>Fields</B>
+	<LI>room room
+	<LI>string name [ro]
+	<LI>string sex ("male","female") [ro]
+	</UL>
+	<UL><B>Methods</B>
+	<LI>personal(string)
+	<LI>sendMessage( [person, ] string)
+	<LI>sendMessageExcl( [person, ] string)
+	</UL>
+<LI>Global Variables
+	<UL><LI>rooms
+		<UL><B>Methods</B>
+		<LI>room find(integer)
+		</UL>
+	<LI>persons
+		<UL><B>Methods</B>
+		<LI>person find(string)
+		</UL>
+	</UL>
+</UL>
+
+<H2>Links</H2>
 The source is encapsulated within XML tags. XML tags are kind of like HTML
 tags only more generic. Check <A
 HREF="http://www.w3schools.com/xml/xml_whatis.asp">here</A> for an
@@ -24,6 +68,7 @@ please check <A
 HREF="/javadoc/mmud/characters/Person.html">here</A>. Look for
 the three <I>writeMessage</I> commands.<P>
 
+<H2>Errors</H2>
 If there is an error in one of the scripts you wrote, the proper way to find
 the error is to check out the <A HREF="../showlog.html">Logs</A> of the mmud. Every time a scripts is
 executed but fails, the error is written in the log.
