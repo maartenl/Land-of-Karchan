@@ -549,7 +549,7 @@ store_in_list(int socketfd, char *buf)
 				mine->readbuf = temp2;
 				mine->bufsize = strlen(temp2)+1;
 #ifdef DEBUG
-				printf("%s/%s/%i/s\n", mine->name, mine->password, mine->frames, mine->command);
+				printf("%s/%s/%i/%s\n", mine->name, mine->password, mine->frames, mine->command);
 				fflush(stdout);
 #endif
 				current_name = mine->name;
@@ -758,7 +758,9 @@ main(int argc, char **argv)
 			}
 		}
 	}
+	syslog(LOG_INFO, "shutdown initiated...");
 	clearGameFunctionIndex(); // clear command index
+	syslog(LOG_INFO, "closing database connection...");
 	closedbconnection();
 
 	if (close(sockfd) == -1)

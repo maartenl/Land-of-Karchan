@@ -44,7 +44,8 @@ FILE *getMMudOut()
 	return mmout;
 }
 
-MYSQL dbconnection;
+MYSQL dbconnectioninfo program
+;
 
 void setFrames(int i)
 {
@@ -238,7 +239,7 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 	if (mysql_query(&dbconnection,sqlstring))
 		exiterr(3, sqlstring, &dbconnection);
  
-	if (!(res = mysql_store_result(&dbconnection)) && mysql_num_fields(&dbconnection))
+	if (!(res = mysql_store_result(&dbconnection)) && mysql_field_count(&dbconnection))
 		exiterr(4, sqlstring, &dbconnection);
                     
 //	if (!mysql_eof(res))
