@@ -576,7 +576,7 @@ store_in_list(int socketfd, char *buf)
 				current_frames = mine->frames;
 				current_command = mine->command;
 				
-				WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", mine->name, mine->password, mine->command);
+				WriteSentenceIntoOwnLogFile(BigFile, "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
 				filep = fopen("temp.txt", "w");
 				if (filep == NULL)
