@@ -93,7 +93,7 @@ public class TickerThread extends Thread
 			}
 			catch (PersonException e)
 			{
-				Database.writeLog("root", "problem removing idle user: " + e);
+				Database.writeLog("root", e);
 				e.printStackTrace();
 			}
 		} // neverending loop.

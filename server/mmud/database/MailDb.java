@@ -99,7 +99,7 @@ public class MailDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return result;
 	}
@@ -231,7 +231,7 @@ public class MailDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return result;
 	}
@@ -265,7 +265,7 @@ public class MailDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -302,7 +302,7 @@ public class MailDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return false;
 	}

@@ -217,7 +217,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myItemDef);
 		return myItemDef;
@@ -270,7 +270,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myInventory);
 		return myInventory.toString();
@@ -319,7 +319,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myInventory);
 		return myInventory.toString();
@@ -368,7 +368,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myInventory);
 		return myInventory.toString();
@@ -394,7 +394,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -424,7 +424,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -452,7 +452,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -481,7 +481,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -531,7 +531,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -564,7 +564,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return myItem;
 	}
@@ -592,7 +592,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -622,7 +622,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res != 1)
 		{
@@ -657,7 +657,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (res == 0)
 		{
@@ -720,7 +720,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + items);
 		return items;
@@ -777,7 +777,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + items);
 		return items;
@@ -819,7 +819,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + items);
 		return items;
@@ -879,7 +879,7 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + items);
 		return items;

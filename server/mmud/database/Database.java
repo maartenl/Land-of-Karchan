@@ -34,6 +34,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
 
 import mmud.*;
 import mmud.characters.*;
@@ -79,6 +81,7 @@ public class Database
 	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
 	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
 	public static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
+	public static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
 	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
 	public static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
 
@@ -196,7 +199,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return aStatement;
 	}
@@ -228,7 +231,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return aStatement;
 	}
@@ -305,7 +308,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (myUser != null)
 		{
@@ -387,7 +390,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (myUser != null)
 		{
@@ -434,7 +437,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return false;
 	}
@@ -470,7 +473,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return myBoolean;
 	}
@@ -513,7 +516,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return myRoom;
 	}
@@ -551,7 +554,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return;
 	}
@@ -591,7 +594,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return;
 	}
@@ -694,7 +697,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return myVector;
 	}
@@ -732,7 +735,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (myErrMsg == null)
 		{
@@ -795,7 +798,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		if (result == null && (!aCommand.equals("sorry")))
 		{
@@ -883,7 +886,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		Logger.getLogger("mmud").finer("returns false");
 		return false;
@@ -915,7 +918,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -944,7 +947,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -972,7 +975,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1019,7 +1022,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1048,7 +1051,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1077,7 +1080,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1106,7 +1109,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1135,7 +1138,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1164,7 +1167,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1193,7 +1196,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1223,7 +1226,7 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
@@ -1249,6 +1252,41 @@ public class Database
 			PreparedStatement sqlWriteLog = theConnection.prepareStatement(sqlWriteLogString);
 			sqlWriteLog.setString(1, aName);
 			sqlWriteLog.setString(2, aMessage);
+			int res = sqlWriteLog.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				// TOBEDONE
+			}
+			sqlWriteLog.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * write a log message of an exception to the database. 
+	 * @param aName the name of the person to be inscribed in the log table
+	 * @param aThrowable the exception or error to be written to the log
+	 * table.
+	 */
+	public static void writeLog(String aName, Throwable aThrowable)
+	{
+		Logger.getLogger("mmud").finer("");
+		assert theConnection != null : "theConnection is null";
+		ByteArrayOutputStream myStream = new ByteArrayOutputStream();
+		PrintStream myPrintStream = new PrintStream(myStream);
+		aThrowable.printStackTrace(myPrintStream);
+		myPrintStream.close();
+//		myStream.close();
+		try
+		{
+			PreparedStatement sqlWriteLog = theConnection.prepareStatement(sqlWriteLog2String);
+			sqlWriteLog.setString(1, aName);
+			sqlWriteLog.setString(2, aThrowable.toString());
+			sqlWriteLog.setString(3, myStream.toString());
 			int res = sqlWriteLog.executeUpdate();
 			if (res != 1)
 			{

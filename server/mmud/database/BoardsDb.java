@@ -60,7 +60,7 @@ public class BoardsDb
 		"where mm_boards.name = ?";
 		// boardname
 	public static final String sqlReadBoardMessageString = 
-		"select concat('<HR noshade>From: <B>', mm_boardmessages.name, '</B><BR>" +
+		"select concat('<HR noshade>From: <B>', mm_boardmessages.iname, '</B><BR>" +
 		"Posted: <B>', date_format(posttime, '%W, %M %e, %H:%i:%s'), '</B><P>\r\n', message, " +
 		"'<BR>') as message " +
 		"from mm_boardmessages, mm_boards " + 
@@ -114,7 +114,7 @@ public class BoardsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return newBoard;
 	}
@@ -162,7 +162,7 @@ public class BoardsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 		return result.toString();
 	}
@@ -195,7 +195,7 @@ public class BoardsDb
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
+			Database.writeLog("root", e);
 		}
 	}
 
