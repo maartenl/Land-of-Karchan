@@ -69,11 +69,6 @@ like gameMain, gameLogon and gameNewchar */
     the client connects */
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
-char *current_name;
-char *current_password;
-int current_frames;
-char *current_command; 
-
 int signal_caught = 0;
 
 /*! this function returns true if a SIGHUP/SIGUSR1/SIGUSR2 signal was caught 
@@ -105,7 +100,7 @@ void signalhandler(int signum)
  */
 void emergency_signalhandler(int signum)
 {
-	syslog(LOG_INFO, "SIGSEGV signal caught. (%s, %s, %i)", current_name, current_command, current_frames);
+	syslog(LOG_INFO, "SIGSEGV signal caught.");
 	abort();
 }
 
@@ -909,10 +904,6 @@ store_in_list(int socketfd, char *buf)
 //				printf("%s/%s/%s/%i/%s\n", mine->action, mine->name, mine->password, mine->frames, mine->command);
 				fflush(stdout);
 #endif
-				current_name = mine->name;
-				current_password = mine->password;
-				current_frames = mine->frames;
-				if (!strcmp(mine->action, "mud")) {current_command = mine->command;}
 				
 				WriteSentenceIntoOwnLogFile(getParam(MM_BIGFILE), "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				// decide what action to take
@@ -1186,6 +1177,11 @@ main(int argc, char **argv)
 		}
 	}
 	syslog(LOG_INFO, "shutdown initiated...");
+	syslog(LOG_INFO, "waiting for threads...");
+	while (head !=NULL)
+	{
+		pthread_join(head->mythread, NULL);
+	}
 	syslog(LOG_INFO, "waiting for ending cleanup thread...");
 	pthread_join(cleanupthread, NULL);
 	clearGameFunctionIndex(); // clear command index
