@@ -42,7 +42,8 @@ Room <?php echo $_REQUEST{"room"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select * from mm_rooms where id = ".$_REQUEST{"room"}
+$result = mysql_query("select * from mm_rooms where id =
+	".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -81,7 +82,7 @@ while ($myrow = mysql_fetch_array($result))
 printf("</P>");
 $result = mysql_query("select * ".
 	" from mm_roomattributes".
-	" where id = ".$_REQUEST{"room"}
+	" where id = ".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -96,7 +97,7 @@ $result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
 	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_roomitemtable".
 	" where mm_itemtable.id = mm_roomitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_roomitemtable.room = ".$_REQUEST{"room"}
+	" mm_roomitemtable.room = ".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -109,7 +110,8 @@ printf("</P>");
 
 $result = mysql_query("select mm_usertable.name ".
 	" from mm_usertable".
-	" where active = 1 and room  = ".$_REQUEST{"room"}
+	" where active = 1 and room  =
+".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -119,7 +121,8 @@ while ($myrow = mysql_fetch_array($result))
 printf("</P>");
 $result = mysql_query("select mm_usertable.name ".
 	" from mm_usertable".
-	" where active = 0 and room  = ".$_REQUEST{"room"}
+	" where active = 0 and room  =
+	".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -128,7 +131,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 printf("<b>Referenced in the following rooms:</b><BR>");
-$result = mysql_query("select id from mm_rooms where ".$_REQUEST{"room"}.
+$result = mysql_query("select id from mm_rooms where
+	".mysql_escape_string($_REQUEST{"room"}).
 	" in (west, east, north, south, up, down) "
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());

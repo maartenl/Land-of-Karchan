@@ -43,7 +43,8 @@ Item <?php echo $_REQUEST{"item"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select mm_itemtable.id, mm_items.* from mm_items, mm_itemtable ".
-	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id = ".$_REQUEST{"item"}
+	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id =
+	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -60,7 +61,7 @@ while ($myrow = mysql_fetch_array($result))
 
 $result = mysql_query("select * ".
 	" from mm_itemattributes".
-	" where id = ".$_REQUEST{"item"}
+	" where id = ".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -72,7 +73,8 @@ while ($myrow = mysql_fetch_array($result))
 
 $result = mysql_query("select containerid ".
 	" from mm_itemitemtable".
-	" where mm_itemitemtable.id = ".$_REQUEST{"item"}
+	" where mm_itemitemtable.id =
+	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -81,7 +83,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 $result = mysql_query("select room ".
 	" from mm_roomitemtable".
-	" where mm_roomitemtable.id = ".$_REQUEST{"item"}
+	" where mm_roomitemtable.id =
+	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -90,7 +93,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 $result = mysql_query("select belongsto ".
 	" from mm_charitemtable".
-	" where mm_charitemtable.id = ".$_REQUEST{"item"}
+	" where mm_charitemtable.id =
+	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -102,7 +106,8 @@ $result = mysql_query("select mm_itemitemtable.id, mm_items.id, ".
 	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_itemitemtable".
 	" where mm_itemtable.id = mm_itemitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_itemitemtable.containerid = ".$_REQUEST{"item"}
+	" mm_itemitemtable.containerid =
+	".mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

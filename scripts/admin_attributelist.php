@@ -43,7 +43,7 @@ Attribute <?php echo $_REQUEST{"name"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_charattributes ".
-	"where name = \"".$_REQUEST{"name"}."\""
+	"where name = \"".mysql_escape_string($_REQUEST{"name"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -55,7 +55,7 @@ while ($myrow = mysql_fetch_array($result))
 printf("<P>");
 
 $result = mysql_query("select * from mm_roomattributes ".
-	"where name = \"".$_REQUEST{"name"}."\""
+	"where name = \"".mysql_escape_string($_REQUEST{"name"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -67,7 +67,7 @@ while ($myrow = mysql_fetch_array($result))
 printf("<P>");
 
 $result = mysql_query("select * from mm_itemattributes ".
-	"where name = \"".$_REQUEST{"name"}."\""
+	"where name = \"".mysql_escape_string($_REQUEST{"name"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

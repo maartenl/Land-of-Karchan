@@ -44,8 +44,9 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
-	'".$_REQUEST{"name"}."' 
-	and mm_usertable.password = password('".$_REQUEST{"password"}."')
+	'".mysql_escape_string($_REQUEST{"name"})."' 
+	and mm_usertable.password =
+	password('".mysql_escape_string($_REQUEST{"password"})."')
 	and mm_usertable.god < 2"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -56,15 +57,20 @@ if (mysql_num_rows($result) == 0)
 
 if ($_REQUEST{"family"} != "0")
 {
-	mysql_query("replace into family values(\"".$_REQUEST{"name"}."\",
-		\"".$_REQUEST{"familyname"}."\",".$_REQUEST{"family"}.")",
+	mysql_query("replace into family
+	values(\"".mysql_escape_string($_REQUEST{"name"})."\",
+	\"".mysql_escape_string($_REQUEST{"familyname"}). 
+	"\",".mysql_escape_string($_REQUEST{"family"}).")",
 		 $dbhandle)
 		or die("Query failed : " . mysql_error());
 }
 mysql_query("replace into characterinfo 
-	values(\"".$_REQUEST{"name"}."\", \"".$_REQUEST{"imageurl"}."\",
-\"".$_REQUEST{"homepageurl"}."\", \"".$_REQUEST{"dateofbirth"}."\",
-\"".$_REQUEST{"cityofbirth"}."\", \"".$_REQUEST{"storyline"}."\")",
+	values(\"".mysql_escape_string($_REQUEST{"name"})."\",
+	\"".mysql_escape_string($_REQUEST{"imageurl"})."\",
+	\"".mysql_escape_string($_REQUEST{"homepageurl"})."\",
+	\"".mysql_escape_string($_REQUEST{"dateofbirth"})."\",
+	\"".mysql_escape_string($_REQUEST{"cityofbirth"})."\",
+	\"".mysql_escape_string($_REQUEST{"storyline"})."\")",
 	 $dbhandle)
 	or die("Query failed : " . mysql_error());
 mysql_close($dbhandle);

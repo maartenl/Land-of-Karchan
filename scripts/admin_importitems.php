@@ -43,7 +43,7 @@ Items from <?php echo $_REQUEST{"char"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from oldmud.itemtable 
-	where belongsto = \"".$_REQUEST{"char"}."\""
+	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 $numfields = mysql_num_fields($result);

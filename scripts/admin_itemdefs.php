@@ -43,7 +43,7 @@ Item Definition <?php echo $_REQUEST{"item"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_items where id = ".
-		$_REQUEST{"item"}
+		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -79,7 +79,7 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 $result = mysql_query("select id from mm_itemtable where itemid = ".
-		$_REQUEST{"item"}
+		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

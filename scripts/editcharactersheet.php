@@ -44,8 +44,9 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
-	'".$_REQUEST{"name"}."' 
-	and mm_usertable.password = password('".$_REQUEST{"password"}."')"
+	'".mysql_escape_string($_REQUEST{"name"})."' 
+	and mm_usertable.password =
+	password('".mysql_escape_string($_REQUEST{"password"})."')"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
@@ -55,7 +56,7 @@ if (mysql_num_rows($result) == 0)
 $result = mysql_query("select *, replace(replace(replace(storyline,
 	'&','&amp;'),'<', '&lt;'), '>', '&gt;') 
 	from characterinfo 
-        where name = '".$_REQUEST{"name"}."'", $dbhandle)
+        where name = '".mysql_escape_string($_REQUEST{"name"})."'", $dbhandle)
 	or die("Query failed : " . mysql_error());
 if ($myrow = mysql_fetch_array($result)) 
 {

@@ -42,7 +42,8 @@ Char <?php echo $_REQUEST{"char"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select * from mm_usertable where name = \"".$_REQUEST{"char"}."\""
+$result = mysql_query("select * from mm_usertable where name =
+	\"".mysql_escape_string($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -81,7 +82,7 @@ printf("<P>");
 
 $result = mysql_query("select * ".
     " from mm_charattributes".
-    " where charname = \"".$_REQUEST{"char"}."\""
+    " where charname = \"".mysql_escape_string($_REQUEST{"char"})."\""
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -93,7 +94,7 @@ while ($myrow = mysql_fetch_array($result))
 
 $result = mysql_query("select * ".
     " from characterinfo".
-    " where name = \"".$_REQUEST{"char"}."\""
+    " where name = \"".mysql_escape_string($_REQUEST{"char"})."\""
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -110,7 +111,8 @@ $result = mysql_query("select mm_charitemtable.id, mm_items.id, ".
 	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_charitemtable".
 	" where mm_itemtable.id = mm_charitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_charitemtable.belongsto = \"".$_REQUEST{"char"}."\""
+	" mm_charitemtable.belongsto =
+	\"".mysql_escape_string($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

@@ -59,7 +59,7 @@ $result = mysql_query("select mm_usertable.name, title, sex,
         concat('<A HREF=\"',homepageurl,'\">',homepageurl,'</A>'), 
         \"Yes\", dateofbirth, cityofbirth, mm_usertable.lastlogin, storyline 
         from mm_usertable, characterinfo 
-        where mm_usertable.name = '".$_REQUEST{"name"}."' and 
+        where mm_usertable.name = '".mysql_escape_string($_REQUEST{"name"})."' and 
         mm_usertable.name = characterinfo.name"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -101,7 +101,8 @@ function familyValues($arg)
 		from family, familyvalues 
 		left join characterinfo 
 		on characterinfo.name = family.toname 
-		where family.name = '".$_REQUEST{"name"}."' and 
+		where family.name =
+		'".mysql_escape_string($_REQUEST{"name"})."' and 
 		family.description = familyvalues.id", $arg)
 		or die("Query failed : " . mysql_error());
 	printf("<B>Family Relations:</B><BR><UL>");
