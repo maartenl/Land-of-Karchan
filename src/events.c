@@ -66,7 +66,7 @@ main(int argc, char *argv[])
 		while (row != NULL)
 		{
 			room =  atoi(row[1]);
-			Parse("anonymous", &room, "this is totally bogus stuff", row[0]);
+			Parse(NULL, "anonymous", &room, "this is totally bogus stuff", row[0], 1);
 			row = mysql_fetch_row(res);
 		}
 		mysql_free_result(res);

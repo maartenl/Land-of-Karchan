@@ -55,7 +55,6 @@ like database operations, server statistics, configuration and tokenization
 /*roomindex, west, east, north, south, up, down, light_source*/
 roomstruct room;
 
-int frames;
 char secretpassword[40];
 /*! property providing where ANY user output of the program should be redirected to. */
 int mmout;
@@ -106,29 +105,6 @@ send_socket(int s, char *buf, int *len)
 }
 
 MYSQL dbconnection;
-
-//! set the mud interface
-/*! this sets the mud interface used.
-\param i int, can have the following values:
-<UL><LI>0 -> normal interface, one page
-<LI>1 -> frames
-<LI>2 -> frames with server push
-<LI>3 -> future use
-</UL>
-*/
-void setFrames(int i)
-{
-	frames=i;
-}
-
-//! gets the current mud interface
-/*! this gets the current interface used.
-\see setFrames
-*/
-int getFrames()
-{
-	return frames;
-}
 
 //! returns dbconnection variable
 /*! this returns the dbconnection as setup by opendbconnection and used by
@@ -256,29 +232,17 @@ void setParam(int i, char *parameter)
 	}
 }
 
-char **tokens;
-int  tokenamount;
-
-//! set number of available tokens. Usually only called once in gameMain
-void
-setTokenAmount(int amount)
-{
-	tokenamount = amount;
-}
-
-//! retrieve number of available tokens
+//! returns the number of tokens of a command to be executed 
 int
-getTokenAmount()
+getTokenAmount(mudpersonstruct *fmudstruct)
 {
-	return tokenamount;
+	if (fmudstruct != NULL)
+	{
+		return fmudstruct->tokenamount;
+	}
+	return 0;
 }
 
-//! set the token array, usually only called once in gameMaine
-void
-setTokens(char **ftokens)
-{
-	tokens = ftokens;
-}
 
 //! get the index of the token matching the description
 /*! \param ftoken char* containing the token to look for in the tokens, 
@@ -286,12 +250,12 @@ setTokens(char **ftokens)
 	\return int, index number of token, -1 if not found
 */
 int
-getTokenIndex(char *ftoken)
+getTokenIndex(mudpersonstruct *fmudstruct, char *ftoken)
 {
 	int i;
-	for (i=0; i<tokenamount; i++)
+	for (i=0; i<fmudstruct->tokenamount; i++)
 	{
-		if (!strcasecmp(ftoken, tokens[i]))
+		if (!strcasecmp(ftoken, fmudstruct->tokens[i]))
 		{
 			return i;
 		}
@@ -301,13 +265,13 @@ getTokenIndex(char *ftoken)
 
 //! returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
 char *
-getToken(int i)
+getToken(mudpersonstruct *fmudstruct, int i)
 {
-	if ((i >= tokenamount) && (i <  0))
+	if ((i >= fmudstruct->tokenamount) || (i <  0))
 	{
 		return "";
 	}
-	return tokens[i];
+	return fmudstruct->tokens[i];
 }
 
 /*! linked list of mudpersonstruct, keeps a list of established
@@ -337,14 +301,20 @@ get_first_from_list()
 
 /*! add a new mudpersonstruct with default values to the beginning of the list
  (i.e. the first member of the list is the newly added socketfd) 
- \param socketfd int socket descriptor to be added to list of established connections and corresponding mud info
+ This requires that this method be updated whenever a change in the mudpersonstruct is contemplated.
+ \param socketfd int socket descriptor to be added to list of established connections and corresponding mud info, primary key
  \return int always returns 1
  */
 int
 add_to_list(int socketfd)
 {
 	mudpersonstruct *mine;
+	int i;
 	mine = (mudpersonstruct *) malloc(sizeof(mudpersonstruct));
+	if (mine == NULL)
+	{
+		return 0;
+	}
 	mine->name[0] = 0;
 	mine->password[0] = 0;
 	mine->address[0] = 0;
@@ -353,10 +323,16 @@ add_to_list(int socketfd)
 	mine->action = NULL;
 	mine->command = NULL;
 	mine->bufsize = 1;
+	mine->room = -1;
 	mine->readbuf = (char *) malloc(mine->bufsize);
 	mine->readbuf[0] = 0; // initialized to empty string
 	mine->socketfd = socketfd;
 	mine->newchar = NULL;
+	mine->tokenamount = 0;
+	for (i = 0; i < 50; i++) 
+	{
+		mine->tokens[i] = NULL;
+	}
 	mine->next = list;
 	list = mine;
 	return 1;

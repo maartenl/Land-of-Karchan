@@ -74,7 +74,7 @@ int parser_debug = 0;
 \param parserstring char* parserstring single string containing a command or the beginning of an if statement
 \sa Parse
 */
-int ParseSentence(char *name, int *room, char *parserstring)
+int ParseSentence(char *name, int *room, char *parserstring, int frames)
 {
 	if (!strcasecmp(parserstring, "end"))
 	{
@@ -156,13 +156,13 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			send_printf(getMMudOut(), "</HEAD>\n");
 
 			send_printf(getMMudOut(), "<BODY>\n");
-			if (!getFrames())
+			if (!frames)
 			{
 				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 			}
 			else
 			{
-				if (getFrames()==1)
+				if (frames==1)
 				{
 					send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 				} else
@@ -201,13 +201,13 @@ int ParseSentence(char *name, int *room, char *parserstring)
 				send_printf(getMMudOut(), "</HEAD>\n");
 				
 				send_printf(getMMudOut(), "<BODY>\n");
-				if (!getFrames())
+				if (!frames)
 				{
 					send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 				}
 				else
 				{
-					if (getFrames()==1)
+					if (frames==1)
 					{
 						send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 					} else
@@ -428,7 +428,7 @@ multiple lines.
 \param parserstring char* parserstring string containing an entire method
 \sa ParseSentence
 */
-int Parse(char *name, int *room, char *command, char *parserstring)
+int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, char *parserstring, int frames)
 {
 	char *string;
 	int pos, memory, level, state[20];
@@ -524,7 +524,7 @@ int Parse(char *name, int *room, char *command, char *parserstring)
 					temp = (char *) malloc(memory+255);
 					temp[i-string]=0;
 					strncpy(temp, string, i-string);
-					sprintf(change, "%i", getTokenAmount());
+					sprintf(change, "%i", getTokenAmount(fmudstruct));
 					strcat(temp, change);
 					strcat(temp, i+strlen("%amount"));
 					free(string);
@@ -540,12 +540,12 @@ int Parse(char *name, int *room, char *command, char *parserstring)
 					number[1]=i[2];
 					number[2]=0;
 					integer = atoi(number);
-					if ((integer > 0) && (integer <= getTokenAmount()))
+					if ((integer > 0) && (integer <= getTokenAmount(fmudstruct)))
 					{
 						temp = (char *) malloc(memory+255);
 						temp[i-string]=0;
 						strncpy(temp, string, i-string);
-						strcat(temp, getToken(integer-1));
+						strcat(temp, getToken(fmudstruct, integer-1));
 						strcat(temp, i+3);
 						free(string);
 						string=temp;
@@ -566,7 +566,7 @@ int Parse(char *name, int *room, char *command, char *parserstring)
 				if ((state[level]!=1) && (state[level]!=3))
 				{
 					if (parser_debug) {send_printf(getMMudOut(), "[%s]<BR>\n", string);}
-					switch (ParseSentence(name, room, string))
+					switch (ParseSentence(name, room, string, frames))
 					{
 						case 1 : // end found
 						{
@@ -687,7 +687,7 @@ processing.
 \param room char int room person is occuping
 \sa Parse
 */
-int SearchForSpecialCommand(char *name, char *password, char *command, int room)
+int SearchForSpecialCommand(mudpersonstruct *fmudstruct, char *name, char *password, char *command, int room, int frames)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -721,7 +721,7 @@ int SearchForSpecialCommand(char *name, char *password, char *command, int room)
 				row[3] = command.args
 				row[4] = method.src
 			*/
-			returnvalue = Parse(name, &myroom, command, row[4]);
+			returnvalue = Parse(fmudstruct, name, &myroom, command, row[4], frames);
 			row = mysql_fetch_row(res);
 		}
 		if (parser_debug) {send_printf(getMMudOut(), "</FONT><HR>\r\n");}
@@ -739,7 +739,7 @@ int SearchForSpecialCommand(char *name, char *password, char *command, int room)
 			char logname[100];
 			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
-			if (getFrames()!=2) {ReadFile(logname);}
+			if (frames!=2) {ReadFile(logname);}
 			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;
@@ -750,7 +750,7 @@ int SearchForSpecialCommand(char *name, char *password, char *command, int room)
 			char logname[100];
 			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
-			if (getFrames()!=2) {ReadFile(logname);}
+			if (frames!=2) {ReadFile(logname);}
 			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;

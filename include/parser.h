@@ -25,9 +25,9 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-int ParseSentence(char *name, int *room, char *parserstring);
+int ParseSentence(char *name, int *room, char *parserstring, int frames);
 
-int Parse(char *name, int *room, char *command, char *parserstring);
+int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, char *parserstring, int frames);
 
-int SearchForSpecialCommand(char *name, char *password, char *command, int room);
+int SearchForSpecialCommand(mudpersonstruct *fmudstruct, char *name, char *password, char *command, int room, int frames);
 

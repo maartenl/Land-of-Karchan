@@ -368,9 +368,9 @@ ReadFile(const char *filenaam)
 
 //! print the standard command form for filling in commands
 int
-PrintForm(char * name, char * password)
+PrintForm(char * name, char * password, int frames)
 {
-if (!getFrames())
+if (!frames)
 {
 	send_printf(getMMudOut(), "<SCRIPT language=\"JavaScript\">\r\n"
 			"<!-- In hiding!\r\n"
@@ -414,13 +414,13 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</TITLE>\n");
 	send_printf(getMMudOut(), "</HEAD>\n");
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -523,7 +523,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 
 	send_printf(getMMudOut(), "</UL><BR>");
-	PrintForm(name, password);
+	PrintForm(name, password, fmudstruct->frames);
 	
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
@@ -636,7 +636,7 @@ exist_adverb(char *s)
 \param z int, roomnumber
 */
 void 
-RoomTextProc(int z)
+RoomTextProc(int z, int frames)
 {
 	FILE           *fp;
 	MYSQL_RES *res;
@@ -650,13 +650,13 @@ RoomTextProc(int z)
 	send_printf(getMMudOut(), "</TITLE>\n");
 	send_printf(getMMudOut(), "</HEAD>\n");
 
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -700,21 +700,40 @@ RoomTextProc(int z)
 it is usually this method that is called last, in order to print the appropriate text
 */
 void 
-WriteRoom(char * name, char * password, int room, int sleepstatus)
+WriteRoom(mudpersonstruct *fmudstruct)
 {
+	char * name;
+	char * password;
+	int room;
+	int frames;
+	int sleepstatus = 0;
 	roomstruct	*temproom;
 	int i=0;
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *tempsql;
-	RoomTextProc(room);
+	room = fmudstruct->room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	frames = fmudstruct->frames;
+	res = executeQuery(NULL, "select sleep from tmp_usertable where name='%x'", name);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row != NULL)
+		{
+			sleepstatus = atoi(row[0]);
+		}
+		mysql_free_result(res);
+	}
+	RoomTextProc(room, frames);
 
 	send_printf(getMMudOut(), "[");
 	temproom=GetRoomInfo(room);
 	if (temproom->west) {
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 		i++;
 	}
 	if (temproom->east) {
@@ -722,7 +741,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			send_printf(getMMudOut(), ", ");
 		}
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 		i++;
 	}
 	if (temproom->north) {
@@ -730,7 +749,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			send_printf(getMMudOut(), ", ");
 		}
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 		i++;
 	}
 	if (temproom->south) {
@@ -738,7 +757,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			send_printf(getMMudOut(), ", ");
 		}
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 		i++;
 	}
 	if (temproom->up) {
@@ -746,7 +765,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			send_printf(getMMudOut(), ", ");
 		}
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 		i++;
 	}
 	if (temproom->down) {
@@ -754,14 +773,14 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			send_printf(getMMudOut(), ", ");
 		}
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
-		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, fmudstruct->frames+1);
 	}
 	free(temproom);
 	i = 0;
 	
 	send_printf(getMMudOut(), "]<P>\r\n");
 
-if (!getFrames()) 
+if (!fmudstruct->frames) 
 {
         send_printf(getMMudOut(),"<TABLE ALIGN=right>\n");
 	send_printf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
@@ -888,7 +907,7 @@ if (!getFrames())
 	                    "HREF=\"%s?command=e&name=%s&password=%s\">\n",
 	                    getParam(MM_MUDCGI), name, password);
 	                    send_printf(getMMudOut(), "</MAP>\n");
-} /*end if getFrames dude*/
+} /*end if fmudstruct->frames dude*/
 	/* Print characters in room */
 	tempsql = composeSqlStatement("select "
 	"if(god=3, concat('A ',age,"
@@ -916,19 +935,19 @@ if (!getFrames())
 	if (atoi(row[3])!=0)
 	{
 		send_printf(getMMudOut(), "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
-			colorme, getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, row[0]);
+			colorme, getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, row[0]);
 	}
 	else
 	{
 			if (atoi(row[1])==0) 
 			{
 				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
-					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
+					getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, colorme, row[0]);
 			}
 			else
 			{
 				send_printf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
-					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
+					getParam(MM_MUDCGI), row[4], name, password, fmudstruct->frames+1, colorme, row[0]);
 			}
 		}
 	}
@@ -1021,9 +1040,9 @@ if (!getFrames())
 	mysql_free_result(res);
 	send_printf(getMMudOut(), "<BR>\r\n");
 
-	PrintForm(name, password);
+	PrintForm(name, password, frames);
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (fmudstruct->frames!=2) {ReadFile(logname);}
 
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");

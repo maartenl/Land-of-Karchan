@@ -911,7 +911,6 @@ store_in_list(int socketfd, char *buf)
 				if (!strcmp(mine->action, "mud")) {current_command = mine->command;}
 				
 				WriteSentenceIntoOwnLogFile(getParam(MM_BIGFILE), "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
-				setFrames(mine->frames);
 				setMMudOut(socketfd);
 				// decide what action to take
 				if (!strcasecmp(mine->action, "logon"))

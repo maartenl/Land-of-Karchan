@@ -25,24 +25,24 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-void MIFList(char *name, char *password, int room);
+void MIFList(char *name, char *password, int room, int frames);
 void MIFEntryIn(char *name, char *password, int room);
 void MIFEntryOut(char *name, char *password, int room);
-void MIFTalk(char *name, char *password, char *command, int room);
+void MIFTalk(mudpersonstruct *fmudstruct);
 
-void RangerList(char *name, char *password, int room);
+void RangerList(char *name, char *password, int room, int frames);
 void RangerEntryIn(char *name, char *password, int room);
 void RangerEntryOut(char *name, char *password, int room);
-void RangerTalk(char *name, char *password, char *command, int room);
+void RangerTalk(mudpersonstruct *fmudstruct);
 
-void SWTalk(char *name, char *password, char *command, int room);
+void SWTalk(mudpersonstruct *fmudstruct);
 
-void DepTalk(char *name, char *password, char *command, int room);
+void DepTalk(mudpersonstruct *fmudstruct);
 
-void BKTalk(char *name, char *password, char *command, int room);
+void BKTalk(mudpersonstruct *fmudstruct);
 
-void VampTalk(char *name, char *password, char *command, int room);
+void VampTalk(mudpersonstruct *fmudstruct);
 
-void KnightTalk(char *name, char *password, char *command, int room);
+void KnightTalk(mudpersonstruct *fmudstruct);
 
-void CoDTalk(char *name, char *password, char *command, int room);
+void CoDTalk(mudpersonstruct *fmudstruct);

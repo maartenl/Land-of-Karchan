@@ -40,7 +40,7 @@ int ExistUser(char *name);
 int ExistUserRoom(int roomnr, char *name);
 
 char *
-ExistUserByDescription(int beginning, int amount, int room, char **returndesc);
+ExistUserByDescription(mudpersonstruct *fmudstruct, int beginning, int amount, int room, char **returndesc);
 
 int SearchUser(char *name);
        

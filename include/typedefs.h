@@ -105,7 +105,12 @@ typedef struct
 } mudinfostruct;
 
 /*! struct used for internal purposes, it keeps track of the information
-	regarding the mud (username, password, command) sent during a connection */
+	regarding the mud (username, password, command) sent during a connection 
+	frames: the Frame currently in use
+	   0 = normal operation
+	   1 = operation with frames
+	   2 = operation with frames and server push
+*/
 typedef struct
 {
 	char *readbuf; // buffer to read from socket, standard=1024 bytes
@@ -120,6 +125,10 @@ typedef struct
 	char *command;
 	int socketfd; // socket descriptor
 	void *newchar; // usually NULL, except when action=newchar
+	
+	char *tokens[50];
+	int tokenamount;
+	
 	void *next; // next item in the list
 } mudpersonstruct;
 
@@ -147,18 +156,6 @@ int isShuttingdown();
 
 void setShutdown(int aOffset);
 
-/* set the Frame variable to a certain value
-   0 = normal operation
-   1 = operation with frames
-   2 = operation with frames and server push */
-void setFrames(int i);
-   
-/* get the Frame currently in use
-   0 = normal operation
-   1 = operation with frames
-   2 = operation with frames and server push */
-int getFrames();
-
 int send_socket(int s, char *buf, int *len);
 
 int send_printf(const int socketfd, char *fmt,...);
@@ -175,19 +172,11 @@ mudinfostruct getMudInfo();
 
 void setMudInfo(mudinfostruct amudinfostruct);
 
-char *getCommandString();
+int getTokenAmount(mudpersonstruct *fmudstruct);
 
-void setCommandString(char *fstring);
-
-void setTokenAmount(int amount);
-
-int getTokenAmount();
-
-void setTokens(char **ftokens);
-
-int getTokenIndex(char *ftoken);
+int getTokenIndex(mudpersonstruct *fmudstruct, char *ftoken);
    
-char *getToken(int i);
+char *getToken(mudpersonstruct *fmudstruct, int i);
 
 void 
 FatalError(FILE *output, int i, char *description, char *busywith);

@@ -93,6 +93,21 @@ int getCookie(char *name, char *value)
 	return 1;
 }
 
+
+int frames;
+
+//! returns the interface id
+int getFrames()
+{
+	return frames;
+}
+   
+//! sets the interface id
+void setFrames(int aFrames)
+{
+	frames = aFrames;
+}
+      
 char *
 createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 {

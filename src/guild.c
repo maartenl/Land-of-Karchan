@@ -34,7 +34,7 @@ some "talk lines". */
 
 //! list of guildmembers of the MIF
 void 
-MIFList(char *name, char *password, int room)
+MIFList(char *name, char *password, int room, int frames)
 {
 	char 		logname[100];
 
@@ -52,13 +52,13 @@ MIFList(char *name, char *password, int room)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -78,7 +78,7 @@ MIFList(char *name, char *password, int room)
 	mysql_free_result(res);
 	send_printf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
@@ -164,19 +164,28 @@ MIFEntryOut(char *name, char *password, int room)
 
 //! talk to other mif members on the game
 void 
-MIFTalk(char *name, char *password, char *command, int room)
+MIFTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
@@ -193,7 +202,7 @@ MIFTalk(char *name, char *password, char *command, int room)
 
 //! list ranger members
 void 
-RangerList(char *name, char *password, int room)
+RangerList(char *name, char *password, int room, int frames)
 {
 	char 		logname[100];
 
@@ -211,13 +220,13 @@ RangerList(char *name, char *password, int room)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -237,7 +246,7 @@ RangerList(char *name, char *password, int room)
 	mysql_free_result(res);
 	send_printf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
@@ -324,19 +333,29 @@ RangerEntryOut(char *name, char *password, int room)
 
 //! talk to other rangers on the game
 void 
-RangerTalk(char *name, char *password, char *command, int room)
+RangerTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
@@ -353,19 +372,29 @@ RangerTalk(char *name, char *password, char *command, int room)
 
 /*! add SWTalk */
 void 
-SWTalk(char *name, char *password, char *command, int room)
+SWTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='SW'");
 	res=SendSQL2(temp, NULL);
@@ -382,19 +411,29 @@ SWTalk(char *name, char *password, char *command, int room)
 
 /*! add DepTalk */
 void 
-DepTalk(char *name, char *password, char *command, int room)
+DepTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where god=1");
 	res=SendSQL2(temp, NULL);
@@ -410,19 +449,29 @@ DepTalk(char *name, char *password, char *command, int room)
 }	
 /*! add BKTalk */
 void 
-BKTalk(char *name, char *password, char *command, int room)
+BKTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='BKIC'");
 	res=SendSQL2(temp, NULL);
@@ -438,19 +487,29 @@ BKTalk(char *name, char *password, char *command, int room)
 }
 /*! add VampTalk */
 void 
-VampTalk(char *name, char *password, char *command, int room)
+VampTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Kindred'");
 	res=SendSQL2(temp, NULL);
@@ -466,19 +525,29 @@ VampTalk(char *name, char *password, char *command, int room)
 }
 /*! add KnightTalk */
 void 
-KnightTalk(char *name, char *password, char *command, int room)
+KnightTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Knights'");
 	res=SendSQL2(temp, NULL);
@@ -494,19 +563,29 @@ KnightTalk(char *name, char *password, char *command, int room)
 }
 /*! add CoDTalk */
 void 
-CoDTalk(char *name, char *password, char *command, int room)
+CoDTalk(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *temp2;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+	
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",
-	name, command + (getToken(2) - getToken(0)));
+	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
 	
 	temp = composeSqlStatement("select name from tmp_usertable where guild='CoD'");
 	res=SendSQL2(temp, NULL);

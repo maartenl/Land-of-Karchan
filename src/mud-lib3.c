@@ -404,13 +404,13 @@ BigTalk_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -434,10 +434,10 @@ BigTalk_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
 	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
 	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n", getFrames()+1);
+	send_printf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n", fmudstruct->frames+1);
 	send_printf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
 	send_printf(getMMudOut(), "</FORM><P>\n");
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (fmudstruct->frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;
@@ -463,13 +463,13 @@ MailFormDumpOnScreen(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -501,7 +501,7 @@ MailFormDumpOnScreen(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n");
 	send_printf(getMMudOut(), "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n");
 	send_printf(getMMudOut(), "</FORM><P>\r\n");
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (fmudstruct->frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;

@@ -316,7 +316,7 @@ return 1;
 	description is not found, the method will return NULL
 */
 char * 
-ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
+ExistUserByDescription(mudpersonstruct *fmudstruct, int beginning, int amount, int room, char **returndesc)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -340,11 +340,11 @@ ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 	"' ', sex, ' ', race)"
 	" from tmp_usertable where room = %i and '%s' in "
 	"(race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg) ",
-		room, getToken(beginning));
+		room, getToken(fmudstruct, beginning));
 	for (i=beginning+1;i<beginning+amount;i++)
 	{
 		strcat(temp, " and '");
-		strcat(temp, getToken(i));
+		strcat(temp, getToken(fmudstruct, i));
 		strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
 	}
 	res=SendSQL2(temp, NULL);

@@ -104,13 +104,13 @@ ListMail_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -134,7 +134,7 @@ while(row = mysql_fetch_row(res))
 	send_printf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
 	"<A HREF=\"%s?command=readmail+%i&name=%s&password=%s&frames=%i\">"
 	"%s</A></TD><TD><A HREF=\"%s?command=deletemail+%i&name=%s&password=%s&frames=%i\">Delete</A></TD>"
-	"</TR>\r\n",row[0], getParam(MM_MUDCGI), j, name, password, getFrames()+1, row[3], getParam(MM_MUDCGI), j, name, password, getFrames()+1);
+	"</TR>\r\n",row[0], getParam(MM_MUDCGI), j, name, password, fmudstruct->frames+1, row[3], getParam(MM_MUDCGI), j, name, password, fmudstruct->frames+1);
 	j++;
 }
  send_printf(getMMudOut(), "</TABLE><BR>\r\n");
@@ -150,7 +150,7 @@ while(row = mysql_fetch_row(res))
 	\param erasehem integer, 1 if needs to be deleted, 0 otherwise, message is always displayed
 */
 void 
-ReadMail(char *name, char *password, int room, int messnr, int erasehem)
+ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem)
 {
 	int             i = 1,j;
 	FILE           *fp;
@@ -228,13 +228,13 @@ send_printf(getMMudOut(), "</TITLE>\n");
 send_printf(getMMudOut(), "</HEAD>\n");
 
 send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -259,7 +259,7 @@ send_printf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2
 send_printf(getMMudOut(), "<HR noshade>%s", row[6]);
 send_printf(getMMudOut(), "<HR noshade>");
 send_printf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
-	getParam(MM_MUDCGI), name, password, getFrames()+1);
+	getParam(MM_MUDCGI), name, password, frames+1);
 PrintForm(name, password);
 send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
@@ -374,13 +374,13 @@ Who_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -438,7 +438,7 @@ Who_Command(mudpersonstruct *fmudstruct)
 	\param description char* that contains the (large) amount of text to be displayed
 */
 void 
-LookString(char *description, char *name, char *password)
+LookString(char *description, char *name, char *password, int frames)
 {
 	char 		logname[100];
 
@@ -456,13 +456,13 @@ LookString(char *description, char *name, char *password)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -473,7 +473,7 @@ LookString(char *description, char *name, char *password)
 
 	send_printf(getMMudOut(), "%s", description);
 	PrintForm(name, password);
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
@@ -482,7 +482,7 @@ LookString(char *description, char *name, char *password)
 /*! \param id int, contains the id number of the item of which the description needs to be displayed
 */
 void 
-LookAtProc(int id, char *name, char *password)
+LookAtProc(int id, char *name, char *password, int frames)
 {
 	char 		logname[100];
 
@@ -500,13 +500,13 @@ LookAtProc(int id, char *name, char *password)
 	send_printf(getMMudOut(), "</HEAD>\n");
 
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -533,7 +533,7 @@ LookAtProc(int id, char *name, char *password)
 	mysql_free_result(res);
 
 	PrintForm(name, password);
-	if (getFrames()!=2) {ReadFile(logname);}
+	if (frames!=2) {ReadFile(logname);}
 	send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
@@ -549,9 +549,18 @@ Format can be the following
 In case of a person, description + health + wearing is put onto the screen.
 */
 void 
-LookItem_Command(char *name, char *password, int room)
+LookItem_Command(mudpersonstruct *fmudstruct)
 {
 	char 		logname[100];
+	char *name;
+	char *password;
+	int room;
+	int frames;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	frames = fmudstruct->frames;
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -560,13 +569,13 @@ LookItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	if ((getTokenAmount()<3) || (getTokenAmount()>6))
+	if ((getTokenAmount(fmudstruct)<3) || (getTokenAmount(fmudstruct)>6))
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		return;
 	}
-	if (getTokenAmount()==3)
+	if (getTokenAmount(fmudstruct)==3)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -575,9 +584,9 @@ LookItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.belongsto = '') and "
-			"(items.name = '%x')",room, getToken(2));
+			"(items.name = '%x')",room, getToken(fmudstruct, 2));
 	}
-	if (getTokenAmount()==4)
+	if (getTokenAmount(fmudstruct)==4)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -590,28 +599,9 @@ LookItem_Command(char *name, char *password, int room)
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') )",
-			room, getToken(3), getToken(2), getToken(2), getToken(2));
+			room, getToken(fmudstruct, 3), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2));
 	}
-	if (getTokenAmount()==5)
-	{
-		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, "
-			"items.container, tmpitems.containerid from items, "
-			"tmp_itemtable tmpitems where "
-			"(items.id = tmpitems.id) and "
-			"(tmpitems.room = %i) and "
-			"(tmpitems.search = '') and "
-			"(tmpitems.belongsto = '') and "
-			"(items.name = '%x') and "
-			"( (items.adject1='%x') or "
-			"  (items.adject2='%x') or "
-			"  (items.adject3='%x') ) and "
-			"( (items.adject1='%x') or "
-			"  (items.adject2='%x') or "
-			"  (items.adject3='%x') )",
-			room, getToken(4), getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3));
-	}
-	if (getTokenAmount()==6)
+	if (getTokenAmount(fmudstruct)==5)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, "
 			"items.container, tmpitems.containerid from items, "
@@ -626,13 +616,32 @@ LookItem_Command(char *name, char *password, int room)
 			"  (items.adject3='%x') ) and "
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
+			"  (items.adject3='%x') )",
+			room, getToken(fmudstruct, 4), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3));
+	}
+	if (getTokenAmount(fmudstruct)==6)
+	{
+		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, "
+			"items.container, tmpitems.containerid from items, "
+			"tmp_itemtable tmpitems where "
+			"(items.id = tmpitems.id) and "
+			"(tmpitems.room = %i) and "
+			"(tmpitems.search = '') and "
+			"(tmpitems.belongsto = '') and "
+			"(items.name = '%x') and "
+			"( (items.adject1='%x') or "
+			"  (items.adject2='%x') or "
+			"  (items.adject3='%x') ) and "
+			"( (items.adject1='%x') or "
+			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') ) and "
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') )",
-			room, getToken(5), getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
-			getToken(4), getToken(4), getToken(4));
+			room, getToken(fmudstruct, 5), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
+			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
@@ -653,13 +662,13 @@ LookItem_Command(char *name, char *password, int room)
 			send_printf(getMMudOut(), "</HEAD>\n");
 		
 			send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -723,7 +732,7 @@ LookItem_Command(char *name, char *password, int room)
 			}
 
 			PrintForm(name, password);
-			if (getFrames()!=2) {ReadFile(logname);}
+			if (frames!=2) {ReadFile(logname);}
 			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return ;
@@ -736,7 +745,7 @@ LookItem_Command(char *name, char *password, int room)
 
 	}
 
-	if (getTokenAmount()==3)
+	if (getTokenAmount(fmudstruct)==3)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -744,9 +753,9 @@ LookItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.belongsto = '%x') and "
-			"(items.name = '%x')",name, getToken(2));
+			"(items.name = '%x')",name, getToken(fmudstruct, 2));
 	}
-	if (getTokenAmount()==4)
+	if (getTokenAmount(fmudstruct)==4)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -758,27 +767,9 @@ LookItem_Command(char *name, char *password, int room)
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') )",
-			name, getToken(3), getToken(2), getToken(2), getToken(2));
+			name, getToken(fmudstruct, 3), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2));
 	}
-	if (getTokenAmount()==5)
-	{
-		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
-			"tmp_itemtable tmpitems where "
-			"(items.id = tmpitems.id) and "
-			"(tmpitems.room = 0) and "
-			"(tmpitems.search = '') and "
-			"(tmpitems.belongsto = '%x') and "
-			"(items.name = '%x') and "
-			"( (items.adject1='%x') or "
-			"  (items.adject2='%x') or "
-			"  (items.adject3='%x') ) and "
-			"( (items.adject1='%x') or "
-			"  (items.adject2='%x') or "
-			"  (items.adject3='%x') )",
-			name, getToken(4), getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3));
-	}
-	if (getTokenAmount()==6)
+	if (getTokenAmount(fmudstruct)==5)
 	{
 		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
 			"tmp_itemtable tmpitems where "
@@ -792,13 +783,31 @@ LookItem_Command(char *name, char *password, int room)
 			"  (items.adject3='%x') ) and "
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
+			"  (items.adject3='%x') )",
+			name, getToken(fmudstruct, 4), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3));
+	}
+	if (getTokenAmount(fmudstruct)==6)
+	{
+		temp = composeSqlStatement("select items.description, items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding from items, "
+			"tmp_itemtable tmpitems where "
+			"(items.id = tmpitems.id) and "
+			"(tmpitems.room = 0) and "
+			"(tmpitems.search = '') and "
+			"(tmpitems.belongsto = '%x') and "
+			"(items.name = '%x') and "
+			"( (items.adject1='%x') or "
+			"  (items.adject2='%x') or "
+			"  (items.adject3='%x') ) and "
+			"( (items.adject1='%x') or "
+			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') ) and "
 			"( (items.adject1='%x') or "
 			"  (items.adject2='%x') or "
 			"  (items.adject3='%x') )",
-			name, getToken(5), getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
-			getToken(4), getToken(4), getToken(4));
+			name, getToken(fmudstruct, 5), getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
+			getToken(fmudstruct, 4), getToken(fmudstruct, 4), getToken(fmudstruct, 4));
 	}
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
@@ -834,13 +843,13 @@ LookItem_Command(char *name, char *password, int room)
 			send_printf(getMMudOut(), "</HEAD>\n");
 		
 			send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -851,7 +860,7 @@ LookItem_Command(char *name, char *password, int room)
 		
 			send_printf(getMMudOut(), "%s", row[0]);
 			PrintForm(name, password);
-			if (getFrames()!=2) {ReadFile(logname);}
+			if (frames!=2) {ReadFile(logname);}
 			send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 			mysql_free_result(res);
@@ -865,7 +874,7 @@ LookItem_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 	}
 
-	if (getTokenAmount()==3)
+	if (getTokenAmount(fmudstruct)==3)
 	{
 		char *extralook;
 		extralook = NULL;
@@ -873,7 +882,7 @@ LookItem_Command(char *name, char *password, int room)
 			"where name='look' and "
 			"objectid='%x' and "
 			"objecttype=1",
-			getToken(2));
+			getToken(fmudstruct, 2));
 		res=SendSQL2(temp, NULL);
 		free(temp);temp=NULL;
 		if (res!=NULL)
@@ -891,7 +900,7 @@ LookItem_Command(char *name, char *password, int room)
 			"where (room = %i) and "
 			"(tmp_usertable.name<>'%x') and "
 			"(tmp_usertable.name='%x')",
-			room, name, getToken(2));
+			room, name, getToken(fmudstruct, 2));
 		res=SendSQL2(temp, NULL);
 		free(temp);temp=NULL;
 		if (res!=NULL)
@@ -1050,18 +1059,18 @@ time(&datetime);
 
 /*! check if item exists regarding a name and appropriate adjectives.
 <TT>
-  tokens[1..getTokenAmount()]
+  tokens[1..getTokenAmount(fmudstruct)]
   
-  getTokenAmount()=1 getToken(1)=noun
+  getTokenAmount(fmudstruct)=1 getToken(fmudstruct, 1)=noun
   
-  getTokenAmount()=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
+  getTokenAmount(fmudstruct)=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
   tokens[1..2]=adject3 noun
   
-  getTokenAmount()=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
+  getTokenAmount(fmudstruct)=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
   tokens[1..3]=adject2 adject1 noun tokens[1..3]=adject2 adject3 noun
   tokens[1..3]=adject3 adject1 noun tokens[1..3]=adject3 adject2 noun
   
-  getTokenAmount()=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
+  getTokenAmount(fmudstruct)=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
   adject2 noun tokens[1..4]=adject2 adject1 adject3 noun tokens[1..4]=adject2
   adject3 adject1 noun tokens[1..4]=adject3 adject1 adject2 noun
   tokens[1..4]=adject3 adject2 adject1 noun
@@ -1186,13 +1195,13 @@ Stats_Command(mudpersonstruct *fmudstruct)
 	send_printf(getMMudOut(), "</TITLE>\n");
 	send_printf(getMMudOut(), "</HEAD>\n");
 	send_printf(getMMudOut(), "<BODY>\n");
-	if (!getFrames())
+	if (!fmudstruct->frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (fmudstruct->frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -1309,7 +1318,7 @@ Stats_Command(mudpersonstruct *fmudstruct)
 /*! proper appelation in the game would be <I> get [&lt;amount&gt;] [gold, silver, copper] coin[s]</I>
 */
 void
-GetMoney_Command(char *name, char *password, int room)
+GetMoney_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -1322,9 +1331,17 @@ GetMoney_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
+	char *name;
+	char *password;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1349,7 +1366,7 @@ GetMoney_Command(char *name, char *password, int room)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(tmpitems.containerid = 0)"
-		, getToken(numberfilledout+1),
+		, getToken(fmudstruct, numberfilledout+1),
 		amount, room);
 		res=SendSQL2(sqlstring, &changedrows);
 		free(sqlstring);sqlstring=NULL;
@@ -1429,7 +1446,7 @@ GetMoney_Command(char *name, char *password, int room)
 /*! proper appelation in the game would be <I> drop [&lt;amount&gt;] [gold, silver, copper] coin[s]</I>
 */
 void
-DropMoney_Command(char *name, char *password, int room)
+DropMoney_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* drop [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -1445,9 +1462,16 @@ DropMoney_Command(char *name, char *password, int room)
 	int mycopper, mysilver, mygold, itemid;
 	char *checkerror;
 	
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
+	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	if (getTokenAmount()==1)
+	if (getTokenAmount(fmudstruct)==1)
 	{
 		WriteRoom(name, password, room, 0);
 		return;
@@ -1463,7 +1487,7 @@ DropMoney_Command(char *name, char *password, int room)
 	mygold = atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1476,7 +1500,7 @@ DropMoney_Command(char *name, char *password, int room)
 		return;
 	}
 
-	if (!strcasecmp(getToken(getTokenAmount()-2),"copper"))
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-2),"copper"))
 	{
 		if (mycopper<amount)
 		{
@@ -1493,7 +1517,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=36;
 	}
-	if (!strcasecmp(getToken(getTokenAmount()-2),"silver"))
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-2),"silver"))
 	{
 		if (mysilver<amount)
 		{
@@ -1510,7 +1534,7 @@ DropMoney_Command(char *name, char *password, int room)
 		mysql_free_result(res);
 		itemid=37;
 	}
-	if (!strcasecmp(getToken(getTokenAmount()-2),"gold"))
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-2),"gold"))
 	{
 		if (mygold<amount)
 		{
@@ -1560,17 +1584,17 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop a %s coin.<BR>\r\n", 
-		getToken(getTokenAmount()-2));
+		getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 	WriteMessage(name, room, "%s drops a %s coin.<BR>\r\n",
-		name, getToken(getTokenAmount()-2));
+		name, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 	}
 	else
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You drop %i %s coins.<BR>\r\n", 
-		amount, getToken(getTokenAmount()-2));
+		amount, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 	WriteMessage(name, room, "%s drops %i %s coins.<BR>\r\n",
-		name, amount, getToken(getTokenAmount()-2));
+		name, amount, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 	}
 	WriteRoom(name, password, room, 0);
 }
@@ -1580,7 +1604,7 @@ DropMoney_Command(char *name, char *password, int room)
 	Provided a nice warning if money not sufficiently available.
 */
 void
-GiveMoney_Command(char *name, char *password, int room)
+GiveMoney_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -1590,13 +1614,19 @@ GiveMoney_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	int mygold, mysilver, mycopper;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select name from tmp_usertable where (name = '%x') and "
 		"(name <> '%x') and "
-		"(room = %i)",getToken(getTokenAmount()-1), name, room);
+		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
@@ -1625,7 +1655,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	mycopper=atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1638,7 +1668,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		return ;
 	}
 
-	if (!strcasecmp(getToken(numberfilledout+1),"copper"))
+	if (!strcasecmp(getToken(fmudstruct, numberfilledout+1),"copper"))
 	{
 		if (amount>mycopper) 
 		{
@@ -1647,7 +1677,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			return ;
 		}
 	}
-	if (!strcasecmp(getToken(numberfilledout+1),"silver"))
+	if (!strcasecmp(getToken(fmudstruct, numberfilledout+1),"silver"))
 	{
 		if (amount>mysilver) 
 		{
@@ -1656,7 +1686,7 @@ GiveMoney_Command(char *name, char *password, int room)
 			return ;
 		}
 	}
-	if (!strcasecmp(getToken(numberfilledout+1),"gold"))
+	if (!strcasecmp(getToken(fmudstruct, numberfilledout+1),"gold"))
 	{
 		if (amount>mygold) 
 		{
@@ -1669,13 +1699,13 @@ GiveMoney_Command(char *name, char *password, int room)
 	/*give money to Karn*/
 	sqlstring = composeSqlStatement("update tmp_usertable set %s=%s-%i "
 		"where (name='%x')"
-		, getToken(numberfilledout+1), getToken(numberfilledout+1), amount, name);
+		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, name);
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 	sqlstring = composeSqlStatement("update tmp_usertable set %s=%s+%i "
 		"where (name='%x')"
-		, getToken(numberfilledout+1), getToken(numberfilledout+1), amount, toname);
+		, getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), amount, toname);
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
@@ -1684,21 +1714,21 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You give a %s coin to %s.<BR>\r\n", 
-		getToken(numberfilledout+1), toname);
+		getToken(fmudstruct, numberfilledout+1), toname);
 	WriteMessageTo(toname, name, room, "%s gives a %s coin to %s.<BR>\r\n",
-		name, getToken(numberfilledout+1), toname);
+		name, getToken(fmudstruct, numberfilledout+1), toname);
 	WriteSayTo(toname, name, room, "%s gives a %s coin to you.<BR>\r\n",
-		name, getToken(numberfilledout+1));
+		name, getToken(fmudstruct, numberfilledout+1));
 	}
 	else
 	{
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You give %i %s coins to %s.<BR>\r\n", 
-		amount, getToken(numberfilledout+1) ,toname);
+		amount, getToken(fmudstruct, numberfilledout+1) ,toname);
 	WriteMessageTo(toname, name, room, "%s gives %i %s coins to %s.<BR>\r\n",
-		name, amount, getToken(numberfilledout+1), toname);
+		name, amount, getToken(fmudstruct, numberfilledout+1), toname);
 	WriteSayTo(toname, name, room, "%s gives %i %s coins to you.<BR>\r\n",
-		name, amount, getToken(numberfilledout+1));
+		name, amount, getToken(fmudstruct, numberfilledout+1));
 	}
 	WriteRoom(name, password, room, 0);
 }
@@ -1707,7 +1737,7 @@ GiveMoney_Command(char *name, char *password, int room)
 /*! Proper appelation: <I>get [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
 */
 void
-GetItem_Command(char *name, char *password, int room)
+GetItem_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -1719,10 +1749,16 @@ GetItem_Command(char *name, char *password, int room)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room  = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1734,7 +1770,7 @@ GetItem_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-		if (getTokenAmount()==2+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
 		{
 			/*get pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1746,9 +1782,9 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			, getToken(1+numberfilledout), amount, room);
+			, getToken(fmudstruct, 1+numberfilledout), amount, room);
 		}
-		if (getTokenAmount()==3+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==3+numberfilledout) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1763,13 +1799,13 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,getToken(numberfilledout+2), 
-			getToken(numberfilledout+1), 
-			getToken(numberfilledout+1), 
-			getToken(numberfilledout+1),
+			,getToken(fmudstruct, numberfilledout+2), 
+			getToken(fmudstruct, numberfilledout+1), 
+			getToken(fmudstruct, numberfilledout+1), 
+			getToken(fmudstruct, numberfilledout+1),
 			amount, room);
 		}
-		if (getTokenAmount()==4+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==4+numberfilledout) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1787,12 +1823,12 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,getToken(numberfilledout+3), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			,getToken(fmudstruct, numberfilledout+3), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
 			amount, room);
 		}
-		if (getTokenAmount()>=5+numberfilledout) 
+		if (getTokenAmount(fmudstruct)>=5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1813,10 +1849,10 @@ GetItem_Command(char *name, char *password, int room)
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
 			"(items.getable<>0)"
-			,getToken(numberfilledout+4), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
-			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
+			,getToken(fmudstruct, numberfilledout+4), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
+			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, room);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -1934,7 +1970,7 @@ GetItem_Command(char *name, char *password, int room)
 /*! Proper appelation: <I>drop [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
 */
 void
-DropItem_Command(char *name, char *password, int room)
+DropItem_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -1943,10 +1979,16 @@ DropItem_Command(char *name, char *password, int room)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room  = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -1958,7 +2000,7 @@ DropItem_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-		if (getTokenAmount()==2+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
 		{
 			/*put pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1971,9 +2013,9 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '')"
-			, getToken(1+numberfilledout), amount, name);
+			, getToken(fmudstruct, 1+numberfilledout), amount, name);
 		}
-		if (getTokenAmount()==3+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==3+numberfilledout) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -1990,11 +2032,11 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,getToken(numberfilledout+2), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			,getToken(fmudstruct, numberfilledout+2), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
 			amount, name);
 		}
-		if (getTokenAmount()==4+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==4+numberfilledout) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -2014,12 +2056,12 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,getToken(numberfilledout+3), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			,getToken(fmudstruct, numberfilledout+3), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
 			amount, name);
 		}
-		if (getTokenAmount()>=5+numberfilledout) 
+		if (getTokenAmount(fmudstruct)>=5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -2042,10 +2084,10 @@ DropItem_Command(char *name, char *password, int room)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(items.dropable<>0)"
-			,getToken(numberfilledout+4), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
-			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
+			,getToken(fmudstruct, numberfilledout+4), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
+			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -2201,11 +2243,11 @@ Put_Command(mudpersonstruct *fmudstruct)
 	fcommand = fmudstruct->command;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
-	if (getTokenAmount()<4)
+	if (getTokenAmount(fmudstruct)<4)
 	{
 		return 0;
 	}
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	/* item_a = item to be put into container
 	   item_b = container */
@@ -2220,60 +2262,60 @@ Put_Command(mudpersonstruct *fmudstruct)
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-	if ((getTokenAmount() > 2+numberfilledout) && (!strcasecmp(getToken(2+numberfilledout), "in")))
+	if ((getTokenAmount(fmudstruct) > 2+numberfilledout) && (!strcasecmp(getToken(fmudstruct, 2+numberfilledout), "in")))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(1+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 1+numberfilledout));
 		*itemadject1_a = 0;
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>4+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>4+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>5+numberfilledout)
+		if (getTokenAmount(fmudstruct)>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	else
-	if ((getTokenAmount() > 3+numberfilledout) && (!strcasecmp(getToken(3+numberfilledout), "in")))
+	if ((getTokenAmount(fmudstruct) > 3+numberfilledout) && (!strcasecmp(getToken(fmudstruct, 3+numberfilledout), "in")))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(2+numberfilledout));
-		strcpy(itemadject1_a, getToken(1+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 2+numberfilledout));
+		strcpy(itemadject1_a, getToken(fmudstruct, 1+numberfilledout));
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>5+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>6+numberfilledout)
+		if (getTokenAmount(fmudstruct)>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	else
-	if ((getTokenAmount() > 4+numberfilledout) && (!strcasecmp(getToken(4+numberfilledout), "in")))
+	if ((getTokenAmount(fmudstruct) > 4+numberfilledout) && (!strcasecmp(getToken(fmudstruct, 4+numberfilledout), "in")))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(3+numberfilledout));
-		strcpy(itemadject1_a, getToken(1+numberfilledout));
-		strcpy(itemadject2_a, getToken(2+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 3+numberfilledout));
+		strcpy(itemadject1_a, getToken(fmudstruct, 1+numberfilledout));
+		strcpy(itemadject2_a, getToken(fmudstruct, 2+numberfilledout));
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>6+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>7+numberfilledout)
+		if (getTokenAmount(fmudstruct)>7+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	else
@@ -2567,18 +2609,18 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	command = fmudstruct->command;
 	
-	if (getTokenAmount() < 4)
+	if (getTokenAmount(fmudstruct) < 4)
 	{
 		return 0;
 	}
-	if (getTokenIndex("from") == -1)
+	if (getTokenIndex(fmudstruct, "from") == -1)
 	{
 		/* command does not contain a 'from' word */
 		return 0;
 	}
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	/* item_a = item to retrieve from container
 	   item_b = container */
@@ -2593,64 +2635,64 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-	if ((numberfilledout) && (!strcasecmp(getToken(2), "from")))
+	if ((numberfilledout) && (!strcasecmp(getToken(fmudstruct, 2), "from")))
 	{
 		return 0;
 	}
-	if (!strcasecmp(getToken(2+numberfilledout), "from"))
+	if (!strcasecmp(getToken(fmudstruct, 2+numberfilledout), "from"))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(1+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 1+numberfilledout));
 		*itemadject1_a = 0;
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>4+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>4+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>5+numberfilledout)
+		if (getTokenAmount(fmudstruct)>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	else
-	if (!strcasecmp(getToken(3+numberfilledout), "from"))
+	if (!strcasecmp(getToken(fmudstruct, 3+numberfilledout), "from"))
 	{
 		/* put <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(2+numberfilledout));
-		strcpy(itemadject1_a, getToken(1+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 2+numberfilledout));
+		strcpy(itemadject1_a, getToken(fmudstruct, 1+numberfilledout));
 		*itemadject2_a = 0;
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>5+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>5+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>6+numberfilledout)
+		if (getTokenAmount(fmudstruct)>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	else
-	if (!strcasecmp(getToken(4+numberfilledout), "from"))
+	if (!strcasecmp(getToken(fmudstruct, 4+numberfilledout), "from"))
 	{
 		/* put <bijv vmw> <bijv vmw> name in [bijv vmw] [bijv vnm] [bijv vnm] name */
-		strcpy(itemname_a, getToken(3+numberfilledout));
-		strcpy(itemadject1_a, getToken(1+numberfilledout));
-		strcpy(itemadject2_a, getToken(2+numberfilledout));
+		strcpy(itemname_a, getToken(fmudstruct, 3+numberfilledout));
+		strcpy(itemadject1_a, getToken(fmudstruct, 1+numberfilledout));
+		strcpy(itemadject2_a, getToken(fmudstruct, 2+numberfilledout));
 		*itemadject1_b = 0;
 		*itemadject2_b = 0;
-		strcpy(itemname_b, getToken(getTokenAmount()-1));
-		if (getTokenAmount()>6+numberfilledout)
+		strcpy(itemname_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
+		if (getTokenAmount(fmudstruct)>6+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-2));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-2));
 		}
-		if (getTokenAmount()>7+numberfilledout)
+		if (getTokenAmount(fmudstruct)>7+numberfilledout)
 		{
-			strcpy(itemadject1_b, getToken(getTokenAmount()-3));
+			strcpy(itemadject1_b, getToken(fmudstruct, getTokenAmount(fmudstruct)-3));
 		}
 	}
 	/* retrieve info to find out if item to be retrieved from container exist */
@@ -2888,23 +2930,23 @@ Wear_Command(mudpersonstruct *fmudstruct)
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
-	if (getTokenAmount()<4)
+	if (getTokenAmount(fmudstruct)<4)
 	{
 		return 0;
 	}
-	if (strcasecmp(getToken(getTokenAmount()-2), "on"))
+	if (strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-2), "on"))
 	{
 		return 0;
 	}
 	itemwearable=-1;
-	if (!strcasecmp(getToken(getTokenAmount()-1),"lefthand")) {itemwearable=1;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"righthand")) {itemwearable=2;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"head")) {itemwearable=4;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"neck")) {itemwearable=7;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"head")) {itemwearable=8;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"body")) {itemwearable=9;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"legs")) {itemwearable=10;}
-	if (!strcasecmp(getToken(getTokenAmount()-1),"feet")) {itemwearable=11;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"lefthand")) {itemwearable=1;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"righthand")) {itemwearable=2;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"head")) {itemwearable=4;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"neck")) {itemwearable=7;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"head")) {itemwearable=8;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"body")) {itemwearable=9;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"legs")) {itemwearable=10;}
+	if (!strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-1),"feet")) {itemwearable=11;}
 	
 	if ((itemwearable==1) || (itemwearable==2)) 
 	{
@@ -2920,7 +2962,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"from tmp_itemtable "
 		"where belongsto = '%x' and "
 		"wearing = '%x'"
-		, name, getToken(getTokenAmount()-1));
+		, name, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res != NULL)
@@ -2944,7 +2986,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*wear pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -2957,9 +2999,9 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1), name, sqlcomposite);
+			, getToken(fmudstruct, 1), name, sqlcomposite);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount(fmudstruct)==5) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -2975,11 +3017,11 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name, sqlcomposite);
 		}
-		if (getTokenAmount()==6) 
+		if (getTokenAmount(fmudstruct)==6) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -2998,12 +3040,12 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems_containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name, sqlcomposite);
 		}
-		if (getTokenAmount()>=7) 
+		if (getTokenAmount(fmudstruct)>=7) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -3025,10 +3067,10 @@ Wear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name, sqlcomposite);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3068,7 +3110,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		mysql_free_result(res);
 		sqlstring = composeSqlStatement("insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
 		" values(%i, '', '%x', 1, 0, '%x', '')"
-		, itemid, name, getToken(getTokenAmount()-1));
+		, itemid, name, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	}
 	else
 	{
@@ -3078,7 +3120,7 @@ Wear_Command(mudpersonstruct *fmudstruct)
 		"(wielding='') and "
 		"(wearing='') and "
 		"(containerid = 0)"
-		, getToken(getTokenAmount()-1), itemid, name);
+		, getToken(fmudstruct, getTokenAmount(fmudstruct)-1), itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
@@ -3086,9 +3128,9 @@ Wear_Command(mudpersonstruct *fmudstruct)
 
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You wear a %s, %s %s on your %s.<BR>\r\n", 
-		itemadject1, itemadject2, itemname, getToken(getTokenAmount()-1));
+		itemadject1, itemadject2, itemname, getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	WriteMessage(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
-		name, itemadject1, itemadject2, itemname, HeShe3(mysex), getToken(getTokenAmount()-1));
+		name, itemadject1, itemadject2, itemname, HeShe3(mysex), getToken(fmudstruct, getTokenAmount(fmudstruct)-1));
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
@@ -3120,7 +3162,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -3135,7 +3177,7 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (getTokenAmount()==2) 
+		if (getTokenAmount(fmudstruct)==2) 
 		{
 			/*wear pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wearing from items, tmp_itemtable tmpitems "
@@ -3147,9 +3189,9 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1), name );
+			, getToken(fmudstruct, 1), name );
 		}
-		if (getTokenAmount()==3) 
+		if (getTokenAmount(fmudstruct)==3) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wearing from items, tmp_itemtable tmpitems "
@@ -3164,11 +3206,11 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name);
 		}
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wearing from items, tmp_itemtable tmpitems "
@@ -3186,12 +3228,12 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name);
 		}
-		if (getTokenAmount()>=5) 
+		if (getTokenAmount(fmudstruct)>=5) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wearing from items, tmp_itemtable tmpitems "
@@ -3212,10 +3254,10 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing <> '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3312,7 +3354,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -3356,7 +3398,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (getTokenAmount()==2) 
+		if (getTokenAmount(fmudstruct)==2) 
 		{
 			/*wear pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -3369,9 +3411,9 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"			
-			, getToken(1), name);
+			, getToken(fmudstruct, 1), name);
 		}
-		if (getTokenAmount()==3) 
+		if (getTokenAmount(fmudstruct)==3) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -3387,11 +3429,11 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name);
 		}
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -3410,12 +3452,12 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name);
 		}
-		if (getTokenAmount()>=5) 
+		if (getTokenAmount(fmudstruct)>=5) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -3437,10 +3479,10 @@ Wield_Command(mudpersonstruct *fmudstruct)
 			"(items.wieldable = 3) and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3532,7 +3574,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -3547,7 +3589,7 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 
-		if (getTokenAmount()==2) 
+		if (getTokenAmount(fmudstruct)==2) 
 		{
 			/*wear pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wielding from items, tmp_itemtable tmpitems "
@@ -3559,9 +3601,9 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1), name );
+			, getToken(fmudstruct, 1), name );
 		}
-		if (getTokenAmount()==3) 
+		if (getTokenAmount(fmudstruct)==3) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wielding from items, tmp_itemtable tmpitems "
@@ -3576,11 +3618,11 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name);
 		}
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wielding from items, tmp_itemtable tmpitems "
@@ -3598,12 +3640,12 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name);
 		}
-		if (getTokenAmount()>=5) 
+		if (getTokenAmount(fmudstruct)>=5) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.wielding from items, tmp_itemtable tmpitems "
@@ -3624,10 +3666,10 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding <> '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3724,7 +3766,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -3745,7 +3787,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			WriteRoom(name, password, room, 0);
 			return 1;
 	} /* too much to eat */
-		if (getTokenAmount()==2) 
+		if (getTokenAmount(fmudstruct)==2) 
 		{
 			/*eat pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.eatable from items, tmp_itemtable tmpitems "
@@ -3759,9 +3801,9 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wielding = '') and "
 			"(items.eatable <> '') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1), name);
+			, getToken(fmudstruct, 1), name);
 		}
-		if (getTokenAmount()==3) 
+		if (getTokenAmount(fmudstruct)==3) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.eatable from items, tmp_itemtable tmpitems "
@@ -3778,11 +3820,11 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name);
 		}
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.eatable from items, tmp_itemtable tmpitems "
@@ -3802,12 +3844,12 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name);
 		}
-		if (getTokenAmount()>=5) 
+		if (getTokenAmount(fmudstruct)>=5) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.eatable from items, tmp_itemtable tmpitems "
@@ -3830,10 +3872,10 @@ Eat_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -3856,7 +3898,7 @@ Eat_Command(mudpersonstruct *fmudstruct)
 		strcpy(itemname, row[2]);
 		strcpy(itemadject1, row[3]);
 		strcpy(itemadject2, row[4]);
-		LookString(row[5], name, password);
+		LookString(row[5], name, password, fmudstruct->frames);
 		
 		mysql_free_result(res);
 
@@ -3925,7 +3967,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -3953,7 +3995,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			WriteRoom(name, password, room, 0);
 			return 1;
 	} /* too much to drink spiritual like */
-		if (getTokenAmount()==2) 
+		if (getTokenAmount(fmudstruct)==2) 
 		{
 			/*put pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.drinkable from items, tmp_itemtable tmpitems "
@@ -3967,9 +4009,9 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1), name);
+			, getToken(fmudstruct, 1), name);
 		}
-		if (getTokenAmount()==3) 
+		if (getTokenAmount(fmudstruct)==3) 
 		{
 			/*get iron pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.drinkable from items, tmp_itemtable tmpitems "
@@ -3986,11 +4028,11 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(2), 
-			getToken(1), getToken(1), getToken(1),
+			,getToken(fmudstruct, 2), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 			name);
 		}
-		if (getTokenAmount()==4) 
+		if (getTokenAmount(fmudstruct)==4) 
 		{
 			/*get iron strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.drinkable from items, tmp_itemtable tmpitems "
@@ -4010,12 +4052,12 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(3), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
+			,getToken(fmudstruct, 3), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 			name);
 		}
-		if (getTokenAmount()>=5) 
+		if (getTokenAmount(fmudstruct)>=5) 
 		{
 			/*get iron strong strong pick*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, items.drinkable from items, tmp_itemtable tmpitems "
@@ -4038,10 +4080,10 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(4), 
-			getToken(1), getToken(1), getToken(1),
-			getToken(2), getToken(2), getToken(2),
-			getToken(3), getToken(3), getToken(3),
+			,getToken(fmudstruct, 4), 
+			getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+			getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+			getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 			name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -4060,7 +4102,7 @@ Drink_Command(mudpersonstruct *fmudstruct)
 			return 1;
 		}
 		itemid = atoi(row[0]);
-	LookString(row[5], name, password);
+	LookString(row[5], name, password, fmudstruct->frames);
 		amountitems = atoi(row[1]);
 		strcpy(itemname, row[2]);
 		strcpy(itemadject1, row[3]);
@@ -4174,7 +4216,7 @@ RemapShoppingList_Command(char *name)
 	Item is added to inventory if enough money and the money is subtracted.
 */
 int
-BuyItem_Command(char *name, char *password, int room, char *fromname)
+BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 {
 	/*
 	* buy [amount] <item> to <person> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4188,6 +4230,12 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	int itemgold, itemsilver, itemcopper;
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room  = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
@@ -4202,7 +4250,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	mygold = atoi(row[2]);
 	mysql_free_result(res);
 
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -4214,7 +4262,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-		if (getTokenAmount()==2+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==2+numberfilledout) 
 		{
 			/*give pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4224,9 +4272,9 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.containerid = 0)"
-			, getToken(1+numberfilledout), amount, fromname);
+			, getToken(fmudstruct, 1+numberfilledout), amount, fromname);
 		}
-		if (getTokenAmount()==3+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==3+numberfilledout) 
 		{
 			/*give iron pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4239,11 +4287,11 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(numberfilledout+2), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			,getToken(fmudstruct, numberfilledout+2), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
 			amount, fromname);
 		}
-		if (getTokenAmount()==4+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==4+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4259,12 +4307,12 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(numberfilledout+3), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			,getToken(fmudstruct, numberfilledout+3), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
 			amount, fromname);
 		}
-		if (getTokenAmount()>=5+numberfilledout) 
+		if (getTokenAmount(fmudstruct)>=5+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4283,10 +4331,10 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.containerid = 0)"
-			,getToken(numberfilledout+4), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
-			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
+			,getToken(fmudstruct, numberfilledout+4), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
+			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, fromname);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -4404,7 +4452,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	Item is removed from inventory and the money is added.
 */
 void
-SellItem_Command(char *name, char *password, int room, char *toname)
+SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 {
 	/*
 	* sell [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4418,10 +4466,16 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	int itemgold, itemsilver, itemcopper;
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room  = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -4433,7 +4487,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		WriteRoom(name, password, room, 0);
 		return ;
 	}
-	if (getTokenAmount()==2+numberfilledout) 
+	if (getTokenAmount(fmudstruct)==2+numberfilledout) 
 	{
 		/*sell pick to Karn*/
 		sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4445,9 +4499,9 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		, getToken(1+numberfilledout), amount, name);
+		, getToken(fmudstruct, 1+numberfilledout), amount, name);
 	}
-	if (getTokenAmount()==3+numberfilledout) 
+	if (getTokenAmount(fmudstruct)==3+numberfilledout) 
 	{
 		/*give iron pick to Karn*/
 		sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4462,11 +4516,11 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,getToken(numberfilledout+2), 
-		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+		,getToken(fmudstruct, numberfilledout+2), 
+		getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
 		amount, name);
 	}
-	if (getTokenAmount()==4+numberfilledout) 
+	if (getTokenAmount(fmudstruct)==4+numberfilledout) 
 	{
 		/*give iron strong pick to Karn*/
 		sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4484,12 +4538,12 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,getToken(numberfilledout+3), 
-		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-		getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+		,getToken(fmudstruct, numberfilledout+3), 
+		getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+		getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
 		amount, name);
 	}
-	if (getTokenAmount()>=5+numberfilledout) 
+	if (getTokenAmount(fmudstruct)>=5+numberfilledout) 
 	{
 		/*give iron strong pick to Karn*/
 		sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, "
@@ -4510,10 +4564,10 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.wearing='') and "
 		"(tmpitems.wielding='') and "
 		"(tmpitems.containerid = 0)"
-		,getToken(numberfilledout+4), 
-		getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-		getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
-		getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
+		,getToken(fmudstruct, numberfilledout+4), 
+		getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+		getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
+		getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 		amount, name);
 	}
 	res=SendSQL2(sqlstring, &changedrows);
@@ -4642,7 +4696,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -4656,7 +4710,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 	"(tmpitems.belongsto='') and "
 	"(tmpitems.room = %i) and "
 	"(tmpitems.search = '%x')"
-	, room, fcommand+(getToken(1)-getToken(0)));
+	, room, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
@@ -4668,7 +4722,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", fcommand+(getToken(1)-getToken(0)));
+			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
 			WriteRoom(name, password, room, 0);
 			return 1;
 		}
@@ -4692,7 +4746,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 				"(wielding = '') and "
 				"(containerid = %i) and "
 				"(tmpitems.search = '%x')"
-				, name, itemid, containerid, fcommand+(getToken(1)-getToken(0)));
+				, name, itemid, containerid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)));
 			res=SendSQL2(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
@@ -4736,7 +4790,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 			"(search='%x') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, fcommand+(getToken(1)-getToken(0)), room);
+			, itemid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), room);
 		}
 		else
 		{
@@ -4745,7 +4799,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 			"(search='%x') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, fcommand+(getToken(1)-getToken(0)), room);
+			, itemid, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), room);
 		}
 		res=SendSQL2(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
@@ -4753,9 +4807,9 @@ Search_Command(mudpersonstruct *fmudstruct)
 	}
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You search %s and you find a %s, %s %s.<BR>\r\n", 
-		fcommand+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
+		fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
-		name, fcommand+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
+		name, fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0)), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
@@ -4764,7 +4818,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 /*! correct appelation: <I>give [amount] &lt;item&gt; to &lt;person&gt;</I>
 */
 int
-GiveItem_Command(char *name, char *password, int room)
+GiveItem_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* give [amount] <item> to <person> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4776,14 +4830,20 @@ GiveItem_Command(char *name, char *password, int room)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
+	char *name;
+	char *password;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->password;
+	room  = fmudstruct->room;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
-	if (getTokenAmount() < 4)
+	if (getTokenAmount(fmudstruct) < 4)
 	{
 		return 0;
 	}
-	if (strcasecmp(getToken(getTokenAmount()-2), "to"))
+	if (strcasecmp(getToken(fmudstruct, getTokenAmount(fmudstruct)-2), "to"))
 	{
 		return 0;
 	}
@@ -4791,7 +4851,7 @@ GiveItem_Command(char *name, char *password, int room)
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select name from tmp_usertable where (name = '%x') and "
 		"(name <> '%x') and "
-		"(room = %i)",getToken(getTokenAmount()-1), name, room);
+		"(room = %i)",getToken(fmudstruct, getTokenAmount(fmudstruct)-1), name, room);
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
@@ -4810,7 +4870,7 @@ GiveItem_Command(char *name, char *password, int room)
 	strcpy(toname, row[0]);
 	mysql_free_result(res);
 
-	amount = strtol(getToken(1), &checkerror, 10);
+	amount = strtol(getToken(fmudstruct, 1), &checkerror, 10);
 	numberfilledout=1;
 	if (*checkerror!='\0')
 	{
@@ -4822,7 +4882,7 @@ GiveItem_Command(char *name, char *password, int room)
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
-		if (getTokenAmount()==4+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==4+numberfilledout) 
 		{
 			/*give pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -4833,9 +4893,9 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			, getToken(1+numberfilledout), amount, name);
+			, getToken(fmudstruct, 1+numberfilledout), amount, name);
 		}
-		if (getTokenAmount()==5+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==5+numberfilledout) 
 		{
 			/*give iron pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -4849,11 +4909,11 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,getToken(numberfilledout+2), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
+			,getToken(fmudstruct, numberfilledout+2), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
 			amount, name);
 		}
-		if (getTokenAmount()==6+numberfilledout) 
+		if (getTokenAmount(fmudstruct)==6+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -4870,12 +4930,12 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,getToken(numberfilledout+3), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
+			,getToken(fmudstruct, numberfilledout+3), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
 			amount, name);
 		}
-		if (getTokenAmount()>=7+numberfilledout) 
+		if (getTokenAmount(fmudstruct)>=7+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -4895,10 +4955,10 @@ GiveItem_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='%x') and "
 			"(tmpitems.wearing='') and "
 			"(tmpitems.wielding='')"
-			,getToken(numberfilledout+4), 
-			getToken(numberfilledout+1), getToken(numberfilledout+1), getToken(numberfilledout+1),
-			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
-			getToken(numberfilledout+3), getToken(numberfilledout+3), getToken(numberfilledout+3),
+			,getToken(fmudstruct, numberfilledout+4), 
+			getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1), getToken(fmudstruct, numberfilledout+1),
+			getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2), getToken(fmudstruct, numberfilledout+2),
+			getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3), getToken(fmudstruct, numberfilledout+3),
 			amount, name);
 		}
 		res=SendSQL2(sqlstring, &changedrows);
@@ -5041,7 +5101,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -5056,7 +5116,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
 	
-	if (getTokenAmount()==2) 
+	if (getTokenAmount(fmudstruct)==2) 
 	{
 		/*put pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5067,9 +5127,9 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		, getToken(1), room);
+		, getToken(fmudstruct, 1), room);
 	}
-	if (getTokenAmount()==3) 
+	if (getTokenAmount(fmudstruct)==3) 
 	{
 		/*get iron pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5083,11 +5143,11 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(2), 
-		getToken(1), getToken(1), getToken(1),
+		,getToken(fmudstruct, 2), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 		room);
 	}
-	if (getTokenAmount()==4) 
+	if (getTokenAmount(fmudstruct)==4) 
 	{
 		/*get iron strong pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5104,12 +5164,12 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(3), 
-		getToken(1), getToken(1), getToken(1),
-		getToken(2), getToken(2), getToken(2),
+		,getToken(fmudstruct, 3), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+		getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 		room);
 	}
-	if (getTokenAmount()>=5) 
+	if (getTokenAmount(fmudstruct)>=5) 
 	{
 		/*get iron strong strong pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5129,10 +5189,10 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(4), 
-		getToken(1), getToken(1), getToken(1),
-		getToken(2), getToken(2), getToken(2),
-		getToken(3), getToken(3), getToken(3),
+		,getToken(fmudstruct, 4), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+		getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+		getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 		room);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -5147,14 +5207,14 @@ Read_Command(mudpersonstruct *fmudstruct)
 				row[1], row[2], row[0]);
 			WriteMessage(name, room, "%s reads the %s, %s %s.<BR>\r\n",
 				name, row[1], row[2], row[0]);
-			LookString(row[3], name, password);
+			LookString(row[3], name, password, fmudstruct->frames);
 			return 1;
 		}
 	}
 	
 	mysql_free_result(res);
 
-	if (getTokenAmount()==2) 
+	if (getTokenAmount(fmudstruct)==2) 
 	{
 		/*put pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5165,9 +5225,9 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		, getToken(1), name);
+		, getToken(fmudstruct, 1), name);
 	}
-	if (getTokenAmount()==3) 
+	if (getTokenAmount(fmudstruct)==3) 
 	{
 		/*get iron pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5181,11 +5241,11 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(2), 
-		getToken(1), getToken(1), getToken(1),
+		,getToken(fmudstruct, 2), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
 		name);
 	}
-	if (getTokenAmount()==4) 
+	if (getTokenAmount(fmudstruct)==4) 
 	{
 		/*get iron strong pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5202,12 +5262,12 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(3), 
-		getToken(1), getToken(1), getToken(1),
-		getToken(2), getToken(2), getToken(2),
+		,getToken(fmudstruct, 3), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+		getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
 		name);
 	}
-	if (getTokenAmount()>=5) 
+	if (getTokenAmount(fmudstruct)>=5) 
 	{
 		/*get iron strong strong pick*/
 		sqlstring = composeSqlStatement("select items.name, items.adject1, items.adject2, tmpitems.wearing, tmpitems.wielding, items.readdescr from items, tmp_itemtable tmpitems "
@@ -5227,10 +5287,10 @@ Read_Command(mudpersonstruct *fmudstruct)
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
 		"(items.readdescr <> '')"
-		,getToken(4), 
-		getToken(1), getToken(1), getToken(1),
-		getToken(2), getToken(2), getToken(2),
-		getToken(3), getToken(3), getToken(3),
+		,getToken(fmudstruct, 4), 
+		getToken(fmudstruct, 1), getToken(fmudstruct, 1), getToken(fmudstruct, 1),
+		getToken(fmudstruct, 2), getToken(fmudstruct, 2), getToken(fmudstruct, 2),
+		getToken(fmudstruct, 3), getToken(fmudstruct, 3), getToken(fmudstruct, 3),
 		name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -5276,7 +5336,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 				name, row[1], row[2], row[0], HeSheSmall(mysex));
 		}
 	}
-	LookString(row[5], name, password);
+	LookString(row[5], name, password, fmudstruct->frames);
 	mysql_free_result(res);
 	return 1;
 }
@@ -5284,7 +5344,7 @@ Read_Command(mudpersonstruct *fmudstruct)
 //! execute the dead
 /*! show dead screen */
 void 
-Dead(char *name, char *password, int room)
+Dead(char *name, char *password, int room, int frames)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -5294,13 +5354,13 @@ Dead(char *name, char *password, int room)
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 		} else
@@ -5352,12 +5412,12 @@ ChangeTitle_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
-	title = fcommand+(getToken(1)-getToken(0));
+	title = fcommand+(getToken(fmudstruct, 1)-getToken(fmudstruct, 0));
 	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", title);
 	temp = composeSqlStatement("update tmp_usertable set title='%x' where name='%x'",
 		title, name);

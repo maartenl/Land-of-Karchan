@@ -172,7 +172,7 @@ CheckForOfflineMud()
 }
 
 //! dump a alread-active page towards the player.
-void AlreadyActive(char *name, char *password, char *cookie, char *address)
+void AlreadyActive(char *name, char *password, char *cookie, char *address, int frames)
 {
 	char printstr[512];
 	time_t tijd;
@@ -181,7 +181,7 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address)
 	send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", cookie);
 
 
-	if (!getFrames())
+	if (!frames)
 	{
 		send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
 		send_printf(getMMudOut(), "<BODY>\n");
@@ -197,7 +197,7 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address)
 		
 		send_printf(getMMudOut(),"Do you wish to enter into the active character?<BR><UL><LI>");
 		send_printf(getMMudOut(), "<A HREF=\"%s?command=me+entered+the+game+again...&name=%s&password=%s&frames=%i\">Yes</A>",
-			 getParam(MM_MUDCGI), name, password, getFrames()+1);
+			 getParam(MM_MUDCGI), name, password, frames+1);
 		send_printf(getMMudOut(),"<LI><A HREF=\"/karchan/index.html\">No</A></UL>");
 		send_printf(getMMudOut(),"<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		send_printf(getMMudOut(),"<DIV ALIGN=left><P>");
@@ -206,7 +206,7 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address)
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			send_printf(getMMudOut(), "<FRAMESET ROWS=\"*,50\">\r\n");
@@ -310,7 +310,7 @@ void ToManyNames(char *name, char *address)
 
 //! show the user the registration page for creating a new player
 /*! usually called when the name entered on the logon form does not exist yet. */
-void NewPlayer(char *fname, char *address, char *fpassword)
+void NewPlayer(char *fname, char *address, char *fpassword, int frames)
 {
 	char printstr[512];
 	time_t tijd;
@@ -320,7 +320,7 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	ReadFile(dood);
 	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",fname);
 	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",fpassword);
-	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",getFrames()+1);
+	send_printf(getMMudOut(),"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"%i\">\n",frames+1);
 	send_printf(getMMudOut(),"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
 	send_printf(getMMudOut(),"<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n");
 	send_printf(getMMudOut(),"</FORM></BODY></HTML>\n");
@@ -331,7 +331,7 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 }
 
 //! start the game appropriately
-void MakeStart(char *name, char *password, char *cookie, char *address, int socketfd)
+void MakeStart(char *name, char *password, char *cookie, char *address, int frames, int socketfd)
 {
 	char printstr[512];
 	time_t tijd;
@@ -368,7 +368,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int sock
 		else {WriteSentenceIntoOwnLogFile(printstr, "You have new MudMail!<P>\r\n");}
 	mysql_free_result(res);
 
-	if (!getFrames())
+	if (!frames)
 	{
 			mudpersonstruct *mystruct = find_in_list(socketfd);
 			send_printf(getMMudOut(), "Content-type: text/html\r\n");
@@ -377,6 +377,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int sock
 			strcpy(mystruct->password, password);
 			strcpy(mystruct->cookie, cookie);
 			strcpy(mystruct->address, address);
+			mystruct->frames = frames;
 			if (mystruct->command != NULL) 
 			{
 				free(mystruct->command);
@@ -386,7 +387,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int sock
 	}
 	else
 	{
-		if (getFrames()==1)
+		if (frames==1)
 		{
 			send_printf(getMMudOut(), "Content-type: text/html\r\n");
 			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
@@ -432,7 +433,7 @@ using find_in_list for example.
 int
 gameLogon(int socketfd)
 {
-	char frames[10];
+	int frames;
 	char *name;
 	char *password;
 	char *cookie;
@@ -449,6 +450,7 @@ gameLogon(int socketfd)
 	cookie = mymudstruct->cookie;
 	name = mymudstruct->name;
 	password = mymudstruct->password;
+	frames = mymudstruct->frames;
 	/*	send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 #ifdef DEBUG
 	printf("gameLogon started (%s,%s,%s,%s)!!!\n", name, password, cookie, address);
@@ -537,7 +539,7 @@ gameLogon(int socketfd)
 					return 0;
 				}
 			}
-			AlreadyActive(fname, fsecretpassword, fsecretpassword, address);
+			AlreadyActive(fname, fsecretpassword, fsecretpassword, address, frames);
 			return 0;
 		}
 		else
@@ -570,13 +572,13 @@ gameLogon(int socketfd)
 		else
 		{
 			mysql_free_result(res);
-			NewPlayer(name,address, password);
+			NewPlayer(name,address, password, frames);
 			return 1;
 		}
 	}
 	else
 	{
-		NewPlayer(name,address, password);
+		NewPlayer(name,address, password, frames);
 		return 1;
 	}
 	
@@ -594,6 +596,6 @@ gameLogon(int socketfd)
 	strcpy(name, row[0]);
 	mysql_free_result(res);
 	ActivateUser(name);
-	MakeStart(name, secretpassword, secretpassword, address, socketfd);
+	MakeStart(name, secretpassword, secretpassword, address, frames, socketfd);
 	return 1;
 }

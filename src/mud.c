@@ -119,6 +119,20 @@ void displayError(char *message, int i)
 	exit(1);
 }
 
+int frames;
+
+//! returns the interface id
+int getFrames()
+{
+	return frames;
+}
+
+//! sets the interface id
+void setFrames(int aFrames)
+{
+	frames = aFrames;
+}
+
 //! create a valid xml document
 /*! created a valid xml document with all the necessary fields to generate a new character on the mud. */
 char *

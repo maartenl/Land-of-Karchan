@@ -35,15 +35,6 @@ maarten_l@yahoo.com
 /*! \file mudmain.c
 	\brief  server file containing the gameMain function that is used to parse and execute issued commands */
 
-char *name;		/* contains the name derived from the forms */
-char *password;	/* contains the password derived from the forms */
-int room;		/* contains the room where the character is located */
-int godstatus;		/* contains the godstatus of the character */
-char sexstatus[8];
-int sleepstatus;	/* contains the sleepstatus of the character */
-char guildstatus[10];		/* contains the guild a person belongsto */
-int punishment;	/* contains wether or not you are normal, are a frog, or are a rat. */
-
 // type-definition: 'gameFunction' now can be used as type
 // parameters: mudpersonstruct *
 typedef int (*gameFunction)(mudpersonstruct *);
@@ -116,8 +107,8 @@ char				*gameCommands[] =
 	"wield", NULL}; /* string array */
 int				theNumberOfFunctions = 0;
 	
-MYSQL_RES *res;
-MYSQL_ROW row;
+//MYSQL_RES *res;
+//MYSQL_ROW row;
 
 //! remove gamefunctionarray from memory, to be called at the end of mmserver
 int
@@ -202,7 +193,7 @@ GoDown_Command(mudpersonstruct *fmudstruct)
 		} /* if NOT exhausted */
 	}
 	free(temproom);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 } 				/* endproc */
 
@@ -282,7 +273,7 @@ GoUp_Command(mudpersonstruct *fmudstruct)
 		} /* if NOT exhausted */
 	}
 	free(temproom);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 } 				/* endproc */
 
@@ -355,36 +346,36 @@ Go_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	command = fmudstruct->command;
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
-	if (!strcasecmp(getToken(1), "west")) 
+	if (!strcasecmp(getToken(fmudstruct, 1), "west")) 
 	{
 		GoWest_Command(fmudstruct);	
 		return 1;
 	}
-	if (!strcasecmp(getToken(1), "east")) 
+	if (!strcasecmp(getToken(fmudstruct, 1), "east")) 
 	{
 		GoEast_Command(fmudstruct);
 		return 1;
 	}
-	if (!strcasecmp(getToken(1), "north"))
+	if (!strcasecmp(getToken(fmudstruct, 1), "north"))
 	{
 		GoNorth_Command(fmudstruct);
 		return 1;
 	}
-	if (!strcasecmp(getToken(1), "south"))
+	if (!strcasecmp(getToken(fmudstruct, 1), "south"))
 	{
 		GoSouth_Command(fmudstruct);
 		return 1;
 	}
-	if (!strcasecmp(getToken(1), "down"))
+	if (!strcasecmp(getToken(fmudstruct, 1), "down"))
 	{
 		GoDown_Command(fmudstruct);
 		return 1;
 	}
-	if (!strcasecmp(getToken(1), "up"))
+	if (!strcasecmp(getToken(fmudstruct, 1), "up"))
 	{
 		GoUp_Command(fmudstruct);
 		return 1;
@@ -410,7 +401,7 @@ Clear_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	ClearLogFile(logname);
 	WriteSentenceIntoOwnLogFile(logname, "You cleared your mind.<BR>\r\n");
 	return 1;
@@ -465,11 +456,11 @@ Help_Command(mudpersonstruct *fmudstruct)
 			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
-		PrintForm(name, password);
-		if (getFrames()!=2) {ReadFile(logname);}
+		PrintForm(name, password, fmudstruct->frames);
+		if (fmudstruct->frames!=2) {ReadFile(logname);}
 		return 1;
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp(getToken(0),"help"))) 
+	if ((getTokenAmount(fmudstruct) >= 2) && (!strcasecmp(getToken(fmudstruct, 0),"help"))) 
 	{
 		MYSQL_RES *res;
 		MYSQL_ROW row;
@@ -479,14 +470,14 @@ Help_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "<HTML>\r\n");
 		send_printf(getMMudOut(), "<HEAD>\r\n");
 		send_printf(getMMudOut(), "<TITLE>\r\n");
-		send_printf(getMMudOut(), "Land of Karchan - Command %s\r\n", getToken(1));
+		send_printf(getMMudOut(), "Land of Karchan - Command %s\r\n", getToken(fmudstruct, 1));
 		send_printf(getMMudOut(), "</TITLE>\r\n");
 		send_printf(getMMudOut(), "</HEAD>\r\n");
 		
 		send_printf(getMMudOut(), "<BODY>\r\n");
 		send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
-		temp = composeSqlStatement("select contents from help where command='%x'", getToken(1));
+		temp = composeSqlStatement("select contents from help where command='%x'", getToken(fmudstruct, 1));
 		res=SendSQL2(temp, NULL);
 		free(temp);temp=NULL;
 
@@ -503,8 +494,8 @@ Help_Command(mudpersonstruct *fmudstruct)
 			send_printf(getMMudOut(), "%s",row[0]);
 		}
 		mysql_free_result(res);
-		PrintForm(name, password);
-		if (getFrames()!=2) {ReadFile(logname);}
+		PrintForm(name, password, fmudstruct->frames);
+		if (fmudstruct->frames!=2) {ReadFile(logname);}
 		return 1;
 	}
 }
@@ -525,11 +516,11 @@ ReadMail_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (getTokenAmount()!=2)
+	if (getTokenAmount(fmudstruct)!=2)
 	{
 		return 0;
 	}
-	ReadMail(name, password, room, atoi(getToken(1)), 0);
+	ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 0);
 	return 1;
 }
 
@@ -547,7 +538,7 @@ DeleteMail_Command(mudpersonstruct *fmudstruct)
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
-	ReadMail(name, password, room, atoi(getToken(1)), 2);
+	ReadMail(name, password, room, fmudstruct->frames, atoi(getToken(fmudstruct, 1)), 2);
 	return 1;
 }
 
@@ -555,6 +546,8 @@ DeleteMail_Command(mudpersonstruct *fmudstruct)
 int
 SendMail_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	char *mailto, *mailbody, *mailheader, *sqlstring;
 	char logname[100];
 	int thelength;
@@ -569,21 +562,21 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
       		
-	if (getTokenAmount() < 5)
+	if (getTokenAmount(fmudstruct) < 5)
 	{
 		return 0;
 	}
 
-	mailto = getToken(1);
-	thelength = atoi(getToken(2));
+	mailto = getToken(fmudstruct, 1);
+	thelength = atoi(getToken(fmudstruct, 2));
 	if (thelength<1)
 	{
 		return 0;
 	}
 	mailheader = (char *) malloc(thelength+2);
-	strncpy(mailheader, fcommand + (getToken(3)-getToken(0)), thelength);
+	strncpy(mailheader, fcommand + (getToken(fmudstruct, 3)-getToken(fmudstruct, 0)), thelength);
 	mailheader[thelength+1]=0;
-	mailbody = fcommand + (getToken(3)-getToken(0)) + thelength + 1;
+	mailbody = fcommand + (getToken(fmudstruct, 3)-getToken(fmudstruct, 0)) + thelength + 1;
 	//cgiFormString("mailto", mailto, 99);
 	//cgiFormString("mailheader", mailheader, 99);
 	//cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
@@ -613,7 +606,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 	}
 	mysql_free_result(res);
 	free(mailheader);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -623,6 +616,7 @@ SendMail_Command(mudpersonstruct *fmudstruct)
 int
 Whimpy_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
 	char number[10];
 	char *sqlstring;
 	char logname[100];
@@ -636,59 +630,59 @@ Whimpy_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if (getTokenAmount() == 1) {
+	if (getTokenAmount(fmudstruct) == 1) {
 		strcpy(number,"0");
 	} else {
-		if (!strcasecmp("help", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("help", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			WriteSentenceIntoOwnLogFile(logname, 
 			"Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
 			"<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
 			"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
 			"<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
-		if (!strcasecmp("feeling well", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("feeling well", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"10");
 			//x.whimpy = 10;
 		}
-		if (!strcasecmp("feeling fine", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("feeling fine", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"20");
 			//x.whimpy = 20;
 		}
-		if (!strcasecmp("feeling quite nice", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("feeling quite nice", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"30");
 			//x.whimpy = 30;
 		}
-		if (!strcasecmp("slightly hurt", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("slightly hurt", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"40");
 			//x.whimpy = 40;
 		}
-		if (!strcasecmp("hurt", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("hurt", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"50");
 			//x.whimpy = 50;
 		}
-		if (!strcasecmp("quite hurt", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("quite hurt", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"60");
 			//x.whimpy = 60;
 		}
-		if (!strcasecmp("extremely hurt", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("extremely hurt", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"70");
 			//x.whimpy = 70;
 		}
-		if (!strcasecmp("terribly hurt", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("terribly hurt", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"80");
 			//x.whimpy = 80;
 		}
-		if (!strcasecmp("feeling bad", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("feeling bad", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"90");
 			//x.whimpy = 90;
 		}
-		if (!strcasecmp("feeling very bad", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("feeling very bad", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"100");
 			//x.whimpy = 100;
 		}
-		if (!strcasecmp("at death's door", fcommand + (getToken(1) - getToken(0)))) {
+		if (!strcasecmp("at death's door", fcommand + (getToken(fmudstruct, 1) - getToken(fmudstruct, 0)))) {
 			strcpy(number,"110");
 			//x.whimpy = 110;
 		}
@@ -703,7 +697,7 @@ Whimpy_Command(mudpersonstruct *fmudstruct)
 	}
 	
 	WriteSentenceIntoOwnLogFile(logname, "<I>Whimpy set.</I><BR>\r\n");
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -711,6 +705,8 @@ Whimpy_Command(mudpersonstruct *fmudstruct)
 int
 PKill_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	char *sqlstring;
 	char logname[100];
 	char *name;
@@ -722,7 +718,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
@@ -740,7 +736,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 	else
 	{
 		mysql_free_result(res);
-		if (!strcasecmp("on", getToken(1))) 
+		if (!strcasecmp("on", getToken(fmudstruct, 1))) 
 		{
 			sqlstring = composeSqlStatement("update tmp_usertable set fightable=1 where "
 				"name='%x'", name);
@@ -759,7 +755,7 @@ PKill_Command(mudpersonstruct *fmudstruct)
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
 		} /* pkill is turned of */
 	} /* if indeed the person is not already fighting */
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -782,7 +778,7 @@ Me_Command(mudpersonstruct *fmudstruct)
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteMessage(name, room, "%s %s<BR>\r\n", name, command + 3);
 	WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -790,6 +786,8 @@ Me_Command(mudpersonstruct *fmudstruct)
 int
 Stop_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	char logname[100];
 	char *sqlstring;
 	char *name;
@@ -813,7 +811,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 		{
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "You are not fighting anyone.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
+			WriteRoom(fmudstruct);
 			return 1;
 		}
 		mysql_free_result(res);
@@ -825,7 +823,7 @@ Stop_Command(mudpersonstruct *fmudstruct)
 		mysql_free_result(res);
 		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
 		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -835,6 +833,8 @@ Stop_Command(mudpersonstruct *fmudstruct)
 int 
 Fight_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	int myFightable;
 	char *myFightingName;
 	char *sqlstring;
@@ -859,11 +859,11 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	mysql_free_result(res);
 
 	/* this section takes care of the looking up of the description */
-	myFightingName = ExistUserByDescription(1, getTokenAmount() - 1, room, &myDescription);
+	myFightingName = ExistUserByDescription(fmudstruct, 1, getTokenAmount(fmudstruct) - 1, room, &myDescription);
 	if (myFightingName == NULL)
 	{
-		myFightingName = getToken(1);
-		myDescription = getToken(1);
+		myFightingName = getToken(fmudstruct, 1);
+		myDescription = getToken(fmudstruct, 1);
 	}
 	
 	sqlstring = composeSqlStatement("select name,god from tmp_usertable where "
@@ -879,10 +879,10 @@ Fight_Command(mudpersonstruct *fmudstruct)
 	if ((myFightable!=1) && (atoi(row[1])!=3))
 	{
 		mysql_free_result(res);
-		if (myFightingName != getToken(1)) {free(myFightingName);}
-		if (myDescription != getToken(1)) {free(myDescription);}
+		if (myFightingName != getToken(fmudstruct, 1)) {free(myFightingName);}
+		if (myDescription != getToken(fmudstruct, 1)) {free(myDescription);}
 		WriteSentenceIntoOwnLogFile(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	if (row!=NULL)
@@ -908,9 +908,9 @@ Fight_Command(mudpersonstruct *fmudstruct)
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 	}
 	mysql_free_result(res);
-	if (myFightingName != getToken(1)) {free(myFightingName);}
-	if (myDescription != getToken(1)) {free(myDescription);}
-	WriteRoom(name, password, room, 0);
+	if (myFightingName != getToken(fmudstruct, 1)) {free(myFightingName);}
+	if (myDescription != getToken(fmudstruct, 1)) {free(myDescription);}
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -932,17 +932,17 @@ Bow_Command(mudpersonstruct *fmudstruct)
 	if (!strcasecmp(fcommand, "bow")) {
 		WriteSentenceIntoOwnLogFile(logname, "You bow gracefully.<BR>\r\n");
 		WriteMessage(name, room, "%s bows gracefully.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
-	if (getTokenAmount() == 3 && (!strcasecmp(getToken(0), "bow")) && (!strcasecmp(getToken(1), "to"))) {
-		if (WriteMessageTo(getToken(2), name, room, "%s bows gracefully to %s.<BR>\r\n", name, getToken(2)) == 0) {
+	if (getTokenAmount(fmudstruct) == 3 && (!strcasecmp(getToken(fmudstruct, 0), "bow")) && (!strcasecmp(getToken(fmudstruct, 1), "to"))) {
+		if (WriteMessageTo(getToken(fmudstruct, 2), name, room, "%s bows gracefully to %s.<BR>\r\n", name, getToken(fmudstruct, 2)) == 0) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, "%s bows gracefully to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You bow gracefully to %s.<BR>\r\n", getToken(2));
+			WriteSayTo(getToken(fmudstruct, 2), name, room, "%s bows gracefully to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You bow gracefully to %s.<BR>\r\n", getToken(fmudstruct, 2));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -965,7 +965,7 @@ Eyebrow_Command(mudpersonstruct *fmudstruct)
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "You raise an eyebrow.<BR>\r\n");
 	WriteMessage(name, room, "%s raises an eyebrow.<BR>\r\n", name);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -987,17 +987,17 @@ Curtsey_Command(mudpersonstruct *fmudstruct)
 	if (!strcasecmp(fcommand, "curtsey")) {
 		WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey.<BR>\r\n");
 		WriteMessage(name, room, "%s drops a curtsey.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
-	if (getTokenAmount() == 3 && (!strcasecmp(getToken(0), "curtsey")) && (!strcasecmp(getToken(1), "to"))) {
-		if (WriteMessageTo(getToken(2), name, room, "%s drops a curtsey to %s.<BR>\r\n", name, getToken(2)) == 0) {
+	if (getTokenAmount(fmudstruct) == 3 && (!strcasecmp(getToken(fmudstruct, 0), "curtsey")) && (!strcasecmp(getToken(fmudstruct, 1), "to"))) {
+		if (WriteMessageTo(getToken(fmudstruct, 2), name, room, "%s drops a curtsey to %s.<BR>\r\n", name, getToken(fmudstruct, 2)) == 0) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, "%s drops a curtsey to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey to %s.</BR>\r\n", getToken(2));
+			WriteSayTo(getToken(fmudstruct, 2), name, room, "%s drops a curtsey to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey to %s.</BR>\r\n", getToken(fmudstruct, 2));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -1021,17 +1021,17 @@ Flinch_Command(mudpersonstruct *fmudstruct)
 	if (!strcasecmp(fcommand, "flinch")) {
 		WriteSentenceIntoOwnLogFile(logname, "You flinch.<BR>\r\n");
 		WriteMessage(name, room, "%s flinches.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
-	if (getTokenAmount() == 3 && (!strcasecmp(getToken(0), "flinch")) && (!strcasecmp(getToken(1), "to"))) {
-		if (WriteMessageTo(getToken(2), name, room, "%s flinches to %s.<BR>\r\n", name, getToken(2)) == 0) {
+	if (getTokenAmount(fmudstruct) == 3 && (!strcasecmp(getToken(fmudstruct, 0), "flinch")) && (!strcasecmp(getToken(fmudstruct, 1), "to"))) {
+		if (WriteMessageTo(getToken(fmudstruct, 2), name, room, "%s flinches to %s.<BR>\r\n", name, getToken(fmudstruct, 2)) == 0) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, "%s flinches to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You flinch to %s.</BR>\r\n", getToken(2));
+			WriteSayTo(getToken(fmudstruct, 2), name, room, "%s flinches to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You flinch to %s.</BR>\r\n", getToken(fmudstruct, 2));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -1052,15 +1052,15 @@ Tell_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if ((getTokenAmount() > 3) && (!strcasecmp("to", getToken(1)))) {
-		if (!WriteLinkTo(getToken(2), name, "<B>%s tells you </B>: %s<BR>\r\n",
-					    name, fcommand + (getToken(3) - getToken(0)))) {
+	if ((getTokenAmount(fmudstruct) > 3) && (!strcasecmp("to", getToken(fmudstruct, 1)))) {
+		if (!WriteLinkTo(getToken(fmudstruct, 2), name, "<B>%s tells you </B>: %s<BR>\r\n",
+					    name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)))) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
 			WriteSentenceIntoOwnLogFile(logname, "<B>You tell %s</B> : %s<BR>\r\n",
-			      getToken(2), fcommand + (getToken(3) - getToken(0)));
+			      getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -1080,32 +1080,32 @@ Say_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (getTokenAmount() == 1)
+	if (getTokenAmount(fmudstruct) == 1)
 	{
 		return 0;
 	}
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) 
+	if ((!strcasecmp("to", getToken(fmudstruct, 1))) && (getTokenAmount(fmudstruct) > 3)) 
 	{
-		if (!WriteMessageTo(getToken(2), name, room, "%s says [to %s] : %s<BR>\r\n",
-				    name, getToken(2), fcommand + (getToken(3) - getToken(0)))) 
+		if (!WriteMessageTo(getToken(fmudstruct, 2), name, room, "%s says [to %s] : %s<BR>\r\n",
+				    name, getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)))) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		}
 		else 
 		{
 			/* person not found */ 
-			WriteSayTo(getToken(2), name, room, 
-				   "<B>%s says [to you]</B> : %s<BR>\r\n", name, fcommand + (getToken(3) - getToken(0)));
-			WriteSentenceIntoOwnLogFile(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", getToken(2), fcommand + (getToken(3) - getToken(0)));
-			ReadBill(getToken(2), fcommand + (getToken(3) - getToken(0)), name, room);
+			WriteSayTo(getToken(fmudstruct, 2), name, room, 
+				   "<B>%s says [to you]</B> : %s<BR>\r\n", name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
+			WriteSentenceIntoOwnLogFile(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
+			ReadBill(getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)), name, room);
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	WriteSentenceIntoOwnLogFile(logname, "<B>You say </B>: %s<BR>\r\n", fcommand + 4);
 	WriteMessage(name, room, "%s says : %s<BR>\r\n", name, fcommand + 4);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -1124,34 +1124,34 @@ Shout_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if (getTokenAmount() == 1)
+	if (getTokenAmount(fmudstruct) == 1)
 	{
 		return 0;
 	}
-	if ((getTokenAmount() > 3) && (!strcasecmp("to", getToken(1))))
+	if ((getTokenAmount(fmudstruct) > 3) && (!strcasecmp("to", getToken(fmudstruct, 1))))
 	{
 		char           *temp1, *temp2;
 		temp1 = (char *) malloc(strlen(fcommand) + 80);
 		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s shouts [to you] </B>: %s<BR>\r\n",
-			name, fcommand + (getToken(3) - getToken(0)));
+			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
-			name, getToken(2), fcommand + (getToken(3) - getToken(0)));
-		if (!WriteMessageTo(getToken(2), name, room, temp2)) {
+			name, getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
+		if (!WriteMessageTo(getToken(fmudstruct, 2), name, room, temp2)) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, temp1);
+			WriteSayTo(getToken(fmudstruct, 2), name, room, temp1);
 			WriteSentenceIntoOwnLogFile(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
-						     getToken(2), fcommand + (getToken(3) - getToken(0)));
+						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
 		free(temp2);
 		free(temp1);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	WriteSentenceIntoOwnLogFile(logname, "<B>You shout</B> : %s<BR>\r\n", fcommand + 6);
 	WriteMessage(name, room, "%s shouts : %s<BR>\r\n", name, fcommand + 6);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -1172,34 +1172,34 @@ Ask_Command(mudpersonstruct *fmudstruct)
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if (getTokenAmount() == 1)
+	if (getTokenAmount(fmudstruct) == 1)
 	{
 		return 0;
 	}
-	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) 
+	if ((!strcasecmp("to", getToken(fmudstruct, 1))) && (getTokenAmount(fmudstruct) > 3)) 
 	{
 		char           *temp1, *temp2;
 		temp1 = (char *) malloc(strlen(fcommand) + 80);
 		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s asks you </B>: %s<BR>\r\n",
-			name, fcommand + (getToken(3) - getToken(0)));
+			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s asks %s : %s<BR>\r\n",
-			name, getToken(2), fcommand + (getToken(3) - getToken(0)));
-		if (!WriteMessageTo(getToken(2), name, room, temp2)) {
+			name, getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
+		if (!WriteMessageTo(getToken(fmudstruct, 2), name, room, temp2)) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, temp1);
+			WriteSayTo(getToken(fmudstruct, 2), name, room, temp1);
 			WriteSentenceIntoOwnLogFile(logname, "<B>You ask %s</B> : %s<BR>\r\n",
-						     getToken(2), fcommand + (getToken(3) - getToken(0)));
+						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
 		free(temp2);
 		free(temp1);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	WriteSentenceIntoOwnLogFile(logname, "<B>You ask</B> : %s<BR>\r\n", fcommand + 4);
 	WriteMessage(name, room, "%s asks : %s<BR>\r\n", name, fcommand + 4);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -1219,34 +1219,34 @@ Whisper_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (getTokenAmount() == 1)
+	if (getTokenAmount(fmudstruct) == 1)
 	{
 		return 0;
 	}
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
-	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) {
+	if ((!strcasecmp("to", getToken(fmudstruct, 1))) && (getTokenAmount(fmudstruct) > 3)) {
 		char           *temp1, *temp2;
 		temp1 = (char *) malloc(strlen(fcommand) + 80);
 		temp2 = (char *) malloc(strlen(fcommand) + 80);
 		sprintf(temp1, "<B>%s whispers [to you]</B> : %s<BR>\r\n",
-			name, fcommand + (getToken(3) - getToken(0)));
+			name, fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
-			name, getToken(2));
-		if (!WriteMessageTo(getToken(2), name, room, temp2)) {
+			name, getToken(fmudstruct, 2));
+		if (!WriteMessageTo(getToken(fmudstruct, 2), name, room, temp2)) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, temp1);
+			WriteSayTo(getToken(fmudstruct, 2), name, room, temp1);
 			WriteSentenceIntoOwnLogFile(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
-						     getToken(2), fcommand + (getToken(3) - getToken(0)));
+						     getToken(fmudstruct, 2), fcommand + (getToken(fmudstruct, 3) - getToken(fmudstruct, 0)));
 		}
 		free(temp2);
 		free(temp1);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	WriteSentenceIntoOwnLogFile(logname, "<B>You whisper </B>: %s<BR>\r\n", fcommand + 8);
 	WriteMessage(name, room, "%s whispers : %s<BR>\r\n", name, fcommand + 8);
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -1266,7 +1266,7 @@ Awaken_Command(mudpersonstruct *fmudstruct)
 	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "You aren't asleep, silly.<BR>\r\n");
-	WriteRoom(name, password, room, 0);
+	WriteRoom(fmudstruct);
 	return 1;
 }
 
@@ -1300,13 +1300,13 @@ Look_Command(mudpersonstruct *fmudstruct)
 	    (!strcasecmp(fcommand, "look")) ||
 	    (!strcasecmp(fcommand, "l"))) 
 	{
-		WriteRoom(name, password, room, 0);
+		WriteRoom(fmudstruct);
 		return 1;
 	}
 	
-	if (getTokenAmount() > 2) 
+	if (getTokenAmount(fmudstruct) > 2) 
 	{
-		LookItem_Command(name, password, room);
+		LookItem_Command(fmudstruct);
 		return 1;
 	}
 	return 0;
@@ -1327,26 +1327,26 @@ Get_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if ( ((getTokenAmount()==3) || (getTokenAmount()==4)) && (!strcasecmp("get", getToken(0))) )
+	if ( ((getTokenAmount(fmudstruct)==3) || (getTokenAmount(fmudstruct)==4)) && (!strcasecmp("get", getToken(fmudstruct, 0))) )
 	{
 	/* get copper coin(s)
 	   get 10 copper coin(s)
 	*/
-		if ((!strcasecmp("coin",getToken(getTokenAmount()-1))) ||
-			(!strcasecmp("coins", getToken(getTokenAmount()-1))) )
+		if ((!strcasecmp("coin",getToken(fmudstruct, getTokenAmount(fmudstruct)-1))) ||
+			(!strcasecmp("coins", getToken(fmudstruct, getTokenAmount(fmudstruct)-1))) )
 		{
-			if ((!strcasecmp("copper",getToken(getTokenAmount()-2))) ||
-				(!strcasecmp("silver",getToken(getTokenAmount()-2))) ||
-				(!strcasecmp("gold", getToken(getTokenAmount()-2))) )
+			if ((!strcasecmp("copper",getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) ||
+				(!strcasecmp("silver",getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) ||
+				(!strcasecmp("gold", getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) )
 			{
-				GetMoney_Command(name, password, room);
+				GetMoney_Command(fmudstruct);
 				return 1;
 			}
 		}
 	}
-	if (getTokenAmount() >= 2) 
+	if (getTokenAmount(fmudstruct) >= 2) 
 	{
-		GetItem_Command(name, password, room);
+		GetItem_Command(fmudstruct);
 		return 1;
 	}
 }
@@ -1364,26 +1364,26 @@ Drop_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if ( ((getTokenAmount()==3) || (getTokenAmount()==4)) && (!strcasecmp("drop", getToken(0))) )
+	if ( ((getTokenAmount(fmudstruct)==3) || (getTokenAmount(fmudstruct)==4)) && (!strcasecmp("drop", getToken(fmudstruct, 0))) )
 	{
 	/* drop copper coin(s)
 	   drop 10 copper coin(s)
 	*/
-		if ((!strcasecmp("coin",getToken(getTokenAmount()-1))) ||
-			(!strcasecmp("coins", getToken(getTokenAmount()-1))) )
+		if ((!strcasecmp("coin",getToken(fmudstruct, getTokenAmount(fmudstruct)-1))) ||
+			(!strcasecmp("coins", getToken(fmudstruct, getTokenAmount(fmudstruct)-1))) )
 		{
-			if ((!strcasecmp("copper",getToken(getTokenAmount()-2))) ||
-				(!strcasecmp("silver",getToken(getTokenAmount()-2))) ||
-				(!strcasecmp("gold", getToken(getTokenAmount()-2))) )
+			if ((!strcasecmp("copper",getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) ||
+				(!strcasecmp("silver",getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) ||
+				(!strcasecmp("gold", getToken(fmudstruct, getTokenAmount(fmudstruct)-2))) )
 			{
-				DropMoney_Command(name, password, room);
+				DropMoney_Command(fmudstruct);
 				return 1;
 			}
 		}
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("drop", getToken(0)))) 
+	if ((getTokenAmount(fmudstruct) >= 2) && (!strcasecmp("drop", getToken(fmudstruct, 0)))) 
 	{
-		DropItem_Command(name, password, room);
+		DropItem_Command(fmudstruct);
 		return 1;
 	}
 }
@@ -1401,53 +1401,54 @@ Buy_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (getTokenAmount() < 2)
+	if (getTokenAmount(fmudstruct) < 2)
 	{
 		return 0;
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==9)) 
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==9)) 
 	{
-		return BuyItem_Command(name, password, room, "Bill");
+		return BuyItem_Command(fmudstruct, "Bill");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==16)) 
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==16)) 
 	{
-		return BuyItem_Command(name, password, room, "Karcas");
+		return BuyItem_Command(fmudstruct, "Karcas");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==64)) 
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==64)) 
 	{
-		return BuyItem_Command(name, password, room, "Karina");
+		return BuyItem_Command(fmudstruct, "Karina");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==73))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==73))
 	{
-		return BuyItem_Command(name, password, room, "Hagen");
+		return BuyItem_Command(fmudstruct, "Hagen");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==85)) 
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==85)) 
 	{
-		return BuyItem_Command(name, password, room, "Karsten");
+		return BuyItem_Command(fmudstruct, "Karsten");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==87))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==87))
 	{
-		return BuyItem_Command(name, password, room, "Kurst");
+		return BuyItem_Command(fmudstruct, "Kurst");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==161))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==161))
 	{
-		return BuyItem_Command(name, password, room, "Karstare");
+		return BuyItem_Command(fmudstruct, "Karstare");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==228))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==228))
 	{
-		return BuyItem_Command(name, password, room, "Vimrilad");
+		return BuyItem_Command(fmudstruct, "Vimrilad");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==2550))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==2550))
 	{
-		return BuyItem_Command(name, password, room, "Telios");
+		return BuyItem_Command(fmudstruct, "Telios");
 	}
-	if ((!strcasecmp("buy", getToken(0))) && (room==2551))
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==2551))
 	{
-		return BuyItem_Command(name, password, room, "Nolli");
+		return BuyItem_Command(fmudstruct, "Nolli");
 	}
-        if ((!strcasecmp("buy", getToken(0))) && (room==2551))
-        {
-	        return BuyItem_Command(name, password, room, "Nolli");                  }
+	if ((!strcasecmp("buy", getToken(fmudstruct, 0))) && (room==2551))
+	{
+		return BuyItem_Command(fmudstruct, "Nolli");
+	}
 return 0;
 }
 
@@ -1464,9 +1465,9 @@ Sell_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if ((getTokenAmount() >= 2) && (!strcasecmp("sell", getToken(0))) && (room==16)) 
+	if ((getTokenAmount(fmudstruct) >= 2) && (!strcasecmp("sell", getToken(fmudstruct, 0))) && (room==16)) 
 	{
-		SellItem_Command(name, password, room, "Karcas");
+		SellItem_Command(fmudstruct, "Karcas");
 		return 1;
 	}
 	return 0;
@@ -1490,12 +1491,33 @@ Admin_Command(mudpersonstruct *fmudstruct)
 	char *password;
 	char *fcommand;
 	int room;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if (godstatus != 1)
+	res = executeQuery(NULL, "select godstatus from tmp_usertable where name='%x'", name);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row != NULL)
+		{
+			if (strcmp("1", row[0]))
+			{
+				mysql_free_result(res);
+				return 0;
+			}
+			mysql_free_result(res);
+		}
+		else
+		{
+			mysql_free_result(res);
+			return 0;
+		}
+	}
+	else
 	{
 		return 0;
 	}
@@ -1509,13 +1531,13 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "</HEAD>\n");
 
 		send_printf(getMMudOut(), "<BODY>\n");	
-		if (!getFrames())
+		if (!fmudstruct->frames)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
-			if (getFrames()==1)
+			if (fmudstruct->frames==1)
 			{
 				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
@@ -1527,7 +1549,7 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "<H1>Admin Shutdown - Shutting down Game</H1>\n");
 		send_printf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
 		
-		PrintForm(name, password);
+		PrintForm(name, password, fmudstruct->frames);
 		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		setShutdown(1);
@@ -1543,13 +1565,13 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "</HEAD>\n");
 
 		send_printf(getMMudOut(), "<BODY>\n");	
-		if (!getFrames())
+		if (!fmudstruct->frames)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
-			if (getFrames()==1)
+			if (fmudstruct->frames==1)
 			{
 				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
@@ -1563,7 +1585,7 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "Rereading config files. Please use 'admin config' to view any new settings. "
 		"Bear in mind that a change in database info or socket info requires a restart of the server. Please stand by...<P>");
 		readConfigFiles("config.xml");
-		PrintForm(name, password);
+		PrintForm(name, password, fmudstruct->frames);
 		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
@@ -1578,13 +1600,13 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "</HEAD>\n");
 
 		send_printf(getMMudOut(), "<BODY>\n");	
-		if (!getFrames())
+		if (!fmudstruct->frames)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
-			if (getFrames()==1)
+			if (fmudstruct->frames==1)
 			{
 				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
@@ -1597,7 +1619,7 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		
 		send_printf(getMMudOut(), "Reading config files. Please stand by...<P>");
 		writeConfig();
-		PrintForm(name, password);
+		PrintForm(name, password, fmudstruct->frames);
 		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
@@ -1615,13 +1637,13 @@ Admin_Command(mudpersonstruct *fmudstruct)
 		send_printf(getMMudOut(), "</HEAD>\n");
 
 		send_printf(getMMudOut(), "<BODY>\n");	
-		if (!getFrames())
+		if (!fmudstruct->frames)
 		{
 			send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
 		}
 		else
 		{
-			if (getFrames()==1)
+			if (fmudstruct->frames==1)
 			{
 				send_printf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			} else
@@ -1640,7 +1662,7 @@ Admin_Command(mudpersonstruct *fmudstruct)
 			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections,
 			mymudinfo.maxnumber_of_current_connections);
 	
-		PrintForm(name, password);
+		PrintForm(name, password, fmudstruct->frames);
 		send_printf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
@@ -1661,27 +1683,27 @@ Give_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	if ( ((getTokenAmount()==5) || (getTokenAmount()==6)) && (!strcasecmp("give", getToken(0))) )
+	if ( ((getTokenAmount(fmudstruct)==5) || (getTokenAmount(fmudstruct)==6)) && (!strcasecmp("give", getToken(fmudstruct, 0))) )
 	{
 	/* give copper coin(s)
 	   give 10 copper coin(s)
 	*/
-		if ((!strcasecmp("coin",getToken(getTokenAmount()-3))) ||
-			(!strcasecmp("coins", getToken(getTokenAmount()-3))) )
+		if ((!strcasecmp("coin",getToken(fmudstruct, getTokenAmount(fmudstruct)-3))) ||
+			(!strcasecmp("coins", getToken(fmudstruct, getTokenAmount(fmudstruct)-3))) )
 		{
-			if ((!strcasecmp("copper",getToken(getTokenAmount()-4))) ||
-				(!strcasecmp("silver",getToken(getTokenAmount()-4))) ||
-				(!strcasecmp("gold", getToken(getTokenAmount()-4))) )
+			if ((!strcasecmp("copper",getToken(fmudstruct, getTokenAmount(fmudstruct)-4))) ||
+				(!strcasecmp("silver",getToken(fmudstruct, getTokenAmount(fmudstruct)-4))) ||
+				(!strcasecmp("gold", getToken(fmudstruct, getTokenAmount(fmudstruct)-4))) )
 			{
-				GiveMoney_Command(name, password, room);
+				GiveMoney_Command(fmudstruct);
 				return 1;
 			}
 		}
 	}
-	if ((getTokenAmount() >= 4) && (!strcasecmp("give", getToken(0)))) 
+	if ((getTokenAmount(fmudstruct) >= 4) && (!strcasecmp("give", getToken(fmudstruct, 0)))) 
 	{
 		int i;
-		i = GiveItem_Command(name, password, room);
+		i = GiveItem_Command(fmudstruct);
 		return i;
 	}
 	return 0;
@@ -1691,15 +1713,34 @@ Give_Command(mudpersonstruct *fmudstruct)
 int
 RangerGuild_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	char *name;
 	char *password;
 	char *fcommand;
+	char guildstatus[10];
 	int room;
 	
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
+	res = executeQuery(NULL, "select guildstatus from tmp_usertable where name='%x'", name);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row == NULL)
+		{
+			mysql_free_result(res);
+			return 0;
+		}
+		strcpy(guildstatus, row[0]);
+	}
+	else
+	{
+		return 0;
+	}
+	mysql_free_result(res);
 	/* Guilds */
 	if (!strcasecmp("rangers", guildstatus))
 	{
@@ -1718,7 +1759,7 @@ RangerGuild_Command(mudpersonstruct *fmudstruct)
 			RangerEntryOut(name, password, room);
 			return 1;
 		}
-		if ( (getTokenAmount() > 2) && (!strcasecmp("nature", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount(fmudstruct) > 2) && (!strcasecmp("nature", getToken(fmudstruct, 0))) && (!strcasecmp("talk", getToken(fmudstruct, 1))) )
 		{
 			RangerTalk(name, password, room);
 			return 1;
@@ -1731,15 +1772,34 @@ RangerGuild_Command(mudpersonstruct *fmudstruct)
 int
 MifGuild_Command(mudpersonstruct *fmudstruct)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	char *name;
 	char *password;
 	char *fcommand;
+	char guildstatus[10];
 	int room;
 	
 	name = fmudstruct->name;
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
+	res = executeQuery(NULL, "select guildstatus from tmp_usertable where name='%x'", name);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
+		if (row == NULL)
+		{
+			mysql_free_result(res);
+			return 0;
+		}
+		strcpy(guildstatus, row[0]);
+	}
+	else
+	{
+		return 0;
+	}
+	mysql_free_result(res);
 	if (!strcasecmp("mif", guildstatus))
 	{
 		if (!strcasecmp("magic list", fcommand))
@@ -1757,7 +1817,7 @@ MifGuild_Command(mudpersonstruct *fmudstruct)
 			MIFEntryOut(name, password, room);
 			return 1;
 		}
-		if ( (getTokenAmount() > 2) && (!strcasecmp("magic", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount(fmudstruct) > 2) && (!strcasecmp("magic", getToken(fmudstruct, 0))) && (!strcasecmp("talk", getToken(fmudstruct, 1))) )
 		{
 			MIFTalk(name, password, room);
 			return 1;
@@ -1844,19 +1904,28 @@ containing the essential information regarding the current player. */
 int
 gameMain(int socketfd)
 {
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 	int		oldroom, room;
 	int		i, amount;
 	char	frames[10];
+	char *name;
+	char *password;
 	char	*temp;
 	char *sqlstring;
 	char	logname[100];
 	char	*junk;
 	char *command;
 	char *printstr;
-	char    *myTokens[100];
+	char    **myTokens;
 	struct tm datumtijd;
 	time_t   datetime;
 	mudpersonstruct *mymudstruct;
+	int godstatus;		/* contains the godstatus of the character */
+	char sexstatus[8];
+	int sleepstatus;	/* contains the sleepstatus of the character */
+	char guildstatus[10];		/* contains the guild a person belongsto */
+	int punishment;	/* contains wether or not you are normal, are a frog, or are a rat. */
 
 #ifdef DEBUG	
 	printf("gameMain started!!!\n");
@@ -1865,7 +1934,11 @@ gameMain(int socketfd)
 	command = mymudstruct->command;
 	name = mymudstruct->name;
 	password = mymudstruct->password;
+	myTokens = mymudstruct->tokens;
 	umask(0000);
+#ifdef DEBUG	
+	printf("gameMain started!!!\n");
+#endif
 
 	printstr = (char *) malloc(strlen(mymudstruct->command)+500);
 	time(&datetime);
@@ -1905,8 +1978,8 @@ gameMain(int socketfd)
 		return 0;
 	}
 	
-	name = strdup(row[0]); /* copy name to name from database */
-	room=atoi(row[3]); /* copy roomnumber to room from database */
+	strcpy(name, row[0]); /* copy name to name from database */
+	mymudstruct->room = room=atoi(row[3]); /* copy roomnumber to room from database */
 	sleepstatus=atoi(row[2]); /* copy sleep to sleepstatus from database */
 	godstatus=atoi(row[5]); /* copy godstatus of player from database */
 	strcpy(sexstatus,row[6]); /* sex status (male, female) */
@@ -1914,7 +1987,7 @@ gameMain(int socketfd)
 	{ 
 		/* check vitals along with maxvital */
 		mysql_free_result(res);
-		Dead(name, password, room);
+		Dead(name, password, room, mymudstruct->frames);
 		free(printstr);
 		return 0;
 	}
@@ -1958,7 +2031,7 @@ gameMain(int socketfd)
 	
 	if (*junk == '\0') 
 	{
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -1968,7 +2041,7 @@ gameMain(int socketfd)
 		|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) 
 	{ 
 		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -1984,7 +2057,7 @@ gameMain(int socketfd)
 			return 1;
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
-		WriteRoom(name, password, room, 1);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -2009,7 +2082,7 @@ gameMain(int socketfd)
 		res=SendSQL2(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -2018,7 +2091,7 @@ gameMain(int socketfd)
 		(!strcasecmp(command, "look around")) ||
 		(!strcasecmp(command, "look")) ||
 		(!strcasecmp(command, "l"))) {
-			WriteRoom(name, password, room, 0);
+			WriteRoom(mymudstruct);
 			free(junk);
 			free(printstr);
 			return 1;
@@ -2058,7 +2131,7 @@ gameMain(int socketfd)
 		}
 
 		WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -2075,14 +2148,13 @@ gameMain(int socketfd)
 				amount = i - 1;
 				i = -1;
 			}	/* endif */
-			if (i>95) {
+			if (i>45) {
 				amount = i - 1;
 				i = -1;
 			}	/* endif */
 		}		/* endwhile */
 	}			/* endif */
-	setTokens(myTokens);
-	setTokenAmount(amount);
+	mymudstruct->tokenamount = amount;
 
 	if (SearchForSpecialCommand(name, password, command, room)==1)
 	{
@@ -2098,10 +2170,10 @@ gameMain(int socketfd)
 		/* binary search in index, if found call function */
 		int i = (theNumberOfFunctions / 2) + (theNumberOfFunctions % 2);
 		int pos = theNumberOfFunctions / 2;
-		int equals = strcasecmp(gameCommands[pos], getToken(0));
+		int equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
 		#ifdef DEBUG
 		send_printf(getMMudOut(), "%i\n", theNumberOfFunctions);
-		send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
+		send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
 		#endif
 		while ((i>0) && (equals))
 		{
@@ -2115,10 +2187,10 @@ gameMain(int socketfd)
 			if ((pos >= 0) && (pos < theNumberOfFunctions))
 			{
 				#ifdef DEBUG
-				send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(0), gameCommands[pos]);
+				send_printf(getMMudOut(), "%i, %i, %s, %s\n", i, pos, getToken(mymudstruct, 0), gameCommands[pos]);
 				#endif
 				
-				equals = strcasecmp(gameCommands[pos], getToken(0));
+				equals = strcasecmp(gameCommands[pos], getToken(mymudstruct, 0));
 			}
 		}
 		if (!equals)
@@ -2151,83 +2223,83 @@ gameMain(int socketfd)
 	if ((temp = get_pluralis(command)) != NULL) {
 		WriteSentenceIntoOwnLogFile(logname, "You %s.<BR>\r\n", command);
 		WriteMessage(name, room, "%s %s.<BR>\r\n", name, temp);
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
 	}
 	/* smile engagingly */
-	if ( (getTokenAmount()==2) && ((temp = get_pluralis(getToken(0))) != NULL) &&
-		 (exist_adverb(getToken(1))) ) {
-		WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(0), getToken(1));
-		WriteMessage(name, room, "%s %s %s.<BR>\r\n", name, temp, getToken(1));
-		WriteRoom(name, password, room, 0);
+	if ( (getTokenAmount(mymudstruct)==2) && ((temp = get_pluralis(getToken(mymudstruct, 0))) != NULL) &&
+		 (exist_adverb(getToken(mymudstruct, 1))) ) {
+		WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1));
+		WriteMessage(name, room, "%s %s %s.<BR>\r\n", name, temp, getToken(mymudstruct, 1));
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
 	}
 	/* smile to bill */
-	if ((getTokenAmount() == 3) && ((temp = get_pluralis(getToken(0))) != NULL) && 
-		(!strcasecmp(getToken(1), "to")) ) {
-		if (WriteMessageTo(getToken(2), name, room, "%s %s to %s.<BR>\r\n", name, temp, getToken(2)) == 0) {
+	if ((getTokenAmount(mymudstruct) == 3) && ((temp = get_pluralis(getToken(mymudstruct, 0))) != NULL) && 
+		(!strcasecmp(getToken(mymudstruct, 1), "to")) ) {
+		if (WriteMessageTo(getToken(mymudstruct, 2), name, room, "%s %s to %s.<BR>\r\n", name, temp, getToken(mymudstruct, 2)) == 0) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(2), name, room, "%s %s to you.<BR>\r\n", name, temp);
-			WriteSentenceIntoOwnLogFile(logname, "You %s to %s.</BR>\r\n", getToken(0), getToken(2));
+			WriteSayTo(getToken(mymudstruct, 2), name, room, "%s %s to you.<BR>\r\n", name, temp);
+			WriteSentenceIntoOwnLogFile(logname, "You %s to %s.</BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 2));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
 	}
 	/* smile(0) engagingly(1) to(2) Bill(3) */
-	if ((getTokenAmount() == 4) && ((temp = get_pluralis(getToken(0))) != NULL) && 
-		(!strcasecmp(getToken(2), "to")) && (exist_adverb(getToken(1))) ) {
-		if (WriteMessageTo(getToken(3), name, room, "%s %s %s to %s.<BR>\r\n", name, temp, getToken(1), getToken(3)) == 0) {
+	if ((getTokenAmount(mymudstruct) == 4) && ((temp = get_pluralis(getToken(mymudstruct, 0))) != NULL) && 
+		(!strcasecmp(getToken(mymudstruct, 2), "to")) && (exist_adverb(getToken(mymudstruct, 1))) ) {
+		if (WriteMessageTo(getToken(mymudstruct, 3), name, room, "%s %s %s to %s.<BR>\r\n", name, temp, getToken(mymudstruct, 1), getToken(mymudstruct, 3)) == 0) {
 			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(3), name, room, "%s %s %s to you.<BR>\r\n", name, temp, getToken(1));
-			WriteSentenceIntoOwnLogFile(logname, "You %s %s to %s.</BR>\r\n", getToken(0), getToken(1), getToken(3));
+			WriteSayTo(getToken(mymudstruct, 3), name, room, "%s %s %s to you.<BR>\r\n", name, temp, getToken(mymudstruct, 1));
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s to %s.</BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1), getToken(mymudstruct, 3));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
 	}
 	/* multiple person emotions */
 	/* caress bill */
-	if ((getTokenAmount() == 2) && ((temp = get_pluralis2(getToken(0))) != NULL)) {
+	if ((getTokenAmount(mymudstruct) == 2) && ((temp = get_pluralis2(getToken(mymudstruct, 0))) != NULL)) {
 		char            temp1[50], temp2[50];
 		sprintf(temp1, "%s %s you.<BR>\r\n", name, temp);
-		sprintf(temp2, "%s %s %s.<BR>\r\n", name, temp, getToken(1));
-		if (!WriteMessageTo(getToken(1), name, room, "%s %s %s.<BR>\r\n",
-					    name, temp, getToken(1))) {
+		sprintf(temp2, "%s %s %s.<BR>\r\n", name, temp, getToken(mymudstruct, 1));
+		if (!WriteMessageTo(getToken(mymudstruct, 1), name, room, "%s %s %s.<BR>\r\n",
+					    name, temp, getToken(mymudstruct, 1))) {
 			WriteSentenceIntoOwnLogFile(logname, "That user doesn't exist.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(1), name, room,
+			WriteSayTo(getToken(mymudstruct, 1), name, room,
 				"%s %s you.<BR>\r\n", name, temp);
-			WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(0), getToken(1));
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
 	}			/* end of multiple persons emotions */
 	/* caress bill absentmindedly */
-	if ((getTokenAmount() == 3) && ((temp = get_pluralis2(getToken(0))) != NULL) &&
-		(exist_adverb(getToken(2))) ) {
+	if ((getTokenAmount(mymudstruct) == 3) && ((temp = get_pluralis2(getToken(mymudstruct, 0))) != NULL) &&
+		(exist_adverb(getToken(mymudstruct, 2))) ) {
 		char            temp1[50], temp2[50];
-		sprintf(temp1, "%s %s you, %s.<BR>\r\n", name, temp, getToken(2));
-		sprintf(temp2, "%s %s %s, %s.<BR>\r\n", name, temp, getToken(1), getToken(2));
-		if (!WriteMessageTo(getToken(1), name, room, "%s %s %s, %s.<BR>\r\n",
-					    name, temp, getToken(1), getToken(2))) {
+		sprintf(temp1, "%s %s you, %s.<BR>\r\n", name, temp, getToken(mymudstruct, 2));
+		sprintf(temp2, "%s %s %s, %s.<BR>\r\n", name, temp, getToken(mymudstruct, 1), getToken(mymudstruct, 2));
+		if (!WriteMessageTo(getToken(mymudstruct, 1), name, room, "%s %s %s, %s.<BR>\r\n",
+					    name, temp, getToken(mymudstruct, 1), getToken(mymudstruct, 2))) {
 			WriteSentenceIntoOwnLogFile(logname, "That user doesn't exist.<BR>\r\n");
 		} else {
-			WriteSayTo(getToken(1), name, room,
-				"%s %s you, %s.<BR>\r\n", name, temp, getToken(2));
-			WriteSentenceIntoOwnLogFile(logname, "You %s %s, %s.<BR>\r\n", getToken(0), getToken(1), getToken(2));
+			WriteSayTo(getToken(mymudstruct, 1), name, room,
+				"%s %s you, %s.<BR>\r\n", name, temp, getToken(mymudstruct, 2));
+			WriteSentenceIntoOwnLogFile(logname, "You %s %s, %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1), getToken(mymudstruct, 2));
 		}
-		WriteRoom(name, password, room, 0);
+		WriteRoom(mymudstruct);
 		free(junk);
 		free(printstr);
 		return 1;
@@ -2236,7 +2308,7 @@ gameMain(int socketfd)
 /* add SWTalk */		
 	if (!strcasecmp("SW", guildstatus))
 	{
-		if ( (!strcasecmp("pow", getToken(0))) && (!strcasecmp("wow", getToken(1))) )
+		if ( (!strcasecmp("pow", getToken(mymudstruct, 0))) && (!strcasecmp("wow", getToken(mymudstruct, 1))) )
 		{
 			SWTalk(name, password, room);
 			free(junk);
@@ -2249,7 +2321,7 @@ gameMain(int socketfd)
 /* add BKTalk */		
 	if (!strcasecmp("BKIC", guildstatus))
 	{
-		if ( (!strcasecmp("chaos", getToken(0))) && (!strcasecmp("murmur", getToken(1))) )
+		if ( (!strcasecmp("chaos", getToken(mymudstruct, 0))) && (!strcasecmp("murmur", getToken(mymudstruct, 1))) )
 		{
 			BKTalk(name, password, room);
 			free(junk);
@@ -2262,7 +2334,7 @@ gameMain(int socketfd)
 /* add VampTalk */		
 	if (!strcasecmp("Kindred", guildstatus))
 	{
-		if ( (!strcasecmp("misty", getToken(0))) && (!strcasecmp("whisper", getToken(1))) )
+		if ( (!strcasecmp("misty", getToken(mymudstruct, 0))) && (!strcasecmp("whisper", getToken(mymudstruct, 1))) )
 		{
 			VampTalk(name, password, room);
 			free(junk);
@@ -2275,7 +2347,7 @@ gameMain(int socketfd)
 /* add KnightTalk */		
 	if (!strcasecmp("Knights", guildstatus))
 	{
-		if ( (getTokenAmount() > 2) && (!strcasecmp("knight", getToken(0))) && (!strcasecmp("talk", getToken(1))) )
+		if ( (getTokenAmount(mymudstruct) > 2) && (!strcasecmp("knight", getToken(mymudstruct, 0))) && (!strcasecmp("talk", getToken(mymudstruct, 1))) )
 		{
 			KnightTalk(name, password, room);
 			free(junk);
@@ -2288,7 +2360,7 @@ gameMain(int socketfd)
 /* add CoDTalk */		
 	if (!strcasecmp("CoD", guildstatus))
 	{
-		if ( (!strcasecmp("mogob", getToken(0))) && (!strcasecmp("burz", getToken(1))) )
+		if ( (!strcasecmp("mogob", getToken(mymudstruct, 0))) && (!strcasecmp("burz", getToken(mymudstruct, 1))) )
 		{
 			CoDTalk(name, password, room);
 			free(junk);
@@ -2301,6 +2373,6 @@ gameMain(int socketfd)
 	/* End Guilds */
 
 	WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
-	WriteRoom(name, password, room, 0);
+	WriteRoom(mymudstruct);
 	return 1;
 }

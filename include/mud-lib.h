@@ -30,7 +30,7 @@ maarten_l@yahoo.com
 
 int ReadFile(const char *filenaam);
       
-int PrintForm(char * name, char * password);
+int PrintForm(char * name, char * password, int frames);
 
 int Inventory_Command(mudpersonstruct *fmudstruct);
 
@@ -42,7 +42,7 @@ char *get_pluralis2(char *s);
 
 int exit_adverb(char *s);
 
-void WriteRoom(char * name, char * password, int room, int sleepstatus);
+void WriteRoom(mudpersonstruct *fmudstruct);
 
 int CheckWeight(char * name);
         
