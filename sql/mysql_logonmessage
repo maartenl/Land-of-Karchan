@@ -25,6 +25,41 @@ The current deputies are:
 Kass, Kel, Bladestorm, Legolas, Silverblade, Blackfyre<P>
 
 <HR>
+Thursday, Oct 10 2002, 20:07<P>
+<I>Does anyone actually read this logonmessage?
+</I><P>
+<FORM>   
+<input
+type=\"radio\" name=\"poll\" value=\"1\"
+onClick=\"doClick(1)\">Nope, not me.
+<BR><input type=\"radio\" name=\"poll\" value=\"2\"
+onClick=\"doClick(2)\">Yeah, I read them occasionally when I feel like it
+<BR><input type=\"radio\" name=\"poll\" value=\"3\"
+onClick=\"doClick(3)\">I read them always, shame they do not get updated
+frequently though
+<BR><input type=\"radio\" name=\"poll\" value=\"4\"
+onClick=\"doClick(4)\">D00D! It is one of the reasons I log on!
+<BR><input type=\"radio\" name=\"poll\" value=\"5\"
+onClick=\"doClick(5)\">Maybe you should get one of
+them blogs/journal/thingies.
+<BR><input type=\"radio\" name=\"poll\" value=\"6\"
+onClick=\"doClick(6)\">Dude, you do not suck!
+<BR><input type=\"radio\" name=\"poll\" value=\"7\"
+onClick=\"doClick(7)\">Awww, man, another poll!! The combat, man!
+When is the combat coming back?
+<P>
+</FORM>
+<SCRIPT>
+<!-- Begin to hide sript contents from old browsers.
+function doClick(number)
+{
+// window.alert(number)
+   document.CommandForm.command.value=\"poll \" + number
+
+}
+// End the hiding here. -->
+</SCRIPT>
+<HR>
 Wednesday, Oct 09 2002, 22:37<P>
 Just finished with a new implementation that might make the game act
 <I>wonky</I> again. <P>Also, some emotes seem to be buggy. They will not
