@@ -41,7 +41,7 @@ extern char    *tokens[100];
 
 int debug = 0;
 
-int ParseSentence(char *name, int room, char *parserstring)
+int ParseSentence(char *name, int *room, char *parserstring)
 /* Pre: name = the name of the person executing the command
 		parserstring = single string containing a command or the beginning of an if statement
 	Post:returns int, possible values
@@ -206,7 +206,7 @@ int ParseSentence(char *name, int room, char *parserstring)
 		if (debug) {fprintf(cgiOut, "sayeveryone found...<BR>\n");}
 		strcpy(temp, parserstring+13);
 		temp[strlen(temp)-2]=0;
-		WriteMessage2(name, room, temp);
+		WriteMessage2(name, *room, temp);
 		free(temp);
 	}
 	if (strstr(parserstring, "sayto(")==parserstring)
@@ -224,7 +224,7 @@ int ParseSentence(char *name, int room, char *parserstring)
 		strcpy(temp2, temp3+2);
 		temp[temp3-parserstring-8]=0;
 		temp2[strlen(temp2)-2]=0;
-		WriteSayTo(temp, name, room, temp2);
+		WriteSayTo(temp, name, *room, temp2);
 		free(temp);
 		free(temp2);
 	}
@@ -243,17 +243,27 @@ int ParseSentence(char *name, int room, char *parserstring)
 		strcpy(temp2, temp3+2);
 		temp[temp3-parserstring-16]=0;
 		temp2[strlen(temp2)-2]=0;
-		if (!WriteMessageTo2(temp, name, room, temp2))
+		if (!WriteMessageTo2(temp, name, *room, temp2))
 		{
 			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
 		}
 		free(temp);
 		free(temp2);
 	}
+	if (strstr(parserstring, "set room=")==parserstring)
+	{
+		/* set the room inside the parser
+		  this is necesary because the room number is not reread after
+		  an update statement on the database. So both commands need to be
+		  in tandem if necessary. */
+		/* syntax: set room=30 */
+		if (debug) {fprintf(cgiOut, "set room= found...<BR>\n");}
+		*room = atoi(parserstring+9);
+	}
 	return 0;
 }
 
-int Parse(char *name, int room, char *parserstring)
+int Parse(char *name, int *room, char *parserstring)
 {
 	char *string;
 	int pos, memory, level, state[20];
@@ -462,7 +472,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 				row[3] = command.args
 				row[4] = method.src
 			*/
-			returnvalue = Parse(name, room, row[4]);
+			returnvalue = Parse(name, &room, row[4]);
 			row = mysql_fetch_row(res);
 		}
 		if (debug) {fprintf(cgiOut, "</FONT><HR>\r\n");}
