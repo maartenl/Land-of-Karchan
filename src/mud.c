@@ -1341,13 +1341,13 @@ cgiMain()
 			KillGame();
 		}
 /* add SWTalk */		
-		if ( (!strcmp("Pow", tokens[0])) && (!strcmp("Wow", tokens[1])) )
+		if ( (!strcmp("pow", tokens[0])) && (!strcmp("wow", tokens[1])) )
 		{
 			SWTalk(name, password, room);
 			KillGame();
 		}
 /* add DepTalk */		
-		if ( (!strcmp("Dep", tokens[0])) && (!strcmp("Chat", tokens[1])) )
+		if ( (!strcmp("dep", tokens[0])) && (!strcmp("chat", tokens[1])) )
 		{
 			DepTalk(name, password, room);
 			KillGame();
