@@ -57,6 +57,7 @@ public class EyebrowCommand extends NormalCommand
 		if (myParsed.length == 1)
 		{
 			Persons.sendMessage(aUser, "%SNAME raise%VERB2 an eyebrow.<BR>\r\n");
+			return true;
 		}
 		return false;
 	}
