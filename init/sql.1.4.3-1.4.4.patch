@@ -39,13 +39,14 @@ wearing, wielding, containerid);
 
 create table containeditems (id int(7) not null,
 /*search = ''*/
-belongsto varchar(20) not null,
+/*not necessary because inherited from parent... 
+belongsto varchar(20) not null,*/
 amount int(7),
 /*room int(7) default 0,*/
 /*wearing
 wielding*/
 containedin int(11) not null,
-primary key (id, belongsto, containedin));
+primary key (id, containedin));
 
 /* change primary key to include containerid */
 
