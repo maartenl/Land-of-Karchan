@@ -1,3 +1,11 @@
+#!/bin/sh
+
+cd /karchan/mud/sql   
+
+. ./mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+
 update methods
 set src = "say(\"You yawn.<BR>\")
 sayeveryone(\"%me yawns.<BR>\")
@@ -6,8 +14,7 @@ return
 " where id = 2;
 
 update methods
-set src = "debug
-if sql(""select 1 from rooms where id=20 and south=0"")
+set src = "if sql(""select 1 from rooms where id=20 and south=0"")
 	say(""You succeed in opening the door of the cupboard. \\
 		 [<A HREF=""http://www.karchan.org/images/mpeg/her.mpg"">\\
 		MPEG</A>]<BR>"")
@@ -41,3 +48,6 @@ else
 end
 return
 " where id=1;
+
+END_OF_DATA
+
