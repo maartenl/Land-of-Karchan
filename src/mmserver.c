@@ -306,7 +306,7 @@ send_socket(int s, char *buf, int *len)
 	int total = 0;	// how many btytes we've sent
 	int bytesleft = *len;	// how many we have left to send
 	int n;
-#ifdef DEBUG
+#if DEBUG==2
 	printf("[message]: %s\n", buf);
 #endif
 	while (total < *len)
@@ -347,6 +347,7 @@ parseXml(mudpersonstruct *fmine)
 	char *temp;
 
 	// build an XML tree from a the file;
+	printf("Deb[%s]ug\n", fmine->readbuf);
 	doc = xmlParseMemory(fmine->readbuf, strlen(fmine->readbuf));
     if (doc == NULL) 
 		return(0);
@@ -534,7 +535,9 @@ store_in_list(int socketfd, char *buf)
 			char t;
 			t = temp[7];
 			temp[7] = 0;
-			//printf(mine->readbuf);
+#ifdef DEBUG
+			printf(mine->readbuf);
+#endif
 			if (parseXml(mine))
 			{
 				char *temp2, string[1024];

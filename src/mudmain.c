@@ -77,7 +77,7 @@ char				*gameCommands[] =
 	"inventory",
 	"l",
 	"listmail",
-	"look",
+	//"look", commented out until clear what the problem is.
 	"magic",
 	"mail",
 	"me",
@@ -1194,7 +1194,7 @@ initGameFunctionIndex()
 	gameFunctionArray[theNumberOfFunctions++] = &Help_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Inventory_Command;
-	gameFunctionArray[theNumberOfFunctions++] = &Look_Command;
+	//gameFunctionArray[theNumberOfFunctions++] = &Look_Command; commented out until clear what the probkem is.
 	gameFunctionArray[theNumberOfFunctions++] = &ListMail_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Look_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &MifGuild_Command;
