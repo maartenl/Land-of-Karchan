@@ -65,10 +65,10 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-//#define ServerName "www.karchan.org"
+#define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
 
-#define ServerName "zeus"
+//#define ServerName "zeus"
 //#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
@@ -101,12 +101,12 @@ maartenl@il.fontys.nl
 #define NewcharExe          "http://www.il.fontys.nl/usr-bin/newchar"
 #define MudreloginExe       "http://www.il.fontys.nl/usr-bin/mudrelogin"*/
 
-#define MudExe              "http://"ServerName CGIName"mud2.cgi"
-#define EnterExe            "http://"ServerName CGIName"enter2.cgi"
-#define NewcharExe          "http://"ServerName CGIName"newchar2.cgi"
-#define MudreloginExe       "http://"ServerName CGIName"mudrelogin2.cgi"
-#define LogonframeExe       "http://"ServerName CGIName"logonframe2.cgi"
-#define LeftframeExe       "http://"ServerName CGIName"leftframe2.cgi"
+#define MudExe              "http://"ServerName CGIName"mud.cgi"
+#define EnterExe            "http://"ServerName CGIName"enter.cgi"
+#define NewcharExe          "http://"ServerName CGIName"newchar.cgi"
+#define MudreloginExe       "http://"ServerName CGIName"mudrelogin.cgi"
+#define LogonframeExe       "http://"ServerName CGIName"logonframe.cgi"
+#define LeftframeExe       "http://"ServerName CGIName"leftframe.cgi"
 
 typedef struct 
 {
