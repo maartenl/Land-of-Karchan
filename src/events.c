@@ -38,6 +38,9 @@ main(int argc, char *argv[])
 	char method_name[32];
 
 	umask(0000);
+	
+	initParam();
+	readConfigFiles("/karchan/config.xml");
 
 	opendbconnection();
 	setMMudOut(stdout);
@@ -66,5 +69,6 @@ main(int argc, char *argv[])
 	}
 
 	closedbconnection();
-
+	freeParam();
+	
 }

@@ -36,66 +36,41 @@ maartenl@il.fontys.nl
 
 #define debuggin 0
 
-void showFamilyValues(MYSQL mysql, char *name)
+void showFamilyValues(const char *name)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int textlength, sqlsize, i;
-	char *sqlstring;
 	
-	sqlstring = (char *) malloc(1400 + strlen(name) + 1);
-	sprintf(sqlstring, "select familyvalues.description, toname, characterinfo.name "
+	res = executeQuery(NULL, "select familyvalues.description, toname, characterinfo.name "
 	"from family, familyvalues "
 		"left join characterinfo "
 		"on characterinfo.name = family.toname "
-	"where family.name = '%s' and "
+	"where family.name = '%x' and "
 	"family.description = familyvalues.id", name);
 	printf("<B>Family Relations:</B><BR><UL>\n");
-	if (mysql_query(&mysql,sqlstring))
+	if (res)// there are rows
 	{
-		// error
-	}
-	else // query succeeded, process any data returned by it
-	{
-		res = mysql_store_result(&mysql);
-		if (res)// there are rows
+		int num_fields = mysql_num_fields(res);
+		// retrieve rows, then call mysql_free_result(result)
+		while ((row = mysql_fetch_row(res))!=NULL) 
 		{
-			int num_fields = mysql_num_fields(res);
-			// retrieve rows, then call mysql_free_result(result)
-			while ((row = mysql_fetch_row(res))!=NULL) 
+			if (row[2] == NULL)
 			{
-				if (row[2] == NULL)
-				{
-					printf("<LI>%s of %s<BR>",row[0], row[1]);
-				}
-				else
-				{
-					printf("<LI>%s of <A HREF=\"charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
-				}
+				printf("<LI>%s of %s<BR>",row[0], row[1]);
 			}
-			mysql_free_result(res);
+			else
+			{
+				printf("<LI>%s of <A HREF=\"charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
+			}
 		}
-		else// mysql_store_result() returned nothing; should it have?
-		{
-			if(mysql_field_count(&mysql) == 0)
-			{
-				// query does not return data
-				// (it was not a SELECT)
-				// num_rows = mysql_affected_rows(&mysql);
-			}
-			else // mysql_store_result() should have returned data
-			{
-				fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-			}
-		}	
+		mysql_free_result(res);
 	}
-	free(sqlstring);
 	printf("</UL>");
 }
                  
 void showCharacterSheet()
 {
-	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int textlength, sqlsize, i;
@@ -114,7 +89,7 @@ void showCharacterSheet()
 		"Storyline:",
 		NULL};
 	
-	char *sqlstring, *formstring, *sqlformstring;
+//	char *sqlstring, *formstring, *sqlformstring;
 	
 	/*- put length of cgientry in 'textlength'
 		- allocate 'textlength' memory to formstring
@@ -126,15 +101,10 @@ void showCharacterSheet()
 		- add sqlformstring to sqlstring
 		- free everything and add to sqlsize
 	*/
-	textlength = strlen(cgi_getentrystr("name"));
-	formstring = (char *) malloc(textlength+1);
-	strcpy(formstring, cgi_getentrystr("name"));
-	sqlformstring = (char *) malloc(2*textlength+1+2);
-	mysql_escape_string(sqlformstring,formstring,strlen(formstring));
-	textlength = strlen(sqlformstring);
-
-	sqlstring = (char *) malloc(1400 + textlength);
-	sprintf(sqlstring, "select usertable.name, title, sex, concat(age,"
+	
+	opendbconnection();
+	res = executeQuery(NULL,
+	"select usertable.name, title, sex, concat(age,"
 	"if(length = 'none', '', concat(', ',length)),"
 	"if(width = 'none', '', concat(', ',width)),"
 	"if(complexion = 'none', '', concat(', ',complexion)),"
@@ -150,80 +120,47 @@ void showCharacterSheet()
 	"concat('<A HREF=\"',homepageurl,'\">',homepageurl,'</A>'), "
 	"\"Yes\", dateofbirth, cityofbirth, usertable.lastlogin, storyline "
 	"from usertable, characterinfo "
-	"where usertable.name = '%s' and "
-	"usertable.name = characterinfo.name", sqlformstring);
+	"where usertable.name = '%x' and "
+	"usertable.name = characterinfo.name", cgi_getentrystr("name"));
 	printf("Content-type: text/html\n\n");
 	printf("<HTML>\n");
 	printf("<HEAD>\n");
 	printf("<TITLE>\n");
-	printf("Land of Karchan - %s\n", formstring);
+	printf("Land of Karchan - %s\n", cgi_getentrystr("name"));
 	printf("</TITLE>\n");
 	printf("</HEAD>\n");
 
 	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\n");
 	printf("<H1>\n");
-	printf("<IMG SRC=\"/images/gif/dragon.gif\">Character Sheet of %s</H1>\n", sqlformstring);
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">Character Sheet of %s</H1>\n", cgi_getentrystr("name"));
 	printf("<HR>\n");
 	
 	//printf("[%s]\n", sqlstring);
- 	
-	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
+	if (res != NULL) // query succeeded, process any data returned by it
 	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_select_db(&mysql,DatabaseName))
-	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_query(&mysql,sqlstring))
-	{
-		// error
-	}
-	else // query succeeded, process any data returned by it
-	{
-		res = mysql_store_result(&mysql);
-		if (res)// there are rows
+		int num_fields = mysql_num_fields(res);
+		// retrieve rows, then call mysql_free_result(result)
+		row = mysql_fetch_row(res);
+		if (row != NULL)
 		{
-			int num_fields = mysql_num_fields(res);
-			// retrieve rows, then call mysql_free_result(result)
-			row = mysql_fetch_row(res);
-			if (row != NULL)
+			int i;
+			for (i=0;i<num_fields;i++)
 			{
-				int i;
-				for (i=0;i<num_fields;i++)
+				if ((strcmp("<IMG SRC=\"http://\">", row[i])) &&
+				   (strcmp("<IMG SRC=\"\">", row[i]))) 
 				{
-					if ((strcmp("<IMG SRC=\"http://\">", row[i])) &&
-					   (strcmp("<IMG SRC=\"\">", row[i]))) 
-					{
-						printf("<B>%s</B> %s<BR>",databaseitems[i],row[i]);
-					}
-					if (i==9) 
-					{
-						showFamilyValues(mysql, sqlformstring);
-					}
+					printf("<B>%s</B> %s<BR>",databaseitems[i],row[i]);
+				}
+				if (i==9) 
+				{
+					showFamilyValues(cgi_getentrystr("name"));
 				}
 			}
-			mysql_free_result(res);
 		}
-		else// mysql_store_result() returned nothing; should it have?
-		{
-			if(mysql_field_count(&mysql) == 0)
-			{
-				// query does not return data
-				// (it was not a SELECT)
-				// num_rows = mysql_affected_rows(&mysql);
-			}
-			else // mysql_store_result() should have returned data
-			{
-				fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-			}
-		}	
+		mysql_free_result(res);
 	}
- 	mysql_close(&mysql);
-	free(formstring);free(sqlformstring);
-	free(sqlstring);
+	closedbconnection();
+
 	printf("<HR><P><A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
 	printf("</BODY>\n");
 	printf("</HTML>\n");
@@ -233,6 +170,10 @@ int
 main(int argc, char * argv[])
 {
 	int res;
+	
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+      
 	res = cgi_init();
 	if (res != CGIERR_NONE)
 	{
@@ -245,5 +186,6 @@ main(int argc, char * argv[])
 	showCharacterSheet();
 	
 	cgi_quit();
+	freeParam();
 	return 0;
 }

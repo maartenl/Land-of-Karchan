@@ -138,7 +138,7 @@ GoDown_Command(char *name, char *password, int room, char *fcommand)
 
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 		"where name='%x'"
@@ -208,7 +208,7 @@ GoUp_Command(char *name, char *password, int room, char *fcommand)
 
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 		"where name='%x'"
@@ -278,14 +278,14 @@ void BannedFromGame(char *name, char *address)
 	fprintf(getMMudOut(), "Your ip domain is therefore banned from the game.<P>\n");
 	fprintf(getMMudOut(), "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
-	"<A HREF=\"mailto:deputy@"ServerName"\">deputy@"ServerName"</A> and ask them to make "
+	"<A HREF=\"mailto:deputy@%s\">deputy@%s</A> and ask them to make "
 	"an exception in your case. Do <I>not</I> forget to provide your "
-	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n");
+	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n", getParam(MM_SERVERNAME), getParam(MM_SERVERNAME));
 	fprintf(getMMudOut(), "</body>\n");
 	fprintf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 }
 
@@ -304,7 +304,7 @@ void CookieNotFound(char *name, char *address)
 	fprintf(getMMudOut(), "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 }
 
@@ -352,7 +352,7 @@ int
 Clear_Command(char *name, char *password, int room, char *command)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	WriteRoom(name, password, room, 0);
 	ClearLogFile(logname);
 	WriteSentenceIntoOwnLogFile(logname, "You cleared your mind.<BR>\r\n");
@@ -363,7 +363,7 @@ int
 Help_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (!strcasecmp(fcommand, "help")) 
 	{
 		MYSQL_RES *res;
@@ -468,7 +468,7 @@ SendMail_Command(char *name, char *password, int room, char *fcommand)
 	char *mailto, *mailbody, *mailheader, *sqlstring;
 	char logname[100];
 	int thelength;
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
       		
 	if (getTokenAmount() < 5)
 	{
@@ -524,7 +524,7 @@ Whimpy_Command(char *name, char *password, int room, char *fcommand)
 	char number[10];
 	char *sqlstring;
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (getTokenAmount() == 1) {
 		strcpy(number,"0");
 	} else {
@@ -605,7 +605,7 @@ PKill_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
 		"name='%x'", name);
 	res=SendSQL2(sqlstring, NULL);
@@ -646,7 +646,7 @@ int
 Me_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteMessage(name, room, "%s %s<BR>\r\n", name, command + 3);
 	WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
 	WriteRoom(name, password, room, 0);
@@ -658,7 +658,7 @@ Stop_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
 	char *sqlstring;
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (!strcasecmp("stop fighting", fcommand))
 	{
 		sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
@@ -696,7 +696,7 @@ Fight_Command(char *name, char *password, int room, char *fcommand)
 	char *sqlstring;
 	char *myDescription;
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	sqlstring = composeSqlStatement("select fightable from tmp_usertable where "
 		"name='%x'", name);
 	res=SendSQL2(sqlstring, NULL);
@@ -765,7 +765,7 @@ int
 Bow_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (!strcasecmp(command, "bow")) {
 		WriteSentenceIntoOwnLogFile(logname, "You bow gracefully.<BR>\r\n");
 		WriteMessage(name, room, "%s bows gracefully.<BR>\r\n", name);
@@ -789,7 +789,7 @@ int
 Eyebrow_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "You raise an eyebrow.<BR>\r\n");
 	WriteMessage(name, room, "%s raises an eyebrow.<BR>\r\n", name);
 	WriteRoom(name, password, room, 0);
@@ -800,7 +800,7 @@ int
 Curtsey_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (!strcasecmp(command, "curtsey")) {
 		WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey.<BR>\r\n");
 		WriteMessage(name, room, "%s drops a curtsey.<BR>\r\n", name);
@@ -824,7 +824,7 @@ int
 Flinch_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (!strcasecmp(command, "flinch")) {
 		WriteSentenceIntoOwnLogFile(logname, "You flinch.<BR>\r\n");
 		WriteMessage(name, room, "%s flinches.<BR>\r\n", name);
@@ -848,7 +848,7 @@ int
 Tell_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if ((getTokenAmount() > 3) && (!strcasecmp("to", getToken(1)))) {
 		if (!WriteLinkTo(getToken(2), name, "<B>%s tells you </B>: %s<BR>\r\n",
 					    name, command + (getToken(3) - getToken(0)))) {
@@ -871,7 +871,7 @@ Say_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) 
 	{
 		if (!WriteMessageTo(getToken(2), name, room, "%s says [to %s] : %s<BR>\r\n",
@@ -900,7 +900,7 @@ int
 Shout_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (getTokenAmount() == 1)
 	{
 		return 0;
@@ -936,7 +936,7 @@ int
 Ask_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (getTokenAmount() == 1)
 	{
 		return 0;
@@ -976,7 +976,7 @@ Whisper_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) {
 		char           *temp1, *temp2;
 		temp1 = (char *) malloc(strlen(fcommand) + 80);
@@ -1007,7 +1007,7 @@ int
 Awaken_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "You aren't asleep, silly.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	return 1;
@@ -1193,9 +1193,78 @@ Admin_Command(char *name, char *password, int room, char *fcommand)
 		fprintf(getMMudOut(), "Shutting down of game initiated. Please stand by...<P>");
 		
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 		setShutdown(1);
+		return 1;
+	}
+	if (!strcasecmp(fcommand, "admin readconfig"))
+	{
+		fprintf(getMMudOut(), "<HTML>\n");
+		fprintf(getMMudOut(), "<HEAD>\n");
+		fprintf(getMMudOut(), "<TITLE>\n");
+		fprintf(getMMudOut(), "Land of Karchan - Admin Readconfig\n");
+		fprintf(getMMudOut(), "</TITLE>\n");
+		fprintf(getMMudOut(), "</HEAD>\n");
+
+		fprintf(getMMudOut(), "<BODY>\n");	
+		if (!getFrames())
+		{
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		}
+		else
+		{
+			if (getFrames()==1)
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			} else
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			}
+		}
+
+		fprintf(getMMudOut(), "<H1>Admin Readconfig - Reading Config file</H1>\n");
+		
+		fprintf(getMMudOut(), "Rereading config files. Please use 'admin config' to view any new settings. "
+		"Bear in mind that a change in database info or socket info requires a restart of the server. Please stand by...<P>");
+		readConfigFiles("config.xml");
+		PrintForm(name, password);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
+		return 1;
+	}
+	if (!strcasecmp(fcommand, "admin config"))
+	{
+		fprintf(getMMudOut(), "<HTML>\n");
+		fprintf(getMMudOut(), "<HEAD>\n");
+		fprintf(getMMudOut(), "<TITLE>\n");
+		fprintf(getMMudOut(), "Land of Karchan - Admin Config\n");
+		fprintf(getMMudOut(), "</TITLE>\n");
+		fprintf(getMMudOut(), "</HEAD>\n");
+
+		fprintf(getMMudOut(), "<BODY>\n");	
+		if (!getFrames())
+		{
+			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+		}
+		else
+		{
+			if (getFrames()==1)
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+			} else
+			{
+				fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+			}
+		}
+
+		fprintf(getMMudOut(), "<H1>Admin Config - Config file</H1>\n");
+		
+		fprintf(getMMudOut(), "Reading config files. Please stand by...<P>");
+		writeConfig();
+		PrintForm(name, password);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
+		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin stats"))
@@ -1237,7 +1306,7 @@ Admin_Command(char *name, char *password, int room, char *fcommand)
 			mymudinfo.maxnumber_of_current_connections);
 	
 		PrintForm(name, password);
-		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 		fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 		return 1;
 	}
@@ -1492,7 +1561,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *fadd
 	{
 		NotActive(name, password,6);
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
 	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "

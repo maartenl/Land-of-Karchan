@@ -226,7 +226,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char logname[100];
 		char *temp;
 		if (parser_debug) {fprintf(getMMudOut(), "say found...<BR>\n");}
-		sprintf(logname, "%s%s.log",USERHeader,name);
+		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
 		temp[strlen(temp)-2]=0;
@@ -252,7 +252,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		char logname[100];
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
-		sprintf(logname, "%s%s.log",USERHeader,name);
+		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		if (parser_debug) {fprintf(getMMudOut(), "sayto found...<BR>\n");}
 		temp3 = strstr(parserstring,",");
 		strcpy(temp, parserstring+7);
@@ -269,7 +269,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		/* syntax: sayto("Bill","Howdie!<BR>") */
 		char *temp, *temp2, *temp3;
 		char logname[100];
-		sprintf(logname, "%s%s.log",USERHeader,name);
+		sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 		temp = (char *) malloc(strlen(parserstring)+1);
 		temp2 = (char *) malloc(strlen(parserstring)+1);
 		if (parser_debug) {fprintf(getMMudOut(), "sayeveryoneto found...<BR>\n");}
@@ -384,7 +384,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		temp[strlen(temp)-2]=0;
 		time(&tijd);
 		datum=*(gmtime(&tijd));
-		WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-%i %s\n",
+		WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE), "%i:%i:%i %i-%i-%i %s\n",
 		datum.tm_hour, datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,
 		temp);
 		free(temp);
@@ -675,10 +675,10 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		{
 			/* show() command found */
 			char logname[100];
-			sprintf(logname, "%s%s.log",USERHeader,name);
+			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;
 		}
@@ -686,10 +686,10 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		{
 			/* showstring command found */
 			char logname[100];
-			sprintf(logname, "%s%s.log",USERHeader,name);
+			sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
  			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return 1;
 		}

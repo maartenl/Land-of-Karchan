@@ -49,7 +49,7 @@ int SendSQL(char *sqlstring)
 	FILE *fp;
 	uint i = 0;
 	
-	if (!(mysql_connect(&mysql,"localhost","root", ""))) 
+	if (!(mysql_real_connect(&mysql,"localhost","root", "", "mud", 3306, NULL, 0))) 
 		exiterr(1, sqlstring, &mysql);
  
 	if (mysql_select_db(&mysql,"mud"))

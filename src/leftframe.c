@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "typedefs.h"
 #include "cgi-util.h"
 
 int main(int argc, char * argv[])
@@ -63,7 +62,7 @@ int main(int argc, char * argv[])
 	printf("\r\n");
 	printf("<BODY BGCOLOR=#FFFFFF>\r\n");
 	printf("\r\n");
-	printf("<IMG SRC=\"http://"ServerName"/images/gif/roos.gif\"\r\n");
+	printf("<IMG SRC=\"/images/gif/roos.gif\"\r\n");
 	printf("USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"compass\"><P>\r\n");
 	printf("<P>\r\n");
 	printf("<script language=\"JavaScript\">\r\n");
@@ -99,31 +98,31 @@ int main(int argc, char * argv[])
 	printf("</SCRIPT>\r\n");
 	printf("\r\n");
 	printf("\r\n");
-	printf("<A HREF=\"%s?command=quit&name=%s&password=%s&frames=2\" ", MudExe, name, password);
+	printf("<A HREF=\"/cgi-bin/mud.cgi?command=quit&name=%s&password=%s&frames=2\" ", name, password);
 	printf("TARGET=_top ");
 	printf("onMouseOver=\"img_act('toc2')\" ");
 	printf("onMouseOut=\"img_inact('toc2')\">\r\n");
-	printf("<IMG SRC=\"http://"ServerName"/images/gif/webpic/buttonj.gif\" ");
+	printf("<IMG SRC=\"/images/gif/webpic/buttonj.gif\" ");
 	printf("BORDER=0 ALT=\"quit\" NAME=\"toc2\">\r\n");
 	printf("</A><P>\r\n");
 	printf("\r\n");
-	printf("<A HREF=\"%s?command=sleep&name=%s&password=%s&frames=2\" onMouseOver=\"img_act('toc1')\" ", MudExe, name, password);
+	printf("<A HREF=\"/cgi-bin/mud.cgi?command=sleep&name=%s&password=%s&frames=2\" onMouseOver=\"img_act('toc1')\" ", name, password);
 	printf("TARGET=\"main\"");
 	printf(" onMouseOut=\"img_inact('toc1')\">\r\n");
-	printf("<IMG SRC=\"http://"ServerName"/images/gif/webpic/buttonk.gif\" ");
+	printf("<IMG SRC=\"/images/gif/webpic/buttonk.gif\" ");
 	printf("BORDER=0 ALT=\"sleep\" NAME=\"toc1\">\r\n");
 	printf("</A><P>\r\n\r\n");
-	printf("<A HREF=\"%s?command=clear&name=%s&password=%s&frames=2\" onMouseOver=\"img_act('toc3')\" ", MudExe, name, password);
+	printf("<A HREF=\"/cgi-bin/mud.cgi?command=clear&name=%s&password=%s&frames=2\" onMouseOver=\"img_act('toc3')\" ", name, password);
 	printf("TARGET=\"main\"");
 	printf(" onMouseOut=\"img_inact('toc3')\">\r\n");
-	printf("<IMG SRC=\"http://"ServerName"/images/gif/webpic/buttonr.gif\" ");
+	printf("<IMG SRC=\"/images/gif/webpic/buttonr.gif\" ");
 	printf("BORDER=0 ALT=\"clear\" NAME=\"toc3\">\r\n");
 	printf("</A>\r\n\r\n");
 	printf("<MAP NAME=\"roosmap\">\r\n");
-	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\"%s?command=n&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", MudExe, name, password);
-	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\"%s?command=s&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", MudExe, name, password);
-	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\"%s?command=w&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", MudExe, name, password);
-	printf("<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\"%s?command=e&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", MudExe, name, password);
+	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\"/cgi-bin/mud.cgi?command=n&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", name, password);
+	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\"/cgi-bin/mud.cgi?command=s&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", name, password);
+	printf("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\"/cgi-bin/mud.cgi?command=w&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n",  name, password);
+	printf("<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\"/cgi-bin/mud.cgi?command=e&name=%s&password=%s&frames=2\" TARGET=\"main\">\r\n", name, password);
 	printf("</MAP>\r\n");
 	printf("\r\n");
 	printf("<P>\r\n");

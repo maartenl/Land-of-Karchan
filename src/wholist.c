@@ -31,60 +31,41 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "mysql.h"
+#include "typedefs.h"
 
-void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
+int showWhoList()
 {
-printf("Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
-}
-
-int SendSQL()
-{
-	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	FILE *fp;
 	uint i = 0;
 	
-	char sqlstring[1024];
-	strcpy(sqlstring, "select name, title, "
+	printf("Content-type: text/html\n\n");
+	printf("<META http-equiv=\"refresh\" content=\"120\">");
+	printf("<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">\r\n\r\n");
+	printf("<HTML>\n");
+	printf("<HEAD>\n");
+	printf("<TITLE>\n");
+	printf("Land of Karchan - Who\n");
+	printf("</TITLE>\n");
+	printf("</HEAD>\n");
+	
+	printf("<BODY>\n");
+	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" >\n");
+	printf("<H2>");
+	printf("<IMG SRC=\"/images/gif/dragon.gif\">");
+	printf("List of All Active Users</H2>\r\n");
+	opendbconnection();
+	res = executeQuery(NULL, "select name, title, "
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin)"
 	", sleep from tmp_usertable where god<=1");
-	 
-	if (!(mysql_connect(&mysql,"localhost","mud", "42rakah"))) 
-		exiterr(1, sqlstring, &mysql);
- 
-	if (mysql_select_db(&mysql,"mud"))
-		exiterr(2, sqlstring, &mysql);
- 
-	if (mysql_query(&mysql,sqlstring))
-		exiterr(3, sqlstring, &mysql);
- 
-	if (!(res = mysql_store_result(&mysql)))
+
+	if (res != NULL)
 	{
-		exiterr(4, sqlstring, &mysql);
-	} 
-	else 
-	{
-		printf("Content-type: text/html\n\n");
-		printf("<META http-equiv=\"refresh\" content=\"120\">");
-		printf("<META HTTP-EQUIV=\"pragma\" CONTENT=\"no-cache\">\r\n\r\n");
-		printf("<HTML>\n");
-		printf("<HEAD>\n");
-		printf("<TITLE>\n");
-		printf("Land of Karchan - Who\n");
-		printf("</TITLE>\n");
-		printf("</HEAD>\n");
-		
-		printf("<BODY>\n");
-		printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" >\n");
-		printf("<H2>");
-		printf("<IMG SRC=\"http://www.karchan.org/images/gif/dragon.gif\">");
-		printf("List of All Active Users</H2>\r\n");
-		printf("<I>There are %i persons active in the game.</I><P>\r\n",
-			mysql_num_rows(res));
+		printf("<I>There are %i persons active in the game.</I><P>\r\n", mysql_num_rows(res));
 		printf("<UL>");
-		while((row = mysql_fetch_row(res))) {
+		while((row = mysql_fetch_row(res))) 
+		{
 			if (atoi(row[3])==1)
 			{
 				printf("<LI>%s, %s, sleeping (%i min, %i sec idle)\r\n", 
@@ -96,21 +77,25 @@ int SendSQL()
 				row[0], row[1], atoi(row[2]) / 60, atoi(row[2]) & 60);
 			}
 		}
-		printf("</UL>\r\n");
-
-		printf("</BODY>\r\n");
-		printf("</HTML>\r\n");
+		mysql_free_result(res);
 	}
-	if (!mysql_eof(res))
-		exiterr(5, sqlstring, &mysql);
- 
-	mysql_free_result(res);
-	mysql_close(&mysql);
+	else
+	{
+		printf("Error connecting to the database.");
+	}
+	printf("</UL>\r\n");
+
+	printf("</BODY>\r\n");
+	printf("</HTML>\r\n");
+	closedbconnection();
 }
 
 int
 main()
 {
-	SendSQL();
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+	showWhoList();
+	freeParam();
 	return 0;
 }

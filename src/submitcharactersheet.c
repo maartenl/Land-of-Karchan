@@ -36,115 +36,39 @@ maartenl@il.fontys.nl
 
 #define debuggin 0
 
-char *retrieveCgiValue(const char *fieldname)
+void updateCharacterSheet(const char *name, const char *password)
 {
-	char *result, *formstring;
-	int textlength;
-	textlength = strlen(cgi_getentrystr(fieldname))+1;
-	formstring = (char *) malloc(textlength);
-	strcpy(formstring, cgi_getentrystr(fieldname));
-	result = (char *) malloc(2*textlength+1+2);
-	mysql_escape_string(result,formstring,strlen(formstring));
-	textlength = strlen(result);
-	free(formstring);
-	return result;
-}
-
-void updateCharacterSheet(char *name, char *password)
-{
-	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
-	char *sqlstring;
-	char *image, *homepage, *dateofbirth, *cityofbirth, *storyline;
-	char *family, *familyname;
-	char *sqlstring2;
-	int familyid;
-	image = retrieveCgiValue("imageurl");
-	homepage = retrieveCgiValue("homepageurl");
-	dateofbirth = retrieveCgiValue("dateofbirth");
-	cityofbirth = retrieveCgiValue("cityofbirth");
-	storyline = retrieveCgiValue("storyline");
-	family = retrieveCgiValue("family");
-	familyid = atoi(family);
-	free(family);
-	if (familyid != 0) 
+
+	if (atoi(cgi_getentrystr("family")) != 0) 
 	{
-		family = retrieveCgiValue("familyname");
-		sqlstring2 = (char *) malloc(200+strlen(name)+strlen(family)+3);
-		sprintf(sqlstring2, "replace into family values(\"%s\",\"%s\",%i)", name, family, familyid);
+		mysql_free_result(executeQuery(NULL, "replace into family values(\"%x\",\"%x\",%i)", 
+			name, cgi_getentrystr("familyname"), atoi(cgi_getentrystr("family"))));
 	}
-	sqlstring = (char *) malloc(200+strlen(name)+strlen(image)+strlen(homepage)+strlen(dateofbirth)+strlen(cityofbirth)+strlen(storyline));
-	sprintf(sqlstring, "replace into characterinfo "
-		"values(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\")", name, image, homepage, dateofbirth, cityofbirth, storyline);
-	// printf("[%s]\n", sqlstring);
-	free(image);free(homepage);free(dateofbirth);free(cityofbirth);free(storyline);
+	mysql_free_result(executeQuery(NULL, "replace into characterinfo "
+		"values(\"%x\", \"%x\", \"%x\", \"%x\", \"%x\", \"%x\")", 
+		name, cgi_getentrystr("imageurl"), cgi_getentrystr("homepageurl"), cgi_getentrystr("dateofbirth"),
+		cgi_getentrystr("cityofbirth"), cgi_getentrystr("storyline")));
  	
-	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
-	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_select_db(&mysql,DatabaseName))
-	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_query(&mysql,sqlstring))
-	{
-		// error
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
-	if (familyid != 0)
-	{
-		if (mysql_query(&mysql,sqlstring2))
-		{
-			// error
-			fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-		}
-		free(sqlstring2);
-	}
- 	mysql_close(&mysql);
-	free(sqlstring);
 }
 
 void validateUser()
 {
-	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
 	int success = 0;
-	char *sqlstring, *formstring, *name, *password;
 	
-	/*- put length of cgientry in 'textlength'
-		- allocate 'textlength' memory to formstring
-		- put cgientry in 'formstring'
-		- allocate double memory to sqlformstring
-		- put safesql formstring in 'sqlformstring'
-		- textlength = length of sqlformstring
-		- reallocate memory for sqlstring
-		- add sqlformstring to sqlstring
-		- free everything and add to sqlsize
-	*/
-	name = retrieveCgiValue("name");
-	textlength = strlen(name);
-
-	password = retrieveCgiValue("password");
-	textlength = strlen(password);
-
-	sqlstring = (char *) malloc(100+strlen(name)+strlen(password));
-	sprintf(sqlstring, "select * "
+	res = executeQuery(NULL, "select * "
 	"from usertable "
-	"where usertable.name = '%s' and "
-	"usertable.password = '%s' and "
-	"usertable.god<2", name, password);
+	"where usertable.name = '%x' and "
+	"usertable.password = '%x' and "
+	"usertable.god<2", cgi_getentrystr("name"), cgi_getentrystr("password"));
 	printf("Content-type: text/html\n\n");
 	printf("<HTML>\n");
 	printf("<HEAD>\n");
 	printf("<TITLE>\n");
-	printf("Land of Karchan - %s\n", name);
+	printf("Land of Karchan - %s\n", cgi_getentrystr("name"));
 	printf("</TITLE>\n");
 	printf("</HEAD>\n");
 
@@ -154,63 +78,29 @@ void validateUser()
 	printf("\n");
 	//printf("[%s]\n", sqlstring);
  	
-	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
+	if (res)// there are rows
 	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_select_db(&mysql,DatabaseName))
-	{
-		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-	}
- 
-	if (mysql_query(&mysql,sqlstring))
-	{
-		// error
-	}
-	else // query succeeded, process any data returned by it
-	{
-		res = mysql_store_result(&mysql);
-		if (res)// there are rows
+		int num_fields = mysql_num_fields(res);
+		// retrieve rows, then call mysql_free_result(result)
+		row = mysql_fetch_row(res);
+		if (row == NULL)
 		{
-			int num_fields = mysql_num_fields(res);
-			// retrieve rows, then call mysql_free_result(result)
-			row = mysql_fetch_row(res);
-			if (row == NULL)
-			{
-				success = 0;
-				printf("Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
-			}
-			else
-			{
-				success=1;
-			}
-			mysql_free_result(res);
+			success = 0;
+			printf("Error retrieving character sheet. Either Character does not exist or password is incorrect...<P>\r\n");
 		}
-		else// mysql_store_result() returned nothing; should it have?
+		else
 		{
-			if(mysql_field_count(&mysql) == 0)
-			{
-				// query does not return data
-				// (it was not a SELECT)
-				// num_rows = mysql_affected_rows(&mysql);
-			}
-			else // mysql_store_result() should have returned data
-			{
-				fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
-			}
-		}	
+			success=1;
+		}
+		mysql_free_result(res);
 	}
- 	mysql_close(&mysql);
-	free(sqlstring);
 	if (success) 
 	{
-		updateCharacterSheet(name, password);
+		updateCharacterSheet(cgi_getentrystr("name"), cgi_getentrystr("password"));
 	}
 	printf("Form information has been submitted.<P>\n");
-	printf("Please click <A HREF=\"charactersheet.cgi?name=%s\">", name);
+	printf("Please click <A HREF=\"charactersheet.cgi?name=%s\">", cgi_getentrystr("name"));
 	printf("Character Sheet Info</A> to view the submitted information.<P>");
-	free(name);free(password);
 	printf("<A HREF=\"charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");   
 	printf("</BODY>\n");
 	printf("</HTML>\n");
@@ -220,7 +110,9 @@ int
 main(int argc, char *argv[])
 {
 	int res;
-
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+      
 	res = cgi_init();
 	if (res != CGIERR_NONE)
 	{
@@ -229,8 +121,11 @@ main(int argc, char *argv[])
 		cgi_quit();
 		exit(1);
 	}
-	 
+	
+	opendbconnection();
 	validateUser();
+	closedbconnection();
 	cgi_quit();
+	freeParam();
 	return 0;
 }

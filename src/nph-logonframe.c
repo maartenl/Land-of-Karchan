@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "typedefs.h"
 #include "cgi-util.h"
 
 int main(int argc, char *argv[])
@@ -60,7 +59,7 @@ int main(int argc, char *argv[])
 	printf("<HTML>\r\n");
 	printf("<BODY BGCOLOR=#FFFFFF>\r\n");
 	printf("<DIV ALIGN=CENTER>\r\n");
-	printf("<FORM METHOD=\"GET\" ACTION=\"%s\" NAME=\"myForm\" TARGET=\"statusFrame\">\r\n", MudExe);
+	printf("<FORM METHOD=\"GET\" ACTION=\"/cgi-bin/mud.cgi\" NAME=\"myForm\" TARGET=\"statusFrame\">\r\n");
 	printf("<INPUT TYPE=\"text\" NAME=\"command\" SIZE=\"60\" VALUE=\"\">\r\n");
 	printf("<INPUT TYPE=\"submit\" VALUE=\"Submit\" onClick='document.myForm.command.command=\"\"'>\r\n");
 	printf("<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\r\n", name);

@@ -67,13 +67,13 @@ void listSheets()
 	printf(" way.<P>");
 	printf("\n");
  	
-	if (!(mysql_connect(&mysql,"localhost",DatabaseLogin, DatabasePassword))) 
+	if (!(mysql_connect(&mysql,getParam(MM_DATABASEHOST),getParam(MM_DATABASELOGIN), getParam(MM_DATABASEPASSWORD)))) 
 	{
 		// error
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
 	}
  
-	if (mysql_select_db(&mysql,DatabaseName))
+	if (mysql_select_db(&mysql, getParam(MM_DATABASENAME)))
 	{
 		// error
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
@@ -155,6 +155,9 @@ int
 main(int argc, char * argv[])
 {
 	int res;
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+      
 	res = cgi_init();
 	if (res != CGIERR_NONE)
 	{
@@ -166,5 +169,6 @@ main(int argc, char * argv[])
 
 	listSheets();
 	cgi_quit();
+	freeParam();
 	return 0;
 }

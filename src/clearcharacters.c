@@ -31,94 +31,60 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-#include "mysql.h"
+#include "typedefs.h"
 
 #define debuggin 0
 
-void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
+int clearInactiveCharacters()
 {
-printf("Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
-}
-
-int SendSQL()
-{
-	MYSQL mysql;
-	MYSQL_RES *res;
+	MYSQL_RES *res, *res2;
 	MYSQL_ROW row;
 	FILE *fp;
 	uint i = 0;
 	
-	char sqlstring[1024];
-//	strcpy(sqlstring, "select name "
-//	" from tmp_usertable where "
-//	" god=0 and "
-//	"abs(hour(lastlogin)*60+minute(lastlogin)-(hour(now())*60+minute(now())) ) > 180"
-//	"");
-
-	strcpy(sqlstring, " select name, lastlogin, "
+	opendbconnection();
+	
+	res = executeQuery(NULL, " select name, lastlogin, "
 	"time_to_sec(date_sub(NOW(), INTERVAL 2 HOUR))-time_to_sec(lastlogin) "
 	"from tmp_usertable where lastlogin < date_sub(NOW(), INTERVAL 3 HOUR) "
 	"and god=0");
-	if (!(mysql_connect(&mysql,"localhost","mud", "42rakah"))) 
-		exiterr(1, sqlstring, &mysql);
- 
-	if (mysql_select_db(&mysql,"mud"))
-		exiterr(2, sqlstring, &mysql);
- 
-	if (mysql_query(&mysql,sqlstring))
-		exiterr(3, sqlstring, &mysql);
- 
-	if (!(res = mysql_store_result(&mysql)))
-		{
-			exiterr(4, sqlstring, &mysql);
-		} 
-		else 
-		{
+
+	if (res != NULL)
+	{
 		time_t tijd;
 		struct tm datum;
 		time(&tijd);
 		datum=*(gmtime(&tijd));
-		while((row = mysql_fetch_row(res))) {
+		while((row = mysql_fetch_row(res))) 
+		{
 			printf("%i:%i:%i %i-%i-%i %s deactivated by system (last active %s, %i min. idle)<BR>\r\n",
 			datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,
 			row[0], row[1], atoi(row[2])/60);
 			// Fighting who generates Seg Faults if someone is fighting non-active person
-			sprintf(sqlstring, "update tmp_usertable set fightingwho='' where fightingwho='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
-			sprintf(sqlstring, "delete from tmp_mailtable where toname='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
-			sprintf(sqlstring, "delete from itemtable where belongsto='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
-			sprintf(sqlstring, "replace into itemtable select * from tmp_itemtable where belongsto='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
-			sprintf(sqlstring, "replace into usertable select * from tmp_usertable where name='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
-			sprintf(sqlstring, "delete from tmp_itemtable where belongsto='%s'", row[0]);
-			if (debuggin) {printf("[%s]\n\n", sqlstring);}
-			mysql_query(&mysql,sqlstring);
+			mysql_free_result(executeQuery(NULL, "update tmp_usertable set fightingwho='' where fightingwho='%x'", row[0]));
+			mysql_free_result(executeQuery(NULL, "delete from tmp_mailtable where toname='%x'", row[0]));
+			mysql_free_result(executeQuery(NULL, "delete from itemtable where belongsto='%x'", row[0]));
+			mysql_free_result(executeQuery(NULL, "replace into itemtable select * from tmp_itemtable where belongsto='%x'", row[0]));
+			mysql_free_result(executeQuery(NULL, "replace into usertable select * from tmp_usertable where name='%x'", row[0]));
+			mysql_free_result(executeQuery(NULL, "delete from tmp_itemtable where belongsto='%x'", row[0]));
 		}
-	 
-	if (!mysql_eof(res))
-		exiterr(5, sqlstring, &mysql);
- 
-	sprintf(sqlstring, "delete from tmp_usertable where "
-	"god = 0 and "
-	"lastlogin < date_sub(NOW(), INTERVAL 3 HOUR)");
-	if (debuggin) {printf("[%s]\n", sqlstring);}
-	mysql_query(&mysql,sqlstring);
 
-	mysql_free_result(res);}
-	mysql_close(&mysql);
+		mysql_free_result(res);
+
+		mysql_free_result(executeQuery(NULL, "delete from tmp_usertable where "
+		"god = 0 and lastlogin < date_sub(NOW(), INTERVAL 3 HOUR)"));
+
+	}
+	
+	closedbconnection();
 }
 
 int
 main()
 {
-	SendSQL();
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+	clearInactiveCharacters();
+	freeParam();
 	return 0;
 }

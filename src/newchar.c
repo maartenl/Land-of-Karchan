@@ -50,6 +50,7 @@ maartenl@il.fontys.nl
 #include <libxml/tree.h>
 
 #include "cgi-util.h"
+#include "typedefs.h"
 
 #define MMHOST "zeus" // the hostname users will be connecting to
 #define MMPORT "3339" // the port users will be connecting to
@@ -199,18 +200,6 @@ createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 	return myBuffer;
 }
 
-int theFrames = 0;
-
-int getFrames()
-{
-	return theFrames;
-}
-
-void setFrames(int i)
-{
-	theFrames = i;
-}
-
 int main(int argc, char *argv[])
 {
 	int res, totalnumbytes;
@@ -229,7 +218,9 @@ int main(int argc, char *argv[])
 	struct sockaddr_in their_addr; // connector's address information
          
 	umask(0000);
-	
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+
 #ifdef DEBUG
 	strcpy(name, "Karn");
 	strcpy(password, "tryout");
@@ -406,6 +397,7 @@ int main(int argc, char *argv[])
 	}
 	printf("%s", checkbuf);
 	free(checkbuf);
+	freeParam();
 	
 	return 0;
 }

@@ -74,7 +74,7 @@ MYSQL_RES *res;
 MYSQL_ROW row;
 char *temp;
 
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
   	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -114,14 +114,14 @@ while(row = mysql_fetch_row(res))
 	fprintf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
 	"<A HREF=\"%s?command=readmail+%i&name=%s&password=%s&frames=%i\">"
 	"%s</A></TD><TD><A HREF=\"%s?command=deletemail+%i&name=%s&password=%s&frames=%i\">Delete</A></TD>"
-	"</TR>\r\n",row[0], MudExe, j, name, password, getFrames()+1, row[3], MudExe, j, name, password, getFrames()+1);
+	"</TR>\r\n",row[0], getParam(MM_MUDCGI), j, name, password, getFrames()+1, row[3], getParam(MM_MUDCGI), j, name, password, getFrames()+1);
 	j++;
 }
  fprintf(getMMudOut(), "</TABLE><BR>\r\n");
 	mysql_free_result(res);
 
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -136,7 +136,7 @@ MYSQL_ROW row;
 char *temp;
 char mailname[40], mailtoname[40], maildatetime[40];
 
-sprintf(logname, "%s%s.log", USERHeader, name);
+sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
 	" WHERE toname='%x' ", name);
@@ -235,9 +235,9 @@ fprintf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
 fprintf(getMMudOut(), "<HR noshade>%s", row[6]);
 fprintf(getMMudOut(), "<HR noshade>");
 fprintf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
-	MudExe, name, password, getFrames()+1);
+	getParam(MM_MUDCGI), name, password, getFrames()+1);
 PrintForm(name, password);
-fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 
 mysql_free_result(res);
@@ -276,7 +276,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	MYSQL_ROW row;
 	char *temp;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	temp = composeSqlStatement(temp, "select god from tmp_usertable where name = \"%s\" ", botname);
 	res=SendSQL2(temp, NULL);
@@ -309,7 +309,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	} else {
 	WriteSentenceIntoOwnLogFile(logname, "%s ignores you.<BR>\r\n", botname);
 	WriteMessage(name, room, "%s ignores %s.<BR>\r\n", botname, name);
-	fp = fopen(ErrorFile, "a");
+	fp = fopen(getParam(MM_ERRORFILE), "a");
 	fprintf(fp, "No response: %s says [to %s]: %s\n", name, botname, vraag);
 	fclose(fp);
 	}
@@ -389,7 +389,7 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 	fprintf(getMMudOut(), "</UL>");
 
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 	return 1;
 }
@@ -403,7 +403,7 @@ LookString(char *description, char *name, char *password)
 	MYSQL_ROW row;
 	char *temp;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -431,7 +431,7 @@ LookString(char *description, char *name, char *password)
 	fprintf(getMMudOut(), "%s", description);
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -444,7 +444,7 @@ LookAtProc(int id, char *name, char *password)
 	MYSQL_ROW row;
 	char *temp;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -488,7 +488,7 @@ LookAtProc(int id, char *name, char *password)
 
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -502,7 +502,7 @@ LookItem_Command(char *name, char *password, int room)
 	char *temp;
 	int i, containerid = 0;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	if ((getTokenAmount()<3) || (getTokenAmount()>6))
 	{
@@ -668,7 +668,7 @@ LookItem_Command(char *name, char *password, int room)
 
 			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 			return ;
 		}
@@ -796,7 +796,7 @@ LookItem_Command(char *name, char *password, int room)
 			fprintf(getMMudOut(), "%s", row[0]);
 			PrintForm(name, password);
 			if (getFrames()!=2) {ReadFile(logname);}
-			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+			fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 			fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 			mysql_free_result(res);
 			return ;
@@ -931,14 +931,14 @@ NotActive(char *fname, char *fpassword, int errornr)
 	fprintf(getMMudOut(), "<LI>you were deactivated for not responding for over 1 hour");
 	fprintf(getMMudOut(), "<LI>an error occurred</UL>");
 	fprintf(getMMudOut(), "You should be able to relogin by using the usual link below:<P>");
-	fprintf(getMMudOut(), "<A HREF=\"http://"ServerName"/karchan/enter.html\">Click here to\n");
+	fprintf(getMMudOut(), "<A HREF=\"http://%s/karchan/enter.html\">Click here to\n", getParam(MM_SERVERNAME));
 	fprintf(getMMudOut(), "relogin</A><P>\n");
 	fprintf(getMMudOut(), "</body>\n");
 	fprintf(getMMudOut(), "</HTML>\n");
 	
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
+	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, fpassword, errornr);
 }
 
@@ -971,7 +971,7 @@ Quit_Command(char *name, char *password, int room, char *fcommand)
 	char *temp;
 	char logname[100];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select punishment, address, room  from tmp_usertable where name='%x'",
 			name);
@@ -985,11 +985,12 @@ Quit_Command(char *name, char *password, int room, char *fcommand)
 		WriteMessage(name, atoi(row[2]), "A disgusting toad called ");
 	}
 	WriteMessage(name, atoi(row[2]), "%s left the game...<BR>\r\n", name);
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,
+	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),
 	"%i:%i:%i %i-%i-%i  %s (%s) has left the game<BR>\n", datumtijd.tm_hour,
 				     datumtijd.tm_min, datumtijd.tm_sec, datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year+1900, name, row[1]);
 	mysql_free_result(res);
-	ReadFile(HTMLHeader "goodbye.html");
+	sprintf(logname, "%sgoodbye.html", getParam(MM_HTMLHEADER));
+	ReadFile(logname);
 	RemoveUser(name);
 	return 1;
 }
@@ -1069,7 +1070,7 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];
 	char *extralook = NULL; 
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	extralook = NULL;
 	temp = composeSqlStatement("select concat('You are ',value,'<BR>') from tmp_attributes "
@@ -1218,7 +1219,7 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 	fprintf(getMMudOut(), "<P>");
 	PrintForm(name, password);
 
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 	fprintf(getMMudOut(), "</BODY></HTML>");
 	return 1;
@@ -1238,7 +1239,7 @@ GetMoney_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
@@ -1358,7 +1359,7 @@ DropMoney_Command(char *name, char *password, int room)
 	int mycopper, mysilver, mygold, itemid;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	if (getTokenAmount()==1)
 	{
@@ -1503,7 +1504,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	int mygold, mysilver, mycopper;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select name from tmp_usertable where (name = '%x') and "
@@ -1629,7 +1630,7 @@ GetItem_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
@@ -1853,7 +1854,7 @@ DropItem_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
@@ -2096,7 +2097,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	if (getTokenAmount()<4)
 	{
 		return 0;
@@ -2459,7 +2460,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 		/* command does not contain a 'from' word */
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
@@ -2757,7 +2758,7 @@ Wear_Command(char *name, char *password, int room, char *command)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int changedrows, itemid, amountitems, itemwearable;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	if (getTokenAmount()<4)
 	{
@@ -2983,7 +2984,7 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
@@ -3163,7 +3164,7 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	position=1;strcpy(position2, "right hand");
 	sqlstring = composeSqlStatement("select wielding from tmp_itemtable tmpitems "
@@ -3371,7 +3372,7 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
@@ -3552,7 +3553,7 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 		return 0;
 	}
 
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* check drinkstats of specific person */
 	sqlstring = composeSqlStatement("select eatstats from tmp_usertable where (name = '%x')"
@@ -3741,7 +3742,7 @@ Drink_Command(char *name, char *password, int room, char *fcommand)
 		return 0;
 	}
 
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* check drinkstats of specific person */
 	sqlstring = composeSqlStatement("select drinkstats from tmp_usertable where (name = '%x')"
@@ -3948,8 +3949,8 @@ RemapShoppingList_Command(char *name)
 	if (number==0) {return;}
 
 	sqlstring = composeSqlStatement("update items set readdescr='<H1>"
-	"<IMG SRC=\\\"http://"ServerName"/images/gif/scroll.gif\\\">"
-	"The List</H1><HR>Items:<UL>' where id=%i", number);
+	"<IMG SRC=\\\"http://%s/images/gif/scroll.gif\\\">"
+	"The List</H1><HR>Items:<UL>' where id=%i", getParam(MM_SERVERNAME), number);
 	SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 
@@ -3995,7 +3996,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select copper, silver, gold from tmp_usertable where (name = '%x')"
@@ -4221,7 +4222,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
 	numberfilledout=1;
@@ -4436,7 +4437,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	/*search pick*/
 	sqlstring = composeSqlStatement("select items.id, tmpitems.amount, items.name, items.adject1, items.adject2, tmpitems.containerid "
@@ -4564,7 +4565,7 @@ GiveItem_Command(char *name, char *password, int room)
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	if (getTokenAmount() < 4)
 	{
@@ -4820,7 +4821,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	/* look for specific person */
 	sqlstring = composeSqlStatement("select sex from tmp_usertable where (name = '%x')"
@@ -5064,7 +5065,7 @@ Dead(char *name, char *password, int room)
 	char *temp;
 	char logname[100];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	fprintf(getMMudOut(), "<HTML><HEAD><TITLE>Death</TITLE></HEAD>\n\n");
 	if (!getFrames())
@@ -5103,7 +5104,7 @@ Dead(char *name, char *password, int room)
 	mysql_free_result(res);
 	WriteMessage(name, room, "%s appears from nowhere.<BR>", name);
 	PrintForm(name, password);
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -5119,7 +5120,7 @@ ChangeTitle_Command(char *name, char *password, int room, char *fcommand)
 	{
 		return 0;
 	}
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	title = command+(getToken(1)-getToken(0));
 	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", title);
 	temp = composeSqlStatement("update tmp_usertable set title='%x' where name='%x'",

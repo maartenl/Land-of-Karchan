@@ -1053,7 +1053,7 @@ store_in_list(int socketfd, char *buf)
 				current_frames = mine->frames;
 				if (!strcmp(mine->action, "mud")) {current_command = mine->command;}
 				
-				WriteSentenceIntoOwnLogFile(BigFile, "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
+				WriteSentenceIntoOwnLogFile(getParam(MM_BIGFILE), "mmserver: %s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
 				filep = fopen("temp.txt", "w");
 				if (filep == NULL)
@@ -1151,6 +1151,9 @@ main(int argc, char **argv)
 	openlog("mmserver", LOG_CONS || LOG_PERROR || LOG_PID, LOG_USER);
 
 	syslog(LOG_INFO, "%s: Started.", IDENTITY);
+	syslog(LOG_INFO, "reading config file");
+	initParam();
+	readConfigFiles("config.xml");
 	
 	init_mudinfo();
 	display_mudinfo();
@@ -1293,6 +1296,8 @@ main(int argc, char **argv)
 	
 	syslog(LOG_INFO, "closing database connection...");
 	closedbconnection();
+	
+	freeParam();
 
 	syslog(LOG_INFO, "%s: Stopped.", IDENTITY);
 	

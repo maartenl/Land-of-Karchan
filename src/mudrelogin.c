@@ -37,7 +37,7 @@ NoNewActivate()
    fprintf(cgiOut, "<HTML><HEAD><TITLE>Goodbye</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>"
-		"<IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">Goodbye</H1><HR>\n");
+		"<IMG SRC=\"http://"getParam(MM_SERVERNAME)"/images/gif/dragon.gif\">Goodbye</H1><HR>\n");
 	fprintf(cgiOut, "Thank you for using Land of Karchan. Have a nice day.<P>");
 	fprintf(cgiOut, "</body>\n");
 	fprintf(cgiOut, "</HTML>\n");
@@ -61,7 +61,7 @@ MakeStart(char *name, char *password, int room, char *address)
 	WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-%i%s (%s) entered the game, again.<BR>\n", datum.tm_hour,
 				 datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year+1900, name, address);
 	sprintf(printstr, "%s has entered the game, again...<BR>\r\n", name);
-	sprintf(printstr, USERHeader "%s.log", name);
+	sprintf(printstr, getParam(MM_USERHEADER) "%s.log", name);
 	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
 
 	if (!getFrames())
@@ -100,13 +100,13 @@ MakeStart(char *name, char *password, int room, char *address)
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
 			fprintf(cgiOut, "		<FRAMESET ROWS=\"60%,40%\">\r\n");
 			fprintf(cgiOut, "		<FRAME SRC=%s?command=l&name=%s&password=%s&frames=3 NAME=\"statusFrame\" border=0>\r\n", MudExe, name, password);
-			fprintf(cgiOut, "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", ServerName);
+			fprintf(cgiOut, "		<FRAME SRC=http://%s/karchan/empty.html NAME=\"logFrame\">\r\n", getParam(MM_SERVERNAME));
 			fprintf(cgiOut, "		</FRAMESET>\r\n");
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", ServerName, CGIName, name, password);
+			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-leftframe.cgi?name=%s&password=%s NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), CGIName, name, password);
 			fprintf(cgiOut, "	</FRAMESET>\r\n\r\n");
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", ServerName, CGIName, name, password);
-			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", ServerName, CGIName, name, password);
-			fprintf(cgiOut, "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", ServerName);
+			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-logonframe.cgi?name=%s&password=%s NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n", getParam(MM_SERVERNAME), CGIName, name, password);
+			fprintf(cgiOut, "	<FRAME SRC=http://%s%snph-javascriptframe.cgi?name=%s&password=%s NAME=\"javascriptFrame\">\r\n", getParam(MM_SERVERNAME), CGIName, name, password);
+			fprintf(cgiOut, "	<FRAME SRC=http://%s/karchan/empty.html NAME=\"duhFrame\">\r\n", getParam(MM_SERVERNAME));
 			fprintf(cgiOut, "</FRAMESET>\r\n");
 			fprintf(cgiOut, "</HTML>\r\n");
 		}
@@ -137,7 +137,7 @@ fprintf(cgiOut,"<body>\n");
 fprintf(cgiOut,"<H1>Wrong Password</H1><HR>\n");
 fprintf(cgiOut,"You filled out the wrong password for that particular name! \n");
 fprintf(cgiOut,"Please retry by clicking at the link below:<P>\n");
-fprintf(cgiOut,"<A HREF=\"http://"ServerName"/karchan/enter.html\">Click here to retry</A></body>\n");
+fprintf(cgiOut,"<A HREF=\"http://"getParam(MM_SERVERNAME)"/karchan/enter.html\">Click here to retry</A></body>\n");
 time(&tijd);
 datum=*(gmtime(&tijd));
 WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Password Fault by %s (%s) (mudrelogin)<BR>\n",datum.tm_hour, 
@@ -160,7 +160,7 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "Your ip domain is therefore banned from the game.<P>\n");
 	fprintf(cgiOut, "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
-	"<A HREF=\"mailto:deputy@"ServerName"\">deputy@"ServerName"</A> and ask them to make "
+	"<A HREF=\"mailto:deputy@"getParam(MM_SERVERNAME)"\">deputy@"getParam(MM_SERVERNAME)"</A> and ask them to make "
 	"an exception in your case. Do <I>not</I> forget to provide your "
 	"Character name.<P>You'll be okay as long as you follow the rules.<P>\n");
 	fprintf(cgiOut, "</body>\n");

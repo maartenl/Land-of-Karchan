@@ -340,7 +340,7 @@ char           *adverb[] = {
 NULL};
 
 int 
-ReadFile(char *filenaam)
+ReadFile(const char *filenaam)
 {
 	FILE           *fp;
 	char            string[81];
@@ -372,7 +372,7 @@ if (!getFrames())
 			"	}\r\n"
 			"//-->\r\n"
 			"</SCRIPT>\r\n");
-	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
+	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
 	fprintf(getMMudOut(), "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
 	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
 	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
@@ -410,7 +410,7 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 			fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 		}
 	}
-	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/money.gif\">Inventory</H1>You have");
+	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/money.gif\">Inventory</H1>You have", getParam(MM_SERVERNAME));
 	fprintf(getMMudOut(), "<UL>");
 	sqlstring = composeSqlStatement("select tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems"
 		" where (items.id = tmpitems.id) and "
@@ -507,7 +507,7 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	fprintf(getMMudOut(), "</UL><BR>");
 	PrintForm(name, password);
 	
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 	fprintf(getMMudOut(), "</BODY></HTML>");
 }
@@ -665,7 +665,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 	temproom=GetRoomInfo(room);
 	if (temproom->west) {
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=w&name=%s&password=%s&frames=%i\">west</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->east) {
@@ -673,7 +673,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			fprintf(getMMudOut(), ", ");
 		}
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=e&name=%s&password=%s&frames=%i\">east</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->north) {
@@ -681,7 +681,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			fprintf(getMMudOut(), ", ");
 		}
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=n&name=%s&password=%s&frames=%i\">north</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->south) {
@@ -689,7 +689,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			fprintf(getMMudOut(), ", ");
 		}
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=s&name=%s&password=%s&frames=%i\">south</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->up) {
@@ -697,7 +697,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			fprintf(getMMudOut(), ", ");
 		}
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=up&name=%s&password=%s&frames=%i\">up</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 		i++;
 	}
 	if (temproom->down) {
@@ -705,7 +705,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 			fprintf(getMMudOut(), ", ");
 		}
 		fprintf(getMMudOut(), "<A HREF=\"%s?command=down&name=%s&password=%s&frames=%i\">down</A>",
-		                      MudExe, name, password, getFrames()+1);
+		                      getParam(MM_MUDCGI), name, password, getFrames()+1);
 	}
 	free(temproom);
 	i = 0;
@@ -715,8 +715,8 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 if (!getFrames()) 
 {
         fprintf(getMMudOut(),"<TABLE ALIGN=right>\n");
-	fprintf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://"ServerName"/images/gif/roos.gif\" "
-	"USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>");
+	fprintf(getMMudOut(),"<TR><TD><IMG ALIGN=right SRC=\"http://%s/images/gif/roos.gif\" "
+	"USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>", getParam(MM_SERVERNAME));
 	if (sleepstatus==1) {
 	
 	fprintf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
@@ -759,8 +759,8 @@ if (!getFrames())
 	
 	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=awaken&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
-	                MudExe, name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://"ServerName"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n");
+	                getParam(MM_MUDCGI), name, password);
+	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 	} else {
 	fprintf(getMMudOut(), "<script language=\"JavaScript\">\r\n");
 	
@@ -810,34 +810,34 @@ if (!getFrames())
 	
 	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=quit&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n",
-	                MudExe, name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://"ServerName"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n");
+	                getParam(MM_MUDCGI), name, password);
+	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n", getParam(MM_SERVERNAME));
 	
 	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=sleep&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n",
-	                MudExe, name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://"ServerName"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n");
+	                getParam(MM_MUDCGI), name, password);
+	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n", getParam(MM_SERVERNAME));
 
 	fprintf(getMMudOut(), "<TR><TD><A HREF=\"%s?command=clear&name=%s&password=%s\" "
 		" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n",
-	                MudExe, name, password);
-	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://"ServerName"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n");
+	                getParam(MM_MUDCGI), name, password);
+	fprintf(getMMudOut(), "<IMG ALIGN=left SRC=\"http://%s/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n", getParam(MM_SERVERNAME));
 	}
 	        fprintf(getMMudOut(),"</TABLE>\n");
 
 	                    fprintf(getMMudOut(), "<MAP NAME=\"roosmap\">\n");
 	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" "
 	                    "HREF=\"%s?command=n&name=%s&password=%s\">\n",
-	                    MudExe, name, password);
+	                    getParam(MM_MUDCGI), name, password);
 	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" "
 	                    "HREF=\"%s?command=s&name=%s&password=%s\">\n",
-	                    MudExe, name, password);
+	                    getParam(MM_MUDCGI), name, password);
 	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" "
 	                    "HREF=\"%s?command=w&name=%s&password=%s\">\n",
-	                    MudExe, name, password);
+	                    getParam(MM_MUDCGI), name, password);
 	                    fprintf(getMMudOut(), "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" "
 	                    "HREF=\"%s?command=e&name=%s&password=%s\">\n",
-	                    MudExe, name, password);
+	                    getParam(MM_MUDCGI), name, password);
 	                    fprintf(getMMudOut(), "</MAP>\n");
 } /*end if getFrames dude*/
 	/* Print characters in room */
@@ -867,19 +867,19 @@ if (!getFrames())
 	if (atoi(row[3])!=0)
 	{
 		fprintf(getMMudOut(), "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
-			colorme, MudExe, row[4], name, password, getFrames()+1, row[0]);
+			colorme, getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, row[0]);
 	}
 	else
 	{
 			if (atoi(row[1])==0) 
 			{
 				fprintf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
-					MudExe, row[4], name, password, getFrames()+1, colorme, row[0]);
+					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 			else
 			{
 				fprintf(getMMudOut(), "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
-					MudExe, row[4], name, password, getFrames()+1, colorme, row[0]);
+					getParam(MM_MUDCGI), row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 		}
 	}
@@ -973,10 +973,10 @@ if (!getFrames())
 	fprintf(getMMudOut(), "<BR>\r\n");
 
 	PrintForm(name, password);
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	if (getFrames()!=2) {ReadFile(logname);}
 
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 

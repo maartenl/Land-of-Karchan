@@ -41,7 +41,7 @@ MIFList(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -66,7 +66,7 @@ MIFList(char *name, char *password, int room)
 		}
 	}
 
-	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n");
+	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
@@ -78,7 +78,7 @@ MIFList(char *name, char *password, int room)
 	fprintf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -91,7 +91,7 @@ MIFEntryIn(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, mysex[10];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = SendSQL2(temp, NULL);
@@ -129,7 +129,7 @@ MIFEntryOut(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, mysex[10];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = SendSQL2(temp, NULL);
@@ -168,7 +168,7 @@ MIFTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
@@ -196,7 +196,7 @@ RangerList(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -221,7 +221,7 @@ RangerList(char *name, char *password, int room)
 		}
 	}
 
-	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n");
+	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://%s/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n", getParam(MM_SERVERNAME));
 	temp = composeSqlStatement("select name, title from usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
@@ -233,7 +233,7 @@ RangerList(char *name, char *password, int room)
 	fprintf(getMMudOut(), "</UL>\r\n");
 	PrintForm(name, password);
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
@@ -246,7 +246,7 @@ RangerEntryIn(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, mysex[10];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res = SendSQL2(temp, NULL);
@@ -286,7 +286,7 @@ RangerEntryOut(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, mysex[10];
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res=SendSQL2(temp, NULL);
@@ -324,7 +324,7 @@ RangerTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
@@ -353,7 +353,7 @@ SWTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
@@ -382,7 +382,7 @@ DepTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
@@ -410,7 +410,7 @@ BKTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
@@ -438,7 +438,7 @@ VampTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
@@ -466,7 +466,7 @@ KnightTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
@@ -494,7 +494,7 @@ CoDTalk(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp, *temp2;
 	
-	sprintf(logname, "%s%s.log", USERHeader, name);
+	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",

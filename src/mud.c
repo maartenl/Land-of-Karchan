@@ -49,6 +49,7 @@ maartenl@il.fontys.nl
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "typedefs.h"
 #include "cgi-util.h"
 
 #define MMHOST "zeus"	// the hostname users will be connecting to
@@ -178,18 +179,6 @@ createXmlString(char *fcommand, char *fname, char *fpassword, char *fcookie, int
 	return myBuffer;
 }
 
-int theFrames = 0;
-
-int getFrames()
-{
-	return theFrames;
-}
-
-void setFrames(int i)
-{
-	theFrames = i;
-}
-
 void 
 NotActive(char *fname, char *fpassword, int errornr)
 {
@@ -227,6 +216,9 @@ main(int argc, char * argv[])
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
 	
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+
 #ifdef DEBUG
 	command = (char *) malloc(1024);
 	printf("Command:");
@@ -447,6 +439,6 @@ main(int argc, char * argv[])
 	free(command); // clear the entered command
 	free(myhostname);
 	free(myport);
-	
+	freeParam();
 	return 0;
 }

@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "typedefs.h"
 #include "cgi-util.h"
 
 int main(int argc, char * argv[])

@@ -46,7 +46,7 @@ GoWest_Command(char *name, char *password, int room, char *command)
 	
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 		"where name='%x'"
@@ -114,7 +114,7 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 	                        
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 	"where name='%x'"
@@ -183,7 +183,7 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
                         
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 	"where name='%x'"
@@ -252,7 +252,7 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 	
 //	RoomTextProc(room);
 
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
 		"where name='%x'"
@@ -315,7 +315,7 @@ Sleep_Command(char *name, char *password, int room, char *fcommand)
 	MYSQL_ROW row;
 	char *temp;
                         
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("update tmp_usertable set sleep=1, jumpmana=jumpmana+1, jumpmove=jumpmove+2, jumpvital=jumpvital+3 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
@@ -336,7 +336,7 @@ Awaken2_Command(char *name, char *password, int room)
 	MYSQL_ROW row;
 	char *temp;
                         
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("update tmp_usertable set sleep=0, jumpmana=jumpmana-1, jumpmove=jumpmove-2, jumpvital=jumpvital-3 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
@@ -352,7 +352,7 @@ int
 BigTalk_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
 	fprintf(getMMudOut(), "<TITLE>\n");
@@ -387,7 +387,7 @@ BigTalk_Command(char *name, char *password, int room, char *fcommand)
 			"	}\r\n"
 			"//-->\r\n"
 			"</SCRIPT>\r\n");
-	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
+	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
 	fprintf(getMMudOut(), "<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n");
 	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
 	fprintf(getMMudOut(), "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
@@ -395,7 +395,7 @@ BigTalk_Command(char *name, char *password, int room, char *fcommand)
 	fprintf(getMMudOut(), "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
 	fprintf(getMMudOut(), "</FORM><P>\n");
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;
 }				/* endproc */
@@ -404,7 +404,7 @@ int
 MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
 	fprintf(getMMudOut(), "<TITLE>\n");
@@ -440,7 +440,7 @@ MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 
 	fprintf(getMMudOut(), "<TABLE BORDER=0>");
 	fprintf(getMMudOut(), "<TR><TD>From:</TD><TD><B>%s</B></TD></TR>\r\n",name);
-	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", MudExe);
+	fprintf(getMMudOut(), "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
 	fprintf(getMMudOut(), "<TR><TD>To: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailto\" VALUE=\"\"></TD></TR>\r\n");
 	fprintf(getMMudOut(), "<TR><TD>Header: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailheader\" SIZE=80 VALUE=\"\"></TD></TR>\r\n");
 	fprintf(getMMudOut(), "<TR><TD>Body:</TD><TD>\r\n");
@@ -452,7 +452,7 @@ MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 	fprintf(getMMudOut(), "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n");
 	fprintf(getMMudOut(), "</FORM><P>\r\n");
 	if (getFrames()!=2) {ReadFile(logname);}
-	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+	fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P></BODY></HTML>");
 	return 1;
 }				/* endproc */
@@ -461,7 +461,7 @@ int
 Time_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "Current time is %i:%i:%i<BR>\r\n",
 		 datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec);
 	WriteRoom(name, password, room, 0);
@@ -472,7 +472,7 @@ int
 Date_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];  
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "Current date is %i-%i-%i<BR>\r\n",
 		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year+1900);
 	WriteRoom(name, password, room, 0);
@@ -483,7 +483,7 @@ void
 LookSky_Command(char *name, char *password)
 {
 	char logname[100];  
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	LookAtProc(-10, name, password);
 }				/* endproc */
 

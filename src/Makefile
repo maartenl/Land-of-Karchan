@@ -71,7 +71,7 @@ LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence
 XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
 TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
-nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
+nph-addendum nph-logonframe nph-leftframe nph-javascriptframe \
 wholist charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
 
 all: $(TARGETS)
@@ -104,9 +104,6 @@ enter.o: enter.c
 mmserver.o: mmserver.c
 	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c mmserver.c $(DEBUG)
 
-rolls.o: rolls.c
-	$(CC) $(COPTS) $(INCLUDES) -c rolls.c $(DEBUG)
-
 # has become obsolete
 # mudrelogin.o: mudrelogin.c
 #	$(CC) $(COPTS) $(INCLUDES) -c mudrelogin.c $(DEBUG)
@@ -130,31 +127,28 @@ userlib.o: userlib.c
 	$(CC) $(COPTS) $(INCLUDES) -c userlib.c $(DEBUG)
 
 typedefs.o: typedefs.c 
-	$(CC) $(COPTS) $(INCLUDES) -c typedefs.c $(DEBUG)
+	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c typedefs.c $(DEBUG)
 
 #--- Binary executables are compiled below...
 
-rolls2: rolls.o typedefs.o userlib.o
-	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
-
-enter: enter.o cgi-util.o
-	$(CC) $(COPTS) -o enter cgi-util.o enter.o $(LIBDIR) $(XMLLIBDIR) 
+enter: enter.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o enter cgi-util.o typedefs.o enter.o $(LIBDIR) $(XMLLIBDIR) 
 
 # has become obsolete
 #mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgi-util.o mudrelogin.c
 #	$(CC) $(COPTS) -o mudrelogin cgi-util.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
 
-newchar: newchar.o cgi-util.o newchar.c 
-	$(CC) $(COPTS) -o newchar cgi-util.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
+newchar: newchar.o cgi-util.o newchar.c typedefs.o
+	$(CC) $(COPTS) -o newchar cgi-util.o typedefs.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
 
-mud: mud.o cgi-util.o 
-	$(CC) $(COPTS) -o mud cgi-util.o mud.o $(LIBDIR) $(XMLLIBDIR) 
+mud: mud.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o mud cgi-util.o typedefs.o mud.o $(LIBDIR) $(XMLLIBDIR) 
 
 mmserver: mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
 	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgi-util.o 
-	$(CC) $(COPTS) -o events cgi-util.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)
+	$(CC) $(COPTS) -o events cgi-util.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(XMLLIBDIR)
 
 #--- Compilation of frame-binaries
 
@@ -167,14 +161,14 @@ addendumframe: addendumframe.o cgi-util.o
 leftframe.o: leftframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c leftframe.c
 
-leftframe: leftframe.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o leftframe cgi-util.o typedefs.o leftframe.o $(LIBDIR)
+leftframe: leftframe.o cgi-util.o
+	$(CC) $(COPTS) -o leftframe cgi-util.o leftframe.o $(LIBDIR)
 
 logonframe.o: logonframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c logonframe.c
 
-logonframe: logonframe.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o logonframe cgi-util.o typedefs.o logonframe.o $(LIBDIR)
+logonframe: logonframe.o cgi-util.o 
+	$(CC) $(COPTS) -o logonframe cgi-util.o logonframe.o $(LIBDIR)
 
 #--- Compilation of javascript/serverpush/frame-binaries
 
@@ -182,63 +176,63 @@ nph-addendum.o: nph-addendum.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-addendum.c
 
 nph-addendum: nph-addendum.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o nph-addendum cgi-util.o typedefs.o nph-addendum.o $(LIBDIR) 
+	$(CC) $(COPTS) -o nph-addendum cgi-util.o typedefs.o nph-addendum.o $(LIBDIR) $(XMLLIBDIR)
 
 nph-logonframe.o: nph-logonframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-logonframe.c
 
-nph-logonframe: nph-logonframe.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o nph-logonframe cgi-util.o typedefs.o nph-logonframe.o $(LIBDIR) 
+nph-logonframe: nph-logonframe.o cgi-util.o
+	$(CC) $(COPTS) -o nph-logonframe cgi-util.o nph-logonframe.o $(LIBDIR)
 
 nph-leftframe.o: nph-leftframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-leftframe.c
 
-nph-leftframe: nph-leftframe.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o nph-leftframe cgi-util.o typedefs.o nph-leftframe.o $(LIBDIR) 
+nph-leftframe: nph-leftframe.o cgi-util.o 
+	$(CC) $(COPTS) -o nph-leftframe cgi-util.o nph-leftframe.o $(LIBDIR)
 
 nph-javascriptframe.o: nph-javascriptframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-javascriptframe.c
 
-nph-javascriptframe: nph-javascriptframe.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o nph-javascriptframe cgi-util.o typedefs.o nph-javascriptframe.o $(LIBDIR) 
+nph-javascriptframe: nph-javascriptframe.o cgi-util.o 
+	$(CC) $(COPTS) -o nph-javascriptframe cgi-util.o nph-javascriptframe.o $(LIBDIR)
 
 #--- Compilation and installing of small website binaries like the wholist
 
 wholist.o: wholist.c
 	$(CC) $(COPTS) $(INCLUDES)  -c wholist.c 
 
-wholist: wholist.o
-	$(CC) $(COPTS) -o wholist wholist.o $(LIBDIR)
+wholist: wholist.o typedefs.o
+	$(CC) $(COPTS) -o wholist wholist.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
 charactersheet.o: charactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c charactersheet.c 
 
-charactersheet: charactersheet.o cgi-util.o
-	$(CC) $(COPTS) -o charactersheet cgi-util.o charactersheet.o $(LIBDIR)
+charactersheet: charactersheet.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o charactersheet cgi-util.o charactersheet.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
 charactersheets.o: charactersheets.c
 	$(CC) $(COPTS) $(INCLUDES) -c charactersheets.c 
 
-charactersheets: charactersheets.o cgi-util.o
-	$(CC) $(COPTS) -o charactersheets cgi-util.o charactersheets.o $(LIBDIR) 
+charactersheets: charactersheets.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o charactersheets cgi-util.o charactersheets.o typedefs.o $(LIBDIR)  $(XMLLIBDIR)
 
 editcharactersheet.o: editcharactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c editcharactersheet.c 
 
-editcharactersheet: editcharactersheet.o cgi-util.o
-	$(CC) $(COPTS) -o editcharactersheet cgi-util.o editcharactersheet.o $(LIBDIR)
+editcharactersheet: editcharactersheet.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o editcharactersheet cgi-util.o editcharactersheet.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
 submitcharactersheet.o: submitcharactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c submitcharactersheet.c 
 
-submitcharactersheet: submitcharactersheet.o cgi-util.o
-	$(CC) $(COPTS) -o submitcharactersheet cgi-util.o submitcharactersheet.o $(LIBDIR)
+submitcharactersheet: submitcharactersheet.o cgi-util.o typedefs.o 
+	$(CC) $(COPTS) -o submitcharactersheet cgi-util.o submitcharactersheet.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
 clearcharacters.o: clearcharacters.c
 	$(CC) $(COPTS) $(INCLUDES) -c clearcharacters.c 
 
-clearcharacters: clearcharacters.o clearcharacters.c
-	$(CC) $(COPTS) -o clearcharacters clearcharacters.o $(LIBDIR)
+clearcharacters: clearcharacters.o typedefs.o
+	$(CC) $(COPTS) -o clearcharacters clearcharacters.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
 
 #--- Clean up the stuff and install as well
 

@@ -32,7 +32,7 @@ void
 Error(int i, char *description)
 {
 	FILE           *fp;
-	fp = fopen(ErrorFile, "a");
+	fp = fopen(getParam(MM_ERRORFILE), "a");
 	fprintf(fp, "error %i: %s\n", i, description);
 	fclose(fp);
 }
@@ -105,7 +105,7 @@ ActivateUser(char *name)
 	mysql_free_result(res);
 	
 		umask(0000);
-		sprintf(filenaam, USERHeader "%s.log", name);
+		sprintf(filenaam, "%s%s.log", getParam(MM_USERHEADER), name);
 		fp = fopen(filenaam, "w");
 		fclose(fp);
 		
@@ -198,7 +198,7 @@ free(temp);temp=NULL;
 
 mysql_free_result(res);
 
-	sprintf(filenaam, USERHeader "%s.log", name);
+	sprintf(filenaam, "%s%s.log", getParam(MM_USERHEADER), name);
 	remove(filenaam);
 
 /* -------------------------------------- Items --------------------------- */
@@ -459,7 +459,7 @@ ClearLogFile(char *filenaam)
 }
 
 void 
-WriteSentenceIntoOwnLogFile(char *filenaam, char *fmt,...)
+WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt,...)
 {
 	FILE *filep;
 	va_list ap;
@@ -495,7 +495,7 @@ free(temp);temp=NULL;
 
 save = fmt;
 while((row = mysql_fetch_row(res))) {
-			strcpy(troep, USERHeader);
+			strcpy(troep, getParam(MM_USERHEADER));
 			strcat(troep, row[0]);
 			strcat(troep, ".log");
 			filep = fopen(troep, "a");
@@ -541,7 +541,7 @@ while((row = mysql_fetch_row(res))) {
 				char *s;
 				int i;
 				char c;
-			strcpy(troep, USERHeader);
+			strcpy(troep, getParam(MM_USERHEADER));
 			strcat(troep, row[0]);
 			strcat(troep, ".log");
 				fmt = save;
@@ -582,7 +582,7 @@ if (!(row = mysql_fetch_row(res)))
 	return 0;
 }
 
-	strcpy(troep, USERHeader);
+	strcpy(troep, getParam(MM_USERHEADER));
 	strcat(troep, row[0]);
 	strcat(troep, ".log");
 	filep = fopen(troep, "a");
@@ -619,7 +619,7 @@ if (!(row = mysql_fetch_row(res)))
 	return 0;
 }
 
-	strcpy(troep, USERHeader);
+	strcpy(troep, getParam(MM_USERHEADER));
 	strcat(troep, row[0]);
 	strcat(troep, ".log");
 	filep = fopen(troep, "a");
@@ -646,7 +646,7 @@ res=SendSQL2(temp, NULL);
 free(temp);temp=NULL;
 
 while ((row = mysql_fetch_row(res))) {
-	strcpy(troep, USERHeader);
+	strcpy(troep, getParam(MM_USERHEADER));
 	strcat(troep, row[0]);
 	strcat(troep, ".log");
 	WriteSentenceIntoOwnLogFile(troep, to);

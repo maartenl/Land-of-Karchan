@@ -67,7 +67,7 @@ void WrongPasswd()
 	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
 	printf("You filled out the wrong password for that particular name! \n");
 	printf("Please retry by clicking at the link below:<P>\n");
-	printf("<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
+	printf("<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
 	exit(0);
 }
 
@@ -81,6 +81,9 @@ int main(int argc, char * argv[])
 	char logstring[80];
 	char logname[90];
 
+	initParam();
+	readConfigFiles("/karchan/config.xml");
+      
 //	cgiHeaderContentType("text/html");
 	res = cgi_init();
 	if (res != CGIERR_NONE)
@@ -123,7 +126,7 @@ int main(int argc, char * argv[])
 	printf("---blaat---\n");
 	fflush(stdout);
 	sleep(1);
-	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	fp = fopen(logname, "r");
 //	fseek(fp, 0, SEEK_END);
 	while (1)
@@ -173,5 +176,6 @@ int main(int argc, char * argv[])
 	cgi_quit();
 	
 	fclose(fp);
+	freeParam();
 	return 0;
 }

@@ -25,6 +25,10 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "typedefs.h"
+// include files for the xml library calls
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 /*roomindex, west, east, north, south, up, down, light_source*/
 roomstruct room;
@@ -98,6 +102,68 @@ void setShutdown(int aOffset)
 	if (game_shutdown < 0) 
 	{			
 		game_shutdown = 0;
+	}
+}
+
+char *parameters[24];
+
+/*! clear out the entire parameterlist
+	This should be called at the beginning of each program
+	if you do not want nasty core dumps and segmentation faults. 
+*/
+void initParam()
+{
+	int i;
+	for (i = 0; i < 24; i++)
+	{
+		parameters[i] = NULL;
+	}
+}
+
+/*! clear out the entire parameterlist
+	This should be called at the end of each program
+	It cleanly frees all memory requested by previous calls by setParam().
+*/
+void freeParam()
+{
+	int i;
+	for (i = 0; i < 24; i++)
+	{
+		free(parameters[i]);
+		parameters[i] = NULL;
+	}
+}
+
+/*! retrieve a parameter from the parameter list
+	\param  int constant describing which parameter to retrieve, valid range 1..23
+	\return char* parameter contents
+*/
+const char *getParam(int i)
+{
+	if ((i<0) || (i>23))
+	{
+		return NULL;
+	}
+	if (parameters[i] == NULL)
+	{
+		printf("Problem! Parameter %i is NULL.\n", i);
+		abort();
+	}
+	return parameters[i];
+}
+
+/*! set a parameter
+	\param int constant describing which parameter to set, valid range 1..23
+	\param char* string to set the constant to, the string is copied */
+void setParam(int i, char *parameter)
+{
+	if (parameters[i] != NULL) 
+	{
+		free(parameters[i]);
+	}
+	if (parameter != NULL)
+	{
+		parameters[i] = strdup(parameter);
 	}
 }
 
@@ -175,7 +241,7 @@ FatalError(FILE *output, int i, char *description, char *busywith)
 	"error you received to <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>.<P>\r\n", busywith);
 	fprintf(output, "</BODY></HTML>\r\n");
 
-  fp = fopen(ErrorFile, "a");
+  fp = fopen(getParam(MM_ERRORFILE), "a");
   fprintf(fp, "fatal error %i: %s, %s\n", i, description, busywith);
   fclose(fp);
   exit(0);
@@ -206,7 +272,7 @@ void InitializeRooms(int roomint)
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
 {
 FILE *fp;
-fp = fopen(ErrorFile, "a");
+fp = fopen(getParam(MM_ERRORFILE), "a");
 fprintf( fp, "Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
 fclose(fp);
 }
@@ -234,7 +300,7 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring)
 		exiterr2(1, sqlstring, &mysql, file);
 	}
  
-	if (mysql_select_db(&mysql,DatabaseName))
+	if (mysql_select_db(&mysql,getParam(MM_DATABASENAME)))
 	{
 		exiterr(2, sqlstring, &mysql);
 		exiterr2(2, sqlstring, &mysql, file);
@@ -283,7 +349,12 @@ void
 opendbconnection()
 {
 	mysql_init(&dbconnection);
-	if (!(mysql_real_connect(&dbconnection, "localhost", DatabaseLogin,DatabasePassword, DatabaseName, 0, NULL, 0)))
+	
+	if (!(mysql_real_connect(&dbconnection, 
+		getParam(MM_DATABASEHOST), 
+		getParam(MM_DATABASELOGIN),
+		getParam(MM_DATABASEPASSWORD), 
+		getParam(MM_DATABASENAME), 0, NULL, 0)))
 	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
 	}   
@@ -573,5 +644,107 @@ for (i=0;i<25;i++)
 }
 fpassword[25]=0;
 return fpassword;
+}
+
+//#define MM_ARRAYDEF
+char *parameterdefs[24] =
+{"HTMLHeader",
+"USERHeader", 
+"DATABASEHeader",
+"CopyrightHeader",
+"DatabaseName",
+"DatabaseLogin",   
+"DatabasePassword",
+"DatabaseHost",  
+"DatabasePort",
+"ServerName",
+"CGIName",
+"MudOffLineFile",
+"StdHelpFile",
+"AuditTrailFile", 
+"BigFile",
+"ErrorFile",
+"MudCgi",
+"EnterCgi",
+"NewcharCgi",
+"LogonframeCgi",
+"LeftframeCgi",
+"MMHOST",
+"MMPORT",
+NULL};
+
+/*! dumps the contents of the configuration to the screen. THe
+	databasepassword is skipped for security reasons. 
+*/
+void writeConfig()
+{
+	int i;
+	i=0;
+	fprintf(getMMudOut(), "<TABLE>\r\n");
+	while (parameterdefs[i] != NULL)
+	{
+		if ((i+1) != MM_DATABASEPASSWORD)
+		{
+			fprintf(getMMudOut(), "<TR><TD>%i</TD><TD>%s</TD><TD>%s</TD></TR>\r\n",
+			i+1, parameterdefs[i], getParam(i+1));
+		}
+		i++;
+	}
+	fprintf(getMMudOut(), "</TABLE>\r\n");
+}
+	
+
+/*! read config file (xml file) and parse it properly 
+	\param char * filename which contents is an appropriate xml format
+*/
+int readConfigFiles(char *filename)
+{
+	xmlDocPtr doc;
+	xmlNsPtr ns;
+	xmlNodePtr cur;
+	xmlDtdPtr myDtd = NULL;
+	char *temp;
+	
+	// build an XML tree from the file;
+	doc = xmlParseFile(filename);
+	if (doc == NULL)
+	{
+		return 0;
+	}
+	cur = xmlDocGetRootElement(doc);
+	if (cur == NULL) 
+	{
+		fprintf(stderr,"empty document\n");
+		xmlFreeDoc(doc);
+		return(0);
+	}
+	cur = cur->xmlChildrenNode;
+	while (cur != NULL) 
+	{
+		int counter;
+		temp = NULL;
+		counter = 0;
+		while (parameterdefs[counter] != NULL)
+		{
+			if (!xmlStrcmp(cur->name, (const xmlChar *) parameterdefs[counter]))
+			{
+				if ((temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1)) != NULL)
+				{
+					setParam(counter+1, temp);
+#ifdef DEBUG
+					printf("config: %s,%s(%i),%s\n", temp, parameterdefs[counter], counter, getParam(counter+1));
+#endif					
+					xmlFree(temp);
+				}
+			}
+			counter++;
+		}
+		cur = cur->next;
+	}
+#ifdef DEBUG	
+	xmlDocDump(stderr, doc);
+#endif
+	xmlFreeDoc(doc);
+	return 1;
 }
 
