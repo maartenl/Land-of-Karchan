@@ -995,6 +995,19 @@ public class Person implements Executable, AttributeContainer
 		Logger.getLogger("mmud").finer("field_name=" + field_name +
 			", atttrib_name=" + attrib_name + ", value=" + 
 			value + "[" + value.getClass() + "]");
+		if (field_name.equals("room"))
+		{
+			if (value instanceof Null)
+			{
+				throw new FieldNotSupportedException(field_name + " may not be set to null.");
+			}
+			if (value instanceof Room)
+			{
+				setRoom((Room) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not room.");
+		}
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
