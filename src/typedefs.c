@@ -407,6 +407,93 @@ composeSqlStatement(char *sqlstring, ...)
 	return my_sqlstring;
 }
 
+//! execute a composed sql statement
+/*! create an sql statement in the printf-way, with the following options and execute it.
+	<UL><LI>\%s - normal string
+	<LI>\%x - special string, interpreted for use as string literal in the query
+	(so special characters are escaped properly)
+	<LI>\%i - integer
+	</UL>
+	If you need a % sign, literally, try '%\i' for instance.
+	Example: composeSqlStatement("select * from tmp_usertable where name='\%x', name);
+	\param int* the integere returning the number of rows affected by the query
+	\param sqlstring the format string (with options as displayed above)
+	\param ... the unknown list of parameters to be used
+	\return the resultset, please do not forget to call mysql_free_result
+	\sa SendSQL2
+*/
+MYSQL_RES *
+executeQuery(int *affected_rows, char *sqlstring, ...)
+{
+	char *my_sqlstring, *s, *special_s;
+	int my_size, my_length, d, i;
+	va_list ap;
+	char temp[20];
+	MYSQL_RES *myResultSet;
+
+	my_size = strlen(sqlstring);
+	my_sqlstring = (char *) malloc(my_size+1);
+	*my_sqlstring = 0;
+	my_length = 0;
+	va_start(ap, sqlstring);
+	while (*sqlstring)
+	{
+		if (*sqlstring == '%')
+		{
+			switch(sqlstring[1]) 
+			{
+				case 's': /* common_string */
+					s = va_arg(ap, char *);
+					my_size += strlen(s);
+					my_length += strlen(s);
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, s);
+					sqlstring++;
+					break;
+				case 'x': /* mysql_string */
+					s = va_arg(ap, char *);
+					special_s = (char *) malloc(strlen(s)*2+1);
+					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
+					my_size += i;
+					my_length += i;
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, special_s);
+					free(special_s);special_s=NULL;
+					sqlstring++;
+					break;
+				case 'i': /* int */
+					d = va_arg(ap, int);
+					sprintf(temp, "%i", d);
+					s = temp;
+					my_size += strlen(s);
+					my_length += strlen(s);
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, s);
+					sqlstring++;
+					break;
+				default :
+					my_sqlstring[my_length] = *sqlstring;
+					my_length++;
+					my_sqlstring[my_length] = 0;
+				break;
+			}
+		}
+		else
+		{
+			my_sqlstring[my_length] = *sqlstring;
+			my_length++;
+			my_sqlstring[my_length] = 0;
+		}
+		sqlstring++;
+	}
+	va_end(ap);
+	
+	myResultSet = SendSQL2(my_sqlstring, affected_rows);
+	free(my_sqlstring);
+
+	return myResultSet;
+}
+
 roomstruct *GetRoomInfo(int room)
 {
 	MYSQL_RES *res;
