@@ -298,7 +298,7 @@ public class MudSocket extends Thread
 			myOutputStream.close();
 			myInputStream.close();
 			theSocket.close();
-			Logger.getLogger("mmud").info("closing connection...");
+			Logger.getLogger("mmud").finer("closing connection...");
 		} catch (IOException e)
 		{
 			theSuccess = false;
