@@ -1252,7 +1252,7 @@ Stats_Command(char *name, char *password)
 	,row[0], row[3], ShowString(atoi(row[29])/*vitals*/, atoi(row[52])/*maxvital*/),
 	ShowMovement(atoi(row[49]), atoi(row[51])),
 	 ShowDrink(atoi(row[32])), ShowEat(atoi(row[33])), ShowBurden(CheckWeight(name)), ShowAlignment(atoi(row[47])));
-	fprintf(cgiOut, "You are level <B>%i</B>, <B>%i</B>, <B>%i</B> points away from levelling.<BR>\r\n",
+	fprintf(cgiOut, "You are level <B>%i</B>, <B>%i</B> experience points, <B>%i</B> points away from levelling.<BR>\r\n",
 	 atoi(row[24]) /*x.experience*/ / 1000, atoi(row[24]) % 1000, 1000 - (atoi(row[24]) % 1000));
 	fprintf(cgiOut, "Strength <B>%s</B> Intelligence <B>%s</B> Dexterity <B>%s</B> Constitution <B>%s</B> Wisdom <B>%s</B>"
 		" Mana <B>%i (<font color=blue>%i</Font>)</B> Movement <B>%i (<font color=blue>%i</font>)</B><BR>\r\n",
