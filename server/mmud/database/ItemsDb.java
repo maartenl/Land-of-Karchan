@@ -110,6 +110,12 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlGetItemRoom2String =
+		"select mm_itemtable.* "
+		+ "from mm_roomitemtable, mm_itemtable "
+		+ "where mm_itemtable.itemid = ? and "
+		+ "mm_itemtable.id = mm_roomitemtable.id and "
+        + "mm_roomitemtable.room = ?";
 	public static String sqlGetItemPersonString =
 		"select mm_itemtable.itemid, mm_charitemtable.* "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
@@ -731,6 +737,53 @@ public class ItemsDb
 			sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
 			sqlGetItem.setString(4, (adject2!=null ? adject2 :""));
 			sqlGetItem.setString(5, (adject3!=null ? adject3 :""));
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				Item anItem = new Item(anItemId, anItemInstanceId);
+				Database.getItemAttributes(anItem);
+				items.add(anItem);
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").info("returns: " + items);
+		return items;
+	}
+
+	/**
+	 * Retrieve specific items from the room with a specific itemdefinition.
+	 * @param anItemDef item definition of to look for items.
+	 * @param aRoom the room where said item(s) should be located
+	 * @return Vector containing all Item objects found.
+	 */
+	public static Vector getItemsFromRoom(ItemDef anItemDef,
+								Room aRoom)
+	{
+		Logger.getLogger("mmud").finer("anItemDef=" + anItemDef + 
+			", aRoom=" + aRoom);
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement sqlGetItem =
+				Database.prepareStatement(sqlGetItemRoom2String);
+			sqlGetItem.setInt(1, anItemDef.getId());
+			sqlGetItem.setInt(2, aRoom.getId());
 			res = sqlGetItem.executeQuery();
 			if (res == null)
 			{

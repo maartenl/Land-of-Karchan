@@ -50,7 +50,7 @@ import mmud.commands.Command;
  * Class containing all the information of a person in the game. (Not
  * necessarily a user playing)
  */
-public class Person implements simkin.Executable
+public class Person implements Executable, AttributeContainer
 {
 	private String theName;
 	private Room theRoom;
@@ -813,6 +813,7 @@ public class Person implements simkin.Executable
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
+		AttributeDb.setAttribute(anAttribute, this);
 	}
 
 	/**
@@ -836,6 +837,7 @@ public class Person implements simkin.Executable
 	public void removeAttribute(String aName)
 	{
 		theAttributes.remove(aName);
+		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
 	}
 
 	/**

@@ -38,7 +38,7 @@ import mmud.database.*;
  * The definition of an item. The analogy with Java would be the difference
  * between a class and an object.
  */
-public class ItemDef
+public class ItemDef implements AttributeContainer
 {
 	private String theVerb;
 	private String theAdjective1;

@@ -8,7 +8,7 @@
 HOMEDIR = /home/karchan/cvs2/server
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
-JAVADOCDIR = /var/www/html/javadoc
+JAVADOCDIR = /home/httpd/html/javadoc
 
 #
 # Options that can be used to the make command

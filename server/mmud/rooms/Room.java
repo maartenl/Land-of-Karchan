@@ -47,7 +47,7 @@ public class Room implements Executable
 {
 	private int theId;
 	private String theTitle;
-	private String theContents;
+	private String theDescription;
 	private Room south, north, east, west, up, down;
 	private int intsouth, intnorth, inteast, intwest, intup, intdown;
 
@@ -55,7 +55,7 @@ public class Room implements Executable
 	 * Create a new room.
 	 * @param anId the identification number of the room
 	 * @param aTitle the title of the room.
-	 * @param aContents the contents/description of the room.
+	 * @param aDescription the contents/description of the room.
 	 * @param asouth identification of the room to the south (0 if not
 	 * applicable)
 	 * @param anorth identification of the room to the north (0 if not
@@ -69,11 +69,11 @@ public class Room implements Executable
 	 * @param adown identification of the room down (0 if not
 	 * applicable)
 	 */
-	public Room(int anId, String aTitle, String aContents, int asouth, int anorth, int aeast, int awest, int aup, int adown)
+	public Room(int anId, String aTitle, String aDescription, int asouth, int anorth, int aeast, int awest, int aup, int adown)
 	{
 		theId = anId;
 		theTitle = aTitle;
-		theContents = aContents;
+		theDescription = aDescription;
 		south = null;
 		north = null;
 		east = null;
@@ -275,11 +275,11 @@ public class Room implements Executable
 
 	/**
 	 * Sets the contents, also known as the description, of the room.
-	 * @param aContents the new description for the room.
+	 * @param aDescription the new description for the room.
 	 */
-	public void setContents(String aContents)
+	public void setDescription(String aDescription)
 	{
-		theContents = aContents;
+		theDescription = aDescription;
 		Database.writeRoom(this);
 	}
 
@@ -287,9 +287,9 @@ public class Room implements Executable
 	 * Gets the contents, also known as the description, of the room.
 	 * @return String containing the description for the room.
 	 */
-	public String getContents()
+	public String getDescription()
 	{
-		return theContents;
+		return theDescription;
 	}
 
 	/**
@@ -300,12 +300,12 @@ public class Room implements Executable
 	 */
 	public String getDescription(User aUser)
 	{
-		String result = (getContents() == null ? 
+		String result = (getDescription() == null ? 
 			"<H1>Cardboard</H1>" +
 			"Everywhere around you you notice cardboard. It seems as if this part" +
 			" has either not been finished yet or you encountered an error" +
 			" in retrieving the room description from the server.<P>"
-			: getContents());
+			: getDescription());
 		result += "[ ";
 		if (getWest() != null)
 		{
@@ -478,6 +478,17 @@ public class Room implements Executable
 	}
 
 	/**
+	 * Retrieve items from this room.
+	 * @param anItemDef item definition of items to be looked for.
+	 * @return array containing item objects found.
+	 * @see mmud.database.ItemsDb#getItemsFromRoom
+	 */
+	public Item[] getItems(ItemDef anItemDef)
+	{
+		return (Item[]) ItemsDb.getItemsFromRoom(anItemDef, this).toArray(new Item[0]);
+	}
+
+	/**
 	 * Implements the equals method.
 	 * @param o object to be compared.
 	 * @return boolean, true if the id of the rooms are the same, otherwise
@@ -562,7 +573,7 @@ public class Room implements Executable
 			}
 			if (value instanceof String)
 			{
-				setContents((String) value);
+				setDescription((String) value);
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not string.");
@@ -651,6 +662,7 @@ public class Room implements Executable
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
 		}
+		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
 	public void setValueAt(Object array_index,
@@ -754,6 +766,20 @@ public class Room implements Executable
 				}
 				Persons.sendMessage(this, (String) arguments[0]);
 				return null;
+			}
+		}
+		if (method_name.equals("getItems"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain an Integer as argument.");
+				}
+				return getItems(ItemDefs.getItemDef(
+					((Integer) arguments[0]).intValue() 
+					));
 			}
 		}
 		throw new MethodNotSupportedException(method_name + " not found.");

@@ -16,4 +16,6 @@ debug in a production environment.
 - insert/change/delete attributes
 - look <IN> object
 - search something
-- 
+- check that the stream has not ended in MudSocket, it will return a null
+pointer. ugly.
+- setAttribute+removeAttribute should submit information to the database.

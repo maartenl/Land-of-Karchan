@@ -16,66 +16,66 @@ integer containing either 0 (no/false) or 1 (yes/true).<P>
 <H3>List of Database Tables</H3>
 <TABLE>
 <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
-<TR valign=top><TD>mm_answers</TD><TD>Contains questions and answers for
+<TR valign=top><TD><A HREF="#mm_answers">mm_answers</A></TD><TD>Contains questions and answers for
 bots.</TD></TR>
-<TR valign=top><TD>mm_roomattributes</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_roomattributes">mm_roomattributes</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain room.</TD></TR>
-<TR valign=top><TD>mm_charattributes</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_charattributes">mm_charattributes</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain character (player/non-player).</TD></TR>
-<TR valign=top><TD>mm_itemattributes</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_itemattributes">mm_itemattributes</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Attributes of a certain item.</TD></TR>
-<TR valign=top><TD>mm_logonmessage</TD><TD>The logon message provided upon logon.</TD></TR>
+<TR valign=top><TD><A HREF="#mm_logonmessage">mm_logonmessage</A></TD><TD>The logon message provided upon logon.</TD></TR>
 
-<TR valign=top><TD>mm_sillynamestable</TD><TD></TD></TR>
-<TR valign=top><TD>mm_unbantable</TD><TD></TD></TR>
-<TR valign=top><TD>mm_bantable</TD><TD></TD></TR>
-<TR valign=top><TD>mm_errormessages</TD><TD></TD></TR>
-<TR valign=top><TD>mm_help</TD><TD></TD></TR>
+<TR valign=top><TD><A HREF="#mm_sillynamestable">mm_sillynamestable</A></TD><TD></TD></TR>
+<TR valign=top><TD><A HREF="#mm_unbantable">mm_unbantable</A></TD><TD></TD></TR>
+<TR valign=top><TD><A HREF="#mm_bantable">mm_bantable</A></TD><TD></TD></TR>
+<TR valign=top><TD><A HREF="#mm_errormessages">mm_errormessages</A></TD><TD></TD></TR>
+<TR valign=top><TD><A HREF="#mm_help">mm_help</A></TD><TD></TD></TR>
 
-<TR valign=top><TD>mm_items</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_items">mm_items</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Provides item definitions. So, basically, if you have 
 a bucket, the definition would be in this table, while actual instances of the 
 bucket being carried around are in the table mm_itemtable. This table should 
 contain characteristics common to all buckets.</TD></TR>
-<TR valign=top><TD>mm_shopkeeperitems</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_shopkeeperitems">mm_shopkeeperitems</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Provides which items a shopkeeper is
 allowed to sell/buy and when the shopkeeper decides to stop buying items
 from characters (i.e. when the shop has plenty of those specific items in
 supply)</TD></TR>
-<TR valign=top><TD>mm_itemtable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_itemtable">mm_itemtable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Provides instances of item definitions.</TD></TR>
-<TR valign=top><TD>mm_charitemtable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_charitemtable">mm_charitemtable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Indicates who is carrying which item instances.</TD></TR>
-<TR valign=top><TD>mm_itemitemtable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_itemitemtable">mm_itemitemtable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Indicates which item instances contain which item instances.</TD></TR>
-<TR valign=top><TD>mm_roomitemtable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_roomitemtable">mm_roomitemtable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Indicates which room contains which item instances </TD></TR>
 
-<TR valign=top><TD>mm_rooms</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_rooms">mm_rooms</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Contains room definitions.</TD></TR>
-<TR valign=top><TD>mm_area</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_area">mm_area</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Provides an clustering of rooms called an area.
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
-<TR valign=top><TD>mm_usertable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_usertable">mm_usertable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Contains all characters in the game.</TD></TR>
-<TR valign=top><TD>mm_mailtable</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_mailtable">mm_mailtable</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Contains mud mail of characters in the game</TD></TR>
-<TR valign=top><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
-<TR valign=top><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
+<TR valign=top><TD><A HREF="#mm_boards">mm_boards</A></TD><TD>Identifies individual public message boards,</TD></TR>
+<TR valign=top><TD><A HREF="#mm_boardmessages">mm_boardmessages</A></TD><TD>Contains all messages posted on the public
 message boards.</TD></TR>
 
-<TR valign=top><TD>mm_log</TD><TD>Logging table, for describing important events in the
+<TR valign=top><TD><A HREF="#mm_log">mm_log</A></TD><TD>Logging table, for describing important events in the
 life of characters and administrators.</TD></TR>
-<TR valign=top><TD>mm_commandlog</TD><TD>Logging table, contains every
+<TR valign=top><TD><A HREF="#mm_commandlog">mm_commandlog</A></TD><TD>Logging table, contains every
 command of every user entered with an appropriate timestamp.</TD></TR>
-<TR valign=top><TD>mm_events</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_events">mm_events</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Equal to the linux crontab. Can execute methods
 at specific recurring times in the game.</TD></TR>
-<TR valign=top><TD>mm_commands</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_commands">mm_commands</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Special commands that have to be programmed
 in methods.</TD></TR>
-<TR valign=top><TD>mm_methods</TD><TD><A
+<TR valign=top><TD><A HREF="#mm_methods">mm_methods</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>Special methods that can be entered in the
 database to provide characters with special abilities or to be executed
 periodically. See related tables mm_commands and mm_events.</TD></TR>
@@ -97,7 +97,7 @@ A PDF File can be found <A HREF="/images/pdf/database_schema.pdf">here</A>.
 <H3>List of Fields in Each Table</H3>
 (<I>* denotes primary key</I>)
 </PRE>
-<H4>mm_methods</H4>
+<H4><A NAME="mm_methods">mm_methods</H4>
 <DL>
 <DT>name
 <DD>the name of the method
@@ -121,7 +121,7 @@ whenever a change takes place on the record in question.
 | creation            |
 +---------------------+
 </PRE>
-<H4>mm_commands</H4>
+<H4><A NAME="mm_commands">mm_commands</H4>
 <DL>
 <DT>id
 <DD>identification of the command
@@ -154,7 +154,7 @@ whenever a change takes place on the record in question.
 | creation            |
 +---------------------+
 </PRE>
-<H4>mm_events</H4>
+<H4><A NAME="mm_events">mm_events</H4>
 <DL>
 <DT>eventid
 <DD>unique identification of the event.
@@ -205,6 +205,7 @@ whenever a change takes place on the record in question.
 | creation            |
 +---------------------+
 
+<A NAME="mm_itemattributes">
 +---------------------+
 | mm_itemattributes   |
 +---------------------+
@@ -214,6 +215,7 @@ whenever a change takes place on the record in question.
 |*id                  |
 +---------------------+
 
+<A NAME="mm_roomattributes">
 +---------------------+
 | mm_roomattributes   |
 +---------------------+
@@ -223,6 +225,7 @@ whenever a change takes place on the record in question.
 |*id                  |
 +---------------------+
 
+<A NAME="mm_charattributes">
 +---------------------+
 | mm_charattributes   |
 +---------------------+
@@ -233,7 +236,7 @@ whenever a change takes place on the record in question.
 +---------------------+
 
 </PRE>
-<H4>mm_items</H4>
+<H4><A NAME="mm_items">mm_items</H4>
 <DL>
 <DT>id
 <DD>identification of this item definition, integer.
@@ -267,6 +270,7 @@ If this is NULL, the first one to make any changes owns the item.
 whenever a change takes place on the record in question.
 </DL>
 <PRE>
+<A NAME="mm_shopkeeperitems">
 +---------------------+
 | mm_shopkeeperitems  |
 +---------------------+
@@ -274,6 +278,7 @@ whenever a change takes place on the record in question.
 | max                 |
 |*charname            |
 +---------------------+
+<A NAME="mm_itemtable">
 
 +---------------------+
 | mm_itemtable        |
@@ -283,7 +288,7 @@ whenever a change takes place on the record in question.
 +---------------------+
 
 </PRE>
-<H4>mm_charitemtable</H4>
+<H4><A NAME="mm_charitemtable">mm_charitemtable</H4>
 <DL>
 <DT>id
 <DD>identification of this item instance
@@ -302,6 +307,7 @@ is neither being worn nor wielded.
 | wearing             |
 +---------------------+
 
+<A NAME="mm_roomitemtable">
 +---------------------+
 | mm_roomitemtable    |
 +---------------------+
@@ -310,6 +316,7 @@ is neither being worn nor wielded.
 | search              |
 +---------------------+
 
+<A NAME="mm_itemitemtable">
 +---------------------+
 | mm_itemitemtable    |
 +---------------------+
@@ -317,6 +324,7 @@ is neither being worn nor wielded.
 | containerid         |
 +---------------------+
 
+<A NAME="mm_rooms">
 +---------------------+
 | mm_rooms            |
 +---------------------+
@@ -333,6 +341,7 @@ is neither being worn nor wielded.
 | area                |
 +---------------------+
 
+<A NAME="mm_area">
 +---------------------+
 | mm_area             |
 +---------------------+
@@ -344,7 +353,7 @@ is neither being worn nor wielded.
 +---------------------+
 
 </PRE>
-<H4>mm_usertable</H4>
+<H4><A NAME="mm_usertable">mm_usertable</H4>
 <DL>
 <DT>name
 <DD>identification of this character
@@ -373,12 +382,13 @@ default is 1000.
 | movementstats       |
 +---------------------+
 
+<A NAME="mm_logonmessage">
 +---------------------+
 | mm_logonmessage     |
 +---------------------+
 
 </PRE>
-<H4>mm_commandlog</H4>
+<H4><A NAME="mm_commandlog">mm_commandlog</H4>
 <DL>
 <DT>stamp
 <DD>timestamp of when the command was entered.
@@ -399,7 +409,7 @@ should not be a problem unless rather large conversations take place.
 +---------------------+
 
 </PRE>
-<H4>mm_mailtable</H4>
+<H4><A NAME="mm_mailtable">mm_mailtable</H4>
 <DL>
 <DT>haveread
 <DD>if the mail items has been read or not. (read=1, not read=0)
@@ -420,22 +430,28 @@ session.
 | message             |
 +---------------------+
 
+
+<A NAME="mm_sillynamestable">
 +---------------------+
 | mm_sillynamestable  |
 +---------------------+
 
+<A NAME="mm_unbantable">
 +---------------------+
 | mm_unbantable       |
 +---------------------+
 
+<A NAME="mm_bantable">
 +---------------------+
 | mm_bantable         |
 +---------------------+
 
+<A NAME="mm_errormessages">
 +---------------------+
 | mm_errormessages    |
 +---------------------+
 
+<A NAME="mm_answers">
 +---------------------+
 | mm_answers          |
 +---------------------+
@@ -444,10 +460,12 @@ session.
 | answer              |
 +---------------------+
 
+<A NAME="mm_help">
 +---------------------+
 | mm_help             |
 +---------------------+
 
+<A NAME="mm_log">
 +---------------------+
 | mm_log              |
 +---------------------+
@@ -456,6 +474,7 @@ session.
 | message             |
 +---------------------+
 
+<A NAME="mm_boards">
 +---------------------+
 | mm_boards           |
 +---------------------+
@@ -466,6 +485,7 @@ session.
 | creation            |
 +---------------------+
 
+<A NAME="mm_boardmessages">
 +---------------------+
 | mm_boardmessgages   |
 +---------------------+
@@ -497,6 +517,7 @@ polls.</TD></TR>
 <TR valign=top><TD></TD><TD></TD></TR>
 </TABLE>
 <PRE>
+<A NAME="scratchpad">
 +---------------------+
 | scratchpad          |
 +---------------------+
@@ -504,6 +525,7 @@ polls.</TD></TR>
 | scratch             |
 +---------------------+
 
+<A NAME="characterinfo">
 +---------------------+
 | characterinfo       |
 +---------------------+
@@ -515,6 +537,7 @@ polls.</TD></TR>
 | storyline           |
 +---------------------+
 
+<A NAME="family">
 +---------------------+
 | family              |
 +---------------------+
@@ -523,6 +546,7 @@ polls.</TD></TR>
 | description         |
 +---------------------+
 
+<A NAME="familyvalues">
 +---------------------+
 | familyvalues        |
 +---------------------+
@@ -530,6 +554,7 @@ polls.</TD></TR>
 | description         |
 +---------------------+
 
+<A NAME="polls">
 +---------------------+
 | polls               |
 +---------------------+
@@ -539,6 +564,7 @@ polls.</TD></TR>
 | closed              |
 +---------------------+
 
+<A NAME="poll_choices">
 +---------------------+
 | poll_choices        |
 +---------------------+
@@ -547,6 +573,7 @@ polls.</TD></TR>
 | choice              |
 +---------------------+
 
+<A NAME="poll_values">
 +---------------------+
 | poll_values         |
 +---------------------+

@@ -616,7 +616,7 @@ public class Database
 			{
 				statWriteRoom.setInt(6, aRoom.getDown().getId());
 			}
-			statWriteRoom.setString(7, aRoom.getContents());
+			statWriteRoom.setString(7, aRoom.getDescription());
 			statWriteRoom.setInt(8, aRoom.getId());
 			statWriteRoom.executeUpdate();
 			statWriteRoom.close();

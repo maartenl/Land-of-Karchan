@@ -29,6 +29,7 @@ package mmud.items;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.Hashtable;
 
 import mmud.*;
 import mmud.characters.*;
@@ -36,12 +37,14 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
+import simkin.*;
+
 /**
  * An item in the mud.
  * Basically consists of an ItemDefinition and a number of Attributes
  * specific to this item.
  */
-public class Item
+public class Item implements Executable, AttributeContainer
 {
 	private ItemDef theItemDef;
 	private int theId;
@@ -245,12 +248,15 @@ public class Item
 	}
 
 	/**
-	 * get the description of the item (the long one).
+	 * get the description of the item (the long one). If the attribute
+	 * <I>description</I> exists, than this one is used instead.
 	 * @return String containing the description.
 	 */
 	public String getLongDescription()
 	{
-		return theItemDef.getLongDescription();
+		return (isAttribute("description") ? 
+				getAttribute("description").getValue() : 
+				theItemDef.getLongDescription());
 	}
 
 	/**
@@ -269,6 +275,7 @@ public class Item
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
+		AttributeDb.setAttribute(anAttribute, this);
 	}
 
 	/**
@@ -294,6 +301,7 @@ public class Item
 	public void removeAttribute(String aName)
 	{
 		theAttributes.remove(aName);
+		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
 	}
 
 	/**
@@ -330,5 +338,183 @@ public class Item
 //	public PersonPositionEnum getWielded
 //	public void setWorn(
 //	public void setWielded(PersonPositionEnum aNew
+
+	public void setValue(String field_name, String attrib_name,
+		Object value, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name + ", value=" +
+			value + "[" + value.getClass() + "]");
+		if (field_name.equals("description"))
+		{
+			if (value instanceof Null)
+			{
+				throw new FieldNotSupportedException(field_name + " not set, cannot be null.");
+			}
+			if (value instanceof String)
+			{
+				// TODO: perhaps
+				// setDescription((String) value);
+				return;
+			}
+			throw new FieldNotSupportedException(field_name + " not set, not string.");
+		}
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public void setValueAt(Object array_index,
+		String attrib_name,
+		Object value, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name + ", value=" +
+			value);
+	}
+																																							
+	public ExecutableIterator createIterator()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public ExecutableIterator createIterator(String qualifier)
+	{
+		Logger.getLogger("mmud").finer("qualifier=" + qualifier);
+		return createIterator();
+	}
+																																							
+	public Hashtable getAttributes()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public Hashtable getInstanceVariables()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public String getSource(String location)
+	{
+		Logger.getLogger("mmud").finer("location=" + location);
+		return null;
+	}
+																																							
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		if (field_name.equals("description"))
+		{
+			return getDescription();
+		}
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+																																							
+	public Object getValueAt(Object array_index,
+		String attrib_name, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name);
+		return null;
+	}
+																																							
+	public Object methodAttribute(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("getAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				Attribute mAttrib = getAttribute((String) arguments[0]);
+				if (mAttrib == null)
+				{
+					return null;
+				}
+				if (mAttrib.getValueType().equals("string"))
+				{
+					return mAttrib.getValue();
+				}
+				if (mAttrib.getValueType().equals("integer"))
+				{
+					try
+					{
+						return new Integer(mAttrib.getValue());
+					}
+					catch (NumberFormatException e)
+					{
+						throw new MethodNotSupportedException(method_name +
+						" attribute " + mAttrib.getName() + " does not contain expected number.");
+					}
+				}
+				throw new MethodNotSupportedException(method_name +
+					" unknown value type in attribute " + 
+					mAttrib.getName() + ". (" + 
+					mAttrib.getValueType() + ")");
+			}
+		}
+		if (method_name.equals("removeAttribute"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				removeAttribute((String) arguments[0]);
+				return null;
+			}
+		}
+		if (method_name.equals("setAttribute"))
+		{
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as first argument.");
+				}
+				String mType = "object";
+				if (arguments[1] instanceof String)
+				{
+					mType = "string";
+				}
+				if (arguments[1] instanceof Integer)
+				{
+					mType = "integer";
+				}
+				Attribute mAttrib = new Attribute((String) arguments[0],
+					arguments[1] + "", 
+					mType);
+				setAttribute(mAttrib);
+				return null;
+			}
+		}
+		throw new MethodNotSupportedException(method_name + " not found.");
+	}
+
+	public Object method(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		return methodAttribute(method_name, arguments, ctxt);
+//		throw new MethodNotSupportedException(method_name + " not found.");
+	}
+
 
 }
