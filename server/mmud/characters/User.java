@@ -235,7 +235,7 @@ public class User extends mmud.characters.Person
 	 */
 	public String getPassword()
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("returns " + thePassword);
 		return thePassword;
 	}
 
@@ -264,7 +264,7 @@ public class User extends mmud.characters.Person
 	public boolean verifyPassword(String aPassword)
 	{
 		Logger.getLogger("mmud").finer("");
-		return thePassword.equals(aPassword);
+		return (thePassword == null || thePassword.equals(aPassword));
 	}
 
 	/**

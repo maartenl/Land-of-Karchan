@@ -138,7 +138,7 @@ public final class Persons
 				Logger.getLogger("mmud").info("thrown: " + Constants.MULTIUSERERROR);
 				throw new MultiUserException();
 			}
-			if (!myUser.getPassword().equals(aPassword))
+			if (!myUser.verifyPassword(aPassword))
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 				throw new PwdIncorrectException();
@@ -146,7 +146,7 @@ public final class Persons
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new UserAlreadyActiveException();
 		}
-		if (!myUser.getPassword().equals(aPassword))
+		if (myUser.verifyPassword(aPassword))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 			throw new PwdIncorrectException();

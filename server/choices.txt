@@ -136,7 +136,9 @@ the table over to another table, it is best to:
 - Create some nice typesafe enumerated classes with specific behaviour
 designed per instance. (HEME~ (HIMHER) (ETC)
 
-- wielding and wearing are both stored in the wearing field.
+- wielding and wearing are both stored in the wearing field. This is because
+they are mutually exclusive. An item is either being wield (weld?) or being
+worn. It could use a better name though.
 
 Game Behaviour
 --------------
@@ -197,6 +199,9 @@ TODO
 ----
 
 - Add 'plurals' to the items. (bucket -> buckets)
+- logging is split up into the different characters. This makes it easier to
+debug in a production environment.
+
 
 Changes to the database
 -----------------------
@@ -263,3 +268,32 @@ from mud.unbantable;
 insert into mm_usertable
 select *, null, now()
 from mud.usertable;
+
+setting roomitems
+-----------------
+insert into mm_itemtable
+(itemid, creation, owner)
+select (id, now(), null)
+from mud.tmp_itemtable
+where id < 0;
+
+insert into mm_roomitemtable
+(id, room, search)
+select mm_itemtable.id, tmp.room, null
+from mm_itemtable, mud.tmp_itemtable as tmp
+where tmp.room <> 0 and (tmp.search = null or tmp.search = "");
+
+retrieving someones inventory
+-----------------------------
+amount multiplied with ...
+insert into mm_itemtable
+(itemid, creation, owner)
+select (id, now(), null)
+from mud.tmp_itemtable
+where belongsto = ?;
+
+insert into mm_charitemtable
+(id, belongsto)
+select id, ?
+from mm_itemtable
+where id > x

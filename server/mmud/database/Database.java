@@ -597,10 +597,6 @@ public class Database
 					res.getInt("drinkstats"),
 					res.getInt("eatstats"),
 					Rooms.getRoom(res.getInt("room")));
-				if (myNewChar.getName().equals("Karcas"))
-				{
-					myNewChar.setAttribute(new Attribute("shopkeeper","","string"));
-				}
 				myVector.add(myNewChar);
 				getCharAttributes(myNewChar);
 			}

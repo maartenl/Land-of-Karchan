@@ -112,10 +112,12 @@ public class MudSocket extends Thread
 		{
 			Logger.getLogger("mmud").warning("Don't know about host.");
 			theSuccess = false;
+			e.printStackTrace();
 			return;
 		} catch (IOException e) {
 			Logger.getLogger("mmud").warning("Couldn't get I/O for "
 			+ "the connection.");
+			e.printStackTrace();
 			theSuccess = false;
 			return;
 		}
@@ -153,6 +155,7 @@ public class MudSocket extends Thread
 					{
 						Logger.getLogger("mmud").warning(
 							"unable to interpret frame information, defaulting to 0.");
+			e.printStackTrace();
 					}
 					try
 					{
@@ -165,7 +168,8 @@ public class MudSocket extends Thread
 					{
 						Database.writeLog(name, e + "");
 						Logger.getLogger("mmud").warning(
-							e.getMessage());
+							e + "");
+						e.printStackTrace();
 						myOutputStream.println("\n" + e.toString());
 					}
 				}
@@ -189,6 +193,7 @@ public class MudSocket extends Thread
 					{
 						Logger.getLogger("mmud").warning(
 							"unable to interpret frame information, defaulting to 0.");
+						e.printStackTrace();
 					}
 //					while (true)
 //					{
@@ -232,6 +237,7 @@ public class MudSocket extends Thread
 					{
 						Logger.getLogger("mmud").warning(
 							"unable to interpret frame information, defaulting to 0.");
+						e.printStackTrace();
 					}
 					myOutputStream.println("Realname:");
 					String realname = myInputStream.readLine();
@@ -276,8 +282,9 @@ public class MudSocket extends Thread
 			{
 				Database.writeLog("root", e + "");
 				Logger.getLogger("mmud").warning(
-					e.getMessage());
+					e + "");
 				myOutputStream.println(e.toString());
+				e.printStackTrace();
 			}
 			String expectingOk;
 			expectingOk = myInputStream.readLine();
@@ -292,6 +299,7 @@ public class MudSocket extends Thread
 		} catch (IOException e)
 		{
 			theSuccess = false;
+			e.printStackTrace();
 			return;
 		}
 		theSuccess = true;
@@ -453,10 +461,12 @@ public class MudSocket extends Thread
 		}
 		catch (PersonException e)
 		{
+			e.printStackTrace();
 			return Database.getErrorMessage(e.getMessage());
 		}
 		catch (MudException e)
 		{
+			e.printStackTrace();
 			return Database.getErrorMessage(e.getMessage());
 		}
 	}
