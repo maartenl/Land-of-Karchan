@@ -1340,6 +1340,12 @@ cgiMain()
 			MIFTalk(name, password, room);
 			KillGame();
 		}
+/* add SWTalk */		
+		if ( (!strcmp("Pow", tokens[0])) && (!strcmp("Wow", tokens[1])) )
+		{
+			SWTalk(name, password, room);
+			KillGame();
+		}		
 	}
 	/* End Guilds */
 	if (!strcmp("mail", troep))

@@ -346,3 +346,32 @@ RangerTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }
+
+/* add SWTalk */
+void 
+SWTalk(char *name, char *password, int room)
+{
+	char 		logname[100];
+
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char temp[1024], *temp2;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+
+	temp2 = (char *) malloc(strlen(troep) + 80);
+	sprintf(temp2, "<B><Font color=brown>Pow Wow</font> </B>[%s] : %s<BR>\r\n",
+	name, command + (tokens[2] - tokens[0]));
+	
+	sprintf(temp, "select name from tmp_usertable where guild='SW'");
+	res=SendSQL2(temp, NULL);
+	while (row = mysql_fetch_row(res))
+	{
+		WriteLinkTo(row[0], name, temp2);
+	}
+	mysql_free_result(res);
+	
+	free(temp2);
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}

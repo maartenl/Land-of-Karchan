@@ -36,3 +36,6 @@ void RangerList(char *name, char *password, int room);
 void RangerEntryIn(char *name, char *password, int room);
 void RangerEntryOut(char *name, char *password, int room);
 void RangerTalk(char *name, char *password, int room);
+
+/* add SW chat line */
+void SWTalk(char *name, char *password, int room);
