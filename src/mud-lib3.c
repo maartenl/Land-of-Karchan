@@ -35,8 +35,8 @@ extern int      aantal;
 extern struct tm datumtijd;
 extern time_t   datetime;
 
-void
-GoWest_Command(char *name, char *password, int room)
+int
+GoWest_Command(char *name, char *password, int room, char **ftokens, char *command)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -98,11 +98,11 @@ GoWest_Command(char *name, char *password, int room)
 	}
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
-void
-GoEast_Command(char *name, char *password, int room)
+int
+GoEast_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -165,11 +165,11 @@ GoEast_Command(char *name, char *password, int room)
 	} 
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
-void
-GoNorth_Command(char *name, char *password, int room)
+int
+GoNorth_Command(char *name, char *password, int room, char **ftokens, char *fcommmand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -232,11 +232,11 @@ GoNorth_Command(char *name, char *password, int room)
 	}
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
-void
-GoSouth_Command(char *name, char *password, int room)
+int
+GoSouth_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -298,7 +298,7 @@ GoSouth_Command(char *name, char *password, int room)
 	}
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
 int
@@ -322,7 +322,7 @@ Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 }
 
 void
-Awaken_Command(char *name, char *password, int room)
+Awaken2_Command(char *name, char *password, int room)
 {
 	char logname[100];  
 	MYSQL_RES *res;
@@ -393,8 +393,8 @@ BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcom
 	return 1;
 }				/* endproc */
 
-void
-MailFormDumpOnScreen(char *name, char *password)
+int
+MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
@@ -447,7 +447,7 @@ MailFormDumpOnScreen(char *name, char *password)
 	if (getFrames()!=2) {ReadFile(logname);}
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P></BODY></HTML>");
- 	KillGame();
+	return 1;
 }				/* endproc */
 
 int

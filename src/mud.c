@@ -65,8 +65,8 @@ InitVar(char *fcommand)
 	srandom(datetime);
 }				/* endproc */
 
-void
-GoDown_Command(char *name, char *password, int room)
+int
+GoDown_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	roomstruct*temproom;
 	int i=0;
@@ -128,11 +128,11 @@ GoDown_Command(char *name, char *password, int room)
 	}
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 } 				/* endproc */
 
-void
-GoUp_Command(char *name, char *password, int room)
+int
+GoUp_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	roomstruct*temproom;
 	int i=0;
@@ -194,7 +194,7 @@ GoUp_Command(char *name, char *password, int room)
 	}
 	free(temproom);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 } 				/* endproc */
 
 
@@ -244,6 +244,42 @@ void CookieNotFound(char *name, char *address)
 }
 
 int
+Go_Command(char *name, char *password, int room, char **ftokens, char *command)
+{
+	if (!strcasecmp(tokens[1], "west")) 
+	{
+		GoWest_Command(name, password, room, tokens, command);	
+		return 1;
+	}
+	if (!strcasecmp(tokens[1], "east")) 
+	{
+		GoEast_Command(name, password, room, tokens, command);
+		return 1;
+	}
+	if (!strcasecmp(tokens[1], "north"))
+	{
+		GoNorth_Command(name, password, room, tokens, command);
+		return 1;
+	}
+	if (!strcasecmp(tokens[1], "south"))
+	{
+		GoSouth_Command(name, password, room, tokens, command);
+		return 1;
+	}
+	if (!strcasecmp(tokens[1], "down"))
+	{
+		GoDown_Command(name, password, room, tokens, command);
+		return 1;
+	}
+	if (!strcasecmp(tokens[1], "up"))
+	{
+		GoUp_Command(name, password, room, tokens, command);
+		return 1;
+	}
+	return 0;
+}
+
+int
 Clear_Command(char *name, char *password, int room, char **ftokens, char *command)
 {
 	char logname[100];
@@ -254,7 +290,835 @@ Clear_Command(char *name, char *password, int room, char **ftokens, char *comman
 	return 1;
 }
 
+int
+Help_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (!strcasecmp(fcommand, "help hint")) 
+	{
+		HelpHint_Command(name, password, room);
+		return 1;
+	}
+	if (!strcasecmp(fcommand, "help")) 
+	{
+		MYSQL_RES *res;
+		MYSQL_ROW row;
+		int i;
+		char temp[1024];
+		
+		fprintf(cgiOut, "<HTML>\r\n");
+		fprintf(cgiOut, "<HEAD>\r\n");
+		fprintf(cgiOut, "<TITLE>\r\n");
+		fprintf(cgiOut, "Land of Karchan - General Help\r\n");
+		fprintf(cgiOut, "</TITLE>\r\n");
+		fprintf(cgiOut, "</HEAD>\r\n");
+		
+		fprintf(cgiOut, "<BODY>\r\n");
+		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+	
+		sprintf(temp, "select contents from help where command='general help'");
+		res=SendSQL2(temp, NULL);
+		row = mysql_fetch_row(res);
+		if (row==NULL) 
+		{
+			mysql_free_result(res);
+			res=SendSQL2("select contents from help where command='sorry'", NULL);
+			row = mysql_fetch_row(res);
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		else
+		{
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		mysql_free_result(res);
+		PrintForm(name, password);
+		if (getFrames()!=2) {ReadFile(logname);}
+		return 1;
+	}
+	if ((aantal >= 2) && (!strcasecmp(tokens[0],"help"))) 
+	{
+		MYSQL_RES *res;
+		MYSQL_ROW row;
+		int i;
+		char temp[1024];
+		
+		fprintf(cgiOut, "<HTML>\r\n");
+		fprintf(cgiOut, "<HEAD>\r\n");
+		fprintf(cgiOut, "<TITLE>\r\n");
+		fprintf(cgiOut, "Land of Karchan - Command %s\r\n", tokens[1]);
+		fprintf(cgiOut, "</TITLE>\r\n");
+		fprintf(cgiOut, "</HEAD>\r\n");
+		
+		fprintf(cgiOut, "<BODY>\r\n");
+		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+	
+		sprintf(temp, "select contents from help where command='%s'", tokens[1]);
+		res=SendSQL2(temp, NULL);
+		row = mysql_fetch_row(res);
+		if (row==NULL) 
+		{
+			mysql_free_result(res);
+			res=SendSQL2("select contents from help where command='sorry'", NULL);
+			row = mysql_fetch_row(res);
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		else
+		{
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		mysql_free_result(res);
+		PrintForm(name, password);
+		if (getFrames()!=2) {ReadFile(logname);}
+		return 1;
+	}
+}
+
+int
+ReadMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	ReadMail(name, password, room, atoi(tokens[1]), 0);
+	return 1;
+		ReadMail(name, password, room, atoi(tokens[1]), 2);
+}
+
+int
+DeleteMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	ReadMail(name, password, room, atoi(tokens[1]), 2);
+	return 1;
+}
+
+int
+SendMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char mailto[100], *mailbody, mailheader[100];
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+      		
+	mailbody = (char *) malloc(cgiContentLength);
+	cgiFormString("mailto", mailto, 99);
+	cgiFormString("mailheader", mailheader, 99);
+	cgiFormString("mailbody", mailbody, cgiContentLength - 2);
+		
+	sprintf(sqlstring, "select name from usertable where "
+		"name='%s' and god<2", mailto);
+	res=SendSQL2(sqlstring, NULL);
+	
+	if (res!=NULL)
+	{
+		row = mysql_fetch_row(res);
+	
+		if (row!=NULL) 
+		{
+			WriteMail(name, row[0], mailheader, mailbody);
+			WriteSentenceIntoOwnLogFile(logname, "Mail sent.<BR>\r\n");
+		}  /* endif real user */ 
+		else 
+		{
+			WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
+		}
+	}
+	else
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
+	}
+	mysql_free_result(res);
+		
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Whimpy_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char number[10];
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (aantal == 1) {
+		strcpy(number,"0");
+	} else {
+		if (!strcasecmp("help", command + (tokens[1] - tokens[0]))) {
+			WriteSentenceIntoOwnLogFile(logname, 
+			"Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
+			"<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
+			"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
+			"<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
+			WriteRoom(name, password, room, 0);
+			KillGame();
+		}
+		if (!strcasecmp("feeling well", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"10");
+			//x.whimpy = 10;
+		}
+		if (!strcasecmp("feeling fine", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"20");
+			//x.whimpy = 20;
+		}
+		if (!strcasecmp("feeling quite nice", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"30");
+			//x.whimpy = 30;
+		}
+		if (!strcasecmp("slightly hurt", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"40");
+			//x.whimpy = 40;
+		}
+		if (!strcasecmp("hurt", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"50");
+			//x.whimpy = 50;
+		}
+		if (!strcasecmp("quite hurt", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"60");
+			//x.whimpy = 60;
+		}
+		if (!strcasecmp("extremely hurt", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"70");
+			//x.whimpy = 70;
+		}
+		if (!strcasecmp("terribly hurt", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"80");
+			//x.whimpy = 80;
+		}
+		if (!strcasecmp("feeling bad", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"90");
+			//x.whimpy = 90;
+		}
+		if (!strcasecmp("feeling very bad", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"100");
+			//x.whimpy = 100;
+		}
+		if (!strcasecmp("at death's door", command + (tokens[1] - tokens[0]))) {
+			strcpy(number,"110");
+			//x.whimpy = 110;
+		}
+	}
+	sprintf(sqlstring, "update tmp_usertable set whimpy=%s "
+		" where name='%s'", number, name);
+	res=SendSQL2(sqlstring, NULL);
+	if (res!=NULL)
+	{
+		mysql_free_result(res);
+	}
+	
+	WriteSentenceIntoOwnLogFile(logname, "<I>Whimpy set.</I><BR>\r\n");
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+PKill_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(sqlstring, "select fightingwho from tmp_usertable where "
+		"name='%s'", name);
+	res=SendSQL2(sqlstring, NULL);
+	row = mysql_fetch_row(res);
+	if (row[0][0]!=0)
+	{
+		mysql_free_result(res);
+		WriteSentenceIntoOwnLogFile(logname, "You cannot change your pkill status during combat.<BR>\r\n");
+	}
+	else
+	{
+		mysql_free_result(res);
+		if (!strcasecmp("on", tokens[1])) 
+		{
+			sprintf(sqlstring, "update tmp_usertable set fightable=1 where "
+				"name='%s'", name);
+			res=SendSQL2(sqlstring, NULL);
+			mysql_free_result(res);
+			WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
+		} /* pkill is turned on */
+		else
+		{
+			sprintf(sqlstring, "update tmp_usertable set fightable=0 where "
+				"name='%s'", name);
+			res=SendSQL2(sqlstring, NULL);
+			mysql_free_result(res);
+			WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
+		} /* pkill is turned of */
+	} /* if indeed the person is not already fighting */
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Me_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	WriteMessage(name, room, "%s %s<BR>\r\n", name, command + 3);
+	WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Stop_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (!strcasecmp("stop fighting", fcommand))
+	{
+		sprintf(sqlstring, "select fightingwho from tmp_usertable where "
+			"name='%s'", name);
+		res=SendSQL2(sqlstring, NULL);
+		row = mysql_fetch_row(res);
+		if (row[0][0]==0)
+		{
+			mysql_free_result(res);
+			WriteSentenceIntoOwnLogFile(logname, "You are not fighting anyone.<BR>\r\n");
+			WriteRoom(name, password, room, 0);
+			return 1;
+		}
+		mysql_free_result(res);
+		sprintf(sqlstring, "update tmp_usertable set fightingwho='' where "
+			"name='%s'"
+			, name);
+		res=SendSQL2(sqlstring, NULL);
+		mysql_free_result(res);
+		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
+		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	return 0;
+}
+
 int 
+Fight_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	int myFightable;
+	char *myFightingName;
+	char *myDescription;
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	sprintf(sqlstring, "select fightable from tmp_usertable where "
+		"name='%s'", name);
+	res=SendSQL2(sqlstring, NULL);
+	row = mysql_fetch_row(res);
+	myFightable = atoi(row[0]);
+	mysql_free_result(res);
+
+	/* this section takes care of the looking up of the description */
+	myFightingName = 
+	ExistUserByDescription(tokens, 1, aantal - 1, room, &myDescription);
+	if (myFightingName == NULL)
+	{
+		myFightingName = tokens[1];
+		myDescription = tokens[1];
+	}
+	else
+	{
+		printf("<%s><%s>", myFightingName, myDescription);
+	}
+
+	sprintf(sqlstring, "select name,god from tmp_usertable where "
+	"name<>'%s' and "
+	"name='%s' and "
+	"fightable=1 and "
+	"god<>2 and "
+	"room=%i"
+	, name, myFightingName, room);
+	res=SendSQL2(sqlstring, NULL);
+	row = mysql_fetch_row(res);
+	if ((myFightable!=1) && (atoi(row[1])!=3))
+	{
+		mysql_free_result(res);
+		if (myFightingName != tokens[1]) {free(myFightingName);}
+		if (myDescription != tokens[1]) {free(myDescription);}
+		WriteSentenceIntoOwnLogFile(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	if (row!=NULL)
+	{
+		WriteSentenceIntoOwnLogFile(logname, "You start to fight against %s.<BR>\r\n", myDescription);
+		WriteMessageTo(myFightingName, name, room, "%s starts fighting against %s.<BR>\r\n",
+			    name, myDescription);
+		WriteSayTo(myDescription, name, room, 
+			   "%s starts fighting against you.<BR>\r\n", name);
+		mysql_free_result(res);
+		sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
+		myFightingName, name);
+		res=SendSQL2(sqlstring, NULL);
+		mysql_free_result(res);
+		sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
+		name, myFightingName);
+		res=SendSQL2(sqlstring, NULL);
+	}
+	else
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+	}
+	mysql_free_result(res);
+	if (myFightingName != tokens[1]) {free(myFightingName);}
+	if (myDescription != tokens[1]) {free(myDescription);}
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Bow_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (!strcasecmp(command, "bow")) {
+		WriteSentenceIntoOwnLogFile(logname, "You bow gracefully.<BR>\r\n");
+		WriteMessage(name, room, "%s bows gracefully.<BR>\r\n", name);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	if (aantal == 3 && (!strcasecmp(tokens[0], "bow")) && (!strcasecmp(tokens[1], "to"))) {
+		if (WriteMessageTo(tokens[2], name, room, "%s bows gracefully to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, "%s bows gracefully to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You bow gracefully to %s.<BR>\r\n", tokens[2]);
+		}
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	return 0;
+}
+
+int
+Eyebrow_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	WriteSentenceIntoOwnLogFile(logname, "You raise an eyebrow.<BR>\r\n");
+	WriteMessage(name, room, "%s raises an eyebrow.<BR>\r\n", name);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Curtsey_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (!strcasecmp(command, "curtsey")) {
+		WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey.<BR>\r\n");
+		WriteMessage(name, room, "%s drops a curtsey.<BR>\r\n", name);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	if (aantal == 3 && (!strcasecmp(tokens[0], "curtsey")) && (!strcasecmp(tokens[1], "to"))) {
+		if (WriteMessageTo(tokens[2], name, room, "%s drops a curtsey to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, "%s drops a curtsey to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey to %s.</BR>\r\n", tokens[2]);
+		}
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	return 0;
+}
+
+int
+Flinch_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (!strcasecmp(command, "flinch")) {
+		WriteSentenceIntoOwnLogFile(logname, "You flinch.<BR>\r\n");
+		WriteMessage(name, room, "%s flinches.<BR>\r\n", name);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	if (aantal == 3 && (!strcasecmp(tokens[0], "flinch")) && (!strcasecmp(tokens[1], "to"))) {
+		if (WriteMessageTo(tokens[2], name, room, "%s flinches to %s.<BR>\r\n", name, tokens[2]) == 0) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, "%s flinches to you.<BR>\r\n", name);
+			WriteSentenceIntoOwnLogFile(logname, "You flinch to %s.</BR>\r\n", tokens[2]);
+		}
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	return 0;
+}
+
+int
+Tell_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if ((aantal > 3) && (!strcasecmp("to", tokens[1]))) {
+		if (!WriteLinkTo(tokens[2], name, "<B>%s tells you </B>: %s<BR>\r\n",
+					    name, command + (tokens[3] - tokens[0]))) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSentenceIntoOwnLogFile(logname, "<B>You tell %s</B> : %s<BR>\r\n",
+			      tokens[2], command + (tokens[3] - tokens[0]));
+		}
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	return 0;
+}
+
+int
+Say_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) 
+	{
+		if (!WriteMessageTo(tokens[2], name, room, "%s says [to %s] : %s<BR>\r\n",
+				    name, tokens[2], command + (tokens[3] - tokens[0]))) 
+		{
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		}
+		else 
+		{
+			/* person not found */ 
+			WriteSayTo(tokens[2], name, room, 
+				   "<B>%s says [to you]</B> : %s<BR>\r\n", name, command + (tokens[3] - tokens[0]));
+			WriteSentenceIntoOwnLogFile(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", tokens[2], command + (tokens[3] - tokens[0]));
+			ReadBill(tokens[2], command + (tokens[3] - tokens[0]), name, room);
+		}
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	WriteSentenceIntoOwnLogFile(logname, "<B>You say </B>: %s<BR>\r\n", command + 4);
+	WriteMessage(name, room, "%s says : %s<BR>\r\n", name, command + 4);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Shout_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if ((aantal > 3) && (!strcasecmp("to", tokens[1])))
+	{
+		char           *temp1, *temp2;
+		temp1 = (char *) malloc(cgiContentLength + 80);
+		temp2 = (char *) malloc(cgiContentLength + 80);
+		sprintf(temp1, "<B>%s shouts [to you] </B>: %s<BR>\r\n",
+			name, command + (tokens[3] - tokens[0]));
+		sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
+			name, tokens[2], command + (tokens[3] - tokens[0]));
+		if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, temp1);
+			WriteSentenceIntoOwnLogFile(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
+						     tokens[2], command + (tokens[3] - tokens[0]));
+		}
+		free(temp2);
+		free(temp1);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	WriteSentenceIntoOwnLogFile(logname, "<B>You shout</B> : %s<BR>\r\n", command + 6);
+	WriteMessage(name, room, "%s shouts : %s<BR>\r\n", name, command + 6);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Ask_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) 
+	{
+		char           *temp1, *temp2;
+		temp1 = (char *) malloc(cgiContentLength + 80);
+		temp2 = (char *) malloc(cgiContentLength + 80);
+		sprintf(temp1, "<B>%s asks you </B>: %s<BR>\r\n",
+			name, command + (tokens[3] - tokens[0]));
+		sprintf(temp2, "%s asks %s : %s<BR>\r\n",
+			name, tokens[2], command + (tokens[3] - tokens[0]));
+		if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, temp1);
+			WriteSentenceIntoOwnLogFile(logname, "<B>You ask %s</B> : %s<BR>\r\n",
+						     tokens[2], command + (tokens[3] - tokens[0]));
+		}
+		free(temp2);
+		free(temp1);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	WriteSentenceIntoOwnLogFile(logname, "<B>You ask</B> : %s<BR>\r\n", command + 4);
+	WriteMessage(name, room, "%s asks : %s<BR>\r\n", name, command + 4);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Whisper_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
+		char           *temp1, *temp2;
+		temp1 = (char *) malloc(cgiContentLength + 80);
+		temp2 = (char *) malloc(cgiContentLength + 80);
+		sprintf(temp1, "<B>%s whispers [to you]</B> : %s<BR>\r\n",
+			name, command + (tokens[3] - tokens[0]));
+		sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
+			name, tokens[2]);
+		if (!WriteMessageTo(tokens[2], name, room, temp2)) {
+			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
+		} else {
+			WriteSayTo(tokens[2], name, room, temp1);
+			WriteSentenceIntoOwnLogFile(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
+						     tokens[2], command + (tokens[3] - tokens[0]));
+		}
+		free(temp2);
+		free(temp1);
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	WriteSentenceIntoOwnLogFile(logname, "<B>You whisper </B>: %s<BR>\r\n", command + 8);
+	WriteMessage(name, room, "%s whispers : %s<BR>\r\n", name, command + 8);
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int 
+Awaken_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log",USERHeader,name);
+	WriteSentenceIntoOwnLogFile(logname, "You aren't asleep, silly.<BR>\r\n");
+	WriteRoom(name, password, room, 0);
+	return 1;
+}
+
+int
+Look_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if ((!strcasecmp("look at sky", command)) ||
+	   (!strcasecmp("look at clouds", command))) 
+	{
+		LookSky_Command(name, password);
+		return 1;
+	}
+	if ((*command == '\0') ||
+	    (!strcasecmp(command, "look around")) ||
+	    (!strcasecmp(command, "look")) ||
+	    (!strcasecmp(command, "l"))) 
+	{
+		WriteRoom(name, password, room, 0);
+		return 1;
+	}
+	
+	if (aantal > 1) {
+		LookItem_Command(name, password, room);
+		return 1;
+	}
+	return 0;
+}
+
+int
+Get_Command(char *name, char *fpassword, int room, char **ftokens, char *fcommand)
+{
+	if ( ((aantal==3) || (aantal==4)) && (!strcasecmp("get", tokens[0])) )
+	{
+	/* get copper coin(s)
+	   get 10 copper coin(s)
+	*/
+		if ((!strcasecmp("coin",tokens[aantal-1])) ||
+			(!strcasecmp("coins", tokens[aantal-1])) )
+		{
+			if ((!strcasecmp("copper",tokens[aantal-2])) ||
+				(!strcasecmp("silver",tokens[aantal-2])) ||
+				(!strcasecmp("gold", tokens[aantal-2])) )
+			{
+				GetMoney_Command(name, password, room);
+				return 1;
+			}
+		}
+	}
+	if (aantal >= 2) 
+	{
+		GetItem_Command(name, password, room);
+		return 1;
+	}
+}
+
+int
+Drop_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if ( ((aantal==3) || (aantal==4)) && (!strcasecmp("drop", tokens[0])) )
+	{
+	/* drop copper coin(s)
+	   drop 10 copper coin(s)
+	*/
+		if ((!strcasecmp("coin",tokens[aantal-1])) ||
+			(!strcasecmp("coins", tokens[aantal-1])) )
+		{
+			if ((!strcasecmp("copper",tokens[aantal-2])) ||
+				(!strcasecmp("silver",tokens[aantal-2])) ||
+				(!strcasecmp("gold", tokens[aantal-2])) )
+			{
+				DropMoney_Command(name, password, room);
+				return 1;
+			}
+		}
+	}
+	if ((aantal >= 2) && (!strcasecmp("drop", tokens[0]))) 
+	{
+		DropItem_Command(name, password, room);
+		return 1;
+	}
+}
+
+int
+Buy_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==9)) 
+	{
+		BuyItem_Command(name, password, room, "Bill");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==16)) 
+	{
+		BuyItem_Command(name, password, room, "Karcas");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==64)) 
+	{
+		BuyItem_Command(name, password, room, "Karina");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==73))
+	{
+		BuyItem_Command(name, password, room, "Hagen");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==85)) 
+	{
+		BuyItem_Command(name, password, room, "Karsten");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==87))
+	{
+		BuyItem_Command(name, password, room, "Kurst");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==161))
+	{
+		BuyItem_Command(name, password, room, "Karstare");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==228))
+	{
+		BuyItem_Command(name, password, room, "Vimrilad");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==2550))
+	{
+		BuyItem_Command(name, password, room, "Telios");
+	}
+	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==2551))
+	{
+		BuyItem_Command(name, password, room, "Nolli");
+	}
+	return 0;
+}
+
+int
+Sell_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if ((aantal >= 2) && (!strcasecmp("sell", tokens[0])) && (room==16)) 
+	{
+		SellItem_Command(name, password, room, "Karcas");
+		return 1;
+	}
+	return 0;
+}
+
+int
+Give_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if ( ((aantal==5) || (aantal==6)) && (!strcasecmp("give", tokens[0])) )
+	{
+	/* give copper coin(s)
+	   give 10 copper coin(s)
+	*/
+		if ((!strcasecmp("coin",tokens[aantal-3])) ||
+			(!strcasecmp("coins", tokens[aantal-3])) )
+		{
+			if ((!strcasecmp("copper",tokens[aantal-4])) ||
+				(!strcasecmp("silver",tokens[aantal-4])) ||
+				(!strcasecmp("gold", tokens[aantal-4])) )
+			{
+				GiveMoney_Command(name, password, room);
+				return 1;
+			}
+		}
+	}
+	if ((aantal >= 4) && (!strcasecmp("give", tokens[0]))) 
+	{
+		GiveItem_Command(name, password, room);
+		return 1;
+	}
+	return 0;
+}
+
+int
+RangerGuild_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	/* Guilds */
+	if (!strcasecmp("rangers", guildstatus))
+	{
+		if (!strcasecmp("nature list", command))
+		{
+			RangerList(name, password, room);
+			return 1;
+		}
+		if ( (!strcasecmp("nature call", command)) && (room==43) )
+		{
+			RangerEntryIn(name, password, room);	
+			return 1;
+		}
+		if ( (!strcasecmp("nature call", command)) && (room==216) )
+		{
+			RangerEntryOut(name, password, room);
+			return 1;
+		}
+		if ( (!strcasecmp("nature", tokens[0])) && (!strcasecmp("talk", tokens[1])) )
+		{
+			RangerTalk(name, password, room);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int
+MifGuild_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
+{
+	if (!strcasecmp("mif", guildstatus))
+	{
+		if (!strcasecmp("magic list", command))
+		{
+			MIFList(name, password, room);
+			return 1;
+		}
+		if ( (!strcasecmp("magic wave", command)) && (room==142) )
+		{
+			MIFEntryIn(name, password, room);
+			return 1;
+		}
+		if ( (!strcasecmp("magic wave", command)) && (room==143) )
+		{
+			MIFEntryOut(name, password, room);
+			return 1;
+		}
+		if ( (!strcasecmp("magic", tokens[0])) && (!strcasecmp("talk", tokens[1])) )
+		{
+			MIFTalk(name, password, room);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int
 gameMain(char *fcommand, char *fname, char *fpassword)
 {
 	int             oldroom;
@@ -368,7 +1232,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	{
 		if (!strcasecmp(command, "awaken"))
 		{
-			Awaken_Command(name, password, room);
+			Awaken2_Command(name, password, room);
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
 		WriteRoom(name, password, room, 1);
@@ -406,31 +1270,31 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ((!strcasecmp(command, "go west")) ||
 		(!strcasecmp(command, "west")) ||
 		(!strcasecmp(command, "w"))) {
-				GoWest_Command(name, password, room);
+				GoWest_Command(name, password, room, tokens, command);
 		}
 		if ((!strcasecmp(command, "go east")) ||
 		(!strcasecmp(command, "east")) ||
 		(!strcasecmp(command, "e"))) {
-			GoEast_Command(name, password, room);
+			GoEast_Command(name, password, room, tokens, command);
 		}
 		if ((!strcasecmp(command, "go north")) ||
 		(!strcasecmp(command, "north")) ||
 		(!strcasecmp(command, "n"))) {
-			GoNorth_Command(name, password, room);
+			GoNorth_Command(name, password, room, tokens, command);
 		}
 		if ((!strcasecmp(command, "go south")) ||
 		(!strcasecmp(command, "south")) ||
 		(!strcasecmp(command, "s"))) {
-			GoSouth_Command(name, password, room);
+			GoSouth_Command(name, password, room, tokens, command);
 		}
 	
 		if ((!strcasecmp(command, "go down")) ||
 		(!strcasecmp(command, "down"))) {
-			GoDown_Command(name, password, room);
+			GoDown_Command(name, password, room, tokens, command);
 		}
 		if ((!strcasecmp(command, "go up")) ||
 		(!strcasecmp(command, "up"))) {
-			GoUp_Command(name, password, room);
+			GoUp_Command(name, password, room, tokens, command);
 		}
 		if (!strcasecmp(command, "quit")) 
 		{
@@ -445,39 +1309,159 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	SearchForSpecialCommand(name, password, room);
 	
 	/* initialise and fill the Function array */
-	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*10);
-	gameCommands = (char **) malloc(sizeof(char *)*10);
+	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*100);
+	gameCommands = (char **) malloc(sizeof(char *)*100);
+	gameFunctionArray[myNumberOfFunctions++] = &Ask_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Awaken_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &BigTalk_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Bow_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Buy_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Clear_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Curtsey_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Date_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &DeleteMail_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoDown_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Drink_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoEast_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoEast_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Eat_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Eyebrow_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Fight_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Flinch_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Get_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Give_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Go_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Help_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Look_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &ListMail_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Look_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &MifGuild_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &MailFormDumpOnScreen;
+	gameFunctionArray[myNumberOfFunctions++] = &Me_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoNorth_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &RangerGuild_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoNorth_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &PKill_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Put_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Quit_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Read_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &ReadMail_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Unwear_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Retrieve_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoSouth_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Say_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Search_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Sell_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &SendMail_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Shout_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Sleep_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoSouth_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Stats_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Stop_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Tell_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Time_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &ChangeTitle_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Unwield_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoUp_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoWest_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Wear_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &GoWest_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Whimpy_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Whisper_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Who_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Wield_Command;
 	myNumberOfFunctions=0;
 	/* abcdefghijklmnopqrstuvwxyz */
+	gameCommands[myNumberOfFunctions++] = "ask";
+	gameCommands[myNumberOfFunctions++] = "awaken";
 	gameCommands[myNumberOfFunctions++] = "bigtalk";
+	gameCommands[myNumberOfFunctions++] = "bow";
+	gameCommands[myNumberOfFunctions++] = "buy";
 	gameCommands[myNumberOfFunctions++] = "clear";
+	gameCommands[myNumberOfFunctions++] = "curtsey";
 	gameCommands[myNumberOfFunctions++] = "date";
+	gameCommands[myNumberOfFunctions++] = "deletemail";
+	gameCommands[myNumberOfFunctions++] = "down";
+	gameCommands[myNumberOfFunctions++] = "drink";
+	gameCommands[myNumberOfFunctions++] = "e";
+	gameCommands[myNumberOfFunctions++] = "east";
+	gameCommands[myNumberOfFunctions++] = "eat";
+	gameCommands[myNumberOfFunctions++] = "eyebrow";
+	gameCommands[myNumberOfFunctions++] = "fight";
+	gameCommands[myNumberOfFunctions++] = "flinch";
+	gameCommands[myNumberOfFunctions++] = "get";
+	gameCommands[myNumberOfFunctions++] = "give";
+	gameCommands[myNumberOfFunctions++] = "go";
+	gameCommands[myNumberOfFunctions++] = "help";
 	gameCommands[myNumberOfFunctions++] = "i";
 	gameCommands[myNumberOfFunctions++] = "inventory";
+	gameCommands[myNumberOfFunctions++] = "l";
+	gameCommands[myNumberOfFunctions++] = "listmail";
+	gameCommands[myNumberOfFunctions++] = "look";
+	gameCommands[myNumberOfFunctions++] = "magic";
+	gameCommands[myNumberOfFunctions++] = "mail";
+	gameCommands[myNumberOfFunctions++] = "me";
+	gameCommands[myNumberOfFunctions++] = "n";
+	gameCommands[myNumberOfFunctions++] = "nature";
+	gameCommands[myNumberOfFunctions++] = "north";
+	gameCommands[myNumberOfFunctions++] = "pkill";
+	gameCommands[myNumberOfFunctions++] = "put";
 	gameCommands[myNumberOfFunctions++] = "quit";
+	gameCommands[myNumberOfFunctions++] = "read";
+	gameCommands[myNumberOfFunctions++] = "readmail";
+	gameCommands[myNumberOfFunctions++] = "remove";
+	gameCommands[myNumberOfFunctions++] = "retrieve";
+	gameCommands[myNumberOfFunctions++] = "s";
+	gameCommands[myNumberOfFunctions++] = "say";
+	gameCommands[myNumberOfFunctions++] = "search";
+	gameCommands[myNumberOfFunctions++] = "sell";
+	gameCommands[myNumberOfFunctions++] = "sendmail";
+	gameCommands[myNumberOfFunctions++] = "shout";
 	gameCommands[myNumberOfFunctions++] = "sleep";
+	gameCommands[myNumberOfFunctions++] = "south";
+	gameCommands[myNumberOfFunctions++] = "stats";
+	gameCommands[myNumberOfFunctions++] = "stop";
+	gameCommands[myNumberOfFunctions++] = "tell";
 	gameCommands[myNumberOfFunctions++] = "time";
+	gameCommands[myNumberOfFunctions++] = "title";
+	gameCommands[myNumberOfFunctions++] = "unwield";
+	gameCommands[myNumberOfFunctions++] = "up";
+	gameCommands[myNumberOfFunctions++] = "w";
+	gameCommands[myNumberOfFunctions++] = "wear";
+	gameCommands[myNumberOfFunctions++] = "west";
+	gameCommands[myNumberOfFunctions++] = "whimpy";
+	gameCommands[myNumberOfFunctions++] = "whisper";
 	gameCommands[myNumberOfFunctions++] = "who";
+	gameCommands[myNumberOfFunctions++] = "wield";
 	{
 		/* binary search in index, if found call function */
-		int i = myNumberOfFunctions / 2;
+		int i = (myNumberOfFunctions / 2) + (myNumberOfFunctions % 2);
 		int pos = myNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], tokens[0]);
+		if (commandlineinterface)
+		{
+			fprintf(cgiOut, "%i\n", myNumberOfFunctions);
+		 	fprintf(cgiOut, "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
+		}
 		while ((i!=0) && (equals))
 		{
+			if (i==1) 
+			{
+				i = 0;
+			}
+			i = (i / 2) + (i % 2);
 			if (equals > 0) {pos -= i;}
 			if (equals < 0) {pos += i;}
-			i = i / 2;
-			equals = strcasecmp(gameCommands[pos], tokens[0]);
+			if ((pos >= 0) && (pos < myNumberOfFunctions))
+			{
+				if (commandlineinterface)
+				{
+					fprintf(cgiOut, "%i, %i, %s, %s\n", i, pos, tokens[0], gameCommands[pos]);
+				}
+				equals = strcasecmp(gameCommands[pos], tokens[0]);
+			}
 		}
 		if (!equals)
 		{
@@ -487,126 +1471,19 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 				/* command executed successfully, kill this session */
 				KillGame();
 			}
+			{
+				/* do nothing, the game will in time find out that there is no appropriate response to the bogus command and will produce an error message. Darnit people, why do these damn comment lines sometimes have to be so long! And who turned off my word wrap anyway!!! */
+			}
 		}
-	}
-	
-	if (!strcasecmp(command, "awaken"))
-	{
-		WriteSentenceIntoOwnLogFile(logname, "You aren't asleep, silly.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
-		KillGame();
 	}
 	
 	if (godstatus==1) {Root_Command(name, password, room);}
 	if (godstatus==2) {Evil_Command(name, password, room);}
 
-	if (!strcasecmp(command, "help hint")) 
-	{
-		HelpHint_Command(name, password, room);
-	}
-	if (!strcasecmp(command, "help")) 
-	{
-		MYSQL_RES *res;
-		MYSQL_ROW row;
-		int i;
-		char temp[1024];
-		
-		fprintf(cgiOut, "<HTML>\r\n");
-		fprintf(cgiOut, "<HEAD>\r\n");
-		fprintf(cgiOut, "<TITLE>\r\n");
-		fprintf(cgiOut, "Land of Karchan - General Help\r\n");
-		fprintf(cgiOut, "</TITLE>\r\n");
-		fprintf(cgiOut, "</HEAD>\r\n");
-		
-		fprintf(cgiOut, "<BODY>\r\n");
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
-	
-		sprintf(temp, "select contents from help where command='general help'");
-		res=SendSQL2(temp, NULL);
-		row = mysql_fetch_row(res);
-		if (row==NULL) 
-		{
-			mysql_free_result(res);
-			res=SendSQL2("select contents from help where command='sorry'", NULL);
-			row = mysql_fetch_row(res);
-			fprintf(cgiOut, "%s",row[0]);
-		}
-		else
-		{
-			fprintf(cgiOut, "%s",row[0]);
-		}
-		mysql_free_result(res);
-		PrintForm(name, password);
-		if (getFrames()!=2) {ReadFile(logname);}
-		KillGame();
-	}
-	if ((aantal >= 2) && (!strcasecmp(tokens[0],"help"))) 
-	{
-		MYSQL_RES *res;
-		MYSQL_ROW row;
-		int i;
-		char temp[1024];
-		
-		fprintf(cgiOut, "<HTML>\r\n");
-		fprintf(cgiOut, "<HEAD>\r\n");
-		fprintf(cgiOut, "<TITLE>\r\n");
-		fprintf(cgiOut, "Land of Karchan - Command %s\r\n", tokens[1]);
-		fprintf(cgiOut, "</TITLE>\r\n");
-		fprintf(cgiOut, "</HEAD>\r\n");
-		
-		fprintf(cgiOut, "<BODY>\r\n");
-		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
-	
-		sprintf(temp, "select contents from help where command='%s'", tokens[1]);
-		res=SendSQL2(temp, NULL);
-		row = mysql_fetch_row(res);
-		if (row==NULL) 
-		{
-			mysql_free_result(res);
-			res=SendSQL2("select contents from help where command='sorry'", NULL);
-			row = mysql_fetch_row(res);
-			fprintf(cgiOut, "%s",row[0]);
-		}
-		else
-		{
-			fprintf(cgiOut, "%s",row[0]);
-		}
-		mysql_free_result(res);
-		PrintForm(name, password);
-		if (getFrames()!=2) {ReadFile(logname);}
-		KillGame();
-	}
 
-	if ((!strcasecmp("look at sky", command)) ||
-	   (!strcasecmp("look at clouds", command))) 
-	{
-		LookSky_Command(name, password);
-	}
 /*	if (!strcasecmp(command, "introduce me")) {
 		IntroduceMe_Command(logname);
 	}*/
-	if (!strcasecmp(command, "bow")) {
-		WriteSentenceIntoOwnLogFile(logname, "You bow gracefully.<BR>\r\n");
-		WriteMessage(name, room, "%s bows gracefully.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (aantal == 3 && (!strcasecmp(tokens[0], "bow")) && (!strcasecmp(tokens[1], "to"))) {
-		if (WriteMessageTo(tokens[2], name, room, "%s bows gracefully to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		} else {
-			WriteSayTo(tokens[2], name, room, "%s bows gracefully to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You bow gracefully to %s.<BR>\r\n", tokens[2]);
-		}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (!strcasecmp(command, "eyebrow")) {
-		WriteSentenceIntoOwnLogFile(logname, "You raise an eyebrow.<BR>\r\n");
-		WriteMessage(name, room, "%s raises an eyebrow.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
 	/* smile */
 	if ((temp = get_pluralis(command)) != NULL) {
 		WriteSentenceIntoOwnLogFile(logname, "You %s.<BR>\r\n", command);
@@ -646,553 +1523,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
-	if (!strcasecmp(command, "curtsey")) {
-		WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey.<BR>\r\n");
-		WriteMessage(name, room, "%s drops a curtsey.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (aantal == 3 && (!strcasecmp(tokens[0], "curtsey")) && (!strcasecmp(tokens[1], "to"))) {
-		if (WriteMessageTo(tokens[2], name, room, "%s drops a curtsey to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		} else {
-			WriteSayTo(tokens[2], name, room, "%s drops a curtsey to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You drop a curtsey to %s.</BR>\r\n", tokens[2]);
-		}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (!strcasecmp(command, "flinch")) {
-		WriteSentenceIntoOwnLogFile(logname, "You flinch.<BR>\r\n");
-		WriteMessage(name, room, "%s flinches.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (aantal == 3 && (!strcasecmp(tokens[0], "flinch")) && (!strcasecmp(tokens[1], "to"))) {
-		if (WriteMessageTo(tokens[2], name, room, "%s flinches to %s.<BR>\r\n", name, tokens[2]) == 0) {
-			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		} else {
-			WriteSayTo(tokens[2], name, room, "%s flinches to you.<BR>\r\n", name);
-			WriteSentenceIntoOwnLogFile(logname, "You flinch to %s.</BR>\r\n", tokens[2]);
-		}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((*command == '\0') ||
-	    (!strcasecmp(command, "look around")) ||
-	    (!strcasecmp(command, "look")) ||
-	    (!strcasecmp(command, "l"))) {
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((!strcasecmp(command, "go west")) ||
-	    (!strcasecmp(command, "west")) ||
-	    (!strcasecmp(command, "w"))) {
-		GoWest_Command(name, password, room);
-	}
-	if ((!strcasecmp(command, "go east")) ||
-	    (!strcasecmp(command, "east")) ||
-	    (!strcasecmp(command, "e"))) {
-		GoEast_Command(name, password, room);
-	}
-	if ((!strcasecmp(command, "go north")) ||
-	    (!strcasecmp(command, "north")) ||
-	    (!strcasecmp(command, "n"))) {
-		GoNorth_Command(name, password, room);
-	}
-	if ((!strcasecmp(command, "go south")) ||
-	    (!strcasecmp(command, "south")) ||
-	    (!strcasecmp(command, "s"))) {
-		GoSouth_Command(name, password, room);
-	}
-
-	if ((!strcasecmp(command, "go down")) ||
-	    (!strcasecmp(command, "down"))) {
-		GoDown_Command(name, password, room);
-	}
-	if ((!strcasecmp(command, "go up")) ||
-	    (!strcasecmp(command, "up"))) {
-		GoUp_Command(name, password, room);
-	}
-	if ((aantal >1) && (!strcasecmp(tokens[0], "title"))) {
-		ChangeTitle_Command(name, password, room);
-	}
-	if ((aantal > 1) && (!strcasecmp(tokens[0], "look"))) {
-		Look_Command(name, password, room);
-	}
-	if ((aantal > 1) && (!strcasecmp(tokens[0], "me"))) {
-		WriteMessage(name, room, "%s %s<BR>\r\n", name, command + 3);
-		WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	} /* endme */
-	if ((aantal > 3) && (!strcasecmp("tell", tokens[0])) && (!strcasecmp("to", tokens[1]))) {
-		if (!WriteLinkTo(tokens[2], name, "<B>%s tells you </B>: %s<BR>\r\n",
-					    name, command + (tokens[3] - tokens[0]))) {
-			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		} else {
-			WriteSentenceIntoOwnLogFile(logname, "<B>You tell %s</B> : %s<BR>\r\n",
-			      tokens[2], command + (tokens[3] - tokens[0]));
-		}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-//	if ((aantal > 1) && (!strcasecmp("me", tokens[0]))) {
-//		WriteSentenceIntoOwnLogFile(logname, "%s %s<BR>\r\n", name, command + 3);
-//		WriteRoom(name, password, room, 0);
-//		KillGame();
-//	}			/* endme */
-	if ((!strcasecmp("say", tokens[0])) && (aantal > 1)) {
-		if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
-			if (!WriteMessageTo(tokens[2], name, room, "%s says [to %s] : %s<BR>\r\n",
-					    name, tokens[2], command + (tokens[3] - tokens[0]))) {
-				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-			}
-			 /* person not found */ 
-			else {
-				WriteSayTo(tokens[2], name, room, 
-					   "<B>%s says [to you]</B> : %s<BR>\r\n", name, command + (tokens[3] - tokens[0]));
-				WriteSentenceIntoOwnLogFile(logname, "<B>You say [to %s]</B> : %s<BR>\r\n", tokens[2], command + (tokens[3] - tokens[0]));
-				ReadBill(tokens[2], command + (tokens[3] - tokens[0]), name, room);
-			}
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		WriteSentenceIntoOwnLogFile(logname, "<B>You say </B>: %s<BR>\r\n", command + 4);
-		WriteMessage(name, room, "%s says : %s<BR>\r\n", name, command + 4);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal > 1) && (!strcasecmp("shout", tokens[0]))) {
-		if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
-			char           *temp1, *temp2;
-			temp1 = (char *) malloc(cgiContentLength + 80);
-			temp2 = (char *) malloc(cgiContentLength + 80);
-			sprintf(temp1, "<B>%s shouts [to you] </B>: %s<BR>\r\n",
-				name, command + (tokens[3] - tokens[0]));
-			sprintf(temp2, "%s shouts [to %s] : %s<BR>\r\n",
-				name, tokens[2], command + (tokens[3] - tokens[0]));
-			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-			} else {
-				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile(logname, "<B>You shout [to %s] </B>: %s<BR>\r\n",
-							     tokens[2], command + (tokens[3] - tokens[0]));
-			}
-			free(temp2);
-			free(temp1);
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		WriteSentenceIntoOwnLogFile(logname, "<B>You shout</B> : %s<BR>\r\n", command + 6);
-		WriteMessage(name, room, "%s shouts : %s<BR>\r\n", name, command + 6);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal > 1) && (!strcasecmp("ask", tokens[0]))) {
-		if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
-			char           *temp1, *temp2;
-			temp1 = (char *) malloc(cgiContentLength + 80);
-			temp2 = (char *) malloc(cgiContentLength + 80);
-			sprintf(temp1, "<B>%s asks you </B>: %s<BR>\r\n",
-				name, command + (tokens[3] - tokens[0]));
-			sprintf(temp2, "%s asks %s : %s<BR>\r\n",
-				name, tokens[2], command + (tokens[3] - tokens[0]));
-			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-			} else {
-				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile(logname, "<B>You ask %s</B> : %s<BR>\r\n",
-							     tokens[2], command + (tokens[3] - tokens[0]));
-			}
-			free(temp2);
-			free(temp1);
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		WriteSentenceIntoOwnLogFile(logname, "<B>You ask</B> : %s<BR>\r\n", command + 4);
-		WriteMessage(name, room, "%s asks : %s<BR>\r\n", name, command + 4);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal > 1) && (!strcasecmp("whisper", tokens[0]))) {
-		if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) {
-			char           *temp1, *temp2;
-			temp1 = (char *) malloc(cgiContentLength + 80);
-			temp2 = (char *) malloc(cgiContentLength + 80);
-			sprintf(temp1, "<B>%s whispers [to you]</B> : %s<BR>\r\n",
-				name, command + (tokens[3] - tokens[0]));
-			sprintf(temp2, "%s is whispering something to %s, but you cannot hear what.<BR>\r\n",
-				name, tokens[2]);
-			if (!WriteMessageTo(tokens[2], name, room, temp2)) {
-				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-			} else {
-				WriteSayTo(tokens[2], name, room, temp1);
-				WriteSentenceIntoOwnLogFile(logname, "<B>You whisper [to %s]</B> : %s<BR>\r\n",
-							     tokens[2], command + (tokens[3] - tokens[0]));
-			}
-			free(temp2);
-			free(temp1);
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		WriteSentenceIntoOwnLogFile(logname, "<B>You whisper </B>: %s<BR>\r\n", command + 8);
-		WriteMessage(name, room, "%s whispers : %s<BR>\r\n", name, command + 8);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-
-	if ( (aantal >= 2) && (!strcasecmp("fight", tokens[0])) )
-	{
-		int myFightable;
-		char *myFightingName;
-		char *myDescription;
-		sprintf(sqlstring, "select fightable from tmp_usertable where "
-			"name='%s'", name);
-		res=SendSQL2(sqlstring, NULL);
-		row = mysql_fetch_row(res);
-		myFightable = atoi(row[0]);
-		mysql_free_result(res);
-
-		/* this section takes care of the looking up of the description */
-		myFightingName = 
-		ExistUserByDescription(tokens, 1, aantal - 1, room, &myDescription);
-		if (myFightingName == NULL)
-		{
-			myFightingName = tokens[1];
-			myDescription = tokens[1];
-		}
-		else
-		{
-			printf("<%s><%s>", myFightingName, myDescription);
-		}
-
-		sprintf(sqlstring, "select name,god from tmp_usertable where "
-		"name<>'%s' and "
-		"name='%s' and "
-		"fightable=1 and "
-		"god<>2 and "
-		"room=%i"
-		, name, myFightingName, room);
-		res=SendSQL2(sqlstring, NULL);
-		row = mysql_fetch_row(res);
-		if ((myFightable!=1) && (atoi(row[1])!=3))
-		{
-			mysql_free_result(res);
-			if (myFightingName != tokens[1]) {free(myFightingName);}
-			if (myDescription != tokens[1]) {free(myDescription);}
-			WriteSentenceIntoOwnLogFile(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		if (row!=NULL)
-		{
-			WriteSentenceIntoOwnLogFile(logname, "You start to fight against %s.<BR>\r\n", myDescription);
-			WriteMessageTo(myFightingName, name, room, "%s starts fighting against %s.<BR>\r\n",
-				    name, myDescription);
-			WriteSayTo(myDescription, name, room, 
-				   "%s starts fighting against you.<BR>\r\n", name);
-			mysql_free_result(res);
-			sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
-			myFightingName, name);
-			res=SendSQL2(sqlstring, NULL);
-			mysql_free_result(res);
-			sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
-			name, myFightingName);
-			res=SendSQL2(sqlstring, NULL);
-		}
-		else
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
-		}
-		mysql_free_result(res);
-		if (myFightingName != tokens[1]) {free(myFightingName);}
-		if (myDescription != tokens[1]) {free(myDescription);}
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if (!strcasecmp("stop fighting", command))
-	{
-		sprintf(sqlstring, "select fightingwho from tmp_usertable where "
-			"name='%s'", name);
-		res=SendSQL2(sqlstring, NULL);
-		row = mysql_fetch_row(res);
-		if (row[0][0]==0)
-		{
-			mysql_free_result(res);
-			WriteSentenceIntoOwnLogFile(logname, "You are not fighting anyone.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-		mysql_free_result(res);
-		sprintf(sqlstring, "update tmp_usertable set fightingwho='' where "
-			"name='%s'"
-			, name);
-		res=SendSQL2(sqlstring, NULL);
-		mysql_free_result(res);
-		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal == 2) && (!strcasecmp("pkill", tokens[0]))) 
-	{
-		sprintf(sqlstring, "select fightingwho from tmp_usertable where "
-			"name='%s'", name);
-		res=SendSQL2(sqlstring, NULL);
-		row = mysql_fetch_row(res);
-		if (row[0][0]!=0)
-		{
-			mysql_free_result(res);
-			WriteSentenceIntoOwnLogFile(logname, "You cannot change your pkill status during combat.<BR>\r\n");
-		}
-		else
-		{
-			mysql_free_result(res);
-			if (!strcasecmp("on", tokens[1])) 
-			{
-				sprintf(sqlstring, "update tmp_usertable set fightable=1 where "
-					"name='%s'", name);
-				res=SendSQL2(sqlstring, NULL);
-				mysql_free_result(res);
-				WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
-			} /* pkill is turned on */
-			else
-			{
-				sprintf(sqlstring, "update tmp_usertable set fightable=0 where "
-					"name='%s'", name);
-				res=SendSQL2(sqlstring, NULL);
-				mysql_free_result(res);
-				WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
-			} /* pkill is turned of */
-		} /* if indeed the person is not already fighting */
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal >= 1) && (!strcasecmp("whimpy", tokens[0]))) {
-		char number[10];
-		if (aantal == 1) {
-			strcpy(number,"0");
-		} else {
-			if (!strcasecmp("help", command + (tokens[1] - tokens[0]))) {
-				WriteSentenceIntoOwnLogFile(logname, 
-				"Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
-				"<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
-				"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
-				"<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
-				WriteRoom(name, password, room, 0);
-				KillGame();
-			}
-			if (!strcasecmp("feeling well", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"10");
-				//x.whimpy = 10;
-			}
-			if (!strcasecmp("feeling fine", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"20");
-				//x.whimpy = 20;
-			}
-			if (!strcasecmp("feeling quite nice", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"30");
-				//x.whimpy = 30;
-			}
-			if (!strcasecmp("slightly hurt", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"40");
-				//x.whimpy = 40;
-			}
-			if (!strcasecmp("hurt", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"50");
-				//x.whimpy = 50;
-			}
-			if (!strcasecmp("quite hurt", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"60");
-				//x.whimpy = 60;
-			}
-			if (!strcasecmp("extremely hurt", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"70");
-				//x.whimpy = 70;
-			}
-			if (!strcasecmp("terribly hurt", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"80");
-				//x.whimpy = 80;
-			}
-			if (!strcasecmp("feeling bad", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"90");
-				//x.whimpy = 90;
-			}
-			if (!strcasecmp("feeling very bad", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"100");
-				//x.whimpy = 100;
-			}
-			if (!strcasecmp("at death's door", command + (tokens[1] - tokens[0]))) {
-				strcpy(number,"110");
-				//x.whimpy = 110;
-			}
-		}
-		sprintf(sqlstring, "update tmp_usertable set whimpy=%s "
-			" where name='%s'", number, name);
-		res=SendSQL2(sqlstring, NULL);
-		if (res!=NULL)
-		{
-			mysql_free_result(res);
-		}
-		
-		WriteSentenceIntoOwnLogFile(logname, "<I>Whimpy set.</I><BR>\r\n");
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}			/* endwhimpy */
-	if ((aantal == 1) && (!strcasecmp("stats", tokens[0]))) {
-		Stats_Command(name, password);
-	}
-	if ( ((aantal==3) || (aantal==4)) && (!strcasecmp("get", tokens[0])) )
-	{
-	/* get copper coin(s)
-	   get 10 copper coin(s)
-	*/
-		if ((!strcasecmp("coin",tokens[aantal-1])) ||
-			(!strcasecmp("coins", tokens[aantal-1])) )
-		{
-			if ((!strcasecmp("copper",tokens[aantal-2])) ||
-				(!strcasecmp("silver",tokens[aantal-2])) ||
-				(!strcasecmp("gold", tokens[aantal-2])) )
-			{
-				GetMoney_Command(name, password, room);
-			}
-		}
-	}
-	if ((aantal >= 2) && (!strcasecmp("get", tokens[0]))) 
-	{
-		Get_Command(name, password, room);
-	}
-	if ( ((aantal==3) || (aantal==4)) && (!strcasecmp("drop", tokens[0])) )
-	{
-	/* drop copper coin(s)
-	   drop 10 copper coin(s)
-	*/
-		if ((!strcasecmp("coin",tokens[aantal-1])) ||
-			(!strcasecmp("coins", tokens[aantal-1])) )
-		{
-			if ((!strcasecmp("copper",tokens[aantal-2])) ||
-				(!strcasecmp("silver",tokens[aantal-2])) ||
-				(!strcasecmp("gold", tokens[aantal-2])) )
-			{
-				DropMoney_Command(name, password, room);
-			}
-		}
-	}
-	if ((aantal >= 2) && (!strcasecmp("drop", tokens[0]))) 
-	{
-		Drop_Command(name, password, room);
-	}
-	if ((aantal >= 4) && (!strcasecmp("put", tokens[0]))) 
-	{
-		/* put [amount] <item> in <item> ;
-		    <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
-	   */
-		Put_Command(name, password, room);
-	}
-	if ((aantal >= 4) && (!strcasecmp("retrieve", tokens[0]))) 
-	{
-		/* retrieve [amount] <item> from <item> ;
-	       <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
-		*/
-		Retrieve_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("eat", tokens[0]))) 
-	{
-		Eat_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("drink", tokens[0]))) 
-	{
-		Drink_Command(name, password, room);
-	}
-	if ((aantal >= 4) && (!strcasecmp("wear", tokens[0]))) 
-	{
-		Wear_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("remove", tokens[0]))) 
-	{
-		Unwear_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("wield", tokens[0]))) 
-	{
-		Wield_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("unwield", tokens[0]))) 
-	{
-		Unwield_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==9)) 
-	{
-		Buy_Command(name, password, room, "Bill");
-	}
-	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==16)) 
-	{
-		Buy_Command(name, password, room, "Karcas");
-	}
-	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==64)) 
-	{
-		Buy_Command(name, password, room, "Karina");
-	}
-        if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==73))
-        {
-                Buy_Command(name, password, room, "Hagen");
-        }
-	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==85)) 
-	{
-		Buy_Command(name, password, room, "Karsten");
-	}
-	if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==87))
-        {
-                Buy_Command(name, password, room, "Kurst");
-        }
-        if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==161))
-        {
-                Buy_Command(name, password, room, "Karstare");
-        }
-        if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==228))
-        {
-                Buy_Command(name, password, room, "Vimrilad");
-        }
-        if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==2550))
-        {
-                Buy_Command(name, password, room, "Telios");
-        }
-        if ((aantal >= 2) && (!strcasecmp("buy", tokens[0])) && (room==2551))
-        {
-                Buy_Command(name, password, room, "Nolli");
-        }
-        if ((aantal >= 2) && (!strcasecmp("sell", tokens[0])) && (room==16)) 
-	{
-		Sell_Command(name, password, room, "Karcas");
-	}
-	if ((aantal >= 2) && (!strcasecmp("search", tokens[0]))) 
-	{
-		Search_Command(name, password, room);
-	}
-	if ( ((aantal==5) || (aantal==6)) && (!strcasecmp("give", tokens[0])) )
-	{
-	/* give copper coin(s)
-	   give 10 copper coin(s)
-	*/
-		if ((!strcasecmp("coin",tokens[aantal-3])) ||
-			(!strcasecmp("coins", tokens[aantal-3])) )
-		{
-			if ((!strcasecmp("copper",tokens[aantal-4])) ||
-				(!strcasecmp("silver",tokens[aantal-4])) ||
-				(!strcasecmp("gold", tokens[aantal-4])) )
-			{
-				GiveMoney_Command(name, password, room);
-			}
-		}
-	}
-	if ((aantal >= 4) && (!strcasecmp("give", tokens[0]))) 
-	{
-		Give_Command(name, password, room);
-	}
-	if ((aantal >= 2) && (!strcasecmp("read", tokens[0]))) 
-	{
-		Read_Command(name, password, room);
-	}
 	/* multiple person emotions */
 	/* caress bill */
 	if ((aantal == 2) && ((temp = get_pluralis2(tokens[0])) != NULL)) {
@@ -1227,54 +1557,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}			/* end of multiple persons emotions */
-	/* Guilds */
-	if (!strcasecmp("rangers", guildstatus))
-	{
-		if (!strcasecmp("nature list", command))
-		{
-			RangerList(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("nature call", command)) && (room==43) )
-		{
-			RangerEntryIn(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("nature call", command)) && (room==216) )
-		{
-			RangerEntryOut(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("nature", tokens[0])) && (!strcasecmp("talk", tokens[1])) )
-		{
-			RangerTalk(name, password, room);
-			KillGame();
-		}
-	}
-	if (!strcasecmp("mif", guildstatus))
-	{
-		if (!strcasecmp("magic list", command))
-		{
-			MIFList(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("magic wave", command)) && (room==142) )
-		{
-			MIFEntryIn(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("magic wave", command)) && (room==143) )
-		{
-			MIFEntryOut(name, password, room);
-			KillGame();
-		}
-		if ( (!strcasecmp("magic", tokens[0])) && (!strcasecmp("talk", tokens[1])) )
-		{
-			MIFTalk(name, password, room);
-			KillGame();
-		}
-
-	}
 
 /* add SWTalk */		
 	if (!strcasecmp("SW", guildstatus))
@@ -1333,57 +1615,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	/* End Guilds */
 
-	if (!strcasecmp("mail", command))
-	{
-		MailFormDumpOnScreen(name, password);
-	}
-	if (!strcasecmp("sendmail", tokens[0])) {
-		char mailto[100], *mailbody, mailheader[100];
-		
-		mailbody = (char *) malloc(cgiContentLength);
-		cgiFormString("mailto", mailto, 99);
-		cgiFormString("mailheader", mailheader, 99);
-		cgiFormString("mailbody", mailbody, cgiContentLength - 2);
-		
-		sprintf(sqlstring, "select name from usertable where "
-			"name='%s' and god<2", mailto);
-		res=SendSQL2(sqlstring, NULL);
-		
-		if (res!=NULL)
-		{
-			row = mysql_fetch_row(res);
-		
-			if (row!=NULL) 
-			{
-				WriteMail(name, row[0], mailheader, mailbody);
-				WriteSentenceIntoOwnLogFile(logname, "Mail sent.<BR>\r\n");
-			}  /* endif real user */ 
-			else 
-			{
-				WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
-			}
-		}
-		else
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
-		}
-		mysql_free_result(res);
-		
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}			/* endofmailmessage */
-	if ((!strcasecmp("readmail", tokens[0])) && (aantal == 2)) {
-		ReadMail(name, password, room, atoi(tokens[1]), 0);
-		KillGame();
-	}			/* endofreadmailmessage */
-	if ((!strcasecmp("deletemail", tokens[0])) && (aantal == 2)) {
-		ReadMail(name, password, room, atoi(tokens[1]), 2);
-		KillGame();
-	}			/* endofreadmailmessage */
-	if (!strcasecmp("listmail", tokens[0])) {
-		ListMail(name, password, logname);
-		KillGame();
-	}			/* endoflistmail */
 	WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 }

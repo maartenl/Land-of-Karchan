@@ -112,14 +112,17 @@ free(temp);
 	fclose(fp);*/
 }
 
-void 
-ListMail(char *name, char *password, char *logname)
+int 
+ListMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	int             i = 1,j;
 	FILE           *fp;
+	char				logname[100];
 MYSQL_RES *res;
 MYSQL_ROW row;
 char temp[1024];
+
+	sprintf(logname, "%s%s.log", USERHeader, name);
 
   	fprintf(cgiOut, "<HTML>\n");
 	fprintf(cgiOut, "<HEAD>\n");
@@ -470,7 +473,7 @@ LookAtProc(int id, char *name, char *password)
 }
 
 void 
-Look_Command(char *name, char *password, int room)
+LookItem_Command(char *name, char *password, int room)
 {
 	char 		logname[100];
 
@@ -1208,8 +1211,8 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 	return id;
 }				/* endproc */
 
-void 
-Stats_Command(char *name, char *password)
+int 
+Stats_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -1757,7 +1760,7 @@ GiveMoney_Command(char *name, char *password, int room)
 }
 
 void
-Get_Command(char *name, char *password, int room)
+GetItem_Command(char *name, char *password, int room)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -1984,7 +1987,7 @@ Get_Command(char *name, char *password, int room)
 }
 
 void
-Drop_Command(char *name, char *password, int room)
+DropItem_Command(char *name, char *password, int room)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2224,8 +2227,8 @@ Drop_Command(char *name, char *password, int room)
 	KillGame();
 }
 
-void
-Put_Command(char *name, char *password, int room)
+int
+Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* put [amount] <item> in <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2260,7 +2263,7 @@ Put_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	if (!strcasecmp(tokens[2+numberfilledout], "in"))
 	{
@@ -2341,14 +2344,14 @@ Put_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	itemid_a = atoi(row[0]);
 	amountitems_a = atoi(row[1]);
@@ -2381,14 +2384,14 @@ Put_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	itemid_b = atoi(row[0]);
 	amountitems_b = atoi(row[1]);
@@ -2410,14 +2413,14 @@ Put_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	maxcontainerid = atoi(row[0]);
 	mysql_free_result(res);
@@ -2567,11 +2570,11 @@ Put_Command(char *name, char *password, int room)
 			itemadject1_b, itemadject2_b, itemname_b);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Retrieve_Command(char *name, char *password, int room)
+int
+Retrieve_Command(char *name, char *password, int room, char **ftokens, char *command)
 {
 	/*
 	* retrieve [amount] <item> from <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2606,7 +2609,7 @@ Retrieve_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	if (!strcasecmp(tokens[2+numberfilledout], "from"))
 	{
@@ -2697,14 +2700,14 @@ Retrieve_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item or container not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	itemid_a = atoi(row[0]);
 	amountitems_a = atoi(row[1]);
@@ -2867,11 +2870,11 @@ Retrieve_Command(char *name, char *password, int room)
 			itemadject1_b, itemadject2_b, itemname_b);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Wear_Command(char *name, char *password, int room)
+int
+Wear_Command(char *name, char *password, int room, char **ftokens, char *command)
 {
 	/*
 	* wear <item> on <position>; 
@@ -2921,7 +2924,7 @@ Wear_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You are already wearing something there!<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		mysql_free_result(res);
 	}
@@ -3031,14 +3034,14 @@ Wear_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to wear it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -3085,11 +3088,11 @@ Wear_Command(char *name, char *password, int room)
 	WriteMessage(name, room, "%s wears a %s, %s %s on %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), tokens[aantal-1]);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Unwear_Command(char *name, char *password, int room)
+int
+Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* wear <item> on <position>; 
@@ -3206,14 +3209,14 @@ Unwear_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You try to remove it, and fail.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -3265,11 +3268,11 @@ Unwear_Command(char *name, char *password, int room)
 	WriteMessage(name, room, "%s removes a %s, %s %s from %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), itemwearing);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Wield_Command(char *name, char *password, int room)
+int
+Wield_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* wield <item>; 
@@ -3308,7 +3311,7 @@ Wield_Command(char *name, char *password, int room)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "You are already wielding two items.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
-				KillGame();
+				return 1;
 			}
 		}
 	}
@@ -3419,14 +3422,14 @@ Wield_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have that item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -3473,11 +3476,11 @@ Wield_Command(char *name, char *password, int room)
 	WriteMessage(name, room, "%s wields a %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Unwield_Command(char *name, char *password, int room)
+int
+Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* unwield <item>; 
@@ -3594,14 +3597,14 @@ Unwield_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to stop wielding it.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -3655,11 +3658,11 @@ Unwield_Command(char *name, char *password, int room)
 	WriteMessage(name, room, "%s stops wielding the %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
-void
-Eat_Command(char *name, char *password, int room)
+int
+Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* eat <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3685,7 +3688,7 @@ Eat_Command(char *name, char *password, int room)
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You are full, and cannot eat any more.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 	} /* too much to eat */
 		if (aantal==2) 
 		{
@@ -3787,14 +3790,14 @@ Eat_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot eat that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -3842,11 +3845,11 @@ Eat_Command(char *name, char *password, int room)
 		itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s eats a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
-	KillGame();
+	return 1;
 }
 
-void
-Drink_Command(char *name, char *password, int room)
+int
+Drink_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3873,14 +3876,14 @@ Drink_Command(char *name, char *password, int room)
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You have drunk your fill.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 	} /* too much to drink */
 	if (mydrinkstats < -59) 
 	{
 			WriteSentenceIntoOwnLogFile(logname, "You are already dangerously intoxicated, "
 			"and another drop might just possibly kill you.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 	} /* too much to drink spiritual like */
 		if (aantal==2) 
 		{
@@ -3982,14 +3985,14 @@ Drink_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You cannot drink that.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 	LookString(row[5], name, password);
@@ -4052,7 +4055,7 @@ Drink_Command(char *name, char *password, int room)
 		itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s drinks a %s, %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname);
-	KillGame();
+	return 1;
 }
 
 void
@@ -4099,7 +4102,7 @@ RemapShoppingList_Command(char *name)
 }
 
 void
-Buy_Command(char *name, char *password, int room, char *fromname)
+BuyItem_Command(char *name, char *password, int room, char *fromname)
 {
 	/*
 	* buy [amount] <item> to <person> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4328,7 +4331,7 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 }
 
 void
-Sell_Command(char *name, char *password, int room, char *toname)
+SellItem_Command(char *name, char *password, int room, char *toname)
 {
 	/*
 	* sell [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4544,8 +4547,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 	KillGame();
 }
 
-void
-Search_Command(char *name, char *password, int room)
+int
+Search_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* search <object>
@@ -4575,14 +4578,14 @@ Search_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Object not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", command+(tokens[1]-tokens[0]));
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -4637,7 +4640,7 @@ Search_Command(char *name, char *password, int room)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
-					KillGame();
+					return 1;
 				}
 				mysql_free_result(res);
 		}
@@ -4671,11 +4674,11 @@ Search_Command(char *name, char *password, int room)
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
 		name, command+(tokens[1]-tokens[0]), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }
 
 void
-Give_Command(char *name, char *password, int room)
+GiveItem_Command(char *name, char *password, int room)
 {
 	/*
 	* give [amount] <item> to <person> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4926,8 +4929,8 @@ Give_Command(char *name, char *password, int room)
 	KillGame();
 }
 
-void
-Read_Command(char *name, char *password, int room)
+int
+Read_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	/*
 	* read <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -5043,7 +5046,7 @@ Read_Command(char *name, char *password, int room)
 			WriteMessage(name, room, "%s reads the %s, %s %s.<BR>\r\n",
 				name, row[1], row[2], row[0]);
 			LookString(row[3], name, password);
-			KillGame();
+			return 1;
 		}
 	}
 	
@@ -5137,14 +5140,14 @@ Read_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return 1;
 	}
 	
 	if (row[3][0]!='\0') 
@@ -5176,8 +5179,7 @@ Read_Command(char *name, char *password, int room)
 	}
 	LookString(row[5], name, password);
 	mysql_free_result(res);
-
-	KillGame();
+	return 1;
 }
 
 void 
@@ -5231,8 +5233,8 @@ Dead(char *name, char *password, int room)
 	KillGame();
 }
 
-void
-ChangeTitle_Command(char *name, char *password, int room)
+int
+ChangeTitle_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -5252,6 +5254,6 @@ ChangeTitle_Command(char *name, char *password, int room)
 	free(temp);
 	mysql_free_result(res);
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return 1;
 }				/* endproc */
 
