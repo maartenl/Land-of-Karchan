@@ -380,7 +380,9 @@ public class ItemsDb
 	/**
 	 * Returns a bulleted list of all items visible in a container.
 	 * @param aContainer item object that has a number of visible items.
-	 * @return String containing a list of items visible in the room.
+	 * @return String containing a list of items visible in the container.
+	 * Contains an empty string (not a null object) if no items are visible
+	 * in the container.
 	 */
 	public static String getInventory(Item aContainer)
 	{

@@ -112,6 +112,17 @@ public class OpenCommand extends NormalCommand
 				aContainer.getKeyId(),
 				aContainer.isLocked());
 			Persons.sendMessage(aUser, "%SNAME open%VERB2 " + anItem.getDescription() + ".<BR>\r\n");
+			if (anItem.isAttribute("openevent"))
+			{
+				String mySource =
+					Database.getMethodSource(
+						anItem.getAttribute("openevent").getValue());
+				if ( (mySource == null) || (mySource.trim().equals("")) )
+				{
+					throw new MethodDoesNotExistException("openevent of item " + anItem.getId());
+				}
+				anItem.runScript("openevent", mySource, aUser);
+			}
 			return true;
 		}
 		return false;

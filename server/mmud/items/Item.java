@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.io.StringReader;
 
 import mmud.*;
 import mmud.characters.*;
@@ -432,6 +433,10 @@ public class Item implements Executable, AttributeContainer
 		{
 			return getDescription();
 		}
+		if (field_name.equals("itemdef"))
+		{
+			return new Integer(getItemDef().getId());
+		}
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 																																							
@@ -584,9 +589,88 @@ public class Item implements Executable, AttributeContainer
 				return myItem;
 			}
 		}
+		if (method_name.equals("isWielding"))
+		{
+			if (arguments.length == 0)
+			{
+				return new Boolean(getWearing().isWielding());
+			}
+		}
 		return methodAttribute(method_name, arguments, ctxt);
 //		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
+	/**
+	 * Executes a script with this person as the focus point.
+	 * @param aScript a String containing the script to execute.
+	 * @param aXmlMethodName the name of the method in the xml
+	 * script that you wish to execute.
+	 * @param aPerson the person that is responsible for the mutation
+	 * on the item, causing the event.
+	 * If it is 
+	 * a null value, the scripted method will not be called with this array.
+	 * This also means that the method in the xml script needs
+	 * to either have this parameter set, or not set in the
+	 * declaration.
+	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
+	 * @throws MudException if something goes wrong.
+	 */ 
+	public Object runScript(String aXmlMethodName, String aScript, 
+		Person aPerson)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		try
+		{
+			// Create an interpreter and a context
+			Interpreter interp=new Interpreter();
+			interp.addGlobalVariable("rooms", Rooms.create());
+			interp.addGlobalVariable("persons", Persons.create());
+			ExecutableContext ctxt=new ExecutableContext(interp);
+	
+			// create an XMLExecutable object with the xml string
+			XMLExecutable executable = 
+				new XMLExecutable(getId() + "", new StringReader(aScript));
+	
+			// call the "main" method with the person as an argument
+			// or with the person as well as the command (split into
+			// different words in the array.)
+			if (aPerson == null)
+			{
+				Object args[]= { this } ;
+				return executable.method(aXmlMethodName, args, ctxt);
+			}
+			Object args[]= { aPerson, this };
+			return executable.method(aXmlMethodName, args, ctxt);
+		}
+		catch (simkin.ParseException aParseException)
+		{
+			System.out.println("Unable to parse command.");
+			aParseException.printStackTrace();
+			throw new MudException("Unable to parse command.", aParseException);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new MudException("Unable to run script.", e);
+		}
+	}
 
+	/**
+	 * Executes a script with this person as the focus point.
+	 * @param aScript a String containing the script to execute.
+	 * @param aXmlMethodName the name of the method in the xml
+	 * script that you wish to execute.
+	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
+	 * @see #runScript(String aXmlMethodName,String aScript,String[]
+	 * aCommandArray)
+	 * @throws MudException if something goes wrong.
+	 */ 
+	public Object runScript(String aXmlMethodName, String aScript)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		return runScript(aXmlMethodName, aScript, null);
+	}
+	 
 }

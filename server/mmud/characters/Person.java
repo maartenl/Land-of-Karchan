@@ -919,21 +919,7 @@ public class Person implements Executable, AttributeContainer
 
 	/**
 	 * Executes a script with this person as the focus point.
-	 * @param aScript a String containing the script to execute. The
-	 * following commands in the script are possible:
-	 * <ul>
-	 * <li>sendMessage(&lt;message&gt;);
-	 * <li>sendMessage(&lt;person&gt;, &lt;message&gt;);
-	 * <li>sendMessageExcl(&lt;message&gt;);
-	 * <li>sendMessageExcl(&lt;person&gt;, &lt;message&gt;);
-	 * <li>personal(&lt;message&gt;);
-	 * </ul>
-	 * The following fields in the script are available:
-	 * <ul>
-	 * <li>room
-	 * <li>sex
-	 * <li>name
-	 * </ul>
+	 * @param aScript a String containing the script to execute. 
 	 * @param aXmlMethodName the name of the method in the xml
 	 * script that you wish to execute.
 	 * @param aCommandArray an array of Strings, that contain the

@@ -86,8 +86,17 @@ public class LookCommand extends NormalCommand
 				Persons.sendMessage(aUser, "%SNAME look%VERB2 in " + myItem.getDescription() + ".<BR>\r\n");
 				theResult = "<H1>" + myItem.getDescription() + "</H1>" +
 					"You look in " + myItem.getDescription() + 
-					".<P>You see :<UL>";
-				theResult += ItemsDb.getInventory(myItem) + "</UL>" + aUser.printForm();
+					".<P>";
+				String myInvent = ItemsDb.getInventory(myItem);
+				if (myInvent.equals(""))
+				{
+					theResult += "It is totally empty.<BR>\r\n";
+				}
+				else
+				{
+					theResult += "You see<UL>" + myInvent + "</UL>";
+				}
+				theResult +=  aUser.printForm();
 				return true;
 			}
 		}

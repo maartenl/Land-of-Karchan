@@ -112,6 +112,17 @@ public class CloseCommand extends NormalCommand
 				aContainer.getKeyId(),
 				aContainer.isLocked());
 			Persons.sendMessage(aUser, "%SNAME close%VERB2 " + anItem.getDescription() + ".<BR>\r\n");
+			if (anItem.isAttribute("closeevent"))
+			{
+				String mySource =
+					Database.getMethodSource(
+						anItem.getAttribute("closeevent").getValue());
+				if ( (mySource == null) || (mySource.trim().equals("")) )
+				{
+					throw new MethodDoesNotExistException("closeevent of item " + anItem.getId());
+				}
+				anItem.runScript("closeevent", mySource, aUser);
+			}
 			return true;
 		}
 		return false;
