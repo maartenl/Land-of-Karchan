@@ -32,7 +32,7 @@ maarten_l@yahoo.com
 Land of Karchan - Admin
 </TITLE>
 </HEAD>
-                                                                                                                      
+																													  
 <BODY>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
@@ -42,6 +42,82 @@ Item Definition <?php echo $_REQUEST{"item"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
+
+/* the following constraints need to be checked before any kind of update is
+to take place:
+																																							
+changing itemdef:
+- first check that the change is approved (i.e. owner or null)
+- does wearable not conflict with anybody who is actively wearing it?
+deleting itemdef:
+- first check that the change is approved (i.e. owner or null)
+- check item instances created using item
+adding itemdef:
+- all information filled out correctly?
+																																							
+*/
+if (isset($_REQUEST{"name"}))
+{
+   // check it.
+   $result = mysql_query("select id from mm_items where id = \"".
+	  mysql_escape_string($_REQUEST{"item"}).
+	  "\" and (owner is null or owner = \"".
+	  mysql_escape_string($_COOKIE["karchanadminname"]).
+	  "\")"
+	  , $dbhandle)
+	  or die("Query(1) failed : " . mysql_error());
+   if (mysql_num_rows($result) != 1)
+   {
+	  die("You are not the owner of this itemdefinition.");
+   }
+   $result = mysql_query("select id from mm_items where id = \"".
+	  mysql_escape_string($_REQUEST{"item"})."\""
+	  , $dbhandle)
+	  or die("Query(2) failed : " . mysql_error());
+   if (mysql_num_rows($result) != 1)
+   {
+	  die("Item Definition does not exist.");
+   }
+   $result = mysql_query("select 1 
+	from mm_itemtable, mm_charitemtable 
+	where mm_itemtable.id = mm_charitemtable.id and
+	mm_charitemtable.wearing is not null and
+	mm_itemtable.itemid = ".
+	  mysql_escape_string($_REQUEST{"item"})
+	  , $dbhandle)
+	  or die("Query(2) failed : " . mysql_error());
+   if (mysql_num_rows($result) != 0)
+   {
+	  die("Characters are wearing the item, cannot change wearable.");
+   }
+
+   $wearable2 = 0;
+   for ($i = 0; $i < count($_REQUEST{"wearable"}); $i++)
+   {
+      $wearable2 += $_REQUEST{"wearable"}[$i];
+   }
+   // make that change.
+   $query = "update mm_items set name=\"".
+	  mysql_escape_string($_REQUEST{"name"}).
+	  "\", adject1=\"".
+	  mysql_escape_string($_REQUEST{"adject1"}).
+	  "\", adject2=\"".
+	  mysql_escape_string($_REQUEST{"adject2"}).
+	  "\", adject3=\"".
+	  mysql_escape_string($_REQUEST{"adject3"}).
+	  "\", wearable=\"".
+	  mysql_escape_string($wearable2).
+	  "\", owner=\"".
+	  mysql_escape_string($_COOKIE["karchanadminname"]).
+	  "\" where id = \"".
+	  mysql_escape_string($_REQUEST{"item"}).
+	  "\"";
+   mysql_query($query
+	  , $dbhandle)
+	  or die("Query(8) failed : " . mysql_error());
+   writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
+}
+																																							
 $result = mysql_query("select * from mm_items where id = ".
 		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
@@ -152,8 +228,47 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>container:</b> %s<BR>", $myrow["container"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
+	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
+	$myrow["owner"] == $_COOKIE["karchanadminname"])
+	{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_itemdefs.php">
+<b>
+<INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $myrow["id"] ?>">
+<TABLE>
+<TR><TD>name</TD><TD><INPUT TYPE="text" NAME="name" VALUE="<?php echo $myrow["name"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>adject1</TD><TD><INPUT TYPE="text" NAME="adject1" VALUE="<?php echo $myrow["adject1"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>adject2</TD><TD><INPUT TYPE="text" NAME="adject2" VALUE="<?php echo $myrow["adject2"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>adject3</TD><TD><INPUT TYPE="text" NAME="adject3" VALUE="<?php echo $myrow["adject3"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>wearable/wieldable</TD><TD><SELECT MULTIPLE NAME="wearable[] " SIZE="20">
+<OPTION VALUE="1" <?php if ($myrow["wearable"] & 1) {printf("selected");} ?>>head
+<OPTION VALUE="2" <?php if ($myrow["wearable"] & 2) {printf("selected");} ?>>neck
+<OPTION VALUE="4" <?php if ($myrow["wearable"] & 4) {printf("selected");} ?>>torso
+<OPTION VALUE="8" <?php if ($myrow["wearable"] & 8) {printf("selected");} ?>>arms
+<OPTION VALUE="16" <?php if ($myrow["wearable"] & 16) {printf("selected");} ?>>leftwrist
+<OPTION VALUE="32" <?php if ($myrow["wearable"] & 32) {printf("selected");} ?>>rightwrist
+<OPTION VALUE="64" <?php if ($myrow["wearable"] & 64) {printf("selected");} ?>>leftfinger
+<OPTION VALUE="128" <?php if ($myrow["wearable"] & 128) {printf("selected");} ?>>rightfinger
+<OPTION VALUE="256" <?php if ($myrow["wearable"] & 256) {printf("selected");} ?>>feet
+<OPTION VALUE="512" <?php if ($myrow["wearable"] & 512) {printf("selected");} ?>>hands
+<OPTION VALUE="1024" <?php if ($myrow["wearable"] & 1024) {printf("selected");} ?>>floating
+<OPTION VALUE="2048" <?php if ($myrow["wearable"] & 2048) {printf("selected");} ?>>waist
+<OPTION VALUE="4096" <?php if ($myrow["wearable"] & 4096) {printf("selected");} ?>>legs
+<OPTION VALUE="8192" <?php if ($myrow["wearable"] & 8192) {printf("selected");} ?>>eyes
+<OPTION VALUE="16384" <?php if ($myrow["wearable"] & 16384) {printf("selected");} ?>>ears
+<OPTION VALUE="32768" <?php if ($myrow["wearable"] & 32768) {printf("selected");} ?>>body
+<OPTION VALUE="65536" <?php if ($myrow["wearable"] & 65536) {printf("selected");} ?>>wield lefthand
+<OPTION VALUE="131072" <?php if ($myrow["wearable"] & 131072) {printf("selected");} ?>>wield righthand
+<OPTION VALUE="262144" <?php if ($myrow["wearable"] & 262144) {printf("selected");} ?>>wielding both hands
+</SELECT>
+</TD></TR>
+</TABLE>
+<INPUT TYPE="submit" VALUE="Change Item Definition">
+</b>
+</FORM>
+<?php
+	}
 }
-
 $result = mysql_query("select id from mm_itemtable where itemid = ".
 		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)

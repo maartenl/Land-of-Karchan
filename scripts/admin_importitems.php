@@ -43,28 +43,29 @@ Items from <?php echo $_REQUEST{"char"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mud.itemtable 
-	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\""
+	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\" order by id"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 $numfields = mysql_num_fields($result);
 while ($myrow = mysql_fetch_array($result)) 
 {
+	printf("# ");
 	for ($i = 0; $i < $numfields; $i++) 
 	{
-		printf($myrow[$i] . " ");
+		printf(mysql_field_name($result, $i) . "=" . $myrow[$i] . " ");
 	}
 	printf("<BR>");
 	for ($i=0;$i < $myrow["amount"];$i++)
 	{
 		$select = "insert into mm_itemtable (itemid, creation, owner) 
-			values(".$myrow["id"].", now(), null)";
+			values(".$myrow["id"].", now(), null);";
 		printf("<TT>".$select."</TT><BR>");
 		mysql_query($select, $dbhandle)
 			or die("Query failed : " . mysql_error());
 		$select = "insert into mm_charitemtable (id, belongsto) 
 			select id, \"".$myrow["belongsto"]."\"
 			from mm_itemtable
-			where id IS NULL";
+			where id IS NULL;";
 		printf("<TT>".$select."</TT><BR>");
 		mysql_query($select, $dbhandle)
 			or die("Query failed : " . mysql_error());
