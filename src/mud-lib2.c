@@ -186,6 +186,7 @@ if (messnr!=j)
 	return;
 }
 
+
 strcpy(mailname, row[0]);
 strcpy(mailtoname, row[1]);
 strcpy(maildatetime, row[3]);
@@ -251,11 +252,12 @@ if (erasehem) {
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
 	mysql_free_result(res);
-	temp = composeSqlStatement(temp, "UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
+	temp = composeSqlStatement("UPDATE %s SET haveread=1 WHERE name='%x' and toname='%x' and whensent='%x' ",
 	"mailtable", mailname, mailtoname, maildatetime);
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
-	mysql_free_result(res);}
+	mysql_free_result(res);
+	}
 }
 
 int 
