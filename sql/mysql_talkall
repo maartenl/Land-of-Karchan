@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /karchan2/mud/sql
+cd /karchan/mud/sql
 ./mysql_talk "Karaoke mutters to himself inaudibly.<BR>" 8
 ./mysql_talk "Karcas shouts: Goods for sale! Nice goods! Goods for sale!<BR>" 16
 ./mysql_talk "Bill sets the glass down he was cleaning, picks up another \

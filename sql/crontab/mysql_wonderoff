@@ -1,57 +1,57 @@
 #!/bin/bash
 
 if [ "$1" = "1" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves west.<BR>" 16
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves west.<BR>" 16
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=5 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears.<BR>" 5
+/karchan/mud/sql/mysql_talk "Karcas appears.<BR>" 5
 fi
 
 if [ "$1" = "2" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves south.<BR>" 5
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves south.<BR>" 5
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=3 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears.<BR>" 3
+/karchan/mud/sql/mysql_talk "Karcas appears.<BR>" 3
 fi
 
 if [ "$1" = "3" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves south.<BR>" 3
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves south.<BR>" 3
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=4 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears.<BR>" 4
+/karchan/mud/sql/mysql_talk "Karcas appears.<BR>" 4
 fi
 
 if [ "$1" = "4" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves north.<BR>" 4
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves north.<BR>" 4
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=3 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears.<BR>" 3
+/karchan/mud/sql/mysql_talk "Karcas appears.<BR>" 3
 fi
 
 if [ "$1" = "5" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves north.<BR>" 3
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves north.<BR>" 3
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=5 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears.<BR>" 5
+/karchan/mud/sql/mysql_talk "Karcas appears.<BR>" 5
 fi
 
 if [ "$1" = "6" ]; then 
-/karchan2/mud/sql/mysql_talk "Karcas leaves east.<BR>" 5
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/karchan/mud/sql/mysql_talk "Karcas leaves east.<BR>" 5
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 
 update tmp_usertable set room=16 where name='Karcas';
 END_OF_DATA
-/karchan2/mud/sql/mysql_talk "Karcas appears and immediately steps back behind his counter.<BR>" 16
+/karchan/mud/sql/mysql_talk "Karcas appears and immediately steps back behind his counter.<BR>" 16
 fi
 
 

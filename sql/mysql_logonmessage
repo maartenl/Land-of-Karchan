@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan2/mud/sql/password.sql` -s mud <<END_OF_DATA
+/usr/local/mysql/bin/mysql -h www.karchan.org -u karn --password=`cat /karchan/mud/sql/password.sql` -s mud <<END_OF_DATA
 #
 # update logonmessage
 #
@@ -18,10 +18,10 @@ Where one can change into a hero with a single swipe of his
 sword.<P>
 
 The current deputies are: 
-Elwood, Luminere, Kass, Torko
+Kass, Torko
 <P>
-Yep, the game was down, and it was all due to my fault. 
-I have it fixed now, though.<P>
+Well, obviously I have got the game working again on the new server. Y\'all
+have a good time now, yah hear?<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
 

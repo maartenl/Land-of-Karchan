@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/mysql --password=`cat /karchan2/mud/sql/password.sql` mud <<END_OF_DATA
+/usr/local/mysql/bin/mysql --password=`cat /karchan/mud/sql/password.sql` mud <<END_OF_DATA
 
 update rooms set contents='<h1>The Training Room</h1>
 <IMG SRC=\"http://lok.il.fontys.nl/~karchan/pictures/gif/letters/t.gif\"
