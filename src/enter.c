@@ -475,8 +475,6 @@ int cgiMain()
 	
 	if (strcmp("Karn", name)) {CheckForOfflineMud();}
 
-	printf("Debug!\n");
-	exit(0);
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
 
 
