@@ -26,14 +26,14 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib2.h"
 
-void GoWest_Command(char *name, char *password, int room);
-void GoEast_Command(char *name, char *password, int room);
-void GoNorth_Command(char *name, char *password, int room);
-void GoSouth_Command(char *name, char *password, int room);
+int GoWest_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int GoEast_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int GoNorth_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int GoSouth_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 int Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
-void Awaken_Command(char *name, char *password, int room);
+void Awaken2_Command(char *name, char *password, int room);
 int BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
-void MailFormDumpOnScreen(char *name, char *password);
+int MailFormDumpOnScreen(char *name, char *password, int room, char **ftokens, char *fcommand);
 int Time_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 int Date_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 void LookSky_Command(char *name, char *password);
