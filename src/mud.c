@@ -52,8 +52,6 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "cgi-util.h"
 
-#define MMHOST "zeus"	// the hostname users will be connecting to
-#define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
@@ -230,8 +228,8 @@ main(int argc, char * argv[])
 	printf("Cookie:");
 	fgets(cookiepassword, 39, stdin);cookiepassword[strlen(cookiepassword)-1]=0;
 	setFrames(0);
-	myhostname = strdup(MMHOST);
-	myport = strdup(MMPORT);
+	myhostname = strdup(getParam(MM_HOST));
+	myport = strdup(getParam(MM_PORT));
 #else
 	res = cgi_init();
 	if (res != CGIERR_NONE)
@@ -282,7 +280,7 @@ main(int argc, char * argv[])
 	}
 	if (cgi_getentrystr("hostname") == NULL)
 	{
-		myhostname = strdup(MMHOST);
+		myhostname = strdup(getParam(MM_HOST));
 	}
 	else
 	{
@@ -290,13 +288,13 @@ main(int argc, char * argv[])
 	}
 	if (cgi_getentrystr("port") == NULL)
 	{
-		myport = strdup(MMPORT);
+		myport = strdup(getParam(MM_PORT));
 	}
 	else
 	{
 		if (atoi(cgi_getentrystr("port")) == 0)
 		{
-			myport = strdup(MMPORT);
+			myport = strdup(getParam(MM_PORT));
 		}
 		else
 		{

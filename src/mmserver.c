@@ -47,10 +47,6 @@ maartenl@il.fontys.nl
 
 #include "mudnewchar.h"
 
-/*! default hostname used by the mmserver */
-#define MMHOST "zeus" // the hostname users will be connecting to
-/*! default port number used by the mmserver */
-#define MMPORT 3339 // the port users will be connecting to
 /*! version number of mmserver */
 #define MMVERSION "4.01b" // the mmud version in general
 /*! protocol version of mmserver, should be kept backwards compatible,
@@ -203,7 +199,7 @@ init_socket()
 	struct hostent *he;
 	int yes = 1;
 	
-	if ((he = gethostbyname(MMHOST)) == NULL)
+	if ((he = gethostbyname(getParam(MM_HOST))) == NULL)
 	{
 		perror("gethostbyname");
 		exit(1);
@@ -225,9 +221,9 @@ init_socket()
 	}
 	
 	my_addr.sin_family = AF_INET; // host byte order
-	my_addr.sin_port = htons(MMPORT); // short, network byte order
+	my_addr.sin_port = htons(atoi(getParam(MM_PORT))); // short, network byte order
 	//	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	//	my_addr.sin_addr.s_addr = inet_addr(MMHOST);
+	//	my_addr.sin_addr.s_addr = inet_addr(getParam(MM_HOST));
 	my_addr.sin_addr = *((struct in_addr *)he->h_addr);
 	memset(&(my_addr.sin_zero), '\0', 8); // zero the rest of the struct
 	
