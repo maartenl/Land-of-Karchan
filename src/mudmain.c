@@ -279,7 +279,6 @@ void BannedFromGame(char *name, char *address)
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
-	exit(0);
 }
 
 void CookieNotFound(char *name, char *address)
@@ -1243,7 +1242,6 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	char	*temp;
 	char	logname[100];
 	char	*junk;
-
 
 	command = fcommand;
 	name = fname;
