@@ -52,6 +52,7 @@ public class MailDb
 	public static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
 	public static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
 	public static String sqlUpdateMailString = "update mm_mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
+	public static String sqlRemoveNewMailFlagString = "update mm_mailtable set newmail=0 where toname = ?";
 	public static String sqlSendMailString = "insert into mm_mailtable " +
 		"(name, toname, header, whensent, haveread, newmail, message) " +
 		"values (?, ?, ?, now(), 0, 1, ?)";
@@ -82,7 +83,7 @@ public class MailDb
 				{
 					result += "N";
 				}
-				if (res.getInt("haveread") > 0) 
+				if (res.getInt("haveread") == 0) 
 				{
 					result += "U";
 				}
@@ -307,5 +308,28 @@ public class MailDb
 		return false;
 	}
 
+	/**
+	 * reset all mail to "old". This is usually performed when the user
+	 * exits the game.
+	 * @param aUser the user who wishes to set all mudmail sent to him/her
+	 * onto "old".
+	 */
+	public static void resetNewMailFlag(User aUser)
+	{
+		Logger.getLogger("mmud").finer("");
+		try
+		{
+
+		PreparedStatement sqlRemoveNewMailFlag = Database.prepareStatement(sqlRemoveNewMailFlagString);
+		sqlRemoveNewMailFlag.setString(1, aUser.getName());
+		int res = sqlRemoveNewMailFlag.executeUpdate();
+		sqlRemoveNewMailFlag.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+	}
 
 }

@@ -55,6 +55,7 @@ public class QuitCommand extends NormalCommand
 		Persons.sendMessage(aUser, "%SNAME left the game.<BR>\r\n");
 		try
 		{
+			MailDb.resetNewMailFlag(aUser);
 			Persons.deactivateUser(aUser);
 			Database.writeLog(aUser.getName(), "left the game.");
 		}

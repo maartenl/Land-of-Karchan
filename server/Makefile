@@ -8,6 +8,8 @@
 HOMEDIR = /home/karchan/cvs2/server
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
+JAVADOCDIR = /var/www/html/javadoc
+
 #
 # Options that can be used to the make command
 # --------------------------------------------
@@ -43,7 +45,8 @@ compile: mmud/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc: compile
-	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -private -d ./html \
+	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -private -d \
+	$(JAVADOCDIR) \
 	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database \
 	mmud.boards
 

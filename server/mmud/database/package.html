@@ -41,7 +41,7 @@ supply)</TD></TR>
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
 <TR><TD>mm_usertable</TD><TD></TD></TR>
-<TR><TD>mm_mailtable</TD><TD></TD></TR>
+<TR><TD>mm_mailtable</TD><TD>Contains mud mail of characters in the game</TD></TR>
 <TR><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
 <TR><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
 message boards.</TD></TR>
@@ -165,8 +165,26 @@ life of characters and administrators.</TD></TR>
 | mm_logonmessage     |
 +---------------------+
 
+</PRE>
+<H3>mm_mailtable</H3>
+<DL>
+<DT>haveread
+<DD>if the mail items has been read or not. (read=1, not read=0)
+<DT>newmail
+<DD>if the mail is new (i.e. has not been read since the previous
+session.
+</DL>
+<PRE>
 +---------------------+
 | mm_mailtable        |
++---------------------+
+|*name                |
+| toname              |
+| header              |
+|*whensent            |
+| haveread            |
+| newmail             |
+| message             |
 +---------------------+
 
 +---------------------+
