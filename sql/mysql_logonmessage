@@ -9,7 +9,7 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 # update logonmessage
 #
 
-UPDATE logonmessage set message='<B>Logonmessage</B>
+UPDATE logonmessage set message="<B>Logonmessage</B>
 <BR>
 <IMG SRC=\"http://www.karchan.org/images/gif/letters/w.gif\"
 ALT=\"W\" ALIGN=left>
@@ -24,21 +24,25 @@ sword.<P>
 The current deputies are: 
 Kass, Milady, Kel<P>
 
-There is the possibility to add your personal data to the website!
-It is called a <I>Character Sheet</I>. Fill one in or check out the other 
-people that already have one. You can find it <A
-HREF=\"http://www.karchan.org/cgi-bin/charactersheets.cgi\"
-TARGET=\"_blank\">here</A>.<P>
+Right! I got around to doing some programming. It has been a long time, but
+I finally got myself to do something constructive. The Leather Shop in
+Pendulis has a new item called 'brown leather common sack'. Why is this
+important, you may ask yourself. Well, this item is a <I>container</I>.
+Which means that it can contain other items. There are two new commands
+available that may help you with containers, called '<I>put</I>' and
+'<I>retrieve</I>'.<P>
+This is all still highly <I>buggy</I>, so do report bugs if you find
+them.<P>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
 
 <I>To contact a Deputy, report a bug, contact Karn, or use email, <A
-HREF="http://www.karchan.org/karchan/help/faq.html#38" TARGET=\"_blank\">click here</A>.</I>
+HREF=\"http://www.karchan.org/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
 
 <I>Please read <A
-HREF="http://www.karchan.org/karchan/help/thelaw.html" TARGET=\"_blank\"><FONT
+HREF=\"http://www.karchan.org/karchan/help/thelaw.html\" TARGET=\"_blank\"><FONT
 COLOR=red>The LAW (the most important Rules and Regulations of the game)</FONT></A>.</I>
 <P>
 
@@ -47,7 +51,7 @@ listing
 of the commands, and <B>help &lt;command&gt;</B> for help on a specific 
 command or subject. <P>
 
-' where id=0;
+" where id=0;
 
 END_OF_DATA
 
