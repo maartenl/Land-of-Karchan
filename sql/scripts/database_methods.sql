@@ -237,5 +237,32 @@ end
 return
 " where id = 14;
 
-END_OF_DATA
+update methods set src="sql(\"update tmp_usertable set vitals = vitals - jumpvital - round(3*eatstats/30) where vitals>0\")
+sql(\"update tmp_usertable set manastats = manastats - jumpmana - round(eatstats/30) where manastats>0\")
+sql(\"update tmp_usertable set movementstats = movementstats - jumpmove - round(3*eatstats/30) where movementstats>0\")
 
+sql(\"update tmp_usertable set vitals = vitals - round(3*drinkstats/30) where vitals>0 and drinkstats>0\")
+sql(\"update tmp_usertable set manastats = manastats - round(drinkstats/30) where manastats>0 and drinkstats>0\")
+sql(\"update tmp_usertable set movementstats = movementstats -round(3*drinkstats/30) where movementstats>0 and drinkstats>0\")
+
+sql(\"update tmp_usertable set vitals = 0 where vitals<0\")
+sql(\"update tmp_usertable set manastats = 0 where manastats<0\")
+sql(\"update tmp_usertable set movementstats = 0 where movementstats<0\")
+
+sql(\"update tmp_usertable set drinkstats = drinkstats - 1 where drinkstats>0\")
+sql(\"update tmp_usertable set drinkstats = drinkstats + 1 where drinkstats<0\")
+sql(\"update tmp_usertable set eatstats = eatstats - 1 where eatstats>0\")
+
+# Corpses, decaying
+
+sql(\"delete from tmp_itemtable where id=55\")
+sql(\"delete from bogus_itemtable\")
+sql(\"insert into bogus_itemtable \\
+select 55, \'\', \'\', count(amount), room, \'\', \'\' \\
+from tmp_itemtable where id>=40 and id<=54 group by room\")
+sql(\"insert into tmp_itemtable select * from bogus_itemtable\")
+sql(\"delete from tmp_itemtable where id>=40 and id<=54\")
+return
+" where id=50;
+
+END_OF_DATA
