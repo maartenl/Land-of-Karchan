@@ -123,3 +123,10 @@ insert into mm_charitemtable
 select id, ?
 from mm_itemtable
 where id > x
+
+bugs
+----
+create table bugs (title varchar(255) not null, description text, answer
+text, closed int(1) default 0, name varchar(20) not null,
+creation datetime not null
+primary key);
