@@ -64,6 +64,10 @@ null,   owner varchar(20),
 - create table mm_commandlog (stamp timestamp not null, name varchar(20) not
 null, command varchar(255) not null, primary key(stamp, name));
 - alter table mm_events alter callable set default 0;
+- alter table mm_admin add (email varchar(80) not null default "");
+- alter table mm_items add (capacity int, haslid int(1), keyid int, 
+containtype int);
+
 
 Creating a dupe database
 ------------------------

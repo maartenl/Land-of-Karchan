@@ -10,14 +10,18 @@ debug in a production environment.
 - boards
 - add %SLONG, %TLONG
 - fighting
-- open something/close something
 - inserts and deletes of items/rooms/methods/commands/events
 - insert/change/delete attributes
-- look <IN> object
 - search something
 - check that the stream has not ended in MudSocket, it will return a null
 pointer. ugly.
 - setAttribute+removeAttribute should submit information to the database.
+BUT NOT FOR ItemDefs!
+
+- open something/close something
+- look <IN> object
+- lock something/unlock something
+- check that a person does not wield more than one thing.
 
 Clans
 -----
