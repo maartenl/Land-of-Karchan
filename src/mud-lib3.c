@@ -2060,6 +2060,56 @@ SwitchRoomCheck(char *name, char *password, int room)
 			}
 			break;
 		} /*end of 182*/
+		case 300 :
+		{
+			if ((aantal>1) && (!strcmp("learn", tokens[0])))
+			{
+				if (!strcmp("learn bare-handed combat", troep))
+				{
+					int i;
+					sprintf(temp, "select count(*) from skilltable"
+					" where number=0 and forwhom='%s'",
+					name);
+					res=SendSQL2(temp, NULL);
+					row = mysql_fetch_row(res);
+					i = atoi(row[0]);
+					mysql_free_result(res);
+					if (i!=0)
+					{
+						WriteSentenceIntoOwnLogFile2(logname, "You have already learned that skill.<BR>\r\n");
+						WriteRoom(name, password, room, 0);
+						KillGame();
+					}
+					sprintf(temp, "select practises from tmp_usertable where name='%s'",
+					name);
+					res=SendSQL2(temp, NULL);
+					row = mysql_fetch_row(res);
+					i = atoi(row[0]);
+					mysql_free_result(res);
+					if (i==0)
+					{
+						WriteSentenceIntoOwnLogFile2(logname, "You do not have enough practise sessions to learn that skill.<BR>\r\n");
+						WriteRoom(name, password, room, 0);
+						KillGame();
+					}
+					sprintf(temp, "insert into skilltable values(0, '%s', 0)", name);
+					res=SendSQL2(temp, NULL);
+					mysql_free_result(res);
+					sprintf(temp, "update tmp_usertable set practises=practises-1 where name='%s'",
+					name);
+					res=SendSQL2(temp, NULL);
+					mysql_free_result(res);
+					WriteSentenceIntoOwnLogFile2(logname, "You %s.<BR>\r\n", troep);
+					WriteMessage2(name, room, "%s learns bare-handed combat.<BR>\r\n", name);
+					WriteRoom(name, password, room, 0);
+					KillGame();
+				}
+				WriteSentenceIntoOwnLogFile2(logname, "Unable to locate skill.<BR>\r\n");
+				WriteRoom(name, password, room, 0);
+				KillGame();
+			}
+			break;
+		} /*end of 300*/
 		case 364 :
 		{
 			if (!strcmp(troep, "get key")) 
