@@ -22,7 +22,7 @@ Where one can change into a hero with a single swipe of his
 sword.<P>
 
 The current deputies are: 
-Kass, Torko, Milady, Manatoba<P>
+Kass, Torko, Milady, Manatoba, Kel, Typhome<P>
 
 Okay, I implemented a parser type thingy for the mud. I had to rewrite all
 the existing special commands to this new parser, and that is why the
