@@ -271,11 +271,19 @@ from mud.usertable;
 
 setting roomitems
 -----------------
-insert into mm_itemtable
-(itemid, creation, owner)
-select (id, now(), null)
+select concat(
+"insert into mm_itemtable (itemid, creation, owner)
+values(", id, ",'",  now(), "',null);\n\n",
+"insert into mm_roomitemtable (id, room, search)
+select id,", room, ", null 
+from mm_itemtable 
+where id IS NULL;"
+
+)
 from mud.tmp_itemtable
 where id < 0;
+
+SELECT * FROM tbl_name WHERE auto_col IS NULL
 
 insert into mm_roomitemtable
 (id, room, search)
