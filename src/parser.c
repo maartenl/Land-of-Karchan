@@ -322,7 +322,8 @@ int Parse(char *name, int *room, char *parserstring)
 					strcpy(string, temp);
 					free(temp);
 				}
-				while ((i = strstr(string, "%")) != NULL)
+				while ( ((i = strstr(string, "%0")) != NULL) ||
+					((i = strstr(string, "%1")) != NULL) )
 				{
 					char *temp, number[3];
 					int integer;
