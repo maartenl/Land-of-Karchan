@@ -1,6 +1,0 @@
-Path is: /Jar is NOW present<BR>
-Root path is: /rootTest ck_ConvertTime() - Sat, 19-Aug-2000 19:59:59 GMT
-Write to stream - all modified cookies
-<BR>
-
-Write to stream - done!<BR>
