@@ -23,6 +23,22 @@ BUT NOT FOR ItemDefs!
 - lock something/unlock something
 - check that a person does not wield more than one thing.
 
+- events:
+  openevent(person, item)
+	- occurrs when item is successfully opened by a person
+	- methodname found in attribute "openevent"
+	- refers to source code in methods table
+	- attribute available in item
+  closeevent(person, item)
+	- occurrs when item is successfully closed by a person
+	- methodname found in attribute "closeevent"
+	- refers to source code in methods table
+	- attribute available in item
+  receiveitemevent(person, person, item)
+  enterevent(person, room)
+  leaveevent(person, room)
+ - check if an object is being wielded.
+
 Clans
 -----
 
