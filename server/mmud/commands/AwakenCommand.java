@@ -60,7 +60,7 @@ public class AwakenCommand extends NormalCommand
 		else
 		{
 			aUser.setSleep(false);
-			aUser.writeMessage("%SNAME awaken%VERB2.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME awaken%VERB2.<BR>\r\n");
 		}
 		return true;
 	}
