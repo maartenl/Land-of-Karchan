@@ -430,6 +430,10 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 int
 ReadMail_Command(char *name, char *password, int room, char *fcommand)
 {
+	if (getTokenAmount()<2)
+	{
+		return 0;
+	}
 	ReadMail(name, password, room, atoi(getToken(1)), 0);
 	return 1;
 }
