@@ -112,6 +112,11 @@ public class LookCommand extends NormalCommand
 			}
 			return true;
 		}
+		if (getCommand().equalsIgnoreCase("l"))
+		{
+			// do nothing, just look
+			return true;
+		}
 		return false;
 	}
 
