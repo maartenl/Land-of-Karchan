@@ -46,7 +46,7 @@ $result = mysql_query("select id from mm_itemtable where itemid = ".
 		$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s<A><BR> ", $myrow[0], $myrow[0]);
 }

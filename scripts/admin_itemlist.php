@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select id, adject1, adject2, adject3, name from mm_items order by id"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s<A> ", $myrow[0], $myrow[0]);
 	printf("<b>name:</b> %s %s %s %s<BR>", $myrow[1], $myrow[2], $myrow[3], $myrow[4]);

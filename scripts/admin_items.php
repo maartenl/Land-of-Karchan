@@ -46,7 +46,7 @@ $result = mysql_query("select mm_itemtable.id, mm_items.* from mm_items, mm_item
 	" where mm_items.id = mm_itemtable.itemid and mm_itemtable.id = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow[0]);
 	printf("<b>itemid:</b> %s<BR>", $myrow[1]);
@@ -63,7 +63,7 @@ $result = mysql_query("select * ".
 	" where id = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>value:</b> %s ", $myrow[1]);
@@ -75,7 +75,7 @@ $result = mysql_query("select containerid ".
 	" where mm_itemitemtable.id = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>Item contained in item:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
@@ -84,7 +84,7 @@ $result = mysql_query("select room ".
 	" where mm_roomitemtable.id = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>Item contained in room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
@@ -93,7 +93,7 @@ $result = mysql_query("select belongsto ".
 	" where mm_charitemtable.id = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>Item belongsto character:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
@@ -105,7 +105,7 @@ $result = mysql_query("select mm_itemitemtable.id, mm_items.id, ".
 	" mm_itemitemtable.containerid = ".$_REQUEST{"item"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>itemid:</b> %s ", $myrow[1]);

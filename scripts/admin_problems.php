@@ -48,7 +48,7 @@ $result = mysql_query("select mm_itemtable.id from mm_itemtable ".
 	" LEFT JOIN mm_itemitemtable ON mm_itemitemtable.id = mm_itemtable.id where mm_itemitemtable.id is null "
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A><BR>", $myrow[0], $myrow[0]);
 }

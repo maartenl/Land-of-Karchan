@@ -57,7 +57,7 @@ if ($_REQUEST{"status"} = "3")
 $result = mysql_query($query
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>creation:</b> %s <b>name:</b> %s <b>message:</b> %s<BR> ", $myrow[0],
 		$myrow[1], $myrow[2]);

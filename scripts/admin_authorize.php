@@ -34,7 +34,7 @@ $result = mysql_query("select \"yes\" from mm_admin where name = \"".
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 $good = "no";
-while ($myrow = mysql_fetch_row($result))
+while ($myrow = mysql_fetch_array($result))
 {
 	if ($myrow[0] == "yes")
 	{

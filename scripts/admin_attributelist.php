@@ -46,7 +46,7 @@ $result = mysql_query("select * from mm_charattributes ".
 	"where name = \"".$_REQUEST{"name"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>value:</b> %s ", $myrow[1]);
 	printf("<b>value_type:</b> %s ", $myrow[2]);
@@ -58,7 +58,7 @@ $result = mysql_query("select * from mm_roomattributes ".
 	"where name = \"".$_REQUEST{"name"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>value:</b> %s ", $myrow[1]);
 	printf("<b>value_type:</b> %s ", $myrow[2]);
@@ -70,7 +70,7 @@ $result = mysql_query("select * from mm_itemattributes ".
 	"where name = \"".$_REQUEST{"name"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>value:</b> %s ", $myrow[1]);
 	printf("<b>value_type:</b> %s ", $myrow[2]);

@@ -51,7 +51,7 @@ $result = mysql_query("select name, title, sleep,
 	or die("Query failed : " . mysql_error());
 printf("<I>There are %s persons active in the game.</I><P><UL>\r\n", 
 	mysql_num_rows($result));
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	if ($myrow[2] == "1")
 	{

@@ -67,7 +67,7 @@ if (mysql_num_rows($result) == 0)
 {
 	die("Character does not exist.");
 }
-if ($myrow = mysql_fetch_row($result)) 
+if ($myrow = mysql_fetch_array($result)) 
 {
 	// full character sheet 
 	printf("<B>Name:</B> %s<BR>", $myrow[0]);
@@ -105,7 +105,7 @@ function familyValues($arg)
 		family.description = familyvalues.id", $arg)
 		or die("Query failed : " . mysql_error());
 	printf("<B>Family Relations:</B><BR><UL>");
-	while ($myrow = mysql_fetch_row($result))
+	while ($myrow = mysql_fetch_array($result))
 	{
 		if ($myrow[2] == null)
 		{

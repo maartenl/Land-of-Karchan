@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_rooms where id = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow[0]);
 	if ($myrow[1]<>0)
@@ -84,7 +84,7 @@ $result = mysql_query("select * ".
 	" where id = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>value:</b> %s ", $myrow[1]);
@@ -99,7 +99,7 @@ $result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
 	" mm_roomitemtable.room = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>itemid:</b> %s ", $myrow[1]);
@@ -112,7 +112,7 @@ $result = mysql_query("select mm_usertable.name ".
 	" where active = 1 and room  = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
@@ -122,7 +122,7 @@ $result = mysql_query("select mm_usertable.name ".
 	" where active = 0 and room  = ".$_REQUEST{"room"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
 }
@@ -132,7 +132,7 @@ $result = mysql_query("select id from mm_rooms where ".$_REQUEST{"room"}.
 	" in (west, east, north, south, up, down) "
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[0], $myrow[0]);
 }

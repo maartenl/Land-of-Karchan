@@ -61,7 +61,7 @@ $result = mysql_query("select concat(\"<A
 $numrows = ceil(mysql_num_rows($result) / 5);
 $beginstuff = 'x';
 $counter = 1;
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	$myrow[1] = ucfirst($myrow[1]);
 	if ($myrow[1]{0} != $beginstuff)

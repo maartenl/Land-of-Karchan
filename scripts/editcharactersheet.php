@@ -57,7 +57,7 @@ $result = mysql_query("select *, replace(replace(replace(storyline,
 	from characterinfo 
         where name = '".$_REQUEST{"name"}."'", $dbhandle)
 	or die("Query failed : " . mysql_error());
-if ($myrow = mysql_fetch_row($result)) 
+if ($myrow = mysql_fetch_array($result)) 
 {
 	// full character sheet 
 ?>
@@ -118,7 +118,7 @@ function familyValues($arg)
 	printf("Add family relation:\r\n");
 	printf("<SELECT NAME=\"family\">\r\n");
 	printf("<option selected value=\"0\">None");
-	while ($myrow = mysql_fetch_row($result))
+	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("<option selected value=\"%s\">%s", 
 			$myrow[0],$myrow[1]);

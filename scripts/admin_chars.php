@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select * from mm_usertable where name = \"".$_REQUEST{"char"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> %s<BR>", $myrow[0]);
 	printf("<b>address:</b> %s<BR>", $myrow[1]);
@@ -62,7 +62,7 @@ $result = mysql_query("select * ".
     " where charname = \"".$_REQUEST{"char"}."\""
     , $dbhandle)
     or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
     printf("<b>value:</b> %s ", $myrow[1]);
@@ -77,7 +77,7 @@ $result = mysql_query("select mm_charitemtable.id, mm_items.id, ".
 	" mm_charitemtable.belongsto = \"".$_REQUEST{"char"}."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_row($result)) 
+while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>itemid:</b> %s ", $myrow[1]);
