@@ -25,14 +25,9 @@ The current deputies are:
 Kass, Kel, Silverblade<P>
 
 <HR>
-Monday, Nov 12 2002, 23:46<P>
-Kell mentioned that the bots do not answer when using <I>say to</I>. Fixed it.
-<HR>
-Sunday, Nov 11 2002, 15:13<P>
-THe database was shot down by the operating system because it was taking
-up too much memory. Ah, well, that happens
-when any one program keeps running for approximately 200 days straight.<P>
-Restarted and now we have plenty of free memory again.
+Sunday, Nov 24 2002, 15:11<P>
+Righty ho, the problem with the debugging statements is fixed.
+Should not happen again.
 <HR>
 Friday, Oct 25 2002, 20:26<P>
 Current list of people interested in becoming <B>deputy</B>:
