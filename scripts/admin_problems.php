@@ -229,6 +229,16 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["name"], $myrow["id"]);
 }
 
+printf("<H2>Problems with Scripts</H2>\r\n");
+$result = mysql_query("select name from mm_methods where src is null or src = \"\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>method name:</b> %s (method has no source)<BR>",
+$myrow["name"]);
+}
+
 mysql_close($dbhandle);
 ?>
 
