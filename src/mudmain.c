@@ -1154,8 +1154,9 @@ Admin_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 			mymudinfo.mmudtime, mymudinfo.mmuddate);
 
 		fprintf(getMMudOut(), "Mmud started on : %s<P>\n", asctime(gmtime(&mymudinfo.mmudstartuptime)));
-		fprintf(getMMudOut(), "Number of connections: %i<BR>\nNumber of timeouts: %i<BR>\nNumber of current connections: %i<BR>\n",
-			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections);
+		fprintf(getMMudOut(), "Total connections: %i<BR>\nTimeouts: %i<BR>\nCurrent connections: %i<BR>\nMax. current connections: %i<BR>\n",
+			mymudinfo.number_of_connections, mymudinfo.number_of_timeouts, mymudinfo.number_of_current_connections,
+			mymudinfo.maxnumber_of_current_connections);
 	
 		PrintForm(name, password);
 		fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
