@@ -146,7 +146,7 @@ public final class Persons
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new UserAlreadyActiveException();
 		}
-		if (myUser.verifyPassword(aPassword))
+		if (!myUser.verifyPassword(aPassword))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 			throw new PwdIncorrectException();
