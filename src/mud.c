@@ -431,7 +431,8 @@ cgiMain()
 		}		/* endwhile */
 	}			/* endif */
 
-	if ((strstr(troep,"<applet")!=NULL) || (strstr(troep,"<script")!=NULL)) {
+	if ((strstr(troep,"<applet")!=NULL) || (strstr(troep,"<script")!=NULL)
+		|| (strstr(troep,"java-script")!=NULL) || (strstr(troep,"CommandForm")!=NULL)) { 
 		WriteSentenceIntoOwnLogFile2(logname, "I am afraid, I do not understand that.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
 		KillGame();
