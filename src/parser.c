@@ -277,7 +277,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		if (res != NULL)
 		{
 			row = mysql_fetch_row(res);
-			if (row != NULL)
+			if ( (row != NULL) && (row[0] != NULL) )
 			{
 				/*	row[0] should contain a string */
 				if (stringbuffer != NULL)
