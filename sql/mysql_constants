@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export MYSQL_BIN="/usr/local/bin/mysql"
-export MYSQL_PWD=`cat /karchan/mud/sql/password.sql`
+export MYSQL_PWD=`cat /karchan/password.sql`
 export MYSQL_HOST="localhost"
 export MYSQL_USR="karn"
 export MYSQL_DB="mud"
