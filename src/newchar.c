@@ -111,8 +111,8 @@ void StrangeName(char *name, char *password, char *address)
 		fprintf(cgiOut, "</HTML>\n");
 		time(&tijd);
 		datum=*(gmtime(&tijd));
-		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
-		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
+		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 		exit(0);
 	}
 } /*endproc*/
@@ -138,8 +138,8 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 	exit(0);
 }
 
@@ -160,8 +160,8 @@ void CookieNotFound(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for newchar by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Cookie not found for newchar by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 	closedbconnection();
 	exit(0);
 }
@@ -175,8 +175,8 @@ MakeStart2(char *name, char *password, char *address)
 
 	time(&tijd);
 	datum = *(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-19%i %s (%s) has entered the game and is new<BR>\n", datum.tm_hour,
-				     datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year, name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile, "%i:%i:%i %i-%i-%i %s (%s) has entered the game and is new<BR>\n", datum.tm_hour,
+				     datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year+1900, name, address);
 	sprintf(printstr, "%s has entered the game and is new here...<BR>\r\n", name, address);
 	sprintf(printstr, USERHeader "%s.log", name);
 	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
@@ -200,8 +200,8 @@ void MakeStart(char *name, char *password, char *address, int room)
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 //	printf("Dude4!\n");
 	sprintf(printstr,"%s has entered the game...<BR>\r\n",name);
 	sprintf(printstr,USERHeader"%s.log",name);
@@ -317,8 +317,8 @@ fprintf(cgiOut,"Please retry by clicking at the link below:<P>\n");
 fprintf(cgiOut,"<A HREF=\"http://"ServerName"/karchan/enter.html\">Click here to retry</A></body>\n");
 time(&tijd);
 datum=*(gmtime(&tijd));
-WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Password Fault by %s (%s) (newchar)<BR>\n",datum.tm_hour, 
-datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
+WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Password Fault by %s (%s) (newchar)<BR>\n",datum.tm_hour, 
+datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
 exit(0);
 }
 

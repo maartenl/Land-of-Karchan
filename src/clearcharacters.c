@@ -79,8 +79,8 @@ int SendSQL()
 		time(&tijd);
 		datum=*(gmtime(&tijd));
 		while((row = mysql_fetch_row(res))) {
-			printf("%i:%i:%i %i-%i-19%i %s deactivated by system (last active %s, %i min. idle)<BR>\r\n",
-			datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,
+			printf("%i:%i:%i %i-%i-%i %s deactivated by system (last active %s, %i min. idle)<BR>\r\n",
+			datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,
 			row[0], row[1], atoi(row[2])/60);
 			// Fighting who generates Seg Faults if someone is fighting non-active person
 			sprintf(sqlstring, "update tmp_usertable set fightingwho='' where fightingwho='%s'", row[0]);

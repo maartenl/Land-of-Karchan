@@ -420,7 +420,8 @@ WriteInventoryList(char * name, char * password)
 		" (tmpitems.amount >= 1) and "
 		" (tmpitems.room = 0) and "
 		" (tmpitems.wearing = '') and "
-		" (tmpitems.wielding = '')", name);
+		" (tmpitems.wielding = '') and "
+		" (tmpitems.containerid = 0)", name);
 	res=SendSQL2(sqlstring, NULL);
 	if (res!=NULL)
 	{
@@ -845,7 +846,8 @@ if (!getFrames())
 			"      (tmpitems.belongsto = '') and "
 			"      (tmpitems.amount >=1) and "
 			"      (tmpitems.room = %i) and "
-			"      (items.visible <> 0)"
+			"      (items.visible <> 0) and "
+			"      (tmpitems.containerid=0)"
 			"      ",room);
 	res=SendSQL2(tempsql, NULL);
 	if (res!=NULL)
@@ -898,7 +900,7 @@ CheckWeight(char * name)
 	/* Check total weight of items */
 	sprintf(tempsql, "select sum(items.weight*tmp_itemtable.amount) from "
 	"tmp_itemtable, items where tmp_itemtable.belongsto='%s' and "
-	"tmp_itemtable.id=items.id", name);
+	"tmp_itemtable.id=items.id and tmp_itemtable.containerid=0", name);
 	res=SendSQL2(tempsql, NULL);
 	totalitems=0;
 	if (res!=NULL)

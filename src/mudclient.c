@@ -28,8 +28,8 @@ addLog(char *s)
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	fp = fopen("/home/karchan/mud/data/error.log","a");
-	fprintf(fp, "[%02i:%02i:%02i %02i-%02i-19%i] client: %s\n",
-	datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,s);
+	fprintf(fp, "[%02i:%02i:%02i %02i-%02i-%i] client: %s\n",
+	datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,s);
 	fclose(fp);
 }
 

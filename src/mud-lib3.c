@@ -474,7 +474,7 @@ Date_Command(char *name, char *password, int room)
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	WriteSentenceIntoOwnLogFile(logname, "Current date is %i-%i-%i<BR>\r\n",
-		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year);
+		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year+1900);
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }				/* endproc */

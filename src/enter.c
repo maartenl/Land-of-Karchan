@@ -112,8 +112,8 @@ void StrangeName(char *name, char *password, char *address)
 		fprintf(cgiOut, "</HTML>\n");
 		time(&tijd);
 		datum=*(gmtime(&tijd));
-		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
-		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+		WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Invalid name by %s (%s) <BR>\n",datum.tm_hour,
+		datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 		closedbconnection();
 				exit(0);
 	}
@@ -140,8 +140,8 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 	closedbconnection();
 	exit(0);
 }
@@ -161,8 +161,8 @@ void MultiPlayerDetected(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Multiplayer detected by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 	closedbconnection();
 	exit(0);
 }
@@ -220,8 +220,8 @@ void AlreadyActive(char *name, char *password, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-//	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Already Active Fault by %s (%s)<BR>\n",datum.tm_hour,
-//	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
+//	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Already Active Fault by %s (%s)<BR>\n",datum.tm_hour,
+//	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
 	closedbconnection();
 	exit(0);
 }
@@ -240,8 +240,8 @@ void WrongPasswd(char *name, char *address, char *error)
 	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,error,name,address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i %s by %s (%s)<BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
 	closedbconnection();
 	exit(0);
 }
@@ -252,8 +252,8 @@ void WriteError(char *name, char *address, char *error)
 	struct tm datum;
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i %s by %s (%s)<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,error,name,address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i %s by %s (%s)<BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
 }
 
 void ToManyUsers() 
@@ -287,8 +287,8 @@ void ToManyNames(char *name, char *address)
 	fprintf(cgiOut,"<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", ServerName);
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Too many names Fault by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
 	closedbconnection();
 	exit(0);
 }
@@ -308,8 +308,8 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	fprintf(cgiOut,"</FORM></BODY></HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,fname, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
 	closedbconnection();
 	exit(0);
 }
@@ -327,8 +327,8 @@ void MakeStart(char *name, char *password, char *address, int room)
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i  %s (%s) entered the game<BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 //	printf("Dude4!\n");
 	sprintf(printstr,"%s has entered the game...<BR>\r\n",name);
 	sprintf(printstr,USERHeader"%s.log",name);

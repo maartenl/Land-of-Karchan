@@ -770,6 +770,7 @@ Look_Command(char *name, char *password, int room)
 				"(belongsto='%s') and "
 				"((wearing <> '') or "
 				" (wielding <> '')) and "
+				" (containerid = 0) and "
 				" (items.id = tmpitems.id)",row[0], row[7], row[0]);
 				WriteSentenceIntoOwnLogFile(logname, "%s seems %s.<BR>\r\n", HeShe(row[7]), ShowString(atoi(row[29]), atoi(row[52])));
 				if (!strcmp(row[26],"1")) 
@@ -840,8 +841,8 @@ NotActive(char *fname, char *fpassword, int errornr)
 	
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,fname, fpassword, errornr);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, fpassword, errornr);
 
 	KillGame();
 }
@@ -1223,6 +1224,7 @@ Stats_Command(char *name, char *password)
 	"(belongsto='%s') and "
 	"((wearing <> '') or "
 	" (wielding <> '')) and "
+	" (containerid = 0) and "
 	" (items.id = tmpitems.id)",name);
 	res=SendSQL2(temp, NULL);
 	while ((row = mysql_fetch_row(res))!=NULL)
@@ -1307,7 +1309,8 @@ GetMoney_Command(char *name, char *password, int room)
 		"(tmpitems.amount>=%i) and "
 		"(tmpitems.belongsto='') and "
 		"(tmpitems.room = %i) and "
-		"(tmpitems.search = '')"
+		"(tmpitems.search = '') and "
+		"(tmpitems.containerid = 0)"
 		, tokens[numberfilledout+1],
 		amount, room);
 		res=SendSQL2(sqlstring, &changedrows);
@@ -1346,7 +1349,8 @@ GetMoney_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 		"update tmp_itemtable set amount=amount-%i "
 		"where (id = %i) and "
-		"(room = %i)"
+		"(room = %i) and "
+		"(containerid = 0)"
 		, amount, itemid, room);
 	}
 	else
@@ -1354,7 +1358,8 @@ GetMoney_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 		"delete from tmp_itemtable "
 		"where (id = %i) and "
-		"(room = %i)"
+		"(room = %i) and "
+		"(containerid = 0)"
 		, itemid, room);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -1474,7 +1479,8 @@ DropMoney_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 			"update tmp_itemtable set amount=amount+%i "
 			"where (id=%i) and "
-			"(room=%i)"
+			"(room=%i) and "
+			"(containerid = 0)"
 			, amount, itemid, room);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -1483,7 +1489,8 @@ DropMoney_Command(char *name, char *password, int room)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','',%i,%i,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','',%i,%i,'','')"
 			, itemid, amount, room);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -1671,7 +1678,8 @@ Get_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='') and "
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
-			"(items.getable<>0)"
+			"(items.getable<>0) and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1+numberfilledout], amount, room);
 		}
 		if (aantal==3+numberfilledout) 
@@ -1688,7 +1696,8 @@ Get_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='') and "
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
-			"(items.getable<>0)"
+			"(items.getable<>0) and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+2], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			amount, room);
@@ -1710,7 +1719,8 @@ Get_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='') and "
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
-			"(items.getable<>0)"
+			"(items.getable<>0) and "
+			"(tmpitems.containerd = 0)"
 			,tokens[numberfilledout+3], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -1736,7 +1746,8 @@ Get_Command(char *name, char *password, int room)
 			"(tmpitems.belongsto='') and "
 			"(tmpitems.room = %i) and "
 			"(tmpitems.search = '') and "
-			"(items.getable<>0)"
+			"(items.getable<>0) and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+4], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -1771,7 +1782,8 @@ Get_Command(char *name, char *password, int room)
 			"where (id=%i) and "
 			"(belongsto='%s') and "
 			"(wearing = '') and "
-			"(wielding = '')"
+			"(wielding = '') and "
+			"(containerid = 0)"
 			, amount, itemid, name);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -1780,7 +1792,8 @@ Get_Command(char *name, char *password, int room)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','%s',%i,0,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','%s',%i,0,'','')"
 			, itemid, name, amount);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -1798,7 +1811,8 @@ Get_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 		"update tmp_itemtable set amount=amount-%i "
 		"where (id = %i) and "
-		"(room = %i)"
+		"(room = %i) and "
+		"(containerid = 0)"
 		, amount, itemid, room);
 	}
 	else
@@ -1806,7 +1820,8 @@ Get_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 		"delete from tmp_itemtable "
 		"where (id = %i) and "
-		"(room = %i)"
+		"(room = %i) and "
+		"(containerid = 0)"
 		, itemid, room);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -1866,7 +1881,8 @@ Drop_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1+numberfilledout], amount, name);
 		}
 		if (aantal==3+numberfilledout) 
@@ -1885,7 +1901,8 @@ Drop_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
-			"(items.dropable<>0)"
+			"(items.dropable<>0) and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+2], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			amount, name);
@@ -1909,7 +1926,8 @@ Drop_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
-			"(items.dropable<>0)"
+			"(items.dropable<>0) and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+3], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -1937,7 +1955,8 @@ Drop_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
-			"(items.dropable<>0)"
+			"(items.dropable<>0) and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+4], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -1970,7 +1989,8 @@ Drop_Command(char *name, char *password, int room)
 		sprintf(sqlstring, 
 			"update tmp_itemtable set amount=amount+%i "
 			"where (id=%i) and "
-			"(room=%i)"
+			"(room=%i) and "
+			"(containerid = 0)"
 			, amount, itemid, room);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -1979,7 +1999,8 @@ Drop_Command(char *name, char *password, int room)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','',%i,%i,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','',%i,%i,'','')"
 			, itemid, amount, room);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -1999,7 +2020,8 @@ Drop_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, amount, itemid, name);
 	}
 	else
@@ -2009,7 +2031,8 @@ Drop_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -2092,7 +2115,8 @@ Wear_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"%s"
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1], name, sqlcomposite);
 		}
 		if (aantal==5) 
@@ -2110,7 +2134,8 @@ Wear_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"%s"
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name, sqlcomposite);
@@ -2133,7 +2158,8 @@ Wear_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"%s"
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems_containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2160,7 +2186,8 @@ Wear_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"%s"
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2196,12 +2223,14 @@ Wear_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 		sprintf(sqlstring, 
-		"insert into tmp_itemtable values(%i, '', '%s', 1, 0, '%s', '')"
+		"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+		" values(%i, '', '%s', 1, 0, '%s', '')"
 		, itemid, name, tokens[aantal-1]);
 	}
 	else
@@ -2211,7 +2240,8 @@ Wear_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wielding='') and "
-		"(wearing='')"
+		"(wearing='') and "
+		"(containerid = 0)"
 		, tokens[aantal-1], itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -2263,7 +2293,8 @@ Unwear_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing <> '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1], name );
 		}
 		if (aantal==3) 
@@ -2280,7 +2311,8 @@ Unwear_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing <> '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name);
@@ -2302,7 +2334,8 @@ Unwear_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing <> '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2328,7 +2361,8 @@ Unwear_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing <> '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2363,7 +2397,8 @@ Unwear_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -2374,7 +2409,8 @@ Unwear_Command(char *name, char *password, int room)
 			"where (id=%i) and "
 			"(belongsto='%s') and "
 			"(wearing='%s') and "
-			"(wielding='')"
+			"(wielding='') and "
+			"(containerid = 0)"
 			, itemid, name, itemwearing);
 		}
 		else
@@ -2384,7 +2420,8 @@ Unwear_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wielding='') and "
-		"(wearing='%s')"
+		"(wearing='%s') and "
+		"(containerid = 0)"
 		, itemid, name, itemwearing);
 		}
 	res=SendSQL2(sqlstring, NULL);
@@ -2423,7 +2460,8 @@ Wield_Command(char *name, char *password, int room)
 	"(tmpitems.room = 0) and "
 	"(tmpitems.search = '') and "
 	"(tmpitems.wearing = '') and "
-	"(tmpitems.wielding <> '')"
+	"(tmpitems.wielding <> '') and "
+	"(tmpitems.containerid = 0)"
 	, name);
 	res=SendSQL2(sqlstring, NULL);
 	if (res!=NULL)
@@ -2465,7 +2503,8 @@ Wield_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(items.wieldable = 3) and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"			
 			, tokens[1], name);
 		}
 		if (aantal==3) 
@@ -2483,7 +2522,8 @@ Wield_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(items.wieldable = 3) and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name);
@@ -2506,7 +2546,8 @@ Wield_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(items.wieldable = 3) and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2533,7 +2574,8 @@ Wield_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(items.wieldable = 3) and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2569,12 +2611,14 @@ Wield_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 		sprintf(sqlstring, 
-		"insert into tmp_itemtable values(%i, '', '%s', 1, 0, '', '%i')"
+		"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+		" values(%i, '', '%s', 1, 0, '', '%i')"
 		, itemid, name, position);
 	}
 	else
@@ -2584,7 +2628,8 @@ Wield_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wielding='') and "
-		"(wearing='')"
+		"(wearing='') and "
+		"(containerid = 0)"
 		, position, itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -2636,7 +2681,8 @@ Unwield_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding <> '')"
+			"(tmpitems.wielding <> '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1], name );
 		}
 		if (aantal==3) 
@@ -2653,7 +2699,8 @@ Unwield_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding <> '')"
+			"(tmpitems.wielding <> '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name);
@@ -2675,7 +2722,8 @@ Unwield_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding <> '')"
+			"(tmpitems.wielding <> '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2701,7 +2749,8 @@ Unwield_Command(char *name, char *password, int room)
 			"(tmpitems.room = 0) and "
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding <> '')"
+			"(tmpitems.wielding <> '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2736,7 +2785,8 @@ Unwield_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -2747,7 +2797,8 @@ Unwield_Command(char *name, char *password, int room)
 			"where (id=%i) and "
 			"(belongsto='%s') and "
 			"(wearing='') and "
-			"(wielding='%s')"
+			"(wielding='%s') and "
+			"(containerid = 0)"
 			, itemid, name, itemwielding);
 		}
 		else
@@ -2757,7 +2808,8 @@ Unwield_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wielding='%s') and "
-		"(wearing='')"
+		"(wearing='') and "
+		"(containerid = 0)"
 		, itemid, name, itemwielding);
 		}
 	res=SendSQL2(sqlstring, NULL);
@@ -2816,7 +2868,8 @@ Eat_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(tmpitems.wearing = '') and "
 			"(tmpitems.wielding = '') and "
-			"(items.eatable <> '')"
+			"(items.eatable <> '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1], name);
 		}
 		if (aantal==3) 
@@ -2835,7 +2888,8 @@ Eat_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.eatable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name);
@@ -2859,7 +2913,8 @@ Eat_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.eatable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2887,7 +2942,8 @@ Eat_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.eatable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -2931,7 +2987,8 @@ Eat_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	else
@@ -2941,7 +2998,8 @@ Eat_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing = '') and "
-		"(wielding = '')"
+		"(wielding = '') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -3005,7 +3063,8 @@ Drink_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.drinkable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1], name);
 		}
 		if (aantal==3) 
@@ -3024,7 +3083,8 @@ Drink_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.drinkable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[2], 
 			tokens[1], tokens[1], tokens[1],
 			name);
@@ -3048,7 +3108,8 @@ Drink_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.drinkable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[3], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -3076,7 +3137,8 @@ Drink_Command(char *name, char *password, int room)
 			"(tmpitems.search = '') and "
 			"(items.drinkable <> '') and "
 			"(tmpitems.wearing = '') and "
-			"(tmpitems.wielding = '')"
+			"(tmpitems.wielding = '') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[4], 
 			tokens[1], tokens[1], tokens[1],
 			tokens[2], tokens[2], tokens[2],
@@ -3135,7 +3197,8 @@ Drink_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	else
@@ -3145,7 +3208,8 @@ Drink_Command(char *name, char *password, int room)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -3182,7 +3246,8 @@ RemapShoppingList_Command(char *name)
 	"select items.name, items.adject1, items.adject2, items.copper, items.silver, items.gold"
 	" from items, tmp_itemtable tmpitems where "
 	"(tmpitems.id=items.id) and "
-	"(tmpitems.belongsto='%s')"
+	"(tmpitems.belongsto='%s') and "
+	"(tmpitems.containerid = 0)"
 	, name);
 	res=SendSQL2(sqlstring, NULL);
 	while (row = mysql_fetch_row(res))
@@ -3245,7 +3310,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 			" where (items.name='%s') and "
 			"(items.id=tmpitems.id) and "
 			"(tmpitems.amount>=%i) and "
-			"(tmpitems.belongsto='%s')"
+			"(tmpitems.belongsto='%s') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1+numberfilledout], amount, fromname);
 		}
 		if (aantal==3+numberfilledout) 
@@ -3260,7 +3326,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 			"  (adject3='%s') ) and "
 			"(items.id=tmpitems.id) and "
 			"(tmpitems.amount>=%i) and "
-			"(tmpitems.belongsto='%s')"
+			"(tmpitems.belongsto='%s') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+2], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			amount, fromname);
@@ -3280,7 +3347,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 			"  (adject3='%s') ) and "
 			"(items.id=tmpitems.id) and "
 			"(tmpitems.amount>=%i) and "
-			"(tmpitems.belongsto='%s')"
+			"(tmpitems.belongsto='%s') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+3], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3304,7 +3372,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 			"  (adject3='%s') ) and "
 			"(items.id=tmpitems.id) and "
 			"(tmpitems.amount>=%i) and "
-			"(tmpitems.belongsto='%s')"
+			"(tmpitems.belongsto='%s') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+4], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3355,14 +3424,16 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 			sprintf(sqlstring, 
 				"update tmp_itemtable set amount=amount-%i "
 				"where (id=%i) and "
-				"(belongsto='%s')"
+				"(belongsto='%s') and "
+				"(containerid = 0)"
 				, amount, itemid, fromname);
 			res=SendSQL2(sqlstring, NULL);
 			mysql_free_result(res);
 			sprintf(sqlstring, 
 				"delete from tmp_itemtable where (amount=0) "
 				"and (id=%i) and "
-				"(belongsto='%s')"
+				"(belongsto='%s') and "
+				"(containerid = 0)"
 				, itemid, fromname);
 			res=SendSQL2(sqlstring, NULL);
 			mysql_free_result(res);
@@ -3372,7 +3443,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 		sprintf(sqlstring, 
 			"update tmp_itemtable set amount=amount+%i "
 			"where (id=%i) and "
-			"(belongsto='%s')"
+			"(belongsto='%s') and "
+			"(containerid = 0)"
 			, amount, itemid, name);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -3381,7 +3453,8 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','%s',%i,0,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','%s',%i,0,'','')"
 			, itemid, name, amount);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -3451,7 +3524,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.amount>=%i) and "
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.wearing='') and "
-		"(tmpitems.wielding='')"
+		"(tmpitems.wielding='') and "
+		"(tmpitems.containerid = 0)"
 		, tokens[1+numberfilledout], amount, name);
 	}
 	if (aantal==3+numberfilledout) 
@@ -3468,7 +3542,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.amount>=%i) and "
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.wearing='') and "
-		"(tmpitems.wielding='')"
+		"(tmpitems.wielding='') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[numberfilledout+2], 
 		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 		amount, name);
@@ -3490,7 +3565,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.amount>=%i) and "
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.wearing='') and "
-		"(tmpitems.wielding='')"
+		"(tmpitems.wielding='') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[numberfilledout+3], 
 		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 		tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3516,7 +3592,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"(tmpitems.amount>=%i) and "
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.wearing='') and "
-		"(tmpitems.wielding='')"
+		"(tmpitems.wielding='') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[numberfilledout+4], 
 		tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 		tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3560,7 +3637,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
@@ -3572,7 +3650,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, amount, itemid, name);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
@@ -3583,7 +3662,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 		"where (id=%i) and "
 		"(belongsto='%s') and "
 		"(wearing='') and "
-		"(wielding='')"
+		"(wielding='') and "
+		"(containerid = 0)"
 		, amount, itemid, toname);
 	res=SendSQL2(sqlstring, &changedrows);
 	mysql_free_result(res);
@@ -3591,7 +3671,8 @@ Sell_Command(char *name, char *password, int room, char *toname)
 	if (!changedrows)
 	{
 		sprintf(sqlstring, 
-		"insert into tmp_itemtable values(%i,'','%s',%i,0,'','')"
+		"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+		" values(%i,'','%s',%i,0,'','')"
 		, itemid, toname, amount);
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
@@ -3642,7 +3723,8 @@ Search_Command(char *name, char *password, int room)
 	"(items.id=tmpitems.id) and "
 	"(tmpitems.belongsto='') and "
 	"(tmpitems.room = %i) and "
-	"(tmpitems.search = '%s')"
+	"(tmpitems.search = '%s') and "
+	"(tmpitems.containerid = 0)"
 	, room, troep+(tokens[1]-tokens[0]));
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL) 
@@ -3672,7 +3754,8 @@ Search_Command(char *name, char *password, int room)
 			"where (id=%i) and "
 			"(belongsto='%s') and "
 			"(wearing = '') and "
-			"(wielding = '')"
+			"(wielding = '') and "
+			"(containerid = 0)"
 			, itemid, name);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -3681,7 +3764,8 @@ Search_Command(char *name, char *password, int room)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','%s',1,0,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','%s',1,0,'','')"
 			, itemid, name);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -3700,7 +3784,8 @@ Search_Command(char *name, char *password, int room)
 		"update tmp_itemtable set amount=amount-1 "
 		"where (id=%i) and "
 		"(search='%s') and "
-		"(room=%i)"
+		"(room=%i) and "
+		"(containerid = 0)"
 		, itemid, troep+(tokens[1]-tokens[0]), room);
 	}
 	else
@@ -3709,7 +3794,8 @@ Search_Command(char *name, char *password, int room)
 		"delete from tmp_itemtable "
 		"where (id=%i) and "
 		"(search='%s') and "
-		"(room=%i)"
+		"(room=%i) and "
+		"(containerid = 0)"
 		, itemid, troep+(tokens[1]-tokens[0]), room);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -3778,7 +3864,8 @@ Give_Command(char *name, char *password, int room)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
-			"(tmpitems.wielding='')"
+			"(tmpitems.wielding='') and "
+			"(tmpitems.containerid = 0)"
 			, tokens[1+numberfilledout], amount, name);
 		}
 		if (aantal==5+numberfilledout) 
@@ -3794,7 +3881,8 @@ Give_Command(char *name, char *password, int room)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
-			"(tmpitems.wielding='')"
+			"(tmpitems.wielding='') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+2], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			amount, name);
@@ -3815,7 +3903,8 @@ Give_Command(char *name, char *password, int room)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
-			"(tmpitems.wielding='')"
+			"(tmpitems.wielding='') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+3], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3840,7 +3929,8 @@ Give_Command(char *name, char *password, int room)
 			"(tmpitems.amount>=%i) and "
 			"(tmpitems.belongsto='%s') and "
 			"(tmpitems.wearing='') and "
-			"(tmpitems.wielding='')"
+			"(tmpitems.wielding='') and "
+			"(tmpitems.containerid = 0)"
 			,tokens[numberfilledout+4], 
 			tokens[numberfilledout+1], tokens[numberfilledout+1], tokens[numberfilledout+1],
 			tokens[numberfilledout+2], tokens[numberfilledout+2], tokens[numberfilledout+2],
@@ -3875,7 +3965,8 @@ Give_Command(char *name, char *password, int room)
 			"where (id=%i) and "
 			"(belongsto='%s') and "
 			"(wearing='') and "
-			"(wielding='')"
+			"(wielding='') and "
+			"(containerid = 0)"
 			, amount, itemid, toname);
 		res=SendSQL2(sqlstring, &changedrows);
 		mysql_free_result(res);
@@ -3884,7 +3975,8 @@ Give_Command(char *name, char *password, int room)
 		{
 			int changedrows2;
 			sprintf(sqlstring, 
-			"insert into tmp_itemtable values(%i,'','%s',%i,0,'','')"
+			"insert into tmp_itemtable (id, search, belongsto, amount, room, wearing, wielding)"
+			" values(%i,'','%s',%i,0,'','')"
 			, itemid, toname, amount);
 			res=SendSQL2(sqlstring, &changedrows2);
 
@@ -3903,8 +3995,9 @@ Give_Command(char *name, char *password, int room)
 		"update tmp_itemtable set amount=amount-%i "
 		"where (id=%i) and "
 		"(belongsto='%s') and "
-			"(wearing='') and "
-			"(wielding='')"
+		"(wearing='') and "
+		"(wielding='') and "
+		"(containerid = 0)"
 		, amount, itemid, name);
 	}
 	else
@@ -3913,8 +4006,9 @@ Give_Command(char *name, char *password, int room)
 		"delete from tmp_itemtable "
 		"where (id=%i) and "
 		"(belongsto='%s') and "
-			"(wearing='') and "
-			"(wielding='')"
+		"(wearing='') and "
+		"(wielding='') and "
+		"(containerid = 0)"
 		, itemid, name);
 	}
 	res=SendSQL2(sqlstring, NULL);
@@ -3977,7 +4071,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='') and "
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		, tokens[1], room);
 	}
 	if (aantal==3) 
@@ -3994,7 +4089,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='') and "
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[2], 
 		tokens[1], tokens[1], tokens[1],
 		room);
@@ -4016,7 +4112,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='') and "
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[3], 
 		tokens[1], tokens[1], tokens[1],
 		tokens[2], tokens[2], tokens[2],
@@ -4042,7 +4139,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='') and "
 		"(tmpitems.room = %i) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[4], 
 		tokens[1], tokens[1], tokens[1],
 		tokens[2], tokens[2], tokens[2],
@@ -4078,7 +4176,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		, tokens[1], name);
 	}
 	if (aantal==3) 
@@ -4095,7 +4194,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[2], 
 		tokens[1], tokens[1], tokens[1],
 		name);
@@ -4117,7 +4217,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[3], 
 		tokens[1], tokens[1], tokens[1],
 		tokens[2], tokens[2], tokens[2],
@@ -4143,7 +4244,8 @@ Read_Command(char *name, char *password, int room)
 		"(tmpitems.belongsto='%s') and "
 		"(tmpitems.room = 0) and "
 		"(tmpitems.search = '') and "
-		"(items.readdescr <> '')"
+		"(items.readdescr <> '') and "
+		"(tmpitems.containerid = 0)"
 		,tokens[4], 
 		tokens[1], tokens[1], tokens[1],
 		tokens[2], tokens[2], tokens[2],

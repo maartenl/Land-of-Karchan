@@ -190,8 +190,8 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "</HTML>\n");
 	time(&tijd);
 	datum=*(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-19%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i Banned from mud by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 	exit(0);
 }
 
@@ -584,7 +584,7 @@ cgiMain()
 				"Date: <B>%i-%i-%i</B><BR>"
 				"<HR>%s<HR noshade><BR>\r\n",
 				name, datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec,
-				datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year, command + 7);
+				datumtijd.tm_mday, datumtijd.tm_mon + 1, datumtijd.tm_year+1900, command + 7);
 			fclose(fp);
 			WriteSentenceIntoOwnLogFile(logname, "Public Mail Message Sent.<BR>\r\n");
 		} else {

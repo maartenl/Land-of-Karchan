@@ -117,39 +117,6 @@ fprintf( fp, "<FONT COLOR=red><I>Error</I> %i: %s\n {%s}</FONT><BR>\r\n", exitco
 fclose(fp);
 }
 
-int transfertime(time_t datetime, char *stringrepresentation)
-{
-struct tm datetime2;
-datetime2 = *(gmtime(&datetime));
-        
-sprintf(stringrepresentation, "%i-%.2i-%.2i %.2i:%.2i:%.2i",
-datetime2.tm_year+1900, datetime2.tm_mon+1, datetime2.tm_mday,
-datetime2.tm_hour, datetime2.tm_min, datetime2.tm_sec);
-// 0000-01-01 00:00:00' - '9999-12-31 23:59:59' 
-}
-
-int transfertimeback(time_t *datetime, char *stringrepresentation)
-{
-struct tm datetime2;
-char field[5];
-strncpy(field, stringrepresentation, 4);field[4]='\0';
-datetime2.tm_year=atoi(field)-1900;
-strncpy(field, stringrepresentation+4, 2);field[2]='\0';
-datetime2.tm_mon=atoi(field)-1;
-strncpy(field, stringrepresentation+6, 2);field[2]='\0';
-datetime2.tm_mday=atoi(field);
-strncpy(field, stringrepresentation+8, 2);field[2]='\0';
-datetime2.tm_hour=atoi(field);
-strncpy(field, stringrepresentation+10, 2);field[2]='\0';
-datetime2.tm_min=atoi(field);
-strncpy(field, stringrepresentation+12, 2);field[2]='\0';
-datetime2.tm_sec=atoi(field);
-
-*datetime = mktime(&datetime2);
-// 00000101000000 - 99991231235959
-// 0000-01-01 00:00:00' - '9999-12-31 23:59:59' 
-}
-
 int SendSQL(char *file, char *name, char *password, char *sqlstring)
 {
 	MYSQL mysql;

@@ -577,7 +577,7 @@ void myLog(char *filenaam, char *fmt,...)
 		time(&tijd);
 		datum=*(gmtime(&tijd));
 		fprintf(filep, "[%i:%i:%i %i-%i-%i] ",
-		datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900);
+		datum.tm_hour,datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900+1900);
 		va_start(ap, fmt);
 		(void) vfprintf(filep, fmt, ap);
 		va_end(ap);
@@ -1140,6 +1140,7 @@ int embraceDeath()
 			{
 				sprintf(sqlstring, 
 					"insert into tmp_itemtable "
+					"(id, search, belongsto, amount, room, wearing, wielding) "
 					"values(%i, '', '', %i, %i, '', '')"
 					, atoi(row2[IID]), atoi(row2[IAMOUNT]), atoi(row[YROOM]));
 				if (mysql_query(&mysql, sqlstring))
@@ -1223,7 +1224,7 @@ int embraceDeath()
 			/* create new corpse */
 			sprintf(sqlstring, 
 				"insert into tmp_itemtable "
-				"select id, '', '', 1, %i, '', '' "
+				"select id, '', '', 1, %i, '', '', 0 "
 				"from items where "
 				"adject1 = 'dead' and "
 				"adject2 = '%s' and "

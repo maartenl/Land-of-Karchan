@@ -174,7 +174,8 @@ V 8. Left hand still missing!!!
 #define IROOM 4
 #define IWEARING 5
 #define IWIELDING 6
-#define TMPITEMTOTAL 7
+#define ICONTAINERID 7
+#define TMPITEMTOTAL 8
 
 /* item definition (items) */
 #define INAME 1
@@ -551,7 +552,8 @@ int checkBestHand(int *skillid)
 		"select tmp_itemtable.*, items.* from tmp_itemtable, items where "
 		"tmp_itemtable.id = items.id and "
 		"tmp_itemtable.belongsto = '%s' and "
-		"(tmp_itemtable.wielding = 1 or tmp_itemtable.wielding = 2)"
+		"(tmp_itemtable.wielding = 1 or tmp_itemtable.wielding = 2) and "
+		"tmp_itemtable.containerid = 0"
 		, row[XNAME]);
 	if (mysql_query(&mysql, sqlstring))
 	{
@@ -734,7 +736,8 @@ int DefenseRoll()
 		"tmp_itemtable.id = items.id and "
 		"(tmp_itemtable.wielding <> '' or "
 		"tmp_itemtable.wearing <> '') "
-		"and tmp_itemtable.belongsto='%s'"
+		"and tmp_itemtable.belongsto='%s' "
+		"and tmp_itemtable.containerid=0"
 		, row[YNAME]);
 	if (mysql_query(&mysql, sqlstring))
 	{
@@ -800,7 +803,8 @@ int DamageRoll()
 		"tmp_itemtable.id = items.id and "
 		"(tmp_itemtable.wielding <> '' or "
 		"tmp_itemtable.wearing <> '') "
-		"and tmp_itemtable.belongsto='%s'"
+		"and tmp_itemtable.belongsto='%s' "
+		"and tmp_itemtable.containerid=0"
 		, row[YNAME]);
 	if (mysql_query(&mysql, sqlstring))
 	{
@@ -870,7 +874,8 @@ int embraceDeath()
 		"amount>0 and "
 		"room=0 and "
 		"wearing='' and "
-		"wielding=''"
+		"wielding='' and "
+		"containerid=0"
 		, row[YNAME]);
 	if (mysql_query(&mysql, sqlstring))
 	{
@@ -898,7 +903,8 @@ int embraceDeath()
 				"amount > 0 and "
 				"room = %i and "
 				"wearing = '' and "
-				"wielding = ''"
+				"wielding = '' and "
+				"containerid = 0"
 				, atoi(row2[IAMOUNT]), atoi(row2[IID]), atoi(row[YROOM]));
 			if (mysql_query(&mysql, sqlstring))
 			{
@@ -909,6 +915,7 @@ int embraceDeath()
 			{
 				sprintf(sqlstring, 
 					"insert into tmp_itemtable "
+					"(id, search, belongsto, amount, room, wearing, wielding) "
 					"values(%i, '', '', %i, %i, '', '')"
 					, atoi(row2[IID]), atoi(row2[IAMOUNT]), atoi(row[YROOM]));
 				if (mysql_query(&mysql, sqlstring))
@@ -951,7 +958,9 @@ int embraceDeath()
 		"amount > 0 and "
 		"tmp_itemtable.room = %s and "
 		"wearing = '' and "
-		"wielding = ''"	, row[YRACE], row[YROOM]);
+		"wielding = '' and "
+		"containerid = 0", 
+		row[YRACE], row[YROOM]);
 	if (mysql_query(&mysql, sqlstring))
 	{
 		mysqlExitErr("Unable to send sql statement, exiting...", &mysql);
@@ -979,7 +988,8 @@ int embraceDeath()
 				"amount > 0 and "
 				"room = %i and "
 				"wearing = '' and "
-				"wielding = ''"
+				"wielding = '' and "
+				"containerid = 0"
 				, row2[IID], atoi(row[YROOM]));
 			if (mysql_query(&mysql, sqlstring))
 			{
@@ -992,7 +1002,7 @@ int embraceDeath()
 			/* create new corpse */
 			sprintf(sqlstring, 
 				"insert into tmp_itemtable "
-				"select id, '', '', 1, %i, '', '' "
+				"select id, '', '', 1, %i, '', '', 0 "
 				"from items where "
 				"adject1 = 'dead' and "
 				"adject2 = '%s' and "
