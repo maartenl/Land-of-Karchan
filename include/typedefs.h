@@ -35,8 +35,7 @@ maartenl@il.fontys.nl
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
-/*#include "/karchan2/mysql/include/mysql/mysql.h"*/
-#include "/usr/local/include/mysql/mysql.h"
+#include "mysql.h"
 
 // HTMLHeader, the place where to find things like html-files, audit trail,
 // error log, etc.
