@@ -90,8 +90,7 @@ public class EatCommand extends NormalCommand
 			theResult += aUser.printForm();
 			Database.writeLog(aUser.getName(), "eaten " + myItem);
 			ItemsDb.deleteItem(myItem);
-			aUser.sendMessage(aUser.getName() + " eats " + myItem.getDescription() + ".<BR>\r\n");
-			aUser.writeMessage("You eat " + myItem.getDescription() + ".<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME eat%VERB2 " + myItem.getDescription() + ".<BR>\r\n");
 
 			// increase eat stats
 

@@ -68,15 +68,12 @@ public class CurtseyCommand extends NormalCommand
 			}
 			else
 			{
-				aUser.writeMessage("You drop a curtsey to " + toChar.getName() + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " drops a curtsey to you.<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " drops a curtsey to " + toChar.getName() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, toChar, "%SNAME drop%VERB2 a curtsey to %TNAME.<BR>\r\n");
 			}
 		}
 		else
 		{
-			aUser.writeMessage("You drop a curtsey.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " drops a curtsey.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
 		}
 		return true;
 	}

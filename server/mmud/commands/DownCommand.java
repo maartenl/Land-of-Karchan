@@ -58,10 +58,9 @@ public class DownCommand extends NormalCommand
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getDown() != null)
 		{
-			aUser.writeMessage("You leave down.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " leaves down.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME leave%VERB2 down.<BR>\r\n");
 			aUser.setRoom(myRoom.getDown());
-			aUser.sendMessage(aUser.getName() + " appears.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME appear%VERB2.<BR>\r\n");
 		}
 		else
 		{

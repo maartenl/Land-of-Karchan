@@ -69,16 +69,16 @@ public class SayCommand extends NormalCommand
 			else
 			{
 				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				aUser.writeMessage("<B>You say [to " + toChar.getName() + "]</B> : " + message + "<BR>\r\n");
-				toChar.writeMessage("<B>" + aUser.getName() + " says [to you]</B> : " + message + "<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " says [to " + toChar.getName() + "] : " + message + "<BR>\r\n");
+				Persons.sendMessageExcl(aUser, toChar, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
+				aUser.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+				toChar.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
 			}
 		}
 		else
 		{
 			String message = command.substring(3 + 1).trim();
-			aUser.writeMessage("<B>You say</B> : " + message + "<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " says : " + message + "<BR>\r\n");
+			Persons.sendMessageExcl(aUser, "%SNAME say%VERB2 : " + message + "<BR>\r\n");
+			aUser.writeMessage(aUser, "<B>%SNAME say%VERB2</B> : " + message + "<BR>\r\n");
 		}
 		return true;
 	}

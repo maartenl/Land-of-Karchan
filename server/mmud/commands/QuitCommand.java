@@ -52,7 +52,7 @@ public class QuitCommand extends NormalCommand
 		{
 			return false;
 		}
-		aUser.sendMessage(aUser.getName() + " left the game.<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME left the game.<BR>\r\n");
 		try
 		{
 			Persons.deactivateUser(aUser);

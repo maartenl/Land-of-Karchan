@@ -232,9 +232,7 @@ public class BuyCommand extends NormalCommand
 					{
 						Database.writeLog(aUser.getName(), "bought " + myItem + " from " + toChar);
 						ItemsDb.transferItem(myItem, aUser);
-						aUser.sendMessage(aUser.getName() + " buys " + myItem.getDescription() + " from " + toChar.getName() + ".<BR>\r\n");
-						aUser.writeMessage("You buy " + myItem.getDescription() + " from " + toChar.getName() + ".<BR>\r\n");
-						toChar.writeMessage(aUser.getName() + " buys " + myItem.getDescription() + " from you.<BR>\r\n");
+						Persons.sendMessage(aUser, toChar, "%SNAME buy%VERB2 " + myItem.getDescription() + " from %TNAME.<BR>\r\n");
 						j++;
 					}
 				}

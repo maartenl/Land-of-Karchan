@@ -58,10 +58,9 @@ public class UpCommand extends NormalCommand
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getUp() != null)
 		{
-			aUser.writeMessage("You leave up.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " leaves up.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME leave%VERB2 up.<BR>\r\n");
 			aUser.setRoom(myRoom.getUp());
-			aUser.sendMessage(aUser.getName() + " appears.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME appear%VERB2.<BR>\r\n");
 		}
 		else
 		{

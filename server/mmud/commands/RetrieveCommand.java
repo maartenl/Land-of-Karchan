@@ -142,8 +142,7 @@ public class RetrieveCommand extends NormalCommand
 				Database.writeLog(aUser.getName(), "retrieved " + myItem + " from " + aContainer + (someRoom!=null ? " from room " + someRoom.getId() : ""));
 				ItemsDb.deleteItemFromContainer(myItem);
 				ItemsDb.addItemToChar(myItem, aUser);
-				aUser.sendMessage(aUser.getName() + " retrieves " + myItem.getDescription() + " from " + aContainer.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You retrieve " + myItem.getDescription() + " from " + aContainer.getDescription() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME retrieve%VERB2 " + myItem.getDescription() + " from " + aContainer.getDescription() + ".<BR>\r\n");
 				j++;
 			}
 			return true;

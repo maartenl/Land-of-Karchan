@@ -56,8 +56,7 @@ public class EyebrowCommand extends NormalCommand
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
-			aUser.writeMessage("You raise an eyebrow.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " raises an eyebrow.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME raise%VERB2 an eyebrow.<BR>\r\n");
 		}
 		return false;
 	}

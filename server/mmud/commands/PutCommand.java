@@ -142,8 +142,7 @@ public class PutCommand extends NormalCommand
 				Database.writeLog(aUser.getName(), "put " + myItem + " into container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
 				ItemsDb.deleteItemFromChar(myItem);
 				ItemsDb.addItemToContainer(myItem, aContainer);
-				aUser.sendMessage(aUser.getName() + " puts " + myItem.getDescription() + " into " + aContainer.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You put " + myItem.getDescription() + " into " + aContainer.getDescription() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " into " + aContainer.getDescription() + ".<BR>\r\n");
 				j++;
 			}
 			return true;

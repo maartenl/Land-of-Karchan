@@ -75,8 +75,7 @@ public class ReadCommand extends NormalCommand
 		Attribute attrib = myItem.getAttribute("readable");
 		theResult = attrib.getValue();
 		theResult += aUser.printForm();
-		aUser.sendMessage(aUser.getName() + " reads " + myItem.getDescription() + ".<BR>\r\n");
-		aUser.writeMessage("You read " + myItem.getDescription() + ".<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME read%VERB2 " + myItem.getDescription() + ".<BR>\r\n");
 		return true;
 	}
 

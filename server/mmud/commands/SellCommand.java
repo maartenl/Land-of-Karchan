@@ -233,9 +233,7 @@ public class SellCommand extends NormalCommand
 					{
 						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
 						ItemsDb.transferItem(myItem, toChar);
-						aUser.sendMessage(aUser.getName() + " sells " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
-						aUser.writeMessage("You sell " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
-						toChar.writeMessage(aUser.getName() + " sells " + myItem.getDescription() + " to you.<BR>\r\n");
+						Persons.sendMessage(aUser, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
 						j++;
 					}
 				}

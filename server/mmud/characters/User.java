@@ -94,6 +94,14 @@ public class User extends mmud.characters.Person
 	 * @param aDrinkstats describes the state of thirst, negative values
 	 * usually mean intoxication.
 	 * @param aEatstats describes the state of nourishment/hunger
+	 * @param aLevel describes the level of the character.
+	 * The level is level/1000. The experience is level%1000.
+	 * @param aHealth describes the state of health. 0 is dead, 1000 is
+	 * excellent health.
+	 * @param aAlignment describes the alignment of the character.
+	 * -90 is evil, 90 is good.
+	 * @param aMovement describes the amount of movement left. 0 is
+	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 * @param aGod boolean, indicates wether or not the User has special
 	 * privileges; also known as <I>Administrator</I>.
@@ -123,6 +131,10 @@ public class User extends mmud.characters.Person
 		boolean aPkill,
 		int aDrinkstats,
 		int aEatstats,
+		int aLevel,
+		int aHealth,
+		int aAlignment,
+		int aMovement,
 		Room aRoom)
 	{
 		super(aName, aTitle,
@@ -142,6 +154,10 @@ public class User extends mmud.characters.Person
 			aWhimpy,
 			aDrinkstats,
 			aEatstats,
+			aLevel,
+			aHealth,
+			aAlignment,
+			aMovement,
 			aRoom);
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
@@ -217,6 +233,10 @@ public class User extends mmud.characters.Person
 			0,
 			0, // drinkstats
 			0, // eatstats
+			0, // level
+			1000, // health
+			0, // alignment
+			1000, // movement
 			Rooms.getRoom(1));
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;

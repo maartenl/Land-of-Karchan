@@ -68,6 +68,10 @@ public class Person
 	private int theWhimpy;
 	private int theDrinkstats;
 	private int theEatstats;
+	private int theLevel;
+	private int theHealth;
+	private int theAlignment;
+	private int theMovement;
 	private TreeMap theAttributes = new TreeMap();
 
 	/**
@@ -96,6 +100,14 @@ public class Person
 	 * @param aDrinkstats describes the state of thirst, negative values
 	 * usually mean intoxication.
 	 * @param aEatstats describes the state of nourishment/hunger
+	 * @param aLevel describes the level of the character.
+	 * The level is level/1000. The experience is level%1000.
+	 * @param aHealth describes the state of health. 0 is dead, 1000 is
+	 * excellent health.
+	 * @param anAlignment describes the alignment of the character.
+	 * -90 is evil, 90 is good.
+	 * @param aMovement describes the amount of movement left. 0 is
+	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
 	public Person(String aName, 
@@ -116,6 +128,10 @@ public class Person
 		int aWhimpy,
 		int aDrinkstats,
 		int aEatstats,
+		int aLevel,
+		int aHealth,
+		int anAlignment,
+		int aMovement,
 		Room aRoom)
 	{
 		theName = aName;
@@ -137,6 +153,10 @@ public class Person
 		theWhimpy = aWhimpy;
 		theDrinkstats = aDrinkstats;
 		theEatstats = aEatstats;
+		theLevel = aLevel;
+		theHealth = aHealth;
+		theAlignment = anAlignment;
+		theMovement = aMovement;
 		theLogFile = new File(Constants.mudfilepath, aName + ".log");
 		createLog();
 	}
@@ -169,6 +189,81 @@ public class Person
 	}
 
 	/**
+	 * Returns the health of the character.
+	 * @return integer between 0 (dead) and 1000 (excellent health)
+	 */
+	public int getHealth()
+	{
+		return theHealth;
+	}
+
+	/**
+	 * Returns the level of the character.
+	 * @return integer.
+	 */
+	public int getLevel()
+	{
+		return theLevel / 1000;
+	}
+
+	/**
+	 * Returns the experience of the character.
+	 * @return integer between 0 and 1000. The closer to 1000 is
+	 * the closer to the next level.
+	 */
+	public int getExperience()
+	{
+		return theLevel % 1000;
+	}
+
+	/**
+	 * Returns the health of the character.
+	 * @return String between "dead" and "excellent health"
+	 */
+	public String getHealthDesc()
+	{
+		return Constants.health[theHealth / (1000 / Constants.health.length)];
+	}
+
+	/**
+	 * Returns the movement of the character.
+	 * @return integer between 0 (fully exhausted) 
+	 * and 1000 (not tired)
+	 */
+	public int getMovement()
+	{
+		return theMovement;
+	}
+
+	/**
+	 * Returns the movement of the character.
+	 * @return String between "fully exhausted" and "not tired"
+	 */
+	public String getMovementDesc()
+	{
+		return Constants.movement[theMovement / 1000 * Constants.movement.length];
+	}
+
+	/**
+	 * Returns the alignment of the character.
+	 * @return integer between 0 (evil) 
+	 * and 8 (good)
+	 */
+	public int getAlignment()
+	{
+		return theAlignment;
+	}
+
+	/**
+	 * Returns the alignment of the character.
+	 * @return String between "evil" and "good"
+	 */
+	public String getAlignmentDesc()
+	{
+		return Constants.alignment[theAlignment];
+	}
+
+	/**
 	 * sets the title of the character.
 	 * @param aNewTitle String containing the title
 	 */
@@ -185,6 +280,15 @@ public class Person
 	public int getWhimpy()
 	{
 		return theWhimpy;
+	}
+
+	/**
+	 * get whimpy desription.
+	 * @return string containing the setting
+	 */
+	public String getWhimpyDesc()
+	{
+		return Constants.whimpy[theWhimpy / 10];
 	}
 
 	/**
@@ -518,10 +622,32 @@ public class Person
 	public void writeMessage(String aMessage)
 	{
 		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
+		String message = aMessage;
+		boolean check = false;
+		int i = 0;
+		while (!check)
+		{
+			if (message.charAt(i) == '<')
+			{
+				while (message.charAt(i) != '>') { i++; }
+				i++;
+			}
+			if (message.charAt(i) != ' ')
+			{
+				check = true;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		message = message.substring(0, i) + 
+			message.substring(i, i + 1).toUpperCase() +
+			message.substring(i + 1);
 		try
 		{
 			FileWriter myFileWriter = new FileWriter(theLogFile, true);
-			myFileWriter.write(aMessage, 0, aMessage.length());
+			myFileWriter.write(message, 0, message.length());
 			myFileWriter.close();
 		}
 		catch (Exception e)
@@ -531,26 +657,113 @@ public class Person
 	}
 
 	/**
-	 * Sends a message to the other people in the room
-	 * @param aMessage the message to communicate
+	 * writes a message to the log file of the character that contains
+	 * all communication and messages.
+	 * The message will be
+	 * <I>interpreted</I> by replacing the following values by the following
+	 * other values:
+	 * <TABLE>
+	 * <TR><TD><B>REPLACE</B></TD><TD><B>WITH (if target)</B></TD><TD><B>WITH (if not target)</B></TD></TR>
+	 * <TR><TD>%TNAME</TD><TD>you</TD><TD>name</TD></TR>
+	 * <TR><TD>%TNAMESELF</TD><TD>yourself</TD><TD>name</TD></TR>
+	 * <TR><TD>%THISHER</TD><TD>your</TD><TD>his/her</TD></TR>
+	 * <TR><TD>%THIMHER</TD><TD>you</TD><TD>him/her</TD></TR>
+	 * <TR><TD>%THESHE</TD><TD>you</TD><TD>he/she</TD></TR>
+	 * <TR><TD>%TISARE</TD><TD>are</TD><TD>is</TD></TR>
+	 * <TR><TD>%THASHAVE</TD><TD>have</TD><TD>has</TD></TR>
+	 * <TR><TD>%TYOUPOSS</TD><TD>your</TD><TD>name + s</TD></TR>
+	 * <TR><TD></TD><TD></TD><TD></TD></TR>
+	 * </TABLE>
+	 * @param aMessage the message to be written to the logfile.
+	 * @param aSource the source of the message, the thing originating the
+	 * message.
+	 * @param aTarget the target of the message, could be null if there
+	 * is not target for this specific message.
 	 */
-	public void sendMessage(String aMessage)
+	public void writeMessage(Person aSource, Person aTarget, String aMessage)
 	{
-		Logger.getLogger("mmud").finer("");
-		Persons.sendMessage(this, aMessage);
+		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
+		String message = aMessage;
+		if (aTarget == this)
+		{
+			message = message.replaceAll("%TNAMESELF", "yourself");
+			message = message.replaceAll("%TNAME", "you");
+			message = message.replaceAll("%THISHER", "your");
+			message = message.replaceAll("%THIMHER", "you");
+			message = message.replaceAll("%THESHE", "you");
+			message = message.replaceAll("%TISARE", "are");
+			message = message.replaceAll("%THASHAVE", "have");
+			message = message.replaceAll("%TYOUPOSS", "your");
+		}
+		else
+		{
+			message = message.replaceAll("%TNAMESELF", aTarget.getName());
+			message = message.replaceAll("%TNAME", aTarget.getName());
+			message = message.replaceAll("%THISHER", (aTarget.getSex().posession()));
+			message = message.replaceAll("%THIMHER", (aTarget.getSex().indirect()));
+			message = message.replaceAll("%THESHE", (aTarget.getSex().direct()));
+			message = message.replaceAll("%TISARE", "is");
+			message = message.replaceAll("%THASHAVE", "has");
+			message = message.replaceAll("%TYOUPOSS", aTarget.getName() + "s");
+		}
+		writeMessage(aSource, message);
 	}
 
 	/**
-	 * Sends a message to the other people in the room, except
-	 * for one other character.
-	 * @param aPerson the person that must be excluded from the
-	 * communication.
-	 * @param aMessage the message to send to characters in the room
+	 * writes a message to the log file of the character that contains
+	 * all communication and messages.
+	 * The message will be
+	 * <I>interpreted</I> by replacing the following values by the following
+	 * other values:
+	 * <TABLE>
+	 * <TR><TD><B>REPLACE</B></TD><TD><B>WITH (if source)</B></TD><TD><B>WITH (if not source)</B></TD></TR>
+	 * <TR><TD>%SNAME</TD><TD>you</TD><TD>name</TD></TR>
+	 * <TR><TD>%SNAMESELF</TD><TD>yourself</TD><TD>name</TD></TR>
+	 * <TR><TD>%SHISHER</TD><TD>your</TD><TD>his/her</TD></TR>
+	 * <TR><TD>%SHIMHER</TD><TD>you</TD><TD>him/her</TD></TR>
+	 * <TR><TD>%SHESHE</TD><TD>you</TD><TD>he/she</TD></TR>
+	 * <TR><TD>%SISARE</TD><TD>are</TD><TD>is</TD></TR>
+	 * <TR><TD>%SHASHAVE</TD><TD>have</TD><TD>has</TD></TR>
+	 * <TR><TD>%SYOUPOSS</TD><TD>your</TD><TD>name + s</TD></TR>
+	 * <TR><TD>%VERB1</TD><TD></TD><TD>es</TD></TR>
+	 * <TR><TD>%VERB2</TD><TD></TD><TD>s</TD></TR>
+	 * <TR><TD></TD><TD></TD><TD></TD></TR>
+	 * </TABLE>
+	 * @param aMessage the message to be written to the logfile.
+	 * @param aSource the source of the message, the thing originating the
+	 * message.
 	 */
-	public void sendMessage(Person aPerson, String aMessage)
+	public void writeMessage(Person aSource, String aMessage)
 	{
-		Logger.getLogger("mmud").finer("");
-		Persons.sendMessage(this, aPerson, aMessage);
+		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
+		String message = aMessage;
+		if (aSource == this)
+		{
+			message = message.replaceAll("%SNAMESELF", "yourself");
+			message = message.replaceAll("%SNAME", "you");
+			message = message.replaceAll("%SHISHER", "your");
+			message = message.replaceAll("%SHIMHER", "you");
+			message = message.replaceAll("%SHESHE", "you");
+			message = message.replaceAll("%SISARE", "are");
+			message = message.replaceAll("%SHASHAVE", "have");
+			message = message.replaceAll("%SYOUPOSS", "your");
+			message = message.replaceAll("%VERB1", "");
+			message = message.replaceAll("%VERB2", "");
+		}
+		else
+		{
+			message = message.replaceAll("%SNAMESELF", aSource.getName());
+			message = message.replaceAll("%SNAME", aSource.getName());
+			message = message.replaceAll("%SHISHER", (aSource.getSex().posession()));
+			message = message.replaceAll("%SHIMHER", (aSource.getSex().indirect()));
+			message = message.replaceAll("%SHESHE", (aSource.getSex().direct()));
+			message = message.replaceAll("%SISARE", "is");
+			message = message.replaceAll("%SHASHAVE", "has");
+			message = message.replaceAll("%SYOUPOSS", aSource.getName() + "s");
+			message = message.replaceAll("%VERB1", "es");
+			message = message.replaceAll("%VERB2", "s");
+		}
+		writeMessage(message);
 	}
 
 	/**
@@ -570,84 +783,6 @@ public class Person
 		}
 		return null;
 	}
-
-	/**
-	 * moves items 36, 37, 38 (copper, silver, gold).
-	 * @param toChar character to be provided with the coins
-	 * @param gold how many gold coins need to be moved
-	 * @param silver how many silver coins need to be moved
-	 * @param copper how many copper coins need to be moved
-	 */
-/*	public void moveCoins(Person toChar, int gold, int silver, int copper)
-		throws ItemException
-	{
-		Logger.getLogger("mmud").finer("");
-		int mygold = getItemCount(goldcoin, 0, goldcoin.length);
-		int mysilver = getItemCount(silvercoin, 0, silvercoin.length);
-		int mycopper = getItemCount(coppercoin, 0, coppercoin.length);
-
-		if (mygold*100+mysilver*10+mycopper<gold*100+silver*10+copper)
-		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.NOTENOUGHMONEYERROR);
-			throw new ItemException(Constants.NOTENOUGHMONEYERROR);
-		}
-
-		for (int i=0; i < gold; i++)
-		{
-			Item myItem = getItem(goldcoin, 0, goldcoin.length);
-			removeFromInventory(myItem);
-			toChar.addToInventory(myItem);
-		}
-		while (mysilver < silver)
-		{
-			Item myItem = getItem(goldcoin, 0, goldcoin.length);
-			removeFromInventory(myItem);
-			mysilver += 10;
-			for (int j=0;j<10;j++)
-			{
-				Item newCoin = new Item(ItemDefs.getItemDef(37));
-				addToInventory(newCoin);
-			}
-		}
-		for (int i=0; i < silver; i++)
-		{
-			Item myItem = getItem(silvercoin, 0, silvercoin.length);
-			removeFromInventory(myItem);
-			toChar.addToInventory(myItem);
-		}
-		while (mycopper < copper)
-		{
-			Item myItem = getItem(silvercoin, 0, silvercoin.length);
-			removeFromInventory(myItem);
-			mycopper += 10;
-			for (int j=0;j<10;j++)
-			{
-				Item newCoin = new Item(ItemDefs.getItemDef(36));
-				addToInventory(newCoin);
-			}
-		}
-		for (int i=0; i < copper; i++)
-		{
-			Item myItem = getItem(coppercoin, 0, coppercoin.length);
-			removeFromInventory(myItem);
-			toChar.addToInventory(myItem);
-		}
-	}
-*/
-	/**
-	 * should be the same as item 38
-	 */
-	public static final String[] goldcoin = {"valuable",  "gold", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 37
-	 */
-	public static final String[] silvercoin = {"valuable",  "silver", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 36
-	 */
-	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
 
 	/**
 	 * Set the attribute. Adds the attribute, if the attribute does not
@@ -717,58 +852,27 @@ public class Person
 	}
 
 	/**
-	 * Pick up an item lying on the floor, visible, and
-	 * gettable.
-	 * @param amount the number of items
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @return int somestuff.
+	 * Display statistics .
+	 * @return String containing all the statistics in html format.
 	 */
-/*	public int pickupItems(int amount, 
-				String adject1, 
-				String adject2, 
-				String adject3,
-				String name)
+	public String getStatistics()
 	{
-		return Database.pickupItem(amount, adject1, adject2, adject3, name, this);
-	}*/
+		return "A " +
+		getLongDescription() + 
+		".<BR>You seem to be " +
+		getHealthDesc() + ".<BR>You are " +
+		getMovementDesc() + ".<BR>" +
+		getDrinkstatsDesc() + 
+		getEatstatsDesc() + "You are " +
+//		ShowBurden
+		getAlignmentDesc() + ".<BR>" +
+		"You are level " + getLevel() + " and " + (1000-getExperience()) + 
+		" experience points away from levelling.<BR>" +
+		"You will flee when you are " + getWhimpyDesc() + ".<BR>";
+//		Wearing
+//		Wiedling
+//		Skill
 
-	/**
-	 * Drop an item onto the floor, from your inventory.
-	 * @param amount the number of items
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @return int somestuff.
-	 */
-/*	public int dropItems(int amount, 
-				String adject1, 
-				String adject2, 
-				String adject3,
-				String name)
-	{
-		return 0;
-	}*/
-
-	public int reserveItem(int anId)
-	{
-		return 0;
-	}
-
-	/**
-	 * Reserves a specific item
-	 */
-	public int reserveItem(String aName, 
-		String anAdject1,
-		String anAdject2,
-		String anAdject3)
-	throws ItemException
-	{
-		Logger.getLogger("mmud").finer("");
-		return 0;//Database.reserveItem(this, aName, anAdject1, anAdject2, anAdject3);
 	}
 
 }

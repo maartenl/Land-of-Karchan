@@ -107,8 +107,8 @@ public final class Persons
 				User myUser = (User) myChar;
 				if (myUser.isIdleTooLong())
 				{
-					myUser.sendMessage(myUser.getName() + 
-						" fades slowly from existence.<BR>\r\n");
+					Persons.sendMessage(myUser, 
+						"%SNAME fade%VERB2 slowly from existence.<BR>\r\n");
 					deactivateUser(myUser);
 					Database.writeLog(myUser.getName(), "idled out.");
 				}
@@ -340,9 +340,9 @@ public final class Persons
 	}
 
 	/**
-	 * character communication method to everyone in the room
-	 * except one specific user.
-	 * @param aPerson the person not to send a message to.
+	 * character communication method to everyone in the room. The message
+	 * is parsed, based on who is sending the message.
+	 * @param aPerson the person who is the source of the message.
 	 * @param aMessage the message
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)
@@ -352,18 +352,41 @@ public final class Persons
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()) &&
-				(myChar != aPerson) )
+			if ( (myChar.getRoom() == aPerson.getRoom()))
 			{
-				myChar.writeMessage(aMessage);
+				myChar.writeMessage(aPerson, aMessage);
 			}
 		}
 	}
 
 	/**
-	 * character communication method to everyone in the room except 
-	 * the two characters entered in the parameter list.
-	 * @param aPerson the person doing the communicatin'
+	 * character communication method to everyone in the room excluded the
+	 * person mentioned in the parameters. The message
+	 * is parsed, based on who is sending the message.
+	 * @param aPerson the person who is the source of the message.
+	 * @param aMessage the message
+	 */
+	public static void sendMessageExcl(Person aPerson, String aMessage)
+	{
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
+			",aMessage=" + aMessage);
+		for (int i=0;i < thePersons.size();i++)
+		{
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aPerson.getRoom()) &&
+				myChar != aPerson)
+			{
+				myChar.writeMessage(aPerson, aMessage);
+			}
+		}
+	}
+
+	/**
+	 * character communication method to everyone in the room.
+	 * The first person is the source of the message.
+	 * The second person is the target of the message.
+	 * The message is parsed based on the source and target.
+	 * @param aPerson the person doing the communicatin'.
 	 * @param aSecondPerson the person communicated to.
 	 * @param aMessage the message to be sent
 	 */
@@ -375,11 +398,33 @@ public final class Persons
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()) &&
-				(myChar != aSecondPerson) &&
-				(myChar != aPerson) )
+			if ( (myChar.getRoom() == aPerson.getRoom()))
 			{
-				myChar.writeMessage(aMessage);
+				myChar.writeMessage(aPerson, aSecondPerson, aMessage);
+			}
+		}
+	}
+
+	/**
+	 * character communication method to everyone in the room except 
+	 * to the two persons mentioned in the header.
+	 * The message is parsed based on the source and target.
+	 * @param aPerson the person doing the communicatin'.
+	 * @param aSecondPerson the person communicated to.
+	 * @param aMessage the message to be sent
+	 */
+	public static void sendMessageExcl(Person aPerson, Person aSecondPerson, String aMessage)
+	{
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
+			",aSecondPerson=" + aSecondPerson +
+			",aMessage=" + aMessage);
+		for (int i=0;i < thePersons.size();i++)
+		{
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aPerson.getRoom()) &&
+				myChar != aPerson && myChar != aSecondPerson)
+			{
+				myChar.writeMessage(aPerson, aSecondPerson, aMessage);
 			}
 		}
 	}

@@ -62,8 +62,7 @@ public class PostPublicCommand extends NormalCommand
 		}
 		Board myBoard = BoardsDb.getBoard("public");
 		myBoard.post(aUser, getCommand().substring(6 + 1).trim());
-		aUser.sendMessage(aUser.getName() + " posted something on the public board.<BR>\r\n");
-		aUser.writeMessage("You posted on the public board.<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME posted something on the public board.<BR>\r\n");
 		return true;
 	}
 

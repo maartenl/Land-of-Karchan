@@ -57,10 +57,9 @@ public class SouthCommand extends NormalCommand
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getSouth() != null)
 		{
-			aUser.writeMessage("You leave south.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " leaves south.<BR>\r\n");
+			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 south.<BR>\r\n");
 			aUser.setRoom(myRoom.getSouth());
-			aUser.sendMessage(aUser.getName() + " appears.<BR>\r\n");
+			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
 		}
 		else
 		{

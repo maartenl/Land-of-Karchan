@@ -180,6 +180,38 @@ public final class Constants
 		"feeling very bad",
 		"at death's door"};
 
+	public static final String[] health = {
+		"at death's door",
+		"feeling very bad",
+		"feeling bad",
+		"terribly hurt",
+		"quite hurt",
+		"extremely hurt",
+		"hurt",
+		"slightly hurt",
+		"feeling quite nice",
+		"feeling fine",
+		"feeling well"};
+
+	public static final String[] movement = {
+		"fully exhausted",
+		"almost exhausted",
+		"very tired",
+		"slightly tired",
+		"slightly fatigued",
+		"not tired at all"};
+
+	public static final String[] alignment = {
+		"evil",
+		"bad",
+		"mean",
+		"untrustworthy",
+		"neutral",
+		"trustworthy",
+		"kind",
+		"awfully good",
+		"good"};
+
 	public static final String[][] emotions = {
 	{"agree", "agrees"},
 	{"apologize", "apologizes"},
@@ -616,6 +648,7 @@ public final class Constants
 		theCommandStructure.put("mail", new MailCommand("mail"));
 		theCommandStructure.put("sendmail", new SendMailCommand("sendmail .+"));
 		theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
+		theCommandStructure.put("stats", new StatsCommand("stats"));
 		theCommandStructure.put("inventory", new InventoryCommand("inventory"));
 		theCommandStructure.put("i", new InventoryCommand("i"));
 		theCommandStructure.put("drink", new DrinkCommand("drink( (\\w)+){1,4}"));

@@ -35,13 +35,14 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Go to the room in the west : "west".
- * @see GoCommand
+ * Show the inventory: "inventory".
  */
-public class WestCommand extends NormalCommand
+public class StatsCommand extends NormalCommand
 {
 
-	public WestCommand(String aRegExpr)
+	String theResult;
+
+	public StatsCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -54,18 +55,17 @@ public class WestCommand extends NormalCommand
 		{
 			return false;
 		}
-		Room myRoom = aUser.getRoom();
-		if (myRoom.getWest() != null)
-		{
-			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 west.<BR>\r\n");
-			aUser.setRoom(myRoom.getWest());
-			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
-		}
-		else
-		{
-			aUser.writeMessage("You cannot go west.<BR>\r\n");
-		}
+		String invent = aUser.getStatistics();
+		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Stats</H1>"
+			+ invent
+			+ aUser.printForm();
 		return true;
+	}
+
+	public String getResult()
+	{
+		Logger.getLogger("mmud").finer("");
+		return theResult;
 	}
 
 }

@@ -1,0 +1,15 @@
+TODO
+----
+
+- Add 'plurals' to the items. (bucket -> buckets)
+- logging is split up into the different characters. This makes it easier to
+debug in a production environment.
+- remove gold,silver,copper from mm_usertable
+- boards
+- logonmessage
+- wearing
+- wielding
+- remove news.html
+- write Stacktrace into mm_logs, new writeException in Database, change
+table
+- add %SLONG, %TLONG

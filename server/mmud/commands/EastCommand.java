@@ -57,10 +57,9 @@ public class EastCommand extends NormalCommand
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getEast() != null)
 		{
-			aUser.writeMessage("You leave east.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " leaves east.<BR>\r\n");
+			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 east.<BR>\r\n");
 			aUser.setRoom(myRoom.getEast());
-			aUser.sendMessage(aUser.getName() + " appears.<BR>\r\n");
+			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
 		}
 		else
 		{

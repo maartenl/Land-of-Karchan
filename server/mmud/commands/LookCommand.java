@@ -62,8 +62,7 @@ public class LookCommand extends NormalCommand
 		}
 		theResult = myItem.getLongDescription();
 		theResult += aUser.printForm();
-		aUser.sendMessage(aUser.getName() + " looks at " + myItem.getDescription() + ".<BR>\r\n");
-		aUser.writeMessage("You look at " + myItem.getDescription() + ".<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME look%VERB2 at " + myItem.getDescription() + ".<BR>\r\n");
 		return true;
 	}
 
@@ -105,9 +104,7 @@ public class LookCommand extends NormalCommand
 					aUser.writeMessage("You cannot see that.<BR>\r\n");
 					return true;
 				}
-				aUser.writeMessage("You look at the " + toChar.getLongDescription() + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " looks at you.<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " looks at " + toChar.getName() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, toChar, "%SNAME look%VERB at %TNAME.<BR>\r\n");
 				return true;
 			}
 			return true;

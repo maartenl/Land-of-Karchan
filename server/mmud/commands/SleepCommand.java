@@ -61,8 +61,7 @@ public class SleepCommand extends NormalCommand
 		else
 		{
 			aUser.setSleep(true);
-			aUser.writeMessage("You go to sleep.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " goes to sleep.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME go%VERB1 to sleep.<BR>\r\n");
 		}
 		return true;
 	}

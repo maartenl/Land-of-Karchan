@@ -74,6 +74,14 @@ public class StdShopKeeper extends Person implements ShopKeeper
 	 * @param aDrinkstats describes the state of thirst, negative values
 	 * usually mean intoxication.
 	 * @param aEatstats describes the state of nourishment/hunger
+	 * @param aLevel describes the level of the character.
+	 * The level is level/1000. The experience is level%1000.
+	 * @param aHealth describes the state of health. 0 is dead, 1000 is
+	 * excellent health.
+	 * @param aAlignment describes the alignment of the character.
+	 * -90 is evil, 90 is good.
+	 * @param aMovement describes the amount of movement left. 0 is
+	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
 	public StdShopKeeper(String aName, 
@@ -94,6 +102,10 @@ public class StdShopKeeper extends Person implements ShopKeeper
 		int aWhimpy,
 		int aDrinkstats,
 		int aEatstats,
+		int aLevel,
+		int aHealth,
+		int aAlignment,
+		int aMovement,
 		Room aRoom)
 	{
 		super(aName, 
@@ -114,6 +126,10 @@ public class StdShopKeeper extends Person implements ShopKeeper
 			aWhimpy,
 			aDrinkstats,
 			aEatstats,
+			aLevel,
+			aHealth,
+			aAlignment,
+			aMovement,
 			aRoom);
 	}
 

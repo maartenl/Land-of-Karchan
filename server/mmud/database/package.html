@@ -222,6 +222,11 @@ characters.</TD></TR>
 <TR><TD>family</TD><TD>shows the family relations between characters.</TD></TR>
 <TR><TD>familyvalues</TD><TD>provides a number of possible family relations.
 </TD></TR>
+<TR><TD>polls</TD><TD>contains the different polls.</TD></TR>
+<TR><TD>poll_choices</TD><TD>contains the possible choices per poll.
+</TD></TR>
+<TR><TD>poll_values</TD><TD>contains the answers of users to the different
+polls.</TD></TR>
 <TR><TD></TD><TD></TD></TR>
 </TABLE>
 <PRE>
@@ -249,6 +254,32 @@ characters.</TD></TR>
 +---------------------+
 |*id                  |
 | description         |
++---------------------+
+
++---------------------+
+| polls               |
++---------------------+
+|*id                  |
+| title               |
+| description         |
+| closed              |
++---------------------+
+
++---------------------+
+| poll_choices        |
++---------------------+
+|*id                  |
+|*pollid              |
+| choice              |
++---------------------+
+
++---------------------+
+| poll_values         |
++---------------------+
+|*id                  |
+|*name                |
+| value               |
+| comments            |
 +---------------------+
 </PRE>
 

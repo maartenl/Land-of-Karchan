@@ -46,11 +46,14 @@ public final class Sex
 	 * @param aString string describing the sex object
 	 * to be created: "female" or "male".
 	 * @return Sex object, either male of female.
+	 * @throws RuntimeException if the sex is neither
+	 * male nor female. In this case we do not know what to do.
 	 */
 	public static Sex createFromString(String aString)
 	{
 		if (aString.equals("female")) return FEMALE;
-		return MALE;
+		if (aString.equals("male")) return MALE;
+		throw new RuntimeException("Illegal sex for character!!!");
 	}
 
 	/**

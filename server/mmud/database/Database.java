@@ -299,6 +299,10 @@ public class Database
 				res.getInt("fightable")==1,
 				res.getInt("drinkstats"),
 				res.getInt("eatstats"),
+				res.getInt("experience"),
+				res.getInt("vitals"),
+				res.getInt("alignment"),
+				res.getInt("movementstats"),
 				Rooms.getRoom(res.getInt("room")));
 
 		}
@@ -381,6 +385,10 @@ public class Database
 				res.getInt("fightable")==1,
 				res.getInt("drinkstats"),
 				res.getInt("eatstats"),
+				res.getInt("experience"),
+				res.getInt("vitals"),
+				res.getInt("alignment"),
+				res.getInt("movementstats"),
 				Rooms.getRoom(res.getInt("room")));
 
 		}
@@ -657,6 +665,10 @@ public class Database
 					res.getInt("fightable")==1,
 					res.getInt("drinkstats"),
 					res.getInt("eatstats"),
+					res.getInt("experience"),
+					res.getInt("vitals"),
+					res.getInt("alignment"),
+					res.getInt("movementstats"),
 					Rooms.getRoom(res.getInt("room")));
 				String mySessionPwd = res.getString("lok");
 				if (mySessionPwd != null)
@@ -686,6 +698,10 @@ public class Database
 					res.getInt("whimpy"),
 					res.getInt("drinkstats"),
 					res.getInt("eatstats"),
+					res.getInt("experience"),
+					res.getInt("vitals"),
+					res.getInt("alignment"),
+					res.getInt("movementstats"),
 					Rooms.getRoom(res.getInt("room")));
 				myVector.add(myNewChar);
 				getCharAttributes(myNewChar);

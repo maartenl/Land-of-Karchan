@@ -65,7 +65,7 @@ public class EmotionCommand extends NormalCommand
 			{
 				// agree
 				aUser.writeMessage("You " + plural[0] + ".<BR>\r\n");
-				aUser.sendMessage(aUser.getName() + " " + plural[1] + ".<BR>\r\n");
+				Persons.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + ".<BR>\r\n");
 				break;
 			}
 			case 2:
@@ -74,7 +74,7 @@ public class EmotionCommand extends NormalCommand
 				if (Constants.existsAdverb(myParsed[1]))
 				{
 					aUser.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
-					aUser.sendMessage(aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
+					Persons.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
 				}
 				else
 				{
@@ -96,7 +96,7 @@ public class EmotionCommand extends NormalCommand
 					{
 						aUser.writeMessage("You " + plural[0] + " to " + toChar.getName() + ".<BR>\r\n");
 						toChar.writeMessage(aUser.getName() + " " + plural[1] + " to you.<BR>\r\n");
-						aUser.sendMessage(toChar, aUser.getName() + " " + plural[1] + " to " + toChar.getName() + ".<BR>\r\n");
+						Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " to " + toChar.getName() + ".<BR>\r\n");
 					}
 				}
 				else
@@ -121,7 +121,7 @@ public class EmotionCommand extends NormalCommand
 						{
 							aUser.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
 							toChar.writeMessage(aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to you.<BR>\r\n");
-							aUser.sendMessage(toChar, aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
+							Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
 						}
 						else
 						{

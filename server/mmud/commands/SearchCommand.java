@@ -91,15 +91,13 @@ public class SearchCommand extends NormalCommand
 			Item aContainer = (Item) myItems.elementAt(0);
 			if (!aContainer.isAttribute("container"))
 			{
-				aUser.writeMessage("You search " + aContainer.getDescription() + " but find nothing.<BR>\r\n");
-				aUser.sendMessage(aUser.getName() + " searches " + aContainer.getDescription() + " but finds nothing.<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " but find%VERB2 nothing.<BR>\r\n");
 				return true;
 			}
 			myItems = ItemsDb.getItemsFromContainer(aContainer);
 			if (myItems.size() == 0)
 			{
-				aUser.writeMessage("You search " + aContainer.getDescription() + " but find nothing.<BR>\r\n");
-				aUser.sendMessage(aUser.getName() + " searches " + aContainer.getDescription() + " but finds nothing.<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " but find%VERB1 nothing.<BR>\r\n");
 				return true;
 			}
 			Item firstItem = (Item) myItems.elementAt(0);
@@ -107,8 +105,7 @@ public class SearchCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "searched " + aContainer + " in room " + aUser.getRoom().getId() + " and found " + firstItem);
 			ItemsDb.deleteItemFromContainer(firstItem);
 			ItemsDb.addItemToChar(firstItem, aUser);
-			aUser.sendMessage(aUser.getName() + " searches " + aContainer.getDescription() + " and finds " + firstItem.getDescription() + ".<BR>\r\n");
-			aUser.writeMessage("You search " + aContainer.getDescription() + " and find " + firstItem.getDescription() + ".<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " and find%VERB2 " + firstItem.getDescription() + ".<BR>\r\n");
 			return true;
 		}
 		return false;

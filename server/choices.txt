@@ -140,6 +140,23 @@ designed per instance. (HEME~ (HIMHER) (ETC)
 they are mutually exclusive. An item is either being wield (weld?) or being
 worn. It could use a better name though.
 
+- Several settings in the character have a minimum value and a maximum
+value. For instance, health has an upper level of 1000 and lower level of 0.
+The idea here is to keep these values the same no matter how high the level
+of the character is. In this way we prevent unnecessary inflation. The thing
+to remember is set a high upper level, so incremental steps can be quite
+small if necessary. 1000 seems to do it.
+
+- Communication wise, there are three methods in Person.java that can be
+used. writeMessage for general info. writeMessage(source) for messages that
+change depending on who's doing it. And writeMessage(source,target) for
+messages that change depending on who's doing it to whom.
+writeMessage(source, target) calls writeMessage(source).
+writeMessage(source) calls writeMessage().
+sendMessage calls Persons.sendMessage .
+sendMessage(target) calls Persons.sendMessage .
+Persons.sendMessage calls user.writeMessage
+
 Game Behaviour
 --------------
 
@@ -201,141 +218,3 @@ same deputy account. Reasons:
 	b. will set a precedent, what prevents other people from doing it
 	c. it is not fair to the other deputies that pay the full load
 
-TODO
-----
-
-- Add 'plurals' to the items. (bucket -> buckets)
-- logging is split up into the different characters. This makes it easier to
-debug in a production environment.
-- remove gold,silver,copper from mm_usertable
-- boards
-- logonmessage
-- wearing
-- wielding
-- remove news.html
-- write Stacktrace into mm_logs, new writeException in Database, change
-table
-
-Changes to the database
------------------------
-
-- changes " valuable" to "valuable" for 36,37,38.
-- update mm_items set description = replace(description,
-"http://www.karchan.org/","/") where description like "%karchan.org%";
-- added help for eyebrow command
-- alter table mm_rooms add (area varchar(49) not null default "Main");    
-- create table mm_area (area varchar(49) not null primary key, description
-text not null, shortdesc varchar(255) not null, owner varchar(20) , creation
-timestamp);
-- insert into mm_area values("Main", "The Land of Karchan is split up onto
-different areas. This is the main area, and the area that is used by new
-characters for exploring and learning about the way the game works.", "The
-Main Area of Karchan", "Karn", null);
-- create table mm_log (creation timestamp not null, name varchar(20) not
-null, message varchar(255) not null, primary key (creation, name, message));
-- update mm_usertable set password=password(password)
-- alter table mm_log add (addendum text);
-
-Creating a dupe database
-------------------------
-
-delete from mm_admin;
-delete from mm_bantable;
-delete from mm_charattributes;
-delete from mm_charitemtable;
-delete from mm_itemattributes;
-delete from mm_itemitemtable;
-delete from mm_items;
-delete from mm_itemtable;
-delete from mm_log;
-delete from mm_logonmessage;
-delete from mm_mailtable;
-delete from mm_roomattributes;
-delete from mm_roomitemtable;
-delete from mm_rooms;
-delete from mm_shopkeeperitems;
-delete from mm_sillynamestable;
-delete from mm_unbantable;
-delete from mm_usertable;
-
-insert into mm_bantable
-select * 
-from mud.bantable;
-insert into mm_items
-select *, null, now() 
-from mud.items;
-insert into mm_logonmessage
-select *
-from mud.logonmessage;
-insert into mm_mailtable
-select *
-from mud.mailtable;
-insert into mm_rooms
-select *, null, now(), "Main"
-from mud.rooms;
-insert into mm_sillynamestable
-select *
-from mud.sillynamestable;
-insert into mm_unbantable
-select *
-from mud.unbantable;
-insert into mm_usertable
-select *, null, now()
-from mud.usertable;
-
-creating board system
----------------------
-create table mm_boardmessages
-(boardid varchar(20) not null,
-name varchar(20) not null,
-posttime timestamp not null,
-message text,
-primary key (boardid, name, posttime));
-
-create table mm_boards
-(id int not null primary key,
-name varchar(80) not null,
-description text not null,
-owner varchar(20) not null,
-creation timestamp not null);
-insert into mm_boards values(1, "public", "", "Karn", now());
-insert into mm_boards values(2,"logonmessage","","Karn",now());
-
-setting roomitems
------------------
-select concat(
-"insert into mm_itemtable (itemid, creation, owner)
-values(", id, ",'",  now(), "',null);\n\n",
-"insert into mm_roomitemtable (id, room, search)
-select id,", room, ", null 
-from mm_itemtable 
-where id IS NULL;"
-
-)
-from mud.tmp_itemtable
-where id < 0;
-
-SELECT * FROM tbl_name WHERE auto_col IS NULL
-
-insert into mm_roomitemtable
-(id, room, search)
-select mm_itemtable.id, tmp.room, null
-from mm_itemtable, mud.tmp_itemtable as tmp
-where mm_itemtable.itemid = tmp.itemid
-amd tmp.room <> 0 
-and (tmp.search = null or tmp.search = "");
-
-retrieving someones inventory
------------------------------
-amount multiplied with ...
-insert into mm_itemtable
-(itemid, creation, owner)
-select (id, now(), null)
-from mud.tmp_itemtable
-where belongsto = ?;
-
-insert into mm_charitemtable
-(id, belongsto)
-select id, ?
-from mm_itemtable
-where id > x

@@ -66,8 +66,7 @@ public class ReadPublicCommand extends NormalCommand
 		Board myBoard = BoardsDb.getBoard("public");
 		theResult = myBoard.getDescription() + 
 			myBoard.read() + aUser.printForm();
-		aUser.sendMessage(aUser.getName() + " reads the public board.<BR>\r\n");
-		aUser.writeMessage("You read the public board.<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME read%VERB2 the public board.<BR>\r\n");
 		return true;
 	}
 

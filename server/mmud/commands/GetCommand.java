@@ -107,8 +107,7 @@ public class GetCommand extends NormalCommand
 					Database.writeLog(aUser.getName(), "got " + myItem + " from room " + aUser.getRoom().getId());
 					ItemsDb.deleteItemFromRoom(myItem);
 					ItemsDb.addItemToChar(myItem, aUser);
-					aUser.sendMessage(aUser.getName() + " gets " + myItem.getDescription() + ".<BR>\r\n");
-					aUser.writeMessage("You get " + myItem.getDescription() + ".<BR>\r\n");
+					Persons.sendMessage(aUser, "%SNAME get%VERB2 " + myItem.getDescription() + ".<BR>\r\n");
 					j++;
 				}
 			}

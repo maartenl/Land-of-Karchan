@@ -65,15 +65,12 @@ public class BowCommand extends NormalCommand
 			}
 			else
 			{
-				aUser.writeMessage("You bow to " + toChar.getName() + ".<BR>\r\n");
-				toChar.writeMessage(aUser.getName() + " bows to you.<BR>\r\n");
-				aUser.sendMessage(toChar, aUser.getName() + " bows to " + toChar.getName() + ".<BR>\r\n");
+				Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB to %TNAME.<BR>\r\n");
 			}
 		}
 		else
 		{
-			aUser.writeMessage("You bow.<BR>\r\n");
-			aUser.sendMessage(aUser.getName() + " bows.<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
 		}
 		return true;
 	}

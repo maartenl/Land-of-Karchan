@@ -72,7 +72,7 @@ public class EmotionToCommand extends NormalCommand
 				{
 					aUser.writeMessage("You " + plural[0] + " " + toChar.getName() + ".<BR>\r\n");
 					toChar.writeMessage(aUser.getName() + " " + plural[1] + " you.<BR>\r\n");
-					aUser.sendMessage(toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + ".<BR>\r\n");
+					Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + ".<BR>\r\n");
 				}
 				break;
 			}
@@ -90,7 +90,7 @@ public class EmotionToCommand extends NormalCommand
 					{
 						aUser.writeMessage("You " + plural[0] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
 						toChar.writeMessage(aUser.getName() + " " + plural[1] + " you " + myParsed[2].toLowerCase() + ".<BR>\r\n");
-						aUser.sendMessage(toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
+						Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
 					}
 					else
 					{
