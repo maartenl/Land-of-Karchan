@@ -68,5 +68,11 @@ while ($myrow = mysql_fetch_row($result))
 mysql_close($dbhandle);
 ?>
 </UL>
+<hr>
+
+<a HREF="/karchan/index.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+
 </BODY>
 </HTML>
