@@ -24,11 +24,18 @@ sword.<P>
 The current deputies are: 
 Kass, Torko, Milady, Manatoba, Kel, Typhome<P>
 
-Okay, I implemented a parser type thingy for the mud. I had to rewrite all
-the existing special commands to this new parser, and that is why the
-special commands were temporarily disabled.<P>
-They work again, now. If you find any bugs, please report them to me.<P>
-<FONT COLOR=green>Oh, and by the way, what do you all think of the <B><I>new colour</I></B>?<P></FONT>
+There is the possibility to add your personal data to the website!
+It is called a <I>Character Sheet</I>. Fill one in or check out the other 
+people that already have one. You can find it <A
+HREF=\"http://www.karchan.org/cgi-bin/charactersheets.cgi\">here</A>.<P>
+<FONT COLOR=blue><B>Oh, <I>BLUE</I> is back! Yes, people, blue is back on request of
+lots of people. Ofcourse, it is only a matter of time before I decide to 
+switch again. ;-)</B><P></FONT>
+
+<FONT COLOR=red>To those of you that do not know, the itemtable of the
+database was corrupted. I fixed the problem, but I do not know how much
+information was lost in the process. Will check and perhaps put back a
+backup.<P></FONT>
 Regards and have fun!<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
