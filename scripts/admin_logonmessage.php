@@ -46,12 +46,13 @@ if (get_cfg_var("magic_quotes_gpc") == "1")
 {
 	$_REQUEST{"message"} = stripslashes($_REQUEST{"message"});
 }
-$result = mysql_query("insert into mm_boardmessages 
-	values(2, \"".$_COOKIE["karchanname"]."\",
-	\"".mysql_escape_string($_REQUEST{"time"}).
-	"\",\"".mysql_escape_string($_REQUEST{"message"})."\")"
+$result = mysql_query("replace into mm_boardmessages 
+	values(2, \"".$_COOKIE["karchanname"]."\", now(),\"".
+	mysql_escape_string($_REQUEST{"message"})."\")"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
+
+writeLog($dbhandle, "Added a logon message");
 
 mysql_close($dbhandle);
 ?>
