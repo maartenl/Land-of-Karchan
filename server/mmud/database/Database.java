@@ -1178,7 +1178,6 @@ public class Database
 	public static void writeLog(String aName, String aMessage)
 	{
 		Logger.getLogger("mmud").finer("");
-		assert aMessage.length() <= 255 : "aMessage is supposed to be <255";
 		assert theConnection != null : "theConnection is null";
 		try
 		{
