@@ -382,8 +382,8 @@ if (!getFrames())
 }
 }
 
-void 
-WriteInventoryList(char * name, char * password)
+int
+Inventory_Command(char * name, char * password, int room, char **ftokens, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;

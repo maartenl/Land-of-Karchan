@@ -243,6 +243,17 @@ void CookieNotFound(char *name, char *address)
 	exit(0);
 }
 
+int
+Clear_Command(char *name, char *password, int room, char **ftokens, char *command)
+{
+	char logname[100];
+	sprintf(logname, "%s%s.log", USERHeader, name);
+	WriteRoom(name, password, room, 0);
+	ClearLogFile(logname);
+	WriteSentenceIntoOwnLogFile(logname, "You cleared your mind.<BR>\r\n");
+	return 1;
+}
+
 int 
 gameMain(char *fcommand, char *fname, char *fpassword)
 {
@@ -436,9 +447,15 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	/* initialise and fill the Function array */
 	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*10);
 	gameCommands = (char **) malloc(sizeof(char *)*10);
+	gameFunctionArray[myNumberOfFunctions++] = &Clear_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
+	gameFunctionArray[myNumberOfFunctions++] = &Inventory_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Quit_Command;
 	gameFunctionArray[myNumberOfFunctions++] = &Sleep_Command;
 	myNumberOfFunctions=0;
+	gameCommands[myNumberOfFunctions++] = "clear";
+	gameCommands[myNumberOfFunctions++] = "i";
+	gameCommands[myNumberOfFunctions++] = "inventory";
 	gameCommands[myNumberOfFunctions++] = "quit";
 	gameCommands[myNumberOfFunctions++] = "sleep";
 	{
@@ -446,9 +463,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		int i = myNumberOfFunctions / 2;
 		int pos = myNumberOfFunctions / 2;
 		int equals = strcasecmp(gameCommands[pos], tokens[0]);
-//0 quit
-//1 sleep 
-//i=1;pos=1;equals=-1;
 		while ((i!=0) && (equals))
 		{
 			if (equals > 0) {pos -= i;}
@@ -554,19 +568,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		KillGame();
 	}
 
-   if ((!strcasecmp(command, "inventory")) || (!strcasecmp(command, "i"))) 
-   {
-		WriteInventoryList(name, password);
-		KillGame();
-	}           /* Inventory_Command */
-	if (!strcasecmp(command, "clear")) {
-	        char logname[100];
-	        sprintf(logname, "%s%s.log", USERHeader, name);
-		WriteRoom(name, password, room, 0);
-		ClearLogFile(logname);
-		WriteSentenceIntoOwnLogFile(logname, "You cleared your mind.<BR>\r\n");
-		KillGame();
-	}			/* Clear_Command */
 	if (!strcasecmp(command, "who")) {
 		ListActivePlayers(name, password);
 		WriteRoom(name, password, room, 0);
