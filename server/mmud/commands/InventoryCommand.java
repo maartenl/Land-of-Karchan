@@ -37,12 +37,12 @@ import mmud.database.*;
 /**
  * Show the inventory: "inventory".
  */
-public class InventoryCommand implements Command
+public class InventoryCommand extends NormalCommand
 {
 
 	String theResult;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		theResult = aUser.inventory();
@@ -55,10 +55,5 @@ public class InventoryCommand implements Command
 		return "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You have<UL>" +
 			theResult + "<\\UL>";
 	}
-
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

@@ -38,7 +38,7 @@ import mmud.database.*;
  * Sometimes the space in the fillout form is not enough, than this command
  * will show a bigger entry form : "bigtalk".
  */
-public class BigTalkCommand implements Command
+public class BigTalkCommand extends NormalCommand
 {
 
 	User theUser;
@@ -80,10 +80,6 @@ public class BigTalkCommand implements Command
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public void setCommand(String aCommand)
-	{
 	}
 
 }

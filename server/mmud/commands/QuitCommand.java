@@ -34,11 +34,12 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 
-public class QuitCommand implements Command
+public class QuitCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		aUser.sendMessage(aUser.getName() + " left the game.<BR>\r\n");
 		try
@@ -67,9 +68,5 @@ public class QuitCommand implements Command
 		return Constants.goodbyemessage;
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

@@ -126,15 +126,15 @@ public class Database
 	 * for interfacing with the database server. If the database used
 	 * is changed (or to be more specific the jdbc driver is changed)
 	 * change the constant.
-	 * @throw InstantiationException happens when it is impossible to
+	 * @throws InstantiationException happens when it is impossible to
 	 * instantiate the proper database class, from the class name
 	 * as provided by Constants.dbjdbcclass.
-	 * @throw ClassNotFoundException happens when it is impossible to 	
+	 * @throws ClassNotFoundException happens when it is impossible to 	
 	 * find the proper database class, from the class name
 	 * as provided by Constants.dbjdbcclass.
-	 * @throw IllegalAccessException happens when it is not possible
+	 * @throws IllegalAccessException happens when it is not possible
 	 * to create the database class because access restrictions apply.
-	 * @throw SQLException happens when a connection to the database
+	 * @throws SQLException happens when a connection to the database
 	 * Server could not be established.
 	 */
 	public static void connect()
@@ -167,7 +167,7 @@ public class Database
 
 	/**
 	 * Closes the connection to the database.
-	 * @throw SQLException occurs when something goes wrong.
+	 * @throws SQLException occurs when something goes wrong.
 	 */
 	public static void disconnect()
 		throws SQLException
@@ -180,15 +180,15 @@ public class Database
 	/**
 	 * Refresh the connection to the database. Basically performs a
 	 * disconnect/reconnect.
-	 * @throw InstantiationException happens when it is impossible to
+	 * @throws InstantiationException happens when it is impossible to
 	 * instantiate the proper database class, from the class name
 	 * as provided by Constants.dbjdbcclass.
-	 * @throw ClassNotFoundException happens when it is impossible to 	
+	 * @throws ClassNotFoundException happens when it is impossible to 	
 	 * find the proper database class, from the class name
 	 * as provided by Constants.dbjdbcclass.
-	 * @throw IllegalAccessException happens when it is not possible
+	 * @throws IllegalAccessException happens when it is not possible
 	 * to create the database class because access restrictions apply.
-	 * @throw SQLException happens when a connection to the database
+	 * @throws SQLException happens when a connection to the database
 	 * Server could not be established.
 	 */
 	public static void refresh()
@@ -1001,7 +1001,7 @@ public class Database
 	 * @param messagenr the message number identifying the mudmail
 	 * where "1" represents the first message, "2" the second, etc.
 	 * @return String properly HTML formatted containing the mudmail.
-	 * @throw MailException if the message with messagenumber could
+	 * @throws MailException if the message with messagenumber could
 	 * not be found. (for example the message number was illegal)
 	 */
 	public static String deleteMail(User aUser, int messagenr)
@@ -1020,7 +1020,7 @@ public class Database
 	 * @param deleteIt boolean, <UL><LI>true = delete mail<LI>false = do not
 	 * delete mail, but update <I>haveread</I></UL>
 	 * @return String containing the mail in question.
-	 * @throw MailException if the messagenumber is invalid.
+	 * @throws MailException if the messagenumber is invalid.
 	 */
 	private static String doStuffWithMail(User aUser, int messagenr, boolean deleteIt)
 		throws MailException

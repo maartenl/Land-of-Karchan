@@ -37,7 +37,7 @@ import mmud.database.*;
 /**
  * Delete an existing mail from the mail list of the current user.
  */
-public class DeleteMailCommand implements Command
+public class DeleteMailCommand extends NormalCommand
 {
 
 	String theString;
@@ -72,9 +72,5 @@ public class DeleteMailCommand implements Command
 		return theString;
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

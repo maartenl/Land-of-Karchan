@@ -37,13 +37,14 @@ import mmud.database.*;
 /**
  * Mail something to someone.
  */
-public class MailCommand implements Command
+public class MailCommand extends NormalCommand
 {
 
 	String theString;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		if (command.trim().equalsIgnoreCase("mail"))
 		{
@@ -81,10 +82,5 @@ public class MailCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
-
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

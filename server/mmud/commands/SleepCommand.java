@@ -40,8 +40,9 @@ import mmud.database.*;
 public class SleepCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		if (aUser.isaSleep())
 		{

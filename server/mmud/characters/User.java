@@ -318,7 +318,7 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
-	 * retrieve the frame number<P>
+	 * retrieve the frame number.
 	 * @return integer,
 	 * <UL><LI>0 = normal operation
 	 * <LI>1 = operation with frames
@@ -358,6 +358,7 @@ public class User extends mmud.characters.Person
 	/**
 	 * Get the real name of the person playing.
 	 * @return String containing the real name.
+	 */
 	public String getRealname()
 	{
 		return theRealName;
@@ -495,5 +496,19 @@ public class User extends mmud.characters.Person
 	throws MudException
 	{
 		aCommand.run(this);
+	}
+
+	/**
+	 * Runs a specific command.
+	 * @param aCommand the command to be run
+	 * @return String containing the result of the command executed.
+	 */
+	public String runCommand(String aCommand)
+	throws MudException
+	{
+		Command command = Constants.getCommand(aCommand);
+		command.setCommand(aCommand);
+		command.run(this);
+		return command.getResult();
 	}
 }

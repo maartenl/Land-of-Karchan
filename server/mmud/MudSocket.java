@@ -839,10 +839,8 @@ public class MudSocket extends Thread
 				throw new InvalidFrameException();
 			}
 		} // end switch 
-		Command myCommand = Constants.getCommand(aCommand);
-		myCommand.setCommand(aCommand);
-		myCommand.run(aUser);
-		if (myCommand.getResult() == null)
+		String result = aUser.runCommand(aCommand);
+		if (result == null)
 		{
 			returnStuff += aUser.getRoom().getDescription(aUser);
 			returnStuff += aUser.printForm();
@@ -850,7 +848,7 @@ public class MudSocket extends Thread
 		}
 		else
 		{
-			returnStuff += myCommand.getResult();
+			returnStuff += result;
 		}
 		return returnStuff;
 	}

@@ -37,7 +37,7 @@ import mmud.database.*;
 /**
  * Clear up your log file.
  */
-public class ClearCommand implements Command
+public class ClearCommand extends NormalCommand
 {
 
 	private User theUser;
@@ -67,10 +67,5 @@ public class ClearCommand implements Command
 		}
 		return null;
 	}
-
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

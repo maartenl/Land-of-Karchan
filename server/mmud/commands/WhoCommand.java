@@ -37,12 +37,12 @@ import mmud.database.*;
 /**
  * Provide a list of who is currently logged onto the game: "who".
  */
-public class WhoCommand implements Command
+public class WhoCommand extends NormalCommand
 {
 
 	String theString;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		theString = Persons.getWhoList() + aUser.printForm();
@@ -55,8 +55,4 @@ public class WhoCommand implements Command
 		return theString;
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 }

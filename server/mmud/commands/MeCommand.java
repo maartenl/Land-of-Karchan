@@ -40,8 +40,9 @@ import mmud.database.*;
 public class MeCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		aUser.writeMessage(aUser.getName() + " " + command.substring(3) + "<BR>\r\n");
 		aUser.sendMessage(aUser.getName() + " " + command.substring(3) + "<BR>\r\n");

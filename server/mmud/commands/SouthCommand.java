@@ -41,8 +41,9 @@ import mmud.database.*;
 public class SouthCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getSouth() != null)

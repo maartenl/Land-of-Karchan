@@ -37,14 +37,15 @@ import mmud.database.*;
 /**
  * Look at stuff: "look at well".
  */
-public class LookCommand implements Command
+public class LookCommand extends NormalCommand
 {
 
 	String theResult = null;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws ItemException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		theResult = null;
@@ -86,11 +87,6 @@ public class LookCommand implements Command
 	{
 		Logger.getLogger("mmud").finer("");
 		return theResult;
-	}
-
-
-	public void setCommand(String aCommand)
-	{
 	}
 
 }

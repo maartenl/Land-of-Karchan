@@ -37,12 +37,12 @@ import mmud.database.*;
 /**
  * List the current mudmails of a character.
  */
-public class ListMailCommand implements Command
+public class ListMailCommand extends NormalCommand
 {
 
 	String theString;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		theString = "<H2>List of Mail</H2>\r\n";
@@ -56,10 +56,5 @@ public class ListMailCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
-
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

@@ -38,7 +38,7 @@ import mmud.database.*;
  * Eat an item from inventory. "eat apple pie".
  * Should improve your eat stats.
  */
-public class EatCommand implements Command
+public class EatCommand extends NormalCommand
 {
 
 	String theResult = null;
@@ -81,10 +81,5 @@ public class EatCommand implements Command
 		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
-
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

@@ -42,7 +42,7 @@ import java.util.Calendar;
 public class TimeCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();

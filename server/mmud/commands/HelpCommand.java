@@ -37,7 +37,7 @@ import mmud.database.*;
 /**
  * Show help regarding possible commands: "help".
  */
-public class HelpCommand implements Command
+public class HelpCommand extends NormalCommand
 {
 
 	String theHelp;
@@ -81,9 +81,5 @@ public class HelpCommand implements Command
 		return "";
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

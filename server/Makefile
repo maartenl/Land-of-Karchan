@@ -41,10 +41,11 @@ compile: mmud/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc:
-	cd html; javadoc $(COPTS) ../mmud/*.java 
+	cd javadoc; javadoc -source 1.4 -sourcepath .. mmud/*.java mmud/items/*.java mmud/commands/*.java \
+    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
 
 clean:
-	rm -rf jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
+	rm -rf javadoc/* jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
     mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
     mmud/communication/*~ mmud/configuration/*~
 
@@ -53,5 +54,5 @@ all: $(TARGETS)
 jar:
 	cd jclasses;jar -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
-run:
+run: jar
 	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) -jar runme.jar

@@ -40,8 +40,9 @@ import mmud.database.*;
 public class TitleCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 		aUser.setTitle(command.substring(6));
 		aUser.writeMessage("Changed your title to : '" + aUser.getTitle() + "'.<BR>\r\n");

@@ -49,7 +49,7 @@ public interface Command
 	 * @param aUser the user that is executing the command
 	 * @return boolean, wether or not the command was
 	 * successfull.
-	 * @throw MudException if something goes wrong.
+	 * @throws MudException if something goes wrong.
 	 */
 	public boolean run(User aUser)
 		throws MudException;

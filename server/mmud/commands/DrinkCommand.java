@@ -37,7 +37,7 @@ import mmud.database.*;
 /**
  * Drink an item: "drink beer".
  */
-public class DrinkCommand implements Command
+public class DrinkCommand extends NormalCommand
 {
 
 	String theResult = null;
@@ -90,9 +90,5 @@ public class DrinkCommand implements Command
 		return theResult;
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 
 }

@@ -41,7 +41,7 @@ import mmud.database.*;
 public class WestCommand extends NormalCommand
 {
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
 		Room myRoom = aUser.getRoom();

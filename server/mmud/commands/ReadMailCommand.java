@@ -37,14 +37,15 @@ import mmud.database.*;
 /**
  * Read a mudmail : "readmail 2".
  */
-public class ReadMailCommand implements Command
+public class ReadMailCommand extends NormalCommand
 {
 
 	String theString;
 
-	public boolean run(User aUser, String command)
+	public boolean run(User aUser)
 		throws MailException
 	{
+		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
 	        String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 2)
@@ -72,8 +73,4 @@ public class ReadMailCommand implements Command
 		return theString;
 	}
 
-
-    public void setCommand(String aCommand)
-    {
-    }
 }
