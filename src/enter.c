@@ -436,6 +436,15 @@ void MakeStart(char *name, char *password, char *address, int room)
 	}
 }
 
+void checkcookie(char *name, char *address)
+{
+	char cookie[100];
+	if (getCookie("Karchan", cookie))
+	{
+		MultiPlayerDetected(name, address);
+	}
+}
+
 int cgiMain()
 {
 	char name[20];
@@ -505,7 +514,7 @@ int cgiMain()
 		row = mysql_fetch_row(res);
 		if (row!=NULL) 
 		{
-			char fpassword[40], fname[40], fsecretpassword[40];
+			char fpassword[40], fname[40], fsecretpassword[40], fcookie[40];
 			strcpy(fname, row[0]);
 			strcpy(fpassword, row[1]);
 			strcpy(fsecretpassword, row[3]);
@@ -518,6 +527,22 @@ int cgiMain()
 			if (strcmp(fpassword, password)!=0) 
 			{
 				WrongPasswd(name, cgiRemoteAddr, "Wrong Password detected during relogin");
+			}
+			if (getCookie("Karchan", fcookie))
+			{
+				/* cookie exists, check if cookie corresponds with current user 
+				   in that case, the user is attempting to relogon after a browser
+				   crash
+				*/
+				if (strcmp(fcookie, fsecretpassword))
+				{
+					/* cookie does not correspond with the lok-value in the usertable
+					   in this case, the user is attempting to relogon a character
+					   for which the cookie does not match. In the case of an error,
+					   he will be required to close and restart his webbrowser 
+				   */
+					MultiPlayerDetected(name, cgiRemoteAddr);
+				}
 			}
 			AlreadyActive(fname, fsecretpassword, cgiRemoteAddr);
 		}
@@ -557,6 +582,12 @@ int cgiMain()
 		NewPlayer(name,cgiRemoteAddr, password);
 	}
 	
+	/* the user is attempting to logon to the game, yet he already has a cookie
+		in this case this is not allowed, and a multiplayer log entry will appear.
+		In some cases this is erroneous, namely in the fact that the user might be
+		deactivated after an hour, but his cookie will remain.
+	*/
+	checkcookie(name, cgiRemoteAddr);
 	strcpy(name, row[0]);
 	ActivateUser(name);
 	MakeStart(name, secretpassword, cgiRemoteAddr, atoi(row[2]));

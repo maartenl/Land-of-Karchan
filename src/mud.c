@@ -311,11 +311,17 @@ cgiMain()
 	}
 	else 
 	{
+		char cookiepassword[40];
 		cgiFormString("command", command, cgiContentLength - 2);
 		if (command[0]==0) {strcpy(command,"l");}
 		cgiFormString("name", name, 0);
-//		getCookie("Karchan", password);
 		cgiFormString("password", password, 40);
+		getCookie("Karchan", cookiepassword);
+		if (strcmp(cookiepassword, password))
+		{
+			cgiHeaderContentType("text/html");
+			NotActive(name, password,3);
+		}
 		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
 		{
 			strcpy(frames, "none");
