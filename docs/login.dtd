@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <!ELEMENT root (action, user)>
 <!ELEMENT action (#CDATA)>
-<!ELEMENT user (name, password, frames, +cookie)>
+<!ELEMENT user (name, password, address, frames, +cookie)>
 <!ELEMENT name (#CDATA)>
 <!ELEMENT password (#CDATA)>
+<!ELEMENT address (#CDATA)>
 <!ELEMENT cookie (#CDATA)>
 <!ELEMENT frames (#CDATA)>
 
