@@ -56,6 +56,8 @@ maartenl@il.fontys.nl
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
+/*! \file simple cgi-binary used for creating a new character. */
+
 char frace[10];
 char fsex[10];
 char fage[15];
@@ -72,6 +74,7 @@ char ftitle[80];
 char frealname[80];
 char femail[40];
  
+//! retrieve cookie 'Karchan' from browser, should contain the session password
 int getCookie(char *name, char *value)
 {
 	char *environmentvar;
@@ -105,6 +108,7 @@ int getCookie(char *name, char *value)
 	return 1;
 }
 
+//! dump standard error page on user, cookie not found. Cookie should have been set by enter.c
 void CookieNotFound(char *name, char *address)
 {
 	printf("Content-type: text/html\n\n");
@@ -119,11 +123,11 @@ void CookieNotFound(char *name, char *address)
 	printf("</HTML>\n");
 }
 
-/* attempts to send data over a socket, if not all information is sent.
+/*! attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
-@param int socket descriptor
-@param char* message
-@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
 */
 int
 send_socket(int s, char *buf, int *len)
@@ -149,6 +153,8 @@ send_socket(int s, char *buf, int *len)
 	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
+//! create a valid xml document
+/*! created a valid xml document with all the necessary fields to generate a new character on the mud. */
 char *
 createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 {
@@ -198,6 +204,7 @@ createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 	return myBuffer;
 }
 
+//! main method
 int main(int argc, char *argv[])
 {
 	int res, totalnumbytes;

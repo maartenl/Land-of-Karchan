@@ -33,6 +33,8 @@ maartenl@il.fontys.nl
 #include <sys/file.h>
 #include "typedefs.h"
 
+/*! \file simple cgi-binary, shows all users active in the game. */
+
 int showWhoList()
 {
 	MYSQL_RES *res;

@@ -28,8 +28,12 @@ maartenl@il.fontys.nl
 #include "mudlogon.h"
 #include "mudnewchar.h"
 
+/*! \file part of the server that takes care of creating a new character.
+*/
+
 extern char secretpassword[40];
 
+//! create a new structure for containing the information for creating a new character
 mudnewcharstruct *create_mudnewcharstruct()
 {
 	mudnewcharstruct *mynewstruct;
@@ -45,6 +49,16 @@ mudnewcharstruct *create_mudnewcharstruct()
 	return mynewstruct;
 }
 
+//! main function for creating a new character
+/*! function will create a new character from data provided in the parameter list
+\param name char* containing the new name of the player character
+\param password char* password, the real one, of the new player
+\param cookie char* the session password, as stored in the cookie 'karchan' and as resent upon 
+transmitting a command for verification of the user.
+\param address char* containing the address from which the person is connecting
+\param infostruct mudnewcharstruct* pointer to the structure containing the information for adding a new player
+\returns int containing success (!=0) or failure (0).
+*/
 int 
 gameNewchar(char *name, char *password, char *cookie, char *address, mudnewcharstruct *infostruct)
 {

@@ -28,6 +28,8 @@ maartenl@il.fontys.nl
 #include <string.h>
 #include "cgi-util.h"
 
+/*! \file simple cgi-binary showing the frame where commands can be entered. */
+
 int main(int argc, char *argv[])
 {
 	char name[20];

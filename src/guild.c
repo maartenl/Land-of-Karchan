@@ -28,12 +28,16 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "guild.h"
 
+/*! \file part of the server that does the whole guild thing as well as
+some "talk lines". */
+
 extern roomstruct room;
 char           *command;
 char           *printstr;
 struct tm       datumtijd;
 time_t          datetime;
 
+//! list of guildmembers of the MIF
 void 
 MIFList(char *name, char *password, int room)
 {
@@ -84,6 +88,7 @@ MIFList(char *name, char *password, int room)
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! make a member of the mif enter the mif domicile
 void 
 MIFEntryIn(char *name, char *password, int room)
 {
@@ -122,6 +127,7 @@ MIFEntryIn(char *name, char *password, int room)
 
 }
 
+//! make a member leave the mif domicile
 void 
 MIFEntryOut(char *name, char *password, int room)
 {
@@ -161,6 +167,7 @@ MIFEntryOut(char *name, char *password, int room)
 
 }
 
+//! talk to other mif members on the game
 void 
 MIFTalk(char *name, char *password, int room)
 {
@@ -189,6 +196,7 @@ MIFTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! list ranger members
 void 
 RangerList(char *name, char *password, int room)
 {
@@ -239,6 +247,7 @@ RangerList(char *name, char *password, int room)
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! make a member enter the ranger guild room
 void 
 RangerEntryIn(char *name, char *password, int room)
 {
@@ -279,6 +288,7 @@ RangerEntryIn(char *name, char *password, int room)
 
 }
 
+//! make a ranger leave the guild room
 void 
 RangerEntryOut(char *name, char *password, int room)
 {
@@ -317,6 +327,7 @@ RangerEntryOut(char *name, char *password, int room)
 
 }
 
+//! talk to other rangers on the game
 void 
 RangerTalk(char *name, char *password, int room)
 {
@@ -345,7 +356,7 @@ RangerTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
-/* add SWTalk */
+/*! add SWTalk */
 void 
 SWTalk(char *name, char *password, int room)
 {
@@ -374,7 +385,7 @@ SWTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
-/* add DepTalk */
+/*! add DepTalk */
 void 
 DepTalk(char *name, char *password, int room)
 {
@@ -402,7 +413,7 @@ DepTalk(char *name, char *password, int room)
 	free(temp2);
 	WriteRoom(name, password, room, 0);
 }	
-/* add BKTalk */
+/*! add BKTalk */
 void 
 BKTalk(char *name, char *password, int room)
 {
@@ -430,7 +441,7 @@ BKTalk(char *name, char *password, int room)
 	free(temp2);
 	WriteRoom(name, password, room, 0);
 }
-/* add VampTalk */
+/*! add VampTalk */
 void 
 VampTalk(char *name, char *password, int room)
 {
@@ -458,7 +469,7 @@ VampTalk(char *name, char *password, int room)
 	free(temp2);
 	WriteRoom(name, password, room, 0);
 }
-/* add KnightTalk */
+/*! add KnightTalk */
 void 
 KnightTalk(char *name, char *password, int room)
 {
@@ -486,7 +497,7 @@ KnightTalk(char *name, char *password, int room)
 	free(temp2);
 	WriteRoom(name, password, room, 0);
 }
-/* add CoDTalk */
+/*! add CoDTalk */
 void 
 CoDTalk(char *name, char *password, int room)
 {

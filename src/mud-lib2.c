@@ -28,12 +28,15 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "mud-lib2.h"
 
+/*! \file server file providing extentions and commands to the mud */
+
 extern roomstruct room;
 char           *command;
 char           *printstr;
 struct tm       datumtijd;
 time_t          datetime;
 
+//! write mail to another person
 void 
 WriteMail(char *name, char *toname, char *header, char *message)
 {
@@ -66,6 +69,7 @@ free(temp);temp=NULL;
 
 }
 
+//! list of mails received by the current player
 int 
 ListMail_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -127,6 +131,7 @@ while(row = mysql_fetch_row(res))
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! read or delete mail (yeah, I know, confusing)
 void 
 ReadMail(char *name, char *password, int room, int messnr, int erasehem)
 {
@@ -269,6 +274,7 @@ if (erasehem) {
 	}
 }
 
+//! get some answers from bots, for example Bill but is not only Bill
 int 
 ReadBill(char *botname, char *vraag, char *name, int room)
 {
@@ -320,6 +326,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 }
 	
 
+//! display who is online excluding deps
 int 
 Who_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -396,6 +403,7 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! look at something (either item, or thing, or person, or something else.)
 void 
 LookString(char *description, char *name, char *password)
 {
@@ -437,6 +445,7 @@ LookString(char *description, char *name, char *password)
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! find out what you are looking at and display a description (either item, or thing, or person, or something else.)
 void 
 LookAtProc(int id, char *name, char *password)
 {
@@ -494,6 +503,7 @@ LookAtProc(int id, char *name, char *password)
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! look at item, either in inventory or on floor or hidden
 void 
 LookItem_Command(char *name, char *password, int room)
 {
@@ -916,6 +926,7 @@ LookItem_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! throw standard error page to user regarding not being active.
 void 
 NotActive(char *fname, char *fpassword, int errornr)
 {
@@ -944,6 +955,7 @@ NotActive(char *fname, char *fpassword, int errornr)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, fpassword, errornr);
 }
 
+//! check the room, wonder if this is still used.
 int CheckRoom(int i)
 {
 int j;
@@ -965,6 +977,7 @@ case 215 : {j=1;break;}
 return j;
 }
 
+//! quit the game
 int 
 Quit_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -997,24 +1010,25 @@ Quit_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
-/*
- * tokens[1..getTokenAmount()]
- * 
- * getTokenAmount()=1 getToken(1)=noun
- * 
- * getTokenAmount()=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
- * tokens[1..2]=adject3 noun
- * 
- * getTokenAmount()=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
- * tokens[1..3]=adject2 adject1 noun tokens[1..3]=adject2 adject3 noun
- * tokens[1..3]=adject3 adject1 noun tokens[1..3]=adject3 adject2 noun
- * 
- * getTokenAmount()=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
- * adject2 noun tokens[1..4]=adject2 adject1 adject3 noun tokens[1..4]=adject2
- * adject3 adject1 noun tokens[1..4]=adject3 adject1 adject2 noun
- * tokens[1..4]=adject3 adject2 adject1 noun
- */
-
+/*! check if item exists regarding a name and appropriate adjectives.
+<TT>
+  tokens[1..getTokenAmount()]
+  
+  getTokenAmount()=1 getToken(1)=noun
+  
+  getTokenAmount()=2 tokens[1..2]=adject1 noun tokens[1..2]=adject2 noun
+  tokens[1..2]=adject3 noun
+  
+  getTokenAmount()=3 tokens[1..3]=adject1 adject2 noun tokens[1..3]=adject1 adject3 noun
+  tokens[1..3]=adject2 adject1 noun tokens[1..3]=adject2 adject3 noun
+  tokens[1..3]=adject3 adject1 noun tokens[1..3]=adject3 adject2 noun
+  
+  getTokenAmount()=4 tokens[1..4]=adject1 adject2 adject3 noun tokens[1..4]=adject1 adject3
+  adject2 noun tokens[1..4]=adject2 adject1 adject3 noun tokens[1..4]=adject2
+  adject3 adject1 noun tokens[1..4]=adject3 adject1 adject2 noun
+  tokens[1..4]=adject3 adject2 adject1 noun
+  </TT>
+*/
 int 
 ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 {
@@ -1063,6 +1077,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 	return id;
 }				/* endproc */
 
+//! show statistics of current player
 int 
 Stats_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1227,6 +1242,7 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! get money from floor. this is in place of items, because money is a special case.
 void
 GetMoney_Command(char *name, char *password, int room)
 {
@@ -1344,6 +1360,7 @@ GetMoney_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! drop money onto the floor
 void
 DropMoney_Command(char *name, char *password, int room)
 {
@@ -1491,6 +1508,7 @@ DropMoney_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! give an amount of money to someone else.
 void
 GiveMoney_Command(char *name, char *password, int room)
 {
@@ -1618,6 +1636,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! retrieve an item from the floor.
 void
 GetItem_Command(char *name, char *password, int room)
 {
@@ -1842,6 +1861,7 @@ GetItem_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! drop an item on the floor
 void
 DropItem_Command(char *name, char *password, int room)
 {
@@ -2078,6 +2098,7 @@ DropItem_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! put an item into a container
 int
 Put_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -2432,6 +2453,7 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! retrieve an item from a container
 int
 Retrieve_Command(char *name, char *password, int room, char *command)
 {
@@ -2745,6 +2767,7 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	return 1;
 }
 
+//! wear an item on your body someplace
 int
 Wear_Command(char *name, char *password, int room, char *command)
 {
@@ -2967,6 +2990,7 @@ Wear_Command(char *name, char *password, int room, char *command)
 	return 1;
 }
 
+//! remove item from body
 int
 Unwear_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -3147,6 +3171,7 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! wield an item (in left or right hand)
 int
 Wield_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -3355,6 +3380,7 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! stop wielding an item in right or left hand
 int
 Unwield_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -3537,6 +3563,7 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! eat an item
 int
 Eat_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -3725,6 +3752,7 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! drink an item
 int
 Drink_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -3936,6 +3964,7 @@ Drink_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! remaps the shopping list of a certain bot
 void
 RemapShoppingList_Command(char *name)
 {
@@ -3982,6 +4011,7 @@ RemapShoppingList_Command(char *name)
 
 }
 
+//! buy an item from a bot
 int
 BuyItem_Command(char *name, char *password, int room, char *fromname)
 {
@@ -4208,6 +4238,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	return 1;
 }
 
+//! sell an item to a bot
 void
 SellItem_Command(char *name, char *password, int room, char *toname)
 {
@@ -4421,6 +4452,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	WriteRoom(name, password, room, 0);
 }
 
+//! search for an item among the stuff in a room
 int
 Search_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -4553,6 +4585,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! give an item to a person
 int
 GiveItem_Command(char *name, char *password, int room)
 {
@@ -4808,6 +4841,7 @@ GiveItem_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! read an item, hidden or otherwise
 int
 Read_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -5059,6 +5093,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! execute the dead
 void 
 Dead(char *name, char *password, int room)
 {
@@ -5110,6 +5145,7 @@ Dead(char *name, char *password, int room)
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! change the title of the player
 int
 ChangeTitle_Command(char *name, char *password, int room, char *fcommand)
 {

@@ -34,6 +34,8 @@ maartenl@il.fontys.nl
 #include "cgi-util.h"
 #include "typedefs.h"
 
+/*! \file cgi-binary for submitting a character sheet */
+
 #define debuggin 0
 
 void updateCharacterSheet(const char *name, const char *password)

@@ -28,6 +28,8 @@ maartenl@il.fontys.nl
 #include <string.h>
 #include "cgi-util.h"
 
+/*! \file simple cgi-binary used for server push in mudinterface 3. */
+
 int main(int argc, char * argv[])
 {
 	char name[20];

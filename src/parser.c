@@ -30,6 +30,9 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "parser.h"
 
+/*! \file contains the parser, finds appropriate methods that correspond
+to a users input and interprets and executes them. */
+
 extern char *command;
 char *stringbuffer;
 
@@ -65,9 +68,9 @@ int parser_debug = 0;
 <LI>			7 -> show found, dump description and skip everything else
 <LI>			8 -> showstring found, dump string and skip everything else
 </UL>
-\param char* name of the person executing the command
-\param int room person is occuping
-\param char* parserstring single string containing a command or the beginning of an if statement
+\param name char* name of the person executing the command
+\param room int room person is occuping
+\param parserstring char* parserstring single string containing a command or the beginning of an if statement
 \sa Parse
 */
 int ParseSentence(char *name, int *room, char *parserstring)
@@ -418,9 +421,9 @@ multiple lines.
 <LI>			2 -> returned upon finding 'show' statement
 <LI>			3 -> returned upon finding 'showstring' statement
 </UL>
-\param char* name of the person executing the command
-\param int room person is occuping
-\param char* parserstring string containing an entire method
+\param name char* name of the person executing the command
+\param room int room person is occuping
+\param parserstring char* parserstring string containing an entire method
 \sa ParseSentence
 */
 int Parse(char *name, int *room, char *parserstring)
@@ -676,9 +679,9 @@ that after parsing the method, no more processing is to take place and the
 user received the result. Also means that the server does no more additional
 processing.
 </UL>
-\param char* name of the person executing the command
-\param char* password of the person executing the command
-\param char int room person is occuping
+\param name char* name of the person executing the command
+\param password char* password of the person executing the command
+\param room char int room person is occuping
 \sa Parse
 */
 int SearchForSpecialCommand(char *name, char *password, int room)

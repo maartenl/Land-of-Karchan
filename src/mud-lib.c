@@ -29,6 +29,8 @@ maartenl@il.fontys.nl
 #include "userlib.h"
 #include "mud-lib.h"
 
+/*! \file server file containing the import game extentions like ReadFile and WriteRoom and standard communication */
+
 extern roomstruct room;
 extern int      events[50];
 
@@ -342,6 +344,7 @@ char           *adverb[] = {
 "wistfully",
 NULL};
 
+//! reads a file and dimps it straight onto the output
 int 
 ReadFile(const char *filenaam)
 {
@@ -362,6 +365,7 @@ ReadFile(const char *filenaam)
 	return 1;
 }
 
+//! print the standard command form for filling in commands
 int
 PrintForm(char * name, char * password)
 {
@@ -385,6 +389,7 @@ if (!getFrames())
 }
 }
 
+//! show inventory, items person is carrying
 int
 Inventory_Command(char * name, char * password, int room, char *fcommand)
 {
@@ -515,6 +520,17 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	fprintf(getMMudOut(), "</BODY></HTML>");
 }
 
+//! small help function for computing what you pay and what you get returned
+/*! before any computation is done, it is computed wether or not enough money is available to pay the amount requested. This is done using the following
+calculation: z0*100+z1*10+z2<=a*100+b*10+c
+\param z0 int, gold coins to be paid
+\param z1 int, silver coins to be paid
+\param z2 int, copper coins to be paid
+\param a pointer to int, because needs to change, gold coins available
+\param b pointer to int, because needs to change, silver coins available
+\param c pointer to int, because needs to change, copper coins available
+\returns integer, 1 upon success, 1 upon failure
+*/
 int 
 PayUp(int z0, int z1, int z2, int *a, int *b, int *c)
 /*
@@ -560,6 +576,10 @@ PayUp(int z0, int z1, int z2, int *a, int *b, int *c)
 	return 1;
 }
 
+//! returns the plural of an emotion
+/*!
+\see get_pluralis2
+*/
 char           *
 get_pluralis(char *s)
 {
@@ -571,6 +591,10 @@ get_pluralis(char *s)
 	return emotions[i][PLURALIS];
 }
 
+//! returns the plural of an emotion
+/* this method has the ability to be combined with persons, hence the distinction from get_pluralis
+\see get_pluralis
+*/
 char           *
 get_pluralis2(char *s)
 {
@@ -582,6 +606,10 @@ get_pluralis2(char *s)
 	return emotions2[i][PLURALIS];
 }
 
+
+//! check adverb is available
+/*! for instance: absentmindedly
+*/
 int
 exist_adverb(char *s)
 {
@@ -593,6 +621,10 @@ exist_adverb(char *s)
 	return adverb[i]!=NULL;
 }
 
+//! writes the text of a room to output
+/*!
+\param z int, roomnumber
+*/
 void 
 RoomTextProc(int z)
 {
@@ -653,6 +685,10 @@ RoomTextProc(int z)
 	}
 }
 
+//! write entire room to output, ending function
+/*! this function is used quite often. It is used as the last thing to execute. Once a command has been executed
+it is usually this method that is called last, in order to print the appropriate text
+*/
 void 
 WriteRoom(char * name, char * password, int room, int sleepstatus)
 {
@@ -983,12 +1019,14 @@ if (!getFrames())
 	fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
+//! checks the weight of a person by combining the weights of everything he/she carries
+/*! 
+\returns integer, which is weight = copper*1 + silver*2 + gold*3 + 
+	(item1.weight*item1.amount + item2.weight*item2.amount + ...) 
+*/
 int
 CheckWeight(char * name)
 {
-/* weight = copper*1 + silver*2 + gold*3 + 
-	(item1.weight*item1.amount + item2.weight*item2.amount + ...) 
-*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *tempsql;

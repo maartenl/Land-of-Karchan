@@ -28,8 +28,11 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "userlib.h"
 
+/*! \file definition file with basic user/item/etc operations */
+
 char            ItemDescr[100];
 
+//! show error in MM_ERRORFILE
 void 
 Error(int i, char *description)
 {
@@ -39,6 +42,7 @@ Error(int i, char *description)
 	fclose(fp);
 }
 
+//! make string lowercase, DANGEROUS
 char           *
 lowercase(char dest[512], char *buf)
 {
@@ -49,6 +53,7 @@ lowercase(char dest[512], char *buf)
 	return (dest);
 }
 
+//! wait a number of sec/usec
 void
 Wait(int sec, int usec)
 {
@@ -63,6 +68,10 @@ Wait(int sec, int usec)
 	return ;
 }
 
+//! activate user in the game
+/*! logs the user into the game, the current way of doing this is copying userinfomation, items he/she has in posession and 
+mail he/she reads into tmp_tables.
+*/
 int 
 ActivateUser(char *name)
 {
@@ -123,6 +132,9 @@ ActivateUser(char *name)
 	return 1;
 }
 
+//! removed the player from active gameplaying
+/*! \see ActivateUser
+*/
 int 
 RemoveUser(char *name)
 {
@@ -228,6 +240,7 @@ mysql_free_result(res);
 	return 1;
 }
 
+//! is user online/playing?
 int 
 ExistUser(char *name)
 {
@@ -256,6 +269,7 @@ mysql_free_result(res);
 return 1;
 }
 
+//! is user playing/online and currently occupying that specific room?
 int 
 ExistUserRoom(int roomnr, char *name)
 {
@@ -283,6 +297,7 @@ mysql_free_result(res);
 return 1;
 }
 
+//! see if user is online in the game, based in his/her description instead of character name
 char * 
 ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 {
@@ -336,6 +351,7 @@ ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 	return returnuser;
 }
 
+//! search for user wether online or otherwise
 int 
 SearchUser(char *name)
 {
@@ -364,6 +380,7 @@ mysql_free_result(res);
 return returnvalue;
 }
 
+//! search for the username amongst the banned users list in the database
 int 
 SearchBanList(char *item, char *username)
 {
@@ -414,6 +431,7 @@ mysql_free_result(res);
 return 0;
 }
 
+//! get description of items available based on the name of the item
 char *
 ItemDescription(char *name)
 {
@@ -452,6 +470,7 @@ row = mysql_fetch_row(res);
 	return ItemDescr;
 }
 
+//! clear filename, used by command Clear
 void 
 ClearLogFile(char *filenaam)
 {
@@ -460,6 +479,10 @@ ClearLogFile(char *filenaam)
 	fclose(fp);
 }
 
+//! append message to file
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
 void 
 WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt,...)
 {
@@ -476,6 +499,10 @@ WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt,...)
 	fclose(filep);
 }
 
+//! write message to users in room
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
 void 
 WriteMessage(char *name, int roomnr, char *fmt,...)
 {
@@ -510,6 +537,10 @@ while((row = mysql_fetch_row(res))) {
 	mysql_free_result(res);
 }
 
+//! write message to specific user in room
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
 int 
 WriteMessageTo(char *toname, char *name, int roomnr, char *fmt,...)
 {
@@ -561,6 +592,10 @@ while((row = mysql_fetch_row(res))) {
 	return 1;
 }
 
+//! say something to specific user in room
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
 int 
 WriteSayTo(char *toname, char *name, int roomnr, char *fmt,...)
 {
@@ -598,6 +633,10 @@ if (!(row = mysql_fetch_row(res)))
 	return 1;
 }
 
+//! tell something to specific user regardless of in which room the player resides
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
 int 
 WriteLinkTo(char *toname, char *name, char *fmt,...)
 {
@@ -634,6 +673,7 @@ if (!(row = mysql_fetch_row(res)))
 	return 1;
 }
 
+//! tell a message to everyone in the game
 void 
 SayToAll(char *to)
 {
@@ -658,6 +698,7 @@ while ((row = mysql_fetch_row(res))) {
 mysql_free_result(res);
 }
 
+//! returns 'He' or 'She' string depending on sex
 char *
 HeShe(char *kill)
 {
@@ -668,6 +709,7 @@ HeShe(char *kill)
 	}
 }
 
+//! returns 'he' or 'she' string depending on sex
 char *
 HeSheSmall(char *kill)
 {
@@ -678,6 +720,7 @@ HeSheSmall(char *kill)
 	}
 }
 
+//! returns 'him' or 'her' string depending on sex
 char *
 HeShe2(char *kill)
 {
@@ -688,6 +731,7 @@ HeShe2(char *kill)
 	}
 }
 
+//! returns 'his' or 'her' string depending on sex
 char *
 HeShe3(char *kill)
 {
@@ -698,6 +742,8 @@ HeShe3(char *kill)
 	}
 }
 
+//! provides constant string describing current damage level
+/*! damage level is portrayed in 12 steps from good (0) to worse/dead (maxi) */
 char *
 ShowString(int i, int maxi)
 {
@@ -737,6 +783,9 @@ ShowString(int i, int maxi)
 	return " to be at death's door.";
 }
 
+//! show how tired you are, directly related to how much you can move.
+/*! in steps of 7
+*/
 char *
 ShowMovement(int i, int maxi)
 {
@@ -761,6 +810,7 @@ ShowMovement(int i, int maxi)
 	return " to be fully exhausted.";
 }
 
+//!  hit stuff with a part of you,
 char *
 ShowHittingStuff(int i, char *race)
 {
@@ -776,6 +826,12 @@ ShowHittingStuff(int i, char *race)
 	}
 }
 
+//! show how much you drank
+/* in steps of 6, however, it is also possible to become inebriated with alcohol, which there is another
+set of 6 steps for the negative values of i.
+\param i int, drinkstats, -59 is very drunk, 0 is sober, >=49 flush with fluids.
+\see ShowEat
+*/
 char *
 ShowDrink(int i)
 {
@@ -815,6 +871,11 @@ ShowDrink(int i)
 	return "You cannot drink anymore.<BR>";
 }
 
+//! show how much you have eaten
+/*! in steps of 6
+\param i int, eatstats 0 is hungry, >=49 full
+\see ShowDrink
+*/
 char *
 ShowEat(int i)
 {
@@ -836,6 +897,12 @@ ShowEat(int i)
 	return "You are full.<BR>";
 }
 
+//! show how much you are weighed down by burden
+/*! in steps of 7
+\param i int, less than 500 is travellibg lightly, >=3000 carrying too much and unable to move
+\see ShowDrink
+\see ShowEat
+*/
 char *
 ShowBurden(int i)
 {
@@ -867,6 +934,9 @@ ShowBurden(int i)
 	return "You are carrying way too much and you feel the entire weight pressing down on you.<BR>";
 }
 
+//! compute the amount of encumberance based on strength of character and weight of items carried.
+/*! i.e. this is the amount of a movement penalty that you get when attempting to move. It is subtracted
+from your total physical stats.*/
 int
 computeEncumberance(int fweight, int fstrength)
 {
@@ -879,6 +949,10 @@ computeEncumberance(int fweight, int fstrength)
 	return -1;
 }
 
+//! show the alignnment of your character, wether you are good or evil
+/* 
+\param i int, 0 is neutral, smaller then -90 is utter evil, bigger then 90 is angelic
+*/
 char *
 ShowAlignment(int i)
 {
@@ -921,14 +995,18 @@ ShowAlignment(int i)
 		return "You are good.<BR>";
 }
 
+//! returns a verb depending on with what you are hitting a person
+/*! 
+\param i int, 
+<UL><LI>0..4 : normal
+<LI>5..9 : sword,dagger
+<LI>10..14 : stick
+<LI>15..19 : pick
+</UL>
+*/
 char *
 HitMe(int i)
-{	/* [0..4] : normal
-	 [5..9]: sword,dagger
-	 [10..14]:stick
-	 [15..19]:pick
-	 */
-
+{
 	switch (i) {
 /*---------------- normal -----------*/
 /*with jaws, left paw, right paw, */
@@ -1001,6 +1079,10 @@ HitMe(int i)
 	}
 }
 
+//! returns the power (in words) with which you hit the person you are fighting
+/*! 
+\param i int, 0..10 where 0  is slightly and 10 is very hard.
+*/
 char *
 ErgHard(int i)
 {

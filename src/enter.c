@@ -52,15 +52,18 @@ maartenl@il.fontys.nl
 #include "cgi-util.h"
 #include "typedefs.h"
 
+/*! \file simple cgi-binary used for entering the game as a character. Automatically
+does the appropriate checks.*/
+
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
 /* attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
-@param int socket descriptor
-@param char* message
-@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
 */
 int
 send_socket(int s, char *buf, int *len)

@@ -42,6 +42,10 @@ maartenl@il.fontys.nl
 
 #include "typedefs.h"
 
+/*! \file definition file with constants and essential operations
+like database operations, server statistics, configuration and tokenization
+*/
+
 /*roomindex, west, east, north, south, up, down, light_source*/
 roomstruct room;
 
@@ -66,11 +70,24 @@ FILE *getMMudOut()
 
 MYSQL dbconnection;
 
+//! set the mud interface
+/*! this sets the mud interface used.
+\param i int, can have the following values:
+<UL><LI>0 -> normal interface, one page
+<LI>1 -> frames
+<LI>2 -> frames with server push
+<LI>3 -> future use
+</UL>
+*/
 void setFrames(int i)
 {
 	frames=i;
 }
 
+//! gets the current mud interface
+/*! this gets the current interface used.
+\see setFrames
+*/
 int getFrames()
 {
 	return frames;
@@ -89,12 +106,14 @@ MYSQL getdbconnection()
 
 mudinfostruct mudinfo;
 
+//! retrieve information about the mud (statistics)
 mudinfostruct 
 getMudInfo()
 {
 	return mudinfo;
 }
 
+//! set information about mud (statistics), called from mmserver.c
 void 
 setMudInfo(mudinfostruct amudinfostruct)
 {
@@ -103,11 +122,13 @@ setMudInfo(mudinfostruct amudinfostruct)
 
 int game_shutdown = 0;
 
+//! game should be shut down, shut down initiated
 int isShuttingdown()
 {
 	return game_shutdown;
 }
 
+//! indicate that the game should be shutting down as soon as possible
 void setShutdown(int aOffset)
 {
 	game_shutdown += aOffset;
@@ -147,7 +168,7 @@ void freeParam()
 }
 
 /*! retrieve a parameter from the parameter list
-	\param  int constant describing which parameter to retrieve, valid range 1..23
+	\param i int constant describing which parameter to retrieve, valid range 1..23
 	\return char* parameter contents
 */
 const char *getParam(int i)
@@ -165,8 +186,8 @@ const char *getParam(int i)
 }
 
 /*! set a parameter
-	\param int constant describing which parameter to set, valid range 1..23
-	\param char* string to set the constant to, the string is copied */
+	\param i int constant describing which parameter to set, valid range 1..23
+	\param parameter char* string to set the constant to, the string is copied */
 void setParam(int i, char *parameter)
 {
 	if (parameters[i] != NULL) 
@@ -236,6 +257,7 @@ getToken(int i)
 	return tokens[i];
 }
 
+//! print error to screen and exit
 void 
 FatalError(FILE *output, int i, char *description, char *busywith)
 {         
@@ -259,6 +281,7 @@ FatalError(FILE *output, int i, char *description, char *busywith)
   exit(0);
 }         
 
+/*! initialize rooms, basically retrieves information about one current room */
 void InitializeRooms(int roomint)
 {
 	MYSQL_RES *res;
@@ -281,6 +304,7 @@ void InitializeRooms(int roomint)
 	mysql_free_result(res);
 }
 
+//! write error to file
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
 {
 FILE *fp;
@@ -289,6 +313,7 @@ fprintf( fp, "Error %i: %s\n {%s}\n", exitcode, mysql_error(mysql), sqlstring );
 fclose(fp);
 }
 
+//!write error to file
 void exiterr2(int exitcode, char *sqlstring, MYSQL *mysql, char *file)
 {
 FILE *fp;
@@ -298,6 +323,7 @@ fprintf( fp, "<FONT COLOR=red><I>Error</I> %i: %s\n {%s}</FONT><BR>\r\n", exitco
 fclose(fp);
 }
 
+//! send sql query to database, deprecated!
 int SendSQL(char *file, char *name, char *password, char *sqlstring)
 {
 	MYSQL mysql;
@@ -383,8 +409,9 @@ closedbconnection()
 }
 
 //! send query to database, if necessary retrieve rows
-/*! \param sqlstring the string containing the query
-	\param *affected_rows the integer returning the number of rows affected/retrieved
+/*! might be a little deprecated, use executeQuery instead
+\param sqlstring the string containing the query
+	\param affected_rows the pointer to integer returning the number of rows affected/retrieved
 	\return the resultset, please do not forget to call mysql_free_result!
 	\sa composeSqlStatement, getdbconnection, closedbconnection
 */
@@ -501,7 +528,7 @@ composeSqlStatement(char *sqlstring, ...)
 	</UL>
 	If you need a % sign, literally, try '%\i' for instance.
 	Example: composeSqlStatement("select * from tmp_usertable where name='\%x', name);
-	\param int* the integer returning the number of rows affected by the query
+	\param affected_rows int* the integer returning the number of rows affected by the query
 	(if NULL pointer provided, the function does not return the number of
 	affected rows (obviously) )
 	\param sqlstring the format string (with options as displayed above)
@@ -592,6 +619,7 @@ executeQuery(int *affected_rows, char *sqlstring, ...)
 	return myResultSet;
 }
 
+//! get room infor about a certain room
 roomstruct *GetRoomInfo(int room)
 {
 	MYSQL_RES *res;
@@ -632,6 +660,7 @@ roomstruct *GetRoomInfo(int room)
 	return roomstr;
 }
 
+//! generate a session password to be used by player during game session
 char *generate_password(char *fpassword)
 {
 int i;
@@ -707,7 +736,7 @@ void writeConfig()
 	
 
 /*! read config file (xml file) and parse it properly 
-	\param char * filename which contents is an appropriate xml format
+	\param filename char * filename which contents is an appropriate xml format
 */
 int readConfigFiles(char *filename)
 {
@@ -759,4 +788,5 @@ int readConfigFiles(char *filename)
 	xmlFreeDoc(doc);
 	return 1;
 }
+
 

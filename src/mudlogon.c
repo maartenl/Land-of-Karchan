@@ -30,8 +30,12 @@ maartenl@il.fontys.nl
 #include "mudlogon.h"
 #include "mudmain.h"
 
+/*! \file part of the server that takes care of entering characters in the game */
+
 extern char secretpassword[40];
 
+//! dump page to user explaining that his/her name or password are illegal according to validation rules
+/*! validation rules are explained on the page */
 int
 StrangeName(char *name, char *password, char *address)
 {
@@ -121,6 +125,9 @@ StrangeName(char *name, char *password, char *address)
 	return 1;
 } /*endproc*/
 
+ 
+//! dump page showing that a player is attempting to log on, while already playing as a different character
+/*! this is not allowed, a person may only be logged onto the game as one character as all times. */
 void MultiPlayerDetected(char *name, char *address)
 {
 	char printstr[512];
@@ -139,6 +146,11 @@ void MultiPlayerDetected(char *name, char *address)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 }
 
+//! check to see if mud is online or not
+/*! checking is done by verifying that a file exists, to be precise the file MM_MUDOFFLINEFILE. If it does exist,
+the file is dumped to the user (the file should containing a valid html page containing the reason why the game is temporarily offline 
+and no more processing takes place. 
+\returns int containing 1 if everything is okay, 0 in the case that the file exists. */
 int
 CheckForOfflineMud()
 {
@@ -158,6 +170,7 @@ CheckForOfflineMud()
 	return 1;
 }
 
+//! dump a alread-active page towards the player.
 void AlreadyActive(char *name, char *password, char *cookie, char *address)
 {
 	char printstr[512];
@@ -229,6 +242,8 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
 }
 
+
+//! dump a wrong-password page to the user.
 void WrongPasswd(char *name, char *address, char *error)
 {
 	char printstr[512];
@@ -246,6 +261,7 @@ void WrongPasswd(char *name, char *address, char *error)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
 }
 
+//! write error into the audit trail containing what went wrong, used by most methods that dump a error page to the user.
 void WriteError(char *name, char *address, char *error)
 {
 	time_t tijd;
@@ -256,6 +272,7 @@ void WriteError(char *name, char *address, char *error)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,error,name,address);
 }
 
+//! too many users have attempted to log onto the game, dump error page to user this is for future use right now,
 void ToManyUsers() 
 {
 	fprintf(getMMudOut(),"<head><Title>Error</Title></head>");
@@ -268,6 +285,7 @@ void ToManyUsers()
 	fprintf(getMMudOut(),"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
 }
 	
+//! error page for the user, user attempted to enter a name for a player containing spaces.
 void ToManyNames(char *name, char *address) 
 {
 	char printstr[512];
@@ -289,6 +307,8 @@ void ToManyNames(char *name, char *address)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,address);
 }
 
+//! show the user the registration page for creating a new player
+/*! usually called when the name entered on the logon form does not exist yet. */
 void NewPlayer(char *fname, char *address, char *fpassword)
 {
 	char printstr[512];
@@ -306,9 +326,10 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(getParam(MM_AUDITTRAILFILE),"%i:%i:%i %i-%i-%i New User Signup : %s (%s)\n<BR>",datum.tm_hour,
-	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
+]	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, address);
 }
 
+//! start the game appropriately
 void MakeStart(char *name, char *password, char *cookie, char *address)
 {
 	char printstr[512];
@@ -389,6 +410,7 @@ void MakeStart(char *name, char *password, char *cookie, char *address)
 	}
 }
 
+//! main function for logging into the game 
 int
 gameLogon(char *name, char *password, char *cookie, char *address)
 {

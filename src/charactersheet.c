@@ -34,6 +34,8 @@ maartenl@il.fontys.nl
 #include "cgi-util.h"
 #include "typedefs.h"
 
+/*! \file cgi-binary to show the character sheet of a player */
+
 #define debuggin 0
 
 void showFamilyValues(const char *name)

@@ -28,12 +28,15 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "mud-lib3.h"
 
+/*! \file part of the server that takes care of extended commands */
+
 extern roomstruct room;
 extern char    *command;
 extern char    *printstr;
 extern struct tm datumtijd;
 extern time_t   datetime;
 
+//! make character go west
 int
 GoWest_Command(char *name, char *password, int room, char *command)
 {
@@ -102,6 +105,7 @@ GoWest_Command(char *name, char *password, int room, char *command)
 	return 1;
 }				/* endproc */
 
+//! make character go east
 int
 GoEast_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -171,6 +175,7 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! make character go north
 int
 GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 {
@@ -240,6 +245,7 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 	return 1;
 }				/* endproc */
 
+//! make character go south
 int
 GoSouth_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -308,6 +314,7 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! make character go to sleep
 int
 Sleep_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -329,6 +336,7 @@ Sleep_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! make character wake up (method called from Awaken_Command
 void
 Awaken2_Command(char *name, char *password, int room)
 {
@@ -349,6 +357,7 @@ Awaken2_Command(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 }
 
+//! dump a rather large input field on the screen of the user, for easy putting large masses of text.
 int
 BigTalk_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -401,6 +410,7 @@ BigTalk_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! create a html page containing a nice form for sending mudmail
 int
 MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 {
@@ -458,6 +468,7 @@ MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! show time on the mud
 int
 Time_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -469,6 +480,7 @@ Time_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! show date on the mud
 int
 Date_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -480,6 +492,7 @@ Date_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }				/* endproc */
 
+//! look at the sky
 void
 LookSky_Command(char *name, char *password)
 {

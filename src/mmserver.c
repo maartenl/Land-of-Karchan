@@ -51,6 +51,9 @@ maartenl@il.fontys.nl
 #include "mudmain.h"
 #include "mudnewchar.h"
 
+/*! \file the main server executable file, takes care of socket communication and calling the appropriate other methods
+like gameMain, gameLogon and gameNewchar */
+
 /*! version number of mmserver */
 #define MMVERSION "4.01b" // the mmud version in general
 /*! protocol version of mmserver, should be kept backwards compatible,
@@ -93,7 +96,7 @@ void signalhandler(int signum)
  and will attempt to write the current command,username,frames to the syslog
  for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
  This function also immediately terminates this process by means of abort()
- \param int the signal received, standard parameter required for catching signals
+ \param signum int the signal received, standard parameter required for catching signals
  */
 void emergency_signalhandler(int signum)
 {
@@ -329,9 +332,9 @@ close_socket()
 
 /*! attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
-\param int socket descriptor
-\param char* message
-\param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
 \return return -1 on failure, 0 on success
 */
 int
@@ -383,7 +386,7 @@ mudpersonstruct *list = NULL;
 /*! parses the Xml document received from the socket and contained in
     mudpersonstruct.readbuf, parsed information is stored in the other
     fields of mudpersonstruct 
-    \param mudpersonstruct* mud information used for parsing and storing information
+    \param fmine mudpersonstruct* mud information used for parsing and storing information
     \return int 1 on success, 0 on failure*/
 int
 parseXml(mudpersonstruct *fmine)
@@ -890,7 +893,7 @@ parseXml(mudpersonstruct *fmine)
 
 /*! add a new mudpersonstruct with default values to the beginning of the list
  (i.e. the first member of the list is the newly added socketfd) 
- \param int socket descriptor to be added to list of established connections and corresponding mud info
+ \param socketfd int socket descriptor to be added to list of established connections and corresponding mud info
  \return int always returns 1
  */
 int
@@ -917,7 +920,7 @@ add_to_list(int socketfd)
 
 /*!
  return the mudpersonstruct attached to the socketfd. If not found, return NULL 
- \param int socket descriptor used in search
+ \param socketfd int socket descriptor used in search
  \return mudpersonstruct* mudpersonstruct found in linked list, returns NULL if not found
  */
 mudpersonstruct
@@ -938,7 +941,7 @@ mudpersonstruct
 
 /*! remove the mudpersonstruct from the list based on socketfd. The 'command' char pointer member
  is freed, then the mudpersonstruct is freed and the list is updated. 
- \param int socket descriptor
+ \param socketfd int socket descriptor
  \return 1 upon success, 0 if descriptor not found
  */
 int
@@ -999,8 +1002,8 @@ remove_from_list(int socketfd)
 }
 
 /*! add contents of read buffer to the socketstruct
-    \param int socket descriptor
-    \param char* buffer read from socket to be added to connection struct
+    \param socketfd int socket descriptor
+    \param buf char* buffer read from socket to be added to connection struct
     \return 1 upon success, 0 upon failure to interpret Xml document
  */
 int

@@ -36,6 +36,8 @@ maartenl@il.fontys.nl
 
 #define debuggin 0
 
+/*! \file simple cgi-binary used for displaying all charactersheets. */
+
 void listSheets()
 {
 	MYSQL mysql;

@@ -52,13 +52,18 @@ maartenl@il.fontys.nl
 #include "typedefs.h"
 #include "cgi-util.h"
 
+/*! \file simple cgi-binary used for entering a command as a character in the game
+*/
+
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
-/* Post: name = a string describing the name of the cookie
-			value = a string that shall contain the value if the cookie exists
-	Pre:  returnvalue true upon success, otherwise false
+//! retrieve cookie value
+/*! 
+\param name a string describing the name of the cookie
+\param value a string that shall contain the value if the cookie exists
+\returns int true upon success, otherwise false
 			if returnvalue true then 'value' contains the value 
 			of the cookie with name 'name'
 */
@@ -95,6 +100,7 @@ int getCookie(char *name, char *value)
 	return 1;
 }
 
+//! display standard error page
 void displayError(char *message, int i)
 {
 	printf("Content-type: text/html\n\n");
@@ -112,11 +118,11 @@ void displayError(char *message, int i)
 	exit(1);
 }
 
-/* attempts to send data over a socket, if not all information is sent.
+/*1 attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
-@param int socket descriptor
-@param char* message
-@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
 */
 int
 send_socket(int s, char *buf, int *len)
@@ -142,6 +148,9 @@ send_socket(int s, char *buf, int *len)
 	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
+
+//! create a valid xml document
+/*! created a valid xml document with all the necessary fields to generate a new character on the mud. */
 char *
 createXmlString(char *fcommand, char *fname, char *fpassword, char *fcookie, int fframes)
 {
@@ -177,6 +186,7 @@ createXmlString(char *fcommand, char *fname, char *fpassword, char *fcookie, int
 	return myBuffer;
 }
 
+//! show not-active page to the user, means the player has not logged on yet
 void 
 NotActive(char *fname, char *fpassword, int errornr)
 {
@@ -197,6 +207,7 @@ NotActive(char *fname, char *fpassword, int errornr)
 	printf("</HTML>\n");
 }
 
+//! main function 
 int 
 main(int argc, char * argv[])
 {

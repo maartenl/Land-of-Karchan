@@ -29,6 +29,8 @@ maartenl@il.fontys.nl
 #include "cgi-util.h"
 #include "typedefs.h"
 
+/*! \file simple cgi-binary used for server push in mudinterface 3. */
+
 int checkPassword(char *name, char *password)
 {
 MYSQL_RES *res;

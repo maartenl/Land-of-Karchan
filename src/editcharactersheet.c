@@ -36,6 +36,8 @@ maartenl@il.fontys.nl
 
 #define debuggin 0
 
+/*! \file simple cgi-binary used for editing your charactersheet. */
+
 void showFamilyValues(const char *name, const char *password)
 {
 	MYSQL_RES *res;

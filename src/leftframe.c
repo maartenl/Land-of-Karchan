@@ -28,6 +28,9 @@ maartenl@il.fontys.nl
 #include <string.h>
 #include "cgi-util.h"
 
+/*! \file simple cgi-binary used for the frame with buttons on the right 
+side of the screen. (so, why is it called leftframe.c then?) */
+
 int main(int argc, char * argv[])
 {
 	char name[20];

@@ -27,9 +27,12 @@ maartenl@il.fontys.nl
 #include "mud-lib.h"
 #include "cgic.h"
 
+/*! \file no longer actively used as far as I know */
+
 /* name, west, east, north, south, up, down */
 extern char secretpassword[40];
 
+//! print standard page if person does not wish to reenter the game he is playing
 void 
 NoNewActivate()
 {
@@ -50,6 +53,15 @@ char *ages[] = {
 	"yes",
 "no"};
 
+//! start playing the game
+/*! start playing the game, this starts the appropriate methods and dumps the appropriate html content to the user
+for setting up the game web interface
+\param name char* containing the characters name
+\param password char* containing the password of the name, this, in all probability is not the real 
+password but the 'session password'
+\param room int containing the room number
+\param address char* containing the address from which the person is connecting
+*/
 void 
 MakeStart(char *name, char *password, int room, char *address)
 {
@@ -113,6 +125,7 @@ MakeStart(char *name, char *password, int room, char *address)
 	}
 }
 
+//! dump wrong-password-error-screen towards the user
 void WrongPasswd(char *name, char *address)
 {
 char printstr[512];
@@ -146,6 +159,7 @@ datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name,a
 exit(0);
 }
 
+//! throw banned-page to the user
 void BannedFromGame(char *name, char *address)
 {
 	char printstr[512];
@@ -173,6 +187,10 @@ void BannedFromGame(char *name, char *address)
 	exit(0);
 }
 
+//! throw cookie-not-found page to the user. 
+/*! If there is no cookie, it means either the person did not enable
+cookies in his/her browser or he did not enter the game correctly.
+*/
 void CookieNotFound(char *name, char *address)
 {
 	char printstr[512];

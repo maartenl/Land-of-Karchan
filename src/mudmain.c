@@ -32,6 +32,8 @@ maartenl@il.fontys.nl
 #include "mud-lib2.h"
 #include "mud-lib3.h"
 
+/*! \file server file containing the gameMain function that is used to parse and execute issued commands */
+
 /* three strings destined for parsing the commands */
 extern char    *command;
 extern char    *printstr;
@@ -124,12 +126,14 @@ int				theNumberOfFunctions = 0;
 MYSQL_RES *res;
 MYSQL_ROW row;
 
+//! remove gamefunctionarray from memory, to be called at the end of mmserver
 int
 clearGameFunctionIndex()
 {
 	free(gameFunctionArray);
 }
 
+//! have the character proceed downwards
 int
 GoDown_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -200,6 +204,7 @@ GoDown_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 } 				/* endproc */
 
+//! have the character proceed upwards
 int
 GoUp_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -270,7 +275,7 @@ GoUp_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 } 				/* endproc */
 
-
+//! throw standard banned-from-game page to user
 void BannedFromGame(char *name, char *address)
 {
 	char printstr[512];
@@ -294,6 +299,10 @@ void BannedFromGame(char *name, char *address)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 }
 
+//! throw standard cookie-not-found page to user
+/*! cookie is not found if the webbrowser has disabled cookie support, or the person in question is trying something
+nasty. The cookie in question should be the same as the session password the person is logging in
+*/
 void CookieNotFound(char *name, char *address)
 {
 	char printstr[512];
@@ -313,6 +322,16 @@ void CookieNotFound(char *name, char *address)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,name, address);
 }
 
+//! go somewhere command
+/*! this is the command that is executed first, because it is triggered by the 'go' word in the beginning of a command
+entry. Afterwards, it starts to decide in which direction and triggers the appropriate method for that
+\see GoUp_Command
+\see GoDown_Command
+\see GoWest_Command
+\see GoEast_Command
+\see GoNorth_Command
+\see GoSouth_Command
+*/
 int
 Go_Command(char *name, char *password, int room, char *command)
 {
@@ -353,6 +372,11 @@ Go_Command(char *name, char *password, int room, char *command)
 	return 0;
 }
 
+//! clear the log file of the player playing
+/*! clearing of the log file of the player happens <I>after</I> displaying that entire log to the user.
+This helps it for the user to determine what the last messages were that he/she received before the clear command
+was executed. 
+*/
 int
 Clear_Command(char *name, char *password, int room, char *command)
 {
@@ -364,6 +388,7 @@ Clear_Command(char *name, char *password, int room, char *command)
 	return 1;
 }
 
+//! show general help or specific help on a command
 int
 Help_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -447,6 +472,10 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 	}
 }
 
+//! read the mail, actually is passed onto the next method
+/*!
+\see ReadMail
+*/
 int
 ReadMail_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -458,6 +487,10 @@ ReadMail_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! delete the mail, actually is passed onto the next method
+/*!
+\see ReadMail
+*/
 int
 DeleteMail_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -465,8 +498,7 @@ DeleteMail_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
-/* sendmail <to> <headerlength> <header> <body>
-*/
+//! sendmail &lt;to&gt; &lt;headerlength&gt; &lt;header&gt; &lt;body&gt;
 int
 SendMail_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -523,6 +555,9 @@ SendMail_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! set/show your whimpy
+/*! whimpy determines at what damage level you attempt to 'flee the scene'
+*/
 int
 Whimpy_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -601,6 +636,7 @@ Whimpy_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! turn on/off player killing possibility for your player character
 int
 PKill_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -647,6 +683,9 @@ PKill_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! do an action/emote
+/*! for example: <i>me opens the fridge</i>
+*/
 int
 Me_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -658,6 +697,7 @@ Me_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! stop fighting
 int
 Stop_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -693,6 +733,7 @@ Stop_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! start fighting
 int 
 Fight_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -766,6 +807,7 @@ Fight_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! bow (to somebody possibly)
 int
 Bow_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -790,6 +832,7 @@ Bow_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! raise an eyebrow
 int
 Eyebrow_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -801,6 +844,7 @@ Eyebrow_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! curtsey to someone
 int
 Curtsey_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -825,6 +869,7 @@ Curtsey_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! flinch
 int
 Flinch_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -849,6 +894,7 @@ Flinch_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! tell to person message
 int
 Tell_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -868,6 +914,7 @@ Tell_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! say to person message, where person is optional
 int
 Say_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -901,6 +948,7 @@ Say_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! shout to person message, where person is optional
 int
 Shout_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -937,6 +985,9 @@ Shout_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! ask to person message, where person is optional
+/*! bots will only react to THIS command
+*/
 int
 Ask_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -973,6 +1024,9 @@ Ask_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! whisper to person message, where person is optional
+/*! however, if you do not enter a person, the whispered message can be heard by everyone in the room! 
+*/
 int
 Whisper_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1008,6 +1062,7 @@ Whisper_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! wake up
 int 
 Awaken_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1018,6 +1073,13 @@ Awaken_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+//! look
+/*! rather extensive command, following is possible:
+<UL><LI>look (around)
+<LI>look at item
+<LI>look at person
+</UL>
+*/
 int
 Look_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1044,6 +1106,9 @@ Look_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! get an item
+/*! item must be on the floor
+*/
 int
 Get_Command(char *name, char *fpassword, int room, char *fcommand)
 {
@@ -1071,6 +1136,7 @@ Get_Command(char *name, char *fpassword, int room, char *fcommand)
 	}
 }
 
+//! drops item from inventory onto the floor
 int
 Drop_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1098,6 +1164,7 @@ Drop_Command(char *name, char *password, int room, char *fcommand)
 	}
 }
 
+//! buy an item from a bot (at a store)
 int
 Buy_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1151,6 +1218,7 @@ Buy_Command(char *name, char *password, int room, char *fcommand)
 return 0;
 }
 
+//! sell an item at a store
 int
 Sell_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1162,6 +1230,17 @@ Sell_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! administration command
+/*! different administration commands are possible, and are only possible to those people who have a godstatus of 1
+in the database.
+Possible commands are:
+<DL>
+<DT>admin shutdown<DD>shuts the game server down! dangerous!
+<DT>admin readconfig<DD>rereads the config files. convenient if they have been changed and need to be reloaded
+<DT>admin config<DD>shows current config settings (exclusing the database password, for security reasons)
+<DT>admin stats<DD>shows the current statistics of the server
+</DL>
+*/
 int
 Admin_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1318,6 +1397,7 @@ Admin_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! give item to person
 int
 Give_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1347,6 +1427,7 @@ Give_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! ranger guild command
 int
 RangerGuild_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1377,6 +1458,7 @@ RangerGuild_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! mif guild command
 int
 MifGuild_Command(char *name, char *password, int room, char *fcommand)
 {
@@ -1406,6 +1488,7 @@ MifGuild_Command(char *name, char *password, int room, char *fcommand)
 	return 0;
 }
 
+//! initialise the gamefunctionindex, called at the beginning of mmserver.c
 int
 initGameFunctionIndex()
 {
@@ -1476,6 +1559,7 @@ initGameFunctionIndex()
 	gameFunctionArray[theNumberOfFunctions++] = &Wield_Command;
 }
 
+//! main command parsing and executing body
 int
 gameMain(char *fcommand, char *fname, char *fpassword, char *fcookie, char *faddress)
 {
