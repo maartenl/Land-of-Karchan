@@ -28,7 +28,7 @@ maartenl@il.fontys.nl
 #include "mudmain.h"
 #include "cgic.h"
 
-int commandlineinterface = 0;
+int commandlineinterface = 1;
 
 int 
 cgiMain()
@@ -51,7 +51,7 @@ cgiMain()
 		fgets(name, 21, stdin);
 		printf("Password:");
 		fgets(password, 39, stdin);
-		setFrames(0);
+		setFrames(2);
 	}
 	else 
 	{

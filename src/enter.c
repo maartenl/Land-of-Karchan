@@ -451,12 +451,13 @@ int cgiMain()
 	umask(0000);
 	
 	opendbconnection();
+	setMMudOut(cgiOut);
 	
 	if (0)
 	{
 		printf("Name:");gets(name);
 		printf("Password:");gets(password);
-		setFrames(1);		
+		setFrames(2);
 	}
 	else 
 	{

@@ -124,43 +124,47 @@ int cgiMain()
 	{
 		char temp[160];
 		int i;
-		if (fgets(logstring, 79, fp) != 0) {
-		logstring[strlen(logstring)-1]=0;
-		*temp=0;
-		for (i=0l;i<strlen(logstring);i++)
+		if (fgets(logstring, 79, fp) != 0) 
 		{
-			if (logstring[i]=='\r')
+			logstring[strlen(logstring)-1]=0;
+			*temp=0;
+			for (i=0l;i<strlen(logstring);i++)
 			{
-				strncat(temp, "\\r", 5);
-			}
-			else
-			{
-				if (logstring[i]=='"')
+				if (logstring[i]=='\r')
 				{
-					strncat(temp, "\\\"", 5);
+					strncat(temp, "\\r", 5);
 				}
 				else
 				{
-					strncat(temp, logstring+i, 1);
+					if (logstring[i]=='"')
+					{
+						strncat(temp, "\\\"", 5);
+					}
+					else
+					{
+						strncat(temp, logstring+i, 1);
+					}
 				}
 			}
-		}
 			fprintf(cgiOut, "Content-type: text/html\n\n");
 
 			fprintf(cgiOut, "<HTML>\n");
 			fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\n");
 			fprintf(cgiOut, "<!-- Hide script from older browsers\n\n");
-
+	
 			fprintf(cgiOut, "top.frames[4].stuffString(\"%s\")\n",temp);
 			fprintf(cgiOut, "// End the hiding here. -->\n");
 			fprintf(cgiOut, "</SCRIPT>\n");
 			fprintf(cgiOut, "<P>That's all, folks.\n");
 			fprintf(cgiOut, "---blaat---\n");
-			fflush(stdout);
 		}
-		sleep(1);
+		else
+		{
+			fflush(stdout);
+			sleep(1);
+		}
 	}
-
+	
 	fclose(fp);
 	return 0;
 }

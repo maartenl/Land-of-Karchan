@@ -40,6 +40,7 @@ cgiMain()
 	umask(0000);
 
 	opendbconnection();
+	setMMudOut(stdout);
 
 //	openDatabase();
 	res=SendSQL2("select src, room "

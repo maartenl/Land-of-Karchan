@@ -214,6 +214,7 @@ cgiMain()
 
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
   	opendbconnection();
+	setMMudOut(cgiOut);
 	if (0)
 	{
 		scanf("%s", ageText);scanf("%s", name);scanf("%s", password);

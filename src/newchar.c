@@ -544,6 +544,8 @@ cgiMain()
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
 	generate_password(secretpassword);
   	opendbconnection();
+	setMMudOut(cgiOut);
+
 	umask(0000);
 	strcpy(sqlstring,"insert into usertable "
 	"(name, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, lastlogin, birth)"

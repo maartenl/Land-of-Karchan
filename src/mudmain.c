@@ -1301,6 +1301,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	godstatus=atoi(row[5]); /* copy godstatus of player from database */
 	strcpy(sexstatus,row[6]); /* sex status (male, female) */
 	if (atoi(row[7])>atoi(row[8])) { /* check vitals along with maxvital */
+		mysql_free_result(res);
 		Dead(name, password, room);
 		free(printstr);
 		closedbconnection();
@@ -1308,11 +1309,9 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	}
 	strcpy(guildstatus	, row[9]);
 	punishment = atoi(row[10]);
-	if (strcmp(row[1], password)) {
-		if (godstatus=1) 
-		{
+	if (strcmp(row[1], password)) 
+	{
 			NotActive(name, password,4);
-		}
 	}
 	mysql_free_result(res);
 	if (DebugOptionsOn) {
