@@ -27,11 +27,6 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include "guild.h"
 
-void KillGame();
-/* frees all reserved memory space of commandlines and the like and exits 
-	the program
-*/
-
 void WriteMail(char *name, char *toname, char *header, char *message);
 /* inserts a new mudmail
 		Pre: name = name of sender ^
@@ -115,9 +110,6 @@ void Evil_Command(char *name, char *password, int room);
 
 int Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 /* deactivate and save player, then exit player, and show message */
-
-void HelpHint_Command(char *name, char *password, int room);
-/* show hint according to room you are in */
 
 int ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal);
 /* check if there is an item available corresponding to said parameters
