@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -37,10 +39,7 @@ public class CurtseyCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("CurtseyCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 3 && myParsed[1].equalsIgnoreCase("to"))
 		{

@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -122,11 +123,8 @@ public class Database
 			ClassNotFoundException,
 			IllegalAccessException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.connect ");
-		}
-			Class.forName(Constants.dbjdbcclass).newInstance();
+		Logger.getLogger("mmud").finer("");
+		Class.forName(Constants.dbjdbcclass).newInstance();
 	
 //		DriverManager.setLogWriter(System.out);
 
@@ -143,11 +141,7 @@ public class Database
 			Constants.dbname + "?user=" +
 			Constants.dbuser + "&password=" +
 			Constants.dbpasswd;
-
-		if (Constants.logging)
-		{
-			System.err.println(" " + theUrl);
-		}
+		Logger.getLogger("mmud").info("using url " + theUrl);
 		theConnection = DriverManager.getConnection(theUrl);
 	}
 
@@ -157,10 +151,7 @@ public class Database
 			ClassNotFoundException,
 			IllegalAccessException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.disconnect ");
-		}
+		Logger.getLogger("mmud").finer("");
 		theConnection.close();
 		theConnection = null;
 	}
@@ -171,10 +162,7 @@ public class Database
 			ClassNotFoundException,
 			IllegalAccessException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.refresh ");
-		}
+		Logger.getLogger("mmud").finer("");
 		if (theConnection != null)
 		{
 			disconnect();
@@ -185,10 +173,7 @@ public class Database
 	public static User getUser(String aName)
 	{
 		assert theConnection != null : "theConnection is null";
-		if (Constants.logging)
-		{
-			System.err.println("Database.getUser: " + aName);
-		}
+		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		User myUser = null;
 		try
@@ -201,10 +186,7 @@ public class Database
 		res = sqlGetUser.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		if (res.first())
@@ -250,10 +232,7 @@ public class Database
 	public static boolean existsUser(String aName)
 	{
 		assert theConnection != null : "theConnection is null";
-		if (Constants.logging)
-		{
-			System.err.println("Database.existsUser: " + aName);
-		}
+		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		boolean myBoolean = false;
 		try
@@ -264,10 +243,7 @@ public class Database
 		res = sqlGetUser.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 		}
 		else
 		{
@@ -286,10 +262,7 @@ public class Database
 	public static Room getRoom(int roomnr)
 	{
 		assert theConnection != null : "theConnection is null";
-		if (Constants.logging)
-		{
-			System.err.println("Database.getRoom: " + roomnr);
-		}
+		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		Room myRoom = null;
 		try
@@ -302,10 +275,7 @@ public class Database
 		res = sqlGetRoom.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		res.first();
@@ -329,10 +299,7 @@ public class Database
 	public static ItemDef getItemDef(int itemdefnr)
 	{
 		assert theConnection != null : "theConnection is null";
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItemDef: " + itemdefnr);
-		}
+		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		ItemDef myItemDef = null;
 		try
@@ -345,10 +312,7 @@ public class Database
 		res = sqlGetItemDef.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		res.first();
@@ -396,19 +360,13 @@ public class Database
 		{
 			e.printStackTrace();
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItemDef: returns " + myItemDef);
-		}
+		Logger.getLogger("mmud").info("returns: " + myItemDef);
 		return myItemDef;
 	}
 
 	public static String getInventory(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getInventory: " + aPerson.getName());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		StringBuffer myInventory = new StringBuffer("<UL>");
 		ResultSet res;
@@ -420,10 +378,7 @@ public class Database
 		res = sqlGetInventories.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		while (res.next())
@@ -452,19 +407,13 @@ public class Database
 			e.printStackTrace();
 		}
 		myInventory.append("</UL><BR>");
-		if (Constants.logging)
-		{
-			System.err.println("Database.getInventory: returns " + myInventory);
-		}
+		Logger.getLogger("mmud").info("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
 	public static String getInventory(Room aRoom)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getInventory: " + aRoom.getId());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		StringBuffer myInventory = new StringBuffer();
 		ResultSet res;
@@ -476,10 +425,7 @@ public class Database
 		res = sqlGetInventories.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		while (res.next())
@@ -505,10 +451,7 @@ public class Database
 		{
 			e.printStackTrace();
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.getInventory: returns " + myInventory);
-		}
+		Logger.getLogger("mmud").info("returns: " + myInventory);
 		return myInventory.toString();
 	}
 
@@ -519,14 +462,7 @@ public class Database
 								String name,
 								Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.pickupItem: " + amount +
-								" " + adject1 + 
-								" " + adject2 +
-								" " + adject3 +
-								" " + name + " " + aPerson.getName());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		int res = 0;
 		Item myItem = getItem(adject1, adject2, adject3, name, aPerson);
@@ -544,20 +480,13 @@ public class Database
 		{
 			e.printStackTrace();
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.pickupItem: returns " + res);
-		}
+		Logger.getLogger("mmud").info("returns: " + res);
 		return res;
 	}
 
 	public static void getItemAttributes(int anId, Item anItem)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItemAttributes: " + anId + 
-								" " + anItem);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		try
@@ -567,10 +496,7 @@ public class Database
 		res = sqlGetItemAttributes.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return;
 		}
 		while (res.next())
@@ -596,13 +522,7 @@ public class Database
 								String name,
 								Room aRoom)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItem: " + adject1 + 
-								" " + adject2 +
-								" " + adject3 +
-								" " + name + " " + aRoom.getId());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		Item anItem = null;
@@ -617,10 +537,7 @@ public class Database
 		res = sqlGetItem.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		int anItemId = 0;
@@ -640,10 +557,7 @@ public class Database
 		{
 			e.printStackTrace();
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItem: returns " + anItem);
-		}
+		Logger.getLogger("mmud").info("returns: " + anItem);
 		return anItem;
 	}
 
@@ -653,13 +567,7 @@ public class Database
 								String name,
 								Person aChar)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItem: " + adject1 + 
-								" " + adject2 +
-								" " + adject3 +
-								" " + name + " " + aChar.getName());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		Item anItem = null;
@@ -674,10 +582,7 @@ public class Database
 		res = sqlGetItem.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
 		int anItemId = 0;
@@ -697,19 +602,13 @@ public class Database
 		{
 			e.printStackTrace();
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.getItem: returns " + anItem);
-		}
+		Logger.getLogger("mmud").info("returns: " + anItem);
 		return anItem;
 	}
 
 	public static Vector getPersons()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getPersons: ");
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		Vector myVector = new Vector(50);
 		ResultSet res;
@@ -721,10 +620,7 @@ public class Database
 		res = sqlGetChars.executeQuery();
 		if (res == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("   resultset null");
-			}
+			Logger.getLogger("mmud").info("resultset null");
 			return new Vector();
 		}
 		while (res.next())
@@ -734,10 +630,7 @@ public class Database
 			int gold = res.getInt("gold");
 			int silver = res.getInt("silver");
 			int copper = res.getInt("copper");
-			if (Constants.logging)
-			{
-				System.err.println("   name: " + myName);
-			}
+			Logger.getLogger("mmud").info("name: " + myName);
 			if (res.getInt("god") < 2)
 			{
 				User myRealUser = new User(myName, 
@@ -843,10 +736,8 @@ public class Database
 				"</HEAD><BODY BGCOLOR=#FFFFFF><H1>Error: "+originalErr+
 				"</H1>The following error occurred.</BODY></HTML>";
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Database.getErrorMessage: " + originalErr + "," + myErrMsg);
-		}
+		Logger.getLogger("mmud").info("originalErr=" + originalErr +
+			",myErrMsg=" + myErrMsg);
 		return myErrMsg;
 	}
 
@@ -856,10 +747,7 @@ public class Database
 	 */
 	public static String getLogonMessage()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getLogonMessage: ");
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		String result = null;
@@ -891,10 +779,7 @@ public class Database
 	 */
 	public static String getHelp(String aCommand)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getHelp: " + aCommand);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (aCommand == null)
 		{
 			aCommand = "general help";
@@ -935,10 +820,7 @@ public class Database
 	 */
 	public static String getListOfMail(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.getListOfMail " + aUser);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		int j = 1;
@@ -986,10 +868,7 @@ public class Database
 	public static String readMail(User aUser, int messagenr)
 		throws MailException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.readMail " + aUser + "," + messagenr);
-		}
+		Logger.getLogger("mmud").finer("");
 		return doStuffWithMail(aUser, messagenr, false);
 	}
 
@@ -1000,10 +879,7 @@ public class Database
 	public static String deleteMail(User aUser, int messagenr)
 		throws MailException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.deleteMail " + aUser + "," + messagenr);
-		}
+		Logger.getLogger("mmud").finer("");
 		return doStuffWithMail(aUser, messagenr, true);
 	}
 
@@ -1016,16 +892,10 @@ parameter
 	private static String doStuffWithMail(User aUser, int messagenr, boolean deleteIt)
 		throws MailException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.doStuffWitheMail " + aUser + "," + messagenr);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (messagenr <= 0)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.INVALIDMAILERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
 			throw new MailException(Constants.INVALIDMAILERROR);
 		}
 		assert theConnection != null : "theConnection is null";
@@ -1043,10 +913,7 @@ parameter
 		{
 			if (!res.absolute(messagenr))
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDMAILERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
 				throw new MailException(Constants.INVALIDMAILERROR);
 			}
 			result += "<H1>Read Mail - " + res.getString("header") + "</H1>";
@@ -1101,10 +968,7 @@ parameter
 		else
 		{
 			sqlReadMailMsg.close();
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.INVALIDMAILERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
 			throw new MailException(Constants.INVALIDMAILERROR);
 		}
 		sqlReadMailMsg.close();
@@ -1121,10 +985,7 @@ parameter
 	 */
 	public static void sendMail(User aUser, User toUser, String header, String message)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.sendMail: " + aUser + "," + toUser + "," + header + "," + message);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1159,10 +1020,7 @@ parameter
 	 */
 	public static boolean isUserBanned(String username, String address)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.isUserBanned: ");
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		User myUser = null;
@@ -1238,10 +1096,7 @@ parameter
 	 */
 	public static boolean hasUserNewMail(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.hasUserNewMail: ");
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		try
@@ -1279,10 +1134,7 @@ parameter
 	 */
 	public static void setSessionPassword(String username, String sesspwd)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setSessionPassword: " + username + "," + sesspwd);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1311,10 +1163,7 @@ parameter
 	 */
 	public static void activateUser(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.activateUser: " + aUser);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1341,10 +1190,7 @@ parameter
 	 */
 	public static void deactivateUser(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.deactivateUser: " + aUser);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1372,10 +1218,7 @@ parameter
 	 */
 	public static void createUser(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.createUser: " + aUser);
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1420,10 +1263,7 @@ parameter
 	 */
 	public static void setTitle(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setTitle: " + aPerson + "," + aPerson.getTitle());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1451,10 +1291,7 @@ parameter
 	 */
 	public static void setDrinkstats(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setDrinkstats: " + aPerson + "," + aPerson.getDrinkstats());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1482,10 +1319,7 @@ parameter
 	 */
 	public static void setEatstats(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setEatstats: " + aPerson + "," + aPerson.getEatstats());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1513,10 +1347,7 @@ parameter
 	 */
 	public static void setSleep(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setSleep: " + aPerson + "," + aPerson.isaSleep());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1544,10 +1375,7 @@ parameter
 	 */
 	public static void setRoom(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setRoom: " + aPerson + "," + aPerson.getRoom());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1575,10 +1403,7 @@ parameter
 	 */
 	public static void setWhimpy(Person aPerson)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setWhimpy: " + aPerson + "," + aPerson.getWhimpy());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{
@@ -1607,10 +1432,7 @@ parameter
 	 */
 	public static void setPkill(User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Database.setPkill: " + aUser + "," + aUser.isPkill());
-		}
+		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		try
 		{

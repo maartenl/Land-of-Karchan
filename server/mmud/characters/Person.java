@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -349,10 +350,7 @@ public class Person
 
 	public void writeMessage(String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Person.writeMessage " + getName() + "," + aMessage);
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			FileWriter myFileWriter = new FileWriter(theLogFile, true);
@@ -370,10 +368,7 @@ public class Person
 	 */
 	public void sendMessage(String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Person.sendMessage " + aMessage);
-		}
+		Logger.getLogger("mmud").finer("");
 		Persons.sendMessage(this, aMessage);
 	}
 
@@ -383,19 +378,13 @@ public class Person
 	 */
 	public void sendMessage(Person aPerson, String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Person.sendMessage " + aMessage);
-		}
+		Logger.getLogger("mmud").finer("");
 		Persons.sendMessage(this, aPerson, aMessage);
 	}
 
 	public String readLog()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Person.readLog");
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			return Constants.readFile(theLogFile);
@@ -417,20 +406,14 @@ public class Person
 /*	public void moveCoins(Person toChar, int gold, int silver, int copper)
 		throws ItemException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Person.moveCoins "+toChar+","+gold+","+silver+","+copper);
-		}
+		Logger.getLogger("mmud").finer("");
 		int mygold = getItemCount(goldcoin, 0, goldcoin.length);
 		int mysilver = getItemCount(silvercoin, 0, silvercoin.length);
 		int mycopper = getItemCount(coppercoin, 0, coppercoin.length);
 
 		if (mygold*100+mysilver*10+mycopper<gold*100+silver*10+copper)
 		{
-			if (Constants.logging)
-			{   
-				System.err.println("thrown: " + Constants.NOTENOUGHMONEYERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.NOTENOUGHMONEYERROR);
 			throw new ItemException(Constants.NOTENOUGHMONEYERROR);
 		}
 

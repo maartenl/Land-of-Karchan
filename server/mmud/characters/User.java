@@ -33,6 +33,7 @@ import java.io.FileWriter;
 import java.io.FileReader; 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 import mmud.database.*;
 import mmud.characters.*;
@@ -111,10 +112,7 @@ public class User extends mmud.characters.Person
 			aDrinkstats,
 			aEatstats,
 			aRoom);
-		if (Constants.logging)
-		{
-			System.err.println("User.User: " + aName + "," + aPassword + "," + anAddress + "," + aGod + "," + aCookie + "," + aRoom);
-		}
+		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
 		theAddress = anAddress;
 		theEmail = aEmail;
@@ -181,10 +179,7 @@ public class User extends mmud.characters.Person
 			0, // drinkstats
 			0, // eatstats
 			Rooms.getRoom(1));
-		if (Constants.logging)
-		{
-			System.err.println("User.User: " + aName + "," + aPassword + "," + anAddress + "," + aCookie);
-		}
+		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
 		theAddress = anAddress;
 		theEmail = aEmail;
@@ -201,28 +196,19 @@ public class User extends mmud.characters.Person
 
 	public String getPassword()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getPassword");
-		}
+		Logger.getLogger("mmud").finer("");
 		return thePassword;
 	}
 
 	public boolean verifyPassword(String aPassword)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.verifyPassword: " + aPassword);
-		}
+		Logger.getLogger("mmud").finer("");
 		return thePassword.equals(aPassword);
 	}
 
 	public String getAddress()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getAddress");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theAddress;
 	}
 
@@ -233,10 +219,7 @@ public class User extends mmud.characters.Person
 	 */
 	public void generateSessionPassword()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.generateSessionPassword");
-		}
+		Logger.getLogger("mmud").finer("");
 		char[] myCharArray =
 			{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
 			'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -258,10 +241,7 @@ public class User extends mmud.characters.Person
 	 */
 	public String getSessionPassword()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getSessionPassword");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theSessionPassword;
 	}
 
@@ -271,10 +251,7 @@ public class User extends mmud.characters.Person
 	 */
 	public boolean verifySessionPassword(String aSessionPassword)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.verifySessionPassword: " + aSessionPassword);
-		}
+		Logger.getLogger("mmud").finer("");
 		return (theSessionPassword == null ? false : theSessionPassword.equals(aSessionPassword));
 	}
 
@@ -284,10 +261,7 @@ public class User extends mmud.characters.Person
 	 */
 	public void setSessionPassword(String aSessionPassword)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.setSessionPassword: " + aSessionPassword);
-		}
+		Logger.getLogger("mmud").finer("");
 		theSessionPassword = aSessionPassword;
 	}
 
@@ -300,28 +274,19 @@ public class User extends mmud.characters.Person
 	 */
 	public int getFrames()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getFrames: " + theFrames);
-		}
+		Logger.getLogger("mmud").finer("");
 		return theFrames;
 	}
 
 	public void setFrames(int i)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.setFrames " + i);
-		}
+		Logger.getLogger("mmud").finer("");
 		theFrames  = i;
 	}
 
 	public boolean isGod()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.isGod");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theGod;
 	}
 
@@ -347,10 +312,7 @@ public class User extends mmud.characters.Person
 
 	public String printForm()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.printForm");
-		}
+		Logger.getLogger("mmud").finer("");
 		String myString = "";
 	    if (getFrames() == 0)
     	{
@@ -375,19 +337,13 @@ public class User extends mmud.characters.Person
 
 	public void setNow()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.setNow");
-		}
+		Logger.getLogger("mmud").finer("");
 		rightNow = Calendar.getInstance();
 	}
 
 	public String getIdleTime()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getIdleTime");
-		}
+		Logger.getLogger("mmud").finer("");
 		Calendar tempNow = Calendar.getInstance();
 		if (rightNow == null) 
 		{
@@ -399,10 +355,7 @@ public class User extends mmud.characters.Person
 
 	public String getUrl(String aCommand)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getUrl");
-		}
+		Logger.getLogger("mmud").finer("");
 		return Constants.mudcgi + "?command=" + aCommand + "&name=" +
 			getName() + "&password=" + getPassword() + "&frames=" +
 			getFrames();
@@ -410,10 +363,7 @@ public class User extends mmud.characters.Person
 
 	public String getListOfMail()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("User.getListOfMail");
-		}
+		Logger.getLogger("mmud").finer("");
 		return Database.getListOfMail(this);
 	}
 

@@ -43,15 +43,15 @@ import mmud.commands.*;
 public final class Constants
 {
 	/**
-	 * the logger for logging messages
+	 * the logger for logging messages. The log level is set in the 
+	 * properties file and is provided both to the logger as well as
+	 * the handlers of the root logger.
 	 */
     public final static Logger logger = Logger.getLogger("mmud");
 
 	// the defaults
 	public final static boolean SHUTDOWN = false;
 	public final static boolean OFFLINE = false;
-
-	public final static boolean LOGGING = true;
 
 	public final static String CONFIG_FILE = "config";
 	public final static String config_file = CONFIG_FILE;
@@ -111,7 +111,6 @@ public final class Constants
 	public static String dburl = DBURL;
 
 	public static boolean offline = OFFLINE;
-	public static boolean logging = LOGGING;
 
 	public static String mudfilepath = MUDFILEPATH;
 	public static String mudofflinefile = "offline.txt";
@@ -531,7 +530,6 @@ public final class Constants
 		logger.finer("");
 
 		theDefaults = new Properties();
-		theDefaults.setProperty("logging", (LOGGING ? "true" : "false"));
 		theDefaults.setProperty("mudfilepath", MUDFILEPATH);
 		theDefaults.setProperty("dbname", DBNAME);
 		theDefaults.setProperty("dbhost", DBHOST);
@@ -699,7 +697,6 @@ public final class Constants
 		dbpasswd = theValues.getProperty("dbpasswd");
 		dbjdbcclass = theValues.getProperty("dbjdbcclass");
 		dburl = theValues.getProperty("dburl");
-		logging = (theValues.getProperty("logging").equals("true") ? true : false);
 
 		mudfilepath = theValues.getProperty("mudfilepath");
 		mudofflinefile = theValues.getProperty("mudofflinefile");

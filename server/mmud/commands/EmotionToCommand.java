@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -42,16 +44,9 @@ public class EmotionToCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("EmotionToCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		String[] plural = {myParsed[0].toLowerCase(), Constants.returnEmotionTo(myParsed[0])};
-		if (Constants.logging)
-		{
-			System.err.println("EmotionToCommand.run " + plural[0] + "," + plural[1]);
-		}
 		if (plural == null)
 		{
 			return false;

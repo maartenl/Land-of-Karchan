@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -40,10 +42,7 @@ public class HelpCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("HelpCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
 		if (command.equalsIgnoreCase("help"))
 		{
@@ -64,10 +63,7 @@ public class HelpCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("HelpCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			String aString = theHelp;

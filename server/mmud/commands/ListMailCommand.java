@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -39,10 +41,7 @@ public class ListMailCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ListMailCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		theString = "<H2>List of Mail</H2>\r\n";
 		theString += aUser.getListOfMail();
 		theString += aUser.printForm();
@@ -51,10 +50,7 @@ public class ListMailCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ListMailCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
 

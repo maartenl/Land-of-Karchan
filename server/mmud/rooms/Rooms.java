@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.rooms;
 
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -52,10 +53,7 @@ public final class Rooms
 	{
 		Room myRoom = null;
 		assert theRooms != null : "theRooms vector is null";
-		if (Constants.logging)
-		{
-			System.err.println("Rooms.getRoom: " + aRoomNr);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (aRoomNr == 0) 
 		{
 			return null;

@@ -28,6 +28,8 @@ maarten_l@yahoo.com
 package mmud.characters;
 
 import java.util.Vector;
+import java.util.logging.Logger;
+
 
 import mmud.*;
 import mmud.characters.*;
@@ -41,29 +43,20 @@ public final class Persons
 
 	public static void init()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.init");
-		}
+		Logger.getLogger("mmud").finer("");
 		thePersons = Database.getPersons();
 	}
 
 	public Persons()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.Persons");
-		}
+		Logger.getLogger("mmud").finer("");
 //		thePersons = new Vector();
 	}
 
 	public static Person retrievePerson(String aName)
 	{
 		assert thePersons != null : "thePersons vector is null";
-		if (Constants.logging)
-		{
-			System.err.println("Persons.retrievePerson: " + aName);
-		}
+		Logger.getLogger("mmud").finer("aName=" + aName);
 		for (int i=0;i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
@@ -87,18 +80,14 @@ public final class Persons
 	 	public static User activateUser(String aName, String aPassword, String aCookie)
 		throws PersonException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.activateUser: " + aName + "," + aPassword + "," + aCookie);
-		}
+		Logger.getLogger("mmud").finer("aName=" + aName +
+			",aPassword=" + aPassword +
+			",aCookie=" + aCookie);
 		Person myChar = retrievePerson(aName);
 		if ((myChar != null) && (!(myChar instanceof User)))
 		{
 			// found, but no user
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.NOTAUSERERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.NOTAUSERERROR);
 			throw new PersonException(Constants.NOTAUSERERROR);
 		}
 		User myUser = (myChar == null ? null : (User) myChar);
@@ -107,10 +96,7 @@ public final class Persons
 			myUser = Database.getUser(aName);
 			if (myUser == null)
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.USERNOTFOUNDERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.USERNOTFOUNDERROR);
 				throw new PersonException(Constants.USERNOTFOUNDERROR);
 			}
 		}
@@ -120,24 +106,15 @@ public final class Persons
 				(!aCookie.equals(myUser.getSessionPassword())) &&
 				!aCookie.equals("") )
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.MULTIUSERERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.MULTIUSERERROR);
 				throw new PersonException(Constants.MULTIUSERERROR);
 			}
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERALREADYACTIVEERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new PersonException(Constants.USERALREADYACTIVEERROR);
 		}
 		if (!myUser.getPassword().equals(aPassword))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.PWDINCORRECTERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 			throw new PersonException(Constants.PWDINCORRECTERROR);
 		}
 		// everything seems to be okay
@@ -153,10 +130,7 @@ public final class Persons
  	public static void deactivateUser(User aUser)
 	throws PersonException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.deactivateUser: " + aUser.getName());
-		}
+		Logger.getLogger("mmud").finer("aUser=" + aUser);
 		Database.deactivateUser(aUser);
 		thePersons.remove(aUser);
 	}
@@ -187,16 +161,29 @@ public final class Persons
 		String aCookie)
 		throws PersonException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.createUser: " + aName + "," + aPassword + "," + anAddress + "," + aCookie);
-		}
+		Logger.getLogger("mmud").finer(
+			"aName=" + aName + 
+			",aPassword=" + aPassword + 
+			",anAddress=" + anAddress +
+			",aRealName=" + aRealName +
+			",aEmail=" + aEmail +
+			",aTitle=" + aTitle +
+			",aRace=" + aRace +
+			",aSex=" + aSex +
+			",aAge=" + aAge +
+			",aLength=" + aLength +
+			",aWidth=" + aWidth +
+			",aComplexion=" + aComplexion +
+			",aEyes=" + aEyes +
+			",aFace=" + aFace +
+			",aHair=" + aHair +
+			",aBeard=" + aBeard +
+			",aArms=" + aArms +
+			",aLegs=" + aLegs +
+			",aCookie=" + aCookie);
 		if (Database.existsUser(aName))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERALREADYEXISTSERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYEXISTSERROR);
 			throw new PersonException(Constants.USERALREADYEXISTSERROR);
 		}
 		// everything seems to be okay
@@ -224,10 +211,8 @@ public final class Persons
 
 	public static String descriptionOfPersonsInRoom(Room aRoom, User aUser)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.descriptionOfPersonsInRoom: " + aRoom + "," + aUser);
-		}
+		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
+			",aUser=" + aUser);
 		String myOutput = new String();
 		
 		for (int i=0;i < thePersons.size();i++)
@@ -247,10 +232,7 @@ public final class Persons
 	 */
 	public static void sendWall(String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.sendWall: " + aMessage);
-		}
+		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
@@ -263,10 +245,8 @@ public final class Persons
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.sendMessage: " + aPerson + " " + aMessage);
-		}
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
+			",aMessage=" + aMessage);
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
@@ -284,10 +264,9 @@ public final class Persons
 	 */
 	public static void sendMessage(Person aPerson, Person aSecondPerson, String aMessage)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.sendMessage: " + aPerson + " " + aSecondPerson + " " + aMessage);
-		}
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
+			",aSecondPerson=" + aSecondPerson +
+			",aMessage=" + aMessage);
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
@@ -305,10 +284,7 @@ public final class Persons
 	 */
 	public static String getWhoList()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Persons.getWhoList ");
-		}
+		Logger.getLogger("mmud").finer("");
 		String myString = "<UL>";
 		int count = 0;
 		for (int i=0;i < thePersons.size();i++)

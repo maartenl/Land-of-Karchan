@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -37,10 +39,7 @@ public class WhimpyCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("WhimpyCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		command = command.trim();
 		if (command.equalsIgnoreCase("whimpy help"))
 		{

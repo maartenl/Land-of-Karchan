@@ -37,6 +37,7 @@ import java.io.File;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.MalformedPatternException;
+import java.util.logging.Logger;
 
 import mmud.characters.*;
 import mmud.database.*;
@@ -68,28 +69,19 @@ public class MudSocket extends Thread
 
 	public boolean isSuccessfull()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.isSuccessFull");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theSuccess;
 	}
 
 	public MudSocket(Socket aSocket)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.MudSocket");
-		}
+		Logger.getLogger("mmud").finer("");
 		theSocket = aSocket;
 	}
 
 	public void run()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.run");
-		}
+		Logger.getLogger("mmud").finer("");
 		PrintWriter myOutputStream = null;  
 		BufferedReader myInputStream = null;
 		try
@@ -192,10 +184,7 @@ public class MudSocket extends Thread
 			myOutputStream.close();
 			myInputStream.close();
 			theSocket.close();
-			if (Constants.logging)
-			{
-				System.err.println("MudSocket.run: closing connection");
-			}
+			Logger.getLogger("mmud").info("closing connection...");
 		} catch (IOException e)
 		{
 			theSuccess = false;
@@ -222,10 +211,11 @@ public class MudSocket extends Thread
 	private String enterMud(String aName, String aPassword, String aAddress, String aCookie, int aFrames)
 		throws MudException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.enterMud: " + aName + "," + aPassword + "," + aAddress + "," + aCookie + "," + aFrames);
-		}
+		Logger.getLogger("mmud").finer("aName=" + aName + 
+			",aPassword=" + aPassword + 
+			",aAddress=" + aAddress + 
+			",aCookie=" + aCookie + 
+			",aFrames=" + aFrames);
 		try
 		{
 		try
@@ -246,18 +236,12 @@ public class MudSocket extends Thread
 		{
 			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
 			{
-				if (Constants.logging)
-				{
-					System.err.println("MudSocket.enterMud: invalid name " + aName);
-				}
+				Logger.getLogger("mmud").info("invalid name " + aName);
 				return Constants.logoninputerrormessage;
 			}
 			if (aPassword.length() < 5)
 			{
-				if (Constants.logging)
-				{
-					System.err.println("MudSocket.enterMud: password too short" + aPassword);
-				}
+				Logger.getLogger("mmud").info("password too short " + aPassword);
 				return Constants.logoninputerrormessage;
 			}
 		}
@@ -268,10 +252,7 @@ public class MudSocket extends Thread
 		}
 		if (Database.isUserBanned(aName, aAddress))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERBANNEDERROR);
-			}
+			Logger.getLogger("mmud").info("thrown " + Constants.USERBANNEDERROR);
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
 		User myUser = Persons.activateUser(aName, aPassword, aCookie);
@@ -353,10 +334,7 @@ public class MudSocket extends Thread
 			}
 			default :
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
-				}
+				Logger.getLogger("mmud").info("thrown " + Constants.INVALIDFRAMEERROR);
 				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		}
@@ -388,10 +366,11 @@ public class MudSocket extends Thread
 	 */
 	private String executeMud(String aName, String aAddress, String aCookie, int aFrames, String aCommand)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.executeMud: " + aName + "," + aAddress + "," + aCookie + "," + aFrames + "," + aCommand);
-		}
+		Logger.getLogger("mmud").finer("aName=" + aName + 
+			",aAddress=" + aAddress + 
+			",aCookie=" + aCookie + 
+			",aFrames=" + aFrames + 
+			",aCommand=" + aCommand);
 		try
 		{
 		try
@@ -412,18 +391,12 @@ public class MudSocket extends Thread
 		{
 			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
 			{
-				if (Constants.logging)
-				{
-					System.err.println("MudSocket.enterMud: invalid name " + aName);
-				}
+				Logger.getLogger("mmud").info("invalid name " + aName);
 				return Constants.logoninputerrormessage;
 			}
 /*			if (myMatcher.matches(aCommand, myCompiler.compile("(.)*([<applet|<script|java-script|CommandForm])+(.)*")))
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDCOMMANDERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDCOMMANDERROR);
 				throw new MudException(Constants.INVALIDCOMMANDERROR);
 			}
 */
@@ -435,36 +408,24 @@ public class MudSocket extends Thread
 		}
 		if (Database.isUserBanned(aName, aAddress))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERBANNEDERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.USERBANNEDERROR);
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
 		Person myChar = Persons.retrievePerson(aName);
 		if (myChar == null)
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERNOTFOUNDERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.USERNOTFOUNDERROR);
 			throw new MudException(Constants.USERNOTFOUNDERROR);
 		}
 		if (!(myChar instanceof User))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.NOTAUSERERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.NOTAUSERERROR);
 			throw new MudException(Constants.NOTAUSERERROR);
 		}
 		User myUser = (User) myChar;
 		if (!myUser.verifySessionPassword(aCookie))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.PWDINCORRECTERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
 			throw new MudException(Constants.PWDINCORRECTERROR);
 		}
 		myUser.setFrames(aFrames);
@@ -579,10 +540,7 @@ public class MudSocket extends Thread
 		String aLegs,
 		String aCookie, int aFrames)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.newUserMud: " + aName + "," + aPassword + "," + anAddress + "," + aCookie + "," + aFrames);
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 		try
@@ -603,18 +561,12 @@ public class MudSocket extends Thread
 		{
 			if (!myMatcher.matches(aName, myCompiler.compile("[A-Z|_|a-z]{3,}")))
 			{
-				if (Constants.logging)
-				{
-					System.err.println("MudSocket.enterMud: invalid name " + aName);
-				}
+				Logger.getLogger("mmud").info("invalid name " + aName);
 				return Constants.logoninputerrormessage;
 			}
 			if (aPassword.length() < 5)
 			{
-				if (Constants.logging)
-				{
-					System.err.println("MudSocket.enterMud: password too short" + aPassword);
-				}
+				Logger.getLogger("mmud").info("password too short " + aPassword);
 				return Constants.logoninputerrormessage;
 			}
 		}
@@ -625,10 +577,7 @@ public class MudSocket extends Thread
 		}
 		if (Database.isUserBanned(aName, anAddress))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.USERBANNEDERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.USERBANNEDERROR);
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
 		User myUser = Persons.createUser(aName,
@@ -706,10 +655,7 @@ public class MudSocket extends Thread
 			}
 			default :
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDFRAMEERROR);
 				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		}
@@ -735,10 +681,8 @@ public class MudSocket extends Thread
 	public String gameMain(User aUser, String aCommand)
 		throws MudException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("MudSocket.gameMain: " + aUser.getName() + "," + aCommand);
-		}
+		Logger.getLogger("mmud").finer("aUser=" + aUser.getName() + 
+			",aCommand=" + aCommand);
 		String returnStuff = "<HTML>\n";
 		returnStuff += "<HEAD>\n";
 		returnStuff += "<TITLE>\n";
@@ -764,10 +708,7 @@ public class MudSocket extends Thread
 			}
 			default :
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDFRAMEERROR);
-				}
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDFRAMEERROR);
 				throw new PersonException(Constants.INVALIDFRAMEERROR);
 			}
 		} // end switch 

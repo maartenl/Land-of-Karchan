@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.items;     
 
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -52,10 +53,7 @@ public final class ItemDefs
 	{
 		ItemDef myItemDef = null;
 		assert theItemDefs != null : "theItemDefs vector is null";
-		if (Constants.logging)
-		{
-//			System.err.println("ItemDefs.getItemDef: " + aItemDefNr);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (aItemDefNr == 0) 
 		{
 			return null;

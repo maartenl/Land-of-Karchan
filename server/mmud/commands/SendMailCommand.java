@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -43,10 +45,7 @@ public class SendMailCommand extends NormalCommand
 	public boolean run(User aUser, String command)
 		throws MailException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("SendMailCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 4)
 		{
@@ -67,31 +66,13 @@ public class SendMailCommand extends NormalCommand
 				}
 				catch (NumberFormatException e)
 				{
-					if (Constants.logging)
-					{
-						System.err.println("thrown: " + Constants.INVALIDMAILERROR);
-					}
+					Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
 					throw new MailException(Constants.INVALIDMAILERROR);
 				}
-				if (Constants.logging)
-				{
-					System.err.println("SendMailCommand.run " + size);
-				}
+				Logger.getLogger("mmud").finer("");
 				start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;
-				if (Constants.logging)
-				{
-					System.err.println("SendMailCommand.run " + start);
-				}
 				header = command.substring(start, size + start);
-				if (Constants.logging)
-				{
-					System.err.println("SendMailCommand.run " + header);
-				}
 				message = command.substring(start + size + 1 - 1);
-				if (Constants.logging)
-				{
-					System.err.println("SendMailCommand.run " + message);
-				}
 				Database.sendMail(aUser, toUser, header, message);
 				aUser.writeMessage("Mail sent.<BR>\r\n");
 			}

@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -39,20 +41,14 @@ public class BigTalkCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("BigTalkCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
 		return true;
 	}
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("BigTalkCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			String aString = "Due to the size of the area, this is where the really big messages are " +

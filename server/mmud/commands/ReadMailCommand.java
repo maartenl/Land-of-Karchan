@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -40,11 +42,8 @@ public class ReadMailCommand implements Command
 	public boolean run(User aUser, String command)
 		throws MailException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ReadMailCommand.run " + aUser + "," + command);
-		}
-        String[] myParsed = Constants.parseCommand(command);
+		Logger.getLogger("mmud").finer("");
+	        String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length == 2)
 		{
 			
@@ -55,11 +54,7 @@ public class ReadMailCommand implements Command
 			}
 			catch (NumberFormatException e)
 			{
-				if (Constants.logging)
-				{
-					System.err.println("thrown: " + Constants.INVALIDMAILERROR);
-				}
-
+				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
 				throw new MailException(Constants.INVALIDMAILERROR);
 			}
 			return true;
@@ -70,10 +65,7 @@ public class ReadMailCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ReadMailCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		return theString;
 	}
 

@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -40,10 +42,7 @@ public abstract class NormalCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("NormalCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		return null;
 	}
 }

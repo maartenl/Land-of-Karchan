@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -37,10 +39,7 @@ public class AwakenCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("AwakenCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (!aUser.isaSleep())
 		{
 			aUser.writeMessage("You already are awake.<BR>\r\n");

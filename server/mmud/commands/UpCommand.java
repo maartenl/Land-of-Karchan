@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -37,10 +39,7 @@ public class UpCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("UpCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getUp() != null)
 		{

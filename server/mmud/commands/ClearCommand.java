@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -39,20 +41,14 @@ public class ClearCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ClearCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		theUser = aUser;
 		return true;
 	}
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("ClearCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			String returnStuff = theUser.getRoom().getDescription(theUser);

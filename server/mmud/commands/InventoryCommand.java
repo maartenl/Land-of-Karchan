@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -39,20 +41,14 @@ public class InventoryCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("InventoryCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		theResult = aUser.inventory();
 		return true;
 	}
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("InventoryCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		return "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You have<UL>" +
 			theResult + "<\\UL>";
 	}

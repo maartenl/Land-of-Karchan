@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -39,10 +41,7 @@ public class TimeCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("TimeCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current time is " 
 			+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":" +

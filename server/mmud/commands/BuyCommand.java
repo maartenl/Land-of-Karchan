@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -56,10 +58,7 @@ public class BuyCommand extends NormalCommand
 	public boolean run(User aUser, String command)
 		throws ItemException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("BuyCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
 		{

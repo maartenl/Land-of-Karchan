@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;
 
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 import mmud.*;
 import mmud.characters.*;
@@ -39,10 +40,7 @@ public class DateCommand extends NormalCommand
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("DateCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current date is " 
 			+ myCalendar.get(Calendar.MONTH) + "-" +

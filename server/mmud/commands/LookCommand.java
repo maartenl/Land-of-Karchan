@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -40,10 +42,7 @@ public class LookCommand implements Command
 	public boolean run(User aUser, String command)
 		throws ItemException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("LookCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return this
 		theResult = null;
 		String[] myParsed = Constants.parseCommand(command);
@@ -82,10 +81,7 @@ public class LookCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("LookCommand.getResult  returns " + theResult);
-		}
+		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
 

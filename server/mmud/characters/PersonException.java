@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;

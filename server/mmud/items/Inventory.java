@@ -28,6 +28,7 @@ maarten_l@yahoo.com
 package mmud;
 
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.items.*;
 
@@ -37,10 +38,7 @@ public class Inventory
 
 	public Inventory()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Inventory.Inventory");
-		}
+		Logger.getLogger("mmud").finer("");
 		theItems = new Vector();
 	}
 
@@ -66,10 +64,7 @@ public class Inventory
 	 */
 	public void add(Item anItem)
 	{
-		if (Constants.logging)
-		{
-//			System.err.println("Inventory.add " + anItem);
-		}
+		Logger.getLogger("mmud").finer("");
 		theItems.addElement(anItem);
 	}
 
@@ -79,16 +74,10 @@ public class Inventory
 	public void remove(Item anItem)
 		throws ItemException
 	{
-		if (Constants.logging)
-		{
-			System.err.println("Inventory.remove " + anItem);
-		}
+		Logger.getLogger("mmud").finer("");
 		if (!theItems.remove(anItem))
 		{
-			if (Constants.logging)
-			{
-				System.err.println("thrown: " + Constants.ITEMDOESNOTEXISTERROR);
-			}
+			Logger.getLogger("mmud").info("thrown: " + Constants.ITEMDOESNOTEXISTERROR);
 			throw new ItemException(Constants.ITEMDOESNOTEXISTERROR);
 		}
 	}
@@ -100,15 +89,7 @@ public class Inventory
 	 */
 	public Item getItem(String[] parsedarray, int startpos, int endpos)
 	{
-		if (Constants.logging)
-		{
-			System.err.print("Inventory.getItem " + startpos + "," + endpos + ",");
-			for (int i=startpos; i<endpos; i++)
-			{
-				System.err.print(parsedarray[i] + " ");
-			}
-			System.err.println("");
-		}
+		Logger.getLogger("mmud").finer("");
 		for (int i=0;i<theItems.size();i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
@@ -128,10 +109,7 @@ public class Inventory
 					}
 					if (found)
 					{
-						if (Constants.logging)
-						{
-							System.err.println("Inventory.getItem returns " + myItem);
-						}
+						Logger.getLogger("mmud").info("returns: " + myItem);
 						return myItem;
 					}
 				}
@@ -148,15 +126,7 @@ public class Inventory
 	public int getItemCount(String[] parsedarray, int startpos, int endpos)
 	{
 		int myCount = 0;
-		if (Constants.logging)
-		{
-			System.err.print("Inventory.getItemCount ");
-			for (int i=startpos; i<endpos; i++)
-			{
-				System.err.print(parsedarray[i] + " ");
-			}
-			System.err.println("");
-		}
+		Logger.getLogger("mmud").finer("");
 		for (int i=0;i<theItems.size();i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
@@ -181,10 +151,7 @@ public class Inventory
 				}
 			}
 		}
-		if (Constants.logging)
-		{
-			System.err.println("Inventory.getItemCount returns " + myCount);
-		}
+		Logger.getLogger("mmud").info("returns: " + myCount);
 		return myCount;
 	}
 

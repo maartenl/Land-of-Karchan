@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.logging.Logger;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -37,10 +39,7 @@ public class QuitCommand implements Command
 
 	public boolean run(User aUser, String command)
 	{
-		if (Constants.logging)
-		{
-			System.err.println("QuitCommand.run " + aUser + "," + command);
-		}
+		Logger.getLogger("mmud").finer("");
 		aUser.sendMessage(aUser.getName() + " left the game.<BR>\r\n");
 		try
 		{
@@ -55,10 +54,7 @@ public class QuitCommand implements Command
 
 	public String getResult()
 	{
-		if (Constants.logging)
-		{
-			System.err.println("QuitCommand.getResult");
-		}
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			String aString = Constants.readFile(Constants.goodbyefile);
