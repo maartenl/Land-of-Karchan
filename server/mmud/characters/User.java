@@ -230,14 +230,14 @@ public class User extends mmud.characters.Person
 			aArms,
 			aLegs,
 			false,
-			0,
-			0, // drinkstats
-			0, // eatstats
-			0, // level
-			1000, // health
-			0, // alignment
-			1000, // movement
-			Rooms.getRoom(1));
+-			Constants.DEFAULT_WHIMPY,
+			Constants.DEFAULT_DRINK,
+			Constants.DEFAULT_EAT,
+			Constants.DEFAULT_LEVEL,
+			Constants.DEFAULT_HEALTH,
+			Constants.DEFAULT_ALIGNMENT,
+			Constants.DEFAULT_MOVEMENT,
+			Rooms.getRoom(Constants.DEFAULT_ROOM));
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
 		theAddress = anAddress;

@@ -50,11 +50,59 @@ import mmud.commands.*;
 public final class Constants
 {
 	/**
+	 * Default room where new users appear. In this case it is the cave.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_ROOM = 1;
+	
+	/**
+	 * Default for whimpy setting. The default is NOT whimpy.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_WHIMPY = 0;
+
+	/**
+	 * Default drink setting. The default is thirsty.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_DRINK = 0;
+	
+	/**
+	 * Default eat setting. The default is hungry.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_EAT = 0;
+	
+	/**
+	 * Default level when first starting. The default is 0.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_LEVEL = 0;
+
+	/**
+	 * Default health is 1000, top health.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_HEALTH = 1000;
+	
+	/**
+	 * Default alignment is good (8).
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_ALIGNMENT = 8;
+	
+	/**
+	 * Default movement is 1000 (not tired).
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_MOVEMENT = 1000;
+	
+	/**
 	 * the logger for logging messages. The log level is set in the 
 	 * properties file and is provided both to the logger as well as
 	 * the handlers of the root logger.
 	 */
-    public final static Logger logger = Logger.getLogger("mmud");
+	 public final static Logger logger = Logger.getLogger("mmud");
 
 	// the defaults
 	public final static boolean SHUTDOWN = false;

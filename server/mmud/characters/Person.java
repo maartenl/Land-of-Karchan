@@ -65,13 +65,13 @@ public class Person
 	private String theLegs;
 	private File theLogFile;
 	private boolean theSleep;
-	private int theWhimpy;
-	private int theDrinkstats;
-	private int theEatstats;
-	private int theLevel;
-	private int theHealth;
-	private int theAlignment;
-	private int theMovement;
+	private int theWhimpy = Constants.DEFAULT_WHIMPY;
+	private int theDrinkstats = Constants.DEFAULT_DRINK;
+	private int theEatstats = Constants.DEFAULT_EAT;
+	private int theLevel = Constants.DEFAULT_LEVEL;
+	private int theHealth = Constants.DEFAULT_HEALTH;
+	private int theAlignment = Constants.DEFAULT_ALIGNMENT;
+	private int theMovement = Constants.DEFAULT_MOVEMENT;
 	private TreeMap theAttributes = new TreeMap();
 
 	/**
@@ -245,7 +245,9 @@ public class Person
 	 */
 	public String getMovementDesc()
 	{
-		return Constants.movement[theMovement / 1000 * Constants.movement.length];
+		Logger.getLogger("mmud").finer("movement=" + theMovement + 
+		", movement.length=" + Constants.movement.length);
+		return Constants.movement[theMovement / 1000 * (Constants.movement.length-1)];
 	}
 
 	/**
@@ -255,6 +257,7 @@ public class Person
 	 */
 	public int getAlignment()
 	{
+		Logger.getLogger("mmud").finer("returns " + theAlignment); 
 		return theAlignment;
 	}
 
@@ -264,6 +267,8 @@ public class Person
 	 */
 	public String getAlignmentDesc()
 	{
+		Logger.getLogger("mmud").
+		finer("returns Constants.alignment[" + theAlignment + "]"); 
 		return Constants.alignment[theAlignment];
 	}
 
@@ -287,7 +292,9 @@ public class Person
 	}
 
 	/**
-	 * get whimpy desription.
+	 * get whimpy desription. Returns an empty string if 
+	 * the player is not whimpy at all. (i.e. if the 
+	 * player does not wish to flee ever)
 	 * @return string containing the setting
 	 */
 	public String getWhimpyDesc()
@@ -863,6 +870,9 @@ public class Person
 	{
 		String stuff = ItemsDb.getWearablesFromChar(this);
 		stuff = stuff.replaceAll("%SHISHER", "your");
+		String whimpy = ("".equals(getWhimpyDesc()) ? 
+		"You are not whimpy at all.<BR>" :
+		"You will flee when you are " + getWhimpyDesc() + ".<BR>");
 		return "A " +
 		getLongDescription() + 
 		".<BR>You seem to be " +
@@ -873,8 +883,8 @@ public class Person
 //		ShowBurden
 		getAlignmentDesc() + ".<BR>" +
 		"You are level " + getLevel() + " and " + (1000-getExperience()) + 
-		" experience points away from levelling.<BR>" +
-		"You will flee when you are " + getWhimpyDesc() + ".<BR>" +
+		" experience points away from levelling.<BR>" + whimpy
+		 +
 		stuff;
 //		Skill
 
