@@ -207,11 +207,12 @@ cgiMain()
 		exit(0);
 	}
 	
-	sms_SetDomain("www.karchan.org");
+	sms_SetDomain(ServerName);
 	sms_SetPath("/");
 	if (sms_GetCookie("KARCHAN") == NULL)
 	{
-		CookieNotFound(name, cgiRemoteAddr);
+//		cgiHeaderContentType("text/html");
+//		CookieNotFound(name, cgiRemoteAddr);
 	}
 	else
 	{
