@@ -37,48 +37,47 @@ Land of Karchan - Admin
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Items from <?php echo $_REQUEST{"char"} ?></H1>
+Admin User <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_COOKIE["karchanadminname"] != "Karn")
 {
-    die("This administration option is only available to Karn.");
+	die("This administration option is only available to Karn.");
 }
-$result = mysql_query("select * from mud.itemtable 
-	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\" order by id"
+$result = mysql_query("update mm_admin set validuntil = date_add(validuntil,
+	interval 1 month) where name = \"".
+	mysql_escape_string($_REQUEST{"char"})."\" and 
+	validuntil >= now()"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
-$numfields = mysql_num_fields($result);
-while ($myrow = mysql_fetch_array($result)) 
+
+$result = mysql_query("update mm_admin set validuntil = date_add(now(),
+	interval 1 month) where name = \"".
+	mysql_escape_string($_REQUEST{"char"})."\" and 
+	validuntil < now()"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+
+$result = mysql_query("select validuntil from mm_admin 
+	where name = \"".
+	mysql_escape_string($_REQUEST{"char"})."\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result))
 {
-	printf("# ");
-	for ($i = 0; $i < $numfields; $i++) 
-	{
-		printf(mysql_field_name($result, $i) . "=" . $myrow[$i] . " ");
-	}
-	printf("<BR>");
-	for ($i=0;$i < $myrow["amount"];$i++)
-	{
-		$select = "insert into mm_itemtable (itemid, creation, owner) 
-			values(".$myrow["id"].", now(), null);";
-		printf("<TT>".$select."</TT><BR>");
-		mysql_query($select, $dbhandle)
-			or die("Query failed : " . mysql_error());
-		$select = "insert into mm_charitemtable (id, belongsto) 
-			select id, \"".$myrow["belongsto"]."\"
-			from mm_itemtable
-			where id IS NULL;";
-		printf("<TT>".$select."</TT><BR>");
-		mysql_query($select, $dbhandle)
-			or die("Query failed : " . mysql_error());
-	}
+	writeLog($dbhandle, "Expiration date for ".$_REQUEST{"char"}." changed to ".
+		$myrow["validuntil"].".");
+	printf("Expiration date for ".$_REQUEST{"char"}." changed to ".
+		$myrow["validuntil"].".<P>\r\n");
 }
-
-
 mysql_close($dbhandle);
 ?>
+
+<a HREF="/karchan/admin/extend_period.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
 
 </BODY>
 </HTML>

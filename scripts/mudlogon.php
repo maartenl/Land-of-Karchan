@@ -53,6 +53,8 @@ maarten_l@yahoo.com
 		fputs ($fp, $_REQUEST{"name"}."\n");
 		fgets ($fp,128); // password
 		fputs ($fp, $_REQUEST{"password"}."\n");
+		fgets ($fp,128); // ip address
+		fputs ($fp, gethostbyaddr(apache_getenv("REMOTE_ADDR"))."\n");
 		fgets ($fp,128); // cookie
 		fputs ($fp, $_COOKIE["karchanpassword"]."\n");
 		fgets ($fp,128); // frames

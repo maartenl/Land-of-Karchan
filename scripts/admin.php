@@ -50,8 +50,7 @@ Land of Karchan - Admin
 Click <A HREF="/karchan/admin/admin.html" TARGET="_top">here</A> to return to the menu.
 
 <?php
-if ( (!isset($_COOKIE["karchanadminname"])) &&
-	(!isset($_REQUEST{"username"})) )
+if (!isset($_COOKIE["karchanadminname"]))
 {
 ?>
 <FORM METHOD="GET" ACTION="/scripts/admin.php">
@@ -72,6 +71,25 @@ You are logged on.<P>
 Your logon information will expire in 2 hours.
 <P>
 <?php
+
+if ($_COOKIE["karchanadminname"] == "Karn")
+{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_extendperiod.php">
+Extend Admin with name:
+<INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_importitems.php">
+Import items for user with name:
+<INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
+
+<?php
+}
 }
 ?>
 

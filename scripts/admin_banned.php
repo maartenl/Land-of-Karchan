@@ -42,21 +42,22 @@ Banned People</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-printf("Bantable<P>");
-$result = mysql_query("select * from mm_bantable"
-	, $dbhandle)
-	or die("Query(1) failed : " . mysql_error());
-while ($myrow = mysql_fetch_array($result)) 
-{
-	printf("<b>address:</b> %s ", $myrow[0]);
-	printf("<b>days:</b> %s ",$myrow[1]);
-	printf("<b>ip:</b> %s ", $myrow[2]);
-	printf("<b>name:</b> %s ", $myrow[3]);
-	printf("<b>deputy:</b> %s ", $myrow[4]);
-	printf("<b>date:</b> %s ", $myrow[5]);
-	printf("<b>reason:</b> %s<BR>", $myrow[6]);
-}
 
+if ($_REQUEST{"ban_address"} != "")
+{
+	mysql_query("replace into mm_bantable values(".
+	"\"".mysql_escape_string($_REQUEST{"ban_address"})."\",".
+	mysql_escape_string($_REQUEST{"ban_days"}).",".
+	"\"".mysql_escape_string($_REQUEST{"ban_ip"})."\",".
+	"\"".mysql_escape_string($_REQUEST{"ban_name"})."\",".
+	"\"".mysql_escape_string($_COOKIE{"karchanadminname"})."\",".
+	"now(),".
+	"\"".mysql_escape_string($_REQUEST{"ban_reason"})."\"".
+	")"
+	, $dbhandle)
+	or die("Query(8) failed : " . mysql_error());
+	writeLog($dbhandle, "Added ban on address ".$_REQUEST{"ban_address"}.".");
+}
 if ($_REQUEST{"unbanname"} <> "")
 {
 	mysql_query("replace into mm_unbantable values(\"".
@@ -73,8 +74,6 @@ if ($_REQUEST{"sillyname"} != "")
 	or die("Query(3) failed : " . mysql_error());
 	writeLog($dbhandle, "Added sillyname. (".$_REQUEST{"sillyname"}.")");
 }
-
-printf("Unbantable<P>");
 if ($_REQUEST{"remove_unban"} != NULL)
 {
 	mysql_query("delete from mm_unbantable where name = \"".
@@ -83,6 +82,33 @@ if ($_REQUEST{"remove_unban"} != NULL)
 		or die("Query(4) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed unbanname. (".$_REQUEST{"remove_unban"}.")");
 }
+if ($_REQUEST{"remove_sillyname"} != NULL)
+{
+	mysql_query("delete from mm_sillynamestable where name = \"".
+		mysql_escape_string($_REQUEST{"remove_sillyname"})."\""
+		, $dbhandle)
+		or die("Query(6) failed : " . mysql_error());
+	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");
+}
+
+
+printf("Bantable<P>");
+$result = mysql_query("select * from mm_bantable"
+	, $dbhandle)
+	or die("Query(1) failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>address:</b> %s ", $myrow[0]);
+	printf("<b>days:</b> %s ",$myrow[1]);
+	printf("<b>ip:</b> %s ", $myrow[2]);
+	printf("<b>name:</b> %s ", $myrow[3]);
+	printf("<b>deputy:</b> %s ", $myrow[4]);
+	printf("<b>date:</b> %s ", $myrow[5]);
+	printf("<b>reason:</b> %s<BR>", $myrow[6]);
+}
+
+
+printf("Unbantable<P>");
 $result = mysql_query("select * from mm_unbantable order by name"
 	, $dbhandle)
 	or die("Query(5) failed : " . mysql_error());
@@ -102,14 +128,6 @@ while ($myrow = mysql_fetch_array($result))
 printf("</TD></TR></TABLE>");
 
 printf("Sillynamestable<P>");
-if ($_REQUEST{"remove_sillyname"} != NULL)
-{
-	mysql_query("delete from mm_sillynamestable where name = \"".
-		mysql_escape_string($_REQUEST{"remove_sillyname"})."\""
-		, $dbhandle)
-		or die("Query(6) failed : " . mysql_error());
-	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");
-}
 $result = mysql_query("select * from mm_sillynamestable order by name"
 	, $dbhandle)
 	or die("Query(7) failed : " . mysql_error());
@@ -128,21 +146,6 @@ while ($myrow = mysql_fetch_array($result))
 }
 printf("</TD></TR></TABLE>");
 
-if ($_REQUEST{"ban_address"} != "")
-{
-	mysql_query("replace into mm_bantable values(".
-	"\"".mysql_escape_string($_REQUEST{"ban_address"})."\",".
-	mysql_escape_string($_REQUEST{"ban_days"}).",".
-	"\"".mysql_escape_string($_REQUEST{"ban_ip"})."\",".
-	"\"".mysql_escape_string($_REQUEST{"ban_name"})."\",".
-	"\"".mysql_escape_string($_COOKIE{"karchanadminname"})."\",".
-	"now(),".
-	"\"".mysql_escape_string($_REQUEST{"ban_reason"})."\"".
-	")"
-	, $dbhandle)
-	or die("Query(8) failed : " . mysql_error());
-	writeLog($dbhandle, "Added ban on address ".$_REQUEST{"ban_address"}.".");
-}
 
 mysql_close($dbhandle);
 ?>
