@@ -66,8 +66,84 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>wieldable:</b> %s<BR>", $myrow["wieldable"]);
 	printf("<b>description:</b> %s<BR>", $myrow["description"]);
 	printf("<b>readdescr:</b> %s<BR>", $myrow["readdescr"]);
-	printf("<b>wearable:</b> %s<BR>", $myrow["wearable"]);
-	printf("<b>gold:</b> %s<BR>", $myrow["gold"]);
+	printf("<b>wearable:</b> <UL>");
+	if ($myrow["wearable"] & 1)
+	{
+		printf("<li>on head");
+	}
+	if ($myrow["wearable"] & 2)
+	{
+		printf("<li>on neck");
+	}
+	if ($myrow["wearable"] & 4)
+	{
+		printf("<li>on torso");
+	}
+	if ($myrow["wearable"] & 8)
+	{
+		printf("<li>on arms");
+	}
+	if ($myrow["wearable"] & 16)
+	{
+		printf("<li>on left wrist");
+	}
+	if ($myrow["wearable"] & 32)
+	{
+		printf("<li>on right wrist");
+	}
+	if ($myrow["wearable"] & 64)
+	{
+		printf("<li>on left finger");
+	}
+	if ($myrow["wearable"] & 128)
+	{
+		printf("<li>on right finger");
+	}
+	if ($myrow["wearable"] & 256)
+	{
+		printf("<li>on feet");
+	}
+	if ($myrow["wearable"] & 512)
+	{
+		printf("<li>on hands");
+	}
+	if ($myrow["wearable"] & 1024)
+	{
+		printf("<li>floating nearby");
+	}
+	if ($myrow["wearable"] & 2048)
+	{
+		printf("<li>on waist");
+	}
+	if ($myrow["wearable"] & 4096)
+	{
+		printf("<li>on legs");
+	}
+	if ($myrow["wearable"] & 8192)
+	{
+		printf("<li>on eyes");
+	}
+	if ($myrow["wearable"] & 16384)
+	{
+		printf("<li>on ears");
+	}
+	if ($myrow["wearable"] & 32768)
+	{
+		printf("<li>on body");
+	}
+	if ($myrow["wearable"] & 65536)
+	{
+		printf("<li>wielding with left hand");
+	}
+	if ($myrow["wearable"] & 131072)
+	{
+		printf("<li>wielding with right hand");
+	}
+	if ($myrow["wearable"] & 262144)
+	{
+		printf("<li>wielding with both hands");
+	}
+	printf("</ul><b>gold:</b> %s<BR>", $myrow["gold"]);
 	printf("<b>silver:</b> %s<BR>", $myrow["silver"]);
 	printf("<b>copper:</b> %s<BR>", $myrow["copper"]);
 	printf("<b>weight:</b> %s<BR>", $myrow["weight"]);
@@ -90,7 +166,7 @@ while ($myrow = mysql_fetch_array($result))
 mysql_close($dbhandle);
 ?>
 
-<a HREF="/karchan/admin/index.html">
+<a HREF="/scripts/admin.php">
 <img SRC="/images/gif/webpic/buttono.gif"  
 BORDER="0"></a><p>
 

@@ -54,7 +54,7 @@ while ($myrow = mysql_fetch_array($result))
 mysql_close($dbhandle);
 ?>
 
-<a HREF="/karchan/admin/index.html">
+<a HREF="/scripts/admin.php">
 <img SRC="/images/gif/webpic/buttono.gif"  
 BORDER="0"></a><p>
 

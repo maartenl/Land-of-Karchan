@@ -44,7 +44,7 @@ Land of Karchan - Admin
 Cookie Set</H1>
 Cookie will expire in 2 hours.
 <P>
-<a HREF="/karchan/admin/index.html">
+<a HREF="/scripts/admin.php">
 <img SRC="/images/gif/webpic/buttono.gif"  
 BORDER="0"></a><p>
 
