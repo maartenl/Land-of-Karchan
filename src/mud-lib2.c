@@ -2918,6 +2918,10 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40], itemwearing[20];
 	int changedrows, itemid, amountitems, itemwearable;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	/* look for specific person */
