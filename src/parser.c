@@ -560,3 +560,4 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		}
 	}
 }
+

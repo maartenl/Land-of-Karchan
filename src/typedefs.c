@@ -304,3 +304,36 @@ for (i=0;i<25;i++)
 fpassword[25]=0;
 return fpassword;
 }
+
+int getCookie(char *name, char *value)
+{
+	char *environmentvar;
+	char *found;
+	char *ending;
+	environmentvar = getenv("HTTP_COOKIE");
+	if (environmentvar == NULL)
+	{
+		/* Problems: Environment var containing cookies not found */
+		return 0;
+	}
+//	fprintf(fp, "[%s]", environmentvar);
+	if ((found = strstr(environmentvar, name)) == NULL)
+	{
+		/* Problems: Cookie not found! */
+		return 0;
+	}
+	if ((ending = strstr(found, ";")) == NULL)
+	{
+		/* Hmmm, probably last cookie in the string of cookies */
+		found += strlen(name)+1;
+		strcpy(value, found);
+	}
+	else
+	{
+		/* Hmmm, everything seems to be in order, copying until ; */
+		found += strlen(name)+1;
+		strncpy(value, found+strlen(name)+1, ending-found);
+		value[ending-found]='\0';
+	}
+	return 1;
+}

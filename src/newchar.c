@@ -25,7 +25,6 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
-#include "cookies.h"
 
 extern char secretpassword[40];
 
@@ -94,7 +93,9 @@ void StrangeName(char *name, char *password, char *address)
 				break;
 			}
 		}
-		fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
+		cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
+  		fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
 		fprintf(cgiOut, "<BODY>\n");
 		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
 		fprintf(cgiOut,"%s<P>\r\n", error2);
@@ -121,6 +122,8 @@ void BannedFromGame(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
@@ -145,6 +148,8 @@ void CookieNotFound(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
@@ -175,6 +180,10 @@ MakeStart2(char *name, char *password, char *address)
 	sprintf(printstr, "%s has entered the game and is new here...<BR>\r\n", name, address);
 	sprintf(printstr, USERHeader "%s.log", name);
 	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
+//	cgiHeaderContentType("text/html");
+	fprintf(cgiOut, "Content-type: text/html\r\n");  
+	fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);        
+//getCookie(cgiOut, "Karchan","");
 	WriteRoom(name, password, 1, 0);
 }
 
@@ -248,12 +257,20 @@ void MakeStart(char *name, char *password, char *address, int room)
 
 	if (!getFrames())
 	{
+//		cgiHeaderContentType("text/html");
+		fprintf(cgiOut, "Content-type: text/html\r\n");
+		fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);        
+		//getCookie(cgiOut, "Karchan","");
 		WriteRoom(name, password, room, 0);
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
+//			cgiHeaderContentType("text/html");
+		fprintf(cgiOut, "Content-type: text/html\r\n");
+		fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);        
+//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
@@ -265,6 +282,10 @@ void MakeStart(char *name, char *password, char *address, int room)
 			fprintf(cgiOut, "</HTML>\r\n");
 		} else
 		{
+//			cgiHeaderContentType("text/html");
+		fprintf(cgiOut, "Content-type: text/html\r\n");
+		fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);        
+//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
@@ -519,32 +540,8 @@ cgiMain()
 	char		name[40], password[40], frames[10];
 	cgiFormResultType error;
 
-	sms_FreeResources();
-	sms_PickupCookies();
-	if(ck_JarPresent() != SMS_OK_FLAG)
-	{
-		printf("Content-type: text/html\n\n");
-		printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
-		"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
-		printf("</BODY>\n</HTML>");
-		exit(0);
-	}
-	
-	sms_SetDomain(ServerName);
-	sms_SetPath("/");
-	if (sms_GetCookie("KARCHAN") == NULL)
-	{
-		CookieNotFound(name, cgiRemoteAddr);
-	}
-	else
-	{
-		strcpy(secretpassword, sms_GetCookie("KARCHAN"));
-	}
-	sms_WriteCookies();
-	sms_FreeResources();
-
-	cgiHeaderContentType("text/html");
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
+	generate_password(secretpassword);
   	opendbconnection();
 	umask(0000);
 	strcpy(sqlstring,"insert into usertable values('");
@@ -610,7 +607,9 @@ cgiMain()
 
 	time(&currenttime);
 
-	strcat(sqlstring, "0,0,2,1,'',0,0,''");
+	strcat(sqlstring, "0,0,2,1,'");
+	strcat(sqlstring, secretpassword); /* == lok */
+	strcat(sqlstring, "',0,0,''");
 //	gold, silver, copper, room, lok, whimpy, experience, fightingwho
 	strcat(sqlstring, ",0,0,0,0,0,0,0,0");
 //	sleep, punishment, fightable, vitals, fysically, mentally, drinkstats, eatstats
@@ -630,7 +629,7 @@ cgiMain()
 	SendSQL2(sqlstring, NULL);
 	InsertPersonalInfo();
  	
-	MakeStart(name, password, cgiRemoteAddr, 1);
+	MakeStart(name, secretpassword, cgiRemoteAddr, 1);
 	ActivateUser(name);
 	closedbconnection();
 	return (0);

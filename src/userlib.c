@@ -146,7 +146,7 @@ res=SendSQL2(temp, NULL);
 mysql_free_result(res);
 
 /* set active to 0 on name in temp_usertable */
-sprintf(temp, "update tmp_usertable set active=0, fightingwho='' where name='%s'", name);
+sprintf(temp, "update tmp_usertable set lok='', active=0, fightingwho='' where name='%s'", name);
 res=SendSQL2(temp, NULL);
 
 mysql_free_result(res);

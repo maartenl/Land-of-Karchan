@@ -70,7 +70,7 @@ void showFamilyValues(MYSQL mysql, char *name)
 				}
 				else
 				{
-					fprintf(cgiOut, "<LI>%s of <A HREF=\"/cgi-bin/charactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
+					fprintf(cgiOut, "<LI>%s of <A HREF=\"CGINamecharactersheet.cgi?name=%s\">%s</A><BR>",row[0], row[1], row[1]);
 				}
 			}
 			mysql_free_result(res);
@@ -223,7 +223,7 @@ void showCharacterSheet()
  	mysql_close(&mysql);
 	free(formstring);free(sqlformstring);
 	free(sqlstring);
-	fprintf(cgiOut, "<HR><P><A HREF=\"/cgi-bin/charactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
+	fprintf(cgiOut, "<HR><P><A HREF=\"CGINamecharactersheets.cgi\"><IMG SRC=\"/images/gif/webpic/new/buttono.gif\" BORDER=\"0\" ALT=\"Backitup!\"></A>\n");
 	fprintf(cgiOut, "</BODY>\n");
 	fprintf(cgiOut, "</HTML>\n");
 }

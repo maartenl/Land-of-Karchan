@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include "mud-lib3.h"
-#include "cookies.h"
 
 int 
 cgiMain()

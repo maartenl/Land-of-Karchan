@@ -28,11 +28,11 @@ INSTALLDIR = /home/httpd/cgi-bin/
 
 CC = gcc
 COPTS = -O2 -m486
-INCLUDES = -I../include -idirafter /usr/include/mysql/ -idirafter ./cookies/
+INCLUDES = -I../include -idirafter /usr/include/mysql/ 
 
 EXEDIR = /home/httpd/cgi-bin
-LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
-OPTIONS = -lm -lmysqlclient -lcookies
+LIBDIR = -L/usr/local/lib/mysql/ 
+OPTIONS = -lm -lmysqlclient 
 
 TARGETS = mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \

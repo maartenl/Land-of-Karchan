@@ -26,7 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "../include/typedefs.h"
+#include "typedefs.h"
 #include "cgic.h"
 
 int cgiMain()

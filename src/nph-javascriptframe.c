@@ -26,7 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "../include/typedefs.h"
+#include "typedefs.h"
 #include "cgic.h"
 
 int cgiMain()
@@ -53,7 +53,7 @@ int cgiMain()
 	fprintf(cgiOut, "<TITLE>Karchan</TITLE>\r\n");
 	fprintf(cgiOut, "</HEAD>\r\n");
 	fprintf(cgiOut, "\r\n");
-	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF OnLoad=\"top.frames[5].location='http://www.karchan.org/cgi-bin/nph-addendum.cgi?name=%s&password=%s'\">\r\n", name, password);
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF OnLoad=\"top.frames[5].location='/cgi-bin/nph-addendum.cgi?name=%s&password=%s'\">\r\n", name, password);
 	fprintf(cgiOut, "<SCRIPT LANGUAGE=\"JavaScript1.2\">\r\n");
 	fprintf(cgiOut, "<!-- Hide script from older browsers\r\n");
 	fprintf(cgiOut, "\r\n");

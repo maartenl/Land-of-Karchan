@@ -79,7 +79,7 @@ void listSheets()
 		fprintf(stderr, "Error: %s\n", mysql_error(&mysql));
 	}
  
-	if (mysql_query(&mysql,"select concat(\"<LI><A HREF=\\\"/cgi-bin/charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") "
+	if (mysql_query(&mysql,"select concat(\"<LI><A HREF=\\\"CGINamecharactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") "
 	"from characterinfo, usertable "
 	"where usertable.name=characterinfo.name"))
 	{
@@ -115,7 +115,7 @@ void listSheets()
 	}
  	mysql_close(&mysql);
 	fprintf(cgiOut, "</UL>");
-	fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"/cgi-bin/editcharactersheet.cgi\">\n");
+	fprintf(cgiOut, "<FORM METHOD=\"GET\" ACTION=\"CGINameeditcharactersheet.cgi\">\n");
 	fprintf(cgiOut, "<HR>\r\n");
 	fprintf(cgiOut, "(Fictional) Name:<BR>\r\n");
 	fprintf(cgiOut, "<INPUT TYPE=\"text\" NAME=\"name\" VALUE=\"\" SIZE=\"19\"\r\n");

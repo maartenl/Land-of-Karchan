@@ -180,3 +180,11 @@ char *generate_password(char *fpassword);
    Pre:  a string containing 24 random digits/capitals/small caps
    Returns: the pointer to fpassword
 */
+
+int getCookie(char *name, char *value);
+/* Post: name = a string describing the name of the cookie
+			value = a string that shall contain the value if the cookie exists
+	Pre:  returnvalue true upon success, otherwise false
+			if returnvalue true then 'value' contains the value 
+			of the cookie with name 'name'
+*/

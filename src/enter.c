@@ -25,7 +25,6 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
-#include "cookies.h"
 
 /*name, west, east, north, south, up, down*/
 extern int hellroom;
@@ -96,6 +95,8 @@ void StrangeName(char *name, char *password, char *address)
 				break;
 			}
 		}
+		cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 		fprintf(cgiOut, "<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", error1);
 		fprintf(cgiOut, "<BODY>\n");
 		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s</H1><HR>\n", error1);
@@ -124,6 +125,9 @@ void BannedFromGame(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
@@ -149,6 +153,8 @@ void MultiPlayerDetected(char *name, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Multiple Player Detected</H1><HR>\n");
@@ -175,6 +181,8 @@ if (fp==NULL)
 	} else
 	{
 	fclose(fp);
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	ReadFile(MudOffLineFile);
 	closedbconnection();
 	exit(0);
@@ -186,6 +194,8 @@ void AlreadyActive(char *name, char *password, char *address)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
@@ -226,6 +236,7 @@ void WrongPasswd(char *name, char *address, char *error)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
 	fprintf(cgiOut,"<html><head><Title>Error</Title></head>\n");
 	fprintf(cgiOut,"<body>\n");
 	fprintf(cgiOut,"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Wrong Password</H1><HR>\n");
@@ -292,6 +303,7 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
+	cgiHeaderContentType("text/html");
 	ReadFile(HTMLHeader"newchar.html");
 	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n",fname);
 	fprintf(cgiOut,"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n",fpassword);
@@ -377,12 +389,20 @@ void MakeStart(char *name, char *password, char *address, int room)
 
 	if (!getFrames())
 	{
-		WriteRoom(name, password, room, 0);
+//			cgiHeaderContentType("text/html");
+			fprintf(cgiOut, "Content-type: text/html\r\n");
+			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
+//getCookie(cgiOut, "Karchan","");
+   		WriteRoom(name, password, room, 0);
 	}
 	else
 	{
 		if (getFrames()==1)
 		{
+			fprintf(cgiOut, "Content-type: text/html\r\n");
+			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
+//			cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
@@ -394,6 +414,10 @@ void MakeStart(char *name, char *password, char *address, int room)
 			fprintf(cgiOut, "</HTML>\r\n");
 		} else
 		{
+			fprintf(cgiOut, "Content-type: text/html\r\n");
+			fprintf(cgiOut, "Set-cookie: Karchan=%s;\r\n\r\n", password);
+//			cgiHeaderContentType("text/html");
+//getCookie(cgiOut, "Karchan","");
 			fprintf(cgiOut, "<HTML><HEAD><TITLE>Land of Karchan - %s</TITLE></HEAD>\r\n", name);
 			fprintf(cgiOut, "<FRAMESET ROWS=\"*,50,0,0\">\r\n");
 			fprintf(cgiOut, "	<FRAMESET COLS=\"*,180\">\r\n");
@@ -425,32 +449,6 @@ int cgiMain()
 	
 	umask(0000);
 	
-	sms_FreeResources();
-	sms_PickupCookies();
-	if(ck_JarPresent() != SMS_OK_FLAG)
-	{
-		printf("Content-type: text/html\n\n");
-		printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
-		"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
-		printf("</BODY>\n</HTML>");
-		exit(0);
-	}
-	
-	sms_SetDomain(ServerName);
-	sms_SetPath("/");
-	if (sms_GetCookie("KARCHAN") == NULL)
-	{
-		generate_password(secretpassword);
-		sms_SetCookie("KARCHAN", secretpassword);
-	}
-	else
-	{
-		strcpy(secretpassword, sms_GetCookie("KARCHAN"));
-	}
-	/* sms_DebugCookies(); */
-	sms_WriteCookies();
-	sms_FreeResources();
-
 	opendbconnection();
 	
 	if (0)
@@ -473,7 +471,6 @@ int cgiMain()
 		if (!strcmp(frames,"3")) {setFrames(2);}
 	}
 
-	cgiHeaderContentType("text/html");
 /*	fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
 	
 	if (strcmp("Karn", name)) {CheckForOfflineMud();}
@@ -487,35 +484,19 @@ int cgiMain()
 	if (strlen(password)<5) {ToManyNames(name, cgiRemoteAddr);}
 	if (strlen(name)<3) {ToManyNames(name, cgiRemoteAddr);}
 	
-	/* Already playing as another Character? */
-	sprintf(temp, "select name from tmp_usertable where "
-	"lok = '%s' and "
-	"god<>1 and "
-	"name <> '%s'", secretpassword, name);
-	res=SendSQL2(temp, NULL);
-	if (res!=NULL) 
-	{
-		row = mysql_fetch_row(res);
-		if (row!=NULL) 
-		{
-			mysql_free_result(res);
-//			WriteError(name, cgiRemoteAddr, "Multi-player detected");
-			MultiPlayerDetected(name, cgiRemoteAddr);
-		}
-	} 
-	
 	/* set the secret password */
+	generate_password(secretpassword);
 	sprintf(temp, "update usertable "
 	"set lok = '%s' "
 	"where name = '%s'", secretpassword, name);
-	SendSQL2(temp, NULL);
+	res=SendSQL2(temp, NULL);
 	if (res!=NULL) 
 	{
 		mysql_free_result(res);
 	} 
 	
 	/* ExistUser */
-	sprintf(temp, "select name, password, god from tmp_usertable where name='%s'", name);
+	sprintf(temp, "select name, password, god, lok from tmp_usertable where name='%s' and lok<>''", name);
 	
 	res=SendSQL2(temp, NULL);
 
@@ -524,9 +505,10 @@ int cgiMain()
 		row = mysql_fetch_row(res);
 		if (row!=NULL) 
 		{
-			char fpassword[40], fname[40];
+			char fpassword[40], fname[40], fsecretpassword[40];
 			strcpy(fname, row[0]);
 			strcpy(fpassword, row[1]);
+			strcpy(fsecretpassword, row[3]);
 			if (!strcmp(row[2],"2")) 
 			{
 				mysql_free_result(res);
@@ -537,7 +519,7 @@ int cgiMain()
 			{
 				WrongPasswd(name, cgiRemoteAddr, "Wrong Password detected during relogin");
 			}
-			AlreadyActive(fname, fpassword, cgiRemoteAddr);
+			AlreadyActive(fname, fsecretpassword, cgiRemoteAddr);
 		}
 		else
 		{
@@ -577,7 +559,7 @@ int cgiMain()
 	
 	strcpy(name, row[0]);
 	ActivateUser(name);
-	MakeStart(name, password, cgiRemoteAddr, atoi(row[2]));
+	MakeStart(name, secretpassword, cgiRemoteAddr, atoi(row[2]));
 	mysql_free_result(res);
 	closedbconnection();
 	return 0;

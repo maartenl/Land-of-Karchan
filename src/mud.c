@@ -26,7 +26,6 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include "mud-lib3.h"
-#include "cookies.h"
 
 extern int      hellroom;
 extern int      events[50];
@@ -315,6 +314,7 @@ cgiMain()
 		cgiFormString("command", command, cgiContentLength - 2);
 		if (command[0]==0) {strcpy(command,"l");}
 		cgiFormString("name", name, 0);
+//		getCookie("Karchan", password);
 		cgiFormString("password", password, 40);
 		if (cgiFormString("frames", frames, 10)!=cgiFormSuccess)
 		{
@@ -328,33 +328,15 @@ cgiMain()
 				     "%s (%s): |%s|\n", name, password, command);
 
 	}
-	if (!strcasecmp(command, "quit"))
+	if (strcasecmp("quit", command))
 	{
-		sms_FreeResources();
-		sms_PickupCookies();
-		if(ck_JarPresent() != SMS_OK_FLAG)
-		{
-			printf("Content-type: text/html\n\n");
-			printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
-			"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
-			printf("</BODY>\n</HTML>");
-			exit(0);
-		}
-		
-		sms_SetDomain(ServerName);
-		sms_SetPath("/");
-		if (sms_GetCookie("KARCHAN") == NULL)
-		{
-			CookieNotFound(name, cgiRemoteAddr);
-		}
-		else
-		{
-			sms_ClrCookie("KARCHAN");
-		}
-		sms_WriteCookies();
-		sms_FreeResources();
+		cgiHeaderContentType("text/html");
 	}
-	cgiHeaderContentType("text/html");
+	else
+	{
+		fprintf(cgiOut, "Content-type: text/html\r\n");
+		fprintf(cgiOut, "Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
+	}
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
 
@@ -363,8 +345,9 @@ cgiMain()
 	}
 
 //	openDatabase();
-	sprintf(sqlstring, "select name, password, sleep, room, lastlogin, god, sex, vitals, maxvital, guild, punishment from tmp_usertable where "
-		"name='%s'", name);
+	sprintf(sqlstring, "select name, lok, sleep, room, lastlogin, god, sex, vitals, maxvital, guild, punishment "
+		"from tmp_usertable "
+		"where name='%s' and lok<>''", name);
 	res=SendSQL2(sqlstring, NULL);
 	if (res==NULL)
 	{

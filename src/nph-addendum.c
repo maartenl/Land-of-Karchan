@@ -26,8 +26,8 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include "../include/cgic.h"
-#include "../include/typedefs.h"
+#include "cgic.h"
+#include "typedefs.h"
 
 int checkPassword(char *name, char *password)
 {
@@ -39,7 +39,9 @@ char temp[1024];
 
 opendbconnection();
 
-sprintf(temp, "select password from tmp_usertable where name='%s'", name);
+/* xxxx Change from me to use a random password
+sprintf(temp, "select password from tmp_usertable where name='%s'", name);*/
+sprintf(temp, "select lok from tmp_usertable where name='%s' and lok<>''", name);
 res=SendSQL2(temp, NULL);
 
 if (res==NULL)
