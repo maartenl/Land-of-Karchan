@@ -65,10 +65,10 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-#define ServerName "www.karchan.org"
+//#define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
 
-//#define ServerName "zeus"
+#define ServerName "zeus"
 //#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
@@ -107,12 +107,6 @@ maartenl@il.fontys.nl
 #define MudreloginExe       "http://"ServerName CGIName"mudrelogin2.cgi"
 #define LogonframeExe       "http://"ServerName CGIName"logonframe2.cgi"
 #define LeftframeExe       "http://"ServerName CGIName"leftframe2.cgi"
-
-#define FirstNormalChar     25648
-#define FirstNormalItem     91584
-/*#define FirstNormalItem     0*/
-
-#define PerlHeader
 
 typedef struct
 {
