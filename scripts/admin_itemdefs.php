@@ -195,7 +195,8 @@ if (isset($_REQUEST{"name"}))
 	writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
 }
 																																							
-$result = mysql_query("select * from mm_items where id = ".
+$result = mysql_query("select *,  date_format(creation, \"%Y-%m-%d %T\") as
+    creation2 from mm_items where id = ".
 		mysql_escape_string($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -305,8 +306,8 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>capacity:</b> %s<BR>", $myrow["capacity"]);
 	printf("<b>isopenable:</b> %s<BR>", ($myrow["isopenable"]==1? "yes":"no"));
 	printf("<b>keyid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%S\">%s</A><BR>", $myrow["keyid"], $myrow["keyid"]);
-	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
-	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
+	printf("<b>owner:</b> %s<BR>", $myrow["owner"]);
+	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
 	$myrow["owner"] == $_COOKIE["karchanadminname"])
 	{
