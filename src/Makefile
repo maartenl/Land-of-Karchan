@@ -53,7 +53,7 @@ COPTS = -g -m486
 # this header is for Source installations of mysql
 #
 INCLUDES = -I../include -I/usr/include/mysql/ 
-XMLINCLUDES = `/usr/bin/xml-config --cflags`
+XMLINCLUDES = `/usr/bin/xml2-config --cflags`
 
 EXEDIR = /home/httpd/cgi-bin
 # this header is for RPM installations of mysql
@@ -65,9 +65,10 @@ EXEDIR = /home/httpd/cgi-bin
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
 #
-LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz
-# -lefence
-XMLLIBDIR = `/usr/bin/xml-config --libs`
+LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence
+# you can use xml-config, however, when two xml libs exists, it will
+# pick the oldest one
+XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
 TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
@@ -83,7 +84,7 @@ mudmain.o: mudmain.c
 	$(CC) $(COPTS) $(INCLUDES) -c mudmain.c $(DEBUG)
 
 mud.o: mud.c
-	$(CC) $(COPTS) $(INCLUDES) -c mud.c $(DEBUG)
+	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c mud.c $(DEBUG)
 
 events.o: events.c
 	$(CC) $(COPTS) $(INCLUDES) -c events.c $(DEBUG)
@@ -139,10 +140,10 @@ newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c
 	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR)
 
 mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o cgic.o 
-	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR)
+	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(XMLLIBDIR) 
 
 mmserver: mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
-	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR) $(DEBUG)
+	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
 
 events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o 
 	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)
