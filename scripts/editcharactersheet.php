@@ -61,7 +61,7 @@ if ($myrow = mysql_fetch_row($result))
 {
 	// full character sheet 
 ?>
-<FORM METHOD="GET" ACTION="/cgi-bin/submitcharactersheet.cgi">
+<FORM METHOD="GET" ACTION="/scripts/submitcharactersheet.php">
 <HR>
 Homepage Url:<BR>
 <INPUT TYPE="text" NAME="homepageurl" VALUE="<?php echo $myrow[2] ?>" SIZE="50" MAXLENGTH="253"><P>
