@@ -279,7 +279,7 @@ $result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
-	printf("<b>itemid:</b> %s ", $myrow[1]);
+	printf("<b>itemid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A> ", $myrow[1], $myrow[1]);
 	printf("<b>description:</b> %s %s %s %s<BR>", $myrow[2], $myrow[3], $myrow[4], $myrow[5]);
 }
 printf("</P>");
