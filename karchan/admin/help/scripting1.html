@@ -1,0 +1,48 @@
+<HTML>
+<TITLE>Help on Events
+</TITLE>
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
+<H1>Help on Events</H1>
+
+An event takes place at a certain date and time in the game. It can be a
+repetitive event, taking place for example every hour. The way this is done
+is by specifying at what time an event needs to take place. For example:
+
+<P><B>minute:</B> 49<P>
+If this event has this attribute, it will occur every hour at 11 minutes to
+the hour.
+
+<P><B>hour:</B> 9 <B>minute:</B> 49<P>
+If this event has this attribute, it will occur every day at 11 minutes to
+9 o'clock in the morning.<P>
+
+There are three events possible:
+<OL>
+<LI>an event attached to person. i.e. you wish to make Bill do something at
+a certain time
+<LI>an event attached to a room. i.e. you wish to cause an avalanche in a
+mountain pass every week, which must be cleared by players.
+<LI>a global event. i.e. an event that is not attached to any person or
+room, but generally runs anyway.
+</OL>
+
+The event in question must always point to a method that contains the
+scripting part responsible for executing the event. The scripting part comes
+very specific. Pay special attention to the method name, as that is the
+method the mud will search for in the database.<P>
+For the different cases scripting always starts as the
+following:
+<OL>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params="person"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params="room"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params=""&gt;
+</PRE>
+</OL>
+</BODY>
+
+</HTML>
