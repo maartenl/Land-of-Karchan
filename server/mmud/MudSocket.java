@@ -518,6 +518,7 @@ public class MudSocket extends Thread
 			return Constants.logoninputerrormessage;
 		}
 		if ( (aCommand.toUpperCase().matches("(.)*<APPLET(.)*")) ||
+		   (aCommand.toUpperCase().matches("(.)*ONLOAD(.)*")) ||
 		   (aCommand.toUpperCase().matches("(.)*<SCRIPT(.)*")) ||
 		   (aCommand.toUpperCase().matches("(.)*JAVA-SCRIPT(.)*")) ||
 		   (aCommand.toUpperCase().matches("(.)*JAVASCRIPT(.)*")) ||
