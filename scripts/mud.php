@@ -47,19 +47,21 @@ if (!isset($_REQUEST{"command"}) &&
 //	{
 //		echo "$header: $value <br />\n";
 //	}
-	$fp = fsockopen ("localhost", 3339, $errno, $errstr, 30);
+	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
 	if (!$fp) 
 	{
 		echo "$errstr ($errno)<br>\n";
 	} 
 	else 
 	{
-		mysql_query("insert into mm_commandlog (name, command) values(\"".
-			mysql_escape_string($_COOKIE["karchanname"])."\", \"".
-			mysql_escape_string($_REQUEST{"command"})."\")"
-			, $dbhandle)
-			or die("Query failed : " . mysql_error());
-
+		if (trim($_REQUEST{"command"}) != "")
+		{
+			mysql_query("insert into mm_commandlog (name, command) values(\"".
+				mysql_escape_string($_COOKIE["karchanname"])."\", \"".
+				mysql_escape_string($_REQUEST{"command"})."\")"
+				, $dbhandle)
+				or die("Query failed : " . mysql_error());
+		}
 		fgets ($fp,128); // mud id
 		fgets ($fp,128); // action
 		fputs ($fp, "mud\n");
