@@ -4,7 +4,8 @@ create directory "cvsroot" in /karchan2/mud/
 alias cvs="/karchan2/cvs/bin/cvs"
 
 Checking out files:
-cvs checkout <directoryname>
+/* the -P is necessary in order not to retrieve empty directories */
+cvs checkout -P <directoryname>
 
 Adding files to the directories:
 cvs add <filename>
