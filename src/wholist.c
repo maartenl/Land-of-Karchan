@@ -31,8 +31,7 @@ maartenl@il.fontys.nl
 #include <time.h>
 #include <stdarg.h>
 #include <sys/file.h>
-/*#include "/karchan2/mysql/include/mysql/mysql.h"*/
-#include "/usr/local/include/mysql/mysql.h"
+#include "mysql.h"
 
 #define debuggin 0
 

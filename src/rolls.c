@@ -48,8 +48,7 @@ V 8. Left hand still missing!!!
 #include <sys/file.h>
 #include <signal.h>		// for catching a signal or two
 #include "userlib.h"
-/*#include "/karchan2/mysql/include/mysql/mysql.h"*/
-#include "/usr/local/include/mysql/mysql.h"
+#include "mysql.h"
 
 /* person who is fighting (tmp_usertable/usertable) */
 #define XNAME 0
