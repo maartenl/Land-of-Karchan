@@ -50,18 +50,12 @@ public class Database
 {
 
 	private static Connection theConnection = null;
+
 	public static String sqlGetUserString = "select * from mm_usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
-	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
-	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
-	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
-	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=date_sub(now(), interval 2 hour) where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=date_sub(now(), interval 2 hour) where name = ?";
-	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
-	public static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
@@ -71,8 +65,10 @@ public class Database
 	public static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
 	public static String sqlSetSleepString = "update mm_usertable set sleep=? where name = ?";
 	public static String sqlSetRoomString = "update mm_usertable set room=? where name = ?";
-	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
 	public static String sqlSetWhimpyString = "update mm_usertable set whimpy = ? where name = ?";
+	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
+
+	public static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
 	public static String sqlListMailString = "select name, haveread, newmail, header from mm_mailtable where toname = ? order by whensent asc";
 	public static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
 	public static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
@@ -80,44 +76,25 @@ public class Database
 	public static String sqlSendMailString = "insert into mm_mailtable " +
 		"(name, toname, header, whensent, haveread, newmail, message) " +
 		"values (?, ?, ?, now(), 0, 1, ?)";
-	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
-	public static String sqlGetInventoryPersonString = 
-		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, mm_items "
-		+ "where mm_itemtable.itemid = mm_items.id and owner = ? and ownertype = 1 "
-		+ "and visible = 1 "
-		+ "group by adject1, adject2, adject3, name";
-	public static String sqlGetInventoryRoomString =
-		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, mm_items "
-		+ "where mm_itemtable.itemid = mm_items.id and owner = ? and ownertype = 2 "
-		+ "and visible = 1 "
-		+ "group by adject1, adject2, adject3, name";
-	public static String sqlPickupItemString =
-		"update mm_itemtable "
-		+ "set owner = ?, ownertype = 1 "
-		+ "where mm_itemtable.itemid = ? and owner = ? and ownertype = 2 "
-		+ "limit ?";
-	public static String sqlGetItemRoomString =
-		"select * from mm_itemtable, mm_items "
-		+ "where mm_itemtable.itemid = mm_items.id and "
-        + "owner = ? and ownertype = 2 "
-		+ "and name = ? and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 "
-		+ "limit 1";
-	public static String sqlGetItemPersonString =
-		"select * from mm_itemtable, mm_items "
-		+ "where mm_itemtable.itemid = mm_items.id and "
-        + "owner = ? and ownertype = 1 "
-		+ "and name = ? and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
-		+ "field(?, adject1, adject2, adject3, \"\")!=0 "
-		+ "limit 1";
+
+	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
+
+	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
+	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
+	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
+	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
+	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
+	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
+
+	public static String sqlGetCharAttributesString =
+		"select * from mm_charattributes "
+		+ "where charname = ?";
 	public static String sqlGetItemAttributesString =
 		"select * from mm_itemattributes "
 		+ "where id = ?";
-	public static String sqlGetItemDefString = "select * from mm_items where id = ?";
+	public static String sqlGetRoomAttributesString =
+		"select * from mm_roomattributes "
+		+ "where id = ?";
 
 	/**
 	 * Connects to the database using an url. The url looks something like 
@@ -206,6 +183,30 @@ public class Database
 	}
 
 	/**
+	 * Create a prepared statement.
+	 * @param aQuery the sql query used to create the statement.
+	 * @return PreparedStatement object, can be used to add variables and 
+	 * do a query.
+	 * @see executeUpdate
+	 * @see executeQuery
+	 */
+	static PreparedStatement prepareStatement(String aQuery)
+	{
+		assert theConnection != null : "theConnection is null";
+		Logger.getLogger("mmud").finer("");
+		PreparedStatement aStatement = null;
+		try
+		{
+			aStatement = theConnection.prepareStatement(aQuery);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return aStatement;
+	}
+
+	/**
 	 * Retrieve a character from the database.
 	 * @param aName the name of the character. This uniquely identifies
 	 * any character in the database.
@@ -268,6 +269,7 @@ public class Database
 		{
 			e.printStackTrace();
 		}
+		getCharAttributes(myUser);
 		return myUser;
 	}
 
@@ -349,226 +351,11 @@ public class Database
 	}
 
 	/**
-	 * Returns the itemdefinition based on the itemdefinition id.
-	 * @param itemdefnr item definition identification number
-	 * @return ItemDef object containing all information.
-	 */
-	public static ItemDef getItemDef(int itemdefnr)
-	{
-		assert theConnection != null : "theConnection is null";
-		Logger.getLogger("mmud").finer("");
-		ResultSet res;
-		ItemDef myItemDef = null;
-		try
-		{
-
-		PreparedStatement sqlGetItemDef = theConnection.prepareStatement(sqlGetItemDefString);
-//		sqlGetItemDef.setBigDecimal
-//		sqlGetItemDef.setInt
-		sqlGetItemDef.setInt(1, itemdefnr);
-		res = sqlGetItemDef.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		res.first();
-		myItemDef  = new ItemDef(
-			itemdefnr,
-			res.getString("adject1"),
-			res.getString("adject2"), res.getString("adject3"),
-			res.getString("name"), res.getString("description"),
-			res.getInt("gold"), res.getInt("silver"), res.getInt("copper"));
-		// do stuff with attributes.
-		String drinkable = res.getString("drinkable");
-		String eatable = res.getString("eatable");
-		String readable = res.getString("readdescr");
-		int visible = res.getInt("visible");
-		int dropable = res.getInt("dropable");
-		int getable = res.getInt("getable");
-		if ( (drinkable != null) && (!drinkable.trim().equals("")) )
-		{
-			myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
-		}
-		if ( (eatable != null) && (!eatable.trim().equals("")) )
-		{
-			myItemDef.setAttribute(new Attribute("eatable", eatable, "string"));
-		}
-		if ( (readable != null) && (!readable.trim().equals("")) )
-		{
-			myItemDef.setAttribute(new Attribute("readable", readable, "string"));
-		}
-		if (dropable == 0)
-		{
-			myItemDef.setAttribute(new Attribute("notdropable", "", "string"));
-		}
-		if (getable == 0)
-		{
-			myItemDef.setAttribute(new Attribute("notgetable", "", "string"));
-		}
-		if (visible == 0)
-		{
-			myItemDef.setAttribute(new Attribute("invisible", "", "string"));
-		}
-		res.close();
-		sqlGetItemDef.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Logger.getLogger("mmud").info("returns: " + myItemDef);
-		return myItemDef;
-	}
-
-	/**
-	 * Returns the inventory of a person in the form of a bulleted list.
-	 * @param aPerson the person whos inventory we are interested in.
-	 * @return String containing the bulleted list of items the
-	 * person is carrying.
-	 */
-	public static String getInventory(Person aPerson)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		StringBuffer myInventory = new StringBuffer("<UL>");
-		ResultSet res;
-		try
-		{
-
-		PreparedStatement sqlGetInventories = theConnection.prepareStatement(sqlGetInventoryPersonString);
-		sqlGetInventories.setString(1, aPerson.getName());
-		res = sqlGetInventories.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		while (res.next())
-		{
-			int amount = res.getInt("amount");
-			if (amount != 1)
-			{
-				// 5 gold, hard cups
-				myInventory.append("<LI>" + amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " " + 
-					res.getString("name") + "s.\r\n");
-			}
-			else
-			{
-				// a gold, hard cup
-				myInventory.append("<LI>a " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " " + 
-					res.getString("name") + ".\r\n");
-			}
-		}
-		res.close();
-		sqlGetInventories.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		myInventory.append("</UL><BR>");
-		Logger.getLogger("mmud").info("returns: " + myInventory);
-		return myInventory.toString();
-	}
-
-	/**
-	 * Returns a bulleted list of all items visible in a room.
-	 * @param aRoom room object that has a number of visible items.
-	 * @param String containing a list of items visible in the room.
-	 */
-	public static String getInventory(Room aRoom)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		StringBuffer myInventory = new StringBuffer();
-		ResultSet res;
-		try
-		{
-
-		PreparedStatement sqlGetInventories = theConnection.prepareStatement(sqlGetInventoryRoomString);
-		sqlGetInventories.setString(1, aRoom.getId() + "");
-		res = sqlGetInventories.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		while (res.next())
-		{
-			int amount = res.getInt("amount");
-			if (amount > 1)
-			{
-				myInventory.append(amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
-					+ res.getString("name") + "s are here.<BR>\r\n");
-			}
-			else
-			{
-				myInventory.append("A " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
-					+ res.getString("name") + " is here.<BR>\r\n");
-			}
-		}
-		res.close();
-		sqlGetInventories.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Logger.getLogger("mmud").info("returns: " + myInventory);
-		return myInventory.toString();
-	}
-
-	/**
-	 * Pick up an item off the floor.
-	 * @param amount the number of items
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @param aPerson the person who wishes to pick up the item.
-	 * @return 0 when no items are picked up, 1 otherwise.
-	 */
-	public static int pickupItem(int amount,
-								String adject1,
-								String adject2,
-								String adject3,
-								String name,
-								Person aPerson)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		int res = 0;
-		Item myItem = getItem(adject1, adject2, adject3, name, aPerson);
-		try
-		{
-		PreparedStatement sqlPickItem = theConnection.prepareStatement(sqlPickupItemString);
-		sqlPickItem.setString(1, aPerson.getName());
-		sqlPickItem.setInt(2, myItem.getId());
-		sqlPickItem.setInt(3, aPerson.getRoom().getId());
-		sqlPickItem.setInt(4, amount);
-		res = sqlPickItem.executeUpdate();
-		sqlPickItem.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Logger.getLogger("mmud").info("returns: " + res);
-		return res;
-	}
-
-	/**
 	 * Add all attributes found in the database regarding a certain item to
 	 * that item object. Basically fills up the attribute list of the item.
 	 * @param anItem item object
-	 * @param anId the item id.
 	 */
-	public static void getItemAttributes(int anId, Item anItem)
+	public static void getItemAttributes(Item anItem)
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -576,7 +363,7 @@ public class Database
 		try
 		{
 		PreparedStatement sqlGetItemAttributes = theConnection.prepareStatement(sqlGetItemAttributesString);
-		sqlGetItemAttributes.setInt(1, anId);
+		sqlGetItemAttributes.setInt(1, anItem.getId());
 		res = sqlGetItemAttributes.executeQuery();
 		if (res == null)
 		{
@@ -601,112 +388,42 @@ public class Database
 	}
 
 	/**
-	 * Retrieve the item from the room.
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @param aRoom the room where said item should be located
-	 * @return Item object containing all information regarding the item.
+	 * Add all attributes found in the database regarding a certain
+	 * character to
+	 * that character object. Basically fills up the attribute list of the
+	 * character.
+	 * @param aPerson character whose attributes we need
 	 */
-	public static Item getItem(String adject1,
-								String adject2,
-								String adject3,
-								String name,
-								Room aRoom)
+	public static void getCharAttributes(Person aPerson)
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
-		Item anItem = null;
 		try
 		{
-		PreparedStatement sqlGetItem = theConnection.prepareStatement(sqlGetItemRoomString);
-		sqlGetItem.setString(1, aRoom.getId()+"");
-		sqlGetItem.setString(2, name);
-		sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
-		sqlGetItem.setString(4, (adject2!=null ? adject1 :""));
-		sqlGetItem.setString(5, (adject3!=null ? adject1 :""));
-		res = sqlGetItem.executeQuery();
+		PreparedStatement sqlGetCharAttributes = theConnection.prepareStatement(sqlGetCharAttributesString);
+		sqlGetCharAttributes.setString(1, aPerson.getName());
+		res = sqlGetCharAttributes.executeQuery();
 		if (res == null)
 		{
 			Logger.getLogger("mmud").info("resultset null");
-			return null;
+			return;
 		}
-		int anItemId = 0;
-		int anItemInstanceId = 0;
 		while (res.next())
 		{
-			anItemInstanceId = res.getInt("id");
-			anItemId = res.getInt("itemid");
-			
+			Attribute myAttrib = new Attribute(res.getString("name"),
+				res.getString("value"),
+				res.getString("value_type"));
+			aPerson.setAttribute(myAttrib);
 		}
 		res.close();
-		sqlGetItem.close();
-		anItem = new Item(getItemDef(anItemId));
-		getItemAttributes(anItemInstanceId, anItem);
+		sqlGetCharAttributes.close();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		Logger.getLogger("mmud").info("returns: " + anItem);
-		return anItem;
-	}
-
-	/**
-	 * Retrieve the item from the inventory of a character.
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
-	 * @param aChar the character who has the item in his/her inventory.
-	 * @return Item object containing all information regarding the found
-	 * item.
-	 */
-	public static Item getItem(String adject1,
-								String adject2,
-								String adject3,
-								String name,
-								Person aChar)
-	{
-		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
-		ResultSet res;
-		Item anItem = null;
-		try
-		{
-		PreparedStatement sqlGetItem = theConnection.prepareStatement(sqlGetItemPersonString);
-		sqlGetItem.setString(1, aChar.getName()+"");
-		sqlGetItem.setString(2, name);
-		sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
-		sqlGetItem.setString(4, (adject2!=null ? adject1 :""));
-		sqlGetItem.setString(5, (adject3!=null ? adject1 :""));
-		res = sqlGetItem.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		int anItemId = 0;
-		int anItemInstanceId = 0;
-		while (res.next())
-		{
-			anItemInstanceId = res.getInt("id");
-			anItemId = res.getInt("itemid");
-			
-		}
-		res.close();
-		sqlGetItem.close();
-		anItem = new Item(getItemDef(anItemId));
-		getItemAttributes(anItemInstanceId, anItem);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Logger.getLogger("mmud").info("returns: " + anItem);
-		return anItem;
+		return;
 	}
 
 	/**
@@ -774,6 +491,7 @@ public class Database
 					myRealUser.setSessionPassword(mySessionPwd);
 				}
 				myVector.add(myRealUser);
+				getCharAttributes(myRealUser);
 			}
 			else
 			{
@@ -801,6 +519,7 @@ public class Database
 					myNewChar.setAttribute(new Attribute("shopkeeper","","string"));
 				}
 				myVector.add(myNewChar);
+				getCharAttributes(myNewChar);
 			}
 		}
 		res.close();

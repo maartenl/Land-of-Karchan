@@ -48,7 +48,8 @@ public class BowCommand extends NormalCommand
 		if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
 		{
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if (toChar == null)
+			if ((toChar == null) ||
+				(!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			}

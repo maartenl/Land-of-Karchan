@@ -1,18 +1,50 @@
 - sleeping?
+- there should be a definite method for determining if a person is "valid",
+i.e. does he exist, in the same room, is visible, and a host of other
+settings. There should be a gerneal method for checking this.
+- items should be "reservered" and then used. For example when dealing with
+shopkeepers :
+	-	reserve item from shopkeeper : int Person.reserveItem(stuff)
+	-	in case of problem -> returns ItemException
+	-	do coin check
+	-	in case of problem -> move item back into person : Person.addItem(stuff)
+	-	in case of OK -> start removing coins from persons account and
+		move item into a new person inventory : Person.addItem(stuff)
+possibilities: - do everything at once in the database
+				- do selective stuff in the database, and reissue queries
+					when necessary.
 - rmeove Echo.java
+Implementation
+--------------
+
+- I split up Database.java in different static objects, that request the
+connection from Database.java in order to have some semblance of order. It
+becomes difficult to find the correct method in a huge Database object.
 
 - It is impossible at this time, due to memory requirements, to keep all
 items as separate objects in memory. Therefore I've chosen to, with regards
 to items, keep all access to the items on the database level and to not
 perform any caching. For rooms and characters this should not be a problem,
 as the characters will not exceed 20 in most cases and very few rooms are
-normally used.
+normally used. 
 
-- It might be a good idea to periodically flush the cached rooms, though.
-Within time, the caching will take up quite a big part.
+- Addendum to the previous point: However, I feel having an item object
+facilitates matters immensely, and I should make use of it. The one thing
+that I need to remember than, is not to keep any of the item objects in
+memory. I.e. have them garbage collected as soon as they leave scope, and
+reissue a query to the database whenever the item has been garbage collected
+and needs to be recreated.
+
+- Second Addendum: I do, however, take the same approach with the item
+definitions as with the rooms and characters. I assume that the
+itemdefinitions will not grow exorbitantly, as in general a small amount of
+items will be used in the game.
+
+- It might be a good idea to periodically flush the cached rooms and cached
+itemdefinitions though. Within time, the caching will take up quite a big part.
 
 - It is not a good idea to keep "amount" with the items, because it provides
-a logistical nightmare, and makesit impossible (or difficult) to provide
+a logistical nightmare, and makes it impossible (or difficult) to provide
 unique abilities to certain items.
 
 - It is better to have different itemtables, for rooms/items/characters, in
@@ -21,3 +53,44 @@ the table over to another table, it is best to:
 1. retrieve itemids
 2. remove itemids from table (reserving itemids)
 3. add itemids to another table
+
+Game Behaviour
+--------------
+
+- gold, silver and copper coins will be normal items. All values will be
+counted using "copper". I.e. a copper coin is worth 1 copper coin. 1 silver
+coin is worth 10 copper coins and 1 gold coin is worth 100 copper coins.
+
+- When falling asleep, it is only possible for two commands to be used:
+awaken or quit.
+
+- Items and money, in most muds, seem to be available in great quantities.
+This is in soo much a problem, that inflation makes everything generally
+worthless. Possibilities to remedy this:
+	- make worthless items easily obtainable, make valueable items rare
+	- do not provide any mechanisms that "create" items. If no items are
+	  created from scratch, no imbalance will be perpetrated. New items,
+	  however, could be created using resources at ones disposal.
+	  (fish, gloves, nice chair, etc.) However, make certain that it
+	  takes a great amount of time and effort to correctly create a new 
+	  item.
+	- do not make shopkeepers accept all items, only those items they are
+	  interested in, and then only if they haven't completely filled up
+	  their stock yet. It is even possible to have shopkeepers decide to set
+	  the price depending on the amount they have in stock.
+
+- Destruction of items can take place:
+	- items can be consumed by
+		- eating
+		- drinking
+		- fire
+		- "use" in general
+		- time (i.e. wear/tear/perishables/etc)
+
+- Items can change fundamentally. Certain items can change into different
+items, for example a "new torch" can change into a "burnt stick".
+
+- In order for characters to have special abilities that require additional
+database information, we are unable at this time to add them using the
+"attributes". It will require a different interface to be implemented on top
+of the default Character class. A good example is ShopKeeper.

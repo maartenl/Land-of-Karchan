@@ -68,7 +68,7 @@ public final class ItemDefs
 		ItemDef myItemDef = null;
 		assert theItemDefs != null : "theItemDefs vector is null";
 		Logger.getLogger("mmud").finer("");
-		if (aItemDefNr == 0) 
+		if (aItemDefNr <= 0) 
 		{
 			return null;
 		}
@@ -80,12 +80,11 @@ public final class ItemDefs
 				return myItemDef;
 			}
 		}
-		myItemDef = Database.getItemDef(aItemDefNr);
+		myItemDef = ItemsDb.getItemDef(aItemDefNr);
 		if (myItemDef != null)
 		{
 			theItemDefs.addElement(myItemDef);
 		}
 		return myItemDef;
 	}
-
 }

@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -45,8 +46,20 @@ public class GetCommand extends NormalCommand
 	private String adject3;
 	private int amount;
 
+	/**
+	 * This method will make a <I>best effort</I> regarding picking up of
+	 * the items requested. This means that, if you request 5 items, and
+	 * there are 5 or more items in the room, this method will attempt to
+	 * aquire 5 items. It is possible that not all items are available, in which 
+	 * case you
+	 * could conceivably only receive 3 items or instance.
+	 * @throws ItemException in case the item requested could not be located
+	 * or is not allowed to be picked up.
+	 * @throws ParseException in case the user entered an illegal amount of
+	 * items. Illegal being defined as smaller than 1.
+	 */
 	public boolean run(User aUser)
-		throws ItemException
+		throws ItemException, ParseException
 	{
 		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
@@ -59,6 +72,10 @@ public class GetCommand extends NormalCommand
 			try
 			{
 				amount = Integer.parseInt(myParsed[1]);
+				if (amount < 1)
+				{
+					throw new ParseException();
+				}
 				switch (myParsed.length)
 				{
 					case 3:
@@ -117,24 +134,31 @@ public class GetCommand extends NormalCommand
 					break;
 				}
 			}
-			Item myItem = aUser.getRoom().getItem(adject1, adject2, adject3, name);
-			int result = aUser.pickupItems(amount, adject1, adject2, adject3, name);
-			if (result == 0)
+			Vector myItems = null;
+			myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
+			if (myItems.size() < amount)
 			{
-				aUser.writeMessage("You cannot find that item in the room.<BR>\r\n");
-				return true;
+				if (amount == 1)
+				{
+					aUser.writeMessage("You cannot find that item in the room.<BR>\r\n");
+					return true;
+				}
+				else
+				{
+					aUser.writeMessage("You cannot find that many items in the room.<BR>\r\n");
+					return true;
+				}
 			}
-			if (result == 1)
+			int j = 0;
+			for (int i = 0; (i < myItems.size() && j != amount); i++)
 			{
+				// here needs to be a check for validity of the item
+				Item myItem = (Item) myItems.elementAt(i);
+				ItemsDb.pickupItem(myItem, aUser);
 				aUser.sendMessage(aUser.getName() + " gets " + myItem.getDescription() + ".<BR>\r\n");
 				aUser.writeMessage("You get " + myItem.getDescription() + ".<BR>\r\n");
+				j++;
 			}
-			else
-			{
-				aUser.sendMessage(aUser.getName() + " gets " + result + " " + myItem.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You get " + result + " " + myItem.getDescription() + ".<BR>\r\n");
-			}
-
 			return true;
 		}
 		return false;

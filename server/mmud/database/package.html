@@ -5,7 +5,165 @@
 
 Provides access to the database. All database access must go through this
 class, in order to keep database specific code isolated from other parts of
-the game.
+the game.<p>
+All database centric methods have "default" package scope, so they can be
+used only within this package. All public methods will never return database
+objects. This keeps the database part separate from the mud.
+</PRE>
+
+Database structure is the following:
+<P>(<I>* denotes primary key</I>)
+<TABLE>
+<TR><TD>Tablename</TD><TD>Description</TD></TR>
+<TR><TD>mm_roomattributes</TD><TD></TD></TR>
+<TR><TD>mm_charattributes</TD><TD></TD></TR>
+<TR><TD>mm_itemattributes</TD><TD></TD></TR>
+<TR><TD>mm_logonmessage</TD><TD></TD></TR>
+
+<TR><TD>mm_sillynamestable</TD><TD></TD></TR>
+<TR><TD>mm_unbantable</TD><TD></TD></TR>
+<TR><TD>mm_bantable</TD><TD></TD></TR>
+<TR><TD>mm_errormessages</TD><TD></TD></TR>
+<TR><TD>mm_help</TD><TD></TD></TR>
+
+<TR><TD>mm_items</TD><TD></TD></TR>
+<TR><TD>mm_shopkeeperitems</TD><TD>Provides wich items a shopkeeper is
+allowed to sell/buy and when the shopkeeper decides to stop buying items
+from characters (i.e. when the shop has plenty of those specific items in
+supply)</TD></TR>
+<TR><TD>mm_itemtable</TD><TD></TD></TR>
+<TR><TD>mm_charitemtable</TD><TD></TD></TR>
+<TR><TD>mm_itemitemtable</TD><TD></TD></TR>
+<TR><TD>mm_roomitemtable</TD><TD></TD></TR>
+
+<TR><TD>mm_rooms</TD><TD></TD></TR>
+<TR><TD>mm_usertable</TD><TD></TD></TR>
+<TR><TD>mm_mailtable</TD><TD></TD></TR>
+
+<TR><TD></TD><TD></TD></TR>
+</TABLE>
+<PRE>
++---------------------+
+| mm_itemattributes   |
++---------------------+
+|*name                |
+| value               |
+| value_type          |
+|*id                  |
++---------------------+
+
++---------------------+
+| mm_roomattributes   |
++---------------------+
+|*name                |
+| value               |
+| value_type          |
+|*id                  |
++---------------------+
+
++---------------------+
+| mm_charattributes   |
++---------------------+
+|*name                |
+| value               |
+| value_type          |
+|*charname            |
++---------------------+
+
++---------------------+
+| mm_items            |
++---------------------+
+|*id                  |
+| general stuff       |
++---------------------+
+
++---------------------+
+| mm_shopkeeperitems  |
++---------------------+
+|*id                  |
+| max                 |
+|*charname            |
++---------------------+
+
++---------------------+
+| mm_itemtable        |
++---------------------+
+|*id                  |
+| itemid              |
++---------------------+
+
++---------------------+
+| mm_charitemtable    |
++---------------------+
+|*id                  |
+| belongsto           |
+| wearing             |
+| wielding            |
++---------------------+
+
++---------------------+
+| mm_roomitemtable    |
++---------------------+
+|*id                  |
+| room                |
+| search              |
++---------------------+
+
++---------------------+
+| mm_itemitemtable    |
++---------------------+
+|*id                  |
+| containerid         |
++---------------------+
+
++---------------------+
+| mm_rooms            |
++---------------------+
+|*id                  |
+| west                |
+| east                |
+| north               |
+| south               |
+| up                  |
+| down                |
+| contents            |
++---------------------+
+
++---------------------+
+| mm_usertable        |
++---------------------+
+|*name                |
++---------------------+
+
++---------------------+
+| mm_logonmessage     |
++---------------------+
+
++---------------------+
+| mm_mailtable        |
++---------------------+
+
++---------------------+
+| mm_sillynamestable  |
++---------------------+
+
++---------------------+
+| mm_unbantable       |
++---------------------+
+
++---------------------+
+| mm_bantable         |
++---------------------+
+
++---------------------+
+| mm_errormessages    |
++---------------------+
+
++---------------------+
+| mm_help             |
++---------------------+
+
+</PRE>
 
 </body>
 </html>

@@ -52,7 +52,7 @@ public class MultiUserException extends PersonException
 
 	/**
 	 * constructor for creating a exception with a message.
-	 * @param aString the string containing the message
+	 * @param aMessage the string containing the message
 	 */
 	public MultiUserException(String aMessage)
 	{

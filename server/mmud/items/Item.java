@@ -42,14 +42,31 @@ import mmud.database.*;
 public class Item
 {
 	private ItemDef theItemDef;
+	private int theId;
 	private TreeMap theAttributes = new TreeMap();
 
 	/**
-	 * Create this item object with a default Item Definition.
+	 * Create this item object with a default Item Definition and id.
+	 * This method is usually only used by the database.
+	 * @param anItemDef definition of the item
+	 * @param anId integer identification of the item
 	 */
-	public Item(ItemDef anItemDef)
+	public Item(ItemDef anItemDef, int anId)
 	{
 		theItemDef = anItemDef;
+		theId = anId;
+	} 
+
+	/**
+	 * Create this item object with a default Item Definition and id.
+	 * This method is usually only used by the database.
+	 * @param anItemDef integer definition identification of the item
+	 * @param anId integer identification of the item
+	 */
+	public Item(int anItemDef, int anId)
+	{
+		theItemDef = ItemsDb.getItemDef(anItemDef);
+		theId = anId;
 	} 
 
 	/**
@@ -57,16 +74,17 @@ public class Item
 	 */
 	public Item(Item anItem)
 	{
-		this(anItem.getItemDef());
+		//this(anItem.getItemDef());
 	} 
 
 	/**
-	 * Returns the id of the Item Definition.
-	 * @return integer identifying the Item Definition.
+	 * Returns the id of this Item. Every instance of an ItemDef
+	 * has a unique item id.
+	 * @return integer identifying the Item.
 	 */
 	public int getId()
 	{
-		return theItemDef.getId();
+		return theId;
 	}
 
 	/**
@@ -166,7 +184,7 @@ public class Item
 	 */
 	public String toString()
 	{
-		return super.toString() + ":" + getItemDef();
+		return super.toString() + ":" + getId() + ":" + getItemDef();
 	}
 
 	/**

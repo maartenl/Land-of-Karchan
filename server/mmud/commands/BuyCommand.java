@@ -55,20 +55,41 @@ public class BuyCommand extends NormalCommand
 	 */
 	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
 
+	/**
+	 * Tries out the buy command. There are a couple of requirements that
+	 * need to be met, before a successful sale takes place.
+	 * <ol><li>command struct. should be "<I>buy from &lt;character&gt;
+	 * &lt;item&gt;</I>", for example: "<I>buy from Karcas gold ring</I>".
+	 * <li>the person selling the item should
+	 * <ol><li> exist, <li>be in the same room and<li>
+	 * have a occupation-attribute set to "shopkeeper"
+	 * and<li>has the appropriate item for sale</ol>
+	 * <li>the person buying should be able to afford the item
+	 * </ol>
+	 * @param aUser the character doing the buying.
+	 */
 	public boolean run(User aUser)
 		throws ItemException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
+		// parse command string
 		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
 		{
+			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
-			if ((toChar == null) || (!toChar.isAttribute("shopkeeper")))
+			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
+			if (!"shopkeeper".equals(toChar.getAttribute("occupation")))
+			{
+				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
+				return true;
+			}
+			// check for item in posession of shopkeeper
             Item myItem = null;// = toChar.getItem(myParsed, 1, myParsed.length - 2);
             if ((myItem == null) || (myItem.isAttribute("notbuyable")))
 

@@ -33,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -516,7 +517,7 @@ public class Person
 	 */
 	public void writeMessage(String aMessage)
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
 		try
 		{
 			FileWriter myFileWriter = new FileWriter(theLogFile, true);
@@ -698,7 +699,21 @@ public class Person
 	 */
 	public String inventory()
 	{
-		return Database.getInventory(this);
+		return ItemsDb.getInventory(this);
+	}
+
+	/**
+	 * Retrieve items from this character.
+	 * @param adject1 the first adjective
+	 * @param adject2 the second adjective
+	 * @param adject3 the third adjective
+	 * @param name the name of the item
+	 * @return Vector containing item objects found.
+	 * @see mmud.database.ItemsDb#getItemsFromChar
+	 */
+	public Vector getItems(String adject1, String adject2, String adject3, String name) 
+	{
+		return ItemsDb.getItemsFromChar(adject1, adject2, adject3, name, this);
 	}
 
 	/**
@@ -711,14 +726,14 @@ public class Person
 	 * @param name the name of the item
 	 * @return int somestuff.
 	 */
-	public int pickupItems(int amount, 
+/*	public int pickupItems(int amount, 
 				String adject1, 
 				String adject2, 
 				String adject3,
 				String name)
 	{
 		return Database.pickupItem(amount, adject1, adject2, adject3, name, this);
-	}
+	}*/
 
 	/**
 	 * Drop an item onto the floor, from your inventory.
@@ -729,15 +744,31 @@ public class Person
 	 * @param name the name of the item
 	 * @return int somestuff.
 	 */
-	public int dropItems(int amount, 
+/*	public int dropItems(int amount, 
 				String adject1, 
 				String adject2, 
 				String adject3,
 				String name)
 	{
 		return 0;
-		// DEBUG
-//		return Database.dropItem(amount, adject1, adject2, adject3, name, this);
+	}*/
+
+	public int reserveItem(int anId)
+	{
+		return 0;
+	}
+
+	/**
+	 * Reserves a specific item
+	 */
+	public int reserveItem(String aName, 
+		String anAdject1,
+		String anAdject2,
+		String anAdject3)
+	throws ItemException
+	{
+		Logger.getLogger("mmud").finer("");
+		return 0;//Database.reserveItem(this, aName, anAdject1, anAdject2, anAdject3);
 	}
 
 }

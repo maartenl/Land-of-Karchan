@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.rooms;
 
+import java.util.Vector;
+
 import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
@@ -424,24 +426,40 @@ public class Room
 	 * present in the room.
 	 * @return String a string representation of a HTML bulleted list
 	 * of all items.
-	 * @see Database#getInventory
+	 * @see ItemDb#getInventory
 	 */
 	public String inventory()
 	{
-		return Database.getInventory(this);
+		return ItemsDb.getInventory(this);
 	}
 
 	/**
-	 * Retrieve an item from this room.
+	 * Retrieve items from this room.
 	 * @param adject1 the first adjective
 	 * @param adject2 the second adjective
 	 * @param adject3 the third adjective
 	 * @param name the name of the item
-	 * @return Item object containing the item found.
+	 * @return Vector containing item objects found.
+	 * @see mmud.database.ItemsDb#getItemsFromRoom
 	 */
-	public Item getItem(String adject1, String adject2, String adject3, String name)
+	public Vector getItems(String adject1, String adject2, String adject3, String name)
 	{
-		return Database.getItem(adject1, adject2, adject3, name, this);
+		return ItemsDb.getItemsFromRoom(adject1, adject2, adject3, name, this);
+	}
+
+	/**
+	 * Implements the equals method.
+	 * @param o object to be compared.
+	 * @return boolean, true if the id of the rooms are the same, otherwise
+	 * false.
+	 */
+	public boolean equals(Object o)
+	{
+		if (!(o instanceof Room))
+		{
+			return false;
+		}
+		return ((Room) o).getId() == getId();
 	}
 
 }

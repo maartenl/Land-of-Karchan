@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.*;
 import mmud.characters.*;
@@ -46,102 +47,126 @@ public class DropCommand extends NormalCommand
     private String adject3;
     private int amount;
 
+	/**
+	 * This method will make a <I>best effort</I> regarding dropping of
+	 * the requested items. This means that, if you request 5 items, and
+	 * there are 5 or more items in your inventory, this method will attempt to
+	 * aquire 5 items. It is possible that not all items are available, in which
+	 * case you
+	 * could conceivably only receive 3 items or instance.
+	 * @throws ItemException in case the item requested could not be located
+	 * or is not allowed to be dropped.
+	 * @throws ParseException in case the user entered an illegal amount of
+	 * items. Illegal being defined as smaller than 1.
+	 */
 	public boolean run(User aUser)
-		throws ItemException
+		throws ItemException, ParseException
 	{
-		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
+		String command = getCommand();
 		// initialise string, important otherwise previous instances will return this
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 1)
 		{
-            // get [amount] [adject1..3] name
-            amount = 1;
-            try
-            {
-                amount = Integer.parseInt(myParsed[1]);
-                switch (myParsed.length)
-                {
-                    case 3:
-                    adject1 =  null;
-                    adject2 =  null;
-                    adject3 =  null;
-                    name = myParsed[2];
-                    break;
-                    case 4:
-                    adject1 = myParsed[2];
-                    adject2 =  null;
-                    adject3 =  null;
-                    name = myParsed[3];
-                    break;
-                    case 5:
-                    adject1 = myParsed[2];
-                    adject2 = myParsed[3];
-                    adject3 =  null;
-                    name = myParsed[4];
-                    break;
-                    case 6:
-                    adject1 = myParsed[2];
-                    adject2 = myParsed[3];
-                    adject3 = myParsed[4];
-                    name = myParsed[5];
-                    break;
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                switch (myParsed.length)
-                {
-                    case 2:
-                    adject1 =  null;
-                    adject2 =  null;
-                    adject3 =  null;
-                    name = myParsed[1];
-                    break;
-                    case 3:
-                    adject1 = myParsed[1];
-                    adject2 =  null;
-                    adject3 =  null;
-                    name = myParsed[2];
-                    break;
-                    case 4:
-                    adject1 = myParsed[1];
-                    adject2 = myParsed[2];
-                    adject3 =  null;
-                    name = myParsed[3];
-                    break;
-                    case 5:
-                    adject1 = myParsed[1];
-                    adject2 = myParsed[2];
-                    adject3 = myParsed[3];
-                    name = myParsed[4];
-                    break;
-                }
-            }
-			// DEBUG
-            Item myItem = null; //aUser.getItem(adject1, adject2, adject3, name);
-            int result = aUser.dropItems(amount, adject1, adject2, adject3, name);
-			if (result == 0)
+			// get [amount] [adject1..3] name
+			amount = 1;
+			try
 			{
-				aUser.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
-				return true;
+				amount = Integer.parseInt(myParsed[1]);
+				if (amount < 1)
+				{
+					throw new ParseException();
+				}
+				switch (myParsed.length)
+				{
+					case 3:
+					adject1 =  null;
+					adject2 =  null;
+					adject3 =  null;
+					name = myParsed[2];
+					break;
+					case 4:
+					adject1 = myParsed[2];
+					adject2 =  null;
+					adject3 =  null;
+					name = myParsed[3];
+					break;
+					case 5:
+					adject1 = myParsed[2];
+					adject2 = myParsed[3];
+					adject3 =  null;
+					name = myParsed[4];
+					break;
+					case 6:
+					adject1 = myParsed[2];
+					adject2 = myParsed[3];
+					adject3 = myParsed[4];
+					name = myParsed[5];
+					break;
+				}
 			}
-			if (myItem.isAttribute("notdroppable"))
+			catch (NumberFormatException e)
 			{
-				aUser.writeMessage("You cannot drop that item.<BR>\r\n");
-				return true;
+				switch (myParsed.length)
+				{
+					case 2:
+					adject1 =  null;
+					adject2 =  null;
+					adject3 =  null;
+					name = myParsed[1];
+					break;
+					case 3:
+					adject1 = myParsed[1];
+					adject2 =  null;
+					adject3 =  null;
+					name = myParsed[2];
+					break;
+					case 4:
+					adject1 = myParsed[1];
+					adject2 = myParsed[2];
+					adject3 =  null;
+					name = myParsed[3];
+					break;
+					case 5:
+					adject1 = myParsed[1];
+					adject2 = myParsed[2];
+					adject3 = myParsed[3];
+					name = myParsed[4];
+					break;
+				}
 			}
-			if (result == 1)
+			Vector myItems = null;
+			myItems = aUser.getItems(adject1, adject2, adject3, name);
+			if (myItems.size() < amount)
 			{
-				aUser.sendMessage(aUser.getName() + " drops " + myItem.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You drop " + myItem.getDescription() + ".<BR>\r\n");
+				if (amount == 1)
+				{
+					aUser.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
+					return true;
+				}
+				else
+				{
+					aUser.writeMessage("You cannot find that many items in your inventory.<BR>\r\n");
+					return true;
+				}
 			}
-			else
+			int j = 0;
+			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
-				aUser.sendMessage(aUser.getName() + " drops " + result + " " + myItem.getDescription() + ".<BR>\r\n");
-				aUser.writeMessage("You drop " + result + " " + myItem.getDescription() + ".<BR>\r\n");
+				// here needs to be a check for validity of the item
+				Item myItem = (Item) myItems.elementAt(i);
+				if (myItem.isAttribute("notdroppable"))
+				{
+					aUser.writeMessage("You cannot drop that item.<BR>\r\n");
+				}
+				else
+				{
+					ItemsDb.dropItem(myItem, aUser.getRoom());
+					aUser.sendMessage(aUser.getName() + " drops " + myItem.getDescription() + ".<BR>\r\n");
+					aUser.writeMessage("You drop " + myItem.getDescription() + ".<BR>\r\n");
+					j++;
+				}
 			}
-
 			return true;
 		}
 		return false;

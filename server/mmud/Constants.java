@@ -94,6 +94,7 @@ public final class Constants
 	public final static String ITEMDEFDOESNOTEXISTERROR = "the definition of the item does not exist";
 	public final static String ITEMDOESNOTEXISTERROR = "the item does not exist";
 	public final static String NOTENOUGHMONEYERROR = "you do not have enough money";
+	public final static String UNABLETOPARSEPROPERLY = "the entire command or part of the command could not be parsed correctly";
 
 	/*! version number of mmserver */
 	public final static String MMVERSION = "4.01b"; // the mmud version in general

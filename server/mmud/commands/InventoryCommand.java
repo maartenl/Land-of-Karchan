@@ -45,15 +45,18 @@ public class InventoryCommand extends NormalCommand
 	public boolean run(User aUser)
 	{
 		Logger.getLogger("mmud").finer("");
-		theResult = aUser.inventory();
+		String invent = aUser.inventory();
+		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
+			+ " have " + (invent.equals("")?"nothing.<P>":" <UL>" 
+			+ aUser.inventory() + "</UL>") 
+            + aUser.printForm();
 		return true;
 	}
 
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
-		return "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You have<UL>" +
-			theResult + "<\\UL>";
+		return theResult;
 	}
 
 }
