@@ -84,7 +84,7 @@ XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
 TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe \
-wholist charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
+ charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -208,13 +208,7 @@ nph-javascriptframe.o: nph-javascriptframe.c
 nph-javascriptframe: nph-javascriptframe.o cgi-util.o 
 	$(CC) $(COPTS) -o nph-javascriptframe cgi-util.o nph-javascriptframe.o $(LIBDIR)
 
-#--- Compilation and installing of small website binaries like the wholist
-
-wholist.o: wholist.c
-	$(CC) $(COPTS) $(INCLUDES)  -c wholist.c 
-
-wholist: wholist.o typedefs.o
-	$(CC) $(COPTS) -o wholist wholist.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
+#--- Compilation and installing of small website binaries
 
 charactersheet.o: charactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c charactersheet.c 
@@ -315,7 +309,6 @@ install: all
 install_scripts: all
 	@echo "Installing Mud Script Binaries..."
 	@echo "  (these are small scripts that add some functionality to the website)"
-	@cp wholist $(INSTALLDIR)wholist.cgi
 	@cp charactersheet $(INSTALLDIR)charactersheet.cgi
 	@cp charactersheets $(INSTALLDIR)charactersheets.cgi
 	@cp editcharactersheet $(INSTALLDIR)editcharactersheet.cgi
