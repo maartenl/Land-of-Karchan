@@ -11,7 +11,7 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 
 UPDATE logonmessage set message="<B>Logonmessage</B>
 <BR>
-<IMG SRC=\"http://www.karchan.org/images/gif/letters/w.gif\"
+<IMG SRC=\"/images/gif/letters/w.gif\"
 ALT=\"W\" ALIGN=left>
 elcome to the Land of Karchan MUD, a land filled with mystery 
 and enchantment, where weapons, magic, intelligence, and common 
@@ -20,15 +20,20 @@ and the same. Where elves coexist peacefully with the humans, and
 make war with the dwarves. Where the sun rises, and the moon falls. 
 Where one can change into a hero with a single swipe of his 
 sword.<P>
+<center>
+<IMG SRC=\"/images/christmas/Xmas1a.gif\">
+</center>
 
 The current deputies are: 
 Kass, Kel, Silverblade<P>
 
 <HR>
+<IMG SRC=\"/images/christmas/xbow.gif\">
 Sunday, Nov 24 2002, 15:11<P>
 Righty ho, the problem with the debugging statements is fixed.
 Should not happen again.
 <HR>
+<IMG SRC=\"/images/christmas/noel7.gif\">
 Friday, Oct 25 2002, 20:26<P>
 Current list of people interested in becoming <B>deputy</B>:
 <UL>
@@ -42,16 +47,18 @@ Current list of people interested in becoming <B>deputy</B>:
 <LI>Rienn Iriydgrayne
 </UL>
 <HR>
+<IMG SRC=\"/images/christmas/noel6.gif\">
 Regards,<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
 <HR>
+<IMG SRC=\"/images/christmas/noel5.gif\">
 <I>To contact a Deputy, report a bug, contact Karn, or use email, <A
-HREF=\"http://www.karchan.org/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
+HREF=\"/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
 
 <I>Please read <A
-HREF=\"http://www.karchan.org/karchan/help/thelaw.html\" TARGET=\"_blank\"><FONT
+HREF=\"/karchan/help/thelaw.html\" TARGET=\"_blank\"><FONT
 COLOR=red>The LAW (the most important Rules and Regulations of the game)</FONT></A>.</I>
 <P>
 
