@@ -62,7 +62,7 @@ return
 ");
 
 replace into events
-values(19, "plague1", -1, -1, 19, 24, -1, 1, "plague3", "", 0);
+values(19, "plague1", -1, -1, 12, 00, -1, 1, "plague3", "", 0);
 replace into methods
 values(94,"plague3",
 "# once a day, diminish plague by one if user logged on today
