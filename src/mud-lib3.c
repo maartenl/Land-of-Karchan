@@ -395,11 +395,6 @@ GoNorth_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	command = fmudstruct->command;
-#ifdef DEBUG
-        printf("gameMain %i, %i!!!\n", room, fmudstruct->room);
-#endif
-                                
-//	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
