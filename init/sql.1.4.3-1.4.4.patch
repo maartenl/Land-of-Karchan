@@ -89,6 +89,17 @@ enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug',
 change sex sex enum('male','female') default
 NULL;
 
+#
+# Table structure for table 'tmp_attributes'
+select "" as "Creating 'tmp_attributes' table...";
+CREATE TABLE tmp_attributes (
+  name varchar(32) NOT NULL default '',
+  value text,
+  value_type varchar(20) NOT NULL default 'string',
+  objectid varchar(200) NOT NULL default '0',
+  objecttype int(3) NOT NULL default '0',
+  PRIMARY KEY  (name,objectid,objecttype)
+) TYPE=MyISAM;
 
 END_OF_DATA
 
