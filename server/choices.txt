@@ -195,6 +195,12 @@ container. Containers are identified in two ways:
 1. a specific iteminstance has an attribute called "container" (boolean,true)
 2. an item definition has "container" set to value other than 0.
 
+- Deputies are fine. However, I will not tolerate two people sharing the
+same deputy account. Reasons:
+	a. will make pinpointing resposibilities difficult
+	b. will set a precedent, what prevents other people from doing it
+	c. it is not fair to the other deputies that pay the full load
+
 TODO
 ----
 
@@ -268,6 +274,23 @@ from mud.unbantable;
 insert into mm_usertable
 select *, null, now()
 from mud.usertable;
+
+creating board system
+---------------------
+create table mm_boardmessages
+(boardid varchar(20) not null,
+name varchar(20) not null,
+posttime timestamp not null,
+message text,
+primary key (boardid, name, posttime));
+
+create table mm_boards
+(id int not null primary key,
+name varchar(80) not null,
+description text not null,
+owner varchar(20) not null,
+creation timestamp not null);
+insert into mm_boards values(1, "public", "", "Karn", now());
 
 setting roomitems
 -----------------
