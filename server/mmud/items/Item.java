@@ -479,6 +479,8 @@ public class Item implements Executable, AttributeContainer
 						" does not contain a String as argument.");
 				}
 				removeAttribute((String) arguments[0]);
+				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from item " +
+					this);
 				return null;
 			}
 		}
@@ -508,6 +510,8 @@ public class Item implements Executable, AttributeContainer
 					arguments[1] + "", 
 					mType);
 				setAttribute(mAttrib);
+				Database.writeLog("root", "set attribute (" + arguments[0] + ") in item " +
+					this);
 				return null;
 			}
 		}
@@ -556,6 +560,7 @@ public class Item implements Executable, AttributeContainer
 				{
 					throw new MethodNotSupportedException(e.getMessage());
 				}
+				Database.writeLog("root", "created item (" + myItem + ") in item " + this);
 				return myItem;
 			}
 		}

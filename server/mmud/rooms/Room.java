@@ -808,6 +808,7 @@ public class Room implements Executable, AttributeContainer
 				{
 					throw new MethodNotSupportedException(e.getMessage());
 				}
+				Database.writeLog("root", "created item (" + myItem + ") in room " + getId());
 				return myItem;
 			}
 		}
@@ -871,6 +872,8 @@ public class Room implements Executable, AttributeContainer
 						" does not contain a String as argument.");
 				}
 				removeAttribute((String) arguments[0]);
+				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from room " +
+					getId());
 				return null;
 			}
 		}
@@ -900,6 +903,8 @@ public class Room implements Executable, AttributeContainer
 					arguments[1] + "", 
 					mType);
 				setAttribute(mAttrib);
+				Database.writeLog("root", "set attribute (" + arguments[0] + ") in room " +
+					getId());
 				return null;
 			}
 		}

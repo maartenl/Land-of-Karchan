@@ -1179,6 +1179,8 @@ public class Person implements Executable, AttributeContainer
 				{
 					throw new MethodNotSupportedException(e.getMessage());
 				}
+				Database.writeLog("root", "created item (" + myItem + ") for person " +
+					getName());
 				return myItem;
 			}
 		}
@@ -1242,6 +1244,8 @@ public class Person implements Executable, AttributeContainer
 						" does not contain a String as argument.");
 				}
 				removeAttribute((String) arguments[0]);
+				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from person " +
+					getName());
 				return null;
 			}
 		}
@@ -1271,6 +1275,8 @@ public class Person implements Executable, AttributeContainer
 					arguments[1] + "", 
 					mType);
 				setAttribute(mAttrib);
+				Database.writeLog("root", "set attribute (" + arguments[0] + ") for person " +
+					getName());
 				return null;
 			}
 		}
