@@ -242,43 +242,56 @@ return 1;
 }
 
 char * 
-ExistUserByDescription(char **ftokens, int beginning, int amount, int room)
+ExistUserByDescription(char **ftokens, int beginning, int amount, int room, char **returndesc)
 {
-MYSQL_RES *res;
-MYSQL_ROW row;
-char *temp;
-char *returnuser = NULL;
-int i ;
-
-/* Check if user exists in tmp_usertable, search by description */
-temp = (char *) malloc (1000 + amount * 2000);
-sprintf(temp, "select name from tmp_usertable where room = %i and '%s' in "
-"(race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg) ",
-	room, ftokens[beginning]);
-for (i=beginning+1;i<beginning+amount;i++)
-{
-	strcat(temp, " and '");
-	strcat(temp, ftokens[i]);
-	strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
-}
-printf("<%s>", temp);
-res=SendSQL2(temp, NULL);
-free(temp);
-if (res==NULL)
-{
-	return NULL;
-}
-row = mysql_fetch_row(res);
-if (row==NULL)
-{
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char *temp;
+	char *returnuser = NULL;
+	int i ;
+	
+	/* Check if user exists in tmp_usertable, search by description */
+	temp = (char *) malloc (200 + amount * 200);
+	sprintf(temp, "select name, "
+	"concat(age,"
+	"if(length = 'none', '', concat(', ',length)),"
+	"if(width = 'none', '', concat(', ',width)),"
+	"if(complexion = 'none', '', concat(', ',complexion)),"
+	"if(eyes = 'none', '', concat(', ',eyes)),"
+	"if(face = 'none', '', concat(', ',face)),"
+	"if(hair = 'none', '', concat(', ',hair)),"
+	"if(beard = 'none', '', concat(', ',beard)),"
+	"if(arm = 'none', '', concat(', ',arm)),"
+	"if(leg = 'none', '', concat(', ',leg)),"
+	"' ', sex, ' ', race)"
+	" from tmp_usertable where room = %i and '%s' in "
+	"(race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg) ",
+		room, ftokens[beginning]);
+	for (i=beginning+1;i<beginning+amount;i++)
+	{
+		strcat(temp, " and '");
+		strcat(temp, ftokens[i]);
+		strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
+	}
+	res=SendSQL2(temp, NULL);
+	free(temp);
+	if (res==NULL)
+	{
+		return NULL;
+	}
+	row = mysql_fetch_row(res);
+	if (row==NULL)
+	{
+		mysql_free_result(res);
+		return NULL;
+	}
+	returnuser = (char *) malloc (strlen(row[0])+2);
+	strcpy(returnuser, row[0]);
+	*returndesc = (char *) malloc (strlen(row[1])+2);
+	strcpy(*returndesc, row[1]);
 	mysql_free_result(res);
-	return NULL;
-}
-returnuser = (char *) malloc (strlen(row[0])+2);
-strcpy(returnuser, row[0]);
-mysql_free_result(res);
-
-return returnuser;
+	
+	return returnuser;
 }
 
 int 

@@ -786,7 +786,19 @@ if (!getFrames())
 	                    fprintf(cgiOut, "</MAP>\n");
 } /*end if getFrames dude*/
 	/* Print characters in room */
-	sprintf(tempsql, "select name, sleep, god, punishment from tmp_usertable where (room=%i) and (name<>'%s')",room,name);
+	sprintf(tempsql, "select "
+	"if(god=3, concat('A ',age,"
+	"if(length = 'none', '', concat(', ',length)),"
+	"if(width = 'none', '', concat(', ',width)),"
+	"if(complexion = 'none', '', concat(', ',complexion)),"
+	"if(eyes = 'none', '', concat(', ',eyes)),"
+	"if(face = 'none', '', concat(', ',face)),"
+	"if(hair = 'none', '', concat(', ',hair)),"
+	"if(beard = 'none', '', concat(', ',beard)),"
+	"if(arm = 'none', '', concat(', ',arm)),"
+	"if(leg = 'none', '', concat(', ',leg)),"
+	"' ', sex, ' ', race),name)"
+	", sleep, god, punishment, name from tmp_usertable where (room=%i) and (name<>'%s')",room,name);
 	res=SendSQL2(tempsql, NULL);
 	if (res!=NULL)
 	{
@@ -799,19 +811,19 @@ if (!getFrames())
 	if (atoi(row[3])!=0)
 	{
 		fprintf(cgiOut, "<FONT COLOR=%s>A frog called <A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\">%s</A> is here.<BR>\r\n", 
-			colorme, MudExe, row[0], name, password, getFrames()+1, row[0]);
+			colorme, MudExe, row[4], name, password, getFrames()+1, row[0]);
 	}
 	else
 	{
 			if (atoi(row[1])==0) 
 			{
 				fprintf(cgiOut, "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here.<BR>\r\n", 
-					MudExe, row[0], name, password, getFrames()+1, colorme, row[0]);
+					MudExe, row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 			else
 			{
 				fprintf(cgiOut, "<A HREF=\"%s?command=look+at+%s&name=%s&password=%s&frames=%i\"><FONT COLOR=%s>%s</FONT></A> is here, asleep.<BR>\r\n", 
-					MudExe, row[0], name, password, getFrames()+1, colorme, row[0]);
+					MudExe, row[4], name, password, getFrames()+1, colorme, row[0]);
 			}
 		}
 	}

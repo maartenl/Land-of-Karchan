@@ -218,5 +218,6 @@ install: all
 	@chmod o= $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*
 	@chmod g=x $(INSTALLDIR)*
+  @chown karchan:karchan $(INSTALLDIR)*
 	@echo "Installation done."
 

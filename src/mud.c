@@ -57,11 +57,11 @@ char sqlstring[1024];
 void 
 InitVar()
 {
-	if (DebugOptionsOn) {
-		printstr = (char *) malloc(500);
-		troep = (char *) malloc(100);
-		command = (char *) malloc(100);
-		junk = (char *) malloc(100);
+	if (0) {
+		printstr = (char *) malloc(1000);
+		troep = (char *) malloc(1000);
+		command = (char *) malloc(1000);
+		junk = (char *) malloc(1000);
 	} else {
 		printstr = (char *) malloc(cgiContentLength + 500);
 		troep = (char *) malloc(cgiContentLength);
@@ -274,7 +274,7 @@ cgiMain()
 	umask(0000);
 	InitVar();
 	opendbconnection();
-	if (1) {
+	if (0) {
 		printf("Command:");
 		gets(command);
 		printf("Name:");
@@ -395,8 +395,6 @@ cgiMain()
 		KillGame();
 	}
 	
-	printf("%s, %i, %i\n", tokens[0], aantal, room);
-	printf("<%s>", ExistUserByDescription(tokens, 0, aantal, room));
 	if (punishment > 0)
 	{
 		if (!strcmp(troep, "say rrribbit"))
@@ -489,7 +487,36 @@ cgiMain()
 	}
 	if (!strcmp(troep, "help")) 
 	{
-		ReadFile(StdHelpFile);
+		MYSQL_RES *res;
+		MYSQL_ROW row;
+		int i;
+		char temp[1024];
+		
+		fprintf(cgiOut, "<HTML>\r\n");
+		fprintf(cgiOut, "<HEAD>\r\n");
+		fprintf(cgiOut, "<TITLE>\r\n");
+		fprintf(cgiOut, "Land of Karchan - General Help\r\n");
+		fprintf(cgiOut, "</TITLE>\r\n");
+		fprintf(cgiOut, "</HEAD>\r\n");
+		
+		fprintf(cgiOut, "<BODY>\r\n");
+		fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
+	
+		sprintf(temp, "select contents from help where command='general help'");
+		res=SendSQL2(temp, NULL);
+		row = mysql_fetch_row(res);
+		if (row==NULL) 
+		{
+			mysql_free_result(res);
+			res=SendSQL2("select contents from help where command='sorry'", NULL);
+			row = mysql_fetch_row(res);
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		else
+		{
+			fprintf(cgiOut, "%s",row[0]);
+		}
+		mysql_free_result(res);
 		PrintForm(name, password);
 		if (getFrames()!=2) {ReadFile(logname);}
 		KillGame();
@@ -852,46 +879,64 @@ cgiMain()
 		KillGame();
 	}
 
-	if ( (aantal == 2) && (!strcmp("fight", tokens[0])) && 
+	if ( (aantal >= 2) && (!strcmp("fight", tokens[0])) && 
 		(room!=-1) && (room!=3) && (room!=164) )
 	{
 		int myFightable;
+		char *myFightingName;
+		char *myDescription;
 		sprintf(sqlstring, "select fightable from tmp_usertable where "
 			"name='%s'", name);
 		res=SendSQL2(sqlstring, NULL);
 		row = mysql_fetch_row(res);
 		myFightable = atoi(row[0]);
 		mysql_free_result(res);
+
+		/* this section takes care of the looking up of the description */
+		myFightingName = 
+		ExistUserByDescription(tokens, 1, aantal - 1, room, &myDescription);
+		if (myFightingName == NULL)
+		{
+			myFightingName = tokens[1];
+			myDescription = tokens[1];
+		}
+		else
+		{
+			printf("<%s><%s>", myFightingName, myDescription);
+		}
+
 		sprintf(sqlstring, "select name,god from tmp_usertable where "
-			"name<>'%s' and "
-			"name='%s' and "
-			"fightable=1 and "
-			"god<>2 and "
-			"room=%i"
-			, name, tokens[1], room);
+		"name<>'%s' and "
+		"name='%s' and "
+		"fightable=1 and "
+		"god<>2 and "
+		"room=%i"
+		, name, myFightingName, room);
 		res=SendSQL2(sqlstring, NULL);
 		row = mysql_fetch_row(res);
 		if ((myFightable!=1) && (atoi(row[1])!=3))
 		{
 			mysql_free_result(res);
+			if (myFightingName != tokens[1]) {free(myFightingName);}
+			if (myDescription != tokens[1]) {free(myDescription);}
 			WriteSentenceIntoOwnLogFile2(logname, "Pkill is off, so you cannot fight.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
 			KillGame();
 		}
 		if (row!=NULL)
 		{
-			WriteSentenceIntoOwnLogFile2(logname, "You start to fight against %s.<BR>\r\n", row[0]);
-			WriteMessageTo2(tokens[1], name, room, "%s starts fighting against %s.<BR>\r\n",
-				    name, row[0]);
-			WriteSayTo(row[0], name, room, 
+			WriteSentenceIntoOwnLogFile2(logname, "You start to fight against %s.<BR>\r\n", myDescription);
+			WriteMessageTo2(myFightingName, name, room, "%s starts fighting against %s.<BR>\r\n",
+				    name, myDescription);
+			WriteSayTo(myDescription, name, room, 
 				   "%s starts fighting against you.<BR>\r\n", name);
 			mysql_free_result(res);
 			sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
-			tokens[1], name);
+			myFightingName, name);
 			res=SendSQL2(sqlstring, NULL);
 			mysql_free_result(res);
 			sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
-			name, tokens[1]);
+			name, myFightingName);
 			res=SendSQL2(sqlstring, NULL);
 		}
 		else
@@ -899,6 +944,8 @@ cgiMain()
 			WriteSentenceIntoOwnLogFile2(logname, "Person not found.<BR>\r\n");
 		}
 		mysql_free_result(res);
+		if (myFightingName != tokens[1]) {free(myFightingName);}
+		if (myDescription != tokens[1]) {free(myDescription);}
 		WriteRoom(name, password, room, 0);
 		KillGame();
 	}
