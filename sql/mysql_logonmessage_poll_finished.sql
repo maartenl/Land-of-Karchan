@@ -22,57 +22,55 @@ Where one can change into a hero with a single swipe of his
 sword.<P>
 
 The current deputies are: 
-Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Nate<P>
+Kass, Kel, Bladestorm, Legolas, Silverblade<P>
 
-<FONT COLOR=\"red\">The quest is \"closed\".</Font>. People will no longer contract the
-Whiteblodge Plague. However, people that are currently suffering from the
-disease will still die if they do not find the cure! Now it is waiting until 
-the next quest.
-<HR>Results: <I>What did You think of the Whiteblodge
-Plague?</I><P>
+I am off to Croatia for two weeks. Will be back sometime around the 28th
+of July 2002.
+<HR>Results: <I>What happened to you when the mud went down?</I><P>
 <TABLE>
-   </TR><TD></TD><TD>209 people voted</TD></TR>
+   </TR><TD></TD><TD>208 people voted</TD></TR>
 	<TR>
    <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Way cool! Do more of those!</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Didn't effect me much, not like I enjoy the game anyway</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"133\" ALT=\"39%\">62 / <FONT COLOR=red>39%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"48\" ALT=\"11%\">22 / <FONT COLOR=red>11%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Was fun.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Felt a small twinge inside.</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"62\" ALT=\"13%\">29 / <FONT COLOR=red>13%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"45\" ALT=\"10%\">21 / <FONT COLOR=red>10%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Was okay, I guess.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">I have lots of other muds I play, I simply switched.</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"71\" ALT=\"15%\">33 / <FONT COLOR=red>15%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"19\" ALT=\"4%\">9 / <FONT COLOR=red>4%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Didn't like it.</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">>Shivers down my back, sweating, paleness. First withdrawal symptoms.</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"61\" ALT=\"13%\">28 / <FONT COLOR=red>13%</FONT>
+      </NOBR></TD>
+   </TR>
+   <TR>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Cowered beneath the staircase, because the end
+of the world could not be far behind.</TD>
+      <TD WIDTH=\"450\"><NOBR>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"129\" ALT=\"29%\">60 / <FONT COLOR=red>29%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
       <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Dude, you suck!</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"6%\">14 / <FONT COLOR=red>6%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"30\" ALT=\"7%\">14 / <FONT COLOR=red>7%</FONT>
       </NOBR></TD>
    </TR>
    <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">What Plague?</TD>
+      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Forget this! When is the fighting finally coming back?</TD>
       <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"94\" ALT=\"21%\">44 / <FONT COLOR=red>21%</FONT>
-      </NOBR></TD>
-   </TR>
-   <TR>
-      <TD WIDTH=\"150\" ALIGN=\"RIGHT\">Huh? Polls?</TD>
-      <TD WIDTH=\"450\"><NOBR>
-      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"26\" ALT=\"6%\">12 / <FONT COLOR=red>6%</FONT>
+      <IMG SRC=\"/images/jpeg/mainbar2.jpg\" HEIGHT=20 width=\"117\" ALT=\"26%\">54 / <FONT COLOR=red>26%</FONT>
       </NOBR></TD>
 </TABLE>
 
