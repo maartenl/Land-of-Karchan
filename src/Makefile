@@ -81,7 +81,7 @@ LIBDIR = -L/usr/lib/mysql/ -lm -l$(MYSQLLIB) -lz -lpthread
 # pick the oldest one
 XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
-TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
+TARGETS = mmserver mud events newchar enter leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe \
  clearcharacters
 
@@ -162,12 +162,6 @@ events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o g
 	$(CC) $(COPTS) -o events cgi-util.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(XMLLIBDIR)
 
 #--- Compilation of frame-binaries
-
-addendumframe.o: addendumframe.c 
-	$(CC) $(COPTS) $(INCLUDES) -c addendumframe.c
-
-addendumframe: addendumframe.o cgi-util.o
-	$(CC) $(COPTS) -o addendumframe cgi-util.o addendumframe.o $(LIBDIR) 
 
 leftframe.o: leftframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c leftframe.c
