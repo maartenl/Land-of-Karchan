@@ -48,7 +48,7 @@ maartenl@il.fontys.nl
 #include "mudnewchar.h"
 
 /*! default hostname used by the mmserver */
-#define MMHOST "karchan.org" // the hostname users will be connecting to
+#define MMHOST "zeus" // the hostname users will be connecting to
 /*! default port number used by the mmserver */
 #define MMPORT 3339 // the port users will be connecting to
 /*! version number of mmserver */
@@ -1032,6 +1032,7 @@ store_in_list(int socketfd, char *buf)
 			{
 				char *temp2, string[1024];
 				FILE *filep;
+				int j;
 				temp[7] = t;
 				temp2 = (char *) malloc(strlen(temp+7)+1);
 				if (temp2 == NULL)
@@ -1091,6 +1092,15 @@ store_in_list(int socketfd, char *buf)
 				}
 				fclose(filep);
 				setMMudOut(stdout);
+				j = strlen("</HTML>");
+				if (send_socket(socketfd, "</HTML>", &j) == -1)
+				{
+					syslog(LOG_INFO, "error during send to the socket...");
+				}
+				if (j != strlen("</HTML>"))
+				{
+					syslog(LOG_INFO, "unable to send all information to the socket...");
+				}
 				return 1;
 			}
 #ifdef DEBUG
@@ -1254,22 +1264,7 @@ main(int argc, char **argv)
 						buf[nbytes]=0;
 						if (store_in_list(i, buf) == 1)
 						{
-							if (getFrames() < 4)
-							{
-								// close socket from our side as well
-								char top[10];
-//								recv(i, top, 2, 0);
-								if (close(i) == -1)
-								{
-									syslog(LOG_WARNING, "attempting to close user socket");
-								}
-								else
-								{
-									FD_CLR(i, &master_fds); // remove closed socket from master set
-									remove_from_list(i);
-									removeconnection_mudinfo();
-								}
-							}
+							// do nothing
 						}
 					}
 				}

@@ -213,17 +213,18 @@ void setFrames(int i)
 
 int main(int argc, char *argv[])
 {
-	int res;
+	int res, totalnumbytes;
 	char name[20];
 	char password[40];
 	char cookie[80];
 	char frames[10];
 	char *temp;
 	char *myhostname, *myport;
+	char *mudtitle = NULL;
 	
 	int sockfd, numbytes;
 	int first;
-	char receivebuf[1024], *sendbuf;
+	char receivebuf[1024], *sendbuf, *checkbuf;
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
          
@@ -346,8 +347,10 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	
-	receivebuf[numbytes] = '\0';
-//	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
+	receivebuf[numbytes] = '\0';checkbuf = NULL;totalnumbytes=1;
+	mudtitle = (char *) malloc(strlen(receivebuf)+1);
+	strcpy(mudtitle, receivebuf);
+	//	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
 	sendbuf = createXmlString(name, password, cookie, getFrames());
 //	printf("[%s]", sendbuf);
 	numbytes=strlen(sendbuf);
@@ -355,23 +358,55 @@ int main(int argc, char *argv[])
 	free(sendbuf);
 //	send_socket(sockfd, "\n", &numbytes);
 
-	first = 1;
 	while ((numbytes = recv(sockfd, receivebuf, 1024-1, 0)) != 0)
 	{
-		receivebuf[numbytes]=0;
-		if (first)
+		if (numbytes==-1)
 		{
-			if (strstr(receivebuf, "Content") != receivebuf)
-			{
-//				cgiHeaderContentType("text/html");
-				printf("Content-type: text/html\n\n");
-			}
-			first = 0;
+			int i = errno;
+			printf("[An error occurred receiving information: %s]", strerror(i));
 		}
-		printf("%s", receivebuf);
+		else
+		{
+			receivebuf[numbytes]=0;
+			totalnumbytes+=numbytes;
+			if (checkbuf == NULL)
+			{
+				checkbuf = (char *) malloc(numbytes+1);
+				checkbuf[0]=0;
+			}
+			else
+			{
+				checkbuf = (char *) realloc(checkbuf, totalnumbytes);
+			}
+			strcat(checkbuf, receivebuf);
+			if (strstr(checkbuf, "</HTML>") != NULL)
+			{
+				break;
+			}
+		}
 	}
+	numbytes=strlen("OK");
+	send_socket(sockfd, "OK", &numbytes);
+      
 	close(sockfd);
-
+	if (strstr(checkbuf, "Content") != checkbuf)
+	{
+		printf("Content-type: text/html\r\n\r\n");
+		if (mudtitle != NULL)
+		{
+			printf("<FONT Size=1>%s</FONT><HR>",mudtitle);
+			free(mudtitle);
+			mudtitle = NULL;
+		}
+	}
+	if (mudtitle != NULL)
+	{
+		free(mudtitle);
+		mudtitle = NULL;
+	}
+	printf("%s", checkbuf);
+	free(checkbuf);
+	
 	return 0;
 }
 

@@ -51,7 +51,7 @@ maartenl@il.fontys.nl
 
 #include "cgi-util.h"
 
-#define MMHOST "karchan.org"	// the hostname users will be connecting to
+#define MMHOST "zeus"	// the hostname users will be connecting to
 #define MMPORT "3339" // the port users will be connecting to
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
@@ -98,7 +98,7 @@ int getCookie(char *name, char *value)
 
 void displayError(char *message, int i)
 {
-	printf("Content-type: text/html\r\n\r\n");
+	printf("Content-type: text/html\n\n");
 	printf("<HTML><HEAD><TITLE>Error - %s</TITLE></HEAD>\n\n", strerror(i));
 	printf("<BODY>\n");
 	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
@@ -220,6 +220,7 @@ main(int argc, char * argv[])
 	char frames[10];
 	char cookiepassword[40];
 	char *myhostname, *myport;
+	char *mudtitle = NULL;
 		
 	int sockfd, numbytes, totalnumbytes;
 	char receivebuf[1024], *sendbuf, *checkbuf;
@@ -351,7 +352,7 @@ main(int argc, char * argv[])
 	else
 	{
 		printf("Content-type: text/html\r\n");
-		printf("Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
+			printf("Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
 	}
 	
 	/* setup socket stuff*/
@@ -381,7 +382,9 @@ main(int argc, char * argv[])
 	}
 	
 	receivebuf[numbytes] = '\0';checkbuf = NULL;totalnumbytes=1;
-	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
+	mudtitle = (char *) malloc(strlen(receivebuf)+1);
+	strcpy(mudtitle, receivebuf);
+//	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
 	sendbuf = createXmlString(command, name, password, cookiepassword, getFrames());
 //	printf("[%s]", sendbuf);
 	numbytes=strlen(sendbuf);
@@ -420,7 +423,22 @@ main(int argc, char * argv[])
 	send_socket(sockfd, "OK", &numbytes);
       
 	close(sockfd);
-	printf("%s", checkbuf);
+	if (strstr(checkbuf, "Content") != checkbuf)
+	{
+	//		printf(Content-type: text/html\r\n\r\n");
+		if (mudtitle != NULL)
+		{
+			printf("<FONT Size=1>%s</FONT><HR>",mudtitle);
+			free(mudtitle);
+			mudtitle = NULL;
+		 }
+	}
+	if (mudtitle != NULL)
+	{
+		free(mudtitle);
+		mudtitle = NULL;
+	}
+ 	printf("%s", checkbuf);
 	free(checkbuf);
 
 	cgi_quit();
