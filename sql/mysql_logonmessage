@@ -1,4 +1,4 @@
-Just#!/bin/sh
+#!/bin/sh
 
 cd /karchan/mud/sql   
 
@@ -25,13 +25,12 @@ The current deputies are:
 Kass, Kel, Bladestorm, Legolas, Silverblade, Blackfyre<P>
 
 <HR>
-Monday, Oct 14 2002, 19:11<P>
-Remember that I mentioned that sometimes you could get the white screen of
-death? Well, I think I fixed it. We should now get <I>less</I> white
-screens of death. Mail me at <A 
-HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A> 
-with which commands it is still possible to create the white screen of 
-death.
+Sunday, Oct 20 2002, 01:22<P>
+Darnit, still not sleepy. Anyway, the latest addition to the mud is the
+fact that no longer are important information hard coded. The mud runs now
+by means of a configuration file. (Whooo! 22nd century technology!)<P>
+That, and I decided to make the logonmessage a little smaller due to
+increased demand.
 <HR>
 Thursday, Oct 10 2002, 20:07<P>
 <I>Does anyone actually read this logonmessage?
@@ -68,33 +67,6 @@ function doClick(number)
 // End the hiding here. -->
 </SCRIPT>
 <HR>
-Wednesday, Oct 09 2002, 22:37<P>
-Just finished with a new implementation that might make the game act
-<I>wonky</I> again. <P>Also, some emotes seem to be buggy. They will not
-crash the server, but give each individual user <I>sometimes</I> the white
-screen of death. Use the back-button on your browser to fix it.<P>
-Furthermore, I have decided to accept about <FONT COLOR=red>three 
-(3) new positions for deputy.</FONT> Now all I need to do is dive into my
-emails of last few months to see who wanted to join. For more info,
-read the FAQ.
-<HR>
-Tuesday, Sep 17 2002, 21:26<P>
-Some more good news: the mudmail seems to be fixed. I caught the bug
-and at the same time (as I was bored, anyway) I added some, I think,
-nice features to the mudmail system.
-<HR>
-Some good news: I think I have most of the bugs that were causing freezes
-and the white-screen-of-death. The game should be running more stable now.
-*crosses fingers*
-<P>
-One of the little changes that you might have noticed is the extra
-little piece of text at the top of your screen. It
-contains the Version Number and last Compile Date/Time stamp
-of the new mud engine. <P>
-Sometimes the game will freeze up. This means that I screwed up and one of
-the commands used is the cause. What happens is that I fix
-it immediately and restart the game server. However, between the
-game freezing up and me resetting the game the game is unavailable.<P>
 Regards,<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
