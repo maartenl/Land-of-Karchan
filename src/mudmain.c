@@ -875,6 +875,10 @@ Shout_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (getTokenAmount() == 1)
+	{
+		return 0;
+	}
 	if ((getTokenAmount() > 3) && (!strcasecmp("to", getToken(1))))
 	{
 		char           *temp1, *temp2;
@@ -907,6 +911,10 @@ Ask_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
+	if (getTokenAmount() == 1)
+	{
+		return 0;
+	}
 	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) 
 	{
 		char           *temp1, *temp2;
@@ -938,6 +946,10 @@ int
 Whisper_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
+	if (getTokenAmount() == 1)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	if ((!strcasecmp("to", getToken(1))) && (getTokenAmount() > 3)) {
 		char           *temp1, *temp2;
@@ -1628,7 +1640,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 		{
 			/* string has been found */
 #ifdef DEBUG
-				printf("command found (%s)\n", gameCommands[pos]);
+			printf("command found (%s)\n", gameCommands[pos]);
 #endif
 			if (gameFunctionArray[pos](name, password, room, command))
 			{
