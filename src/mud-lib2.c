@@ -1248,6 +1248,10 @@ Stats_Command(char *name, char *password)
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
+		if (row==NULL)
+		{
+			fprintf(cgiOut, "You currently have no special skills.<BR>\r\n");
+		}
 		while (row!=NULL)
 		{
 			fprintf(cgiOut, "%s", row[0]);
