@@ -415,11 +415,11 @@ int Parse(char *name, int *room, char *parserstring)
 					{
 						level--;
 					}
-					if ( (state[level]==1) && (strstr(string, "if sql(")==string) )
+					if ( (state[level]==3) && (strstr(string, "if sql(")==string) )
 					{
 						level++;state[level]=3;
 					}
-					if ( (state[level]==3) && (strstr(string, "if sql(")==string) )
+					if ( (state[level]==1) && (strstr(string, "if sql(")==string) )
 					{
 						level++;state[level]=3;
 					}
