@@ -1,4 +1,4 @@
-<?
+<?php
 /*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
@@ -26,8 +26,6 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
-<META http-equiv="refresh" content="120">
-<META HTTP-EQUIV="pragma" CONTENT="no-cache">
 <HTML>
 <HEAD>
 <TITLE>
@@ -55,7 +53,7 @@ fill out, and change later in the same way.<P>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select concat(\"<A
-	HREF=\\\"/cgi-bin/charactersheet.cgi?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") 
+	HREF=\\\"/scripts/charactersheet.php?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") 
 	, usertable.name from characterinfo, usertable 
 	where usertable.name=characterinfo.name"
 	, $dbhandle)
@@ -83,7 +81,7 @@ mysql_close($dbhandle);
 </TR></TABLE>
 
 </UL>
-<FORM METHOD="GET" ACTION="/cgi-bin/editcharactersheet.cgi">
+<FORM METHOD="GET" ACTION="/scripts/editcharactersheet.php">
 <HR>
 (Fictional) Name:<BR>
 <INPUT TYPE="text" NAME="name" VALUE="" SIZE="19" MAXLENGTH="19"><P>

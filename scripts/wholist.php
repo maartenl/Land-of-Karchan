@@ -1,4 +1,4 @@
-<?
+<?php
 /*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
