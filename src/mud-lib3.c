@@ -744,7 +744,7 @@ SwitchRoomCheck(char *name, char *password, int room)
 		}
 		case 9:
 		{
-			if (!strcmp(troep, "open cupboard")) 
+			if (!strcmp(troep, "open cupbo2ard")) 
 			{
 				sprintf(temp, "select south from rooms where id=20");
 				res=SendSQL2(temp, NULL);
