@@ -129,6 +129,7 @@ public class AdminCommand extends NormalCommand
 				"<DT>admin reset characters<DD>reset the cached rooms, required every time you make a change to a room" +
 				"<DT>admin reset rooms<DD>reset the cached characters, required every time you make a change to a character." +
 				"Already active characters are reloaded into the cache from the database." +
+				"<DT>admin shutdown<DD>Shuts down the game. Carefull! The game is not automatically restarted!" +
 				"<DT>admin wall &lt;message&gt;<DD>pages all users with the message entered" +
 				"<DT>admin uptime<DD>show the datetime when the game was started and the current datetime " +
 				"and the elapsed time period in between." +
