@@ -1347,13 +1347,11 @@ cgiMain()
 			KillGame();
 		}
 /* add DepTalk */		
-/* problem detected by Maarten: DepTalk declaration not found, unable to compile
-Temporarily commented this code out. Somebody fix. */
-/*		if ( (!strcmp("Dep", tokens[0])) && (!strcmp("Chat", tokens[1])) )
+		if ( (!strcmp("Dep", tokens[0])) && (!strcmp("Chat", tokens[1])) )
 		{
 			DepTalk(name, password, room);
 			KillGame();
-		}*/
+		}
 	}
 	/* End Guilds */
 	if (!strcmp("mail", troep))
