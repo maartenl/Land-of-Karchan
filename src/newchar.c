@@ -544,14 +544,16 @@ cgiMain()
 	generate_password(secretpassword);
   	opendbconnection();
 	umask(0000);
-	strcpy(sqlstring,"insert into usertable values('");
+	strcpy(sqlstring,"insert into usertable "
+	"(name, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, lastlogin, birth)"
+	"values('");
 
 	error = cgiFormString("name", tempfield, 20);
 	strcpy(name, tempfield);
 	strcpy(troep, name);
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
 
-	strcat(sqlstring, tempfield);strcat(sqlstring, "','','"); /*name, address*/
+	strcat(sqlstring, tempfield);strcat(sqlstring, "','"); /*name*/
 	if (error != cgiFormSuccess) {
 		exit(0);
 	}
@@ -603,29 +605,14 @@ cgiMain()
 	cgiFormSelectSingle("arms", farm, 5, &choice, 0);
 	strcat(sqlstring, farm[choice]);strcat(sqlstring, "','");
 	cgiFormSelectSingle("legs", fleg, 7, &choice, 0);
-	strcat(sqlstring, fleg[choice]);strcat(sqlstring, "',");
+	strcat(sqlstring, fleg[choice]);strcat(sqlstring, "','");
 
 	time(&currenttime);
 
-	strcat(sqlstring, "0,0,2,1,'");
 	strcat(sqlstring, secretpassword); /* == lok */
-	strcat(sqlstring, "',0,0,''");
-//	gold, silver, copper, room, lok, whimpy, experience, fightingwho
-	strcat(sqlstring, ",0,0,0,0,0,0,0,0");
-//	sleep, punishment, fightable, vitals, fysically, mentally, drinkstats, eatstats
-	strcat(sqlstring, ",0,DATE_SUB(NOW(), INTERVAL 2 HOUR), "
-						 "DATE_SUB(NOW(), INTERVAL 2 HOUR),");
-//	active
-// ---------------
-	strcat(sqlstring, "0,'',2,2,2,2,2");
-//	god, guild, strength, intelligence, dexterity, constitution, wisdom	
-	strcat(sqlstring, ",0,0,0,0,");
-//	practises, training, bandage, alighment, 
-	strcat(sqlstring, "0,0,118,500,118,");
-//	manastats, movementstats, maxmana, maxmove, maxvital
-	strcat(sqlstring, "'','','','','','','','','','','','','','','','','',"
-	"1,1,1)");
-//	cgi-variables, all empty. 
+	strcat(sqlstring, "'");
+	strcat(sqlstring, ",DATE_SUB(NOW(), INTERVAL 2 HOUR), "
+						 "DATE_SUB(NOW(), INTERVAL 2 HOUR))");
 	SendSQL2(sqlstring, NULL);
 	InsertPersonalInfo();
  	
