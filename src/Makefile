@@ -1,6 +1,7 @@
 #
 # MakeFile -- Maarten's Mud Makefile for compiling the binaries
 #
+# gcc mmserver.c `/usr/bin/xml-config --cflags` `/usr/bin/xml-config --libs` -I/usr/local/include/mysql/ -I../include/ -lm -lmysqlclient -lefence 
 
 # Directory for installing the mud-cgi-binaries 
 # ---------------------------------------------
@@ -50,24 +51,21 @@ COPTS = -g -m486
 # INCLUDES = -I../include -idirafter /usr/include/mysql/ 
 # this header is for Source installations of mysql
 #
-INCLUDES = -I../include -idirafter /usr/local/include/mysql/ 
+INCLUDES = -I../include -I/usr/local/include/mysql/ 
 XMLINCLUDES = `/usr/bin/xml-config --cflags`
 
 EXEDIR = /home/httpd/cgi-bin
 # this header is for RPM installations of mysql
 #
-# LIBDIR = -L/usr/local/lib/mysql/ 
+# LIBDIR = -L/usr/local/lib/mysql/ -lm -lmysqlclient
 # this header is for Source installations of mysql
 #
-LIBDIR = -L/usr/local/lib/mysql/ 
-XMLLIBDIR = `/usr/bin/xml-config --libs`
-
 # the -lefence option is strictly for debugging purposes
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
-#
-# OPTIONS = -lm -lmysqlclient
-OPTIONS = -lm -lmysqlclient -lefence
+#-L/usr/local/lib/mysql/ 
+LIBDIR = -lm -lmysqlclient -lefence
+XMLLIBDIR = `/usr/bin/xml-config --libs`
 
 TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
@@ -77,165 +75,159 @@ all: $(TARGETS)
 	strip $(TARGETS)
 
 cgic.o: cgic.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c cgic.c
+	$(CC) $(COPTS) $(INCLUDES) -c cgic.c
 
-mudmain.o: mudmain.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudmain.c $(DEBUG)
+mudmain.o: mudmain.c
+	$(CC) $(COPTS) $(INCLUDES) -c mudmain.c $(DEBUG)
 
-mud.o: mud.c mudmain.o mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud.c $(DEBUG)
+mud.o: mud.c
+	$(CC) $(COPTS) $(INCLUDES) -c mud.c $(DEBUG)
 
-#mmserver.o: mmserver.c mudmain.o mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	#$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mmserver.c 
+events.o: events.c
+	$(CC) $(COPTS) $(INCLUDES) -c events.c $(DEBUG)
 
-events.o: events.c mud-lib2.o mud-lib3.o parser.o mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c events.c $(DEBUG)
+newchar.o: newchar.c
+	$(CC) $(COPTS) $(INCLUDES) -c newchar.c $(DEBUG)
 
-newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c newchar.c $(DEBUG)
+enter.o: enter.c
+	$(CC) $(COPTS) $(INCLUDES) -c enter.c $(DEBUG)
 
-enter.o: enter.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c $(DEBUG)
+mmserver.o: mmserver.c
+	$(CC) $(COPTS) $(INCLUDES) $(XMLINCLUDES) -c mmserver.c $(DEBUG)
 
-rolls2: rolls.o typedefs.o userlib.o rolls.c
-	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
+rolls.o: rolls.c
+	$(CC) $(COPTS) $(INCLUDES) -c rolls.c $(DEBUG)
 
-rolls.o: rolls.c userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c rolls.c $(DEBUG)
+mudrelogin.o: mudrelogin.c
+	$(CC) $(COPTS) $(INCLUDES) -c mudrelogin.c $(DEBUG)
 
-mudrelogin.o: mudrelogin.c mud-lib.o userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudrelogin.c $(DEBUG)
+mud-lib.o: mud-lib.c
+	$(CC) $(COPTS) $(INCLUDES) -c mud-lib.c $(DEBUG)
 
-mud-lib.o: mud-lib.c typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib.c $(DEBUG)
+guild.o: guild.c
+	$(CC) $(COPTS) $(INCLUDES) -c guild.c $(DEBUG)
 
-guild.o: guild.c mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c guild.c $(DEBUG)
+mud-lib2.o: mud-lib2.c
+	$(CC) $(COPTS) $(INCLUDES) -c mud-lib2.c $(DEBUG)
 
-mud-lib2.o: mud-lib2.c guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib2.c $(DEBUG)
+mud-lib3.o: mud-lib3.c
+	$(CC) $(COPTS) $(INCLUDES) -c mud-lib3.c $(DEBUG)
 
-mud-lib3.o: mud-lib3.c parser.o mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mud-lib3.c $(DEBUG)
+parser.o: parser.c 
+	$(CC) $(COPTS) $(INCLUDES) -c parser.c $(DEBUG)
 
-parser.o: parser.c mud-lib2.o guild.o mud-lib.o typedefs.o userlib.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c parser.c $(DEBUG)
+userlib.o: userlib.c
+	$(CC) $(COPTS) $(INCLUDES) -c userlib.c $(DEBUG)
 
-userlib.o: userlib.c typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c userlib.c $(DEBUG)
-
-typedefs.o: typedefs.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c typedefs.c $(DEBUG)
-
-mudclient.o: cgic.o mudclient.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudclient.c $(DEBUG)
+typedefs.o: typedefs.c 
+	$(CC) $(COPTS) $(INCLUDES) -c typedefs.c $(DEBUG)
 
 #--- Binary executables are compiled below...
 
-mudclient: cgic.o mudclient.o
-	$(CC) $(COPTS) -o mudclient cgic.o mudclient.o
+rolls2: rolls.o typedefs.o userlib.o
+	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
 
 enter: enter.o mud-lib.o typedefs.o userlib.o cgic.o enter.c
-	$(CC) $(COPTS) -o enter cgic.o typedefs.o userlib.o mud-lib.o enter.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o enter cgic.o typedefs.o userlib.o mud-lib.o enter.o $(LIBDIR)
 
 mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
-	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR) $(INCLUDES) $(OPTIONS)
+	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
 
 newchar: newchar.o mud-lib.o typedefs.o userlib.o cgic.o newchar.c 
-	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o newchar cgic.o typedefs.o userlib.o mud-lib.o newchar.o  $(LIBDIR)
 
-mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o mud.c enter newchar 
-	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR) $(OPTIONS) 
+mud: mud.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o cgic.o 
+	$(CC) $(COPTS) -o mud mudmain.o cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o mud.o $(LIBDIR)
 
-mmserver: mmserver.c mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c 
-	$(CC) $(COPTS) -o mmserver mmserver.c mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(OPTIONS) $(INCLUDES) $(XMLINCLUDES) $(XMLLIBDIR)  $(DEBUG)
+mmserver: mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
+	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR) $(DEBUG)
 
-events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o events.c
-	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR) $(OPTIONS) 
+events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o 
+	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)
 
 #--- Compilation of frame-binaries
 
 addendumframe.o: addendumframe.c 
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c addendumframe.c  -o addendumframe.o
+	$(CC) $(COPTS) $(INCLUDES) -c addendumframe.c
 
 addendumframe: addendumframe.o cgic.o
-	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) $(OPTIONS) $(INCLUDES)
+	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) 
 
 leftframe.o: leftframe.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c leftframe.c -o leftframe.o
+	$(CC) $(COPTS) $(INCLUDES) -c leftframe.c
 
 leftframe: leftframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR)
 
-logonframe.o: cgic.o logonframe.c typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c logonframe.c -o logonframe.o
+logonframe.o: logonframe.c
+	$(CC) $(COPTS) $(INCLUDES) -c logonframe.c
 
-logonframe: logonframe.o cgic.o logonframe.c typedefs.o
-	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR) $(OPTIONS)
+logonframe: logonframe.o cgic.o typedefs.o
+	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR)
 
 #--- Compilation of javascript/serverpush/frame-binaries
 
-nph-addendum.o: cgic.o typedefs.o nph-addendum.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-addendum.c -o nph-addendum.o 
+nph-addendum.o: nph-addendum.c
+	$(CC) $(COPTS) $(INCLUDES) -c nph-addendum.c
 
 nph-addendum: nph-addendum.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) 
 
 nph-logonframe.o: nph-logonframe.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-logonframe.c -o nph-logonframe.o
+	$(CC) $(COPTS) $(INCLUDES) -c nph-logonframe.c
 
 nph-logonframe: nph-logonframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-logonframe cgic.o typedefs.o nph-logonframe.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o nph-logonframe cgic.o typedefs.o nph-logonframe.o $(LIBDIR) 
 
 nph-leftframe.o: nph-leftframe.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-leftframe.c -o nph-leftframe.o
+	$(CC) $(COPTS) $(INCLUDES) -c nph-leftframe.c
 
 nph-leftframe: nph-leftframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-leftframe cgic.o typedefs.o nph-leftframe.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o nph-leftframe cgic.o typedefs.o nph-leftframe.o $(LIBDIR) 
 
 nph-javascriptframe.o: nph-javascriptframe.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-javascriptframe.c -o nph-javascriptframe.o
+	$(CC) $(COPTS) $(INCLUDES) -c nph-javascriptframe.c
 
 nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-javascriptframe cgic.o typedefs.o nph-javascriptframe.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o nph-javascriptframe cgic.o typedefs.o nph-javascriptframe.o $(LIBDIR) 
 
 #--- Compilation and installing of small website binaries like the wholist
 
 wholist.o: wholist.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c wholist.c 
+	$(CC) $(COPTS) $(INCLUDES)  -c wholist.c 
 
 wholist: wholist.o
-	$(CC) $(COPTS) -o wholist wholist.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o wholist wholist.o $(LIBDIR)
 
 charactersheet.o: charactersheet.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c charactersheet.c 
+	$(CC) $(COPTS) $(INCLUDES) -c charactersheet.c 
 
 charactersheet: charactersheet.o cgic.o
-	$(CC) $(COPTS) -o charactersheet cgic.o charactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o charactersheet cgic.o charactersheet.o $(LIBDIR)
 
 charactersheets.o: charactersheets.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c charactersheets.c 
+	$(CC) $(COPTS) $(INCLUDES) -c charactersheets.c 
 
 charactersheets: charactersheets.o cgic.o
-	$(CC) $(COPTS) -o charactersheets cgic.o charactersheets.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o charactersheets cgic.o charactersheets.o $(LIBDIR) 
 
 editcharactersheet.o: editcharactersheet.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c editcharactersheet.c 
+	$(CC) $(COPTS) $(INCLUDES) -c editcharactersheet.c 
 
 editcharactersheet: editcharactersheet.o cgic.o
-	$(CC) $(COPTS) -o editcharactersheet cgic.o editcharactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o editcharactersheet cgic.o editcharactersheet.o $(LIBDIR)
 
 submitcharactersheet.o: submitcharactersheet.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c submitcharactersheet.c 
+	$(CC) $(COPTS) $(INCLUDES) -c submitcharactersheet.c 
 
 submitcharactersheet: submitcharactersheet.o cgic.o
-	$(CC) $(COPTS) -o submitcharactersheet cgic.o submitcharactersheet.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o submitcharactersheet cgic.o submitcharactersheet.o $(LIBDIR)
 
 clearcharacters.o: clearcharacters.c
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c clearcharacters.c 
+	$(CC) $(COPTS) $(INCLUDES) -c clearcharacters.c 
 
 clearcharacters: clearcharacters.o clearcharacters.c
-	$(CC) $(COPTS) -o clearcharacters clearcharacters.o $(LIBDIR) $(OPTIONS)
+	$(CC) $(COPTS) -o clearcharacters clearcharacters.o $(LIBDIR)
 
 #--- Clean up the stuff and install as well
 
