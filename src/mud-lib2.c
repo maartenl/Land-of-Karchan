@@ -133,6 +133,38 @@ char mailname[40], mailtoname[40], maildatetime[40];
 
 sprintf(logname, "%s%s.log", USERHeader, name);
 
+temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
+	" WHERE toname='%x' ", name);
+res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
+if (res != NULL)
+{
+	row = mysql_fetch_row(res);
+	if (row != NULL)
+	{
+		if ( (atoi(row[0])<messnr) || (messnr < 1))
+		{
+			WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
+			WriteRoom(name, password, room, 0);
+			return;
+		}
+	}
+	else
+	{
+		mysql_free_result(res);
+		WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		return;
+	}
+	mysql_free_result(res);
+}
+else
+{
+	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
+	WriteRoom(name, password, room, 0);
+	return;
+}
+
 temp = composeSqlStatement("SELECT * FROM tmp_mailtable"
 	" WHERE toname='%x' ORDER BY whensent ASC", name);
 res=SendSQL2(temp, NULL);
