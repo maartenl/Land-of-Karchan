@@ -220,6 +220,88 @@ end with a </root> tag.
 \end{verbatim}
 
 \newpage
+\section{Server Administration}
+\subsection{Configuration}
+Configuring of the game is done by means of a single xml file that contains
+all the configuration options. It is called by default \emph{config.xml}. Here is a
+layout and explanation of this file along with examples that are mostly used
+by the emph{Land of Karchan}. See for a specific example of how the file
+should look at the emph{config.xml} file in this docs directory.
+
+\subparagraph{HTMLHeader}
+the directory where the files are that are loaded for viewing to the user.
+Examples are newchar.html and goodbye.html. For example: /karchan/mud/data/
+\subparagraph{USERHeader}
+the directory where the log files of users reside during gameplay. For example: /karchan/mud/tmp/
+\subparagraph{DATABASEHeader}
+the directory where administration and logging files are kept. For example: /karchan/mud/data/
+\subparagraph{CopyrightHeader}
+the header displayed on every page provided to the user. For example: Copyright Maarten van Leunen 2002
+\subparagraph{DatabaseName}
+name of the database. For example: mud
+\subparagraph{DatabaseLogin}
+the user that has appropriate rights to the database. For example: root
+\subparagraph{DatabasePassword}
+the password of the user for connecting to the database. For example: temp
+\subparagraph{DatabaseHost}
+the hostname of the server where the database server is running. For example: localhost
+\subparagraph{DatabasePort}
+the port number on the server on which the database is listening. For example: 3306
+\subparagraph{ServerName}
+the hostname of the server which has to provide the webpages/cgi binaries.
+For example: www.karchan.org
+\subparagraph{CGIName}
+the directory where the cgi binaries are stored on the webserver. For example: /cgi-bin/
+\subparagraph{MudOffLineFile}
+the file containing the message to be displayed when the game is offline. If
+the file is absent, the game is online by default. For example: /karchan/mud/data/offline.txt
+\subparagraph{StdHelpFile}
+the helpfile loaded when someone on the game issues the command emph{help}. For example: /karchan/mud/data/help.txt
+\subparagraph{AuditTrailFile}
+the file containing messages about who logged on/off and when. For example: /karchan/mud/data/audit.trail
+\subparagraph{BigFile}
+the file containing every command, submitted by every user. For example: /karchan/mud/data/bigfile
+\subparagraph{ErrorFile}
+the file that contains the errors encountered. Usefull for example for
+determining what errors happened during sql statements to the database. For example: /karchan/mud/data/error.txt
+\subparagraph{MudCgi}
+the cgi binary used for submitting commands. For example: /cgi-bin/mud.cgi
+\subparagraph{EnterCgi}
+the cgi binary used for entering the game. For example: /cgi-bin/enter.cgi
+\subparagraph{NewcharCgi}
+the cgi binary for creating a new character. For example: /cgi-bin/newchar.cgi
+\subparagraph{LogonframeCgi}
+the cgi binary for creating the proper frameset. Used for mud interface 2
+and 3. For example: /cgi-bin/logonframe.cgi
+\subparagraph{LeftframeCgi}
+the cgi binary for creating the proper frameset. Used for mud interface 2
+and 3. For example: /cgi-bin/leftframe.cgi
+\subparagraph{MMHOST}
+the hostname of the server on which the mmserver process is running. For example:
+karchan.org
+\subparagraph{MMPORT}
+the port number of the mmserver process on which clients can connect, For example: 3339
+
+\subsection{Administration Commands}
+It is possible to do some simple administration on the server side. Most of
+this functionality is only for monitoring the current process. The following
+commands are available.
+
+\subparagraph{admin stats}
+shows statistics on the current game, how many connections there are, how
+many connections there have been and how many connections there were at the
+most busiest time,  as well as when the server came online.
+\subparagraph{admin config}
+shows the current settings as loaded from the config.xml file.
+\subparagraph{admin readconfig}
+rereads the settings from the config.xml file and immediately makes them
+active. This goes for everything except the database connection  and the
+socket communication.
+\subparagraph{admin shutdown}
+shuts the game down cleanly, closing all connections and cleaning up memory
+as it should. This is the preferred way of shutting the game down.
+
+\newpage
 \section{Playing the game}
 \subsection{Character Defaults}
 The five main attributes of your character are:
@@ -381,9 +463,6 @@ schematic.
 \item determine if person dead is bot
 \item diminish experience points by half (say, 500ex becomes 250exp)
 \end{itemize}
-
-{\par\centering
-\resizebox*{1\textwidth}{!}{\rotatebox{270}{\includegraphics{death.ps}}} \par}
 
 \subsection{Learning and Improving Your Character}
 Learning and Improving your character can be done by a lot of different
@@ -1211,23 +1290,23 @@ issueing fight  (default:0)
 \subparagraph{maxmana}maximum magic  (default:118)
 \subparagraph{maxmove}maximum movement  (default:500)
 \subparagraph{maxvital}maximum damage (death imminent)  (default:118)
-\subparagraph{cgiServerSoftware}environment variables "SERVER_SOFTWARE"
-\subparagraph{cgiServerName}environment variable "SERVER_NAME"
-\subparagraph{cgiGatewayInterface}environment variable "GATEWAY_INTERFACE"
-\subparagraph{cgiServerProtocol}environment variable "SERVER_PROTOCOL"
-\subparagraph{cgiServerPort}environment variable "SERVER_PORT"
-\subparagraph{cgiRequestMethod}environment variable "REQUEST_METHOD"
-\subparagraph{cgiPathInfo}environment variable "PATH_INFO"
-\subparagraph{cgiPathTranslated}environment variable "PATH_TRANSLATED"
-\subparagraph{cgiScriptName}environment variable "SCRIPT_NAME"
-\subparagraph{cgiRemoteHost}environment variable "REMOTE_HOST"
-\subparagraph{cgiRemoteAddr}environment variable "REMOTE_ADDR"
-\subparagraph{cgiAuthType}environment variable "AUTH_TYPE"
-\subparagraph{cgiRemoteUser}environment variable "REMOTE_USER"
-\subparagraph{cgiRemoteIdent}environment variable "REMOTE_IDENT"
-\subparagraph{cgiContentType}environment variable "CONTENT_TYPE"
-\subparagraph{cgiAccept}environment variable, "HTTP_ACCEPT"
-\subparagraph{cgiUserAgent}environment variable "HTTP_USER_AGENT"
+\subparagraph{cgiServerSoftware}environment variables "SERVER\_SOFTWARE"
+\subparagraph{cgiServerName}environment variable "SERVER\_NAME"
+\subparagraph{cgiGatewayInterface}environment variable "GATEWAY\_INTERFACE"
+\subparagraph{cgiServerProtocol}environment variable "SERVER\_PROTOCOL"
+\subparagraph{cgiServerPort}environment variable "SERVER\_PORT"
+\subparagraph{cgiRequestMethod}environment variable "REQUEST\_METHOD"
+\subparagraph{cgiPathInfo}environment variable "PATH\_INFO"
+\subparagraph{cgiPathTranslated}environment variable "PATH\_TRANSLATED"
+\subparagraph{cgiScriptName}environment variable "SCRIPT\_NAME"
+\subparagraph{cgiRemoteHost}environment variable "REMOTE\_HOST"
+\subparagraph{cgiRemoteAddr}environment variable "REMOTE\_ADDR"
+\subparagraph{cgiAuthType}environment variable "AUTH\_TYPE"
+\subparagraph{cgiRemoteUser}environment variable "REMOTE\_USER"
+\subparagraph{cgiRemoteIdent}environment variable "REMOTE\_IDENT"
+\subparagraph{cgiContentType}environment variable "CONTENT\_TYPE"
+\subparagraph{cgiAccept}environment variable, "HTTP\_ACCEPT"
+\subparagraph{cgiUserAgent}environment variable "HTTP\_USER\_AGENT"
 \subparagraph{jumpmanaint}increase on magic when healing  (default:1)
 \subparagraph{jumpmoveint}increase on movement when healing  (default:1)
 \subparagraph{jumpvital}increase on damage when healing  (default:1)
