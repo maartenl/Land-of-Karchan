@@ -62,7 +62,7 @@ $result = mysql_query("select mm_boardmessages.name,
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<hr>".$myrow[posttime]."<p>".
+	printf("<hr>".$myrow["posttime"]."<p>".
 		$myrow["message"]."<p><i>".$myrow["name"]."</i>");
 }
 

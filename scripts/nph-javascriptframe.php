@@ -31,7 +31,7 @@ maarten_l@yahoo.com
 <TITLE>Karchan</TITLE>
 </HEAD>
 
-<BODY BGCOLOR=#FFFFFF OnLoad="top.frames[5].location='/scripts/nph-addendum.php?name=<?php echo $_REQUEST{"name"} ?>&password=<?php echo$_REQUEST{"password"} ?>'">
+<BODY BGCOLOR=#FFFFFF OnLoad="top.frames[5].location='/scripts/nph-addendum.php?name=<?php echo $_COOKIE["karchanname"] ?>&password=<?php echo$_REQUEST{"password"} ?>'">
 <SCRIPT LANGUAGE="JavaScript1.2">
 <!-- Hide script from older browsers
 

@@ -32,7 +32,7 @@ maarten_l@yahoo.com
 <FORM METHOD="GET" ACTION="/scripts/mud.php" NAME="myForm" TARGET="statusFrame">
 <INPUT TYPE="text" NAME="command" SIZE="60" VALUE="">
 <INPUT TYPE="submit" VALUE="Submit" onClick='document.myForm.command.command=""'>
-<INPUT TYPE="hidden" NAME="name" VALUE="<?php echo $_REQUEST{"name"} ?>">
+<INPUT TYPE="hidden" NAME="name" VALUE="<?php echo $_COOKIE["karchanname"] ?>">
 <INPUT TYPE="hidden" NAME="frames" VALUE="3">
 <P>
 </FORM>

@@ -69,26 +69,26 @@ document [imgName].src = imgOff;
 </SCRIPT>
 
 
-<A HREF="/scripts/mud.php?command=quit&name=<?php echo $_REQUEST{"name"} ?>&frames=2" 
+<A HREF="/scripts/mud.php?command=quit&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" 
 TARGET=_top onMouseOver="img_act('toc2')" onMouseOut="img_inact('toc2')">
 <IMG SRC="/images/gif/webpic/buttonj.gif" BORDER=0 ALT="quit" NAME="toc2">
 </A><P>
 
-<A HREF="/scripts/mud.php?command=sleep&name=<?php echo $_REQUEST{"name"} ?>&frames=2" onMouseOver="img_act('toc1')" 
+<A HREF="/scripts/mud.php?command=sleep&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" onMouseOver="img_act('toc1')" 
 TARGET="main" onMouseOut="img_inact('toc1')">
 <IMG SRC="/images/gif/webpic/buttonk.gif" BORDER=0 ALT="sleep" NAME="toc1">
 </A><P>
 
-<A HREF="/scripts/mud.php?command=clear&name=<?php echo $_REQUEST{"name"} ?>&frames=2" onMouseOver="img_act('toc3')" 
+<A HREF="/scripts/mud.php?command=clear&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" onMouseOver="img_act('toc3')" 
 TARGET="main" onMouseOut="img_inact('toc3')">
 <IMG SRC="/images/gif/webpic/buttonr.gif" BORDER=0 ALT="clear" NAME="toc3">
 </A>
 
 <MAP NAME="roosmap">
-<AREA SHAPE="POLY" COORDS="0,0,33,31,63,0,0,0" HREF="/scripts/mud.php?command=n&name=<?php echo $_REQUEST{"name"} ?>&frames=2" TARGET="main">
-<AREA SHAPE="POLY" COORDS="0,63,33,31,63,63,0,63" HREF="/scripts/mud.php?command=s&name=<?php echo $_REQUEST{"name"} ?>&frames=2" TARGET="main">
-<AREA SHAPE="POLY" COORDS="0,0,33,31,0,63,0,0" HREF="/scripts/mud.php?command=w&name=<?php echo $_REQUEST{"name"} ?>&frames=2" TARGET="main">
-<AREA SHAPE="POLY" COORDS="63,0,33,31,63,63,63,0" HREF="/scripts/mud.php?command=e&name=<?php echo $_REQUEST{"name"} ?>&frames=2" TARGET="main">
+<AREA SHAPE="POLY" COORDS="0,0,33,31,63,0,0,0" HREF="/scripts/mud.php?command=n&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" TARGET="main">
+<AREA SHAPE="POLY" COORDS="0,63,33,31,63,63,0,63" HREF="/scripts/mud.php?command=s&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" TARGET="main">
+<AREA SHAPE="POLY" COORDS="0,0,33,31,0,63,0,0" HREF="/scripts/mud.php?command=w&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" TARGET="main">
+<AREA SHAPE="POLY" COORDS="63,0,33,31,63,63,63,0" HREF="/scripts/mud.php?command=e&name=<?php echo $_COOKIE["karchanname"] ?>&frames=2" TARGET="main">
 </MAP>
 
 <P>

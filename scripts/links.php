@@ -44,7 +44,8 @@ relating to fantasy.
 </UL>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
-if ($_REQUEST{"linkname"} != "")
+if (($_REQUEST{"linkname"} != "") &&
+	($_COOKIE["karchanname"] != ""))
 {
 	if (($_REQUEST{"type"} != "1") &&
 		($_REQUEST{"type"} != "2") &&
@@ -63,10 +64,10 @@ if ($_REQUEST{"linkname"} != "")
 		mysql_escape_string($_REQUEST{"type"}).", name 
 		from mm_usertable
 		where name = \"".
-		mysql_escape_string($_REQUEST{"name"}).
-		"\" and password = password(\"".
-		mysql_escape_string($_REQUEST{"password"}).
-		"\")";
+		mysql_escape_string($_COOKIE["karchanname"]).
+		"\" and lok = \"".
+		mysql_escape_string($_COOKIE["karchanpassword"]).
+		"\"";
 	$result = mysql_query($query
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -134,17 +135,24 @@ HREF="http://www.sourceforge.net/projects/mmud">http://sourceforge.net/projects/
 <DIV ALIGN=right>Last Updated $Date$
 </DIV>
 
+<?php
+if (($_COOKIE{"karchanpassword"} != "") &&
+	($_COOKIE["karchanname"] != ""))
+{
+?>
 Add link:<FORM METHOD="GET" ACTION="/scripts/links.php">
 Name of Website: <INPUT TYPE="text" NAME="linkname" VALUE="" SIZE="50" MAXLENGTH="255"><P>
 Url of Website: <INPUT TYPE="text" NAME="url" VALUE="" SIZE="50" MAXLENGTH="255"><P>
 Type: <BR><input type="radio" name="type" value="1" checked>Karchanian Homepage<BR>
 <input type="radio" name="type" value="2">General Link<BR>
 <input type="radio" name="type" value="3">Guild Homepage<BR>
-Your Character Name: <INPUT TYPE="text" NAME="name" VALUE="" SIZE="20" MAXLENGTH="20"><P>
-Your Character Password: <INPUT TYPE="password" NAME="password" VALUE="" SIZE="20" MAXLENGTH="40"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
+
+<?php 
+}
+?>
 
 <A HREF="/karchan/index.html"><IMG SRC="/images/gif/webpic/buttono.gif" BORDER="0"></A><P>
 

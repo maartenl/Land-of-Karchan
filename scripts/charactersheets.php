@@ -80,18 +80,21 @@ mysql_close($dbhandle);
 ?>
 </TR></TABLE>
 
+
+<?php
+if (($_COOKIE{"karchanpassword"} != "") &&
+	($_COOKIE["karchanname"] != ""))
+{
+?>
 </UL>
 <FORM METHOD="GET" ACTION="/scripts/editcharactersheet.php">
-<HR>
-(Fictional) Name:<BR>
-<INPUT TYPE="text" NAME="name" VALUE="" SIZE="19" MAXLENGTH="19"><P>
-Password:<BR>
-<INPUT TYPE="password" NAME="password" VALUE="" SIZE="10" MAXLENGTH="39">
-<P>
-<INPUT TYPE="submit" VALUE="Edit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
+<INPUT TYPE="submit" VALUE="Edit Your Character Sheet">
 </FORM>
 <hr>
+
+<?php
+}
+?>
 
 <a HREF="/karchan/chronicles/chronicles2.html">
 <img SRC="/images/gif/webpic/buttono.gif"  

@@ -29,8 +29,8 @@ maarten_l@yahoo.com
 <?php
 if ($_REQUEST{"username"} != "")
 {
-	setcookie("karchanname", $_REQUEST{"username"}, time() + 7200);
-	setcookie("karchanpassword", $_REQUEST{"userpassword"}, time() + 7200);
+	setcookie("karchanadminname", $_REQUEST{"username"}, time() + 7200);
+	setcookie("karchanadminpassword", $_REQUEST{"userpassword"}, time() + 7200);
 }
 ?>
 
@@ -47,15 +47,15 @@ Land of Karchan - Admin
 <IMG SRC="/images/gif/dragon.gif">Karchan Admin Page</H1>
 
 <?php
-if ( ($_COOKIE["karchanname"] == "") &&
-	($_REQUEST{"username"} == ""))
+if ( ($_COOKIE["karchanadminname"] == "") &&
+	($_REQUEST{"username"} == "") )
 {
 ?>
 <FORM METHOD="GET" ACTION="/scripts/admin.php">
 Administrator name:<BR>
 <INPUT TYPE="text" NAME="username" VALUE="" SIZE="39" MAXLENGTH="39"><P>
 Administrator password:<BR>
-<INPUT TYPE="text" NAME="userpassword" VALUE="" SIZE="38" MAXLENGTH="38"><P>
+<INPUT TYPE="password" NAME="userpassword" VALUE="" SIZE="38" MAXLENGTH="38"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>

@@ -54,11 +54,11 @@ maarten_l@yahoo.com
 		fgets ($fp,128); // action
 		fputs ($fp, "newchar\n");
 		fgets ($fp,128); // name
-		fputs ($fp, $_REQUEST{"name"}."\n");
+		fputs ($fp, $_COOKIE["karchanname"]."\n");
 		fgets ($fp,128); // password
 		fputs ($fp, $_REQUEST{"password"}."\n");
 		fgets ($fp,128); // cookie
-		fputs ($fp, $_COOKIE["Karchan"]."\n");
+		fputs ($fp, $_COOKIE["karchanpassword"]."\n");
 		fgets ($fp,128); // frames
 		fputs ($fp, $_REQUEST{"frames"}."\n");
 		fgets ($fp,128); // realname
@@ -97,7 +97,7 @@ maarten_l@yahoo.com
 		{
 			$cookie = substr($cookie, 16);
 			$cookie = substr_replace($cookie, "", -1, 1);
-			setcookie("Karchan", $cookie);
+			setcookie("karchanpassword", $cookie);
 		}
 		else
 		{

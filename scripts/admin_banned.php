@@ -99,7 +99,7 @@ if ($_REQUEST{"ban_address"} != "")
 	mysql_escape_string($_REQUEST{"ban_days"}).",".
 	"\"".mysql_escape_string($_REQUEST{"ban_ip"})."\",".
 	"\"".mysql_escape_string($_REQUEST{"ban_name"})."\",".
-	"\"".mysql_escape_string($_COOKIE{"karchanname"})."\",".
+	"\"".mysql_escape_string($_COOKIE{"karchanadminname"})."\",".
 	"now(),".
 	"\"".mysql_escape_string($_REQUEST{"ban_reason"})."\"".
 	")"

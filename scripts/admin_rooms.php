@@ -42,41 +42,217 @@ Room <?php echo $_REQUEST{"room"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-$result = mysql_query("select * from mm_rooms where id =
+
+/* the following constraints need to be checked before any kind of update is
+to take place:
+
+changing room:
+- first check that the change is approved (i.e. owner or null)
+- does room south exist
+- does room north exist
+- does room east exist
+- does room west exist
+- does room up exist
+- does room down exist
+- does area exist
+deleting room:
+- first check that the change is approved (i.e. owner or null)
+- check persons in room
+- check items in room
+- check references to this room in other rooms
+adding room:
+- all information filled out correctly?
+- does area exist?
+todo:
+- update room
+- update owner
+- insert into log
+
+*/
+if ($_REQUEST{"west"} <> "")
+{
+	// check it.
+	$result = mysql_query("select id from mm_rooms where id = ".
+		mysql_escape_string($_REQUEST{"room"}).
+		" and (owner is null or owner = \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\")"
+		, $dbhandle)
+		or die("Query(1) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 1)
+	{
+		die("You are not the owner of this room.");
+	}
+	if ($_REQUEST{"south"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"south"})
+			, $dbhandle)
+			or die("Query failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("South exit does not exist.");
+		}
+	}
+	if ($_REQUEST{"north"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"north"})
+			, $dbhandle)
+			or die("Query(2) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("North exit does not exist.");
+		}
+	}
+	if ($_REQUEST{"west"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"west"})
+			, $dbhandle)
+			or die("Query(3) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("West exit does not exist.");
+		}
+	}
+	if ($_REQUEST{"east"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"east"})
+			, $dbhandle)
+			or die("Query(4) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("East exit does not exist.");
+		}
+	}
+	if ($_REQUEST{"up"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"up"})
+			, $dbhandle)
+			or die("Query(5) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("Up exit does not exist.");
+		}
+	}
+	if ($_REQUEST{"down"} != 0)
+	{
+		$result = mysql_query("select id from mm_rooms where id = ".
+			mysql_escape_string($_REQUEST{"down"})
+			, $dbhandle)
+			or die("Query(6) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 1)
+		{
+			die("Down exit does not exist.");
+		}
+	}
+	$result = mysql_query("select area from mm_area where area = \"".
+		mysql_escape_string($_REQUEST{"area"})."\""
+		, $dbhandle)
+		or die("Query(7) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 1)
+	{
+		die("Area does not exist.");
+	}
+	// make that change.
+	$query = "update mm_rooms set north=".
+		mysql_escape_string($_REQUEST{"north"}).
+		", south=".
+		mysql_escape_string($_REQUEST{"south"}).
+		", east=".
+		mysql_escape_string($_REQUEST{"east"}).
+		", west=".
+		mysql_escape_string($_REQUEST{"west"}).
+		", up=".
+		mysql_escape_string($_REQUEST{"up"}).
+		", down=".
+		mysql_escape_string($_REQUEST{"down"}).
+		", contents=\"".
+		mysql_escape_string($_REQUEST{"contents"}).
+		"\", area=\"".
+		mysql_escape_string($_REQUEST{"area"}).
+		"\", owner=\"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\" where id = ".
+		mysql_escape_string($_REQUEST{"room"});
+	mysql_query($query
+		, $dbhandle)
+		or die("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Changed room ".$_REQUEST{"room"}.".", $query);
+}
+
+$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 from mm_rooms where id =
 	".mysql_escape_string($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow[0]);
-	if ($myrow[1]<>0)
+	if ($myrow["west"]<>0)
 	{
-		printf("<b>west:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[1], $myrow[1]);
+		printf("<b>west:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["west"], $myrow["west"]);
 	}
-	if ($myrow[2]<>0)
+	if ($myrow["east"]<>0)
 	{
-		printf("<b>east:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[2], $myrow[2]);
+		printf("<b>east:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["east"], $myrow["east"]);
 	}
-	if ($myrow[3]<>0)
+	if ($myrow["north"]<>0)
 	{
-		printf("<b>north:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[3], $myrow[3]);
+		printf("<b>north:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["north"], $myrow["north"]);
 	}
-	if ($myrow[4]<>0)
+	if ($myrow["south"]<>0)
 	{
-		printf("<b>south:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[4], $myrow[4]);
+		printf("<b>south:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["south"], $myrow["south"]);
 	}
-	if ($myrow[5]<>0)
+	if ($myrow["up"]<>0)
 	{
-		printf("<b>up:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[5], $myrow[5]);
+		printf("<b>up:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["up"], $myrow["up"]);
 	}
-	if ($myrow[6]<>0)
+	if ($myrow["down"]<>0)
 	{
-		printf("<b>down:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[6], $myrow[6]);
+		printf("<b>down:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["down"], $myrow["down"]);
 	}
-	printf("<b>contents:</b> %s<BR>", $myrow[7]);
-	printf("<b>owner:</b> %s<BR>", $myrow[8]);
-	printf("<b>creation:</b> %s<BR>", $myrow[9]);
-	printf("<b>area:</b> %s<BR>", $myrow[10]);
+	printf("<b>contents:</b> %s<BR>", $myrow["contents"]);
+	printf("<b>owner:</b> %s<BR>", $myrow["owner"]);
+	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
+	printf("<b>area:</b> %s<BR>", $myrow["area"]);
+	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
+		$myrow["owner"] == $_COOKIE["karchanadminname"])
+	{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_rooms.php">
+<b>
+<INPUT TYPE="hidden" NAME="room" VALUE="<?php echo $myrow["id"] ?>">
+<TABLE>
+<TR><TD>west</TD><TD><INPUT TYPE="text" NAME="west" VALUE="<?php echo $myrow["west"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>east</TD><TD><INPUT TYPE="text" NAME="east" VALUE="<?php echo $myrow["east"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>north</TD><TD><INPUT TYPE="text" NAME="north" VALUE="<?php echo $myrow["north"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>south</TD><TD><INPUT TYPE="text" NAME="south" VALUE="<?php echo $myrow["south"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>up</TD><TD><INPUT TYPE="text" NAME="up" VALUE="<?php echo $myrow["up"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>down</TD><TD><INPUT TYPE="text" NAME="down" VALUE="<?php echo $myrow["down"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>contents</TD><TD><TEXTAREA NAME="contents" ROWS="14" COLS="85"><?php echo $myrow["contents"] ?></TEXTAREA></TD></TR>
+<TR><TD>area</TD><TD><SELECT NAME="area">
+<?php
+$arearesult = mysql_query("select area from mm_area"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($areamyrow = mysql_fetch_array($arearesult)) 
+{
+	printf("<option %s value=\"%s\">%s",
+		($areamyrow["area"] == $myrow["area"] ? "selected" : ""),
+		$areamyrow["area"], $areamyrow["area"]);
+}
+?>
+</SELECT></TD></TR>
+</TABLE>
+<INPUT TYPE="submit" VALUE="Change Room">
+</b>
+</FORM>
+<?php
+	}
 }
 
 printf("</P>");

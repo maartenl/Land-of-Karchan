@@ -60,10 +60,10 @@ if ($_REQUEST{"value"} != "")
 		mysql_escape_string($_REQUEST{"comments"})."\" 
 		from mm_usertable
 		where name = \"".
-		mysql_escape_string($_REQUEST{"name"}).
-		"\" and password = password(\"".
-		mysql_escape_string($_REQUEST{"password"}).
-		"\")";
+		mysql_escape_string($_COOKIE["karchanname"]).
+		"\" and lok = \"".
+		mysql_escape_string($_COOKIE["karchanpassword"]).
+		"\"";
 	mysql_query($query
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());

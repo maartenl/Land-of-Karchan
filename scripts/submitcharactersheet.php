@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - <?php echo $_REQUEST{"name"} ?>
+Land of Karchan - <?php echo $_COOKIE["karchanname"] ?>
 </TITLE>
 </HEAD>
                                                                                                                       
@@ -44,9 +44,9 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
-	'".mysql_escape_string($_REQUEST{"name"})."' 
-	and mm_usertable.password =
-	password('".mysql_escape_string($_REQUEST{"password"})."')
+	'".mysql_escape_string($_COOKIE["karchanname"])."' 
+	and mm_usertable.lok =
+	'".mysql_escape_string($_COOKIE["karchanpassword"])."'
 	and mm_usertable.god < 2"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -58,14 +58,14 @@ if (mysql_num_rows($result) == 0)
 if ($_REQUEST{"family"} != "0")
 {
 	mysql_query("replace into family
-	values(\"".mysql_escape_string($_REQUEST{"name"})."\",
+	values(\"".mysql_escape_string($_COOKIE["karchanname"])."\",
 	\"".mysql_escape_string($_REQUEST{"familyname"}). 
 	"\",".mysql_escape_string($_REQUEST{"family"}).")",
 		 $dbhandle)
 		or die("Query failed : " . mysql_error());
 }
 mysql_query("replace into characterinfo 
-	values(\"".mysql_escape_string($_REQUEST{"name"})."\",
+	values(\"".mysql_escape_string($_COOKIE["karchanname"])."\",
 	\"".mysql_escape_string($_REQUEST{"imageurl"})."\",
 	\"".mysql_escape_string($_REQUEST{"homepageurl"})."\",
 	\"".mysql_escape_string($_REQUEST{"dateofbirth"})."\",
@@ -76,7 +76,8 @@ mysql_query("replace into characterinfo
 mysql_close($dbhandle);
 ?>
 Form information has been submitted.<P>
-Please click <A HREF="/scripts/charactersheet.php?name=<?php echo $_REQUEST{"name"} ?>">
+Please click <A HREF="/scripts/charactersheet.php?name=<?php echo
+$_COOKIE["karchanname"] ?>">
 Character Sheet Info</A> to view the submitted information.<P>
 
 <p>

@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - <?php echo $_REQUEST{"name"} ?>
+Land of Karchan - <?php echo $_COOKIE["karchanname"] ?>
 </TITLE>
 </HEAD>
                                                                                                                       
@@ -37,16 +37,16 @@ Land of Karchan - <?php echo $_REQUEST{"name"} ?>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Edit Character Sheet of <?php echo $_REQUEST{"name"} ?></H1>
+Edit Character Sheet of <?php echo $_COOKIE["karchanname"] ?></H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
-	'".mysql_escape_string($_REQUEST{"name"})."' 
-	and mm_usertable.password =
-	password('".mysql_escape_string($_REQUEST{"password"})."')"
+	'".mysql_escape_string($_COOKIE["karchanname"])."' 
+	and mm_usertable.lok =
+	'".mysql_escape_string($_COOKIE["karchanpassword"])."'"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
@@ -56,7 +56,7 @@ if (mysql_num_rows($result) == 0)
 $result = mysql_query("select *, replace(replace(replace(storyline,
 	'&','&amp;'),'<', '&lt;'), '>', '&gt;') 
 	from characterinfo 
-        where name = '".mysql_escape_string($_REQUEST{"name"})."'", $dbhandle)
+        where name = '".mysql_escape_string($_COOKIE["karchanname"])."'", $dbhandle)
 	or die("Query failed : " . mysql_error());
 if ($myrow = mysql_fetch_array($result)) 
 {
@@ -76,8 +76,6 @@ Original storyline was...<BR><TABLE><TR><TD><TT><?php echo $myrow[6] ?></TT></TD
 Storyline:<BR>
 <TEXTAREA NAME="storyline" VALUE="" ROWS="30" COLS="85"></TEXTAREA><P>
 <?php familyValues($dbhandle); ?>
-<INPUT TYPE="hidden" NAME="name" VALUE="<?php echo $_REQUEST{"name"} ?>">
-<INPUT TYPE="hidden" NAME="password" VALUE="<?php echo $_REQUEST{"password"} ?>">
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear">
 </FORM>
@@ -100,8 +98,6 @@ City of Birth:
 Storyline:<BR>
 <TEXTAREA NAME="storyline" VALUE="" ROWS="30" COLS="85"></TEXTAREA><P>
 <?php familyValues($dbhandle); ?>
-<INPUT TYPE="hidden" NAME="name" VALUE="<?php echo $_REQUEST{"name"} ?>">
-<INPUT TYPE="hidden" NAME="password" VALUE="<?php echo $_REQUEST{"password"} ?>">
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear">
 </FORM>

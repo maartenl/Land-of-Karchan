@@ -44,15 +44,18 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_REQUEST{"status"} = "1")
 {
-	$query = "select date_format(creation), name, message, addendum from mm_log order by creation";
+	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
+		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log order by creation";
 }
 if ($_REQUEST{"status"} = "2")
 {
-	$query = "select date_format(creation, \"%Y-%c-%e %T\"), name, message, addendum from mm_log where creation > now() -  INTERVAL 7 day order by creation";
+	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
+		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() -  INTERVAL 7 day order by creation";
 }
 if ($_REQUEST{"status"} = "3")
 {
-	$query = "select date_format(creation, \"%Y-%c-%e %T\"), name, message, addendum from mm_log where creation > now() - INTERVAL 1 day order by creation";
+	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message,
+		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - INTERVAL 1 day order by creation";
 }
 $result = mysql_query($query
 	, $dbhandle)
@@ -67,7 +70,7 @@ while ($myrow = mysql_fetch_array($result))
 	else
 	{
 		printf("<b>creation:</b> %s <b>name:</b> %s <b>message:</b>
-%s<PRE>%s</PRE><BR> ", $myrow[0],
+			%s<BR>%s<BR> ", $myrow[0],
 			$myrow[1], $myrow[2], $myrow["addendum"]);
 	}
 }
