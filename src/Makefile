@@ -70,15 +70,15 @@ LIBDIR = -L/usr/lib/mysql/ -lm -lmysqlclient -lz -lefence
 # pick the oldest one
 XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
-TARGETS = mmserver mud events mudrelogin newchar enter addendumframe leftframe logonframe \
+TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls2 \
 wholist charactersheet charactersheets editcharactersheet submitcharactersheet clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
 
-cgic.o: cgic.c
-	$(CC) $(COPTS) $(INCLUDES) -c cgic.c
+cgi-util.o: cgi-util.c
+	$(CC) $(COPTS) $(INCLUDES) -c -o cgi-util.o cgi-util.c
 
 mudmain.o: mudmain.c
 	$(CC) $(COPTS) $(INCLUDES) -c mudmain.c $(DEBUG)
@@ -107,8 +107,9 @@ mmserver.o: mmserver.c
 rolls.o: rolls.c
 	$(CC) $(COPTS) $(INCLUDES) -c rolls.c $(DEBUG)
 
-mudrelogin.o: mudrelogin.c
-	$(CC) $(COPTS) $(INCLUDES) -c mudrelogin.c $(DEBUG)
+# has become obsolete
+# mudrelogin.o: mudrelogin.c
+#	$(CC) $(COPTS) $(INCLUDES) -c mudrelogin.c $(DEBUG)
 
 mud-lib.o: mud-lib.c
 	$(CC) $(COPTS) $(INCLUDES) -c mud-lib.c $(DEBUG)
@@ -136,69 +137,70 @@ typedefs.o: typedefs.c
 rolls2: rolls.o typedefs.o userlib.o
 	$(CC) $(COPTS) -o rolls2 typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
 
-enter: enter.o cgic.o
-	$(CC) $(COPTS) -o enter cgic.o enter.o $(LIBDIR) $(XMLLIBDIR) 
+enter: enter.o cgi-util.o
+	$(CC) $(COPTS) -o enter cgi-util.o enter.o $(LIBDIR) $(XMLLIBDIR) 
 
-mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgic.o mudrelogin.c
-	$(CC) $(COPTS) -o mudrelogin cgic.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
+# has become obsolete
+#mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgi-util.o mudrelogin.c
+#	$(CC) $(COPTS) -o mudrelogin cgi-util.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
 
-newchar: newchar.o cgic.o newchar.c 
-	$(CC) $(COPTS) -o newchar cgic.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
+newchar: newchar.o cgi-util.o newchar.c 
+	$(CC) $(COPTS) -o newchar cgi-util.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
 
-mud: mud.o cgic.o 
-	$(CC) $(COPTS) -o mud cgic.o mud.o $(LIBDIR) $(XMLLIBDIR) 
+mud: mud.o cgi-util.o 
+	$(CC) $(COPTS) -o mud cgi-util.o mud.o $(LIBDIR) $(XMLLIBDIR) 
 
 mmserver: mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
 	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
 
-events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgic.o 
-	$(CC) $(COPTS) -o events cgic.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)
+events: events.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.c cgi-util.o 
+	$(CC) $(COPTS) -o events cgi-util.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o events.o $(LIBDIR)
 
 #--- Compilation of frame-binaries
 
 addendumframe.o: addendumframe.c 
 	$(CC) $(COPTS) $(INCLUDES) -c addendumframe.c
 
-addendumframe: addendumframe.o cgic.o
-	$(CC) $(COPTS) -o addendumframe cgic.o addendumframe.o $(LIBDIR) 
+addendumframe: addendumframe.o cgi-util.o
+	$(CC) $(COPTS) -o addendumframe cgi-util.o addendumframe.o $(LIBDIR) 
 
 leftframe.o: leftframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c leftframe.c
 
-leftframe: leftframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR)
+leftframe: leftframe.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o leftframe cgi-util.o typedefs.o leftframe.o $(LIBDIR)
 
 logonframe.o: logonframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c logonframe.c
 
-logonframe: logonframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR)
+logonframe: logonframe.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o logonframe cgi-util.o typedefs.o logonframe.o $(LIBDIR)
 
 #--- Compilation of javascript/serverpush/frame-binaries
 
 nph-addendum.o: nph-addendum.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-addendum.c
 
-nph-addendum: nph-addendum.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) 
+nph-addendum: nph-addendum.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o nph-addendum cgi-util.o typedefs.o nph-addendum.o $(LIBDIR) 
 
 nph-logonframe.o: nph-logonframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-logonframe.c
 
-nph-logonframe: nph-logonframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-logonframe cgic.o typedefs.o nph-logonframe.o $(LIBDIR) 
+nph-logonframe: nph-logonframe.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o nph-logonframe cgi-util.o typedefs.o nph-logonframe.o $(LIBDIR) 
 
 nph-leftframe.o: nph-leftframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-leftframe.c
 
-nph-leftframe: nph-leftframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-leftframe cgic.o typedefs.o nph-leftframe.o $(LIBDIR) 
+nph-leftframe: nph-leftframe.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o nph-leftframe cgi-util.o typedefs.o nph-leftframe.o $(LIBDIR) 
 
 nph-javascriptframe.o: nph-javascriptframe.c
 	$(CC) $(COPTS) $(INCLUDES) -c nph-javascriptframe.c
 
-nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
-	$(CC) $(COPTS) -o nph-javascriptframe cgic.o typedefs.o nph-javascriptframe.o $(LIBDIR) 
+nph-javascriptframe: nph-javascriptframe.o cgi-util.o typedefs.o
+	$(CC) $(COPTS) -o nph-javascriptframe cgi-util.o typedefs.o nph-javascriptframe.o $(LIBDIR) 
 
 #--- Compilation and installing of small website binaries like the wholist
 
@@ -211,26 +213,26 @@ wholist: wholist.o
 charactersheet.o: charactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c charactersheet.c 
 
-charactersheet: charactersheet.o cgic.o
-	$(CC) $(COPTS) -o charactersheet cgic.o charactersheet.o $(LIBDIR)
+charactersheet: charactersheet.o cgi-util.o
+	$(CC) $(COPTS) -o charactersheet cgi-util.o charactersheet.o $(LIBDIR)
 
 charactersheets.o: charactersheets.c
 	$(CC) $(COPTS) $(INCLUDES) -c charactersheets.c 
 
-charactersheets: charactersheets.o cgic.o
-	$(CC) $(COPTS) -o charactersheets cgic.o charactersheets.o $(LIBDIR) 
+charactersheets: charactersheets.o cgi-util.o
+	$(CC) $(COPTS) -o charactersheets cgi-util.o charactersheets.o $(LIBDIR) 
 
 editcharactersheet.o: editcharactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c editcharactersheet.c 
 
-editcharactersheet: editcharactersheet.o cgic.o
-	$(CC) $(COPTS) -o editcharactersheet cgic.o editcharactersheet.o $(LIBDIR)
+editcharactersheet: editcharactersheet.o cgi-util.o
+	$(CC) $(COPTS) -o editcharactersheet cgi-util.o editcharactersheet.o $(LIBDIR)
 
 submitcharactersheet.o: submitcharactersheet.c
 	$(CC) $(COPTS) $(INCLUDES) -c submitcharactersheet.c 
 
-submitcharactersheet: submitcharactersheet.o cgic.o
-	$(CC) $(COPTS) -o submitcharactersheet cgic.o submitcharactersheet.o $(LIBDIR)
+submitcharactersheet: submitcharactersheet.o cgi-util.o
+	$(CC) $(COPTS) -o submitcharactersheet cgi-util.o submitcharactersheet.o $(LIBDIR)
 
 clearcharacters.o: clearcharacters.c
 	$(CC) $(COPTS) $(INCLUDES) -c clearcharacters.c 
@@ -247,7 +249,7 @@ backup: all
 	@echo "Backing up Mud Binaries..."
 	@echo "  Backing up Central Mud CGI..."
 	@cp $(INSTALLDIR)mud.cgi $(INSTALLDIR)mud_backup.cgi
-	@cp $(INSTALLDIR)mudrelogin.cgi $(INSTALLDIR)mudrelogin_backup.cgi
+#	@cp $(INSTALLDIR)mudrelogin.cgi $(INSTALLDIR)mudrelogin_backup.cgi
 	@cp $(INSTALLDIR)enter.cgi $(INSTALLDIR)enter_backup.cgi
 	@cp $(INSTALLDIR)newchar.cgi $(INSTALLDIR)newchar_backup.cgi
 	@echo "  Backing up Frame CGI..."
@@ -264,7 +266,7 @@ restore: all
 	@echo "Restoring backup of Mud Binaries..."
 	@echo "  Restoring backup Central Mud CGI..."
 	@cp $(INSTALLDIR)mud_backup.cgi $(INSTALLDIR)mud.cgi 
-	@cp $(INSTALLDIR)mudrelogin_backup.cgi $(INSTALLDIR)mudrelogin.cgi 
+#	@cp $(INSTALLDIR)mudrelogin_backup.cgi $(INSTALLDIR)mudrelogin.cgi 
 	@cp $(INSTALLDIR)enter_backup.cgi $(INSTALLDIR)enter.cgi 
 	@cp $(INSTALLDIR)newchar_backup.cgi $(INSTALLDIR)newchar.cgi 
 	@echo "  Restoring backup Frame CGI..."
@@ -286,7 +288,7 @@ install: all
 	@echo "Installing Mud Binaries..."
 	@echo "  Installing Central Mud CGI..."
 	@cp mud $(INSTALLDIR)mud.cgi
-	@cp mudrelogin $(INSTALLDIR)mudrelogin.cgi
+#	@cp mudrelogin $(INSTALLDIR)mudrelogin.cgi
 	@cp enter $(INSTALLDIR)enter.cgi
 	@cp newchar $(INSTALLDIR)newchar.cgi
 	@echo "  Installing Frame CGI..."
