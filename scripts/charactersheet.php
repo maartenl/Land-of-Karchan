@@ -42,7 +42,7 @@ Character Sheet of <?php echo $_REQUEST{"name"} ?></H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
-$result = mysql_query("select usertable.name, title, sex,
+$result = mysql_query("select mm_usertable.name, title, sex,
 	concat(age,
 	if(length = 'none', '', concat(', ',length)),
         if(width = 'none', '', concat(', ',width)),
@@ -57,10 +57,10 @@ $result = mysql_query("select usertable.name, title, sex,
         concat('<IMG SRC=\"',imageurl,'\">'), 
         guild, 
         concat('<A HREF=\"',homepageurl,'\">',homepageurl,'</A>'), 
-        \"Yes\", dateofbirth, cityofbirth, usertable.lastlogin, storyline 
-        from usertable, characterinfo 
-        where usertable.name = '".$_REQUEST{"name"}."' and 
-        usertable.name = characterinfo.name"
+        \"Yes\", dateofbirth, cityofbirth, mm_usertable.lastlogin, storyline 
+        from mm_usertable, characterinfo 
+        where mm_usertable.name = '".$_REQUEST{"name"}."' and 
+        mm_usertable.name = characterinfo.name"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)

@@ -43,10 +43,10 @@ Character Sheets</H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
 
-$result = mysql_query("select * from usertable where usertable.name =
+$result = mysql_query("select * from mm_usertable where mm_usertable.name =
 	'".$_REQUEST{"name"}."' 
-	and usertable.password = '".$_REQUEST{"password"}."'
-	and usertable.god < 2"
+	and mm_usertable.password = password('".$_REQUEST{"password"}."')
+	and mm_usertable.god < 2"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)

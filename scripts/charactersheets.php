@@ -53,9 +53,9 @@ fill out, and change later in the same way.<P>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select concat(\"<A
-	HREF=\\\"/scripts/charactersheet.php?name=\",usertable.name,\"\\\">\",usertable.name,\"</A>\") 
-	, usertable.name from characterinfo, usertable 
-	where usertable.name=characterinfo.name"
+	HREF=\\\"/scripts/charactersheet.php?name=\",mm_usertable.name,\"\\\">\",mm_usertable.name,\"</A>\") 
+	, mm_usertable.name from characterinfo, mm_usertable 
+	where mm_usertable.name=characterinfo.name"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 $numrows = ceil(mysql_num_rows($result) / 5);

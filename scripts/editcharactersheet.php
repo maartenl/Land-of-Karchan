@@ -43,9 +43,9 @@ Edit Character Sheet of <?php echo $_REQUEST{"name"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
 
-$result = mysql_query("select * from usertable where usertable.name =
+$result = mysql_query("select * from mm_usertable where mm_usertable.name =
 	'".$_REQUEST{"name"}."' 
-	and usertable.password = '".$_REQUEST{"password"}."'"
+	and mm_usertable.password = password('".$_REQUEST{"password"}."')"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
@@ -86,7 +86,7 @@ else
 {
 	// empty character sheet
 ?>
-<FORM METHOD="GET" ACTION="/cgi-bin/submitcharactersheet.cgi">
+<FORM METHOD="GET" ACTION="/scripts/submitcharactersheet.php">
 <HR>
 Homepage Url:<BR>
 <INPUT TYPE="text" NAME="homepageurl" VALUE="http://" SIZE="50" MAXLENGTH="253"><P>
