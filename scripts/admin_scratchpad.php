@@ -32,44 +32,64 @@ maarten_l@yahoo.com
 Land of Karchan - Admin
 </TITLE>
 </HEAD>
-																													  
+                                                                                                                      
 <BODY>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Char <?php echo $_REQUEST{"char"} ?></H1>
+Scratchpad</H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
-$possibilities = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-$password = "";
-for ($i = 1; $i < 14 ; $i++)
+/*
+There are two possibilities:
+1. just the contents
+2. just the contents but with a changeable form
+*/
+
+if (isset($_REQUEST{"scratchpad"}))
 {
-	$password = $password.substr($possibilities, rand(0,61), 1);
+$result = mysql_query("update scratchpad set scratch=
+	\"".mysql_escape_string($_REQUEST{"scratchpad"})."\",
+	owner=\"".mysql_escape_string($_COOKIE["karchanadminname"])."\""
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
 }
-// make that change.
-$query = "update mm_usertable set password = password(\"".
-	$password.
-	"\"), owner=\"".
-	mysql_escape_string($_COOKIE["karchanadminname"]).
-	"\" where name = \"".
-	mysql_escape_string($_REQUEST{"char"}).
-	"\" and (owner is null or owner = \"".
-	mysql_escape_string($_COOKIE["karchanadminname"])."\")";
-mysql_query($query, $dbhandle)  
-or die("Query(8) failed : " . mysql_error(). "[" . $query . "]");
-writeLog($dbhandle, "Changed password of character ".$_REQUEST{"char"}.".");
+$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
+last_updated2 from scratchpad"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>Last updated:</b> %s, by %s<BR>", $myrow["last_updated2"]
+		, $myrow["owner"]);  
+    printf("%s", $myrow["scratch"]);
+	if (isset($_REQUEST{"bogus"}))
+	{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_scratchpad.php">
+<TEXTAREA NAME="scratchpad" ROWS="50" COLS="85">
+<?php echo $myrow["scratch"] ?>
+</TEXTAREA>
+<P><INPUT TYPE="submit" VALUE="Submit Info"><P>
+</FORM>
+<?php
+	}
+	else
+	{
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_scratchpad.php">
+<INPUT TYPE="hidden" NAME="bogus" VALUE="bogus">
+<P><INPUT TYPE="submit" VALUE="Change Scratchpad"><P>
+</FORM>
+<?php
+	}
+}
 mysql_close($dbhandle);
 ?>
 
-Changed password of character <I><?php echo $_REQUEST{"char"} ?></I>
-to <I><?php echo $password ?></I>.<P>
-
-<a HREF="/karchan/admin/chars.html">
-<img SRC="/images/gif/webpic/buttono.gif"  
-BORDER="0"></a><p>
 
 </BODY>
 </HTML>

@@ -42,10 +42,7 @@ Logonmessage</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-if (get_cfg_var("magic_quotes_gpc") == "1")
-{
-	$_REQUEST{"message"} = stripslashes($_REQUEST{"message"});
-}
+
 $result = mysql_query("replace into mm_boardmessages 
 	values(2, \"".mysql_escape_string($_COOKIE["karchanadminname"])."\", now(),\"".
 	mysql_escape_string($_REQUEST{"message"})."\")"
