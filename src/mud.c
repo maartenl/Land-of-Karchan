@@ -1376,6 +1376,28 @@ cgiMain()
 
 	}
 
+/* add KnightTalk */		
+	if (!strcmp("Knights", guildstatus))
+	{
+		if ( (!strcmp("knight", tokens[0])) && (!strcmp("talk", tokens[1])) )
+		{
+			KnightTalk(name, password, room);
+			KillGame();
+		}
+
+	}
+
+/* add JusticeTalk */		
+	if (!strcmp("Justice", guildstatus))
+	{
+		if ( (!strcmp("justice", tokens[0])) && (!strcmp("talk", tokens[1])) )
+		{
+			JusticeTalk(name, password, room);
+			KillGame();
+		}
+
+	}
+
 	/* End Guilds */
 	if (!strcmp("mail", troep))
 	{

@@ -48,3 +48,9 @@ void BKTalk(char *name, char *password, int room);
 
 /* add Kindred chat line */
 void VampTalk(char *name, char *password, int room);
+
+/* add Knight chat line */
+void KnightTalk(char *name, char *password, int room);
+
+/* add Justice chat line */
+void JusticeTalk(char *name, char *password, int room);
