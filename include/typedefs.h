@@ -127,6 +127,7 @@ typedef struct
 	void *newchar; // usually NULL, except when action=newchar
 	
 	char *tokens[50];
+	char *memblock; // the memory block which is basically a copy of command and is used to strok for *tokens
 	int tokenamount;
 	
 	void *next; // next item in the list

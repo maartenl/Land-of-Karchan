@@ -329,6 +329,7 @@ add_to_list(int socketfd)
 	mine->socketfd = socketfd;
 	mine->newchar = NULL;
 	mine->tokenamount = 0;
+	mine->memblock = NULL; // once again, should contain a memory block used for strtok
 	for (i = 0; i < 50; i++) 
 	{
 		mine->tokens[i] = NULL;
@@ -386,6 +387,11 @@ remove_from_list(int socketfd)
 			{
 				free(mine->command);
 				mine->command = NULL;
+			}
+			if (mine->memblock != NULL) 
+			{
+				free(mine->memblock);
+				mine->memblock = NULL;
 			}
 			if (mine->action != NULL) 
 			{

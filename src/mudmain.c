@@ -1916,7 +1916,6 @@ gameMain(int socketfd)
 	char	logname[100];
 	char	*junk;
 	char *command;
-	char *printstr;
 	char    **myTokens;
 	struct tm datumtijd;
 	time_t   datetime;
@@ -1936,11 +1935,7 @@ gameMain(int socketfd)
 	password = mymudstruct->password;
 	myTokens = mymudstruct->tokens;
 	umask(0000);
-#ifdef DEBUG	
-	printf("gameMain started!!!\n");
-#endif
 
-	printstr = (char *) malloc(strlen(mymudstruct->command)+500);
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
@@ -1948,13 +1943,11 @@ gameMain(int socketfd)
 	if (SearchBanList(mymudstruct->address, name)) 
 	{
 		BannedFromGame(name, mymudstruct->address);
-		free(printstr);
 		return 0;
 	}
 
 	if (!ExistUser(name)) {
 		NotActive(name,password,1);
-		free(printstr);
 		return 0;
 	}
 
@@ -1967,14 +1960,12 @@ gameMain(int socketfd)
 	if (res==NULL)
 	{
 		NotActive(name, password,2);
-		free(printstr);
 		return 0;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL)
 	{
 		NotActive(name, password,3);
-		free(printstr);
 		return 0;
 	}
 	
@@ -1988,7 +1979,6 @@ gameMain(int socketfd)
 		/* check vitals along with maxvital */
 		mysql_free_result(res);
 		Dead(name, password, room, mymudstruct->frames);
-		free(printstr);
 		return 0;
 	}
 	strcpy(guildstatus	, row[9]);
@@ -2022,8 +2012,12 @@ gameMain(int socketfd)
 	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
-	junk = (char *) malloc(strlen(command)+1);
-	strcpy(junk, command);
+	junk = strdup(command);
+	if (mymudstruct->memblock != NULL)
+	{
+		free(mymudstruct->memblock);
+	}
+	mymudstruct->memblock = junk;
 	while ((strlen(junk)>0) && (junk[strlen(junk)-1]==' ')) 
 	{
 		junk[strlen(junk)-1]=0;
@@ -2032,8 +2026,6 @@ gameMain(int socketfd)
 	if (*junk == '\0') 
 	{
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	
@@ -2042,8 +2034,6 @@ gameMain(int socketfd)
 	{ 
 		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 
@@ -2052,14 +2042,10 @@ gameMain(int socketfd)
 		if (!strcasecmp(command, "awaken"))
 		{
 			Awaken2_Command(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	
@@ -2083,8 +2069,6 @@ gameMain(int socketfd)
 		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 		}
 		if ((*command == '\0') ||
@@ -2092,8 +2076,6 @@ gameMain(int socketfd)
 		(!strcasecmp(command, "look")) ||
 		(!strcasecmp(command, "l"))) {
 			WriteRoom(mymudstruct);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 		if ((!strcasecmp(command, "go west")) ||
@@ -2132,8 +2114,6 @@ gameMain(int socketfd)
 
 		WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 
@@ -2156,10 +2136,8 @@ gameMain(int socketfd)
 	}			/* endif */
 	mymudstruct->tokenamount = amount;
 
-	if (SearchForSpecialCommand(name, password, command, room)==1)
+	if (SearchForSpecialCommand(mymudstruct, name, password, command, room, mymudstruct->frames)==1)
 	{
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 #ifdef DEBUG
@@ -2202,8 +2180,6 @@ gameMain(int socketfd)
 			if (gameFunctionArray[pos](mymudstruct))
 			{
 				/* command executed successfully, kill this session */
-				free(junk);
-				free(printstr);
 				return 1;
 			}
 			else
@@ -2224,8 +2200,6 @@ gameMain(int socketfd)
 		WriteSentenceIntoOwnLogFile(logname, "You %s.<BR>\r\n", command);
 		WriteMessage(name, room, "%s %s.<BR>\r\n", name, temp);
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	/* smile engagingly */
@@ -2234,8 +2208,6 @@ gameMain(int socketfd)
 		WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1));
 		WriteMessage(name, room, "%s %s %s.<BR>\r\n", name, temp, getToken(mymudstruct, 1));
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	/* smile to bill */
@@ -2248,8 +2220,6 @@ gameMain(int socketfd)
 			WriteSentenceIntoOwnLogFile(logname, "You %s to %s.</BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 2));
 		}
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	/* smile(0) engagingly(1) to(2) Bill(3) */
@@ -2262,8 +2232,6 @@ gameMain(int socketfd)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s to %s.</BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1), getToken(mymudstruct, 3));
 		}
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}
 	/* multiple person emotions */
@@ -2281,8 +2249,6 @@ gameMain(int socketfd)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1));
 		}
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}			/* end of multiple persons emotions */
 	/* caress bill absentmindedly */
@@ -2300,8 +2266,6 @@ gameMain(int socketfd)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s, %s.<BR>\r\n", getToken(mymudstruct, 0), getToken(mymudstruct, 1), getToken(mymudstruct, 2));
 		}
 		WriteRoom(mymudstruct);
-		free(junk);
-		free(printstr);
 		return 1;
 	}			/* end of multiple persons emotions */
 
@@ -2311,8 +2275,6 @@ gameMain(int socketfd)
 		if ( (!strcasecmp("pow", getToken(mymudstruct, 0))) && (!strcasecmp("wow", getToken(mymudstruct, 1))) )
 		{
 			SWTalk(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 
@@ -2324,8 +2286,6 @@ gameMain(int socketfd)
 		if ( (!strcasecmp("chaos", getToken(mymudstruct, 0))) && (!strcasecmp("murmur", getToken(mymudstruct, 1))) )
 		{
 			BKTalk(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 
@@ -2337,8 +2297,6 @@ gameMain(int socketfd)
 		if ( (!strcasecmp("misty", getToken(mymudstruct, 0))) && (!strcasecmp("whisper", getToken(mymudstruct, 1))) )
 		{
 			VampTalk(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 
@@ -2350,8 +2308,6 @@ gameMain(int socketfd)
 		if ( (getTokenAmount(mymudstruct) > 2) && (!strcasecmp("knight", getToken(mymudstruct, 0))) && (!strcasecmp("talk", getToken(mymudstruct, 1))) )
 		{
 			KnightTalk(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 
@@ -2363,8 +2319,6 @@ gameMain(int socketfd)
 		if ( (!strcasecmp("mogob", getToken(mymudstruct, 0))) && (!strcasecmp("burz", getToken(mymudstruct, 1))) )
 		{
 			CoDTalk(name, password, room);
-			free(junk);
-			free(printstr);
 			return 1;
 		}
 
