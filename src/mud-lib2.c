@@ -1352,6 +1352,13 @@ GetMoney_Command(char *name, char *password, int room)
 	{
 		amount=1;numberfilledout=0;
 	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
+
 		/*get iron pick*/
 		sprintf(sqlstring, 
 		"select items.id, tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems "
@@ -1475,6 +1482,12 @@ DropMoney_Command(char *name, char *password, int room)
 	if (*checkerror!='\0')
 	{
 		amount=1;numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 
 	if (!strcmp(tokens[aantal-2],"copper"))
@@ -1632,6 +1645,12 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		amount=1;numberfilledout=0;
 	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
 
 	if (!strcmp(tokens[numberfilledout+1],"copper"))
 	{
@@ -1720,6 +1739,12 @@ Get_Command(char *name, char *password, int room)
 	if (*checkerror!='\0')
 	{
 		amount=1;numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 		if (aantal==2+numberfilledout) 
 		{
@@ -1941,6 +1966,12 @@ Drop_Command(char *name, char *password, int room)
 	if (*checkerror!='\0')
 	{
 		amount=1;numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 		if (aantal==2+numberfilledout) 
 		{
@@ -2186,6 +2217,12 @@ Put_Command(char *name, char *password, int room)
 	{
 		amount=1;
 		numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 	if (!strcmp(tokens[2+numberfilledout], "in"))
 	{
@@ -2526,6 +2563,12 @@ Retrieve_Command(char *name, char *password, int room)
 	{
 		amount=1;
 		numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 	if (!strcmp(tokens[2+numberfilledout], "from"))
 	{
@@ -4052,6 +4095,12 @@ Buy_Command(char *name, char *password, int room, char *fromname)
 	{
 		amount=1;numberfilledout=0;
 	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
+	}
 		if (aantal==2+numberfilledout) 
 		{
 			/*give pick to Karn*/
@@ -4263,6 +4312,12 @@ Sell_Command(char *name, char *password, int room, char *toname)
 	if (*checkerror!='\0')
 	{
 		amount=1;numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 	if (aantal==2+numberfilledout) 
 	{
@@ -4624,6 +4679,12 @@ Give_Command(char *name, char *password, int room)
 	if (*checkerror!='\0')
 	{
 		amount=1;numberfilledout=0;
+	}
+	if (amount<1) 
+	{
+		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		KillGame();
 	}
 		if (aantal==4+numberfilledout) 
 		{
