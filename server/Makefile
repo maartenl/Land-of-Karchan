@@ -38,16 +38,19 @@ TARGETS = compile javadoc release
 
 compile: mmud/*.java
 	$(CC) $(COPTS) mmud/*.java mmud/items/*.java mmud/commands/*.java \
-	mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
+	mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java \
+	mmud/boards/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc: compile
 	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -private -d ./html \
-	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database
+	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database \
+	mmud.boards
 
 clean:
 	rm -rf jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
 	mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
+	mmud/boards/*~ \
 	mmud/communication/*~ mmud/configuration/*~
 
 dist-clean:

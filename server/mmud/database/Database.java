@@ -39,6 +39,8 @@ import mmud.*;
 import mmud.characters.*;
 import mmud.items.*;
 import mmud.rooms.*;
+import mmud.boards.BoardFormatEnum;
+import mmud.boards.Board;
 
 /**
  * The central class that takes care of all the commands that are to be
@@ -744,35 +746,17 @@ public class Database
 	}
 
 	/**
-	 * returns the logonmessage when logging into the game
+	 * returns the logonmessage when logging into the game.
+	 * The logonmessage is basically the board called "logonmessage".
 	 * @return String containing the logon message.
 	 */
 	public static String getLogonMessage()
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
-		ResultSet res;
-		String result = null;
-		try
-		{
-
-		PreparedStatement sqlGetLogonMsg = theConnection.prepareStatement(sqlGetLogonMessageString);
-		res = sqlGetLogonMsg.executeQuery();
-		if (res != null)
-		{
-			if (res.next())
-			{
-				result = res.getString("message");
-			}
-			res.close();
-		}
-		sqlGetLogonMsg.close();
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			Database.writeLog("root", "sqlexception: " + e.getMessage());
-		}
+		Board logonBoard = BoardsDb.getBoard("logonmessage");
+		String result = logonBoard.getDescription() + 
+			logonBoard.read(BoardFormatEnum.SIMPLE);
 		return result;
 	}
 

@@ -506,7 +506,7 @@ public class User extends mmud.characters.Person
 	/**
 	 * Returns a list of mudmails.
 	 * @return String containing list of mails.
-	 * @see mmud.database.Database#getListOfMail
+	 * @see mmud.database.MailDb#getListOfMail
 	 */
 	public String getListOfMail()
 	{

@@ -42,6 +42,9 @@ Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
 <TR><TD>mm_usertable</TD><TD></TD></TR>
 <TR><TD>mm_mailtable</TD><TD></TD></TR>
+<TR><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
+<TR><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
+message boards.</TD></TR>
 
 <TR><TD>mm_log</TD><TD>Logging table, for describing important events in the
 life of characters and administrators.</TD></TR>
@@ -185,6 +188,25 @@ life of characters and administrators.</TD></TR>
 +---------------------+
 |*creation            |
 |*name                |
+| message             |
++---------------------+
+
++---------------------+
+| mm_boards           |
++---------------------+
+|*id                  |
+| name                |
+| description         |
+| owner               |
+| creation            |
++---------------------+
+
++---------------------+
+| mm_boardmessgages   |
++---------------------+
+|*boardid             |
+|*name                |
+|*posttime            |
 | message             |
 +---------------------+
 </PRE>

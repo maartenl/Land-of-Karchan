@@ -627,6 +627,8 @@ public final class Constants
 		theCommandStructure.put("retrieve", new RetrieveCommand("retrieve( (\\w)+){1,4} from( (\\w)+){1,4}"));
 		theCommandStructure.put("give", new GiveCommand("give( (\\w)+){1,4} to (\\w)+"));
 		theCommandStructure.put("read", new ReadCommand("read( (\\w)+){1,4}"));
+		theCommandStructure.put("readpublic", new ReadPublicCommand("readpublic"));
+		theCommandStructure.put("public", new PostPublicCommand("public .+"));
 		theCommandStructure.put("l", new LookCommand("l"));
 		theCommandStructure.put("look", new LookCommand("look at( (\\w)+){1,4}"));
 		theCommandStructure.put("buy", new BuyCommand("buy( (\\w)+){1,4} from (\\w)+"));
