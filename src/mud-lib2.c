@@ -2398,6 +2398,10 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
 	
+	if (getTokenAmount() < 4)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
 	amount = strtol(getToken(1), &checkerror, 10);
@@ -3102,6 +3106,10 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40], position2[20];
 	int changedrows, itemid, amountitems, itemwearable, position;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	position=1;strcpy(position2, "right hand");
@@ -3310,6 +3318,10 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40], itemwielding[20], position[20];
 	int changedrows, itemid, amountitems, itemwieldable;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	/* look for specific person */
@@ -3490,6 +3502,11 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int changedrows, itemid, amountitems, myeatstats;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
+
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
 	/* check drinkstats of specific person */
@@ -3678,6 +3695,11 @@ Drink_Command(char *name, char *password, int room, char *fcommand)
 	int changedrows, itemid, amountitems;
 	int mydrinkstats;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
+
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
 	/* check drinkstats of specific person */
@@ -4375,6 +4397,10 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
 	
+	if (getTokenAmount() < 2)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 	/*search pick*/
