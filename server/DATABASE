@@ -67,7 +67,11 @@ null, command varchar(255) not null, primary key(stamp, name));
 - alter table mm_admin add (email varchar(80) not null default "");
 - alter table mm_items add (capacity int, isopenable int(1) not null default
 0, keyid int, containtype int);
-
+- alter table mm_usertable alter column race set default "human";
+- ALTER TABLE mm_usertable MODIFY race enum('fox','zombie','wyvern','wolf','turtle','troll','spider','slug','ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity','chipmunk',
+'buggie','dragon') not null default "human";
+- ALTER TABLE mm_usertable MODIFY sex enum('male','female')
+not null default "male";
 
 Creating a dupe database
 ------------------------
