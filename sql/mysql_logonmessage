@@ -27,50 +27,30 @@ Kass, Kel, Bladestorm, Legolas, Silverblade<P>
 <HR>
 I am back from Croatia and I am still in one piece. It was a nice two weeks.
 <P>
-I am currently busy with a new implementation of the mud. This
-implementation does not offer any specialties (yet) but is
-more a release for me in order to make the mud
-more conform client-server architecture instead of webscripting.
-This new implementation seems to be working okay and seems to be stable.
+I am currently busy with a new implementation of the mud. 
 <P>
-The new implementation can be started at
-<A HREF=\"http://www.karchan.org/karchan/enter_beta.html\">Beta Logon
-Screen</A>. The new implementation will replace the old one at the end
-of this week.<P>
-Let us all pray that everything will go smoothly for once!<P>
-<I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
-Souls)</I><P>
-<HR>
-<B><FONT color=\"red\">Update</FONT></B><P>
-The new implementation has just gone live. All in all you should not
-notice any difference. If you do, or you notice that some commands are not
-working, please send an email to 
-<A HREF=\"mailto:deputy@karchan.org\">deputy@karchan.org</A> or 
-<A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>
-so I can check it out.<P>
+What does not work:
+<UL>
+<LI>sendmail (sending mudmail)
+</UL>
+What works again:
+<UL>
+<LI>HTML tags in commands
+<LI>bigtalk
+</UL>
+<P>
 One of the little changes that you might have noticed is the extra
 little piece of text at the top of your screen. It
 contains the Version Number and last Compile Date/Time stamp
 of the new mud engine. <P>
+Sometimes the game will freeze up. This means that I screwed up and one of
+the commands used is the cause. What happens is that I fix
+it immediately and restart the game server. However, between the
+game freezing up and me resetting the game the game is unavailable.<P>
+Regards,<P>
 <I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
 Souls)</I><P>
 <HR>
-<B><FONT color=\"red\">Update on the Update</FONT></B><P>
-Kandy just told me that sending mudmail no longer works. She
-is right and I\'ll work on it right away. Reading,
-deleting and listing mudmail still works though.<P>
-Furthermore Eok tells me that HTML tags do not work anymore. He is
-right and I have to fix that, like, pronto, but tomorrow. I'm tired.
-<P>
-<I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
-Souls)</I><P>
-<HR>
-<B><FONT color=\"red\">Another update</FONT></B><P>
-This is rapidly becoming the longest logonmessage ever.
-I think I just fixed the HTML commands. Try it.
-<P>
-<I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
-Souls)</I><P>
 <I>To contact a Deputy, report a bug, contact Karn, or use email, <A
 HREF=\"http://www.karchan.org/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
 <P>
