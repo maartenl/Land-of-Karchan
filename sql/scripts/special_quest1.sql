@@ -487,7 +487,7 @@ You should be able to read it.<P>
 replace into tmp_itemtable values(-172, '','',1,562,'','',0);
 
 replace into items
-values(53, 'recipe','paper','medicine','old',
+values(153, 'recipe','paper','medicine','old',
 0,0,0,0,'','',0,0,1,1,1,0,'<H1>The Medicine Recipe</H1> <IMG
 SRC="/images/gif/letters/y.gif" ALIGN=left>es! This appears to be just what
 you need. It contains detailed instructions on how to create a potion that
@@ -516,24 +516,178 @@ of ingredients required:<P>
 Besides that the recipe has no knowledge for your eyes.
 You cannot make it yourself. <P>', 0,0,0,0,1,0,0,0);
 
+replace into items
+values(148, 'leaves','blessed','thistle','herbal',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1>The Blessed Thistle Leaves</H1> <IMG
+SRC="/images/gif/letters/t.gif" ALIGN=left>his seems to be what appears to
+be a pesky weed at first. Then you notice that it seems to be made of small
+dark-green leaves. A strong smell is emmanating from it, that temporarily
+refreshes you.<P>
+','', 0,0,0,0,1,0,0,0);
+replace into respawningitemtable values(148, 'road', '', 1, 3, '', '', 0);
+replace into respawningitemtable values(148, 'road', '', 1, 32, '', '', 0);
+replace into respawningitemtable values(148, 'road', '', 1, 35, '', '', 0);
+replace into tmp_itemtable values(148, 'road', '', 1, 3, '', '', 0);
+replace into tmp_itemtable values(148, 'road', '', 1, 32, '', '', 0);
+replace into tmp_itemtable values(148, 'road', '', 1, 35, '', '', 0);
+replace into items
+values(150, 'leaves','herbal','marshmallow','some',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1>The Marshmallow Leaves</H1> <IMG
+SRC="/images/gif/letters/t.gif" ALIGN=left>hese leaves seem to be a bit
+hairy, have a dark-green hue and are brownish at the rim of the leaves. Some
+ugly blotches, like rust almost, seem to be gathered around them.<P>
+','', 0,0,0,0,1,0,0,0);
+replace into respawningitemtable values(150, 'shrubbery', '', 1, 565, '', '', 0);
+replace into tmp_itemtable values(150, 'shrubbery', '', 1, 565, '', '', 0);
+replace into items
+values(151, 'potion','red','herbal','whiteblodge-plague',
+0,0,0,0,'','',0,0,1,1,1,0,'<H1>The Red Herbal Potion</H1> <IMG
+SRC="/images/gif/letters/y.gif" ALIGN=left>ou are holding a small bottle in
+your hand containing a darkish-red yet transparant potion. On the small
+bottle there is a label saying <I>Cure to Whiteblodge Plague</I> written
+in black ink in an unsteady hand.<P>
+','', 0,0,0,0,1,0,0,0);
+
 replace into commands values(806, 'readspecialbook',1,'read % book',
 'readspecialbook','',562);
 replace into methods values(99, 'readspecialbook',
 "sayeveryone(""%me attempts to read an old book called &quot; \\\\
 <I>Diseases and Cures</I>&quot;.<BR>"") 
 say(""You open the book &quot;<I>Diseases and Cures</I>&quot;."")
-if sql(""select 1 from tmp_itemtable where id=53 and belongsto='%me'"")
+if sql(""select 1 from tmp_itemtable where id=153 and belongsto='%me'"")
 	say(""It doesn't seem to contain anything interesting and you toss it \\\\
 down on the table again.<BR>"")
 else
 	say(""Instead of starting to read you notice that there is a loose page \\\\
 in the book and you take it out. It appears to be a recipe for a cure \\\\
 against the Whiteblodge Plague.<BR>"")
-	sql(""insert into tmp_itemtable values(53, '', '%me', 1, 0, '', '', 0)"")
+	sql(""insert into tmp_itemtable values(153, '', '%me', 1, 0, '', '', 0)"")
 end
 showstandard
 return
 ");
+
+replace into methclaimed values(6,'300-399','Karn');
+
+replace into commands values(807, 'makerecipe',1,'give %recipe to vimrilad',
+'makerecipe','',228);
+replace into methods values(300, 'makerecipe',
+"# check if person has recipe
+if sql(""select 1 from tmp_itemtable where belongsto='%me' and id=153"")
+	sayeveryone(""%me gives Vimrilad an old medicine recipe.<BR>"")
+	say(""You give Vimrilad an old medicine recipe.<BR>"")
+	# check if person has enough money (1 gold coin outta do it)
+	if sql(""select 1 from tmp_usertable where name='%me' and \\\\
+gold*100+silver*10+copper >= 100"")
+		# check if wizard has all necessary herbs
+		if sql(""select 1 from tmp_itemtable where id = 148 and belongsto='Vimrilad'"")
+			if sql(""select 1 from tmp_itemtable where id = 150 and belongsto='Vimrilad'"")
+				# checks okay-> remove herbs from wizard inventory, display action, 
+				sql(""update tmp_itemtable set amount=amount-1 where belongsto='Vimrilad' and id in (148, 150)"")
+				sql(""delete from tmp_itemtable where belongsto='Vimrilad' and id in (148, 150) and amount = 0"")
+				# add potion to inventory
+				if sql(""select 1 from tmp_itemtable where id=151 and belongsto='%me'"")
+					sql(""update tmp_itemtable set amount=amount+1 where id=151 and belongsto='%me'"")
+				else
+					sql(""insert into tmp_itemtable (id, search, belongsto, amount, wearing, wielding) \\\\
+values(151, '', '%me', 1, '', '')"")
+				end
+				sql(""update tmp_usertable set gold=gold-1 where name='%me'"")
+				sql(""update tmp_usertable set silver=silver+10*gold, gold=0 where name='%me' and gold<0"")
+				sql(""update tmp_usertable set copper=copper+10*silver, silver=0 where name='%me' and silver<0"")
+				sayeveryone(""%me receives a red, herbal potion from Vimrilad.<BR>"")
+				say(""You receive a red, herbal potion from Vimrilad.<BR>"")
+				showstandard
+			else
+				sayeveryone(""Vimrilad says [to %me]: I'm sorry, but I am all out \\\\
+of Marshmallow leaves. And I have no idea where to get them. I'm \\\\
+sorry.<BR>He returns the recipe to %me.<BR>"")
+				say(""Vimrilad says [to you]: I'm sorry, but I am all out \\\\
+of Marshmallow leaves. And I have no idea where to get them. I'm \\\\
+sorry.<BR>He returns the recipe to you.<BR>"")
+				showstandard
+			end
+		else
+			sayeveryone(""Vimrilad says [to %me]: I'm sorry, but I am all out \\\\
+of Blessed Thistle leaves. And I have no idea where to get them. I'm \\\\
+sorry.<BR>He returns the recipe to %me.<BR>"")
+			say(""Vimrilad says [to you]: I'm sorry, but I am all out \\\\
+of Blessed Thistle leaves. And I have no idea where to get them. I'm \\\\
+sorry.<BR>He returns the recipe to you.<BR>"")
+			showstandard
+		end
+	else
+		sayeveryone(""Vimrilad says [to %me]: I'm sorry, but my fee for \\\\
+potion creation is 100 copper coins.<BR>Vimlirad gives %me the \\\\
+recipe.<BR>"")
+		say(""Vimrilad says [to you]: I'm sorry, but my fee for \\\\
+potion creation is 100 copper coins.<BR>Vimlirad returns the recipe.<BR>"")
+		showstandard
+	end
+end
+return
+");
+
+update rooms set south=563, contents='<H1><IMG
+SRC="/images/jpeg/forest2.jpg">The
+Forest</H1> <!113> <IMG
+SRC="/images/gif/letters/y.gif" ALIGN=left>ou are in
+the middle of a huge forest. To the west and south your way is blocked by a
+huge ring of mountains, surrounding the forest. To the south you see a small
+passage leading into a secluded area of the forest. Every other way leads deeper
+into the forest.<P>
+Upon further inspection, you notice that the ground to the south appears to
+become much much more moist.<P>
+' where id=113;
+replace into rooms values(563, 0, 0, 113, 564, 0, 0, '<H1>The Beginnings of a
+Swamp</H1> 
+<IMG SRC="/images/gif/letters/y.gif" ALIGN=left>ou are still standing in the
+forest. However, due to the south the ground seems to become more moist and
+moist. The number of insects, buzzing around your head seems to have
+increased, and the flora around you seems to be of the creeping low kind and
+the stunted bald trees surrounding you do not provide much in the way of
+entertainment either.<P>
+The ground seems to be a bit moist and your footing is less certain than it
+once was.<P>
+');
+replace into rooms values(564, 0, 0, 563, 565, 0, 0, '<H1>The Swamp</H1> 
+<IMG SRC="/images/gif/letters/y.gif" ALIGN=left>ou are no longer standing in
+a forest, but rather in a swamp. Left and right you see large puddles of
+weed-covered stagnant water. Marsh grass seems to be the most prolific here.
+The buzzing of the insects is slowly driving you a little crazy and the
+sickly smell of decay is nauseating. To the south you are able to penetrate
+deeper into the swamps.<P>
+You are currently on the only thing that seems to provide some support in
+this swamp. It seems to be a rather small strip of solid ground that can
+support your weight. As far as you can tell it leads both north and south.
+<P>
+');
+replace into rooms values(565, 0, 0, 564, 0, 0, 0, '<H1>The Swamp</H1> 
+<IMG SRC="/images/gif/letters/t.gif" ALIGN=left>he swamp seems to end here
+right against the very mountains. Surrounding you are still puddles of
+water, and some small stunted trees not worth mentioning.<P>
+Next to your feet you notice a dark-green shrubbery that seems to fit well
+into the surroundings.
+<P>
+');
+
+replace into commands values(808, 'drinkplaguepotion',1,'drink %potion',
+'drinkplaguepotion','',0);
+replace into methods values(301, 'drinkplaguepotion',
+"# check if person has potion
+if sql(""select 1 from tmp_itemtable where belongsto='%me' and id=151"")
+	sql(""update tmp_itemtable set amount=amount-1 where id=151 and belongsto='%me'"")
+	sql(""delete from tmp_itemtable where amount=0 and id=151 and belongsto='%me'"")
+	sql(""delete from tmp_attributes where (name='plague' or name='look') and objectid='%me'"")
+	sql(""replace into tmp_attributes values('cure', 'true', 'string','%me',1)"")
+	sql(""update tmp_usertable set vitals=0 where name='%me'"")
+	sayeveryone(""%me drinks the red potion, and feels healthy again.<BR>"")
+	say(""You drink the red potion and you feel healthy again.<BR>"")
+	showstandard
+end
+return
+");
+
 
 
 END_OF_DATA
