@@ -37,7 +37,8 @@ MYSQLLIB = mysqlclient_r
 # when the program is terminated, a list is dumped on standard output
 # on which variables are still available in memory and have not cleared
 # properly.
-DEBUG = -DMEMMAN
+DEBUG = 
+#-DMEMMAN
 # -DDEBUG
 
 
