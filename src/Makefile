@@ -35,7 +35,7 @@ EXEDIR = /karchan2/apache/cgi-bin
 LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
 OPTIONS = -lm -lmysqlclient
 
-TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe nph-addendum nph-logonframe nph-leftframe nph-javascriptframe background rolls wholist clearcharacters
+TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -51,12 +51,6 @@ newchar.o: newchar.c mud-lib.o userlib.o typedefs.o
 
 enter.o: enter.c mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c enter.c 
-
-background: background.o typedefs.o userlib.o background.c
-	$(CC) $(COPTS) -o background typedefs.o userlib.o background.o $(LIBDIR) $(OPTIONS)
-
-background.o: background.c userlib.o typedefs.o
-	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c background.c 
 
 rolls: rolls.o typedefs.o userlib.o rolls.c
 	$(CC) $(COPTS) -o rolls typedefs.o userlib.o rolls.o $(LIBDIR) $(OPTIONS)
