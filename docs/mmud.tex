@@ -399,8 +399,7 @@ Maps will be created using Gimp. The text contained on the map is "times" and th
 
 \subsection{Documentation}
 All documentation of the game will be done in the format of "Latex" (.tex)
-Diagrams will be written with XFIG and included using either the .ps format
-or the .pdf format.
+Diagrams will be written with XFIG and included using the .pdf and .ps format.
 
 In order to generate the different formats for viewing of the documentation,
 the following commands are available: generate dvi (latex mmud.tex),
@@ -548,6 +547,14 @@ have nested if statements. This means that the body of an if statement can
 contain an if statement.
 \subparagraph{sql("query")}the query between the " (quotes) is executed by
 the database
+\subparagraph{set room=\#}this little command is used to set the room of the
+current user to another room. However, it is also necessary to use an update
+statement on the database, if you want this change to be permanent. Right
+now, the change will only effect operations occurring during parsing. After
+that the room number is lost again. The room number available during parsing
+has an effect on all 'say' commands. Usually both the sql update statement
+of a room and this command work in tandem. Look for more information at the
+events table.
 \subparagraph{say("sentence")}the sentence between the " (quotes) is sent to
 the current user.
 \subparagraph{sayeveryone("sentence")}the sentence between the " (quotes) is
@@ -711,6 +718,19 @@ insert into events values(3, 'an\_event', -1, -1, -1, 20, -1, 1, 'a\_method','',
 insert into events values(4, 'an\_event', -1, -1, -1, 30, -1, 1, 'a\_method','',0);
 insert into events values(5, 'an\_event', -1, -1, -1, 40, -1, 1, 'a\_method','',0);
 insert into events values(6, 'an\_event', -1, -1, -1, 50, -1, 1, 'a\_method','',0);
+\end{verbatim}
+
+Here for example, is a piece of code used to get the bot Karcas to walk
+around. It also gives a fair example of the use of the command 'set room=x'.
+\begin{verbatim}
+	if sql("select 1 from tmp_usertable where room = 5 and name='Karcas' \
+		and hour(now()) % 2 = 0")
+	sayeveryone("Karcas leaves south.<BR>")
+	sql("update tmp_usertable set room=3 where name='Karcas'")
+	set room=3
+	sayeveryone("Karcas appears from nowhere.<BR>")
+end
+return
 \end{verbatim}
 
 \subsection{Attributes}
