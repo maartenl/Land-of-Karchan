@@ -1,0 +1,88 @@
+#!/bin/sh
+
+cd /karchan/mud/sql   
+
+. ./mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+#
+# update logonmessage
+#
+
+UPDATE logonmessage set message="<B>Logonmessage</B>
+<BR>
+<IMG SRC=\"http://www.karchan.org/images/gif/letters/w.gif\"
+ALT=\"W\" ALIGN=left>
+elcome to the Land of Karchan MUD, a land filled with mystery 
+and enchantment, where weapons, magic, intelligence, and common 
+sense play key roles in the realm. Where love and war can be one 
+and the same. Where elves coexist peacefully with the humans, and 
+make war with the dwarves. Where the sun rises, and the moon falls. 
+Where one can change into a hero with a single swipe of his 
+sword.<P>
+
+The current deputies are: 
+Kass, Milady, Kel, Bladestorm, Blackfyre, Legolas, Nate<P>
+
+<FONT COLOR=\"red\">The quest is
+ready</Font>. Meaning that there is now a cure for the disease that everyone
+is suffering from. For the first clue, I suggest that you visit the castle.<P>
+I would like to know what everyone thinks about the Whiteblodge Plague (as
+it is called.) Therefore, I invented something called <I>polls</I>. It is a
+bit complicated, but it will sort itself out. There are two commands:
+<UL>
+<LI>poll &lt;number&gt;
+<LI>poll &lt;comments&gt;
+</UL>
+<HR><I>What did You think of the Whiteblodge
+Plague?</I><P>
+<FORM>   
+<input type=\"radio\" name=\"poll\" value=\"1\" onClick=\"doClick(1)\">Way
+cool! Do more of those!
+<BR><input type=\"radio\" name=\"poll\" value=\"2\"
+onClick=\"doClick(2)\">Was fun.
+<BR><input type=\"radio\" name=\"poll\" value=\"3\"
+onClick=\"doClick(3)\">Was okay, I guess.
+<BR><input type=\"radio\" name=\"poll\" value=\"4\"
+onClick=\"doClick(4)\">Didn't like it.   
+<BR><input type=\"radio\" name=\"poll\" value=\"5\"
+onClick=\"doClick(5)\">Dude, you suck!   
+<BR><input type=\"radio\" name=\"poll\" value=\"6\"
+onClick=\"doClick(6)\">What Plague?      
+<BR><input type=\"radio\" name=\"poll\" value=\"7\"
+onClick=\"doClick(7)\">Huh? Polls?       
+<P>
+</FORM>
+<SCRIPT>
+<!-- Begin to hide sript contents from old browsers.
+function doClick(number)
+{
+// window.alert(number)
+   document.CommandForm.command.value=\"poll \" + number
+
+}
+// End the hiding here. -->
+</SCRIPT>
+<HR>
+Regards and have fun!<P>
+<I>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
+Souls)</I><P>
+
+<I>To contact a Deputy, report a bug, contact Karn, or use email, <A
+HREF=\"http://www.karchan.org/karchan/help/faq.html#38\" TARGET=\"_blank\">click here</A>.</I>
+<P>
+
+<I>Please read <A
+HREF=\"http://www.karchan.org/karchan/help/thelaw.html\" TARGET=\"_blank\"><FONT
+COLOR=red>The LAW (the most important Rules and Regulations of the game)</FONT></A>.</I>
+<P>
+
+If you are new to this game, and need help, please type <B>help</B> for a
+listing 
+of the commands, and <B>help &lt;command&gt;</B> for help on a specific 
+command or subject. <P>
+
+" where id=0;
+
+END_OF_DATA
+
