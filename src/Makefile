@@ -15,6 +15,7 @@ INSTALLDIR = /home/httpd/cgi-bin/
 # make install		(installation og binaries into the correct dir)
 # make backup			(makes backup of the binaries from *.cgi to *_backup.cgi)
 # make restore		(restores the backup that was created, if the backup was present)
+# make install_scripts    (created the scripts used on the web and installs them)
 
 #------------------------------------------------------------------
 # It is not necessary to modify anything below this line,
