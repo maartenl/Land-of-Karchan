@@ -39,7 +39,7 @@ int PrintForm(char * name, char * password);
 /* Prints the standard form output */
 
 int
-Inventory_Command(char * name, char * password, int room, char **ftokens, char *fcommand);
+Inventory_Command(char * name, char * password, int room, char *fcommand);
 /* Write inventory list to cgiOut */
 
 int PayUp(int z0, int z1, int z2, int *a, int *b, int *c);

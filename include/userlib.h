@@ -69,9 +69,8 @@ int ExistUserRoom(int roomnr, char *name);
 */  
 
 char *
-ExistUserByDescription(char **ftokens, int beginning, int amount, int room, char **returndesc);
+ExistUserByDescription(int beginning, int amount, int room, char **returndesc);
 /*Pre: beginning >= 0 ^ amount > 1 ^ room is valid ^ 
-	ftokens contains the array of tokens parsed from the input of the user ^
 	(returndesc = non-memory-allocated pointer V returndesc = NULL)
 	Post: user exists => return username
 	      user !exists => return NULL

@@ -65,10 +65,10 @@ maartenl@il.fontys.nl
 // So, syntax is : http://lok.il.fontys.nl/~karchan/cgi-bin/enter.cgi
 // become: "http://"ServerName CGIName "enter.cgi"
 
-#define ServerName "www.karchan.org"
+//#define ServerName "www.karchan.org"
 #define CGIName    "/cgi-bin/"
 
-//#define ServerName "zeus"
+#define ServerName "zeus"
 //#define CGIName    "/cgi-bin/"
 
 #define ActiveUserFile      USERHeader"users.active.txt"
@@ -182,6 +182,22 @@ mudinfostruct getMudInfo();
 /* set the structure to something else. The way these methods work is usually, you get the structure, you change
 it and you put it back. */
 void setMudInfo(mudinfostruct amudinfostruct);
+
+/* set number of available tokens. Usually only called once in gameMain
+*/
+void setTokenAmount(int amount);
+
+/* retrieve number of available tokens
+*/
+int getTokenAmount();
+
+/* set the token array, usually only called once in gameMaine
+*/
+void setTokens(char **ftokens);
+
+/* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
+*/
+char *getToken(int i);
 
 void 
 FatalError(FILE *output, int i, char *description, char *busywith);

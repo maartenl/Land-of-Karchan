@@ -37,7 +37,7 @@ void WriteMail(char *name, char *toname, char *header, char *message);
 					message, set flags as New and Unread
 */
    			
-int ListMail_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int ListMail_Command(char *name, char *password, int room, char *fcommand);
 /* lists available mudmail
 		Pre: name = name of receiver, commonly yourself ^
 		Post:show list of available mail
@@ -56,7 +56,7 @@ int ReadBill(char *botname, char *vraag, char *name, int room);
 		post:if answer found, return answer else "Ignore" bot and add to log
 */
 
-int Who_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Who_Command(char *name, char *password, int room, char *fcommand);
 /* dump list of people onto screen who are logged in at this time
 		Pre: true
 		Post: list of active people with idletime added
@@ -97,7 +97,7 @@ void Evil_Command(char *name, char *password, int room);
 		- beam <number>
 */
 
-int Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Quit_Command(char *name, char *password, int room, char *fcommand);
 /* deactivate and save player, then exit player, and show message */
 
 int ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal);
@@ -111,7 +111,7 @@ int ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal);
 */
 
 int
-Stats_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+Stats_Command(char *name, char *password, int room, char *fcommand);
 /* show character statistics */
 
 void GetMoney_Command(char *name, char *password, int room);
@@ -145,7 +145,7 @@ void DropItem_Command(char *name, char *password, int room);
 	Post: item(s) dropped from inventory onto floor
 */
 
-int Put_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Put_Command(char *name, char *password, int room, char *fcommand);
 /* put item into container
 	Pre: put [amount] <item> in <item>; 
 	     <item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
@@ -154,7 +154,7 @@ int Put_Command(char *name, char *password, int room, char **ftokens, char *fcom
 	Post: item(s) added to container if possible
 */
 
-int Retrieve_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Retrieve_Command(char *name, char *password, int room, char *fcommand);
 /* retrieve item from container
 	Pre: retrieve [amount] <item> from <item>; 
 			<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
@@ -174,19 +174,19 @@ void SellItem_Command(char *name, char *password, int room, char *toname);
 	Post: item(s) dropped from inventory, money added
 */
 
-int Eat_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Eat_Command(char *name, char *password, int room, char *fcommand);
 /* eat item in inventory
 	Pre: eat <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
 	Post: item(s) dropped from inventory, eaten if possible
 */
 
-int Drink_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Drink_Command(char *name, char *password, int room, char *fcommand);
 /* drink item in inventory
 	Pre: drink <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
 	Post: item(s) dropped from inventory, drunk if possible
 */
 
-int Wear_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Wear_Command(char *name, char *password, int room, char *fcommand);
 /* wear an item
 	Pre: wear <item> on <position> ^ 
 				<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
@@ -194,41 +194,41 @@ int Wear_Command(char *name, char *password, int room, char **ftokens, char *fco
 	Post: item dropped from inventory, worn if possible
 */
 
-int Unwear_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Unwear_Command(char *name, char *password, int room, char *fcommand);
 /* remove an item being worn
 	Pre: remove <item> ^ 
 				<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
 	Post: item removed from body and added to inventory again
 */
 
-int Wield_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Wield_Command(char *name, char *password, int room, char *fcommand);
 /* wield an item in left or right hand
 	Pre: wield <item> ^ 
 				<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
 	Post: item removed from inventory and wielded
 */
 
-int Unwield_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Unwield_Command(char *name, char *password, int room, char *fcommand);
 /* stop wielding an item in left or right hand
 	Pre: unwield <item> ^ 
 				<item> = [bijv vmw] [bijv vnm] [bijv vnm] name ^
 	Post: item removed from right or left hand and added to inventory
 */
 
-void GiveItem_Command(char *name, char *password, int room);
+int GiveItem_Command(char *name, char *password, int room);
 /* give item to person
 	Pre: give [amount] <item> to <person> ^
 					<item> = [bijv vmw] [bijv vnm] [bijv vnm] name 
 	Post: true
 */
 
-int Search_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Search_Command(char *name, char *password, int room, char *fcommand);
 /* search something in the area to see if there's hidden items obtainable
 	Pre: search <object>
 	Post: found item added to inventory
 */
 
-int Read_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Read_Command(char *name, char *password, int room, char *fcommand);
 /* read item
 	Pre: read <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
 	Post:dump read description onto stdout
@@ -237,5 +237,5 @@ int Read_Command(char *name, char *password, int room, char **ftokens, char *fco
 void Dead(char *name, char *password, int room);
 /* Show dead screen */
 
-int ChangeTitle_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int ChangeTitle_Command(char *name, char *password, int room, char *fcommand);
 /* change title of person */
