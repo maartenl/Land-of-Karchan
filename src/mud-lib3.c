@@ -502,7 +502,7 @@ SwitchRoomCheck(char *name, char *password, int room)
 	{
 		case 1:
 		{
-			if (!strcmp(troep, "pull chain"))
+			if (!strcmp(troep, "pull chain3"))
 			{
 				sprintf(temp, "select id from items "
 				"where (id=-3) and (adject3='loose')");
@@ -535,7 +535,7 @@ SwitchRoomCheck(char *name, char *password, int room)
 
 				KillGame();
 			}
-			if (!strcmp(troep, "jump in lake"))
+			if (!strcmp(troep, "jump idn lake"))
 			{
 				sprintf(temp, "select id from items "
 				"where (id=-3) and (adject3='loose')");
