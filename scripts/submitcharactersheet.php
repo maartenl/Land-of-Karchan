@@ -42,6 +42,15 @@ Character Sheets</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
+        
+/**
+ * verify form information
+ */      
+if (!isset($_COOKIE["karchanname"]) &&    
+    !isset($_COOKIE["karchanpassword"]) )
+{   
+    die("Form information missing.");
+}
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
 	'".mysql_escape_string($_COOKIE["karchanname"])."' 

@@ -43,6 +43,14 @@ Char <?php echo $_REQUEST{"char"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
+/**
+ * verify form information
+ */
+if (!isset($_REQUEST{"char"}))
+{
+    die("Form information missing.");
+}
+
 /* the following constraints need to be checked before any kind of update is
 to take place:
 
@@ -50,8 +58,12 @@ changing room:
 - first check that the change is approved (i.e. owner or null)
 - does room exist
 - check if sex is correct
-deleting room:   
-adding room:
+deleting character:   
+- checking attributes
+- checking items (mm_charitemtable)
+- checking mail
+- checking family/characterinfo
+adding character:
 */
 if (isset($_REQUEST{"race"}))
 {
@@ -158,9 +170,11 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>Creation:</b> %s<BR>", $myrow["creation2"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[21], $myrow[21]);
+	$owner = false;
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
 		$myrow["owner"] == $_COOKIE["karchanadminname"])
 	{
+		$owner = true;
 ?>
 <FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
 <b>
@@ -218,7 +232,30 @@ while ($myrow = mysql_fetch_array($result))
 	}
 }
 
-printf("<P>");
+printf("<H2><A HREF=\"/karchan/admin/help/attributes.html\" target=\"_blank\">
+<IMG SRC=\"/images/icons/9pt4a.gif\" BORDER=\"0\"></A>Attributes</H2>");
+
+if (isset($_REQUEST{"char"}) &&
+	isset($_REQUEST{"mm_charattributes_name"}) &&
+	isset($_REQUEST{"mm_charattributes_value"}) &&
+	isset($_REQUEST{"mm_charattributes_value_type"}) &&
+	$owner)
+{
+	$query = "insert into mm_charattributes 
+		(name, value, value_type, charname) values(\""
+		.mysql_escape_string($_REQUEST{"mm_charattributes_name"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"mm_charattributes_value"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"mm_charattributes_value_type"}).
+		"\", \""
+		.mysql_escape_string($_REQUEST{"char"}).
+		"\")";
+	mysql_query($query
+		, $dbhandle)  
+		or die("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Added attribute to ".$_REQUEST{"char"}.".", $query);
+}
 
 $result = mysql_query("select * ".
 	" from mm_charattributes".
@@ -231,7 +268,27 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>value:</b> %s ", $myrow[1]);
 	printf("<b>value_type:</b> %s<BR>", $myrow[2]);
 }
+	if ($owner)
+	{
+?>
 
+<FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
+<b>
+<INPUT TYPE="hidden" NAME="mm_charattributes_charname" VALUE="<?php echo $_REQUEST{"char"} ?>">
+<INPUT TYPE="hidden" NAME="char" VALUE="<?php echo $_REQUEST{"char"} ?>">
+<TABLE>
+<TR><TD>name</TD><TD><INPUT TYPE="text" NAME="mm_charattributes_name" VALUE="" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>value</TD><TD><INPUT TYPE="text" NAME="mm_charattributes_value" VALUE="" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>value_type</TD><TD><SELECT NAME="mm_charattributes_value_type" SIZE="2"> 
+<OPTION VALUE="string" selected >string
+<OPTION VALUE="integer">integer
+</SELECT></TD></TR>   
+</TABLE>
+<INPUT TYPE="submit" VALUE="Add Attribute">
+</b>   
+</FORM>
+<?php
+	}
 $result = mysql_query("select * ".
 	" from characterinfo".
 	" where name = \"".mysql_escape_string($_REQUEST{"char"})."\""

@@ -39,9 +39,20 @@ Land of Karchan - Admin
 <IMG SRC="/images/gif/dragon.gif">
 Attribute <?php echo $_REQUEST{"name"} ?></H1>
 
+<A HREF="/karchan/admin/help/attributes.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
+ 
+/**
+ * verify form information
+ */
+if (!isset($_REQUEST{"name"}))
+{
+    die("Form information missing.");
+}
+
 $result = mysql_query("select * from mm_charattributes ".
 	"where name = \"".mysql_escape_string($_REQUEST{"name"})."\""
 	, $dbhandle)

@@ -28,7 +28,7 @@ maarten_l@yahoo.com
 ?>
 <?php
 	header ("Content-type: text/html");
-	
+   
 // Hack prevention.
 //	$headers = apache_request_headers();
 //	header()

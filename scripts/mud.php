@@ -27,6 +27,17 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
+include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
+
+/**
+ * verify form information
+ */      
+if (!isset($_REQUEST{"command"}) &&
+	!isset($_COOKIE["karchanname"]) &&
+	!isset($_COOKIE["karchanpassword"]) )
+{   
+	die("Form information missing.");
+}
 // Hack prevention.
 //	$headers = apache_request_headers();
 //	header()
@@ -43,6 +54,12 @@ maarten_l@yahoo.com
 	} 
 	else 
 	{
+		mysql_query("insert into mm_commandlog (name, command) values(\"".
+			mysql_escape_string($_COOKIE["karchanname"])."\", \"".
+			mysql_escape_string($_REQUEST{"command"})."\")"
+			, $dbhandle)
+			or die("Query failed : " . mysql_error());
+
 		fgets ($fp,128); // mud id
 		fgets ($fp,128); // action
 		fputs ($fp, "mud\n");

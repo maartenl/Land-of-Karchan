@@ -49,6 +49,15 @@ function writeLogLong ($dbhandle, $arg, $addendum)
     or die("Query failed : " . mysql_error());
 }
 
+/**
+ * verify form information
+ */
+if (!isset($_COOKIE["karchanadminname"]) ||
+	!isset($_COOKIE["karchanadminpassword"]))
+{   
+    die("Admin Name and/or password information missing.");
+}
+
 $result = mysql_query("select \"yes\" from mm_admin where name = \"".
         mysql_escape_string($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
 	mysql_escape_string($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()"

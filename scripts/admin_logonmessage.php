@@ -43,6 +43,13 @@ Logonmessage</H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
+/**
+ * verify form information
+ */
+if (!isset($_REQUEST{"message"}))
+{   
+	die("Form information missing.");
+}
 $result = mysql_query("replace into mm_boardmessages 
 	values(2, \"".mysql_escape_string($_COOKIE["karchanadminname"])."\", now(),\"".
 	mysql_escape_string($_REQUEST{"message"})."\")"

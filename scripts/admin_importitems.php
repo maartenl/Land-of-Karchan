@@ -46,10 +46,15 @@ if ($_COOKIE["karchanadminname"] != "Karn")
 {
     die("This administration option is only available to Karn.");
 }
+
+/**
+ * verify form information
+ */
 if (!isset($_REQUEST{"char"}))
 {
     die("Form information missing.");
 }
+
 $result = mysql_query("select * from mud.itemtable 
 	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\" order by id"
 	, $dbhandle)
