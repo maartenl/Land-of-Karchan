@@ -169,11 +169,6 @@ Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 
-
-<a HREF="/scripts/admin.php">
-<img SRC="/images/gif/webpic/buttono.gif"  
-BORDER="0"></a><p>
-
 </BODY>
 </HTML>
 

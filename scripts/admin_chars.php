@@ -248,7 +248,7 @@ while ($myrow = mysql_fetch_array($result))
 mysql_close($dbhandle);
 ?>
 
-<a HREF="/scripts/admin.php">
+<a HREF="/karchan/admin/chars.html">
 <img SRC="/images/gif/webpic/buttono.gif"  
 BORDER="0"></a><p>
 

@@ -46,6 +46,9 @@ Land of Karchan - Admin
 <H1>
 <IMG SRC="/images/gif/dragon.gif">Karchan Admin Page</H1>
 
+<P>
+Click <A HREF="/karchan/admin/admin.html" TARGET="_top">here</A> to return to the menu.
+
 <?php
 if ( (!isset($_COOKIE["karchanadminname"])) &&
 	(!isset($_REQUEST{"username"})) )
@@ -65,63 +68,8 @@ else
 {
 ?>
 
-<TABLE WIDTH=100%><TR><TD><A HREF="/scripts/admin_problems.php">Report Problems</A>
-</TD><TD><A HREF="/scripts/admin_bugs.php">Bug List</A>
-</TD><TD><A HREF="/scripts/admin_itemlist.php">Item List</A>
-</TD><TD><A HREF="/scripts/admin_banned.php">Banned People</A>
-</TD></TR></TABLE>
-<HR>
-<FORM METHOD="GET" ACTION="/scripts/admin_log.php">
-Show Log
-<SELECT NAME="status">
-<option value=1>All
-<option value=2>Last Week
-<option selected value=3>Today
-</SELECT>
+You are logged on.
 <P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-</UL>
-<HR>
-<FORM METHOD="GET" ACTION="/scripts/admin_rooms.php">
-Show Room with id:
-<INPUT TYPE="text" NAME="room" VALUE="" SIZE="19" MAXLENGTH="19"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<HR>
-<FORM METHOD="GET" ACTION="/scripts/admin_chars.php">
-Show Character with name:
-<INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<HR>
-<FORM METHOD="GET" ACTION="/scripts/admin_importitems.php">
-Import items belonging to: 
-<INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<HR>
-Logonmessage:
-<FORM METHOD="GET" ACTION="/scripts/admin_logonmessage.php">
-<TEXTAREA NAME="message" VALUE="" 
-ROWS="20" COLS="85"></TEXTAREA><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
-<FORM METHOD="GET" ACTION="/scripts/admin_select.php">
-<HR>
-Select statement:<BR>
-(<I>Examples</I>: <TT>select * from mm_usertable where name="Karn"</TT> or
-<TT>show fields from mm_usertable</TT>)<BR>
-<TEXTAREA NAME="select" VALUE="select ..." 
-ROWS="20" COLS="85"></TEXTAREA><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
 <?php
 }
 ?>
