@@ -172,8 +172,7 @@ return
 " where id = 8;
 
 update methods
-set src = "debug
-# Karcas travels from shop to square
+set src = "# Karcas travels from shop to square
 if sql(""select 1 from tmp_usertable where room = 16 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves west.<BR>"")
 	sql(""update tmp_usertable set room=5 where name='Karcas'"")
@@ -184,8 +183,7 @@ return
 " where id = 9;
 
 update methods
-set src = "debug
-# Karcas travels from square to road
+set src = "# Karcas travels from square to road
 if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves south.<BR>"")
 	sql(""update tmp_usertable set room=3 where name='Karcas'"")
@@ -196,8 +194,7 @@ return
 " where id = 10;
 
 update methods
-set src = "debug
-# Karcas travels from road to mountains
+set src = "# Karcas travels from road to mountains
 if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves south.<BR>"")
 	sql(""update tmp_usertable set room=4 where name='Karcas'"")
@@ -208,8 +205,7 @@ return
 " where id = 11;
 
 update methods
-set src = "debug
-# Karcas travels from mountains back to road
+set src = "# Karcas travels from mountains back to road
 if sql(""select 1 from tmp_usertable where room = 4 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves north.<BR>"")
 	sql(""update tmp_usertable set room=3 where name='Karcas'"")
@@ -220,8 +216,7 @@ return
 " where id = 12;
 
 update methods
-set src = "debug
-# Karcas travels from road back to square
+set src = "# Karcas travels from road back to square
 if sql(""select 1 from tmp_usertable where room = 3 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves north.<BR>"")
 	sql(""update tmp_usertable set room=5 where name='Karcas'"")
@@ -232,8 +227,7 @@ return
 " where id = 13;
 
 update methods
-set src = "debug
-# Karcas travels from square back to shop
+set src = "# Karcas travels from square back to shop
 if sql(""select 1 from tmp_usertable where room = 5 and name='Karcas' and hour(now()) % 2 = 0"")
 	sayeveryone(""Karcas leaves west.<BR>"")
 	sql(""update tmp_usertable set room=16 where name='Karcas'"")
@@ -243,8 +237,7 @@ end
 return
 " where id = 14;
 
-update methods set src="debug
-sql(\"update tmp_usertable set vitals = vitals - jumpvital - round(3*eatstats/30) where vitals>0\")
+update methods set src="sql(\"update tmp_usertable set vitals = vitals - jumpvital - round(3*eatstats/30) where vitals>0\")
 sql(\"update tmp_usertable set manastats = manastats - jumpmana - round(eatstats/30) where manastats>0\")
 sql(\"update tmp_usertable set movementstats = movementstats - jumpmove - round(3*eatstats/30) where movementstats>0\")
 
@@ -273,27 +266,23 @@ return
 " where id=50;
 
 update methods
-set src="debug
-sql(""insert into tmp_itemtable select * from respawningitemtable"")
+set src="sql(""insert into tmp_itemtable select * from respawningitemtable"")
 return
 " where id=51;
 
 update methods
-set src="debug
-sql(""update bantable set days = days - 1 where days>0"")
+set src="sql(""update bantable set days = days - 1 where days>0"")
 sql(""delete from bantable where days=0"")
 return
 " where id=52;
 
 update methods
-set src="debug
-sql(""insert into tmp_usertable select * from bottable"")
+set src="sql(""insert into tmp_usertable select * from bottable"")
 return
 " where id=53;
 
 update methods
-set src="debug
-set room=8
+set src="set room=8
 sayeveryone(""Karaoke mutters to himself inaudibly.<BR>"")
 set room=16
 sayeveryone(""Karcas shouts: Goods for sale! Nice goods! Goods for sale!<BR>"")
