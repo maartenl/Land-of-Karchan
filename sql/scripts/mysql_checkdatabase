@@ -1,0 +1,56 @@
+#!/bin/sh
+
+cd /karchan/mud/sql   
+
+. ./mysql_constants
+
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+
+check table CHA;
+check table CON;
+check table DEX;
+check table INTL;
+check table STR;
+check table WIS;
+check table ability_scores;
+check table action;
+check table answers;
+check table attributes;
+check table bantable;
+check table bogus_itemtable;
+check table bottable;
+check table characterinfo;
+check table claimed;
+check table commands;
+check table depalias;
+check table events;
+check table family;
+check table familyvalues;
+check table guilds;
+check table help;
+check table items;
+check table itemtable;
+check table logonmessage;
+check table mailtable;
+check table methods;
+check table negativeitem;
+check table objects;
+check table olditem;
+check table oldmail;
+check table olduser;
+check table positiveitem;
+check table private_info;
+check table respawningitemtable;
+check table rooms;
+check table sillynamestable;
+check table skills;
+check table skilltable;
+check table tmp_itemtable;
+check table tmp_mailtable;
+check table tmp_usertable;
+check table treasure;
+check table unbantable;
+check table usertable;
+
+END_OF_DATA
+
