@@ -1210,6 +1210,10 @@ cgiMain()
 	{
 		Buy_Command(name, password, room, "Karina");
 	}
+        if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==73))
+        {
+                Buy_Command(name, password, room, "Hagen");
+        }
 	if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==85)) 
 	{
 		Buy_Command(name, password, room, "Karsten");
@@ -1221,6 +1225,18 @@ cgiMain()
         if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==161))
         {
                 Buy_Command(name, password, room, "Karstare");
+        }
+        if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==228))
+        {
+                Buy_Command(name, password, room, "Vimrilad");
+        }
+        if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==2550))
+        {
+                Buy_Command(name, password, room, "Telios");
+        }
+        if ((aantal >= 2) && (!strcmp("buy", tokens[0])) && (room==2551))
+        {
+                Buy_Command(name, password, room, "Nolli");
         }
         if ((aantal >= 2) && (!strcmp("sell", tokens[0])) && (room==16)) 
 	{
