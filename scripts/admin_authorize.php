@@ -63,9 +63,27 @@ while ($myrow = mysql_fetch_array($result))
 	}
 }
 
+$result = mysql_query("select \"invalid\" from mm_admin where name = \"".
+        $_COOKIE["karchanadminname"]."\" and passwd = password(\"".
+		$_COOKIE["karchanadminpassword"]."\") and validuntil < now()"
+    , $dbhandle)
+    or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result))
+{
+	if ($myrow[0] == "invalid")
+	{
+		$good = "invalid";
+	}
+}
+
 if ($good == "no")
 {
-	die("You are not authorized!");
+	die("Your user account does not exist!");
+}
+
+if ($good == "invalid")
+{
+	die("Your account has expired. Contact karn@karchan.org.");
 }
 
 ?>
