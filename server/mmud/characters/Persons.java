@@ -72,7 +72,8 @@ public final class Persons
 	 * the game.
 	 * @param aName name of the character to search for.
 	 * @return Person object containing all relevant information of the
-	 * character.
+	 * character. Will return null pointer if character not active
+	 * in the game.
 	 */
 	public static Person retrievePerson(String aName)
 	{
@@ -146,6 +147,7 @@ public final class Persons
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new UserAlreadyActiveException();
 		}
+
 		if (!myUser.verifyPassword(aPassword))
 		{
 			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
@@ -359,10 +361,8 @@ public final class Persons
 		for (int i=0;i < thePersons.size();i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			System.err.println("Persons.getWhoList " + myChar);
 			if (myChar instanceof User)
 			{
-			System.err.println("Persons.getWhoList " + myChar);
 				User myUser = (User) myChar;
 				myString += "<LI>" + myUser.getName() + ", " + myUser.getTitle() + (myUser.isaSleep()?", sleeping ":" ") + myUser.getIdleTime() + "\r\n";
 				count++;

@@ -60,7 +60,11 @@ public class SendMailCommand extends NormalCommand
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 4)
 		{
-			Person toChar = Database.getUser(myParsed[1], "");
+			Person toChar = Persons.retrievePerson(myParsed[1]);
+			if (toChar == null)
+			{
+				toChar = Database.getUser(myParsed[1], "");
+			}
 			if ((toChar == null) || (!(toChar instanceof User)))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");

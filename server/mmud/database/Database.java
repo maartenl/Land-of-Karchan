@@ -270,9 +270,9 @@ public class Database
 					aPassword:
 					null),
 				res.getString("address"),
-				res.getString("title"),
 				res.getString("realname"),
 				res.getString("email"),
+				res.getString("title"),
 				res.getString("race"),
 				Sex.createFromString(res.getString("sex")),
 				res.getString("age"),
@@ -293,6 +293,7 @@ public class Database
 				res.getInt("drinkstats"),
 				res.getInt("eatstats"),
 				Rooms.getRoom(res.getInt("room")));
+
 		}
 		res.close();
 		sqlGetUser.close();
