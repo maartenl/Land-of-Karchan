@@ -122,12 +122,18 @@ leftframe.o: leftframe.c
 leftframe: leftframe.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o leftframe cgic.o typedefs.o leftframe.o $(LIBDIR) $(OPTIONS)
 
+logonframe.o: cgic.o logonframe.c typedefs.o
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c logonframe.c -o logonframe.o
+
 logonframe: logonframe.o cgic.o logonframe.c typedefs.o
 	$(CC) $(COPTS) -o logonframe cgic.o typedefs.o logonframe.o $(LIBDIR) $(OPTIONS)
 
 #--- Compilation of javascript/serverpush/frame-binaries
 
-nph-addendum: nph-addendum.o cgic.o typedefs.o nph-addendum.c
+nph-addendum.o: cgic.o typedefs.o nph-addendum.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c nph-addendum.c -o nph-addendum.o 
+
+nph-addendum: nph-addendum.o cgic.o typedefs.o
 	$(CC) $(COPTS) -o nph-addendum cgic.o typedefs.o nph-addendum.o $(LIBDIR) $(OPTIONS)
 
 nph-logonframe.o: nph-logonframe.c
@@ -150,8 +156,14 @@ nph-javascriptframe: nph-javascriptframe.o cgic.o typedefs.o
 
 #--- Compilation and installing of small website binaries like the wholist
 
-wholist: wholist.o wholist.c
-	$(CC) $(COPTS) -o wholist wholist.o $(LIBDIR) $(OPTIONS)
+wholist.o: wholist.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c wholist.c 
+
+wholist: wholist.o
+	$(CC) $(COPTS) -o wholist wholist.o $(INCLUDES) $(LIBDIR) $(OPTIONS)
+
+clearcharacters.o: clearcharacters.c
+	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c clearcharacters.c 
 
 clearcharacters: clearcharacters.o clearcharacters.c
 	$(CC) $(COPTS) -o clearcharacters clearcharacters.o $(LIBDIR) $(OPTIONS)
