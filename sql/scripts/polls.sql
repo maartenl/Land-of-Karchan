@@ -14,14 +14,14 @@ create table polls
 title varchar(255) not null,
 description varchar(255) not null,
 minvalue int not null,
-maxvalue int not null);
+maxvalue int not null)
 
 create table poll_values
 (id int not null,
 name varchar(20) not null,
 value int,
 comments text,
-primary key (id, name));
+primary key (id, name))
 
 */
 
