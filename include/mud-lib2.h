@@ -75,7 +75,7 @@ int ReadBill(char *botname, char *vraag, char *name, int room);
 		post:if answer found, return answer else "Ignore" bot and add to log
 */
 
-void ListActivePlayers(char *name, char *password) ;
+int Who_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 /* dump list of people onto screen who are logged in at this time
 		Pre: true
 		Post: list of active people with idletime added

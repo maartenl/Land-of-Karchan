@@ -32,10 +32,10 @@ void GoNorth_Command(char *name, char *password, int room);
 void GoSouth_Command(char *name, char *password, int room);
 int Sleep_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 void Awaken_Command(char *name, char *password, int room);
-void BigTalk_Command(char *name, char *password);
+int BigTalk_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 void MailFormDumpOnScreen(char *name, char *password);
-void Time_Command(char *name, char *password, int room);
-void Date_Command(char *name, char *password, int room);
+int Time_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
+int Date_Command(char *name, char *password, int room, char **ftokens, char *fcommand);
 void LookSky_Command(char *name, char *password);
 
 void SwitchRoomCheck(char *name, char *password, int room);
