@@ -43,7 +43,7 @@ List of All Active Users</H2>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select name, title, sleep, 
-	(unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60 as min,
+	floor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,
 	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec
 	from mm_usertable 
 	where god<=1 and active=1"

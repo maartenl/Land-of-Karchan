@@ -77,11 +77,19 @@ maarten_l@yahoo.com
 		}
 		else
 		{
+			if (get_cfg_var("magic_quotes_gpc") == "1")
+			{
+				$cookie = stripslashes($cookie);
+			}
 			echo $cookie;
 		}
 		$readline = fgets ($fp,128);
 		while ((!feof($fp)) && ($readline != ".\n"))
 		{
+			if (get_cfg_var("magic_quotes_gpc") == "1")
+			{
+				$readline = stripslashes($readline);
+			}
 			echo $readline;
 			$readline = fgets ($fp, 128);
 		}
