@@ -42,8 +42,6 @@ import mmud.boards.*;
 public class ReadPublicCommand extends ReadBoardCommand
 {
 
-	String theResult = null;
-
 	public ReadPublicCommand(String aRegExpr)
 	{
 		super(aRegExpr);
@@ -59,12 +57,6 @@ public class ReadPublicCommand extends ReadBoardCommand
 		}
 		// initialise string, important otherwise previous instances will return this
 		return readMessage(aUser, "public", 3);
-	}
-
-	public String getResult()
-	{
-		Logger.getLogger("mmud").finer("");
-		return theResult;
 	}
 
 }
