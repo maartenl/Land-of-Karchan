@@ -274,7 +274,7 @@ cgiMain()
 	umask(0000);
 	InitVar();
 	opendbconnection();
-	if (0) {
+	if (1) {
 		printf("Command:");
 		gets(command);
 		printf("Name:");
@@ -394,7 +394,9 @@ cgiMain()
 		WriteRoom(name, password, room, 1);
 		KillGame();
 	}
-
+	
+	printf("%s, %i, %i\n", tokens[0], aantal, room);
+	printf("<%s>", ExistUserByDescription(tokens, 0, aantal, room));
 	if (punishment > 0)
 	{
 		if (!strcmp(troep, "say rrribbit"))

@@ -506,7 +506,7 @@ cgiMain()
 						 "DATE_SUB(NOW(), INTERVAL 2 HOUR),");
 //	active
 // ---------------
-	strcat(sqlstring, "0,'',0,0,0,0,0");
+	strcat(sqlstring, "0,'',2,2,2,2,2");
 //	god, guild, strength, intelligence, dexterity, constitution, wisdom	
 	strcat(sqlstring, ",0,0,0,0,");
 //	practises, training, bandage, alighment, 
