@@ -157,6 +157,18 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["id"], $myrow["id"]);
 }
 
+$result = mysql_query("select mm_itemtable.id from mm_items, mm_itemtable, mm_charitemtable "
+	." where mm_items.id < 0 "
+	." and mm_items.id = mm_itemtable.itemid "
+	." and mm_itemtable.id = mm_charitemtable.id"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item instance :</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> (person has item with negative itemdef)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
 $result = mysql_query("select room1.id from mm_roomitemtable as room1 left join"
 	." mm_itemtable as room2 on room1.id = room2.id where room2.id is null"
 	, $dbhandle)
