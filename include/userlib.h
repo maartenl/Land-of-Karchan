@@ -53,6 +53,8 @@ void WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt, ...);
 
 void WriteMessage(char *name, int roomnr, char *fmt, ...);
 
+void WriteWall(char *name, char *fmt, ...);
+
 int WriteMessageTo(char *toname, char *name, int roomnr, char *fmt, ...);
 
 int WriteSayTo(char *toname, char *name, int roomnr, char *fmt, ...);

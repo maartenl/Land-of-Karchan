@@ -1329,6 +1329,7 @@ Possible commands are:
 <DT>admin readconfig<DD>rereads the config files. convenient if they have been changed and need to be reloaded
 <DT>admin config<DD>shows current config settings (exclusing the database password, for security reasons)
 <DT>admin stats<DD>shows the current statistics of the server
+<DT>admin wall<DD>prints a message into everyone currently active in the game, for example '<I>admin wall Hello everybody!<P></I>'.
 </DL>
 */
 int
@@ -1367,6 +1368,12 @@ Admin_Command(mudpersonstruct *fmudstruct)
 	else
 	{
 		return 0;
+	}
+	if ( (getTokenAmount(fmudstruct)>2) && (!strcasecmp(getToken(fmudstruct, 1), "wall")) )
+	{
+		WriteWall(name, fcommand+( getToken(fmudstruct, 2)-getToken(fmudstruct, 0) ));
+		WriteRoom(fmudstruct);
+		return 1;
 	}
 	if (!strcasecmp(fcommand, "admin shutdown"))
 	{

@@ -546,6 +546,41 @@ while((row = mysql_fetch_row(res))) {
 	mysql_free_result(res);
 }
 
+//! write message to all users in the mud, used normally by system administrators or events/triggers
+/*! can contain a formatted string and extra parameters
+\see printf
+*/
+void 
+WriteWall(char *name, char *fmt,...)
+{
+char troep[100];
+FILE *filep;
+va_list ap;
+char *save;
+
+MYSQL_RES *res;
+MYSQL_ROW row;
+char *temp;
+
+temp = composeSqlStatement("select name from tmp_usertable");
+res=sendQuery(temp, NULL);
+mud_free(temp);temp=NULL;
+
+save = fmt;
+while((row = mysql_fetch_row(res))) {
+			strcpy(troep, getParam(MM_USERHEADER));
+			strcat(troep, row[0]);
+			strcat(troep, ".log");
+			filep = fopen(troep, "a");
+			fmt = save;
+			va_start(ap, fmt);
+			(void) vfprintf(filep, fmt, ap);
+			va_end(ap);
+			fclose(filep);
+	}			/* endwhile */
+	mysql_free_result(res);
+}
+
 //! write message to specific user in room
 /*! can contain a formatted string and extra parameters
 \see printf
