@@ -54,6 +54,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			5 -> if found, if false (so skip first sequence of actions)
 			6 -> showstandard found, skip everything and dump output
 			7 -> show found, dump description and skip everything else
+			8 -> showstring found, dump string and skip everything else
 */
 {
 	if (!strcmp(parserstring, "end"))
@@ -118,6 +119,41 @@ int ParseSentence(char *name, int *room, char *parserstring)
 	{
 		if (debug) {fprintf(cgiOut, "showstandard found, exiting...<BR>\n");}
 		return 6;
+	}
+	if (!strcmp(parserstring, "showstring"))
+	{
+		if (debug) {fprintf(cgiOut, "showstring found, exiting...<BR>\n");}
+		if (stringbuffer == NULL)
+		{
+			if (debug) {fprintf(cgiOut, "showstring skipped, stringbuffer empty...<BR>\n");}
+		}
+		else
+		{
+			fprintf(cgiOut, "<HTML>\n");
+			fprintf(cgiOut, "<HEAD>\n");
+			fprintf(cgiOut, "<TITLE>\n");
+			fprintf(cgiOut, "Land of Karchan\n");
+			fprintf(cgiOut, "</TITLE>\n");
+			fprintf(cgiOut, "</HEAD>\n");
+
+			fprintf(cgiOut, "<BODY>\n");
+			if (!getFrames())
+			{
+				fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"setfocus()\">\n");
+			}
+			else
+			{
+				if (getFrames()==1)
+				{
+					fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
+				} else
+				{
+					fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\" onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
+				}
+			}
+			fprintf(cgiOut, "%s", stringbuffer);
+			return 8;
+		}
 	}
 	if (strstr(parserstring, "show(")==parserstring)
 	{
@@ -290,6 +326,54 @@ int ParseSentence(char *name, int *room, char *parserstring)
 			mysql_free_result(res);
 		}
 	}
+	if (strstr(parserstring, "addstring(")==parserstring)
+	{
+		/* compute string return value */
+		char *temp;
+		MYSQL_RES *res;
+		MYSQL_ROW row;
+		temp = (char *) malloc(strlen(parserstring)+1);
+		strcpy(temp, parserstring+11);
+		temp[strlen(temp)-2]=0;
+
+		if (debug) {fprintf(cgiOut, "addstring [%s]found...<BR>\n", parserstring);}
+		res=SendSQL2(temp, NULL);
+		free(temp);
+		if (res != NULL)
+		{
+			int stringbuffersize;
+			if (stringbuffer == NULL)
+			{
+				stringbuffer = (char *) malloc(2);
+				stringbuffer[0]=0;
+				stringbuffersize=2;
+			}
+			else
+			{
+				stringbuffersize=strlen(stringbuffer)+2;
+			}
+			while ((row = mysql_fetch_row(res))!=NULL)
+			{
+				/*	row[0] should contain a string */
+				if (row[0]!=NULL)
+				{
+					char *temp;
+					stringbuffersize += strlen(row[0])+2;
+					temp = (char *) realloc(stringbuffer, stringbuffersize);
+					if (temp != NULL)
+					{
+						stringbuffer=temp;
+						strcat(stringbuffer, row[0]);
+					}
+					else
+					{
+						if (debug) {fprintf(cgiOut, "addstring: realloc failed...<BR>\n");}
+					}
+				}
+			}
+			mysql_free_result(res);
+		}
+	}
 	return 0;
 }
 
@@ -342,8 +426,9 @@ int Parse(char *name, int *room, char *parserstring)
 					strncpy(temp, string, i-string);
 					strcat(temp, name);
 					strcat(temp, i+strlen("%me"));
-					strcpy(string, temp);
-					free(temp);
+					free(string);
+					string=temp;
+					memory+=255;
 				}
 				while ((i = strstr(string, "%string")) != NULL)
 				{
@@ -362,8 +447,9 @@ int Parse(char *name, int *room, char *parserstring)
 					strncpy(temp, string, i-string);
 					strcat(temp, mybuffer);
 					strcat(temp, i+strlen("%string"));
-					strcpy(string, temp);
-					free(temp);
+					free(string);
+					string=temp;
+					memory+=255+strlen(mybuffer);
 				}
 				while ((i = strstr(string, "%amount")) != NULL)
 				{
@@ -374,8 +460,9 @@ int Parse(char *name, int *room, char *parserstring)
 					sprintf(change, "%i", aantal);
 					strcat(temp, change);
 					strcat(temp, i+strlen("%amount"));
-					strcpy(string, temp);
-					free(temp);
+					free(string);
+					string=temp;
+					memory+=255;
 				}
 				while ( ((i = strstr(string, "%0")) != NULL) ||
 					((i = strstr(string, "%1")) != NULL) )
@@ -393,8 +480,9 @@ int Parse(char *name, int *room, char *parserstring)
 						strncpy(temp, string, i-string);
 						strcat(temp, tokens[integer-1]);
 						strcat(temp, i+3);
-						strcpy(string, temp);
-						free(temp);
+						free(string);
+						string=temp;
+						memory+=255;
 					}
 					else
 					{
@@ -402,8 +490,9 @@ int Parse(char *name, int *room, char *parserstring)
 						temp[i-string]=0;
 						strncpy(temp, string, i-string);
 						strcat(temp, i+1);
-						strcpy(string, temp);
-						free(temp);
+						free(string);
+						string=temp;
+						memory+=255;
 					}
 				}
 				/* this is the parsing part, the previous part was just splitting up */
@@ -452,6 +541,12 @@ int Parse(char *name, int *room, char *parserstring)
 						{
 							free(string);
 							return 2;
+							break;
+						}
+						case 8 : // showstring found, exiting
+						{
+							free(string);
+							return 3;
 							break;
 						}
 					} // end switch
@@ -550,6 +645,17 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		if (returnvalue==2)
 		{
 			/* show() command found */
+			char logname[100];
+			sprintf(logname, "%s%s.log",USERHeader,name);
+ 			PrintForm(name, password);
+			if (getFrames()!=2) {ReadFile(logname);}
+			fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
+			fprintf(cgiOut, "<DIV ALIGN=left><P>");
+			KillGame();
+		}
+		if (returnvalue==3)
+		{
+			/* showstring command found */
 			char logname[100];
 			sprintf(logname, "%s%s.log",USERHeader,name);
  			PrintForm(name, password);
