@@ -28,9 +28,19 @@ INSTALLDIR = /home/httpd/cgi-bin/
 
 CC = gcc
 COPTS = -O2 -m486
-INCLUDES = -I../include -idirafter /usr/include/mysql/ 
+# this header is for RPM installations of mysql
+#
+# INCLUDES = -I../include -idirafter /usr/include/mysql/ 
+# this header is for Source installations of mysql
+#
+INCLUDES = -I../include -idirafter /usr/local/include/mysql/ 
 
 EXEDIR = /home/httpd/cgi-bin
+# this header is for RPM installations of mysql
+#
+# LIBDIR = -L/usr/local/lib/mysql/ 
+# this header is for Source installations of mysql
+#
 LIBDIR = -L/usr/local/lib/mysql/ 
 OPTIONS = -lm -lmysqlclient 
 

@@ -471,12 +471,14 @@ int cgiMain()
 		if (!strcmp(frames,"2")) {setFrames(1);}
 		if (!strcmp(frames,"3")) {setFrames(2);}
 	}
-
 /*	fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
 	
 	if (strcmp("Karn", name)) {CheckForOfflineMud();}
 
+	printf("Debug!\n");
+	exit(0);
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
+
 
 	StrangeName(name, password, cgiRemoteAddr);
 	
