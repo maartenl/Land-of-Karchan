@@ -71,7 +71,7 @@ public class WhisperCommand extends NormalCommand
 				String message = command.substring(command.indexOf(myParsed[3], 7 + 1 + 2 + 1 + myParsed[2].length())).trim();
 				aUser.writeMessage("<B>You whisper [to " + toChar.getName() + "]</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage("<B>" + aUser.getName() + " whispers [to you]</B> : " + message + "<BR>\r\n");
-				Persons.sendMessageExcl(aUser, toChar, "%SNAME %SISARE whispering something to %SNAME, but you cannot hear what.<BR>\r\n");
+				Persons.sendMessageExcl(aUser, toChar, "%SNAME %SISARE whispering something to %TNAME, but you cannot hear what.<BR>\r\n");
 			}
 		}
 		else
