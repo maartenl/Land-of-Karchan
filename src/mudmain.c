@@ -1565,7 +1565,7 @@ RangerGuild_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	res = executeQuery(NULL, "select guildstatus from tmp_usertable where name='%x'", name);
+	res = executeQuery(NULL, "select guild from tmp_usertable where name='%x'", name);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -1624,7 +1624,7 @@ MifGuild_Command(mudpersonstruct *fmudstruct)
 	password = fmudstruct->cookie;
 	room = fmudstruct->room;
 	fcommand = fmudstruct->command;
-	res = executeQuery(NULL, "select guildstatus from tmp_usertable where name='%x'", name);
+	res = executeQuery(NULL, "select guild from tmp_usertable where name='%x'", name);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);
