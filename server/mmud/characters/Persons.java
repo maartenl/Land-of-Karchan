@@ -50,7 +50,7 @@ public final class Persons
 	/**
 	 * Initialise this object by retrieving all persons from the
 	 * database that are playing the game.
-	 * @see mmud.Database#getPersons
+	 * @see mmud.database.Database#getPersons
 	 */
 	public static void init()
 	{

@@ -30,24 +30,25 @@ CC = /usr/java/j2sdk1.4.1_02/bin/javac
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar:jclasses
-COPTS = -source 1.4 -classpath $(CLASSPATH) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
+CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar:runme.jar
+CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar:jakarta-oro-2.0.7.jar
+COPTS = -source 1.4 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
 
-TARGETS = compile
+TARGETS = compile javadoc release
 
 compile: mmud/*.java
 	$(CC) $(COPTS) mmud/*.java mmud/items/*.java mmud/commands/*.java \
-    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
+	mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
 #    mmud/communication/*.java mmud/configuration/*.java
 
-javadoc:
-	cd javadoc; javadoc -source 1.4 -sourcepath .. mmud/*.java mmud/items/*.java mmud/commands/*.java \
-    mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java 
+javadoc: compile
+	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -d ./html \
+	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database
 
 clean:
-	rm -rf javadoc/* jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
-    mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
-    mmud/communication/*~ mmud/configuration/*~
+	rm -rf html/* jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
+	mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
+	mmud/communication/*~ mmud/configuration/*~
 
 all: $(TARGETS)
 
@@ -55,4 +56,7 @@ jar:
 	cd jclasses;jar -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
 run: jar
-	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) -jar runme.jar
+	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) mmud.Main
+
+release: clean compile jar javadoc
+	echo "Release done."

@@ -25,12 +25,12 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-package mmud;
+package mmud.items;
 
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import mmud.items.*;
+import mmud.Constants;
 
 /**
  * Collection class for storing of items.

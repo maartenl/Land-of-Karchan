@@ -50,45 +50,45 @@ public class Database
 {
 
 	private static Connection theConnection = null;
-	public static String sqlGetUserString = "select * from usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetRoomString = "select * from rooms where id = ?";
-	public static String sqlGetPersonsString = "select * from usertable where active = 1";
+	public static String sqlGetUserString = "select * from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
+	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
-	public static String sqlGetBan1String = "select count(name) as count from sillynamestable where ? like name";
-	public static String sqlGetBan2String = "select count(name) as count from unbantable where name = ?";
-	public static String sqlGetBan3String = "select count(address) as count from bantable where ? like address";
-	public static String sqlSetSessPwdString = "update usertable set lok = ? where name = ?";
-	public static String sqlActivateUserString = "update usertable set active=1, lastlogin=date_sub(now(), interval 2 hour) where name = ?";
-	public static String sqlDeActivateUserString = "update usertable set active=0, lok=\"\", lastlogin=date_sub(now(), interval 2 hour) where name = ?";
-	public static String sqlGetLogonMessageString = "select message from logonmessage where id=0";
-	public static String sqlYouHaveNewMailString = "select count(*) as count from mailtable where toname = ? and newmail = 1";
-	public static String sqlCreateUserString = "insert into usertable " +
+	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
+	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
+	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
+	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
+	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=date_sub(now(), interval 2 hour) where name = ?";
+	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=date_sub(now(), interval 2 hour) where name = ?";
+	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
+	public static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
+	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
-	public static String sqlSetTitleString = "update usertable set title=? where name = ?";
-	public static String sqlSetDrinkstatsString = "update usertable set drinkstats=? where name = ?";
-	public static String sqlSetEatstatsString = "update usertable set eatstats=? where name = ?";
-	public static String sqlExistsUserString = "select 1 from usertable where name = ?";
-	public static String sqlSetSleepString = "update usertable set sleep=? where name = ?";
-	public static String sqlSetRoomString = "update usertable set room=? where name = ?";
-	public static String sqlGetHelpString = "select contents from help where command = ?";
-	public static String sqlSetWhimpyString = "update usertable set whimpy = ? where name = ?";
-	public static String sqlListMailString = "select name, haveread, newmail, header from mailtable where toname = ? order by whensent asc";
-	public static String sqlReadMailString = "select * from mailtable where toname = ? order by whensent asc";
-	public static String sqlDeleteMailString = "delete from mailtable where name = ? and toname = ? and whensent = ? ";
-	public static String sqlUpdateMailString = "update mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
-	public static String sqlSendMailString = "insert into mailtable " +
+	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
+	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
+	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
+	public static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
+	public static String sqlSetSleepString = "update mm_usertable set sleep=? where name = ?";
+	public static String sqlSetRoomString = "update mm_usertable set room=? where name = ?";
+	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
+	public static String sqlSetWhimpyString = "update mm_usertable set whimpy = ? where name = ?";
+	public static String sqlListMailString = "select name, haveread, newmail, header from mm_mailtable where toname = ? order by whensent asc";
+	public static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
+	public static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
+	public static String sqlUpdateMailString = "update mm_mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
+	public static String sqlSendMailString = "insert into mm_mailtable " +
 		"(name, toname, header, whensent, haveread, newmail, message) " +
 		"values (?, ?, ?, now(), 0, 1, ?)";
-	public static String sqlUpdatePkillString = "update usertable set fightable = ? where name = ?";
+	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 	public static String sqlGetInventoryPersonString = 
-		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, items "
-		+ "where mm_itemtable.itemid = items.id and owner = ? and ownertype = 1 "
+		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and owner = ? and ownertype = 1 "
 		+ "and visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 	public static String sqlGetInventoryRoomString =
-		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, items "
-		+ "where mm_itemtable.itemid = items.id and owner = ? and ownertype = 2 "
+		"select count(*) as amount, adject1, adject2, adject3, name from mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and owner = ? and ownertype = 2 "
 		+ "and visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 	public static String sqlPickupItemString =
@@ -97,8 +97,8 @@ public class Database
 		+ "where mm_itemtable.itemid = ? and owner = ? and ownertype = 2 "
 		+ "limit ?";
 	public static String sqlGetItemRoomString =
-		"select * from mm_itemtable, items "
-		+ "where mm_itemtable.itemid = items.id and "
+		"select * from mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
         + "owner = ? and ownertype = 2 "
 		+ "and name = ? and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
@@ -106,8 +106,8 @@ public class Database
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 "
 		+ "limit 1";
 	public static String sqlGetItemPersonString =
-		"select * from mm_itemtable, items "
-		+ "where mm_itemtable.itemid = items.id and "
+		"select * from mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
         + "owner = ? and ownertype = 1 "
 		+ "and name = ? and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
@@ -117,10 +117,10 @@ public class Database
 	public static String sqlGetItemAttributesString =
 		"select * from mm_itemattributes "
 		+ "where id = ?";
-	public static String sqlGetItemDefString = "select * from items where id = ?";
+	public static String sqlGetItemDefString = "select * from mm_items where id = ?";
 
 	/**
-	 * Connects to the database using an url like 
+	 * Connects to the database using an url. The url looks something like 
 	 * "jdbc:mysql://localhost.localdomain/mud?user=root&password=".
 	 * Uses the classname in Constants.dbjdbcclass to get the right class
 	 * for interfacing with the database server. If the database used
@@ -1148,9 +1148,9 @@ public class Database
 
 	/**
 	 * search for the username amongst the banned users list in the database
-	 * first checks the sillynamestable in the database, then checks the
-	 * unbantable and
-	 *  as last check checks the bantable
+	 * first checks the mm_sillynamestable in the database, then checks the
+	 * mm_unbantable and
+	 *  as last check checks the mm_bantable
 	 * @return boolean, true if found, false if not found
 	 * @param username String, name of the playercharacter 
 	 * @param address String, the address of the player 
@@ -1265,7 +1265,7 @@ public class Database
 	}
 
 	/**
-	 * set the session password of a user into the usertable
+	 * set the session password of a user into the mm_usertable
 	 * @param username String, name of the playercharacter 
 	 * @param sesspwd String, the session password of the player 
 	 */
@@ -1295,7 +1295,7 @@ public class Database
 
 	/**
 	 * activate user.
-	 * This is done by copying the record over to tmp_usertable
+	 * This is done by copying the record over to tmp_mm_usertable
 	 * @param aUser User wishing to be active
 	 */
 	public static void activateUser(User aUser)
@@ -1350,7 +1350,7 @@ public class Database
 
 	/**
 	 * create user
-	 * A new record will be inserted into the usertable.
+	 * A new record will be inserted into the mm_usertable.
 	 * @param aUser User wishing to be created
 	 */
 	public static void createUser(User aUser)

@@ -1,2 +1,23 @@
 - sleeping?
 - rmeove Echo.java
+
+- It is impossible at this time, due to memory requirements, to keep all
+items as separate objects in memory. Therefore I've chosen to, with regards
+to items, keep all access to the items on the database level and to not
+perform any caching. For rooms and characters this should not be a problem,
+as the characters will not exceed 20 in most cases and very few rooms are
+normally used.
+
+- It might be a good idea to periodically flush the cached rooms, though.
+Within time, the caching will take up quite a big part.
+
+- It is not a good idea to keep "amount" with the items, because it provides
+a logistical nightmare, and makesit impossible (or difficult) to provide
+unique abilities to certain items.
+
+- It is better to have different itemtables, for rooms/items/characters, in
+order to keep the primary key as best as possible. When moving items from
+the table over to another table, it is best to:
+1. retrieve itemids
+2. remove itemids from table (reserving itemids)
+3. add itemids to another table
