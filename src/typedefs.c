@@ -880,3 +880,14 @@ int readConfigFiles(char *filename)
 }
 
 
+int memory_check = 0;
+
+void addMemory(int i)
+{
+	memory_check += i;
+}
+
+int getMemory()
+{
+	return memory_check;
+}

@@ -179,3 +179,6 @@ char *generate_password(char *fpassword);
 
 void writeConfig(int socketfd);
 int readConfigFiles(char *filename);
+
+void addMemory(int i);
+int getMemory();
