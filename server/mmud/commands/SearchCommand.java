@@ -104,6 +104,7 @@ public class SearchCommand extends NormalCommand
 			}
 			Item firstItem = (Item) myItems.elementAt(0);
 			// here needs to be a check for validity of the item
+			Database.writeLog(aUser.getName(), "searched " + aContainer + " in room " + aUser.getRoom().getId() + " and found " + firstItem);
 			ItemsDb.deleteItemFromContainer(firstItem);
 			ItemsDb.addItemToChar(firstItem, aUser);
 			aUser.sendMessage(aUser.getName() + " searches " + aContainer.getDescription() + " and finds " + firstItem.getDescription() + ".<BR>\r\n");

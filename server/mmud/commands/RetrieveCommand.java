@@ -79,6 +79,7 @@ public class RetrieveCommand extends NormalCommand
 		if (myParsed.length > 1)
 		{
 			// check for into.
+			Room someRoom = null;
 			int frompos = 0;
 			while (!myParsed[frompos].equalsIgnoreCase("from")) 
 			{
@@ -97,6 +98,7 @@ public class RetrieveCommand extends NormalCommand
 			{
 				myContainers = 
 					aUser.getRoom().getItems(adject1, adject2, adject3, name);
+				someRoom = aUser.getRoom(); // for the writeLog.
 				if (myContainers.size() < 1)
 				{
 					aUser.writeMessage("You do not have that container.<BR>\r\n");
@@ -137,6 +139,7 @@ public class RetrieveCommand extends NormalCommand
 				// here needs to be a check for validity of the item
 				boolean success = true;
 				Item myItem = (Item) myItems.elementAt(i);
+				Database.writeLog(aUser.getName(), "retrieved " + myItem + " from " + aContainer + (someRoom!=null ? " from room " + someRoom.getId() : ""));
 				ItemsDb.deleteItemFromContainer(myItem);
 				ItemsDb.addItemToChar(myItem, aUser);
 				aUser.sendMessage(aUser.getName() + " retrieves " + myItem.getDescription() + " from " + aContainer.getDescription() + ".<BR>\r\n");

@@ -111,6 +111,7 @@ public class PutCommand extends NormalCommand
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
+			Room someRoom = null;
 
 			Vector myContainers = 
 				aUser.getItems(adject1, adject2, adject3, name);
@@ -118,6 +119,7 @@ public class PutCommand extends NormalCommand
 			{
 				myContainers = 
 					aUser.getRoom().getItems(adject1, adject2, adject3, name);
+				someRoom = aUser.getRoom(); // usefull for the writeLog.
 				if (myContainers.size() < 1)
 				{
 					aUser.writeMessage("You do not have that container.<BR>\r\n");
@@ -137,6 +139,7 @@ public class PutCommand extends NormalCommand
 				// here needs to be a check for validity of the item
 				boolean success = true;
 				Item myItem = (Item) myItems.elementAt(i);
+				Database.writeLog(aUser.getName(), "put " + myItem + " into container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
 				ItemsDb.deleteItemFromChar(myItem);
 				ItemsDb.addItemToContainer(myItem, aContainer);
 				aUser.sendMessage(aUser.getName() + " puts " + myItem.getDescription() + " into " + aContainer.getDescription() + ".<BR>\r\n");

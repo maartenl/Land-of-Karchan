@@ -102,6 +102,7 @@ public class GiveCommand extends NormalCommand
 				if (success)
 				{
 					// transfer item to other person
+					Database.writeLog(aUser.getName(), "gave " + myItem + " to " + toChar.getName());
 					ItemsDb.transferItem(myItem, toChar);
 					aUser.writeMessage("You give " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
 					toChar.writeMessage(aUser.getName() + " gives " + myItem.getDescription() + " to you.<BR>\r\n");

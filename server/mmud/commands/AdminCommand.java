@@ -81,18 +81,21 @@ public class AdminCommand extends NormalCommand
 		}
 		if (getCommand().equalsIgnoreCase("admin reset rooms"))
 		{
+			Database.writeLog(aUser.getName(), "admin command 'reset rooms' executed");
 			Rooms.init();
 			aUser.writeMessage("Rooms have been reset.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset characters"))
 		{
+			Database.writeLog(aUser.getName(), "admin command 'reset characters' executed");
 			Persons.init();
 			aUser.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().startsWith("admin wall"))
 		{
+			Database.writeLog(aUser.getName(), "admin command 'wall' executed (" + getCommand().substring(11) + ")");
 			Persons.sendWall(getCommand().substring(11));
 			aUser.writeMessage("Wall message sent.<BR>\r\n");
 			return true;

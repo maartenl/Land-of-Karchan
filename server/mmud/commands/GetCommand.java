@@ -104,6 +104,7 @@ public class GetCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (!myItem.isAttribute("notgetable"))
 				{
+					Database.writeLog(aUser.getName(), "got " + myItem + " from room " + aUser.getRoom().getId());
 					ItemsDb.deleteItemFromRoom(myItem);
 					ItemsDb.addItemToChar(myItem, aUser);
 					aUser.sendMessage(aUser.getName() + " gets " + myItem.getDescription() + ".<BR>\r\n");

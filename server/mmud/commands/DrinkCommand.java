@@ -96,6 +96,7 @@ public class DrinkCommand extends NormalCommand
 				// do some other stuff
 			}
 
+			Database.writeLog(aUser.getName(), "drank " + myItem);
 			ItemsDb.deleteItem(myItem);
 			aUser.sendMessage(aUser.getName() + " drinks " + myItem.getDescription() + ".<BR>\r\n");
 			aUser.writeMessage("You drink " + myItem.getDescription() + ".<BR>\r\n");

@@ -839,7 +839,16 @@ public class MudSocket extends Thread
 				throw new InvalidFrameException();
 			}
 		} // end switch 
-		String result = aUser.runCommand(aCommand);
+		String result = null;
+		try
+		{
+			result = aUser.runCommand(aCommand);
+		}
+		catch (MudException e)
+		{
+			Database.writeLog(aUser.getName(), "command: " + aCommand + " exception: " + e + " msg: " + e.getMessage());
+			throw e;
+		}
 		if (result == null)
 		{
 			returnStuff += aUser.getRoom().getDescription(aUser);

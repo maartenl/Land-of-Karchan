@@ -88,7 +88,7 @@ public class EatCommand extends NormalCommand
 				return true;
 			}
 			theResult += aUser.printForm();
-
+			Database.writeLog(aUser.getName(), "eaten " + myItem);
 			ItemsDb.deleteItem(myItem);
 			aUser.sendMessage(aUser.getName() + " eats " + myItem.getDescription() + ".<BR>\r\n");
 			aUser.writeMessage("You eat " + myItem.getDescription() + ".<BR>\r\n");

@@ -168,7 +168,6 @@ public class SellCommand extends NormalCommand
 				if (success)
 				{
 					// transfer item to user
-					ItemsDb.transferItem(myItem, toChar);
 					int totalitemvalue = myItem.getValue();
 					while (totalitemvalue != 0)
 					{
@@ -232,6 +231,8 @@ public class SellCommand extends NormalCommand
 					} // end while totalitemvalue>0
 					if (success)
 					{
+						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
+						ItemsDb.transferItem(myItem, toChar);
 						aUser.sendMessage(aUser.getName() + " sells " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
 						aUser.writeMessage("You sell " + myItem.getDescription() + " to " + toChar.getName() + ".<BR>\r\n");
 						toChar.writeMessage(aUser.getName() + " sells " + myItem.getDescription() + " to you.<BR>\r\n");

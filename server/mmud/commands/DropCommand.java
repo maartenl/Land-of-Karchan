@@ -109,6 +109,7 @@ public class DropCommand extends NormalCommand
 				}
 				else
 				{
+					Database.writeLog(aUser.getName(), "dropped " + myItem + " into room " + aUser.getRoom().getId());
 					ItemsDb.deleteItemFromChar(myItem);
 					ItemsDb.addItemToRoom(myItem, aUser.getRoom());
 					aUser.sendMessage(aUser.getName() + " drops " + myItem.getDescription() + ".<BR>\r\n");
