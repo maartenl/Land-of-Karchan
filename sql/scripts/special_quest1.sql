@@ -85,7 +85,9 @@ and attr.objectid = '%me' and attr.objecttype=1"")
 		# me has no cure 
 		if sql(""select round(rand()*10)=1"")
 			# me got stuck with it
-			sql(""insert into tmp_attributes values('plague','100','integer','%me',1)"")
+			# temporarily deleted this, plague no longer contagious
+			# remove comments when plague becomes active again.
+			# sql(""insert into tmp_attributes values('plague','100','integer','%me',1)"")
 		end
 	end
 end
