@@ -404,3 +404,87 @@ DepTalk(char *name, char *password, int room)
 	WriteRoom(name, password, room, 0);
 	KillGame();
 }	
+/* add KnightTalk */
+void 
+KnightTalk(char *name, char *password, int room)
+{
+	char 		logname[100];
+
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char temp[1024], *temp2;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+
+	temp2 = (char *) malloc(strlen(troep) + 80);
+	sprintf(temp2, "<B><Font color=#FF6600>Honor Thread</font> </B>[%s] : %s<BR>\r\n",
+	name, command + (tokens[2] - tokens[0]));
+	
+	sprintf(temp, "select name from tmp_usertable where guild='Knights'");
+	res=SendSQL2(temp, NULL);
+	while (row = mysql_fetch_row(res))
+	{
+		WriteLinkTo(row[0], name, temp2);
+	}
+	mysql_free_result(res);
+	
+	free(temp2);
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}
+/* add BKTalk */
+void 
+BKTalk(char *name, char *password, int room)
+{
+	char 		logname[100];
+
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char temp[1024], *temp2;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+
+	temp2 = (char *) malloc(strlen(troep) + 80);
+	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font> </B>[%s] : %s<BR>\r\n",
+	name, command + (tokens[2] - tokens[0]));
+	
+	sprintf(temp, "select name from tmp_usertable where guild='BKIC'");
+	res=SendSQL2(temp, NULL);
+	while (row = mysql_fetch_row(res))
+	{
+		WriteLinkTo(row[0], name, temp2);
+	}
+	mysql_free_result(res);
+	
+	free(temp2);
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}
+/* add VampTalk */
+void 
+VampTalk(char *name, char *password, int room)
+{
+	char 		logname[100];
+
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char temp[1024], *temp2;
+	
+	sprintf(logname, "%s%s.log", USERHeader, name);
+
+	temp2 = (char *) malloc(strlen(troep) + 80);
+	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font> </B>[%s] : %s<BR>\r\n",
+	name, command + (tokens[2] - tokens[0]));
+	
+	sprintf(temp, "select name from tmp_usertable where guild='Kindred'");
+	res=SendSQL2(temp, NULL);
+	while (row = mysql_fetch_row(res))
+	{
+		WriteLinkTo(row[0], name, temp2);
+	}
+	mysql_free_result(res);
+	
+	free(temp2);
+	WriteRoom(name, password, room, 0);
+	KillGame();
+}

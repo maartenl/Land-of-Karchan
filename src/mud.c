@@ -1342,6 +1342,7 @@ cgiMain()
 		}
 
 	}
+
 /* add SWTalk */		
 	if (!strcmp("SW", guildstatus))
 	{
@@ -1352,6 +1353,40 @@ cgiMain()
 		}
 
 	}		
+
+/* add KnightTalk */		
+	if (!strcmp("Knights", guildstatus))
+	{
+		if ( (!strcmp("honor", tokens[0])) && (!strcmp("thread", tokens[1])) )
+		{
+			KnightTalk(name, password, room);
+			KillGame();
+		}
+
+	}
+
+/* add BKTalk */		
+	if (!strcmp("BKIC", guildstatus))
+	{
+		if ( (!strcmp("chaos", tokens[0])) && (!strcmp("murmur", tokens[1])) )
+		{
+			BKTalk(name, password, room);
+			KillGame();
+		}
+
+	}
+
+/* add VampTalk */		
+	if (!strcmp("Kindred", guildstatus))
+	{
+		if ( (!strcmp("misty", tokens[0])) && (!strcmp("whisper", tokens[1])) )
+		{
+			VampTalk(name, password, room);
+			KillGame();
+		}
+
+	}
+
 	/* End Guilds */
 	if (!strcmp("mail", troep))
 	{
