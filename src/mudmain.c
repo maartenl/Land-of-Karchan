@@ -1070,45 +1070,49 @@ Drop_Command(char *name, char *password, int room, char *fcommand)
 int
 Buy_Command(char *name, char *password, int room, char *fcommand)
 {
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==9)) 
+	if (getTokenAmount() < 2)
 	{
-		BuyItem_Command(name, password, room, "Bill");
+		return 0;
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==16)) 
+	if ((!strcasecmp("buy", getToken(0))) && (room==9)) 
 	{
-		BuyItem_Command(name, password, room, "Karcas");
+		return BuyItem_Command(name, password, room, "Bill");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==64)) 
+	if ((!strcasecmp("buy", getToken(0))) && (room==16)) 
 	{
-		BuyItem_Command(name, password, room, "Karina");
+		return BuyItem_Command(name, password, room, "Karcas");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==73))
+	if ((!strcasecmp("buy", getToken(0))) && (room==64)) 
 	{
-		BuyItem_Command(name, password, room, "Hagen");
+		return BuyItem_Command(name, password, room, "Karina");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==85)) 
+	if ((!strcasecmp("buy", getToken(0))) && (room==73))
 	{
-		BuyItem_Command(name, password, room, "Karsten");
+		return BuyItem_Command(name, password, room, "Hagen");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==87))
+	if ((!strcasecmp("buy", getToken(0))) && (room==85)) 
 	{
-		BuyItem_Command(name, password, room, "Kurst");
+		return BuyItem_Command(name, password, room, "Karsten");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==161))
+	if ((!strcasecmp("buy", getToken(0))) && (room==87))
 	{
-		BuyItem_Command(name, password, room, "Karstare");
+		return BuyItem_Command(name, password, room, "Kurst");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==228))
+	if ((!strcasecmp("buy", getToken(0))) && (room==161))
 	{
-		BuyItem_Command(name, password, room, "Vimrilad");
+		return BuyItem_Command(name, password, room, "Karstare");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==2550))
+	if ((!strcasecmp("buy", getToken(0))) && (room==228))
 	{
-		BuyItem_Command(name, password, room, "Telios");
+		return BuyItem_Command(name, password, room, "Vimrilad");
 	}
-	if ((getTokenAmount() >= 2) && (!strcasecmp("buy", getToken(0))) && (room==2551))
+	if ((!strcasecmp("buy", getToken(0))) && (room==2550))
 	{
-		BuyItem_Command(name, password, room, "Nolli");
+		return BuyItem_Command(name, password, room, "Telios");
+	}
+	if ((!strcasecmp("buy", getToken(0))) && (room==2551))
+	{
+		return BuyItem_Command(name, password, room, "Nolli");
 	}
 	return 0;
 }
