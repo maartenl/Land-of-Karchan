@@ -106,11 +106,16 @@ res=SendSQL2(temp, NULL);
 free(temp);temp=NULL;
 
 fprintf(getMMudOut(), "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
-while(row = mysql_fetch_row(res)) {
-  fprintf(getMMudOut(), "<TR VALIGN=top><TD>%i.</TD><TD>", j++);
-  if (atoi(row[2])>0) {fprintf(getMMudOut(),"N");}
-  if (atoi(row[1])==0) {fprintf(getMMudOut(),"U");}
-  fprintf(getMMudOut(),"</TD><TD><B>From: <BR>Header: </B></TD><TD>%s<BR>%s<P></TD></TR>\r\n",row[0],row[3]);
+while(row = mysql_fetch_row(res)) 
+{
+	fprintf(getMMudOut(), "<TR VALIGN=top><TD>%i.</TD><TD>", j);
+	if (atoi(row[2])>0) {fprintf(getMMudOut(),"N");}
+	if (atoi(row[1])==0) {fprintf(getMMudOut(),"U");}
+	fprintf(getMMudOut(),"</TD><TD><B>From: </B>%s</TD><TD><B>Header: </B>"
+	"<A HREF=\"%s?command=readmail+%i&name=%s&password=%s&frames=%i\">"
+	"%s</A></TD><TD><A HREF=\"%s?command=deletemail+%i&name=%s&password=%s&frames=%i\">Delete</A></TD>"
+	"</TR>\r\n",row[0], MudExe, j, name, password, getFrames()+1, row[3], MudExe, j, name, password, getFrames()+1);
+	j++;
 }
  fprintf(getMMudOut(), "</TABLE><BR>\r\n");
 	mysql_free_result(res);
@@ -228,7 +233,9 @@ if (atoi(row[4])>0) {fprintf(getMMudOut(), "Yes</B></TD></TR>\r\n");}
 		else {fprintf(getMMudOut(), "No</B></TD></TR>\r\n");}
 fprintf(getMMudOut(), "<TR><TD>Header:</TD><TD><B>%s</B></TABLE>\r\n", row[2]);
 fprintf(getMMudOut(), "<HR noshade>%s", row[6]);
-fprintf(getMMudOut(), "<HR noshade><P>");
+fprintf(getMMudOut(), "<HR noshade>");
+fprintf(getMMudOut(),"<A HREF=\"%s?command=listmail&name=%s&password=%s&frames=%i\">ListMail</A><P>",
+	MudExe, name, password, getFrames()+1);
 PrintForm(name, password);
 fprintf(getMMudOut(), "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 fprintf(getMMudOut(), "<DIV ALIGN=left><P>");
