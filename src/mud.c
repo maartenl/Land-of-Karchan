@@ -167,6 +167,26 @@ cgiMain()
 		fprintf(cgiOut, "Set-cookie: Karchan=; expires= Monday, 01-January-01 00:05:00 GMT\r\n\r\n");
 	}
 	
+	if (!strcasecmp("sendmail", command))
+	{
+		char *mailheader;
+		char *mailbody;
+		char *mailto;
+		mailto = (char *) malloc(cgiContentLength);
+		mailheader = (char *) malloc(cgiContentLength);
+		mailbody = (char *) malloc(cgiContentLength);
+		if ((cgiFormString("mailto", mailto, 99) == cgiFormSuccess)
+			&& (cgiFormString("mailheader", mailheader, 99) == cgiFormSuccess)
+			&& (cgiFormString("mailbody", mailbody, cgiContentLength - 2) == cgiFormSuccess))
+		{
+			sprintf(command, "sendmail %s %i %s %s", 
+				mailto, strlen(mailheader), mailheader, mailbody);
+		}
+		free(mailheader);
+		free(mailbody);
+		free(mailto);
+	}
+	
 	/* setup socket stuff*/
 	if ((he = gethostbyname("localhost")) == NULL)
 	{
