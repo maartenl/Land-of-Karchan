@@ -174,3 +174,9 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring);
 MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows);
 
 roomstruct *GetRoomInfo(int room);
+
+char *generate_password(char *fpassword);
+/* Post: an empty string that may be modified, len>26
+   Pre:  a string containing 24 random digits/capitals/small caps
+   Returns: the pointer to fpassword
+*/
