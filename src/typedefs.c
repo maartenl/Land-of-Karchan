@@ -44,8 +44,7 @@ FILE *getMMudOut()
 	return mmout;
 }
 
-MYSQL dbconnectioninfo program
-;
+MYSQL dbconnection;
 
 void setFrames(int i)
 {
@@ -211,11 +210,11 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring)
 void
 opendbconnection()
 {
-	if (!(mysql_connect(&dbconnection,"localhost",DatabaseLogin,DatabasePassword))) 
+	mysql_init(&dbconnection);
+	if (!(mysql_real_connect(&dbconnection, "localhost", DatabaseLogin,DatabasePassword, DatabaseName, 0, NULL, 0)))
+	{
 		exiterr(1, "error establishing connection with mysql", &dbconnection);
- 
-	if (mysql_select_db(&dbconnection,DatabaseName))
-		exiterr(2, "error opening database", &dbconnection);
+	}
 }
 
 void
