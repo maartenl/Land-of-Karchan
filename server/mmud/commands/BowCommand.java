@@ -65,12 +65,44 @@ public class BowCommand extends NormalCommand
 			}
 			else
 			{
-				Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB1 to %TNAME.<BR>\r\n");
+				if (myParsed.length == 4)
+				{
+					// bow evilly
+					if (Constants.existsAdverb(myParsed[3]))
+					{
+							Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB2 to %TNAME "
+								 + myParsed[3].toLowerCase() + ".<BR>\r\n");
+					}
+					else
+					{
+					   aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+					}
+				}
+				else
+				{
+					Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
+				}
 			}
 		}
 		else
 		{
-			Persons.sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
+			if (myParsed.length == 2)
+			{
+				// bow evilly
+				if (Constants.existsAdverb(myParsed[1]))
+				{
+						Persons.sendMessage(aUser, "%SNAME bow%VERB2 "
+							 + myParsed[1].toLowerCase() + ".<BR>\r\n");
+				}
+				else
+				{
+				   aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+				}
+			}
+			else
+			{
+				Persons.sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
+			}
 		}
 		return true;
 	}
