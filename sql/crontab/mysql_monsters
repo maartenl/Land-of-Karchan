@@ -1,0 +1,11 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+#
+# Dumping data for bots into tmp_usertable;
+#
+
+insert into tmp_usertable select * from bottable;
+
+END_OF_DATA
+

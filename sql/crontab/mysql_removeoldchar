@@ -1,0 +1,19 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+
+#
+# Everyone who hasn't logged on for at least 90 days gets backupped and then
+# erased.
+#
+select name, to_days(now())-to_days(lastlogin) from usertable where
+to_days(now())-to_days(lastlogin)>90;
+
+insert into olduser select * from usertable where
+to_days(now())-to_days(lastlogin)>90;
+
+delete from usertable where
+to_days(now())-to_days(lastlogin)>90;
+
+END_OF_DATA
+

@@ -1,0 +1,10 @@
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+
+#
+# Dumping data for items into table 'tmp_itemtable'
+#
+
+insert into tmp_itemtable select * from respawningitemtable;
+
+END_OF_DATA
+

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+/karchan2/servers/mysql/bin/mysql -h www.karchan.org -u karn --password=pagedown -s mud <<END_OF_DATA
+
+#
+# Changeem
+#
+update bantable set days = days - 1 
+	where days>0;
+delete from bantable where days=0;
+
+END_OF_DATA
+
