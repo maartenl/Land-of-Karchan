@@ -53,6 +53,10 @@ public final class Persons
 //		thePersons = new Vector();
 	}
 
+	/**
+	 * retrieve the character from the list of characters currently active in
+	 * the game.
+	 */
 	public static Person retrievePerson(String aName)
 	{
 		assert thePersons != null : "thePersons vector is null";
@@ -77,8 +81,8 @@ public final class Persons
 	 * browser. It is possible that this is "null", if the user was not
 	 * logged in before.
 	 */
-	 	public static User activateUser(String aName, String aPassword, String aCookie)
-		throws PersonException
+ 	public static User activateUser(String aName, String aPassword, String aCookie)
+	throws PersonException
 	{
 		Logger.getLogger("mmud").finer("aName=" + aName +
 			",aPassword=" + aPassword +
@@ -108,6 +112,11 @@ public final class Persons
 			{
 				Logger.getLogger("mmud").info("thrown: " + Constants.MULTIUSERERROR);
 				throw new PersonException(Constants.MULTIUSERERROR);
+			}
+			if (!myUser.getPassword().equals(aPassword))
+			{
+				Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
+				throw new PersonException(Constants.PWDINCORRECTERROR);
 			}
 			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new PersonException(Constants.USERALREADYACTIVEERROR);

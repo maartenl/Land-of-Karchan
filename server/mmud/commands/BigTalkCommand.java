@@ -64,8 +64,7 @@ public class BigTalkCommand implements Command
 				"<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi + "\" NAME=\"CommandForm\">\n" +
 				"<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n" +
 				"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + theUser.getName() + "\">\n" +
-				"<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + theUser.getPassword() + "\">\n" +
-				"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + theUser.getFrames() + "\">\n" +
+				"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + (theUser.getFrames()+1) + "\">\n" +
 				"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n" +
 				"</FORM><P>\n";
 

@@ -192,27 +192,27 @@ public class Room
 		result += "[ ";
 		if (getWest() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=w&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">west</A>";
+			result += "<A HREF=\"" + aUser.getUrl("w") + "\">west </A>";
 		}
 		if (getEast() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=e&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">east</A>";
+			result += "<A HREF=\"" + aUser.getUrl("e") + "\">east </A>";
 		}
 		if (getNorth() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=n&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">north</A>";
+			result += "<A HREF=\"" + aUser.getUrl("n") + "\">north </A>";
 		}
 		if (getSouth() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=s&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">south</A>";
+			result += "<A HREF=\"" + aUser.getUrl("s") + "\">south </A>";
 		}
 		if (getUp() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=up&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">up</A>";
+			result += "<A HREF=\"" + aUser.getUrl("up") + "\">up </A>";
 		}
 		if (getDown() != null)
 		{
-			result += "<A HREF=\"" + Constants.mudcgi + "?command=down&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "&frames=" + aUser.getFrames() + "\">down</A>";
+			result += "<A HREF=\"" + aUser.getUrl("down") + "\">down </A>";
 		}
 		result += "]<P>\r\n";
 		if (aUser.getFrames() == 0)
@@ -259,7 +259,7 @@ public class Room
 	
 	
 				result +=  "</SCRIPT>\r\n";
-				result +=  "<TR><TD><A HREF=\"" + Constants.mudcgi + "?command=awaken&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
+				result +=  "<TR><TD><A HREF=\"" + aUser.getUrl("awaken") + "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
 				result +=  "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n";
 			} 
 			else 
@@ -309,21 +309,21 @@ public class Room
 	
 				result +=  "</SCRIPT>\r\n";
 	
-				result +=  "<TR><TD><A HREF=\"" + Constants.mudcgi + "?command=quit&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n";
+				result +=  "<TR><TD><A HREF=\"" + aUser.getUrl("quit") + "\" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n";
 				result +=  "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n";
 	
-				result +=  "<TR><TD><A HREF=\"" + Constants.mudcgi + "?command=sleep&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
+				result +=  "<TR><TD><A HREF=\"" + aUser.getUrl("sleep") + "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
 				result +=  "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n";
 	
-				result +=  "<TR><TD><A HREF=\"" + Constants.mudcgi + "?command=clear&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n";
+				result +=  "<TR><TD><A HREF=\"" + aUser.getUrl("clear") + "\" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n";
 				result +=  "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n";
 			}
 			result += "</TABLE>\n";
 			result +=  "<MAP NAME=\"roosmap\">\n";
-			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\"" + Constants.mudcgi + "?command=n&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\">\n";
-			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\"" + Constants.mudcgi + "?command=s&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\">\n";
-			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\"" + Constants.mudcgi + "?command=w&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\">\n";
-			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\"" + Constants.mudcgi + "?command=e&name=" + aUser.getName() + "&password=" + aUser.getPassword() + "\">\n";
+			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\"" + aUser.getUrl("n") + "\">\n";
+			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\"" + aUser.getUrl("s") + "\">\n";
+			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\"" + aUser.getUrl("w") + "\">\n";
+			result +=  "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\"" + aUser.getUrl("e") + "\">\n";
 			result +=  "</MAP>\n";
 		} /*end if fmudstruct->frames dude*/
 

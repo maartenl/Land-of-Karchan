@@ -64,7 +64,6 @@ public class MailCommand implements Command
 			theString += "<TEXTAREA NAME=\"mailbody\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n";
 			theString += "</TD></TR></TABLE><INPUT TYPE=\"hidden\" NAME=\"command\" VALUE=\"sendmail\">\n";
 			theString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + aUser.getName() + "\">\n";
-			theString += "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + aUser.getPassword() + "\">\n";
 			theString += "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n";
 			theString += "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n";
 			theString += "</FORM><P>\r\n";

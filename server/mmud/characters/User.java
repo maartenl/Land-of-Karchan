@@ -51,7 +51,6 @@ public class User extends mmud.characters.Person
 
 	private int theFrames;
 	private boolean theGod;
-	private String theCookie;
 	private Calendar rightNow;
 	private boolean thePkill;
 
@@ -118,13 +117,9 @@ public class User extends mmud.characters.Person
 		theEmail = aEmail;
 		theRealName = aRealName;
 		theGod = aGod;
-		theCookie = aCookie;
+		setSessionPassword(aCookie);
 		thePkill = aPkill;
 		rightNow = Calendar.getInstance();
-		if ((theCookie != null) && (theCookie.trim().equals(""))) 
-		{
-			theCookie = null;
-		}
 	}
 
 	/**
@@ -186,12 +181,8 @@ public class User extends mmud.characters.Person
 		theRealName = aRealName;
 		theGod = false;
 		thePkill = true;
-		theCookie = aCookie;
+		setSessionPassword(aCookie);
 		rightNow = Calendar.getInstance();
-		if ((theCookie != null) && (theCookie.trim().equals(""))) 
-		{
-			theCookie = null;
-		}
 	}
 
 	public String getPassword()
@@ -262,7 +253,8 @@ public class User extends mmud.characters.Person
 	public void setSessionPassword(String aSessionPassword)
 	{
 		Logger.getLogger("mmud").finer("");
-		theSessionPassword = aSessionPassword;
+		theSessionPassword =
+			(aSessionPassword.trim().equals("") ? null : aSessionPassword);
 	}
 
 	/**
@@ -327,7 +319,6 @@ public class User extends mmud.characters.Person
 			myString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi + "\" NAME=\"CommandForm\">\n";
 			myString += "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n";
 			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + getName() + "\">\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + getPassword() + "\">\n";
 			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n";
 			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
 			myString += "</FORM><P>\n";
@@ -357,8 +348,8 @@ public class User extends mmud.characters.Person
 	{
 		Logger.getLogger("mmud").finer("");
 		return Constants.mudcgi + "?command=" + aCommand + "&name=" +
-			getName() + "&password=" + getPassword() + "&frames=" +
-			getFrames();
+			getName() + "&frames=" +
+			(getFrames() + 1);
 	}
 
 	public String getListOfMail()
