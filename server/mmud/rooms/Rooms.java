@@ -51,11 +51,10 @@ public final class Rooms implements Executable
 	}
 
 	/**
-	 * Creation of collection consisting of an empty list.
+	 * Creation of Rooms object.
 	 */
 	public Rooms()
 	{
-		theRooms = new Vector();
 	}
 
 	/**

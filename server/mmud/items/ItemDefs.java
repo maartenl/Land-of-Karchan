@@ -43,11 +43,10 @@ public final class ItemDefs
 	private static Vector theItemDefs = new Vector();
 
 	/**
-	 * Create a new itemdefs object with an empty list.
+	 * Create a new itemdefs object.
 	 */
 	public ItemDefs()
 	{
-		theItemDefs = new Vector();
 	}
 
 	/**
