@@ -2979,7 +2979,7 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount()>=5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
