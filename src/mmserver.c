@@ -367,9 +367,10 @@ parseXml(mudpersonstruct *fmine)
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"command"))
 		{
 			temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			fmine->command = temp;
+			fmine->command = strdup(temp);
+			xmlFree(temp);
 #ifdef DEBUG	
-			printf("%s,%s, %s\n", cur->name, temp, fmine->command );
+			printf("%s,%s\n", cur->name, fmine->command);
 #endif
 		}
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"user"))
@@ -386,7 +387,7 @@ parseXml(mudpersonstruct *fmine)
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
 			if (strlen(temp)>19)
 			{
-				free(temp);
+				xmlFree(temp);
 				temp = NULL;
 				xmlFreeDoc(doc);
 				return 0;
@@ -395,14 +396,16 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("%s,%s\n", cur2->name, temp);
 #endif
-			free(temp);
+			xmlFree(temp);
+			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"password"))
 		{
 			temp = xmlNodeListGetString(doc, cur2->xmlChildrenNode, 1);
 			if (strlen(temp)>39)
 			{
-				free(temp);
+				xmlFree(temp);
+				temp=NULL;
 				xmlFreeDoc(doc);
 				return 0;
 			}
@@ -410,7 +413,8 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("%s,%s\n", cur2->name, temp);
 #endif
-			free(temp);
+			xmlFree(temp);
+			temp = NULL;
 		}
 		if (!xmlStrcmp(cur2->name, (const xmlChar *)"frames"))
 		{
@@ -421,7 +425,8 @@ parseXml(mudpersonstruct *fmine)
 #ifdef DEBUG	
 			printf("%s,%s\n", cur2->name, temp);
 #endif
-			free(temp);
+			xmlFree(temp);
+			temp = NULL;
 		}
 		cur2 = cur2->next;
 	}
@@ -498,9 +503,12 @@ remove_from_list(int socketfd)
 			if (mine->command != NULL) 
 			{
 				free(mine->command);
+				mine->command = NULL;
 			}
 			free(mine->readbuf);
+			mine->readbuf = NULL;
 			free(mine);
+			mine = NULL;
 			return 1;
 		}
 		mine2 = mine;
@@ -544,6 +552,11 @@ store_in_list(int socketfd, char *buf)
 				FILE *filep;
 				temp[7] = t;
 				temp2 = (char *) malloc(strlen(temp+7)+1);
+				if (temp2 == NULL)
+				{
+					syslog(LOG_ERR, "attempting to malloc storage...");
+					exit(7);
+				}
 				strcpy(temp2, temp+7);
 				free(mine->readbuf);
 				mine->readbuf = temp2;
@@ -560,6 +573,11 @@ store_in_list(int socketfd, char *buf)
 				WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
 				filep = fopen("temp.txt", "w");
+				if (filep == NULL)
+				{
+					syslog(LOG_ERR, "attempting to open file.(%s)..", strerror(errno));
+					exit(7);
+				}
 				setMMudOut(filep);
 				gameMain(mine->command, mine->name, mine->password, "127.0.0.1"); 
 				if (!strcasecmp(mine->command, "admin shutdown"))
@@ -760,16 +778,27 @@ main(int argc, char **argv)
 	}
 	syslog(LOG_INFO, "shutdown initiated...");
 	clearGameFunctionIndex(); // clear command index
-	syslog(LOG_INFO, "closing database connection...");
-	closedbconnection();
-
 	if (close(sockfd) == -1)
 	{
 		// do some error checking
 		syslog(LOG_ERR, "attempting to close main socket...");
 		exit(7);
 	}
+	while (list != NULL)
+	{
+		FD_CLR(list->socketfd, &master_fds); // remove closed socket from master set
+		if (close(list->socketfd) == -1)
+		{
+			// do some error checking
+			syslog(LOG_ERR, "attempting to close user socket...");
+			exit(7);
+		}
+		remove_from_list(list->socketfd);
+	}
 	
+	syslog(LOG_INFO, "closing database connection...");
+	closedbconnection();
+
 	syslog(LOG_INFO, "%s: Stopped.", IDENTITY);
 	
 	closelog();
