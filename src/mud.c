@@ -935,8 +935,7 @@ cgiMain()
 		KillGame();
 	}
 
-	if ( (aantal >= 2) && (!strcmp("fight", tokens[0])) && 
-		(room!=-1) && (room!=3) && (room!=164) )
+	if ( (aantal >= 2) && (!strcmp("fight", tokens[0])) )
 	{
 		int myFightable;
 		char *myFightingName;

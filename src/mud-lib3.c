@@ -742,56 +742,6 @@ SwitchRoomCheck(char *name, char *password, int room)
 			}
 			break;
 		}
-		case 9:
-		{
-			if (!strcmp(troep, "close cupboard")) 
-			{
-				sprintf(temp, "select south from rooms where id=20");
-				res=SendSQL2(temp, NULL);
-				row = mysql_fetch_row(res);
-				if (atoi(row[0])==0)
-				{
-					mysql_free_result(res);
-					WriteSentenceIntoOwnLogFile2(logname, "The cupboard is already closed.<BR>\r\n");
-					WriteRoom(name, password, room, 0);
-					KillGame();
-				}
-				mysql_free_result(res);
-
-				WriteSentenceIntoOwnLogFile2(logname, "You succeed in closing the door of the cupboard. "
-				" [<A HREF=\"http://"ServerName"/images/mpeg/her2.mpg\">MPEG</A>]<BR>\r\n");
-				WriteMessage2(name, room, "%s closes the door of the cupboard.<BR>\r\n", name);
-
-				res=SendSQL2("update items set description='<H1><IMG "
-				"SRC=\\\"http://"ServerName"/images/gif/herberg3.gif\\\">The Cupboard</H1><HR> "
-				"You look at the cupboard. It is very old and wormeaten. With one knock "
-				"you could probably knock it down, but I doubt if the barman would appreciate "
-				"this much. It hasn\\'t got a lock so you could open it. I doubt if the barman "
-				"would mind.<P>"
-				"', adject1='comparatively', adject2='big', name='cupboard' where id=-32", NULL);
-				mysql_free_result(res);
-
-				res=SendSQL2("update rooms set contents='<IMG SRC=\\\"http://"ServerName"/images/gif/herberg1.gif\\\""
-				"ALIGN=CENTER><H1>The Taverne &quot;The Twisted Dwarf&quot;</H1> <IMG "
-				"SRC=\\\"http://"ServerName"/images/gif/letters/y.gif\\\" ALIGN=left>ou are now "
-				"in the Inn &quot;The Twisted Dwarf&quot; . It is dark, as always in these places. The "
-				"windows are of a dark blue color, which doesn\\'t allow any light to enter the "
-				"room. A lot of woodwork, wooden tables, chairs and a rather large bar on the "
-				"right of you is situated almost against the wall. In the back of the room a "
-				"comparatively big cupboard is visible. Behind the bar a norse small ugly "
-				"dwarf is cleaning some glasses. On the bar you see a sign on a piece of "
-				"wood, apparently this is the menu for the day. Scattered among the tables "
-				"are groups of people, playing what seems to be a dwarfish version of Poker. "
-				"You see a sign on the wall behind the counter.<P>"
-				"', north=0 where id=9", NULL);
-				mysql_free_result(res);
-				res=SendSQL2("update rooms set south=0 where id=20", NULL);
-				mysql_free_result(res);
-				WriteRoom(name, password, room, 0);
-				KillGame();
-			}
-			break;
-		}
 		case 16:
 		{
 			if ((!strcmp(troep, "go down")) ||
@@ -1322,76 +1272,6 @@ SwitchRoomCheck(char *name, char *password, int room)
 			}
 			break;
 		} /*end 61*/
-		case 63:
-		{
-			if (!strcmp(troep, "heal critical wounds")) 
-			{
-				int itemcopper, itemsilver, itemgold, personvitals;
-				sprintf(temp, "select gold, silver, copper, vitals from tmp_usertable where name='%s'", name);
-				res=SendSQL2(temp, NULL);
-				row = mysql_fetch_row(res);
-				itemgold=atoi(row[0]);
-				itemsilver=atoi(row[1]);
-				itemcopper=atoi(row[2]);
-				personvitals=atoi(row[3]);
-				mysql_free_result(res);
-
-				WriteMessage2(name, room, "%s says [to Kainian] :  Please heal me, good priest.<BR>\r\n", name);
-				if (PayUp(100,0,0,&itemgold,&itemsilver,&itemcopper)) {
-				personvitals-=125;
-				if (personvitals<0) {personvitals=0;}
-				WriteMessage2(name, room, "Kainian prays to the Almighty Karn for his divine influence "
-				"in the restoration of the health of %s. Suddenly %s is struck with an unearthly light!<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "Kainian prays to the Almighty Karn for his divine influence "
-				"in the restoration of the health of you. Suddenly you feel yourself full of new energy!<BR>\r\n");
-				} else {
-				WriteMessage2(name, room, "Kainian says [to %s] :  You do not have enough money to pay for my services.<BR>\r\n", name);
-				WriteSentenceIntoOwnLogFile2(logname, "Kainian says [to you] : You do not have enough money to pay for my services.<BR>\r\n");}
-
-				sprintf(temp, "update tmp_usertable set vitals=%i, "
-				"gold=%i, silver=%i, copper=%i where name='%s'",
-				personvitals, itemgold, itemsilver, itemcopper, name);
-				res=SendSQL2(temp, NULL);
-				mysql_free_result(res);
-
-				WriteRoom(name, password, room, 0);
-				KillGame();
-			}
-			if (!strcmp(troep, "heal light wounds")) 
-			{
-				int itemcopper, itemsilver, itemgold, personvitals;
-				sprintf(temp, "select gold, silver, copper, vitals from tmp_usertable where name='%s'", name);
-				res=SendSQL2(temp, NULL);
-				row = mysql_fetch_row(res);
-				itemgold=atoi(row[0]);
-				itemsilver=atoi(row[1]);
-				itemcopper=atoi(row[2]);
-				personvitals=atoi(row[3]);
-				mysql_free_result(res);
-
-				WriteMessage2(name, room, "%s says [to Kainian] :  Please heal me, good priest.<BR>\r\n", name);
-				if (PayUp(25,0,0,&itemgold,&itemsilver,&itemcopper)) {
-				personvitals-=50;
-				if (personvitals<0) {personvitals=0;}
-				WriteMessage2(name, room, "Kainian prays to the Almighty Karn for his divine influence "
-				"in the restoration of the health of %s. Suddenly %s is struck with an unearthly light!<BR>\r\n", name, name);
-				WriteSentenceIntoOwnLogFile2(logname, "Kainian prays to the Almighty Karn for his divine influence "
-				"in the restoration of the health of you. Suddenly you feel yourself full of new energy!<BR>\r\n");
-				} else {
-				WriteMessage2(name, room, "Kainian says [to %s] :  You do not have enough money to pay for my services.<BR>\r\n", name);
-				WriteSentenceIntoOwnLogFile2(logname, "Kainian says [to you] : You do not have enough money to pay for my services.<BR>\r\n");}
-
-				sprintf(temp, "update tmp_usertable set vitals=%i, "
-				"gold=%i, silver=%i, copper=%i where name='%s'",
-				personvitals, itemgold, itemsilver, itemcopper, name);
-				res=SendSQL2(temp, NULL);
-				mysql_free_result(res);
-
-				WriteRoom(name, password, room, 0);
-				KillGame();
-			}
-			break;
-		} /*end of 63*/
 		case 65:
 		{
 			if (!strcmp(troep, "minimize coins")) 
