@@ -296,10 +296,7 @@ int ParseSentence(char *name, int *room, char *parserstring)
 		  in tandem if necessary. */
 		/* syntax: set room=30 */
 		if (debug) {fprintf(cgiOut, "set room=%s found...<BR>\n", parserstring+9);}
-		//*room = 4;
-		if (debug) {fprintf(cgiOut, "set room=%i found...<BR>\n", *room);}
 		*room = atoi(parserstring+9);
-		if (debug) {fprintf(cgiOut, "set room=%i found...<BR>\n", *room);}
 	}
 	if (strstr(parserstring, "getstring(")==parserstring)
 	{
