@@ -31,13 +31,9 @@ solution would be to keep all money in the room object, but not in the
 database. (Okay, so money will be lost when the game is reset, so what, it
 was just lying around anyway)
 Decision:
-- character has gold,silver,copper fields that are stored in the database
-- room has gold,silver,copper fields stored in the object
-- room money is lost upon server crash
-- room money is lost upon rooms reset
-- room description should incorporate money
-- Get and Drop and Give will have to be changed to incorporate special
-	cases for money
+- character does not have
+gold,silver,copper fields that are stored in the database
+- room does not have gold,silver,copper fields stored in the object
 
 The Whole Thing Is Utter Crap!
 gold, silver, copper coins are items, same as any other. The fact that
@@ -154,6 +150,7 @@ order to keep the primary key as best as possible. When moving items from
 the table over to another table, it is best to:
 1. remove item from table
 2. add item to other table
+This is in order to prevent items being "created" when the delete fails.
 
 - wielding and wearing are both stored in the wearing field. This is because
 they are mutually exclusive. An item is either being wield (weld?) or being
@@ -166,7 +163,8 @@ PersonPositionEnum.
 PersonPositionEnum is going to be a simple class-member of Item.java. It is
 a little to specific to make it an attribute, although it isn't used much.
 wearable is an integer in ItemDef, to determine if it is possible to
-wear/wield the stuff somewhere.
+wear/wield the stuff somewhere. It is a bitmask to determine what the
+different positions are where the item can be worn.
 
 database: get wearing items from person
 change wearing stuff

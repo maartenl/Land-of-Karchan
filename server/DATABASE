@@ -4,6 +4,8 @@ Changes to the database
 - changes " valuable" to "valuable" for 36,37,38.
 - update mm_items set description = replace(description,
 "http://www.karchan.org/","/") where description like "%karchan.org%";
+- update mm_rooms set contents = replace(contents,
+"http://www.karchan.org/","/") where contents like "%karchan.org%";
 - added help for eyebrow command
 - alter table mm_rooms add (area varchar(49) not null default "Main");    
 - create table mm_area (area varchar(49) not null primary key, description

@@ -1,6 +1,8 @@
 TODO
 ----
 
+- make the admin scripts so that deps can make changes and changes are
+committed to the log and the owner of the object is changed appropriately.
 - Add 'plurals' to the items. (bucket -> buckets)
 - logging is split up into the different characters. This makes it easier to
 debug in a production environment.
