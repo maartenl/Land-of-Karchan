@@ -13,7 +13,8 @@ Here follows a summary of the diffent objects that are supported and the
 methods and fields they contain:<P>
 
 Legend:<DL><DT>[ro]<DD>read only field</DL><P>
-<UL><B>Object</B>
+<B>Object</B>
+<UL>
 <LI>room
 	<UL><B>Fields</B>
 	<LI>int room [ro]
@@ -55,10 +56,11 @@ Legend:<DL><DT>[ro]<DD>read only field</DL><P>
 	</UL>
 <LI>item
 	<UL><B>Fields</B>
-	<LI>
+	<LI>integer itemdef [ro]
 	</UL>
 	<UL><B>Methods</B>
 	<LI>Item addItem(integer)
+	<LI>boolean isWielding()
 
 	<LI>string/integer/boolean getAttribute(string)
 	<LI>setAttribute(string, object/string/integer/boolean)
@@ -76,6 +78,30 @@ Legend:<DL><DT>[ro]<DD>read only field</DL><P>
 		</UL>
 	</UL>
 </UL>
+
+<H3>Which methods</H3>
+The following method signatures are recognised by the game.
+<OL>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params="person"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params="room"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="event" params=""&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="command" params="person,command"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="openevent" params="person,item"&gt;
+</PRE>
+<LI><PRE>&lt;object&gt;
+&lt;function name="closeevent" params="person,item"&gt;
+</PRE>
+
+</OL>
 
 <H3>Adding a method</H3>
 
