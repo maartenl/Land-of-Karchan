@@ -6,3 +6,5 @@ export MYSQL_HOST="www.karchan.org"
 export MYSQL_USR="karn"
 export MYSQL_DB="mud"
 
+export MYSQL_DUMP="/usr/bin/mysqldump"
+export MYSQL_TESTDB="mudtest"
