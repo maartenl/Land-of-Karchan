@@ -24,9 +24,9 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
+
 package mmud.rooms;
 
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.*;
@@ -36,57 +36,27 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Collection class containing rooms used.
+ * Exception thrown when the user is not found (either in the entire
+ * database, or in the list of active users.
  */
-public final class Rooms 
+public class RoomNotFoundException extends RoomException
 {
-	private static Vector theRooms = new Vector();
 
 	/**
-	 * Creation of collection consisting of an empty list.
+	 * constructor for creating an exception with a default message.
 	 */
-	public Rooms()
+	public RoomNotFoundException()
 	{
-		theRooms = new Vector();
+		super(Constants.ROOMNOTFOUNDERROR);
 	}
 
 	/**
-	 * Initialises this object with an empty list.
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
 	 */
-	public static void init()
+	public RoomNotFoundException(String aMessage)
 	{
-		theRooms = new Vector();
-	}
-
-	/**
-	 * retrieves a room based on the roomnumber.
-	 * @param aRoomNr the number of the room to retrieve
-	 * @return Room object containing the room requested. Returns a null
-	 * pointer if the room does not exist.
-	 */
-	public static Room getRoom(int aRoomNr)
-	{
-		Room myRoom = null;
-		assert theRooms != null : "theRooms vector is null";
-		Logger.getLogger("mmud").finer("");
-		if (aRoomNr == 0) 
-		{
-			return null;
-		}
-		for (int i=0;i < theRooms.size(); i++)
-		{
-			myRoom = (Room) theRooms.elementAt(i);
-			if ((myRoom != null) && (myRoom.getId() == aRoomNr))
-			{
-				return myRoom;
-			}
-		}
-		myRoom = Database.getRoom(aRoomNr);
-		if (myRoom != null)
-		{
-			theRooms.addElement(myRoom);
-		}
-		return myRoom;
+		super(Constants.ROOMNOTFOUNDERROR + " " + aMessage);
 	}
 
 }

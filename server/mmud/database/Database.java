@@ -34,6 +34,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.util.Collection;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
 
@@ -94,6 +95,13 @@ public class Database
 		"and ( hour = -1 or hour = HOUR(NOW()) ) " +
 		"and ( minute = -1 or minute = MINUTE(NOW()) ) " +
 		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )";
+	public static String sqlGetMethod = "select src " +
+		"from mm_methods " +
+		"where name = ?";
+	public static String sqlGetUserCommands = 
+		"select * " +
+		"from mm_commands " +
+		"where callable = 1";
 
 	public static String sqlGetCharAttributesString =
 		"select * from mm_charattributes "
@@ -104,6 +112,9 @@ public class Database
 	public static String sqlGetRoomAttributesString =
 		"select * from mm_roomattributes "
 		+ "where id = ?";
+
+	public static String sqlGetAnswers = 
+		"select * from mm_answers where ? like question and name = ?";
 
 	/**
 	 * Connects to the database using an url. The url looks something like 
@@ -249,14 +260,15 @@ public class Database
 	/**
 	 * Retrieve a character from the database that is currently NOT playing.
 	 * @param aName the name of the character. This uniquely identifies
-	 * any character in the database.
+	 * any character in the database. The character is always a <I>user</I>
+	 * playing the game, because if it is not a User, than it is a bot and
+	 * bots should always be active in the game.
 	 * @param aPassword the password of the character. Used to verify the
 	 * encrypted password in the database.
 	 * If the password does not match, the record is still returned,
 	 * but with the password set to the null pointer.
 	 * @return User containing all information. Returns null value if the user
 	 * could not be found.
-	 * DEBUG!! Why returns User, why not Person?
 	 */
 	public static User getUser(String aName, String aPassword)
 	{
@@ -499,7 +511,8 @@ public class Database
 	/**
 	 * Returns the room information based on the roomnumber.
 	 * @param roomnr integer containing the number of the room.
-	 * @return Room object containing all information.
+	 * @return Room object containing all information. null pointer if the
+	 * room could not be found in the database.
 	 */
 	public static Room getRoom(int roomnr)
 	{
@@ -737,6 +750,7 @@ public class Database
 	 * with events.
 	 */
 	public static void runEvents()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -753,22 +767,38 @@ public class Database
 			while (res.next())
 			{
 				String myName = res.getString("name");
-				String myRoom = res.getString("room");
+				int myRoom = res.getInt("room");
 				String mySource = res.getString("src");
-				Logger.getLogger("mmud").info("method_name=" +
-					res.getString("method_name"));
 				if (myName != null)
 				{
 					// character detected
+					Logger.getLogger("mmud").info("method_name=" +
+						res.getString("method_name") + ", person=" + myName);
+					Person aPerson = Persons.retrievePerson(myName);
+					if (aPerson == null)
+					{
+						throw new UserNotFoundException();
+					}
+					aPerson.runScript("event", mySource);
 				}
 				else
-				if (myRoom != null)
+				if (myRoom != 0)
 				{
 					// room detected
+					Logger.getLogger("mmud").info("method_name=" +
+						res.getString("method_name") + ", room=" + myRoom);
+					Room aRoom = Rooms.getRoom(myRoom);
+					if (aRoom == null)
+					{
+						throw new RoomNotFoundException();
+					}
+					aRoom.runScript("event", mySource);
 				}
 				else
 				{
 					// neither detected, overall game executing.
+					Logger.getLogger("mmud").info("method_name=" +
+						res.getString("method_name"));
 				}
 			}
 			res.close();
@@ -779,6 +809,145 @@ public class Database
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
+	}
+
+	/**
+	 * Retrieves all commands defined in the database
+	 * that are <I>active</I>. 
+	 * @return Collection (Vector in this case) 
+	 * containing all the special commands defined in
+	 * the database. Each command is stored in special UserCommandInfo class.
+	 * @see mmud.UserCommandInfo
+	 */
+	public static Collection getUserCommands()
+	{
+		Logger.getLogger("mmud").finer("");
+		assert theConnection != null : "theConnection is null";
+		Vector myResult = new Vector(25);
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetUserCommands = theConnection.prepareStatement(sqlGetUserCommands);
+			res = statGetUserCommands.executeQuery();
+			if (res == null)
+			{
+				return myResult;
+			}
+			while (res.next())
+			{
+				String myCommand = res.getString("command");
+				String myMethod = res.getString("method_name");
+				int myRoom = res.getInt("room");
+				UserCommandInfo aUserCommandInfo;
+				if (myRoom != 0)
+				{
+					// room detected
+					aUserCommandInfo = new UserCommandInfo(
+						myCommand, myMethod, new Integer(myRoom));
+				}
+				else
+				{
+					// no room detected
+					aUserCommandInfo = new UserCommandInfo(
+						myCommand, myMethod);
+				}
+				myResult.add(aUserCommandInfo);
+			}
+			res.close();
+			statGetUserCommands.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		return myResult;
+	}
+
+	/**
+	 * Retrieves the answer to a question from a player or otherwise to a
+	 * bot.
+	 * @return String containing the answer. Returns null if the answer was
+	 * not found.
+	 * @param aPerson the person that is being asked the question.
+	 * @param aQuestion the question asked.
+	 */
+	public static String getAnswers(Person aPerson, 
+		String aQuestion)
+	{
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
+			", aQuestion=" + aQuestion);
+		assert theConnection != null : "theConnection is null";
+		String result = null;
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetAnswers =
+				theConnection.prepareStatement(sqlGetAnswers);
+			statGetAnswers.setString(1, aQuestion);
+			statGetAnswers.setString(2, aPerson.getName());
+			res = statGetAnswers.executeQuery();
+			if (res == null)
+			{
+				return null;
+			}
+			if (res.next())
+			{
+				result = res.getString("answer");
+			}
+			res.close();
+			statGetAnswers.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").finer("returns " + result);
+		return result;
+	}
+
+	/**
+	 * Retrieves the source of a method from the database.
+	 * @return String containing the source of the method. Returns null
+	 * if the method source was not found. Probably when the method
+	 * does not exist.
+	 * @param aMethodName the name of the method, used to find
+	 * the source of the method.
+	 */
+	public static String getMethodSource(String aMethodName)
+	{
+		Logger.getLogger("mmud").finer("aMethodName=" + aMethodName);
+		assert theConnection != null : "theConnection is null";
+		String result = null;
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetMethod =
+				theConnection.prepareStatement(sqlGetMethod);
+			statGetMethod.setString(1, aMethodName);
+			res = statGetMethod.executeQuery();
+			
+			if (res == null)
+			{
+				return null;
+			}
+			while (res.next())
+			{
+				result = res.getString("src");
+			}
+			res.close();
+			statGetMethod.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		return result;
 	}
 
 	/**

@@ -53,8 +53,8 @@ public class Main
 	{
 		try
 		{
-			Constants.init();
 			// Log a simple INFO message.
+			Constants.init();
 			Constants.logger.info("Starting server");
 			Database.connect();
 			Database.writeLog("root","Starting server");
@@ -64,6 +64,8 @@ public class Main
 			Constants.logger.info("Starting tickerthread...");
 			TickerThread myTicker = new TickerThread();
 			myTicker.start();
+			Constants.logger.info("Loading user commands...");
+			Constants.setUserCommands(Database.getUserCommands());
 			Constants.logger.info("Creating Server Socket...");
 			myServerSocket = new ServerSocket(3339);
 			while (!Constants.shutdown)
@@ -73,7 +75,6 @@ public class Main
 				myMudSocket.start();
 			}
 			myServerSocket.close();
-			Thread.sleep(1000);
 			Database.writeLog("root","Stopping server");
 			Database.disconnect();
 			// Log a simple INFO message.

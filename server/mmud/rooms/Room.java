@@ -27,6 +27,11 @@ maarten_l@yahoo.com
 package mmud.rooms;
 
 import java.util.Vector;
+import java.util.Hashtable;
+import java.util.logging.Logger;
+import java.io.StringReader;
+
+import simkin.*;
 
 import mmud.*;
 import mmud.characters.*;
@@ -38,7 +43,7 @@ import mmud.database.*;
  * Data class containing all the information with regards to a room in the
  * mud.
  */
-public class Room
+public class Room implements Executable
 {
 	private int theId;
 	private String theTitle;
@@ -460,6 +465,151 @@ public class Room
 			return false;
 		}
 		return ((Room) o).getId() == getId();
+	}
+
+	/**
+	 * Sends a message to everyone in this room. Ideal to communicate
+	 * room events.
+	 * @param aMessage the message to be sent
+	 */
+	public void sendMessage(String aMessage) 
+	{
+		Persons.sendMessage(this, aMessage);
+	}
+
+	/**
+	 * Executes a script with this room as the focus point.
+	 * @param aScript a String containing the script to execute. The
+	 * following commands in the script are possible:
+	 * <ul>
+	 * <li>sendMessage(&lt;message&gt;);
+	 * </ul>
+	 * @param aXmlMethodName the name of the method in the xml
+	 * script that you wish to execute.
+	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
+	 * @throws MudException if something goes wrong.
+	 */
+	public void runScript(String aXmlMethodName, String aScript)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		try
+		{
+			// Create an interpreter and a context
+			Interpreter interp=new Interpreter();
+			ExecutableContext ctxt=new ExecutableContext(interp);
+																																							
+			// create an XMLExecutable object with the xml string
+			XMLExecutable executable =
+				new XMLExecutable(getId() + "", new StringReader(aScript));
+																																							
+			// call the "main" method with the person as an argument
+			Object args[]={this};
+			executable.method(aXmlMethodName, args, ctxt);
+		}
+		catch (simkin.ParseException aParseException)
+		{
+			System.out.println("Unable to parse command.");
+			aParseException.printStackTrace();
+			throw new MudException("Unable to parse command.", aParseException);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new MudException("Unable to run script.", e);
+		}
+	}
+																																							
+	public void setValue(String field_name, String attrib_name,
+		Object value, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name + ", value=" +
+			value + "[" + value.getClass() + "]");
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+
+	public void setValueAt(Object array_index,
+		String attrib_name,
+		Object value, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name + ", value=" +
+			value);
+	}
+																																							
+	public ExecutableIterator createIterator()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public ExecutableIterator createIterator(String qualifier)
+	{
+		Logger.getLogger("mmud").finer("qualifier=" + qualifier);
+		return createIterator();
+	}
+																																							
+	public Hashtable getAttributes()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public Hashtable getInstanceVariables()
+	{
+		Logger.getLogger("mmud").finer("");
+		return null;
+	}
+																																							
+	public String getSource(String location)
+	{
+		Logger.getLogger("mmud").finer("location=" + location);
+		return null;
+	}
+																																							
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		if (field_name.equals("room"))
+		{
+			return new Integer(getId());
+		}
+		throw new FieldNotSupportedException(field_name + " not found.");
+	}
+																																							
+	public Object getValueAt(Object array_index,
+		String attrib_name, ExecutableContext ctxt)
+	{
+		Logger.getLogger("mmud").finer("array_index=" + array_index +
+			", atttrib_name=" + attrib_name);
+		return null;
+	}
+																																							
+	public Object method(String method_name, Object[]
+		arguments, ExecutableContext ctxt)
+	throws MethodNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("method_name=" + method_name +
+			", arguments=" + arguments);
+		if (method_name.equals("sendMessage"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as argument.");
+				}
+				Persons.sendMessage(this, (String) arguments[0]);
+				return null;
+			}
+		}
+		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
 }

@@ -46,7 +46,7 @@ import mmud.commands.Command;
  * This class contains a Bot, a 
  * independant acting character in the game without control by a user.
  */
-public class Bot extends Person
+public class Bot extends Person implements CommunicationListener
 {
 
 	/**
@@ -134,73 +134,32 @@ public class Bot extends Person
 		aRoom);
 	}
 
-	/**
-	 * writes a message to the log file of the character that contains
-	 * all communication and messages.
-	 * @param aMessage the message to be written to the logfile.
-	 */
-	public void writeMessage(String aMessage)
+	public void commEvent(Person aPerson, CommType aType, String aSentence)
 	{
-		super.writeMessage(aMessage);
+		Logger.getLogger("mmud").finer("aType=" + aType +
+			", aSentence=" + aSentence);
+		if (aType == CommType.TELL)
+		{
+			return;
+		}
+		if (aType == CommType.WHISPER)
+		{
+			Persons.sendMessage(this, aPerson, "%SNAME say%VERB2 [to %TNAME] : Speak up! I cannot hear you!<BR>");
+			return;
+		}
+		String anAnswer = Database.getAnswers(this, aSentence);
+		if (anAnswer == null)
+		{
+			Persons.sendMessage(this, aPerson, "%SNAME ignore%VERB2 %TNAME.<BR>");
+			Database.writeLog(aPerson.getName(), 
+				new MudException("unknown comm to bot " + this.getName() +
+				", sentence was \"" + aSentence + "\"."));
+		}
+		else
+		{
+			Persons.sendMessage(this, aPerson, "%SNAME " + 
+				aType + "%VERB2 [to %TNAME]: " + anAnswer + "<BR>");
+		}
 	}
-
-	/**
-	 * writes a message to the log file of the character that contains
-	 * all communication and messages.
-	 * The message will be
-	 * <I>interpreted</I> by replacing the following values by the following
-	 * other values:
-	 * <TABLE>
-	 * <TR><TD><B>REPLACE</B></TD><TD><B>WITH (if target)</B></TD><TD><B>WITH (if not target)</B></TD></TR>
-	 * <TR><TD>%TNAME</TD><TD>you</TD><TD>name</TD></TR>
-	 * <TR><TD>%TNAMESELF</TD><TD>yourself</TD><TD>name</TD></TR>
-	 * <TR><TD>%THISHER</TD><TD>your</TD><TD>his/her</TD></TR>
-	 * <TR><TD>%THIMHER</TD><TD>you</TD><TD>him/her</TD></TR>
-	 * <TR><TD>%THESHE</TD><TD>you</TD><TD>he/she</TD></TR>
-	 * <TR><TD>%TISARE</TD><TD>are</TD><TD>is</TD></TR>
-	 * <TR><TD>%THASHAVE</TD><TD>have</TD><TD>has</TD></TR>
-	 * <TR><TD>%TYOUPOSS</TD><TD>your</TD><TD>name + s</TD></TR>
-	 * <TR><TD></TD><TD></TD><TD></TD></TR>
-	 * </TABLE>
-	 * @param aMessage the message to be written to the logfile.
-	 * @param aSource the source of the message, the thing originating the
-	 * message.
-	 * @param aTarget the target of the message, could be null if there
-	 * is not target for this specific message.
-	 */
-	public void writeMessage(Person aSource, Person aTarget, String aMessage)
-	{
-		super.writeMessage(aSource, aTarget, aMessage);
-	}
-
-	/**
-	 * writes a message to the log file of the character that contains
-	 * all communication and messages.
-	 * The message will be
-	 * <I>interpreted</I> by replacing the following values by the following
-	 * other values:
-	 * <TABLE>
-	 * <TR><TD><B>REPLACE</B></TD><TD><B>WITH (if source)</B></TD><TD><B>WITH (if not source)</B></TD></TR>
-	 * <TR><TD>%SNAME</TD><TD>you</TD><TD>name</TD></TR>
-	 * <TR><TD>%SNAMESELF</TD><TD>yourself</TD><TD>name</TD></TR>
-	 * <TR><TD>%SHISHER</TD><TD>your</TD><TD>his/her</TD></TR>
-	 * <TR><TD>%SHIMHER</TD><TD>you</TD><TD>him/her</TD></TR>
-	 * <TR><TD>%SHESHE</TD><TD>you</TD><TD>he/she</TD></TR>
-	 * <TR><TD>%SISARE</TD><TD>are</TD><TD>is</TD></TR>
-	 * <TR><TD>%SHASHAVE</TD><TD>have</TD><TD>has</TD></TR>
-	 * <TR><TD>%SYOUPOSS</TD><TD>your</TD><TD>name + s</TD></TR>
-	 * <TR><TD>%VERB1</TD><TD></TD><TD>es</TD></TR>
-	 * <TR><TD>%VERB2</TD><TD></TD><TD>s</TD></TR>
-	 * <TR><TD></TD><TD></TD><TD></TD></TR>
-	 * </TABLE>
-	 * @param aMessage the message to be written to the logfile.
-	 * @param aSource the source of the message, the thing originating the
-	 * message.
-	 */
-	public void writeMessage(Person aSource, String aMessage)
-	{
-		super.writeMessage(aSource, aMessage);
-	}
-
 
 }

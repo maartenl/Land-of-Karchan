@@ -61,6 +61,7 @@ public class WhisperCommand extends NormalCommand
 		}
 		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
+			// whisper to someone
 			Person toChar = Persons.retrievePerson(myParsed[2]);
 			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
@@ -72,6 +73,11 @@ public class WhisperCommand extends NormalCommand
 				aUser.writeMessage("<B>You whisper [to " + toChar.getName() + "]</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage("<B>" + aUser.getName() + " whispers [to you]</B> : " + message + "<BR>\r\n");
 				Persons.sendMessageExcl(aUser, toChar, "%SNAME %SISARE whispering something to %TNAME, but you cannot hear what.<BR>\r\n");
+				if (toChar instanceof CommunicationListener)
+				{
+					((CommunicationListener) toChar).commEvent(aUser, 
+						CommunicationListener.WHISPER, message);
+				}
 			}
 		}
 		else

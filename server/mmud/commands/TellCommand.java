@@ -69,6 +69,11 @@ public class TellCommand extends NormalCommand
 				String message = command.substring(command.indexOf(myParsed[3], 4 + 1 + 2 + 1 + myParsed[2].length())).trim();
 				aUser.writeMessage("<B>You tell " + toChar.getName() + "</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage("<B>" + aUser.getName() + " tells you</B> : " + message + "<BR>\r\n");
+				if (toChar instanceof CommunicationListener)
+				{
+					((CommunicationListener) toChar).commEvent(aUser, 
+						CommunicationListener.TELL, message);
+				}
 			}
 			return true;
 		}

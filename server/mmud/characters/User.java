@@ -34,6 +34,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
+import java.util.Collection;
+import java.util.Iterator;
 
 import mmud.database.*;
 import mmud.characters.*;
@@ -595,18 +597,25 @@ public class User extends mmud.characters.Person
 			{
 				command = new AlreadyAsleepCommand(".+");
 			}
+			command.setCommand(aCommand);
+			command.run(this);
+			return command.getResult();
 		}
-		else
+
+		Collection myCol = Constants.getCommand(aCommand);
+		Iterator myI = myCol.iterator();
+		while (myI.hasNext())
 		{
-			command = Constants.getCommand(aCommand);
+			command = (Command) myI.next();
+			command.setCommand(aCommand);
+			if (command.run(this))
+			{
+				return command.getResult();
+			}
 		}
-		command.setCommand(aCommand);
-		if (!command.run(this))
-		{
-			boguscommand.setCommand(aCommand);
-			boguscommand.run(this);
-			command = boguscommand;
-		}
-		return command.getResult();
+		throw new MudException("We shouldn't reach this point." +
+			" At least the bogus command should execute successfully." + 
+			" This is probably a big bug!.");
 	}
+
 }

@@ -72,6 +72,11 @@ public class ShoutCommand extends NormalCommand
 				Persons.sendMessageExcl(aUser, toChar, "%SNAME shout%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+				if (toChar instanceof CommunicationListener)
+				{
+					((CommunicationListener) toChar).commEvent(aUser, 
+						CommunicationListener.SHOUT, message);
+				}
 			}
 		}
 		else

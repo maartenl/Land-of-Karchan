@@ -50,7 +50,7 @@ import mmud.commands.Command;
  * Class containing all the information of a person in the game. (Not
  * necessarily a user playing)
  */
-public class Person implements Executable
+public class Person implements simkin.Executable
 {
 	private String theName;
 	private Room theRoom;
@@ -633,6 +633,8 @@ public class Person implements Executable
 	 * writes a message to the log file of the character that contains
 	 * all communication and messages.
 	 * @param aMessage the message to be written to the logfile.
+	 * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
+	 * @see #writeMessage(Person aSource, String aMessage)
 	 */
 	public void writeMessage(String aMessage)
 	{
@@ -694,6 +696,8 @@ public class Person implements Executable
 	 * message.
 	 * @param aTarget the target of the message, could be null if there
 	 * is not target for this specific message.
+	 * @see #writeMessage(String aMessage)
+	 * @see #writeMessage(Person aSource, String aMessage)
 	 */
 	public void writeMessage(Person aSource, Person aTarget, String aMessage)
 	{
@@ -747,6 +751,8 @@ public class Person implements Executable
 	 * @param aMessage the message to be written to the logfile.
 	 * @param aSource the source of the message, the thing originating the
 	 * message.
+	 * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
+	 * @see #writeMessage(String aMessage)
 	 */
 	public void writeMessage(Person aSource, String aMessage)
 	{
@@ -895,11 +901,39 @@ public class Person implements Executable
 	}
 
 	/**
-	 * Entry point - executes the script
+	 * Executes a script with this person as the focus point.
+	 * @param aScript a String containing the script to execute. The
+	 * following commands in the script are possible:
+	 * <ul>
+	 * <li>sendMessage(&lt;message&gt;);
+	 * <li>sendMessage(&lt;person&gt;, &lt;message&gt;);
+	 * <li>sendMessageExcl(&lt;message&gt;);
+	 * <li>sendMessageExcl(&lt;person&gt;, &lt;message&gt;);
+	 * <li>personal(&lt;message&gt;);
+	 * <li>person find(&lt;name&gt;);
+	 * </ul>
+	 * The following fields in the script are available:
+	 * <ul>
+	 * <li>room
+	 * <li>sex
+	 * <li>name
+	 * </ul>
+	 * @param aXmlMethodName the name of the method in the xml
+	 * script that you wish to execute.
+	 * @param aCommandArray an array of Strings, that contain the
+	 * different words of the command executed. If it is 
+	 * a null value, the scripted method will not be called with this array.
+	 * This also means that the method in the xml script needs
+	 * to either have this parameter set, or not set in the
+	 * declaration.
+	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
+	 * @throws MudException if something goes wrong.
 	 */ 
-	public void runScript(String aScript)
+	public Object runScript(String aXmlMethodName, String aScript, 
+		String[] aCommandArray)
 	throws MudException
 	{
+		Logger.getLogger("mmud").finer("");
 		try
 		{
 			// Create an interpreter and a context
@@ -911,23 +945,47 @@ public class Person implements Executable
 				new XMLExecutable(getName(), new StringReader(aScript));
 	
 			// call the "main" method with the person as an argument
-			Object args[]={this};
-			executable.method("main",args,ctxt);
+			// or with the person as well as the command (split into
+			// different words in the array.)
+			if (aCommandArray == null)
+			{
+				Object args[]= { this } ;
+				return executable.method(aXmlMethodName, args, ctxt);
+			}
+			Object args[]= { this, aCommandArray };
+			return executable.method(aXmlMethodName, args, ctxt);
 		}
 		catch (simkin.ParseException aParseException)
 		{
 			System.out.println("Unable to parse command.");
 			aParseException.printStackTrace();
-			throw new MudException("Unable to parse command.");
+			throw new MudException("Unable to parse command.", aParseException);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			throw new MudException("Unable to run script.");
+			throw new MudException("Unable to run script.", e);
 		}
 	}
 
-	public void setValue(String field_name, String attrib_name, 
+	/**
+	 * Executes a script with this person as the focus point.
+	 * @param aScript a String containing the script to execute.
+	 * @param aXmlMethodName the name of the method in the xml
+	 * script that you wish to execute.
+	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
+	 * @see #runScript(String aXmlMethodName,String aScript,String[]
+	 * aCommandArray)
+	 * @throws MudException if something goes wrong.
+	 */ 
+	public Object runScript(String aXmlMethodName, String aScript)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		return runScript(aXmlMethodName, aScript, null);
+	}
+	 
+	public void setValue(String field_name, String attrib_name,
 		Object value, ExecutableContext ctxt)
 	throws FieldNotSupportedException
 	{
@@ -936,7 +994,7 @@ public class Person implements Executable
 			value + "[" + value.getClass() + "]");
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
-	 
+
 	public void setValueAt(Object array_index, 
 		String attrib_name, 
 		Object value, ExecutableContext ctxt)
@@ -986,6 +1044,10 @@ public class Person implements Executable
 		{
 			return new Integer(getRoom().getId());
 		}
+		if (field_name.equals("name"))
+		{
+			return getName();
+		}
 		if (field_name.equals("sex"))
 		{
 			return getSex().toString();
@@ -1017,6 +1079,7 @@ public class Person implements Executable
 						" does not contain a String as argument.");
 				}
 				Persons.sendMessage(this, (String) arguments[0]);
+				return null;
 			}
 			if (arguments.length == 2)
 			{
@@ -1032,6 +1095,7 @@ public class Person implements Executable
 				}
 				Persons.sendMessage(this, (Person) arguments[0], 
 					(String) arguments[1]);
+				return null;
 			}
 		}
 		if (method_name.equals("sendMessageExcl"))
@@ -1059,6 +1123,41 @@ public class Person implements Executable
 				}
 				Persons.sendMessageExcl(this, (Person) arguments[0], 
 					(String) arguments[1]);
+				return null;
+			}
+		}
+		if (method_name.equals("find"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a String as argument.");
+				}
+				Person aPerson = Persons.retrievePerson((String) arguments[0]);
+				if (aPerson == null)
+				{
+					return null;
+				}
+				if (aPerson.getRoom() != this.getRoom())
+				{
+					return null;
+				}
+				return aPerson;
+			}
+		}
+		if (method_name.equals("personal"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a String as argument.");
+				}
+				writeMessage((String) arguments[0]);
+				return null;
 			}
 		}
 		throw new MethodNotSupportedException(method_name + " not found.");

@@ -38,9 +38,12 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.Handler;
 import java.util.Vector;
+import java.util.Iterator;
 import java.util.Calendar;
+import java.util.Collection;
 
 import mmud.commands.*;
+import mmud.database.Database;
 
 /**
  * Used constants in the game. Constants might have been read from a
@@ -138,6 +141,8 @@ public final class Constants
 
 	public final static String NOTAUSERERROR = "this is not a valid user";
 	public final static String USERNOTFOUNDERROR = "unable to locate user";
+	public final static String ROOMNOTFOUNDERROR = "unable to locate room";
+	public final static String METHODDOESNOTEXISTERROR = "unable to locate method";
 	public final static String PWDINCORRECTERROR = "password is incorrect";
 	public final static String USERALREADYACTIVEERROR = "the user is already playing the game";
 	public final static String USERALREADYEXISTSERROR = "the user already exists";
@@ -629,18 +634,13 @@ public final class Constants
 	}
 
 	private static TreeMap theCommandStructure = new TreeMap();
+	private static Collection theUserCommandStructure = new Vector();
 	private static TreeMap theEmotionStructure = new TreeMap();
 	private static TreeMap theEmotion2Structure = new TreeMap();
 	private static TreeSet theAdverbStructure = new TreeSet();
 
-	/**
-	 * initialise this class. Sets default properties, load properties
-	 * from file if possible, initializes command structure.
-	 */
-	public static void init()
+	static
 	{
-		logger.finer("");
-
 		theDefaults = new Properties();
 		theDefaults.setProperty("mudfilepath", MUDFILEPATH);
 		theDefaults.setProperty("dbname", DBNAME);
@@ -666,8 +666,6 @@ public final class Constants
 		theDefaults.setProperty("mudbackground", "");
 		theDefaults.setProperty("mudcopyright", "&copy; Copyright Maarten van Leunen");
 		theDefaults.setProperty("logginglevel", "all");
-		theValues = new Properties(theDefaults);
-		loadInfo();
 
 		theCommandStructure.put("bow", new BowCommand("bow( to (\\w)+)?"));
 		theCommandStructure.put("me", new MeCommand("me .+"));
@@ -747,23 +745,78 @@ public final class Constants
 	}
 
 	/**
-	 * Returns the command to be used, based on the first word in the
-	 * command entered by the user.
-	 * @param aCommand String containing the command entered by the user.
-	 * @return Command to be used.
+	 * initialise this class. Sets default properties, load properties
+	 * from file if possible, initializes command structure.
 	 */
-	public static Command getCommand(String aCommand)
+	public static void init()
 	{
 		logger.finer("");
+
+		theValues = new Properties(theDefaults);
+		loadInfo();
+	}
+
+	/**
+	 * set the user command structure for using user commands.
+	 */
+	public static void setUserCommands(Collection aCollection)
+	{
+		theUserCommandStructure = aCollection;
+	}
+		
+	/**
+	 * Returns the commands to be used, based on the first word in the
+	 * command entered by the user.
+	 * @param aCommand String containing the command entered by the user.
+	 * @return Collection (Vector) containing the commands that fit the
+	 * description. The commands that are contained are in the following
+	 * order:
+	 * <ol><li>special commands retrieved from the database
+	 * <li>normal commands
+	 * <li>bogus command (the ultimate failover, "I don't understand
+	 * that.".)
+	 * </ol>It also means that this collection will always carry at least
+	 * one command, the bogys command.
+	 */
+	public static Collection getCommand(String aCommand)
+	{
+		logger.finer("");
+		Vector result = new Vector(5);
+		Iterator myI = theUserCommandStructure.iterator();
+		while (myI.hasNext())
+		{
+			UserCommandInfo myCom = (UserCommandInfo) myI.next();
+			if (aCommand.matches(myCom.getCommand()))
+			{
+				ScriptCommand scriptCommand;
+				if (myCom.getRoom() == null)
+				{
+					// for all rooms.
+					scriptCommand = new ScriptCommand(myCom.getCommand(),
+						myCom.getMethodName());
+				}
+				else
+				{
+					// for one specific room
+					scriptCommand = new ScriptCommand(myCom.getCommand(),
+						myCom.getMethodName(), myCom.getRoom());
+				}
+				scriptCommand.setCommand(aCommand);
+				result.add(scriptCommand);
+			}
+		}
 		int i = aCommand.indexOf(' ');
 		String key = (i != -1 ? aCommand.substring(0, i) : aCommand);
 		Command myCommand = (Command) theCommandStructure.get(key);
-		if (myCommand == null)
+		if (myCommand != null)
 		{
-			return new BogusCommand(".+");
+			myCommand.setCommand(aCommand);
+			result.add(myCommand);
 		}
+		myCommand = new BogusCommand(".+");
 		myCommand.setCommand(aCommand);
-		return myCommand;
+		result.add(myCommand);
+		return result;
 	}
 
 	/**

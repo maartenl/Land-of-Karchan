@@ -365,6 +365,27 @@ public final class Persons
 	}
 
 	/**
+	 * room communication method to everyone in the room. The message
+	 * is not parsed.
+	 * @param aRoom the room that is to display the message
+	 * @param aMessage the message
+	 * @see mmud.characters.Person#writeMessage(java.lang.String) 
+	 */
+	public static void sendMessage(Room aRoom, String aMessage)
+	{
+		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
+			",aMessage=" + aMessage);
+		for (int i=0;i < thePersons.size();i++)
+		{
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aRoom))
+			{
+				myChar.writeMessage(aMessage);
+			}
+		}
+	}
+
+	/**
 	 * character communication method to everyone in the room excluded the
 	 * person mentioned in the parameters. The message
 	 * is parsed, based on who is sending the message.

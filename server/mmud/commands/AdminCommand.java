@@ -111,6 +111,13 @@ public class AdminCommand extends NormalCommand
 			aUser.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
 			return true;
 		}
+		if (getCommand().equalsIgnoreCase("admin reset commands"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'reset commands' executed");
+			Constants.setUserCommands(Database.getUserCommands());
+			aUser.writeMessage("User commands have been reloaded from database.<BR>\r\n");
+			return true;
+		}
 		if (getCommand().equalsIgnoreCase("admin reset itemdefs"))
 		{
 			Database.writeLog(aUser.getName(), "admin command 'reset itemdefs' executed");
@@ -134,8 +141,7 @@ public class AdminCommand extends NormalCommand
 		}
 		if (getCommand().equalsIgnoreCase("admin uptime"))
 		{
-			Database.writeLog(aUser.getName(), "admin command 'uptime' executed (" +
-				Constants.theGameStartupTime + ")");
+			Database.writeLog(aUser.getName(), "admin command 'uptime' executed");
 			Calendar time = Calendar.getInstance();
 			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 			Calendar oldtime = Constants.theGameStartupTime;

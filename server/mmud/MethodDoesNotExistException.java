@@ -28,28 +28,26 @@ maarten_l@yahoo.com
 package mmud;
 
 /**
- * The main exception of the mud.
- */ 
-public class MudException extends Exception
+ * Exception thrown regarding the mail system in the mud.
+ */
+public class MethodDoesNotExistException extends MudException
 {
 
 	/**
-	 * constructor for creating a exception with a message.
-	 * @param aString the string containing the message
+	 * constructor for creating an exception with a default message.
 	 */
-	public MudException(String aString)
-	{
-		super(aString);
-	}
+	public MethodDoesNotExistException()
+	{  
+		super(Constants.METHODDOESNOTEXISTERROR);
+	}  
 
 	/**
 	 * constructor for creating a exception with a message.
 	 * @param aString the string containing the message
-	 * @param aThrowable the original exception.
 	 */
-	public MudException(String aString, Throwable aThrowable)
+	public MethodDoesNotExistException(String aMessage)
 	{
-		super(aString, aThrowable);
-	}
+		super(Constants.METHODDOESNOTEXISTERROR + " " + aMessage);
+	}  
 
 }

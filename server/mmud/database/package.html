@@ -16,51 +16,53 @@ integer containing either 0 (no/false) or 1 (yes/true).<P>
 Database structure is the following:
 <P>(<I>* denotes primary key</I>)
 <TABLE>
-<TR><TD>Tablename</TD><TD>Description</TD></TR>
-<TR><TD>mm_roomattributes</TD><TD>Attributes of a certain room.</TD></TR>
-<TR><TD>mm_charattributes</TD><TD>Attributes of a certain character (player/non-player).</TD></TR>
-<TR><TD>mm_itemattributes</TD><TD>Attributes of a certain item.</TD></TR>
-<TR><TD>mm_logonmessage</TD><TD>The logon message provided upon logon.</TD></TR>
+<TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
+<TR valign=top><TD>mm_answers</TD><TD>Contains questions and answers for
+bots.</TD></TR>
+<TR valign=top><TD>mm_roomattributes</TD><TD>Attributes of a certain room.</TD></TR>
+<TR valign=top><TD>mm_charattributes</TD><TD>Attributes of a certain character (player/non-player).</TD></TR>
+<TR valign=top><TD>mm_itemattributes</TD><TD>Attributes of a certain item.</TD></TR>
+<TR valign=top><TD>mm_logonmessage</TD><TD>The logon message provided upon logon.</TD></TR>
 
-<TR><TD>mm_sillynamestable</TD><TD></TD></TR>
-<TR><TD>mm_unbantable</TD><TD></TD></TR>
-<TR><TD>mm_bantable</TD><TD></TD></TR>
-<TR><TD>mm_errormessages</TD><TD></TD></TR>
-<TR><TD>mm_help</TD><TD></TD></TR>
+<TR valign=top><TD>mm_sillynamestable</TD><TD></TD></TR>
+<TR valign=top><TD>mm_unbantable</TD><TD></TD></TR>
+<TR valign=top><TD>mm_bantable</TD><TD></TD></TR>
+<TR valign=top><TD>mm_errormessages</TD><TD></TD></TR>
+<TR valign=top><TD>mm_help</TD><TD></TD></TR>
 
-<TR><TD>mm_items</TD><TD>Provides item definitions. So, basically, if you have 
-a bucket, the definition would be in this table, wile actual instances of the 
+<TR valign=top><TD>mm_items</TD><TD>Provides item definitions. So, basically, if you have 
+a bucket, the definition would be in this table, while actual instances of the 
 bucket being carried around are in the table mm_itemtable. This table should 
 contain characteristics common to all buckets.</TD></TR>
-<TR><TD>mm_shopkeeperitems</TD><TD>Provides wich items a shopkeeper is
+<TR valign=top><TD>mm_shopkeeperitems</TD><TD>Provides which items a shopkeeper is
 allowed to sell/buy and when the shopkeeper decides to stop buying items
 from characters (i.e. when the shop has plenty of those specific items in
 supply)</TD></TR>
-<TR><TD>mm_itemtable</TD><TD>Provides instances of item definitions.</TD></TR>
-<TR><TD>mm_charitemtable</TD><TD>Indicates who is carrying which item instances.</TD></TR>
-<TR><TD>mm_itemitemtable</TD><TD>Indicates which item instances contain which item instances.</TD></TR>
-<TR><TD>mm_roomitemtable</TD><TD>Indicates which room contains which item instances </TD></TR>
+<TR valign=top><TD>mm_itemtable</TD><TD>Provides instances of item definitions.</TD></TR>
+<TR valign=top><TD>mm_charitemtable</TD><TD>Indicates who is carrying which item instances.</TD></TR>
+<TR valign=top><TD>mm_itemitemtable</TD><TD>Indicates which item instances contain which item instances.</TD></TR>
+<TR valign=top><TD>mm_roomitemtable</TD><TD>Indicates which room contains which item instances </TD></TR>
 
-<TR><TD>mm_rooms</TD><TD>Contains room definitions.</TD></TR>
-<TR><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
+<TR valign=top><TD>mm_rooms</TD><TD>Contains room definitions.</TD></TR>
+<TR valign=top><TD>mm_area</TD><TD>Provides an clustering of rooms called an area.
 Every room is identified as belonging to a area, the main area being
 called "<I>Main</I>".</TD></TR>
-<TR><TD>mm_usertable</TD><TD>Contains all characters in the game.</TD></TR>
-<TR><TD>mm_mailtable</TD><TD>Contains mud mail of characters in the game</TD></TR>
-<TR><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
-<TR><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
+<TR valign=top><TD>mm_usertable</TD><TD>Contains all characters in the game.</TD></TR>
+<TR valign=top><TD>mm_mailtable</TD><TD>Contains mud mail of characters in the game</TD></TR>
+<TR valign=top><TD>mm_boards</TD><TD>Identifies individual public message boards,</TD></TR>
+<TR valign=top><TD>mm_boardmessages</TD><TD>Contains all messages posted on the public
 message boards.</TD></TR>
 
-<TR><TD>mm_log</TD><TD>Logging table, for describing important events in the
+<TR valign=top><TD>mm_log</TD><TD>Logging table, for describing important events in the
 life of characters and administrators.</TD></TR>
-<TR><TD>mm_events</TD><TD>Equal to the linux crontab. Can execute methods
+<TR valign=top><TD>mm_events</TD><TD>Equal to the linux crontab. Can execute methods
 at specific recurring times in the game.</TD></TR>
-<TR><TD>mm_commands</TD><TD>Special commands that have to be programmed
+<TR valign=top><TD>mm_commands</TD><TD>Special commands that have to be programmed
 in methods.</TD></TR>
-<TR><TD>mm_methods</TD><TD>Special methods that can be entered in the
+<TR valign=top><TD>mm_methods</TD><TD>Special methods that can be entered in the
 database to provide characters with special abilities or to be executed
 periodically. See related tables mm_commands and mm_events.</TD></TR>
-<TR><TD></TD><TD></TD></TR>
+<TR valign=top><TD></TD><TD></TD></TR>
 </TABLE>
 </PRE>
 <H3>mm_methods</H3>
@@ -92,7 +94,7 @@ whenever a change takes place on the record in question.
 <DT>id
 <DD>identification of the command
 <DT>callable
-<DD>wether or not the method is active. Either 0 (inactive) or 1 (active).
+<DD>wether or not the command is active. Either 0 (inactive) or 1 (active).
 <DT>command
 <DD>the command which triggers this. % as wildcards are permitted.
 <DT>method_name
@@ -377,6 +379,14 @@ session.
 +---------------------+
 
 +---------------------+
+| mm_answers          |
++---------------------+
+|*name                |
+|*question            |
+| answer              |
++---------------------+
+
++---------------------+
 | mm_help             |
 +---------------------+
 
@@ -413,20 +423,29 @@ mainly for information regarding webside scripts. These tables are easily
 recognized because they do not start with the prefix "mm_".<P>
 (<I>* denotes primary key</I>)
 <TABLE>
-<TR><TD>Tablename</TD><TD>Description</TD></TR>
-<TR><TD>characterinfo</TD><TD>contains story information regarding certain
+<TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
+<TR valign=top><TD>scratchpad</TD><TD>contains personal scratch information
+for administration of the game./TD></TR>
+<TR valign=top><TD>characterinfo</TD><TD>contains story information regarding certain
 characters.</TD></TR>
-<TR><TD>family</TD><TD>shows the family relations between characters.</TD></TR>
-<TR><TD>familyvalues</TD><TD>provides a number of possible family relations.
+<TR valign=top><TD>family</TD><TD>shows the family relations between characters.</TD></TR>
+<TR valign=top><TD>familyvalues</TD><TD>provides a number of possible family relations.
 </TD></TR>
-<TR><TD>polls</TD><TD>contains the different polls.</TD></TR>
-<TR><TD>poll_choices</TD><TD>contains the possible choices per poll.
+<TR valign=top><TD>polls</TD><TD>contains the different polls.</TD></TR>
+<TR valign=top><TD>poll_choices</TD><TD>contains the possible choices per poll.
 </TD></TR>
-<TR><TD>poll_values</TD><TD>contains the answers of users to the different
+<TR valign=top><TD>poll_values</TD><TD>contains the answers of users to the different
 polls.</TD></TR>
-<TR><TD></TD><TD></TD></TR>
+<TR valign=top><TD></TD><TD></TD></TR>
 </TABLE>
 <PRE>
++---------------------+
+| scratchpad          |
++---------------------+
+|*id                  |
+| scratch             |
++---------------------+
+
 +---------------------+
 | characterinfo       |
 +---------------------+

@@ -35,14 +35,27 @@ import mmud.rooms.*;
 import mmud.database.*;
 
 /**
- * Say something : "say Good morning, everyone."
+ * The Script Command. Runs a script.
  */
-public class SayCommand extends NormalCommand
+public class ScriptCommand extends NormalCommand
 {
+	private String theMethodName;
 
-	public SayCommand(String aRegExpr)
+	private String theResult;
+
+	private Integer theRoom;
+
+	public ScriptCommand(String aRegExpr, String aMethodName, Integer aRoom)
 	{
 		super(aRegExpr);
+		theMethodName = aMethodName;
+		theRoom = aRoom;
+	}
+
+	public ScriptCommand(String aRegExpr, String aMethodName)
+	{
+		super(aRegExpr);
+		theMethodName = aMethodName;
 	}
 
 	public boolean run(User aUser)
@@ -53,39 +66,35 @@ public class SayCommand extends NormalCommand
 		{
 			return false;
 		}
-		String command = getCommand();
-		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length <= 1)
+		if ( (theRoom != null) && 
+			(aUser.getRoom().getId() != theRoom.intValue()) )
 		{
 			return false;
 		}
-		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
+		String mySource = Database.getMethodSource(theMethodName);
+		if (mySource == null)
 		{
-			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
-			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			}
-			else
-			{
-				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				Persons.sendMessageExcl(aUser, toChar, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
-				aUser.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				toChar.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				if (toChar instanceof CommunicationListener)
-				{
-					((CommunicationListener) toChar).commEvent(aUser, 
-						CommunicationListener.SAY, message);
-				}
-			}
+			throw new MethodDoesNotExistException(" (" + theMethodName + ")");
 		}
-		else
+		Object stuff = aUser.runScript("command", mySource, getParsedCommand());
+		if (!(stuff instanceof String))
 		{
-			String message = command.substring(3 + 1).trim();
-			Persons.sendMessageExcl(aUser, "%SNAME say%VERB2 : " + message + "<BR>\r\n");
-			aUser.writeMessage(aUser, "<B>%SNAME say%VERB2</B> : " + message + "<BR>\r\n");
+			theResult = null;
+			return true;
+		}
+		theResult = (String) stuff;
+		if ("false".equalsIgnoreCase(theResult))
+		{
+			theResult = null;
+			return false;
 		}
 		return true;
+	}
+
+	public String getResult()
+	{
+		Logger.getLogger("mmud").finer("");
+		return theResult;
 	}
 
 }

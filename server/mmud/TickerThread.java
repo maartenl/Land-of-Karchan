@@ -96,7 +96,15 @@ public class TickerThread extends Thread
 				Database.writeLog("root", e);
 				e.printStackTrace();
 			}
-			Database.runEvents();
+			try
+			{
+				Database.runEvents();
+			}
+			catch (MudException e)
+			{
+				Database.writeLog("root", e);
+				e.printStackTrace();
+			}
 		} // neverending loop.
 	}
 

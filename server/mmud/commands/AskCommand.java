@@ -72,6 +72,11 @@ public class AskCommand extends NormalCommand
 				Persons.sendMessageExcl(aUser, toChar, "%SNAME ask%VERB2 %TNAME: " + message + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
 				toChar.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
+				if (toChar instanceof CommunicationListener)
+				{
+					((CommunicationListener) toChar).commEvent(aUser, 
+						CommunicationListener.ASK, message);
+				}
 			}
 		}
 		else
