@@ -498,6 +498,8 @@ I am talking about is substituting environment variables. The following is
 available right now:
 
 \subparagraph{\%me}is substituted for the username of the current user.
+\subparagraph{\%string}is substituted for a string that has been retrieved
+from the database using an sql statement. See the command 'getstring'.
 \subparagraph{\%amount}is the number of words used to in the command given
 by the current user.
 \subparagraph{\%01}is the first word in the command given by the current
@@ -547,6 +549,11 @@ have nested if statements. This means that the body of an if statement can
 contain an if statement.
 \subparagraph{sql("query")}the query between the " (quotes) is executed by
 the database
+\subparagraph{getstring("query")}the query between the " (quotes) is executed by
+the database, the first value of the result is stored in a
+temporary environment variable called \%string. \%string in any following
+command will be substituted by the value from this resultset. Look for more
+information in the database. A nice example is available in 'show balance'.
 \subparagraph{set room=\#}this little command is used to set the room of the
 current user to another room. However, it is also necessary to use an update
 statement on the database, if you want this change to be permanent. Right
