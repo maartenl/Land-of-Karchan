@@ -47,9 +47,16 @@ maartenl@il.fontys.nl
 
 #include "mudmain.h"
 
+/*! default port number used by the mmserver */
 #define MMPORT 3339 // the port users will be connecting to
+/*! version number of mmserver */
 #define MMVERSION "4.01b" // the mmud version in general
+/*! protocol version of mmserver, should be kept backwards compatible,
+    if backwards compatibility should be broken, update the major
+    version number */
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
+/*! identity string of mmserver, sent immediately to client when
+    the client connects */
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
 
 char *current_name;
@@ -59,9 +66,8 @@ char *current_command;
 
 int signal_caught = 0;
 
-/**
- * this function returns true if a SIGHUP/SIGUSR1/SIGUSR2 signal was caught
- */
+/*! this function returns true if a SIGHUP/SIGUSR1/SIGUSR2 signal was caught 
+    \return int the identification number of the signal caught*/
 int isSignalCaught()
 {
 	int i = signal_caught;
@@ -69,9 +75,10 @@ int isSignalCaught()
 	return i;
 }
 
-/**
- * this function will be run when the process receives a SIGHUP, SIGUSR1 or SIGUSR2 signal
- * and will attempt to close and reopen the different files as well as reread it's config files.
+/*!
+ this function will be run when the process receives a SIGHUP, SIGUSR1 or SIGUSR2 signal
+ and will attempt to close and reopen the different files as well as reread it's config files.
+ /param int the signal received, standard parameter required for catching signals
  */
 void signalhandler(int signum)
 {
@@ -79,11 +86,12 @@ void signalhandler(int signum)
 	signal_caught = signum;
 }
 
-/**
- * this function will be run when the process receives a SIGTERM signal
- * and will attempt to write the current command,username,frames to the syslog
- * for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
- * This function also immediately terminates this process by means of abort()
+/*!
+ this function will be run when the process receives a SIGTERM signal
+ and will attempt to write the current command,username,frames to the syslog
+ for debugging purposes. (i.e. we now know which command SegFaults the mmserver)
+ This function also immediately terminates this process by means of abort()
+ \param int the signal received, standard parameter required for catching signals
  */
 void emergency_signalhandler(int signum)
 {
@@ -91,7 +99,8 @@ void emergency_signalhandler(int signum)
 	abort();
 }
 
-int
+/*! initialises statistics with startup information of the mmserver */
+void
 init_mudinfo()
 {
 	struct hostent *myhostent;
@@ -127,7 +136,7 @@ init_mudinfo()
 	setMudInfo(mymudinfo);	
 }
 
-/* purely for administrative purposes */
+/*! adds a connection attempt to the statistics */
 void
 addconnection_mudinfo()
 {
@@ -142,7 +151,7 @@ addconnection_mudinfo()
 	setMudInfo(mymudinfo);
 }
 
-/* purely for administrative purposes */
+/*! removes a closed connection from the statistics */
 void
 removeconnection_mudinfo()
 {
@@ -152,6 +161,7 @@ removeconnection_mudinfo()
 	setMudInfo(mymudinfo);
 }
 
+/*! display statistics, deprecated, has been handled in mudmain.c*/
 void
 display_mudinfo()
 {
@@ -167,9 +177,9 @@ display_mudinfo()
 	mymudinfo.maxnumber_of_current_connections);
 }
 
-/**
- * rereads the config files, closes all logfiles and reopens them with the new names
- * also closes all sockets if socket port number has been changed.
+/*! rereads the config files, closes all logfiles and reopens them with the new names
+ also closes all sockets if socket port number has been changed.
+ /return int always returns 1
  */
 int
 rereadConfigFiles()
@@ -179,8 +189,11 @@ rereadConfigFiles()
 	return 1;
 }
 
+/*! the socket descriptor used for connections */
 int sockfd = -1;
 
+/*! initialise socket descriptor and bind it to the necessary port 
+    /return int always returns 1, if error occurs exits program */
 int
 init_socket()
 {
@@ -218,7 +231,9 @@ init_socket()
 	return 1;
 }
 
-int
+/*! send messages and receive messages from socket, deprecated, used
+    for testing */
+void
 do_socket()
 {
 	int sin_size;
@@ -290,7 +305,8 @@ do_socket()
 	}
 }
 
-int
+/*! close the main socket, usually called at the end of the main while loop */
+void
 close_socket()
 {
 	if (close(sockfd) == -1)
@@ -301,11 +317,12 @@ close_socket()
 	}
 }
 
-/* attempts to send data over a socket, if not all information is sent.
+/*! attempts to send data over a socket, if not all information is sent.
 will automatically attempt to send the rest.
-@param int socket descriptor
-@param char* message
-@param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\param int socket descriptor
+\param char* message
+\param int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\return return -1 on failure, 0 on success
 */
 int
 send_socket(int s, char *buf, int *len)
@@ -331,6 +348,8 @@ send_socket(int s, char *buf, int *len)
 	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
 }
 
+/*! struct used for internal purposes, it keeps track of the information
+    regarding the mud (username, password, command) sent during a connection */
 typedef struct
 {
 	char *readbuf; // buffer to read from socket, standard=1024 bytes
@@ -343,8 +362,15 @@ typedef struct
 	void *next; // next item in the list
 } mudpersonstruct;
 
+/*! linked list of mudpersonstruct, keeps a list of established 
+    connections/personal mud information */
 mudpersonstruct *list = NULL;
 
+/*! parses the Xml document received from the socket and contained in
+    mudpersonstruct.readbuf, parsed information is stored in the other
+    fields of mudpersonstruct 
+    \param mudpersonstruct* mud information used for parsing and storing information
+    \return int 1 on success, 0 on failure*/
 int
 parseXml(mudpersonstruct *fmine)
 {
@@ -443,9 +469,10 @@ parseXml(mudpersonstruct *fmine)
 	return 1;
 }
 
-/**
- * add a new mudpersonstruct with default values to the beginning of the list
- * (i.e. the first member of the list is the newly added socketfd) 
+/*! add a new mudpersonstruct with default values to the beginning of the list
+ (i.e. the first member of the list is the newly added socketfd) 
+ \param int socket descriptor to be added to list of established connections and corresponding mud info
+ \return int always returns 1
  */
 int
 add_to_list(int socketfd)
@@ -465,8 +492,10 @@ add_to_list(int socketfd)
 	return 1;
 }
 
-/**
- * return the mudpersonstruct attached to the socketfd. If not found, return NULL 
+/*!
+ return the mudpersonstruct attached to the socketfd. If not found, return NULL 
+ \param int socket descriptor used in search
+ \return mudpersonstruct* mudpersonstruct found in linked list, returns NULL if not found
  */
 mudpersonstruct
 *find_in_list(int socketfd)
@@ -484,9 +513,10 @@ mudpersonstruct
 	return NULL;
 }
 
-/**
- * remove the mudpersonstruct from the list based on socketfd. The 'command' char pointer member
- * is freed, then the mudpersonstruct is freed and the list is updated. 
+/*! remove the mudpersonstruct from the list based on socketfd. The 'command' char pointer member
+ is freed, then the mudpersonstruct is freed and the list is updated. 
+ \param int socket descriptor
+ \return 1 upon success, 0 if descriptor not found
  */
 int
 remove_from_list(int socketfd)
@@ -523,8 +553,10 @@ remove_from_list(int socketfd)
 	return 0;
 }
 
-/**
- * add contents of read buffer to the socketstruct
+/*! add contents of read buffer to the socketstruct
+    \param int socket descriptor
+    \param char* buffer read from socket to be added to connection struct
+    \return 1 upon success, 0 upon failure to interpret Xml document
  */
 int
 store_in_list(int socketfd, char *buf)
@@ -612,6 +644,7 @@ store_in_list(int socketfd, char *buf)
 	return 0;
 }
 
+/*! main function */
 int 
 main(int argc, char **argv)
 {
