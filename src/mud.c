@@ -341,7 +341,7 @@ cgiMain()
 			exit(0);
 		}
 		
-		sms_SetDomain("www.karchan.org");
+		sms_SetDomain(ServerName);
 		sms_SetPath("/");
 		if (sms_GetCookie("KARCHAN") == NULL)
 		{
@@ -515,6 +515,9 @@ cgiMain()
 	WriteRoom(name, password, room, 0);
 	KillGame();
 	}
+
+	SearchForSpecialCommand(name, password, room);
+	
 	if (!strcmp(troep, "sleep"))
 	{
 		Sleep_Command(name, password, room);
