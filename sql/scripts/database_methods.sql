@@ -163,8 +163,8 @@ set src = "if sql(""select 1 from items where id=-3 and adject3!='loose'"")
 else
 	say(""You crawl out of the lake, dripping wet.<BR>"")
 	sayeveryone(""%me jumps into the lake.<BR>"")
-	# This part needs to be fixed, attention
 	sql(""update tmp_usertable set room=17 where name='%me'"")
+	set room=17
 	sayeveryone(""%me crawls out of the lake.<BR>"")
 	show(""select contents from action where id=3"")
 end
@@ -552,5 +552,128 @@ end
 showstandard
 return
 " where id=63;
+
+update methods
+set src="if sql(""select 1 from tmp_usertable where name='Karcas' and room=16"")
+	sayeveryone(""%me leaves up, through the hatch.<BR>"")
+	set room=16
+	sayeveryone(""You see %me appearing out of nowhere from behind the counter.<BR>\\\\
+	Karcas says : What are you doing down there! I'll teach you to mess with me!<BR>\\\\
+	He approaches %me, and throws %me out of his shop.<BR>"")
+	set room=5
+	sayeveryone(""You look east and see %me flying through the air.<BR>%me comes down on the ground, slides west and hits the head on the well.<BR>"")
+	sql(""update tmp_usertable set room=5 where name='%me'"")
+	show(""select contents from action where id=8"")
+else
+	say(""You disappear through the hatch, only to reappear safely in Karcas's shop.<BR>"")
+	sayeveryone(""%me disappears through the hatch.<BR>"")
+	sql(""update tmp_usertable set room=16 where name='%me'"")
+	set room=16
+	sayeveryone(""You notice %me magically appearing from behind the counter.<BR>"")
+	showstandard
+end
+return
+" where id=64;
+
+update methods
+set src = "if sql(""select 1 from items where id=-3 and adject3!='loose'"")
+	sql(""update tmp_usertable set room=1 where name='%me'"")
+	set room=1
+	say(""You appear from nowhere.<BR>"")
+	sayeveryone(""%me appears from nowhere.<BR>"")
+	show(""select contents from action where id=4"")
+else
+	say(""You crawl out of the lake, dripping wet.<BR>"")
+	sayeveryone(""%me jumps into the lake.<BR>"")
+	sql(""update tmp_usertable set room=1 where name='%me'"")
+	set room=1
+	sayeveryone(""%me crawls out of the lake.<BR>"")
+	show(""select contents from action where id=5"")
+end
+return
+" where id = 65;
+
+update methods
+set src = "sayeveryone(""%me says [to Kroonz] :  Could you minimize my coins, please?<BR>"")
+if sql(""select 1 from tmp_usertable where name='%me' and gold*100+silver*10+copper<10"")
+	say(""roonz says [to you] : You do not have enough money to pay for my services.<BR>"")
+	sayeveryone(""Kroonz says [to %me] :  You do not have enough money to pay for my services.<BR>"")
+	showstandard
+else
+	say(""Kroonz says [to you]: Your coins are minimized.<BR>"")
+	sayeveryone(""Kroonz says [to %me] : Your coins are minimized.<BR>"")
+	sql(""update tmp_usertable set copper=copper-10 where name='%me'"")
+	sql(""update tmp_usertable set silver=silver-1,copper=copper+10 where name='%me' and copper<0"")
+	sql(""update tmp_usertable set gold=gold-1,silver=silver+10 where name='%me' and silver<0"")
+
+	sql(""update tmp_usertable set silver=silver+round(copper/10), copper=copper % 10 where name='%me'"")
+	sql(""update tmp_usertable set gold=gold+round(silver/10), silver=silver % 10 where name='%me'"")
+	showstandard
+end
+return
+" where id = 66;
+
+update methods
+set src = "if sql(""select %amount = 4"")
+	# Change [copper, silver, gold] to [copper, silver, gold]
+	sayeveryone(""%me says [to Kroonz] :  Could you change my %02 coins to %04?<BR>"")
+	if sql(""select 1 from tmp_usertable where name='%me' and gold*100+silver*10+copper<10"")
+		say(""Kroonz says [to you] : You do not have enough money to pay for my services.<BR>"")
+		sayeveryone(""Kroonz says [to %me] :  You do not have enough money to pay for my services.<BR>"")
+		showstandard
+	end
+	sayeveryone(""Kroonz hands %me money.<BR>"")
+	say(""Kroonz says [to you]: Done.<BR>Kroonz gives you your money.<BR>"")
+	sql(""update tmp_usertable set copper=copper-10 where name='%me'"")
+	sql(""update tmp_usertable set silver=silver-1,copper=copper+10 where name='%me' and copper<0"")
+	sql(""update tmp_usertable set gold=gold-1,silver=silver+10 where name='%me' and silver<0"")
+
+	sql(""update tmp_usertable set silver=silver+round(copper/10), copper = copper % 10 where name='%me' and '%02'='copper' and '%04'='silver'"")
+	sql(""update tmp_usertable set gold=gold+round(copper/100), copper = copper % 100 where name='%me' and '%02'='copper' and '%04'='gold'"")
+	sql(""update tmp_usertable set gold=gold+round(silver/10), silver = silver % 10 where name='%me' and '%02'='silver' and '%04'='gold'"")
+	sql(""update tmp_usertable set copper=copper+silver*10, silver=0 where name='%me' and '%02'='silver' and '%04'='copper'"")
+	sql(""update tmp_usertable set copper=copper+gold*100, gold=0 where name='%me' and '%02'='gold' and '%04'='copper'"")
+	sql(""update tmp_usertable set silver=silver+gold*10, gold=0 where name='%me' and '%02'='gold' and '%04'='silver'"")
+	showstandard
+end
+if sql(""select %amount = 5"")
+	# Change # [copper, silver, gold] to [copper, silver, gold]
+	sayeveryone(""%me says [to Kroonz] :  Could you change some coins for me?<BR>"")
+	if sql(""select 1 from tmp_usertable where name='%me' and gold*100+silver*10+copper<10"")
+		say(""Kroonz says [to you] : You do not have enough money to pay for my services.<BR>"")
+		sayeveryone(""Kroonz says [to %me] :  You do not have enough money to pay for my services.<BR>"")
+		showstandard
+	end
+	sql(""update tmp_usertable set copper=copper-10 where name='%me'"")
+	sql(""update tmp_usertable set silver=silver-1,copper=copper+10 where name='%me' and copper<0"")
+	sql(""update tmp_usertable set gold=gold-1,silver=silver+10 where name='%me' and silver<0"")
+	if sql(""select 1 from tmp_usertable where name='%me' and '%03'='gold' and %02>gold"")
+		say(""Kroonz says [to you] : You do not have that much gold to change.<BR>"")
+		sayeveryone(""Kroonz says [to %me] :  You do not have that much gold to change.<BR>"")
+		showstandard
+	end
+	if sql(""select 1 from tmp_usertable where name='%me' and '%03'='silver' and %02>silver"")
+		say(""Kroonz says [to you] : You do not have that much silver to change.<BR>"")
+		sayeveryone(""Kroonz says [to %me] :  You do not have that much silver to change.<BR>"")
+		showstandard
+	end
+	if sql(""select 1 from tmp_usertable where name='%me' and '%03'='copper' and %02>copper"")
+		say(""Kroonz says [to you] : You do not have that much copper to change.<BR>"")
+		sayeveryone(""Kroonz says [to %me] :  You do not have that much copper to change.<BR>"")
+		showstandard
+	end
+	sayeveryone(""Kroonz hands %me money.<BR>"")
+	say(""Kroonz says [to you]: Done.<BR>Kroonz gives you your money.<BR>"")
+
+	sql(""update tmp_usertable set silver=silver+round(%02/10), copper = copper - (%02 - (%02 % 10)) where name='%me' and '%03'='copper' and '%05'='silver'"")
+	sql(""update tmp_usertable set gold=gold+round(%02/100), copper = copper - (%02 - (%02 % 100)) where name='%me' and '%03'='copper' and '%05'='gold'"")
+	sql(""update tmp_usertable set gold=gold+round(%02/10), silver = silver - (%02 - (%02 % 10)) where name='%me' and '%03'='silver' and '%05'='gold'"")
+	sql(""update tmp_usertable set copper=copper+%02*10, silver=silver-%02 where name='%me' and '%03'='silver' and '%05'='copper'"")
+	sql(""update tmp_usertable set copper=copper+%02*100, gold=gold-%02 where name='%me' and '%03'='gold' and '%05'='copper'"")
+	sql(""update tmp_usertable set silver=silver+%02*10, gold=gold-%02 where name='%me' and '%03'='gold' and '%05'='silver'"")
+	showstandard
+end
+return
+" where id = 67;
 
 END_OF_DATA
