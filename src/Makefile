@@ -24,7 +24,6 @@ MYSQLLIB = mysqlclient_r
 # make install		(installation og binaries into the correct dir)
 # make backup			(makes backup of the binaries from *.cgi to *_backup.cgi)
 # make restore		(restores the backup that was created, if the backup was present)
-# make install_scripts    (created the scripts used on the web and installs them)
 
 # 
 # Option for debugging
@@ -84,7 +83,7 @@ XMLLIBDIR = `/usr/bin/xml2-config --libs`
 
 TARGETS = mmserver mud events newchar enter addendumframe leftframe logonframe \
 nph-addendum nph-logonframe nph-leftframe nph-javascriptframe \
- submitcharactersheet clearcharacters
+ clearcharacters
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -210,12 +209,6 @@ nph-javascriptframe: nph-javascriptframe.o cgi-util.o
 
 #--- Compilation and installing of small website binaries
 
-submitcharactersheet.o: submitcharactersheet.c
-	$(CC) $(COPTS) $(INCLUDES) -c submitcharactersheet.c 
-
-submitcharactersheet: submitcharactersheet.o cgi-util.o typedefs.o 
-	$(CC) $(COPTS) -o submitcharactersheet cgi-util.o submitcharactersheet.o typedefs.o $(LIBDIR) $(XMLLIBDIR)
-
 clearcharacters.o: clearcharacters.c
 	$(CC) $(COPTS) $(INCLUDES) -c clearcharacters.c 
 
@@ -288,14 +281,4 @@ install: all
 	@chmod a+s $(INSTALLDIR)*
 	@echo "Installation done."
 
-install_scripts: all
-	@echo "Installing Mud Script Binaries..."
-	@echo "  (these are small scripts that add some functionality to the website)"
-	@cp submitcharactersheet $(INSTALLDIR)submitcharactersheet.cgi
-	@echo "Setting UIDs for Mud Script Binaries..."
-	@chmod o=x $(INSTALLDIR)*
-	@chmod u=rwx $(INSTALLDIR)*
-	@chmod g= $(INSTALLDIR)*
-	@chmod a+s $(INSTALLDIR)*
-	@echo "Installation of Single Mud Scripts done."
 
