@@ -812,6 +812,10 @@ int
 Say_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
 {
 	char logname[100];
+	if (aantal == 1)
+	{
+		return 0;
+	}
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	if ((!strcasecmp("to", tokens[1])) && (aantal > 3)) 
 	{
