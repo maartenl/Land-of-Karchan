@@ -624,7 +624,6 @@ cgiMain()
 		WriteRoom(name, password, room, 0);
 		ClearLogFile(logname);
 		WriteSentenceIntoOwnLogFile2(logname, "You cleared your mind.<BR>\r\n");
-		WriteMessage2(name, room, "%s clears %s mind.<BR>\r\n", name, HeShe3(sexstatus));
 		KillGame();
 	}			/* Clear_Command */
 	if (!strcmp(troep, "who")) {
