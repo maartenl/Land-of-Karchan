@@ -348,7 +348,6 @@ parseXml(mudpersonstruct *fmine)
 	char *temp;
 
 	// build an XML tree from a the file;
-	printf("Deb[%s]ug\n", fmine->readbuf);
 	doc = xmlParseMemory(fmine->readbuf, strlen(fmine->readbuf));
     if (doc == NULL) 
 		return(0);
@@ -550,19 +549,23 @@ store_in_list(int socketfd, char *buf)
 				mine->readbuf = temp2;
 				mine->bufsize = strlen(temp2)+1;
 #ifdef DEBUG
-				printf("%s/%s/%i/%s\n", mine->name, mine->password, mine->frames, mine->command);
+				printf("%s/%s/%i/s\n", mine->name, mine->password, mine->frames, mine->command);
 				fflush(stdout);
 #endif
 				current_name = mine->name;
 				current_password = mine->password;
 				current_frames = mine->frames;
 				current_command = mine->command;
+				
 				WriteSentenceIntoOwnLogFile(BigFile, "%s (%s): |%s|\n", mine->name, mine->password, mine->command);
 				setFrames(mine->frames);
 				filep = fopen("temp.txt", "w");
 				setMMudOut(filep);
 				gameMain(mine->command, mine->name, mine->password, "127.0.0.1"); 
-				//fprintf(filep,"This is a test.<BR>, %s, %s, %s, %i\n", mine->command, mine->name, mine->password, mine->frames);
+				if (!strcasecmp(mine->command, "admin shutdown"))
+				{
+					setShutdown(1);
+				}
 				fclose(filep);
 				filep = fopen("temp.txt", "r");
 				while (fgets(string, 1023, filep) != 0) 
@@ -586,7 +589,7 @@ store_in_list(int socketfd, char *buf)
 #endif				
 		}
 	}
-	return -1;
+	return 0;
 }
 
 int 
@@ -643,9 +646,12 @@ main(int argc, char **argv)
 	/* below starts basically the entire call to the mudEngine */
 	opendbconnection();
 	initGameFunctionIndex(); // initialise command index 
-	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor as provided by cgic.c
-	while (1)
+	setMMudOut(stdout); // sets the standard output stream of the mud to the filedescriptor 
+	while (!isShuttingdown())
 	{
+#ifdef DEBUG
+		printf("[Listening on socket...]\n");
+#endif
 		/* more socket stuff */
 		read_fds = master_fds; // copy it
 		if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1)

@@ -403,6 +403,7 @@ int Parse(char *name, int *room, char *parserstring)
 	{
 		/* clear stringbuffer for new parser method */
 		free(stringbuffer);
+		stringbuffer = NULL;
 	}
 	/*provides us with what has to be read	
 	Perhaps needs a little more explanations:

@@ -75,6 +75,21 @@ setMudInfo(mudinfostruct amudinfostruct)
 	mudinfo = amudinfostruct;
 }
 
+int shutdown = 0;
+
+int isShuttingdown()
+{
+	return shutdown;
+}
+
+void setShutdown(int aOffset)
+{
+	shutdown += aOffset;
+	if (shutdown < 0) 
+	{			
+		shutdown = 0;
+	}
+}
 
 void 
 FatalError(FILE *output, int i, char *description, char *busywith)

@@ -169,6 +169,17 @@ void setMMudOut(FILE *aFileDescriptor);
 */
 FILE *getMMudOut();
 
+/* returns 0, if not to be shut down
+   returns 1, if to be shut down
+   returns >1, countdown
+*/
+int isShuttingdown();
+
+/* uses an offset, offset is added to shutdown count
+   use setShuttingDown(-1) for countdown
+*/
+void setShutdown(int aOffset);
+
 /* set the Frame variable to a certain value
    0 = normal operation
    1 = operation with frames
