@@ -157,8 +157,7 @@ return
 " where id = 7;
 
 update methods
-set src = "debug
-if sql(""select 1 from items where id=-3 and adject3!='loose'"")
+set src = "if sql(""select 1 from items where id=-3 and adject3!='loose'"")
 	say(""You appear from nowhere.<BR>"")
 	sayeveryone(""%me appears from nowhere.<BR>"")
 	show(""select contents from action where id=2"")
@@ -172,6 +171,15 @@ else
 end
 return
 " where id = 8;
+
+update methods
+set src = "debug
+if sql(""select 1 from tmp_usertable where room = 16 and name='Karcas'"")
+	sayeveryone(""Karcas leaves west.<BR>"")
+	sayeveryone(""Karcas appears from nowhere.<BR>"")
+end
+return
+" where id = 9;
 
 END_OF_DATA
 
