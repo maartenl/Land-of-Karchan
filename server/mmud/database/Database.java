@@ -238,7 +238,8 @@ public class Database
 	 * encrypted password in the database.
 	 * If the password does not match, the record is still returned,
 	 * but with the password set to the null pointer.
-	 * @return User containing all information
+	 * @return User containing all information. Returns null value if the user
+	 * could not be found.
 	 * DEBUG!! Why returns User, why not Person?
 	 */
 	public static User getUser(String aName, String aPassword)
