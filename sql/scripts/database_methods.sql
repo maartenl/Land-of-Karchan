@@ -306,8 +306,7 @@ return
 " where id=54;
 
 update methods
-set src="debug
-if sql(""select 1 from tmp_itemtable tmpitems where (tmpitems.id=2) and \\\\
+set src="if sql(""select 1 from tmp_itemtable tmpitems where (tmpitems.id=2) and \\\\
 (tmpitems.room = 0) and \\\\
 (tmpitems.search = '') and \\\\
 (tmpitems.belongsto = '%me') and \\\\
@@ -322,13 +321,13 @@ tmpitems.wielding <> ''"")
 			You look at the pebbles. They are solid and very small and \\\\
 			they are not blocking your entrance to the south. \\\\
 			Somebody apparently has been hacking away at them, or \\\\
-			they wouldn't have this small a size.<P>""\\\\
+			they wouldn\\\\'t have this small a size.<P>'\\\\
   			, adject1='small', adject2='light', name='pebbles' where id=-16"")
 		sql(""update items set description='<H1>The Pebbles</H1><HR>\\\\
 			You look at the pebbles. They are solid and very small and \\\\
 			they are not blocking your entrance to the north. \\\\
 			Somebody apparently has been hacking away at them, or \\\\
-			they wouldn't have this small a size.<P>""\\\\
+			they wouldn\\\\'t have this small a size.<P>'\\\\
   			, adject1='small', adject2='light', name='pebbles' where id=-40"")
 		sql(""update rooms set contents='<H1>The Other Side</H1><Center>\\\\
 			<IMG ALT=""Mountain""\\\\
@@ -360,5 +359,198 @@ end
 showstandard
 return
 " where id=55;
+
+update methods
+set src="if sql(""select 1 from tmp_itemtable tmpitems where (tmpitems.id=56) and \\\\
+(tmpitems.room = 0) and \\\\
+(tmpitems.search = '') and \\\\
+(tmpitems.belongsto = '%me') and \\\\
+(tmpitems.wearing = '') and \\\\
+tmpitems.wielding = ''"")
+	if sql(""select 1 from tmp_itemtable tmpitems where (tmpitems.id=39) and \\\\
+	(tmpitems.room = 0) and \\\\
+	(tmpitems.search = '') and \\\\
+	(tmpitems.belongsto = '%me') and \\\\
+	(tmpitems.wearing = '') and \\\\
+	tmpitems.wielding = ''"")
+		return
+	else
+		say(""You give a stick to Karaoke.<BR>"")
+		sayeveryone(""%me gives a stick to Karaoke.<BR>"")
+		say(""You receive a key from Karaoke.<BR>You now have an old rusty key.<BR>"")
+		sayeveryone(""Karaoke gives a key to %me.<BR>"")
+		sql(""update tmp_itemtable set amount=amount-1 where id=56 and \\\\
+		room = 0 and \\\\
+		search = '' and \\\\
+		belongsto = '%me' and \\\\
+		wearing = '' and \\\\
+		wielding = ''"")
+		sql(""delete from tmp_itemtable where id=56 and \\\\
+		amount = 0 and \\\\
+		room = 0 and \\\\
+		search = '' and \\\\
+		belongsto = '%me' and \\\\
+		wearing = '' and \\\\
+		wielding = ''"")
+		sql(""insert into tmp_itemtable values(39,'','%me', 1, 0,  '', '')"")
+		show(""select contents from action where id=11"")
+	end
+end
+return
+" where id=56;
+
+update methods
+set src="if sql(""select 1 from tmp_usertable where name='%me' and gold*100+silver*10+copper>10"")
+	say(""You pay Keanur and leave %02.<BR>"")
+	sayeveryone(""You notice %me paying Keanur and leaving %02.<BR>"")
+	if sql(""select '%02' = 'west'"")
+		sql(""update tmp_usertable set room=89, copper=copper-10 where name='%me'"")
+		set room=89
+	else
+		sql(""update tmp_usertable set room=45, copper=copper-10 where name='%me'"")
+		set room=45
+	end
+	sql(""update tmp_usertable set silver=silver-1, copper=copper+10 where name='%me' and copper<0"")
+	sql(""update tmp_usertable set gold=gold-1, silver=silver+10 where name='%me' and silver<0"")
+	showstandard
+else
+	say(""You do not have enough money.<BR>"")
+	showstandard
+end
+return
+" where id=57;
+
+update methods
+set src="if sql(""select (%amount = 2 and '%02'='west') or (%amount = 1 and ('%01'='w' or '%01'='west'))"")
+	say(""You try to go west, yet Keanur hinders you.<BR>"")
+	say(""'I am sorry, this isn't a toll-free bridge, and while passing onto \\\\
+	the bridge is free, leaving it costs 1 silver coin. Use <B>pay west</B>.', \\\\
+	chuckles Keanur.<BR>"")
+else
+	say(""You try to go east, yet Keanur hinders you.<BR>"")
+	say(""'I am sorry, this isn't a toll-free bridge, and while passing onto \\\\
+	the bridge is free, leaving it costs 1 silver coin. Use <B>pay east</B>.', \\\\
+	chuckles Keanur.<BR>"")
+end
+showstandard
+return
+" where id=58;
+
+update methods
+set src="if sql(""select 1 from tmp_usertable where name='Karcas' and room=16"")
+	say(""You try to move behind the counter, but Karcas immediately intervenes.<BR>"")
+	sayeveryone(""%me tries to move behind the counter, but Karcas immediately intervenes.<BR>"")
+	showstandard
+else
+	if sql(""select 1 from items where id=-50 and adject2='open'"")
+		say(""You go down the hatch.<BR>"")
+		sayeveryone(""%me disappears behind the counter.<BR>"")
+		sql(""update tmp_usertable set room=26 where name='%me'"")
+		set room=26
+		sayeveryone(""%me appears from the hatch.<BR>"")
+		showstandard
+	end
+end
+return
+" where id=59;
+
+update methods
+set src="if sql(""select 1 from tmp_usertable where name='Karcas' and room=16"")
+	say(""You try to open the hatch, but Karcas threateningly moves closer, and you decide to do something else.<BR>"")
+	sayeveryone(""%me tries to move behind the counter, but Karcas moves threateningly closer and %me decides to hide in a corner instead.<BR>"")
+	showstandard
+else
+	if sql(""select 1 from items where id=-50 and adject2='open'"")
+		say(""The hatch appears to be already open.<BR>"")
+		showstandard
+	else
+		say(""You open the hatch.<BR>"")
+		sayeveryone(""%me disappears behind the counter. You hear some metalic noises and %me appears again.<BR>"")
+		sql(""update items set adject2='open' where id=-50"")
+		show(""select contents from action where id=7"")
+	end
+end
+return
+" where id=60;
+
+update methods
+set src="if sql(""select 1 from tmp_usertable where name='Karcas' and room=16"")
+	say(""You try to close the hatch, but Karcas threateningly moves closer, and you decide to do something else.<BR>"")
+	sayeveryone(""%me tries to move behind the counter, but Karcas moves threateningly closer and %me decides to hide in a corner instead.<BR>"")
+	showstandard
+else
+	if sql(""select 1 from items where id=-50 and adject2='wooden'"")
+		say(""The hatch appears to be already closed.<BR>"")
+		showstandard
+	else
+		say(""You close the hatch.<BR>"")
+		sayeveryone(""%me disappears behind the counter. You hear some metalic noises and %me appears again.<BR>"")
+		sql(""update items set adject2='wooden' where id=-50"")
+		showstandard
+	end
+end
+return
+" where id=61;
+
+update methods
+set src="if sql(""select 1 from items where id=-91 and adject1='open'"")
+	say(""The chest is already open.<BR>"")
+	showstandard
+else
+	if sql(""select 1 from tmp_itemtable where id=39 and belongsto='%me'"")
+		say(""You open the chest.<BR>"")
+		sayeveryone(""%me opens the chest.<BR>"")
+		sql(""update items set description='<H1><IMG \\\\
+			SRC=""http://www.karchan.org/images/gif/hidden04.gif"">The \\\\
+			 Chest</H1><HR>On the floor on the far side of the hidden \\\\
+			room above the main room of the Inn you see a solid iron chest. \\\\
+			It happens to be very old and very sturdy. It\\\\'s lock is rusted \\\\
+			and the lid is standing wide open. Everybody can look in the \\\\
+			chest if they wanted to.<P>', adject1='open' where id=-91"")
+		sql(""update rooms set contents='<H1><IMG \\\\
+			SRC=""http://www.karchan.org/images/gif/hidden03.gif""> \\\\
+			The Hidden Room</H1> <font size=+3>Y</font>ou are in the middle of \\\\
+			a hidden room on the upper floor of the Inn. It is very dusty \\\\
+			and all around sticky old cobwebbs have been made by the usual \\\\
+			little insects. On the far side of the room a strong iron chest \\\\
+			can be seen. It seems to be open. Above you you can see a lot \\\\
+			of wooden stuff to hold up the roof. To the south there is a way \\\\
+			out, down the staircase that is visible there.<P>' \\\\
+			where id=20"")
+		show(""select contents from action where id=12"")
+	else
+		say(""The chest appears to be locked. You do not have the key.<BR>"")
+		sayeveryone(""%me tries to open the chest, but fails for lack of a key.<BR>
+		showstandard
+	end
+end
+return
+" where id=62;
+
+update methods
+set src="if sql(""select 1 from items where id=-91 and adject1!='open'"")
+	say(""The chest is already closed.<BR>"")
+else
+	say(""You close the chest. [<A HREF=""http://www.karchan.org/images/mpeg/hid2.mpg"">MPEG</A>]<BR>"")
+	sayeveryone(""%me closes the chest.<BR>>"")
+	sql(""update items set description='<H1>The Lock</H1><HR>\\\\
+		You look carefully at the lock of the chest. It is very well made. \\\\
+		Somebody at least knows his business. You can\\\\'t open it, that is \\\\
+		for sure.  Why don\\\\'t you try finding the key? There is probably no \\\\
+		other way to open this chest but with the key.<P>'\\\\
+		, adject1='rusty'  where id=-91"")
+	sql(""update rooms set contents='<H1><IMG \\\\
+		SRC=""http://www.karchan.org/images/gif/hidden01.gif"">\\\\
+		The Hidden Room</H1><font size=+3>Y</font>ou are in the middle of \\\\
+		a hidden room on the upper floor of the Inn. It is very dusty and all \\\\
+		around sticky old cobwebbs have been made by the usual little \\\\
+		insects. On the far side of the room a strong iron chest can be seen. \\\\
+		Above you you can see a lot of wooden stuff to hold up the roof. To \\\\
+		the south there is a way out, down the staircase that is visible \\\\
+		there.<P>' where id=20"")
+end
+showstandard
+return
+" where id=63;
 
 END_OF_DATA
