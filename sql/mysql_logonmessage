@@ -29,6 +29,8 @@ I am currently busy debugging the new implementation of the mud. Like,
 most people know this already.<P>
 Some good news: I think I have the <I>mudmail</I> thingy fixed. Send
 in Bugreports if it is still buggy.<P>
+I also managed to get the <I>double screen</I> thing fixed when you buy an
+item. Thanks to Kesair for telling about that one.
 <P>
 One of the little changes that you might have noticed is the extra
 little piece of text at the top of your screen. It
