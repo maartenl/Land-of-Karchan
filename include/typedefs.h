@@ -108,27 +108,6 @@ maartenl@il.fontys.nl
 #define LogonframeExe       "http://"ServerName CGIName"logonframe2.cgi"
 #define LeftframeExe       "http://"ServerName CGIName"leftframe2.cgi"
 
-typedef struct
-{
-	long		fileposition;
-	int		size;
-} indexrec;
-
-typedef struct
-{
-	char   ip[20];
- 	int	days;
-} banstruct;
-
-typedef struct
-{
-	char name[20];
- 	char toname[20];
-	 char header[100];
-	 time_t datetime;
-	 indexrec positie;
-} mailstruct;
-
 typedef struct 
 {
 	int roomindex;
