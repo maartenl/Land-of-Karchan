@@ -108,73 +108,127 @@ public class MudSocket extends Thread
 			myOutputStream.println(Constants.IDENTITY);
 			try
 			{
+				myOutputStream.println("Action (logon, mud, newchar):");
 				String myAction = myInputStream.readLine();
 				if (myAction.equals("logon"))
 				{
+					myOutputStream.println("Name:");
+					String name = myInputStream.readLine();
+					myOutputStream.println("Password:");
+					String password = myInputStream.readLine();
+					myOutputStream.println("Cookie:");
+					String cookie = myInputStream.readLine();
+					myOutputStream.println("Frames:");
+					String frames = myInputStream.readLine();
+					int frame = 0;
+					try
+					{
+						frame = Integer.parseInt(frames);
+					}
+					catch (NumberFormatException e)
+					{
+						Logger.getLogger("mmud").warning(
+							"unable to interpret frame information, defaulting to 0.");
+					}
 		 			myOutputStream.println(
-						enterMud(myInputStream.readLine(),
-							myInputStream.readLine(),
+						enterMud(name, password, 
 							theSocket.getInetAddress().getCanonicalHostName(),
-							myInputStream.readLine(),
-							Integer.parseInt(myInputStream.readLine())));
+							cookie, frame));
 				}
 				if (myAction.equals("mud"))
 				{
-					while (true)
+					myOutputStream.println("Name:");
+					String name = myInputStream.readLine();
+					myOutputStream.println("Cookie:");
+					String cookie = myInputStream.readLine();
+					myOutputStream.println("Frames:");
+					String frames = myInputStream.readLine();
+					int frame = 0;
+					try
 					{
-					myOutputStream.println(
-						executeMud("qwerty", 
-						theSocket.getInetAddress().getCanonicalHostName(),
-						"qwerty",
-						0,
-						myInputStream.readLine()));
+						frame = Integer.parseInt(frames);
 					}
-//					myOutputStream.println(
-//						executeMud(myInputStream.readLine(),
-//						theSocket.getInetAddress().getCanonicalHostName(),
-//						myInputStream.readLine(),
-//						Integer.parseInt(myInputStream.readLine()),
-//						myInputStream.readLine()));
+					catch (NumberFormatException e)
+					{
+						Logger.getLogger("mmud").warning(
+							"unable to interpret frame information, defaulting to 0.");
+					}
+//					while (true)
+//					{
+					myOutputStream.println("Command:");
+					String command = myInputStream.readLine();
+					myOutputStream.println(
+						executeMud(name, 
+						theSocket.getInetAddress().getCanonicalHostName(),
+						cookie,
+						frame, command));
+//					}
 				}
 				if (myAction.equals("newchar"))
 				{
+					myOutputStream.println("Name:");
+					String name = myInputStream.readLine();
+					myOutputStream.println("Password:");
+					String password = myInputStream.readLine();
+					myOutputStream.println("Cookie:");
+					String cookie = myInputStream.readLine();
+					myOutputStream.println("Frames:");
+					String frames = myInputStream.readLine();
+					int frame = 0;
+					try
+					{
+						frame = Integer.parseInt(frames);
+					}
+					catch (NumberFormatException e)
+					{
+						Logger.getLogger("mmud").warning(
+							"unable to interpret frame information, defaulting to 0.");
+					}
+					myOutputStream.println("Realname:");
+					String realname = myInputStream.readLine();
+					myOutputStream.println("Email:");
+					String email = myInputStream.readLine();
+					myOutputStream.println("Title:");
+					String title = myInputStream.readLine();
+					myOutputStream.println("Race:");
+					String race = myInputStream.readLine();
+					myOutputStream.println("Sex:");
+					String sex = myInputStream.readLine();
+					myOutputStream.println("Age:");
+					String age = myInputStream.readLine();
+					myOutputStream.println("Length:");
+					String length = myInputStream.readLine();
+					myOutputStream.println("width:");
+					String width = myInputStream.readLine();
+					myOutputStream.println("Complexion:");
+					String complexion = myInputStream.readLine();
+					myOutputStream.println("Eyes:");
+					String eyes = myInputStream.readLine();
+					myOutputStream.println("Face:");
+					String face = myInputStream.readLine();
+					myOutputStream.println("Hair:");
+					String hair = myInputStream.readLine();
+					myOutputStream.println("Beard:");
+					String beard = myInputStream.readLine();
+					myOutputStream.println("Arms:");
+					String arms = myInputStream.readLine();
+					myOutputStream.println("Legs:");
+					String legs = myInputStream.readLine();
 					myOutputStream.println(
-						newUserMud(myInputStream.readLine(),
-						myInputStream.readLine(),
+						newUserMud(name, password,
 						theSocket.getInetAddress().getCanonicalHostName(),
-
-						"Maarten van Leunen",
-						"maarten_l@yahoo.com",
-						"Ruler of Stuff",
-						"human",
-						Sex.createFromString("male"),
-						"old",
-						"tall",
-						"thin",
-						"dark-skinned",
-						"yellow-eyed",
-						"handsome",
-						"black-haired",
-						"none",
-						"none",
-						"none",
-						myInputStream.readLine(),
-						Integer.parseInt(myInputStream.readLine())));
+						realname, email, title, race, Sex.createFromString(sex), 
+						age, length,
+						width, complexion, eyes, face, hair, beard, arms,
+						legs, cookie, frame));
 				}
 			}
 			catch (Exception e)
 			{
+				Logger.getLogger("mmud").warning(
+					e.getMessage());
 				myOutputStream.println(e.toString());
 			}
-//			while (userInput.indexOf("<root>") == -1)
-//			{
-//				userInput.append(myInputStream.readLine());
-//				userInput.append("\n");
-//			}
-//			Echo myEcho = new Echo();
-//			myOutputStream.println(userInput.toString());
-//			myEcho.parse(userInput.toString());
-//			myOutputStream.println(myEcho.getOutput());
 			String expectingOk;
 			expectingOk = myInputStream.readLine();
 			while (expectingOk != null && !expectingOk.equals("Ok"))

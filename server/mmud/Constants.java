@@ -500,17 +500,18 @@ public final class Constants
 	{
 		logger.finer("");
 		FileReader myFileReader = new FileReader(aFile);
-		String myResult = new String();
+		StringBuffer myResult = new StringBuffer();
 		char[] myArray = new char[1024];
-		int i =myFileReader.read(myArray, 0, myArray.length);
+		int i = myFileReader.read(myArray, 0, myArray.length);
 		while (i>0)
 		{
-			myResult = myResult + new String(myArray, 0, myArray.length);
-			i =myFileReader.read(myArray, 0, myArray.length);
+			myResult.append(new String(myArray, 0, myArray.length));
+			i = myFileReader.read(myArray, 0, myArray.length);
 		}
-		myResult = myResult + new String(myArray, 0, myArray.length);
 		myFileReader.close();
-		return myResult;
+		String returnResult = myResult.toString();
+		logger.finest("returns: [" + returnResult + "]");
+		return returnResult;
 	}
 
 	public static String readFile(String aFilename)
