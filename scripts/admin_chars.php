@@ -198,6 +198,10 @@ while ($myrow = mysql_fetch_array($result))
 <INPUT TYPE="submit" VALUE="Change Character">
 </b>   
 </FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_resetcharpasswd.php">
+<INPUT TYPE="hidden" NAME="char" VALUE="<?php echo $myrow["name"] ?>">
+<INPUT TYPE="submit" VALUE="Reset Character Password">
+</FORM>
 <?php
 	}
 }
