@@ -289,23 +289,83 @@ int main(int argc, char *argv[])
 	if (!strcmp(frames,"3")) {setFrames(2);}
 	*ftitle=*frealname=*femail=*frace=*fsex=*fage=*flength=0;
 	*fwidth=*fcomplexion=*feyes=*fface=*fhair=*fbeard=*farm=*fleg=0;
-	strncpy(ftitle, cgi_getentrystr("title"), 79);ftitle[79]=0;
-	strncpy(frealname, cgi_getentrystr("RealName"), 79);frealname[79]=0;
-	strncpy(femail, cgi_getentrystr("EMAIL"), 39);femail[39]=0;
-	strncpy(frace, cgi_getentrystr("race"), 9);frace[9]=0;
-	strncpy(fsex, cgi_getentrystr("sex"), 9);fsex[9]=0;
-	strncpy(fage, cgi_getentrystr("age"), 14);fage[14]=0;
-	strncpy(flength, cgi_getentrystr("length"), 15);flength[15]=0;
-	strncpy(fwidth, cgi_getentrystr("width"), 15);fwidth[15]=0;
-	strncpy(fcomplexion, cgi_getentrystr("complexion"), 15);fcomplexion[15]=0;
-	strncpy(feyes, cgi_getentrystr("eyes"), 15);feyes[15];
-	strncpy(fface, cgi_getentrystr("face"), 18);fface[18]=0;
-	strncpy(fhair, cgi_getentrystr("hair"), 18);fhair[18]=0;
-	strncpy(fbeard, cgi_getentrystr("beard"), 18);fbeard[18]=0;
-	strncpy(farm, cgi_getentrystr("arms"), 15);farm[15]=0;
-	strncpy(fleg, cgi_getentrystr("legs"), 15);fleg[15]=0;
+	if (cgi_getentrystr("title") != NULL) 
+	{
+		strncpy(ftitle, cgi_getentrystr("title"), 79);
+		ftitle[79]=0;
+	}
+	if (cgi_getentrystr("RealName") != NULL)
+	{
+		strncpy(frealname, cgi_getentrystr("RealName"), 79);
+		frealname[79]=0;
+	}
+	if (cgi_getentrystr("EMAIL") != NULL)
+	{
+		strncpy(femail, cgi_getentrystr("EMAIL"), 39);
+		femail[39]=0;
+	}
+	if (cgi_getentrystr("race") != NULL)
+	{
+		strncpy(frace, cgi_getentrystr("race"), 9);
+		frace[9]=0;
+	}
+	if (cgi_getentrystr("sex") != NULL)
+	{
+		strncpy(fsex, cgi_getentrystr("sex"), 9);
+		fsex[9]=0;
+	}
+	if (cgi_getentrystr("age") != NULL)
+	{
+		strncpy(fage, cgi_getentrystr("age"), 14);
+		fage[14]=0;
+	}
+	if (cgi_getentrystr("length") != NULL)
+	{
+		strncpy(flength, cgi_getentrystr("length"), 15);
+		flength[15]=0;
+	}
+	if (cgi_getentrystr("width") != NULL)
+	{
+		strncpy(fwidth, cgi_getentrystr("width"), 15);
+		fwidth[15]=0;
+	}
+	if (cgi_getentrystr("complexion") != NULL)
+	{
+		strncpy(fcomplexion, cgi_getentrystr("complexion"), 15);
+		fcomplexion[15]=0;
+	}
+	if (cgi_getentrystr("eyes") != NULL)
+	{
+		strncpy(feyes, cgi_getentrystr("eyes"), 15);
+		feyes[15];
+	}
+	if (cgi_getentrystr("face") != NULL)
+	{
+		strncpy(fface, cgi_getentrystr("face"), 18);
+		fface[18]=0;
+	}
+	if (cgi_getentrystr("hair") != NULL)
+	{
+		strncpy(fhair, cgi_getentrystr("hair"), 18);
+		fhair[18]=0;
+	}
+	if (cgi_getentrystr("beard") != NULL)
+	{
+		strncpy(fbeard, cgi_getentrystr("beard"), 18);
+		fbeard[18]=0;
+	}
+	if (cgi_getentrystr("arms") != NULL)
+	{
+		strncpy(farm, cgi_getentrystr("arms"), 15);
+		farm[15]=0;
+	}
+	if (cgi_getentrystr("legs") != NULL)
+	{
+		strncpy(fleg, cgi_getentrystr("legs"), 15);
+		fleg[15]=0;
+	}
 #endif
-	
+
 	/* setup socket stuff*/
 	if ((he = gethostbyname(myhostname)) == NULL)
 	{
