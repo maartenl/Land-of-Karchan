@@ -567,8 +567,15 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 				/* this is the parsing part, the previous part was just splitting up */
 				if ((state[level]!=1) && (state[level]!=3))
 				{
+					int return_value;
 					if (parser_debug) {send_printf(fmudstruct->socketfd, "[%s]<BR>\n", string);}
-					switch (ParseSentence(name, room, string, frames, fmudstruct->socketfd))
+					return_value = ParseSentence(name, room, string, frames, fmudstruct->socketfd);
+					if (*room != (fmudstruct->room))
+					{
+						// apparently a 'set room' command was encountered.
+						fmudstruct->room = *room;
+					}
+					switch (return_value)
 					{
 						case 1 : // end found
 						{
