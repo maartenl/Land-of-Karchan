@@ -45,6 +45,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 import mmud.commands.Command;
+import mmud.races.*;
 
 /**
  * Class containing all the information of a person in the game. (Not
@@ -55,7 +56,7 @@ public class Person implements Executable, AttributeContainer
 	private String theName;
 	private Room theRoom;
 	private String theTitle;
-	private String theRace;
+	private Race theRace;
 	private Sex theSex;
 	private String theAge;
 	private String theLength;
@@ -116,7 +117,7 @@ public class Person implements Executable, AttributeContainer
 	 */
 	public Person(String aName, 
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,
@@ -138,6 +139,7 @@ public class Person implements Executable, AttributeContainer
 		int aMovement,
 		Room aRoom)
 	{
+		Logger.getLogger("mmud").finer(""); 
 		theName = aName;
 		theRoom = aRoom;
 		theTitle = aTitle;
@@ -444,9 +446,9 @@ public class Person implements Executable, AttributeContainer
 
 	/**
 	 * returns the race of the character.
-	 * @return String containing the race
+	 * @return Race containing the race
 	 */
-	public String getRace()
+	public Race getRace()
 	{
 		return theRace;
 	}

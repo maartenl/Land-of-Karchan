@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import mmud.characters.*;
 import mmud.database.*;
 import mmud.commands.*;
+import mmud.races.*;
 
 /**
  * the class that takes care of all the socket communication. Is basically
@@ -708,7 +709,7 @@ public class MudSocket extends Thread
 			aPassword, anAddress, aRealName,
 			aEmail,
 			aTitle,
-			aRace,
+			RaceFactory.createFromString(aRace),
 			aSex,
 			aAge,
 			aLength,

@@ -1,3 +1,14 @@
+- it is very important that the maximum amount of hitpoints is recalculated
+every time! That way we do not have to get worried about keeping it
+contained in the database, but it is only determined by the game engine
+itself, and can be easily changed, without having to change the database.
+Brilliant!
+For example: 
+	- compute trainings and skills, only store in the database how
+	much training and skill has been USED.
+	- compute maximum health possible, only store in the database how much
+	health has been USED.
+
 - there should be a definite method for determining if a person is "valid",
 i.e. does he exist, in the same room, is visible, and a host of other
 settings. There should be a gerneal method for checking this.

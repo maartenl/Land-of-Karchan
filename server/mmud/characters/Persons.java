@@ -36,6 +36,7 @@ import mmud.characters.*;
 import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
+import mmud.races.*;
 
 import simkin.*;
 
@@ -243,7 +244,7 @@ public final class Persons implements Executable
 		String aRealName,
 		String aEmail,
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,

@@ -40,6 +40,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 import mmud.commands.Command;
+import mmud.races.*;
 
 /**
  * Class containing a default shopkeeper implementation. (currently not a
@@ -86,7 +87,7 @@ public class StdShopKeeper extends Person implements ShopKeeper
 	 */
 	public StdShopKeeper(String aName, 
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,

@@ -45,6 +45,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.boards.BoardFormatEnum;
 import mmud.boards.Board;
+import mmud.races.*;
 
 /**
  * The central class that takes care of all the commands that are to be
@@ -304,7 +305,7 @@ public class Database
 				res.getString("realname"),
 				res.getString("email"),
 				res.getString("title"),
-				res.getString("race"),
+				RaceFactory.createFromString(res.getString("race")),
 				Sex.createFromString(res.getString("sex")),
 				res.getString("age"),
 				res.getString("length"),
@@ -390,7 +391,7 @@ public class Database
 				res.getString("realname"),
 				res.getString("email"),
 				res.getString("title"),
-				res.getString("race"),
+				RaceFactory.createFromString(res.getString("race")),
 				Sex.createFromString(res.getString("sex")),
 				res.getString("age"),
 				res.getString("length"),
@@ -745,7 +746,7 @@ public class Database
 					res.getString("realname"),
 					res.getString("email"),
 					res.getString("title"),
-					res.getString("race"),
+					RaceFactory.createFromString(res.getString("race")),
 					Sex.createFromString(res.getString("sex")),
 					res.getString("age"),
 					res.getString("length"),
@@ -781,7 +782,7 @@ public class Database
 			{
 				Bot myNewChar = new Bot(myName,
 					res.getString("title"),
-					res.getString("race"),
+					RaceFactory.createFromString(res.getString("race")),
 					Sex.createFromString(res.getString("sex")),
 					res.getString("age"),
 					res.getString("length"),
@@ -1326,7 +1327,7 @@ public class Database
 		sqlCreateUser.setString(4, aUser.getTitle());
 		sqlCreateUser.setString(5, aUser.getRealname());
 		sqlCreateUser.setString(6, aUser.getEmail());
-		sqlCreateUser.setString(7, aUser.getRace());
+		sqlCreateUser.setString(7, aUser.getRace().toString());
 		sqlCreateUser.setString(8, aUser.getSex().toString());
 		sqlCreateUser.setString(9, aUser.getAge());
 		sqlCreateUser.setString(10, aUser.getLength());

@@ -44,6 +44,7 @@ import mmud.commands.*;
 import mmud.Sex;
 import mmud.Constants;
 import mmud.MudException;
+import mmud.races.*;
 
 /**
  * Class containing all the information of a user connecting to the game.
@@ -114,7 +115,7 @@ public class User extends mmud.characters.Person
 		String aRealName,
 		String aEmail,
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,
@@ -204,7 +205,7 @@ public class User extends mmud.characters.Person
 		String aRealName,
 		String aEmail,
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,

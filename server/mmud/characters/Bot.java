@@ -41,6 +41,7 @@ import mmud.items.*;
 import mmud.rooms.*;
 import mmud.database.*;
 import mmud.commands.Command;
+import mmud.races.*;
 
 /**
  * This class contains a Bot, a 
@@ -87,7 +88,7 @@ public class Bot extends Person implements CommunicationListener
 	 */
 	public Bot(String aName, 
 		String aTitle,
-		String aRace,
+		Race aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,
@@ -132,6 +133,7 @@ public class Bot extends Person implements CommunicationListener
 		anAlignment,
 		aMovement,
 		aRoom);
+		Logger.getLogger("mmud").finer("");
 	}
 
 	public void commEvent(Person aPerson, CommType aType, String aSentence)
