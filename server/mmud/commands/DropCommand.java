@@ -68,75 +68,15 @@ public class DropCommand extends NormalCommand
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 1)
 		{
-			// get [amount] [adject1..3] name
-			amount = 1;
-			try
-			{
-				amount = Integer.parseInt(myParsed[1]);
-				if (amount < 1)
-				{
-					throw new ParseException();
-				}
-				switch (myParsed.length)
-				{
-					case 3:
-					adject1 =  null;
-					adject2 =  null;
-					adject3 =  null;
-					name = myParsed[2];
-					break;
-					case 4:
-					adject1 = myParsed[2];
-					adject2 =  null;
-					adject3 =  null;
-					name = myParsed[3];
-					break;
-					case 5:
-					adject1 = myParsed[2];
-					adject2 = myParsed[3];
-					adject3 =  null;
-					name = myParsed[4];
-					break;
-					case 6:
-					adject1 = myParsed[2];
-					adject2 = myParsed[3];
-					adject3 = myParsed[4];
-					name = myParsed[5];
-					break;
-				}
-			}
-			catch (NumberFormatException e)
-			{
-				switch (myParsed.length)
-				{
-					case 2:
-					adject1 =  null;
-					adject2 =  null;
-					adject3 =  null;
-					name = myParsed[1];
-					break;
-					case 3:
-					adject1 = myParsed[1];
-					adject2 =  null;
-					adject3 =  null;
-					name = myParsed[2];
-					break;
-					case 4:
-					adject1 = myParsed[1];
-					adject2 = myParsed[2];
-					adject3 =  null;
-					name = myParsed[3];
-					break;
-					case 5:
-					adject1 = myParsed[1];
-					adject2 = myParsed[2];
-					adject3 = myParsed[3];
-					name = myParsed[4];
-					break;
-				}
-			}
-			Vector myItems = null;
-			myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			amount = ((Integer) stuff.elementAt(0)).intValue();
+			adject1 = (String) stuff.elementAt(1);
+			adject2 = (String) stuff.elementAt(2);
+			adject3 = (String) stuff.elementAt(3);
+			name = (String) stuff.elementAt(4);
+
+			Vector myItems = 
+				aUser.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
@@ -161,7 +101,8 @@ public class DropCommand extends NormalCommand
 				}
 				else
 				{
-					ItemsDb.dropItem(myItem, aUser.getRoom());
+					ItemsDb.deleteItemFromChar(myItem);
+					ItemsDb.addItemToRoom(myItem, aUser.getRoom());
 					aUser.sendMessage(aUser.getName() + " drops " + myItem.getDescription() + ".<BR>\r\n");
 					aUser.writeMessage("You drop " + myItem.getDescription() + ".<BR>\r\n");
 					j++;

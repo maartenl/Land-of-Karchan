@@ -46,9 +46,12 @@ javadoc: compile
 	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database
 
 clean:
-	rm -rf html/* jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
+	rm -rf jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
 	mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
 	mmud/communication/*~ mmud/configuration/*~
+
+dist-clean:
+	rm -rf html/*
 
 all: $(TARGETS)
 

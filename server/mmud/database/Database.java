@@ -876,7 +876,7 @@ public class Database
 	 */
 	public static boolean isUserBanned(String username, String address)
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("username=" + username + ",address=" + address);
 		assert theConnection != null : "theConnection is null";
 		ResultSet res;
 		User myUser = null;
@@ -894,6 +894,7 @@ public class Database
 				{
 					res.close();
 					sqlGetBanStat.close();
+					Logger.getLogger("mmud").finer("returns true (mm_sillynamestable)");
 					return true;
 				}
 			}
@@ -912,6 +913,7 @@ public class Database
 				{
 					res.close();
 					sqlGetBanStat.close();
+					Logger.getLogger("mmud").finer("returns false (mm_unbantable)");
 					return false;
 				}
 			}
@@ -931,6 +933,7 @@ public class Database
 				{
 					res.close();
 					sqlGetBanStat.close();
+					Logger.getLogger("mmud").finer("returns true (mm_bantable)");
 					return true;
 				}
 			}
@@ -942,6 +945,7 @@ public class Database
 		{
 			e.printStackTrace();
 		}
+		Logger.getLogger("mmud").finer("returns false");
 		return false;
 	}
 

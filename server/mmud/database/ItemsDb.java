@@ -67,17 +67,20 @@ public class ItemsDb
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 
-	public static String sqlPickupItem1String =
+	public static String sqlDeleteItemRoomString =
 		"delete from mm_roomitemtable "
 		+ "where id = ?";
-	public static String sqlPickupItem2String =
+	public static String sqlDeleteItemItemString =
+		"delete from mm_itemitemtable "
+		+ "where id = ?";
+	public static String sqlAddItemCharString =
 		"insert into mm_charitemtable "
 		+ "(id, belongsto) "
 		+ "values(?, ?)";
-	public static String sqlDropItem1String =
+	public static String sqlDeleteItemCharString =
 		"delete from mm_charitemtable "
 		+ "where id = ?";
-	public static String sqlDropItem2String =
+	public static String sqlAddItemRoomString =
 		"insert into mm_roomitemtable "
 		+ "(id, room) "
 		+ "values(?, ?)";
@@ -86,7 +89,7 @@ public class ItemsDb
 		+ "from mm_roomitemtable, mm_items, mm_itemtable "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_roomitemtable.id and "
-        + "room = ? and "
+        + "mm_roomitemtable.room = ? and "
 		+ "name = ? and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
@@ -101,9 +104,19 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlTransferItemString =
+		"update mm_charitemtable "
+		+ "set belongsto = ? "
+		+ "where id = ?";
+	public static String sqlDeleteItemString =
+		"delete from mm_itemtable "
+		+ "where id = ?";
+	public static String sqlAddItemString =
+		"insert into mm_itemtable "
+		+ "(itemid) "
+		+ "values(?)";
 
 	public static String sqlGetItemDefString = "select * from mm_items where id = ?";
-	// public static String sqlCreateItem = "insert into mm_itemtable (itemid) values(?)";
 
 	/**
 	 * Returns the itemdefinition based on the itemdefinition id.
@@ -169,7 +182,7 @@ public class ItemsDb
 		res.close();
 		sqlGetItemDef.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -221,7 +234,7 @@ public class ItemsDb
 		res.close();
 		sqlGetInventories.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -269,7 +282,7 @@ public class ItemsDb
 		res.close();
 		sqlGetInventories.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -278,64 +291,201 @@ public class ItemsDb
 	}
 
 	/**
-	 * Pick up an item off the floor. Actually,  this means an item is
-	 * transferred from a room to a characters inventory.
-	 * Attention! No checking takes place
-	 * wether or not the item is suitable to be picked up.
-	 * @param anItem the item to be picked up
-	 * @param aPerson the person who wishes to pick up the item.
-	 * @throws ItemDoesNotExistException when we were unable to pickup the item.
+	 * Remove item from inventory of room.
+	 * @param anItem the item to be removed.
+	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
-	public static void pickupItem(Item anItem,
-								Person aPerson)
+	public static void deleteItemFromRoom(Item anItem)
 	throws ItemDoesNotExistException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
 		try
 		{
-			// we should prepare two statements:
-			// 1. the item is removed from the roomtable
-			// 2. the item is added to the chartable
-			PreparedStatement sqlPickItem = Database.prepareStatement(sqlPickupItem1String);
-			sqlPickItem.setInt(1, anItem.getId());
-			res = sqlPickItem.executeUpdate();
-			sqlPickItem.close();
-			if (res == 0)
-			{
-				// the idea here was to remove just 1 row
-				// if this did not succeed, it means that we had some
-				// problems getting the appropriate item
-				throw new ItemDoesNotExistException();
-			}
-			sqlPickItem = Database.prepareStatement(sqlPickupItem2String);
-			sqlPickItem.setInt(1, anItem.getId());
-			sqlPickItem.setString(2, aPerson.getName());
-			res = sqlPickItem.executeUpdate();
-			sqlPickItem.close();
+			PreparedStatement sqlDeleteItem = Database.prepareStatement(sqlDeleteItemRoomString);
+			sqlDeleteItem.setInt(1, anItem.getId());
+			res = sqlDeleteItem.executeUpdate();
+			sqlDeleteItem.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		if (res != 1)
 		{
-			throw new ItemDoesNotExistException("able to delete, but unable to add, database corrupted?");
+			throw new ItemDoesNotExistException();
 		}
 	}
 
 	/**
-	 * Drop an item onto the floor. Actually, this means the item is
-	 * transferred from a characters inventory to a room. 
-	 * Attention! No checking takes place
-	 * wether or not the item is suitable to be dropped.
-	 * @param anItem the item to be dropped
-	 * @param aRoom the room into which the item should be dropped.
-	 * In most cases this would be the same room, that a person has
-	 * occupied who wishes to drop said item.
-	 * @throws ItemDoesNotExistException when we were unable to drop the item.
+	 * Adds an item to the inventory of a person.
+	 * @param anItem the item to be added
+	 * @param aPerson the person
+	 * @throws ItemDoesNotExistException when we were unable to add the item.
 	 */
-	public static void dropItem(Item anItem,
+	public static void addItemToChar(Item anItem, Person aPerson)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlAddItem = Database.prepareStatement(sqlAddItemCharString);
+			sqlAddItem.setInt(1, anItem.getId());
+			sqlAddItem.setString(2, aPerson.getName());
+			res = sqlAddItem.executeUpdate();
+			sqlAddItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Remove an item from the inventory of a character.
+	 * @param anItem the item to be removed
+	 * @throws ItemDoesNotExistException when we were unable to remove the item.
+	 */
+	public static void deleteItemFromChar(Item anItem)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlDeleteItem = Database.prepareStatement(sqlDeleteItemCharString);
+			sqlDeleteItem.setInt(1, anItem.getId());
+			res = sqlDeleteItem.executeUpdate();
+			sqlDeleteItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Remove an item from the contents of another item. A good example
+	 * of this method is for instance removing a gold coin from a  bag.
+	 * @param anItem the item to be removed
+	 * @throws ItemDoesNotExistException when we were unable to remove the item.
+	 */
+	public static void deleteItemFromItem(Item anItem)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlDeleteItem = Database.prepareStatement(sqlDeleteItemItemString);
+			sqlDeleteItem.setInt(1, anItem.getId());
+			res = sqlDeleteItem.executeUpdate();
+			sqlDeleteItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Delete an item. Item is also removed from wherever it resides, be it
+	 * person or room or inside another item.
+	 * @param anItem the item to be removed
+	 * @throws ItemDoesNotExistException when we were unable to remove the item.
+	 */
+	public static void deleteItem(Item anItem)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			try
+			{
+				deleteItemFromChar(anItem);
+			}
+			catch (ItemException e)
+			{
+			}
+			try
+			{
+				deleteItemFromRoom(anItem);
+			}
+			catch (ItemException e)
+			{
+			}
+			try
+			{
+				deleteItemFromItem(anItem);
+			}
+			catch (ItemException e)
+			{
+			}
+			PreparedStatement sqlDeleteItem = Database.prepareStatement(sqlDeleteItemString);
+			sqlDeleteItem.setInt(1, anItem.getId());
+			res = sqlDeleteItem.executeUpdate();
+			sqlDeleteItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res != 1)
+		{
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Create a new item. Item is not used automatically.
+	 * @param anItemDef the item definition to use as a template
+	 * @return Item containing the id of the new item.
+	 */
+	public static Item addItem(ItemDef anItemDef)
+	{
+		Logger.getLogger("mmud").finer("");
+		Item myItem = null;
+		try
+		{
+			PreparedStatement sqlAddItem = Database.prepareStatement(sqlAddItemString);
+			sqlAddItem.setInt(1, anItemDef.getId());
+			sqlAddItem.executeUpdate();
+			ResultSet res = sqlAddItem.getGeneratedKeys();
+			System.out.println(res);
+			if (res.next())
+			{
+				myItem = new Item(anItemDef, res.getInt(1));
+			}
+			sqlAddItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return myItem;
+	}
+
+	/**
+	 * Add an item to a room.
+	 * @param anItem the item to be added
+	 * @param aRoom the room into which the item should be dropped.
+	 * @throws ItemDoesNotExistException when we were unable to add the item.
+	 */
+	public static void addItemToRoom(Item anItem,
 								Room aRoom)
 	throws ItemDoesNotExistException
 	{
@@ -343,33 +493,56 @@ public class ItemsDb
 		int res = 0;
 		try
 		{
-			// we should prepare two statements:
-			// 1. the item is removed from the chartable
-			// 2. the item is added to the roomtable
-			PreparedStatement sqlDropItem = Database.prepareStatement(sqlDropItem1String);
-			sqlDropItem.setInt(1, anItem.getId());
-			res = sqlDropItem.executeUpdate();
-			sqlDropItem.close();
-			if (res == 0)
-			{
-				// the idea here was to remove just 1 row
-				// if this did not succeed, it means that we had some
-				// problems getting the appropriate item
-				throw new ItemDoesNotExistException();
-			}
-			sqlDropItem = Database.prepareStatement(sqlDropItem2String);
-			sqlDropItem.setInt(1, anItem.getId());
-			sqlDropItem.setInt(2, aRoom.getId());
-			res = sqlDropItem.executeUpdate();
-			sqlDropItem.close();
+			PreparedStatement sqlAddItem = Database.prepareStatement(sqlAddItemRoomString);
+			sqlAddItem.setInt(1, anItem.getId());
+			sqlAddItem.setInt(2, aRoom.getId());
+			res = sqlAddItem.executeUpdate();
+			sqlAddItem.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		if (res != 1)
 		{
-			throw new ItemDoesNotExistException("able to delete, but unable to add, database corrupted?");
+			throw new ItemDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Transfer an item from one persons inventory to the inventory of
+	 * another person. Usefull when giving/buying/selling items.
+	 * Attention! No checking takes place
+	 * wether or not the item is suitable to be transferred.
+	 * @param anItem the item to be transferred
+	 * @param aUser the user who needs to receive the item in his/her
+	 * inventory.
+	 * @throws ItemDoesNotExistException when we were unable to transfer the item.
+	 */
+	public static void transferItem(Item anItem,
+								Person aPerson)
+	throws ItemDoesNotExistException
+	{
+		Logger.getLogger("mmud").finer("");
+		int res = 0;
+		try
+		{
+			PreparedStatement sqlDropItem = Database.prepareStatement(sqlTransferItemString);
+			sqlDropItem.setString(1, aPerson.getName());
+			sqlDropItem.setInt(2, anItem.getId());
+			res = sqlDropItem.executeUpdate();
+			sqlDropItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		if (res == 0)
+		{
+			// the idea here was to change just 1 row containing 1 item
+			// if this did not succeed, it means that we had some
+			// problems getting the appropriate item
+			throw new ItemDoesNotExistException();
 		}
 	}
 
@@ -422,7 +595,7 @@ public class ItemsDb
 			res.close();
 			sqlGetItem.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -478,7 +651,7 @@ public class ItemsDb
 			res.close();
 			sqlGetItem.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}

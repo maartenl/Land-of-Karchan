@@ -1,10 +1,9 @@
-- sleeping?
 - there should be a definite method for determining if a person is "valid",
 i.e. does he exist, in the same room, is visible, and a host of other
 settings. There should be a gerneal method for checking this.
-- items should be "reservered" and then used. For example when dealing with
+- For example when dealing with
 shopkeepers :
-	-	reserve item from shopkeeper : int Person.reserveItem(stuff)
+	-	get all items that fit the criteria
 	-	in case of problem -> returns ItemException
 	-	do coin check
 	-	in case of problem -> move item back into person : Person.addItem(stuff)
@@ -14,6 +13,70 @@ possibilities: - do everything at once in the database
 				- do selective stuff in the database, and reissue queries
 					when necessary.
 - rmeove Echo.java
+
+- problem: gold, silver, copper should be fields belonging to a certain
+character, reason: if they are implemented as separate items we could be
+having a problem regarding providing exact change.
+- problem: dropping money onto a room, getting money from a room
+	- items or -> advantage: already implemented for the most part
+			-> disadvantage: conversion to user.fields
+	- fields -> advantage: the same as fields in the user
+			-> disadvantage: can it be pickedup dropped correctly?
+- problem: what if someone wants to have a NEW item called a "nice bronze
+pirate coin"? We'd be in a whole lot of trouble when items are used instead
+of fields.
+- adding fields to a room regarding money is not very efficient, because
+most rooms do not have money lying around. It would waste space. An obvious
+solution would be to keep all money in the room object, but not in the
+database. (Okay, so money will be lost when the game is reset, so what, it
+was just lying around anyway)
+Decision:
+- character has gold,silver,copper fields that are stored in the database
+- room has gold,silver,copper fields stored in the object
+- room money is lost upon server crash
+- room money is lost upon rooms reset
+- room description should incorporate money
+- Get and Drop and Give will have to be changed to incorporate special
+	cases for money
+
+The Whole Thing Is Utter Crap!
+gold, silver, copper coins are items, same as any other. The fact that
+shopkeepers do not have proper change is going to have to be taken instride.
+
+computation:
+golda, silvera, coppera me
+goldb, silverb, copperb shopkeeper
+goldi, silveri, copperi item
+
+It's too bloody complicated, just create and delete items as necessary.
+1. Translate all values of the item to copper (getValue()).
+2. transfer copperi from me to shopkeeper
+	addendum: if my copper depleted, delete 1 silver and add 10 copper, than
+	try again.
+	addendum: if my silver depleted, delete 1 gold and add 10 silver, than
+	try again with the previous addendum.
+silverb + silveri
+coppera - copperi < 0
+copperb + copperi
+
+And Again It Is Too Complicated:  if I change everything to copper, the
+shopkeeper is going to have his/her hands full with coppers which is not a
+very good position. At a first attempt I managed to add over 900 copper
+coins dammit!
+
+transfer gold until gold finished or no more gold required
+transfer silver until silver finished or no more silver required
+transfer copper until copper finished or no more copper required
+item+ 1 2 1
+inventoyr 1 3 0
+0 3 0 
+0 2 0
+0 1 0
+
+
+- item methods in itemsdb, transfer/drop/get are too specific.
+  keep it geneeral as in add/delete.
+
 Implementation
 --------------
 
@@ -53,6 +116,11 @@ the table over to another table, it is best to:
 1. retrieve itemids
 2. remove itemids from table (reserving itemids)
 3. add itemids to another table
+
+- Create some nice typesafe enumerated classes with specific behaviour
+designed per instance. (HEME~ (HIMHER) (ETC)
+
+-
 
 Game Behaviour
 --------------
@@ -94,3 +162,13 @@ items, for example a "new torch" can change into a "burnt stick".
 database information, we are unable at this time to add them using the
 "attributes". It will require a different interface to be implemented on top
 of the default Character class. A good example is ShopKeeper.
+
+TODO
+----
+
+- Add 'plurals' to the items. (bucket -> buckets)
+
+Changes to the database
+-----------------------
+
+- changes " valuable" to "valuable" for 36,37,38.

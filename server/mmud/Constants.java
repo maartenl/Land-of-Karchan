@@ -37,6 +37,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.Handler;
+import java.util.Vector;
 
 import mmud.commands.*;
 
@@ -732,6 +733,129 @@ public final class Constants
 				aChar == 'U' ||
 				aChar == 'I' ||
 				aChar == 'O';
+	}
+
+	/**
+	 * parse an item description. Entries in the parameters could look like
+	 * this:
+	 * <ul><li>bucket, length=1
+	 * <li>wooden bucket, length=2
+	 * <li>old wooden bucket, length=3
+	 * <li>small old wooden bucket, length=4
+	 * <li>2 bucket, length=2
+	 * <li>2 wooden bucket, length=3
+	 * <li>2 old wooden bucket, length=4
+	 * <li>2 small old wooden bucket, length=5
+	 * </ul>
+	 * @param words String array containing words per element
+	 * @param begin the position in the string array where the item
+	 * description starts.
+	 * @param length the length of the item description (1..5)
+	 * @return Vector of length 5, first is the amount (Integer),
+	 * next three are adjectives in Strings and
+	 * then comes the name of the item in String. Adjectives are allowed
+	 * to be null values.
+	 * @throws ParseException when the amount requested is less than 1, or
+	 * the number of words in the array does not match a proper item
+	 * description.
+	 */
+	public static Vector parseItemDescription(String []words,
+			int begin, 
+			int length)
+	throws ParseException
+	{
+		String output = "";
+		for (int i=begin;i<begin+length;i++)
+		{
+			output+=",words[" + i + "]=" + words[i];
+		}
+		logger.finer(output + ",words.length=" + words.length + 
+			",begin=" + begin + 
+			",length=" + length);
+		String adject1, adject2, adject3, name;
+		// get [amount] [adject1..3] name
+		int amount = 1;
+		try
+		{
+			amount = Integer.parseInt(words[begin]);
+			if (amount < 1)
+			{
+				throw new ParseException();
+			}
+			switch (length)
+			{
+				case 2:
+				adject1 =  null;
+				adject2 =  null;
+				adject3 =  null;
+				name = words[begin + 1];
+				break;
+				case 3:
+				adject1 = words[begin + 1];
+				adject2 =  null;
+				adject3 =  null;
+				name = words[begin + 2];
+				break;
+				case 4:
+				adject1 = words[begin + 1];
+				adject2 = words[begin + 2];
+				adject3 =  null;
+				name = words[begin + 3];
+				break;
+				case 5:
+				adject1 = words[begin + 1];
+				adject2 = words[begin + 2];
+				adject3 = words[begin + 3];
+				name = words[begin + 4];
+				break;
+				default:
+				throw new ParseException();
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			switch (length)
+			{
+				case 1:
+				adject1 =  null;
+				adject2 =  null;
+				adject3 =  null;
+				name = words[begin];
+				break;
+				case 2:
+				adject1 = words[begin];
+				adject2 =  null;
+				adject3 =  null;
+				name = words[begin + 1];
+				break;
+				case 3:
+				adject1 = words[begin];
+				adject2 = words[begin + 1];
+				adject3 =  null;
+				name = words[begin + 2];
+				break;
+				case 4:
+				adject1 = words[begin];
+				adject2 = words[begin + 1];
+				adject3 = words[begin + 2];
+				name = words[begin + 3];
+				break;
+				default:
+				throw new ParseException();
+			}
+		}
+		Vector myVector = new Vector();
+		myVector.add(new Integer(amount));
+		myVector.add(adject1);
+		myVector.add(adject2);
+		myVector.add(adject3);
+		myVector.add(name);
+		logger.finer("returns adject1=" + adject1 +
+			",adject2=" + adject2 +
+			",adject3=" + adject3 +
+			",name=" + name +
+			",amount=" + amount);
+		return myVector;
 	}
 
 	/**

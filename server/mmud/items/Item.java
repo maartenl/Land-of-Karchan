@@ -122,7 +122,20 @@ public class Item
 	{
 		return theItemDef.getAdjective3();
 	}
-	
+
+       
+	/**
+	 * Returns the amount of money something costs in total copper coins.
+	 * @return integer, gold*100+silver*10+copper
+	 * @see Item#getGold
+	 * @see Item#getCopper
+	 * @see Item#getSilver
+	 */
+	public int getValue()   
+	{
+		return theItemDef.getValue();
+	}
+
 	/**
 	 * get the gold coins part of the value of the item.
 	 * @return integer containing the number of gold coins.

@@ -144,6 +144,18 @@ public class ItemDef
 	}
 	
 	/**
+	 * Returns the amount of money something costs in total copper coins.
+	 * @return integer, gold*100+silver*10+copper
+	 * @see ItemDef#getGold
+	 * @see ItemDef#getSilver
+	 * @see ItemDef#getCopper
+	 */
+	public int getValue()
+	{
+		return getGold() * 100 + getSilver() * 10 + getCopper();
+	}
+
+	/**
 	 * Return the amount of gold it costs.
 	 * @return integer containing number of gold coins.
 	 */

@@ -426,7 +426,7 @@ public class Room
 	 * present in the room.
 	 * @return String a string representation of a HTML bulleted list
 	 * of all items.
-	 * @see ItemDb#getInventory
+	 * @see ItemsDb#getInventory
 	 */
 	public String inventory()
 	{
