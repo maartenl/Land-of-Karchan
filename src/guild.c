@@ -117,7 +117,6 @@ MIFEntryIn(char *name, char *password, int room)
 	LookString(row[0], name, password);
 	mysql_free_result(res);
 
-	KillGame();
 }
 
 void 
@@ -155,7 +154,6 @@ MIFEntryOut(char *name, char *password, int room)
 	LookString(row[0], name, password);
 	mysql_free_result(res);
 
-	KillGame();
 }
 
 void 
@@ -183,7 +181,6 @@ MIFTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void 
@@ -271,7 +268,6 @@ RangerEntryIn(char *name, char *password, int room)
 	LookString(row[0], name, password);
 	mysql_free_result(res);
 
-	KillGame();
 }
 
 void 
@@ -308,7 +304,6 @@ RangerEntryOut(char *name, char *password, int room)
 	LookString(row[0], name, password);
 	mysql_free_result(res);
 
-	KillGame();
 }
 
 void 
@@ -336,7 +331,6 @@ RangerTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 /* add SWTalk */
@@ -365,7 +359,6 @@ SWTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 /* add DepTalk */
@@ -394,7 +387,6 @@ DepTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }	
 /* add BKTalk */
 void 
@@ -422,7 +414,6 @@ BKTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 /* add VampTalk */
 void 
@@ -450,7 +441,6 @@ VampTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 /* add KnightTalk */
 void 
@@ -478,7 +468,6 @@ KnightTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 /* add CoDTalk */
 void 
@@ -506,6 +495,5 @@ CoDTalk(char *name, char *password, int room)
 	
 	free(temp2);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 

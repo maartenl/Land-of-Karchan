@@ -338,7 +338,6 @@ Awaken2_Command(char *name, char *password, int room)
 	WriteSentenceIntoOwnLogFile(logname, "You wake up.<BR>\n");
 	WriteMessage(name, room, "%s wakes up. %s is now wide awake.<BR>\n", name, name);
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 int
@@ -478,6 +477,5 @@ LookSky_Command(char *name, char *password)
 	char logname[100];  
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	LookAtProc(-10, name, password);
-	KillGame();
 }				/* endproc */
 

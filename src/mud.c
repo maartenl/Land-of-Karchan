@@ -286,11 +286,6 @@ Help_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 {
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	if (!strcasecmp(fcommand, "help hint")) 
-	{
-		HelpHint_Command(name, password, room);
-		return 1;
-	}
 	if (!strcasecmp(fcommand, "help")) 
 	{
 		MYSQL_RES *res;
@@ -370,7 +365,6 @@ ReadMail_Command(char *name, char *password, int room, char **ftokens, char *fco
 {
 	ReadMail(name, password, room, atoi(tokens[1]), 0);
 	return 1;
-		ReadMail(name, password, room, atoi(tokens[1]), 2);
 }
 
 int
@@ -1135,10 +1129,19 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	opendbconnection();
 
-	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
+	if (SearchBanList(cgiRemoteAddr, name)) 
+	{
+		BannedFromGame(name, cgiRemoteAddr);
+		free(printstr);
+		closedbconnection();
+		return 0;
+	}
 
 	if (!ExistUser(name)) {
 		NotActive(name,password,1);
+		free(printstr);
+		closedbconnection();
+		return 0;
 	}
 
 //	openDatabase();
@@ -1149,11 +1152,17 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	if (res==NULL)
 	{
 		NotActive(name, password,2);
+		free(printstr);
+		closedbconnection();
+		return 0;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL)
 	{
 		NotActive(name, password,3);
+		free(printstr);
+		closedbconnection();
+		return 0;
 	}
 	
 	strcpy(name, row[0]); /* copy name to name from database */
@@ -1163,6 +1172,9 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	strcpy(sexstatus,row[6]); /* sex status (male, female) */
 	if (atoi(row[7])>atoi(row[8])) { /* check vitals along with maxvital */
 		Dead(name, password, room);
+		free(printstr);
+		closedbconnection();
+		return 0;
 	}
 	strcpy(guildstatus	, row[9]);
 	punishment = atoi(row[10]);
@@ -1216,21 +1228,32 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	}			/* endif */
 
 	if ((strstr(command,"<applet")!=NULL) || (strstr(command,"<script")!=NULL)
-		|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) { 
+		|| (strstr(command,"java-script")!=NULL) || (strstr(command,"CommandForm")!=NULL)) 
+	{ 
 		WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
-		}
+		free(junk);
+		free(printstr);
+	   closedbconnection();
+		return 1;
+	}
 
 	if (sleepstatus==1) 
 	{
 		if (!strcasecmp(command, "awaken"))
 		{
 			Awaken2_Command(name, password, room);
+			free(junk);
+			free(printstr);
+	   	closedbconnection();
+			return 1;
 		}
 		WriteSentenceIntoOwnLogFile(logname, "You can't do that. You are asleep, silly.<BR>\r\n");
 		WriteRoom(name, password, room, 1);
-		KillGame();
+		free(junk);
+		free(printstr);
+	   closedbconnection();
+		return 1;
 	}
 	
 	if (punishment > 0)
@@ -1252,14 +1275,20 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		res=SendSQL2(sqlstring, NULL);
 		mysql_free_result(res);
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	   closedbconnection();
+		return 1;
 		}
 		if ((*command == '\0') ||
 		(!strcasecmp(command, "look around")) ||
 		(!strcasecmp(command, "look")) ||
 		(!strcasecmp(command, "l"))) {
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			free(junk);
+			free(printstr);
+	   	closedbconnection();
+			return 1;
 		}
 		if ((!strcasecmp(command, "go west")) ||
 		(!strcasecmp(command, "west")) ||
@@ -1297,10 +1326,19 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	WriteSentenceIntoOwnLogFile(logname, "You cannot do that, you are a frog, remember?<BR>\r\n");
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	free(junk);
+	free(printstr);
+  	closedbconnection();
+	return 1;
 	}
 
-	SearchForSpecialCommand(name, password, room);
+	if (SearchForSpecialCommand(name, password, room)==1)
+	{
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
+	}
 	
 	/* initialise and fill the Function array */
 	gameFunctionArray = (gameFunction *) malloc(sizeof(gameFunction)*100);
@@ -1478,9 +1516,6 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	free(gameFunctionArray);
 	free(gameCommands);
 	
-	if (godstatus==1) {Root_Command(name, password, room);}
-	if (godstatus==2) {Evil_Command(name, password, room);}
-
 /*	if (!strcasecmp(command, "introduce me")) {
 		IntroduceMe_Command(logname);
 	}*/
@@ -1489,7 +1524,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		WriteSentenceIntoOwnLogFile(logname, "You %s.<BR>\r\n", command);
 		WriteMessage(name, room, "%s %s.<BR>\r\n", name, temp);
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}
 	/* smile engagingly */
 	if ( (aantal==2) && ((temp = get_pluralis(tokens[0])) != NULL) &&
@@ -1497,7 +1535,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
 		WriteMessage(name, room, "%s %s %s.<BR>\r\n", name, temp, tokens[1]);
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}
 	/* smile to bill */
 	if ((aantal == 3) && ((temp = get_pluralis(tokens[0])) != NULL) && 
@@ -1509,7 +1550,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			WriteSentenceIntoOwnLogFile(logname, "You %s to %s.</BR>\r\n", tokens[0], tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}
 	/* smile(0) engagingly(1) to(2) Bill(3) */
 	if ((aantal == 4) && ((temp = get_pluralis(tokens[0])) != NULL) && 
@@ -1521,7 +1565,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s to %s.</BR>\r\n", tokens[0], tokens[1], tokens[3]);
 		}
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}
 	/* multiple person emotions */
 	/* caress bill */
@@ -1538,7 +1585,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s.<BR>\r\n", tokens[0], tokens[1]);
 		}
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}			/* end of multiple persons emotions */
 	/* caress bill absentmindedly */
 	if ((aantal == 3) && ((temp = get_pluralis2(tokens[0])) != NULL) &&
@@ -1555,7 +1605,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 			WriteSentenceIntoOwnLogFile(logname, "You %s %s, %s.<BR>\r\n", tokens[0], tokens[1], tokens[2]);
 		}
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		free(junk);
+		free(printstr);
+	  	closedbconnection();
+		return 1;
 	}			/* end of multiple persons emotions */
 
 /* add SWTalk */		
@@ -1564,7 +1617,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ( (!strcasecmp("pow", tokens[0])) && (!strcasecmp("wow", tokens[1])) )
 		{
 			SWTalk(name, password, room);
-			KillGame();
+			free(junk);
+			free(printstr);
+	  		closedbconnection();
+			return 1;
 		}
 
 	}		
@@ -1575,7 +1631,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ( (!strcasecmp("chaos", tokens[0])) && (!strcasecmp("murmur", tokens[1])) )
 		{
 			BKTalk(name, password, room);
-			KillGame();
+			free(junk);
+			free(printstr);
+	  		closedbconnection();
+			return 1;
 		}
 
 	}
@@ -1586,7 +1645,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ( (!strcasecmp("misty", tokens[0])) && (!strcasecmp("whisper", tokens[1])) )
 		{
 			VampTalk(name, password, room);
-			KillGame();
+			free(junk);
+			free(printstr);
+	  		closedbconnection();
+			return 1;
 		}
 
 	}
@@ -1597,7 +1659,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ( (!strcasecmp("knight", tokens[0])) && (!strcasecmp("talk", tokens[1])) )
 		{
 			KnightTalk(name, password, room);
-			KillGame();
+			free(junk);
+			free(printstr);
+	  		closedbconnection();
+			return 1;
 		}
 
 	}
@@ -1608,7 +1673,10 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 		if ( (!strcasecmp("mogob", tokens[0])) && (!strcasecmp("burz", tokens[1])) )
 		{
 			CoDTalk(name, password, room);
-			KillGame();
+			free(junk);
+			free(printstr);
+	  		closedbconnection();
+			return 1;
 		}
 
 	}
@@ -1617,6 +1685,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 
 	WriteSentenceIntoOwnLogFile(logname, "I am afraid, I do not understand that.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
+	return 1;
 }
 
 int 

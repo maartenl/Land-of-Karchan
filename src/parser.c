@@ -674,7 +674,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 		{
 			/* showstandard command found */
 			WriteRoom(name, password, myroom, 0);
-			KillGame();
+			return 1;
 		}
 		if (returnvalue==2)
 		{
@@ -685,7 +685,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			if (getFrames()!=2) {ReadFile(logname);}
 			fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 			fprintf(cgiOut, "<DIV ALIGN=left><P>");
-			KillGame();
+			return 1;
 		}
 		if (returnvalue==3)
 		{
@@ -696,8 +696,9 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 			if (getFrames()!=2) {ReadFile(logname);}
 			fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 			fprintf(cgiOut, "<DIV ALIGN=left><P>");
-			KillGame();
+			return 1;
 		}
 	}
+	return 0;
 }
 

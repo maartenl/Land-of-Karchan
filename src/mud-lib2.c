@@ -52,15 +52,6 @@ time_t          datetime;
  */
 
 void 
-KillGame()
-{
-//	closeDatabase();
-	closedbconnection();
-	free(printstr);
-	exit(0);
-}
-
-void 
 WriteMail(char *name, char *toname, char *header, char *message)
 {
 	int             i = 1,j;
@@ -190,7 +181,7 @@ if (messnr!=j)
 {
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
 	WriteRoom(name, password, room, 0);
-	KillGame();
+	return;
 }
 
 strcpy(mailname, row[0]);
@@ -642,7 +633,6 @@ LookItem_Command(char *name, char *password, int room)
 			if (getFrames()!=2) {ReadFile(logname);}
 			fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 			fprintf(cgiOut, "<DIV ALIGN=left><P>");
-			KillGame();
 			return ;
 		}
 		mysql_free_result(res);
@@ -771,8 +761,6 @@ LookItem_Command(char *name, char *password, int room)
 			fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 			fprintf(cgiOut, "<DIV ALIGN=left><P>");
 			mysql_free_result(res);
-
-			KillGame();
 			return ;
 		}
 		mysql_free_result(res);
@@ -870,7 +858,6 @@ LookItem_Command(char *name, char *password, int room)
 				mysql_free_result(res);
 
 				WriteRoom(name, password, room, 0);
-				KillGame();
 				return ;
 			}
 			mysql_free_result(res);
@@ -884,7 +871,6 @@ LookItem_Command(char *name, char *password, int room)
 	
 	WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void 
@@ -913,92 +899,6 @@ NotActive(char *fname, char *fpassword, int errornr)
 	datum=*(gmtime(&tijd));
 	WriteSentenceIntoOwnLogFile(AuditTrailFile,"%i:%i:%i %i-%i-%i NotActive by %s (%s) (error %i)<BR>\n",datum.tm_hour,
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, fpassword, errornr);
-
-	KillGame();
-}
-
-void 
-DeputyAlias(char *name, char *password, int room)
-{
-	char logname[100];
-
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char temp[2048], temp2[2048];
-	int i;
-	
-	sprintf(logname, "%s%s.log", USERHeader, name);
-
-	sprintf(temp, "select * from depalias where \"%s\" like id and \"%s\" like names",
-			command, name);
-	res=SendSQL2(temp, NULL);
-	if (res!=NULL)
-	{
-		row = mysql_fetch_row(res);
-
-		if (row!=NULL)
-		{
-			strcpy(temp, row[2]);
-			mysql_free_result(res);
-			*temp2=0;
-			for (i=0;i<=strlen(temp);i++)
-			{
-				if (temp[i]!='$') 
-				{
-					temp2[strlen(temp2)+1]=0;
-					temp2[strlen(temp2)]=temp[i];
-				} else
-				{
-					i+=1;
-					if (temp[i]=='*')
-					{
-					strcat(temp2, name);
-					}
-					else
-					{
-					strcat(temp2, tokens[temp[i]-'0']);
-					}
-				}
-			}
-			SendSQL(logname, name, password, temp2);
-		}
-		else
-		{
-			mysql_free_result(res);
-		}
-	}
-	WriteRoom(name, password, room, 0);
-	KillGame();
-}
-
-void 
-Root_Command(char *name, char *password, int room)
-{
-	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader, name);
-	if (tokens[0][0]=='x') {DeputyAlias(name, password, room);}
-	if (!strcasecmp("s endsql",tokens[0])) {
-		SendSQL(logname, name, password, command+(tokens[1]-tokens[0]));
-		WriteRoom(name, password, room, 0);
-		KillGame();
-		}
-	if ((aantal == 2) && (!strcasecmp(tokens[0], "deactivate")))
-	{
-		RemoveUser(tokens[1]);
-		WriteSentenceIntoOwnLogFile(logname, "%s deactivated.<BR>\r\n", tokens[1]);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((*command == 'a') && (*(command + 1) == 'l') && (*(command + 2) == 'l')) {
-		SayToAll(command + 4);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ( (!strcasecmp("dep", tokens[0])) && (!strcasecmp("chat", tokens[1])) )
-	{
-		DepTalk(name, password, room);
-		KillGame();
-	}
 }
 
 int CheckRoom(int i)
@@ -1021,35 +921,6 @@ case 215 : {j=1;break;}
 }  
 return j;
 }
-
-void 
-Evil_Command(char *name, char *password, int room)
-{
-	char logname[100];
-	sprintf(logname, "%s%s.log",USERHeader, name);
-	if ((*command == 'a') && (*(command + 1) == 'l') && (*(command + 2) == 'l')) {
-		SayToAll(command + 4);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal == 3) &&
-	    (!strcasecmp("beam", tokens[0])) && (!CheckRoom(atoi(tokens[2])))) {
-		WriteMessage(name, room, "%s's eyes light up red for a few seconds, then black smoke begins to "
-		"surround him. When the black smoke clears he appears to be gone.<BR>\r\n", name);
-		WriteSentenceIntoOwnLogFile(logname, "You disappear and reappear in a cloud of smoke.<BR>\r\n");
-		// x.room = atoi(tokens[2]);
-		WriteMessage(name, room, "A black smokey cloud appears, when the smoke clears %s is standing"
-		" there, grinning evilly at your surprised face.<BR>\r\n", name);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-	if ((aantal == 4) &&
-	    (!strcasecmp("beam", tokens[0]))  && (!CheckRoom(atoi(tokens[2])))) {
-//		y.room = atoi(tokens[3]);
-		WriteRoom(name, password, room, 0);
-		KillGame();
-	}
-} /*endproc*/
 
 int 
 Quit_Command(char *name, char *password, int room, char **ftokens, char *fcommand)
@@ -1079,70 +950,6 @@ Quit_Command(char *name, char *password, int room, char **ftokens, char *fcomman
 	ReadFile(HTMLHeader "goodbye.html");
 	RemoveUser(name);
 	return 1;
-}
-
-void 
-HelpHint_Command(char *name, char *password, int room)
-{
-	char logname[100];
-	
-	sprintf(logname, "%s%s.log", USERHeader, name);
-	
-	switch (room) {
-		case 1:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 9:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 239:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Only your pride seems to be hurt as you stand "
-			"in soggy clothing at the foot of a small slope. You notice a small object floating upstream to the north. It"
-			" looks strangely familiar... .<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 16:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Look very carefully at everything.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 3:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Read sign to see how to mail messages.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 8:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Talk to Karaoke, give him what he needs most.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 5:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Try to climb down the well.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	case 20:
-		{
-			WriteSentenceIntoOwnLogFile(logname, "Hint: Open the chest with the key.<BR>\r\n");
-			WriteRoom(name, password, room, 0);
-			KillGame();
-		}
-	}
-	WriteSentenceIntoOwnLogFile(logname, "This room is exceptionally boring.<BR>\r\n");
-	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 /*
@@ -1368,7 +1175,7 @@ Stats_Command(char *name, char *password, int room, char **ftokens, char *fcomma
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P>");
 	fprintf(cgiOut, "</BODY></HTML>");
-	KillGame();
+	return 1;
 }
 
 void
@@ -1397,7 +1204,7 @@ GetMoney_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return;
 	}
 
 		/*get iron pick*/
@@ -1420,14 +1227,14 @@ GetMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Coins not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -1484,7 +1291,6 @@ GetMoney_Command(char *name, char *password, int room)
 		name, amount, itemadject2);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void
@@ -1528,7 +1334,7 @@ DropMoney_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return;
 	}
 
 	if (!strcasecmp(tokens[aantal-2],"copper"))
@@ -1537,7 +1343,7 @@ DropMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return;
 		}
 		/* look for specific person */
 		sprintf(sqlstring, 
@@ -1554,7 +1360,7 @@ DropMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return;
 		}
 		/* look for specific person */
 		sprintf(sqlstring, 
@@ -1571,7 +1377,7 @@ DropMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		/* look for specific person */
 		sprintf(sqlstring, 
@@ -1606,7 +1412,7 @@ DropMoney_Command(char *name, char *password, int room)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "Copper coins not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
-				KillGame();
+				return;
 			}
 			mysql_free_result(res);
 	}
@@ -1628,7 +1434,6 @@ DropMoney_Command(char *name, char *password, int room)
 		name, amount, tokens[aantal-2]);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void
@@ -1658,14 +1463,14 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	strcpy(toname, row[0]);
 	mysql_free_result(res);
@@ -1690,7 +1495,7 @@ GiveMoney_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 
 	if (!strcasecmp(tokens[numberfilledout+1],"copper"))
@@ -1699,7 +1504,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough copper coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 	}
 	if (!strcasecmp(tokens[numberfilledout+1],"silver"))
@@ -1708,7 +1513,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough silver coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 	}
 	if (!strcasecmp(tokens[numberfilledout+1],"gold"))
@@ -1717,7 +1522,7 @@ GiveMoney_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough gold coins.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 	}
 
@@ -1756,7 +1561,6 @@ GiveMoney_Command(char *name, char *password, int room)
 		name, amount, tokens[numberfilledout+1]);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void
@@ -1785,7 +1589,7 @@ GetItem_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 		if (aantal==2+numberfilledout) 
 		{
@@ -1879,14 +1683,14 @@ GetItem_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -1940,7 +1744,7 @@ GetItem_Command(char *name, char *password, int room)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
-					KillGame();
+					return ;
 				}
 				mysql_free_result(res);
 		}
@@ -1983,7 +1787,6 @@ GetItem_Command(char *name, char *password, int room)
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void
@@ -2012,7 +1815,7 @@ DropItem_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 		if (aantal==2+numberfilledout) 
 		{
@@ -2113,14 +1916,14 @@ DropItem_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -2176,7 +1979,7 @@ DropItem_Command(char *name, char *password, int room)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
-					KillGame();
+					return ;
 				}
 				mysql_free_result(res);
 		}
@@ -2224,7 +2027,6 @@ DropItem_Command(char *name, char *password, int room)
 			name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 int
@@ -4140,7 +3942,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 		if (aantal==2+numberfilledout) 
 		{
@@ -4226,14 +4028,14 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -4249,7 +4051,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough money.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 
 		/* look for specific person */
@@ -4303,7 +4105,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
-				KillGame();
+				return ;
 			}
 			mysql_free_result(res);
 	}
@@ -4327,7 +4129,6 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		name, amount, itemadject1, itemadject2, itemname, fromname);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 void
@@ -4358,7 +4159,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	if (aantal==2+numberfilledout) 
 	{
@@ -4452,14 +4253,14 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "You fail to sell the item.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return;
 	}
 	itemid = atoi(row[0]);
 	amountitems = atoi(row[1]);
@@ -4544,7 +4345,6 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 int
@@ -4703,14 +4503,14 @@ GiveItem_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	row = mysql_fetch_row(res);
 	if (row==NULL) 
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 	strcpy(toname, row[0]);
 	mysql_free_result(res);
@@ -4725,7 +4525,7 @@ GiveItem_Command(char *name, char *password, int room)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		KillGame();
+		return ;
 	}
 		if (aantal==4+numberfilledout) 
 		{
@@ -4815,14 +4615,14 @@ GiveItem_Command(char *name, char *password, int room)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "Item not found.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			KillGame();
+			return ;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -4874,7 +4674,7 @@ GiveItem_Command(char *name, char *password, int room)
 				{
 					WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 					WriteRoom(name, password, room, 0);
-					KillGame();
+					return ;
 				}
 				mysql_free_result(res);
 		}
@@ -4926,7 +4726,6 @@ GiveItem_Command(char *name, char *password, int room)
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(name, password, room, 0);
-	KillGame();
 }
 
 int
@@ -5230,7 +5029,6 @@ Dead(char *name, char *password, int room)
 	PrintForm(name, password);
 	fprintf(cgiOut, "<HR><FONT Size=1><DIV ALIGN=right>%s", CopyrightHeader);
 	fprintf(cgiOut, "<DIV ALIGN=left><P>");
-	KillGame();
 }
 
 int
