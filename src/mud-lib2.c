@@ -2424,6 +2424,10 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 		WriteRoom(name, password, room, 0);
 		return 1;
 	}
+	if ((numberfilledout) && (!strcasecmp(getToken(2), "from")))
+	{
+		return 0;
+	}
 	if (!strcasecmp(getToken(2+numberfilledout), "from"))
 	{
 		/* put name in [bijv vmw] [bijv vnm] [bijv vnm] name */
