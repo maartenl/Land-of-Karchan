@@ -211,8 +211,8 @@ cgiMain()
 	sms_SetPath("/");
 	if (sms_GetCookie("KARCHAN") == NULL)
 	{
-//		cgiHeaderContentType("text/html");
-//		CookieNotFound(name, cgiRemoteAddr);
+		cgiHeaderContentType("text/html");
+		CookieNotFound(name, cgiRemoteAddr);
 	}
 	else
 	{
