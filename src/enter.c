@@ -25,9 +25,11 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
+#include "cookies.h"
 
 /*name, west, east, north, south, up, down*/
 extern int hellroom;
+extern char secretpassword[40];
 
 void StrangeName(char *name, char *password, char *address)
 {
@@ -355,7 +357,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
 	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
-                
+
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
 	sprintf(temp, "SELECT count(*) FROM tmp_mailtable"
 		" WHERE toname='%s' and newmail=1", name);
@@ -417,8 +419,32 @@ int cgiMain()
 	
 	umask(0000);
 	
-	cgiHeaderContentType("text/html");
+	sms_FreeResources();
+	sms_PickupCookies();
+	if(ck_JarPresent() != SMS_OK_FLAG)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
+		"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
+		printf("</BODY>\n</HTML>");
+		exit(0);
+	}
 	
+	sms_SetDomain("www.karchan.org");
+	sms_SetPath("/");
+	if (sms_GetCookie("KARCHAN") == NULL)
+	{
+		generate_password(secretpassword);
+		sms_SetCookie("KARCHAN", secretpassword);
+	}
+	else
+	{
+		strcpy(secretpassword, sms_GetCookie("KARCHAN"));
+	}
+	/* sms_DebugCookies(); */
+	sms_WriteCookies();
+	sms_FreeResources();
+
 	opendbconnection();
 	
 	if (0)
@@ -441,6 +467,9 @@ int cgiMain()
 		if (!strcmp(frames,"3")) {setFrames(2);}
 	}
 
+	cgiHeaderContentType("text/html");
+/*	fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
+	
 	if (strcmp("Karn", name)) {CheckForOfflineMud();}
 
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
@@ -451,6 +480,33 @@ int cgiMain()
 	if (strstr(password," ")!=NULL) {ToManyNames(name, cgiRemoteAddr);}
 	if (strlen(password)<5) {ToManyNames(name, cgiRemoteAddr);}
 	if (strlen(name)<3) {ToManyNames(name, cgiRemoteAddr);}
+	
+	/* Already playing as another Character? */
+	sprintf(temp, "select name from tmp_usertable where "
+	"lok = '%s' and "
+	"god<>1 and "
+	"name <> '%s'", secretpassword, name);
+	res=SendSQL2(temp, NULL);
+	if (res!=NULL) 
+	{
+		row = mysql_fetch_row(res);
+		if (row!=NULL) 
+		{
+			mysql_free_result(res);
+//			WriteError(name, cgiRemoteAddr, "Multi-player detected");
+			MultiPlayerDetected(name, cgiRemoteAddr);
+		}
+	} 
+	
+	/* set the secret password */
+	sprintf(temp, "update usertable "
+	"set lok = '%s' "
+	"where name = '%s'", secretpassword, name);
+	SendSQL2(temp, NULL);
+	if (res!=NULL) 
+	{
+		mysql_free_result(res);
+	} 
 	
 	/* ExistUser */
 	sprintf(temp, "select name, password, god from tmp_usertable where name='%s'", name);
@@ -486,20 +542,6 @@ int cgiMain()
 	{
 		mysql_free_result(res);
 	}
-	
-	/* Already playing as another Character? */
-	sprintf(temp, "select name from tmp_usertable where address='%s' and god<>1", cgiRemoteAddr);
-	res=SendSQL2(temp, NULL);
-	if (res!=NULL) 
-	{
-		row = mysql_fetch_row(res);
-		if (row!=NULL) 
-		{
-			mysql_free_result(res);
-//			WriteError(name, cgiRemoteAddr, "Multi-player detected");
-			MultiPlayerDetected(name, cgiRemoteAddr);
-		}
-	} 
 	
 	/* SearchUser */
 	sprintf(temp, "select name, password, room from usertable where name='%s'", name);

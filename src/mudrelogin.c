@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
-Copyright (C) 1998  Maarten van Leunen
+Copyright (C) 1998Maarten van Leunen
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -10,12 +10,12 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA02111-1307, USA.
 
 Maarten van Leunen
 Driek van Erpstraat 9
@@ -25,9 +25,11 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
+#include "cookies.h"
 
 /* name, west, east, north, south, up, down */
-extern int      hellroom;
+extern int hellroom;
+extern char secretpassword[40];
 
 void 
 NoNewActivate()
@@ -44,20 +46,20 @@ NoNewActivate()
 }
 
 
-char           *ages[] = {
+char *ages[] = {
 	"yes",
 "no"};
 
 void 
 MakeStart(char *name, char *password, int room, char *address)
 {
-	char            printstr[512];
-	time_t          tijd;
-	struct tm       datum;
+	char printstr[512];
+	time_t tijd;
+	struct tm datum;
 	time(&tijd);
 	datum = *(gmtime(&tijd));
-	WriteSentenceIntoOwnLogFile2(AuditTrailFile, "%i:%i:%i %i-%i-19%i  %s (%s) entered the game, again.<BR>\n", datum.tm_hour,
-				     datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year, name, address);
+	WriteSentenceIntoOwnLogFile2(AuditTrailFile, "%i:%i:%i %i-%i-19%i%s (%s) entered the game, again.<BR>\n", datum.tm_hour,
+				 datum.tm_min, datum.tm_sec, datum.tm_mday, datum.tm_mon + 1, datum.tm_year, name, address);
 	sprintf(printstr, "%s has entered the game, again...<BR>\r\n", name);
 	sprintf(printstr, USERHeader "%s.log", name);
 	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
@@ -140,7 +142,7 @@ void BannedFromGame(char *name, char *address)
 	fprintf(cgiOut, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
 	fprintf(cgiOut, "<BODY>\n");
 	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Banned</H1><HR>\n");
-	fprintf(cgiOut, "You, or someone in your domain,  has angered the gods by behaving badly on this mud. ");
+	fprintf(cgiOut, "You, or someone in your domain,has angered the gods by behaving badly on this mud. ");
 	fprintf(cgiOut, "Your ip domain is therefore banned from the game.<P>\n");
 	fprintf(cgiOut, "If you have not misbehaved or even have never before played the game before, and wish"
 	" to play with your current IP address, email to "
@@ -157,23 +159,70 @@ void BannedFromGame(char *name, char *address)
 	exit(0);
 }
 
+void CookieNotFound(char *name, char *address)
+{
+	char printstr[512];
+	time_t tijd;
+	struct tm datum;
+	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	fprintf(cgiOut, "<BODY>\n");
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	fprintf(cgiOut, "When you logon, a cookie is automatically generated. ");
+	fprintf(cgiOut, "However, I have been unable to find my cookie.<P>\n");
+	fprintf(cgiOut, "Please attempt to relogon.<P>\n");
+	fprintf(cgiOut, "</body>\n");
+	fprintf(cgiOut, "</HTML>\n");
+	time(&tijd);
+	datum=*(gmtime(&tijd));
+	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	closedbconnection();
+	exit(0);
+}
+
 int 
 cgiMain()
 {
-	char            name[20];
-	char            password[40];
-	char						frames[10];
-	int				room;
-	int             i;
-	int             ageChoice;
-	int		sleepstatus;
-	char            ageText[10];
+	char name[20];
+	char password[40];
+	char frames[10];
+	int room;
+	int i;
+	int ageChoice;
+	int	sleepstatus;
+	char ageText[10];
 	MYSQL_RES		*res;
 	MYSQL_ROW		row;
 	char 			temp[1024];
 	umask(0000);
+
+	sms_FreeResources();
+	sms_PickupCookies();
+	if(ck_JarPresent() != SMS_OK_FLAG)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
+		"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
+		printf("</BODY>\n</HTML>");
+		exit(0);
+	}
+	
+	sms_SetDomain("www.karchan.org");
+	sms_SetPath("/");
+	if (sms_GetCookie("KARCHAN") == NULL)
+	{
+		CookieNotFound(name, cgiRemoteAddr);
+	}
+	else
+	{
+		strcpy(secretpassword, sms_GetCookie("KARCHAN"));
+	}
+	sms_WriteCookies();
+	sms_FreeResources();
+	
 	cgiHeaderContentType("text/html");
-	opendbconnection();
+/*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
+  	opendbconnection();
 	if (0)
 	{
 		scanf("%s", ageText);scanf("%s", name);scanf("%s", password);
@@ -202,7 +251,7 @@ cgiMain()
 	if (ExistUser(name)==0) 
 	{
 		WrongPasswd(name, cgiRemoteAddr);
-		}
+	}
 
 	/* GetUser */
 	sprintf(temp, "select name, password, room, sleep from tmp_usertable where "

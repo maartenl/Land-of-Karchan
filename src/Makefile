@@ -35,7 +35,9 @@ EXEDIR = /karchan2/apache/cgi-bin
 LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
 OPTIONS = -lm -lmysqlclient
 
-TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist clearcharacters
+TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
+nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist \
+clearcharacters libcookies
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -84,6 +86,13 @@ mudclient.o: cgic.o mudclient.c
 
 mudserver.o: mudserver.c mud-lib2.o mud-lib3.o mud-lib.o userlib.o typedefs.o
 	$(CC) $(COPTS) $(INCLUDES) $(LIBDIR) -c mudserver.c 
+
+#--- Library for the Cookie functions
+
+libcookies:
+	cd cookies
+	make
+	cd ..
 
 #--- Binary executables are compiled below...
 
@@ -168,7 +177,7 @@ clearcharacters: clearcharacters.o clearcharacters.c
 #--- Clean up the stuff and install as well
 
 clean:
-	rm *.o *~ $(TARGETS)
+	rm -f *.o *~ *.backup $(TARGETS)
 
 backup: all
 	@echo "Backing up Mud Binaries..."

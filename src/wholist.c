@@ -110,8 +110,9 @@ int SendSQL()
 	mysql_close(&mysql);
 }
 
-void
+int
 main()
 {
 	SendSQL();
+	return 0;
 }

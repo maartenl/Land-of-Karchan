@@ -31,6 +31,7 @@ roomstruct room;
 
 int hellroom=164;
 int frames;
+char secretpassword[40];
 
 MYSQL dbconnection;
 
@@ -276,4 +277,30 @@ roomstr->down=atoi(row[5]);
 mysql_free_result(res);
 
 return roomstr;
+}
+
+char *generate_password(char *fpassword)
+{
+int i;
+srand(time(NULL));
+for (i=0;i<25;i++) 
+{
+	switch (rand()*3/RAND_MAX)
+	{
+		case 0 :
+			/* numbers 48-57*/
+			fpassword[i]=48+(int) (10.0*rand()/(RAND_MAX+1.0));
+			break;
+		case 1 :
+			/* capital letters 65-90 */
+			fpassword[i]=65+(int) (26.0*rand()/(RAND_MAX+1.0));
+			break;
+		case 2 :
+			/* small caps 97-122 */
+			fpassword[i]=97+(int) (26.0*rand()/(RAND_MAX+1.0));
+			break;
+	}
+}
+fpassword[25]=0;
+return fpassword;
 }

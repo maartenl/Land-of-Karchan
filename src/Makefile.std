@@ -30,15 +30,17 @@ INSTALLDIR = /home/httpd/cgi-bin/
 CC = gcc
 COPTS = -O2 -m486
 # INCLUDES = -I../include -idirafter /karchan2/mysql/include/mysql/
-INCLUDES = -I../include -idirafter /usr/local/include/mysql/
+INCLUDES = -I../include -idirafter /usr/local/include/mysql/ -idirafter ./cookies/
 
 # EXEDIR = /karchan2/apache/cgi-bin
 EXEDIR = /home/httpd/cgi-bin
 # LIBDIR = -L/karchan2/servers/mysql/lib/mysql/
-LIBDIR = -L/usr/local/lib/mysql/
-OPTIONS = -lm -lmysqlclient
+LIBDIR = -L/usr/local/lib/mysql/ -L./cookies/
+OPTIONS = -lm -lmysqlclient -lcookies
 
-TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls wholist clearcharacters
+TARGETS = mud mudrelogin newchar enter addendumframe leftframe logonframe \
+nph-addendum nph-logonframe nph-leftframe nph-javascriptframe rolls \
+wholist clearcharacters cookies/libcookies.a
 
 all: $(TARGETS)
 	strip $(TARGETS)
@@ -171,7 +173,7 @@ clearcharacters: clearcharacters.o clearcharacters.c
 #--- Clean up the stuff and install as well
 
 clean:
-	rm *.o *~ $(TARGETS)
+	rm -f *.o *.backup *~ $(TARGETS)
 
 backup: all
 	@echo "Backing up Mud Binaries..."

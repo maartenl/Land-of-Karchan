@@ -26,6 +26,7 @@ maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include "mud-lib3.h"
+#include "cookies.h"
 
 extern int      hellroom;
 extern int      events[50];
@@ -40,6 +41,7 @@ extern char    *tokens[100];
 extern int      aantal;
 extern struct tm datumtijd;
 extern time_t   datetime;
+extern char secretpassword[40];
 
 char name[20];		/* contains the name derived from the forms */
 char password[40];	/* contains the password derived from the forms */
@@ -262,6 +264,27 @@ void BannedFromGame(char *name, char *address)
 	exit(0);
 }
 
+void CookieNotFound(char *name, char *address)
+{
+	char printstr[512];
+	time_t tijd;
+	struct tm datum;
+	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	fprintf(cgiOut, "<BODY>\n");
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	fprintf(cgiOut, "When you logon, a cookie is automatically generated. ");
+	fprintf(cgiOut, "However, I have been unable to find my cookie.<P>\n");
+	fprintf(cgiOut, "Please attempt to relogon.<P>\n");
+	fprintf(cgiOut, "</body>\n");
+	fprintf(cgiOut, "</HTML>\n");
+	time(&tijd);
+	datum=*(gmtime(&tijd));
+	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for mud by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	closedbconnection();
+	exit(0);
+}
+
 int 
 cgiMain()
 {
@@ -272,8 +295,11 @@ cgiMain()
 	char            logname[100];
 
 	umask(0000);
+
 	InitVar();
+
 	opendbconnection();
+
 	if (0) {
 		printf("Command:");
 		gets(command);
@@ -301,8 +327,35 @@ cgiMain()
 				     "%s (%s): |%s|\n", name, password, command);
 
 	}
+	if (!strcasecmp(command, "quit"))
+	{
+		sms_FreeResources();
+		sms_PickupCookies();
+		if(ck_JarPresent() != SMS_OK_FLAG)
+		{
+			printf("Content-type: text/html\n\n");
+			printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
+			"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
+			printf("</BODY>\n</HTML>");
+			exit(0);
+		}
+		
+		sms_SetDomain("www.karchan.org");
+		sms_SetPath("/");
+		if (sms_GetCookie("KARCHAN") == NULL)
+		{
+			CookieNotFound(name, cgiRemoteAddr);
+		}
+		else
+		{
+			sms_ClrCookie("KARCHAN");
+		}
+		sms_WriteCookies();
+		sms_FreeResources();
+	}
 	cgiHeaderContentType("text/html");
-
+/*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
+  
 	if (SearchBanList(cgiRemoteAddr, name)) {BannedFromGame(name, cgiRemoteAddr);}
 
 	if (!ExistUser(name)) {
@@ -559,8 +612,8 @@ cgiMain()
 	}
 
 	SwitchRoomCheck(name, password, room);
-    if ((!strcmp(troep, "inventory")) || (!strcmp(troep, "i"))) 
-    {
+   if ((!strcmp(troep, "inventory")) || (!strcmp(troep, "i"))) 
+   {
 		WriteInventoryList(name, password);
 		KillGame();
 	}           /* Inventory_Command */

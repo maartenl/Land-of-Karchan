@@ -25,6 +25,9 @@ Europe
 maartenl@il.fontys.nl
 -------------------------------------------------------------------------*/
 #include "mud-lib.h"
+#include "cookies.h"
+
+extern char secretpassword[40];
 
 void StrangeName(char *name, char *password, char *address)
 {
@@ -137,6 +140,27 @@ void BannedFromGame(char *name, char *address)
 	exit(0);
 }
 
+void CookieNotFound(char *name, char *address)
+{
+	char printstr[512];
+	time_t tijd;
+	struct tm datum;
+	fprintf(cgiOut, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
+	fprintf(cgiOut, "<BODY>\n");
+	fprintf(cgiOut, "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unable to logon</H1><HR>\n");
+	fprintf(cgiOut, "When you logon, a cookie is automatically generated. ");
+	fprintf(cgiOut, "However, I have been unable to find my cookie.<P>\n");
+	fprintf(cgiOut, "Please attempt to relogon.<P>\n");
+	fprintf(cgiOut, "</body>\n");
+	fprintf(cgiOut, "</HTML>\n");
+	time(&tijd);
+	datum=*(gmtime(&tijd));
+	WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Cookie not found for newchar by %s (%s) <BR>\n",datum.tm_hour,
+	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name, address);
+	closedbconnection();
+	exit(0);
+}
+
 void 
 MakeStart2(char *name, char *password, char *address)
 {
@@ -204,7 +228,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 	res=SendSQL2(temp, NULL);
 	mysql_free_result(res);
 	WriteSentenceIntoOwnLogFile2(printstr, "You appear from nowhere.<BR>\r\n");
-                
+
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
 	sprintf(temp, "SELECT count(*) FROM tmp_mailtable"
 		" WHERE toname='%s' and newmail=1", name);
@@ -269,6 +293,63 @@ datum=*(gmtime(&tijd));
 WriteSentenceIntoOwnLogFile2(AuditTrailFile,"%i:%i:%i %i-%i-19%i Password Fault by %s (%s) (newchar)<BR>\n",datum.tm_hour, 
 datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year,name,address);
 exit(0);
+}
+
+void InsertPersonalInfo()
+{
+	int textlength, sqlsize, i;
+	char *sqlstring, *formstring, *sqlformstring;
+	char *formitems[] = 
+		{"RealName", 
+		"EMAIL", 
+		"myrealage", 
+		"mysex", 
+		"mycountry",
+		"myoccupation",
+		"myinternal",
+		"myexternal",
+		"mycomments",
+		NULL};
+
+	sqlstring = (char *) malloc(48);
+	sqlsize=48;
+	strcpy(sqlstring, "insert into private_info values (null, now(), '");
+
+	for (i = 0; formitems[i] != NULL; i++)
+	{
+		/*	- put length of cgientry in 'textlength'
+				- allocate 'textlength' memory to formstring
+				- put cgientry in 'formstring'
+				- allocate double memory to sqlformstring
+				- put safesql formstring in 'sqlformstring'
+				- textlength = length of sqlformstring
+				- reallocate memory for sqlstring
+				- add sqlformstring to sqlstring
+				- free everything and add to sqlsize
+			*/
+		cgiFormStringSpaceNeeded(formitems[i], &textlength);
+		formstring = (char *) malloc(textlength);
+		cgiFormString(formitems[i], formstring, textlength);
+		sqlformstring = (char *) malloc(2*textlength+1+2);
+		mysql_escape_string(sqlformstring,formstring,strlen(formstring));
+		if (formitems[i+1] == NULL)
+		{
+			strcat(sqlformstring,"')");
+		}
+		else
+		{
+			strcat(sqlformstring,"','");
+		}
+		textlength = strlen(sqlformstring);
+		sqlstring = (char *) realloc(sqlstring, sqlsize + textlength);
+		strcat(sqlstring, sqlformstring);
+		sqlsize += textlength;
+//		fprintf(cgiOut, "[%s][%s]<BR>\n", formstring, sqlformstring);
+		free(formstring);free(sqlformstring);
+	}
+	SendSQL2(sqlstring, NULL);
+//	fprintf(cgiOut, "[%s]", sqlstring);
+	free(sqlstring);
 }
 
 int 
@@ -432,8 +513,33 @@ cgiMain()
 	char		name[40], password[40], frames[10];
 	cgiFormResultType error;
 
+	sms_FreeResources();
+	sms_PickupCookies();
+	if(ck_JarPresent() != SMS_OK_FLAG)
+	{
+		printf("Content-type: text/html\n\n");
+		printf("<HTML>\n<HEADER>\n<TITLE>Error : Cookie Jar missing!</TITLE>\n</HEADER>\n\n"
+		"<BODY BGCOLOR=#FFFFFF>Couldn't find cookie jar!!!\n\n");
+		printf("</BODY>\n</HTML>");
+		exit(0);
+	}
+	
+	sms_SetDomain("www.karchan.org");
+	sms_SetPath("/");
+	if (sms_GetCookie("KARCHAN") == NULL)
+	{
+		CookieNotFound(name, cgiRemoteAddr);
+	}
+	else
+	{
+		strcpy(secretpassword, sms_GetCookie("KARCHAN"));
+	}
+	sms_WriteCookies();
+	sms_FreeResources();
+
 	cgiHeaderContentType("text/html");
-	opendbconnection();
+/*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
+  	opendbconnection();
 	umask(0000);
 	strcpy(sqlstring,"insert into usertable values('");
 
@@ -516,7 +622,8 @@ cgiMain()
 	"1,1,1)");
 //	cgi-variables, all empty. 
 	SendSQL2(sqlstring, NULL);
-	
+	InsertPersonalInfo();
+ 	
 	MakeStart(name, password, cgiRemoteAddr, 1);
 	ActivateUser(name);
 	closedbconnection();
