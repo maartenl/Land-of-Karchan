@@ -155,7 +155,7 @@ public final class Persons
 		{
 			if (myUser.getPassword() == null)
 			{
-				User tempUser = Database.getUser(aName, aPassword);
+				User tempUser = Database.getActiveUser(aName, aPassword);
 				if( (tempUser == null) || (!tempUser.verifyPassword(aPassword)))
 				{
 					Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
@@ -316,7 +316,10 @@ public final class Persons
 			if ( (myChar.getRoom() == aRoom) &&
 				(myChar != aUser) )
 			{
-				myOutput = myOutput + "A " + myChar.getRace() + " called " + myChar.getName() + " is here.<BR>\r\n";
+				myOutput = myOutput + "A " + myChar.getRace() + 
+					" called <A HREF=\"" + 
+					aUser.getUrl("look+at+" + myChar.getName()) + 
+					"\">" + myChar.getName() + "</A> is here.<BR>\r\n";
 			}
 		}
 		return myOutput;

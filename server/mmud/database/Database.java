@@ -52,6 +52,7 @@ public class Database
 	private static Connection theConnection = null;
 
 	public static String sqlGetUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetActiveUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, lastlogin=now() where name = ?";
@@ -231,7 +232,7 @@ public class Database
 	}
 
 	/**
-	 * Retrieve a character from the database.
+	 * Retrieve a character from the database that is currently NOT playing.
 	 * @param aName the name of the character. This uniquely identifies
 	 * any character in the database.
 	 * @param aPassword the password of the character. Used to verify the
@@ -253,6 +254,88 @@ public class Database
 		{
 
 		PreparedStatement sqlGetUser = theConnection.prepareStatement(sqlGetUserString);
+//		sqlGetUser.setBigDecimal
+//		sqlGetUser.setInt
+		sqlGetUser.setString(1, aPassword);
+		sqlGetUser.setString(2, aName);
+		res = sqlGetUser.executeQuery();
+		if (res == null)
+		{
+			Logger.getLogger("mmud").info("resultset null");
+			return null;
+		}
+		if (res.first())
+		{
+			myUser  = new User(
+				res.getString("name"), 
+				(res.getString("encrypted").equals(res.getString("password")) ? 
+					aPassword:
+					null),
+				res.getString("address"),
+				res.getString("realname"),
+				res.getString("email"),
+				res.getString("title"),
+				res.getString("race"),
+				Sex.createFromString(res.getString("sex")),
+				res.getString("age"),
+				res.getString("length"),
+				res.getString("width"),
+				res.getString("complexion"),
+				res.getString("eyes"),
+				res.getString("face"),
+				res.getString("hair"),
+				res.getString("beard"),
+				res.getString("arm"),
+				res.getString("leg"),
+				res.getInt("sleep") == 1,
+				isAuthorizedGod(res.getString("name")),
+				res.getString("lok"),
+				res.getInt("whimpy"),
+				res.getInt("fightable")==1,
+				res.getInt("drinkstats"),
+				res.getInt("eatstats"),
+				Rooms.getRoom(res.getInt("room")));
+
+		}
+		res.close();
+		sqlGetUser.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", "sqlexception: " + e.getMessage());
+		}
+		if (myUser != null)
+		{
+			getCharAttributes(myUser);
+		}
+		return myUser;
+	}
+
+	/**
+	 * Retrieve a character from the database that is currently playing.
+	 * @param aName the name of the character. This uniquely identifies
+	 * any character in the database.
+	 * @param aPassword the password of the character. Used to verify the
+	 * encrypted password in the database.
+	 * If the password does not match, the record is still returned,
+	 * but with the password set to the null pointer.
+	 * @return User containing all information. Returns null value if the user
+	 * could not be found.
+	 * DEBUG!! Why returns User, why not Person?
+	 */
+	public static User getActiveUser(String aName, String aPassword)
+	{
+		assert theConnection != null : "theConnection is null";
+		Logger.getLogger("mmud").finer("aName=" + aName + 
+			",aPassword=" + aPassword);
+		ResultSet res;
+		User myUser = null;
+		try
+		{
+
+		PreparedStatement sqlGetUser =
+			theConnection.prepareStatement(sqlGetActiveUserString);
 //		sqlGetUser.setBigDecimal
 //		sqlGetUser.setInt
 		sqlGetUser.setString(1, aPassword);
