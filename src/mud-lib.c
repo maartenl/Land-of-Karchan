@@ -441,6 +441,52 @@ WriteInventoryList(char * name, char * password)
 	}
 	mysql_free_result(res);
 
+	sprintf(sqlstring, 
+		"select items.id, items.name, items.adject1, items.adject2, "
+		"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
+		"from items, tmp_itemtable tmpitems, containeditems, items items2 "
+		" where (items.id = tmpitems.id) and "
+		" (items.visible <> 0) and "
+		" (tmpitems.search = '') and "
+		" (tmpitems.belongsto = '%s') and "
+		" (tmpitems.amount = 1) and "
+		" (tmpitems.room = 0) and "
+		" (tmpitems.wearing = '') and "
+		" (tmpitems.wielding = '') and "
+		" (tmpitems.containerid <> 0) and "
+		" (tmpitems.containerid = containeditems.containedin) and "
+		" (containeditems.id = items2.id) "
+		" order by items.name, items.adject1, items.adject2", name);
+	res=SendSQL2(sqlstring, NULL);
+	if (res!=NULL)
+	{
+		int itemid=0;
+		while ((row = mysql_fetch_row(res))!=NULL)
+		{
+			if (itemid != atoi(row[0]))
+			{
+				fprintf(cgiOut, "\r\n<LI>a %s %s, %s containing ",
+					row[2], row[3], row[1]);
+				itemid = atoi(row[0]);
+			}
+			else
+			{
+				fprintf(cgiOut, ", ");
+			}
+			if (atoi(row[4])!=1) 
+			{
+				fprintf(cgiOut, "%s %s, %s %ss",
+					row[4], row[6], row[7], row[5]);
+			}
+			else
+			{
+				fprintf(cgiOut, "a %s, %s %s",
+					row[6], row[7], row[5]);
+			}
+		}
+	}
+	mysql_free_result(res);
+
 	sprintf(sqlstring, "select gold, silver, copper from tmp_usertable"
 		" where name = '%s'", name);
 	res=SendSQL2(sqlstring, NULL);
