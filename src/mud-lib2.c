@@ -2593,7 +2593,7 @@ Wield_Command(char *name, char *password, int room)
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You wield a %s, %s %s in your %s.<BR>\r\n", 
 		itemadject1, itemadject2, itemname, position2);
-	WriteMessage(name, room, "%s wears a %s, %s %s in %s %s.<BR>\r\n",
+	WriteMessage(name, room, "%s wields a %s, %s %s in %s %s.<BR>\r\n",
 		name, itemadject1, itemadject2, itemname, HeShe3(mysex), position2);
 	WriteRoom(name, password, room, 0);
 	KillGame();
