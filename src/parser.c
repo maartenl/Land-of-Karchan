@@ -637,31 +637,16 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 	int myroom = room;
 	
 	stuff = getdbconnection();
-	troep2 = (char *) malloc(strlen(command)*2+3);
-	// unsigned int mysql_real_escape_string(MYSQL *mysql, char *to, const char *from, unsigned int length) 
-	if (troep2 == NULL)
-	{
-		perror("SearchForSpecialCommand - attempting to allocate space for char (1)");
-		return 0;
-	}
-	mysql_real_escape_string(&stuff, troep2, command, strlen(command));
-	tempstr = (char *) malloc(strlen(troep2)+7*100+strlen(name));
-	if (tempstr == NULL)
-	{
-		perror("SearchForSpecialCommand - attempting to allocate space for char (2)");
-		return 0;
-	}
-	sprintf(tempstr, "select commands.id, commands.name, commands.method_name, commands.args, methods.src"
+	tempstr = composeSqlStatement("select commands.id, commands.name, commands.method_name, commands.args, methods.src"
 	" from commands, tmp_usertable user, methods"
 	" where commands.callable != 0 "
 	" and \"%s\" like commands.command "
 	" and (commands.room = 0 or commands.room = user.room)"
 	" and user.name = \"%s\" "
 	" and methods.name = commands.method_name "
-	,troep2, name);
+	,command, name);
 	res=SendSQL2(tempstr, NULL);
 	free(tempstr);
-	free(troep2);
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);

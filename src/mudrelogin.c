@@ -209,7 +209,7 @@ cgiMain()
 	char ageText[10];
 	MYSQL_RES		*res;
 	MYSQL_ROW		row;
-	char 			temp[1024];
+	char 			*temp;
 	umask(0000);
 
 /*  fprintf(cgiOut, "[%s]", getenv("HTTP_COOKIE"));*/
@@ -248,10 +248,11 @@ cgiMain()
 	}
 
 	/* GetUser */
-	sprintf(temp, "select name, lok, room, sleep "
+	temp = composeSqlStatement("select name, lok, room, sleep "
 		"from tmp_usertable "
-		"where name='%s' and lok<>''", name);
+		"where name='%x' and lok<>''", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -284,10 +285,11 @@ cgiMain()
 
 	/* Create New lok-temporary-secretpassword */
 	generate_password(secretpassword);
-	sprintf(temp, "update tmp_usertable "
-		"set lok='%s' "
-		"where name='%s'", secretpassword, name);
+	temp = composeSqlStatement("update tmp_usertable "
+		"set lok='%x' "
+		"where name='%x'", secretpassword, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	if (res!=NULL) 
 	{
 		mysql_free_result(res);

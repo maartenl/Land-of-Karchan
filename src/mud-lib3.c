@@ -41,17 +41,18 @@ GoWest_Command(char *name, char *password, int room, char *command)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
 	
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+		"where name='%x'"
 		, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -86,9 +87,10 @@ GoWest_Command(char *name, char *password, int room, char *command)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves west.<BR>\r\n", name);
 				room = temproom->west;
-				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -107,17 +109,18 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
 	                        
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-	"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+	"where name='%x'"
 	, name);
 	res=SendSQL2(temp, NULL);  
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -152,10 +155,11 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves east.<BR>\r\n", name);
 				room = temproom->east;
-				sprintf(temp, "update tmp_usertable set room=%i, "
-				"movementstats=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i, "
+				"movementstats=%i where name='%x'"
 				, room, movementstats, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -174,17 +178,18 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
                         
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-	"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+	"where name='%x'"
 	, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -219,10 +224,11 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves north.<BR>\r\n", name);
 				room = temproom->north;
-				sprintf(temp, "update tmp_usertable set room=%i, "
-					"movementstats=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i, "
+					"movementstats=%i where name='%x'"
 								, room, movementstats, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -241,17 +247,18 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
 	
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+		"where name='%x'"
 		, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -286,9 +293,10 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves south.<BR>\r\n", name);
 				room = temproom->south;
-				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -305,12 +313,13 @@ Sleep_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
                         
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "update tmp_usertable set sleep=1, jumpmana=jumpmana+1, jumpmove=jumpmove+2, jumpvital=jumpvital+3 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set sleep=1, jumpmana=jumpmana+1, jumpmove=jumpmove+2, jumpvital=jumpvital+3 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, "You go to sleep.<BR>\n");
@@ -325,12 +334,13 @@ Awaken2_Command(char *name, char *password, int room)
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
                         
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "update tmp_usertable set sleep=0, jumpmana=jumpmana-1, jumpmove=jumpmove-2, jumpvital=jumpvital-3 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set sleep=0, jumpmana=jumpmana-1, jumpmove=jumpmove-2, jumpvital=jumpvital-3 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	WriteSentenceIntoOwnLogFile(logname, "You wake up.<BR>\n");

@@ -387,7 +387,7 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char sqlstring[1024];
+	char *sqlstring;
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -412,17 +412,18 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	}
 	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/money.gif\">Inventory</H1>You have");
 	fprintf(getMMudOut(), "<UL>");
-	sprintf(sqlstring, "select tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems"
+	sqlstring = composeSqlStatement("select tmpitems.amount, items.name, items.adject1, items.adject2 from items, tmp_itemtable tmpitems"
 		" where (items.id = tmpitems.id) and "
 		" (items.visible <> 0) and "
 		" (tmpitems.search = '') and "
-		" (tmpitems.belongsto = '%s') and "
+		" (tmpitems.belongsto = '%x') and "
 		" (tmpitems.amount >= 1) and "
 		" (tmpitems.room = 0) and "
 		" (tmpitems.wearing = '') and "
 		" (tmpitems.wielding = '') and "
 		" (tmpitems.containerid = 0)", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		while ((row = mysql_fetch_row(res))!=NULL)
@@ -441,14 +442,13 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	}
 	mysql_free_result(res);
 
-	sprintf(sqlstring, 
-		"select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
+	sqlstring = composeSqlStatement("select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
 		"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
 		"from items, tmp_itemtable tmpitems, containeditems, items items2 "
 		" where (items.id = tmpitems.id) and "
 		" (items.visible <> 0) and "
 		" (tmpitems.search = '') and "
-		" (tmpitems.belongsto = '%s') and "
+		" (tmpitems.belongsto = '%x') and "
 		" (tmpitems.amount = 1) and "
 		" (tmpitems.room = 0) and "
 		" (tmpitems.wearing = '') and "
@@ -458,6 +458,7 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 		" (containeditems.id = items2.id) "
 		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		int containerid=0;
@@ -487,9 +488,10 @@ Inventory_Command(char * name, char * password, int room, char *fcommand)
 	}
 	mysql_free_result(res);
 
-	sprintf(sqlstring, "select gold, silver, copper from tmp_usertable"
-		" where name = '%s'", name);
+	sqlstring = composeSqlStatement("select gold, silver, copper from tmp_usertable"
+		" where name = '%x'", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -592,10 +594,9 @@ void
 RoomTextProc(int z)
 {
 	FILE           *fp;
-	char           *pakem;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 
 	fprintf(getMMudOut(), "<HTML>\n");
 	fprintf(getMMudOut(), "<HEAD>\n");
@@ -619,8 +620,9 @@ RoomTextProc(int z)
 		}
 	}
 
-	sprintf(temp, "select contents from rooms where id=%i", z);
+	temp = composeSqlStatement("select contents from rooms where id=%i", z);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
@@ -656,7 +658,7 @@ WriteRoom(char * name, char * password, int room, int sleepstatus)
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char tempsql[1024];
+	char *tempsql;
 	RoomTextProc(room);
 
 	fprintf(getMMudOut(), "[");
@@ -839,7 +841,7 @@ if (!getFrames())
 	                    fprintf(getMMudOut(), "</MAP>\n");
 } /*end if getFrames dude*/
 	/* Print characters in room */
-	sprintf(tempsql, "select "
+	tempsql = composeSqlStatement("select "
 	"if(god=3, concat('A ',age,"
 	"if(length = 'none', '', concat(', ',length)),"
 	"if(width = 'none', '', concat(', ',width)),"
@@ -851,8 +853,9 @@ if (!getFrames())
 	"if(arm = 'none', '', concat(', ',arm)),"
 	"if(leg = 'none', '', concat(', ',leg)),"
 	"' ', sex, ' ', race),name)"
-	", sleep, god, punishment, name from tmp_usertable where (room=%i) and (name<>'%s')",room,name);
+	", sleep, god, punishment, name from tmp_usertable where (room=%i) and (name<>'%x')",room,name);
 	res=SendSQL2(tempsql, NULL);
+	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		char colorme[10];
@@ -885,7 +888,7 @@ if (!getFrames())
 	fprintf(getMMudOut(), "<BR>\r\n");
 
 	/* Print items in room */
-	sprintf(tempsql, "select tmpitems.amount, items.adject1, items.adject2, items.name from items, tmp_itemtable tmpitems "
+	tempsql = composeSqlStatement("select tmpitems.amount, items.adject1, items.adject2, items.name from items, tmp_itemtable tmpitems "
 			"where (items.id = tmpitems.id) and "
 			"      (tmpitems.search = '') and "
 			"      (tmpitems.belongsto = '') and "
@@ -895,6 +898,7 @@ if (!getFrames())
 			"      (tmpitems.containerid=0)"
 			"      ",room);
 	res=SendSQL2(tempsql, NULL);
+	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		while ((row = mysql_fetch_row(res))!=NULL)
@@ -913,22 +917,23 @@ if (!getFrames())
 	} 
 	mysql_free_result(res);
 	/* print special items (containers and such) */
-		sprintf(tempsql, "select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
-			"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
-			"from items, tmp_itemtable tmpitems, containeditems, items items2 "
-			" where (items.id = tmpitems.id) and "
-			" (items.visible <> 0) and "
-			" (tmpitems.search = '') and "
-			" (tmpitems.belongsto = '') and "
-			" (tmpitems.amount = 1) and "
-			" (tmpitems.room = %i) and "
-			" (tmpitems.wearing = '') and "
-			" (tmpitems.wielding = '') and " 
-			" (tmpitems.containerid <> 0) and "
-			" (tmpitems.containerid = containeditems.containedin) and "
-			" (containeditems.id = items2.id) "
-			" order by tmpitems.containerid, items.name, items.adject1, items.adject2", room);
+	tempsql = composeSqlStatement("select tmpitems.containerid, items.id, items.name, items.adject1, items.adject2, "
+		"containeditems.amount, items2.name, items2.adject1, items2.adject2 "
+		"from items, tmp_itemtable tmpitems, containeditems, items items2 "
+		" where (items.id = tmpitems.id) and "
+		" (items.visible <> 0) and "
+		" (tmpitems.search = '') and "
+		" (tmpitems.belongsto = '') and "
+		" (tmpitems.amount = 1) and "
+		" (tmpitems.room = %i) and "
+		" (tmpitems.wearing = '') and "
+		" (tmpitems.wielding = '') and " 
+		" (tmpitems.containerid <> 0) and "
+		" (tmpitems.containerid = containeditems.containedin) and "
+		" (containeditems.id = items2.id) "
+		" order by tmpitems.containerid, items.name, items.adject1, items.adject2", room);
 	res=SendSQL2(tempsql, NULL);
+	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
 	{
 		int containerid = 0;
@@ -983,23 +988,25 @@ CheckWeight(char * name)
 */
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char tempsql[1024];
+	char *tempsql;
 	int totalgold, totalitems;
 	
 	/* Check total weight of items */
-	sprintf(tempsql, "select tmp_usertable.gold*3 + tmp_usertable.silver*2 "
+	tempsql = composeSqlStatement("select tmp_usertable.gold*3 + tmp_usertable.silver*2 "
 	"+ tmp_usertable.copper from tmp_usertable where "
-	"tmp_usertable.name='%s'", name);
+	"tmp_usertable.name='%x'", name);
 	res=SendSQL2(tempsql, NULL);
+	free(tempsql);tempsql=NULL;
 	row = mysql_fetch_row(res);
 	totalgold = atoi(row[0]); 
 	mysql_free_result(res);
 
 	/* Check total weight of items */
-	sprintf(tempsql, "select sum(items.weight*tmp_itemtable.amount) from "
-	"tmp_itemtable, items where tmp_itemtable.belongsto='%s' and "
+	tempsql = composeSqlStatement("select sum(items.weight*tmp_itemtable.amount) from "
+	"tmp_itemtable, items where tmp_itemtable.belongsto='%x' and "
 	"tmp_itemtable.id=items.id and tmp_itemtable.containerid=0", name);
 	res=SendSQL2(tempsql, NULL);
+	free(tempsql);tempsql=NULL;
 	totalitems=0;
 	if (res!=NULL)
 	{

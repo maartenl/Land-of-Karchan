@@ -39,7 +39,7 @@ MIFList(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -67,8 +67,9 @@ MIFList(char *name, char *password, int room)
 	}
 
 	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">MIF List of Members</H1><HR><UL>\r\n");
-	sprintf(temp, "select name, title from usertable where guild='mif'");
+	temp = composeSqlStatement("select name, title from usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
 	while (row = mysql_fetch_row(res))
 	{
 		fprintf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
@@ -88,12 +89,13 @@ MIFEntryIn(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], mysex[10];
+	char *temp, mysex[10];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	sprintf(temp, "select sex from tmp_usertable where name='%s'", name);
-	res=SendSQL2(temp, NULL);
+	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
+	res = SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -106,8 +108,9 @@ MIFEntryIn(char *name, char *password, int room)
 	WriteMessage(name, room, "You notice that the wall in the north disappears, %s appears, and the wall replaces itself.<BR>\r\n",
 	name);
 
-	sprintf(temp, "update tmp_usertable set room=143 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set room=143 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=SendSQL2("select contents from action where id=9", NULL);
@@ -124,12 +127,13 @@ MIFEntryOut(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], mysex[10];
+	char *temp, mysex[10];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	sprintf(temp, "select sex from tmp_usertable where name='%s'", name);
-	res=SendSQL2(temp, NULL);
+	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
+	res = SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -143,8 +147,9 @@ MIFEntryOut(char *name, char *password, int room)
 	" %s appears from behind the wall, where you can see another room, and the wall "
 	"represents itself. You are pretty amazed.<BR>\r\n", name);
 
-	sprintf(temp, "update tmp_usertable set room=142 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set room=142 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=SendSQL2("select contents from action where id=10", NULL);
@@ -161,7 +166,7 @@ MIFTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -169,8 +174,9 @@ MIFTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=red>Magitalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='mif'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='mif'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -188,7 +194,7 @@ RangerList(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -216,8 +222,9 @@ RangerList(char *name, char *password, int room)
 	}
 
 	fprintf(getMMudOut(), "<H1><IMG SRC=\"http://"ServerName"/images/gif/dragon.gif\">Ranger List of Members</H1><HR><UL>\r\n");
-	sprintf(temp, "select name, title from usertable where guild='rangers'");
+	temp = composeSqlStatement("select name, title from usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		fprintf(getMMudOut(), "<LI>%s, %s\r\n", row[0], row[1]);
@@ -237,12 +244,13 @@ RangerEntryIn(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], mysex[10];
+	char *temp, mysex[10];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	sprintf(temp, "select sex from tmp_usertable where name='%s'", name);
-	res=SendSQL2(temp, NULL);
+	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
+	res = SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -257,8 +265,9 @@ RangerEntryIn(char *name, char *password, int room)
 	 "%s appears, and the waterfall flows back together.<BR>\r\n",
 	name);
 
-	sprintf(temp, "update tmp_usertable set room=216 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set room=216 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=SendSQL2("select contents from action where id=13", NULL);
@@ -275,12 +284,13 @@ RangerEntryOut(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], mysex[10];
+	char *temp, mysex[10];
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
-	sprintf(temp, "select sex from tmp_usertable where name='%s'", name);
+	temp = composeSqlStatement("select sex from tmp_usertable where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	row = mysql_fetch_row(res);
 	strcpy(mysex, row[0]);
 	mysql_free_result(res);
@@ -293,8 +303,9 @@ RangerEntryOut(char *name, char *password, int room)
 	WriteMessage(name, room, "You hear the rustling water change in sound, Before your eye's"
 	" %s slowly appears through the seemingly solid waterfall without a trace.<BR>\r\n", name);
 
-	sprintf(temp, "update tmp_usertable set room=43 where name='%s'", name);
+	temp = composeSqlStatement("update tmp_usertable set room=43 where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 
 	res=SendSQL2("select contents from action where id=14", NULL);
@@ -311,7 +322,7 @@ RangerTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -319,8 +330,9 @@ RangerTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=green>Naturetalk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='rangers'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='rangers'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -339,7 +351,7 @@ SWTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -347,8 +359,9 @@ SWTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=brown>Pow Wow</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='SW'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='SW'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -367,7 +380,7 @@ DepTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -375,8 +388,9 @@ DepTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=purple>Deputy Line</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where god=1");
+	temp = composeSqlStatement("select name from tmp_usertable where god=1");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -394,7 +408,7 @@ BKTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -402,8 +416,9 @@ BKTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=#CC0000>Chaos Murmur</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='BKIC'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='BKIC'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -421,7 +436,7 @@ VampTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -429,8 +444,9 @@ VampTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=#666666>Misty Whisper</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='Kindred'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='Kindred'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -448,7 +464,7 @@ KnightTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -456,8 +472,9 @@ KnightTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='Knights'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='Knights'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);
@@ -475,7 +492,7 @@ CoDTalk(char *name, char *password, int room)
 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024], *temp2;
+	char *temp, *temp2;
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
@@ -483,8 +500,9 @@ CoDTalk(char *name, char *password, int room)
 	sprintf(temp2, "<B><Font color=#660000>Mogob Burz</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(2) - getToken(0)));
 	
-	sprintf(temp, "select name from tmp_usertable where guild='CoD'");
+	temp = composeSqlStatement("select name from tmp_usertable where guild='CoD'");
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	while (row = mysql_fetch_row(res))
 	{
 		WriteLinkTo(row[0], name, temp2);

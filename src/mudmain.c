@@ -118,7 +118,6 @@ int				theNumberOfFunctions = 0;
 	
 MYSQL_RES *res;
 MYSQL_ROW row;
-char sqlstring[1024];
 
 int
 clearGameFunctionIndex()
@@ -134,17 +133,19 @@ GoDown_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
 
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+		"where name='%x'"
 		, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
+
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -179,9 +180,11 @@ GoDown_Command(char *name, char *password, int room, char *fcommand)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves down.<BR>\r\n", name);
 				room = temproom->down;
-				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
+
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -200,17 +203,19 @@ GoUp_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	int strength, movementstats, maxmove;
 
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",USERHeader,name);
 
-	sprintf(temp, "select strength, movementstats, maxmove from tmp_usertable "
-		"where name='%s'"
+	temp = composeSqlStatement("select strength, movementstats, maxmove from tmp_usertable "
+		"where name='%x'"
 		, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
+
 	row = mysql_fetch_row(res);
 	strength = atoi(row[0]);
 	movementstats = atoi(row[1]);
@@ -245,9 +250,11 @@ GoUp_Command(char *name, char *password, int room, char *fcommand)
 				if (movementstats > maxmove) {movementstats = maxmove;}
 				WriteMessage(name, room, "%s leaves up.<BR>\r\n", name);
 				room = temproom->up;
-				sprintf(temp, "update tmp_usertable set room=%i where name='%s'"
+				temp = composeSqlStatement("update tmp_usertable set room=%i where name='%x'"
 								, room, name);
 				res=SendSQL2(temp, NULL);
+				free(temp);temp=NULL;
+
 				mysql_free_result(res);
 				WriteMessage(name, room, "%s appears.<BR>\r\n", name);
 			} /* if burden NOT too heavy to move */
@@ -362,7 +369,7 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		MYSQL_RES *res;
 		MYSQL_ROW row;
 		int i;
-		char temp[1024];
+		char *temp;
 		
 		fprintf(getMMudOut(), "<HTML>\r\n");
 		fprintf(getMMudOut(), "<HEAD>\r\n");
@@ -374,8 +381,10 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		fprintf(getMMudOut(), "<BODY>\r\n");
 		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
-		sprintf(temp, "select contents from help where command='general help'");
+		temp = composeSqlStatement("select contents from help where command='general help'");
 		res=SendSQL2(temp, NULL);
+		free(temp);temp=NULL;
+
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
@@ -398,7 +407,7 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		MYSQL_RES *res;
 		MYSQL_ROW row;
 		int i;
-		char temp[1024];
+		char *temp;
 		
 		fprintf(getMMudOut(), "<HTML>\r\n");
 		fprintf(getMMudOut(), "<HEAD>\r\n");
@@ -410,8 +419,10 @@ Help_Command(char *name, char *password, int room, char *fcommand)
 		fprintf(getMMudOut(), "<BODY>\r\n");
 		fprintf(getMMudOut(), "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\">\r\n");
 	
-		sprintf(temp, "select contents from help where command='%s'", getToken(1));
+		temp = composeSqlStatement("select contents from help where command='%x'", getToken(1));
 		res=SendSQL2(temp, NULL);
+		free(temp);temp=NULL;
+
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
@@ -454,17 +465,17 @@ DeleteMail_Command(char *name, char *password, int room, char *fcommand)
 int
 SendMail_Command(char *name, char *password, int room, char *fcommand)
 {
-	char *mailto, *mailbody, *mailheader;
+	char *mailto, *mailbody, *mailheader, *sqlstring;
 	char logname[100];
 	int thelength;
 	sprintf(logname, "%s%s.log",USERHeader,name);
       		
-   if (getTokenAmount() < 5)
-   {
-   	return 0;
-   }
+	if (getTokenAmount() < 5)
+	{
+		return 0;
+	}
 
-   mailto = getToken(1);
+	mailto = getToken(1);
 	thelength = atoi(getToken(2));
 	if (thelength<1)
 	{
@@ -478,9 +489,10 @@ SendMail_Command(char *name, char *password, int room, char *fcommand)
 	//cgiFormString("mailheader", mailheader, 99);
 	//cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
 		
-	sprintf(sqlstring, "select name from usertable where "
-		"name='%s' and god<2", mailto);
+	sqlstring = composeSqlStatement("select name from usertable where "
+		"name='%x' and god<2", mailto);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	
 	if (res!=NULL)
 	{
@@ -510,6 +522,7 @@ int
 Whimpy_Command(char *name, char *password, int room, char *fcommand)
 {
 	char number[10];
+	char *sqlstring;
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	if (getTokenAmount() == 1) {
@@ -569,9 +582,10 @@ Whimpy_Command(char *name, char *password, int room, char *fcommand)
 			//x.whimpy = 110;
 		}
 	}
-	sprintf(sqlstring, "update tmp_usertable set whimpy=%s "
-		" where name='%s'", number, name);
+	sqlstring = composeSqlStatement("update tmp_usertable set whimpy=%s "
+		" where name='%x'", number, name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	if (res!=NULL)
 	{
 		mysql_free_result(res);
@@ -585,15 +599,17 @@ Whimpy_Command(char *name, char *password, int room, char *fcommand)
 int
 PKill_Command(char *name, char *password, int room, char *fcommand)
 {
+	char *sqlstring;
 	char logname[100];
 	if (getTokenAmount() < 2)
 	{
 		return 0;
 	}
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	sprintf(sqlstring, "select fightingwho from tmp_usertable where "
-		"name='%s'", name);
+	sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
+		"name='%x'", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if (row[0][0]!=0)
 	{
@@ -605,17 +621,19 @@ PKill_Command(char *name, char *password, int room, char *fcommand)
 		mysql_free_result(res);
 		if (!strcasecmp("on", getToken(1))) 
 		{
-			sprintf(sqlstring, "update tmp_usertable set fightable=1 where "
-				"name='%s'", name);
+			sqlstring = composeSqlStatement("update tmp_usertable set fightable=1 where "
+				"name='%x'", name);
 			res=SendSQL2(sqlstring, NULL);
+			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now on.<BR>\r\n");
 		} /* pkill is turned on */
 		else
 		{
-			sprintf(sqlstring, "update tmp_usertable set fightable=0 where "
-				"name='%s'", name);
+			sqlstring = composeSqlStatement("update tmp_usertable set fightable=0 where "
+				"name='%x'", name);
 			res=SendSQL2(sqlstring, NULL);
+			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
 			WriteSentenceIntoOwnLogFile(logname, "Pkill is now off.<BR>\r\n");
 		} /* pkill is turned of */
@@ -639,12 +657,14 @@ int
 Stop_Command(char *name, char *password, int room, char *fcommand)
 {
 	char logname[100];
+	char *sqlstring;
 	sprintf(logname, "%s%s.log",USERHeader,name);
 	if (!strcasecmp("stop fighting", fcommand))
 	{
-		sprintf(sqlstring, "select fightingwho from tmp_usertable where "
-			"name='%s'", name);
+		sqlstring = composeSqlStatement("select fightingwho from tmp_usertable where "
+			"name='%x'", name);
 		res=SendSQL2(sqlstring, NULL);
+		free(sqlstring);sqlstring=NULL;
 		row = mysql_fetch_row(res);
 		if (row[0][0]==0)
 		{
@@ -654,10 +674,11 @@ Stop_Command(char *name, char *password, int room, char *fcommand)
 			return 1;
 		}
 		mysql_free_result(res);
-		sprintf(sqlstring, "update tmp_usertable set fightingwho='' where "
-			"name='%s'"
+		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='' where "
+			"name='%x'"
 			, name);
 		res=SendSQL2(sqlstring, NULL);
+		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteMessage(name, room, "%s stops fighting.<BR>\r\n", name);
 		WriteSentenceIntoOwnLogFile(logname, "You stop fighting.<BR>\r\n");
@@ -672,12 +693,14 @@ Fight_Command(char *name, char *password, int room, char *fcommand)
 {
 	int myFightable;
 	char *myFightingName;
+	char *sqlstring;
 	char *myDescription;
 	char logname[100];
 	sprintf(logname, "%s%s.log",USERHeader,name);
-	sprintf(sqlstring, "select fightable from tmp_usertable where "
-		"name='%s'", name);
+	sqlstring = composeSqlStatement("select fightable from tmp_usertable where "
+		"name='%x'", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	myFightable = atoi(row[0]);
 	mysql_free_result(res);
@@ -690,14 +713,15 @@ Fight_Command(char *name, char *password, int room, char *fcommand)
 		myDescription = getToken(1);
 	}
 	
-	sprintf(sqlstring, "select name,god from tmp_usertable where "
-	"name<>'%s' and "
-	"name='%s' and "
+	sqlstring = composeSqlStatement("select name,god from tmp_usertable where "
+	"name<>'%x' and "
+	"name='%x' and "
 	"fightable=1 and "
 	"god<>2 and "
 	"room=%i"
 	, name, myFightingName, room);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	row = mysql_fetch_row(res);
 	if ((myFightable!=1) && (atoi(row[1])!=3))
 	{
@@ -716,13 +740,15 @@ Fight_Command(char *name, char *password, int room, char *fcommand)
 		WriteSayTo(myDescription, name, room, 
 			   "%s starts fighting against you.<BR>\r\n", name);
 		mysql_free_result(res);
-		sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
+		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		myFightingName, name);
 		res=SendSQL2(sqlstring, NULL);
+		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
-		sprintf(sqlstring, "update tmp_usertable set fightingwho='%s' where name='%s'",
+		sqlstring = composeSqlStatement("update tmp_usertable set fightingwho='%x' where name='%x'",
 		name, myFightingName);
 		res=SendSQL2(sqlstring, NULL);
+		free(sqlstring);sqlstring=NULL;
 	}
 	else
 	{
@@ -1384,6 +1410,7 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	int		i, amount;
 	char	frames[10];
 	char	*temp;
+	char *sqlstring;
 	char	logname[100];
 	char	*junk;
 
@@ -1414,10 +1441,11 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	}
 
 //	openDatabase();
-	sprintf(sqlstring, "select name, lok, sleep, room, lastlogin, god, sex, vitals, maxvital, guild, punishment "
+	sqlstring = composeSqlStatement("select name, lok, sleep, room, lastlogin, god, sex, vitals, maxvital, guild, punishment "
 		"from tmp_usertable "
-		"where name='%s' and lok<>''", name);
+		"where name='%x' and lok<>''", name);
 	res=SendSQL2(sqlstring, NULL);
+	free(sqlstring);sqlstring=NULL;
 	if (res==NULL)
 	{
 		NotActive(name, password,2);
@@ -1467,10 +1495,10 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
 //	'0000-01-01 00:00:00' - '9999-12-31 23:59:59'
-	sprintf(sqlstring, "update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
-			"address='%s' where name='%s'",	faddress, name);
+	sqlstring = composeSqlStatement("update tmp_usertable set lastlogin=date_sub(NOW(), INTERVAL 2 HOUR), "
+			"address='%x' where name='%x'",	faddress, name);
 	res=SendSQL2(sqlstring, NULL);
-	
+	free(sqlstring);sqlstring=NULL;
 	mysql_free_result(res);
 
 	junk = (char *) malloc(strlen(command)+1);
@@ -1528,9 +1556,10 @@ gameMain(char *fcommand, char *fname, char *fpassword, char *faddress)
 			 "Do not do again what you did to become this.<BR>\r\n");
 		
 		}
-		sprintf(sqlstring, "update tmp_usertable set punishment=punishment-1 where name='%s'",
+		sqlstring = composeSqlStatement("update tmp_usertable set punishment=punishment-1 where name='%x'",
 			name);
 		res=SendSQL2(sqlstring, NULL);
+		free(sqlstring);sqlstring=NULL;
 		mysql_free_result(res);
 		WriteRoom(name, password, room, 0);
 		free(junk);

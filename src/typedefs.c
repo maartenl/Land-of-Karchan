@@ -31,14 +31,18 @@ roomstruct room;
 
 int frames;
 char secretpassword[40];
-/* property providing where ANY user output of the program should be redirected to. */
+/*! property providing where ANY user output of the program should be redirected to. */
 FILE *mmout;
 
+/*! set/redirect output from a mud command into a filedescriptor */
 void setMMudOut(FILE *aFileDescriptor)
 {
 	mmout = aFileDescriptor;
 }
 
+/*! get the redirected output/filedescriptor. This is usually used in conjunction with an fprintf statement
+like fprintf(getMMudOut(), "Message from Karn\n");
+*/
 FILE *getMMudOut()
 {
 	return mmout;
@@ -56,6 +60,12 @@ int getFrames()
 	return frames;
 }
 
+//! returns dbconnection variable
+/*! this returns the dbconnection as setup by opendbconnection and used by
+	closedbconnection
+	\return dbconnection variable of type MYSQL
+	\sa opendbconnection, closedbconnection
+*/
 MYSQL getdbconnection()
 {
 	return dbconnection;
@@ -91,10 +101,10 @@ void setShutdown(int aOffset)
 	}
 }
 
-char    **tokens;
-int		tokenamount;
+char **tokens;
+int  tokenamount;
 
-/* set number of available tokens. Usually only called once in gameMain
+/*! set number of available tokens. Usually only called once in gameMain
 */
 void
 setTokenAmount(int amount)
@@ -102,7 +112,8 @@ setTokenAmount(int amount)
 	tokenamount = amount;
 }
 
-/* retrieve number of available tokens
+/*! 
+	retrieve number of available tokens
 */
 int
 getTokenAmount()
@@ -110,7 +121,7 @@ getTokenAmount()
 	return tokenamount;
 }
 
-/* set the token array, usually only called once in gameMaine
+/*! set the token array, usually only called once in gameMaine
 */
 void
 setTokens(char **ftokens)
@@ -118,7 +129,7 @@ setTokens(char **ftokens)
 	tokens = ftokens;
 }
 
-/* get the index of the token matching the description
+/*! get the index of the token matching the description
 	returns -1 if not found
 */
 int
@@ -135,7 +146,7 @@ getTokenIndex(char *ftoken)
 	return -1;
 }
 
-/* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
+/*! returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
 */
 char *
 getToken(int i)
@@ -172,23 +183,24 @@ FatalError(FILE *output, int i, char *description, char *busywith)
 
 void InitializeRooms(int roomint)
 {
-MYSQL_RES *res;
-MYSQL_ROW row;
-char temp[1024];
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char *temp;
 
-sprintf(temp, "select west, east, north, south, up, down from rooms where id=%i", roomint);
-res=SendSQL2(temp, NULL);
+	temp = composeSqlStatement("select west, east, north, south, up, down from rooms where id=%i", roomint);
+	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 
-row = mysql_fetch_row(res);
+	row = mysql_fetch_row(res);
 
-room.west=atoi(row[0]);
-room.east=atoi(row[1]);
-room.north=atoi(row[2]);
-room.south=atoi(row[3]);
-room.up=atoi(row[4]);
-room.down=atoi(row[5]);
+	room.west=atoi(row[0]);
+	room.east=atoi(row[1]);
+	room.north=atoi(row[2]);
+	room.south=atoi(row[3]);
+	room.up=atoi(row[4]);
+	room.down=atoi(row[5]);
 
-mysql_free_result(res);
+	mysql_free_result(res);
 }
 
 void exiterr(int exitcode, char *sqlstring, MYSQL *mysql)
@@ -263,6 +275,10 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring)
 	mysql_close(&mysql);
 }
 
+//! open the connection to the database server
+/*! uses the constants as defined in typedefs.h to connect, needs to be changed.
+	\sa closedbconnection
+*/
 void
 opendbconnection()
 {
@@ -273,12 +289,22 @@ opendbconnection()
 	}   
 }
 
+//! close the connection to the database server
+/*! 
+	\sa opendbconnection
+*/
 void
 closedbconnection()
 {
 	mysql_close(&dbconnection);
 }
 
+//! send query to database, if necessary retrieve rows
+/*! \param sqlstring the string containing the query
+	\param *affected_rows the integer returning the number of rows affected/retrieved
+	\return the resultset, please do not forget to call mysql_free_result!
+	\sa composeSqlStatement, getdbconnection, closedbconnection
+*/
 MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 {
 	MYSQL_RES *res;
@@ -299,13 +325,95 @@ MYSQL_RES *SendSQL2(char *sqlstring, int *affected_rows)
 	return res;
 }
 
+//! create an sql statement
+/*! create an sql statement in the printf-way, but with the following options:
+	<UL><LI>\%s - normal string
+	<LI>\%x - special string, interpreted for use as string literal in the query
+	(so special characters are escaped properly)
+	<LI>\%i - integer
+	</UL>
+	If you need a % sign, literally, try '%\i' for instance.
+	Example: composeSqlStatement("select * from tmp_usertable where name='\%x', name);
+	\param sqlstring the format string (with options as displayed above)
+	\param ... the unknown list of parameters to be used
+	\return a char pointer to the composed string (memory has been allocated, do not forget to use free())
+	\sa SendSQL2
+*/
+char *
+composeSqlStatement(char *sqlstring, ...)
+{
+	char *my_sqlstring, *s, *special_s;
+	int my_size, my_length, d, i;
+	va_list ap;
+	char temp[20];
+
+	my_size = strlen(sqlstring);
+	my_sqlstring = (char *) malloc(my_size+1);
+	*my_sqlstring = 0;
+	my_length = 0;
+	va_start(ap, sqlstring);
+	while (*sqlstring)
+	{
+		if (*sqlstring == '%')
+		{
+			switch(sqlstring[1]) 
+			{
+				case 's': /* common_string */
+					s = va_arg(ap, char *);
+					my_size += strlen(s);
+					my_length += strlen(s);
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, s);
+					sqlstring++;
+					break;
+				case 'x': /* mysql_string */
+					s = va_arg(ap, char *);
+					special_s = (char *) malloc(strlen(s)*2+1);
+					i = mysql_real_escape_string(&dbconnection, special_s, s, strlen(s));
+					my_size += i;
+					my_length += i;
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, special_s);
+					free(special_s);special_s=NULL;
+					sqlstring++;
+					break;
+				case 'i': /* int */
+					d = va_arg(ap, int);
+					sprintf(temp, "%i", d);
+					s = temp;
+					my_size += strlen(s);
+					my_length += strlen(s);
+					my_sqlstring = realloc(my_sqlstring, my_size+1);
+					strcat(my_sqlstring, s);
+					sqlstring++;
+					break;
+				default :
+					my_sqlstring[my_length] = *sqlstring;
+					my_length++;
+					my_sqlstring[my_length] = 0;
+				break;
+			}
+		}
+		else
+		{
+			my_sqlstring[my_length] = *sqlstring;
+			my_length++;
+			my_sqlstring[my_length] = 0;
+		}
+		sqlstring++;
+	}
+	va_end(ap);
+
+	return my_sqlstring;
+}
+
 roomstruct *GetRoomInfo(int room)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	roomstruct *roomstr;
 	int i;
-	char temp[1024];
+	char *temp;
 	
 	roomstr = (roomstruct *)malloc(sizeof(*roomstr));
 	
@@ -316,8 +424,9 @@ roomstruct *GetRoomInfo(int room)
 	roomstr->up=0;
 	roomstr->down=0;
 	
-	sprintf(temp, "select west, east, north, south, up, down from rooms where id=%i", room);
+	temp = composeSqlStatement("select west, east, north, south, up, down from rooms where id=%i", room);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	if (res != NULL)
 	{
 		row = mysql_fetch_row(res);

@@ -35,15 +35,13 @@ MYSQL_RES *res;
 MYSQL_ROW row;
 roomstruct *roomstr;
 int i;
-char temp[1024];
+char *tempsql, temp[1024];
 
 opendbconnection();
 
-/* xxxx Change from me to use a random password
-sprintf(temp, "select password from tmp_usertable where name='%s'", name);*/
-sprintf(temp, "select lok from tmp_usertable where name='%s' and lok<>''", name);
-res=SendSQL2(temp, NULL);
-
+tempsql = composeSqlStatement("select lok from tmp_usertable where name='%x' and lok<>''", name);
+res=SendSQL2(tempsql, NULL);
+free(tempsql);
 if (res==NULL)
 {
 	return 0;

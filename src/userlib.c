@@ -71,32 +71,36 @@ ActivateUser(char *name)
 	/*move all resident mudmail from user to activemail*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	
 	/* ------------------------------- Mail ------------------------------ */
 	
-	sprintf(temp, "insert into tmp_mailtable select * from mailtable where toname='%s'", name);
+	temp = composeSqlStatement("insert into tmp_mailtable select * from mailtable where toname='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 	
 	/* ------------------------------ User -------------------------------- */
 	
-	sprintf(temp, "update usertable set active=1, "
-	"lastlogin=date_sub(now(), interval 2 hour) where name='%s'", name);
+	temp = composeSqlStatement("update usertable set active=1, "
+	"lastlogin=date_sub(now(), interval 2 hour) where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 	
-	sprintf(temp, "insert into tmp_usertable select * from usertable where name='%s'", name);
+	temp = composeSqlStatement("insert into tmp_usertable select * from usertable where name='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 	
 	/* -------------------------------------- Attributes --------------------------- */
 	
-	sprintf(temp, "insert into tmp_attributes select * from attributes where objectid='%s' and objecttype=1", name);
+	temp = composeSqlStatement("insert into tmp_attributes select * from attributes where objectid='%x' and objecttype=1", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 	
@@ -108,8 +112,9 @@ ActivateUser(char *name)
 	/* -------------------------------------- Items --------------------------- */
 	
 	/* Copy all items of the user to tmp_itemstable */
-	sprintf(temp, "insert into tmp_itemtable select * from itemtable where belongsto='%s'", name);
+	temp = composeSqlStatement("insert into tmp_itemtable select * from itemtable where belongsto='%x'", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	
 	mysql_free_result(res);
 
@@ -126,61 +131,70 @@ RemoveUser(char *name)
 /*remove all active mudmail from user*/
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
 /* ------------------------------- Mail ------------------------------ */
 
 /* Remove mail of user in temp_mailtable */
-sprintf(temp, "delete from tmp_mailtable where toname='%s'", name);
+temp = composeSqlStatement("delete from tmp_mailtable where toname='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
-sprintf(temp, "update mailtable SET newmail=0 WHERE toname='%s'", name);
+temp = composeSqlStatement("update mailtable SET newmail=0 WHERE toname='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* ------------------------------ User -------------------------------- */
 
 /* make certain nobody is fighting against this removed person */
-sprintf(temp, "update tmp_usertable set fightingwho='' where fightingwho='%s'", name);
+temp = composeSqlStatement("update tmp_usertable set fightingwho='' where fightingwho='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 mysql_free_result(res);
 
 /* set active to 0 on name in temp_usertable */
-sprintf(temp, "update tmp_usertable set lok='', active=0, fightingwho='' where name='%s'", name);
+temp = composeSqlStatement("update tmp_usertable set lok='', active=0, fightingwho='' where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* replace name in temp_usertable in usertable */
-sprintf(temp, "replace into usertable select * from tmp_usertable where name='%s'", name);
+temp = composeSqlStatement("replace into usertable select * from tmp_usertable where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* delete name from temp_usertable */
-sprintf(temp, "delete from tmp_usertable where name='%s'", name);
+temp = composeSqlStatement("delete from tmp_usertable where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* -------------------------------------- Attributes ----------------------- */
 
 /* Remove attributes of user in attributes table */
-sprintf(temp, "delete from attributes where objectid='%s' and objecttype=1", name);
+temp = composeSqlStatement("delete from attributes where objectid='%x' and objecttype=1", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 /* replace tmp_attributes in attributes */
-sprintf(temp, "replace into attributes select * from tmp_attributes where objectid='%s' and objecttype=1", name);
+temp = composeSqlStatement("replace into attributes select * from tmp_attributes where objectid='%x' and objecttype=1", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* delete name from temp_usertable */
-sprintf(temp, "delete from tmp_attributes where objectid='%s' and objecttype=1", name);
+temp = composeSqlStatement("delete from tmp_attributes where objectid='%x' and objecttype=1", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
@@ -190,19 +204,22 @@ mysql_free_result(res);
 /* -------------------------------------- Items --------------------------- */
 
 /* Remove items of user in itemtable */
-sprintf(temp, "delete from itemtable where belongsto='%s'", name);
+temp = composeSqlStatement("delete from itemtable where belongsto='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 /* Copy items of user in tmp_itemtable to itemtable */
-sprintf(temp, "replace into itemtable select * from tmp_itemtable where belongsto='%s'", name);
+temp = composeSqlStatement("replace into itemtable select * from tmp_itemtable where belongsto='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
 /* Remove items of user in tmp_itemtable */
-sprintf(temp, "delete from tmp_itemtable where belongsto='%s'", name);
+temp = composeSqlStatement("delete from tmp_itemtable where belongsto='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 mysql_free_result(res);
 
@@ -214,11 +231,12 @@ ExistUser(char *name)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
 /* Check if user exists in temp_usertable */
-sprintf(temp, "select count(*) from tmp_usertable where name='%s'", name);
+temp = composeSqlStatement("select count(*) from tmp_usertable where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 if (res==NULL)
 {
@@ -241,11 +259,12 @@ ExistUserRoom(int roomnr, char *name)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
 /* Check if user exists in temp_usertable in room roomnr */
-sprintf(temp, "select count(*) from tmp_usertable where name='%s' and room=%i", name, roomnr);
+temp = composeSqlStatement("select count(*) from tmp_usertable where name='%x' and room=%i", name, roomnr);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 if (res==NULL)
 {
 	return 0;
@@ -295,7 +314,7 @@ ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 		strcat(temp, "' in (race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg)");
 	}
 	res=SendSQL2(temp, NULL);
-	free(temp);
+	free(temp);temp=NULL;
 	if (res==NULL)
 	{
 		return NULL;
@@ -320,12 +339,13 @@ SearchUser(char *name)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 int returnvalue;
 
 /* Check if user exists in usertable */
-sprintf(temp, "select count(*) from usertable where name='%s'", name);
+temp = composeSqlStatement("select count(*) from usertable where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 if (res==NULL)
 {
 	return 0;
@@ -348,10 +368,11 @@ SearchBanList(char *item, char *username)
 MYSQL_RES *res;
 MYSQL_ROW row;
 int i;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select count(name) from sillynamestable where '%s' like name", username);
+temp = composeSqlStatement("select count(name) from sillynamestable where '%x' like name", username);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
 
@@ -362,8 +383,9 @@ if (strcmp(row[0],"0"))
 }
 mysql_free_result(res);
 
-sprintf(temp, "select count(name) from unbantable where name='%s'", username);
+temp = composeSqlStatement("select count(name) from unbantable where name='%x'", username);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
 
@@ -374,8 +396,9 @@ if (strcmp(row[0],"0"))
 }
 mysql_free_result(res);
 
-sprintf(temp, "select count(address) from bantable where '%s' like address", item);
+temp = composeSqlStatement("select count(address) from bantable where '%x' like address", item);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
 
@@ -394,12 +417,13 @@ ItemDescription(char *name)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 char *ItemDescr;
 
 /* Get description of item from items */
-sprintf(temp, "select adject1, adject2, adject3, name from items where name='%s'", name);
+temp = composeSqlStatement("select adject1, adject2, adject3, name from items where name='%x'", name);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 row = mysql_fetch_row(res);
 
@@ -463,10 +487,11 @@ char c;
 
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select name from tmp_usertable where name<>'%s' and room=%i", name, roomnr);
+temp = composeSqlStatement("select name from tmp_usertable where name<>'%x' and room=%i", name, roomnr);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 save = fmt;
 while((row = mysql_fetch_row(res))) {
@@ -492,10 +517,11 @@ WriteMessageTo(char *toname, char *name, int roomnr, char *fmt,...)
 MYSQL_RES *res;
 MYSQL_ROW row;
 int i;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select name, room from tmp_usertable where name='%s' and room=%i", toname, roomnr);
+temp = composeSqlStatement("select name, room from tmp_usertable where name='%x' and room=%i", toname, roomnr);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 if (!mysql_fetch_row(res)) 
 {
@@ -504,8 +530,9 @@ if (!mysql_fetch_row(res))
 
 mysql_free_result(res);
 
-sprintf(temp, "select name from tmp_usertable where name<>'%s' and name<>'%s' and room=%i", name, toname, roomnr);
+temp = composeSqlStatement("select name from tmp_usertable where name<>'%x' and name<>'%x' and room=%i", name, toname, roomnr);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 save = fmt;
 while((row = mysql_fetch_row(res))) {
@@ -544,10 +571,11 @@ WriteSayTo(char *toname, char *name, int roomnr, char *fmt,...)
 
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select name from tmp_usertable where name='%s' and room=%i", toname, roomnr);
+temp = composeSqlStatement("select name from tmp_usertable where name='%x' and room=%i", toname, roomnr);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 if (!(row = mysql_fetch_row(res))) 
 {
@@ -580,10 +608,11 @@ WriteLinkTo(char *toname, char *name, char *fmt,...)
 
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select name from tmp_usertable where name='%s'", toname);
+temp = composeSqlStatement("select name from tmp_usertable where name='%x'", toname);
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 if (!(row = mysql_fetch_row(res))) 
 {
@@ -610,10 +639,11 @@ SayToAll(char *to)
 
 MYSQL_RES *res;
 MYSQL_ROW row;
-char temp[1024];
+char *temp;
 
-sprintf(temp, "select name from tmp_usertable");
+temp = composeSqlStatement("select name from tmp_usertable");
 res=SendSQL2(temp, NULL);
+free(temp);temp=NULL;
 
 while ((row = mysql_fetch_row(res))) {
 	strcpy(troep, USERHeader);

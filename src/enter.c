@@ -323,7 +323,7 @@ void MakeStart(char *name, char *password, char *address, int room)
 	FILE           *fp; 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	time(&tijd);
 	datum=*(gmtime(&tijd));
 //	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
@@ -344,38 +344,38 @@ void MakeStart(char *name, char *password, char *address, int room)
 		mysql_free_result(res);
 	}
 	
-	sprintf(temp, "UPDATE tmp_usertable SET "
-	"cgiServerSoftware='%s', "
-	"cgiServerName='%s', "
-	"cgiGatewayInterface='%s', "
-	"cgiServerProtocol='%s', "
-	"cgiServerPort='%s', "
-	"cgiRequestMethod='%s', "
-	"cgiPathInfo='%s', "
-	"cgiPathTranslated='%s', "
-	"cgiScriptName='%s', "
-	"cgiRemoteHost='%s', "
-	"cgiRemoteAddr='%s', "
-	"cgiAuthType='%s', "
-	"cgiRemoteUser='%s', "
-	"cgiRemoteIdent='%s', "
-	"cgiContentType='%s', "
-	"cgiAccept='%s', "
-	"cgiUserAgent='%s', address='%s' "
-	"WHERE name='%s'", cgiServerSoftware, cgiServerName, cgiGatewayInterface, 
+	temp = composeSqlStatement("UPDATE tmp_usertable SET "
+	"cgiServerSoftware='%x', "
+	"cgiServerName='%x', "
+	"cgiGatewayInterface='%x', "
+	"cgiServerProtocol='%x', "
+	"cgiServerPort='%x', "
+	"cgiRequestMethod='%x', "
+	"cgiPathInfo='%x', "
+	"cgiPathTranslated='%x', "
+	"cgiScriptName='%x', "
+	"cgiRemoteHost='%x', "
+	"cgiRemoteAddr='%x', "
+	"cgiAuthType='%x', "
+	"cgiRemoteUser='%x', "
+	"cgiRemoteIdent='%x', "
+	"cgiContentType='%x', "
+	"cgiAccept='%x', "
+	"cgiUserAgent='%x', address='%x' "
+	"WHERE name='%x'", cgiServerSoftware, cgiServerName, cgiGatewayInterface, 
 	cgiServerProtocol, cgiServerPort, cgiRequestMethod, cgiPathInfo, 
 	cgiPathTranslated, cgiScriptName, cgiRemoteHost, cgiRemoteAddr,
 	cgiAuthType, cgiRemoteUser, cgiRemoteIdent, cgiContentType, cgiAccept,
 	cgiUserAgent, cgiRemoteAddr, name); 
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	mysql_free_result(res);
 	WriteSentenceIntoOwnLogFile(printstr, "You appear from nowhere.<BR>\r\n");
 
-//	printf("Dude3! %s, %s, %s, %i\n", name, password, address, room);
-	sprintf(temp, "SELECT count(*) FROM tmp_mailtable"
-		" WHERE toname='%s' and newmail=1", name);
-//	printf("%s\n",temp);
+	temp = composeSqlStatement("SELECT count(*) FROM tmp_mailtable"
+		" WHERE toname='%x' and newmail=1", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	                        
 	row = mysql_fetch_row(res);
 	if (*row[0]=='0') {WriteSentenceIntoOwnLogFile(printstr, "You have no new MudMail...<P>\r\n");}
@@ -446,7 +446,7 @@ int cgiMain()
 	int i;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char temp[1024];
+	char *temp;
 	
 	umask(0000);
 	
@@ -486,19 +486,18 @@ int cgiMain()
 	
 	/* set the secret password */
 	generate_password(secretpassword);
-	sprintf(temp, "update usertable "
-	"set lok = '%s' "
-	"where name = '%s'", secretpassword, name);
+	temp = composeSqlStatement("update usertable set lok='%x' where name='%x'", secretpassword, name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 	if (res!=NULL) 
 	{
 		mysql_free_result(res);
 	} 
 	
 	/* ExistUser */
-	sprintf(temp, "select name, password, god, lok from tmp_usertable where name='%s' and lok<>''", name);
-	
+	temp = composeSqlStatement("select name, password, god, lok from tmp_usertable where name='%x' and lok<>''", name);
 	res=SendSQL2(temp, NULL);
+	free(temp);temp=NULL;
 
 	if (res!=NULL) 
 	{
@@ -548,8 +547,9 @@ int cgiMain()
 	}
 	
 	/* SearchUser */
-	sprintf(temp, "select name, password, room from usertable where name='%s'", name);
+	temp = composeSqlStatement("select name, password, room from usertable where name='%x'", name);
 	res=SendSQL2(temp, NULL); 
+	free(temp);temp=NULL;
 	if (res!=NULL)
 	{
 		row = mysql_fetch_row(res);
