@@ -449,14 +449,31 @@ DeleteMail_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
+/* sendmail <to> <headerlength> <header> <body>
+*/
 int
 SendMail_Command(char *name, char *password, int room, char *fcommand)
 {
-	char mailto[100], *mailbody, mailheader[100];
+	char *mailto, *mailbody, *mailheader;
 	char logname[100];
+	int thelength;
 	sprintf(logname, "%s%s.log",USERHeader,name);
       		
-	mailbody = (char *) malloc(strlen(fcommand)+2);
+   if (getTokenAmount() < 5)
+   {
+   	return 0;
+   }
+
+   mailto = getToken(1);
+	thelength = atoi(getToken(2));
+	if (thelength<1)
+	{
+		return 0;
+	}
+	mailheader = (char *) malloc(thelength+2);
+	strncpy(mailheader, command + (getToken(3)-getToken(0)), thelength);
+	mailheader[thelength+1]=0;
+	mailbody = command + (getToken(3)-getToken(0)) + thelength + 1;
 	//cgiFormString("mailto", mailto, 99);
 	//cgiFormString("mailheader", mailheader, 99);
 	//cgiFormString("mailbody", mailbody, strlen(fcommand) - 2);
@@ -484,7 +501,7 @@ SendMail_Command(char *name, char *password, int room, char *fcommand)
 		WriteSentenceIntoOwnLogFile(logname, "Mail not sent! User not found.<BR>\r\n");
 	}
 	mysql_free_result(res);
-		
+	free(mailheader);
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
