@@ -22,11 +22,6 @@ chat, fun, talk, mush, moo, dungeon, dragon, www, forms, cgi, free">
 <!-- In hiding!
  browserName = navigator.appName;          
            browserVer = parseInt(navigator.appVersion);
-               if (browserName == "Netscape" && browserVer >= 3) version =
-"n3";
-               else version = "n2";
-               
-               if (version == "n3") {                
                toc2on = new Image;          
                toc2on.src = "/images/gif/webpic/new/button3.gif";
                toc3on = new Image;          
@@ -78,20 +73,15 @@ chat, fun, talk, mush, moo, dungeon, dragon, www, forms, cgi, free">
                toc13off = new Image;
                toc13off.src = "/images/gif/webpic/buttons.gif";
                
-        }
 
 function img_act(imgName) {
-        if (version == "n3") {
         imgOn = eval(imgName + "on.src");
         document [imgName].src = imgOn;
-        }
 }
 
 function img_inact(imgName) {
-        if (version == "n3") {
         imgOff = eval(imgName + "off.src");
         document [imgName].src = imgOff;
-        }
 }
 
 //-->

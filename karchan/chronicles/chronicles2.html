@@ -10,11 +10,6 @@
 <!-- In hiding!
  browserName = navigator.appName;          
            browserVer = parseInt(navigator.appVersion);
-               if (browserName == "Netscape" && browserVer >= 3) version =
-"n3";
-               else version = "n2";
-               
-               if (version == "n3") {                
                toc1on = new Image;          
                toc1on.src = "/images/gif/webpic/new/button4.gif";
                toc2on = new Image;          
@@ -54,20 +49,15 @@
                backoff = new Image;
                backoff.src = "/images/gif/webpic/buttono.gif";
                
-        }
 
 function img_act(imgName) {
-        if (version == "n3") {
         imgOn = eval(imgName + "on.src");
         document [imgName].src = imgOn;
-        }
 }
 
 function img_inact(imgName) {
-        if (version == "n3") {
         imgOff = eval(imgName + "off.src");
         document [imgName].src = imgOff;
-        }
 }
 
 //-->
