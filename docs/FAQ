@@ -22,5 +22,21 @@ SetEnv LD_LIBRARY_PATH /usr/local/lib/mysql/
 
 That should fix the problem.
 
+2.
+
+Question: Help! My PHPScripts or the server is generating unwanted \
+(backslashes) in front of \ (backslashes) and ' (quotes) and " (double
+quotes).
+
+Anwer: this is possible due to a wrong setting in your php module in the
+apache server. Check out the script configuration.php, look for the php
+configuration variable <I>magic_quotes_gpc</I>. It should be turned OFF.
+
+If it is set to on, as was the default in old installations of Linux, you
+can turn it back off in the php.ini file (which is probably located in
+/etc/).
+
+That should fix it.
+
 Any comments, please tell me.
 
