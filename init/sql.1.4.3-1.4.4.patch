@@ -5,6 +5,15 @@
 # create a patch for the new version of the mud
 #
 
+create table boards 
+(
+boardname varchar(20) NOT NULL default 'public',
+name varchar(20) NOT NULL default '',
+posttime datetime NOT NULL,
+message text NOT NULL,
+primary key (name, posttime)
+);
+
 
 END_OF_DATA
 
