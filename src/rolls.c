@@ -616,7 +616,6 @@ int checkWeaponSkill(char *itemname, int *skillid)
 		/*knife skill*/
 		*skillid = 2;
 	}
-	fprintf(outputfile, "itemname='%s'\n", itemname);
 	sprintf(sqlstring, 
 		"select * from skills, skilltable where "
 		"skilltable.number = %i and "
