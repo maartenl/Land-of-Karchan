@@ -69,7 +69,7 @@ send_socket(int s, char *buf, int *len)
 {
 	int total = 0;	// how many btytes we've sent
 	int bytesleft = *len;	// how many we have left to send
-	int n;
+	int n = 0;
 #if DEBUG==2
 	printf("[message]: %s\n", buf);
 #endif
@@ -336,7 +336,7 @@ mudpersonstruct
 	mine = list;
 	while (mine != NULL)
 	{
-		if (mine->socketfd = socketfd)
+		if (mine->socketfd == socketfd)
 		{
 			return mine;
 		}
@@ -543,8 +543,6 @@ closedbconnection()
 MYSQL_RES *sendQuery(char *sqlstring, int *affected_rows)
 {
 	MYSQL_RES *res;
-	MYSQL_ROW row;
-	uint i = 0;
  
 	pthread_mutex_lock(&mysqlmutex);
 	if (mysql_query(&dbconnection,sqlstring))
@@ -831,9 +829,7 @@ void writeConfig(int socketfd)
 int readConfigFiles(char *filename)
 {
 	xmlDocPtr doc;
-	xmlNsPtr ns;
 	xmlNodePtr cur;
-	xmlDtdPtr myDtd = NULL;
 	char *temp;
 	
 	// build an XML tree from the file;

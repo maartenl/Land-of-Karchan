@@ -41,9 +41,6 @@ maarten_l@yahoo.com
 
 void updateCharacterSheet(const char *name, const char *password)
 {
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-
 	if (atoi(cgi_getentrystr("family")) != 0) 
 	{
 		mysql_free_result(executeQuery(NULL, "replace into family values(\"%x\",\"%x\",%i)", 
@@ -83,7 +80,6 @@ void validateUser()
  	
 	if (res)// there are rows
 	{
-		int num_fields = mysql_num_fields(res);
 		// retrieve rows, then call mysql_free_result(result)
 		row = mysql_fetch_row(res);
 		if (row == NULL)

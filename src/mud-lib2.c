@@ -25,7 +25,11 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
 #include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
 #include "mud-lib2.h"
 
 /*! \file mud-lib2.c
@@ -40,13 +44,10 @@ maarten_l@yahoo.com
 void 
 WriteMail(char *name, char *toname, char *header, char *message)
 {
-	int             i = 1,j;
-	FILE           *fp;
 	struct tm       datumtijd;
 	time_t   datetime;
-MYSQL_RES *res;
-MYSQL_ROW row;
-char *temp;
+	MYSQL_RES *res;
+	char *temp;
 
 //'9999-12-31 23:59:59'
 
@@ -78,8 +79,7 @@ free(temp);temp=NULL;
 int 
 ListMail_Command(mudpersonstruct *fmudstruct)
 {
-	int             i = 1,j;
-	FILE           *fp;
+	int             j;
 	char				logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -126,7 +126,7 @@ res=sendQuery(temp, NULL);
 free(temp);temp=NULL;
 
 send_printf(fmudstruct->socketfd, "<TABLE BORDER=0 VALIGN=top>\r\n");j=1;
-while(row = mysql_fetch_row(res)) 
+while ( (row = mysql_fetch_row(res)) )
 {
 	send_printf(fmudstruct->socketfd, "<TR VALIGN=top><TD>%i.</TD><TD>", j);
 	if (atoi(row[2])>0) {send_printf(fmudstruct->socketfd,"N");}
@@ -143,6 +143,7 @@ while(row = mysql_fetch_row(res))
 	PrintForm(name, password, fmudstruct->frames, fmudstruct->socketfd);
 	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
+	return 1;
 }
 
 //! read or delete mail (yeah, I know, confusing)
@@ -153,8 +154,7 @@ while(row = mysql_fetch_row(res))
 int 
 ReadMail(char *name, char *password, int room, int frames, int messnr, int erasehem, int socketfd)
 {
-	int             i = 1,j;
-	FILE           *fp;
+	int             j;
 	char logname[100];
 MYSQL_RES *res;
 MYSQL_ROW row;
@@ -312,7 +312,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	{
 		return 0;
 	}
-	if (row = mysql_fetch_row(res)) 
+	if ( (row = mysql_fetch_row(res)) )
 	{
 		if (atoi(row[0])!=2)
 		{
@@ -330,7 +330,7 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
 
-	if (row = mysql_fetch_row(res)) {
+	if ( (row = mysql_fetch_row(res)) ) {
 	WriteSentenceIntoOwnLogFile(logname, "%s says [to you]: %s<BR>\r\n", botname, row[0]);
 	WriteMessage(name, room, "%s says [to %s]: %s<BR>\r\n", botname, name, row[0]);
 	} else {
@@ -351,8 +351,6 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 int 
 Who_Command(mudpersonstruct *fmudstruct)
 {
-	int				i = 0;
-	FILE			*fp;
 	MYSQL_RES 		*res;
 	MYSQL_ROW		row;
 	char			*tempsql;
@@ -442,10 +440,6 @@ LookString(char *description, char *name, char *password, int frames, int socket
 {
 	char 		logname[100];
 
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-	char *temp;
-	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	send_printf(socketfd, "<HTML>\n");
@@ -567,8 +561,8 @@ LookItem_Command(mudpersonstruct *fmudstruct)
 	
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *temp;
-	int i, containerid = 0;
+	char *temp = NULL;
+	int containerid = 0;
 	
 	name = fmudstruct->name;
 	password = fmudstruct->password;
@@ -1091,7 +1085,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int id;
-	char *temp, *dude;
+	char *temp = NULL, *dude;
 
 	dude = "select id from items where";
 
@@ -1464,10 +1458,10 @@ DropMoney_Command(mudpersonstruct *fmudstruct)
 	MYSQL_ROW row;
 	char *sqlstring;
 	char logname[100];
-	char itemname[40], itemadject1[40], itemadject2[40];
-	int amount, changedrows, numberfilledout;
-	int mycopper, mysilver, mygold, itemid;
+	int amount, numberfilledout;
+	int mycopper, mysilver, mygold;
 	char *checkerror;
+	int itemid=0, changedrows;
 	
 	char *name;
 	char *password;
@@ -1617,8 +1611,7 @@ GiveMoney_Command(mudpersonstruct *fmudstruct)
 	MYSQL_ROW row;
 	char *sqlstring;
 	char logname[100], toname[40];
-	char itemname[40], itemadject1[40], itemadject2[40];
-	int amount, changedrows, itemid, amountitems, numberfilledout;
+	int amount, numberfilledout;
 	int mygold, mysilver, mycopper;
 	char *checkerror;
 	char *name;
@@ -1751,7 +1744,7 @@ GetItem_Command(mudpersonstruct *fmudstruct)
 	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *sqlstring;
+	char *sqlstring = NULL;
 	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
@@ -1981,7 +1974,7 @@ DropItem_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *sqlstring;
+	char *sqlstring = NULL;
 	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
@@ -2237,7 +2230,7 @@ Put_Command(mudpersonstruct *fmudstruct)
 	char itemname_b[40], itemadject1_b[40], itemadject2_b[40];
 	char itembelongsto_b[40];
 	int containerid_b, room_b;
-	int amount, changedrows, itemid, amountitems, numberfilledout;
+	int amount, changedrows, numberfilledout;
 	char *checkerror;
 	char *name;
 	char *password;
@@ -2597,14 +2590,13 @@ Retrieve_Command(mudpersonstruct *fmudstruct)
 	char *sqlstring;
 	char logname[100];
 	int already_in_inventory = 0;
-	int maxcontainerid;
 	int itemid_a, amountitems_a;
 	char itemname_a[40], itemadject1_a[40], itemadject2_a[40];
-	int itemid_b, amountitems_b;
+	int itemid_b;
 	char itemname_b[40], itemadject1_b[40], itemadject2_b[40];
 	char itembelongsto_b[40];
 	int containerid_b, room_b;
-	int amount, changedrows, itemid, amountitems, numberfilledout;
+	int amount, changedrows, numberfilledout;
 	char *checkerror;
 	char *name;
 	char *password;
@@ -3155,10 +3147,10 @@ Unwear_Command(mudpersonstruct *fmudstruct)
 	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *sqlstring, sqlcomposite[80];
+	char *sqlstring;
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], itemwearing[20];
-	int changedrows, itemid, amountitems, itemwearable;
+	int changedrows, itemid, amountitems;
 	char *name;
 	char *password;
 	char *fcommand;
@@ -3350,7 +3342,7 @@ Wield_Command(mudpersonstruct *fmudstruct)
 	char *sqlstring;
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], position2[20];
-	int changedrows, itemid, amountitems, itemwearable, position;
+	int changedrows, itemid, amountitems, position;
 	char *name;
 	char *password;
 	char *fcommand;
@@ -3567,10 +3559,10 @@ Unwield_Command(mudpersonstruct *fmudstruct)
 	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *sqlstring, sqlcomposite[80];
+	char *sqlstring;
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], itemwielding[20], position[20];
-	int changedrows, itemid, amountitems, itemwieldable;
+	int changedrows, itemid, amountitems;
 	char *name;
 	char *password;
 	char *fcommand;
@@ -4200,7 +4192,7 @@ RemapShoppingList_Command(char *name)
 	, name);
 	res=sendQuery(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		sqlstring = composeSqlStatement("update items set readdescr=CONCAT(readdescr, "
 		"'<LI>%s, %s %s (%s gold, %s silver, %s copper a piece)') "
@@ -4231,7 +4223,7 @@ BuyItem_Command(mudpersonstruct *fmudstruct, char *fromname)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *sqlstring;
-	char logname[100], toname[40];
+	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int mygold, mysilver, mycopper;
 	int itemgold, itemsilver, itemcopper;
@@ -4466,10 +4458,9 @@ SellItem_Command(mudpersonstruct *fmudstruct, char *toname)
 	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *sqlstring;
+	char *sqlstring = NULL;
 	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
-	int mygold, mysilver, mycopper;
 	int itemgold, itemsilver, itemcopper;
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
@@ -4691,8 +4682,7 @@ Search_Command(mudpersonstruct *fmudstruct)
 	char *sqlstring;
 	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
-	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
-	char *checkerror;
+	int changedrows, itemid, amountitems, containerid;
 	char *name;
 	char *password;
 	char *fcommand;
@@ -5083,6 +5073,7 @@ GiveItem_Command(mudpersonstruct *fmudstruct)
 		name, amount, itemadject1, itemadject2, itemname);
 	}
 	WriteRoom(fmudstruct);
+	return 1;
 }
 
 //! read an item, hidden or otherwise
@@ -5354,7 +5345,6 @@ void
 Dead(char *name, char *password, int room, int frames, int socketfd)
 {
 	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char *temp;
 	char logname[100];
 	
@@ -5406,7 +5396,6 @@ int
 ChangeTitle_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char *temp, *title;
 	char logname[100];
 	char *name;

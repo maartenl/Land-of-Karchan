@@ -25,7 +25,12 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
 #include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
+#include "mud-lib2.h"
 #include "guild.h"
 
 /*! \file guild.c
@@ -71,7 +76,7 @@ MIFList(char *name, char *password, int room, int frames, int socketfd)
 	temp = composeSqlStatement("select name, title from usertable where guild='mif'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL; // temp was allocated by composeSqlStatement 
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
 	}
@@ -190,7 +195,7 @@ MIFTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='mif'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -239,7 +244,7 @@ RangerList(char *name, char *password, int room, int frames, int socketfd)
 	temp = composeSqlStatement("select name, title from usertable where guild='rangers'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		send_printf(socketfd, "<LI>%s, %s\r\n", row[0], row[1]);
 	}
@@ -360,7 +365,7 @@ RangerTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='rangers'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -399,7 +404,7 @@ SWTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='SW'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -438,7 +443,7 @@ DepTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where god=1");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -476,7 +481,7 @@ BKTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='BKIC'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -514,7 +519,7 @@ VampTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Kindred'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -548,11 +553,11 @@ KnightTalk(mudpersonstruct *fmudstruct)
 	temp2 = (char *) malloc(strlen(command) + 80);
 	sprintf(temp2, "<B><Font color=#0000CC>Knight Talk</font></B> [%s] : %s<BR>\r\n",
 	name, command + (getToken(fmudstruct, 2) - getToken(fmudstruct, 0)));
-	
+
 	temp = composeSqlStatement("select name from tmp_usertable where guild='Knights'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}
@@ -590,7 +595,7 @@ CoDTalk(mudpersonstruct *fmudstruct)
 	temp = composeSqlStatement("select name from tmp_usertable where guild='CoD'");
 	res=sendQuery(temp, NULL);
 	free(temp);temp=NULL;
-	while (row = mysql_fetch_row(res))
+	while ( (row = mysql_fetch_row(res)) )
 	{
 		WriteLinkTo(row[0], name, temp2);
 	}

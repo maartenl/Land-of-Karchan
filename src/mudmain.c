@@ -26,8 +26,11 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 #include "typedefs.h"
 #include "userlib.h"
+#include "parser.h"
+#include "guild.h"
 #include "mud-lib.h"
 #include "mud-lib2.h"
 #include "mud-lib3.h"
@@ -112,12 +115,12 @@ int
 clearGameFunctionIndex()
 {
 	free(gameFunctionArray);
+	return 1;
 }
 
 //! throw standard banned-from-game page to user
 void BannedFromGame(char *name, char *address, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd, "<HTML><HEAD><TITLE>You have been banned</TITLE></HEAD>\n\n");
@@ -144,7 +147,6 @@ nasty. The cookie in question should be the same as the session password the per
 */
 void CookieNotFound(char *name, char *address, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd, "<HTML><HEAD><TITLE>Unable to logon</TITLE></HEAD>\n\n");
@@ -263,7 +265,6 @@ Help_Command(mudpersonstruct *fmudstruct)
 	{
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		int i;
 		char *temp;
 		
 		send_printf(fmudstruct->socketfd, "<HTML>\r\n");
@@ -301,7 +302,6 @@ Help_Command(mudpersonstruct *fmudstruct)
 	{
 		MYSQL_RES *res;
 		MYSQL_ROW row;
-		int i;
 		char *temp;
 		
 		send_printf(fmudstruct->socketfd, "<HTML>\r\n");
@@ -335,6 +335,7 @@ Help_Command(mudpersonstruct *fmudstruct)
 		if (fmudstruct->frames!=2) {ReadFile(logname, fmudstruct->socketfd);}
 		return 1;
 	}
+	return 0;
 }
 
 //! read the mail, actually is passed onto the next method
@@ -1186,6 +1187,7 @@ Get_Command(mudpersonstruct *fmudstruct)
 		GetItem_Command(fmudstruct);
 		return 1;
 	}
+	return 0;
 }
 
 //! drops item from inventory onto the floor
@@ -1223,6 +1225,7 @@ Drop_Command(mudpersonstruct *fmudstruct)
 		DropItem_Command(fmudstruct);
 		return 1;
 	}
+	return 0;
 }
 
 //! buy an item from a bot (at a store)
@@ -1732,6 +1735,7 @@ initGameFunctionIndex()
 	gameFunctionArray[theNumberOfFunctions++] = &Whisper_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Who_Command;
 	gameFunctionArray[theNumberOfFunctions++] = &Wield_Command;
+	return 1;
 }
 
 //! main command parsing and executing body
@@ -1743,9 +1747,8 @@ gameMain(int socketfd)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int		oldroom, room;
-	int		i, amount;
-	char	frames[10];
+	int room;
+	int i, amount = 0;
 	char *name;
 	char *password;
 	char	*temp;
@@ -1771,7 +1774,7 @@ gameMain(int socketfd)
 	name = mymudstruct->name;
 	password = mymudstruct->password;
 	myTokens = mymudstruct->tokens;
-	umask(0000);
+//	umask(0000);
 
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
@@ -2112,7 +2115,7 @@ gameMain(int socketfd)
 	{
 		if ( (!strcasecmp("pow", getToken(mymudstruct, 0))) && (!strcasecmp("wow", getToken(mymudstruct, 1))) )
 		{
-			SWTalk(name, password, room);
+			SWTalk(mymudstruct);
 			return 1;
 		}
 
@@ -2123,7 +2126,7 @@ gameMain(int socketfd)
 	{
 		if ( (!strcasecmp("chaos", getToken(mymudstruct, 0))) && (!strcasecmp("murmur", getToken(mymudstruct, 1))) )
 		{
-			BKTalk(name, password, room);
+			BKTalk(mymudstruct);
 			return 1;
 		}
 
@@ -2134,7 +2137,7 @@ gameMain(int socketfd)
 	{
 		if ( (!strcasecmp("misty", getToken(mymudstruct, 0))) && (!strcasecmp("whisper", getToken(mymudstruct, 1))) )
 		{
-			VampTalk(name, password, room);
+			VampTalk(mymudstruct);
 			return 1;
 		}
 
@@ -2145,7 +2148,7 @@ gameMain(int socketfd)
 	{
 		if ( (getTokenAmount(mymudstruct) > 2) && (!strcasecmp("knight", getToken(mymudstruct, 0))) && (!strcasecmp("talk", getToken(mymudstruct, 1))) )
 		{
-			KnightTalk(name, password, room);
+			KnightTalk(mymudstruct);
 			return 1;
 		}
 
@@ -2156,7 +2159,7 @@ gameMain(int socketfd)
 	{
 		if ( (!strcasecmp("mogob", getToken(mymudstruct, 0))) && (!strcasecmp("burz", getToken(mymudstruct, 1))) )
 		{
-			CoDTalk(name, password, room);
+			CoDTalk(mymudstruct);
 			return 1;
 		}
 

@@ -81,7 +81,7 @@ void setParam(int i, char *parameter);
 
 /* this structure is used to provide valuable information about the current status of both the socket as well as the daemon
 */
-typedef struct
+typedef struct mudinfostruct
 {
 	char hostname[256];
 	char hostip[256];
@@ -104,7 +104,7 @@ typedef struct
 	   1 = operation with frames
 	   2 = operation with frames and server push
 */
-typedef struct
+typedef struct mudpersonstruct
 {
 	char *readbuf; // buffer to read from socket, standard=1024 bytes
 	int bufsize; // buffer size, initialised to 1024

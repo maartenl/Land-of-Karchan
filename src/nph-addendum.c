@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "cgi-util.h"
 #include "typedefs.h"
 
@@ -36,7 +38,6 @@ int checkPassword(char *name, char *password)
 {
 MYSQL_RES *res;
 MYSQL_ROW row;
-int i;
 char *tempsql, temp[1024];
 
 opendbconnection();
@@ -70,7 +71,6 @@ void WrongPasswd()
 	printf("You filled out the wrong password for that particular name! \n");
 	printf("Please retry by clicking at the link below:<P>\n");
 	printf("<A HREF=\"http://%s/karchan/enter.html\">Click here to retry</A></body>\n", getParam(MM_SERVERNAME));
-	exit(0);
 }
 
 int main(int argc, char * argv[])
@@ -93,7 +93,7 @@ int main(int argc, char * argv[])
 		printf("Content-type: text/html\n\n");
 		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
 		cgi_quit();
-		exit(1);
+		return 1;
 	}
 	
 	if (0) 
@@ -107,7 +107,12 @@ int main(int argc, char * argv[])
 		strncpy(password, cgi_getentrystr("password"), 39);password[39]=0;
 	}
 
-	if (!checkPassword(name, password)) {WrongPasswd();}
+	if (!checkPassword(name, password)) 
+	{
+		WrongPasswd();
+		cgi_quit();
+		return 1;
+	}
 
 	i = 0;
 	printf("HTTP/1.0 200\n");
@@ -124,7 +129,7 @@ int main(int argc, char * argv[])
 	
 	printf("// End the hiding here. -->\n");
 	printf("</SCRIPT>\n");
-	printf("<P>That's all, folks %i.\n");
+	printf("<P>That's all, folks.\n");
 	printf("---blaat---\n");
 	fflush(stdout);
 	sleep(1);

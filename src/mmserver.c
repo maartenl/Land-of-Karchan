@@ -52,7 +52,9 @@ maarten_l@yahoo.com
 #include <pthread.h>
 
 #include "typedefs.h"
+#include "userlib.h"
 #include "mudmain.h"
+#include "mudlogon.h"
 #include "mudnewchar.h"
 
 /*! \file mmserver.c
@@ -339,11 +341,10 @@ int
 parseXml(mudpersonstruct *fmine)
 {
 	xmlDocPtr doc;
-	xmlNsPtr ns;
 	xmlNodePtr cur, cur2;
 	xmlDtdPtr myDtd = NULL;
 	char *temp;
-	mudnewcharstruct *newcharstruct;
+	mudnewcharstruct *newcharstruct = NULL;
 	
 	if (fmine == NULL)
 	{
@@ -886,8 +887,7 @@ store_in_list(int socketfd, char *buf)
 #endif
 			if (parseXml(mine))
 			{
-				char *temp2, string[1024];
-				FILE *filep;
+				char *temp2;
 				int j;
 				temp[7] = t;
 				temp2 = (char *) malloc(strlen(temp+7)+1);
@@ -1069,15 +1069,12 @@ int
 main(int argc, char **argv)
 {
 //	struct rusage usage;
-	int i;
 	pthread_t cleanupthread;
         
 	// socket variables
 	fd_set master_fds;	// master file descriptor list
 	fd_set read_fds;	// temp file descriptorlist for select()
 	int fdmax; // biggest filedescriptor
-	struct sockaddr_in their_addr; // connector's address information
-	char buf[256]; // buffer for receiving info from socket
 		
 	// signal catching variables
 	struct sigaction mySig, myEmergencySig;

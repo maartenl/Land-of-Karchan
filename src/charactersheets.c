@@ -45,7 +45,6 @@ void listSheets()
 	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int i;
 	
 	printf("Content-type: text/html\n\n");
 	printf("<HTML>\n");
@@ -95,7 +94,6 @@ void listSheets()
 		res = mysql_store_result(&mysql);
 		if (res)// there are rows
 		{
-			int num_fields = mysql_num_fields(res);
 			int num_rows = mysql_num_rows(res);
 			char beginstuff = 'x';
 			int counter = 1;

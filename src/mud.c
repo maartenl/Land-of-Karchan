@@ -109,7 +109,7 @@ void displayError(char *message, int i)
 	printf("<BODY>\n");
 	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
 	printf("Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
-	printf(" to report the error.<P>\r\n", strerror(i));
+	printf(" to report the error.<P>\r\n");
 	
 	printf("<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
 	printf("</body>\n");
@@ -195,11 +195,9 @@ NotActive(char *fname, char *fpassword, int errornr)
 int 
 main(int argc, char * argv[])
 {
-	int res;
 	char *command;
 	char name[22];
 	char password[40];
-	char frames[10];
 	char cookiepassword[40];
 	char *myhostname, *myport;
 	char *mudtitle = NULL;

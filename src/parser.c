@@ -26,8 +26,11 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 #include "mysql.h"
 #include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
 #include "parser.h"
 
 /*! \file parser.c
@@ -228,7 +231,6 @@ int ParseSentence(char *name, int *room, char *parserstring, int frames, int soc
 		/* execute sql statement */
 		char *temp;
 		MYSQL_RES *res;
-		MYSQL_ROW row;
 		if (parser_debug) {send_printf(socketfd, "sql found...<BR>\n");}
 		temp = (char *) malloc(strlen(parserstring)+1);
 		strcpy(temp, parserstring+5);
@@ -565,7 +567,6 @@ int Parse(mudpersonstruct *fmudstruct, char *name, int *room, char *command, cha
 				/* this is the parsing part, the previous part was just splitting up */
 				if ((state[level]!=1) && (state[level]!=3))
 				{
-					int tempstuff;
 					if (parser_debug) {send_printf(fmudstruct->socketfd, "[%s]<BR>\n", string);}
 					switch (ParseSentence(name, room, string, frames, fmudstruct->socketfd))
 					{
@@ -693,7 +694,7 @@ int SearchForSpecialCommand(mudpersonstruct *fmudstruct, char *name, char *passw
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	MYSQL stuff;
-	char *tempstr, *troep2;
+	char *tempstr;
 	int returnvalue = 0;
 	
 	int myroom = room;

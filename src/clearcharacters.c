@@ -38,12 +38,10 @@ maarten_l@yahoo.com
 
 #define debuggin 0
 
-int clearInactiveCharacters()
+void clearInactiveCharacters()
 {
-	MYSQL_RES *res, *res2;
+	MYSQL_RES *res;
 	MYSQL_ROW row;
-	FILE *fp;
-	uint i = 0;
 	
 	opendbconnection();
 	

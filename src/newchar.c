@@ -193,22 +193,19 @@ createXmlString(char *fname, char *fpassword, char *fcookie, int fframes)
 //! main method
 int main(int argc, char *argv[])
 {
-	int res, totalnumbytes;
+	int totalnumbytes;
 	char name[20];
 	char password[40];
 	char cookie[80];
-	char frames[10];
-	char *temp;
-	char *myhostname, *myport;
+	char *myhostname = NULL, *myport = NULL;
 	char *mudtitle = NULL;
 	
 	int sockfd, numbytes;
-	int first;
 	char receivebuf[1024], *sendbuf, *checkbuf;
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
          
-	umask(0000);
+//	umask(0000);
 	initParam();
 	readConfigFiles("/karchan/config.xml");
 

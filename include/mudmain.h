@@ -31,3 +31,4 @@ int initGameFunctionIndex();
 
 int gameMain(int socketfd);
 
+void BannedFromGame(char *name, char *address, int socketfd);

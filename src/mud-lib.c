@@ -25,6 +25,8 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include "typedefs.h"
 #include "userlib.h"
 #include "mud-lib.h"
@@ -370,24 +372,25 @@ ReadFile(const char *filenaam, const int socketfd)
 int
 PrintForm(char * name, char * password, int frames, int socketfd)
 {
-if (!frames)
-{
-	send_printf(socketfd, "<SCRIPT language=\"JavaScript\">\r\n"
-			"<!-- In hiding!\r\n"
-			"function setfocus() {\r\n"
-			"       document.CommandForm.command.focus();\r\n"
-			"	return;\r\n"
-			"	}\r\n"
-			"//-->\r\n"
-			"</SCRIPT>\r\n");
-	send_printf(socketfd, "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
-	send_printf(socketfd, "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
-	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
-	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
-	send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
-	send_printf(socketfd, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
-	send_printf(socketfd, "</FORM><P>\n");
-}
+	if (!frames)
+	{
+		send_printf(socketfd, "<SCRIPT language=\"JavaScript\">\r\n"
+				"<!-- In hiding!\r\n"
+				"function setfocus() {\r\n"
+				"       document.CommandForm.command.focus();\r\n"
+				"	return;\r\n"
+				"	}\r\n"
+				"//-->\r\n"
+				"</SCRIPT>\r\n");
+		send_printf(socketfd, "<FORM METHOD=\"POST\" ACTION=\"%s\" NAME=\"CommandForm\">\n", getParam(MM_MUDCGI));
+		send_printf(socketfd, "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n");
+		send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"%s\">\n", name);
+		send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"%s\">\n", password);
+		send_printf(socketfd, "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n");
+		send_printf(socketfd, "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n");
+		send_printf(socketfd, "</FORM><P>\n");
+	}
+	return !frames;
 }
 
 //! show inventory, items person is carrying
@@ -528,6 +531,7 @@ Inventory_Command(mudpersonstruct *fmudstruct)
 	send_printf(fmudstruct->socketfd, "<HR><FONT Size=1><DIV ALIGN=right>%s", getParam(MM_COPYRIGHTHEADER));
 	send_printf(fmudstruct->socketfd, "<DIV ALIGN=left><P>");
 	send_printf(fmudstruct->socketfd, "</BODY></HTML>");
+	return 1;
 }
 
 //! small help function for computing what you pay and what you get returned

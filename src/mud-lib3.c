@@ -25,7 +25,10 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
 #include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
 #include "mud-lib3.h"
 
 /*! \file mud-lib3.c
@@ -35,7 +38,6 @@ maarten_l@yahoo.com
 int
 GoDown_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -125,7 +127,6 @@ GoDown_Command(mudpersonstruct *fmudstruct)
 int
 GoUp_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -213,7 +214,6 @@ GoUp_Command(mudpersonstruct *fmudstruct)
 int
 GoWest_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -296,7 +296,6 @@ GoWest_Command(mudpersonstruct *fmudstruct)
 int
 GoEast_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -381,7 +380,6 @@ GoEast_Command(mudpersonstruct *fmudstruct)
 int
 GoNorth_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -464,7 +462,6 @@ GoNorth_Command(mudpersonstruct *fmudstruct)
 int
 GoSouth_Command(mudpersonstruct *fmudstruct)
 {
-	int i=0;
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -550,7 +547,6 @@ Sleep_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
 	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char *temp;
 	char *name, *password, *fcommand;
 	int room;
@@ -579,7 +575,6 @@ Awaken2_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
 	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char *temp;
 	char *name;
 	char *password;

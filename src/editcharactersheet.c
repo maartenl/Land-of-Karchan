@@ -47,7 +47,6 @@ void showFamilyValues(const char *name, const char *password)
 	res = executeQuery(NULL, "select * from familyvalues");
 	if (res)// there are rows
 	{
-		int num_fields = mysql_num_fields(res);
 		// retrieve rows, then call mysql_free_result(result)
 		row = mysql_fetch_row(res);
 		if (row != NULL)
@@ -81,8 +80,6 @@ void showCharacterSheet(const char *name, const char *password)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
-	char *sqlstring;
 	
 	res = executeQuery(NULL, "select *, replace(replace(replace(storyline, '&','&amp;'),'<', '&lt;'), '>', '&gt;') "
 	"from characterinfo "
@@ -90,7 +87,6 @@ void showCharacterSheet(const char *name, const char *password)
 
 	if (res)// there are rows
 	{
-		int num_fields = mysql_num_fields(res);
 		// retrieve rows, then call mysql_free_result(result)
 		row = mysql_fetch_row(res);
 		if (row != NULL)
@@ -146,7 +142,6 @@ void validateUser()
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
 	int success = 0;
 	
 	res = executeQuery(NULL, "select * from usertable where usertable.name = '%x' and usertable.password = '%x'", 
@@ -168,7 +163,6 @@ void validateUser()
  	
 	if (res)// there are rows
 	{
-		int num_fields = mysql_num_fields(res);
 		// retrieve rows, then call mysql_free_result(result)
 		row = mysql_fetch_row(res);
 		if (row == NULL)

@@ -25,6 +25,7 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
 #include "typedefs.h"
 #include "parser.h"
 
@@ -39,9 +40,8 @@ main(int argc, char *argv[])
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int room;
-	char method_name[32];
 
-	umask(0000);
+//	umask(0000);
 	
 	initParam();
 	readConfigFiles("/karchan/config.xml");
@@ -73,5 +73,5 @@ main(int argc, char *argv[])
 
 	closedbconnection();
 	freeParam();
-	
+	return 0;
 }

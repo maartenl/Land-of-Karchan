@@ -149,7 +149,7 @@ void displayError(char *message, int i)
 	printf("<BODY>\n");
 	printf("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>%s - %s</H1><HR>\n", message, strerror(i));
 	printf("Please contact me at <A HREF=\"mailto:karn@karchan.org\">karn@karchan.org</A>");
-	printf(" to report the error.<P>\r\n", strerror(i));
+	printf(" to report the error.<P>\r\n");
 	
 	printf("<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n");
 	printf("</body>\n");
@@ -161,22 +161,19 @@ void displayError(char *message, int i)
 
 int main(int argc, char * argv[])
 {
-	int res, totalnumbytes;
+	int totalnumbytes;
 	char name[20];
 	char password[40];
 	char cookie[80];
-	char frames[10];
-	char *temp = NULL;
 	char *mudtitle = NULL;
-	char *myhostname, *myport;
+	char *myhostname = NULL, *myport = NULL;
 	
 	int sockfd, numbytes;
-	int first;
 	char receivebuf[1024], *sendbuf, *checkbuf;
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
 
-	umask(0000);
+//	umask(0000);
 	initParam();
 	readConfigFiles("/karchan/config.xml");
       	

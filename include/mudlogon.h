@@ -27,3 +27,8 @@ maarten_l@yahoo.com
 
 int gameLogon(int socketfd);
 
+int StrangeName(char *name, char *password, char *address, int socketfd);
+
+void WrongPasswd(char *name, char *address, char *error, int socketfd);
+
+void MakeStart(char *name, char *password, char *cookie, char *address, int frames, int socketfd);

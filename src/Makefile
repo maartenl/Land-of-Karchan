@@ -44,7 +44,7 @@ CC = gcc
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-COPTS = -O2 -mcpu=i486
+COPTS = -O2 -mcpu=i486 -Wall
 
 # this header is for RPM installations of mysql
 #

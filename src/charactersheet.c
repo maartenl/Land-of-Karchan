@@ -43,7 +43,6 @@ void showFamilyValues(const char *name)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
 	
 	res = executeQuery(NULL, "select familyvalues.description, toname, characterinfo.name "
 	"from family, familyvalues "
@@ -54,7 +53,6 @@ void showFamilyValues(const char *name)
 	printf("<B>Family Relations:</B><BR><UL>\n");
 	if (res)// there are rows
 	{
-		int num_fields = mysql_num_fields(res);
 		// retrieve rows, then call mysql_free_result(result)
 		while ((row = mysql_fetch_row(res))!=NULL) 
 		{
@@ -76,7 +74,6 @@ void showCharacterSheet()
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	int textlength, sqlsize, i;
 	char *databaseitems[] = 
 		{"Name:",
 		"Title",

@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
 {
 	char name[20];
 	char password[40];
-	int i, res;
+	int res;
 
 //	cgiHeaderContentType("text/html");
 	res = cgi_init();
@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
 		printf("Content-type: text/html\n\n");
 		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
 		cgi_quit();
-		exit(1);
+		return 1;
 	}
 	
 	

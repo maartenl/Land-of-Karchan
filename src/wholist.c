@@ -40,8 +40,6 @@ int showWhoList()
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	FILE *fp;
-	uint i = 0;
 	
 	printf("Content-type: text/html\n\n");
 	printf("<META http-equiv=\"refresh\" content=\"120\">");
@@ -65,7 +63,7 @@ int showWhoList()
 
 	if (res != NULL)
 	{
-		printf("<I>There are %i persons active in the game.</I><P>\r\n", mysql_num_rows(res));
+		printf("<I>There are %i persons active in the game.</I><P>\r\n", (int) mysql_num_rows(res));
 		printf("<UL>");
 		while((row = mysql_fetch_row(res))) 
 		{

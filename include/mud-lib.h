@@ -40,7 +40,7 @@ char *get_pluralis(char *s);
 
 char *get_pluralis2(char *s);
 
-int exit_adverb(char *s);
+int exist_adverb(char *s);
 
 void WriteRoom(mudpersonstruct *fmudstruct);
 

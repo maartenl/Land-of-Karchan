@@ -27,8 +27,6 @@ maarten_l@yahoo.com
 
 void Error(int i, char *description);
 
-char *lowercase(char dest[512], char *buf);
-
 void Wait(int sec, int usec);
 
 int ActivateUser(char *name);

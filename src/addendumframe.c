@@ -26,6 +26,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "cgi-util.h"
 
 /*! \file addendumframe.c
@@ -44,7 +45,7 @@ int main(int argc, char * argv[])
 		printf("Content-type: text/html\n\n");
 		printf("Error # %d: %s<P>\n", res, cgi_strerror(res));
 		cgi_quit();
-		exit(1);
+		return 1;
 	}
 	
 	if (0) 
@@ -72,7 +73,7 @@ int main(int argc, char * argv[])
 	printf("top.frames[1].stuffString(\"<HTML><BODY BGCOLOR=#FFFFFF>\")\n");
 	printf("// End the hiding here. -->\n");
 	printf("</SCRIPT>\n");
-	printf("<P>That's all, folks %i.\n");
+	printf("<P>That's all, folks.\n");
 	printf("---blaat---\n");
 	fflush(stdout);
 	sleep(1);

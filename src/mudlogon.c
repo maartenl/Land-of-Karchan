@@ -25,8 +25,11 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
 #include <string.h>
 #include "typedefs.h"
+#include "userlib.h"
+#include "mud-lib.h"
 #include "mudlogon.h"
 #include "mudmain.h"
 
@@ -61,8 +64,7 @@ StrangeName(char *name, char *password, char *address, int socketfd)
 	if (strlen(password)<5) {j=5;}
 	if (j)
 	{
-		char printstr[512];
-		char *error1,*error2;
+		char *error1 = NULL, *error2 = NULL;
 		time_t tijd;
 		struct tm datum;
 		switch (j)
@@ -131,7 +133,6 @@ StrangeName(char *name, char *password, char *address, int socketfd)
 /*! this is not allowed, a person may only be logged onto the game as one character as all times. */
 void MultiPlayerDetected(char *name, char *address, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd, "<HTML><HEAD><TITLE>Multiple Player Detected</TITLE></HEAD>\n\n");
@@ -174,7 +175,6 @@ CheckForOfflineMud(int socketfd)
 //! dump a alread-active page towards the player.
 void AlreadyActive(char *name, char *password, char *cookie, char *address, int frames, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd, "Content-type: text/html\r\n");
@@ -247,7 +247,6 @@ void AlreadyActive(char *name, char *password, char *cookie, char *address, int 
 //! dump a wrong-password page to the user.
 void WrongPasswd(char *name, char *address, char *error, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd,"<html><head><Title>Error</Title></head>\n");
@@ -289,7 +288,6 @@ void ToManyUsers(int socketfd)
 //! error page for the user, user attempted to enter a name for a player containing spaces.
 void ToManyNames(char *name, char *address, int socketfd) 
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	send_printf(socketfd,"<head><Title>Error</Title></head>\n");
@@ -312,7 +310,6 @@ void ToManyNames(char *name, char *address, int socketfd)
 /*! usually called when the name entered on the logon form does not exist yet. */
 void NewPlayer(char *fname, char *address, char *fpassword, int frames, int socketfd)
 {
-	char printstr[512];
 	time_t tijd;
 	struct tm datum;
 	char dood[100];
@@ -336,8 +333,6 @@ void MakeStart(char *name, char *password, char *cookie, char *address, int fram
 	char printstr[512];
 	time_t tijd;
 	struct tm datum;
-	int             i = 1,j;
-	FILE           *fp; 
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
@@ -439,13 +434,12 @@ gameLogon(int socketfd)
 	char *cookie;
 	char *address;
 	char secretpassword[26];
-	int i;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
 	mudpersonstruct *mymudstruct;
 	
-	umask(0000);
+//	umask(0000);
 	mymudstruct = find_in_list(socketfd);
 	cookie = mymudstruct->cookie;
 	name = mymudstruct->name;
@@ -468,7 +462,7 @@ gameLogon(int socketfd)
 
 	if (SearchBanList(address, name)) 
 	{
-		BannedFromGame(name, address);
+		BannedFromGame(name, address, socketfd);
 		return 0;
 	}
 

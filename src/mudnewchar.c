@@ -25,7 +25,11 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
 #include "typedefs.h"
+#include "userlib.h"
+#include "mudmain.h"
 #include "mudlogon.h"
 #include "mudnewchar.h"
 
@@ -61,10 +65,9 @@ by means of get_from_list
 int 
 gameNewchar(int socketfd)
 {
-	time_t          currenttime;
 	int i;
 	char *name;
-	char *address;
+	char *address = NULL;
 	char *password;
 	char secretpassword[26];
 	mudpersonstruct *mymudstruct;
@@ -75,7 +78,7 @@ gameNewchar(int socketfd)
 	password = mymudstruct->password;
 	infostruct = (mudnewcharstruct *) mymudstruct->newchar;
 #ifdef DEBUG
-	printf("gameNewchar started(%s, %s, %s, %s)!!!\n", name, password, address);
+	printf("gameNewchar started(%s, %s, %s)!!!\n", name, password, address);
 #endif
 
 	/* send_printf(fmudstruct->socketfd, "[%s]", getenv("HTTP_COOKIE"));*/
@@ -83,11 +86,11 @@ gameNewchar(int socketfd)
 
 	if (SearchBanList(address, name)) 
 	{
-		BannedFromGame(name, address);
+		BannedFromGame(name, address, socketfd);
 		return 0;
 	}
 
-	if (StrangeName(name, password, address) == 0)
+	if (StrangeName(name, password, address, socketfd) == 0)
 	{
 		return 0;
 	}
@@ -95,7 +98,7 @@ gameNewchar(int socketfd)
 	/* check if user already exists, if so -> exit */
 	if (SearchUser(name)==1) 
 	{
-		WrongPasswd(name, address);
+		WrongPasswd(name, address, "Wrong password detected during creation of new character", socketfd);
 		return 0;
 	}
 
@@ -112,6 +115,6 @@ gameNewchar(int socketfd)
 		infostruct->fleg, secretpassword);
 
 	ActivateUser(name);
-	MakeStart(name, secretpassword, address);
+	MakeStart(name, secretpassword, secretpassword, address, mymudstruct->frames, socketfd);
 	return 1;
 }

@@ -25,6 +25,8 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
 #include "typedefs.h"
 #include "userlib.h"
 
@@ -44,19 +46,6 @@ Error(int i, char *description)
 	fp = fopen(getParam(MM_ERRORFILE), "a");
 	fprintf(fp, "error %i: %s\n", i, description);
 	fclose(fp);
-}
-
-//! make string lowercase, DANGEROUS
-/*! \deprecated buffer to be entered is not allowed to reach beyond 511 characters
-*/	
-char           *
-lowercase(char dest[512], char *buf)
-{
-	int             i;
-	for (i = 0; i < strlen(buf) + 1; i++) {
-		dest[i] = tolower(buf[i]);
-	}
-	return (dest);
 }
 
 //! wait a number of sec/usec
@@ -82,13 +71,11 @@ mail he/she reads into tmp_tables.
 int 
 ActivateUser(char *name)
 {
-	FILE *fp, *fp2;
-	int i = 0;
-	char filenaam[100], troepstr[100];
+	FILE *fp;
+	char filenaam[100];
 	
 	/*move all resident mudmail from user to activemail*/
 	MYSQL_RES *res;
-	MYSQL_ROW row;
 	char *temp;
 	
 	/* ------------------------------- Mail ------------------------------ */
@@ -122,7 +109,7 @@ ActivateUser(char *name)
 	
 	mysql_free_result(res);
 	
-		umask(0000);
+//		umask(0000);
 		sprintf(filenaam, "%s%s.log", getParam(MM_USERHEADER), name);
 		fp = fopen(filenaam, "w");
 		fclose(fp);
@@ -146,15 +133,11 @@ ActivateUser(char *name)
 int 
 RemoveUser(char *name)
 {
-	FILE *fp, *fp2;
-	char filenaam[100], troepstr[100];
-	int i = 0;
+	char filenaam[100];
+	MYSQL_RES *res;
+	char *temp;
 
-/*remove all active mudmail from user*/
-MYSQL_RES *res;
-MYSQL_ROW row;
-char *temp;
-
+	/*remove all active mudmail from user*/
 /* ------------------------------- Mail ------------------------------ */
 
 /* Remove mail of user in temp_mailtable */
@@ -410,51 +393,50 @@ return returnvalue;
 int 
 SearchBanList(char *item, char *username)
 {
-MYSQL_RES *res;
-MYSQL_ROW row;
-int i;
-char *temp;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char *temp;
 
-temp = composeSqlStatement("select count(name) from sillynamestable where '%x' like name", username);
-res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+	temp = composeSqlStatement("select count(name) from sillynamestable where '%x' like name", username);
+	res=sendQuery(temp, NULL);
+	free(temp);temp=NULL;
 
-row = mysql_fetch_row(res);
+	row = mysql_fetch_row(res);
 
-if (strcmp(row[0],"0")) 
-{
+	if (strcmp(row[0],"0")) 
+	{
+		mysql_free_result(res);
+		return 1;
+	}
 	mysql_free_result(res);
-	return 1;
-}
-mysql_free_result(res);
 
-temp = composeSqlStatement("select count(name) from unbantable where name='%x'", username);
-res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
+	temp = composeSqlStatement("select count(name) from unbantable where name='%x'", username);
+	res=sendQuery(temp, NULL);
+	free(temp);temp=NULL;
 
-row = mysql_fetch_row(res);
+	row = mysql_fetch_row(res);
 
-if (strcmp(row[0],"0")) 
-{
+	if (strcmp(row[0],"0")) 
+	{
+		mysql_free_result(res);
+		return 0;
+	}
 	mysql_free_result(res);
+
+	temp = composeSqlStatement("select count(address) from bantable where '%x' like address", item);
+	res=sendQuery(temp, NULL);
+	free(temp);temp=NULL;
+
+	row = mysql_fetch_row(res);
+
+	if (strcmp(row[0],"0")) 
+	{
+		mysql_free_result(res);
+		return 1;
+	}
+	mysql_free_result(res);
+
 	return 0;
-}
-mysql_free_result(res);
-
-temp = composeSqlStatement("select count(address) from bantable where '%x' like address", item);
-res=sendQuery(temp, NULL);
-free(temp);temp=NULL;
-
-row = mysql_fetch_row(res);
-
-if (strcmp(row[0],"0")) 
-{
-	mysql_free_result(res);
-	return 1;
-}
-mysql_free_result(res);
-
-return 0;
 }
 
 //! get description of items available based on the name of the item
@@ -514,9 +496,6 @@ WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt,...)
 {
 	FILE *filep;
 	va_list ap;
-	char *s;
-	int i;
-	char c;
 
 	filep = fopen(filenaam, "a");
 	va_start(ap, fmt);
@@ -532,13 +511,10 @@ WriteSentenceIntoOwnLogFile(const char *filenaam, char *fmt,...)
 void 
 WriteMessage(char *name, int roomnr, char *fmt,...)
 {
-FILE *fp;
 char troep[100];
 FILE *filep;
 va_list ap;
-char *s, *save;
-int i;
-char c;
+char *save;
 
 MYSQL_RES *res;
 MYSQL_ROW row;
@@ -571,11 +547,9 @@ int
 WriteMessageTo(char *toname, char *name, int roomnr, char *fmt,...)
 {
 	char *save;
-	char troep[100], naamxx1[22], naamxx2[22];
-
-MYSQL_RES *res;
+	char troep[100];
+	MYSQL_RES *res;
 MYSQL_ROW row;
-int i;
 char *temp;
 
 temp = composeSqlStatement("select name, room from tmp_usertable where name='%x' and room=%i", toname, roomnr);
@@ -597,9 +571,6 @@ save = fmt;
 while((row = mysql_fetch_row(res))) {
 				FILE *filep;
 				va_list ap;
-				char *s;
-				int i;
-				char c;
 			strcpy(troep, getParam(MM_USERHEADER));
 			strcat(troep, row[0]);
 			strcat(troep, ".log");
@@ -628,9 +599,6 @@ WriteSayTo(char *toname, char *name, int roomnr, char *fmt,...)
 	char troep[100];
 	FILE *filep;
 	va_list ap;
-	char *s;
-	int i;
-	char c;
 
 MYSQL_RES *res;
 MYSQL_ROW row;
@@ -669,9 +637,6 @@ WriteLinkTo(char *toname, char *name, char *fmt,...)
 	char troep[100];
 	FILE *filep;
 	va_list ap;
-	char *s;
-	int i;
-	char c;
 
 MYSQL_RES *res;
 MYSQL_ROW row;
@@ -850,6 +815,7 @@ ShowHittingStuff(int i, char *race)
 		case 5 : return "left knee";
 		case 6 : return "right knee";
 	}
+	return "right fist";
 }
 
 //! show how much you drank
