@@ -459,6 +459,12 @@ LookItem_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 
+	if ((getTokenAmount()<3) || (getTokenAmount()>6))
+	{
+		WriteSentenceIntoOwnLogFile(logname, "You see nothing special.<BR>\r\n");
+		WriteRoom(name, password, room, 0);
+		return;
+	}
 	if (getTokenAmount()==3)
 	{
 		sprintf(temp, "select items.description, items.name, items.adject1, items.adject2, "
@@ -964,7 +970,7 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 
 	sprintf(dude, "select id from items where");
 
-	switch (getTokenAmount()) {
+	switch (aantal) {
 		/* noun */
 	case 1:{
 		sprintf(temp, "%s items.name='%s'", dude, tok1);
@@ -1296,11 +1302,14 @@ DropMoney_Command(char *name, char *password, int room)
 	
 	sprintf(logname, "%s%s.log", USERHeader, name);
 	
+	if (getTokenAmount()==1)
+	{
+		WriteRoom(name, password, room, 0);
+		return;
+	}
+	
 	/* look for specific person */
-	sprintf(sqlstring, 
-	"select copper, silver, gold from tmp_usertable where 
-	(name = '%s')"
-	, name);
+	sprintf(sqlstring, "select copper, silver, gold from tmp_usertable where (name = '%s')", name);
 	res=SendSQL2(sqlstring, NULL);
 	row = mysql_fetch_row(res);
 	mycopper = atoi(row[0]);
@@ -1636,7 +1645,7 @@ GetItem_Command(char *name, char *password, int room)
 			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, room);
 		}
-		if (getTokenAmount()==5+numberfilledout) 
+		if (getTokenAmount()>=5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -1867,7 +1876,7 @@ DropItem_Command(char *name, char *password, int room)
 			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, name);
 		}
-		if (getTokenAmount()==5+numberfilledout) 
+		if (getTokenAmount()>=5+numberfilledout) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -2803,7 +2812,7 @@ Wear_Command(char *name, char *password, int room, char *command)
 			getToken(2), getToken(2), getToken(2),
 			name, sqlcomposite);
 		}
-		if (getTokenAmount()==7) 
+		if (getTokenAmount()>=7) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3191,7 +3200,7 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount()>=5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3367,7 +3376,7 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount()>=5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3558,7 +3567,7 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount()>=5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3753,7 +3762,7 @@ Drink_Command(char *name, char *password, int room, char *fcommand)
 			getToken(2), getToken(2), getToken(2),
 			name);
 		}
-		if (getTokenAmount()==5) 
+		if (getTokenAmount()>=5) 
 		{
 			/*get iron strong strong pick*/
 			sprintf(sqlstring, 
@@ -3998,7 +4007,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, fromname);
 		}
-		if (getTokenAmount()==5+numberfilledout) 
+		if (getTokenAmount()>=5+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -4221,7 +4230,7 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 		getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 		amount, name);
 	}
-	if (getTokenAmount()==5+numberfilledout) 
+	if (getTokenAmount()>=5+numberfilledout) 
 	{
 		/*give iron strong pick to Karn*/
 		sprintf(sqlstring, 
@@ -4593,7 +4602,7 @@ GiveItem_Command(char *name, char *password, int room)
 			getToken(numberfilledout+2), getToken(numberfilledout+2), getToken(numberfilledout+2),
 			amount, name);
 		}
-		if (getTokenAmount()==7+numberfilledout) 
+		if (getTokenAmount()>=7+numberfilledout) 
 		{
 			/*give iron strong pick to Karn*/
 			sprintf(sqlstring, 
@@ -4816,7 +4825,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 		getToken(2), getToken(2), getToken(2),
 		room);
 	}
-	if (getTokenAmount()==5) 
+	if (getTokenAmount()>=5) 
 	{
 		/*get iron strong strong pick*/
 		sprintf(sqlstring, 
@@ -4917,7 +4926,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 		getToken(2), getToken(2), getToken(2),
 		name);
 	}
-	if (getTokenAmount()==5) 
+	if (getTokenAmount()>=5) 
 	{
 		/*get iron strong strong pick*/
 		sprintf(sqlstring, 
