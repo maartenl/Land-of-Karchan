@@ -1,9 +1,272 @@
-FILES
-=====
+.:
+total 36
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 .
+   4 drwxr-xr-x   11 karchan  karchan      4096 Jun 20 23:11 ..
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 20 23:02 data
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:35 docs
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 include
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 20 23:02 init
+   4 drwxrwxr-x    5 karchan  karchan      4096 Jun 20 23:02 sql
+   4 drwxrwxr-x    4 karchan  karchan      4096 Jun 20 23:02 src
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 tmp
 
-This file contains a list of all files in this release. If for any reason
-one of the files in this list is missing from the archive contact me at
-maarten_l@yahoo.com or try to download the original package from
-http://www.karchan.org
+./data:
+total 48
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+   4 -rw-------    1 karchan  karchan       165 Jun 20 23:02 audit.trail
+   4 -rw-------    1 karchan  karchan       165 Jun 20 23:02 audit.trail.empty
+   0 -rw-r--r--    1 karchan  karchan         0 Jun 20 23:02 bigfile
+   0 -rw-r--r--    1 karchan  karchan         0 Jun 20 23:02 bigfile.empty
+   4 -rw-------    1 karchan  karchan       229 Jun 20 23:02 board.txt
+   4 -rw-------    1 karchan  karchan       229 Jun 20 23:02 board.txt.empty
+   4 -rw-rw-r--    1 karchan  karchan         1 Jun 20 23:02 error.log
+   4 -rw-rw-r--    1 karchan  karchan         1 Jun 20 23:02 error.txt
+   4 -rw-r--r--    1 karchan  karchan       399 Jun 20 23:02 goodbye.html
+   8 -rw-r--r--    1 karchan  karchan      7449 Jun 20 23:02 newchar.html
+   4 -rw-rw-r--    1 karchan  karchan       544 Jun 20 23:02 offline2.txt
 
-~/mmud-1.4.2:
+./docs:
+total 820
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:35 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+   4 -rw-rw-r--    1 karchan  karchan       763 Jun 20 23:02 a_new_release_howto.txt
+   4 -rw-rw-r--    1 karchan  karchan       326 Jun 20 23:02 BUGLIST
+   4 -rw-rw-r--    1 karchan  karchan       897 Jun 20 23:35 CHANGES
+   4 -rw-rw-r--    1 karchan  karchan       237 Jun 20 23:02 CHANGES~
+   4 -rw-rw-r--    1 karchan  karchan      3448 Jun 20 23:02 combat.fig
+   8 -rw-rw-r--    1 karchan  karchan      5045 Jun 20 23:02 compute_hit.fig
+  12 -rw-rw-r--    1 karchan  karchan     10220 Jun 20 23:02 compute_hit.ps
+   4 -rw-rw-r--    1 karchan  karchan      2916 Jun 20 23:02 cookie.fig
+   8 -rw-rw-r--    1 karchan  karchan      7007 Jun 20 23:02 cookie.ps
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+   4 -rw-rw-r--    1 karchan  karchan      2014 Jun 20 23:02 cvs_howto.txt
+   8 -rw-rw-r--    1 karchan  karchan      6540 Jun 20 23:02 database.fig
+  12 -rw-rw-r--    1 karchan  karchan      9893 Jun 20 23:02 database_ideas.txt
+  16 -rw-rw-r--    1 karchan  karchan     13015 Jun 20 23:02 database.ps
+  16 -rw-rw-r--    1 karchan  karchan     16372 Jun 20 23:02 deputy.dvi
+  96 -rw-rw-r--    1 karchan  karchan     90926 Jun 20 23:02 deputy.pdf
+  12 -rw-rw-r--    1 karchan  karchan     10346 Jun 20 23:02 deputy.tex
+   4 -rw-rw-r--    1 karchan  karchan      1818 Jun 20 23:02 example.crontab.txt
+   8 -rwxrwxr-x    1 karchan  karchan      6859 Jun 20 23:02 example_stories_to_play_out.txt
+   4 -rw-rw-r--    1 karchan  karchan       708 Jun 20 23:02 FAQ
+  16 -rw-rw-r--    1 karchan  karchan     16113 Jun 20 23:35 FILES
+   4 -rw-rw-r--    1 karchan  karchan      1588 Jun 20 23:02 linux_command_line.txt
+  96 -rw-rw-r--    1 karchan  karchan     91876 Jun 20 23:02 mmud.dvi
+ 244 -rw-rw-r--    1 karchan  karchan    244870 Jun 20 23:02 mmud.pdf
+  68 -rw-rw-r--    1 karchan  karchan     62516 Jun 20 23:02 mmud.tex
+   4 -rw-rw-r--    1 karchan  karchan       292 Jun 20 23:02 mud_files_howto.txt
+  64 -rwxrwxr-x    1 karchan  karchan     58168 Jun 20 23:02 mudideas.txt
+   8 -rw-rw-r--    1 karchan  karchan      4513 Jun 20 23:02 parser_states.fig
+  12 -rw-rw-r--    1 karchan  karchan      8905 Jun 20 23:02 parser_states.ps
+   4 -rw-rw-r--    1 karchan  karchan      1882 Jun 20 23:02 rolls2.fig
+   8 -rw-rw-r--    1 karchan  karchan      5608 Jun 20 23:02 rolls2.ps
+   4 -rw-rw-r--    1 karchan  karchan      2670 Jun 20 23:02 rolls.fig
+   8 -rw-rw-r--    1 karchan  karchan      6184 Jun 20 23:02 sourcecode.fig
+  16 -rw-rw-r--    1 karchan  karchan     14552 Jun 20 23:02 sourcecode.ps
+  12 -rw-rw-r--    1 karchan  karchan     10087 Jun 20 23:02 tables.setup.txt
+   4 -rw-rw-r--    1 karchan  karchan       387 Jun 20 23:29 TODO
+   4 -rw-rw-r--    1 karchan  karchan       575 Jun 20 23:02 TODO~
+
+./docs/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:35 ..
+   4 -rw-rw-r--    1 karchan  karchan      1552 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan         5 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./include:
+total 80
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+   8 -rw-rw-r--    1 karchan  karchan      5315 Jun 20 23:02 cgic.h
+   4 -rw-rw-r--    1 karchan  karchan       317 Jun 20 23:02 cgi.h
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+   4 -rw-rw-r--    1 karchan  karchan      1983 Jun 20 23:02 guild.h
+   4 -rw-rw-r--    1 karchan  karchan      1320 Jun 20 23:02 mud2-lib.h
+  12 -rw-rw-r--    1 karchan  karchan      8463 Jun 20 23:02 mud-lib2.h
+   4 -rw-rw-r--    1 karchan  karchan      1804 Jun 20 23:02 mud-lib3.h
+   4 -rw-rw-r--    1 karchan  karchan      2025 Jun 20 23:02 mud-lib.h
+   4 -rw-rw-r--    1 karchan  karchan      2363 Jun 20 23:02 parser.h
+   8 -rw-rw-r--    1 karchan  karchan      6765 Jun 20 23:02 typedefs.h
+   8 -rw-rw-r--    1 karchan  karchan      6760 Jun 20 23:02 typedefs.h~
+   8 -rw-rw-r--    1 karchan  karchan      4190 Jun 20 23:02 userlib.h
+
+./include/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rw-rw-r--    1 karchan  karchan       416 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan         8 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./init:
+total 52
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+  24 -rwxrw-r--    1 karchan  karchan     24070 Jun 20 23:02 init.sql
+   4 -rw-r--r--    1 karchan  karchan      1004 Jun 20 23:02 notice.txt
+   8 -rwxrw-r-x    1 karchan  karchan      7419 Jun 20 23:02 sql.1.4.1b-1.4.2a.patch
+   8 -rwxrw-r-x    1 karchan  karchan      6153 Jun 20 23:02 sql.1.4.2a-1.4.3.patch
+
+./sql:
+total 268
+   4 drwxrwxr-x    5 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 crontab
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+  16 -rwxrw-r-x    1 karchan  karchan     13182 Jun 20 23:02 mysql_action
+   8 -rwxrw-r-x    1 karchan  karchan      5502 Jun 20 23:02 mysql_addbots
+   8 -rwxrw-r-x    1 karchan  karchan      7434 Jun 20 23:02 mysql_addhelp
+   4 -rwxrw-r-x    1 karchan  karchan       360 Jun 20 23:02 mysql_checkracesokay
+   4 -rwxrw-r-x    1 karchan  karchan       699 Jun 20 23:02 mysql_cleanup_quotes
+   4 -rwxrw-r-x    1 karchan  karchan       790 Jun 20 23:02 mysql_clearcharacters
+   4 -rwxrwxr-x    1 karchan  karchan       249 Jun 20 23:02 mysql_constants
+   4 -rwxrwxr-x    1 karchan  karchan       244 Jun 20 23:02 mysql_constants~
+   4 -rwxrw-r-x    1 karchan  karchan       272 Jun 20 23:02 mysql_deleteitem
+   4 -rwxrw-r-x    1 karchan  karchan       301 Jun 20 23:02 mysql_fixusers
+   4 -rwxrw-r-x    1 karchan  karchan       862 Jun 20 23:02 mysql_help
+  36 -rwxrw-r-x    1 karchan  karchan     34240 Jun 20 23:02 mysql_items
+  20 -rwxrw-r-x    1 karchan  karchan     16450 Jun 20 23:02 mysql_items2
+  32 -rwxrw-r-x    1 karchan  karchan     32317 Jun 20 23:02 mysql_items3
+  24 -rwxrw-r-x    1 karchan  karchan     21786 Jun 20 23:02 mysql_items4
+   8 -rwxrw-r-x    1 karchan  karchan      6572 Jun 20 23:02 mysql_itemscorpses
+   4 -rwxrw-r-x    1 karchan  karchan      2869 Jun 20 23:02 mysql_logonmessage
+   4 -rwxrw-r-x    1 karchan  karchan      2197 Jun 20 23:02 mysql_logonmessage_christmas
+   8 -rwxrw-r-x    1 karchan  karchan      5334 Jun 20 23:02 mysql_monsters
+   4 -rwxrw-r-x    1 karchan  karchan      1290 Jun 20 23:02 mysql_optimise_tables
+   4 -rwxrw-r-x    1 karchan  karchan       189 Jun 20 23:02 mysql_roomid
+   4 -rwxrw-r-x    1 karchan  karchan      2333 Jun 20 23:02 mysql_rooms
+   4 -rwxrw-r-x    1 karchan  karchan       415 Jun 20 23:02 mysql_skills
+   4 -rwxrw-r-x    1 karchan  karchan       317 Jun 20 23:02 mysql_specialitems
+   4 -rwxrw-r-x    1 karchan  karchan      1390 Jun 20 23:02 mysql_tablestruct
+   4 -rwxrw-r-x    1 karchan  karchan       251 Jun 20 23:02 mysql_talk
+   4 -rwxrw-r-x    1 karchan  karchan       316 Jun 20 23:02 mysql_talk~
+   4 -rwxrw-r-x    1 karchan  karchan       384 Jun 20 23:02 mysql_talkall
+   4 -rwxrw-r-x    1 karchan  karchan       697 Jun 20 23:02 mysql_updateitems
+   4 -rw-rw-r--    1 karchan  karchan        11 Jun 20 23:02 password.sql
+   4 -rw-rw-r--    1 karchan  karchan         8 Jun 20 23:02 password.sql~
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 scripts
+
+./sql/crontab:
+total 48
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    5 karchan  karchan      4096 Jun 20 23:02 ..
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+   4 -rwxrw-r-x    1 karchan  karchan       276 Jun 20 23:02 mysql_diminishbans
+   4 -rwxrw-r-x    1 karchan  karchan      1554 Jun 20 23:02 mysql_healing
+   4 -rwxrw-r-x    1 karchan  karchan      1554 Jun 20 23:02 mysql_make_database_consistent
+   4 -rwxrw-r-x    1 karchan  karchan       273 Jun 20 23:02 mysql_monsters
+   4 -rwxrw-r-x    1 karchan  karchan       527 Jun 20 23:02 mysql_removeoldchar
+   8 -rwxrw-r-x    1 karchan  karchan      4673 Jun 20 23:02 mysql_resetaction
+   4 -rwxrw-r-x    1 karchan  karchan       292 Jun 20 23:02 mysql_respawnitems
+   4 -rwxrw-r-x    1 karchan  karchan      1894 Jun 20 23:02 mysql_wonderoff
+
+./sql/crontab/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rw-rw-r--    1 karchan  karchan       410 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan        12 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./sql/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    5 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rw-rw-r--    1 karchan  karchan      1375 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan         4 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./sql/scripts:
+total 72
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    5 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rwxrwxr-x    1 karchan  karchan       517 Jun 20 23:02 create_mudtest.sql
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+  16 -rwxrwxr-x    1 karchan  karchan     13129 Jun 20 23:02 database_methods2.sql
+  32 -rw-rw-r--    1 karchan  karchan     30091 Jun 20 23:02 database_methods.sql
+   4 -rwxrwxr-x    1 karchan  karchan       706 Jun 20 23:02 mysql_change_roomdesc
+   4 -rwxrwxr-x    1 karchan  karchan       798 Jun 20 23:02 mysql_checkdatabase
+
+./sql/scripts/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rw-rw-r--    1 karchan  karchan       267 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan        12 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./src:
+total 712
+   4 drwxrwxr-x    4 karchan  karchan      4096 Jun 20 23:02 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
+   4 -rw-rw-r--    1 karchan  karchan      2647 Jun 20 23:02 addendumframe.c
+   4 -rw-rw-r--    1 karchan  karchan      2617 Jun 20 23:02 cgi.c
+  24 -rw-rw-r--    1 karchan  karchan     23333 Jun 20 23:02 cgic.c
+   8 -rw-rw-r--    1 karchan  karchan      4504 Jun 20 23:02 cgictest.c
+   4 -rw-rw-r--    1 karchan  karchan       220 Jun 20 23:02 cgitest.c
+   8 -rw-rw-r--    1 karchan  karchan      6871 Jun 20 23:02 charactersheet.c
+   8 -rw-rw-r--    1 karchan  karchan      4981 Jun 20 23:02 charactersheets.c
+   4 -rw-rw-r--    1 karchan  karchan      4060 Jun 20 23:02 clearcharacters.c
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 16 22:15 cookies
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+  12 -rw-rw-r--    1 karchan  karchan     10760 Jun 20 23:02 editcharactersheet.c
+  24 -rw-rw-r--    1 karchan  karchan     21469 Jun 20 23:02 enter.c
+   4 -rw-rw-r--    1 karchan  karchan      1927 Jun 20 23:02 events.c
+  16 -rw-rw-r--    1 karchan  karchan     13757 Jun 20 23:02 guild.c
+   8 -rw-rw-r--    1 karchan  karchan      6024 Jun 20 23:02 leftframe.c
+   4 -rw-rw-r--    1 karchan  karchan      2296 Jun 20 23:02 logonframe.c
+  12 -rw-rw-r--    1 karchan  karchan     11298 Jun 20 23:02 Makefile
+  12 -rw-rw-r--    1 karchan  karchan      9301 Jun 20 23:02 Makefile.weird
+  36 -rw-rw-r--    1 karchan  karchan     35567 Jun 20 23:02 mud.backup.c
+  44 -rw-rw-r--    1 karchan  karchan     44935 Jun 20 23:02 mud.c
+   4 -rw-rw-r--    1 karchan  karchan      3186 Jun 20 23:02 mudclient.c
+ 128 -rw-rw-r--    1 karchan  karchan    124824 Jun 20 23:02 mud-lib2.c
+  16 -rw-rw-r--    1 karchan  karchan     16275 Jun 20 23:02 mud-lib3.c
+  24 -rw-rw-r--    1 karchan  karchan     24339 Jun 20 23:02 mud-lib.c
+  12 -rw-rw-r--    1 karchan  karchan     10555 Jun 20 23:02 mudrelogin.c
+  36 -rw-rw-r--    1 karchan  karchan     33800 Jun 20 23:02 mudserver.c
+  20 -rw-rw-r--    1 karchan  karchan     20341 Jun 20 23:02 newchar.c
+   4 -rw-rw-r--    1 karchan  karchan      3192 Jun 20 23:02 nph-addendum2.c
+   8 -rw-rw-r--    1 karchan  karchan      4363 Jun 20 23:02 nph-addendum.c
+   4 -rw-rw-r--    1 karchan  karchan      3275 Jun 20 23:02 nph-javascriptframe.c
+   8 -rw-rw-r--    1 karchan  karchan      6207 Jun 20 23:02 nph-leftframe.c
+   4 -rw-rw-r--    1 karchan  karchan      2309 Jun 20 23:02 nph-logonframe.c
+  20 -rw-rw-r--    1 karchan  karchan     17974 Jun 20 23:02 parser.c
+   4 -rw-rw-r--    1 karchan  karchan      4055 Jun 20 23:02 personal_info.c
+  56 -rw-rw-r--    1 karchan  karchan     51403 Jun 20 23:02 rolls2.c
+  64 -rw-rw-r--    1 karchan  karchan     58092 Jun 20 23:02 rolls.c
+   8 -rw-rw-r--    1 karchan  karchan      7110 Jun 20 23:02 submitcharactersheet.c
+   4 -rw-rw-r--    1 karchan  karchan      1414 Jun 20 23:02 testing.c
+  12 -rw-rw-r--    1 karchan  karchan      8374 Jun 20 23:02 typedefs.c
+  20 -rw-rw-r--    1 karchan  karchan     19073 Jun 20 23:02 userlib.c
+   4 -rw-rw-r--    1 karchan  karchan      3232 Jun 20 23:02 wholist.c
+
+./src/cookies:
+total 12
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    4 karchan  karchan      4096 Jun 20 23:02 ..
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 CVS
+
+./src/cookies/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    3 karchan  karchan      4096 Jun 16 22:15 ..
+   4 -rw-rw-r--    1 karchan  karchan         2 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan        12 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./src/CVS:
+total 20
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    4 karchan  karchan      4096 Jun 20 23:02 ..
+   4 -rw-rw-r--    1 karchan  karchan      1754 Jun 16 22:15 Entries
+   4 -rw-rw-r--    1 karchan  karchan         4 Jun 16 22:15 Repository
+   4 -rw-rw-r--    1 karchan  karchan        51 Jun 16 22:15 Root
+
+./tmp:
+total 8
+   4 drwxrwxr-x    2 karchan  karchan      4096 Jun 16 22:15 .
+   4 drwxrwxr-x    9 karchan  karchan      4096 Jun 16 22:16 ..
