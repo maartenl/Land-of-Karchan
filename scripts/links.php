@@ -65,7 +65,6 @@ if ($_REQUEST{"linkname"} != "")
 		"\" and password = password(\"".
 		mysql_escape_string($_REQUEST{"password"}).
 		"\")";
-	printf($query);
 	$result = mysql_query($query
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
