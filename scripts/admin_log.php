@@ -44,15 +44,15 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_REQUEST{"status"} = "1")
 {
-	$query = "select * from mm_log order by creation";
+	$query = "select date_format(creation), name, message from mm_log order by creation";
 }
 if ($_REQUEST{"status"} = "2")
 {
-	$query = "select * from mm_log where creation > now() - INTERVAL 1 day order by creation";
+	$query = "select date_format(creation, \"%Y-%c-%e %T\"), name, message from mm_log where creation > now() -  INTERVAL 7 day order by creation";
 }
 if ($_REQUEST{"status"} = "3")
 {
-	$query = "select * from mm_log where creation > now() -  INTERVAL 7 day order by creation";
+	$query = "select date_format(creation, \"%Y-%c-%e %T\"), name, message from mm_log where creation > now() - INTERVAL 1 day order by creation";
 }
 $result = mysql_query($query
 	, $dbhandle)
