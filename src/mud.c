@@ -49,7 +49,6 @@ maarten_l@yahoo.com
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "typedefs.h"
 #include "cgi-util.h"
 
 /*! \file mud.c
@@ -59,6 +58,40 @@ maarten_l@yahoo.com
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud 
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
+
+#define MM_HOST "sherlock"
+#define MM_PORT "3339"
+
+/*! attempts to send data over a socket, if not all information is sent.
+will automatically attempt to send the rest.
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\return return -1 on failure, 0 on success
+*/
+int
+send_socket(int s, char *buf, int *len)
+{
+	int total = 0;	// how many btytes we've sent
+	int bytesleft = *len;	// how many we have left to send
+	int n = 0;
+#if DEBUG==2
+	printf("[message]: %s\n", buf);
+#endif
+	while (total < *len)
+	{
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1)
+		{
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+	}
+	*len = total;	// return number actually sent here
+	
+	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
+}
 
 //! retrieve cookie value
 /*! 
@@ -209,9 +242,6 @@ main(int argc, char * argv[])
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
 	
-	initParam();
-	readConfigFiles("/karchan/config.xml");
-
 #ifdef DEBUG
 	command = (char *) malloc(1024);
 	printf("Command:");
@@ -224,8 +254,8 @@ main(int argc, char * argv[])
 	fgets(cookiepassword, 39, stdin);cookiepassword[strlen(cookiepassword)-1]=0;
 	setFrames(0);
 	strcpy(frames, "0");
-	myhostname = strdup(getParam(MM_HOST));
-	myport = strdup(getParam(MM_PORT));
+	myhostname = strdup(MM_HOST);
+	myport = strdup(MM_PORT);
 	res = 0;
 #else
 	res = cgi_init();
@@ -277,7 +307,7 @@ main(int argc, char * argv[])
 	}
 	if (cgi_getentrystr("hostname") == NULL)
 	{
-		myhostname = strdup(getParam(MM_HOST));
+		myhostname = strdup(MM_HOST);
 	}
 	else
 	{
@@ -285,13 +315,13 @@ main(int argc, char * argv[])
 	}
 	if (cgi_getentrystr("port") == NULL)
 	{
-		myport = strdup(getParam(MM_PORT));
+		myport = strdup(MM_PORT);
 	}
 	else
 	{
 		if (atoi(cgi_getentrystr("port")) == 0)
 		{
-			myport = strdup(getParam(MM_PORT));
+			myport = strdup(MM_PORT);
 		}
 		else
 		{
@@ -434,6 +464,5 @@ main(int argc, char * argv[])
 	free(command); // clear the entered command
 	free(myhostname);
 	free(myport);
-	freeParam();
 	return 0;
 }

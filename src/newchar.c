@@ -50,11 +50,44 @@ maarten_l@yahoo.com
 #include <libxml/tree.h>
 
 #include "cgi-util.h"
-#include "typedefs.h"
 
 #define MMVERSION "4.01b" // the mmud version in general
 #define MMPROTVERSION "1.0" // the protocol version used in this mud
 #define IDENTITY "Maartens Mud (MMud) Version " MMVERSION " " __DATE__ __TIME__ "\n"
+
+#define MM_HOST "sherlock"
+#define MM_PORT "3339"
+
+/*! attempts to send data over a socket, if not all information is sent.
+will automatically attempt to send the rest.
+\param s int socket descriptor
+\param buf char* message
+\param len int* length of message, should be equal to strlen(message) both at the beginning as well as after
+\return return -1 on failure, 0 on success
+*/
+int
+send_socket(int s, char *buf, int *len)
+{
+	int total = 0;	// how many btytes we've sent
+	int bytesleft = *len;	// how many we have left to send
+	int n = 0;
+#if DEBUG==2
+	printf("[message]: %s\n", buf);
+#endif
+	while (total < *len)
+	{
+		n = send(s, buf+total, bytesleft, 0);
+		if (n == -1)
+		{
+			break;
+		}
+		total += n;
+		bytesleft -= n;
+	}
+	*len = total;	// return number actually sent here
+	
+	return (n == -1 ? -1 : 0);	// return -1 on failure, 0 on success
+}
 
 /*! \file newchar.c
 	\brief  simple cgi-binary used for creating a new character. */
@@ -208,8 +241,6 @@ int main(int argc, char *argv[])
 	struct sockaddr_in their_addr; // connector's address information
          
 //	umask(0000);
-	initParam();
-	readConfigFiles("/karchan/config.xml");
 
 #ifdef DEBUG
 	strcpy(name, "Karn");
@@ -257,7 +288,7 @@ int main(int argc, char *argv[])
 	}
 	if (cgi_getentrystr("hostname") == NULL)
 	{
-		myhostname = strdup(getParam(MM_HOST));
+		myhostname = strdup(MM_HOST);
 	}
 	else
 	{
@@ -265,13 +296,13 @@ int main(int argc, char *argv[])
 	}
 	if (cgi_getentrystr("port") == NULL)
 	{
-		myport = strdup(getParam(MM_PORT));
+		myport = strdup(MM_PORT);
 	}
 	else
 	{
 		if (atoi(cgi_getentrystr("port")) == 0)
 		{
-			myport = strdup(getParam(MM_PORT));
+			myport = strdup(MM_PORT);
 		}
 		else
 		{
@@ -449,7 +480,6 @@ int main(int argc, char *argv[])
 	}
 	printf("%s", checkbuf);
 	free(checkbuf);
-	freeParam();
 	
 	return 0;
 }

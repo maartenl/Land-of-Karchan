@@ -37,8 +37,9 @@ MYSQLLIB = mysqlclient_r
 # when the program is terminated, a list is dumped on standard output
 # on which variables are still available in memory and have not cleared
 # properly.
-DEBUG = -DDEBUG
-# -DMEMMAN
+DEBUG = -DMEMMAN
+# -DDEBUG
+
 
 #
 #------------------------------------------------------------------
@@ -75,7 +76,7 @@ EXEDIR = /home/httpd/cgi-bin
 # it enables ElectricFence which is used to detect
 # general memory allocation errors (malloc)
 #
-LIBDIR = -L/usr/lib/mysql/ -lm -l$(MYSQLLIB) -lz -lefence -lpthread
+LIBDIR = -L/usr/lib/mysql/ -lm -l$(MYSQLLIB) -lz -lpthread
 # you can use xml-config, however, when two xml libs exists, it will
 # pick the oldest one
 XMLLIBDIR = `/usr/bin/xml2-config --libs`
@@ -141,18 +142,18 @@ typedefs.o: typedefs.c
 
 #--- Binary executables are compiled below...
 
-enter: enter.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o enter cgi-util.o typedefs.o enter.o $(LIBDIR) $(XMLLIBDIR) 
+enter: enter.o cgi-util.o 
+	$(CC) $(COPTS) -o enter cgi-util.o enter.o $(LIBDIR) $(XMLLIBDIR) 
 
 # has become obsolete
 #mudrelogin: mudrelogin.o mud-lib.o typedefs.o userlib.o cgi-util.o mudrelogin.c
 #	$(CC) $(COPTS) -o mudrelogin cgi-util.o typedefs.o userlib.o mud-lib.o mudrelogin.o $(LIBDIR)
 
-newchar: newchar.o cgi-util.o newchar.c typedefs.o
-	$(CC) $(COPTS) -o newchar cgi-util.o typedefs.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
+newchar: newchar.o cgi-util.o newchar.c
+	$(CC) $(COPTS) -o newchar cgi-util.o newchar.o $(LIBDIR) $(XMLLIBDIR) 
 
-mud: mud.o cgi-util.o typedefs.o
-	$(CC) $(COPTS) -o mud cgi-util.o typedefs.o mud.o $(LIBDIR) $(XMLLIBDIR) 
+mud: mud.o cgi-util.o
+	$(CC) $(COPTS) -o mud cgi-util.o mud.o $(LIBDIR) $(XMLLIBDIR) 
 
 mmserver: mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o mud-lib2.o mud-lib3.o parser.o guild.o 
 	$(CC) $(COPTS) -o mmserver mmserver.o mudmain.o mudlogon.o mudnewchar.o typedefs.o userlib.o mud-lib.o guild.o mud-lib2.o mud-lib3.o parser.o $(LIBDIR) $(XMLLIBDIR)
