@@ -56,6 +56,11 @@ null, message varchar(255) not null, primary key (creation, name, message));
   creation timestamp,
   PRIMARY KEY  (eventid)
 );
+- create table mm_answers (name varchar(20) not null, question varchar(80)
+not null, answer text not null, primary key(name, question));
+- create table scratchpad (id int not null primary key, scratch longblob not
+null,   owner varchar(20),
+  creation timestamp);
 
 Creating a dupe database
 ------------------------
