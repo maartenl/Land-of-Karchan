@@ -118,6 +118,11 @@ ALTER TABLE mm_shopkeeperitems engine=InnoDB;
 ALTER TABLE mm_sillynamestable engine=InnoDB;
 ALTER TABLE mm_unbantable engine=InnoDB;
 ALTER TABLE mm_usertable engine=InnoDB;
+- create table mm_bannednamestable (name varchar(20) not null primary key, 
+deputy varchar(20),
+creation timestamp not null,
+days int(3), reason varchar(255));
+
 
 Creating a dupe database
 ------------------------

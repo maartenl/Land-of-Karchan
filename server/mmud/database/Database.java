@@ -83,6 +83,7 @@ public class Database
 	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
 	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
 	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
+	public static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
 	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
 	public static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
 	public static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
@@ -1138,7 +1139,8 @@ public class Database
 	 * database.
 	 * First checks the mm_sillynamestable in the database, if found returns
 	 * true. Then checks the
-	 * mm_unbantable, if ound returns false. And
+	 * mm_unbantable, if found returns false. Then checks the mm_bannednamestable,
+	 * if found returns true. And
 	 * as last check checks the mm_bantable, if found returns true,
 	 * otherwise returns false.
 	 * @return boolean, true if found, false if not found
@@ -1192,6 +1194,24 @@ public class Database
 		}
 		sqlGetBanStat.close();
 
+		sqlGetBanStat = theConnection.prepareStatement(sqlGetBan4String);
+		sqlGetBanStat.setString(1, username);
+		res = sqlGetBanStat.executeQuery();
+		if (res != null)
+		{
+			if (res.next())
+			{
+				if (res.getInt("count") > 0) 
+				{
+					res.close();
+					sqlGetBanStat.close();
+					Logger.getLogger("mmud").finer("returns true (mm_bannednamestable)");
+					return true;
+				}
+			}
+			res.close();
+		}
+		sqlGetBanStat.close();
 
 		sqlGetBanStat = theConnection.prepareStatement(sqlGetBan3String);
 		sqlGetBanStat.setString(1, address);
