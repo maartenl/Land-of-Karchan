@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - Bug Reports
+Mmud - Bug Reports
 </TITLE>
 </HEAD>
 <BODY>

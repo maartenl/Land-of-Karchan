@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - Admin
+Mmud - Admin
 </TITLE>
 </HEAD>
 																													  
@@ -38,6 +38,9 @@ Land of Karchan - Admin
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
 Item Definition <?php echo $_REQUEST{"item"} ?></H1>
+
+<A HREF="/karchan/admin/help/items.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
@@ -93,19 +96,38 @@ if (isset($_REQUEST{"name"}))
 	{
 		die("Dropable value must be either 0 (no) or 1 (yes).");
 	}
+	if (($_REQUEST["isopenable"] != "1") &&
+	   ($_REQUEST["isopenable"] != "0"))
+	{
+		die("isOpenable value must be either 0 (no) or 1 (yes).");
+	}
 	if (($_REQUEST["visible"] != "1") &&
 	   ($_REQUEST["visible"] != "0"))
 	{
 		die("Visible value must be either 0 (no) or 1 (yes).");
 	}
+	if ($_REQUEST["keyid"] != "")
+	{
+		$result = mysql_query("select 1 
+		from mm_items 
+		where id = \"".
+		  mysql_escape_string($_REQUEST["keyid"]) . "\""
+		  , $dbhandle)
+		  or die("Query(3) failed : " . mysql_error());
+		if (mysql_num_rows($result) == 0)
+		{
+		  die("Key Item Definition Id does not exist.");
+		}
+	}
+
 	$result = mysql_query("select 1 
 	from mm_itemtable, mm_charitemtable 
 	where mm_itemtable.id = mm_charitemtable.id and
 	mm_charitemtable.wearing is not null and
 	mm_itemtable.itemid = ".
-	  mysql_escape_string($_REQUEST{"item"})
+	  mysql_escape_string($_REQUEST["item"])
 	  , $dbhandle)
-	  or die("Query(2) failed : " . mysql_error());
+	  or die("Query(4) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 0)
 	{
 	  die("Characters are wearing the item, cannot change wearable.");
@@ -116,6 +138,8 @@ if (isset($_REQUEST{"name"}))
 	{
 		$wearable2 += $_REQUEST{"wearable"}[$i];
 	}
+	$capacity = $_REQUEST["capacity"];
+	$keyid = $_REQUEST["keyid"];
 	$eatable = $_REQUEST["eatable"];
 	$drinkable = $_REQUEST["drinkable"];
 	$readdescr = $_REQUEST["readdescr"];
@@ -138,6 +162,10 @@ if (isset($_REQUEST{"name"}))
 			"\"".mysql_escape_string($drinkable)."\"").
 	  ", readdescr=". ($readdescr==""?"null": 
 			"\"".mysql_escape_string($readdescr)."\"").
+	  ", capacity=". ($capacity==""?"null": 
+			"\"".mysql_escape_string($capacity)."\"").
+	  ", keyid=". ($keyid==""?"null": 
+			"\"".mysql_escape_string($keyid)."\"").
 	  ", gold=".
 	  mysql_escape_string($_REQUEST["gold"]).
 	  ", silver=".
@@ -148,6 +176,8 @@ if (isset($_REQUEST{"name"}))
 	  mysql_escape_string($_REQUEST["weight"]).
 	  ", container=".
 	  mysql_escape_string($_REQUEST["container"]).
+	  ", isopenable=".
+	  mysql_escape_string($_REQUEST["isopenable"]).
 	  ", getable=".
 	  mysql_escape_string($_REQUEST["getable"]).
 	  ", dropable=".
@@ -272,6 +302,9 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>pasdefense:</b> %s<BR>", $myrow["pasdefense"]);
 	printf("<b>damageresistance:</b> %s<BR>", $myrow["damageresistance"]);
 	printf("<b>container:</b> %s<BR>", ($myrow["container"]==1? "yes":"no"));
+	printf("<b>capacity:</b> %s<BR>", $myrow["capacity"]);
+	printf("<b>isopenable:</b> %s<BR>", ($myrow["isopenable"]==1? "yes":"no"));
+	printf("<b>keyid:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%S\">%s</A><BR>", $myrow["keyid"], $myrow["keyid"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>Creation:</b> %s<BR>", $myrow["creation"]);
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
@@ -301,6 +334,10 @@ ROWS="10" COLS="85">
 <TR><TD>weight</TD><TD><INPUT TYPE="text" NAME="weight" VALUE="<?php echo $myrow["weight"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>container</TD><TD><INPUT TYPE="radio" NAME="container" VALUE="1" <?php echo ($myrow["container"] == 1? "checked" : "") ?>>yes
 <BR><INPUT TYPE="radio" NAME="container" VALUE="0" <?php echo ($myrow["container"] == 0? "checked" : "") ?>>no</TD></TR>
+<TR><TD>isopenable</TD><TD><INPUT TYPE="radio" NAME="isopenable" VALUE="1" <?php echo ($myrow["isopenable"] == 1? "checked" : "") ?>>yes
+<BR><INPUT TYPE="radio" NAME="isopenable" VALUE="0" <?php echo ($myrow["isopenable"] == 0? "checked" : "") ?>>no</TD></TR>
+<TR><TD>capacity</TD><TD><INPUT TYPE="text" NAME="capacity" VALUE="<?php echo $myrow["capacity"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>keyid</TD><TD><INPUT TYPE="text" NAME="keyid" VALUE="<?php echo $myrow["keyid"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>getable</TD><TD><INPUT TYPE="radio" NAME="getable" VALUE="1" <?php echo ($myrow["getable"] == 1? "checked" : "") ?>>yes
 <BR><INPUT TYPE="radio" NAME="getable" VALUE="0" <?php echo ($myrow["getable"] == 0? "checked" : "") ?>>no</TD></TR>
 <TR><TD>dropable</TD><TD><INPUT TYPE="radio" NAME="dropable" VALUE="1" <?php echo ($myrow["dropable"] == 1? "checked" : "") ?>>yes

@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - Admin
+Mmud - Admin
 </TITLE>
 </HEAD>
                                                                                                                       
@@ -38,6 +38,9 @@ Land of Karchan - Admin
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
 Banned People</H1>
+
+<A HREF="/karchan/admin/help/banning.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
@@ -92,7 +95,7 @@ if ($_REQUEST{"remove_sillyname"} != NULL)
 }
 
 
-printf("Bantable<P>");
+printf("<H2>Bantable</H2>");
 $result = mysql_query("select * from mm_bantable"
 	, $dbhandle)
 	or die("Query(1) failed : " . mysql_error());
@@ -106,9 +109,19 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>date:</b> %s ", $myrow[5]);
 	printf("<b>reason:</b> %s<BR>", $myrow[6]);
 }
+?>
+Add Ban:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
+Address:<INPUT TYPE="text" NAME="ban_address" VALUE="" SIZE="40" MAXLENGTH="40"><P>
+Days:<INPUT TYPE="text" NAME="ban_days" VALUE="" SIZE="3" MAXLENGTH="3"><P>
+Ip:<INPUT TYPE="text" NAME="ban_ip" VALUE="" SIZE="40" MAXLENGTH="40"><P>
+Name:<INPUT TYPE="text" NAME="ban_name" VALUE="" SIZE="20" MAXLENGTH="20"><P>
+Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
 
-
-printf("Unbantable<P>");
+<?php
+printf("<H2>Unbantable</H2>");
 $result = mysql_query("select * from mm_unbantable order by name"
 	, $dbhandle)
 	or die("Query(5) failed : " . mysql_error());
@@ -127,7 +140,15 @@ while ($myrow = mysql_fetch_array($result))
 }
 printf("</TD></TR></TABLE>");
 
-printf("Sillynamestable<P>");
+?>
+Add Unbanname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
+<INPUT TYPE="text" NAME="unbanname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
+
+<?php
+printf("<H2>Sillynamestable</H2>");
 $result = mysql_query("select * from mm_sillynamestable order by name"
 	, $dbhandle)
 	or die("Query(7) failed : " . mysql_error());
@@ -150,11 +171,6 @@ printf("</TD></TR></TABLE>");
 mysql_close($dbhandle);
 ?>
 
-Add Unbanname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
-<INPUT TYPE="text" NAME="unbanname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
 
 Add Sillyname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
 <INPUT TYPE="text" NAME="sillyname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
@@ -162,15 +178,6 @@ Add Sillyname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 
-Add Ban:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
-Address:<INPUT TYPE="text" NAME="ban_address" VALUE="" SIZE="40" MAXLENGTH="40"><P>
-Days:<INPUT TYPE="text" NAME="ban_days" VALUE="" SIZE="3" MAXLENGTH="3"><P>
-Ip:<INPUT TYPE="text" NAME="ban_ip" VALUE="" SIZE="40" MAXLENGTH="40"><P>
-Name:<INPUT TYPE="text" NAME="ban_name" VALUE="" SIZE="20" MAXLENGTH="20"><P>
-Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><P>
-<INPUT TYPE="submit" VALUE="Submit">
-<INPUT TYPE="reset" VALUE="Clear"><P>
-</FORM>
 
 </BODY>
 </HTML>
