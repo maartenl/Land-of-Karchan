@@ -221,8 +221,8 @@ main(int argc, char * argv[])
 	char cookiepassword[40];
 	char *myhostname, *myport;
 		
-	int sockfd, numbytes;
-	char receivebuf[1024], *sendbuf;
+	int sockfd, numbytes, totalnumbytes;
+	char receivebuf[1024], *sendbuf, *checkbuf;
 	struct hostent *he;
 	struct sockaddr_in their_addr; // connector's address information
 	
@@ -380,7 +380,7 @@ main(int argc, char * argv[])
 		displayError("recv", errno);
 	}
 	
-	receivebuf[numbytes] = '\0';
+	receivebuf[numbytes] = '\0';checkbuf = NULL;totalnumbytes=1;
 	printf("<FONT Size=1>%s</FONT><HR>",receivebuf);
 	sendbuf = createXmlString(command, name, password, cookiepassword, getFrames());
 //	printf("[%s]", sendbuf);
@@ -399,13 +399,29 @@ main(int argc, char * argv[])
 		else
 		{
 			receivebuf[numbytes]='\0';
-			printf("%s", receivebuf);
+			totalnumbytes+=numbytes;
+			if (checkbuf == NULL)
+			{
+				checkbuf = (char *) malloc(numbytes+1);
+				checkbuf[0]=0;
+			}
+			else
+			{
+				checkbuf = (char *) realloc(checkbuf, totalnumbytes);
+			}
+			strcat(checkbuf, receivebuf);
+			if (strstr(checkbuf, "</HTML>") != NULL)
+			{
+				break;
+			}
 		}
 	}
 	numbytes=strlen("OK");
 	send_socket(sockfd, "OK", &numbytes);
-
+      
 	close(sockfd);
+	printf("%s", checkbuf);
+	free(checkbuf);
 
 	cgi_quit();
 
