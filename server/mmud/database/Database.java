@@ -97,7 +97,8 @@ public class Database
 		"and ( dayofmonth = -1 or dayofmonth = DAYOFMONTH(NOW()) ) " +
 		"and ( hour = -1 or hour = HOUR(NOW()) ) " +
 		"and ( minute = -1 or minute = MINUTE(NOW()) ) " +
-		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )";
+		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )" +
+		"and ( month <> -1 or dayofmonth <> -1 or hour <> -1 or minute <> -1 or dayofweek <> -1 )";
 	public static String sqlGetMethod = "select src " +
 		"from mm_methods " +
 		"where name = ?";
