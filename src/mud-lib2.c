@@ -3948,7 +3948,7 @@ RemapShoppingList_Command(char *name)
 
 }
 
-void
+int
 BuyItem_Command(char *name, char *password, int room, char *fromname)
 {
 	/*
@@ -3987,7 +3987,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 	{
 		WriteSentenceIntoOwnLogFile(logname, "Negative amounts are not allowed.<BR>\r\n");
 		WriteRoom(name, password, room, 0);
-		return ;
+		return 1;
 	}
 		if (getTokenAmount()==2+numberfilledout) 
 		{
@@ -4073,14 +4073,14 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			return ;
+			return 1;
 		}
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You fail to buy the item.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			return ;
+			return 1;
 		}
 		itemid = atoi(row[0]);
 		amountitems = atoi(row[1]);
@@ -4096,7 +4096,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		{
 			WriteSentenceIntoOwnLogFile(logname, "You do not have enough money.<BR>\r\n");
 			WriteRoom(name, password, room, 0);
-			return ;
+			return 1;
 		}
 
 		/* look for specific person */
@@ -4150,7 +4150,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 			{
 				WriteSentenceIntoOwnLogFile(logname, "Person not found.<BR>\r\n");
 				WriteRoom(name, password, room, 0);
-				return ;
+				return 1;
 			}
 			mysql_free_result(res);
 	}
@@ -4174,6 +4174,7 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 		name, amount, itemadject1, itemadject2, itemname, fromname);
 	}
 	WriteRoom(name, password, room, 0);
+	return 1;
 }
 
 void
