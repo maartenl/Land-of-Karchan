@@ -59,18 +59,6 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>readdescr:</b> %s<BR>", $myrow[7]);
 }
 
-$result = mysql_query("select * ".
-	" from mm_itemattributes".
-	" where id = ".mysql_escape_string($_REQUEST{"item"})
-	, $dbhandle)
-	or die("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_array($result)) 
-{
-	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
-	printf("<b>value:</b> %s ", $myrow[1]);
-	printf("<b>value_type:</b> %s<BR>", $myrow[2]);
-}
-
 $result = mysql_query("select containerid ".
 	" from mm_itemitemtable".
 	" where mm_itemitemtable.id =
@@ -115,6 +103,21 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
 	printf("<b>itemid:</b> %s ", $myrow[1]);
 	printf("<b>description:</b> %s %s %s %s<BR>", $myrow[2], $myrow[3], $myrow[4], $myrow[5]);
+}
+
+printf("<H2><A HREF=\"/karchan/admin/help/attributes.html\" target=\"_blank\">
+<IMG SRC=\"/images/icons/9pt4a.gif\" BORDER=\"0\"></A>Attributes</H2>");
+
+$result = mysql_query("select * ".
+	" from mm_itemattributes".
+	" where id = ".mysql_escape_string($_REQUEST{"item"})
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
+	printf("<b>value:</b> %s ", $myrow[1]);
+	printf("<b>value_type:</b> %s<BR>", $myrow[2]);
 }
 mysql_close($dbhandle);
 ?>
