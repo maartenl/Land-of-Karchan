@@ -350,7 +350,7 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 		}
 	}
 	fprintf(getMMudOut(), "<H2>List of All Users</H2>");
-	tempsql = composeSqlStatement("select count(*) from tmp_usertable where god<=1");
+	tempsql = composeSqlStatement("select count(*) from tmp_usertable where god<1");
 	res=SendSQL2(tempsql, NULL);
 	free(tempsql);tempsql=NULL;
 	if (res!=NULL)
