@@ -257,8 +257,8 @@ sql(\"update tmp_usertable set eatstats = eatstats - 1 where eatstats>0\")
 
 sql(\"delete from tmp_itemtable where id=55\")
 sql(\"delete from bogus_itemtable\")
-sql(\"insert into bogus_itemtable \\
-select 55, \'\', \'\', count(amount), room, \'\', \'\' \\
+sql(\"insert into bogus_itemtable \\\\
+select 55, \'\', \'\', count(amount), room, \'\', \'\' \\\\
 from tmp_itemtable where id>=40 and id<=54 group by room\")
 sql(\"insert into tmp_itemtable select * from bogus_itemtable\")
 sql(\"delete from tmp_itemtable where id>=40 and id<=54\")
