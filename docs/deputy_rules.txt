@@ -39,6 +39,10 @@ first.
 
 
 Any other suggestions and ideas?
+I, Elwood have a suggestion regarding security
+Every 30 days deps should be rquired to change their SSH and MUD passwords.
+
+
 
 
 
