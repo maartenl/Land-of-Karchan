@@ -135,7 +135,7 @@ public class ItemsDb
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
-        + "belongsto = ? and mm_charitemtable.wearing <> 0";
+        + "belongsto = ? and mm_charitemtable.wearing is not null";
 
 	/**
 	 * Makes one specific item either being worn or not being worn
@@ -154,7 +154,7 @@ public class ItemsDb
 	public static String sqlTransferItemString =
 		"update mm_charitemtable "
 		+ "set belongsto = ? "
-		+ "where id = ? and wearing = 0";
+		+ "where id = ? and wearing is null";
 	public static String sqlDeleteItemString =
 		"delete from mm_itemtable "
 		+ "where id = ?";
@@ -671,11 +671,14 @@ public class ItemsDb
 								Person aPerson)
 	throws ItemDoesNotExistException
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("anItem=" + anItem + 
+			", aPerson=" + aPerson);
 		int res = 0;
 		try
 		{
 			PreparedStatement sqlDropItem = Database.prepareStatement(sqlTransferItemString);
+			System.out.println(sqlTransferItemString + ":"
++aPerson.getName()+ ":"+anItem.getId());
 			sqlDropItem.setString(1, aPerson.getName());
 			sqlDropItem.setInt(2, anItem.getId());
 			res = sqlDropItem.executeUpdate();
