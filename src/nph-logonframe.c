@@ -1,4 +1,5 @@
 /*-------------------------------------------------------------------------
+cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
