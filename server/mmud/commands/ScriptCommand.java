@@ -88,6 +88,7 @@ public class ScriptCommand extends NormalCommand
 			theResult = null;
 			return false;
 		}
+		theResult +=  aUser.printForm();
 		return true;
 	}
 
