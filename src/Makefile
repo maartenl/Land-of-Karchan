@@ -213,9 +213,10 @@ restore: all
 	@cp $(INSTALLDIR)nph-leftframe_backup.cgi $(INSTALLDIR)nph-leftframe.cgi 
 	@cp $(INSTALLDIR)nph-javascriptframe_backup.cgi $(INSTALLDIR)nph-javascriptframe.cgi 
 	@echo "Setting UIDs for Mud Binaries..."
-	@chmod o= $(INSTALLDIR)*
-	@chmod u=rwx $(INSTALLDIR)*        
-	@chmod g=x $(INSTALLDIR)*
+	@chmod o=x $(INSTALLDIR)*
+	@chmod u=rwx $(INSTALLDIR)*
+	@chmod g= $(INSTALLDIR)*
+	@chmod a+s $(INSTALLDIR)*
 	@echo "Backup restored."
 
 install: all
@@ -234,9 +235,9 @@ install: all
 	@cp nph-leftframe $(INSTALLDIR)nph-leftframe.cgi
 	@cp nph-javascriptframe $(INSTALLDIR)nph-javascriptframe.cgi
 	@echo "Setting UIDs for Mud Binaries..."
-	@chmod o= $(INSTALLDIR)*
+	@chmod o=x $(INSTALLDIR)*
 	@chmod u=rwx $(INSTALLDIR)*
-	@chmod g=x $(INSTALLDIR)*
-   @chown karchan:karchan $(INSTALLDIR)*
+	@chmod g= $(INSTALLDIR)*
+	@chmod a+s $(INSTALLDIR)*
 	@echo "Installation done."
 
