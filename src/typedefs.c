@@ -123,7 +123,7 @@ setTokens(char **ftokens)
 char *
 getToken(int i)
 {
-	if (i >= tokenamount)
+	if ((i >= tokenamount) && (i <  0))
 	{
 		return "";
 	}
