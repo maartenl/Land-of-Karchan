@@ -32,8 +32,6 @@ maarten_l@yahoo.com
 	\brief  part of the server that does the whole guild thing as well as
 some "talk lines". */
 
-extern char* command;
-
 //! list of guildmembers of the MIF
 void 
 MIFList(char *name, char *password, int room)
@@ -166,7 +164,7 @@ MIFEntryOut(char *name, char *password, int room)
 
 //! talk to other mif members on the game
 void 
-MIFTalk(char *name, char *password, int room)
+MIFTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -326,7 +324,7 @@ RangerEntryOut(char *name, char *password, int room)
 
 //! talk to other rangers on the game
 void 
-RangerTalk(char *name, char *password, int room)
+RangerTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -355,7 +353,7 @@ RangerTalk(char *name, char *password, int room)
 
 /*! add SWTalk */
 void 
-SWTalk(char *name, char *password, int room)
+SWTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -384,7 +382,7 @@ SWTalk(char *name, char *password, int room)
 
 /*! add DepTalk */
 void 
-DepTalk(char *name, char *password, int room)
+DepTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -412,7 +410,7 @@ DepTalk(char *name, char *password, int room)
 }	
 /*! add BKTalk */
 void 
-BKTalk(char *name, char *password, int room)
+BKTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -440,7 +438,7 @@ BKTalk(char *name, char *password, int room)
 }
 /*! add VampTalk */
 void 
-VampTalk(char *name, char *password, int room)
+VampTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -468,7 +466,7 @@ VampTalk(char *name, char *password, int room)
 }
 /*! add KnightTalk */
 void 
-KnightTalk(char *name, char *password, int room)
+KnightTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 
@@ -496,7 +494,7 @@ KnightTalk(char *name, char *password, int room)
 }
 /*! add CoDTalk */
 void 
-CoDTalk(char *name, char *password, int room)
+CoDTalk(char *name, char *password, char *command, int room)
 {
 	char 		logname[100];
 

@@ -32,9 +32,6 @@ maarten_l@yahoo.com
 /*! \file mud-lib.c
 	\brief  server file containing the import game extentions like ReadFile and WriteRoom and standard communication */
 
-extern roomstruct room;
-extern int      events[50];
-
 char           *emotions[][2] = {
 	{"agree", "agrees"},
 	{"apologize", "apologizes"},
@@ -345,7 +342,9 @@ char           *adverb[] = {
 "wistfully",
 NULL};
 
-//! reads a file and dumps it straight onto the output
+//! reads a file and dumps it straight onto the socket
+/*! \return int 0 upon failure, 1 upon success
+*/
 int 
 ReadFile(const char *filenaam)
 {
@@ -356,7 +355,7 @@ ReadFile(const char *filenaam)
 	{
 		int i = errno;
 		send_printf(getMMudOut(), "%i: %s (%s)\n", i, strerror(i), filenaam);
-		return 1;
+		return 0;
 	}
 	
 	while (fgets(string, 80, fp) != 0) 
@@ -393,12 +392,21 @@ if (!getFrames())
 
 //! show inventory, items person is carrying
 int
-Inventory_Command(char * name, char * password, int room, char *fcommand)
+Inventory_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *sqlstring;
-
+	char *name;
+	char *password;
+	char *command;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	command = fmudstruct->command;
+	room = fmudstruct->room;
+	
 	send_printf(getMMudOut(), "<HTML>\n");
 	send_printf(getMMudOut(), "<HEAD>\n");
 	send_printf(getMMudOut(), "<TITLE>\n");

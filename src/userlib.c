@@ -34,6 +34,9 @@ maarten_l@yahoo.com
 char            ItemDescr[100];
 
 //! show error in MM_ERRORFILE
+/*! appends an error to the file
+	\param i contains valid error values
+	*/
 void 
 Error(int i, char *description)
 {
@@ -44,6 +47,8 @@ Error(int i, char *description)
 }
 
 //! make string lowercase, DANGEROUS
+/*! \deprecated buffer to be entered is not allowed to reach beyond 511 characters
+*/	
 char           *
 lowercase(char dest[512], char *buf)
 {
@@ -72,6 +77,7 @@ Wait(int sec, int usec)
 //! activate user in the game
 /*! logs the user into the game, the current way of doing this is copying userinfomation, items he/she has in posession and 
 mail he/she reads into tmp_tables.
+	\param name char* containing a valid name and of a user that is not active in the game
 */
 int 
 ActivateUser(char *name)
@@ -135,6 +141,7 @@ ActivateUser(char *name)
 
 //! removed the player from active gameplaying
 /*! \see ActivateUser
+	\param name char*, name of playercharacter and must be active in the game
 */
 int 
 RemoveUser(char *name)
@@ -242,6 +249,8 @@ mysql_free_result(res);
 }
 
 //! is user online/playing?
+/* \param name char*, user exists and is active in the game
+*/
 int 
 ExistUser(char *name)
 {
@@ -299,6 +308,13 @@ return 1;
 }
 
 //! see if user is online in the game, based in his/her description instead of character name
+/* \param beginning int, >=0
+	\param amount int, >1
+	\param room int, must be a valid room
+	\param returndesc array of strings, contains the description tags to search for
+	\return char* describing the requested player, if a player in that room fitting that
+	description is not found, the method will return NULL
+*/
 char * 
 ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 {
@@ -353,6 +369,9 @@ ExistUserByDescription(int beginning, int amount, int room, char **returndesc)
 }
 
 //! search for user wether online or otherwise
+/*! \return int, 0 if user does not exist with that name, 1 if found
+	\param name char* that contains the name of the player to search for
+*/
 int 
 SearchUser(char *name)
 {
@@ -382,6 +401,12 @@ return returnvalue;
 }
 
 //! search for the username amongst the banned users list in the database
+/*! first checks the sillynamestable in the database, then checks the unbantable and
+	as last check checks the bantable.
+	\return int 1 if found, 0 if not found
+	\param item char* that contains the address of the player
+	\param username char* name of the playercharacter
+*/
 int 
 SearchBanList(char *item, char *username)
 {
@@ -937,7 +962,9 @@ ShowBurden(int i)
 
 //! compute the amount of encumberance based on strength of character and weight of items carried.
 /*! i.e. this is the amount of a movement penalty that you get when attempting to move. It is subtracted
-from your total physical stats.*/
+from your total physical stats.
+	\return int containing -1..50, where 0 is travelling lightly, 50 is carrying really much, -1 if carrying TOO MUCH
+*/
 int
 computeEncumberance(int fweight, int fstrength)
 {

@@ -36,8 +36,6 @@ table. Usually this executable is put into your crontab. */
 int 
 main(int argc, char *argv[])
 {
-	struct tm datumtijd;
-	time_t   datetime;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int room;
@@ -68,7 +66,7 @@ main(int argc, char *argv[])
 		while (row != NULL)
 		{
 			room =  atoi(row[1]);
-			Parse("anonymous", &room, row[0]);
+			Parse("anonymous", &room, "this is totally bogus stuff", row[0]);
 			row = mysql_fetch_row(res);
 		}
 		mysql_free_result(res);

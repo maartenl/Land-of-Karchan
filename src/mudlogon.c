@@ -33,7 +33,7 @@ maarten_l@yahoo.com
 /*! \file mudlogon.c
 	\brief  part of the server that takes care of entering characters in the game */
 
-extern char secretpassword[40];
+//extern char secretpassword[40];
 
 //! dump page to user explaining that his/her name or password are illegal according to validation rules
 /*! validation rules are explained on the page */
@@ -331,7 +331,7 @@ void NewPlayer(char *fname, char *address, char *fpassword)
 }
 
 //! start the game appropriately
-void MakeStart(char *name, char *password, char *cookie, char *address)
+void MakeStart(char *name, char *password, char *cookie, char *address, int socketfd)
 {
 	char printstr[512];
 	time_t tijd;
@@ -370,9 +370,19 @@ void MakeStart(char *name, char *password, char *cookie, char *address)
 
 	if (!getFrames())
 	{
+			mudpersonstruct *mystruct = find_in_list(socketfd);
 			send_printf(getMMudOut(), "Content-type: text/html\r\n");
 			send_printf(getMMudOut(), "Set-cookie: Karchan=%s;\r\n\r\n", password);
-//			gameMain("me has entered the game...<BR>\r\n", name, password, cookie, address);
+			strcpy(mystruct->name, name);
+			strcpy(mystruct->password, password);
+			strcpy(mystruct->cookie, cookie);
+			strcpy(mystruct->address, address);
+			if (mystruct->command != NULL) 
+			{
+				free(mystruct->command);
+			}
+			mystruct->command = strdup("me has entered the game...<BR>\r\n");
+			gameMain(socketfd);
 	}
 	else
 	{
@@ -427,6 +437,7 @@ gameLogon(int socketfd)
 	char *password;
 	char *cookie;
 	char *address;
+	char secretpassword[26];
 	int i;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -434,15 +445,15 @@ gameLogon(int socketfd)
 	mudpersonstruct *mymudstruct;
 	
 	umask(0000);
-#ifdef DEBUG
-	printf("gameLogon started (%s,%s,%s,%s)!!!\n", name, password, cookie, address);
-#endif
-	
 	mymudstruct = find_in_list(socketfd);
 	cookie = mymudstruct->cookie;
 	name = mymudstruct->name;
 	password = mymudstruct->password;
 	/*	send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
+#ifdef DEBUG
+	printf("gameLogon started (%s,%s,%s,%s)!!!\n", name, password, cookie, address);
+#endif
+	
 	
 	if (strcmp("Karn", name)) 
 	{
@@ -583,6 +594,6 @@ gameLogon(int socketfd)
 	strcpy(name, row[0]);
 	mysql_free_result(res);
 	ActivateUser(name);
-	MakeStart(name, secretpassword, secretpassword, address);
+	MakeStart(name, secretpassword, secretpassword, address, socketfd);
 	return 1;
 }

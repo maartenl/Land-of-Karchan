@@ -34,7 +34,7 @@ maarten_l@yahoo.com
 	\brief  contains the parser, finds appropriate methods that correspond
 to a users input and interprets and executes them. */
 
-extern char *command;
+//extern char *command;
 char *stringbuffer;
 
 //char *replace = 
@@ -424,10 +424,11 @@ multiple lines.
 </UL>
 \param name char* name of the person executing the command
 \param room int room person is occuping
+\param command char* containing the original command
 \param parserstring char* parserstring string containing an entire method
 \sa ParseSentence
 */
-int Parse(char *name, int *room, char *parserstring)
+int Parse(char *name, int *room, char *command, char *parserstring)
 {
 	char *string;
 	int pos, memory, level, state[20];
@@ -682,10 +683,11 @@ processing.
 </UL>
 \param name char* name of the person executing the command
 \param password char* password of the person executing the command
+\param command char* contains the command to be searched for in the database
 \param room char int room person is occuping
 \sa Parse
 */
-int SearchForSpecialCommand(char *name, char *password, int room)
+int SearchForSpecialCommand(char *name, char *password, char *command, int room)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
@@ -719,7 +721,7 @@ int SearchForSpecialCommand(char *name, char *password, int room)
 				row[3] = command.args
 				row[4] = method.src
 			*/
-			returnvalue = Parse(name, &myroom, row[4]);
+			returnvalue = Parse(name, &myroom, command, row[4]);
 			row = mysql_fetch_row(res);
 		}
 		if (parser_debug) {send_printf(getMMudOut(), "</FONT><HR>\r\n");}

@@ -31,15 +31,9 @@ maarten_l@yahoo.com
 /*! \file mud-lib3.c
 	\brief  part of the server that takes care of extended commands */
 
-extern roomstruct room;
-extern char    *command;
-extern char    *printstr;
-extern struct tm datumtijd;
-extern time_t   datetime;
-
 //! make character go west
 int
-GoWest_Command(char *name, char *password, int room, char *command)
+GoWest_Command(mudpersonstruct *fmudstruct)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -48,7 +42,13 @@ GoWest_Command(char *name, char *password, int room, char *command)
 	MYSQL_ROW row;
 	char *temp;
 	int strength, movementstats, maxmove;
+	char *name, *password, *command;
+	int room;
 	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
@@ -108,7 +108,7 @@ GoWest_Command(char *name, char *password, int room, char *command)
 
 //! make character go east
 int
-GoEast_Command(char *name, char *password, int room, char *fcommand)
+GoEast_Command(mudpersonstruct *fmudstruct)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -117,7 +117,13 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 	MYSQL_ROW row;
 	char *temp;
 	int strength, movementstats, maxmove;
-	                        
+	char *name, *password, *command;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
@@ -178,7 +184,7 @@ GoEast_Command(char *name, char *password, int room, char *fcommand)
 
 //! make character go north
 int
-GoNorth_Command(char *name, char *password, int room, char *fcommmand)
+GoNorth_Command(mudpersonstruct *fmudstruct)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -187,6 +193,12 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 	MYSQL_ROW row;
 	char *temp;
 	int strength, movementstats, maxmove;
+	char *name, *password, *command;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
                         
 //	RoomTextProc(room);
 
@@ -248,7 +260,7 @@ GoNorth_Command(char *name, char *password, int room, char *fcommmand)
 
 //! make character go south
 int
-GoSouth_Command(char *name, char *password, int room, char *fcommand)
+GoSouth_Command(mudpersonstruct *fmudstruct)
 {
 	roomstruct      *temproom;
 	int i=0;
@@ -257,7 +269,14 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 	MYSQL_ROW row;
 	char *temp;
 	int strength, movementstats, maxmove;
-	
+	char *name, *password, *command;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
+		
 //	RoomTextProc(room);
 
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
@@ -317,13 +336,20 @@ GoSouth_Command(char *name, char *password, int room, char *fcommand)
 
 //! make character go to sleep
 int
-Sleep_Command(char *name, char *password, int room, char *fcommand)
+Sleep_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
-                        
+	char *name, *password, *fcommand;
+	int room;
+
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
+	                        
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 
 	temp = composeSqlStatement("update tmp_usertable set sleep=1, jumpmana=jumpmana+1, jumpmove=jumpmove+2, jumpvital=jumpvital+3 where name='%x'", name);
@@ -360,9 +386,15 @@ Awaken2_Command(char *name, char *password, int room)
 
 //! dump a rather large input field on the screen of the user, for easy putting large masses of text.
 int
-BigTalk_Command(char *name, char *password, int room, char *fcommand)
+BigTalk_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
+	char *name, *password, *fcommand;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	send_printf(getMMudOut(), "<HTML>\n");
 	send_printf(getMMudOut(), "<HEAD>\n");
@@ -413,9 +445,15 @@ BigTalk_Command(char *name, char *password, int room, char *fcommand)
 
 //! create a html page containing a nice form for sending mudmail
 int
-MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
+MailFormDumpOnScreen(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
+	char *name, *password, *fcommand;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	send_printf(getMMudOut(), "<HTML>\n");
 	send_printf(getMMudOut(), "<HEAD>\n");
@@ -471,9 +509,20 @@ MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand)
 
 //! show time on the mud
 int
-Time_Command(char *name, char *password, int room, char *fcommand)
+Time_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
+	char *name, *password;
+	struct tm datumtijd;
+	time_t   datetime;
+time(&datetime);
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	
+	time(&datetime);
+	datumtijd = *(gmtime(&datetime));
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "Current time is %i:%i:%i<BR>\r\n",
 		 datumtijd.tm_hour, datumtijd.tm_min, datumtijd.tm_sec);
@@ -483,9 +532,19 @@ Time_Command(char *name, char *password, int room, char *fcommand)
 
 //! show date on the mud
 int
-Date_Command(char *name, char *password, int room, char *fcommand)
+Date_Command(mudpersonstruct *fmudstruct)
 {
 	char logname[100];  
+	char *name, *password;
+	struct tm datumtijd;
+	time_t   datetime;
+	int room;
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+
+	time(&datetime);
+	datumtijd = *(gmtime(&datetime));
 	sprintf(logname, "%s%s.log",getParam(MM_USERHEADER),name);
 	WriteSentenceIntoOwnLogFile(logname, "Current date is %i-%i-%i<BR>\r\n",
 		datumtijd.tm_mon + 1, datumtijd.tm_mday, datumtijd.tm_year+1900);

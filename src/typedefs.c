@@ -160,6 +160,9 @@ getMudInfo()
 }
 
 //! set information about mud (statistics), called from mmserver.c
+/*! The way these methods work is usually, you get the structure, you change
+it and you put it back.
+*/
 void 
 setMudInfo(mudinfostruct amudinfostruct)
 {
@@ -169,12 +172,19 @@ setMudInfo(mudinfostruct amudinfostruct)
 int game_shutdown = 0;
 
 //! game should be shut down, shut down initiated
+/*! \return int, <UL><LI> 0, if not to be shut down
+	<LI>1, if to be shut down
+	<LI>>1, countdown</UL>
+*/
 int isShuttingdown()
 {
 	return game_shutdown;
 }
 
 //! indicate that the game should be shutting down as soon as possible
+/*! \param aOffset int, used as offset, offset is added to shutdown count
+	use setShuttingDown(-1) for countdown
+*/
 void setShutdown(int aOffset)
 {
 	game_shutdown += aOffset;
@@ -249,33 +259,31 @@ void setParam(int i, char *parameter)
 char **tokens;
 int  tokenamount;
 
-/*! set number of available tokens. Usually only called once in gameMain
-*/
+//! set number of available tokens. Usually only called once in gameMain
 void
 setTokenAmount(int amount)
 {
 	tokenamount = amount;
 }
 
-/*! 
-	retrieve number of available tokens
-*/
+//! retrieve number of available tokens
 int
 getTokenAmount()
 {
 	return tokenamount;
 }
 
-/*! set the token array, usually only called once in gameMaine
-*/
+//! set the token array, usually only called once in gameMaine
 void
 setTokens(char **ftokens)
 {
 	tokens = ftokens;
 }
 
-/*! get the index of the token matching the description
-	returns -1 if not found
+//! get the index of the token matching the description
+/*! \param ftoken char* containing the token to look for in the tokens, 
+	is not allowed to have any spaces as the tokens contain none.
+	\return int, index number of token, -1 if not found
 */
 int
 getTokenIndex(char *ftoken)
@@ -291,8 +299,7 @@ getTokenIndex(char *ftoken)
 	return -1;
 }
 
-/*! returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
-*/
+//! returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
 char *
 getToken(int i)
 {
@@ -606,8 +613,9 @@ int SendSQL(char *file, char *name, char *password, char *sqlstring)
 }
 
 //! open the connection to the database server
-/*! uses the constants as defined in typedefs.h to connect, needs to be changed.
+/*! uses the parameters from the configuration file (config.xml) to connect.
 	\sa closedbconnection
+	\return int, 0 upon error, 1 upon success
 */
 int 
 opendbconnection()
@@ -890,6 +898,10 @@ roomstruct *GetRoomInfo(int room)
 }
 
 //! generate a session password to be used by player during game session
+/*! \param fpassword a char* that may be modified and has as length at least 26 characters available
+	\return char* the same pointer as fpassword, fpassword has been changed and contains 25 random 
+	digits, capitals and smallcaps
+*/
 char *generate_password(char *fpassword)
 {
 int i;

@@ -28,27 +28,21 @@ maarten_l@yahoo.com
 void MIFList(char *name, char *password, int room);
 void MIFEntryIn(char *name, char *password, int room);
 void MIFEntryOut(char *name, char *password, int room);
-void MIFTalk(char *name, char *password, int room);
+void MIFTalk(char *name, char *password, char *command, int room);
 
 void RangerList(char *name, char *password, int room);
 void RangerEntryIn(char *name, char *password, int room);
 void RangerEntryOut(char *name, char *password, int room);
-void RangerTalk(char *name, char *password, int room);
+void RangerTalk(char *name, char *password, char *command, int room);
 
-/* add SW chat line */
-void SWTalk(char *name, char *password, int room);
+void SWTalk(char *name, char *password, char *command, int room);
 
-/* add deputy chat line */
-void DepTalk(char *name, char *password, int room);
+void DepTalk(char *name, char *password, char *command, int room);
 
-/* add Blood Knight chat line */
-void BKTalk(char *name, char *password, int room);
+void BKTalk(char *name, char *password, char *command, int room);
 
-/* add Kindred chat line */
-void VampTalk(char *name, char *password, int room);
+void VampTalk(char *name, char *password, char *command, int room);
 
-/* add Knight chat line */
-void KnightTalk(char *name, char *password, int room);
+void KnightTalk(char *name, char *password, char *command, int room);
 
-/* add CoD chat line */
-void CoDTalk(char *name, char *password, int room);
+void CoDTalk(char *name, char *password, char *command, int room);

@@ -26,67 +26,26 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
 void Error(int i, char *description);
-/* Pre: i contains valid error values
-   Post:ErrorFile(new) = ErrorFile(old) + Error(i)
-*/
 
 char *lowercase(char dest[512], char *buf);
-/* Pre: strlen(buf)<512
-   Post:dest=buffer without capitals
-*/   
 
 void Wait(int sec, int usec);
-/* Pre: sec = seconds to wait ^
-        usec = useconds to wait
-   Post: Operation suspended for sec seconds and usec microseconds
-*/
 
 int ActivateUser(char *name);
-/* Pre: x = valid character ^ x = not active
-   Post:ActiveUserFile(new) = ActiveUserFile(old)+x ^
-        UserFile(new) = UserFile(old) + x made active ^
-        (Ei : i elem of Collection(files with extentoin ".log") : i=x.username+".log") 
-*/        
 
 int RemoveUser(char *name);
-/*Pre: x exists ^ x elem of ActiveUserFile
-  Post:ActiveUserFile(new) = ActiveUserFile(old) + x.room=0 + x.name="" ^
-       UserFile(new) = UserFile(old) + x.activeuserpos = -1 ^
-       !exists x.name+".log" 
-/*      
 
 int ExistUser(char *name);
-/*Pre: x = valid ^ x exists
-  Post:x active => return pos x in ActiveUserFile ^ x=x in ActiveUserFile
-       x !active=> return 0 
-*/  
 
 int ExistUserRoom(int roomnr, char *name);
-/*Pre: x = valid ^ x exists
-  Post:x active => return pos x in ActiveUserFile ^ x=x in ActiveUserFile ^ x in room roomnr
-       x !active=> return 0 
-*/  
 
 char *
 ExistUserByDescription(int beginning, int amount, int room, char **returndesc);
-/*Pre: beginning >= 0 ^ amount > 1 ^ room is valid ^ 
-	(returndesc = non-memory-allocated pointer V returndesc = NULL)
-	Post: user exists => return username
-	      user !exists => return NULL
-	      returndesc != null => returndesc = string depicting description
-*/
 
 int SearchUser(char *name);
-/*Pre: x = valid
-  Post:x exists => return pos x in UserFile ^
-       x !exists=> return 0
-*/
        
 int
 SearchBanList(char *item, char *username);
-/*Pre: -
-  Post: returns true is person is banned from list
-*/
 
 char *ItemDescription(char *name);
 
@@ -105,16 +64,12 @@ int WriteLinkTo(char *toname, char *name, char *fmt, ...);
 void SayToAll(char *to);
 
 char *HeShe(char *kill);
-/* returns "He" or "She" */
 
 char *HeSheSmall(char *kill);
-/* returns "he" or "she" */
 
 char *HeShe2(char *kill);
-/* returns "him" or "her" */
 
 char *HeShe3(char *kill);
-/* returns "his" or "her" */
 
 char *ShowString(int i, int maxi);
 
@@ -127,11 +82,8 @@ char *ShowDrink(int i);
 char *ShowEat(int i);
 
 char *ShowBurden(int i);
-/* weight 0..3000 */
 
 int computeEncumberance(int fweight, int fstrength);
-/* weight 0..3000, encumberance 0..50
-   -1 = too much to carry, you are totally bogged down*/
 
 char *ShowAlignment(int i);
 

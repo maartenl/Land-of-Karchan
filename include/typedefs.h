@@ -114,6 +114,7 @@ typedef struct
 	char password[42];
 	char address[42];
 	char cookie[80];
+	int room;
 	int frames;
 	char *action; // {mud, logon, new}
 	char *command;
@@ -142,15 +143,8 @@ void setMMudOut(int aFileDescriptor);
 */
 int getMMudOut();
 
-/* returns 0, if not to be shut down
- returns 1, if to be shut down
- returns >1, countdown
-*/
 int isShuttingdown();
 
-/* uses an offset, offset is added to shutdown count
- use setShuttingDown(-1) for countdown
-*/
 void setShutdown(int aOffset);
 
 /* set the Frame variable to a certain value
@@ -169,53 +163,34 @@ int send_socket(int s, char *buf, int *len);
 
 int send_printf(const int socketfd, char *fmt,...);
 
-/* return the currently in use database connection handle */
 MYSQL getdbconnection();
 
 const char *getdberror();
 
-/* open a connection to the database DatabaseName 
-   using DatabaseLogin and DatabasePassword */
 int opendbconnection();
    
-/* close the connection to the database */
 void closedbconnection();
 
-/* return the structure that contains all the mud information (either for mutating or for displaying) */
 mudinfostruct getMudInfo();
 
-/* set the structure to something else. The way these methods work is usually, you get the structure, you change
-it and you put it back. */
 void setMudInfo(mudinfostruct amudinfostruct);
 
 char *getCommandString();
 
 void setCommandString(char *fstring);
 
-/* set number of available tokens. Usually only called once in gameMain
-*/
 void setTokenAmount(int amount);
 
-/* retrieve number of available tokens
-*/
 int getTokenAmount();
 
-/* set the token array, usually only called once in gameMaine
-*/
 void setTokens(char **ftokens);
 
-/* get the index of the token matching the description
-	returns -1 if not found
-*/
 int getTokenIndex(char *ftoken);
    
-/* returns the i-th token, if i is beyond the number of available tokens, returns empty constant string
-*/
 char *getToken(int i);
 
 void 
 FatalError(FILE *output, int i, char *description, char *busywith);
-/* prints an error on "output" and into the error file */
 
 void InitializeRooms();
 
@@ -234,10 +209,6 @@ MYSQL_RES *executeQuery(int *affected_rows, char *sqlstring, ...);
 roomstruct *GetRoomInfo(int room);
 
 char *generate_password(char *fpassword);
-/* Post: an empty string that may be modified, len>26
-   Pre:  a string containing 24 random digits/capitals/small caps
-   Returns: the pointer to fpassword
-*/
 
 void writeConfig();
 int readConfigFiles(char *filename);

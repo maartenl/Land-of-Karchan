@@ -1,4 +1,4 @@
-l/*-------------------------------------------------------------------------
+/*-------------------------------------------------------------------------
 cvsinfo: $Header$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
@@ -29,24 +29,12 @@ maarten_l@yahoo.com
 #define PLURALIS   1
 
 int ReadFile(const char *filenaam);
-/* Read file and dumps it onto standard output
-	Pre: filename must exist
-	Post: return true 
-*/
       
 int PrintForm(char * name, char * password);
-/* Prints the standard form output */
 
-int
-Inventory_Command(char * name, char * password, int room, char *fcommand);
-/* Write inventory list to cgiOut */
+int Inventory_Command(mudpersonstruct *fmudstruct);
 
 int PayUp(int z0, int z1, int z2, int *a, int *b, int *c);
-/* Pre :
-   Post : returns true if a*100+b*10+c>z0*100+z1*10+z2
-   Function: withdraws z0 gold, z1 silver, z2 copper from 
-   		a gold, b silver, c copper
-*/
 
 char *get_pluralis(char *s);
 
@@ -57,7 +45,4 @@ int exit_adverb(char *s);
 void WriteRoom(char * name, char * password, int room, int sleepstatus);
 
 int CheckWeight(char * name);
-/* weight = copper*1 + silver*2 + gold*3 +
-            (item1.weight*item1.amount + item2.weight*item2.amount + ...)
-*/
         

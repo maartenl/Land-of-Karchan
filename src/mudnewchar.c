@@ -33,7 +33,7 @@ maarten_l@yahoo.com
 	\brief  part of the server that takes care of creating a new character.
 */
 
-extern char secretpassword[40];
+//extern char secretpassword[40];
 
 //! create a new structure for containing the information for creating a new character
 mudnewcharstruct *create_mudnewcharstruct()
@@ -66,16 +66,17 @@ gameNewchar(int socketfd)
 	char *name;
 	char *address;
 	char *password;
+	char secretpassword[26];
 	mudpersonstruct *mymudstruct;
 	mudnewcharstruct *infostruct;
 	
-#ifdef DEBUG
-	printf("gameNewchar started(%s, %s, %s, %s)!!!\n", name, password, cookie, address);
-#endif
 	mymudstruct = find_in_list(socketfd);
 	name = mymudstruct->name;
 	password = mymudstruct->password;
 	infostruct = (mudnewcharstruct *) mymudstruct->newchar;
+#ifdef DEBUG
+	printf("gameNewchar started(%s, %s, %s, %s)!!!\n", name, password, address);
+#endif
 
 	/* send_printf(getMMudOut(), "[%s]", getenv("HTTP_COOKIE"));*/
 	generate_password(secretpassword);

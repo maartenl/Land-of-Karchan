@@ -25,16 +25,16 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 
-int GoWest_Command(char *name, char *password, int room, char *fcommand);
-int GoEast_Command(char *name, char *password, int room, char *fcommand);
-int GoNorth_Command(char *name, char *password, int room, char *fcommand);
-int GoSouth_Command(char *name, char *password, int room, char *fcommand);
-int Sleep_Command(char *name, char *password, int room, char *fcommand);
+int GoWest_Command(mudpersonstruct *fmudstruct);
+int GoEast_Command(mudpersonstruct *fmudstruct);
+int GoNorth_Command(mudpersonstruct *fmudstruct);
+int GoSouth_Command(mudpersonstruct *fmudstruct);
+int Sleep_Command(mudpersonstruct *fmudstruct);
 void Awaken2_Command(char *name, char *password, int room);
-int BigTalk_Command(char *name, char *password, int room, char *fcommand);
-int MailFormDumpOnScreen(char *name, char *password, int room, char *fcommand);
-int Time_Command(char *name, char *password, int room, char *fcommand);
-int Date_Command(char *name, char *password, int room, char *fcommand);
+int BigTalk_Command(mudpersonstruct *fmudstruct);
+int MailFormDumpOnScreen(mudpersonstruct *fmudstruct);
+int Time_Command(mudpersonstruct *fmudstruct);
+int Date_Command(mudpersonstruct *fmudstruct);
 void LookSky_Command(char *name, char *password);
 
 void SwitchRoomCheck(char *name, char *password, int room);

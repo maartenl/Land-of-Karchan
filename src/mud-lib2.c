@@ -31,23 +31,27 @@ maarten_l@yahoo.com
 /*! \file mud-lib2.c
 	\brief  server file providing extentions and commands to the mud */
 
-extern roomstruct room;
-char           *command;
-char           *printstr;
-struct tm       datumtijd;
-time_t          datetime;
-
 //! write mail to another person
+/*! \param name char*, name of sender
+	\param toname char*, name of receiver
+	\param header char*, title
+	\param message char*, contents of email
+*/
 void 
 WriteMail(char *name, char *toname, char *header, char *message)
 {
 	int             i = 1,j;
 	FILE           *fp;
+	struct tm       datumtijd;
+	time_t   datetime;
 MYSQL_RES *res;
 MYSQL_ROW row;
 char *temp;
 
 //'9999-12-31 23:59:59'
+
+	time(&datetime);
+	datumtijd = *(gmtime(&datetime));
 
 temp = composeSqlStatement("INSERT INTO %s VALUES ('%x', '%x', '%x', "
 	"'%i-%i-%i %i:%i:%i',0,1, '%x')", 
@@ -72,15 +76,24 @@ free(temp);temp=NULL;
 
 //! list of mails received by the current player
 int 
-ListMail_Command(char *name, char *password, int room, char *fcommand)
+ListMail_Command(mudpersonstruct *fmudstruct)
 {
 	int             i = 1,j;
 	FILE           *fp;
 	char				logname[100];
-MYSQL_RES *res;
-MYSQL_ROW row;
-char *temp;
-
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char *temp;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
+	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
   	send_printf(getMMudOut(), "<HTML>\n");
@@ -133,6 +146,9 @@ while(row = mysql_fetch_row(res))
 }
 
 //! read or delete mail (yeah, I know, confusing)
+/*! \param messnr integer containing the number of the message to read/delete
+	\param erasehem integer, 1 if needs to be deleted, 0 otherwise, message is always displayed
+*/
 void 
 ReadMail(char *name, char *password, int room, int messnr, int erasehem)
 {
@@ -276,6 +292,8 @@ if (erasehem) {
 }
 
 //! get some answers from bots, for example Bill but is not only Bill
+/*! answer if found, otherwise bot ignores you and message asked is added to the log
+*/
 int 
 ReadBill(char *botname, char *vraag, char *name, int room)
 {
@@ -328,15 +346,26 @@ ReadBill(char *botname, char *vraag, char *name, int room)
 	
 
 //! display who is online excluding deps
+/*! shows a bulleted list of people currently online, with their idle times and wether or not they are asleep.
+	Deputies are excluded because they usually have an idle time that would curdle milk. */
 int 
-Who_Command(char *name, char *password, int room, char *fcommand)
+Who_Command(mudpersonstruct *fmudstruct)
 {
 	int				i = 0;
 	FILE			*fp;
 	MYSQL_RES 		*res;
 	MYSQL_ROW		row;
 	char			*tempsql;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
 	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
+		
 	send_printf(getMMudOut(), "<HTML>\n");
 	send_printf(getMMudOut(), "<HEAD>\n");
 	send_printf(getMMudOut(), "<TITLE>\n");
@@ -404,7 +433,10 @@ Who_Command(char *name, char *password, int room, char *fcommand)
 	return 1;
 }
 
-//! look at something (either item, or thing, or person, or something else.)
+//! dispay a description
+/*! handy for displaying random bits of text.
+	\param description char* that contains the (large) amount of text to be displayed
+*/
 void 
 LookString(char *description, char *name, char *password)
 {
@@ -446,7 +478,9 @@ LookString(char *description, char *name, char *password)
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
-//! find out what you are looking at and display a description (either item, or thing, or person, or something else.)
+//! displays the description of an item properly
+/*! \param id int, contains the id number of the item of which the description needs to be displayed
+*/
 void 
 LookAtProc(int id, char *name, char *password)
 {
@@ -504,7 +538,16 @@ LookAtProc(int id, char *name, char *password)
 	send_printf(getMMudOut(), "<DIV ALIGN=left><P>");
 }
 
-//! look at item, either in inventory or on floor or hidden
+//! look at item, either in inventory or on floor or hidden or at a person in the room
+/*! incredibly comprehensive look command, will check on the following first:
+<UL><LI>items
+<LI>persons</UL>
+Format can be the following
+<UL><LI>look at [&lt;adjective&gt; [&lt;adjective&gt; [&lt;adjective&gt;]]] &lt;name&gt;
+<LI>look at &lt;person&gt;
+</UL>In case of an item, the description is put onto the screen.
+In case of a person, description + health + wearing is put onto the screen.
+*/
 void 
 LookItem_Command(char *name, char *password, int room)
 {
@@ -956,37 +999,31 @@ NotActive(char *fname, char *fpassword, int errornr)
 	datum.tm_min,datum.tm_sec,datum.tm_mday,datum.tm_mon+1,datum.tm_year+1900,fname, fpassword, errornr);
 }
 
-//! check the room, wonder if this is still used.
-int CheckRoom(int i)
-{
-int j;
-j=0;
-switch(i) {
-case 143 : {j=1;break;}
-case 205 : {j=1;break;}
-case 206 : {j=1;break;}
-case 207 : {j=1;break;}
-case 208 : {j=1;break;}
-case 209 : {j=1;break;}
-case 210 : {j=1;break;}
-case 211 : {j=1;break;}
-case 212 : {j=1;break;}
-case 213 : {j=1;break;}
-case 214 : {j=1;break;}
-case 215 : {j=1;break;}
-}  
-return j;
-}
-
 //! quit the game
+/*! deactivate and save player, then exit player, and show goodbye message found in goodbye.html
+*/
 int 
-Quit_Command(char *name, char *password, int room, char *fcommand)
+Quit_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
+	struct tm       datumtijd;
+	time_t   datetime;
+time(&datetime);
 	MYSQL_ROW row;
 	char *temp;
 	char logname[100];
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
 	
+	time(&datetime);
+	datumtijd = *(gmtime(&datetime));
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
+		
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
 	temp = composeSqlStatement("select punishment, address, room  from tmp_usertable where name='%x'",
@@ -1029,6 +1066,8 @@ Quit_Command(char *name, char *password, int room, char *fcommand)
   adject3 adject1 noun tokens[1..4]=adject3 adject1 adject2 noun
   tokens[1..4]=adject3 adject2 adject1 noun
   </TT>
+  \param aantal integer, 1..4
+  \return int 0 upon not found, id of the item if found
 */
 int 
 ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
@@ -1070,9 +1109,23 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 	}			/* endswitch */
 	res=SendSQL2(temp, NULL);
 	free(temp);temp=NULL;
-	row = mysql_fetch_row(res);
+	if (res != NULL)
+	{
+		row = mysql_fetch_row(res);
 	
-	if (row) {id=atoi(row[0]);} else {id=0;}
+		if (row) 
+		{
+			id=atoi(row[0]);
+		} 
+		else 
+		{
+			id=0;
+		}
+	}
+	else
+	{
+		id = 0;
+	}
 
 	mysql_free_result(res);
 	return id;
@@ -1080,14 +1133,23 @@ ItemCheck(char *tok1, char *tok2, char *tok3, char *tok4, int aantal)
 
 //! show statistics of current player
 int 
-Stats_Command(char *name, char *password, int room, char *fcommand)
+Stats_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp;
 	char logname[100];
 	char *extralook = NULL; 
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
 	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
+		
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	
 	extralook = NULL;
@@ -1244,6 +1306,8 @@ Stats_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! get money from floor. this is in place of items, because money is a special case.
+/*! proper appelation in the game would be <I> get [&lt;amount&gt;] [gold, silver, copper] coin[s]</I>
+*/
 void
 GetMoney_Command(char *name, char *password, int room)
 {
@@ -1362,6 +1426,8 @@ GetMoney_Command(char *name, char *password, int room)
 }
 
 //! drop money onto the floor
+/*! proper appelation in the game would be <I> drop [&lt;amount&gt;] [gold, silver, copper] coin[s]</I>
+*/
 void
 DropMoney_Command(char *name, char *password, int room)
 {
@@ -1510,12 +1576,12 @@ DropMoney_Command(char *name, char *password, int room)
 }
 
 //! give an amount of money to someone else.
+/*! Proper appelation in game is <I>give [&lt;amount&gt;] [gold, silver, copper] coin[s] to &lt;person&gt;</I>.
+	Provided a nice warning if money not sufficiently available.
+*/
 void
 GiveMoney_Command(char *name, char *password, int room)
 {
-	/*
-	* give [amount] <silver/gold/copper> coins to <person>
-	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *sqlstring;
@@ -1638,6 +1704,8 @@ GiveMoney_Command(char *name, char *password, int room)
 }
 
 //! retrieve an item from the floor.
+/*! Proper appelation: <I>get [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+*/
 void
 GetItem_Command(char *name, char *password, int room)
 {
@@ -1863,12 +1931,11 @@ GetItem_Command(char *name, char *password, int room)
 }
 
 //! drop an item on the floor
+/*! Proper appelation: <I>drop [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+*/
 void
 DropItem_Command(char *name, char *password, int room)
 {
-	/*
-	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
-	*/
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *sqlstring;
@@ -2100,8 +2167,11 @@ DropItem_Command(char *name, char *password, int room)
 }
 
 //! put an item into a container
+/*! Proper appelation: <I>put [&lt;amount&gt;] &lt;item&gt; in &lt;container&gt; ; container = &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+	Second item must be a container, and be in room or in inventory. First item must be in inventory.
+*/
 int
-Put_Command(char *name, char *password, int room, char *fcommand)
+Put_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* put [amount] <item> in <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2120,6 +2190,15 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 	int containerid_b, room_b;
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 	if (getTokenAmount()<4)
@@ -2455,8 +2534,11 @@ Put_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! retrieve an item from a container
+/*! Proper appelation: <I>retrieve [&lt;amount&gt;] &lt;item&gt; from &lt;container&gt; ; container = &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+	Second item must be a container, and be in room or in inventory. First item shall be added to your inventory.
+*/
 int
-Retrieve_Command(char *name, char *password, int room, char *command)
+Retrieve_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* retrieve [amount] <item> from <item>;<item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -2475,6 +2557,15 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 	int containerid_b, room_b;
 	int amount, changedrows, itemid, amountitems, numberfilledout;
 	char *checkerror;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
 	
 	if (getTokenAmount() < 4)
 	{
@@ -2769,8 +2860,10 @@ Retrieve_Command(char *name, char *password, int room, char *command)
 }
 
 //! wear an item on your body someplace
+/*! correct appelation: <I>wear &lt;item&gt; on &lt;position&gt; ; position = {head, neck, body, lefthand, righthand, legs, feet}</I>
+*/
 int
-Wear_Command(char *name, char *password, int room, char *command)
+Wear_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* wear <item> on <position>; 
@@ -2783,6 +2876,15 @@ Wear_Command(char *name, char *password, int room, char *command)
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int changedrows, itemid, amountitems, itemwearable;
+	char *name;
+	char *password;
+	char *command;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	command = fmudstruct->command;
 	
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
 
@@ -2992,8 +3094,10 @@ Wear_Command(char *name, char *password, int room, char *command)
 }
 
 //! remove item from body
+/*! correct appelation: <I>remove &lt;item&gt;</I>
+*/
 int
-Unwear_Command(char *name, char *password, int room, char *fcommand)
+Unwear_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* wear <item> on <position>; 
@@ -3006,6 +3110,15 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], itemwearing[20];
 	int changedrows, itemid, amountitems, itemwearable;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -3173,8 +3286,10 @@ Unwear_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! wield an item (in left or right hand)
+/*! correct appelation: <I>wield &lt;item&gt;</I>
+*/
 int
-Wield_Command(char *name, char *password, int room, char *fcommand)
+Wield_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* wield <item>; 
@@ -3187,6 +3302,15 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], position2[20];
 	int changedrows, itemid, amountitems, itemwearable, position;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -3382,8 +3506,10 @@ Wield_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! stop wielding an item in right or left hand
+/*! correct appelation: <I>unwield &lt;item&gt;</I>
+*/
 int
-Unwield_Command(char *name, char *password, int room, char *fcommand)
+Unwield_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* unwield <item>; 
@@ -3396,6 +3522,15 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100], mysex[20];
 	char itemname[40], itemadject1[40], itemadject2[40], itemwielding[20], position[20];
 	int changedrows, itemid, amountitems, itemwieldable;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -3565,8 +3700,10 @@ Unwield_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! eat an item
+/*! Proper appelation: <I>eat &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+*/
 int
-Eat_Command(char *name, char *password, int room, char *fcommand)
+Eat_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* eat <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3577,6 +3714,15 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 	char logname[100];
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int changedrows, itemid, amountitems, myeatstats;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -3754,8 +3900,10 @@ Eat_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! drink an item
+/*! Proper appelation: <I>drink &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+*/
 int
-Drink_Command(char *name, char *password, int room, char *fcommand)
+Drink_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* get [amount] <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -3767,6 +3915,15 @@ Drink_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int changedrows, itemid, amountitems;
 	int mydrinkstats;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -4013,6 +4170,9 @@ RemapShoppingList_Command(char *name)
 }
 
 //! buy an item from a bot
+/*! Proper appelation: <I>buy [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+	Item is added to inventory if enough money and the money is subtracted.
+*/
 int
 BuyItem_Command(char *name, char *password, int room, char *fromname)
 {
@@ -4240,6 +4400,9 @@ BuyItem_Command(char *name, char *password, int room, char *fromname)
 }
 
 //! sell an item to a bot
+/*! Proper appelation: <I>sell [&lt;amount&gt;] &lt;item&gt; ; item = &lt;adjective1..3&gt; &lt;name&gt; </I>
+	Item is removed from inventory and the money is added.
+*/
 void
 SellItem_Command(char *name, char *password, int room, char *toname)
 {
@@ -4454,8 +4617,10 @@ SellItem_Command(char *name, char *password, int room, char *toname)
 }
 
 //! search for an item among the stuff in a room
+/*! correct appelation: <I>search &lt;item&gt;</I>
+*/
 int
-Search_Command(char *name, char *password, int room, char *fcommand)
+Search_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* search <object>
@@ -4467,6 +4632,15 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	char itemname[40], itemadject1[40], itemadject2[40];
 	int amount, changedrows, itemid, amountitems, numberfilledout, containerid;
 	char *checkerror;
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -4482,7 +4656,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	"(tmpitems.belongsto='') and "
 	"(tmpitems.room = %i) and "
 	"(tmpitems.search = '%x')"
-	, room, command+(getToken(1)-getToken(0)));
+	, room, fcommand+(getToken(1)-getToken(0)));
 	res=SendSQL2(sqlstring, NULL);
 	free(sqlstring);sqlstring=NULL;
 	if (res==NULL) 
@@ -4494,7 +4668,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 		row = mysql_fetch_row(res);
 		if (row==NULL) 
 		{
-			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", command+(getToken(1)-getToken(0)));
+			WriteSentenceIntoOwnLogFile(logname, "You search %s dilligently, yet find nothing at all.<BR>\r\n", fcommand+(getToken(1)-getToken(0)));
 			WriteRoom(name, password, room, 0);
 			return 1;
 		}
@@ -4518,7 +4692,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 				"(wielding = '') and "
 				"(containerid = %i) and "
 				"(tmpitems.search = '%x')"
-				, name, itemid, containerid, command+(getToken(1)-getToken(0)));
+				, name, itemid, containerid, fcommand+(getToken(1)-getToken(0)));
 			res=SendSQL2(sqlstring, &changedrows);
 			free(sqlstring);sqlstring=NULL;
 			mysql_free_result(res);
@@ -4562,7 +4736,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 			"(search='%x') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, command+(getToken(1)-getToken(0)), room);
+			, itemid, fcommand+(getToken(1)-getToken(0)), room);
 		}
 		else
 		{
@@ -4571,7 +4745,7 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 			"(search='%x') and "
 			"(room=%i) and "
 			"(containerid = 0)"
-			, itemid, command+(getToken(1)-getToken(0)), room);
+			, itemid, fcommand+(getToken(1)-getToken(0)), room);
 		}
 		res=SendSQL2(sqlstring, NULL);
 		free(sqlstring);sqlstring=NULL;
@@ -4579,14 +4753,16 @@ Search_Command(char *name, char *password, int room, char *fcommand)
 	}
 	WriteSentenceIntoOwnLogFile(logname, 
 		"You search %s and you find a %s, %s %s.<BR>\r\n", 
-		command+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
+		fcommand+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
 	WriteMessage(name, room, "%s searches %s and finds a %s, %s %s.<BR>\r\n",
-		name, command+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
+		name, fcommand+(getToken(1)-getToken(0)), itemadject1, itemadject2, itemname);
 	WriteRoom(name, password, room, 0);
 	return 1;
 }
 
 //! give an item to a person
+/*! correct appelation: <I>give [amount] &lt;item&gt; to &lt;person&gt;</I>
+*/
 int
 GiveItem_Command(char *name, char *password, int room)
 {
@@ -4843,8 +5019,10 @@ GiveItem_Command(char *name, char *password, int room)
 }
 
 //! read an item, hidden or otherwise
+/*! correct appelation: <I>read &lt;item&gt;</I>
+*/
 int
-Read_Command(char *name, char *password, int room, char *fcommand)
+Read_Command(mudpersonstruct *fmudstruct)
 {
 	/*
 	* read <item> ; <item> = [bijv vmw] [bijv vnm] [bijv vnm] name
@@ -4853,6 +5031,15 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 	MYSQL_ROW row;
 	char *sqlstring;
 	char logname[100], mysex[10];
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
@@ -5095,6 +5282,7 @@ Read_Command(char *name, char *password, int room, char *fcommand)
 }
 
 //! execute the dead
+/*! show dead screen */
 void 
 Dead(char *name, char *password, int room)
 {
@@ -5148,19 +5336,28 @@ Dead(char *name, char *password, int room)
 
 //! change the title of the player
 int
-ChangeTitle_Command(char *name, char *password, int room, char *fcommand)
+ChangeTitle_Command(mudpersonstruct *fmudstruct)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *temp, *title;
 	char logname[100];
+	char *name;
+	char *password;
+	char *fcommand;
+	int room;
+	
+	name = fmudstruct->name;
+	password = fmudstruct->cookie;
+	room = fmudstruct->room;
+	fcommand = fmudstruct->command;
 	
 	if (getTokenAmount() < 2)
 	{
 		return 0;
 	}
 	sprintf(logname, "%s%s.log", getParam(MM_USERHEADER), name);
-	title = command+(getToken(1)-getToken(0));
+	title = fcommand+(getToken(1)-getToken(0));
 	WriteSentenceIntoOwnLogFile(logname, "Title changed to : %s<BR>\n", title);
 	temp = composeSqlStatement("update tmp_usertable set title='%x' where name='%x'",
 		title, name);
