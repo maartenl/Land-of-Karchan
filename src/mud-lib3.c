@@ -29,7 +29,6 @@ maartenl@il.fontys.nl
 
 extern roomstruct room;
 extern char    *command;
-extern char    *junk;
 extern char    *printstr;
 extern char    *tokens[100];
 extern int      aantal;

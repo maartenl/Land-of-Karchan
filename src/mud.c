@@ -31,7 +31,6 @@ int commandlineinterface = 0;
 
 /* three strings destined for parsing the commands */
 extern char    *command;
-extern char    *junk;
 extern char    *printstr;
 extern char    *tokens[100];
 extern int      aantal;
@@ -56,7 +55,6 @@ void
 InitVar(char *fcommand)
 {
 	printstr = (char *) malloc(strlen(fcommand)+500);
-	junk = (char *) malloc(strlen(fcommand));
 	time(&datetime);
 	datumtijd = *(gmtime(&datetime));
 	srandom(datetime);
@@ -248,6 +246,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	char						frames[10];
 	char           *temp;
 	char            logname[100];
+	char 				*junk;
 
 	command = fcommand;
 	name = fname;
@@ -319,6 +318,7 @@ gameMain(char *fcommand, char *fname, char *fpassword)
 	
 	mysql_free_result(res);
 
+	junk = (char *) malloc(strlen(command));
 	strcpy(junk, command);
 	tokens[0] = junk;
 	tokens[0] = strtok(junk, " ");
