@@ -236,4 +236,182 @@ is a perennial growing to 4 feet tall. <P>
 
 ");
 
+replace into claimed values(0, '0 - 399','Karn');
+
+update rooms set contents ='<H1><IMG SRC="/images/gif/mielikki/house8.gif">The
+Hut</H1> <IMG
+SRC="/images/gif/letters/a.gif" ALIGN=left> slightly derilict, small
+building is visible here. Something between a hut and a house, for lack of a
+better description.<P>
+You can either make a closer inspection of this building, surrounded by the
+forest and the mountains or you can retreat back to the south.<P>
+' where id=117;
+
+replace into items
+values(145, 'building','small','derilict','slightly',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1><IMG SRC="/images/gif/mielikki/house8.gif">
+The Hut</H1> <IMG
+SRC="/images/gif/letters/a.gif" ALIGN=left> slightly derilict, small
+building is visible here. Something between a hut and a house, for lack of a
+better description.<P>
+The entire shack seems to be made of decaying grey wood, except for the
+oldfashioned wooden door and the small rectangular glass windows. You might be
+able to look inside or open the door.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(145, '','',1,117,'','',0);
+replace into items
+values(146, 'door','oldfashioned','wooden','old',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Door</H1> <IMG
+SRC="/images/gif/letters/t.gif" ALIGN=left>he door seems to be closed. It is
+made of a different wood than the walls of the shack and a brass doorknob is
+visible which can probably be used to <I>open</I> the door.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(146, '','',1,117,'','',0);
+replace into items
+values(147, 'windows','small','rectangular','glass',
+0,0,0,0,'','',0,0,0,0,0,0,'<H1>The Windows</H1> <IMG
+SRC="/images/gif/letters/w.gif" ALIGN=left>indows are visible on both sides
+of the door. They are of the typical rectangular sort, with two small beams
+through the middle probably for support. The glass pane of the windows seems
+to be extremely dirty, and you can hardly make out what is inside, however,
+you might be able to <I>look through</I> the windows.<P>
+','', 0,0,0,0,0,0,0,0);
+replace into tmp_itemtable values(147, '','',1,117,'','',0);
+
+replace into action
+values(23, "<H1>Looking Through The Windows</H1>
+<IMG
+SRC=\"/images/gif/letters/i.gif\" ALIGN=left>nside you see a whole mess of
+stuff. A very very old crone seems to be shuffeling this way and that
+muttering to herself, although you are too far away to hear anything
+inside.<P>
+Suddenly she looks directly at you, startling you rather. Her intense gaze
+upon you makes you draw back from the windows. In absolutely no time at all,
+the door of the little shack opens and the old crone shows herself, yells
+'Get Lost!', and slams the door of the shack shut.<P>
+");
+
+replace into action
+values(24, "<H1>Opening the Door</H1>
+<IMG
+SRC=\"/images/gif/letters/y.gif\" ALIGN=left>ou attempt to open the door, by
+grabbing the brass knop on the door and giving it a good tug. Alas, the door
+seems to be closed and locked.<P>
+However, there suddenly is some audible noise inside, and all of a sudden
+the door is, basically, torn open rather quickly, and an old old crone looks
+suspiciously at your face.<P>
+Her intense gaze upon you makes you draw back a little.<P>
+\"<I>And what do we think we are doing, hmm? Just going ahead and trying to see
+if the door is open? And what if it was open? Hmmm? Fancy yourself inviting
+yourself inside and looking about? Hmmm?</I>\"<P>
+She pokes you thoroughly in the chest. You feel yourself blushing a nicely
+deep crimson.<P>
+\"<I>And what if I wasn't here? What if the door wasn't locked? Would you have
+let yourself in? Hmm? Maybe look around a bit? Maybe take some stuff that
+doesn't belong to you, but you would fancy that the old crone no longer
+needs anyway? Hmmm?</I>\"<P>
+She is squinting at you.<P>
+\"<I>The next time I see you trying this thing again, I'm going to turn you into
+a toad.</I>\", she mutters, \"<I>An ugly one!!!</I>\". At that last remark, she slams the
+door shut again.<P>
+Well, that was embarassing, that was.<P>
+");
+
+replace into action
+values(25, "<H1>Knocking at the Door</H1>
+<IMG
+SRC=\"/images/gif/letters/y.gif\" ALIGN=left>ou have your doubts, but you grab
+your courage by the scruff of its neck and give a gentle knocking at the
+door.<P>
+An old crone opens the door, looks at you suspiciously. You flash your most
+ingratiating smile at her. She frowns but beckons you inside.<P>
+Once you are inside, she immediately slams the door shut again.<P>
+With a morose expression on her face she get some beaten up old crockery
+from a shelf above her and dashes it all violently in the appropriate way
+onto a small table. <P>
+\"Tea?\", she shouts at you unexpectedly. Without even waiting on your answer
+she continues with what she was doing.<P>
+");
+
+replace into commands values(802, 'lookwindow',1,'look through window%',
+'lookwindow','',117);
+replace into methods values(95, 'lookwindow',
+"sayeveryone(""%me tries to look through the windows. Suddenly you see %me \\\\
+drawing back.<BR>The door of the shack opens, an old and wrinkled crone \\\\
+shows herself briefly, spits to %me '<I>Get Lost!</I>' and slams the door shut \\\\
+again.<BR>"")
+show(""select contents from action where id=23"")
+return
+");
+
+replace into commands values(803, 'opendoor',1,'open door',
+'opendoor','',117);
+replace into methods values(96, 'opendoor',
+"sayeveryone(""%me gives the brass knob on the door a good tug.<BR> \\\\
+There suddenly is some audible noise inside, and all of a sudden \\\\
+the door is, basically, torn open rather quickly, and an old old crone looks \\\\
+out suspiciously.<BR> \\\\
+She gazes intensely upon %me and %me draws back a little.<BR> \\\\
+<B>Old crone says [to %me] :</B>\"<I>And what do we think we are doing, hmm? Just going ahead and trying to see \\\\
+if the door is open? And what if it was open? Hmmm? Fancy yourself inviting \\\\
+yourself inside and looking about? Hmmm?</I>\"<BR> \\\\
+The old crone pokes %me thoroughly in the chest.<BR> \\\\
+%me blushes a nice deep crimson.<BR> \\\\
+<B>Old crone says [to %me] :</B>\"<I>And what if I wasn't here? What if the door wasn't locked? Would you have \\\\
+let yourself in? Hmm? Maybe look around a bit? Maybe take some stuff that \\\\
+doesn't belong to you, but you would fancy that the old crone no longer \\\\
+needs anyway? Hmmm?</I>\"<BR> \\\\
+She squints at %me.<BR> \\\\
+<B>Old crone says [to %me] :</B>\"<I>The next time I see you trying this thing again, I'm going to turn you into \\\\
+a toad... An ugly one!!!</I>\".<BR> \\\\
+The old crone slams the door shut again.<BR>"")
+show(""select contents from action where id=24"")
+return
+");
+
+replace into commands values(804, 'knockdoor',1,'knock on door',
+'knockdoor','',117);
+replace into methods values(97, 'knockdoor',
+"sayeveryone(""%me knocks gently on the door. An old crone opens the door \\\\
+and after a couple of extremely suspicious looks from her and some \\\\
+particularly sparkling smiles from %me, beckons %me inside.<BR> \\\\
+The old crone immediately shuts the door.<BR>"") 
+set room=562
+sql(""update tmp_usertable set room=562 where name='%me'"")
+sayeveryone(""%me enters the room.<BR>"")
+show(""select contents from action where id=25"")
+return
+");
+
+replace into rooms values(562, 0, 0, 0, 0, 0, 0, '<H1>The
+Room</H1> 
+<IMG SRC="/images/gif/letters/y.gif" ALIGN=left>ou are standing in the
+living room as well as the only room of the residence of the old crone.<P>
+A lot of mess adorns the walls and the tables and the floor all around you.
+Everything from evil looking potions to books to strange implements of which
+you do not know the use. It seems the old crone has forgotten about you.<P>
+To the south is the door that you entered through that would enable you to
+<I>leave</I>.<P>
+');
+
+replace into commands values(805, 'exitsouth',1,'leave',
+'exitsouth','',562);
+replace into methods values(98, 'exitsouth',
+"sayeveryone(""%me bids goodbye to the old crone and leaves south.<BR>"") 
+say(""You take your leave from the old crone, refuse gently another round \\\\
+of tea and you exit through the door south.<BR>"")
+set room=117
+sql(""update tmp_usertable set room=117 where name='%me'"")
+sayeveryone(""%me appears out of the rundown house.<BR>"")
+showstandard
+return
+");
+
+replace into tmp_usertable 
+(name, title, race, sex, age, length, width, complexion, eyes, face, hair,
+beard, arm, leg, room, god)
+values("Korinase", "Old Crone", "human", "female", "very old", "small",
+"thin", "none", "black-eyed", "none", "black-haired", "none", "none",
+"none", 562, 2);
+
 END_OF_DATA
