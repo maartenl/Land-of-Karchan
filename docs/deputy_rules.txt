@@ -3,12 +3,14 @@ Deputy Rules
 
 0. Deputies should not misuse their powers. (this is a general rule, and can be interpreted in a lot of ways, one of the most common ones is that the deps do not obtain private player information unless for solving problems/aiding the game)
 
-1. Deputies should not "help" normal players in extravagant ways. (for
+1. It is ABSOLUTELY FORBIDDEN for deputies to share their passwords/userids with other non-dep players.
+
+2. Deputies should not "help" normal players in extravagant ways. (for
 example making them invulnerable, giving them money, telling what to do
 and where to do it, giving them huge battle axes or big hitpoints so nobody
 can kill them)
 
-2. Overall/Global changes to the game should be discussed (through
+3. Overall/Global changes to the game should be discussed (through
 for example email) with ALL deputies and Karn. Only afterwards may any
 global/overall change take place. Global changes will only be executed by
 Karn, as they have a huge impact on the game and could make the game
