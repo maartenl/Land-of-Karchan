@@ -174,6 +174,7 @@ j=1;
 while((row = mysql_fetch_row(res)) && (messnr!=j)) {j++;}
 if (messnr!=j) 
 {
+	mysql_free_result(res);
 	WriteSentenceIntoOwnLogFile(logname, "No mail with that number!<BR>\r\n");
 	WriteRoom(name, password, room, 0);
 	return;
