@@ -33,7 +33,7 @@ int ReadFile(char *filenaam);
 /* Read file and dumps it onto standard output
 	Pre: filename must exist
 	Post: return true 
-/*
+*/
       
 int PrintForm(char * name, char * password);
 /* Prints the standard form output */
