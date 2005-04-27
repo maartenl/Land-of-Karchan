@@ -24,11 +24,26 @@ First of all, and this is important, the container field must be set to
 <I>yes</I> or all other fields regarding containers are ignored.<P>
 The other fields are capacity, isopenable and keyid. Capacity is used to
 indicate how much a container can carry. Isopenable indicates whether the
-open and close command will work. Keyid is the item definition identification
+open and close command will work. If isopenable is false, it means that the
+items is always open and does not need to be opened or closed.
+<P>
+Keyid is the item definition identification
 number of the item that can be used to unlock/lock the lock of the
-container.
+container. When empty, the container does not have a lock.
 
 <H2>Container</H2>
-
+A container (instance of a container item definition) will contain a number
+of <I>attributes</I> that help remember the state of the container. For
+example:
+<DL>
+<DT>isopenable
+<DD>boolean, indicates wether or not the container can be opened and closed.
+This overrides the isopenable field in the container definition itself.
+<DT>isopen
+<DD>boolean, indicates wether the container is open or closed.
+<DT>islocked
+<DD>boolean, indicates wether the container is locked or not. If no keyid is
+present in the container definition, this field is ignored.
+</DL>
 </BODY>
 </HTML>
