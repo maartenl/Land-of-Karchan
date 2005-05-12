@@ -97,6 +97,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.south = room2.id where room2.id is null"
+	." and room1.south is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -107,6 +108,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.north = room2.id where room2.id is null"
+	." and room1.north is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -117,6 +119,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.east = room2.id where room2.id is null"
+	." and room1.east is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -127,6 +130,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.west = room2.id where room2.id is null"
+	." and room1.west is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -137,6 +141,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.up = room2.id where room2.id is null"
+	." and room1.up is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -147,6 +152,7 @@ $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select room1.id from mm_rooms as room1 left join"
 	." mm_rooms as room2 on room1.down = room2.id where room2.id is null"
+	." and room1.down is not null"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
