@@ -83,10 +83,16 @@ if (isset($_REQUEST{"west"}))
 	{
 		die("You are not the owner of this room.");
 	}
-	if ($_REQUEST{"south"} != 0)
+	$south = trim($_REQUEST{"south"});
+	$north = trim($_REQUEST{"north"});
+	$west = trim($_REQUEST{"west"});
+	$east = trim($_REQUEST{"east"});
+	$up = trim($_REQUEST{"up"});
+	$down = trim($_REQUEST{"down"});
+	if ($south != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"south"})
+			mysql_escape_string($south)
 			, $dbhandle)
 			or die("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -94,10 +100,14 @@ if (isset($_REQUEST{"west"}))
 			die("South exit does not exist.");
 		}
 	}
-	if ($_REQUEST{"north"} != 0)
+	else
+	{
+		$south = "null";
+	}
+	if ($north != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"north"})
+			mysql_escape_string($north)
 			, $dbhandle)
 			or die("Query(2) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -105,10 +115,14 @@ if (isset($_REQUEST{"west"}))
 			die("North exit does not exist.");
 		}
 	}
-	if ($_REQUEST{"west"} != 0)
+	else
+	{
+		$north = "null";
+	}
+	if ($west != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"west"})
+			mysql_escape_string($west)
 			, $dbhandle)
 			or die("Query(3) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -116,10 +130,14 @@ if (isset($_REQUEST{"west"}))
 			die("West exit does not exist.");
 		}
 	}
-	if ($_REQUEST{"east"} != 0)
+	else
+	{
+		$west = "null";
+	}
+	if ($east != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"east"})
+			mysql_escape_string($east)
 			, $dbhandle)
 			or die("Query(4) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -127,10 +145,14 @@ if (isset($_REQUEST{"west"}))
 			die("East exit does not exist.");
 		}
 	}
-	if ($_REQUEST{"up"} != 0)
+	else
+	{
+		$east = "null";
+	}
+	if ($up != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"up"})
+			mysql_escape_string($up)
 			, $dbhandle)
 			or die("Query(5) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -138,16 +160,24 @@ if (isset($_REQUEST{"west"}))
 			die("Up exit does not exist.");
 		}
 	}
-	if ($_REQUEST{"down"} != 0)
+	else
+	{
+		$up = "null";
+	}
+	if ($down != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($_REQUEST{"down"})
+			mysql_escape_string($down)
 			, $dbhandle)
 			or die("Query(6) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
 			die("Down exit does not exist.");
 		}
+	}
+	else
+	{
+		$down = "null";
 	}
 	$result = mysql_query("select area from mm_area where area = \"".
 		mysql_escape_string($_REQUEST{"area"})."\""
@@ -159,17 +189,17 @@ if (isset($_REQUEST{"west"}))
 	}
 	// make that change.
 	$query = "update mm_rooms set north=".
-		mysql_escape_string($_REQUEST{"north"}).
+		mysql_escape_string($north).
 		", south=".
-		mysql_escape_string($_REQUEST{"south"}).
+		mysql_escape_string($south).
 		", east=".
-		mysql_escape_string($_REQUEST{"east"}).
+		mysql_escape_string($east).
 		", west=".
-		mysql_escape_string($_REQUEST{"west"}).
+		mysql_escape_string($west).
 		", up=".
-		mysql_escape_string($_REQUEST{"up"}).
+		mysql_escape_string($up).
 		", down=".
-		mysql_escape_string($_REQUEST{"down"}).
+		mysql_escape_string($down).
 		", contents=\"".
 		mysql_escape_string($_REQUEST{"contents"}).
 		"\", area=\"".
