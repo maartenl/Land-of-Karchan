@@ -209,6 +209,16 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["id"], $myrow["id"]);
 }
 
+$result = mysql_query("select itemtable.id from mm_roomitemtable as itemtable left join"
+	." mm_rooms on itemtable.room = mm_rooms.id where mm_rooms.id is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> (item in non-existing room)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
 
 printf("<H2>Problems with Attributes</H2>\r\n");
 $result = mysql_query("select room1.name, room1.id from mm_roomattributes as room1 left join"
