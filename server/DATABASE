@@ -81,15 +81,15 @@ not null default "male";
 - ALTER TABLE mm_items MODIFY readdescr TEXT;
 - ALTER TABLE mm_logonmessage MODIFY message TEXT not null;
 - ALTER TABLE mm_mailtable MODIFY message TEXT not null;
-- ALTER TABLE bugs engine=InnoDB;
-- ALTER TABLE characterinfo engine=InnoDB;
-- ALTER TABLE family engine=InnoDB;
-- ALTER TABLE familyvalues engine=InnoDB;
-- ALTER TABLE links engine=InnoDB;
-- ALTER TABLE poll_choices engine=InnoDB;
-- ALTER TABLE poll_values engine=InnoDB;
-- ALTER TABLE polls engine=InnoDB;
-- ALTER TABLE scratchpad engine=InnoDB;
+ALTER TABLE bugs engine=InnoDB;
+ALTER TABLE characterinfo engine=InnoDB;
+ALTER TABLE family engine=InnoDB;
+ALTER TABLE familyvalues engine=InnoDB;
+ALTER TABLE links engine=InnoDB;
+ALTER TABLE poll_choices engine=InnoDB;
+ALTER TABLE poll_values engine=InnoDB;
+ALTER TABLE polls engine=InnoDB;
+ALTER TABLE scratchpad engine=InnoDB;
 
 ALTER TABLE mm_admin engine=InnoDB;
 ALTER TABLE mm_answers engine=InnoDB;
@@ -118,11 +118,120 @@ ALTER TABLE mm_shopkeeperitems engine=InnoDB;
 ALTER TABLE mm_sillynamestable engine=InnoDB;
 ALTER TABLE mm_unbantable engine=InnoDB;
 ALTER TABLE mm_usertable engine=InnoDB;
+ALTER TABLE mm_bannednamestable engine=InnoDB;
 - create table mm_bannednamestable (name varchar(20) not null primary key, 
 deputy varchar(20),
 creation timestamp not null,
 days int(3), reason varchar(255));
+- alter table mm_events
+add foreign key (method_name) references mm_methods (name)
+on delete restrict
+on update cascade;
+- alter table mm_commands
+add foreign key (method_name) references mm_methods (name)
+on delete restrict
+on update cascade;
+- alter table mm_itemtable
+add foreign key (itemid) references mm_items (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (area) references mm_area (area)
+on delete restrict
+on update cascade;
+- alter table mm_roomitemtable
+add foreign key (id) references mm_itemtable (id)
+on delete restrict
+on update cascade;
+- alter table mm_charitemtable
+add foreign key (id) references mm_itemtable (id)
+on delete restrict
+on update cascade;
+- alter table mm_itemitemtable
+add foreign key (id) references mm_itemtable (id)
+on delete restrict
+on update cascade;
+- alter table mm_itemattributes
+add foreign key (id) references mm_itemtable (id)
+on delete restrict
+on update cascade;
+- alter table mm_roomattributes
+add foreign key (id) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_charattributes
+add foreign key (charname) references mm_usertable (name)
+on delete restrict
+on update cascade;
+- alter table mm_roomitemtable
+add foreign key (room) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_charitemtable
+add foreign key (belongsto) references mm_usertable (name)
+on delete restrict
+on update cascade;
+- alter table mm_itemitemtable
+add foreign key (containerid) references mm_itemtable (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (north) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (south) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (east) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (west) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (up) references mm_rooms (id)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (down) references mm_rooms (id)
+on delete restrict
+on update cascade;
 
+- alter table mm_methods
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_commands
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_events
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_items
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_rooms
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_area
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_usertable
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_boards
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
 
 Creating a dupe database
 ------------------------
