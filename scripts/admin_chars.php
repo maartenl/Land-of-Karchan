@@ -232,6 +232,14 @@ New password:
 <INPUT TYPE="text" NAME="newpassword" SIZE="40" MAXLENGTH="40">
 <INPUT TYPE="submit" VALUE="Reset Password">
 </FORM>
+
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["name"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="7">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</b>
+</FORM>
 <?php
 	}
 }
