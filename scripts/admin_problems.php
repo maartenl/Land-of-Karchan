@@ -277,6 +277,28 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["name"]);
 }
 
+printf("<H2>Problems with Mail</H2>\r\n");
+
+$result = mysql_query("select mm_mailtable.name from mm_mailtable left join"
+	." mm_usertable on mm_usertable.name = mm_mailtable.name where mm_usertable.name is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>mail:</b> %s (mailsender %s does not exist)<BR>",
+$myrow["name"], $myrow["name"]);
+}
+
+$result = mysql_query("select mm_mailtable.toname from mm_mailtable left join"
+	." mm_usertable on mm_usertable.name = mm_mailtable.toname where mm_usertable.name is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>mail:</b> %s (mailreceiver %s does not exist)<BR>",
+$myrow["toname"], $myrow["toname"]);
+}
+
 mysql_close($dbhandle);
 ?>
 
