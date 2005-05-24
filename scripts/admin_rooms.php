@@ -281,6 +281,13 @@ while ($areamyrow = mysql_fetch_array($arearesult))
 <INPUT TYPE="submit" VALUE="Change Room">
 </b>
 </FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="5">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</b>
+</FORM>
 <?php
 	}
 }

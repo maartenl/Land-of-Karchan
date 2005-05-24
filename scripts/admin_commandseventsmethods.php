@@ -342,6 +342,14 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 </b>
 </FORM>
 
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["eventid"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="3">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</b>
+</FORM>
+
 <?php
 	}
 }
@@ -556,6 +564,14 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 <INPUT TYPE="submit" VALUE="Change Command">
 </b>
 </FORM>
+
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="2">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</b>
+</FORM>
 <?php
 	}
 }
@@ -681,6 +697,14 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ",
 $myrow["src2"] ?></TEXTAREA></TD></TR>
 </TABLE>
 <INPUT TYPE="submit" VALUE="Change Method">
+</b>
+</FORM>
+
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["name"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="1">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
 </b>
 </FORM>
 <?php

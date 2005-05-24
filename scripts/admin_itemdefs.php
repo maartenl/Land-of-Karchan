@@ -409,6 +409,13 @@ ROWS="10" COLS="85">
 <INPUT TYPE="submit" VALUE="Change Item Definition">
 </b>
 </FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["id"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="4">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</b>
+</FORM>
 <?php
 	}
 }
