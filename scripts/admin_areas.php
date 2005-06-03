@@ -70,6 +70,21 @@ while ($myrow = mysql_fetch_array($result))
 	{
 		printf("<A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A> ", $myrow2["id"], $myrow2["id"]);
 	}
+	printf("<P><B>boundaries:</B> ");
+	$result2 = mysql_query("select distinct mm_rooms1.id 
+	from mm_rooms as mm_rooms1, mm_rooms as mm_rooms2 
+	where mm_rooms1.area <> '"
+	.mysql_escape_string($myrow["area"])
+	."' and mm_rooms2.area = '"
+	.mysql_escape_string($myrow["area"])
+	."' and 
+	mm_rooms1.id in (mm_rooms2.north, mm_rooms2.south, mm_rooms2.east, mm_rooms2.west, mm_rooms2.up, mm_rooms2.down) order by mm_rooms1.id"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+	while ($myrow2 = mysql_fetch_array($result2))
+	{
+		printf("<A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A> ", $myrow2["id"], $myrow2["id"]);
+	}
 	printf("<P>");
 }
 
