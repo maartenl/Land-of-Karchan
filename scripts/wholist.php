@@ -56,12 +56,12 @@ while ($myrow = mysql_fetch_array($result))
 	if ($myrow[2] == "1")
 	{
 		printf("<li>%s, %s, sleeping (logged on %s min, %s sec ago)\r\n",
-		$myrow[0], $myrow[1], $myrow[3], $myrow[4]);
+		$myrow["name"], $myrow["title"], $myrow["min"], $myrow["sec"]);
 	}
 	else
 	{
 		printf("<li>%s, %s (logged on %s min, %s sec ago)\r\n",
-		$myrow[0], $myrow[1], $myrow[3], $myrow[4]);
+		$myrow["name"], $myrow["title"], $myrow["min"], $myrow["sec"]);
 	}
 
 }
