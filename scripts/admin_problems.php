@@ -86,6 +86,16 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["id"], $myrow["id"]);
 }
 $result = mysql_query("select id from mm_rooms "
+	." where north is null and south is null and east is null and west is null and up is null and down is null"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A>
+(room has no exits)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+$result = mysql_query("select id from mm_rooms "
 	." where west=0 or east=0 or north=0 or south=0 or up=0 or down=0"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
