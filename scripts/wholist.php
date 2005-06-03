@@ -44,9 +44,11 @@ List of All Active Users</H2>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 $result = mysql_query("select name, title, sleep, 
 	floor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,
-	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec
-	from mm_usertable 
-	where god<=1 and active=1"
+	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec,
+	if (mm_area.area <> \"Main\", concat(\" in \" , mm_area.shortdesc), \"\") as area
+	from mm_usertable, mm_rooms, mm_area 
+	where god<=1 and active=1 and mm_rooms.id = mm_usertable.room and
+	mm_rooms.area = mm_area.area"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 printf("<I>There are %s persons active in the game.</I><P><UL>\r\n", 
@@ -55,13 +57,13 @@ while ($myrow = mysql_fetch_array($result))
 {
 	if ($myrow[2] == "1")
 	{
-		printf("<li>%s, %s, sleeping (logged on %s min, %s sec ago)\r\n",
-		$myrow["name"], $myrow["title"], $myrow["min"], $myrow["sec"]);
+		printf("<li>%s, %s, sleeping %s (logged on %s min, %s sec ago)\r\n",
+		$myrow["name"], $myrow["title"], $myrow["area"], $myrow["min"], $myrow["sec"]);
 	}
 	else
 	{
-		printf("<li>%s, %s (logged on %s min, %s sec ago)\r\n",
-		$myrow["name"], $myrow["title"], $myrow["min"], $myrow["sec"]);
+		printf("<li>%s, %s %s (logged on %s min, %s sec ago)\r\n",
+		$myrow["name"], $myrow["title"], $myrow["area"], $myrow["min"], $myrow["sec"]);
 	}
 
 }
