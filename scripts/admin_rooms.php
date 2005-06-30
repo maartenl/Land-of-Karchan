@@ -61,14 +61,51 @@ deleting room:
 - check items in room
 - check references to this room in other rooms
 adding room:
-- all information filled out correctly?
 - does area exist?
+- is area owned by the current admin guy?
 todo:
 - update room
 - update owner
 - insert into log
 
 */
+if (isset($_REQUEST{"addroom_area"}))
+{
+	// check the area for admin rights.
+	$result = mysql_query("select area from mm_area where area = \"".
+		mysql_escape_string($_REQUEST{"addroom_area"}).
+		"\" and owner = \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\""
+		, $dbhandle)
+		or die("Query(7) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 1)
+	{
+		die("Area does not exist or you are not the owner.");
+	}
+	$result = mysql_query("select max(id)+1 as maxid from mm_rooms"
+		, $dbhandle)
+		or die("Query(8) failed : " . mysql_error());
+	// get the new room number.
+	$roomid = 0;
+	while ($myrow = mysql_fetch_array($result)) 
+	{
+		$roomid = $myrow["maxid"];
+	}
+	// make that change.
+	$query = "insert into mm_rooms (id, area, owner, creation) values(".
+		$roomid.
+		", \"".
+		mysql_escape_string($_REQUEST{"addroom_area"}).
+		"\", \"".
+		mysql_escape_string($_COOKIE["karchanadminname"]).
+		"\", now())";
+	mysql_query($query
+		, $dbhandle)
+		or die("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Added room ".$roomid.".", $query);
+	$_REQUEST{"room"} = $roomid;
+}
 if (isset($_REQUEST{"west"}))
 {
 	// check it.
@@ -279,6 +316,26 @@ while ($areamyrow = mysql_fetch_array($arearesult))
 </SELECT></TD></TR>
 </TABLE>
 <INPUT TYPE="submit" VALUE="Change Room">
+</b>
+</FORM>
+<FORM METHOD="GET" ACTION="/scripts/admin_rooms.php">
+<b>
+area <SELECT NAME="addroom_area">
+<?php
+$arearesult = mysql_query("select area from mm_area where owner='".
+	mysql_escape_string($_COOKIE["karchanadminname"]).
+	"'"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($areamyrow = mysql_fetch_array($arearesult)) 
+{
+	printf("<option %s value=\"%s\">%s",
+		($areamyrow["area"] == $myrow["area"] ? "selected" : ""),
+		$areamyrow["area"], $areamyrow["area"]);
+}
+?>
+</SELECT>
+<INPUT TYPE="submit" VALUE="Add Room">
 </b>
 </FORM>
 <FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
