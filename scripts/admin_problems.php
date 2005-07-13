@@ -183,6 +183,17 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["id"], $myrow["id"]);
 }
 
+$result = mysql_query("select * from mm_items "
+	." where not exists (select id from mm_itemtable where itemid=mm_items.id)"
+	, $dbhandle)
+	or die("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s</A> 
+	(no items exist with that item definition, item definition is not used)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
 $result = mysql_query("select mm_itemtable.id from mm_items, mm_itemtable, mm_charitemtable "
 	." where mm_items.id < 0 "
 	." and mm_items.id = mm_itemtable.itemid "
