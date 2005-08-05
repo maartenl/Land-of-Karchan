@@ -38,17 +38,16 @@ Mmud - Bug Reports
 </H1>
 <TABLE>
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 if (isset($_REQUEST{"title"}))
 {
 	$query = "update bugs set title=\"".
-		mysql_escape_string($_REQUEST{"title"})."\", description=\"".
-		mysql_escape_string($_REQUEST{"description"})."\",  answer=\"".
-		mysql_escape_string($_REQUEST{"answer"})."\", closed= ".
-		mysql_escape_string($_REQUEST{"closed"})." where  creation=\"".
-		mysql_escape_string($_REQUEST{"bug"})."\"";
+		quote_smart($_REQUEST{"title"})."\", description=\"".
+		quote_smart($_REQUEST{"description"})."\",  answer=\"".
+		quote_smart($_REQUEST{"answer"})."\", closed= ".
+		quote_smart($_REQUEST{"closed"})." where  creation=\"".
+		quote_smart($_REQUEST{"bug"})."\"";
 	mysql_query($query
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());

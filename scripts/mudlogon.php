@@ -39,7 +39,7 @@ maarten_l@yahoo.com
 //	{
 //		echo "$header: $value <br />\n";
 //	}
-	$fp = fsockopen ("localhost", 3339, $errno, $errstr, 30);
+	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
 	if (!$fp) 
 	{
 		echo "$errstr ($errno)<br>\n";
@@ -54,7 +54,7 @@ maarten_l@yahoo.com
 		fgets ($fp,128); // password
 		fputs ($fp, $_REQUEST{"password"}."\n");
 		fgets ($fp,128); // ip address
-		fputs ($fp, gethostbyaddr(apache_getenv("REMOTE_ADDR"))."\n");
+		fputs ($fp, gethostbyaddr($_SERVER['REMOTE_ADDR'])."\n");
 		fgets ($fp,128); // cookie
 		fputs ($fp, $_COOKIE["karchanpassword"]."\n");
 		fgets ($fp,128); // frames

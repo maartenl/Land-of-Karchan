@@ -33,10 +33,10 @@ if (isset($_REQUEST{"username"}))
 	setcookie("karchanadminname", $_REQUEST{"username"}, time() + 7200);
 	setcookie("karchanadminpassword", $_REQUEST{"userpassword"}, time() + 7200);
 	mysql_query("insert into mm_log (name, message) values(".
-	  "\"".mysql_escape_string($_REQUEST{"username"}).
+	  "\"".quote_smart($_REQUEST{"username"}).
 	  "\",\"Attempted logon to admin account from host ".
-	  mysql_escape_string(gethostbyaddr($_SERVER['REMOTE_ADDR']))." (".
-	  mysql_escape_string($_SERVER['REMOTE_ADDR']).
+	  quote_smart(gethostbyaddr($_SERVER['REMOTE_ADDR']))." (".
+	  quote_smart($_SERVER['REMOTE_ADDR']).
 	  ")\")"
 	  , $dbhandle)
 	or die("Query failed : " . mysql_error());

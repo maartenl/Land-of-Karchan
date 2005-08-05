@@ -40,7 +40,6 @@ Mmud - Admin
 Admin User <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_COOKIE["karchanadminname"] != "Karn")
 {
@@ -48,21 +47,21 @@ if ($_COOKIE["karchanadminname"] != "Karn")
 }
 $result = mysql_query("update mm_admin set validuntil = date_add(validuntil,
 	interval 1 month) where name = \"".
-	mysql_escape_string($_REQUEST{"char"})."\" and 
+	quote_smart($_REQUEST{"char"})."\" and 
 	validuntil >= now()"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 
 $result = mysql_query("update mm_admin set validuntil = date_add(now(),
 	interval 1 month) where name = \"".
-	mysql_escape_string($_REQUEST{"char"})."\" and 
+	quote_smart($_REQUEST{"char"})."\" and 
 	validuntil < now()"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 
 $result = mysql_query("select validuntil from mm_admin 
 	where name = \"".
-	mysql_escape_string($_REQUEST{"char"})."\""
+	quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))

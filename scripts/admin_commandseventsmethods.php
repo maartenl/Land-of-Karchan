@@ -40,7 +40,6 @@ Mmud - Admin
 Commands, Events and Methods</H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /* the following constraints need to be checked before any kind of update is
@@ -100,9 +99,9 @@ if ( (isset($_REQUEST{"eventid"}))
 	// check that the event is the proper owner.
     // check it.
     $result = mysql_query("select eventid from mm_events where eventid = \"".
-        mysql_escape_string($_REQUEST{"eventid"}).  
+        quote_smart($_REQUEST{"eventid"}).  
         "\" and (owner is null or owner = \"".   
-        mysql_escape_string($_COOKIE["karchanadminname"]).
+        quote_smart($_COOKIE["karchanadminname"]).
         "\")"
         , $dbhandle)
         or die("Query(1) failed : " . mysql_error());
@@ -112,7 +111,7 @@ if ( (isset($_REQUEST{"eventid"}))
     }
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
-		mysql_escape_string($_REQUEST{"eventmethodname"}).
+		quote_smart($_REQUEST{"eventmethodname"}).
 		"\""
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -129,7 +128,7 @@ if ( (isset($_REQUEST{"eventid"}))
 	if (trim($_REQUEST{"eventcharname"}) != "")
 	{
 		$result = mysql_query("select 1 from mm_usertable where name = \"".
-			mysql_escape_string($_REQUEST{"eventcharname"}).
+			quote_smart($_REQUEST{"eventcharname"}).
 			"\""
 			, $dbhandle)
 			or die("Query failed : " . mysql_error());
@@ -142,7 +141,7 @@ if ( (isset($_REQUEST{"eventid"}))
 	if (trim($_REQUEST{"eventroom"}) != "")
 	{
 		$result = mysql_query("select 1 from mm_rooms where id = \"".
-			mysql_escape_string($_REQUEST{"eventroom"}).
+			quote_smart($_REQUEST{"eventroom"}).
 			"\""
 			, $dbhandle)
 			or die("Query failed : " . mysql_error());
@@ -154,30 +153,30 @@ if ( (isset($_REQUEST{"eventid"}))
 	// make that change
 	$query = "update mm_events set name=".
 		(trim($_REQUEST{"eventcharname"}) != "" ?
-			"\"".mysql_escape_string($_REQUEST{"eventcharname"})."\"":
+			"\"".quote_smart($_REQUEST{"eventcharname"})."\"":
 			"null").
 		", month=\"".
-		mysql_escape_string($_REQUEST{"eventmonth"}).
+		quote_smart($_REQUEST{"eventmonth"}).
 		"\", dayofmonth=\"".
-		mysql_escape_string($_REQUEST{"eventdayofmonth"}).
+		quote_smart($_REQUEST{"eventdayofmonth"}).
 		"\", hour=\"".
-		mysql_escape_string($_REQUEST{"eventhour"}).
+		quote_smart($_REQUEST{"eventhour"}).
 		"\", minute=\"".
-		mysql_escape_string($_REQUEST{"eventminute"}).
+		quote_smart($_REQUEST{"eventminute"}).
 		"\", dayofweek=\"".
-		mysql_escape_string($_REQUEST{"eventdayofweek"}).
+		quote_smart($_REQUEST{"eventdayofweek"}).
 		"\", callable=\"".
-		mysql_escape_string($_REQUEST{"eventcallable"}).
+		quote_smart($_REQUEST{"eventcallable"}).
 		"\", method_name=\"".
-		mysql_escape_string($_REQUEST{"eventmethodname"}).
+		quote_smart($_REQUEST{"eventmethodname"}).
 		"\", room=".
 		(trim($_REQUEST{"eventroom"}) != "" ?
-			"\"".mysql_escape_string($_REQUEST{"eventroom"})."\"":
+			"\"".quote_smart($_REQUEST{"eventroom"})."\"":
 			"null").
 		", owner=\"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\" where eventid = \"".
-		mysql_escape_string($_REQUEST{"eventid"}).
+		quote_smart($_REQUEST{"eventid"}).
 		"\"";
     mysql_query($query
         , $dbhandle)
@@ -189,7 +188,7 @@ if (isset($_REQUEST{"addeventmethodname"}))
 {
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
-		mysql_escape_string($_REQUEST{"addeventmethodname"}).
+		quote_smart($_REQUEST{"addeventmethodname"}).
 		"\""
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -215,9 +214,9 @@ if (isset($_REQUEST{"addeventmethodname"}))
 	$query = "insert into mm_events (eventid, method_name, owner) values(".
 		($maxid + 1).
 		", \"".
-		mysql_escape_string($_REQUEST{"addeventmethodname"}).
+		quote_smart($_REQUEST{"addeventmethodname"}).
 		"\", \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
     mysql_query($query
         , $dbhandle)
@@ -232,9 +231,9 @@ if (isset($_REQUEST{"deleteeventid"}))
 		die("Expected eventid to be an integer, and it wasn't.");
 	}
         $query = "delete from mm_events where eventid = ".
-		mysql_escape_string($_REQUEST{"deleteeventid"}).
+		quote_smart($_REQUEST{"deleteeventid"}).
 		" and (owner is null or owner = \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
 		or die("Query (".$query.") failed : " . mysql_error());
@@ -387,9 +386,9 @@ if ( isset($_REQUEST{"commandid"})
 	}
 	// check that the command is the proper owner.
     $result = mysql_query("select id from mm_commands where id = \"".
-        mysql_escape_string($_REQUEST{"commandid"}).  
+        quote_smart($_REQUEST{"commandid"}).  
         "\" and (owner is null or owner = \"".   
-        mysql_escape_string($_COOKIE["karchanadminname"]).
+        quote_smart($_COOKIE["karchanadminname"]).
         "\")"
         , $dbhandle)
         or die("Query(1) failed : " . mysql_error());
@@ -399,7 +398,7 @@ if ( isset($_REQUEST{"commandid"})
     }
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
-		mysql_escape_string($_REQUEST{"commandmethodname"}).
+		quote_smart($_REQUEST{"commandmethodname"}).
 		"\""
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -416,7 +415,7 @@ if ( isset($_REQUEST{"commandid"})
 	if (trim($_REQUEST{"commandroom"}) != "")
 	{
 		$result = mysql_query("select 1 from mm_rooms where id = \"".
-			mysql_escape_string($_REQUEST{"commandroom"}).
+			quote_smart($_REQUEST{"commandroom"}).
 			"\""
 			, $dbhandle)
 			or die("Query failed : " . mysql_error());
@@ -427,19 +426,19 @@ if ( isset($_REQUEST{"commandid"})
 	}
 	// make that change
 	$query = "update mm_commands set command=\"".
-		mysql_escape_string($_REQUEST{"commandcommand"}).
+		quote_smart($_REQUEST{"commandcommand"}).
 		"\", callable=\"".
-		mysql_escape_string($_REQUEST{"commandcallable"}).
+		quote_smart($_REQUEST{"commandcallable"}).
 		"\", method_name=\"".
-		mysql_escape_string($_REQUEST{"commandmethodname"}).
+		quote_smart($_REQUEST{"commandmethodname"}).
 		"\", room=".
 		(trim($_REQUEST{"commandroom"}) != "" ?
-			"\"".mysql_escape_string($_REQUEST{"commandroom"})."\"":
+			"\"".quote_smart($_REQUEST{"commandroom"})."\"":
 			"null").
 		", owner=\"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\" where id = \"".
-		mysql_escape_string($_REQUEST{"commandid"}).
+		quote_smart($_REQUEST{"commandid"}).
 		"\"";
     mysql_query($query
         , $dbhandle)
@@ -452,7 +451,7 @@ if (isset($_REQUEST{"addcommandname"}) &&
 {
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
-		mysql_escape_string($_REQUEST{"addcommandmethodname"}).
+		quote_smart($_REQUEST{"addcommandmethodname"}).
 		"\""
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -478,11 +477,11 @@ if (isset($_REQUEST{"addcommandname"}) &&
 	$query = "insert into mm_commands (id, command, method_name, owner) values(".
 		($maxid + 1).
 		", \"".
-		mysql_escape_string($_REQUEST{"addcommandname"}).
+		quote_smart($_REQUEST{"addcommandname"}).
 		"\", \"".
-		mysql_escape_string($_REQUEST{"addcommandmethodname"}).
+		quote_smart($_REQUEST{"addcommandmethodname"}).
 		"\", \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
     mysql_query($query
         , $dbhandle)
@@ -496,9 +495,9 @@ if (isset($_REQUEST{"deletecommandid"}))
 		die("Expected commandid to be an integer, and it wasn't.");
 	}
         $query = "delete from mm_commands where id = ".
-		mysql_escape_string($_REQUEST{"deletecommandid"}).
+		quote_smart($_REQUEST{"deletecommandid"}).
 		" and (owner is null or owner = \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
 		or die("Query (".$query.") failed : " . mysql_error());
@@ -604,9 +603,9 @@ if (isset($_REQUEST{"methodname"}) && isset($_REQUEST{"src"}))
 {
 	// make that change
 	$query = "update mm_methods set src=\"".
-		mysql_escape_string($_REQUEST{"src"}).
+		quote_smart($_REQUEST{"src"}).
 		"\" where name = \"".
-		mysql_escape_string($_REQUEST{"methodname"}).
+		quote_smart($_REQUEST{"methodname"}).
 		"\"";
     mysql_query($query
         , $dbhandle)
@@ -617,9 +616,9 @@ if (isset($_REQUEST{"addmethodname"}))
 {
 	// make that change
 	$query = "insert into mm_methods (name, owner) values(\"".
-		mysql_escape_string($_REQUEST{"addmethodname"}).
+		quote_smart($_REQUEST{"addmethodname"}).
 		"\", \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
     mysql_query($query
         , $dbhandle)
@@ -630,7 +629,7 @@ if (isset($_REQUEST{"deletemethodname"}))
 {
   // check if no event is using this method
   $result = mysql_query("select 1 from mm_events where method_name = \"".
-    mysql_escape_string($_REQUEST{"deletemethodname"}).
+    quote_smart($_REQUEST{"deletemethodname"}).
 	"\"", $dbhandle);
         if (mysql_num_rows($result) > 0)
         {
@@ -638,7 +637,7 @@ if (isset($_REQUEST{"deletemethodname"}))
         }
         // check if no command is using this method
   $result = mysql_query("select 1 from mm_commands where method_name = \"".
-    mysql_escape_string($_REQUEST{"deletemethodname"}).
+    quote_smart($_REQUEST{"deletemethodname"}).
 	"\"", $dbhandle);
         if (mysql_num_rows($result) > 0)
         {
@@ -647,9 +646,9 @@ if (isset($_REQUEST{"deletemethodname"}))
 
         // make it so
         $query = "delete from mm_methods where name = \"".
-		mysql_escape_string($_REQUEST{"deletemethodname"}).
+		quote_smart($_REQUEST{"deletemethodname"}).
 		"\" and (owner is null or owner = \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
 		or die("Query (".$query.") failed : " . mysql_error());

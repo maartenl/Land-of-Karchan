@@ -40,7 +40,6 @@ Mmud - Admin
 Logonmessage</H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /**
@@ -51,8 +50,8 @@ if (!isset($_REQUEST{"message"}))
 	die("Form information missing.");
 }
 $result = mysql_query("replace into mm_boardmessages 
-	values(2, \"".mysql_escape_string($_COOKIE["karchanadminname"])."\", now(),\"".
-	mysql_escape_string($_REQUEST{"message"})."\")"
+	values(2, \"".quote_smart($_COOKIE["karchanadminname"])."\", now(),\"".
+	quote_smart($_REQUEST{"message"})."\")"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 

@@ -40,7 +40,6 @@ Mmud - Admin
 Logs <?php echo $_REQUEST{"status"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_REQUEST{"status"} == "1")
 {

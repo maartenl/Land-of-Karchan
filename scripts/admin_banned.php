@@ -43,19 +43,18 @@ Banned People</H1>
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 if ($_REQUEST{"ban_address"} != "")
 {
 	mysql_query("replace into mm_bantable values(".
-	"\"".mysql_escape_string($_REQUEST{"ban_address"})."\",".
-	mysql_escape_string($_REQUEST{"ban_days"}).",".
-	"\"".mysql_escape_string($_REQUEST{"ban_ip"})."\",".
-	"\"".mysql_escape_string($_REQUEST{"ban_name"})."\",".
-	"\"".mysql_escape_string($_COOKIE{"karchanadminname"})."\",".
+	"\"".quote_smart($_REQUEST{"ban_address"})."\",".
+	quote_smart($_REQUEST{"ban_days"}).",".
+	"\"".quote_smart($_REQUEST{"ban_ip"})."\",".
+	"\"".quote_smart($_REQUEST{"ban_name"})."\",".
+	"\"".quote_smart($_COOKIE{"karchanadminname"})."\",".
 	"now(),".
-	"\"".mysql_escape_string($_REQUEST{"ban_reason"})."\"".
+	"\"".quote_smart($_REQUEST{"ban_reason"})."\"".
 	")"
 	, $dbhandle)
 	or die("Query(8) failed : " . mysql_error());
@@ -64,7 +63,7 @@ if ($_REQUEST{"ban_address"} != "")
 if ($_REQUEST{"unbanname"} <> "")
 {
 	mysql_query("replace into mm_unbantable values(\"".
-	mysql_escape_string($_REQUEST{"unbanname"})."\")"
+	quote_smart($_REQUEST{"unbanname"})."\")"
 	, $dbhandle)
 	or die("Query(2) failed : " . mysql_error());
 	writeLog($dbhandle, "Added name to be unbanned. (".$_REQUEST{"unbanname"}.")");
@@ -72,7 +71,7 @@ if ($_REQUEST{"unbanname"} <> "")
 if ($_REQUEST{"sillyname"} != "")
 {
 	mysql_query("replace into mm_sillynamestable values(\"".
-	mysql_escape_string($_REQUEST{"sillyname"})."\")"
+	quote_smart($_REQUEST{"sillyname"})."\")"
 	, $dbhandle)
 	or die("Query(3) failed : " . mysql_error());
 	writeLog($dbhandle, "Added sillyname. (".$_REQUEST{"sillyname"}.")");
@@ -80,7 +79,7 @@ if ($_REQUEST{"sillyname"} != "")
 if ($_REQUEST{"remove_unban"} != NULL)
 {
 	mysql_query("delete from mm_unbantable where name = \"".
-		mysql_escape_string($_REQUEST{"remove_unban"})."\""
+		quote_smart($_REQUEST{"remove_unban"})."\""
 		, $dbhandle)
 		or die("Query(4) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed unbanname. (".$_REQUEST{"remove_unban"}.")");
@@ -88,7 +87,7 @@ if ($_REQUEST{"remove_unban"} != NULL)
 if ($_REQUEST{"remove_sillyname"} != NULL)
 {
 	mysql_query("delete from mm_sillynamestable where name = \"".
-		mysql_escape_string($_REQUEST{"remove_sillyname"})."\""
+		quote_smart($_REQUEST{"remove_sillyname"})."\""
 		, $dbhandle)
 		or die("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");

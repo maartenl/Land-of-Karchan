@@ -40,7 +40,6 @@ Mmud - Admin
 Items from <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_COOKIE["karchanadminname"] != "Karn")
 {
@@ -56,7 +55,7 @@ if (!isset($_REQUEST{"char"}))
 }
 
 $result = mysql_query("select * from mud.itemtable 
-	where belongsto = \"".mysql_escape_string($_REQUEST{"char"})."\" order by id"
+	where belongsto = \"".quote_smart($_REQUEST{"char"})."\" order by id"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 $numfields = mysql_num_fields($result);

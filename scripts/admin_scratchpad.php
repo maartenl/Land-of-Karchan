@@ -40,7 +40,6 @@ Mmud - Admin
 Scratchpad</H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /*
@@ -52,8 +51,8 @@ There are two possibilities:
 if (isset($_REQUEST{"scratchpad"}))
 {
 $result = mysql_query("update scratchpad set scratch=
-	\"".mysql_escape_string($_REQUEST{"scratchpad"})."\",
-	owner=\"".mysql_escape_string($_COOKIE["karchanadminname"])."\""
+	\"".quote_smart($_REQUEST{"scratchpad"})."\",
+	owner=\"".quote_smart($_COOKIE["karchanadminname"])."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 }

@@ -39,7 +39,7 @@ maarten_l@yahoo.com
 //	{
 //		echo "$header: $value <br />\n";
 //	}
-	$fp = fsockopen ("localhost", 3339, $errno, $errstr, 30);
+	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
 	if (!$fp) 
 	{
 		echo "$errstr ($errno)<br>\n";

@@ -53,9 +53,9 @@ if (!isset($_COOKIE["karchanname"]) &&
 }
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
-	'".mysql_escape_string($_COOKIE["karchanname"])."' 
+	'".quote_smart($_COOKIE["karchanname"])."' 
 	and mm_usertable.lok =
-	'".mysql_escape_string($_COOKIE["karchanpassword"])."'
+	'".quote_smart($_COOKIE["karchanpassword"])."'
 	and mm_usertable.god < 2"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -67,19 +67,19 @@ if (mysql_num_rows($result) == 0)
 if ($_REQUEST{"family"} != "0")
 {
 	mysql_query("replace into family
-	values(\"".mysql_escape_string($_COOKIE["karchanname"])."\",
-	\"".mysql_escape_string($_REQUEST{"familyname"}). 
-	"\",".mysql_escape_string($_REQUEST{"family"}).")",
+	values(\"".quote_smart($_COOKIE["karchanname"])."\",
+	\"".quote_smart($_REQUEST{"familyname"}). 
+	"\",".quote_smart($_REQUEST{"family"}).")",
 		 $dbhandle)
 		or die("Query failed : " . mysql_error());
 }
 mysql_query("replace into characterinfo 
-	values(\"".mysql_escape_string($_COOKIE["karchanname"])."\",
-	\"".mysql_escape_string($_REQUEST{"imageurl"})."\",
-	\"".mysql_escape_string($_REQUEST{"homepageurl"})."\",
-	\"".mysql_escape_string($_REQUEST{"dateofbirth"})."\",
-	\"".mysql_escape_string($_REQUEST{"cityofbirth"})."\",
-	\"".mysql_escape_string($_REQUEST{"storyline"})."\")",
+	values(\"".quote_smart($_COOKIE["karchanname"])."\",
+	\"".quote_smart($_REQUEST{"imageurl"})."\",
+	\"".quote_smart($_REQUEST{"homepageurl"})."\",
+	\"".quote_smart($_REQUEST{"dateofbirth"})."\",
+	\"".quote_smart($_REQUEST{"cityofbirth"})."\",
+	\"".quote_smart($_REQUEST{"storyline"})."\")",
 	 $dbhandle)
 	or die("Query failed : " . mysql_error());
 mysql_close($dbhandle);

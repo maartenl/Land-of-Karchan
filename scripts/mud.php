@@ -57,8 +57,8 @@ if (!isset($_REQUEST{"command"}) &&
 		if (trim($_REQUEST{"command"}) != "")
 		{
 			mysql_query("insert into mm_commandlog (name, command) values(\"".
-				mysql_escape_string($_COOKIE["karchanname"])."\", \"".
-				mysql_escape_string($_REQUEST{"command"})."\")"
+				quote_smart($_COOKIE["karchanname"])."\", \"".
+				quote_smart($_REQUEST{"command"})."\")"
 				, $dbhandle)
 				or die("Query failed : " . mysql_error());
 		}

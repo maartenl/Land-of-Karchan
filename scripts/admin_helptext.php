@@ -40,14 +40,13 @@ Mmud - Admin
 <A HREF="/karchan/admin/help/help.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 if ( isset($_REQUEST{"newcommand"}) )
 {
 	// make that change.
 	$query = "insert into mm_help (command, contents) values(\"".
-		mysql_escape_string($_REQUEST{"newcommand"}).
+		quote_smart($_REQUEST{"newcommand"}).
 		"\",\"<H1></H1>
 <DL>
 <DT><B>NAME</B>
@@ -78,9 +77,9 @@ if ( isset($_REQUEST{"command"}) &&
 {
 	// make that change.
 	$query = "update mm_help set contents=\"".
-		mysql_escape_string($_REQUEST{"contents"}).
+		quote_smart($_REQUEST{"contents"}).
 		"\" where command = \"".
-		mysql_escape_string($_REQUEST{"command"})."\"";
+		quote_smart($_REQUEST{"command"})."\"";
 	mysql_query($query
 		, $dbhandle)
 		or die("Query(8) failed : " . mysql_error());

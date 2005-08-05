@@ -41,7 +41,7 @@ Land of Karchan - Poll
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 // show results
 $result = mysql_query("select * from polls where id=".
-	mysql_escape_string($_REQUEST{"number"})
+	quote_smart($_REQUEST{"number"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -54,15 +54,15 @@ if ($_REQUEST{"value"} != "")
 	$query = "replace into poll_values
 		(id, name, value, comments)
 		select ".
-		mysql_escape_string($_REQUEST{"number"}).", \"".
-		mysql_escape_string($_REQUEST{"name"})."\", ".
-		mysql_escape_string($_REQUEST{"value"}).", \"".
-		mysql_escape_string($_REQUEST{"comments"})."\" 
+		quote_smart($_REQUEST{"number"}).", \"".
+		quote_smart($_REQUEST{"name"})."\", ".
+		quote_smart($_REQUEST{"value"}).", \"".
+		quote_smart($_REQUEST{"comments"})."\" 
 		from mm_usertable
 		where name = \"".
-		mysql_escape_string($_COOKIE["karchanname"]).
+		quote_smart($_COOKIE["karchanname"]).
 		"\" and lok = \"".
-		mysql_escape_string($_COOKIE["karchanpassword"]).
+		quote_smart($_COOKIE["karchanpassword"]).
 		"\"";
 	mysql_query($query
 		, $dbhandle)
@@ -73,7 +73,7 @@ if ($closed == "1")
 {
 	$result = mysql_query("select count(*) as count 
 		from poll_values 
-		where id=".mysql_escape_string($_REQUEST{"number"})
+		where id=".quote_smart($_REQUEST{"number"})
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
 	$count = 1;
@@ -84,7 +84,7 @@ if ($closed == "1")
 	printf($count." people voted.<BR>");
 	$result = mysql_query("select count(poll_values.id) as count, poll_choices.choice 
 		from poll_choices, poll_values 
-		where pollid=".mysql_escape_string($_REQUEST{"number"})." and 
+		where pollid=".quote_smart($_REQUEST{"number"})." and 
 		pollid = poll_values.id and
 		poll_choices.id = poll_values.value 
 		group by poll_choices.id 
@@ -109,7 +109,7 @@ else
 	// show form
 	$result = mysql_query("select * 
 		from poll_choices 
-		where pollid=".mysql_escape_string($_REQUEST{"number"})."
+		where pollid=".quote_smart($_REQUEST{"number"})."
 		order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());

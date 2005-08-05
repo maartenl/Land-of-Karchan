@@ -40,7 +40,6 @@ Mmud - Ownership
 Owner <?php echo $_COOKIE["karchanadminname"] ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 /* 
 changing ownership/resetting ownership is only possible
@@ -100,10 +99,10 @@ if (isset($_REQUEST{"removeownership"}))
 		die("Unknown table row to claim ownership on...");
 	}
 	$query = "update ".$table." set owner = null where owner = '"
-	   .mysql_escape_string($_COOKIE["karchanadminname"])
+	   .quote_smart($_COOKIE["karchanadminname"])
 	   ."' and "
 	   .$row
-	   ." = '".mysql_escape_string($_REQUEST{"id"})."'";
+	   ." = '".quote_smart($_REQUEST{"id"})."'";
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
@@ -119,7 +118,7 @@ else
 	printf("<TD><H2>Methods</H2>");
 	$result = mysql_query("select name as name from mm_methods
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by name"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -130,7 +129,7 @@ else
 	printf("</TD><TD><H2>Commands</H2>");
 	$result = mysql_query("select id as id from mm_commands
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -141,7 +140,7 @@ else
 	printf("</TD><TD><H2>Events</H2>");
 	$result = mysql_query("select eventid as id from mm_events
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by eventid"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -152,7 +151,7 @@ else
 	printf("</TD><TD><H2>Items</H2>");
 	$result = mysql_query("select id as id from mm_items
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -163,7 +162,7 @@ else
 	printf("</TD><TD><H2>Rooms</H2>");
 	$result = mysql_query("select id as id from mm_rooms
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -174,7 +173,7 @@ else
 	printf("</TD><TD><H2>Boards</H2>");
 	$result = mysql_query("select id as id from mm_boards
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());
@@ -185,7 +184,7 @@ else
 	printf("</TD><TD><H2>Persons</H2>");
 	$result = mysql_query("select name as name from mm_usertable
 		where owner = '"
-		.mysql_escape_string($_COOKIE["karchanadminname"])
+		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by name"
 		, $dbhandle)
 		or die("Query failed : " . mysql_error());

@@ -57,14 +57,14 @@ if ((isset($_REQUEST{"linkname"})) &&
 	$query = "replace into links 
 		(linkname, url, type, name)
 		select \"".
-		mysql_escape_string($_REQUEST{"linkname"})."\", \"".
-		mysql_escape_string($_REQUEST{"url"})."\", ".
-		mysql_escape_string($_REQUEST{"type"}).", name 
+		quote_smart($_REQUEST{"linkname"})."\", \"".
+		quote_smart($_REQUEST{"url"})."\", ".
+		quote_smart($_REQUEST{"type"}).", name 
 		from mm_usertable
 		where name = \"".
-		mysql_escape_string($_COOKIE["karchanname"]).
+		quote_smart($_COOKIE["karchanname"]).
 		"\" and lok = \"".
-		mysql_escape_string($_COOKIE["karchanpassword"]).
+		quote_smart($_COOKIE["karchanpassword"]).
 		"\"";
 	$result = mysql_query($query
 		, $dbhandle)

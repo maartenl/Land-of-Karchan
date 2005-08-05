@@ -32,8 +32,8 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 function writeLog ($dbhandle, $arg)
 {
 	mysql_query("insert into mm_log (name, message) values(".
-		"\"".mysql_escape_string($_COOKIE["karchanadminname"])."\",\"".
-		mysql_escape_string($arg)."\")"
+		"\"".quote_smart($_COOKIE["karchanadminname"])."\",\"".
+		quote_smart($arg)."\")"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 }
@@ -41,9 +41,9 @@ function writeLog ($dbhandle, $arg)
 function writeLogLong ($dbhandle, $arg, $addendum)
 {
 	mysql_query("insert into mm_log (name, message, addendum) values(".
-		"\"".mysql_escape_string($_COOKIE["karchanadminname"])."\",\"".
-		mysql_escape_string($arg)."\",\"".
-		mysql_escape_string($addendum)
+		"\"".quote_smart($_COOKIE["karchanadminname"])."\",\"".
+		quote_smart($arg)."\",\"".
+		quote_smart($addendum)
 		."\")"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
@@ -59,8 +59,8 @@ if (!isset($_COOKIE["karchanadminname"]) ||
 }
 
 $result = mysql_query("select \"yes\" from mm_admin where name = \"".
-        mysql_escape_string($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
-	mysql_escape_string($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()"
+        quote_smart($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
+	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 $good = "no";
@@ -73,8 +73,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 $result = mysql_query("select \"invalid\" from mm_admin where name = \"".
-        mysql_escape_string($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
-	mysql_escape_string($_COOKIE["karchanadminpassword"])."\") and validuntil < now()"
+        quote_smart($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
+	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil < now()"
     , $dbhandle)
     or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))

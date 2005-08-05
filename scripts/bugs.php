@@ -44,14 +44,14 @@ if (isset($_REQUEST{"title"}))
 	$query = "insert into bugs
 		(title, description, name, creation)
 		select \"".
-		mysql_escape_string($_REQUEST{"title"})."\", \"".
-		mysql_escape_string($_REQUEST{"description"})."\", \"".
-		mysql_escape_string($_COOKIE{"karchanname"})."\", now()
+		quote_smart($_REQUEST{"title"})."\", \"".
+		quote_smart($_REQUEST{"description"})."\", \"".
+		quote_smart($_COOKIE{"karchanname"})."\", now()
 		from mm_usertable
 		where name = \"".
-		mysql_escape_string($_COOKIE["karchanname"]).
+		quote_smart($_COOKIE["karchanname"]).
 		"\" and lok = \"".
-		mysql_escape_string($_COOKIE["karchanpassword"]).
+		quote_smart($_COOKIE["karchanpassword"]).
 		"\"";
 	mysql_query($query
 		, $dbhandle)

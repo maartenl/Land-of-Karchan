@@ -40,7 +40,6 @@ Mmud - Admin
 Char <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /**
@@ -70,9 +69,9 @@ if (isset($_REQUEST{"race"}))
 {
 	// check it.
 	$result = mysql_query("select name from mm_usertable where name = \"".
-		mysql_escape_string($_REQUEST{"char"}).
+		quote_smart($_REQUEST{"char"}).
 		"\" and (owner is null or owner = \"".   
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")"
 		, $dbhandle)
 		or die("Query(1) failed : " . mysql_error());
@@ -86,7 +85,7 @@ if (isset($_REQUEST{"race"}))
 		die("Gender should be either male or female.");
 	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
-		mysql_escape_string($_REQUEST{"room"})."\""
+		quote_smart($_REQUEST{"room"})."\""
 		, $dbhandle)
 		or die("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
@@ -95,41 +94,41 @@ if (isset($_REQUEST{"race"}))
 	}
 	// make that change.
 	$query = "update mm_usertable set race=\"".
-		mysql_escape_string($_REQUEST{"race"}).
+		quote_smart($_REQUEST{"race"}).
 		"\", sex=\"".
-		mysql_escape_string($_REQUEST{"sex"}).
+		quote_smart($_REQUEST{"sex"}).
 		"\", age=\"".
-		mysql_escape_string($_REQUEST{"age"}).
+		quote_smart($_REQUEST{"age"}).
 		"\", length=\"".
-		mysql_escape_string($_REQUEST{"length"}).
+		quote_smart($_REQUEST{"length"}).
 		"\", width=\"".
-		mysql_escape_string($_REQUEST{"width"}).
+		quote_smart($_REQUEST{"width"}).
 		"\", complexion=\"".
-		mysql_escape_string($_REQUEST{"complexion"}).
+		quote_smart($_REQUEST{"complexion"}).
 		"\", eyes=\"".
-		mysql_escape_string($_REQUEST{"eyes"}).
+		quote_smart($_REQUEST{"eyes"}).
 		"\", face=\"".
-		mysql_escape_string($_REQUEST{"face"}).
+		quote_smart($_REQUEST{"face"}).
 		"\", hair=\"".
-		mysql_escape_string($_REQUEST{"hair"}).
+		quote_smart($_REQUEST{"hair"}).
 		"\", beard=\"".
-		mysql_escape_string($_REQUEST{"beard"}).
+		quote_smart($_REQUEST{"beard"}).
 		"\", arm=\"".
-		mysql_escape_string($_REQUEST{"arm"}).
+		quote_smart($_REQUEST{"arm"}).
 		"\", leg=\"".
-		mysql_escape_string($_REQUEST{"leg"}).
+		quote_smart($_REQUEST{"leg"}).
 		"\", room=\"".
-		mysql_escape_string($_REQUEST{"room"}).
+		quote_smart($_REQUEST{"room"}).
 		"\", experience=\"".
-		mysql_escape_string($_REQUEST{"experience"}).
+		quote_smart($_REQUEST{"experience"}).
 		"\", god=\"".
-		mysql_escape_string($_REQUEST{"god"}).
+		quote_smart($_REQUEST{"god"}).
 		"\", active=\"".
-		mysql_escape_string($_REQUEST{"active"}).
+		quote_smart($_REQUEST{"active"}).
 		"\", owner=\"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\" where name = \"".
-		mysql_escape_string($_REQUEST{"char"}).
+		quote_smart($_REQUEST{"char"}).
 		"\"";
 	mysql_query($query
 		, $dbhandle)  
@@ -139,7 +138,7 @@ if (isset($_REQUEST{"race"}))
 
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
 	creation2 from mm_usertable where name =
-	\"".mysql_escape_string($_REQUEST{"char"})."\""
+	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -255,13 +254,13 @@ if (isset($_REQUEST{"char"}) &&
 {
 	$query = "replace into mm_charattributes 
 		(name, value, value_type, charname) values(\""
-		.mysql_escape_string($_REQUEST{"mm_charattributes_name"}).
+		.quote_smart($_REQUEST{"mm_charattributes_name"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"mm_charattributes_value"}).
+		.quote_smart($_REQUEST{"mm_charattributes_value"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"mm_charattributes_value_type"}).
+		.quote_smart($_REQUEST{"mm_charattributes_value_type"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"char"}).
+		.quote_smart($_REQUEST{"char"}).
 		"\")";
 	mysql_query($query
 		, $dbhandle)  
@@ -271,7 +270,7 @@ if (isset($_REQUEST{"char"}) &&
 
 $result = mysql_query("select * ".
 	" from mm_charattributes".
-	" where charname = \"".mysql_escape_string($_REQUEST{"char"})."\""
+	" where charname = \"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -304,7 +303,7 @@ while ($myrow = mysql_fetch_array($result))
 	}
 $result = mysql_query("select * ".
 	" from characterinfo".
-	" where name = \"".mysql_escape_string($_REQUEST{"char"})."\""
+	" where name = \"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -322,7 +321,7 @@ $result = mysql_query("select mm_charitemtable.id, mm_items.id, ".
 	" where mm_itemtable.id = mm_charitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
 	" mm_charitemtable.belongsto =
-	\"".mysql_escape_string($_REQUEST{"char"})."\""
+	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

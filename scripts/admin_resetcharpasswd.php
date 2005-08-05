@@ -40,7 +40,6 @@ Mmud - Admin
 Char <?php echo $_REQUEST{"char"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 if ( (!isset($_REQUEST{"char"})) ||
@@ -57,11 +56,11 @@ if (strlen($password) < 5)
 $query = "update mm_usertable set password = password(\"".
 	$password.
 	"\"), owner=\"".
-	mysql_escape_string($_COOKIE["karchanadminname"]).
+	quote_smart($_COOKIE["karchanadminname"]).
 	"\" where name = \"".
-	mysql_escape_string($_REQUEST{"char"}).
+	quote_smart($_REQUEST{"char"}).
 	"\" and (owner is null or owner = \"".
-	mysql_escape_string($_COOKIE["karchanadminname"])."\")";
+	quote_smart($_COOKIE["karchanadminname"])."\")";
 mysql_query($query, $dbhandle)  
 or die("Query(8) failed : " . mysql_error(). "[" . $query . "]");
 writeLog($dbhandle, "Changed password of character ".$_REQUEST{"char"}.".");

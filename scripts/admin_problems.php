@@ -40,7 +40,6 @@ Mmud - Admin
 <H2><A HREF="/karchan/admin/help/problems.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 printf("<H2>Problems with Users</H2>\r\n");

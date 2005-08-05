@@ -40,7 +40,6 @@ Mmud - Ownership
 Areas</H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 /* 
 showing the different areas and what rooms belong to which area.
@@ -62,7 +61,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<B>creation:</B> %s<BR>", $myrow["creation2"]);
 	printf("<B>rooms:</B> ");
 	$result2 = mysql_query("select id from mm_rooms where area = '"
-	.mysql_escape_string($myrow["area"])
+	.quote_smart($myrow["area"])
 	."' order by id"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -74,9 +73,9 @@ while ($myrow = mysql_fetch_array($result))
 	$result2 = mysql_query("select distinct mm_rooms1.id 
 	from mm_rooms as mm_rooms1, mm_rooms as mm_rooms2 
 	where mm_rooms1.area <> '"
-	.mysql_escape_string($myrow["area"])
+	.quote_smart($myrow["area"])
 	."' and mm_rooms2.area = '"
-	.mysql_escape_string($myrow["area"])
+	.quote_smart($myrow["area"])
 	."' and 
 	mm_rooms1.id in (mm_rooms2.north, mm_rooms2.south, mm_rooms2.east, mm_rooms2.west, mm_rooms2.up, mm_rooms2.down) order by mm_rooms1.id"
 	, $dbhandle)

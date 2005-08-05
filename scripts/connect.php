@@ -27,7 +27,26 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-include("/karchan/keys.php");
+include("/projects/www.karchan.org/karchan_config/keys.php");
+
+// Quote variable to make safe
+function quote_smart($value)
+{
+    // Stripslashes
+    if (get_magic_quotes_gpc()) 
+    {
+        $value = stripslashes($value);
+    }
+    // Quote if not integer
+    if (!is_numeric($value)) 
+    {
+//         this is nicce, but for a future implementation.
+//        $value = "'" . mysql_real_escape_string($value) . "'";
+        $value = mysql_real_escape_string($value);
+    }
+    return $value;
+}
+
 $dbhandle = mysql_connect($host, $user, $passwd)
 	or die("Could not connect : " . mysql_error());
 mysql_select_db($db,$dbhandle) or die("Could not select database");

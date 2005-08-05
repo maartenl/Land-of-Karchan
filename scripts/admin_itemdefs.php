@@ -43,7 +43,6 @@ Item Definition <?php echo $_REQUEST{"item"} ?></H1>
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /* the following constraints need to be checked before any kind of update is
@@ -63,9 +62,9 @@ if (isset($_REQUEST{"name"}))
 {
 	// check it.
 	$result = mysql_query("select id from mm_items where id = \"".
-	  mysql_escape_string($_REQUEST{"item"}).
+	  quote_smart($_REQUEST{"item"}).
 	  "\" and (owner is null or owner = \"".
-	  mysql_escape_string($_COOKIE["karchanadminname"]).
+	  quote_smart($_COOKIE["karchanadminname"]).
 	  "\")"
 	  , $dbhandle)
 	  or die("Query(1) failed : " . mysql_error());
@@ -74,7 +73,7 @@ if (isset($_REQUEST{"name"}))
 	  die("You are not the owner of this itemdefinition.");
 	}
 	$result = mysql_query("select id from mm_items where id = \"".
-	  mysql_escape_string($_REQUEST{"item"})."\""
+	  quote_smart($_REQUEST{"item"})."\""
 	  , $dbhandle)
 	  or die("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
@@ -111,7 +110,7 @@ if (isset($_REQUEST{"name"}))
 		$result = mysql_query("select 1 
 		from mm_items 
 		where id = \"".
-		  mysql_escape_string($_REQUEST["keyid"]) . "\""
+		  quote_smart($_REQUEST["keyid"]) . "\""
 		  , $dbhandle)
 		  or die("Query(3) failed : " . mysql_error());
 		if (mysql_num_rows($result) == 0)
@@ -125,7 +124,7 @@ if (isset($_REQUEST{"name"}))
 	where mm_itemtable.id = mm_charitemtable.id and
 	mm_charitemtable.wearing is not null and
 	mm_itemtable.itemid = ".
-	  mysql_escape_string($_REQUEST["item"])
+	  quote_smart($_REQUEST["item"])
 	  , $dbhandle)
 	  or die("Query(4) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 0)
@@ -145,49 +144,49 @@ if (isset($_REQUEST{"name"}))
 	$readdescr = $_REQUEST["readdescr"];
 	// make that change.
 	$query = "update mm_items set name=\"".
-	  mysql_escape_string($_REQUEST{"name"}).
+	  quote_smart($_REQUEST{"name"}).
 	  "\", adject1=\"".
-	  mysql_escape_string($_REQUEST{"adject1"}).
+	  quote_smart($_REQUEST{"adject1"}).
 	  "\", adject2=\"".
-	  mysql_escape_string($_REQUEST{"adject2"}).
+	  quote_smart($_REQUEST{"adject2"}).
 	  "\", adject3=\"".
-	  mysql_escape_string($_REQUEST{"adject3"}).
+	  quote_smart($_REQUEST{"adject3"}).
 	  "\", wearable=\"".
-	  mysql_escape_string($wearable2).
+	  quote_smart($wearable2).
 	  "\", description=\"".
-	  mysql_escape_string($_REQUEST["description"]).
+	  quote_smart($_REQUEST["description"]).
 	  "\", eatable=". ($eatable==""?"null": 
-			"\"".mysql_escape_string($eatable)."\"").
+			"\"".quote_smart($eatable)."\"").
 	  ", drinkable=". ($drinkable==""?"null": 
-			"\"".mysql_escape_string($drinkable)."\"").
+			"\"".quote_smart($drinkable)."\"").
 	  ", readdescr=". ($readdescr==""?"null": 
-			"\"".mysql_escape_string($readdescr)."\"").
+			"\"".quote_smart($readdescr)."\"").
 	  ", capacity=". ($capacity==""?"null": 
-			"\"".mysql_escape_string($capacity)."\"").
+			"\"".quote_smart($capacity)."\"").
 	  ", keyid=". ($keyid==""?"null": 
-			"\"".mysql_escape_string($keyid)."\"").
+			"\"".quote_smart($keyid)."\"").
 	  ", gold=".
-	  mysql_escape_string($_REQUEST["gold"]).
+	  quote_smart($_REQUEST["gold"]).
 	  ", silver=".
-	  mysql_escape_string($_REQUEST["silver"]).
+	  quote_smart($_REQUEST["silver"]).
 	  ", copper=".
-	  mysql_escape_string($_REQUEST["copper"]).
+	  quote_smart($_REQUEST["copper"]).
 	  ", weight=".
-	  mysql_escape_string($_REQUEST["weight"]).
+	  quote_smart($_REQUEST["weight"]).
 	  ", container=".
-	  mysql_escape_string($_REQUEST["container"]).
+	  quote_smart($_REQUEST["container"]).
 	  ", isopenable=".
-	  mysql_escape_string($_REQUEST["isopenable"]).
+	  quote_smart($_REQUEST["isopenable"]).
 	  ", getable=".
-	  mysql_escape_string($_REQUEST["getable"]).
+	  quote_smart($_REQUEST["getable"]).
 	  ", dropable=".
-	  mysql_escape_string($_REQUEST["dropable"]).
+	  quote_smart($_REQUEST["dropable"]).
 	  ", visible=".
-	  mysql_escape_string($_REQUEST["visible"]).
+	  quote_smart($_REQUEST["visible"]).
 	  ", owner=\"".
-	  mysql_escape_string($_COOKIE["karchanadminname"]).
+	  quote_smart($_COOKIE["karchanadminname"]).
 	  "\" where id = \"".
-	  mysql_escape_string($_REQUEST{"item"}).
+	  quote_smart($_REQUEST{"item"}).
 	  "\"";
 	mysql_query($query
 	  , $dbhandle)
@@ -205,7 +204,7 @@ if (isset($_REQUEST{"deleteitemdef"}))
 	}
 	// check if no item instances are derived from this item definition
 	$result = mysql_query("select 1 from mm_itemtable where itemid = ".
-	mysql_escape_string($_REQUEST{"deleteitemdef"}), $dbhandle);
+	quote_smart($_REQUEST{"deleteitemdef"}), $dbhandle);
 	if (mysql_num_rows($result) > 0)
 	{
 		die("There are still item instances using this item definition.");
@@ -213,9 +212,9 @@ if (isset($_REQUEST{"deleteitemdef"}))
 	
 	// make it so
 	$query = "delete from mm_items where id = ".
-	mysql_escape_string($_REQUEST{"deleteitemdef"}).
+	quote_smart($_REQUEST{"deleteitemdef"}).
 	" and (owner is null or owner = \"".
-	mysql_escape_string($_COOKIE["karchanadminname"]).
+	quote_smart($_COOKIE["karchanadminname"]).
 	"\")";
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
@@ -228,7 +227,7 @@ if (isset($_REQUEST{"deleteitemdef"}))
 
 $result = mysql_query("select *,date_format(creation, \"%Y-%m-%d %T\") as
 	creation2 from mm_items where id = ".
-		mysql_escape_string($_REQUEST{"item"})
+		quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -420,7 +419,7 @@ ROWS="10" COLS="85">
 	}
 }
 $result = mysql_query("select id from mm_itemtable where itemid = ".
-		mysql_escape_string($_REQUEST{"item"})
+		quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

@@ -40,7 +40,6 @@ Mmud - Admin
 <A HREF="/karchan/admin/help/boards.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as

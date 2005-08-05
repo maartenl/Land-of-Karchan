@@ -40,7 +40,6 @@ Mmud - Admin
 Select Statement</H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 printf("<PRE>".$_REQUEST{"select"}."</PRE>");
 if (!isset($_REQUEST{"select"}))
@@ -58,6 +57,12 @@ if (substr($_REQUEST{"select"},0,6) != "select")
 		die("Only select and show statements are allowed!");
 	}
 }
+    // Stripslashes
+    if (get_magic_quotes_gpc()) 
+    {
+        $_REQUEST{"select"} = stripslashes($_REQUEST{"select"});
+    }
+
 $result = mysql_query($_REQUEST{"select"}
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());

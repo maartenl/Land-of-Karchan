@@ -40,7 +40,6 @@ Mmud - Admin
 Item <?php echo $_REQUEST{"item"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 /* the following constraints need to be checked before any kind of update is
 to take place:
@@ -85,7 +84,7 @@ date_format(mm_itemtable.creation, \"%Y-%m-%d %T\") as creation2,
 concat(adject1, \" \", adject2, \" \", adject3, \" \", name) as description
 from mm_itemtable left join mm_items ".
 	" on mm_items.id = mm_itemtable.itemid where mm_itemtable.id =
-	".mysql_escape_string($_REQUEST{"item"})
+	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -117,7 +116,7 @@ if (isset($_REQUEST{"removeitemfromroom"}))
 		die("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_roomitemtable where id = ".
-	mysql_escape_string($_REQUEST{"removeitemfromroom"});
+	quote_smart($_REQUEST{"removeitemfromroom"});
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
@@ -139,7 +138,7 @@ if (isset($_REQUEST{"removeitemfromchar"}))
 		die("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_charitemtable where id = ".
-	mysql_escape_string($_REQUEST{"removeitemfromchar"});
+	quote_smart($_REQUEST{"removeitemfromchar"});
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
@@ -161,7 +160,7 @@ if (isset($_REQUEST{"removeitemfromitem"}))
 		die("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_itemitemtable where id = ".
-	mysql_escape_string($_REQUEST{"removeitemfromitem"});
+	quote_smart($_REQUEST{"removeitemfromitem"});
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
@@ -184,7 +183,7 @@ if (isset($_REQUEST{"removeitemtotally"}))
 	}
 	
 	$query = "delete from mm_itemtable where id = ".
-	mysql_escape_string($_REQUEST{"removeitemtotally"});
+	quote_smart($_REQUEST{"removeitemtotally"});
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
 	writeLogLong($dbhandle, "Removed item instance ".$_REQUEST{"removeitemtotally"}.".", $query);
@@ -207,7 +206,7 @@ if (isset($_REQUEST{"additemtoroom"}))
 	}
 	// check that room exists
 	$result = mysql_query("select id from mm_rooms where id = ".
-	mysql_escape_string($_REQUEST{"additemtoroom_roomid"})
+	quote_smart($_REQUEST{"additemtoroom_roomid"})
 	, $dbhandle)
 	or die("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
@@ -216,9 +215,9 @@ if (isset($_REQUEST{"additemtoroom"}))
 	}
 	
 	$query = "insert into mm_roomitemtable (id, room) values(".
-	mysql_escape_string($_REQUEST{"additemtoroom"}).
+	quote_smart($_REQUEST{"additemtoroom"}).
 	", ".
-	mysql_escape_string($_REQUEST{"additemtoroom_roomid"}).
+	quote_smart($_REQUEST{"additemtoroom_roomid"}).
 	")";
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
@@ -238,7 +237,7 @@ if (isset($_REQUEST{"additemtochar"}))
 	}
 	// check that character exists
 	$result = mysql_query("select name from mm_usertable where name = \"".
-	mysql_escape_string($_REQUEST{"additemtochar_charname"}).
+	quote_smart($_REQUEST{"additemtochar_charname"}).
 	"\""
 	, $dbhandle)
 	or die("Query(2) failed : " . mysql_error());
@@ -248,9 +247,9 @@ if (isset($_REQUEST{"additemtochar"}))
 	}
 
 	$query = "insert into mm_charitemtable (id, belongsto) values(".
-	mysql_escape_string($_REQUEST{"additemtochar"}).
+	quote_smart($_REQUEST{"additemtochar"}).
 	", \"".
-	mysql_escape_string($_REQUEST{"additemtochar_charname"}).
+	quote_smart($_REQUEST{"additemtochar_charname"}).
 	"\")";
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
@@ -280,7 +279,7 @@ if (isset($_REQUEST{"additemtocontainer"}))
 	// check that container exists and is in fact a container
 	$result = mysql_query("select mm_itemtable.itemid from mm_itemtable, mm_items ".
 	"where mm_itemtable.itemid = mm_items.id and mm_items.container = 1 and mm_itemtable.id = ".
-	mysql_escape_string($_REQUEST{"additemtocontainer_containerid"})
+	quote_smart($_REQUEST{"additemtocontainer_containerid"})
 	, $dbhandle)
 	or die("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
@@ -289,9 +288,9 @@ if (isset($_REQUEST{"additemtocontainer"}))
 	}
 
 	$query = "insert into mm_itemitemtable (id, containerid) values(".
-	mysql_escape_string($_REQUEST{"additemtocontainer"}).
+	quote_smart($_REQUEST{"additemtocontainer"}).
 	", ".
-	mysql_escape_string($_REQUEST{"additemtocontainer_containerid"}).
+	quote_smart($_REQUEST{"additemtocontainer_containerid"}).
 	")";
 	mysql_query($query, $dbhandle)
 	or die("Query (".$query.") failed : " . mysql_error());
@@ -301,7 +300,7 @@ if (isset($_REQUEST{"additemtocontainer"}))
 $result = mysql_query("select containerid ".
 	" from mm_itemitemtable".
 	" where mm_itemitemtable.id =
-	".mysql_escape_string($_REQUEST{"item"})
+	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -319,7 +318,7 @@ while ($myrow = mysql_fetch_array($result))
 $result = mysql_query("select room ".
 	" from mm_roomitemtable".
 	" where mm_roomitemtable.id =
-	".mysql_escape_string($_REQUEST{"item"})
+	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -337,7 +336,7 @@ while ($myrow = mysql_fetch_array($result))
 $result = mysql_query("select belongsto ".
 	" from mm_charitemtable".
 	" where mm_charitemtable.id =
-	".mysql_escape_string($_REQUEST{"item"})
+	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -358,7 +357,7 @@ $result = mysql_query("select mm_itemitemtable.id, mm_items.id, ".
 	" where mm_itemtable.id = mm_itemitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
 	" mm_itemitemtable.containerid =
-	".mysql_escape_string($_REQUEST{"item"})
+	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -408,13 +407,13 @@ if (isset($_REQUEST{"item"}) &&
 {
 	$query = "replace into mm_itemattributes
 		(name, value, value_type, id) values(\""
-		.mysql_escape_string($_REQUEST{"mm_itemattributes_name"}).
+		.quote_smart($_REQUEST{"mm_itemattributes_name"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"mm_itemattributes_value"}).
+		.quote_smart($_REQUEST{"mm_itemattributes_value"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"mm_itemattributes_value_type"}).
+		.quote_smart($_REQUEST{"mm_itemattributes_value_type"}).
 		"\", \""
-		.mysql_escape_string($_REQUEST{"item"}).
+		.quote_smart($_REQUEST{"item"}).
 		"\")";
 	mysql_query($query
 		, $dbhandle)
@@ -423,7 +422,7 @@ if (isset($_REQUEST{"item"}) &&
 }
 $result = mysql_query("select * ".
 	" from mm_itemattributes".
-	" where id = ".mysql_escape_string($_REQUEST{"item"})
+	" where id = ".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

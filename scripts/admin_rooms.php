@@ -40,7 +40,6 @@ Mmud - Admin
 Room <?php echo $_REQUEST{"room"} ?></H1>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 /* the following constraints need to be checked before any kind of update is
@@ -73,9 +72,9 @@ if (isset($_REQUEST{"addroom_area"}))
 {
 	// check the area for admin rights.
 	$result = mysql_query("select area from mm_area where area = \"".
-		mysql_escape_string($_REQUEST{"addroom_area"}).
+		quote_smart($_REQUEST{"addroom_area"}).
 		"\" and owner = \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\""
 		, $dbhandle)
 		or die("Query(7) failed : " . mysql_error());
@@ -96,9 +95,9 @@ if (isset($_REQUEST{"addroom_area"}))
 	$query = "insert into mm_rooms (id, area, owner, creation) values(".
 		$roomid.
 		", \"".
-		mysql_escape_string($_REQUEST{"addroom_area"}).
+		quote_smart($_REQUEST{"addroom_area"}).
 		"\", \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\", now())";
 	mysql_query($query
 		, $dbhandle)
@@ -110,9 +109,9 @@ if (isset($_REQUEST{"west"}))
 {
 	// check it.
 	$result = mysql_query("select id from mm_rooms where id = ".
-		mysql_escape_string($_REQUEST{"room"}).
+		quote_smart($_REQUEST{"room"}).
 		" and (owner is null or owner = \"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\")"
 		, $dbhandle)
 		or die("Query(1) failed : " . mysql_error());
@@ -129,7 +128,7 @@ if (isset($_REQUEST{"west"}))
 	if ($south != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($south)
+			quote_smart($south)
 			, $dbhandle)
 			or die("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -144,7 +143,7 @@ if (isset($_REQUEST{"west"}))
 	if ($north != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($north)
+			quote_smart($north)
 			, $dbhandle)
 			or die("Query(2) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -159,7 +158,7 @@ if (isset($_REQUEST{"west"}))
 	if ($west != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($west)
+			quote_smart($west)
 			, $dbhandle)
 			or die("Query(3) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -174,7 +173,7 @@ if (isset($_REQUEST{"west"}))
 	if ($east != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($east)
+			quote_smart($east)
 			, $dbhandle)
 			or die("Query(4) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -189,7 +188,7 @@ if (isset($_REQUEST{"west"}))
 	if ($up != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($up)
+			quote_smart($up)
 			, $dbhandle)
 			or die("Query(5) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -204,7 +203,7 @@ if (isset($_REQUEST{"west"}))
 	if ($down != "")
 	{
 		$result = mysql_query("select id from mm_rooms where id = ".
-			mysql_escape_string($down)
+			quote_smart($down)
 			, $dbhandle)
 			or die("Query(6) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
@@ -217,7 +216,7 @@ if (isset($_REQUEST{"west"}))
 		$down = "null";
 	}
 	$result = mysql_query("select area from mm_area where area = \"".
-		mysql_escape_string($_REQUEST{"area"})."\""
+		quote_smart($_REQUEST{"area"})."\""
 		, $dbhandle)
 		or die("Query(7) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
@@ -226,25 +225,25 @@ if (isset($_REQUEST{"west"}))
 	}
 	// make that change.
 	$query = "update mm_rooms set north=".
-		mysql_escape_string($north).
+		quote_smart($north).
 		", south=".
-		mysql_escape_string($south).
+		quote_smart($south).
 		", east=".
-		mysql_escape_string($east).
+		quote_smart($east).
 		", west=".
-		mysql_escape_string($west).
+		quote_smart($west).
 		", up=".
-		mysql_escape_string($up).
+		quote_smart($up).
 		", down=".
-		mysql_escape_string($down).
+		quote_smart($down).
 		", contents=\"".
-		mysql_escape_string($_REQUEST{"contents"}).
+		quote_smart($_REQUEST{"contents"}).
 		"\", area=\"".
-		mysql_escape_string($_REQUEST{"area"}).
+		quote_smart($_REQUEST{"area"}).
 		"\", owner=\"".
-		mysql_escape_string($_COOKIE["karchanadminname"]).
+		quote_smart($_COOKIE["karchanadminname"]).
 		"\" where id = ".
-		mysql_escape_string($_REQUEST{"room"});
+		quote_smart($_REQUEST{"room"});
 	mysql_query($query
 		, $dbhandle)
 		or die("Query(8) failed : " . mysql_error());
@@ -252,7 +251,7 @@ if (isset($_REQUEST{"west"}))
 }
 
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 from mm_rooms where id =
-	".mysql_escape_string($_REQUEST{"room"})
+	".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -323,7 +322,7 @@ while ($areamyrow = mysql_fetch_array($arearesult))
 area <SELECT NAME="addroom_area">
 <?php
 $arearesult = mysql_query("select area from mm_area where owner='".
-	mysql_escape_string($_COOKIE["karchanadminname"]).
+	quote_smart($_COOKIE["karchanadminname"]).
 	"'"
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
@@ -352,7 +351,7 @@ while ($areamyrow = mysql_fetch_array($arearesult))
 printf("</P>");
 $result = mysql_query("select * ".
 	" from mm_roomattributes".
-	" where id = ".mysql_escape_string($_REQUEST{"room"})
+	" where id = ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -367,7 +366,7 @@ $result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
 	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_roomitemtable".
 	" where mm_itemtable.id = mm_roomitemtable.id and ".
 	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_roomitemtable.room = ".mysql_escape_string($_REQUEST{"room"})
+	" mm_roomitemtable.room = ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -381,7 +380,7 @@ printf("</P>");
 $result = mysql_query("select mm_usertable.name ".
 	" from mm_usertable".
 	" where active = 1 and room  =
-".mysql_escape_string($_REQUEST{"room"})
+".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -392,7 +391,7 @@ printf("</P>");
 $result = mysql_query("select mm_usertable.name ".
 	" from mm_usertable".
 	" where active = 0 and room  =
-	".mysql_escape_string($_REQUEST{"room"})
+	".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -402,7 +401,7 @@ while ($myrow = mysql_fetch_array($result))
 
 printf("<b>Referenced in the following rooms:</b><BR>");
 $result = mysql_query("select id from mm_rooms where
-	".mysql_escape_string($_REQUEST{"room"}).
+	".quote_smart($_REQUEST{"room"}).
 	" in (west, east, north, south, up, down) "
 	, $dbhandle)
 	or die("Query failed : " . mysql_error());
