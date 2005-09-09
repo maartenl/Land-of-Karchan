@@ -2,13 +2,13 @@
 # MakeFile -- Maarten's Mud Makefile for compiling the java server
 #
 # javac -source 1.4 -classpath
-# ../../mysql-connector-java-3.0.6-stable/mysql-connector-java-3.0.6-stable-bin.jar:.
 # *.java
 
-HOMEDIR = /home/karchan/cvs2/server
+HOMEDIR = /home/karchan/cvs/server
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
-JAVADOCDIR = /home/httpd/html/javadoc
+JAVADOCDIR = /var/www/html/javadoc
+JAVADIR = /usr/java/j2sdk1.4.2_09/bin
 
 #
 # Options that can be used to the make command
@@ -26,14 +26,17 @@ JAVADOCDIR = /home/httpd/html/javadoc
 # unless you know what you are doing.
 #
 
-CC = /usr/java/j2sdk1.4.1_02/bin/javac
+CC = $(JAVADIR)/javac
+JAVA = $(JAVADIR)/java
+JAVADOC = $(JAVADIR)/javadoc
+JAVAJAR = $(JAVADIR)/jar
 
 # CC = javac
 # the -g option is to compile debugging info into the object files
 #
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
-CLASSPATH = mysql-connector-java-3.0.6-stable-bin.jar:Simkin.jar:runme.jar
-CLASSPATH2 = mysql-connector-java-3.0.6-stable-bin.jar:Simkin.jar
+CLASSPATH =  mysql-connector-java-3.1.7-bin.jar:Simkin.jar:runme.jar
+CLASSPATH2 =  mysql-connector-java-3.1.7-bin.jar:Simkin.jar
 COPTS = -source 1.4 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
 
 TARGETS = compile javadoc release
@@ -45,7 +48,7 @@ compile: mmud/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc: compile
-	/usr/java/j2sdk1.4.1_02/bin/javadoc -source 1.4 -private -d \
+	$(JAVADOC) -source 1.4 -private -d \
 	$(JAVADOCDIR) \
 	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database \
 	mmud.boards mmud.races
@@ -62,10 +65,13 @@ dist-clean:
 all: $(TARGETS)
 
 jar:
-	cd jclasses;jar -cmvf ../MANIFEST.MF ../runme.jar -C . .
+	cd jclasses;$(JAVAJAR) -cmvf ../MANIFEST.MF ../runme.jar -C . .
+
+html:
+	$(JAVA) -jar j2h.jar -d /home/httpd/html/javasrc/ -js . -jd /home/httpd/html/javadoc
 
 run: jar
-	/usr/java/j2sdk1.4.1_02/bin/java -cp $(CLASSPATH) mmud.Main
+	$(JAVA) -cp $(CLASSPATH) mmud.Main
 
 release: clean compile jar javadoc
 	echo "Release done."
