@@ -69,4 +69,9 @@ public class DownCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new DownCommand(aRegExpr);
+	}
+	
 }

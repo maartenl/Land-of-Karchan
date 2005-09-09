@@ -93,4 +93,9 @@ public class MailCommand extends NormalCommand
 		return theString;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new MailCommand(aRegExpr);
+	}
+	
 }

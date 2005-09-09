@@ -64,6 +64,7 @@ public class User extends mmud.characters.Person
 	private Calendar rightNow;
 	private boolean thePkill;
 
+
 	/**
 	 * create an instance of User, based on Database data. 
 	 * @param aName the name of the character
@@ -608,6 +609,7 @@ public class User extends mmud.characters.Person
 		while (myI.hasNext())
 		{
 			command = (Command) myI.next();
+			command = command.createCommand(aCommand);
 			command.setCommand(aCommand);
 			if (command.run(this))
 			{

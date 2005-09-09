@@ -78,4 +78,9 @@ public class ClearCommand extends NormalCommand
 		return null;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new ClearCommand(aRegExpr);
+	}
+	
 }

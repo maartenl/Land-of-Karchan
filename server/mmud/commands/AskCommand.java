@@ -88,4 +88,9 @@ public class AskCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new AskCommand(aRegExpr);
+	}
+	
 }

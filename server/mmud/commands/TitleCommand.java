@@ -59,4 +59,9 @@ public class TitleCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new TitleCommand(aRegExpr);
+	}
+	
 }

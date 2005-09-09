@@ -68,4 +68,9 @@ public class SouthCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new SouthCommand(aRegExpr);
+	}
+	
 }

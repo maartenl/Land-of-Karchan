@@ -68,4 +68,9 @@ public class WestCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new WestCommand(aRegExpr);
+	}
+	
 }

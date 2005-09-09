@@ -662,8 +662,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param aXmlMethodName the name of the method in the xml
 	 * script that you wish to execute.
 	 * @see <A HREF="http://www.simkin.co.uk">Simkin</A>
-	 * @see #runScript(String aXmlMethodName,String aScript,String[]
-	 * aCommandArray)
+	 * @see #runScript(String,String,String[])
 	 * @throws MudException if something goes wrong.
 	 */ 
 	public Object runScript(String aXmlMethodName, String aScript)

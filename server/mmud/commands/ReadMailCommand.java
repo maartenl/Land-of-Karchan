@@ -81,4 +81,9 @@ public class ReadMailCommand extends NormalCommand
 		return theString;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new ReadMailCommand(aRegExpr);
+	}
+	
 }

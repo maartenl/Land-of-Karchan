@@ -40,7 +40,8 @@ import mmud.database.*;
 import simkin.*;
 
 /**
- * An interface for a container, i.e. an item in the mud that can contain other items.
+ * An interface for a container. Useful for items in the mud that can 
+ * contain other items.
  */
 public interface Container
 {
@@ -63,15 +64,15 @@ public interface Container
 	public int getCapacity();
 
 	/**
-	 * Returns wether or not the container has a lid. i.e. wether
+	 * Returns wether or not the container has a lid. Wether
 	 * or not the container can be opened.
 	 * @return boolean true if the container has a lid.
 	 */
 	public boolean isOpenable();
 
 	/**
-	 * Returns wether or not the container has a lock. i.e.
-	 * wether or not the container can be unlocked/locked.
+	 * Returns wether or not the container has a lock.
+	 * Meaning wether or not the container can be unlocked/locked.
 	 * @return boolean true if the container can be locked/unlocked.
 	 */
 	public boolean hasLock();

@@ -91,5 +91,10 @@ public class HelpCommand extends NormalCommand
 		return "";
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new HelpCommand(aRegExpr);
+	}
+	
 
 }

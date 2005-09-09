@@ -71,4 +71,9 @@ public class PkillCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new PkillCommand(aRegExpr);
+	}
+	
 }

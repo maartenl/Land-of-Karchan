@@ -68,4 +68,9 @@ public class EastCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new EastCommand(aRegExpr);
+	}
+	
 }

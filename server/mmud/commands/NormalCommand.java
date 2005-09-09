@@ -101,4 +101,5 @@ public abstract class NormalCommand implements Command
 	{
 		return theParsedCommand;
 	}
+
 }

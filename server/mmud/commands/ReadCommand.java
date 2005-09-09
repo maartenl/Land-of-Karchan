@@ -119,4 +119,9 @@ public class ReadCommand extends NormalCommand
 		return theResult;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new ReadCommand(aRegExpr);
+	}
+	
 }

@@ -243,4 +243,9 @@ public class SellCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new SellCommand(aRegExpr);
+	}
+	
 }

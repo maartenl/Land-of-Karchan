@@ -85,4 +85,9 @@ public class WhimpyCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new WhimpyCommand(aRegExpr);
+	}
+	
 }

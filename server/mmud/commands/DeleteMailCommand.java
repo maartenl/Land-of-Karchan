@@ -80,5 +80,10 @@ public class DeleteMailCommand extends NormalCommand
 		return theString;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new DeleteMailCommand(aRegExpr);
+	}
+	
 
 }

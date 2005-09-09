@@ -128,4 +128,9 @@ public class UnwieldCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new UnwieldCommand(aRegExpr);
+	}
+	
 }

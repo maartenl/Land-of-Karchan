@@ -103,4 +103,9 @@ public class ShoutCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new ShoutCommand(aRegExpr);
+	}
+	
 }

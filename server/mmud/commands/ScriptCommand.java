@@ -98,4 +98,15 @@ public class ScriptCommand extends NormalCommand
 		return theResult;
 	}
 
+	/**
+	 * There are too many parameters required for this one
+	 * to be automatically created using the standard.
+	 * Don't use this method.
+	 * @return null value, always
+	 */
+	public Command createCommand(String aRegExpr)
+	{
+		return null;
+	}
+	
 }

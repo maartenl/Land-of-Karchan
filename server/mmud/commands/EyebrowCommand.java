@@ -62,4 +62,9 @@ public class EyebrowCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new EyebrowCommand(aRegExpr);
+	}
+	
 }

@@ -191,4 +191,9 @@ public class LookCommand extends NormalCommand
 		return theResult;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new LookCommand(aRegExpr);
+	}
+	
 }

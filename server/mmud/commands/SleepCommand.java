@@ -66,4 +66,9 @@ public class SleepCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new SleepCommand(aRegExpr);
+	}
+	
 }

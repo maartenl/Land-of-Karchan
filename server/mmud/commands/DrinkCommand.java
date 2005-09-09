@@ -113,4 +113,9 @@ public class DrinkCommand extends NormalCommand
 	}
 
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new DrinkCommand(aRegExpr);
+	}
+	
 }

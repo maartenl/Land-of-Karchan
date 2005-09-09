@@ -58,4 +58,9 @@ public class MeCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new MeCommand(aRegExpr);
+	}
+	
 }

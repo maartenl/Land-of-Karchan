@@ -184,4 +184,9 @@ public class WearCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new WearCommand(aRegExpr);
+	}
+	
 }

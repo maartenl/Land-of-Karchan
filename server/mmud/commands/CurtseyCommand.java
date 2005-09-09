@@ -78,4 +78,9 @@ public class CurtseyCommand extends NormalCommand
 		return true;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new CurtseyCommand(aRegExpr);
+	}
+	
 }

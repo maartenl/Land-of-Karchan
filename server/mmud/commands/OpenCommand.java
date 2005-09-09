@@ -128,4 +128,9 @@ public class OpenCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new OpenCommand(aRegExpr);
+	}
+	
 }

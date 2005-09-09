@@ -55,16 +55,6 @@ public interface Command
 		throws MudException;
 
 	/**
-	 * Returns the String that should be communicated to the user
-	 * accessing the game. Basically, this is the output. It can
-	 * contain, and usually does, the room description, appropriate form for new
-	 * information and the logfile.
-	 * @return String containing the description of the result of the
-	 * action for the user playing.
-	 */
-	public String getResult();
-
-	/**
 	 * Sets the command originally used to execute this command. Useful
 	 * for parsing.
 	 * @param aCommand String containing the original command.
@@ -83,4 +73,21 @@ public interface Command
 	 * @return String[] containing the individual words in the command.
 	 */
 	public String[] getParsedCommand();
+	
+	/**
+	 * creates a new instance of the current object.
+         * @param aRegExpr a regular expression to which the command should
+         * follow. For example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
+         * parameter that can be used when the name of the character playing
+         * is requested.
+	 */
+	public Command createCommand(String aRegExpr);
+	
+	/**
+	 * Returns the appropriate view for a player.
+	 * @return String containing the view of a player.
+	 * Header, description, form, logfile, footer.
+	 */
+	public String getResult();
+	
 }

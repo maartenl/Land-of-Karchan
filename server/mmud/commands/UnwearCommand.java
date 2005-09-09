@@ -178,4 +178,9 @@ public class UnwearCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new UnwearCommand(aRegExpr);
+	}
+	
 }

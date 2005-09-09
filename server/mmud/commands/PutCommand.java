@@ -157,4 +157,9 @@ public class PutCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new PutCommand(aRegExpr);
+	}
+	
 }

@@ -67,4 +67,9 @@ public class ListMailCommand extends NormalCommand
 		return theString;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new ListMailCommand(aRegExpr);
+	}
+	
 }

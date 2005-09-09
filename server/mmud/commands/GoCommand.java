@@ -87,4 +87,9 @@ public class GoCommand extends NormalCommand
 		return false;
 	}
 
+	public Command createCommand(String aRegExpr)
+	{
+		return new GoCommand(aRegExpr);
+	}
+	
 }
