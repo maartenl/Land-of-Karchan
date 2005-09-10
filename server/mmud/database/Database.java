@@ -120,6 +120,10 @@ public class Database
 
 	public static String sqlGetAnswers = 
 		"select * from mm_answers where ? like question and name = ?";
+		
+	public static String sqlGetAreaString = 
+		"select mm_area.* from mm_area, mm_rooms where mm_rooms.id = ? "
+		+ "and mm_rooms.area = mm_area.area";
 
 	/**
 	 * Connects to the database using an url. The url looks something like 
@@ -555,6 +559,47 @@ public class Database
 			Database.writeLog("root", e);
 		}
 		return myRoom;
+	}
+
+	/**
+	 * Returns the area information of a certain room.
+	 * @param Room object used for finding out to which are it belongs.
+	 * @return Area object containing all area information. null pointer if the
+	 * area could not be found in the database.
+	 */
+	public static Area getArea(Room aRoom)
+	{
+		assert theConnection != null : "theConnection is null";
+		assert aRoom != null : "aRoom is null";
+		Logger.getLogger("mmud").finer("");
+		ResultSet res;
+		Area myArea  = null;
+		try
+		{
+
+		PreparedStatement sqlGetArea = theConnection.prepareStatement(sqlGetAreaString);
+		sqlGetArea.setInt(1, aRoom.getId());
+		res = sqlGetArea.executeQuery();
+		if (res == null)
+		{
+			Logger.getLogger("mmud").info("resultset null");
+			return null;
+		}
+		res.first();
+		myArea  = new Area(
+			res.getString("area"),
+			res.getString("description"),
+			res.getString("shortdesc"));
+		res.close();
+		sqlGetArea.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").finer("returns " + myArea);
+		return myArea;
 	}
 
 	/**

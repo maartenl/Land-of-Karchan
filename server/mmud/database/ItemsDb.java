@@ -305,14 +305,14 @@ public class ItemsDb
 			{
 				// 5 gold, hard cups
 				myInventory.append("<LI>" + amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " " + 
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " " + 
 					res.getString("name") + "s.\r\n");
 			}
 			else
 			{
 				// a gold, hard cup
 				myInventory.append("<LI>a " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " " + 
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " " + 
 					res.getString("name") + ".\r\n");
 			}
 		}
@@ -355,13 +355,13 @@ public class ItemsDb
 			if (amount > 1)
 			{
 				myInventory.append(amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " "
 					+ res.getString("name") + "s are here.<BR>\r\n");
 			}
 			else
 			{
 				myInventory.append("A " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " "
 					+ res.getString("name") + " is here.<BR>\r\n");
 			}
 		}
@@ -406,13 +406,13 @@ public class ItemsDb
 			if (amount > 1)
 			{
 				myInventory.append("<LI>" + amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " "
 					+ res.getString("name") + "s.<BR>\r\n");
 			}
 			else
 			{
 				myInventory.append("<LI>A " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + " "
+					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " "
 					+ res.getString("name") + ".<BR>\r\n");
 			}
 		}
@@ -1141,7 +1141,8 @@ public class ItemsDb
 					(myPos.isWielding() ? "wielding " : "wearing ") + 
 					(Constants.isQwerty(res.getString("adject1").charAt(0)) ? "an " : "a ") + 
 					res.getString("adject1") + ", " + 
-					res.getString("adject2") + " " + 
+					res.getString("adject2") + ", " + 
+					res.getString("adject3") + " " + 
 					res.getString("name") + " " + myPos + ".<BR>\r\n");
 			}
 			res.close();

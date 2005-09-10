@@ -485,7 +485,13 @@ public final class Persons implements Executable
 			if (myChar instanceof User)
 			{
 				User myUser = (User) myChar;
-				myString += "<LI>" + myUser.getName() + ", " + myUser.getTitle() + (myUser.isaSleep()?", sleeping ":" ") + myUser.getIdleTime() + "\r\n";
+				Area myArea = myChar.getRoom().getArea();
+				myString += "<LI>" + myUser.getName() + ", " + myUser.getTitle();
+				if (!myArea.getName().equals("Main"))
+				{
+					myString += " in " + myArea.getShortDescription();
+				}
+				myString += (myUser.isaSleep()?", sleeping ":" ") + myUser.getIdleTime() + "\r\n";
 				count++;
 			}
 		}

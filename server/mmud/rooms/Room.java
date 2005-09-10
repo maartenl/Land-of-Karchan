@@ -295,6 +295,15 @@ public class Room implements Executable, AttributeContainer
 	}
 
 	/**
+	 * Returns area information.
+	 * @return Area object containing the area information.
+	 */
+	public Area getArea()
+	{
+		return Database.getArea(this);
+	}
+
+	/**
 	 * Returns the description of the room, suitable for webbrowsers.
 	 * @param aUser the user who needs to have the webpage.
 	 * @return String containing a full description of the room suitable
