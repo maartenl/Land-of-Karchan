@@ -37,11 +37,35 @@ Mmud - Admin
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Banned People</H1>
+Table of Contents</H1>
+<A HREF="#introduction">Introduction</A><P>
+<A HREF="#bannedpeople">Banned People</A><P>
+<A HREF="#unbannedchars">Unbanned Characters</A><P>
+<A HREF="#bannedchars">Banned Characters</A><P>
+<A HREF="#sillynames">Silly Names</A><P>
 
-<A HREF="/karchan/admin/help/banning.html" target="_blank">
-<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
+<A NAME="introduction"><H1><A HREF="/karchan/admin/help/banning.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
+Introduction</H1>
 
+The banning of people and characters from the mud may seem to be 
+complicated at first. Therefore this short introduction. The following rules
+govern wether or not the character is banned. The rules are processed in the
+order that they appear here. If a rule indicates that a person is
+<I>banned</I> or
+is <I>not banned</I>, then all te next rules are skipped.
+<OL><LI>if the name exists in the Silly names table, the character is
+<I>banned</I>
+<LI>if the name exists in the Unbanned names table, the character is <I>not
+banned</I>
+<LI>if the name exists in the Banned names table, the character is
+<I>banned</I>
+<LI>if the ip number exists or is part of a range of ipnumbers specified in
+the Banned people table, the character is <I>banned</I>
+<LI>in <I>all</I> other cases the character is allowed to log on.
+</OL>
+
+<A NAME="bannedpeople"><H1>Banned People</H1>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
@@ -59,6 +83,19 @@ if ($_REQUEST{"ban_address"} != "")
 	, $dbhandle)
 	or die("Query(8) failed : " . mysql_error());
 	writeLog($dbhandle, "Added ban on address ".$_REQUEST{"ban_address"}.".");
+}
+if ($_REQUEST{"add_bannedname"} != "")
+{
+	$query = "replace into mm_bannednamestable values(\"".
+	quote_smart($_REQUEST{"add_bannedname"})."\",\"".
+	quote_smart($_COOKIE{"karchanadminname"})."\",".
+	"now(),".
+	quote_smart($_REQUEST{"add_bandays"}).",\"".
+	quote_smart($_REQUEST{"add_banreason"}).
+	"\")";
+	mysql_query($query, $dbhandle)
+	or die("Query(8) failed : " . $query . mysql_error());
+	writeLog($dbhandle, "Added ban on character ".$_REQUEST{"add_bannedname"}.".");
 }
 if ($_REQUEST{"unbanname"} <> "")
 {
@@ -92,9 +129,16 @@ if ($_REQUEST{"remove_sillyname"} != NULL)
 		or die("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");
 }
+if ($_REQUEST{"remove_bannedname"} != NULL)
+{
+	mysql_query("delete from mm_bannednamestable where name = \"".
+		quote_smart($_REQUEST{"remove_bannedname"})."\""
+		, $dbhandle)
+		or die("Query(6) failed : " . mysql_error());
+	writeLog($dbhandle, "Removed banned name. (".$_REQUEST{"remove_bannedname"}.")");
+}
 
 
-printf("<H2>Bantable</H2>");
 $result = mysql_query("select * from mm_bantable"
 	, $dbhandle)
 	or die("Query(1) failed : " . mysql_error());
@@ -119,8 +163,8 @@ Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 
+<A NAME="unbannedchars"><H1>Unbanned Characters</H1>
 <?php
-printf("<H2>Unbantable</H2>");
 $result = mysql_query("select * from mm_unbantable order by name"
 	, $dbhandle)
 	or die("Query(5) failed : " . mysql_error());
@@ -146,8 +190,36 @@ Add Unbanname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
 
+<A NAME="bannedchars"><H1>Banned Characters</H1>
+<TABLE><TR><TD><B>Name</B></TD><TD><B>Deputy</B></TD><TD><B>Creation
+</B></TD><TD><B>Days</B></TD><TD><B>Reason</B></TD></TR><TR><TD>
 <?php
-printf("<H2>Sillynamestable</H2>");
+$result = mysql_query("select * from mm_bannednamestable order by name"
+	, $dbhandle)
+	or die("Query(7) failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<A HREF=\"/scripts/admin_banned.php?remove_bannedname=%s\">%s</A><BR>",
+		$myrow["name"], $myrow["name"]);
+	printf("</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s",
+		$myrow["deputy"], $myrow["creation"], $myrow["days"],
+		$myrow["reason"]);
+	printf("</TD></TR><TR><TD>");
+}
+?>
+</TD></TR></TABLE>
+
+Add Banned name:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
+<INPUT TYPE="text" NAME="add_bannedname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
+Days:<INPUT TYPE="text" NAME="add_bandays" VALUE="" SIZE="3" MAXLENGTH="3"><P>
+Reason:<INPUT TYPE="text" NAME="add_banreason" VALUE="" SIZE="40" MAXLENGTH="255"><P>
+<INPUT TYPE="submit" VALUE="Submit">
+<INPUT TYPE="reset" VALUE="Clear"><P>
+</FORM>
+
+<A NAME="sillynames"><H1>Banned Silly Names</H1>
+
+<?php
 $result = mysql_query("select * from mm_sillynamestable order by name"
 	, $dbhandle)
 	or die("Query(7) failed : " . mysql_error());
@@ -166,8 +238,8 @@ while ($myrow = mysql_fetch_array($result))
 }
 printf("</TD></TR></TABLE>");
 
-
 mysql_close($dbhandle);
+
 ?>
 
 
