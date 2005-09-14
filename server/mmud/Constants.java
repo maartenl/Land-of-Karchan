@@ -293,6 +293,7 @@ public final class Constants
 	{"frown", "frowns"},
 	{"giggle", "giggles"},
 	{"glare", "glares"},
+	{"grimace", "grimaces"},
 	{"grin", "grins"},
 	{"groan", "groans"},
 	{"growl", "growls"},
@@ -321,7 +322,8 @@ public final class Constants
 	{"whistle", "whistles"},
 	{"wink", "winks"},
 	{"laugh", "laughs out loud"},
-	{"wonder", "wonders"}};
+	{"wonder", "wonders"},
+	{"wince", "winces"}};
 
 	public static final String[][] emotions2 = {
 	{"caress", "caresses"},
