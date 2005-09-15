@@ -151,9 +151,9 @@ public class UnlockCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new UnlockCommand(aRegExpr);
+		return new UnlockCommand(getRegExpr());
 	}
 	
 }

@@ -214,9 +214,9 @@ public class WieldCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new WieldCommand(aRegExpr);
+		return new WieldCommand(getRegExpr());
 	}
 	
 }

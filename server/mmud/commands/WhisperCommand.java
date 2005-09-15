@@ -89,9 +89,9 @@ public class WhisperCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new WhisperCommand(aRegExpr);
+		return new WhisperCommand(getRegExpr());
 	}
 	
 }

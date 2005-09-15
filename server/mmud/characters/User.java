@@ -609,7 +609,7 @@ public class User extends mmud.characters.Person
 		while (myI.hasNext())
 		{
 			command = (Command) myI.next();
-			command = command.createCommand(aCommand);
+			command = command.createCommand();
 			command.setCommand(aCommand);
 			if (command.run(this))
 			{

@@ -156,9 +156,9 @@ public class LockCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new LockCommand(aRegExpr);
+		return new LockCommand(getRegExpr());
 	}
 	
 }

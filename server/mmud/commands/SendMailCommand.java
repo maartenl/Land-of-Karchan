@@ -94,9 +94,9 @@ public class SendMailCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new SendMailCommand(aRegExpr);
+		return new SendMailCommand(getRegExpr());
 	}
 	
 }

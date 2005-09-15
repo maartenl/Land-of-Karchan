@@ -242,9 +242,9 @@ public class BuyCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new BuyCommand(aRegExpr);
+		return new BuyCommand(getRegExpr());
 	}
 	
 }

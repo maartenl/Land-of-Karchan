@@ -64,9 +64,9 @@ public class TimeCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new TimeCommand(aRegExpr);
+		return new TimeCommand(getRegExpr());
 	}
 	
 }

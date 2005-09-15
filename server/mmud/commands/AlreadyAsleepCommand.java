@@ -56,9 +56,9 @@ public class AlreadyAsleepCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new AlreadyAsleepCommand(aRegExpr);
+		return new AlreadyAsleepCommand(getRegExpr());
 	}
 	
 }

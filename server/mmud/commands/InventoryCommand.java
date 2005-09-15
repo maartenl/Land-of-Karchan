@@ -69,9 +69,9 @@ public class InventoryCommand extends NormalCommand
 		return theResult;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new InventoryCommand(aRegExpr);
+		return new InventoryCommand(getRegExpr());
 	}
 	
 }

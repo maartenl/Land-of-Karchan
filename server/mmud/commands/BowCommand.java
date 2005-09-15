@@ -107,9 +107,9 @@ public class BowCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new BowCommand(aRegExpr);
+		return new BowCommand(getRegExpr());
 	}
 	
 }

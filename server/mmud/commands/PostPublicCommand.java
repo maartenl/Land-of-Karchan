@@ -58,9 +58,9 @@ public class PostPublicCommand extends PostBoardCommand
 		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1).trim());
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new PostPublicCommand(aRegExpr);
+		return new PostPublicCommand(getRegExpr());
 	}
 	
 }

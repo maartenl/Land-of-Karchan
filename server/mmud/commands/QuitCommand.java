@@ -81,9 +81,9 @@ public class QuitCommand extends NormalCommand
 		return theResult;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new QuitCommand(aRegExpr);
+		return new QuitCommand(getRegExpr());
 	}
 	
 }

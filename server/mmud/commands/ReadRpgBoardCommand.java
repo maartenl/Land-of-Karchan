@@ -59,9 +59,9 @@ public class ReadRpgBoardCommand extends ReadBoardCommand
 		return readMessage(aUser, "roleplaying", 13);
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new ReadRpgBoardCommand(aRegExpr);
+		return new ReadRpgBoardCommand(getRegExpr());
 	}
 	
 }

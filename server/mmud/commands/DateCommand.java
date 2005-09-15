@@ -63,9 +63,9 @@ public class DateCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new DateCommand(aRegExpr);
+		return new DateCommand(getRegExpr());
 	}
 	
 }

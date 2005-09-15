@@ -178,9 +178,9 @@ public class UnwearCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new UnwearCommand(aRegExpr);
+		return new UnwearCommand(getRegExpr());
 	}
 	
 }

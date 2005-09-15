@@ -69,9 +69,9 @@ public class UpCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new UpCommand(aRegExpr);
+		return new UpCommand(getRegExpr());
 	}
 	
 }

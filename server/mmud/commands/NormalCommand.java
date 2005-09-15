@@ -48,6 +48,11 @@ public abstract class NormalCommand implements Command
 	 */
 	private String theRegExpr;
 
+	public String getRegExpr()
+	{
+		return theRegExpr;
+	}
+	
 	/**
 	 * Constructor.
 	 * @param aRegExpr a regular expression to which the command should
@@ -71,12 +76,13 @@ public abstract class NormalCommand implements Command
 		{
 			String stuff = getCommand().substring(0, getCommand().indexOf('\n'));
 			result = stuff.matches(myregexpr);
+			Logger.getLogger("mmud").finer("returns case 1 " + result);
 		}
 		else
 		{
 			result = (getCommand().matches(myregexpr));
+			Logger.getLogger("mmud").finer("returns case 2 " + result);
 		}
-		Logger.getLogger("mmud").finer("returns " + result);
 		return result;
 	}
 

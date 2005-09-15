@@ -58,9 +58,9 @@ public class PostRpgBoardCommand extends PostBoardCommand
 		return postMessage(aUser, "roleplaying", 13, getCommand().substring(8 + 1).trim());
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new PostRpgBoardCommand(aRegExpr);
+		return new PostRpgBoardCommand(getRegExpr());
 	}
 	
 }

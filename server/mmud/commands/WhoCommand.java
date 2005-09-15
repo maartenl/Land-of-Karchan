@@ -66,9 +66,9 @@ public class WhoCommand extends NormalCommand
 		return theString;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new WhoCommand(aRegExpr);
+		return new WhoCommand(getRegExpr());
 	}
 	
 }

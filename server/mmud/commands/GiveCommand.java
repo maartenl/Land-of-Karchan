@@ -113,9 +113,9 @@ public class GiveCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new GiveCommand(aRegExpr);
+		return new GiveCommand(getRegExpr());
 	}
 	
 }

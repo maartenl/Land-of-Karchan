@@ -70,9 +70,9 @@ public class StatsCommand extends NormalCommand
 		return theResult;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new StatsCommand(aRegExpr);
+		return new StatsCommand(getRegExpr());
 	}
 	
 }

@@ -128,9 +128,9 @@ public class CloseCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new CloseCommand(aRegExpr);
+		return new CloseCommand(getRegExpr());
 	}
 	
 }

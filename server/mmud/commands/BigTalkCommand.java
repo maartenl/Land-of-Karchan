@@ -92,9 +92,9 @@ public class BigTalkCommand extends NormalCommand
 		return null;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new BigTalkCommand(aRegExpr);
+		return new BigTalkCommand(getRegExpr());
 	}
 	
 }

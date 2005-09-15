@@ -158,9 +158,9 @@ public class RetrieveCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new RetrieveCommand(aRegExpr);
+		return new RetrieveCommand(getRegExpr());
 	}
 	
 }

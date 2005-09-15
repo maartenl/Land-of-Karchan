@@ -59,9 +59,9 @@ public class ReadPublicCommand extends ReadBoardCommand
 		return readMessage(aUser, "public", 3);
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new ReadPublicCommand(aRegExpr);
+		return new ReadPublicCommand(getRegExpr());
 	}
 	
 }

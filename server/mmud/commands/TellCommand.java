@@ -80,9 +80,9 @@ public class TellCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new TellCommand(aRegExpr);
+		return new TellCommand(getRegExpr());
 	}
 	
 }

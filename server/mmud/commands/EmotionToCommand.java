@@ -107,9 +107,9 @@ public class EmotionToCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new EmotionToCommand(aRegExpr);
+		return new EmotionToCommand(getRegExpr());
 	}
 	
 }

@@ -65,9 +65,9 @@ public class AwakenCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new AwakenCommand(aRegExpr);
+		return new AwakenCommand(getRegExpr());
 	}
 	
 }

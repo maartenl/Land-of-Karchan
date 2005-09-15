@@ -187,9 +187,9 @@ public class AdminCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new AdminCommand(aRegExpr);
+		return new AdminCommand(getRegExpr());
 	}
 	
 }

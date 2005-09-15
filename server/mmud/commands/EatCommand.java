@@ -105,9 +105,9 @@ public class EatCommand extends NormalCommand
 		return theResult;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new EatCommand(aRegExpr);
+		return new EatCommand(getRegExpr());
 	}
 	
 }

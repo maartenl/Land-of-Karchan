@@ -62,6 +62,12 @@ public interface Command
 	public void setCommand(String aCommand);
 
 	/**
+         * returns the regular expression the command structure must follow.
+         * @return String containing the regular expression.
+         */
+	public String getRegExpr();
+
+	/**
 	 * Gets the command originally used to execute this command. Useful
 	 * for parsing.
 	 * @return String containing the original command.
@@ -81,7 +87,7 @@ public interface Command
          * parameter that can be used when the name of the character playing
          * is requested.
 	 */
-	public Command createCommand(String aRegExpr);
+	public Command createCommand();
 	
 	/**
 	 * Returns the appropriate view for a player.

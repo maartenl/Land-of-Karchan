@@ -111,9 +111,9 @@ public class SearchCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new SearchCommand(aRegExpr);
+		return new SearchCommand(getRegExpr());
 	}
 	
 }

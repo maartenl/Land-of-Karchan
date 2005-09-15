@@ -104,7 +104,7 @@ public class ScriptCommand extends NormalCommand
 	 * Don't use this method.
 	 * @return null value, always
 	 */
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
 		return null;
 	}

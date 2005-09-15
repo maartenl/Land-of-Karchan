@@ -121,9 +121,9 @@ public class DropCommand extends NormalCommand
 		return false;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new DropCommand(aRegExpr);
+		return new DropCommand(getRegExpr());
 	}
 	
 }

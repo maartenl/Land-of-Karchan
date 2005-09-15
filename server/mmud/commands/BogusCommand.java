@@ -55,9 +55,9 @@ public class BogusCommand extends NormalCommand
 		return true;
 	}
 
-	public Command createCommand(String aRegExpr)
+	public Command createCommand()
 	{
-		return new BogusCommand(aRegExpr);
+		return new BogusCommand(getRegExpr());
 	}
 	
 }
