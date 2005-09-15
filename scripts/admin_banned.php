@@ -66,6 +66,9 @@ the Banned people table, the character is <I>banned</I>
 </OL>
 
 <A NAME="bannedpeople"><H1>Banned People</H1>
+<TABLE><TR><TD><B>Address</B></TD><TD><B>Days</B></TD><TD><B>Ip
+</B></TD><TD><B>Name</B></TD><TD><B>Deputy</B></TD><TD><B>Date
+</B></TD><TD><B>Reason</B></TD></TR>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
@@ -137,22 +140,32 @@ if ($_REQUEST{"remove_bannedname"} != NULL)
 		or die("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed banned name. (".$_REQUEST{"remove_bannedname"}.")");
 }
-
+if ($_REQUEST{"remove_banned"} != NULL)
+{
+	$query = "delete from mm_bantable where trim(address) = \"".
+		quote_smart($_REQUEST{"remove_banned"})."\"";
+	mysql_query($query, $dbhandle)
+		or die("Query(6) failed : " . mysql_error());
+	writeLog($dbhandle, "Removed ".$query."banned address. (".$_REQUEST{"remove_banned"}.")");
+}
 
 $result = mysql_query("select * from mm_bantable"
 	, $dbhandle)
 	or die("Query(1) failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf("<b>address:</b> %s ", $myrow[0]);
-	printf("<b>days:</b> %s ",$myrow[1]);
-	printf("<b>ip:</b> %s ", $myrow[2]);
-	printf("<b>name:</b> %s ", $myrow[3]);
-	printf("<b>deputy:</b> %s ", $myrow[4]);
-	printf("<b>date:</b> %s ", $myrow[5]);
-	printf("<b>reason:</b> %s<BR>", $myrow[6]);
+	printf("<TR><TD><A HREF=\"/scripts/admin_banned.php?remove_banned=%s\">%s</A></TD>",
+	$myrow["address"], $myrow["address"]);
+	printf("<TD>%s ",$myrow["days"]);
+	printf("<TD>%s ", $myrow["IP"]);
+	printf("<TD>%s ", $myrow["name"]);
+	printf("<TD>%s ", $myrow["deputy"]);
+	printf("<TD>%s ", $myrow["date"]);
+	printf("<TD>%s</TD></TR>", $myrow["reason"]);
 }
 ?>
+
+</TABLE>
 Add Ban:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
 Address:<INPUT TYPE="text" NAME="ban_address" VALUE="" SIZE="40" MAXLENGTH="40"><P>
 Days:<INPUT TYPE="text" NAME="ban_days" VALUE="" SIZE="3" MAXLENGTH="3"><P>

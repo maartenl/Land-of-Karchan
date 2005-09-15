@@ -61,11 +61,15 @@ $result = mysql_query("select *, creation+0 as creation3, date_format(creation, 
 	or die("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
+	if ( (!isset($_REQUEST{"open"})) or
+		($_REQUEST{"open"}==$myrow["closed"]) )
+	{
 	printf("<TR><TD><A HREF=\"/scripts/admin_bugs.php?bug=".$myrow["creation3"]."
 		\">".$myrow["creation2"].
 		"</A></TD><TD>".$myrow["title"].
 		"</TD><TD>".$myrow["name"].
 		"</TD><TD>".($myrow["closed"]==1?"Closed":"Open")."</TD></TR>");
+	}
 	if (isset($_REQUEST{"bug"}) && 
 		($myrow["creation3"]==$_REQUEST{"bug"}))
 	{
