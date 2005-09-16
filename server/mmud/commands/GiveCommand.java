@@ -102,10 +102,18 @@ public class GiveCommand extends NormalCommand
 				if (success)
 				{
 					// transfer item to other person
-					Database.writeLog(aUser.getName(), "gave " + myItem + " to " + toChar.getName());
-					ItemsDb.transferItem(myItem, toChar);
-					Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
-					j++;
+					try
+					{
+						ItemsDb.transferItem(myItem, toChar);
+						Database.writeLog(aUser.getName(), "gave " + myItem + " to " + toChar.getName());
+						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
+						j++;
+					}
+					catch (ItemDoesNotExistException e)
+					{
+						Database.writeLog(aUser.getName(), "tried to give " + myItem + " to " + toChar.getName() + " but failed.");
+						// skipping this itemm, heading over to the next one.
+					}
 				}
 			}
 			return true;
