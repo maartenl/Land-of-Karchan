@@ -240,12 +240,12 @@ public class Item implements Executable, AttributeContainer
 
 	/**
 	 * get a description of the item.
-	 * @return String containing the description in the format: "an/a
-	 * [adject1], [adject2] [verb]".
+	 * @return String containing the short description.
+	 * @see ItemDef#getDescription
 	 */
 	public String getDescription()
 	{
-		return (Constants.isQwerty(getAdjective1().charAt(0)) ? "an " : "a ") + getAdjective1() + ", " + getAdjective2() + " " + getVerb();
+		return getItemDef().getDescription();
 	}
 
 	private String getStringForWearing(PersonPositionEnum aPos)

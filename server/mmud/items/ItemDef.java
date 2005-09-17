@@ -286,4 +286,17 @@ public class ItemDef implements AttributeContainer
 		return u.getId() == getId();
 	}
 
+	/**
+	 * get a description of the item.
+	 * @return String containing the description in the format: "an/a
+	 * [adject1], [adject2], [adject3] [verb]".
+	 */
+	 public String getDescription()
+	 {
+		 return (Constants.isQwerty(getAdjective1().charAt(0)) ?
+			 "an " : "a ") + getAdjective1() + ", " +
+			 getAdjective2() + ", " + 
+			 getAdjective3() + " " + getVerb();
+	 }
+
 }
