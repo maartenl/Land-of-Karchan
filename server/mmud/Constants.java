@@ -791,7 +791,8 @@ public final class Constants
 	 * <li>bogus command (the ultimate failover, "I don't understand
 	 * that.".)
 	 * </ol>It also means that this collection will always carry at least
-	 * one command, the bogus command.
+	 * one command, the bogus command.<P>
+	 * All commands are newly created.
 	 */
 	public static Collection getCommand(String aCommand)
 	{

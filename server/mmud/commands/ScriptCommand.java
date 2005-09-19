@@ -36,6 +36,7 @@ import mmud.database.*;
 
 /**
  * The Script Command. Runs a script.
+ * @see mmud.Constants#getCommand
  */
 public class ScriptCommand extends NormalCommand
 {
@@ -45,6 +46,14 @@ public class ScriptCommand extends NormalCommand
 
 	private Integer theRoom;
 
+	/**
+	 * Constructor for the script command.
+	 * @param aRegExpr the regular expression for validating syntax of the 
+	 * appropriate command.
+	 * @aMethodName the name of the method to be executed.
+	 * @param aRoom the id of the room where this command is allowed
+	 * to be executed. If null, the command is availabe in any room.
+	 */
 	public ScriptCommand(String aRegExpr, String aMethodName, Integer aRoom)
 	{
 		super(aRegExpr);
@@ -52,6 +61,13 @@ public class ScriptCommand extends NormalCommand
 		theRoom = aRoom;
 	}
 
+	/**
+	 * Constructor for the script command. The scriptcommand
+	 * can be executed in all rooms.
+	 * @param aRegExpr the regular expression for validating syntax of the 
+	 * appropriate command.
+	 * @aMethodName the name of the method to be executed.
+	 */
 	public ScriptCommand(String aRegExpr, String aMethodName)
 	{
 		super(aRegExpr);
@@ -101,12 +117,14 @@ public class ScriptCommand extends NormalCommand
 	/**
 	 * There are too many parameters required for this one
 	 * to be automatically created using the standard.
-	 * Don't use this method.
-	 * @return null value, always
+	 * Instead, this method will return the object on which it
+	 * was called. This should not be a problem, as script commands
+	 * are always created anew.
+	 * @return <I>this</I>
 	 */
 	public Command createCommand()
 	{
-		return null;
+		return this;
 	}
 	
 }
