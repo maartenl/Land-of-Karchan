@@ -92,14 +92,19 @@ public class GiveCommand extends NormalCommand
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
 				// here needs to be a check for validity of the item
-				boolean success = true;
+				boolean valid = true;
 				Item myItem = (Item) myItems.elementAt(i);
 				if (myItem.isAttribute("notgiveable"))
 				{
 					aUser.writeMessage("You cannot give that item.<BR>\r\n");
-					return true;
+					valid = false;
 				}
-				if (success)
+				if (myItem.isWearing())
+				{
+					aUser.writeMessage("You are wearing or wielding that item.<BR>\r\n");
+					valid = false;
+				}
+				if (valid)
 				{
 					// transfer item to other person
 					try

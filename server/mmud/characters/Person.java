@@ -78,6 +78,7 @@ public class Person implements Executable, AttributeContainer
 	private int theAlignment = Constants.DEFAULT_ALIGNMENT;
 	private int theMovement = Constants.DEFAULT_MOVEMENT;
 	private TreeMap theAttributes = new TreeMap();
+	private Person theFightingWith = null;
 
 	/**
 	 * Constructor. Create a person.
@@ -1315,4 +1316,36 @@ public class Person implements Executable, AttributeContainer
 		throw new MethodNotSupportedException(method_name + " not found.");
 	}
 
+	/**
+	 * Checks to see if you are fighting someone. Does not necessarily
+	 * imply that you are <I><actively</I> fighting someone, just
+	 * that it is possible if the circumstances are right.
+	 * @return boolean, true if it is indicated that you could be
+	 * fighting someone.
+	 */
+	public boolean isFighting()
+	{
+		return (theFightingWith != null);
+	}
+
+	/**
+	 * Set the person you are fighting against.
+	 * TODO: perhaps revise this one tho throw something instead.
+	 * @param aPerson the person to fight against.
+	 * @return boolean, true if the operation was successfull.
+	 */
+	public boolean setFightingPerson(Person aPerson)
+	{
+		theFightingWith = aPerson;
+		return true;
+	}
+
+	/**
+	 * Returns the person you are fighting against.
+	 * @return Person class that you are fighting against.
+	 */
+	public Person getFightingPerson()
+	{
+		return theFightingWith;
+	}
 }

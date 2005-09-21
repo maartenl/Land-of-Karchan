@@ -102,12 +102,19 @@ public class DropCommand extends NormalCommand
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
 				// here needs to be a check for validity of the item
+				boolean valid = true;
 				Item myItem = (Item) myItems.elementAt(i);
+				if (myItem.isWearing())
+				{
+					aUser.writeMessage("You are wearing or wielding that item.<BR>\r\n");
+					valid = false;
+				}
 				if (myItem.isAttribute("notdroppable"))
 				{
 					aUser.writeMessage("You cannot drop that item.<BR>\r\n");
+					valid = false;
 				}
-				else
+				if (valid)
 				{
 					Database.writeLog(aUser.getName(), "dropped " + myItem + " into room " + aUser.getRoom().getId());
 					ItemsDb.deleteItemFromChar(myItem);

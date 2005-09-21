@@ -113,13 +113,23 @@ public class Item implements Executable, AttributeContainer
 	}
 
 	/**
-	 * Returns the position on the body where this item is worn.
-	 * Will return a null pointer if the item is not worn at all.
+	 * Returns the position on the body where this item is worn/wielded.
+	 * Will return a null pointer if the item is not worn/wielded at all.
 	 * @return PersonPositionEnum identifying the position on the body.
 	 */
 	public PersonPositionEnum getWearing()
 	{
 		return thePlaceOnBody;
+	}
+
+	/**
+	 * Returns wether or not an item is being worn/wielded by a person.
+	 * This will always return false if the item is lying in a room.
+	 * @return true if the item is being worn/wielded, otherwise false.
+	 */
+	public boolean isWearing()
+	{
+		return thePlaceOnBody != null;
 	}
 
 	/**

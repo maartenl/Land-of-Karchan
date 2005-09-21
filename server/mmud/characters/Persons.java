@@ -28,6 +28,7 @@ maarten_l@yahoo.com
 package mmud.characters;
 
 import java.util.Vector;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.Hashtable;
 
@@ -603,6 +604,15 @@ public final class Persons implements Executable
 			}
 		}
 		throw new MethodNotSupportedException(method_name + " not found.");
+	}
+
+	/**
+	 * Returns the iterator so we can cycle through all available players.
+	 * @return Iterator for cycling through all available players.
+	 */
+	public static Iterator getIterator()
+	{
+		return thePersons.iterator();
 	}
 
 }
