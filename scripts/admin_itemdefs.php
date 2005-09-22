@@ -119,24 +119,6 @@ if (isset($_REQUEST{"name"}))
 		}
 	}
 
-	$result = mysql_query("select 1 
-	from mm_itemtable, mm_charitemtable 
-	where mm_itemtable.id = mm_charitemtable.id and
-	mm_charitemtable.wearing is not null and
-	mm_itemtable.itemid = ".
-	  quote_smart($_REQUEST["item"])
-	  , $dbhandle)
-	  or die("Query(4) failed : " . mysql_error());
-	if (mysql_num_rows($result) != 0)
-	{
-	  die("Characters are wearing the item, cannot change wearable.");
-	}
-
-	$wearable2 = 0;
-	for ($i = 0; $i < count($_REQUEST{"wearable"}); $i++)
-	{
-		$wearable2 += $_REQUEST{"wearable"}[$i];
-	}
 	$capacity = $_REQUEST["capacity"];
 	$keyid = $_REQUEST["keyid"];
 	$eatable = $_REQUEST["eatable"];
@@ -151,8 +133,6 @@ if (isset($_REQUEST{"name"}))
 	  quote_smart($_REQUEST{"adject2"}).
 	  "\", adject3=\"".
 	  quote_smart($_REQUEST{"adject3"}).
-	  "\", wearable=\"".
-	  quote_smart($wearable2).
 	  "\", description=\"".
 	  quote_smart($_REQUEST["description"]).
 	  "\", eatable=". ($eatable==""?"null": 
@@ -192,6 +172,50 @@ if (isset($_REQUEST{"name"}))
 	  , $dbhandle)
 	  or die("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
+
+	$wearable2 = 0;
+	for ($i = 0; $i < count($_REQUEST{"wearable"}); $i++)
+	{
+		$wearable2 += $_REQUEST{"wearable"}[$i];
+	}
+	$result = mysql_query("select wearable
+	from mm_itemtable
+	where mm_itemtable.wearable <> ".
+	quote_smart($wearable2).
+	" and mm_itemtable.itemid = ".
+	  quote_smart($_REQUEST["item"])
+	  , $dbhandle)
+	  or die("Query(4) failed : " . mysql_error());
+	if (mysql_num_rows($result) != 0)
+	{
+		// check the wearing...
+		$result = mysql_query("select 1 
+		from mm_itemtable, mm_charitemtable 
+		where mm_itemtable.id = mm_charitemtable.id and
+		mm_charitemtable.wearing is not null and
+		mm_itemtable.itemid = ".
+		  quote_smart($_REQUEST["item"])
+		  , $dbhandle)
+		  or die("Query(4) failed : " . mysql_error());
+		if (mysql_num_rows($result) != 0)
+		{
+		  die("Characters are wearing the item, cannot change wearable.");
+		}
+
+		// change the wearing...
+		$query = "update mm_items set wearable=\"".
+		  quote_smart($wearable2).
+		  "\", owner=\"".
+		  quote_smart($_COOKIE["karchanadminname"]).
+		  "\" where id = \"".
+		  quote_smart($_REQUEST{"item"}).
+		  "\"";
+		mysql_query($query
+		  , $dbhandle)
+		  or die("Query(9) failed : " . mysql_error());
+		writeLogLong($dbhandle, "Changed wearing field of item definition ".$_REQUEST{"item"}.".", $query);
+	}
+
 }
 																																							
 
