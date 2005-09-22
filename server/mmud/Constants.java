@@ -591,6 +591,32 @@ public final class Constants
 	"wisely",
 	"wistfully"};
 
+	private static FightingThread theFightingThread;
+	
+	/**
+	 * Resets the fighting thread back to null. Used when nobody
+	 * is fighting anymore.
+	 */
+	public static void emptyFightingThread()
+	{
+	  theFightingThread = null;
+        }
+	
+	/**
+	 * This is basically used for 
+	 * creating and running the thread that takes care of the fighting.
+	 * The one command that should do this is the FightCommand.
+	 * @see mmud.commands.FightCommand
+	 */
+	public static void wakeupFightingThread()
+	{
+	  if (theFightingThread == null)
+	  {
+	    Constants.logger.info("Starting fightingthread...");
+	    theFightingThread = new FightingThread();
+	    theFightingThread.start();
+	  }
+	}
 
 	/**
 	 * standard tostring implementation.
@@ -711,6 +737,8 @@ public final class Constants
 		theCommandStructure.put("mail", new MailCommand("mail"));
 		theCommandStructure.put("sendmail", new SendMailCommand("sendmail .+"));
 		theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
+		theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
+		theCommandStructure.put("stop", new FightCommand("stop fighting"));
 		theCommandStructure.put("stats", new StatsCommand("stats"));
 		theCommandStructure.put("inventory", new InventoryCommand("inventory"));
 		theCommandStructure.put("i", new InventoryCommand("i"));

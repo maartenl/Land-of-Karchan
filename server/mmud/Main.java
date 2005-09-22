@@ -65,9 +65,6 @@ public class Main
 			Constants.logger.info("Starting tickerthread...");
 			TickerThread myTicker = new TickerThread();
 			myTicker.start();
-			Constants.logger.info("Starting fightingthread...");
-			FightingThread myFighting = new FightingThread();
-			myFighting.start();
 			Constants.logger.info("Loading user commands...");
 			Constants.setUserCommands(Database.getUserCommands());
 			Constants.logger.info("Creating Server Socket...");

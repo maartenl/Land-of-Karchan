@@ -57,7 +57,8 @@ public class GiveCommand extends NormalCommand
 		}
 		// initialise string, important otherwise previous instances will return this
 		String[] myParsed = getParsedCommand();
-		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("to")) 
+		if (myParsed.length >= 4 && 
+			myParsed[myParsed.length-2].equalsIgnoreCase("to")) 
 		{
 			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
