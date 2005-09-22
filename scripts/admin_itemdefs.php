@@ -179,10 +179,10 @@ if (isset($_REQUEST{"name"}))
 		$wearable2 += $_REQUEST{"wearable"}[$i];
 	}
 	$result = mysql_query("select wearable
-	from mm_itemtable
-	where mm_itemtable.wearable <> ".
+	from mm_items
+	where wearable <> ".
 	quote_smart($wearable2).
-	" and mm_itemtable.itemid = ".
+	" and id = ".
 	  quote_smart($_REQUEST["item"])
 	  , $dbhandle)
 	  or die("Query(4) failed : " . mysql_error());

@@ -49,7 +49,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_itemdefs.php?item=%s\">%s<A> ", 
 		$myrow["id"], $myrow["id"]);
 	printf("<b>name:</b> %s %s %s %s<BR>", 
-		$myrow["adject1"], $myrow["adject2"], $myrow["adject3"], $myrow["adject4"]);
+		$myrow["adject1"], $myrow["adject2"], $myrow["adject3"], $myrow["name"]);
 }
 
 mysql_close($dbhandle);
