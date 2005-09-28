@@ -164,7 +164,12 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>lok:</b> %s<BR>", $myrow["lok"]);
 	printf("<b>whimpy:</b> %s<BR>", $myrow["whimpy"]);
 	printf("<b>sleep:</b> %s<BR>", $myrow["sleep"]);
-	printf("<b>god:</b> %s<BR>", $myrow["god"]);
+	$god = "unknown";
+	if ($myrow["god"] == "0") {$god = "normal";}
+	if ($myrow["god"] == "1") {$god = "deputy";}
+	if ($myrow["god"] == "2") {$god = "bot";}
+	if ($myrow["god"] == "3") {$god = "mob";}
+	printf("<b>god:</b> %s<BR>", $god);
 	printf("<b>active:</b> %s<BR>", $myrow["active"]);
 	printf("<b>lastlogin:</b> %s<BR>", $myrow["lastlogin"]);
 	printf("<b>birth:</b> %s<BR>", $myrow["birth"]);
@@ -219,7 +224,12 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>leg</TD><TD><INPUT TYPE="text" NAME="leg" VALUE="<?php echo $myrow["leg"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>room</TD><TD><INPUT TYPE="text" NAME="room" VALUE="<?php echo $myrow["room"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>experience</TD><TD><INPUT TYPE="text" NAME="experience" VALUE="<?php echo $myrow["experience"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
-<TR><TD>god</TD><TD><INPUT TYPE="text" NAME="god" VALUE="<?php echo $myrow["god"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>god</TD><TD><SELECT NAME="god" SIZE="4"> 
+<OPTION VALUE="0" <?php if ($myrow["god"] == "0") {printf("selected");} ?>>normal
+<OPTION VALUE="1" <?php if ($myrow["god"] == "1") {printf("selected");} ?>>deputy
+<OPTION VALUE="2" <?php if ($myrow["god"] == "2") {printf("selected");} ?>>bot
+<OPTION VALUE="3" <?php if ($myrow["god"] == "3") {printf("selected");} ?>>mob
+</SELECT></TD></TR>
 <TR><TD>active</TD><TD><INPUT TYPE="text" NAME="active" VALUE="<?php echo $myrow["active"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 </TABLE>
 <INPUT TYPE="submit" VALUE="Change Character">

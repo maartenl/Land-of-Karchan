@@ -51,11 +51,20 @@ while ($myrow = mysql_fetch_array($result))
 }
 if ($_REQUEST{"value"} != "")
 {
+	/**
+	 * verify form information
+	 */      
+    if (!isset($_COOKIE["karchanname"]) &&   
+       !isset($_COOKIE["karchanpassword"]) )
+    {   
+        die("Form information missing. You must be logged into the game ".
+        "to enter into the polls.");
+    }
 	$query = "replace into poll_values
 		(id, name, value, comments)
 		select ".
 		quote_smart($_REQUEST{"number"}).", \"".
-		quote_smart($_REQUEST{"name"})."\", ".
+		quote_smart($_COOKIE["karchanname"])."\", ".
 		quote_smart($_REQUEST{"value"}).", \"".
 		quote_smart($_REQUEST{"comments"})."\" 
 		from mm_usertable
@@ -98,7 +107,7 @@ if ($closed == "1")
 		printf("<LI>".$myrow["choice"]." (".$myrow["count"]." votes, ".
 			(int) (($vote/$count)*100)." %%)<BR>");
 		printf("<IMG SRC=\"/images/jpeg/mainbar2.jpg\"
-			HEIGHT=20 width=\"".(int)(450*$vote/$count)."\" ALT=\"".(int)
+			HEIGHT=20 width=\"".(int)(800*$vote/$count)."\" ALT=\"".(int)
 			(($vote/$count)*100)."%%\"><BR>");
 
 	}
@@ -106,6 +115,15 @@ if ($closed == "1")
 } 
 else
 {
+	/**
+	 * verify form information
+	 */      
+	 if (!isset($_COOKIE["karchanname"]) &&   
+	    !isset($_COOKIE["karchanpassword"]) )
+     {   
+	    die("Form information missing. You must be logged into the game ".
+        "to enter into the polls.");
+     }
 	// show form
 	$result = mysql_query("select * 
 		from poll_choices 
@@ -120,8 +138,6 @@ else
 			$myrow["id"]."\">".$myrow["choice"]."<BR>");
 	}
 	printf("Comments: <INPUT TYPE=\"text\" NAME=\"comments\" VALUE=\"\" SIZE=\"20\"><P>");
-	printf("Your Character Name: <INPUT TYPE=\"text\" NAME=\"name\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"20\"><P>");
-	printf("Your Character Password: <INPUT TYPE=\"password\" NAME=\"password\" VALUE=\"\" SIZE=\"20\" MAXLENGTH=\"40\"><P>");
 	printf("<INPUT TYPE=\"hidden\" NAME=\"number\" VALUE=\"".$_REQUEST{"number"}."\" SIZE=\"20\" MAXLENGTH=\"40\"><P>");
 	printf("<INPUT TYPE=\"submit\" VALUE=\"Submit\">");
 	printf("<INPUT TYPE=\"reset\" VALUE=\"Clear\"><P>");
