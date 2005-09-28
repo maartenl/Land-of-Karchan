@@ -37,7 +37,7 @@ Mmud - Admin
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Item <?php echo $_REQUEST{"item"} ?></H1>
+Polls</H1>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
