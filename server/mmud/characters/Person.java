@@ -1348,4 +1348,16 @@ public class Person implements Executable, AttributeContainer
 	{
 		return theFightingWith;
 	}
+	
+	/**
+	 * Returns false. Overwrite this method to return true if you wish
+	 * it to be possible to fight against this person. For example, a bot
+	 * will automatically return false. A mob will automatically return
+	 * true.
+	 * @return boolean false value.
+	 */
+	public boolean isFightable()
+	{
+		return false;
+	}
 }

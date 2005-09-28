@@ -46,6 +46,10 @@ import mmud.races.*;
 /**
  * This class contains a Bot, a 
  * independant acting character in the game without control by a user.
+ * A bot is a usefull addition to the game, as he/she can be asked
+ * stuff and give stuff as a trader or banker or trainer or the like.
+ * @see Mob
+ * @see User
  */
 public class Bot extends Person implements CommunicationListener
 {

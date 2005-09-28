@@ -621,4 +621,14 @@ public class User extends mmud.characters.Person
 			" This is probably a big bug!.");
 	}
 
+     
+	/**
+	 * Returns true, this person can fight.
+	 * @return boolean true value.
+	 */
+	public boolean isFightable()
+	{
+		return true;
+	}
+
 }

@@ -41,6 +41,7 @@ BUT NOT FOR ItemDefs!
 - IMPORTANT! If any one command/event/method is generating an exception,
 make certain that it it removed from the list of executable commands, and that
 the "callable" field in the database is deactivated.
+- add 'fight' and 'stop fighting' commands to the help.
 
 Clans
 -----

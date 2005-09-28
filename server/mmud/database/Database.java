@@ -90,8 +90,12 @@ public class Database
 	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
 	public static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
 
+	public static String sqlDeactivateEvent = 
+		"update mm_events " +
+		"set callable = 0 " +
+		"where eventid = ?";
 	public static String sqlGetEvents = "select mm_methods.name as method_name, " +
-		"mm_events.name, src, room from mm_events, mm_methods " +
+		"mm_events.name, src, room, mm_events.eventid from mm_events, mm_methods " +
 		"where callable = 1 " +
 		"and mm_methods.name = mm_events.method_name " +
 		"and ( month = -1 or month = MONTH(NOW()) ) " + 
@@ -100,6 +104,10 @@ public class Database
 		"and ( minute = -1 or minute = MINUTE(NOW()) ) " +
 		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )" +
 		"and ( month <> -1 or dayofmonth <> -1 or hour <> -1 or minute <> -1 or dayofweek <> -1 )";
+	public static String sqlDeactivateCommand = 
+		"update mm_commands " +
+		"set callable = 0 " +
+		"where id = ?";
 	public static String sqlGetMethod = "select src " +
 		"from mm_methods " +
 		"where name = ?";
@@ -770,7 +778,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetChars =theConnection.prepareStatement(sqlGetPersonsString);
+		PreparedStatement sqlGetChars = theConnection.prepareStatement(sqlGetPersonsString);
 		res = sqlGetChars.executeQuery();
 		if (res == null)
 		{
@@ -825,9 +833,37 @@ public class Database
 				myVector.add(myRealUser);
 				getCharAttributes(myRealUser);
 			}
-			else
+			else if (res.getInt("god") == 2)
 			{
 				Bot myNewChar = new Bot(myName,
+					res.getString("title"),
+					RaceFactory.createFromString(res.getString("race")),
+					Sex.createFromString(res.getString("sex")),
+					res.getString("age"),
+					res.getString("length"),
+					res.getString("width"),
+					res.getString("complexion"),
+					res.getString("eyes"),
+					res.getString("face"),
+					res.getString("hair"),
+					res.getString("beard"),
+					res.getString("arm"),
+					res.getString("leg"),
+					res.getInt("sleep") == 1,
+					res.getInt("whimpy"),
+					res.getInt("drinkstats"),
+					res.getInt("eatstats"),
+					res.getInt("experience"),
+					res.getInt("vitals"),
+					res.getInt("alignment"),
+					res.getInt("movementstats"),
+					Rooms.getRoom(res.getInt("room")));
+				myVector.add(myNewChar);
+				getCharAttributes(myNewChar);
+			}
+			else
+			{
+				Mob myNewChar = new Mob(myName,
 					res.getString("title"),
 					RaceFactory.createFromString(res.getString("race")),
 					Sex.createFromString(res.getString("sex")),
@@ -872,6 +908,7 @@ public class Database
 	 * or originating in a global game event type thingy.
 	 * This method is usually called from a separate thread dealing
 	 * with events.
+	 * @see sqlGetEvents
 	 */
 	public static void runEvents()
 	throws MudException
@@ -893,6 +930,7 @@ public class Database
 				String myName = res.getString("name");
 				int myRoom = res.getInt("room");
 				String mySource = res.getString("src");
+				int myEventId = res.getInt("eventid");
 				if (myName != null)
 				{
 					// character detected
@@ -903,7 +941,15 @@ public class Database
 					{
 						throw new UserNotFoundException();
 					}
-					aPerson.runScript("event", mySource);
+					try
+					{
+						aPerson.runScript("event", mySource);
+					}
+					catch (MudException myMudException)
+					{
+						deactivateEvent(myEventId);
+						throw myMudException;
+					}
 				}
 				else
 				if (myRoom != 0)
@@ -916,17 +962,90 @@ public class Database
 					{
 						throw new RoomNotFoundException();
 					}
-					aRoom.runScript("event", mySource);
+					try
+					{
+						aRoom.runScript("event", mySource);
+					}
+					catch (MudException myMudException)
+					{
+						deactivateEvent(myEventId);
+						throw myMudException;
+					}
 				}
 				else
 				{
 					// neither detected, overall game executing.
 					Logger.getLogger("mmud").info("method_name=" +
 						res.getString("method_name"));
+					// TODO: not implemented yet
 				}
 			}
 			res.close();
 			statGetEvents.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+	}
+
+	/**
+	 * Deactivates a certain event in the mud. This is done
+	 * when a certain event is not executed properly, i.e. when an
+	 * exception has occurred. This is important to prevent any event
+	 * from making the game unplayable.
+	 * @param anEventId the unique id of the event to be deactivated.
+	 */
+	public static void deactivateEvent(int anEventId)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		assert theConnection != null : "theConnection is null";
+		try
+		{
+			PreparedStatement statDeactivateEvent =
+				theConnection.prepareStatement(sqlDeactivateEvent);
+			statDeactivateEvent.setInt(1, anEventId);
+			int res = statDeactivateEvent.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				// TOBEDONE
+			}
+			statDeactivateEvent.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+	}
+
+	/**
+	 * Deactivates a certain (special) command in the mud. This is done
+	 * when a certain command is not executed properly, i.e. when an
+	 * exception has occurred. This is important to prevent any command
+	 * from making the game unplayable.
+	 * @param aCommandId the unique id of the command to be deactivated.
+	 */
+	public static void deactivateCommand(int aCommandId)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		assert theConnection != null : "theConnection is null";
+		try
+		{
+			PreparedStatement statDeactivateCommand =
+				theConnection.prepareStatement(sqlDeactivateCommand);
+			statDeactivateCommand.setInt(1, aCommandId);
+			int res = statDeactivateCommand.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				// TOBEDONE
+			}
+			statDeactivateCommand.close();
 		}
 		catch (SQLException e)
 		{
@@ -962,19 +1081,20 @@ public class Database
 			{
 				String myCommand = res.getString("command");
 				String myMethod = res.getString("method_name");
+				int myCommandId = res.getInt("id");
 				int myRoom = res.getInt("room");
 				UserCommandInfo aUserCommandInfo;
 				if (myRoom != 0)
 				{
 					// room detected
 					aUserCommandInfo = new UserCommandInfo(
-						myCommand, myMethod, new Integer(myRoom));
+						myCommandId, myCommand, myMethod, new Integer(myRoom));
 				}
 				else
 				{
 					// no room detected
 					aUserCommandInfo = new UserCommandInfo(
-						myCommand, myMethod);
+						myCommandId, myCommand, myMethod);
 				}
 				myResult.add(aUserCommandInfo);
 			}

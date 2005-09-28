@@ -232,6 +232,19 @@ on update cascade;
 add foreign key (owner) references mm_admin (name)
 on delete restrict
 on update cascade;
+- alter table polls add (owner varchar(20) not null, creation timestamp);
+- alter table polls
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table poll_choices
+add foreign key (pollid) references polls (id)
+on delete restrict
+on update cascade;
+- alter table poll_values
+add foreign key (id) references polls (id)
+on delete restrict
+on update cascade;
 
 Creating a dupe database
 ------------------------

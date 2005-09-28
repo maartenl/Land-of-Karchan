@@ -40,38 +40,19 @@ import mmud.database.*;
  */
 public class ScriptCommand extends NormalCommand
 {
-	private String theMethodName;
+	private UserCommandInfo theCommandInfo;
 
 	private String theResult;
 
-	private Integer theRoom;
-
 	/**
 	 * Constructor for the script command.
-	 * @param aRegExpr the regular expression for validating syntax of the 
-	 * appropriate command.
-	 * @aMethodName the name of the method to be executed.
-	 * @param aRoom the id of the room where this command is allowed
-	 * to be executed. If null, the command is availabe in any room.
+	 * @param aCommandInfo data class containing information about
+	 * the command.
 	 */
-	public ScriptCommand(String aRegExpr, String aMethodName, Integer aRoom)
+	public ScriptCommand(UserCommandInfo aCommandInfo)
 	{
-		super(aRegExpr);
-		theMethodName = aMethodName;
-		theRoom = aRoom;
-	}
-
-	/**
-	 * Constructor for the script command. The scriptcommand
-	 * can be executed in all rooms.
-	 * @param aRegExpr the regular expression for validating syntax of the 
-	 * appropriate command.
-	 * @aMethodName the name of the method to be executed.
-	 */
-	public ScriptCommand(String aRegExpr, String aMethodName)
-	{
-		super(aRegExpr);
-		theMethodName = aMethodName;
+		super(aCommandInfo.getCommand());
+		theCommandInfo = aCommandInfo;
 	}
 
 	public boolean run(User aUser)
@@ -82,17 +63,26 @@ public class ScriptCommand extends NormalCommand
 		{
 			return false;
 		}
-		if ( (theRoom != null) && 
-			(aUser.getRoom().getId() != theRoom.intValue()) )
+		if ( (theCommandInfo.getRoom() != null) && 
+			(aUser.getRoom().getId() != theCommandInfo.getRoom().intValue()) )
 		{
 			return false;
 		}
-		String mySource = Database.getMethodSource(theMethodName);
-		if (mySource == null)
+		String mySource = Database.getMethodSource(theCommandInfo.getMethodName());
+		Object stuff = null;
+		try
 		{
-			throw new MethodDoesNotExistException(" (" + theMethodName + ")");
+			if (mySource == null)
+			{
+				throw new MethodDoesNotExistException(" (" + theCommandInfo.getMethodName() + ")");
+			}
+			stuff = aUser.runScript("command", mySource, getParsedCommand());
 		}
-		Object stuff = aUser.runScript("command", mySource, getParsedCommand());
+		catch (MudException e)
+		{
+			theCommandInfo.deactivateCommand();
+			throw e;
+		}
 		if (!(stuff instanceof String))
 		{
 			theResult = null;

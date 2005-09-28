@@ -92,6 +92,16 @@ public class FightCommand extends NormalCommand
 				return true;
 			}
 		}
+		if (!aUser.isFightable())
+		{
+			aUser.writeMessage("You cannot fight.<BR>\r\n");
+			return true;
+		}
+		if (!toChar.isFightable())
+		{
+			aUser.writeMessage("You cannot attack that person.<BR>\r\n");
+			return true;
+		}
 		aUser.setFightingPerson(toChar);
 		toChar.setFightingPerson(aUser);
 		Persons.sendMessage(aUser, toChar, "%SNAME start%VERB2 to fight against %TNAME.<BR>\r\n");

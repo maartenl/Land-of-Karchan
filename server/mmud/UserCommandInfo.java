@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud;
 
+import mmud.database.Database;
+
 /**
  * The definition of a user command. Bear in mind that commands that
  * are executed often do not make very good global user commands,
@@ -34,6 +36,8 @@ package mmud;
  */ 
 public class UserCommandInfo 
 {
+	private int theCommandId;
+	
 	private String theCommand;
 
 	private String theMethodName;
@@ -47,12 +51,14 @@ public class UserCommandInfo
 	 * @param aMethodName the name of the method to call.
 	 * @param aRoom the room in which this command is active. Can be
 	 * a null pointer if the command is active in all rooms.
+	 * @param aCommandId the identification number for the command
 	 */
-	public UserCommandInfo(String aCommand, 
+	public UserCommandInfo(int aCommandId, String aCommand, 
 		String aMethodName, Integer aRoom)
 	{
 		assert aCommand != null : "aCommand is null";
 		assert aMethodName != null : "aMethodName is null";
+		theCommandId = aCommandId;
 		theCommand = aCommand;
 		theMethodName = aMethodName;
 		theRoom = aRoom;
@@ -63,12 +69,14 @@ public class UserCommandInfo
 	 * @param aCommand the regular expression for determining
 	 * the command is equal to the command entered.
 	 * @param aMethodName the name of the method to call.
+	 * @param aCommandId the identification number for the command
 	 */
-	public UserCommandInfo(String aCommand, 
+	public UserCommandInfo(int aCommandId, String aCommand, 
 		String aMethodName)
 	{
 		assert aCommand != null : "aCommand is null";
 		assert aMethodName != null : "aMethodName is null";
+		theCommandId = aCommandId;
 		theCommand = aCommand;
 		theMethodName = aMethodName;
 	}
@@ -110,7 +118,18 @@ public class UserCommandInfo
 
 	public String toString()
 	{
-		return getCommand() + ":" + getMethodName() + ":" + getRoom();
+		return theCommandId + ":" + getCommand() + ":" + getMethodName() + ":" + getRoom();
+	}
+
+	/**
+	 * Use this method when the command that had to be run, throws
+	 * an exception.
+	 */
+	public void deactivateCommand()
+		throws MudException
+	{
+		Constants.removeUserCommand(this);
+		Database.deactivateCommand(theCommandId);
 	}
 
 }

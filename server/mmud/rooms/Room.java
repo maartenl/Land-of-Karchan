@@ -558,7 +558,6 @@ public class Room implements Executable, AttributeContainer
 		}
 		catch (simkin.ParseException aParseException)
 		{
-			System.out.println("Unable to parse command.");
 			aParseException.printStackTrace();
 			throw new MudException("Unable to parse command.", aParseException);
 		}

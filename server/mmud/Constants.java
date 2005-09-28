@@ -808,6 +808,24 @@ public final class Constants
 	}
 		
 	/**
+	 * remove a command from the collection of special user commands.
+	 * Usually this is used for when a command has broken
+	 * down.
+	 * @param aCommand the command that is one of the collection of commands
+	 * and which needs to be removed.
+	 * @throws MudException if the command to be removed is not present in the
+	 * collection.
+	 */
+	public static void removeUserCommand(UserCommandInfo aCommand)
+      throws MudException
+	{
+	  if (!theUserCommandStructure.remove(aCommand))
+	  {
+	    throw new MudException("Special user command to be removed not found in collection...");
+	  }
+	}
+	
+	/**
 	 * Returns the commands to be used, based on the first word in the
 	 * command entered by the user.
 	 * @param aCommand String containing the command entered by the user.
@@ -835,20 +853,7 @@ public final class Constants
 			{
 				logger.finer("matches " + myCom.getCommand());
 				ScriptCommand scriptCommand;
-				if (myCom.getRoom() == null)
-				{
-					// for all rooms.
-					scriptCommand = new ScriptCommand(myCom.getCommand(),
-						myCom.getMethodName());
-				}
-				else
-				{
-					// for one specific room
-					logger.finer("matches " + myCom.getCommand() + 
-						" with room " + myCom.getRoom());
-					scriptCommand = new ScriptCommand(myCom.getCommand(),
-						myCom.getMethodName(), myCom.getRoom());
-				}
+				scriptCommand = new ScriptCommand(myCom);
 				scriptCommand.setCommand(aCommand);
 				result.add(scriptCommand);
 			}
