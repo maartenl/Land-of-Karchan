@@ -265,9 +265,15 @@ also handy to see if someone is active in the game.
 <DT><A NAME="fight">fight &lt;person&lt;</A>
 <DD>will make your character start fighting with a person that is in the
 current room. This is only possible if the person in question is allowed to
-be attacked, and both of you have <I>pkill</I> set to "on". 
-The screen will show the progression of the battle. (See also <I>pkill</I>,
-and <I>stop fighting</I>)
+be attacked. Both of you have <I>pkill</I> set to "on" if both of you
+are regular players and wish to fight.
+The screen will show the progression of the battle. (See also <I><A
+HREF="#pkill">pkill</A></I>,
+and <I><A HREF="#stopfighting">stop fighting</A></I>)
+<DT><A NAME="stopfighting">stop fighting</A>
+<DD>will make your character stop fighting. This does not mean that the
+person attacking you will stop.
+(See also <I><A HREF="#fight">fight</A></I>)
 <DT><A NAME="whimpy">whimpy &lt;string&lt;</A>
 <DD>this is a safeguard to make sure that you are not killed while you
 weren't looking. It is a boundary. If your vitals go across this boundary,
@@ -489,6 +495,7 @@ standardly set to "off".
 <A HREF="#extinguish">extinguish</A><BR>
 
 <BR><FONT SIZE=+3><DIV ALIGN=top>F<P><FONT SIZE=-1>
+<A HREF="#fight">fight</A><BR>
 <A HREF="#agree">flinch</A><BR>
 <A HREF="#agree">flirt</A><BR>
 <A HREF="#caress">fondle</A><BR>
@@ -589,6 +596,7 @@ standardly set to "off".
 <A HREF="#caress">sniff</A><BR>
 <A HREF="#caress">squeeze</A><BR>
 <A HREF="#agree">stare</A><BR>
+<A HREF="#stopfighting">stop fighting</A><BR>
 
 <BR><FONT SIZE=+3><DIV ALIGN=top>T<P><FONT SIZE=-1>
 <A HREF="#caress">tackle</A><BR>
@@ -606,7 +614,7 @@ standardly set to "off".
 
 <BR><FONT SIZE=+3><DIV ALIGN=top>W<P><FONT SIZE=-1>
 <A HREF="#agree">wave</A><BR>
-</TD><TD>
+</TD><TD><FONT SIZE=-1>
 <A HREF="#whimpy">whimpy</A><BR>
 <A HREF="#whisperto">whisper to</A><BR>
 <A HREF="#agree">whistle</A><BR>
