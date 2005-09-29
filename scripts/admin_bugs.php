@@ -84,9 +84,10 @@ Description:<BR>
 Answer:<BR>
 <TEXTAREA NAME="answer" VALUE="" ROWS="15" COLS="79">
 <?php echo $myrow["answer"] ?></TEXTAREA><P>
-
-<input type="radio" name="closed" value="0">Open<BR>
-<input type="radio" name="closed" value="1">Closed
+<input type="radio" name="closed" value="0" 
+<?php echo ($myrow["closed"] == 0 ? "checked" : "") ?>>Open<BR>
+<input type="radio" name="closed" value="1"
+<?php echo ($myrow["closed"] == 1 ? "checked" : "") ?>>Closed
 <BR>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
