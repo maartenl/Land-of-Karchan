@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/database/ItemsDb.java,v 1.17 2005/09/10 22:41:46 karchan Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -126,6 +126,13 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
+	public static String sqlGetItemPerson2String =
+		"select mm_itemtable.itemid, mm_charitemtable.* "
+		+ "from mm_charitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_charitemtable.id and "
+        + "belongsto = ? and "
+		+ "mm_items.id = ?";
 	public static String sqlGetItemContainerString =
 		"select mm_itemtable.itemid, mm_itemitemtable.* "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
@@ -1006,6 +1013,65 @@ public class ItemsDb
 			sqlGetItem.setString(3, (adject1!=null ? adject1 :""));
 			sqlGetItem.setString(4, (adject2!=null ? adject2 :""));
 			sqlGetItem.setString(5, (adject3!=null ? adject3 :""));
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Item anItem = null;
+				if (anItemDef instanceof ContainerDef)
+				{
+					anItem = new StdItemContainer((ContainerDef) anItemDef,
+						anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				else
+				{
+					anItem = new Item(anItemDef, anItemInstanceId, 
+						PersonPositionEnum.get(res.getInt("wearing")));
+				}
+				
+				Database.getItemAttributes(anItem);
+				items.add(anItem);
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+		Logger.getLogger("mmud").finer("returns: " + items);
+		return items;
+	}
+
+	/**
+	 * Retrieve the item from the inventory of a character.
+	 * @param anItemDef the required itemdefinition.
+	 * @param aChar the character who has the item in his/her inventory.
+	 * @return Vector containing all Item objects found.
+	 */
+	public static Vector getItemsFromChar(ItemDef aItemDef,
+								Person aChar)
+	{
+		Logger.getLogger("mmud").finer("aItemDef=" + aItemDef + 
+			",char=" + aChar.getName());
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement sqlGetItem = Database.prepareStatement(sqlGetItemPerson2String);
+			sqlGetItem.setString(1, aChar.getName()+"");
+			sqlGetItem.setInt(2, aItemDef.getId());
 			res = sqlGetItem.executeQuery();
 			if (res == null)
 			{

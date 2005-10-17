@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/FightingThread.java,v 1.1 2005/09/22 16:39:13 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/MudSocket.java,v 1.30 2005/02/08 21:23:19 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -59,16 +59,7 @@ public class MudSocket extends Thread
 	public String isOffline()
 		throws IOException, MudException
 	{
-		File myFile = new File(Constants.mudofflinefile);
-		if (!myFile.exists())
-		{
-			return null;
-		}
-		if (!myFile.canRead())
-		{
-			return null;
-		}
-		return Constants.readFile(Constants.mudofflinefile);
+		return Constants.getOfflineDescription();
 	}
 
 	/**

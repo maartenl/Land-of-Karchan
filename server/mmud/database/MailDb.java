@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/database/MailDb.java,v 1.4 2004/07/24 16:52:14 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

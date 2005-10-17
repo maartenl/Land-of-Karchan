@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/database/Database.java,v 1.32 2005/09/28 04:33:50 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -219,6 +219,24 @@ public class Database
 		connect();
 	}
 
+	private static void checkConnection()
+	throws MudDatabaseException
+	{
+		if (theConnection.isClosed())
+		{
+			theConnection = null;
+			try
+			{
+				connect();
+			}
+			catch (InstantiationException e)
+			{
+				throw new MudDatabaseException(
+				Constants.DATABASECONNECTIONERROR, e);
+			}
+		}
+	}
+
 	/**
 	 * Create a prepared statement.
 	 * @param aQuery the sql query used to create the statement.
@@ -226,19 +244,13 @@ public class Database
 	 * do a query.
 	 */
 	static PreparedStatement prepareStatement(String aQuery)
+	throws MudDatabaseException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("");
+		checkConnection();
 		PreparedStatement aStatement = null;
-		try
-		{
-			aStatement = theConnection.prepareStatement(aQuery);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
-		}
+		aStatement = theConnection.prepareStatement(aQuery);
 		return aStatement;
 	}
 
@@ -256,21 +268,15 @@ public class Database
 	static PreparedStatement prepareStatement(String aQuery, 
 		int resultSetType, 
 		int resultSetConcurrency)
+		throws MudDatabaseException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("");
+		checkConnection();
 		PreparedStatement aStatement = null;
-		try
-		{
-			aStatement = theConnection.prepareStatement(aQuery,
-				resultSetType, 
-				resultSetConcurrency);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
-		}
+		aStatement = theConnection.prepareStatement(aQuery,
+			resultSetType, 
+			resultSetConcurrency);
 		return aStatement;
 	}
 
@@ -297,7 +303,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetUser = theConnection.prepareStatement(sqlGetUserString);
+		PreparedStatement sqlGetUser = prepareStatement(sqlGetUserString);
 //		sqlGetUser.setBigDecimal
 //		sqlGetUser.setInt
 		sqlGetUser.setString(1, aPassword);
@@ -383,7 +389,7 @@ public class Database
 		{
 
 		PreparedStatement sqlGetUser =
-			theConnection.prepareStatement(sqlGetActiveUserString);
+			prepareStatement(sqlGetActiveUserString);
 //		sqlGetUser.setBigDecimal
 //		sqlGetUser.setInt
 		sqlGetUser.setString(1, aPassword);
@@ -462,7 +468,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlAutho = theConnection.prepareStatement(sqlAuthorizeString);
+		PreparedStatement sqlAutho = prepareStatement(sqlAuthorizeString);
 		sqlAutho.setString(1, aName);
 		res = sqlAutho.executeQuery();
 		if (res == null)
@@ -503,7 +509,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetUser = theConnection.prepareStatement(sqlExistsUserString);
+		PreparedStatement sqlGetUser = prepareStatement(sqlExistsUserString);
 		sqlGetUser.setString(1, aName);
 		res = sqlGetUser.executeQuery();
 		if (res == null)
@@ -540,7 +546,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetRoom = theConnection.prepareStatement(sqlGetRoomString);
+		PreparedStatement sqlGetRoom = prepareStatement(sqlGetRoomString);
 //		sqlGetRoom.setBigDecimal
 //		sqlGetRoom.setInt
 		sqlGetRoom.setInt(1, roomnr);
@@ -571,7 +577,7 @@ public class Database
 
 	/**
 	 * Returns the area information of a certain room.
-	 * @param Room object used for finding out to which are it belongs.
+	 * @param aRoom object used for finding out to which are it belongs.
 	 * @return Area object containing all area information. null pointer if the
 	 * area could not be found in the database.
 	 */
@@ -585,7 +591,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetArea = theConnection.prepareStatement(sqlGetAreaString);
+		PreparedStatement sqlGetArea = prepareStatement(sqlGetAreaString);
 		sqlGetArea.setInt(1, aRoom.getId());
 		res = sqlGetArea.executeQuery();
 		if (res == null)
@@ -623,7 +629,7 @@ public class Database
 		try
 		{
 
-			PreparedStatement statWriteRoom = theConnection.prepareStatement(sqlWriteRoomString);
+			PreparedStatement statWriteRoom = prepareStatement(sqlWriteRoomString);
 			if (aRoom.getNorth() == null)
 			{
 				statWriteRoom.setNull(1, Types.INTEGER);
@@ -696,7 +702,7 @@ public class Database
 		ResultSet res;
 		try
 		{
-		PreparedStatement sqlGetItemAttributes = theConnection.prepareStatement(sqlGetItemAttributesString);
+		PreparedStatement sqlGetItemAttributes = prepareStatement(sqlGetItemAttributesString);
 		sqlGetItemAttributes.setInt(1, anItem.getId());
 		res = sqlGetItemAttributes.executeQuery();
 		if (res == null)
@@ -736,7 +742,7 @@ public class Database
 		ResultSet res;
 		try
 		{
-		PreparedStatement sqlGetCharAttributes = theConnection.prepareStatement(sqlGetCharAttributesString);
+		PreparedStatement sqlGetCharAttributes = prepareStatement(sqlGetCharAttributesString);
 		sqlGetCharAttributes.setString(1, aPerson.getName());
 		res = sqlGetCharAttributes.executeQuery();
 		if (res == null)
@@ -778,7 +784,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetChars = theConnection.prepareStatement(sqlGetPersonsString);
+		PreparedStatement sqlGetChars = prepareStatement(sqlGetPersonsString);
 		res = sqlGetChars.executeQuery();
 		if (res == null)
 		{
@@ -908,7 +914,7 @@ public class Database
 	 * or originating in a global game event type thingy.
 	 * This method is usually called from a separate thread dealing
 	 * with events.
-	 * @see sqlGetEvents
+	 * @see #sqlGetEvents
 	 */
 	public static void runEvents()
 	throws MudException
@@ -919,7 +925,7 @@ public class Database
 		try
 		{
 
-			PreparedStatement statGetEvents = theConnection.prepareStatement(sqlGetEvents);
+			PreparedStatement statGetEvents = prepareStatement(sqlGetEvents);
 			res = statGetEvents.executeQuery();
 			if (res == null)
 			{
@@ -1005,7 +1011,7 @@ public class Database
 		try
 		{
 			PreparedStatement statDeactivateEvent =
-				theConnection.prepareStatement(sqlDeactivateEvent);
+				prepareStatement(sqlDeactivateEvent);
 			statDeactivateEvent.setInt(1, anEventId);
 			int res = statDeactivateEvent.executeUpdate();
 			if (res != 1)
@@ -1037,7 +1043,7 @@ public class Database
 		try
 		{
 			PreparedStatement statDeactivateCommand =
-				theConnection.prepareStatement(sqlDeactivateCommand);
+				prepareStatement(sqlDeactivateCommand);
 			statDeactivateCommand.setInt(1, aCommandId);
 			int res = statDeactivateCommand.executeUpdate();
 			if (res != 1)
@@ -1071,7 +1077,7 @@ public class Database
 		try
 		{
 
-			PreparedStatement statGetUserCommands = theConnection.prepareStatement(sqlGetUserCommands);
+			PreparedStatement statGetUserCommands = prepareStatement(sqlGetUserCommands);
 			res = statGetUserCommands.executeQuery();
 			if (res == null)
 			{
@@ -1129,7 +1135,7 @@ public class Database
 		{
 
 			PreparedStatement statGetAnswers =
-				theConnection.prepareStatement(sqlGetAnswers);
+				prepareStatement(sqlGetAnswers);
 			statGetAnswers.setString(1, aQuestion);
 			statGetAnswers.setString(2, aPerson.getName());
 			res = statGetAnswers.executeQuery();
@@ -1171,7 +1177,7 @@ public class Database
 		{
 
 			PreparedStatement statGetMethod =
-				theConnection.prepareStatement(sqlGetMethod);
+				prepareStatement(sqlGetMethod);
 			statGetMethod.setString(1, aMethodName);
 			res = statGetMethod.executeQuery();
 			
@@ -1211,7 +1217,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetErrMsg = theConnection.prepareStatement(sqlGetErrMsgString);
+		PreparedStatement sqlGetErrMsg = prepareStatement(sqlGetErrMsgString);
 		sqlGetErrMsg.setString(1, originalErr);
 		res = sqlGetErrMsg.executeQuery();
 		if (res != null)
@@ -1274,7 +1280,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetHelpMsg = theConnection.prepareStatement(sqlGetHelpString);
+		PreparedStatement sqlGetHelpMsg = prepareStatement(sqlGetHelpString);
 		sqlGetHelpMsg.setString(1, aCommand);
 		res = sqlGetHelpMsg.executeQuery();
 		if (res != null)
@@ -1321,7 +1327,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlGetBanStat = theConnection.prepareStatement(sqlGetBan1String);
+		PreparedStatement sqlGetBanStat = prepareStatement(sqlGetBan1String);
 		sqlGetBanStat.setString(1, username);
 		res = sqlGetBanStat.executeQuery();
 		if (res != null)
@@ -1340,7 +1346,7 @@ public class Database
 		}
 		sqlGetBanStat.close();
 
-		sqlGetBanStat = theConnection.prepareStatement(sqlGetBan2String);
+		sqlGetBanStat = prepareStatement(sqlGetBan2String);
 		sqlGetBanStat.setString(1, username);
 		res = sqlGetBanStat.executeQuery();
 		if (res != null)
@@ -1359,7 +1365,7 @@ public class Database
 		}
 		sqlGetBanStat.close();
 
-		sqlGetBanStat = theConnection.prepareStatement(sqlGetBan4String);
+		sqlGetBanStat = prepareStatement(sqlGetBan4String);
 		sqlGetBanStat.setString(1, username);
 		res = sqlGetBanStat.executeQuery();
 		if (res != null)
@@ -1378,7 +1384,7 @@ public class Database
 		}
 		sqlGetBanStat.close();
 
-		sqlGetBanStat = theConnection.prepareStatement(sqlGetBan3String);
+		sqlGetBanStat = prepareStatement(sqlGetBan3String);
 		sqlGetBanStat.setString(1, address);
 		res = sqlGetBanStat.executeQuery();
 		if (res != null)
@@ -1418,7 +1424,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetSessPwd = theConnection.prepareStatement(sqlSetSessPwdString);
+		PreparedStatement sqlSetSessPwd = prepareStatement(sqlSetSessPwdString);
 		sqlSetSessPwd.setString(1, sesspwd);
 		sqlSetSessPwd.setString(2, username);
 		int res = sqlSetSessPwd.executeUpdate();
@@ -1448,7 +1454,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlActivateUser = theConnection.prepareStatement(sqlActivateUserString);
+		PreparedStatement sqlActivateUser = prepareStatement(sqlActivateUserString);
 		sqlActivateUser.setString(1, aUser.getAddress());
 		sqlActivateUser.setString(2, aUser.getName());
 		int res = sqlActivateUser.executeUpdate();
@@ -1477,7 +1483,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlDeActivateUser = theConnection.prepareStatement(sqlDeActivateUserString);
+		PreparedStatement sqlDeActivateUser = prepareStatement(sqlDeActivateUserString);
 		sqlDeActivateUser.setString(1, aUser.getName());
 		int res = sqlDeActivateUser.executeUpdate();
 		if (res != 1)
@@ -1506,7 +1512,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlCreateUser = theConnection.prepareStatement(sqlCreateUserString);
+		PreparedStatement sqlCreateUser = prepareStatement(sqlCreateUserString);
 		sqlCreateUser.setString(1, aUser.getName());
 		sqlCreateUser.setString(2, aUser.getAddress());
 		sqlCreateUser.setString(3, aUser.getPassword());
@@ -1552,7 +1558,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetTitleUser = theConnection.prepareStatement(sqlSetTitleString);
+		PreparedStatement sqlSetTitleUser = prepareStatement(sqlSetTitleString);
 		sqlSetTitleUser.setString(1, aPerson.getTitle());
 		sqlSetTitleUser.setString(2, aPerson.getName());
 		int res = sqlSetTitleUser.executeUpdate();
@@ -1581,7 +1587,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetDrinkstatsUser = theConnection.prepareStatement(sqlSetDrinkstatsString);
+		PreparedStatement sqlSetDrinkstatsUser = prepareStatement(sqlSetDrinkstatsString);
 		sqlSetDrinkstatsUser.setInt(1, aPerson.getDrinkstats());
 		sqlSetDrinkstatsUser.setString(2, aPerson.getName());
 		int res = sqlSetDrinkstatsUser.executeUpdate();
@@ -1610,7 +1616,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetEatstatsUser = theConnection.prepareStatement(sqlSetEatstatsString);
+		PreparedStatement sqlSetEatstatsUser = prepareStatement(sqlSetEatstatsString);
 		sqlSetEatstatsUser.setInt(1, aPerson.getEatstats());
 		sqlSetEatstatsUser.setString(2, aPerson.getName());
 		int res = sqlSetEatstatsUser.executeUpdate();
@@ -1639,7 +1645,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetSleepUser = theConnection.prepareStatement(sqlSetSleepString);
+		PreparedStatement sqlSetSleepUser = prepareStatement(sqlSetSleepString);
 		sqlSetSleepUser.setInt(1, (aPerson.isaSleep() ? 1 : 0));
 		sqlSetSleepUser.setString(2, aPerson.getName());
 		int res = sqlSetSleepUser.executeUpdate();
@@ -1668,7 +1674,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetRoomUser = theConnection.prepareStatement(sqlSetRoomString);
+		PreparedStatement sqlSetRoomUser = prepareStatement(sqlSetRoomString);
 		sqlSetRoomUser.setInt(1, aPerson.getRoom().getId());
 		sqlSetRoomUser.setString(2, aPerson.getName());
 		int res = sqlSetRoomUser.executeUpdate();
@@ -1697,7 +1703,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetWhimpyUser = theConnection.prepareStatement(sqlSetWhimpyString);
+		PreparedStatement sqlSetWhimpyUser = prepareStatement(sqlSetWhimpyString);
 		sqlSetWhimpyUser.setInt(1, aPerson.getWhimpy());
 		sqlSetWhimpyUser.setString(2, aPerson.getName());
 		int res = sqlSetWhimpyUser.executeUpdate();
@@ -1727,7 +1733,7 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetPkillUser = theConnection.prepareStatement(sqlUpdatePkillString);
+		PreparedStatement sqlSetPkillUser = prepareStatement(sqlUpdatePkillString);
 		sqlSetPkillUser.setInt(1, (aUser.isPkill() ? 1 : 0));
 		sqlSetPkillUser.setString(2, aUser.getName());
 		int res = sqlSetPkillUser.executeUpdate();
@@ -1764,7 +1770,7 @@ public class Database
 		assert theConnection != null : "theConnection is null";
 		try
 		{
-			PreparedStatement sqlWriteLog = theConnection.prepareStatement(sqlWriteLogString);
+			PreparedStatement sqlWriteLog = prepareStatement(sqlWriteLogString);
 			sqlWriteLog.setString(1, aName);
 			sqlWriteLog.setString(2, aMessage);
 			int res = sqlWriteLog.executeUpdate();
@@ -1798,7 +1804,7 @@ public class Database
 //		myStream.close();
 		try
 		{
-			PreparedStatement sqlWriteLog = theConnection.prepareStatement(sqlWriteLog2String);
+			PreparedStatement sqlWriteLog = prepareStatement(sqlWriteLog2String);
 			sqlWriteLog.setString(1, aName);
 			sqlWriteLog.setString(2, aThrowable.toString());
 			sqlWriteLog.setString(3, myStream.toString());

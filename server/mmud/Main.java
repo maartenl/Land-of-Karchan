@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/Main.java,v 1.13 2005/09/22 16:39:13 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -29,6 +29,7 @@ package mmud;
 
 /* imports */
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.io.IOException;
@@ -45,6 +46,50 @@ import mmud.characters.*;
 public class Main
 {
 
+
+	/**
+	 * Connects to the database and does error handling.
+	 */
+	public static void dbConnect()
+	{
+		try
+		{
+			Database.connect();
+		}
+		catch (SQLException e)
+		{
+			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
+		catch (InstantiationException e2)
+		{
+			System.out.println("An instantiation error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e2.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e2);
+			System.out.println("Exiting mud...");
+			System.exit(2);
+		}
+		catch (ClassNotFoundException e3)
+		{
+			System.out.println("The host running the mysql database is unknown.");
+			System.out.println("The message was : " + e3.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e3);
+			System.out.println("Exiting mud...");
+			System.exit(3);
+		}
+		catch (IllegalAccessException e4)
+		{
+			System.out.println("An illegal access to a class was attempted while attempting to contact the database.");
+			System.out.println("The message was : " + e4.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e4);
+			System.out.println("Exiting mud...");
+			System.exit(4);
+		}
+	}
+	
 	/**
 	 * the default method that is called when the server is started.
 	 * @param args The arguments provided when attempting to start the
@@ -52,41 +97,59 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
+		// Log a simple INFO message.
+		Constants.init();
+		dbConnect();
+		Constants.logger.info("Starting server");
+		Database.writeLog("root","Starting server");
+		ServerSocket myServerSocket = null;
+		Constants.logger.info("Retrieving characters...");
+		Persons.init();
+		Constants.logger.info("Starting tickerthread...");
+		TickerThread myTicker = new TickerThread();
+		myTicker.start();
+		Constants.logger.info("Loading user commands...");
+		Constants.setUserCommands(Database.getUserCommands());
+		Constants.logger.info("Creating Server Socket...");
+		InetAddress myAddress = null;
 		try
 		{
-			// Log a simple INFO message.
-			Constants.init();
-			Constants.logger.info("Starting server");
-			Database.connect();
-			Database.writeLog("root","Starting server");
-			ServerSocket myServerSocket = null;
-			Constants.logger.info("Retrieving characters...");
-			Persons.init();
-			Constants.logger.info("Starting tickerthread...");
-			TickerThread myTicker = new TickerThread();
-			myTicker.start();
-			Constants.logger.info("Loading user commands...");
-			Constants.setUserCommands(Database.getUserCommands());
-			Constants.logger.info("Creating Server Socket...");
-			InetAddress myAddress = 
+			myAddress = 
 				("all".equals(Constants.mudhost) ? null :
 				InetAddress.getByName(Constants.mudhost));
+		}
+		catch (UnknownHostException e)
+		{
+			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
+		try
+		{
 			myServerSocket = new ServerSocket(
 				Constants.mudportnumber,
 				0, // default
 				myAddress
 				);
+		}
+		catch (IOException e)
+		{
+			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
+		try
+		{
 			while (!Constants.shutdown)
 			{
 				Socket mySocket = myServerSocket.accept();
 				MudSocket myMudSocket = new MudSocket(mySocket);
 				myMudSocket.start();
 			}
-			myServerSocket.close();
-			Database.writeLog("root","Stopping server");
-			Database.disconnect();
-			// Log a simple INFO message.
-			Constants.logger.info("Stopping server");
 		}
 		catch (Exception e)
 		{
@@ -94,5 +157,32 @@ public class Main
 			Constants.logger.log(Level.WARNING, "exception {0}", e);
 			return;
 		}
+		try
+		{
+			myServerSocket.close();
+		}
+		catch (IOException e)
+		{
+			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
+		Database.writeLog("root","Stopping server");
+		try
+		{
+			Database.disconnect();
+		}
+		catch (SQLException e)
+		{
+			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "connect()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
+		// Log a simple INFO message.
+		Constants.logger.info("Stopping server");
 	}
 }

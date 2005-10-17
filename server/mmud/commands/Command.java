@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/commands/Command.java,v 1.8 2005/09/15 04:50:00 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -82,10 +82,6 @@ public interface Command
 	
 	/**
 	 * creates a new instance of the current object.
-         * @param aRegExpr a regular expression to which the command should
-         * follow. For example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
-         * parameter that can be used when the name of the character playing
-         * is requested.
 	 */
 	public Command createCommand();
 	

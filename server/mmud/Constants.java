@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/Constants.java,v 1.28 2005/09/28 04:33:50 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -156,6 +156,7 @@ public final class Constants
 	public final static String ITEMCANNOTBEWORNERROR = "the item cannot be worn (at least not there)";
 	public final static String NOTENOUGHMONEYERROR = "you do not have enough money";
 	public final static String UNABLETOPARSEPROPERLY = "the entire command or part of the command could not be parsed correctly";
+	public final static String DATABASECONNECTIONERROR = "error connecting to database";
 
 	/*! version number of mmserver */
 	public final static String MMVERSION = "4.01b"; // the mmud version in general
@@ -600,7 +601,7 @@ public final class Constants
 	public static void emptyFightingThread()
 	{
 	  theFightingThread = null;
-        }
+		}
 	
 	/**
 	 * This is basically used for 
@@ -612,9 +613,9 @@ public final class Constants
 	{
 	  if (theFightingThread == null)
 	  {
-	    Constants.logger.info("Starting fightingthread...");
-	    theFightingThread = new FightingThread();
-	    theFightingThread.start();
+		Constants.logger.info("Starting fightingthread...");
+		theFightingThread = new FightingThread();
+		theFightingThread.start();
 	  }
 	}
 
@@ -817,11 +818,11 @@ public final class Constants
 	 * collection.
 	 */
 	public static void removeUserCommand(UserCommandInfo aCommand)
-      throws MudException
+	  throws MudException
 	{
 	  if (!theUserCommandStructure.remove(aCommand))
 	  {
-	    throw new MudException("Special user command to be removed not found in collection...");
+		throw new MudException("Special user command to be removed not found in collection...");
 	  }
 	}
 	
@@ -1076,17 +1077,17 @@ public final class Constants
 			FileInputStream reader = new FileInputStream(aFilename);
 			theValues.load(reader);
 			reader.close();
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println("File not found (" + aFilename + ")...");
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            System.out.println("Error reading file (" + aFilename + ")...");
-            e.printStackTrace();
-        }
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("File not found (" + aFilename + ")...");
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			System.out.println("Error reading file (" + aFilename + ")...");
+			e.printStackTrace();
+		}
 		dbname = theValues.getProperty("dbname");
 		dbhost = theValues.getProperty("dbhost");
 		dbdomain = theValues.getProperty("dbdomain");
@@ -1102,8 +1103,8 @@ public final class Constants
 		}
 		catch (NumberFormatException e)
 		{
-            System.out.println("Unable to interpret portnumber");
-            e.printStackTrace();
+			System.out.println("Unable to interpret portnumber");
+			e.printStackTrace();
 		}
 		mudhost = theValues.getProperty("host");
 
@@ -1166,6 +1167,14 @@ public final class Constants
 		{
 			logLevel = Level.FINEST;
 		}
+		else if (level.equalsIgnoreCase("none"))
+		{
+			logLevel = Level.OFF;
+		}
+		else if (level.equalsIgnoreCase("off"))
+		{
+			logLevel = Level.OFF;
+		}
 		// The root logger's handlers default to INFO. We have to
 		// crank them up. We could crank up only some of them
 		// if we wanted, but we will turn them all up.
@@ -1195,32 +1204,71 @@ public final class Constants
 		loadInfo(config_file);
 	}
 
-    /**
-     * save properties to file.
-     */
-    public static void saveInfo()
-    {
+	/**
+	 * save properties to file.
+	 */
+	public static void saveInfo()
+	{
 		logger.finer("");
-        try
-        {
-            FileOutputStream writer = new FileOutputStream(CONFIG_FILE);
-            theValues.store(writer,
-            " contains persistent configuration information for server\n" +
-            "# this file is generated, do not edit unless you really want to.");
-            writer.close();
-        }
-        catch (FileNotFoundException e)
-        {
-            System.out.println("File not found...");
-            e.printStackTrace();
-            return;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return;
-        }
-    }
+		try
+		{
+			FileOutputStream writer = new FileOutputStream(CONFIG_FILE);
+			theValues.store(writer,
+			" contains persistent configuration information for server\n" +
+			"# this file is generated, do not edit unless you really want to.");
+			writer.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("File not found...");
+			e.printStackTrace();
+			return;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+	}
 
+	private static String theOfflineDescription = null;
 
+	/**
+	 * Returns the offline description. Either this is read from file,
+	 * or it is set during gameplay.<BR>
+	 * Setting from file is for external reasons, so we do not have to stop
+	 * the game. Setting from inside the game is for serious reasons
+	 * like a database connection that is down or something similar.
+	 * @return the String containing the description of the game when
+	 * the game is offline. If the game is in perfect working order,
+	 * a null pointer is returned.
+	 */
+	public static String getOfflineDescription()
+	throws IOException
+	{
+		if (theOfflineDescription == null)
+		{
+			File myFile = new File(Constants.mudofflinefile);
+			if (!myFile.exists())
+			{
+				return null;
+			}
+			if (!myFile.canRead())
+			{
+				return null;
+			}
+			return Constants.readFile(Constants.mudofflinefile);
+		}
+		return theOfflineDescription;
+	}
+	
+	/**
+	 * Sets the description in game. This is primarily used for serious problems
+	 * like a broken down database connection or something.
+	 * @param aDesc the description to be returned upon entering the mud.
+	 */
+	public static void setOfflineDescription(String aDesc)
+	{
+		theOfflineDescription = aDesc;
+	}
 }

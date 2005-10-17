@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/rooms/Area.java,v 1.1 2005/09/10 22:41:47 karchan Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -52,7 +52,10 @@ public class Area
 
 	/**
 	 * Create a new area.
-	 * @param anId the identification number of the room
+	 * @param aName the name of the area. This one uniquely identifies an area.
+	 * @param aDescription the entire description of the area in question.
+	 * @param aShortDescription one sentence containing the <I>full</I> name
+	 * of the area.
 	 */
 	public Area(String aName, 
 		String aDescription, 

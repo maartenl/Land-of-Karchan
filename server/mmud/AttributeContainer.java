@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/AttributeContainer.java,v 1.1 2004/10/13 20:45:28 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud;
 
+import mmud.database.MudDatabaseException;
+
 /**
  * Interface to indicate that an object can contain attributes.
  */
@@ -38,7 +40,8 @@ public interface AttributeContainer
 	 * exist yet.
 	 * @param anAttribute the attribute to be set.
 	 */
-	public void setAttribute(Attribute anAttribute);
+	public void setAttribute(Attribute anAttribute)
+	throws MudDatabaseException;
 
 	/**
 	 * returns the attribute found with name aName or null
@@ -55,8 +58,9 @@ public interface AttributeContainer
 	 * @param aName the string with the name of the attribute to be
 	 * removed.
 	 */
-	public void removeAttribute(String aName);
-
+	public void removeAttribute(String aName)
+	throws MudDatabaseException;
+	
 	/**
 	 * returns true if the attribute with name aName
 	 * exists.

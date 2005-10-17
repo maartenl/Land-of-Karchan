@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/characters/Person.java,v 1.23 2005/09/28 04:33:50 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -814,6 +814,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param anAttribute the attribute to be set.
 	 */
 	public void setAttribute(Attribute anAttribute)
+	throws MudDatabaseException
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
 		AttributeDb.setAttribute(anAttribute, this);
@@ -838,6 +839,7 @@ public class Person implements Executable, AttributeContainer
 	 * removed.
 	 */
 	public void removeAttribute(String aName)
+	throws MudDatabaseException
 	{
 		theAttributes.remove(aName);
 		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
@@ -1189,6 +1191,33 @@ public class Person implements Executable, AttributeContainer
 				return myItem;
 			}
 		}
+		if (method_name.equals("removeItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Item))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain an Item as argument.");
+				}
+				Item myItem = (Item) arguments[0];
+				if (myItem == null)
+				{
+					throw new MethodNotSupportedException(method_name + " tried to use an empty item.");
+				}
+				try
+				{
+					ItemsDb.deleteItemFromChar(myItem);
+				}
+				catch (ItemDoesNotExistException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
+				Database.writeLog("root", "removed item (" + myItem + ") from person " +
+					getName());
+				return myItem;
+			}
+		}
 		if (method_name.equals("wornItem"))
 		{
 			if (arguments.length == 1)
@@ -1203,6 +1232,19 @@ public class Person implements Executable, AttributeContainer
 					((Integer) arguments[0]).intValue()
 					)
 					);
+			}
+		}
+		if (method_name.equals("getItem"))
+		{
+			if (arguments.length == 1)
+			{
+				if (!(arguments[0] instanceof Integer))
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" does not contain a Integer as argument.");
+				}
+				return ItemsDb.getItemsFromChar(ItemDefs.getItemDef(
+					((Integer) arguments[0]).intValue()), this);
 			}
 		}
 //		throw new MethodNotSupportedException(method_name + " not found.");
@@ -1264,7 +1306,15 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain a String as argument.");
 				}
-				removeAttribute((String) arguments[0]);
+				try
+				{
+					removeAttribute((String) arguments[0]);
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(
+						"unable to remove attribute" +  e);
+				}
 				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from person " +
 					getName());
 				return null;
@@ -1295,7 +1345,15 @@ public class Person implements Executable, AttributeContainer
 				Attribute mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
-				setAttribute(mAttrib);
+				try
+				{
+					setAttribute(mAttrib);
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(
+						"unable to set attribute" +  e);
+				}
 				Database.writeLog("root", "set attribute (" + arguments[0] + ") for person " +
 					getName());
 				return null;
@@ -1360,4 +1418,5 @@ public class Person implements Executable, AttributeContainer
 	{
 		return false;
 	}
+
 }

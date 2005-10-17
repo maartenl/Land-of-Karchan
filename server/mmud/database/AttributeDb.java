@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/database/AttributeDb.java,v 1.1 2004/10/18 22:25:08 karn Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -72,6 +72,7 @@ public class AttributeDb
 	 * @param aRoom the room that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Room aRoom)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -99,6 +100,7 @@ public class AttributeDb
 	 * @param aPerson the person that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Person aPerson)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -126,6 +128,7 @@ public class AttributeDb
 	 * @param anItem the item that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Item anItem)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -154,6 +157,7 @@ public class AttributeDb
 	 * @param aRoom the room that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Room aRoom)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -180,6 +184,7 @@ public class AttributeDb
 	 * @param aPerson the person that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Person aPerson)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -207,6 +212,7 @@ public class AttributeDb
 	 * @param anItem the item that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Item anItem)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
