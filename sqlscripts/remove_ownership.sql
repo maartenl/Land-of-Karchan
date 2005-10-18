@@ -6,6 +6,7 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 #
 # This has to be done before the deputy/administrator is
 # removed from the administrator table.
+#
 
 update mm_methods set owner=null where owner="Argo";
 update mm_commands set owner=null where owner="Argo";
