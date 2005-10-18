@@ -16,5 +16,10 @@ update mm_boards set owner=null where owner="Argo";
 update mm_usertable set owner=null where owner="Argo";
 update mm_area set owner=null where owner="Argo";
 
+#
+# remove the administrator from the administrator table
+#
+delete from mm_admin where name="Argo";
+
 END_OF_DATA
 
