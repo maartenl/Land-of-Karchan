@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/characters/MultiUserException.java,v 1.3 2004/04/14 20:30:09 karn Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

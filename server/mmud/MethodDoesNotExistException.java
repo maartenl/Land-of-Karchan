@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/MethodDoesNotExistException.java,v 1.2 2004/10/03 00:12:43 karchan Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

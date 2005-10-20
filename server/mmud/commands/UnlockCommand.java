@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/commands/UnlockCommand.java,v 1.3 2005/09/15 04:50:00 karn Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

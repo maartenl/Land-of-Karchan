@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/database/ItemsDb.java,v 1.17 2005/09/10 22:41:46 karchan Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
