@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-cvsinfo: $Header$
+cvsinfo: $Header: /karchan/mud/cvsroot/scripts/mudlogon.php,v 1.5 2005/08/05 07:31:19 karchan Exp $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -42,7 +42,28 @@ maarten_l@yahoo.com
 	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
 	if (!$fp) 
 	{
-		echo "$errstr ($errno)<br>\n";
+?>
+<HTML>
+<TITLE>An Error Occured Attempting to Logon To The Mud
+</TITLE>
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
+<H1><IMG SRC="/images/gif/dragon.gif">An Error Occured Attempting To Logon To The Mud</H1><HR>
+The following error occured:<P><TT>
+<?php	echo "$errstr ($errno)<br>\n"; ?></TT><P>
+<?php
+if ($errno = "111")
+{
+?>Error code <B>111</B> usually indicates that the mud server has crashed or has
+been deactivated. It needs to be restarted.<P><?php
+}
+?>
+Please contact Karn (at <A HREF-"mailto:karn@karchan.org">karn@karchan.org</A>) 
+as soon as possible to mention this problem and 
+please mention the error message and error code.<P>
+Thank you.
+</BODY>
+</HTML>
+<?php
 	} 
 	else 
 	{
