@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-cvsinfo: $Header: /karchan/mud/cvsroot/scripts/mudlogon.php,v 1.5 2005/08/05 07:31:19 karchan Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
