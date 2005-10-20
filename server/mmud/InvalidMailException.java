@@ -41,4 +41,14 @@ public class InvalidMailException extends MailException
 		super(Constants.INVALIDMAILERROR);
 	}
 
+
+	/**
+	 * constructor for creating a chained invalid mail exception.
+	 * @param aThrowable the original exception.
+	 */
+	public InvalidMailException(Throwable aThrowable)
+	{
+		super(Constants.INVALIDMAILERROR, aThrowable);
+	}
+
 }

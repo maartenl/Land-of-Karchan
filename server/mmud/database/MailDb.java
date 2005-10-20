@@ -63,6 +63,7 @@ public class MailDb
 	 * @return String containing a bulleted list of mudmails.
 	 */
 	public static String getListOfMail(User aUser)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -116,7 +117,15 @@ public class MailDb
 		throws MailException
 	{
 		Logger.getLogger("mmud").finer("");
-		return doStuffWithMail(aUser, messagenr, false);
+		try
+		{
+			return doStuffWithMail(aUser, messagenr, false);
+		}
+		catch (MudDatabaseException e)
+		{
+			Constants.logger.throwing("mmud.database.MailDb", "readMail()", e);
+			throw new InvalidMailException(e); 
+		}
 	}
 
 	/**
@@ -132,7 +141,15 @@ public class MailDb
 		throws MailException
 	{
 		Logger.getLogger("mmud").finer("");
-		return doStuffWithMail(aUser, messagenr, true);
+		try
+		{
+			return doStuffWithMail(aUser, messagenr, true);
+		}
+		catch (MudDatabaseException e)
+		{
+			Constants.logger.throwing("mmud.database.MailDb", "deleteMail()", e);
+			throw new InvalidMailException(e); 
+		}
 	}
 
 	/**
@@ -147,7 +164,7 @@ public class MailDb
 	 * @throws MailException if the messagenumber is invalid.
 	 */
 	private static String doStuffWithMail(User aUser, int messagenr, boolean deleteIt)
-		throws MailException
+		throws MailException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (messagenr <= 0)
@@ -245,6 +262,7 @@ public class MailDb
 	 * @param message the body of the mudmail
 	 */
 	public static void sendMail(User aUser, User toUser, String header, String message)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		try
@@ -276,6 +294,7 @@ public class MailDb
 	 * @param aUser User whos mail must be checked.
 	 */
 	public static boolean hasUserNewMail(User aUser)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -315,6 +334,7 @@ public class MailDb
 	 * onto "old".
 	 */
 	public static void resetNewMailFlag(User aUser)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		try

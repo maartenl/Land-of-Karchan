@@ -72,6 +72,7 @@ public final class Rooms implements Executable
 	 * pointer if the room does not exist.
 	 */
 	public static Room getRoom(int aRoomNr)
+	throws MudException
 	{
 		Room myRoom = null;
 		assert theRooms != null : "theRooms vector is null";
@@ -177,7 +178,15 @@ public final class Rooms implements Executable
 					throw new MethodNotSupportedException(method_name + 
 						" does not contain a Integer as argument.");
 				}
-				return getRoom(((Integer) arguments[0]).intValue());
+				try
+				{
+					return getRoom(((Integer) arguments[0]).intValue());
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" error searching for room. " + e);
+				}
 			}
 		}
 		throw new MethodNotSupportedException(method_name + " not found.");

@@ -41,7 +41,7 @@ public interface AttributeContainer
 	 * @param anAttribute the attribute to be set.
 	 */
 	public void setAttribute(Attribute anAttribute)
-	throws MudDatabaseException;
+	throws MudException;
 
 	/**
 	 * returns the attribute found with name aName or null
@@ -59,7 +59,7 @@ public interface AttributeContainer
 	 * removed.
 	 */
 	public void removeAttribute(String aName)
-	throws MudDatabaseException;
+	throws MudException;
 	
 	/**
 	 * returns true if the attribute with name aName

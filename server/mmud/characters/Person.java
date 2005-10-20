@@ -284,6 +284,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param aNewTitle String containing the title
 	 */
 	public void setTitle(String aNewTitle)
+	throws MudException
 	{
 		theTitle = aNewTitle;
 		Database.setTitle(this);
@@ -314,6 +315,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param aWhimpy Integer containing the whimpy
 	 */
 	public void setWhimpy(int aWhimpy)
+	throws MudException
 	{
 		theWhimpy = aWhimpy;
 		Database.setWhimpy(this);
@@ -385,6 +387,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param i Integer containing the thirst
 	 */
 	public void setDrinkstats(int i)
+	throws MudException
 	{
 		if (!canDrink()) return;
 		theDrinkstats = i;
@@ -439,6 +442,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param i Integer containing the hunger
 	 */
 	public void setEatstats(int i)
+	throws MudException
 	{
 		if (!canEat()) return;
 		theEatstats = i;
@@ -567,6 +571,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param aSleep boolean containing the sleep status
 	 */
 	public void setSleep(boolean aSleep)
+	throws MudException
 	{
 		theSleep = aSleep;
 		Database.setSleep(this);
@@ -586,6 +591,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param aRoom Room containing the current room of the character
 	 */
 	public void setRoom(Room aRoom)
+	throws MudException
 	{
 		theRoom = aRoom;
 		Database.setRoom(this);
@@ -861,6 +867,7 @@ public class Person implements Executable, AttributeContainer
 	 * @return a string containing a html list.
 	 */
 	public String inventory()
+	throws MudDatabaseException
 	{
 		return ItemsDb.getInventory(this);
 	}
@@ -875,6 +882,7 @@ public class Person implements Executable, AttributeContainer
 	 * @see mmud.database.ItemsDb#getItemsFromChar
 	 */
 	public Vector getItems(String adject1, String adject2, String adject3, String name) 
+	throws MudException
 	{
 		return ItemsDb.getItemsFromChar(adject1, adject2, adject3, name, this);
 	}
@@ -888,6 +896,7 @@ public class Person implements Executable, AttributeContainer
 	 * @see ItemDb#getWornItemFromChar
 	 */
 	public Item isWorn(PersonPositionEnum aPlace)
+	throws MudException
 	{
 		return ItemsDb.getWornItemFromChar(this, aPlace);
 	}
@@ -897,6 +906,7 @@ public class Person implements Executable, AttributeContainer
 	 * @return String containing all the statistics in html format.
 	 */
 	public String getStatistics()
+	throws MudDatabaseException
 	{
 		String stuff = ItemsDb.getWearablesFromChar(this);
 		stuff = stuff.replaceAll("%SHISHER", "your");
@@ -1009,7 +1019,16 @@ public class Person implements Executable, AttributeContainer
 			}
 			if (value instanceof Room)
 			{
-				setRoom((Room) value);
+				try
+				{
+					setRoom((Room) value);
+				}
+				catch (MudException e)
+ 				{
+ 					throw new FieldNotSupportedException(field_name +
+						" could not set room.");
+				
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -1171,13 +1190,29 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name + 
 						" does not contain a Integer as argument.");
 				}
-				ItemDef myItemDef = ItemDefs.getItemDef(
-					((Integer) arguments[0]).intValue());
+				ItemDef myItemDef = null;
+				try
+				{
+					myItemDef = ItemDefs.getItemDef(
+						((Integer) arguments[0]).intValue());
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
 				if (myItemDef == null)
 				{
 					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
 				}
-				Item myItem = ItemsDb.addItem(myItemDef);
+				Item myItem = null;
+				try
+				{
+					myItem = ItemsDb.addItem(myItemDef);
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
 				try
 				{
 					ItemsDb.addItemToChar(myItem, this);
@@ -1185,6 +1220,10 @@ public class Person implements Executable, AttributeContainer
 				catch (ItemDoesNotExistException e)
 				{
 					throw new MethodNotSupportedException(e.getMessage());
+				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
 				}
 				Database.writeLog("root", "created item (" + myItem + ") for person " +
 					getName());
@@ -1213,6 +1252,10 @@ public class Person implements Executable, AttributeContainer
 				{
 					throw new MethodNotSupportedException(e.getMessage());
 				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
+				}
 				Database.writeLog("root", "removed item (" + myItem + ") from person " +
 					getName());
 				return myItem;
@@ -1227,11 +1270,21 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name + 
 						" does not contain a Integer as argument.");
 				}
-				return isWorn(
-					PersonPositionEnum.get(
-					((Integer) arguments[0]).intValue()
-					)
-					);
+				Item b = null;
+				try
+				{
+					b = isWorn(
+						PersonPositionEnum.get(
+						((Integer) arguments[0]).intValue()
+						)
+						);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" error retrieving worn item from database. "  + e);
+				}
+				return  b;
 			}
 		}
 		if (method_name.equals("getItem"))
@@ -1243,8 +1296,18 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name + 
 						" does not contain a Integer as argument.");
 				}
-				return ItemsDb.getItemsFromChar(ItemDefs.getItemDef(
-					((Integer) arguments[0]).intValue()), this);
+				Vector b = null;
+				try
+				{
+					b =  ItemsDb.getItemsFromChar(ItemDefs.getItemDef(
+						((Integer) arguments[0]).intValue()), this);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name + 
+						" error retrieving item from database. "  + e);
+				}
+				return b;
 			}
 		}
 //		throw new MethodNotSupportedException(method_name + " not found.");

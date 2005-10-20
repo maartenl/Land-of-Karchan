@@ -68,7 +68,7 @@ public class LookCommand extends NormalCommand
 	}
 
 	private boolean LookInItem(User aUser, Vector aItems)
-	throws ItemException
+	throws ItemException, MudException
 	{
 		Iterator myIterator = aItems.iterator();
 		while (myIterator.hasNext())

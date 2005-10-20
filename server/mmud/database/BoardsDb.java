@@ -87,6 +87,7 @@ public class BoardsDb
 	 * Returns null pointer if the board could not be found.
 	 */
 	public static Board getBoard(String aBoard)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -127,6 +128,7 @@ public class BoardsDb
 	 * @return String containing a list of messages.
 	 */
 	public static String readBoard(String aBoard, BoardFormatEnum aFormat)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -175,6 +177,7 @@ public class BoardsDb
 	 */
 	public static void sendBoard(String aBoardName, String aUserName, 
 		String aMessage)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		try

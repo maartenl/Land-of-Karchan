@@ -54,7 +54,8 @@ public interface Container
 	 * @param name the name of the item
 	 * @return Vector containing item objects found.
 	 */
-	public Vector getItems(String adject1, String adject2, String adject3, String name);
+	public Vector getItems(String adject1, String adject2, String adject3, String name)
+	throws MudException;
 
 	/**
 	 * Returns the amount of weight that can be contained inside
@@ -105,6 +106,7 @@ public interface Container
 	/**
 	 * Sets the status of the container.
 	 */
-	public void setLidsNLocks(boolean isOpenable, boolean newIsOpen, ItemDef newHasLock, boolean newIsLocked);
+	public void setLidsNLocks(boolean isOpenable, boolean newIsOpen, ItemDef newHasLock, boolean newIsLocked)
+	throws MudException;
 
 }

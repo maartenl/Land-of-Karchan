@@ -219,6 +219,7 @@ public class User extends mmud.characters.Person
 		String aArms,
 		String aLegs,
 		String aCookie)
+	throws MudException
 	{
 		super(aName, aTitle,
 			aRace,
@@ -317,6 +318,7 @@ public class User extends mmud.characters.Person
 	 * digits, capitals and smallcaps.
 	 */
 	public void generateSessionPassword()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		char[] myCharArray =
@@ -543,6 +545,7 @@ public class User extends mmud.characters.Person
 	 * @see mmud.database.MailDb#getListOfMail
 	 */
 	public String getListOfMail()
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		return MailDb.getListOfMail(this);

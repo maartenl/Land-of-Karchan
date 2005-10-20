@@ -52,7 +52,8 @@ public abstract class PostBoardCommand extends NormalCommand
      * @param aUser the user posting to the board. Used to convey messages.
      * @param aBoardName the name of the board. 
      * @param aRoomId the identification number of the room where
-    *  this board is active.
+     * this board is active.
+     * @return boolean, false if a message was not properly posted.
      */
 	protected boolean postMessage(User aUser, 
 		String aBoardName, 
@@ -63,8 +64,25 @@ public abstract class PostBoardCommand extends NormalCommand
 		{
 			return false;
 		}
-		Board myBoard = BoardsDb.getBoard(aBoardName);
-		myBoard.post(aUser, aMessage);
+		Board myBoard = null;
+		try
+		{
+			myBoard = BoardsDb.getBoard(aBoardName);
+		}
+		catch (MudDatabaseException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		try
+		{
+			myBoard.post(aUser, aMessage);
+		}
+		catch (MudDatabaseException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 		Persons.sendMessage(aUser, "%SNAME posted something on the " +
 			myBoard.getName() + " board.<BR>\r\n");
 		return true;

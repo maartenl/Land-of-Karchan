@@ -64,6 +64,7 @@ public final class ItemDefs
 	 * @return ItemDef the found Item Definition.
 	 */
 	public static ItemDef getItemDef(int aItemDefNr)
+	throws MudDatabaseException
 	{
 		ItemDef myItemDef = null;
 		assert theItemDefs != null : "theItemDefs vector is null";

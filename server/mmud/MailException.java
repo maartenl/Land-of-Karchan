@@ -42,4 +42,14 @@ public class MailException extends MudException
 		super(aString);
 	}
 
+	/**
+	 * constructor for creating a exception with a message.
+	 * @param aString the string containing the message
+	 * @param aThrowable the original exception.
+	 */
+	public MailException(String aString, Throwable aThrowable)
+	{
+		super(aString, aThrowable);
+	}
+
 }

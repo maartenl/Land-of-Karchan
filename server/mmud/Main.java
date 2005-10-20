@@ -1,5 +1,6 @@
 /*-------------------------------------------------------------------------
 cvsinfo: $Header: /karchan/mud/cvsroot/server/mmud/Main.java,v 1.13 2005/09/22 16:39:13 karn Exp $
+svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -74,7 +75,7 @@ public class Main
 		}
 		catch (ClassNotFoundException e3)
 		{
-			System.out.println("The host running the mysql database is unknown.");
+			System.out.println("Java driver for the mysql database is not found.");
 			System.out.println("The message was : " + e3.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e3);
 			System.out.println("Exiting mud...");
@@ -104,12 +105,34 @@ public class Main
 		Database.writeLog("root","Starting server");
 		ServerSocket myServerSocket = null;
 		Constants.logger.info("Retrieving characters...");
-		Persons.init();
+		try
+		{
+			Persons.init();
+		}
+		catch (MudException e)
+		{
+			System.out.println("An mud database error occurred while attempting to initialise users.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.characters.Persons", "init()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
 		Constants.logger.info("Starting tickerthread...");
 		TickerThread myTicker = new TickerThread();
 		myTicker.start();
 		Constants.logger.info("Loading user commands...");
-		Constants.setUserCommands(Database.getUserCommands());
+		try
+		{
+			Constants.setUserCommands(Database.getUserCommands());
+		}
+		catch (MudDatabaseException e)
+		{
+			System.out.println("An mud database error occurred while attempting to retrieve user commands.");
+			System.out.println("The message was : " + e.getMessage());
+			Constants.logger.throwing("mmud.database.Database", "getUserCommand()", e);
+			System.out.println("Exiting mud...");
+			System.exit(1);
+		}
 		Constants.logger.info("Creating Server Socket...");
 		InetAddress myAddress = null;
 		try
@@ -120,7 +143,7 @@ public class Main
 		}
 		catch (UnknownHostException e)
 		{
-			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("The host " + Constants.mudhost + " is unknown.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
@@ -136,7 +159,7 @@ public class Main
 		}
 		catch (IOException e)
 		{
-			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("An Input/Output error occurred while attempting to create a server socket.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
@@ -163,7 +186,7 @@ public class Main
 		}
 		catch (IOException e)
 		{
-			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out.println("An Input/output error occurred while attempting to close the server socket.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");

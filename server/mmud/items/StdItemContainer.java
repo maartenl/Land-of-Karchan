@@ -82,6 +82,7 @@ public class StdItemContainer extends Item implements Container
 	 * @see mmud.database.ItemsDb#getItemsFromContainer
 	 */
 	public Vector getItems(String adject1, String adject2, String adject3, String name) 
+	throws MudException
 	{
 		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name, this);
 	}
@@ -147,6 +148,7 @@ public class StdItemContainer extends Item implements Container
 		boolean newIsOpen,
 		ItemDef newLock, 
 		boolean newIsLocked)
+	throws MudException
 	{
 		setAttribute(new Attribute("isopenable", "" + isOpenable, "boolean"));
 		setAttribute(new Attribute("isopen", "" + newIsOpen, "boolean"));

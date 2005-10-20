@@ -153,7 +153,16 @@ public class Bot extends Person implements CommunicationListener
 			Persons.sendMessage(this, aPerson, "%SNAME say%VERB2 [to %TNAME] : Speak up! I cannot hear you!<BR>");
 			return;
 		}
-		String anAnswer = Database.getAnswers(this, aSentence);
+		String anAnswer = null;
+		try
+		{
+			anAnswer = Database.getAnswers(this, aSentence);
+		}
+		catch (MudDatabaseException e)
+		{
+			Constants.logger.throwing("mmud.characters.Bot", "commEvent()", e);
+			// ignored, we will just say that an appropriate answer was not found.
+		}
 		if (anAnswer == null)
 		{
 			Persons.sendMessage(this, aPerson, "%SNAME ignore%VERB2 %TNAME.<BR>");

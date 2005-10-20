@@ -87,6 +87,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anId integer identification of the item
 	 */
 	public Item(int anItemDef, int anId, PersonPositionEnum aPosBody)
+	throws MudDatabaseException
 	{
 		this(ItemDefs.getItemDef(anItemDef), anId, aPosBody);
 	} 
@@ -98,6 +99,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anId integer identification of the item
 	 */
 	public Item(int anItemDef, int anId)
+	throws MudDatabaseException
 	{
 		this(ItemDefs.getItemDef(anItemDef), anId);
 	} 
@@ -151,11 +153,11 @@ public class Item implements Executable, AttributeContainer
 	 * @throws ItemDoesNotExistException if the item could not be found.
 	 */
 	public void setWearing(PersonPositionEnum aPersonPosition)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException, ItemCannotBeWornException
 	{
 		if (!isWearable(aPersonPosition))
 		{
-			throw new RuntimeException("unable to attach item to position," +
+			throw new ItemCannotBeWornException("unable to attach item to position," +
 				" position illegal for this item.");
 		}
 		thePlaceOnBody = aPersonPosition;
@@ -319,6 +321,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anAttribute the attribute to be added/set.
 	 */
 	public void setAttribute(Attribute anAttribute)
+	throws MudException
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
 		AttributeDb.setAttribute(anAttribute, this);
@@ -345,6 +348,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param aName the name of the attribute to be removed.
 	 */
 	public void removeAttribute(String aName)
+	throws MudException
 	{
 		theAttributes.remove(aName);
 		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
@@ -513,7 +517,15 @@ public class Item implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain a String as argument.");
 				}
-				removeAttribute((String) arguments[0]);
+				try
+				{
+					removeAttribute((String) arguments[0]);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not remove attribute.");
+				}
 				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from item " +
 					this);
 				return null;
@@ -544,7 +556,15 @@ public class Item implements Executable, AttributeContainer
 				Attribute mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
-				setAttribute(mAttrib);
+				try
+				{
+					setAttribute(mAttrib);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not set attribute.");
+				}
 				Database.writeLog("root", "set attribute (" + arguments[0] + ") in item " +
 					this);
 				return null;
@@ -580,13 +600,29 @@ public class Item implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain a Integer as argument.");
 				}
-				ItemDef myItemDef = ItemDefs.getItemDef( 
-					((Integer) arguments[0]).intValue());
+				ItemDef myItemDef = null;
+				try
+				{
+					myItemDef = ItemDefs.getItemDef( 
+						((Integer) arguments[0]).intValue());
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
 				if (myItemDef == null)
 				{
 					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
 				}
-				Item myItem = ItemsDb.addItem(myItemDef);
+				Item myItem = null;
+				try
+				{
+					myItem = ItemsDb.addItem(myItemDef);
+				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
+				}
 				try
 				{
 					ItemsDb.addItemToContainer(myItem, this);
@@ -594,6 +630,10 @@ public class Item implements Executable, AttributeContainer
 				catch (ItemDoesNotExistException e)
 				{
 					throw new MethodNotSupportedException(e.getMessage());
+				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
 				}
 				Database.writeLog("root", "created item (" + myItem + ") in item " + this);
 				return myItem;

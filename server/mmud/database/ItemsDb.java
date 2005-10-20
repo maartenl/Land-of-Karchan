@@ -190,6 +190,7 @@ public class ItemsDb
 	 * @return ItemDef object containing all information.
 	 */
 	public static ItemDef getItemDef(int itemdefnr)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -290,6 +291,7 @@ public class ItemsDb
 	 * person is carrying.
 	 */
 	public static String getInventory(Person aPerson)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		StringBuffer myInventory = new StringBuffer("");
@@ -341,6 +343,7 @@ public class ItemsDb
 	 * @return String containing a list of items visible in the room.
 	 */
 	public static String getInventory(Room aRoom)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		StringBuffer myInventory = new StringBuffer();
@@ -392,6 +395,7 @@ public class ItemsDb
 	 * in the container.
 	 */
 	public static String getInventory(Item aContainer)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		StringBuffer myInventory = new StringBuffer();
@@ -441,7 +445,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
 	public static void deleteItemFromRoom(Item anItem)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -470,7 +474,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to add the item.
 	 */
 	public static void addItemToChar(Item anItem, Person aPerson)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -499,7 +503,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
 	public static void deleteItemFromChar(Item anItem)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -528,7 +532,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
 	public static void deleteItemFromContainer(Item anItem)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -557,7 +561,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to remove the item.
 	 */
 	public static void deleteItem(Item anItem)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -609,6 +613,7 @@ public class ItemsDb
 	 * @see ItemsDb#addItemToContainer
 	 */
 	public static Item addItem(ItemDef anItemDef)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		Item myItem = null;
@@ -648,7 +653,7 @@ public class ItemsDb
 	 */
 	public static void addItemToRoom(Item anItem,
 								Room aRoom)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -678,7 +683,7 @@ public class ItemsDb
 	 * @throws ItemDoesNotExistException when we were unable to add the item.
 	 */
 	public static void addItemToContainer(Item anItem, Item aContainer)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		int res = 0;
@@ -713,7 +718,7 @@ public class ItemsDb
 	 */
 	public static void transferItem(Item anItem,
 								Person aPerson)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("anItem=" + anItem + 
 			", aPerson=" + aPerson);
@@ -742,7 +747,6 @@ public class ItemsDb
 		}
 	}
 
-
 	/**
 	 * Retrieve specific items from the room.
 	 * @param adject1 the first adjective. Null value means first adjective
@@ -760,6 +764,7 @@ public class ItemsDb
 								String adject3,
 								String name,
 								Room aRoom)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -817,6 +822,7 @@ public class ItemsDb
 	 */
 	public static Vector getItemsFromRoom(ItemDef anItemDef,
 								Room aRoom)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("anItemDef=" + anItemDef + 
 			", aRoom=" + aRoom);
@@ -881,6 +887,7 @@ public class ItemsDb
 								String adject3,
 								String name,
 								Item aContainer)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -936,6 +943,7 @@ public class ItemsDb
 	 * @return Vector containing all Item objects found.
 	 */
 	public static Vector getItemsFromContainer(Item aContainer)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
@@ -998,6 +1006,7 @@ public class ItemsDb
 								String adject3,
 								String name,
 								Person aChar)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("adject1=" + adject1 + 
 			",adject2=" + adject2 +
@@ -1062,6 +1071,7 @@ public class ItemsDb
 	 */
 	public static Vector getItemsFromChar(ItemDef aItemDef,
 								Person aChar)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("aItemDef=" + aItemDef + 
 			",char=" + aChar.getName());
@@ -1106,8 +1116,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting items of " + aItemDef + " from " + aChar, e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -1125,6 +1134,7 @@ public class ItemsDb
 	 */
 	public static Item getWornItemFromChar(Person aChar, 
 		PersonPositionEnum aPlace)
+	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("aChar=" + aChar + 
 			",aPlace=" + aPlace);
@@ -1186,6 +1196,7 @@ public class ItemsDb
 	 * wearing/wielding.
 	 */
 	public static String getWearablesFromChar(Person aChar)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("char=" + aChar.getName());
 		ResultSet res;
@@ -1232,7 +1243,7 @@ public class ItemsDb
 	 * the item that needs to be manipulated.
 	 */
 	public static void changeWearing(Item anItem)
-	throws ItemDoesNotExistException
+	throws ItemDoesNotExistException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer(anItem + ",wearing="+anItem.getWearing());
 		int res = 0;

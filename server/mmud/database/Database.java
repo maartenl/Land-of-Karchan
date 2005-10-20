@@ -222,7 +222,29 @@ public class Database
 	private static void checkConnection()
 	throws MudDatabaseException
 	{
-		if (theConnection.isClosed())
+		if (theConnection == null)
+		{
+			try
+			{
+				connect();
+			}
+			catch (Exception e)
+			{
+				throw new MudDatabaseException(
+					Constants.DATABASECONNECTIONERROR, e);
+			}
+		}
+		boolean closed = true;
+		try
+		{
+			closed = theConnection.isClosed();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException(
+			Constants.DATABASECONNECTIONERROR, e);
+		}
+		if (closed)
 		{
 			theConnection = null;
 			try
@@ -233,6 +255,21 @@ public class Database
 			{
 				throw new MudDatabaseException(
 				Constants.DATABASECONNECTIONERROR, e);
+			}
+			catch (SQLException e2)
+			{
+				throw new MudDatabaseException(
+				Constants.DATABASECONNECTIONERROR, e2);
+			}
+			catch (ClassNotFoundException e3)
+			{
+				throw new MudDatabaseException(
+				Constants.DATABASECONNECTIONERROR, e3);
+			}
+			catch (IllegalAccessException e4)
+			{
+				throw new MudDatabaseException(
+				Constants.DATABASECONNECTIONERROR, e4);
 			}
 		}
 	}
@@ -250,7 +287,30 @@ public class Database
 		Logger.getLogger("mmud").finer("");
 		checkConnection();
 		PreparedStatement aStatement = null;
-		aStatement = theConnection.prepareStatement(aQuery);
+		try
+		{
+			aStatement = theConnection.prepareStatement(aQuery);
+		}
+//		catch (InstantiationException e)
+//		{
+//			throw new MudDatabaseException(
+//			Constants.DATABASECONNECTIONERROR, e);
+//		}
+		catch (SQLException e2)
+		{
+			throw new MudDatabaseException(
+			Constants.DATABASECONNECTIONERROR, e2);
+		}
+//		catch (ClassNotFoundException e3)
+//		{
+//			throw new MudDatabaseException(
+//			Constants.DATABASECONNECTIONERROR, e3);
+//		}
+//		catch (IllegalAccessException e4)
+//		{
+//			throw new MudDatabaseException(
+//			Constants.DATABASECONNECTIONERROR, e4);
+//		}
 		return aStatement;
 	}
 
@@ -274,9 +334,17 @@ public class Database
 		Logger.getLogger("mmud").finer("");
 		checkConnection();
 		PreparedStatement aStatement = null;
-		aStatement = theConnection.prepareStatement(aQuery,
-			resultSetType, 
-			resultSetConcurrency);
+		try
+		{
+			aStatement = theConnection.prepareStatement(aQuery,
+				resultSetType, 
+				resultSetConcurrency);
+		}
+		catch (SQLException e2)
+		{
+			throw new MudDatabaseException(
+			Constants.DATABASECONNECTIONERROR, e2);
+		}
 		return aStatement;
 	}
 
@@ -294,6 +362,7 @@ public class Database
 	 * could not be found.
 	 */
 	public static User getUser(String aName, String aPassword)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("aName=" + aName + 
@@ -379,6 +448,7 @@ public class Database
 	 * DEBUG!! Why returns User, why not Person?
 	 */
 	public static User getActiveUser(String aName, String aPassword)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("aName=" + aName + 
@@ -460,6 +530,7 @@ public class Database
 	 * @return boolean, true if it is an administrator.
 	 */
 	public static boolean isAuthorizedGod(String aName)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("");
@@ -501,6 +572,7 @@ public class Database
 	 * @return boolean, true if found, false otherwise.
 	 */
 	public static boolean existsUser(String aName)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("");
@@ -538,6 +610,7 @@ public class Database
 	 * room could not be found in the database.
 	 */
 	public static Room getRoom(int roomnr)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		Logger.getLogger("mmud").finer("");
@@ -582,6 +655,7 @@ public class Database
 	 * area could not be found in the database.
 	 */
 	public static Area getArea(Room aRoom)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		assert aRoom != null : "aRoom is null";
@@ -621,6 +695,7 @@ public class Database
 	 * @param aRoom Room object containing all information.
 	 */
 	public static void writeRoom(Room aRoom)
+	throws MudException
 	{
 		assert theConnection != null : "theConnection is null";
 		assert aRoom != null : "aRoom is null";
@@ -696,6 +771,7 @@ public class Database
 	 * @param anItem item object
 	 */
 	public static void getItemAttributes(Item anItem)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -736,6 +812,7 @@ public class Database
 	 * @param aPerson character whose attributes we need
 	 */
 	public static void getCharAttributes(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer(aPerson + "");
 		assert theConnection != null : "theConnection is null";
@@ -775,6 +852,7 @@ public class Database
 	 * @return Vector containing all currently active persons in the game.
 	 */
 	public static Vector getPersons()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1069,6 +1147,7 @@ public class Database
 	 * @see mmud.UserCommandInfo
 	 */
 	public static Collection getUserCommands()
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1125,6 +1204,7 @@ public class Database
 	 */
 	public static String getAnswers(Person aPerson, 
 		String aQuestion)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
 			", aQuestion=" + aQuestion);
@@ -1168,6 +1248,7 @@ public class Database
 	 * the source of the method.
 	 */
 	public static String getMethodSource(String aMethodName)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("aMethodName=" + aMethodName);
 		assert theConnection != null : "theConnection is null";
@@ -1233,7 +1314,10 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-			Database.writeLog("root", e);
+		}
+		catch (MudDatabaseException e2)
+		{
+			e2.printStackTrace();
 		}
 		if (myErrMsg == null)
 		{
@@ -1252,6 +1336,7 @@ public class Database
 	 * @return String containing the logon message.
 	 */
 	public static String getLogonMessage()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1268,6 +1353,7 @@ public class Database
 	 * @return String containing the man page of the command.
 	 */
 	public static String getHelp(String aCommand)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aCommand == null)
@@ -1319,6 +1405,7 @@ public class Database
 	 * @param address String, the address of the player 
 	 */
 	public static boolean isUserBanned(String username, String address)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("username=" + username + ",address=" + address);
 		assert theConnection != null : "theConnection is null";
@@ -1418,6 +1505,7 @@ public class Database
 	 * @param sesspwd String, the session password of the player 
 	 */
 	public static void setSessionPassword(String username, String sesspwd)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1448,6 +1536,7 @@ public class Database
 	 * @param aUser User wishing to be active
 	 */
 	public static void activateUser(User aUser)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1477,6 +1566,7 @@ public class Database
 	 * @param aUser User wishing to be deactivated
 	 */
 	public static void deactivateUser(User aUser)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1506,6 +1596,7 @@ public class Database
 	 * @param aUser User wishing to be created
 	 */
 	public static void createUser(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1552,6 +1643,7 @@ public class Database
 	 * @param aPerson Person with changed title
 	 */
 	public static void setTitle(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1581,6 +1673,7 @@ public class Database
 	 * @param aPerson Person with changed drinkstats
 	 */
 	public static void setDrinkstats(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1610,6 +1703,7 @@ public class Database
 	 * @param aPerson Person with changed eatstats
 	 */
 	public static void setEatstats(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1639,6 +1733,7 @@ public class Database
 	 * @param aPerson Person with changed sleep
 	 */
 	public static void setSleep(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1668,6 +1763,7 @@ public class Database
 	 * @param aPerson Person with changed room
 	 */
 	public static void setRoom(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1697,6 +1793,7 @@ public class Database
 	 * @param aPerson Person with new whimpy setting
 	 */
 	public static void setWhimpy(Person aPerson)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1727,6 +1824,7 @@ public class Database
 	 * @param aUser User with new whimpy setting
 	 */
 	public static void setPkill(User aUser)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		assert theConnection != null : "theConnection is null";
@@ -1785,6 +1883,10 @@ public class Database
 		{
 			e.printStackTrace();
 		}
+		catch (MudDatabaseException e2)
+		{
+			e2.printStackTrace();
+		}
 	}
 
 	/**
@@ -1819,6 +1921,10 @@ public class Database
 		catch (SQLException e)
 		{
 			e.printStackTrace();
+		}
+		catch (MudDatabaseException e2)
+		{
+			e2.printStackTrace();
 		}
 	}
 

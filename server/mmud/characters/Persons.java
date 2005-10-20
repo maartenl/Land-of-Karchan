@@ -62,6 +62,7 @@ public final class Persons implements Executable
 	 * @see mmud.database.Database#getPersons
 	 */
 	public static void init()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		thePersons = Database.getPersons();
@@ -117,8 +118,16 @@ public final class Persons implements Executable
 				{
 					Persons.sendMessage(myUser, 
 						"%SNAME fade%VERB2 slowly from existence.<BR>\r\n");
-					deactivateUser(myUser);
-					Database.writeLog(myUser.getName(), "idled out.");
+					try
+					{
+						deactivateUser(myUser);
+						Database.writeLog(myUser.getName(), "idled out.");
+					}
+					catch (MudDatabaseException e)
+					{
+						Constants.logger.throwing("mmud.characters.Persons", "removeIdleUsers", e);
+						// ignore it, so we cannot remove idle users, so what.
+					}
 				}
 			}
 		}
@@ -140,7 +149,7 @@ public final class Persons implements Executable
 	 */
  	public static User activateUser(String aName, String aPassword, 
 		String anAddress, String aCookie)
-	throws PersonException
+	throws PersonException, MudException
 	{
 		Logger.getLogger("mmud").finer("aName=" + aName +
 			",aPassword=" + aPassword +
@@ -208,7 +217,7 @@ public final class Persons implements Executable
 	 * @throws PersonException if something is wrong
 	 */
  	public static void deactivateUser(User aUser)
-	throws PersonException
+	throws PersonException, MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("aUser=" + aUser);
 		Database.deactivateUser(aUser);
@@ -258,7 +267,7 @@ public final class Persons implements Executable
 		String aArms,
 		String aLegs,
 		String aCookie)
-		throws PersonException
+		throws PersonException, MudException
 	{
 		Logger.getLogger("mmud").finer(
 			"aName=" + aName + 
@@ -476,6 +485,7 @@ public final class Persons implements Executable
 	 * @return String containing who's who.
 	 */
 	public static String getWhoList()
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String myString = "<UL>";

@@ -63,9 +63,26 @@ public abstract class ReadBoardCommand extends NormalCommand
 			return false;
 		}
 		theResult = null;
-		Board myBoard = BoardsDb.getBoard(aBoardName);
-		theResult = myBoard.getDescription() + 
-			myBoard.read() + aUser.printForm();
+		Board myBoard = null;
+		try
+		{
+			myBoard = BoardsDb.getBoard(aBoardName);
+		}
+		catch (MudDatabaseException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		try
+		{
+			theResult = myBoard.getDescription() + 
+				myBoard.read() + aUser.printForm();
+		}
+		catch (MudDatabaseException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 		Persons.sendMessage(aUser, "%SNAME read%VERB2 the " + myBoard.getName() 
 			+ " board.<BR>\r\n");
 		return true;

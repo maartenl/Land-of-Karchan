@@ -93,6 +93,7 @@ public class Board
 	 * @param aMessage the message to post.
 	 */
 	public void post(User aUser, String aMessage)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		BoardsDb.sendBoard(getName(), aUser.getName(), aMessage);
@@ -103,6 +104,7 @@ public class Board
 	 * @return String containing messages.
 	 */
 	public String read()
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		return read(BoardFormatEnum.BOARD);
@@ -114,6 +116,7 @@ public class Board
 	 * @param aFormat the format to be used for displaying the messages.
 	 */
 	public String read(BoardFormatEnum aFormat)
+	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		return BoardsDb.readBoard(getName(), aFormat);

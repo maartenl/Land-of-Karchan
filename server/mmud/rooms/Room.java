@@ -102,6 +102,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aSouth the room to the south.
 	 */
 	public void setSouth(Room aSouth)
+	throws MudException
 	{
 		south = aSouth;
 		intsouth = 0;
@@ -113,6 +114,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aNorth the room to the north.
 	 */
 	public void setNorth(Room aNorth)
+	throws MudException
 	{
 		north = aNorth;
 		intnorth = 0;
@@ -124,6 +126,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aEast the room to the east.
 	 */
 	public void setEast(Room aEast)
+	throws MudException
 	{
 		east = aEast;
 		inteast = 0;
@@ -135,6 +138,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aWest the room to the west.
 	 */
 	public void setWest(Room aWest)
+	throws MudException
 	{
 		west = aWest;
 		intwest = 0;
@@ -146,6 +150,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aUp the room to the up.
 	 */
 	public void setUp(Room aUp)
+	throws MudException
 	{
 		up = aUp;
 		intup = 0;
@@ -157,6 +162,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aDown the room to the down.
 	 */
 	public void setDown(Room aDown)
+	throws MudException
 	{
 		down = aDown;
 		intdown = 0;
@@ -168,6 +174,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the south. Returns null if no room is south.
 	 */
 	public Room getSouth()
+	throws MudException
 	{
 		if (south == null)
 		{
@@ -185,6 +192,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the north. Returns null if no room is north.
 	 */
 	public Room getNorth()
+	throws MudException
 	{
 		if (north == null)
 		{
@@ -202,6 +210,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the east. Returns null if no room is east.
 	 */
 	public Room getEast()
+	throws MudException
 	{
 		if (east == null)
 		{
@@ -219,6 +228,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the west. Returns null if no room is west.
 	 */
 	public Room getWest()
+	throws MudException
 	{
 		if (west == null)
 		{
@@ -236,6 +246,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the up. Returns null if no room is up.
 	 */
 	public Room getUp()
+	throws MudException
 	{
 		if (up == null)
 		{
@@ -253,6 +264,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Room the room to the down. Returns null if no room is down.
 	 */
 	public Room getDown()
+	throws MudException
 	{
 		if (down == null)
 		{
@@ -280,6 +292,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aDescription the new description for the room.
 	 */
 	public void setDescription(String aDescription)
+	throws MudException
 	{
 		theDescription = aDescription;
 		Database.writeRoom(this);
@@ -299,6 +312,7 @@ public class Room implements Executable, AttributeContainer
 	 * @return Area object containing the area information.
 	 */
 	public Area getArea()
+	throws MudException
 	{
 		return Database.getArea(this);
 	}
@@ -310,6 +324,7 @@ public class Room implements Executable, AttributeContainer
 	 * for webbrowsing.
 	 */
 	public String getDescription(User aUser)
+	throws MudException
 	{
 		String result = (getDescription() == null ? 
 			"<H1>Cardboard</H1>" +
@@ -470,6 +485,7 @@ public class Room implements Executable, AttributeContainer
 	 * @see ItemsDb#getInventory
 	 */
 	public String inventory()
+	throws MudDatabaseException
 	{
 		return ItemsDb.getInventory(this);
 	}
@@ -484,6 +500,7 @@ public class Room implements Executable, AttributeContainer
 	 * @see mmud.database.ItemsDb#getItemsFromRoom
 	 */
 	public Vector getItems(String adject1, String adject2, String adject3, String name)
+	throws MudDatabaseException, MudException
 	{
 		return ItemsDb.getItemsFromRoom(adject1, adject2, adject3, name, this);
 	}
@@ -495,6 +512,7 @@ public class Room implements Executable, AttributeContainer
 	 * @see mmud.database.ItemsDb#getItemsFromRoom
 	 */
 	public Item[] getItems(ItemDef anItemDef)
+	throws MudDatabaseException, MudException
 	{
 		return (Item[]) ItemsDb.getItemsFromRoom(anItemDef, this).toArray(new Item[0]);
 	}
@@ -583,7 +601,14 @@ public class Room implements Executable, AttributeContainer
 			}
 			if (value instanceof String)
 			{
-				setDescription((String) value);
+				try
+				{
+					setDescription((String) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change description " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not string.");
@@ -592,12 +617,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setEast(null);
+				try
+				{
+					setEast(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change east " + e);
+				}
 				return;
 			}
 			if (value instanceof Room)
 			{
-				setEast((Room) value);
+				try
+				{
+					setEast((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change east " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -606,12 +645,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setWest(null);
-				return;
+				try
+				{
+					setWest(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change west " + e);
+				}
+			return;
 			}
 			if (value instanceof Room)
 			{
-				setWest((Room) value);
+				try
+				{
+					setWest((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change west " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -620,12 +673,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setNorth(null);
+				try
+				{
+					setNorth(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change north " + e);
+				}
 				return;
 			}
 			if (value instanceof Room)
 			{
-				setNorth((Room) value);
+				try
+				{
+					setNorth((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change north " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -634,12 +701,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setSouth(null);
+				try
+				{
+					setSouth(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change south " + e);
+				}
 				return;
 			}
 			if (value instanceof Room)
 			{
-				setSouth((Room) value);
+				try
+				{
+					setSouth((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change south " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -648,12 +729,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setUp(null);
+				try
+				{
+					setUp(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change up " + e);
+				}
 				return;
 			}
 			if (value instanceof Room)
 			{
-				setUp((Room) value);
+				try
+				{
+					setUp((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change up " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -662,12 +757,26 @@ public class Room implements Executable, AttributeContainer
 		{
 			if (value instanceof Null)
 			{
-				setDown(null);
+				try
+				{
+					setDown(null);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change down " + e);
+				}
 				return;
 			}
 			if (value instanceof Room)
 			{
-				setDown((Room) value);
+				try
+				{
+					setDown((Room) value);
+				}
+				catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name + " unable to change down " + e);
+				}
 				return;
 			}
 			throw new FieldNotSupportedException(field_name + " not set, not room.");
@@ -720,33 +829,40 @@ public class Room implements Executable, AttributeContainer
 	{
 		Logger.getLogger("mmud").finer("field_name=" + field_name +
 			", atttrib_name=" + attrib_name);
-		if (field_name.equals("room"))
+		try
 		{
-			return new Integer(getId());
+			if (field_name.equals("room"))
+			{
+				return new Integer(getId());
+			}
+			if (field_name.equals("east"))
+			{
+				return getEast();
+			}
+			if (field_name.equals("west"))
+			{
+				return getWest();
+			}
+			if (field_name.equals("north"))
+			{
+				return getNorth();
+			}
+			if (field_name.equals("south"))
+			{
+				return getSouth();
+			}
+			if (field_name.equals("up"))
+			{
+				return getUp();
+			}
+			if (field_name.equals("down"))
+			{
+				return getDown();
+			}
 		}
-		if (field_name.equals("east"))
+		catch (MudException e)
 		{
-			return getEast();
-		}
-		if (field_name.equals("west"))
-		{
-			return getWest();
-		}
-		if (field_name.equals("north"))
-		{
-			return getNorth();
-		}
-		if (field_name.equals("south"))
-		{
-			return getSouth();
-		}
-		if (field_name.equals("up"))
-		{
-			return getUp();
-		}
-		if (field_name.equals("down"))
-		{
-			return getDown();
+			throw new FieldNotSupportedException(field_name + " error retrieving value. " + e);
 		}
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
@@ -787,9 +903,22 @@ public class Room implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain an Integer as argument.");
 				}
-				return getItems(ItemDefs.getItemDef(
-					((Integer) arguments[0]).intValue() 
-					));
+				Item[] b = null;
+				try
+				{
+					b = getItems(ItemDefs.getItemDef(
+						((Integer) arguments[0]).intValue() 
+						));
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
+				catch (MudException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
+				}
+				return b;
 			}
 		}
 		if (method_name.equals("addItem"))
@@ -801,13 +930,29 @@ public class Room implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain an Integer as argument.");
 				}
-				ItemDef myItemDef = ItemDefs.getItemDef(
-					((Integer) arguments[0]).intValue());
+				ItemDef myItemDef = null;
+				try
+				{
+					myItemDef = ItemDefs.getItemDef(
+						((Integer) arguments[0]).intValue());
+				}
+				catch (MudDatabaseException e)
+				{
+					throw new MethodNotSupportedException(e.getMessage());
+				}
 				if (myItemDef == null)
 				{
 					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
 				}
-				Item myItem = ItemsDb.addItem(myItemDef);
+				Item myItem = null;
+				try
+				{
+					myItem = ItemsDb.addItem(myItemDef);
+				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
+				}
 				try
 				{
 					ItemsDb.addItemToRoom(myItem, this);
@@ -815,6 +960,10 @@ public class Room implements Executable, AttributeContainer
 				catch (ItemDoesNotExistException e)
 				{
 					throw new MethodNotSupportedException(e.getMessage());
+				}
+				catch (MudDatabaseException e2)
+				{
+					throw new MethodNotSupportedException(e2.getMessage());
 				}
 				Database.writeLog("root", "created item (" + myItem + ") in room " + getId());
 				return myItem;
@@ -879,7 +1028,15 @@ public class Room implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain a String as argument.");
 				}
-				removeAttribute((String) arguments[0]);
+				try
+				{
+					removeAttribute((String) arguments[0]);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not remove attribute.");
+				}
 				Database.writeLog("root", "removed attribute (" + arguments[0] + ") from room " +
 					getId());
 				return null;
@@ -910,7 +1067,15 @@ public class Room implements Executable, AttributeContainer
 				Attribute mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
-				setAttribute(mAttrib);
+				try
+				{
+					setAttribute(mAttrib);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not set attribute.");
+				}
 				Database.writeLog("root", "set attribute (" + arguments[0] + ") in room " +
 					getId());
 				return null;
@@ -936,9 +1101,10 @@ public class Room implements Executable, AttributeContainer
 	 * @param anAttribute the attribute to be added/set.
 	 */
 	public void setAttribute(Attribute anAttribute)
+	throws MudException
 	{
-		theAttributes.put(anAttribute.getName(), anAttribute);
 		AttributeDb.setAttribute(anAttribute, this);
+		theAttributes.put(anAttribute.getName(), anAttribute);
 	}
 
 	/**
@@ -958,6 +1124,7 @@ public class Room implements Executable, AttributeContainer
 	 * @param aName the name of the attribute to be removed.
 	 */
 	public void removeAttribute(String aName)
+	throws MudException
 	{
 		theAttributes.remove(aName);
 		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
