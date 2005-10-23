@@ -4,7 +4,7 @@
 # javac -source 1.4 -classpath
 # *.java
 
-HOMEDIR = /home/karchan/cvs/server
+HOMEDIR = /home/karchan/mmud/server
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
 JAVADOCDIR = /var/www/html/javadoc
