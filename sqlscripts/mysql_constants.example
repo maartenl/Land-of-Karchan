@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export MYSQL_BIN="/usr/bin/mysql"
+export MYSQL_PWD="itsasecret"
+export MYSQL_HOST="localhost"
+export MYSQL_USR="root"
+export MYSQL_DB="mud"
+
+export MYSQL_DUMP="/usr/bin/mysqldump"
