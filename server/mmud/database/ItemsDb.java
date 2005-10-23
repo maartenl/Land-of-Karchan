@@ -26,19 +26,26 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.database; 
 
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
+import mmud.Attribute;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.characters.Person;
+import mmud.items.ContainerDef;
+import mmud.items.Item;
+import mmud.items.ItemCannotBeWornException;
+import mmud.items.ItemDef;
+import mmud.items.ItemDefs;
+import mmud.items.ItemDoesNotExistException;
+import mmud.items.ItemException;
+import mmud.items.PersonPositionEnum;
+import mmud.items.StdItemContainer;
+import mmud.rooms.Room;
 
 /**
  * Used for queries towards the database regarding Items.

@@ -28,11 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.characters.User;
 
 /**
  * Sets the whimpy or displays the whimpy of the user: "whimpy".

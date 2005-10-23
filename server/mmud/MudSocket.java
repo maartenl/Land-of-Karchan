@@ -27,20 +27,25 @@ maarten_l@yahoo.com
 
 package mmud;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.UnknownHostException;
-import java.io.IOException;
-import java.io.File;
 import java.util.logging.Logger;
 
-import mmud.characters.*;
-import mmud.database.*;
-import mmud.commands.*;
-import mmud.races.*;
+import mmud.characters.InvalidFrameException;
+import mmud.characters.Person;
+import mmud.characters.PersonException;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.characters.UserAlreadyActiveException;
+import mmud.characters.UserNotFoundException;
+import mmud.database.Database;
+import mmud.database.MailDb;
+import mmud.races.RaceFactory;
 
 /**
  * the class that takes care of all the socket communication. Is basically

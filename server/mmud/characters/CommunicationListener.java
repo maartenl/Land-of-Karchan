@@ -27,7 +27,6 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.logging.Logger;
 
 /**
  * Event that is triggered when either a say/tell/ask/whisper/shout

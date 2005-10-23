@@ -27,13 +27,7 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.logging.Logger;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
 
 /**
  * Exception thrown when someone attempts to enter the game, is already

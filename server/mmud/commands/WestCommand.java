@@ -28,11 +28,10 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.MudException;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.rooms.Room;
 
 /**
  * Go to the room in the west : "west".

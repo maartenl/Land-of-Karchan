@@ -26,11 +26,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.rooms;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.MudException;
 
 /**
  * Exception thrown when dealing with rooms.

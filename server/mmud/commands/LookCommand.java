@@ -26,15 +26,20 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
-import java.util.logging.Logger;
-import java.util.Vector;
 import java.util.Iterator;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.characters.Person;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.ItemsDb;
+import mmud.items.Container;
+import mmud.items.Item;
+import mmud.items.ItemDoesNotExistException;
+import mmud.items.ItemException;
 
 /**
  * Look at stuff: "look at well". There are three different possibilities:

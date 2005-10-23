@@ -26,7 +26,6 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.items;
 
-import mmud.MudException;
 import mmud.Constants;
 
 /**

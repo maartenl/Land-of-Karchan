@@ -27,20 +27,11 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-import mmud.commands.Command;
-import mmud.races.*;
+import mmud.MudException;
+import mmud.Sex;
+import mmud.items.Item;
+import mmud.races.Race;
+import mmud.rooms.Room;
 
 /**
  * Class containing a default shopkeeper implementation. (currently not a

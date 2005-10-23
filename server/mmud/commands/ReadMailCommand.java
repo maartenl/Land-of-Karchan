@@ -28,11 +28,12 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.InvalidMailException;
+import mmud.MailException;
+import mmud.MudException;
+import mmud.characters.User;
+import mmud.database.MailDb;
 
 /**
  * Read a mudmail : "readmail 2".

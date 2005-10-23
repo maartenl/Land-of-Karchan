@@ -29,23 +29,38 @@ package mmud.characters;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-import java.util.Vector;
 import java.io.StringReader;
 import java.util.Hashtable;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import simkin.*;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-import mmud.commands.Command;
-import mmud.races.*;
+import mmud.Attribute;
+import mmud.AttributeContainer;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.Sex;
+import mmud.database.AttributeDb;
+import mmud.database.Database;
+import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
+import mmud.items.Item;
+import mmud.items.ItemDef;
+import mmud.items.ItemDefs;
+import mmud.items.ItemDoesNotExistException;
+import mmud.items.PersonPositionEnum;
+import mmud.races.Race;
+import mmud.rooms.Room;
+import mmud.rooms.Rooms;
+import simkin.Executable;
+import simkin.ExecutableContext;
+import simkin.ExecutableIterator;
+import simkin.FieldNotSupportedException;
+import simkin.Interpreter;
+import simkin.MethodNotSupportedException;
+import simkin.Null;
+import simkin.XMLExecutable;
 
 /**
  * Class containing all the information of a person in the game. (Not

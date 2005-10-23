@@ -26,19 +26,6 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.rooms;
 
-import java.util.Vector;
-import java.util.TreeMap;
-import java.util.Hashtable;
-import java.util.logging.Logger;
-import java.io.StringReader;
-
-import simkin.*;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
 
 /**
  * Data class containing all the information with regards to a group of rooms

@@ -28,11 +28,12 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.characters.Person;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.Database;
 
 /**
  * Fight another person. Syntax is :<P>

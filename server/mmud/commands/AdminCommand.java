@@ -26,17 +26,18 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
-import java.util.logging.Logger;
-import java.util.Vector;
-import java.util.Calendar;
 import java.text.DateFormat;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.characters.Person;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.Database;
+import mmud.items.ItemDefs;
+import mmud.rooms.Rooms;
 
 /**
  * Admin command. Necessary for resetting several caching stuff like:

@@ -29,11 +29,8 @@ package mmud.items;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
 
 /**
  * Collection class containing all the item definitions.
@@ -66,8 +63,11 @@ public final class ItemDefs
 	public static ItemDef getItemDef(int aItemDefNr)
 	throws MudDatabaseException
 	{
+		if (theItemDefs == null)
+		{
+			throw new RuntimeException("theItemDefs vector is null");
+		}
 		ItemDef myItemDef = null;
-		assert theItemDefs != null : "theItemDefs vector is null";
 		Logger.getLogger("mmud").finer("");
 		for (int i=0;i < theItemDefs.size(); i++)
 		{

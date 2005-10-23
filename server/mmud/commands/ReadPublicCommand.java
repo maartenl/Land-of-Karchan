@@ -27,14 +27,10 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
-import java.util.Vector;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-import mmud.boards.*;
+import mmud.MudException;
+import mmud.characters.User;
+import mmud.items.ItemException;
 
 /**
  * Reads the public board in room 3.

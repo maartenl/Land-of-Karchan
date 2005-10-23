@@ -27,14 +27,12 @@ maarten_l@yahoo.com
 package mmud.commands;  
 
 import java.util.logging.Logger;
-import java.util.Vector;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-import mmud.boards.*;
+import mmud.boards.Board;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.BoardsDb;
+import mmud.database.MudDatabaseException;
 
 /**
  * Reads a general board.

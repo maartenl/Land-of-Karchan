@@ -27,15 +27,7 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-
 import mmud.items.Item;
-import mmud.database.Database;
 
 /**
  * Class containing all the methods that have to be implemented for a

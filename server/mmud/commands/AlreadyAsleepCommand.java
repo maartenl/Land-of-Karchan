@@ -28,11 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.MudException;
+import mmud.characters.User;
 
 /**
  * Command used if the person is asleep, and the command is not 

@@ -28,11 +28,9 @@ package mmud.items;
 
 import java.util.TreeMap;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Attribute;
+import mmud.AttributeContainer;
+import mmud.Constants;
 
 /**
  * The definition of an item. The analogy with Java would be the difference

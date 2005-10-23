@@ -26,20 +26,13 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.database; 
 
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Vector;
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.boards.*;
+import mmud.boards.Board;
+import mmud.boards.BoardFormatEnum;
 
 /**
  * Used for queries towards the database regarding Boards.

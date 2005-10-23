@@ -27,19 +27,24 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.logging.Logger;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-import mmud.races.*;
-
-import simkin.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.Sex;
+import mmud.database.Database;
+import mmud.database.MudDatabaseException;
+import mmud.races.Race;
+import mmud.rooms.Area;
+import mmud.rooms.Room;
+import simkin.Executable;
+import simkin.ExecutableContext;
+import simkin.ExecutableIterator;
+import simkin.FieldNotSupportedException;
+import simkin.MethodNotSupportedException;
 
 /**
  * Collection class containing all persons at the moment active in the game.
@@ -86,7 +91,10 @@ public final class Persons implements Executable
 	 */
 	public static Person retrievePerson(String aName)
 	{
-		assert thePersons != null : "thePersons vector is null";
+		if (thePersons == null)
+		{
+			throw new RuntimeException("thePersons vector was null.");
+		}
 		Logger.getLogger("mmud").finer("aName=" + aName);
 		for (int i=0;i < thePersons.size(); i++)
 		{
@@ -106,7 +114,10 @@ public final class Persons implements Executable
 	public static void removeIdleUsers()
 	throws PersonException
 	{
-		assert thePersons != null : "thePersons vector is null";
+		if (thePersons == null)
+		{
+			throw new RuntimeException("thePersons vector was null.");
+		}
 		Logger.getLogger("mmud").finer("");
 		for (int i=0;i < thePersons.size(); i++)
 		{

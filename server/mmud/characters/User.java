@@ -27,24 +27,26 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.Random;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader; 
-import java.io.IOException;
 import java.util.Calendar;
-import java.util.logging.Logger;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Random;
+import java.util.logging.Logger;
 
-import mmud.database.*;
-import mmud.characters.*;
-import mmud.rooms.*;
-import mmud.commands.*;
-import mmud.Sex;
 import mmud.Constants;
 import mmud.MudException;
-import mmud.races.*;
+import mmud.Sex;
+import mmud.commands.AlreadyAsleepCommand;
+import mmud.commands.AwakenCommand;
+import mmud.commands.BogusCommand;
+import mmud.commands.Command;
+import mmud.commands.QuitCommand;
+import mmud.database.Database;
+import mmud.database.MailDb;
+import mmud.database.MudDatabaseException;
+import mmud.races.Race;
+import mmud.rooms.Room;
+import mmud.rooms.Rooms;
 
 /**
  * Class containing all the information of a user connecting to the game.

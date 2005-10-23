@@ -28,11 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.MudException;
+import mmud.characters.Persons;
+import mmud.characters.User;
 
 /**
  * The Me Command: "me closes the fridge.".

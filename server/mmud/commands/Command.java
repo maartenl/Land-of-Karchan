@@ -26,11 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
-import java.util.logging.Logger;
-
-import mmud.*;
-import mmud.*;
-import mmud.characters.*;
+import mmud.MudException;
+import mmud.characters.User;
 
 /**
  * The interface used for all commands to be executed. Commands are executed

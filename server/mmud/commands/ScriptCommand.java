@@ -28,11 +28,11 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.MethodDoesNotExistException;
+import mmud.MudException;
+import mmud.UserCommandInfo;
+import mmud.characters.User;
+import mmud.database.Database;
 
 /**
  * The Script Command. Runs a script.

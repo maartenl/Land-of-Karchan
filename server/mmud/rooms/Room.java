@@ -26,19 +26,33 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.rooms;
 
-import java.util.Vector;
-import java.util.TreeMap;
-import java.util.Hashtable;
-import java.util.logging.Logger;
 import java.io.StringReader;
+import java.util.Hashtable;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import simkin.*;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Attribute;
+import mmud.AttributeContainer;
+import mmud.MudException;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.AttributeDb;
+import mmud.database.Database;
+import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
+import mmud.items.Item;
+import mmud.items.ItemDef;
+import mmud.items.ItemDefs;
+import mmud.items.ItemDoesNotExistException;
+import simkin.Executable;
+import simkin.ExecutableContext;
+import simkin.ExecutableIterator;
+import simkin.FieldNotSupportedException;
+import simkin.Interpreter;
+import simkin.MethodNotSupportedException;
+import simkin.Null;
+import simkin.XMLExecutable;
 
 /**
  * Data class containing all the information with regards to a room in the

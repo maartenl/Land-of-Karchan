@@ -26,15 +26,6 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.boards;
 
-import java.util.TreeMap;
-import java.util.logging.Logger;
-import java.util.Vector;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
 
 /**
  * Different formats that can be used to display message boards.

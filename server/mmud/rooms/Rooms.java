@@ -26,17 +26,17 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.rooms;
 
+import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
-import java.util.Hashtable;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-
-import simkin.*;
+import mmud.MudException;
+import mmud.database.Database;
+import simkin.Executable;
+import simkin.ExecutableContext;
+import simkin.ExecutableIterator;
+import simkin.FieldNotSupportedException;
+import simkin.MethodNotSupportedException;
 
 /**
  * Collection class containing rooms used.
@@ -74,8 +74,11 @@ public final class Rooms implements Executable
 	public static Room getRoom(int aRoomNr)
 	throws MudException
 	{
+		if (theRooms == null)
+		{
+			throw new RuntimeException("theRooms vector is null");
+		}
 		Room myRoom = null;
-		assert theRooms != null : "theRooms vector is null";
 		Logger.getLogger("mmud").finer("");
 		if (aRoomNr == 0) 
 		{

@@ -26,14 +26,18 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
-import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.ParseException;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.items.Container;
+import mmud.items.Item;
+import mmud.items.ItemException;
+import mmud.rooms.Room;
 
 /**
  * Locks a container with a key: "lock chest with key".

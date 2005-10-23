@@ -27,13 +27,7 @@ maarten_l@yahoo.com
 
 package mmud.rooms;
 
-import java.util.logging.Logger;
-
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
 
 /**
  * Exception thrown when the user is not found (either in the entire

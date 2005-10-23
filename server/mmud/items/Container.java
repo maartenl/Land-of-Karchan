@@ -26,18 +26,9 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.items;     
 
-import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.Vector;
-import java.util.Hashtable;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-
-import simkin.*;
+import mmud.MudException;
 
 /**
  * An interface for a container. Useful for items in the mud that can 

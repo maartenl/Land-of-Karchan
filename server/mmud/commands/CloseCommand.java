@@ -26,14 +26,19 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
-import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
+import mmud.Constants;
+import mmud.MethodDoesNotExistException;
+import mmud.MudException;
+import mmud.ParseException;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.database.Database;
+import mmud.items.Container;
+import mmud.items.Item;
+import mmud.items.ItemException;
 
 /**
  * Close a container: "close chest".

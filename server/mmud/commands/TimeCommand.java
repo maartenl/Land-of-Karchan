@@ -26,15 +26,11 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;  
 
+import java.util.Calendar;
 import java.util.logging.Logger;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-
-import java.util.Calendar;
+import mmud.MudException;
+import mmud.characters.User;
 
 /**
  * Displays the current time: "time".

@@ -26,19 +26,29 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.items;     
 
+import java.io.StringReader;
+import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.io.StringReader;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-
-import simkin.*;
+import mmud.Attribute;
+import mmud.AttributeContainer;
+import mmud.MudException;
+import mmud.characters.Person;
+import mmud.characters.Persons;
+import mmud.database.AttributeDb;
+import mmud.database.Database;
+import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
+import mmud.rooms.Rooms;
+import simkin.Executable;
+import simkin.ExecutableContext;
+import simkin.ExecutableIterator;
+import simkin.FieldNotSupportedException;
+import simkin.Interpreter;
+import simkin.MethodNotSupportedException;
+import simkin.Null;
+import simkin.XMLExecutable;
 
 /**
  * An item in the mud.

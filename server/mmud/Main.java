@@ -28,17 +28,17 @@ maarten_l@yahoo.com
 package mmud;
 
 /* imports */
-import java.net.ServerSocket;
-import java.net.UnknownHostException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
-import javax.xml.parsers.DocumentBuilder;
-import java.util.logging.*;
+import java.util.logging.Level;
 
-import mmud.database.*;
-import mmud.characters.*;
+import mmud.characters.Persons;
+import mmud.database.Database;
+import mmud.database.MudDatabaseException;
 
 /**
  * Main class, used for starting the main method.

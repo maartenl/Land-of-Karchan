@@ -26,18 +26,11 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.items;     
 
-import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.Vector;
-import java.util.Hashtable;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.database.*;
-
-import simkin.*;
+import mmud.Attribute;
+import mmud.MudException;
+import mmud.database.ItemsDb;
 
 /**
  * An item in the mud that can contain other items.

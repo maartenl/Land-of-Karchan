@@ -56,8 +56,6 @@ public class UserCommandInfo
 	public UserCommandInfo(int aCommandId, String aCommand, 
 		String aMethodName, Integer aRoom)
 	{
-		assert aCommand != null : "aCommand is null";
-		assert aMethodName != null : "aMethodName is null";
 		theCommandId = aCommandId;
 		theCommand = aCommand;
 		theMethodName = aMethodName;
@@ -74,8 +72,6 @@ public class UserCommandInfo
 	public UserCommandInfo(int aCommandId, String aCommand, 
 		String aMethodName)
 	{
-		assert aCommand != null : "aCommand is null";
-		assert aMethodName != null : "aMethodName is null";
 		theCommandId = aCommandId;
 		theCommand = aCommand;
 		theMethodName = aMethodName;

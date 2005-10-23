@@ -26,26 +26,37 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.database; 
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Logger;
-import java.util.Collection;
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
 
-import mmud.*;
-import mmud.characters.*;
-import mmud.items.*;
-import mmud.rooms.*;
-import mmud.boards.BoardFormatEnum;
+import mmud.Attribute;
+import mmud.Constants;
+import mmud.MudException;
+import mmud.Sex;
+import mmud.UserCommandInfo;
 import mmud.boards.Board;
-import mmud.races.*;
+import mmud.boards.BoardFormatEnum;
+import mmud.characters.Bot;
+import mmud.characters.Mob;
+import mmud.characters.Person;
+import mmud.characters.Persons;
+import mmud.characters.User;
+import mmud.characters.UserNotFoundException;
+import mmud.items.Item;
+import mmud.races.RaceFactory;
+import mmud.rooms.Area;
+import mmud.rooms.Room;
+import mmud.rooms.RoomNotFoundException;
+import mmud.rooms.Rooms;
 
 /**
  * The central class that takes care of all the commands that are to be
@@ -283,7 +294,7 @@ public class Database
 	static PreparedStatement prepareStatement(String aQuery)
 	throws MudDatabaseException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("");
 		checkConnection();
 		PreparedStatement aStatement = null;
@@ -330,7 +341,7 @@ public class Database
 		int resultSetConcurrency)
 		throws MudDatabaseException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("");
 		checkConnection();
 		PreparedStatement aStatement = null;
@@ -364,7 +375,7 @@ public class Database
 	public static User getUser(String aName, String aPassword)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("aName=" + aName + 
 			",aPassword=" + aPassword);
 		ResultSet res;
@@ -450,7 +461,7 @@ public class Database
 	public static User getActiveUser(String aName, String aPassword)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("aName=" + aName + 
 			",aPassword=" + aPassword);
 		ResultSet res;
@@ -532,7 +543,7 @@ public class Database
 	public static boolean isAuthorizedGod(String aName)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		User myUser = null;
@@ -574,7 +585,7 @@ public class Database
 	public static boolean existsUser(String aName)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		boolean myBoolean = false;
@@ -612,7 +623,7 @@ public class Database
 	public static Room getRoom(int roomnr)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
+
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		Room myRoom = null;
@@ -657,8 +668,10 @@ public class Database
 	public static Area getArea(Room aRoom)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
-		assert aRoom != null : "aRoom is null";
+		if (aRoom == null)
+		{
+			throw new RuntimeException("aRoom is null");
+		}
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
 		Area myArea  = null;
@@ -697,8 +710,10 @@ public class Database
 	public static void writeRoom(Room aRoom)
 	throws MudException
 	{
-		assert theConnection != null : "theConnection is null";
-		assert aRoom != null : "aRoom is null";
+		if (aRoom == null)
+		{
+			throw new RuntimeException("aRoom is null");
+		}
 		Logger.getLogger("mmud").finer("aRoom=" + aRoom);
 		ResultSet res;
 		try
@@ -774,7 +789,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		try
 		{
@@ -815,7 +830,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer(aPerson + "");
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		try
 		{
@@ -855,7 +870,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		Vector myVector = new Vector(50);
 		ResultSet res;
 		User myUser = null;
@@ -998,7 +1013,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		try
 		{
@@ -1085,7 +1100,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 			PreparedStatement statDeactivateEvent =
@@ -1117,7 +1132,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 			PreparedStatement statDeactivateCommand =
@@ -1150,7 +1165,7 @@ public class Database
 	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		Vector myResult = new Vector(25);
 		ResultSet res;
 		try
@@ -1208,7 +1223,7 @@ public class Database
 	{
 		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
 			", aQuestion=" + aQuestion);
-		assert theConnection != null : "theConnection is null";
+
 		String result = null;
 		ResultSet res;
 		try
@@ -1251,7 +1266,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("aMethodName=" + aMethodName);
-		assert theConnection != null : "theConnection is null";
+
 		String result = null;
 		ResultSet res;
 		try
@@ -1291,7 +1306,7 @@ public class Database
 	 */
 	public static String getErrorMessage(String originalErr)
 	{
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		User myUser = null;
 		String myErrMsg = Constants.unknownerrormessage;
@@ -1339,7 +1354,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		Board logonBoard = BoardsDb.getBoard("logonmessage");
 		String result = logonBoard.getDescription() + 
 			logonBoard.read(BoardFormatEnum.SIMPLE);
@@ -1360,7 +1375,7 @@ public class Database
 		{
 			aCommand = "general help";
 		}
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		String result = null;
 		try
@@ -1408,7 +1423,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("username=" + username + ",address=" + address);
-		assert theConnection != null : "theConnection is null";
+
 		ResultSet res;
 		User myUser = null;
 		try
@@ -1508,7 +1523,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1539,7 +1554,7 @@ public class Database
 	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1569,7 +1584,7 @@ public class Database
 	throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1599,7 +1614,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1646,7 +1661,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1676,7 +1691,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1706,7 +1721,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1736,7 +1751,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1766,7 +1781,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1796,7 +1811,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1827,7 +1842,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 
@@ -1865,7 +1880,7 @@ public class Database
 	public static void writeLog(String aName, String aMessage)
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		try
 		{
 			PreparedStatement sqlWriteLog = prepareStatement(sqlWriteLogString);
@@ -1898,7 +1913,7 @@ public class Database
 	public static void writeLog(String aName, Throwable aThrowable)
 	{
 		Logger.getLogger("mmud").finer("");
-		assert theConnection != null : "theConnection is null";
+
 		ByteArrayOutputStream myStream = new ByteArrayOutputStream();
 		PrintStream myPrintStream = new PrintStream(myStream);
 		aThrowable.printStackTrace(myPrintStream);

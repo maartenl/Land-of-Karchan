@@ -27,7 +27,6 @@ maarten_l@yahoo.com
 
 package mmud;
 
-import mmud.database.MudDatabaseException;
 
 /**
  * Interface to indicate that an object can contain attributes.
