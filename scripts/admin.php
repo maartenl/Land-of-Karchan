@@ -39,7 +39,7 @@ if (isset($_REQUEST{"username"}))
 	  quote_smart($_SERVER['REMOTE_ADDR']).
 	  ")\")"
 	  , $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 }
 ?>
 

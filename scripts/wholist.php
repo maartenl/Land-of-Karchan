@@ -50,7 +50,8 @@ $result = mysql_query("select name, title, sleep,
 	where god<=1 and active=1 and mm_rooms.id = mm_usertable.room and
 	mm_rooms.area = mm_area.area"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
+//	error_message("Query failed : " . mysql_error());
 printf("<I>There are %s persons active in the game.</I><P><UL>\r\n", 
 	mysql_num_rows($result));
 while ($myrow = mysql_fetch_array($result)) 

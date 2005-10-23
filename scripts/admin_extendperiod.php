@@ -43,27 +43,27 @@ Admin User <?php echo $_REQUEST{"char"} ?></H1>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ($_COOKIE["karchanadminname"] != "Karn")
 {
-	die("This administration option is only available to Karn.");
+	error_message("This administration option is only available to Karn.");
 }
 $result = mysql_query("update mm_admin set validuntil = date_add(validuntil,
 	interval 1 month) where name = \"".
 	quote_smart($_REQUEST{"char"})."\" and 
 	validuntil >= now()"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 
 $result = mysql_query("update mm_admin set validuntil = date_add(now(),
 	interval 1 month) where name = \"".
 	quote_smart($_REQUEST{"char"})."\" and 
 	validuntil < now()"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 
 $result = mysql_query("select validuntil from mm_admin 
 	where name = \"".
 	quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))
 {
 	writeLog($dbhandle, "Expiration date for ".$_REQUEST{"char"}." changed to ".

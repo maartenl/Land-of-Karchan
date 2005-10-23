@@ -59,7 +59,7 @@ $result = mysql_query("select mm_boardmessages.name,
 	mm_boards.name = \"logonmessage\"
 	order by mm_boardmessages.posttime desc"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<hr>".$myrow["posttime"]."<p>".

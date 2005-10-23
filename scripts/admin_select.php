@@ -44,17 +44,17 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 printf("<PRE>".$_REQUEST{"select"}."</PRE>");
 if (!isset($_REQUEST{"select"}))
 {
-	die("Form field &lt;select&gt; has not been set.");
+	error_message("Form field &lt;select&gt; has not been set.");
 }
 if (strstr($_REQUEST{"select"}, "mysq") <> false)
 {
-	die("Only select and show statements are allowed!");
+	error_message("Only select and show statements are allowed!");
 }
 if (substr($_REQUEST{"select"},0,6) != "select")
 {
 	if (substr($_REQUEST{"select"},0,4) != "show")
 	{
-		die("Only select and show statements are allowed!");
+		error_message("Only select and show statements are allowed!");
 	}
 }
     // Stripslashes
@@ -65,7 +65,7 @@ if (substr($_REQUEST{"select"},0,6) != "select")
 
 $result = mysql_query($_REQUEST{"select"}
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 $numfields = mysql_num_fields($result);
 printf("<TABLE BORDER=1 FRAME=void><TR>");
 for ($i = 0; $i < $numfields; $i++) 

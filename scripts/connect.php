@@ -47,7 +47,34 @@ function quote_smart($value)
     return $value;
 }
 
+// error method for displaying a proper error message
+function error_idmessage($value, $message)
+{
+    if (get_magic_quotes_gpc()) 
+    {
+        $value = stripslashes($value);
+        $message = stripslashes($message);
+    }
+?>
+<I>An error has occurred. 
+Please email <A HREF="mailto:karn@karchan.org">karn@karchan.org</A>.
+Include the error message, the webpage where the error
+occurred and possibly, if relevant, your karchan charactername in the email 
+so that I can start debugging.<P>
+The error message was:<P><B>
+id:<?php echo $value . " message:" . $message ?></B>
+<P>Thank you.<P>Karn</I>
+<?php
+    die();
+}
+
+// error method for displaying a proper error message
+function error_message($message)
+{
+    error_idmessage("unknown", $message);
+}
+
 $dbhandle = mysql_connect($host, $user, $passwd)
-	or die("Could not connect : " . mysql_error());
-mysql_select_db($db,$dbhandle) or die("Could not select database");
+	or error_message("Could not connect : " . mysql_error());
+mysql_select_db($db,$dbhandle) or error_message("Could not select database: " . mysql_error());
 ?>

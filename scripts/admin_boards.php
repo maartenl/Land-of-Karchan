@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
         creation2 from mm_boards"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s ", $myrow["id"]);

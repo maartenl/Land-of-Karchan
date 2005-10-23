@@ -51,7 +51,7 @@ if ((isset($_REQUEST{"linkname"})) &&
 		($_REQUEST{"type"} != "2") &&
 		($_REQUEST{"type"} != "3"))
 	{
-		die("Wrong link type!");
+		error_message("Wrong link type!");
 	}
 
 	$query = "replace into links 
@@ -68,12 +68,12 @@ if ((isset($_REQUEST{"linkname"})) &&
 		"\"";
 	$result = mysql_query($query
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 }
 
 $result = mysql_query("select * from links where type = 1 order by creation"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<LI><A HREF=\"".$myrow["url"]."\">".
@@ -88,7 +88,7 @@ while ($myrow = mysql_fetch_array($result))
 <?php
 $result = mysql_query("select * from links where type = 2 order by creation"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<LI><A HREF=\"".$myrow["url"]."\">".
@@ -103,7 +103,7 @@ while ($myrow = mysql_fetch_array($result))
 
 $result = mysql_query("select * from links where type = 3 order by creation"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<LI><A HREF=\"".$myrow["url"]."\">".

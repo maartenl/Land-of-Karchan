@@ -48,16 +48,16 @@ $result = mysql_query("select * from mm_usertable where mm_usertable.name =
 	and mm_usertable.lok =
 	'".quote_smart($_COOKIE["karchanpassword"])."'"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
 {
-	die("Password not correct, or character does not exist.");
+	error_message("Password not correct, or character does not exist.");
 }
 $result = mysql_query("select *, replace(replace(replace(storyline,
 	'&','&amp;'),'<', '&lt;'), '>', '&gt;') 
 	from characterinfo 
         where name = '".quote_smart($_COOKIE["karchanname"])."'", $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 if ($myrow = mysql_fetch_array($result)) 
 {
 	// full character sheet 
@@ -108,7 +108,7 @@ mysql_close($dbhandle);
 function familyValues($arg)
 {
 	$result = mysql_query("select * from familyvalues", $arg)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	printf("(<I>Make sure you spell the name of the ");
 	printf("familymember correctly, otherwise the corresponding ");
 	printf("charactersheet can not be obtained.</I>)<BR>");

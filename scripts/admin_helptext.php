@@ -69,7 +69,7 @@ Anybody: <TT></TT><P>
 </DL>\")";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Created new help on command ".$_REQUEST{"newcommand"}.".", $query);
 }
 if ( isset($_REQUEST{"command"}) && 
@@ -82,13 +82,13 @@ if ( isset($_REQUEST{"command"}) &&
 		quote_smart($_REQUEST{"command"})."\"";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed help on command ".$_REQUEST{"command"}.".", $query);
 }
 $result = mysql_query("select command, contents from mm_help order by
 command"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<BR><b>command:</b> <A

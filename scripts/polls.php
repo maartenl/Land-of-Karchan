@@ -42,7 +42,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 // show results
 $result = mysql_query("select * from polls order by id"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 printf("<UL>");
 while ($myrow = mysql_fetch_array($result)) 
 {

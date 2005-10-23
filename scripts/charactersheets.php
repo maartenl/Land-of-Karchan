@@ -57,7 +57,7 @@ $result = mysql_query("select concat(\"<A
 	, mm_usertable.name from characterinfo, mm_usertable 
 	where mm_usertable.name=characterinfo.name"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 $numrows = ceil(mysql_num_rows($result) / 5);
 $beginstuff = 'x';
 $counter = 1;

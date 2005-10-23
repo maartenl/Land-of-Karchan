@@ -58,7 +58,7 @@ if ($_REQUEST{"status"} == "3")
 }
 $result = mysql_query($query
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ($myrow["addendum"] == "")

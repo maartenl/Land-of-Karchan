@@ -67,43 +67,43 @@ if (isset($_REQUEST{"name"}))
 	  quote_smart($_COOKIE["karchanadminname"]).
 	  "\")"
 	  , $dbhandle)
-	  or die("Query(1) failed : " . mysql_error());
+	  or error_message("Query(1) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-	  die("You are not the owner of this itemdefinition.");
+	  error_message("You are not the owner of this itemdefinition.");
 	}
 	$result = mysql_query("select id from mm_items where id = \"".
 	  quote_smart($_REQUEST{"item"})."\""
 	  , $dbhandle)
-	  or die("Query(2) failed : " . mysql_error());
+	  or error_message("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-	  die("Item Definition does not exist.");
+	  error_message("Item Definition does not exist.");
 	}
 	if (($_REQUEST["container"] != "1") &&
 	   ($_REQUEST["container"] != "0"))
 	{
-		die("Container value must be either 0 (no) or 1 (yes).");
+		error_message("Container value must be either 0 (no) or 1 (yes).");
 	}
 	if (($_REQUEST["getable"] != "1") &&
 	   ($_REQUEST["getable"] != "0"))
 	{
-		die("Getable value must be either 0 (no) or 1 (yes).");
+		error_message("Getable value must be either 0 (no) or 1 (yes).");
 	}
 	if (($_REQUEST["dropable"] != "1") &&
 	   ($_REQUEST["dropable"] != "0"))
 	{
-		die("Dropable value must be either 0 (no) or 1 (yes).");
+		error_message("Dropable value must be either 0 (no) or 1 (yes).");
 	}
 	if (($_REQUEST["isopenable"] != "1") &&
 	   ($_REQUEST["isopenable"] != "0"))
 	{
-		die("isOpenable value must be either 0 (no) or 1 (yes).");
+		error_message("isOpenable value must be either 0 (no) or 1 (yes).");
 	}
 	if (($_REQUEST["visible"] != "1") &&
 	   ($_REQUEST["visible"] != "0"))
 	{
-		die("Visible value must be either 0 (no) or 1 (yes).");
+		error_message("Visible value must be either 0 (no) or 1 (yes).");
 	}
 	if ($_REQUEST["keyid"] != "")
 	{
@@ -112,10 +112,10 @@ if (isset($_REQUEST{"name"}))
 		where id = \"".
 		  quote_smart($_REQUEST["keyid"]) . "\""
 		  , $dbhandle)
-		  or die("Query(3) failed : " . mysql_error());
+		  or error_message("Query(3) failed : " . mysql_error());
 		if (mysql_num_rows($result) == 0)
 		{
-		  die("Key Item Definition Id does not exist.");
+		  error_message("Key Item Definition Id does not exist.");
 		}
 	}
 
@@ -170,7 +170,7 @@ if (isset($_REQUEST{"name"}))
 	  "\"";
 	mysql_query($query
 	  , $dbhandle)
-	  or die("Query(8) failed : " . mysql_error());
+	  or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed item definition ".$_REQUEST{"item"}.".", $query);
 
 	$wearable2 = 0;
@@ -185,7 +185,7 @@ if (isset($_REQUEST{"name"}))
 	" and id = ".
 	  quote_smart($_REQUEST["item"])
 	  , $dbhandle)
-	  or die("Query(4) failed : " . mysql_error());
+	  or error_message("Query(4) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 0)
 	{
 		// check the wearing...
@@ -196,10 +196,10 @@ if (isset($_REQUEST{"name"}))
 		mm_itemtable.itemid = ".
 		  quote_smart($_REQUEST["item"])
 		  , $dbhandle)
-		  or die("Query(4) failed : " . mysql_error());
+		  or error_message("Query(4) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 0)
 		{
-		  die("Characters are wearing the item, cannot change wearable.");
+		  error_message("Characters are wearing the item, cannot change wearable.");
 		}
 
 		// change the wearing...
@@ -212,7 +212,7 @@ if (isset($_REQUEST{"name"}))
 		  "\"";
 		mysql_query($query
 		  , $dbhandle)
-		  or die("Query(9) failed : " . mysql_error());
+		  or error_message("Query(9) failed : " . mysql_error());
 		writeLogLong($dbhandle, "Changed wearing field of item definition ".$_REQUEST{"item"}.".", $query);
 	}
 
@@ -224,14 +224,14 @@ if (isset($_REQUEST{"deleteitemdef"}))
 	// check if everything is in proper format
 	if ( !is_numeric($_REQUEST{"deleteitemdef"}))
 	{
-		die("Expected item definition id to be an integer, and it wasn't.");
+		error_message("Expected item definition id to be an integer, and it wasn't.");
 	}
 	// check if no item instances are derived from this item definition
 	$result = mysql_query("select 1 from mm_itemtable where itemid = ".
 	quote_smart($_REQUEST{"deleteitemdef"}), $dbhandle);
 	if (mysql_num_rows($result) > 0)
 	{
-		die("There are still item instances using this item definition.");
+		error_message("There are still item instances using this item definition.");
 	}
 	
 	// make it so
@@ -241,10 +241,10 @@ if (isset($_REQUEST{"deleteitemdef"}))
 	quote_smart($_COOKIE["karchanadminname"]).
 	"\")";
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() != 1)
 	{
-		die("Item definition does not exist or not proper owner.");
+		error_message("Item definition does not exist or not proper owner.");
 	}
 	writeLogLong($dbhandle, "Removed item definition ".$_REQUEST{"deleteitemdef"}.".", $query);
 }
@@ -253,7 +253,7 @@ $result = mysql_query("select *,date_format(creation, \"%Y-%m-%d %T\") as
 	creation2 from mm_items where id = ".
 		quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow["id"]);
@@ -445,7 +445,7 @@ ROWS="10" COLS="85">
 $result = mysql_query("select id from mm_itemtable where itemid = ".
 		quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s<A><BR> ", $myrow[0], $myrow[0]);

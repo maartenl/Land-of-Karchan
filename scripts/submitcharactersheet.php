@@ -49,7 +49,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 if (!isset($_COOKIE["karchanname"]) &&    
     !isset($_COOKIE["karchanpassword"]) )
 {   
-    die("Form information missing.");
+    error_message("Form information missing.");
 }
 
 $result = mysql_query("select * from mm_usertable where mm_usertable.name =
@@ -58,10 +58,10 @@ $result = mysql_query("select * from mm_usertable where mm_usertable.name =
 	'".quote_smart($_COOKIE["karchanpassword"])."'
 	and mm_usertable.god < 2"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
 {
-	die("Password not correct, or character does not exist.");
+	error_message("Password not correct, or character does not exist.");
 }
 
 if ($_REQUEST{"family"} != "0")
@@ -71,7 +71,7 @@ if ($_REQUEST{"family"} != "0")
 	\"".quote_smart($_REQUEST{"familyname"}). 
 	"\",".quote_smart($_REQUEST{"family"}).")",
 		 $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 }
 mysql_query("replace into characterinfo 
 	values(\"".quote_smart($_COOKIE["karchanname"])."\",
@@ -81,7 +81,7 @@ mysql_query("replace into characterinfo
 	\"".quote_smart($_REQUEST{"cityofbirth"})."\",
 	\"".quote_smart($_REQUEST{"storyline"})."\")",
 	 $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 mysql_close($dbhandle);
 ?>
 Form information has been submitted.<P>

@@ -54,12 +54,12 @@ $result = mysql_query("update scratchpad set scratch=
 	\"".quote_smart($_REQUEST{"scratchpad"})."\",
 	owner=\"".quote_smart($_COOKIE["karchanadminname"])."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 }
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
 last_updated2 from scratchpad"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>Last updated:</b> %s, by %s<BR>", $myrow["last_updated2"]

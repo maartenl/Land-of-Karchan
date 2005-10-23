@@ -62,10 +62,10 @@ $result = mysql_query("select mm_usertable.name, title, sex,
         where mm_usertable.name = '".quote_smart($_REQUEST{"name"})."' and 
         mm_usertable.name = characterinfo.name"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 if (mysql_num_rows($result) == 0)
 {
-	die("Character does not exist.");
+	error_message("Character does not exist.");
 }
 if ($myrow = mysql_fetch_array($result)) 
 {
@@ -104,7 +104,7 @@ function familyValues($arg)
 		where family.name =
 		'".quote_smart($_REQUEST{"name"})."' and 
 		family.description = familyvalues.id", $arg)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	printf("<B>Family Relations:</B><BR><UL>");
 	while ($myrow = mysql_fetch_array($result))
 	{

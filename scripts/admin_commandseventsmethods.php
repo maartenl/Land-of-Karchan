@@ -94,7 +94,7 @@ if ( (isset($_REQUEST{"eventid"}))
          !is_numeric($_REQUEST{"eventminute"}) ||
          !is_numeric($_REQUEST{"eventdayofweek"}) )
 	{
-		die("Expected one of the fields to be an integer, and it wasn't.");
+		error_message("Expected one of the fields to be an integer, and it wasn't.");
 	}
 	// check that the event is the proper owner.
     // check it.
@@ -104,25 +104,25 @@ if ( (isset($_REQUEST{"eventid"}))
         quote_smart($_COOKIE["karchanadminname"]).
         "\")"
         , $dbhandle)
-        or die("Query(1) failed : " . mysql_error());
+        or error_message("Query(1) failed : " . mysql_error());
     if (mysql_num_rows($result) != 1)
     {
-        die("You are not the owner of this event.");
+        error_message("You are not the owner of this event.");
     }
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
 		quote_smart($_REQUEST{"eventmethodname"}).
 		"\""
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Method does not exist.");
+		error_message("Method does not exist.");
 	}
     if ( ($_REQUEST{"eventcallable"} != "1") &&
         ($_REQUEST{"eventcallable"} != "0") )
     {
-        die("Callable should be either 0 or 1.");
+        error_message("Callable should be either 0 or 1.");
     }
 	// check to see that character exists
 	if (trim($_REQUEST{"eventcharname"}) != "")
@@ -131,10 +131,10 @@ if ( (isset($_REQUEST{"eventid"}))
 			quote_smart($_REQUEST{"eventcharname"}).
 			"\""
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("Character ".$_REQUEST{"eventcharname"}." does not exist.");
+			error_message("Character ".$_REQUEST{"eventcharname"}." does not exist.");
 		}
 	}
 	// check to see that room exists
@@ -144,10 +144,10 @@ if ( (isset($_REQUEST{"eventid"}))
 			quote_smart($_REQUEST{"eventroom"}).
 			"\""
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("Room ".$_REQUEST{"eventroom"}." does not exist.");
+			error_message("Room ".$_REQUEST{"eventroom"}." does not exist.");
 		}
 	}
 	// make that change
@@ -180,7 +180,7 @@ if ( (isset($_REQUEST{"eventid"}))
 		"\"";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Changed event ".$_REQUEST{"eventid"}.
 		".", $query);
 }
@@ -191,15 +191,15 @@ if (isset($_REQUEST{"addeventmethodname"}))
 		quote_smart($_REQUEST{"addeventmethodname"}).
 		"\""
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Method does not exist.");
+		error_message("Method does not exist.");
 	}
 	// create new id
 	$result = mysql_query("select max(eventid) as id from mm_events"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	$maxid = 0;
 	while ($myrow = mysql_fetch_array($result)) 
 	{
@@ -207,7 +207,7 @@ if (isset($_REQUEST{"addeventmethodname"}))
 	}
 	if ($maxid == 0)
 	{
-		die("Could not compute id for event.");
+		error_message("Could not compute id for event.");
 	}
 	
 	// make that change
@@ -220,7 +220,7 @@ if (isset($_REQUEST{"addeventmethodname"}))
 		"\")";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Added event ".($maxid + 1).
 		" which uses method ".$_REQUEST{"addeventmethodname"}.".", $query);
 }
@@ -228,7 +228,7 @@ if (isset($_REQUEST{"deleteeventid"}))
 {
 	if ( !is_numeric($_REQUEST{"deleteeventid"}))
 	{
-		die("Expected eventid to be an integer, and it wasn't.");
+		error_message("Expected eventid to be an integer, and it wasn't.");
 	}
         $query = "delete from mm_events where eventid = ".
 		quote_smart($_REQUEST{"deleteeventid"}).
@@ -236,17 +236,17 @@ if (isset($_REQUEST{"deleteeventid"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
-		or die("Query (".$query.") failed : " . mysql_error());
+		or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() != 1)
 	{
-		die("Event does not exist or not proper owner.");
+		error_message("Event does not exist or not proper owner.");
 	}
     writeLogLong($dbhandle, "Removed event ".$_REQUEST{"deleteeventid"}.".", $query);
 }
 
 $result = mysql_query("select date_format(now(), \"%Y-%m-%d %T\") as now"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 $myrow = mysql_fetch_array($result);
 printf("<H2>Current date/time</H2>".$myrow["now"]."<P>");
 ?>
@@ -257,7 +257,7 @@ Events</H2>
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
 	from mm_events"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ( ($myrow["owner"] == null || $myrow["owner"] == "" ||
@@ -382,7 +382,7 @@ if ( isset($_REQUEST{"commandid"})
 	// check proper information formats
 	if ( !is_numeric($_REQUEST{"commandid"}) )
 	{
-		die("Expected commandid (".$_REQUEST{"commandid"}.") to be an integer, and it wasn't.");
+		error_message("Expected commandid (".$_REQUEST{"commandid"}.") to be an integer, and it wasn't.");
 	}
 	// check that the command is the proper owner.
     $result = mysql_query("select id from mm_commands where id = \"".
@@ -391,25 +391,25 @@ if ( isset($_REQUEST{"commandid"})
         quote_smart($_COOKIE["karchanadminname"]).
         "\")"
         , $dbhandle)
-        or die("Query(1) failed : " . mysql_error());
+        or error_message("Query(1) failed : " . mysql_error());
     if (mysql_num_rows($result) != 1)
     {
-        die("You are not the owner of this command.");
+        error_message("You are not the owner of this command.");
     }
 	// check to see that method exists
 	$result = mysql_query("select 1 from mm_methods where name = \"".
 		quote_smart($_REQUEST{"commandmethodname"}).
 		"\""
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Method does not exist.");
+		error_message("Method does not exist.");
 	}
     if ( ($_REQUEST{"commandcallable"} != "1") &&
         ($_REQUEST{"commandcallable"} != "0") )
     {
-        die("Callable should be either 0 or 1.");
+        error_message("Callable should be either 0 or 1.");
     }
 	// check to see that room exists
 	if (trim($_REQUEST{"commandroom"}) != "")
@@ -418,10 +418,10 @@ if ( isset($_REQUEST{"commandid"})
 			quote_smart($_REQUEST{"commandroom"}).
 			"\""
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("Room ".$_REQUEST{"commandroom"}." does not exist.");
+			error_message("Room ".$_REQUEST{"commandroom"}." does not exist.");
 		}
 	}
 	// make that change
@@ -442,7 +442,7 @@ if ( isset($_REQUEST{"commandid"})
 		"\"";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Changed command ".$_REQUEST{"commandid"}.
 		".", $query);
 }
@@ -454,15 +454,15 @@ if (isset($_REQUEST{"addcommandname"}) &&
 		quote_smart($_REQUEST{"addcommandmethodname"}).
 		"\""
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Method does not exist.");
+		error_message("Method does not exist.");
 	}
 	// create new id
 	$result = mysql_query("select max(id) as id from mm_commands"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	$maxid = 0;
 	while ($myrow = mysql_fetch_array($result)) 
 	{
@@ -470,7 +470,7 @@ if (isset($_REQUEST{"addcommandname"}) &&
 	}
 	if ($maxid == 0)
 	{
-		die("Could not compute id for command.");
+		error_message("Could not compute id for command.");
 	}
 	
 	// make that change
@@ -485,14 +485,14 @@ if (isset($_REQUEST{"addcommandname"}) &&
 		"\")";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Added command ".$_REQUEST{"addcommandname"}.".", $query);
 }
 if (isset($_REQUEST{"deletecommandid"}))
 {
 	if ( !is_numeric($_REQUEST{"deletecommandid"}))
 	{
-		die("Expected commandid to be an integer, and it wasn't.");
+		error_message("Expected commandid to be an integer, and it wasn't.");
 	}
         $query = "delete from mm_commands where id = ".
 		quote_smart($_REQUEST{"deletecommandid"}).
@@ -500,17 +500,17 @@ if (isset($_REQUEST{"deletecommandid"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
-		or die("Query (".$query.") failed : " . mysql_error());
+		or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() != 1)
 	{
-		die("Command does not exist or not proper owner.");
+		error_message("Command does not exist or not proper owner.");
 	}
     writeLogLong($dbhandle, "Removed command ".$_REQUEST{"deletecommandid"}.".", $query);
 }
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
 	from mm_commands"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ( ($myrow["owner"] == null || $myrow["owner"] == "" ||
@@ -609,7 +609,7 @@ if (isset($_REQUEST{"methodname"}) && isset($_REQUEST{"src"}))
 		"\"";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Changed method ".$_REQUEST{"methodname"}.".", $query);
 }
 if (isset($_REQUEST{"addmethodname"}))
@@ -622,7 +622,7 @@ if (isset($_REQUEST{"addmethodname"}))
 		"\")";
     mysql_query($query
         , $dbhandle)
-        or die("Query(8) failed : " . mysql_error());
+        or error_message("Query(8) failed : " . mysql_error());
     writeLogLong($dbhandle, "Added method ".$_REQUEST{"addmethodname"}.".", $query);
 }
 if (isset($_REQUEST{"deletemethodname"}))
@@ -633,7 +633,7 @@ if (isset($_REQUEST{"deletemethodname"}))
 	"\"", $dbhandle);
         if (mysql_num_rows($result) > 0)
         {
-            die("There are still events using this method.");
+            error_message("There are still events using this method.");
         }
         // check if no command is using this method
   $result = mysql_query("select 1 from mm_commands where method_name = \"".
@@ -641,7 +641,7 @@ if (isset($_REQUEST{"deletemethodname"}))
 	"\"", $dbhandle);
         if (mysql_num_rows($result) > 0)
         {
-            die("There are still commands using this method.");
+            error_message("There are still commands using this method.");
         }
 
         // make it so
@@ -651,10 +651,10 @@ if (isset($_REQUEST{"deletemethodname"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\")";
 	mysql_query($query, $dbhandle)
-		or die("Query (".$query.") failed : " . mysql_error());
+		or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() != 1)
 	{
-		die("Method does not exist or not proper owner.");
+		error_message("Method does not exist or not proper owner.");
 	}
     writeLogLong($dbhandle, "Removed method ".$_REQUEST{"deletemethodname"}.".", $query);
 }
@@ -664,7 +664,7 @@ replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\"
 as src2, date_format(creation, \"%Y-%m-%d %T\") as creation2 
 	from mm_methods"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A

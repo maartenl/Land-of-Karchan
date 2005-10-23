@@ -45,12 +45,12 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 if ( (!isset($_REQUEST{"char"})) ||
      (!isset($_REQUEST{"newpassword"})) )
 {
-	die("Form information missing.");
+	error_message("Form information missing.");
 }
 $password = $_REQUEST{"newpassword"};
 if (strlen($password) < 5)
 {
-	die("Password should be at least 5 characters long.");
+	error_message("Password should be at least 5 characters long.");
 }
 // make that change.
 $query = "update mm_usertable set password = password(\"".
@@ -62,7 +62,7 @@ $query = "update mm_usertable set password = password(\"".
 	"\" and (owner is null or owner = \"".
 	quote_smart($_COOKIE["karchanadminname"])."\")";
 mysql_query($query, $dbhandle)  
-or die("Query(8) failed : " . mysql_error(). "[" . $query . "]");
+or error_message("Query(8) failed : " . mysql_error(). "[" . $query . "]");
 writeLog($dbhandle, "Changed password of character ".$_REQUEST{"char"}.".");
 mysql_close($dbhandle);
 ?>

@@ -53,15 +53,18 @@ hierachy is as follows:<P>
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
 
 // show results
-$result = mysql_query("select concat(\"<LI><A HREF=\\\"mailto:\", 
-mm_admin.name, \"@karchan.org\\\">\", mm_admin.name, \"</A>, \", title)
-	as name from mm_admin, mm_usertable 
+$result = mysql_query("select mm_admin.name, title from mm_admin, mm_usertable 
 where mm_admin.name = mm_usertable.name and mm_admin.validuntil > now()"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
-	printf($myrow["name"]);
+	echo "<LI><A HREF=\"mailto:".
+		$myrow["name"].
+		"@karchan.org\">".
+		$myrow["name"].
+		"</A>, ".
+		$myrow["title"] . "\r\n";
 }
 mysql_close($dbhandle);
 ?>

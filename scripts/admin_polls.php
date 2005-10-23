@@ -51,7 +51,7 @@ if (isset($_REQUEST{"createnewpoll"}))
 	// compute maximum new id.
 	$result = mysql_query("select max(id) + 1 as maxid from polls"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	$maxid = 1;
 	while ($myrow = mysql_fetch_array($result)) 
 	{
@@ -64,7 +64,7 @@ if (isset($_REQUEST{"createnewpoll"}))
        .quote_smart($_COOKIE["karchanadminname"])
        ."',now())";
     mysql_query($query, $dbhandle)
-    or die("Query (".$query.") failed : " . mysql_error());
+    or error_message("Query (".$query.") failed : " . mysql_error());
     writeLogLong($dbhandle, "Created new poll.", $query);
     printf("Created new poll.<P>");
 }
@@ -91,7 +91,7 @@ if (isset($_REQUEST{"change_pollid"}))
        .quote_smart($_COOKIE["karchanadminname"])
 		."'";
     mysql_query($query, $dbhandle)
-    or die("Query (".$query.") failed : " . mysql_error());
+    or error_message("Query (".$query.") failed : " . mysql_error());
     writeLogLong($dbhandle, "Changed poll ".$_REQUEST{"change_pollid"}.".", $query);
     printf("Changed poll.<P>");
 
@@ -103,7 +103,7 @@ if (isset($_REQUEST{"change_pollid"}))
      		."where pollid = "
 	        .quote_smart($_REQUEST{"change_pollid"})
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		$maxid = 1;
 		while ($myrow = mysql_fetch_array($result)) 
 		{
@@ -115,7 +115,7 @@ if (isset($_REQUEST{"change_pollid"}))
 	       ." and pollid = "
 	       .quote_smart($_REQUEST{"change_pollid"});
 	    mysql_query($query, $dbhandle)
-	    or die("Query (".$query.") failed : " . mysql_error());
+	    or error_message("Query (".$query.") failed : " . mysql_error());
 	    writeLogLong($dbhandle, "Deleted poll choice for poll ".quote_smart($_REQUEST{"change_pollid"}).".", $query);
 	    printf("Deleted poll choice.<P>");
     }
@@ -127,7 +127,7 @@ if (isset($_REQUEST{"change_pollid"}))
 		    ." where pollid = "
             .quote_smart($_REQUEST{"change_pollid"})
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		$maxid = 1;
 		while ($myrow = mysql_fetch_array($result)) 
 		{
@@ -146,7 +146,7 @@ if (isset($_REQUEST{"change_pollid"}))
 	       .quote_smart($_REQUEST{"change_addchoice"})
 	       ."')";
 	    mysql_query($query, $dbhandle)
-	    or die("Query (".$query.") failed : " . mysql_error());
+	    or error_message("Query (".$query.") failed : " . mysql_error());
 	    writeLogLong($dbhandle, "Created new poll choice for poll ".quote_smart($_REQUEST{"change_pollid"}).".", $query);
 	    printf("Created new poll choice.<P>");
     }
@@ -155,7 +155,7 @@ if (isset($_REQUEST{"change_pollid"}))
 
 $result = mysql_query("select *,  date_format(creation, \"%Y-%m-%d %T\") as creation2 from polls"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
@@ -185,7 +185,7 @@ if (isset($_REQUEST{"pollid"}))
     quote_smart($_COOKIE["karchanadminname"]).
     "')"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result)) 
 	{
 		$found = true;
@@ -226,7 +226,7 @@ VALUE="" SIZE="40" MAXLENGTH="40"><BR>
 		"where pollid = ".
 	    quote_smart($_REQUEST{"pollid"})
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		while ($myrow = mysql_fetch_array($result)) 
 		{
 			printf("<b>id:</b> %s ", $myrow["id"]);
@@ -242,7 +242,7 @@ VALUE="" SIZE="40" MAXLENGTH="40"><BR>
     quote_smart($_REQUEST{"pollid"}).
     " and trim(comments) <> \"\" and comments is not null"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result)) 
 	{
 		printf("<b>name:</b> %s ", $myrow["name"]);

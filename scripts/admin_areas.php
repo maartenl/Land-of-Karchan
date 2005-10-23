@@ -51,7 +51,7 @@ $result = mysql_query("select area, description, shortdesc, owner,
 	date_format(creation, \"%Y-%m-%d %T\") as creation2
 	from mm_area order by area"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))
 {
 	printf("<B>Area:</b> %s<BR>", $myrow["area"]);
@@ -64,7 +64,7 @@ while ($myrow = mysql_fetch_array($result))
 	.quote_smart($myrow["area"])
 	."' order by id"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 	while ($myrow2 = mysql_fetch_array($result2))
 	{
 		printf("<A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A> ", $myrow2["id"], $myrow2["id"]);
@@ -79,7 +79,7 @@ while ($myrow = mysql_fetch_array($result))
 	."' and 
 	mm_rooms1.id in (mm_rooms2.north, mm_rooms2.south, mm_rooms2.east, mm_rooms2.west, mm_rooms2.up, mm_rooms2.down) order by mm_rooms1.id"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 	while ($myrow2 = mysql_fetch_array($result2))
 	{
 		printf("<A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A> ", $myrow2["id"], $myrow2["id"]);

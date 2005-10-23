@@ -36,7 +36,7 @@ if (!isset($_REQUEST{"command"}) &&
 	!isset($_COOKIE["karchanname"]) &&
 	!isset($_COOKIE["karchanpassword"]) )
 {   
-	die("Form information missing.");
+	error_message("Form information missing.");
 }
 // Hack prevention.
 //	$headers = apache_request_headers();
@@ -60,7 +60,7 @@ if (!isset($_REQUEST{"command"}) &&
 				quote_smart($_COOKIE["karchanname"])."\", \"".
 				quote_smart($_REQUEST{"command"})."\")"
 				, $dbhandle)
-				or die("Query failed : " . mysql_error());
+				or error_message("Query failed : " . mysql_error());
 		}
 		fgets ($fp,128); // mud id
 		fgets ($fp,128); // action

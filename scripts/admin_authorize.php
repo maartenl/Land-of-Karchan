@@ -35,7 +35,7 @@ function writeLog ($dbhandle, $arg)
 		"\"".quote_smart($_COOKIE["karchanadminname"])."\",\"".
 		quote_smart($arg)."\")"
     , $dbhandle)
-    or die("Query failed : " . mysql_error());
+    or error_message("Query failed : " . mysql_error());
 }
 
 function writeLogLong ($dbhandle, $arg, $addendum)
@@ -46,7 +46,7 @@ function writeLogLong ($dbhandle, $arg, $addendum)
 		quote_smart($addendum)
 		."\")"
     , $dbhandle)
-    or die("Query failed : " . mysql_error());
+    or error_message("Query failed : " . mysql_error());
 }
 
 /**
@@ -55,14 +55,14 @@ function writeLogLong ($dbhandle, $arg, $addendum)
 if (!isset($_COOKIE["karchanadminname"]) ||
 	!isset($_COOKIE["karchanadminpassword"]))
 {   
-    die("Admin Name and/or password information missing.");
+    error_message("Admin Name and/or password information missing.");
 }
 
 $result = mysql_query("select \"yes\" from mm_admin where name = \"".
         quote_smart($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
 	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()"
     , $dbhandle)
-    or die("Query failed : " . mysql_error());
+    or error_message("Query failed : " . mysql_error());
 $good = "no";
 while ($myrow = mysql_fetch_array($result))
 {
@@ -76,7 +76,7 @@ $result = mysql_query("select \"invalid\" from mm_admin where name = \"".
         quote_smart($_COOKIE["karchanadminname"])."\" and passwd = password(\"".
 	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil < now()"
     , $dbhandle)
-    or die("Query failed : " . mysql_error());
+    or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result))
 {
 	if ($myrow[0] == "invalid")
@@ -87,12 +87,12 @@ while ($myrow = mysql_fetch_array($result))
 
 if ($good == "no")
 {
-	die("Your user account does not exist!");
+	error_message("Your user account does not exist!");
 }
 
 if ($good == "invalid")
 {
-	die("Your account has expired. Contact karn@karchan.org.");
+	error_message("Your account has expired. Contact karn@karchan.org.");
 }
 
 ?>

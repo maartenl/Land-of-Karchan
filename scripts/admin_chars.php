@@ -47,7 +47,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
  */
 if (!isset($_REQUEST{"char"}))
 {
-    die("Form information missing.");
+    error_message("Form information missing.");
 }
 
 /* the following constraints need to be checked before any kind of update is
@@ -74,23 +74,23 @@ if (isset($_REQUEST{"race"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\")"
 		, $dbhandle)
-		or die("Query(1) failed : " . mysql_error());
+		or error_message("Query(1) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("You are not the owner of this character.");
+		error_message("You are not the owner of this character.");
 	}
 	if ( ($_REQUEST{"sex"} != "female") &&
 		($_REQUEST{"sex"} != "male") )
 	{
-		die("Gender should be either male or female.");
+		error_message("Gender should be either male or female.");
 	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
 		quote_smart($_REQUEST{"room"})."\""
 		, $dbhandle)
-		or die("Query(2) failed : " . mysql_error());
+		or error_message("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Room does not exist.");
+		error_message("Room does not exist.");
 	}
 	// make that change.
 	$query = "update mm_usertable set race=\"".
@@ -132,7 +132,7 @@ if (isset($_REQUEST{"race"}))
 		"\"";
 	mysql_query($query
 		, $dbhandle)  
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed character ".$_REQUEST{"char"}.".", $query);
 }
 
@@ -140,7 +140,7 @@ $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
 	creation2 from mm_usertable where name =
 	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> %s<BR>", $myrow["name"]);
@@ -274,7 +274,7 @@ if (isset($_REQUEST{"char"}) &&
 		"\")";
 	mysql_query($query
 		, $dbhandle)  
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added attribute to ".$_REQUEST{"char"}.".", $query);
 }
 
@@ -282,7 +282,7 @@ $result = mysql_query("select * ".
 	" from mm_charattributes".
 	" where charname = \"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
@@ -315,7 +315,7 @@ $result = mysql_query("select * ".
 	" from characterinfo".
 	" where name = \"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>imageurl:</b> %s<BR>", $myrow["imageurl"]);
@@ -333,7 +333,7 @@ $result = mysql_query("select mm_charitemtable.id, mm_items.id, ".
 	" mm_charitemtable.belongsto =
 	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);

@@ -55,7 +55,7 @@ if (isset($_REQUEST{"title"}))
 		"\"";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 }
 
 
@@ -63,7 +63,7 @@ if (isset($_REQUEST{"title"}))
 $result = mysql_query("select *, creation+0 as creation3, date_format(creation, \"%Y-%m-%d %T\") as
 	creation2 from bugs order by creation"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<TR><TD><A HREF=\"/scripts/bugs.php?bug=".$myrow["creation3"]."

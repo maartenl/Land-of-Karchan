@@ -43,7 +43,7 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 $result = mysql_query("select * from polls where id=".
 	quote_smart($_REQUEST{"number"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf($myrow["title"]."<P>".$myrow["description"]."<P>");
@@ -57,7 +57,7 @@ if ($_REQUEST{"value"} != "")
     if (!isset($_COOKIE["karchanname"]) &&   
        !isset($_COOKIE["karchanpassword"]) )
     {   
-        die("Form information missing. You must be logged into the game ".
+        error_message("Form information missing. You must be logged into the game ".
         "to enter into the polls.");
     }
 	$query = "replace into poll_values
@@ -75,7 +75,7 @@ if ($_REQUEST{"value"} != "")
 		"\"";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 }
 
 if ($closed == "1")
@@ -84,7 +84,7 @@ if ($closed == "1")
 		from poll_values 
 		where id=".quote_smart($_REQUEST{"number"})
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	$count = 1;
 	while ($myrow = mysql_fetch_array($result)) 
 	{
@@ -99,7 +99,7 @@ if ($closed == "1")
 		group by poll_choices.id 
 		order by poll_choices.id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	printf("<UL>");
 	while ($myrow = mysql_fetch_array($result)) 
 	{
@@ -121,7 +121,7 @@ else
 	 if (!isset($_COOKIE["karchanname"]) &&   
 	    !isset($_COOKIE["karchanpassword"]) )
      {   
-	    die("Form information missing. You must be logged into the game ".
+	    error_message("Form information missing. You must be logged into the game ".
         "to enter into the polls.");
      }
 	// show form
@@ -130,7 +130,7 @@ else
 		where pollid=".quote_smart($_REQUEST{"number"})."
 		order by id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	printf("<FORM METHOD=\"GET\" ACTION=\"/scripts/poll.php\">");
 	while ($myrow = mysql_fetch_array($result)) 
 	{

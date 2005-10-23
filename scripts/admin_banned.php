@@ -84,7 +84,7 @@ if ($_REQUEST{"ban_address"} != "")
 	"\"".quote_smart($_REQUEST{"ban_reason"})."\"".
 	")"
 	, $dbhandle)
-	or die("Query(8) failed : " . mysql_error());
+	or error_message("Query(8) failed : " . mysql_error());
 	writeLog($dbhandle, "Added ban on address ".$_REQUEST{"ban_address"}.".");
 }
 if ($_REQUEST{"add_bannedname"} != "")
@@ -97,7 +97,7 @@ if ($_REQUEST{"add_bannedname"} != "")
 	quote_smart($_REQUEST{"add_banreason"}).
 	"\")";
 	mysql_query($query, $dbhandle)
-	or die("Query(8) failed : " . $query . mysql_error());
+	or error_message("Query(8) failed : " . $query . mysql_error());
 	writeLog($dbhandle, "Added ban on character ".$_REQUEST{"add_bannedname"}.".");
 }
 if ($_REQUEST{"unbanname"} <> "")
@@ -105,7 +105,7 @@ if ($_REQUEST{"unbanname"} <> "")
 	mysql_query("replace into mm_unbantable values(\"".
 	quote_smart($_REQUEST{"unbanname"})."\")"
 	, $dbhandle)
-	or die("Query(2) failed : " . mysql_error());
+	or error_message("Query(2) failed : " . mysql_error());
 	writeLog($dbhandle, "Added name to be unbanned. (".$_REQUEST{"unbanname"}.")");
 }
 if ($_REQUEST{"sillyname"} != "")
@@ -113,7 +113,7 @@ if ($_REQUEST{"sillyname"} != "")
 	mysql_query("replace into mm_sillynamestable values(\"".
 	quote_smart($_REQUEST{"sillyname"})."\")"
 	, $dbhandle)
-	or die("Query(3) failed : " . mysql_error());
+	or error_message("Query(3) failed : " . mysql_error());
 	writeLog($dbhandle, "Added sillyname. (".$_REQUEST{"sillyname"}.")");
 }
 if ($_REQUEST{"remove_unban"} != NULL)
@@ -121,7 +121,7 @@ if ($_REQUEST{"remove_unban"} != NULL)
 	mysql_query("delete from mm_unbantable where name = \"".
 		quote_smart($_REQUEST{"remove_unban"})."\""
 		, $dbhandle)
-		or die("Query(4) failed : " . mysql_error());
+		or error_message("Query(4) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed unbanname. (".$_REQUEST{"remove_unban"}.")");
 }
 if ($_REQUEST{"remove_sillyname"} != NULL)
@@ -129,7 +129,7 @@ if ($_REQUEST{"remove_sillyname"} != NULL)
 	mysql_query("delete from mm_sillynamestable where name = \"".
 		quote_smart($_REQUEST{"remove_sillyname"})."\""
 		, $dbhandle)
-		or die("Query(6) failed : " . mysql_error());
+		or error_message("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed sillyname. (".$_REQUEST{"remove_sillyname"}.")");
 }
 if ($_REQUEST{"remove_bannedname"} != NULL)
@@ -137,7 +137,7 @@ if ($_REQUEST{"remove_bannedname"} != NULL)
 	mysql_query("delete from mm_bannednamestable where name = \"".
 		quote_smart($_REQUEST{"remove_bannedname"})."\""
 		, $dbhandle)
-		or die("Query(6) failed : " . mysql_error());
+		or error_message("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed banned name. (".$_REQUEST{"remove_bannedname"}.")");
 }
 if ($_REQUEST{"remove_banned"} != NULL)
@@ -145,13 +145,13 @@ if ($_REQUEST{"remove_banned"} != NULL)
 	$query = "delete from mm_bantable where trim(address) = \"".
 		quote_smart($_REQUEST{"remove_banned"})."\"";
 	mysql_query($query, $dbhandle)
-		or die("Query(6) failed : " . mysql_error());
+		or error_message("Query(6) failed : " . mysql_error());
 	writeLog($dbhandle, "Removed ".$query."banned address. (".$_REQUEST{"remove_banned"}.")");
 }
 
 $result = mysql_query("select * from mm_bantable"
 	, $dbhandle)
-	or die("Query(1) failed : " . mysql_error());
+	or error_message("Query(1) failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<TR><TD><A HREF=\"/scripts/admin_banned.php?remove_banned=%s\">%s</A></TD>",
@@ -180,7 +180,7 @@ Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><
 <?php
 $result = mysql_query("select * from mm_unbantable order by name"
 	, $dbhandle)
-	or die("Query(5) failed : " . mysql_error());
+	or error_message("Query(5) failed : " . mysql_error());
 $count = 1;
 printf("<TABLE><TR><TD>");
 while ($myrow = mysql_fetch_array($result)) 
@@ -209,7 +209,7 @@ Add Unbanname:<FORM METHOD="GET" ACTION="/scripts/admin_banned.php">
 <?php
 $result = mysql_query("select * from mm_bannednamestable order by name"
 	, $dbhandle)
-	or die("Query(7) failed : " . mysql_error());
+	or error_message("Query(7) failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<A HREF=\"/scripts/admin_banned.php?remove_bannedname=%s\">%s</A><BR>",
@@ -235,7 +235,7 @@ Reason:<INPUT TYPE="text" NAME="add_banreason" VALUE="" SIZE="40" MAXLENGTH="255
 <?php
 $result = mysql_query("select * from mm_sillynamestable order by name"
 	, $dbhandle)
-	or die("Query(7) failed : " . mysql_error());
+	or error_message("Query(7) failed : " . mysql_error());
 $count = 1;
 printf("<TABLE><TR><TD>");
 while ($myrow = mysql_fetch_array($result)) 

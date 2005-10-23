@@ -47,13 +47,13 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
  */
 if (!isset($_REQUEST{"message"}))
 {   
-	die("Form information missing.");
+	error_message("Form information missing.");
 }
 $result = mysql_query("replace into mm_boardmessages 
 	values(2, \"".quote_smart($_COOKIE["karchanadminname"])."\", now(),\"".
 	quote_smart($_REQUEST{"message"})."\")"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 
 writeLog($dbhandle, "Added a logon message");
 

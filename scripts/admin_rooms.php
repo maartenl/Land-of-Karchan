@@ -77,14 +77,14 @@ if (isset($_REQUEST{"addroom_area"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\""
 		, $dbhandle)
-		or die("Query(7) failed : " . mysql_error());
+		or error_message("Query(7) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Area does not exist or you are not the owner.");
+		error_message("Area does not exist or you are not the owner.");
 	}
 	$result = mysql_query("select max(id)+1 as maxid from mm_rooms"
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	// get the new room number.
 	$roomid = 0;
 	while ($myrow = mysql_fetch_array($result)) 
@@ -101,7 +101,7 @@ if (isset($_REQUEST{"addroom_area"}))
 		"\", now())";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added room ".$roomid.".", $query);
 	$_REQUEST{"room"} = $roomid;
 }
@@ -114,10 +114,10 @@ if (isset($_REQUEST{"west"}))
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\")"
 		, $dbhandle)
-		or die("Query(1) failed : " . mysql_error());
+		or error_message("Query(1) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("You are not the owner of this room.");
+		error_message("You are not the owner of this room.");
 	}
 	$south = trim($_REQUEST{"south"});
 	$north = trim($_REQUEST{"north"});
@@ -130,10 +130,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($south)
 			, $dbhandle)
-			or die("Query failed : " . mysql_error());
+			or error_message("Query failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("South exit does not exist.");
+			error_message("South exit does not exist.");
 		}
 	}
 	else
@@ -145,10 +145,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($north)
 			, $dbhandle)
-			or die("Query(2) failed : " . mysql_error());
+			or error_message("Query(2) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("North exit does not exist.");
+			error_message("North exit does not exist.");
 		}
 	}
 	else
@@ -160,10 +160,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($west)
 			, $dbhandle)
-			or die("Query(3) failed : " . mysql_error());
+			or error_message("Query(3) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("West exit does not exist.");
+			error_message("West exit does not exist.");
 		}
 	}
 	else
@@ -175,10 +175,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($east)
 			, $dbhandle)
-			or die("Query(4) failed : " . mysql_error());
+			or error_message("Query(4) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("East exit does not exist.");
+			error_message("East exit does not exist.");
 		}
 	}
 	else
@@ -190,10 +190,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($up)
 			, $dbhandle)
-			or die("Query(5) failed : " . mysql_error());
+			or error_message("Query(5) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("Up exit does not exist.");
+			error_message("Up exit does not exist.");
 		}
 	}
 	else
@@ -205,10 +205,10 @@ if (isset($_REQUEST{"west"}))
 		$result = mysql_query("select id from mm_rooms where id = ".
 			quote_smart($down)
 			, $dbhandle)
-			or die("Query(6) failed : " . mysql_error());
+			or error_message("Query(6) failed : " . mysql_error());
 		if (mysql_num_rows($result) != 1)
 		{
-			die("Down exit does not exist.");
+			error_message("Down exit does not exist.");
 		}
 	}
 	else
@@ -218,10 +218,10 @@ if (isset($_REQUEST{"west"}))
 	$result = mysql_query("select area from mm_area where area = \"".
 		quote_smart($_REQUEST{"area"})."\""
 		, $dbhandle)
-		or die("Query(7) failed : " . mysql_error());
+		or error_message("Query(7) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Area does not exist.");
+		error_message("Area does not exist.");
 	}
 	// make that change.
 	$query = "update mm_rooms set north=".
@@ -246,14 +246,14 @@ if (isset($_REQUEST{"west"}))
 		quote_smart($_REQUEST{"room"});
 	mysql_query($query
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed room ".$_REQUEST{"room"}.".", $query);
 }
 
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 from mm_rooms where id =
 	".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow[0]);
@@ -304,7 +304,7 @@ while ($myrow = mysql_fetch_array($result))
 <?php
 $arearesult = mysql_query("select area from mm_area"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($areamyrow = mysql_fetch_array($arearesult)) 
 {
 	printf("<option %s value=\"%s\">%s",
@@ -325,7 +325,7 @@ $arearesult = mysql_query("select area from mm_area where owner='".
 	quote_smart($_COOKIE["karchanadminname"]).
 	"'"
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($areamyrow = mysql_fetch_array($arearesult)) 
 {
 	printf("<option %s value=\"%s\">%s",
@@ -353,7 +353,7 @@ $result = mysql_query("select * ".
 	" from mm_roomattributes".
 	" where id = ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);
@@ -368,7 +368,7 @@ $result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
 	" mm_items.id = mm_itemtable.itemid and ".
 	" mm_roomitemtable.room = ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
@@ -382,7 +382,7 @@ $result = mysql_query("select mm_usertable.name ".
 	" where active = 1 and room  =
 ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
@@ -393,7 +393,7 @@ $result = mysql_query("select mm_usertable.name ".
 	" where active = 0 and room  =
 	".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR> ", $myrow[0], $myrow[0]);
@@ -404,7 +404,7 @@ $result = mysql_query("select id from mm_rooms where
 	".quote_smart($_REQUEST{"room"}).
 	" in (west, east, north, south, up, down) "
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[0], $myrow[0]);

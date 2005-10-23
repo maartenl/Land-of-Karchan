@@ -76,7 +76,7 @@ $claimed = false; // is the item allocated to a character/room or container?
 
 if (!isset($_REQUEST{"item"}))
 {
-	die("Form information missing.");
+	error_message("Form information missing.");
 }
 $result = mysql_query("select mm_itemtable.id, mm_itemtable.owner, 
 mm_itemtable.itemid,
@@ -86,7 +86,7 @@ from mm_itemtable left join mm_items ".
 	" on mm_items.id = mm_itemtable.itemid where mm_itemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> %s<BR>", $myrow["id"]);
@@ -108,20 +108,20 @@ if (isset($_REQUEST{"removeitemfromroom"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"removeitemfromroom"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_roomitemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromroom"});
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
 	{
-		die("Item does not exist in a room.");
+		error_message("Item does not exist in a room.");
 	}
 	writeLogLong($dbhandle, "Removed item ".$_REQUEST{"removeitemfromroom"}." from room(s).", $query);
 }
@@ -130,20 +130,20 @@ if (isset($_REQUEST{"removeitemfromchar"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"removeitemfromchar"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_charitemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromchar"});
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
 	{
-		die("Item does not belong to a character.");
+		error_message("Item does not belong to a character.");
 	}
 	writeLogLong($dbhandle, "Removed item ".$_REQUEST{"removeitemfromchar"}." from character(s).", $query);
 }
@@ -152,20 +152,20 @@ if (isset($_REQUEST{"removeitemfromitem"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"removeitemfromitem"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	$query = "delete from mm_itemitemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromitem"});
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
 	{
-		die("Item is not stored in a container.");
+		error_message("Item is not stored in a container.");
 	}
 	writeLogLong($dbhandle, "Removed item ".$_REQUEST{"removeitemfromitem"}." from container(s).", $query);
 }
@@ -174,18 +174,18 @@ if (isset($_REQUEST{"removeitemtotally"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"removeitemtotally"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	
 	$query = "delete from mm_itemtable where id = ".
 	quote_smart($_REQUEST{"removeitemtotally"});
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	writeLogLong($dbhandle, "Removed item instance ".$_REQUEST{"removeitemtotally"}.".", $query);
 }
 if (isset($_REQUEST{"additemtoroom"}))
@@ -193,25 +193,25 @@ if (isset($_REQUEST{"additemtoroom"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"additemtoroom"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	if (!is_numeric($_REQUEST{"additemtoroom_roomid"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	// check that room exists
 	$result = mysql_query("select id from mm_rooms where id = ".
 	quote_smart($_REQUEST{"additemtoroom_roomid"})
 	, $dbhandle)
-	or die("Query(2) failed : " . mysql_error());
+	or error_message("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Room does not exist.");
+		error_message("Room does not exist.");
 	}
 	
 	$query = "insert into mm_roomitemtable (id, room) values(".
@@ -220,7 +220,7 @@ if (isset($_REQUEST{"additemtoroom"}))
 	quote_smart($_REQUEST{"additemtoroom_roomid"}).
 	")";
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added item ".$_REQUEST{"additemtoroom"}." to room ".$_REQUEST{"additemtoroom_roomid"}.".", $query);
 }
 if (isset($_REQUEST{"additemtochar"}))
@@ -228,22 +228,22 @@ if (isset($_REQUEST{"additemtochar"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"additemtochar"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	// check that character exists
 	$result = mysql_query("select name from mm_usertable where name = \"".
 	quote_smart($_REQUEST{"additemtochar_charname"}).
 	"\""
 	, $dbhandle)
-	or die("Query(2) failed : " . mysql_error());
+	or error_message("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Character does not exist.");
+		error_message("Character does not exist.");
 	}
 
 	$query = "insert into mm_charitemtable (id, belongsto) values(".
@@ -252,7 +252,7 @@ if (isset($_REQUEST{"additemtochar"}))
 	quote_smart($_REQUEST{"additemtochar_charname"}).
 	"\")";
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added item ".$_REQUEST{"additemtochar"}." to character ".$_REQUEST{"additemtochar_charname"}.".", $query);
 }
 if (isset($_REQUEST{"additemtocontainer"}))
@@ -260,31 +260,31 @@ if (isset($_REQUEST{"additemtocontainer"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"additemtocontainer"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	if (!is_numeric($_REQUEST{"additemtocontainer_containerid"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	// check if owner is correct
 	if (!$owner)
 	{
-		die("You are not the owner of this item instance.");
+		error_message("You are not the owner of this item instance.");
 	}
 	// check that not item is same as container
 	if ($_REQUEST{"additemtocontainer_containerid"} == $_REQUEST{"additemtocontainer"})
 	{
-		die("You cannot put an item into itself.");
+		error_message("You cannot put an item into itself.");
 	}
 	// check that container exists and is in fact a container
 	$result = mysql_query("select mm_itemtable.itemid from mm_itemtable, mm_items ".
 	"where mm_itemtable.itemid = mm_items.id and mm_items.container = 1 and mm_itemtable.id = ".
 	quote_smart($_REQUEST{"additemtocontainer_containerid"})
 	, $dbhandle)
-	or die("Query(2) failed : " . mysql_error());
+	or error_message("Query(2) failed : " . mysql_error());
 	if (mysql_num_rows($result) != 1)
 	{
-		die("Container does not exist or is not a container.");
+		error_message("Container does not exist or is not a container.");
 	}
 
 	$query = "insert into mm_itemitemtable (id, containerid) values(".
@@ -293,7 +293,7 @@ if (isset($_REQUEST{"additemtocontainer"}))
 	quote_smart($_REQUEST{"additemtocontainer_containerid"}).
 	")";
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added item ".$_REQUEST{"additemtocontainer"}." to container ".$_REQUEST{"additemtocontainer_containerid"}.".", $query);
 }
 
@@ -302,7 +302,7 @@ $result = mysql_query("select containerid ".
 	" where mm_itemitemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 ?>
@@ -320,7 +320,7 @@ $result = mysql_query("select room ".
 	" where mm_roomitemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 ?>
@@ -338,7 +338,7 @@ $result = mysql_query("select belongsto ".
 	" where mm_charitemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 ?>
@@ -359,7 +359,7 @@ $result = mysql_query("select mm_itemitemtable.id, mm_items.id, ".
 	" mm_itemitemtable.containerid =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>id:</b> <A HREF=\"/scripts/admin_items.php?item=%s\">%s</A> ", $myrow[0], $myrow[0]);
@@ -417,14 +417,14 @@ if (isset($_REQUEST{"item"}) &&
 		"\")";
 	mysql_query($query
 		, $dbhandle)
-		or die("Query(8) failed : " . mysql_error());
+		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Added attribute to ".$_REQUEST{"char"}.".", $query);
 }
 $result = mysql_query("select * ".
 	" from mm_itemattributes".
 	" where id = ".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
-	or die("Query failed : " . mysql_error());
+	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A HREF=\"/scripts/admin_attributelist.php?name=%s\">%s</A> ", $myrow[0], $myrow[0]);

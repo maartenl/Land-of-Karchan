@@ -64,7 +64,7 @@ if (isset($_REQUEST{"removeownership"}))
 	// check numeric stuff
 	if (!is_numeric($_REQUEST{"removeownership"}))
 	{
-		die("Expected field to be an integer, and it wasn't.");
+		error_message("Expected field to be an integer, and it wasn't.");
 	}
 	if ($_REQUEST{"removeownership"} == "1")
 	{
@@ -96,7 +96,7 @@ if (isset($_REQUEST{"removeownership"}))
 	}
 	else
 	{
-		die("Unknown table row to claim ownership on...");
+		error_message("Unknown table row to claim ownership on...");
 	}
 	$query = "update ".$table." set owner = null where owner = '"
 	   .quote_smart($_COOKIE["karchanadminname"])
@@ -104,10 +104,10 @@ if (isset($_REQUEST{"removeownership"}))
 	   .$row
 	   ." = '".quote_smart($_REQUEST{"id"})."'";
 	mysql_query($query, $dbhandle)
-	or die("Query (".$query.") failed : " . mysql_error());
+	or error_message("Query (".$query.") failed : " . mysql_error());
 	if (mysql_affected_rows() < 1)
 	{
-		die("You are not the owner.");
+		error_message("You are not the owner.");
 	}
 	writeLogLong($dbhandle, "Relinquished ownership.", $query);
 	printf("Relinquished ownership.<P>");
@@ -121,7 +121,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by name"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["name"]);
@@ -132,7 +132,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["id"]);
@@ -143,7 +143,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by eventid"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["id"]);
@@ -154,7 +154,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["id"]);
@@ -165,7 +165,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["id"]);
@@ -176,7 +176,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by id"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["id"]);
@@ -187,7 +187,7 @@ else
 		.quote_smart($_COOKIE["karchanadminname"])
 		."' order by name"
 		, $dbhandle)
-		or die("Query failed : " . mysql_error());
+		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
 		printf("%s<BR>", $myrow["name"]);
