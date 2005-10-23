@@ -140,6 +140,7 @@ public class User extends mmud.characters.Person
 		int aAlignment,
 		int aMovement,
 		Room aRoom)
+	throws MudException
 	{
 		super(aName, aTitle,
 			aRace,

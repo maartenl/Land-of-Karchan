@@ -72,6 +72,7 @@ public class SellCommand extends NormalCommand
 	 * have a occupation-attribute set to "shopkeeper"
 	 * and<li>has enough money</ol>
 	 * <li>the customer should have the item
+	 * <li>the item itself should <I>NOT</I> have a attribute called "notsellable".
 	 * </ol>
 	 * A best effort is tried, this means the following sequence of events:
 	 * <ol><li>the item is transferred into the inventory of the shopkeeper
@@ -144,7 +145,10 @@ public class SellCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(0);
 				sumvalue += myItem.getValue();
 			}
-			Logger.getLogger("mmud").finer("total value=" + sumvalue);
+			Logger.getLogger("mmud").finer(aUser.getName() + " has items worth " + sumvalue + " copper");
+			Logger.getLogger("mmud").finer(toChar.getName() + " has " + 
+				myGold.size() + " gold, " + mySilver.size() + " silver, " +
+				myCopper.size() + " copper");
 			if (myGold.size() * 100 + mySilver.size() * 10 + myCopper.size()
 				< sumvalue )
 			{
@@ -169,6 +173,15 @@ public class SellCommand extends NormalCommand
 				{
 					// transfer item to user
 					int totalitemvalue = myItem.getValue();
+					/*
+						This is a little complicated... but here it goes.
+						(1)
+						item value is at least one gold and shopkeeper has gold    =>    remove one gold coin 
+						else
+						item value is at least one silver and shopkeeper has silver   =>    remove one silver coin
+						else
+						item value is at least one copper and shopkeeper has copper   =>    remove one copper coin
+					*/
 					while (totalitemvalue != 0)
 					{
 						if ((totalitemvalue >= 100) && (myGoldPos != myGold.size()))
@@ -233,7 +246,7 @@ public class SellCommand extends NormalCommand
 					{
 						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
 						ItemsDb.transferItem(myItem, toChar);
-						Persons.sendMessage(aUser, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
+						Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
 						j++;
 					}
 				}

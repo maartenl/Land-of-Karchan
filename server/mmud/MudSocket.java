@@ -215,7 +215,6 @@ public class MudSocket extends Thread
 					{
 						Logger.getLogger("mmud").warning(
 							"unable to interpret frame information, defaulting to 0.");
-						e.printStackTrace();
 					}
 					try
 					{

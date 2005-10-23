@@ -108,6 +108,7 @@ public class StdShopKeeper extends Person implements ShopKeeper
 		int aAlignment,
 		int aMovement,
 		Room aRoom)
+	throws MudException
 	{
 		super(aName, 
 			aTitle,

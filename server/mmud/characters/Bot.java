@@ -113,6 +113,7 @@ public class Bot extends Person implements CommunicationListener
 		int anAlignment,
 		int aMovement,
 		Room aRoom)
+	throws MudException
 	{
 		super(aName, 
 		aTitle,

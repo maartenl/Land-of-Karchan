@@ -139,6 +139,7 @@ public class Person implements Executable, AttributeContainer
 		int anAlignment,
 		int aMovement,
 		Room aRoom)
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer(""); 
 		theName = aName;
@@ -599,8 +600,12 @@ public class Person implements Executable, AttributeContainer
 
 	/**
 	 * creates a new log file and deletes the old one.
+	 * @throws MudException which indicates probably that the
+	 * log file could not be created. Possibly due to
+	 * either permissions or the directory does not exist.
 	 */
 	public void createLog()
+	throws MudException
 	{
 		if (theLogFile.exists())
 		{
@@ -610,9 +615,10 @@ public class Person implements Executable, AttributeContainer
 		{
 			theLogFile.createNewFile();
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
-			e.printStackTrace();
+			throw new MudException("Error creating logfile for " + getName() + 
+				" in " + Constants.mudfilepath, e);
 		}
 	}
 
