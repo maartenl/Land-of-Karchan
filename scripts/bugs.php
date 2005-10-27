@@ -99,6 +99,10 @@ Description:<BR>
 } 
 ?>
 
+<A HREF="/karchan/help/helpindex.html">
+<IMG SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></A><P>
+
 </BODY>
 </HTML>
 

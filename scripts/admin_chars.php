@@ -58,6 +58,7 @@ changing character:
 - check that sex is male or female
 - does room exist
 - check if sex is correct
+- is copper>=0
 deleting character:   
 - checking attributes
 - checking items (mm_charitemtable)
@@ -83,6 +84,10 @@ if (isset($_REQUEST{"race"}))
 		($_REQUEST{"sex"} != "male") )
 	{
 		error_message("Gender should be either male or female.");
+	}
+	if ($_REQUEST{"copper"} < 0)
+	{
+		error_message("Amount of money should always at least be 0.");
 	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
 		quote_smart($_REQUEST{"room"})."\""
@@ -121,6 +126,8 @@ if (isset($_REQUEST{"race"}))
 		quote_smart($_REQUEST{"room"}).
 		"\", experience=\"".
 		quote_smart($_REQUEST{"experience"}).
+		"\", copper=\"".
+		quote_smart($_REQUEST{"copper"}).
 		"\", god=\"".
 		quote_smart($_REQUEST{"god"}).
 		"\", active=\"".
@@ -164,6 +171,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>lok:</b> %s<BR>", $myrow["lok"]);
 	printf("<b>whimpy:</b> %s<BR>", $myrow["whimpy"]);
 	printf("<b>sleep:</b> %s<BR>", $myrow["sleep"]);
+	printf("<b>copper:</b> %s<BR>", $myrow["copper"]);
 	$god = "unknown";
 	if ($myrow["god"] == "0") {$god = "normal";}
 	if ($myrow["god"] == "1") {$god = "deputy";}
@@ -224,6 +232,7 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>leg</TD><TD><INPUT TYPE="text" NAME="leg" VALUE="<?php echo $myrow["leg"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>room</TD><TD><INPUT TYPE="text" NAME="room" VALUE="<?php echo $myrow["room"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>experience</TD><TD><INPUT TYPE="text" NAME="experience" VALUE="<?php echo $myrow["experience"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>copper</TD><TD><INPUT TYPE="text" NAME="copper" VALUE="<?php echo $myrow["copper"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>god</TD><TD><SELECT NAME="god" SIZE="4"> 
 <OPTION VALUE="0" <?php if ($myrow["god"] == "0") {printf("selected");} ?>>normal
 <OPTION VALUE="1" <?php if ($myrow["god"] == "1") {printf("selected");} ?>>deputy

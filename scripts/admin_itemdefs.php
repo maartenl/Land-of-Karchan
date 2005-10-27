@@ -145,10 +145,6 @@ if (isset($_REQUEST{"name"}))
 			"\"".quote_smart($capacity)."\"").
 	  ", keyid=". ($keyid==""?"null": 
 			"\"".quote_smart($keyid)."\"").
-	  ", gold=".
-	  quote_smart($_REQUEST["gold"]).
-	  ", silver=".
-	  quote_smart($_REQUEST["silver"]).
 	  ", copper=".
 	  quote_smart($_REQUEST["copper"]).
 	  ", weight=".
@@ -350,9 +346,7 @@ while ($myrow = mysql_fetch_array($result))
 	{
 		printf("<li>wielding with both hands");
 	}
-	printf("</ul><b>gold:</b> %s<BR>", $myrow["gold"]);
-	printf("<b>silver:</b> %s<BR>", $myrow["silver"]);
-	printf("<b>copper:</b> %s<BR>", $myrow["copper"]);
+	printf("</ul><b>copper:</b> %s<BR>", $myrow["copper"]);
 	printf("<b>weight:</b> %s<BR>", $myrow["weight"]);
 	printf("<b>pasdefense:</b> %s<BR>", $myrow["pasdefense"]);
 	printf("<b>damageresistance:</b> %s<BR>", $myrow["damageresistance"]);
@@ -390,8 +384,6 @@ ROWS="10" COLS="85">
 <?php echo htmlspecialchars($myrow["drinkable"]) ?></TEXTAREA><P></TD></TR>
 <TR><TD>readdescr</TD><TD><TEXTAREA NAME="readdescr" ROWS="10" COLS="85">
 <?php echo htmlspecialchars($myrow["readdescr"]) ?></TEXTAREA><P></TD></TR>
-<TR><TD>gold</TD><TD><INPUT TYPE="text" NAME="gold" VALUE="<?php echo $myrow["gold"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
-<TR><TD>silver</TD><TD><INPUT TYPE="text" NAME="silver" VALUE="<?php echo $myrow["silver"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>copper</TD><TD><INPUT TYPE="text" NAME="copper" VALUE="<?php echo $myrow["copper"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>weight</TD><TD><INPUT TYPE="text" NAME="weight" VALUE="<?php echo $myrow["weight"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>container</TD><TD><INPUT TYPE="radio" NAME="container" VALUE="1" <?php echo ($myrow["container"] == 1? "checked" : "") ?>>yes
