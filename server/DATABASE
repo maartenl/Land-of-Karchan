@@ -247,6 +247,8 @@ on update cascade;
 add foreign key (id) references polls (id)
 on delete restrict
 on update cascade;
+- alter table mm_admin change email email varchar(80) not null;
+- alter table mm_admin change passwd passwd varchar(45) not null;
 
 Creating a dupe database
 ------------------------
