@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin_authorize.php 992 2005-10-23 08:03:45Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -58,42 +58,22 @@ if (!isset($_COOKIE["karchanadminname"]) ||
     error_message("Admin Name and/or password information missing.");
 }
 
-$query ="select \"yes\" from mm_admin where name = \"".
-        quote_smart($_COOKIE["karchanadminname"])."\" and passwd = sha1(\"".
+$query ="update mm_admin set passwd = sha1(\"".
+	quote_smart($_COOKIE["karchanadminpassword"])."\") where name = \"".
+        quote_smart($_COOKIE["karchanadminname"])."\" and passwd = old_password(\"".
 	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil >= now()";
-$result = mysql_query($query
+mysql_query($query
     , $dbhandle)
     or error_message("Query failed : " . mysql_error());
-$good = "no";
-while ($myrow = mysql_fetch_array($result))
+if (mysql_affected_rows() == 1)
 {
-	if ($myrow[0] == "yes")
-	{
-		$good = "yes";
-	}
+	printf("Your password was changed successfully.<P>");
+}
+else
+{
+	printf("Your password was not changed successfully.<P>");
 }
 
-$result = mysql_query("select \"invalid\" from mm_admin where name = \"".
-	quote_smart($_COOKIE["karchanadminname"])."\" and passwd = sha1(\"".
-	quote_smart($_COOKIE["karchanadminpassword"])."\") and validuntil < now()"
-	, $dbhandle)
-	or error_message("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_array($result))
-{
-	if ($myrow[0] == "invalid")
-	{
-		$good = "invalid";
-	}
-}
-
-if ($good == "no")
-{
-	error_message("Your user account does not exist!");
-}
-
-if ($good == "invalid")
-{
-	error_message("Your account has expired. Contact karn@karchan.org.");
-}
+mysql_close($dbhandle);
 
 ?>
