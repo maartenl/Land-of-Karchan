@@ -69,15 +69,15 @@ public class Database
 
 	private static Connection theConnection = null;
 
-	public static String sqlGetUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetActiveUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
+	public static String sqlGetUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetActiveUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
-		"values(?, ?, password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
+		"values(?, ?, old_password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
 	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
 	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
 	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
