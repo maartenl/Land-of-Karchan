@@ -46,13 +46,12 @@ if (isset($_REQUEST{"title"}))
 		quote_smart($_REQUEST{"title"})."\", description=\"".
 		quote_smart($_REQUEST{"description"})."\",  answer=\"".
 		quote_smart($_REQUEST{"answer"})."\", closed= ".
-		quote_smart($_REQUEST{"closed"})." where  creation=\"".
+		quote_smart($_REQUEST{"closed"})." where  creation+0=\"".
 		quote_smart($_REQUEST{"bug"})."\"";
 	mysql_query($query
 		, $dbhandle)
 		or error_message("Query failed : " . mysql_error());
 }
-
 
 // show results
 $result = mysql_query("select *, creation+0 as creation3, date_format(creation, \"%Y-%m-%d %T\") as
