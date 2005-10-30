@@ -89,6 +89,209 @@ public class MudSocket extends Thread
 	}
 
 	/**
+	 * A little wrapper to properly deal with end-of-stream
+	 * and io exceptions.
+	 * @param aReader the reader stream, should be opened already.
+	 * @return String read.
+	 * @throws MudException incase of problems of end-of-stream reached.
+	 */
+	private String readLine(BufferedReader aReader)
+	throws MudException
+	{
+		try
+		{
+			String read  = aReader.readLine();
+			if (read == null)
+			{
+				throw new MudException("unexpected end of connection detected.");
+			}
+			return read;
+		}
+		catch (IOException e)
+		{
+			throw new MudException("io error during reading from socket.", e);
+		}
+		// this point is never reached. There is a return in the try statement.
+	}
+
+	/**
+	 * Used primarily for receiving information for logging
+	 * a user onto the mud and executing the enterMud method
+	 * with the retrieved information.
+	 * @param aWriter the writer to write output to.
+	 * @param aReader the reader to read input from.
+	 * @see enterMud
+	 * @throws MudException when either reading of the input
+	 * goes wrong, or executing mud functionality goes wrong.
+	 */
+	private void readLogonInfoFromSocket(PrintWriter aWriter,
+		BufferedReader aReader)
+	throws MudException
+	{
+		aWriter.println("Name:");
+		String name = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: name=[" + name + "]");
+		aWriter.println("Password:");
+		String password = readLine(aReader);
+		aWriter.println("Address:");
+		String address = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: password=[" + password + "]");
+		aWriter.println("Cookie:");
+		String cookie = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: cookie=[" + cookie + "]");
+		aWriter.println("Frames:");
+		String frames = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: frames=[" + frames + "]");
+		int frame = 1;
+		try
+		{
+			frame = Integer.parseInt(frames);
+		}
+		catch (NumberFormatException e)
+		{
+			Logger.getLogger("mmud").warning(
+				"unable to interpret frame information, defaulting to 0.");
+		}
+		aWriter.println(
+			enterMud(name, password, 
+				address,
+				cookie, frame-1) + "\n.\n");
+	}
+
+	/**
+	 * Used primarily for receiving information and executing
+	 * a specific command for a playing user in the mud.
+	 * @param aWriter the writer to write output to.
+	 * @param aReader the reader to read input from.
+	 * @see executeMud
+	 * @throws MudException when either reading of the input
+	 * goes wrong, or executing mud functionality goes wrong.
+	 */
+	private void readCommandInfoFromSocket(PrintWriter aWriter,
+		BufferedReader aReader)
+	throws MudException
+	{
+		aWriter.println("Name:");
+		String name = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: name=[" + name + "]");
+		aWriter.println("Cookie:");
+		String cookie = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: cookie=[" + cookie + "]");
+		aWriter.println("Frames:");
+		String frames = readLine(aReader);
+		Logger.getLogger("mmud").finest("received from socket: frames=[" + frames + "]");
+		int frame = 1;
+		try
+		{
+			frame = Integer.parseInt(frames);
+		}
+		catch (NumberFormatException e)
+		{
+			Logger.getLogger("mmud").warning(
+				"unable to interpret frame information, defaulting to 0.");
+			e.printStackTrace();
+		}
+//					while (true)
+//					{
+		aWriter.println("Command:");
+		StringBuffer command = new StringBuffer();
+		String readem = readLine(aReader);
+		if (!readem.equals("."))
+		{
+			command.append(readem);
+			readem = readLine(aReader);
+		}
+		while (!readem.equals("."))
+		{
+			command.append("\n" + readem);
+			readem = readLine(aReader);
+		}
+		Logger.getLogger("mmud").finest("received from socket: command=[" + command + "]");
+		if (command.toString().trim().equals(""))
+		{
+			command = new StringBuffer("l");
+		}
+		aWriter.println(
+			executeMud(name, 
+			theSocket.getInetAddress().getCanonicalHostName(),
+			cookie,
+			frame-1, command.toString()) + "\n.\n");
+//					}
+	}
+
+	/**
+	 * Used primarily for receiving information for a <I>new</I> player
+	 * and executing the functionality for adding it to the database.
+	 * Will also automatically log the new player in on the game.
+	 * @param aWriter the writer to write output to.
+	 * @param aReader the reader to read input from.
+	 * @see newUserMud
+	 * @throws MudException when either reading of the input
+	 * goes wrong, or executing mud functionality goes wrong.
+	 */
+	private void readNewcharInfoFromSocket(PrintWriter aWriter,
+		BufferedReader aReader)
+	throws MudException
+	{
+		aWriter.println("Name:");
+		String name = readLine(aReader);
+		aWriter.println("Password:");
+		String password = readLine(aReader);
+		aWriter.println("Cookie:");
+		String cookie = readLine(aReader);
+		aWriter.println("Frames:");
+		String frames = readLine(aReader);
+		int frame = 1;
+		try
+		{
+			frame = Integer.parseInt(frames);
+		}
+		catch (NumberFormatException e)
+		{
+			Logger.getLogger("mmud").warning(
+				"unable to interpret frame information, defaulting to 0.");
+			e.printStackTrace();
+		}
+		aWriter.println("Realname:");
+		String realname = readLine(aReader);
+		aWriter.println("Email:");
+		String email = readLine(aReader);
+		aWriter.println("Title:");
+		String title = readLine(aReader);
+		aWriter.println("Race:");
+		String race = readLine(aReader);
+		aWriter.println("Sex:");
+		String sex = readLine(aReader);
+		aWriter.println("Age:");
+		String age = readLine(aReader);
+		aWriter.println("Length:");
+		String length = readLine(aReader);
+		aWriter.println("width:");
+		String width = readLine(aReader);
+		aWriter.println("Complexion:");
+		String complexion = readLine(aReader);
+		aWriter.println("Eyes:");
+		String eyes = readLine(aReader);
+		aWriter.println("Face:");
+		String face = readLine(aReader);
+		aWriter.println("Hair:");
+		String hair = readLine(aReader);
+		aWriter.println("Beard:");
+		String beard = readLine(aReader);
+		aWriter.println("Arms:");
+		String arms = readLine(aReader);
+		aWriter.println("Legs:");
+		String legs = readLine(aReader);
+		aWriter.println(
+			newUserMud(name, password,
+			theSocket.getInetAddress().getCanonicalHostName(),
+			realname, email, title, race, Sex.createFromString(sex), 
+			age, length,
+			width, complexion, eyes, face, hair, beard, arms,
+			legs, cookie, frame-1) + "\n.\n");
+	}
+
+	/**
 	 * Run method of the thread. This is started when the start method
 	 * is called. Reads from and writes to the socket provided
 	 * upon creation of this thread.<P>The protocol description is
@@ -171,16 +374,18 @@ public class MudSocket extends Thread
 			myOutputStream = new PrintWriter(theSocket.getOutputStream(), true);
 			myInputStream = new BufferedReader(new InputStreamReader(theSocket.getInputStream()));
 			
-		} catch (UnknownHostException e) 
+		} 
+		catch (UnknownHostException e) 
 		{
-			Logger.getLogger("mmud").warning("Don't know about host.");
 			theSuccess = false;
-			e.printStackTrace();
+			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
+			Database.writeLog("root", e);
 			return;
-		} catch (IOException e) {
-			Logger.getLogger("mmud").warning("Couldn't get I/O for "
-			+ "the connection.");
-			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
+			Database.writeLog("root", e);
 			theSuccess = false;
 			return;
 		}
@@ -190,184 +395,64 @@ public class MudSocket extends Thread
 			StringBuffer userInput = new StringBuffer();
 
 			myOutputStream.println(Constants.IDENTITY);
-			try
+			myOutputStream.println("Action (logon, mud, newchar):");
+			String myAction = readLine(myInputStream);
+			Logger.getLogger("mmud").finest("received from socket: [" + myAction + "]");
+			if (myAction.equals("logon"))
 			{
-				myOutputStream.println("Action (logon, mud, newchar):");
-				String myAction = myInputStream.readLine();
-				Logger.getLogger("mmud").finest("received from socket: [" + myAction + "]");
-				if (myAction.equals("logon"))
-				{
-					myOutputStream.println("Name:");
-					String name = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: name=[" + name + "]");
-					myOutputStream.println("Password:");
-					String password = myInputStream.readLine();
-					myOutputStream.println("Address:");
-					String address = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: password=[" + password + "]");
-					myOutputStream.println("Cookie:");
-					String cookie = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: cookie=[" + cookie + "]");
-					myOutputStream.println("Frames:");
-					String frames = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: frames=[" + frames + "]");
-					int frame = 1;
-					try
-					{
-						frame = Integer.parseInt(frames);
-					}
-					catch (NumberFormatException e)
-					{
-						Logger.getLogger("mmud").warning(
-							"unable to interpret frame information, defaulting to 0.");
-					}
-					try
-					{
-		 				myOutputStream.println(
-							enterMud(name, password, 
-								address,
-								cookie, frame-1) + "\n.\n");
-					}
-					catch (Exception e)
-					{
-						Database.writeLog(name, e);
-						Logger.getLogger("mmud").warning(
-							e + "");
-						e.printStackTrace();
-						myOutputStream.println("\n" + e.toString());
-					}
-				}
-				if (myAction.equals("mud"))
-				{
-					myOutputStream.println("Name:");
-					String name = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: name=[" + name + "]");
-					myOutputStream.println("Cookie:");
-					String cookie = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: cookie=[" + cookie + "]");
-					myOutputStream.println("Frames:");
-					String frames = myInputStream.readLine();
-					Logger.getLogger("mmud").finest("received from socket: frames=[" + frames + "]");
-					int frame = 1;
-					try
-					{
-						frame = Integer.parseInt(frames);
-					}
-					catch (NumberFormatException e)
-					{
-						Logger.getLogger("mmud").warning(
-							"unable to interpret frame information, defaulting to 0.");
-						e.printStackTrace();
-					}
-//					while (true)
-//					{
-					myOutputStream.println("Command:");
-					StringBuffer command = new StringBuffer();
-					String readem = myInputStream.readLine();
-					if (!readem.equals("."))
-					{
-						command.append(readem);
-						readem = myInputStream.readLine();
-					}
-					while (!readem.equals("."))
-					{
-						command.append("\n" + readem);
-						readem = myInputStream.readLine();
-					}
-					Logger.getLogger("mmud").finest("received from socket: command=[" + command + "]");
-					if (command.toString().trim().equals(""))
-					{
-						command = new StringBuffer("l");
-					}
-					myOutputStream.println(
-						executeMud(name, 
-						theSocket.getInetAddress().getCanonicalHostName(),
-						cookie,
-						frame-1, command.toString()) + "\n.\n");
-//					}
-				}
-				if (myAction.equals("newchar"))
-				{
-					myOutputStream.println("Name:");
-					String name = myInputStream.readLine();
-					myOutputStream.println("Password:");
-					String password = myInputStream.readLine();
-					myOutputStream.println("Cookie:");
-					String cookie = myInputStream.readLine();
-					myOutputStream.println("Frames:");
-					String frames = myInputStream.readLine();
-					int frame = 1;
-					try
-					{
-						frame = Integer.parseInt(frames);
-					}
-					catch (NumberFormatException e)
-					{
-						Logger.getLogger("mmud").warning(
-							"unable to interpret frame information, defaulting to 0.");
-						e.printStackTrace();
-					}
-					myOutputStream.println("Realname:");
-					String realname = myInputStream.readLine();
-					myOutputStream.println("Email:");
-					String email = myInputStream.readLine();
-					myOutputStream.println("Title:");
-					String title = myInputStream.readLine();
-					myOutputStream.println("Race:");
-					String race = myInputStream.readLine();
-					myOutputStream.println("Sex:");
-					String sex = myInputStream.readLine();
-					myOutputStream.println("Age:");
-					String age = myInputStream.readLine();
-					myOutputStream.println("Length:");
-					String length = myInputStream.readLine();
-					myOutputStream.println("width:");
-					String width = myInputStream.readLine();
-					myOutputStream.println("Complexion:");
-					String complexion = myInputStream.readLine();
-					myOutputStream.println("Eyes:");
-					String eyes = myInputStream.readLine();
-					myOutputStream.println("Face:");
-					String face = myInputStream.readLine();
-					myOutputStream.println("Hair:");
-					String hair = myInputStream.readLine();
-					myOutputStream.println("Beard:");
-					String beard = myInputStream.readLine();
-					myOutputStream.println("Arms:");
-					String arms = myInputStream.readLine();
-					myOutputStream.println("Legs:");
-					String legs = myInputStream.readLine();
-					myOutputStream.println(
-						newUserMud(name, password,
-						theSocket.getInetAddress().getCanonicalHostName(),
-						realname, email, title, race, Sex.createFromString(sex), 
-						age, length,
-						width, complexion, eyes, face, hair, beard, arms,
-						legs, cookie, frame-1) + "\n.\n");
-				}
+				readLogonInfoFromSocket(myOutputStream, myInputStream);
 			}
-			catch (SocketException e)
+			else if (myAction.equals("mud"))
 			{
-				Database.writeLog("root", e);
-				Logger.getLogger("mmud").warning(
-					e + "");
-				myOutputStream.println(e.toString());
-				e.printStackTrace();
+				readCommandInfoFromSocket(myOutputStream, myInputStream);
+			}
+			else if (myAction.equals("newchar"))
+			{
+				readNewcharInfoFromSocket(myOutputStream, myInputStream);
+			}
+			else
+			{
+				throw new MudException("unable to determine the action to take.");
 			}
 			String expectingOk;
-			expectingOk = myInputStream.readLine();
+			expectingOk = readLine(myInputStream);
 			while (expectingOk != null && !expectingOk.equals("Ok"))
 			{
-				expectingOk = myInputStream.readLine();
+				expectingOk = readLine(myInputStream);
 			}
 			myOutputStream.close();
-			myInputStream.close();
-			theSocket.close();
+
+			try
+			{
+				myInputStream.close();
+			}
+			catch (IOException e)
+			{
+				throw new MudException("unable to close input stream.", e);
+			}
+
+			try
+			{
+				theSocket.close();
+			}
+			catch (IOException e)
+			{
+				throw new MudException("unable to close socket.", e);
+			}
 			Logger.getLogger("mmud").finer("closing connection...");
-		} catch (IOException e)
+		} 
+		catch (MudException e)
 		{
 			theSuccess = false;
-			e.printStackTrace();
+			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
+			Database.writeLog("root", e);
+			return;
+		}
+		catch (RuntimeException e2)
+		{
+			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e2);
+			Database.writeLog("root", e2);
+			theSuccess = false;
 			return;
 		}
 		theSuccess = true;
