@@ -223,7 +223,7 @@ public class ItemsDb
 				res.getString("adject1"),
 				res.getString("adject2"), res.getString("adject3"),
 				res.getString("name"), res.getString("description"),
-				res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
+				res.getInt("copper"),
 				res.getInt("wearable"),
 				res.getInt("capacity"), res.getInt("isopenable") == 1, 
 				ItemDefs.getItemDef(res.getInt("keyid")) );
@@ -235,7 +235,7 @@ public class ItemsDb
 				res.getString("adject1"),
 				res.getString("adject2"), res.getString("adject3"),
 				res.getString("name"), res.getString("description"),
-				res.getInt("gold"), res.getInt("silver"), res.getInt("copper"),
+				res.getInt("copper"),
 				res.getInt("wearable"));
 		}
 		// do stuff with attributes.
@@ -340,6 +340,7 @@ public class ItemsDb
 			e.printStackTrace();
 			Database.writeLog("root", e);
 		}
+		myInventory.append("<P><LI>" + aPerson.getDescriptionOfMoney());
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}

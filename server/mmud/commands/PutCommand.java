@@ -44,6 +44,7 @@ import mmud.database.*;
  * </ul>
  * The possible syntax can range from: "put ring in sack" to
  * "put 8 old gold shiny ring in new leather beaten sack".
+ * @see RetrieveCommand
  */
 public class PutCommand extends NormalCommand
 {

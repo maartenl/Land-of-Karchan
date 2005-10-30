@@ -106,6 +106,7 @@ public class Bot extends Person implements CommunicationListener
 		int aHealth,
 		int anAlignment,
 		int aMovement,
+		int aCopper,
 		Room aRoom)
 	throws MudException
 	{
@@ -131,6 +132,7 @@ public class Bot extends Person implements CommunicationListener
 		aHealth,
 		anAlignment,
 		aMovement,
+		aCopper,
 		aRoom);
 		Logger.getLogger("mmud").finer("");
 	}

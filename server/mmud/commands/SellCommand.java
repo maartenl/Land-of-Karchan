@@ -43,6 +43,7 @@ import mmud.items.ItemException;
 
 /**
  * Selling an item to a bot. Syntax : sell &lt;item&gt; to &lt;character&gt;
+ * @see BuyCommand
  */
 public class SellCommand extends NormalCommand
 {
@@ -51,21 +52,6 @@ public class SellCommand extends NormalCommand
 	{
 		super(aRegExpr);
 	}
-
-	/**
-	 * should be the same as item 38
-	 */
-	public static final String[] goldcoin = {"valuable",  "gold", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 37
-	 */
-	public static final String[] silvercoin = {"valuable",  "silver", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 36
-	 */
-	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
 
 	/**
 	 * Tries out the sell command. There are a couple of requirements that
@@ -82,9 +68,7 @@ public class SellCommand extends NormalCommand
 	 * </ol>
 	 * A best effort is tried, this means the following sequence of events:
 	 * <ol><li>the item is transferred into the inventory of the shopkeeper
-	 * <li>gold coins are transferred into the inventory of the customer
-	 * <li>silver coins are transferred into the inventory of the customer
-	 * <li>copper coins are transferred into the inventory of the customer
+	 * <li>money is transferred into the inventory of the customer
 	 * <li>continue with next item
 	 *</ol>
 	 * @param aUser the character doing the selling.
@@ -141,30 +125,22 @@ public class SellCommand extends NormalCommand
 					return true;
 				}
 			}
-			Vector myGold = toChar.getItems("valuable",  "gold", "shiny", "coin");
-			Vector mySilver = toChar.getItems("valuable",  "silver", "shiny", "coin");
-			Vector myCopper = toChar.getItems("valuable",  "copper", "shiny", "coin");
-			
+
 			int sumvalue = 0;
 			for (int i=0; i<amount; i++)
 			{
 				Item myItem = (Item) myItems.elementAt(0);
-				sumvalue += myItem.getValue();
+				sumvalue += myItem.getMoney();
 			}
 			Logger.getLogger("mmud").finer(aUser.getName() + " has items worth " + sumvalue + " copper");
 			Logger.getLogger("mmud").finer(toChar.getName() + " has " + 
-				myGold.size() + " gold, " + mySilver.size() + " silver, " +
-				myCopper.size() + " copper");
-			if (myGold.size() * 100 + mySilver.size() * 10 + myCopper.size()
-				< sumvalue )
+				toChar.getMoney() + " copper coins");
+			if (toChar.getMoney() < sumvalue )
 			{
 				aUser.writeMessage(toChar.getName() + " mutters something about not having enough money.<BR>\r\n");
 				return true;
 			}
 			int j = 0;
-			int myGoldPos = 0;
-			int mySilverPos = 0;
-			int myCopperPos = 0;
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
 				// here needs to be a check for validity of the item
@@ -177,81 +153,15 @@ public class SellCommand extends NormalCommand
 				}
 				if (success)
 				{
-					// transfer item to user
-					int totalitemvalue = myItem.getValue();
-					/*
-						This is a little complicated... but here it goes.
-						(1)
-						item value is at least one gold and shopkeeper has gold    =>    remove one gold coin 
-						else
-						item value is at least one silver and shopkeeper has silver   =>    remove one silver coin
-						else
-						item value is at least one copper and shopkeeper has copper   =>    remove one copper coin
-					*/
-					while (totalitemvalue != 0)
-					{
-						if ((totalitemvalue >= 100) && (myGoldPos != myGold.size()))
-						{
-							// items value is at least 1 gold coin and person has 
-							// gold coins
-							Item myGoldItem = (Item) myGold.elementAt(myGoldPos++);
-							ItemsDb.transferItem(myGoldItem, aUser);
-							totalitemvalue -= 100;
-						}
-						else
-						if ((totalitemvalue >= 10) && (mySilverPos != mySilver.size()))
-						{
-							// items value is at least 1 silver coin and person has 
-							// silver coins
-							Item mySilverItem = (Item) mySilver.elementAt(mySilverPos++);
-							ItemsDb.transferItem(mySilverItem, aUser);
-							totalitemvalue -= 10;
-						}
-						else
-						if ((totalitemvalue >= 1) && (myCopperPos != myCopper.size()))
-						{
-							// items value is at least 1 copper coin and person has
-							// copper coins
-							Item myCopperItem = (Item) myCopper.elementAt(myCopperPos++);
-							ItemsDb.transferItem(myCopperItem, aUser);
-							totalitemvalue -= 1;
-						}
-						else
-						// when we get here, it means that we need small
-						// change, more silver and/or copper coins
-						{
-							// no more silver coins?
-							// 38 == gold, 37 == silver, 36 == copper
-							if (mySilverPos == mySilver.size())
-							{
-								// no more silver coins
-								Item myGoldItem = (Item) myGold.elementAt(myGoldPos++);
-								ItemsDb.deleteItem(myGoldItem);
-								for (int l=0;l<10;l++)
-								{
-									Item newItem = ItemsDb.addItem(ItemDefs.getItemDef(37));
-									ItemsDb.addItemToChar(newItem, toChar);
-									mySilver.add(newItem);
-								}
-							}
-							else
-							{
-								// no more copper coins
-								Item mySilverItem = (Item) mySilver.elementAt(mySilverPos++);
-								ItemsDb.deleteItem(mySilverItem);
-								for (int l=0;l<10;l++)
-								{
-									Item newItem = ItemsDb.addItem(ItemDefs.getItemDef(36));
-									ItemsDb.addItemToChar(newItem, toChar);
-									myCopper.add(newItem);
-								}
-							}
-						}
-					} // end while totalitemvalue>0
+					// transfer money to user
+					int totalitemvalue = myItem.getMoney();
+					// transfer item to shopkeeper
 					if (success)
 					{
-						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
+						toChar.transferMoneyTo(totalitemvalue, aUser);
+						Database.writeLog(aUser.getName(), "received " + totalitemvalue + " copper from " + toChar);
 						ItemsDb.transferItem(myItem, toChar);
+						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
 						Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
 						j++;
 					}

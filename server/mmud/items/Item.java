@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;
+import mmud.Constants;
 import mmud.MudException;
 import mmud.characters.Person;
 import mmud.characters.Persons;
@@ -210,45 +211,25 @@ public class Item implements Executable, AttributeContainer
 		return theItemDef.getAdjective3();
 	}
 
-	/**
-	 * Returns the amount of money something costs in total copper coins.
-	 * @return integer, gold*100+silver*10+copper
-	 * @see Item#getGold
-	 * @see Item#getCopper
-	 * @see Item#getSilver
+   /**
+	 * Returns the value of the item.
+	 * @return String description of the amount of money.
+	 * @see mmud.items.ItemDef#getDescriptionOfMoney
 	 */
-	public int getValue()   
+	public String getDescriptionOfMoney()   
 	{
-		int i = theItemDef.getValue();
-		Logger.getLogger("mmud").finer("returns " + i);
-		return i;
+		String total = theItemDef.getDescriptionOfMoney();
+		Logger.getLogger("mmud").finer("returns '" + total + "'");
+		return total;
 	}
 
 	/**
-	 * get the gold coins part of the value of the item.
-	 * @return integer containing the number of gold coins.
-	 */
-	public int getGold()
-	{
-		return theItemDef.getGold();
-	}
-
-	/**
-	 * get the silver coins part of the value of the item.
-	 * @return integer containing the number of silver coins.
-	 */
-	public int getSilver()
-	{
-		return theItemDef.getSilver();
-	}
-
-	/**
-	 * get the copper coins part of the value of the item.
+	 * get the value of the item.
 	 * @return integer containing the number of copper coins.
 	 */
-	public int getCopper()
+	public int getMoney()
 	{
-		return theItemDef.getCopper();
+		return theItemDef.getMoney();
 	}
 
 	/**

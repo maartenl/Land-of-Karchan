@@ -141,6 +141,7 @@ public class User extends mmud.characters.Person
 		int aHealth,
 		int aAlignment,
 		int aMovement,
+		int aCopper,
 		Room aRoom)
 	throws MudException
 	{
@@ -165,6 +166,7 @@ public class User extends mmud.characters.Person
 			aHealth,
 			aAlignment,
 			aMovement,
+			aCopper,
 			aRoom);
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
@@ -245,6 +247,7 @@ public class User extends mmud.characters.Person
 			Constants.DEFAULT_HEALTH,
 			Constants.DEFAULT_ALIGNMENT,
 			Constants.DEFAULT_MOVEMENT,
+			Constants.DEFAULT_COPPER,
 			Rooms.getRoom(Constants.DEFAULT_ROOM));
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;

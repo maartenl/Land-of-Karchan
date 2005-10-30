@@ -40,6 +40,7 @@ import mmud.Attribute;
 import mmud.AttributeContainer;
 import mmud.Constants;
 import mmud.MudException;
+import mmud.MudMoneyException;
 import mmud.Sex;
 import mmud.database.AttributeDb;
 import mmud.database.Database;
@@ -94,6 +95,7 @@ public class Person implements Executable, AttributeContainer
 	private int theMovement = Constants.DEFAULT_MOVEMENT;
 	private TreeMap theAttributes = new TreeMap();
 	private Person theFightingWith = null;
+	private int theCopper = 0;
 
 	/**
 	 * Constructor. Create a person.
@@ -153,6 +155,7 @@ public class Person implements Executable, AttributeContainer
 		int aHealth,
 		int anAlignment,
 		int aMovement,
+		int aCopper,
 		Room aRoom)
 	throws MudException
 	{
@@ -180,6 +183,7 @@ public class Person implements Executable, AttributeContainer
 		theHealth = aHealth;
 		theAlignment = anAlignment;
 		theMovement = aMovement;
+		theCopper = aCopper;
 		theLogFile = new File(Constants.mudfilepath, aName + ".log");
 		createLog();
 	}
@@ -1501,6 +1505,67 @@ public class Person implements Executable, AttributeContainer
 	public boolean isFightable()
 	{
 		return false;
+	}
+
+	/**
+	 * Returns the amount of money you have.
+	 * @return the amount of theCopper coins, this is the base value.
+	 */
+	public int getMoney()
+	{
+		return theCopper;
+	}
+
+	/**
+	 * Changes the current amount of money that you have with <I>amount</I>.
+	 * @param amount the amount to change. May also be negative, which is usefull
+	 * for withdrawing money.
+	 * @throws MudMoneyException if not the appropriate amount of money
+	 * is present if the amount to change is negative.
+	 */
+	private void addMoney(int amount)
+	throws MudMoneyException, MudException
+	{
+		if (theCopper + amount < 0)
+		{
+			throw new MudMoneyException("You do not have enough money.");
+		}
+		theCopper += amount;
+		Database.setMoney(this);
+	}
+
+	/**
+	 * Returns the amount of money that you are carrying.
+	 * @return String description of the amount of money.
+	 * @see Constants#getDescriptionOfMoney
+	 */
+	public String getDescriptionOfMoney()
+	{
+		String total = Constants.getDescriptionOfMoney(theCopper);
+        Logger.getLogger("mmud").finer("returns '" + total + "'");
+		return total;
+	}
+
+	/**
+	 * Moves an amount of money from this character over to another character.
+	 * @param amount the amount of money to transfer, can be negative or positive.
+	 * @param aPerson the person that will receive the money. 
+	 * (if the amount is positive, otherwise it is the other way around.)
+	 * @throws MudMoneyException if either party does not have enough money.
+	 */
+	public void transferMoneyTo(int amount, Person aPerson)
+	throws MudMoneyException, MudException
+	{
+		if (amount >= 0)
+		{
+			addMoney(-amount);
+			aPerson.addMoney(amount);
+		}
+		else
+		{
+			aPerson.addMoney(amount);
+			addMoney(-amount);
+		}
 	}
 
 }

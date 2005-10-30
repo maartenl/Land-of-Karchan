@@ -44,6 +44,7 @@ import mmud.database.*;
  * </ul>
  * The possible syntax can range from: "retrieve ring from sack" to
  * "retrieve 8 old gold shiny ring from new leather beaten sack".
+ * @see PutCommand
  */
 public class RetrieveCommand extends NormalCommand
 {

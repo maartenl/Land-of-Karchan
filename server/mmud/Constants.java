@@ -119,6 +119,12 @@ import mmud.commands.WieldCommand;
 public final class Constants
 {
 	/**
+	 * Default amount of money new users get. In this case they are totally broke.
+	 * This should be inline with the database setting.
+	 */
+	public final static int DEFAULT_COPPER = 0;
+	
+	/**
 	 * Default room where new users appear. In this case it is the cave.
 	 * This should be inline with the database setting.
 	 */
@@ -1337,4 +1343,32 @@ public final class Constants
 	{
 		theOfflineDescription = aDesc;
 	}
+
+	/**
+	 * Returns the amount of money in gold coins,
+	 * silver coins and theCopper coins.
+	 * <UL>
+	 * <LI>1 silver = 10 theCopper
+	 * <LI>1 gold = 10 silver
+	 * </UL>
+	 * @return String description of the amount of money, for example 
+	 * "<I>3 gold coins, 2 silver coins, 0 copper coins</I>". Returns an
+	 * empty string if no money is present.
+	 */
+	public static String getDescriptionOfMoney(int aValue)
+	{
+		if (aValue == 0)
+		{
+			return "";
+		}
+		int gold = aValue / 100;
+		int silver = (aValue % 100) / 10;
+		int copper = aValue % 10;
+		String copperstr = copper + " copper coin" + (copper == 1? "":"s");
+		String silverstr = silver + " silver coin" + (silver == 1? "":"s") + ", ";
+		String goldstr = gold + " gold coin" + (gold == 1? "":"s") + ", ";
+		String total = goldstr + silverstr + copperstr;
+		return total;
+	}
+
 }

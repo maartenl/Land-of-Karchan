@@ -98,6 +98,7 @@ public class StdShopKeeper extends Person implements ShopKeeper
 		int aHealth,
 		int aAlignment,
 		int aMovement,
+		int aCopper,
 		Room aRoom)
 	throws MudException
 	{
@@ -123,6 +124,7 @@ public class StdShopKeeper extends Person implements ShopKeeper
 			aHealth,
 			aAlignment,
 			aMovement,
+			aCopper,
 			aRoom);
 	}
 

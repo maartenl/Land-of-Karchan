@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 package mmud.items;     
 
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;
@@ -58,15 +59,13 @@ public class ItemDef implements AttributeContainer
 	 * @param anAdjective3 the third adjective of the item
 	 * @param aVerb the verb/name of the item
 	 * @param aDescription a long description of the item
-	 * @param aGold the number of gold coins the item costs
-	 * @param aSilver the number of silver coins the item costs
-	 * @param aCopper the number of copper coins the item costs 
+	 * @param aCopper the number of copper coins the item costs (base value)
 	 * @param aWearable the possible positions that the item
 	 * can be worn on.
 	 */
 	public ItemDef(int anId, String anAdjective1, String anAdjective2, 
 		String anAdjective3, String aVerb, String aDescription, 
-		int aGold, int aSilver, int aCopper,
+		int aCopper,
 		int aWearable)
 	{
 		theId = anId;
@@ -75,8 +74,6 @@ public class ItemDef implements AttributeContainer
 		theAdjective2 = anAdjective2;
 		theAdjective3 = anAdjective3;
 		theDescription = aDescription;
-		theGold = aGold;
-		theSilver = aSilver;
 		theCopper = aCopper;
 		theWearable = aWearable;
 	} 
@@ -87,16 +84,14 @@ public class ItemDef implements AttributeContainer
 	 */
 	public ItemDef(ItemDef anItemDef)
 	{
-		theId = anItemDef.getId();
-		theVerb = anItemDef.getVerb();
-		theAdjective1 = anItemDef.getAdjective1();
-		theAdjective2 = anItemDef.getAdjective2();
-		theAdjective3 = anItemDef.getAdjective3();
-		theDescription = anItemDef.getLongDescription();
-		theGold = anItemDef.getGold();
-		theSilver = anItemDef.getSilver();
-		theCopper = anItemDef.getCopper();
-		theWearable = anItemDef.getWearable();
+		this(anItemDef.getId(),
+			anItemDef.getAdjective1(),
+			anItemDef.getAdjective2(),
+			anItemDef.getAdjective3(),
+			anItemDef.getVerb(),
+			anItemDef.getLongDescription(),
+			anItemDef.getMoney(),
+			anItemDef.getWearable());
 	} 
 
 	/**
@@ -150,40 +145,22 @@ public class ItemDef implements AttributeContainer
 	}
 	
 	/**
-	 * Returns the amount of money something costs in total copper coins.
-	 * @return integer, gold*100+silver*10+copper
-	 * @see ItemDef#getGold
-	 * @see ItemDef#getSilver
-	 * @see ItemDef#getCopper
+	 * Returns the amount of money that you are carrying.
+	 * @return String description of the amount of money.
+	 * @see Constants#getDescriptionOfMoney
 	 */
-	public int getValue()
+	public String getDescriptionOfMoney()
 	{
-		return getGold() * 100 + getSilver() * 10 + getCopper();
+		String total = Constants.getDescriptionOfMoney(theCopper);
+		Logger.getLogger("mmud").finer("returns '" + total + "'");
+		return total;
 	}
 
-	/**
-	 * Return the amount of gold it costs.
-	 * @return integer containing number of gold coins.
-	 */
-	public int getGold()
-	{
-		return theGold;
-	}
-	
-	/**
-	 * Return the amount of silver it costs.
-	 * @return integer containing number of silver coins.
-	 */
-	public int getSilver()
-	{
-		return theSilver;
-	}
-	
 	/**
 	 * Return the amount of copper it costs.
 	 * @return integer containing number of copper coins.
 	 */
-	public int getCopper()
+	public int getMoney()
 	{
 		return theCopper;
 	}

@@ -43,6 +43,7 @@ import mmud.items.ItemException;
 
 /**
  * Buying an item from a bot. Syntax : buy &lt;item&gt; from &lt;character&gt;
+ * @see SellCommand
  */
 public class BuyCommand extends NormalCommand
 {
@@ -143,26 +144,18 @@ public class BuyCommand extends NormalCommand
 					return true;
 				}
 			}
-			Vector myGold = aUser.getItems("valuable",  "gold", "shiny", "coin");
-			Vector mySilver = aUser.getItems("valuable",  "silver", "shiny", "coin");
-			Vector myCopper = aUser.getItems("valuable",  "copper", "shiny", "coin");
-			
 			int sumvalue = 0;
 			for (int i=0; i<amount; i++)
 			{
 				Item myItem = (Item) myItems.elementAt(0);
-				sumvalue += myItem.getValue();
+				sumvalue += myItem.getMoney();
 			}
-			if (myGold.size() * 100 + mySilver.size() * 10 + myCopper.size()
-				< sumvalue )
+			if (aUser.getMoney() < sumvalue )
 			{
 				aUser.writeMessage("You do not have enough money.<BR>\r\n");
 				return true;
 			}
 			int j = 0;
-			int myGoldPos = 0;
-			int mySilverPos = 0;
-			int myCopperPos = 0;
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
 				// here needs to be a check for validity of the item
@@ -176,68 +169,13 @@ public class BuyCommand extends NormalCommand
 				if (success)
 				{
 					// transfer item to user
-					int totalitemvalue = myItem.getValue();
-					while (totalitemvalue != 0)
-					{
-						if ((totalitemvalue >= 100) && (myGoldPos != myGold.size()))
-						{
-							// items value is at least 1 gold coin and person has 
-							// gold coins
-							Item myGoldItem = (Item) myGold.elementAt(myGoldPos++);
-							ItemsDb.transferItem(myGoldItem, toChar);
-							totalitemvalue -= 100;
-						}
-						else
-						if ((totalitemvalue >= 10) && (mySilverPos != mySilver.size()))
-						{
-							// items value is at least 1 silver coin and person has 
-							// silver coins
-							Item mySilverItem = (Item) mySilver.elementAt(mySilverPos++);
-							ItemsDb.transferItem(mySilverItem, toChar);
-							totalitemvalue -= 10;
-						}
-						else
-						if ((totalitemvalue >= 1) && (myCopperPos != myCopper.size()))
-						{
-							// items value is at least 1 copper coin and person has
-							// copper coins
-							Item myCopperItem = (Item) myCopper.elementAt(myCopperPos++);
-							ItemsDb.transferItem(myCopperItem, toChar);
-							totalitemvalue -= 1;
-						}
-						else
-						// when we get here, it means that we need small
-						// change
-						if (myCopperPos == myCopper.size())
-						{
-							// no more copper coins
-							// 38 == gold, 37 == silver, 36 == copper
-							if (mySilverPos == mySilver.size())
-							{
-								// no more silver coins
-								Item myGoldItem = (Item) myGold.elementAt(myGoldPos++);
-								ItemsDb.deleteItem(myGoldItem);
-								for (int l=0;l<10;l++)
-								{
-									Item newItem = ItemsDb.addItem(ItemDefs.getItemDef(37));
-									ItemsDb.addItemToChar(newItem, aUser);
-									mySilver.add(newItem);
-								}
-							}
-							Item mySilverItem = (Item) mySilver.elementAt(mySilverPos++);
-							ItemsDb.deleteItem(mySilverItem);
-							for (int l=0;l<10;l++)
-							{
-								Item newItem = ItemsDb.addItem(ItemDefs.getItemDef(36));
-								ItemsDb.addItemToChar(newItem, aUser);
-								myCopper.add(newItem);
-							}
-						}
-					} // end while totalitemvalue>0
+					int totalitemvalue = myItem.getMoney();
 					if (success)
 					{
-						Database.writeLog(aUser.getName(), "bought " + myItem + " from " + toChar);
+						aUser.transferMoneyTo(totalitemvalue, toChar);
+						Database.writeLog(aUser.getName(), "paid " + totalitemvalue + " copper to " + toChar);
 						ItemsDb.transferItem(myItem, aUser);
+						Database.writeLog(aUser.getName(), "bought " + myItem + " from " + toChar);
 						Persons.sendMessage(aUser, toChar, "%SNAME buy%VERB2 " + myItem.getDescription() + " from %TNAME.<BR>\r\n");
 						j++;
 					}

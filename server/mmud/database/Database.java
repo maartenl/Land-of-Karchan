@@ -69,18 +69,19 @@ public class Database
 
 	private static Connection theConnection = null;
 
-	public static String sqlGetUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetActiveUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
+	public static String sqlGetUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetActiveUserString = "select *, password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
-		"values(?, ?, old_password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
+		"values(?, ?, password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
 	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
 	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
 	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
+	public static String sqlSetMoneyString = "update mm_usertable set copper=? where name = ?";
 	public static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
 	public static String sqlSetSleepString = "update mm_usertable set sleep=? where name = ?";
 	public static String sqlSetRoomString = "update mm_usertable set room=? where name = ?";
@@ -428,6 +429,7 @@ public class Database
 				res.getInt("vitals"),
 				res.getInt("alignment"),
 				res.getInt("movementstats"),
+				res.getInt("copper"),
 				Rooms.getRoom(res.getInt("room")));
 
 		}
@@ -515,6 +517,7 @@ public class Database
 				res.getInt("vitals"),
 				res.getInt("alignment"),
 				res.getInt("movementstats"),
+				res.getInt("copper"),
 				Rooms.getRoom(res.getInt("room")));
 
 		}
@@ -923,6 +926,7 @@ public class Database
 					res.getInt("vitals"),
 					res.getInt("alignment"),
 					res.getInt("movementstats"),
+					res.getInt("copper"),
 					Rooms.getRoom(res.getInt("room")));
 				String mySessionPwd = res.getString("lok");
 				if (mySessionPwd != null)
@@ -956,6 +960,7 @@ public class Database
 					res.getInt("vitals"),
 					res.getInt("alignment"),
 					res.getInt("movementstats"),
+					res.getInt("copper"),
 					Rooms.getRoom(res.getInt("room")));
 				myVector.add(myNewChar);
 				getCharAttributes(myNewChar);
@@ -984,6 +989,7 @@ public class Database
 					res.getInt("vitals"),
 					res.getInt("alignment"),
 					res.getInt("movementstats"),
+					res.getInt("copper"),
 					Rooms.getRoom(res.getInt("room")));
 				myVector.add(myNewChar);
 				getCharAttributes(myNewChar);
@@ -1735,6 +1741,36 @@ public class Database
 			// TOBEDONE
 		}
 		sqlSetEatstatsUser.close();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			Database.writeLog("root", e);
+		}
+	}
+
+	/**
+	 * set the money of a character
+	 * @param aPerson Person with changed money.
+	 */
+	public static void setMoney(Person aPerson)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement sqlSetMoneyUser = prepareStatement(sqlSetMoneyString);
+		sqlSetMoneyUser.setInt(1, aPerson.getMoney());
+		sqlSetMoneyUser.setString(2, aPerson.getName());
+		int res = sqlSetMoneyUser.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+		}
+		sqlSetMoneyUser.close();
 		}
 		catch (SQLException e)
 		{
