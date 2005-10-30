@@ -5,6 +5,7 @@
 # *.java
 
 HOMEDIR = /home/karchan/mmud/server
+# this subdirectory must exist, or grave errors will result.
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
 JAVADOCDIR = /var/www/html/javadoc
