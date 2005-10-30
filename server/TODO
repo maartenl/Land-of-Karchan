@@ -6,7 +6,8 @@ committed to the log and the owner of the object is changed appropriately.
 - Add 'plurals' to the items. (bucket -> buckets)
 - logging is split up into the different characters. This makes it easier to
 debug in a production environment.
-- remove gold,silver,copper from mm_usertable
+- remove gold,silver from mm_usertable, mm_items,only use copper as a
+flat-base value.
 - boards
 - add %SLONG, %TLONG
 - fighting
@@ -42,6 +43,18 @@ BUT NOT FOR ItemDefs!
 make certain that it it removed from the list of executable commands, and that
 the "callable" field in the database is deactivated.
 - add 'fight' and 'stop fighting' commands to the help.
+
+Items
+-----
+The following kind of items are possible:
+- DRINK
+- FOOD
+- ARMOUR
+- WEAPON
+- JEWELRY
+- CLANITEM
+- MAGICITEM
+- NORMAL
 
 Clans
 -----
@@ -93,4 +106,71 @@ the 'clanhomeset' and 'clandonateset' commands. Bosses and treasurers may
 deal with any Clan bankers in your game. If MINCLANMEMBERS don't at least
 login in DAYSCLANDEATH days, then the clan will be purged automatically. 
 http://www.turf.org/helps/
+
+CLANITEMS=> a clan should have special items, that can only be shared/used
+among clanmembers. Changes from clan to another clan automatically destroy
+clanitems or something.
+
+Shopkeepers
+-----------
+
+Shopkeepers buy and sell items. Some shopkeepers will only allow selling and
+buying of specific items. 
+Shopkeepers have a finite amount of money, when the money runs out, the
+shopkeeper will not buy items.
+If an item does not appear in the list of buyable/sellable items, it will
+not be sold/bought.
+You can only buy items that the shopkeepers has in his/her inventory.
+
+Issue: how do I determine what a shopkeeper has for sale at the moment.
+
+Issue: how do I determine how much a shopkeeper is willing to give for a
+certain item?
+
+Current commands for shopkeepers:
+buy <item> from <shopkeeper>
+sell <item> to <shopkeeper>
+
+Money
+-----
+
+- remove gold,silver from mm_usertable. Keep copper for use as a base-value
+for the amount of money someone has.
+- remove gold, silver from mm_items. Keep copper for use as a base-value
+for the amount of money someone has.
+Money is not an Item unless it is part of a room/item.
+When retrieving money from a room/corpse => moneybag, moneypouch, coinbag
+There is never any loose change.
+- a Room does not contain coins, a room contains moneybags.
+- There is never 10 silver coins, it is always 1 gold
+- There is never 10 copper coins, it is always 1 silver
+- Fortune 500 list
+- Ziektekostenverzekering
+- een Baan (blacksmith, fisherman)
+
+impacts the following objects:
+- SellCommand
+- BuyCommand
+- DropCommand
+- GetCommand
+- PutCommand
+- RetrieveCommand
+- Database
+- Person
+- Item
+- Room
+
+Menders
+-------
+
+Items have, for each, a 'condition', for example: mint condition, perfect
+condition, bad shape, worse.
+Itemdefs define a 'maxcondition', which is by default a maximum of 28*6=168
+days. (a little less than half a year).
+Items that are newly created automatically have the maximum condition.
+Every day, the items deteriorate a little (crontab?).
+When deterioration reaches zero, the item is disintegrated!
+Items can be repaired, bringing their condition back to 'mint' by repairmen.
+There are general items, specific items, that can be <I>mended</I> by
+<I>menders</I> (think: repairmen).
 
