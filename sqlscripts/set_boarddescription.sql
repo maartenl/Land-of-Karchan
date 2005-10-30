@@ -21,7 +21,7 @@ sword.<p>
 <A HREF="/scripts/bugs.php" target="_blank">
 <IMG ALIGN=right SRC="/images/gif/webpic/button.bugs.gif"
 BORDER="0"></A>
-Use the button you see on the left to register anything you 
+Use the button you see on the right to register anything you 
 find wrong with the
 mud <I>or</I> anything you would like added.
 <P>' 
