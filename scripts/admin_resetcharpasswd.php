@@ -53,7 +53,7 @@ if (strlen($password) < 5)
 	error_message("Password should be at least 5 characters long.");
 }
 // make that change.
-$query = "update mm_usertable set password = password(\"".
+$query = "update mm_usertable set password = old_password(\"".
 	$password.
 	"\"), owner=\"".
 	quote_smart($_COOKIE["karchanadminname"]).
