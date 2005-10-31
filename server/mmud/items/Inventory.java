@@ -113,9 +113,7 @@ public class Inventory
 					boolean found = true;
 					for (int j=startpos;j<endpos-1;j++)
 					{
-						if ( (!myItem.getAdjective1().equalsIgnoreCase(parsedarray[j])) &&
-							(!myItem.getAdjective2().equalsIgnoreCase(parsedarray[j])) &&
-							(!myItem.getAdjective3().equalsIgnoreCase(parsedarray[j])) )
+						if (!myItem.isAdjective(parsedarray[j]))
 						{
 							found = false;
 						}
@@ -156,9 +154,7 @@ public class Inventory
 					boolean found = true;
 					for (int j=startpos;j<endpos-1;j++)
 					{
-						if ( (!myItem.getAdjective1().equalsIgnoreCase(parsedarray[j])) &&
-							(!myItem.getAdjective2().equalsIgnoreCase(parsedarray[j])) &&
-							(!myItem.getAdjective3().equalsIgnoreCase(parsedarray[j])) )
+						if (!myItem.isAdjective(parsedarray[j]))
 						{
 							found = false;
 						}
@@ -187,7 +183,7 @@ public class Inventory
 			Item myItem = (Item) theItems.elementAt(i);
 			if ((myItem != null) && (!myItem.isAttribute("invisible")) )
 			{
-				myStringBuffer.append("<LI>a " + myItem.getAdjective1() + " " + myItem.getAdjective2() + " " + myItem.getVerb() + ".<BR>\r\n");
+				myStringBuffer.append("<LI>" + myItem.getDescription() + ".<BR>\r\n");
 			}
 		}
 		return myStringBuffer.toString();
@@ -206,7 +202,7 @@ public class Inventory
 			Item myItem = (Item) theItems.elementAt(i);
 			if ( (myItem != null) && (!myItem.isAttribute("invisible")) )
 			{
-				myStringBuffer.append("A " + myItem.getAdjective1() + " " + myItem.getAdjective2() + " " + myItem.getVerb() + " is here .<BR>\r\n");
+				myStringBuffer.append("A" + myItem.getDescription().substring(1) + " is here .<BR>\r\n");
 			}
 		}
 		return myStringBuffer.toString();

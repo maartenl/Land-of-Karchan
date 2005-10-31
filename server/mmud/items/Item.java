@@ -188,7 +188,7 @@ public class Item implements Executable, AttributeContainer
 	 * get the first adjective of the item.
 	 * @return String containing the first adjective.
 	 */
-	public String getAdjective1()
+	String getAdjective1()
 	{
 		return theItemDef.getAdjective1();
 	}
@@ -197,7 +197,7 @@ public class Item implements Executable, AttributeContainer
 	 * get the second adjective of the item.
 	 * @return String containing the second adjective.
 	 */
-	public String getAdjective2()
+	String getAdjective2()
 	{
 		return theItemDef.getAdjective2();
 	}
@@ -206,7 +206,7 @@ public class Item implements Executable, AttributeContainer
 	 * get the third adjective of the item.
 	 * @return String containing the third adjective.
 	 */
-	public String getAdjective3()
+	String getAdjective3()
 	{
 		return theItemDef.getAdjective3();
 	}
@@ -711,6 +711,19 @@ public class Item implements Executable, AttributeContainer
 	{
 		Logger.getLogger("mmud").finer("");
 		return runScript(aXmlMethodName, aScript, null);
+	}
+
+	/**
+	 * determines whether an adjective is actually part of this items
+	 * description.
+	 * @param anAdjective String containing the adjective to look for.
+	 * @return boolean true if the adjective entered is part of the   
+	 * description of this item.
+	 * @see ItemDef#isAdjective
+	 */
+	public boolean isAdjective(String anAdjective)
+	{
+		return theItemDef.isAdjective(anAdjective);
 	}
 	 
 }
