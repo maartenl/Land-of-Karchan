@@ -107,8 +107,7 @@ public class BoardsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting board.", e);
 		}
 		return newBoard;
 	}
@@ -156,8 +155,7 @@ public class BoardsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error listing boardmessages.", e);
 		}
 		return result.toString();
 	}
@@ -190,8 +188,7 @@ public class BoardsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error sending message to board.", e);
 		}
 	}
 

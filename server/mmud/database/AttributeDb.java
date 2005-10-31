@@ -84,8 +84,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting attribute of room.", e);
 		}
 	}
 
@@ -112,8 +111,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting attribute of character.", e);
 		}
 	}
 
@@ -140,8 +138,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting attribute of item.", e);
 		}
 	}
 
@@ -167,8 +164,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error removing attribute from room.", e);
 		}
 	}
 
@@ -194,8 +190,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error removing attribute from character.", e);
 		}
 	}
 
@@ -222,8 +217,7 @@ public class AttributeDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error removing atttribute from item.", e);
 		}
 	}
 

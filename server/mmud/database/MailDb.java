@@ -96,8 +96,7 @@ public class MailDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error listing mudmail.", e);
 		}
 		return result;
 	}
@@ -244,8 +243,7 @@ public class MailDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error doing stuff with mudmail.", e);
 		}
 		return result;
 	}
@@ -279,8 +277,7 @@ public class MailDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error sending mudmail.", e);
 		}
 	}
 
@@ -317,8 +314,7 @@ public class MailDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error checking for new mudmail.", e);
 		}
 		return false;
 	}
@@ -343,8 +339,7 @@ public class MailDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error marking all mudmail as old.", e);
 		}
 	}
 

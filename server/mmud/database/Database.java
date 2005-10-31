@@ -303,26 +303,11 @@ public class Database
 		{
 			aStatement = theConnection.prepareStatement(aQuery);
 		}
-//		catch (InstantiationException e)
-//		{
-//			throw new MudDatabaseException(
-//			Constants.DATABASECONNECTIONERROR, e);
-//		}
 		catch (SQLException e2)
 		{
 			throw new MudDatabaseException(
 			Constants.DATABASECONNECTIONERROR, e2);
 		}
-//		catch (ClassNotFoundException e3)
-//		{
-//			throw new MudDatabaseException(
-//			Constants.DATABASECONNECTIONERROR, e3);
-//		}
-//		catch (IllegalAccessException e4)
-//		{
-//			throw new MudDatabaseException(
-//			Constants.DATABASECONNECTIONERROR, e4);
-//		}
 		return aStatement;
 	}
 
@@ -438,8 +423,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting user.", e);
 		}
 		if (myUser != null)
 		{
@@ -526,8 +510,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting active user.", e);
 		}
 		if (myUser != null)
 		{
@@ -574,8 +557,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error determining godliness.", e);
 		}
 		return false;
 	}
@@ -611,8 +593,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error exists users.", e);
 		}
 		return myBoolean;
 	}
@@ -656,8 +637,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting room.", e);
 		}
 		return myRoom;
 	}
@@ -699,8 +679,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting area.", e);
 		}
 		Logger.getLogger("mmud").finer("returns " + myArea);
 		return myArea;
@@ -778,8 +757,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error writing room.", e);
 		}
 	}
 
@@ -816,8 +794,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting attributes of item.", e);
 		}
 		return;
 	}
@@ -857,8 +834,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting attributes from character.", e);
 		}
 		return;
 	}
@@ -1000,8 +976,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getpersons.", e);
 		}
 		return myVector;
 	}
@@ -1090,8 +1065,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error runevents.", e);
 		}
 	}
 
@@ -1122,8 +1096,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error deactivating event.", e);
 		}
 	}
 
@@ -1154,8 +1127,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error deactivating command.", e);
 		}
 	}
 
@@ -1209,8 +1181,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting user commands.", e);
 		}
 		return myResult;
 	}
@@ -1253,8 +1224,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting answers.", e);
 		}
 		Logger.getLogger("mmud").finer("returns " + result);
 		return result;
@@ -1296,8 +1266,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting method source.", e);
 		}
 		return result;
 	}
@@ -1513,8 +1482,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error determining ban.", e);
 		}
 		Logger.getLogger("mmud").finer("returns false");
 		return false;
@@ -1546,8 +1514,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting session password.", e);
 		}
 	}
 
@@ -1577,8 +1544,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error activating user.", e);
 		}
 	}
 
@@ -1606,8 +1572,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error deactivating user.", e);
 		}
 	}
 
@@ -1654,8 +1619,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error creating user.", e);
 		}
 	}
 
@@ -1684,8 +1648,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting title.", e);
 		}
 	}
 
@@ -1714,8 +1677,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting drink stats.", e);
 		}
 	}
 
@@ -1744,8 +1706,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting eat stats.", e);
 		}
 	}
 
@@ -1774,8 +1735,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting money.", e);
 		}
 	}
 
@@ -1804,8 +1764,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database erorr setting sleep.", e);
 		}
 	}
 
@@ -1834,8 +1793,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting room.", e);
 		}
 	}
 
@@ -1864,8 +1822,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting whimpy.", e);
 		}
 	}
 
@@ -1895,8 +1852,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error setting pkill.", e);
 		}
 	}
 

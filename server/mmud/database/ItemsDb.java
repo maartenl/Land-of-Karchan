@@ -283,8 +283,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error get itemdefinition.", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myItemDef);
 		return myItemDef;
@@ -337,8 +336,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting inventory.", e);
 		}
 		myInventory.append("<P><LI>" + aPerson.getDescriptionOfMoney());
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
@@ -388,8 +386,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting inventory.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
@@ -440,8 +437,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting inventory.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
@@ -466,8 +462,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error deleting item from room.", e);
 		}
 		if (res != 1)
 		{
@@ -496,8 +491,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error adding item to character.", e);
 		}
 		if (res != 1)
 		{
@@ -524,8 +518,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error removing item from character.", e);
 		}
 		if (res != 1)
 		{
@@ -553,8 +546,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error removing item from container.", e);
 		}
 		if (res != 1)
 		{
@@ -603,8 +595,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error deleting item.", e);
 		}
 		if (res != 1)
 		{
@@ -647,8 +638,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error creating new item.", e);
 		}
 		return myItem;
 	}
@@ -675,8 +665,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error adding item to room.", e);
 		}
 		if (res != 1)
 		{
@@ -705,8 +694,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error adding item to container.", e);
 		}
 		if (res != 1)
 		{
@@ -743,8 +731,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error transferring item.", e);
 		}
 		if (res == 0)
 		{
@@ -815,8 +802,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error getting item from room.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -871,8 +857,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving items from room.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -938,8 +923,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving items from container.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -990,8 +974,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving items from container.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -1064,8 +1047,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving items from character.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
@@ -1190,8 +1172,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving worn items from character.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: null");
 		return null;
@@ -1235,8 +1216,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error retrieving wearing items from character.", e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
@@ -1272,8 +1252,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-			Database.writeLog("root", e);
+			throw new MudDatabaseException("database error changing wearing item.", e);
 		}
 		if (res != 1)
 		{
