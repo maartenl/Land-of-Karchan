@@ -151,6 +151,13 @@ public class SellCommand extends NormalCommand
 					aUser.writeMessage("You cannot sell that item.<BR>\r\n");
 					success = false;
 				}
+				if (myItem.getMoney() == 0)
+				{
+					String message = "That item is not worth anything.";
+					Persons.sendMessageExcl(toChar, aUser, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
+					aUser.writeMessage(toChar, aUser, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+					success = false;
+				}
 				if (success)
 				{
 					// transfer money to user
