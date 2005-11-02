@@ -69,15 +69,16 @@ public class Database
 
 	private static Connection theConnection = null;
 
-	public static String sqlGetUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetActiveUserString = "select *, old_password(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
+	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
+	public static String sqlGetUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
+	public static String sqlGetActiveUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
 	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
 	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
 	public static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
 	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
-		"values(?, ?, old_password(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
+		"values(?, ?, sha1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
 	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
 	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
 	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
@@ -361,9 +362,9 @@ public class Database
 	public static User getUser(String aName, String aPassword)
 	throws MudException
 	{
-
 		Logger.getLogger("mmud").finer("aName=" + aName + 
 			",aPassword=" + aPassword);
+		convertPassword(aName, aPassword);
 		ResultSet res;
 		User myUser = null;
 		try
@@ -450,6 +451,7 @@ public class Database
 
 		Logger.getLogger("mmud").finer("aName=" + aName + 
 			",aPassword=" + aPassword);
+		convertPassword(aName, aPassword);
 		ResultSet res;
 		User myUser = null;
 		try
@@ -1515,6 +1517,38 @@ public class Database
 		catch (SQLException e)
 		{
 			throw new MudDatabaseException("database error setting session password.", e);
+		}
+	}
+
+	/**
+	 * convert password of a user from old_password() to sha1(). This is a mysql change, basically.
+	 * Required because old_password will be discontinued sometime.
+	 * @param username String, name of the playercharacter 
+	 * @param passwd String, the secret password of the player 
+	 */
+	private static void convertPassword(String username, String passwd)
+	throws MudDatabaseException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement sqlSetPwd = prepareStatement(sqlConvertPasswordString);
+		sqlSetPwd.setString(1, passwd);
+		sqlSetPwd.setString(2, username);
+		sqlSetPwd.setString(3, passwd);
+		int res = sqlSetPwd.executeUpdate();
+		if (res != 1)
+		{
+			// ignored, if it is not updated, it just means the password
+			// is either wrong or already changed.
+		}
+		sqlSetPwd.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error converting password.", e);
 		}
 	}
 
