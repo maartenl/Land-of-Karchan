@@ -17,8 +17,12 @@ integer containing either 0 (no/false) or 1 (yes/true).<P>
 <H3><A NAME="contents">List of Database Tables</H3>
 <TABLE>
 
-<TR valign=top><TD>Tablename</TD><TD>Description</TD></TR> <TR
-valign=top><TD><A HREF="#mm_answers">mm_answers</A></TD><TD>Contains
+<TR valign=top><TD>Tablename</TD><TD>Description</TD></TR> 
+<TR valign=top><TD><A 
+HREF="#mm_admin">mm_admin</A></TD><TD>Contains the userids and
+passwords of people administrating the mud.</TD></TR> 
+<TR valign=top><TD><A 
+HREF="#mm_answers">mm_answers</A></TD><TD>Contains
 questions and answers forbots.</TD></TR> 
 <TR valign=top><TD><A
 HREF="#mm_area">mm_area</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Provides
@@ -148,6 +152,21 @@ whenever a change takes place on the record in question.
 | src                 |
 | owner               |
 | creation            |
++---------------------+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_admin">mm_admin</A></H4>
+<DL>
+<DT>name
+<DD>the name of the administrator
+<DT>passwd
+<DD>the password of the administrator encoded in SHA1() method.
+</DL>
+<PRE>
++---------------------+
+| mm_admin            |
++---------------------+
+|*name                |
+| passwd              |
 +---------------------+
 </PRE>
 <H4><A HREF="#contents"><A NAME="mm_commands">mm_commands</A></H4>
@@ -404,6 +423,9 @@ is neither being worn nor wielded.
 <DL>
 <DT>name
 <DD>identification of this character. May only contain [A-z_a-z].
+<DT>password
+<DD>the password of the character/user. This is encoded into the mysql
+database using the SHA1() method.
 <DT>race
 <DD>The different races are limited in the game. This is because different
 races have different implementations and characteristics. 
@@ -424,6 +446,7 @@ default is 1000.
 | mm_usertable        |
 +---------------------+
 |*name                |
+| password            |
 | god                 |
 | alignment           |
 | movementstats       |
