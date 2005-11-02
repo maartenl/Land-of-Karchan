@@ -249,6 +249,8 @@ on delete restrict
 on update cascade;
 - alter table mm_admin change email email varchar(80) not null;
 - alter table mm_admin change passwd passwd varchar(45) not null;
+- alter table mm_log drop primary key;
+- create index primaryindex on mm_log (creation, name);
 
 Creating a dupe database
 ------------------------
