@@ -92,6 +92,7 @@ import mmud.commands.SayCommand;
 import mmud.commands.ScriptCommand;
 import mmud.commands.SearchCommand;
 import mmud.commands.SellCommand;
+import mmud.commands.ShowCommand;
 import mmud.commands.SendMailCommand;
 import mmud.commands.ShoutCommand;
 import mmud.commands.SleepCommand;
@@ -839,6 +840,7 @@ public final class Constants
 		theCommandStructure.put("look", new LookCommand("look ((at)|(in))( (\\w|-)+){1,4}"));
 		theCommandStructure.put("buy", new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+"));
 		theCommandStructure.put("sell", new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+"));
+		theCommandStructure.put("show", new ShowCommand("show( (\\w|-)+){1,4} to (\\w)+"));
 		theCommandStructure.put("title", new TitleCommand("title .+"));
 		theCommandStructure.put("admin", new AdminCommand("admin .+"));
 		theCommandStructure.put("roleplay", new PostRpgBoardCommand("roleplay .+"));

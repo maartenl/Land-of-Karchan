@@ -262,38 +262,54 @@ public class ItemDef implements AttributeContainer
 	}
 
 	/**
-	* get a description of the item.
-	* @return String containing the description in the format: "an/a
-	* [adject1], [adject2], [adject3] [verb]".
-	*/
+	 * get a description of the item.
+	 * @return String containing the description in the format: "an/a
+	 * [adject1], [adject2], [adject3] [verb]".
+	 */
 	public String getDescription()
+	{
+		return ItemDef.getDescription(getAdjective1(), 
+			getAdjective2(), getAdjective3(), getVerb());
+	}
+
+	/**
+	 * get a description based on the adjectives and the verb.
+	 * @param adject1 String containing the first adjective.
+	 * @param adject2 String containing the second adjective.
+	 * @param adject3 String containing the third adjective.
+	 * @param verb String containing the verb.
+	 * @return String containing the description in the format: "an/a
+	 * [adject1], [adject2], [adject3] [verb]".
+	 */
+	public static String getDescription(String adject1, String adject2, 
+		String adject3, String verb)
 	{
 		int i = 0;
 		StringBuffer buf = new StringBuffer();
-		if ( (getAdjective1() != null) && getAdjective1().trim().equals(""))
+		if ( (adject1 != null) && !adject1.trim().equals(""))
 		{
 			i++;
-			buf.append(getAdjective1());
+			buf.append(adject1);
 		}
-		if ( (getAdjective2() != null) && getAdjective2().trim().equals(""))
+		if ( (adject2 != null) && !adject2.trim().equals(""))
 		{
 			if (i == 1)
 			{
 				buf.append(", ");
 			}
-			buf.append(getAdjective2());
+			buf.append(adject2);
 			i++;
 		}
-		if ( (getAdjective3() != null) && getAdjective3().trim().equals(""))
+		if ( (adject3 != null) && !adject3.trim().equals(""))
 		{
 			if (i > 0)
 			{
 				buf.append(", ");
 			}
-			buf.append(getAdjective3());
+			buf.append(adject3);
 			i++;
 		}
-		buf.append(" " + getVerb());
+		buf.append(" " + verb);
 		String total = buf.toString();
 		return (Constants.isQwerty(total.charAt(0)) ?
 			 "an " : "a ") + total;

@@ -129,7 +129,7 @@ public class SellCommand extends NormalCommand
 			int sumvalue = 0;
 			for (int i=0; i<amount; i++)
 			{
-				Item myItem = (Item) myItems.elementAt(0);
+				Item myItem = (Item) myItems.elementAt(i);
 				sumvalue += myItem.getMoney();
 			}
 			Logger.getLogger("mmud").finer(aUser.getName() + " has items worth " + sumvalue + " copper");

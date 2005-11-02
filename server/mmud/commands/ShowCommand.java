@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: ShowCommand.java 1005 2005-10-30 13:21:36Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -42,55 +42,38 @@ import mmud.items.ItemDefs;
 import mmud.items.ItemException;
 
 /**
- * Buying an item from a bot. Syntax : buy &lt;item&gt; from &lt;character&gt;
+ * Showing an item to a bot. Syntax : show &lt;item&gt; to &lt;character&gt;.
+ * The one reason why this is usefull is when you wish to know the value
+ * of a certain item.
+ * @see BuyCommand
  * @see SellCommand
  */
-public class BuyCommand extends NormalCommand
+public class ShowCommand extends NormalCommand
 {
 
-	public BuyCommand(String aRegExpr)
+	public ShowCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
 
 	/**
-	 * should be the same as item 38
-	 */
-	public static final String[] goldcoin = {"valuable",  "gold", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 37
-	 */
-	public static final String[] silvercoin = {"valuable",  "silver", "shiny", "coin"};
-
-	/**
-	 * should be the same as item 36
-	 */
-	public static final String[] coppercoin = {"valuable",  "copper", "shiny", "coin"};
-
-	/**
-	 * Tries out the buy command. There are a couple of requirements that
-	 * need to be met, before a successful sale takes place.
-	 * <ol><li>command struct. should be "<I>buy 
-	 * &lt;item&gt; from &lt;character&gt;</I>", for example: "<I>buy
-	 * gold ring from Karcas</I>".
-	 * <li>shopkeeper selling the item should
+	 * Provides the item to a shopkeeper for appraisal.
+	 * There are a couple of requirements that
+	 * need to be met, before a successful appraisal takes place.
+	 * <ol><li>command struct. should be "<I>show 
+	 * &lt;item&gt; to &lt;character&gt;</I>", for example: "<I>show gold ring
+	 * to Karcas</I>".
+	 * <li>shopkeeper buying the item should
 	 * <ol><li> exist, <li>be in the same room and<li>
 	 * have a occupation-attribute set to "shopkeeper"
-	 * and<li>has the appropriate item for sale</ol>
-	 * <li>the customer should be able to afford the item
 	 * </ol>
-	 * A best effort is tried, this means the following sequence of events:
-	 * <ol><li>the item is transferred into the inventory of the customer
-	 * <li>gold coins are transferred into the inventory of the shopkeeper
-	 * <li>silver coins are transferred into the inventory of the shopkeeper
-	 * <li>copper coins are transferred into the inventory of the shopkeeper
-	 * <li>when gold/silver/copper coins are not available in the
-	 * requested quantity, the game will automatically provide
-	 * appropriate change.
+	 * <li>the customer should have the item
+	 * </ol>
+	 * The following sequence of events:
+	 * <ol><li>the shopkeeper mentions how much he/she would give for the item.
 	 * <li>continue with next item
 	 *</ol>
-	 * @param aUser the character doing the buying.
+	 * @param aUser the character doing the showing.
 	 * @throws ItemException in case the appropriate items could not be
 	 * properly processed.
 	 * @throws ParseException if the item description or the number of
@@ -106,7 +89,7 @@ public class BuyCommand extends NormalCommand
 		}
 		String[] myParsed = getParsedCommand();
 		// parse command string
-		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("from"))
+		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("to"))
 		{
 			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
@@ -122,7 +105,7 @@ public class BuyCommand extends NormalCommand
 				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;
 			}
-			// check for item in posession of shopkeeper
+			// check for item in posession of customer
 			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
 			int amount = ((Integer) stuff.elementAt(0)).intValue();
 			String adject1 = (String) stuff.elementAt(1);
@@ -130,56 +113,37 @@ public class BuyCommand extends NormalCommand
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
 			
-			Vector myItems = toChar.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage(toChar.getName() + " does not have that item.<BR>\r\n");
+					aUser.writeMessage("You do not have that item.<BR>\r\n");
 					return true;
 				}
 				else
 				{
-					aUser.writeMessage(toChar.getName() + " does not have that many items.<BR>\r\n");
+					aUser.writeMessage("You do not have that many items.<BR>\r\n");
 					return true;
 				}
 			}
+
 			int sumvalue = 0;
 			for (int i=0; i<amount; i++)
 			{
 				Item myItem = (Item) myItems.elementAt(i);
-				sumvalue += myItem.getMoney();
-			}
-			if (aUser.getMoney() < sumvalue )
-			{
-				aUser.writeMessage("You do not have enough money.<BR>\r\n");
-				return true;
-			}
-			int j = 0;
-			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
-			{
-				// here needs to be a check for validity of the item
-				boolean success = true;
-				Item myItem = (Item) myItems.elementAt(i);
-				if (myItem.isAttribute("notbuyable"))
+				String message = null;
+				if (myItem.getMoney() == 0)
 				{
-					aUser.writeMessage("You cannot buy that item.<BR>\r\n");
-					success = false;
+					message = "A" +myItem.getDescription().substring(1) + " is not worth anything to me.";
 				}
-				if (success)
+				else
 				{
-					// transfer item to user
-					int totalitemvalue = myItem.getMoney();
-					if (success)
-					{
-						aUser.transferMoneyTo(totalitemvalue, toChar);
-						Database.writeLog(aUser.getName(), "paid " + totalitemvalue + " copper to " + toChar);
-						ItemsDb.transferItem(myItem, aUser);
-						Database.writeLog(aUser.getName(), "bought " + myItem + " from " + toChar);
-						Persons.sendMessage(aUser, toChar, "%SNAME buy%VERB2 " + myItem.getDescription() + " from %TNAME.<BR>\r\n");
-						j++;
-					}
+					message = "I'd be willing to pay " + 
+						myItem.getDescriptionOfMoney() + " for " + myItem.getDescription() + ".";
 				}
+				Persons.sendMessageExcl(toChar, aUser, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
+				aUser.writeMessage(toChar, aUser, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
 			}
 			return true;
 		}
@@ -188,7 +152,7 @@ public class BuyCommand extends NormalCommand
 
 	public Command createCommand()
 	{
-		return new BuyCommand(getRegExpr());
+		return new ShowCommand(getRegExpr());
 	}
 	
 }

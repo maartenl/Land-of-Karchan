@@ -316,19 +316,29 @@ public class ItemsDb
 		while (res.next())
 		{
 			int amount = res.getInt("amount");
+			String desc = ItemDef.getDescription(res.getString("adject1"),
+				res.getString("adject2"),
+				res.getString("adject3"),
+				res.getString("name"));
 			if (amount != 1)
 			{
 				// 5 gold, hard cups
-				myInventory.append("<LI>" + amount + " " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " " + 
-					res.getString("name") + "s.\r\n");
+				if (desc.startsWith("an"))
+				{
+					// remove 'an '
+					desc = desc.substring(3);
+				}
+				else
+				{
+					// remove 'a '
+					desc = desc.substring(2);
+				}
+				myInventory.append("<LI>" + amount + " " + desc +	"s.\r\n");
 			}
 			else
 			{
 				// a gold, hard cup
-				myInventory.append("<LI>a " + res.getString("adject1")
-					+ ", " + res.getString("adject2") + ", " + res.getString("adject3") + " " + 
-					res.getString("name") + ".\r\n");
+				myInventory.append("<LI>" + desc + ".\r\n");
 			}
 		}
 		res.close();
@@ -338,7 +348,10 @@ public class ItemsDb
 		{
 			throw new MudDatabaseException("database error getting inventory.", e);
 		}
-		myInventory.append("<P><LI>" + aPerson.getDescriptionOfMoney());
+		if (aPerson.getMoney() != 0)
+		{
+			myInventory.append("<P><LI>" + aPerson.getDescriptionOfMoney());
+		}
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
 	}

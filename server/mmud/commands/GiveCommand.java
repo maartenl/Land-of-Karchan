@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import mmud.Constants;
 import mmud.MudException;
+import mmud.MudMoneyException;
 import mmud.ParseException;
 import mmud.characters.Person;
 import mmud.characters.Persons;
@@ -66,7 +67,7 @@ public class GiveCommand extends NormalCommand
 		if (myParsed.length >= 4 && 
 			myParsed[myParsed.length-2].equalsIgnoreCase("to")) 
 		{
-			// determine if appropriate shopkeeper is found.
+			// determine if appropriate target is found.
 			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
 			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
 			{
@@ -74,7 +75,72 @@ public class GiveCommand extends NormalCommand
 				return true;
 			}
 
-			// check for item in posession of shopkeeper
+			// check for money
+			// "give [x] [gold,silver,copper] coin[s] to <person>"
+			if (myParsed[myParsed.length-3].equalsIgnoreCase("coins") ||
+				myParsed[myParsed.length-3].equalsIgnoreCase("coin") )
+			{
+				Logger.getLogger("mmud").finer("DEBUG!");
+				int amount = 1;
+				int newamount = 0;
+				String currency = null;
+				try
+				{
+					if (myParsed.length == 6)
+					{
+						amount = Integer.parseInt(myParsed[1]);
+						if (amount < 0)
+						{
+							aUser.writeMessage("I beg your pardon?<BR>\r\n");
+							return true;
+						}
+					}
+					if (myParsed[myParsed.length-4].equalsIgnoreCase("gold"))
+					{
+						newamount = amount * 100;
+						currency = "gold";
+					} 
+					else if (myParsed[myParsed.length-4].equalsIgnoreCase("silver"))
+					{
+						newamount = amount * 10;
+						currency = "silver";
+					} 
+					else if (myParsed[myParsed.length-4].equalsIgnoreCase("copper"))
+					{
+						newamount = amount;
+						currency = "copper";
+					}
+					Logger.getLogger("mmud").finer("amount=" + amount + ",currency=" + currency + ",newamount=" + newamount);
+					if (newamount != 0)
+					{
+						try
+						{
+							aUser.transferMoneyTo(newamount, toChar);
+						}
+						catch (MudMoneyException e)
+						{
+							aUser.writeMessage("You do not have that much money.<BR>\r\n");
+							return true;
+						}
+						Database.writeLog(aUser.getName(), "gave " + newamount + " copper to " + toChar);
+						Persons.sendMessage(aUser, toChar, 
+							"%SNAME give%VERB2 " + 
+							amount + 
+							" " + 
+							currency + 
+							" coin" + 
+							(amount == 1 ? "" : "s") +
+							" to %TNAME.<BR>\r\n");
+						return true;
+					}
+				}
+				catch (NumberFormatException e)
+				{
+					// ignore this, pass it through to the standard give functionality.
+				}
+			}
+
+			// check for item in posession of this person
 			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
 			int amount = ((Integer) stuff.elementAt(0)).intValue();
 			String adject1 = (String) stuff.elementAt(1);
