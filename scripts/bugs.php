@@ -61,7 +61,7 @@ if (isset($_REQUEST{"title"}))
 
 // show results
 $result = mysql_query("select *, creation+0 as creation3, date_format(creation, \"%Y-%m-%d %T\") as
-	creation2 from bugs order by creation"
+	creation2 from bugs order by creation desc"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
@@ -74,8 +74,8 @@ while ($myrow = mysql_fetch_array($result))
 	if (isset($_REQUEST{"bug"}) && 
 		($myrow["creation3"]==$_REQUEST{"bug"}))
 	{
-		printf("<TR><TD><B>Description</B><P>".$myrow["description"]."</TR></TD>");
-		printf("<TR><TD><B>Answer</B><P>".$myrow["answer"]."</TR></TD>");
+		printf("<TR><TD COLSPAN=4><B>Description</B><P>".$myrow["description"]."<BR>");
+		printf("<B>Answer</B><P>".$myrow["answer"]."</TD></TR>");
 	}
 }
 printf("</TABLE>");
