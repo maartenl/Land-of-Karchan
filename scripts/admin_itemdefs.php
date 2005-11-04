@@ -124,6 +124,7 @@ if (isset($_REQUEST{"name"}))
 	$eatable = $_REQUEST["eatable"];
 	$drinkable = $_REQUEST["drinkable"];
 	$readdescr = $_REQUEST["readdescr"];
+	$notes = $_REQUEST["notes"];
 	// make that change.
 	$query = "update mm_items set name=\"".
 	  quote_smart($_REQUEST{"name"}).
@@ -141,6 +142,8 @@ if (isset($_REQUEST{"name"}))
 			"\"".quote_smart($drinkable)."\"").
 	  ", readdescr=". ($readdescr==""?"null": 
 			"\"".quote_smart($readdescr)."\"").
+	  ", notes=". ($notes==""?"null": 
+			"\"".quote_smart($notes)."\"").
 	  ", capacity=". ($capacity==""?"null": 
 			"\"".quote_smart($capacity)."\"").
 	  ", keyid=". ($keyid==""?"null": 
@@ -269,6 +272,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>visible:</b> %s<BR>", ($myrow["visible"]==1? "yes":"no"));
 	printf("<b>description:</b> %s<BR>", $myrow["description"]);
 	printf("<b>readdescr:</b> %s<BR>", $myrow["readdescr"]);
+	printf("<b>notes:</b> %s<BR>", $myrow["notes"]);
 	printf("<b>wearable:</b> <UL>");
 	if ($myrow["wearable"] & 1)
 	{
@@ -420,6 +424,8 @@ ROWS="10" COLS="85">
 <OPTION VALUE="262144" <?php if ($myrow["wearable"] & 262144) {printf("selected");} ?>>wielding both hands
 </SELECT>
 </TD></TR>
+<TR><TD>notes</TD><TD><TEXTAREA NAME="notes" ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["notes"]) ?></TEXTAREA><P></TD></TR>
 </TABLE>
 <INPUT TYPE="submit" VALUE="Change Item Definition">
 </b>
