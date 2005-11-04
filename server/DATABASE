@@ -251,6 +251,7 @@ on update cascade;
 - alter table mm_admin change passwd passwd varchar(45) not null;
 - alter table mm_log drop primary key;
 - create index primaryindex on mm_log (creation, name);
+- alter table mm_items add (notes text);
 
 Creating a dupe database
 ------------------------
