@@ -4,12 +4,10 @@
 # javac -source 1.4 -classpath
 # *.java
 
-HOMEDIR = /home/karchan/mmud/server
-# this subdirectory must exist, or grave errors will result.
-INSTALLDIR = $(HOMEDIR)/jclasses
-SOURCEDIR = $(HOMEDIR)
-JAVADOCDIR = /var/www/html/javadoc
-JAVADIR = /usr/java/j2sdk1.4.2_09/bin
+HOMEDIR = /home/maartenl/mmud/server
+JAVADIR = /opt/sun-jdk-1.4.2.09/bin/
+JAVADOCDIR = /projects/www.karchan.org/public/javadoc/
+JAVASRCDIR = /projects/www.karchan.org/public/javasrc/
 
 #
 # Options that can be used to the make command
@@ -31,6 +29,9 @@ CC = $(JAVADIR)/javac
 JAVA = $(JAVADIR)/java
 JAVADOC = $(JAVADIR)/javadoc
 JAVAJAR = $(JAVADIR)/jar
+# this subdirectory must exist, or grave errors will result.
+INSTALLDIR = $(HOMEDIR)/jclasses
+SOURCEDIR = $(HOMEDIR)
 
 # CC = javac
 # the -g option is to compile debugging info into the object files
@@ -69,7 +70,7 @@ jar:
 	cd jclasses;$(JAVAJAR) -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
 html:
-	$(JAVA) -jar j2h.jar -d /home/httpd/html/javasrc/ -js . -jd /home/httpd/html/javadoc
+	$(JAVA) -jar j2h.jar -d $(JAVASRCDIR) -js . -jd $(JAVADOCDIR)
 
 run: jar
 	$(JAVA) -cp $(CLASSPATH) mmud.Main

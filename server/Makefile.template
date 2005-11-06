@@ -5,9 +5,9 @@
 # *.java
 
 HOMEDIR = [usually the current dir]
-# this subdirectory must exist, or grave errors will result.
-JAVADOCDIR = [where should the javadocumentation be put]
 JAVADIR = [what is the place where the java binaries are installed?]
+JAVADOCDIR = [where should the javadocumentation be put]
+JAVASRCDIR = [where should the html-ed source be put]
 
 #
 # Options that can be used to the make command
@@ -29,6 +29,7 @@ CC = $(JAVADIR)/javac
 JAVA = $(JAVADIR)/java
 JAVADOC = $(JAVADIR)/javadoc
 JAVAJAR = $(JAVADIR)/jar
+# this subdirectory must exist, or grave errors will result.
 INSTALLDIR = $(HOMEDIR)/jclasses
 SOURCEDIR = $(HOMEDIR)
 
@@ -69,7 +70,7 @@ jar:
 	cd jclasses;$(JAVAJAR) -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
 html:
-	$(JAVA) -jar j2h.jar -d /home/httpd/html/javasrc/ -js . -jd /home/httpd/html/javadoc
+	$(JAVA) -jar j2h.jar -d $(JAVASRCDIR) -js . -jd $(JAVADOCDIR)
 
 run: jar
 	$(JAVA) -cp $(CLASSPATH) mmud.Main
