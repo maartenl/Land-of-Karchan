@@ -187,12 +187,9 @@ public class MudSocket extends Thread
 		}
 		catch (NumberFormatException e)
 		{
-			Logger.getLogger("mmud").warning(
-				"unable to interpret frame information, defaulting to 0.");
-			e.printStackTrace();
+			Logger.getLogger("mmud").throwing(
+				"mmud.MudSocket", "readCommandInfoFromSocket", e);
 		}
-//					while (true)
-//					{
 		aWriter.println("Command:");
 		StringBuffer command = new StringBuffer();
 		String readem = readLine(aReader);
