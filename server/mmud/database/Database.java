@@ -297,7 +297,7 @@ public class Database
 	throws MudDatabaseException
 	{
 
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aQuery=" + aQuery);
 		checkConnection();
 		PreparedStatement aStatement = null;
 		try
@@ -329,7 +329,7 @@ public class Database
 		throws MudDatabaseException
 	{
 
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aQuery=" + aQuery);
 		checkConnection();
 		PreparedStatement aStatement = null;
 		try

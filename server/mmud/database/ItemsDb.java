@@ -199,7 +199,7 @@ public class ItemsDb
 	public static ItemDef getItemDef(int itemdefnr)
 	throws MudDatabaseException
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("itemdefnr=" + itemdefnr);
 		ResultSet res;
 		ItemDef myItemDef = null;
 		try
@@ -215,9 +215,13 @@ public class ItemsDb
 			Logger.getLogger("mmud").info("resultset null");
 			return null;
 		}
-		res.first();
+		if (!res.first())
+		{
+			throw new MudDatabaseException("item definition " + itemdefnr + " not found.");
+		}
 		if (res.getInt("container") == 1)
 		{
+			int keyid = res.getInt("keyid");
 			myItemDef  = new ContainerDef(
 				itemdefnr,
 				res.getString("adject1"),
@@ -226,7 +230,7 @@ public class ItemsDb
 				res.getInt("copper"),
 				res.getInt("wearable"),
 				res.getInt("capacity"), res.getInt("isopenable") == 1, 
-				ItemDefs.getItemDef(res.getInt("keyid")) );
+				(keyid == 0 ? null:ItemDefs.getItemDef(res.getInt("keyid"))) );
 		}
 		else
 		{
@@ -283,7 +287,7 @@ public class ItemsDb
 		}
 		catch (SQLException e)
 		{
-			throw new MudDatabaseException("database error get itemdefinition.", e);
+			throw new MudDatabaseException("database error get itemdefinition " + itemdefnr + ".", e);
 		}
 		Logger.getLogger("mmud").info("returns: " + myItemDef);
 		return myItemDef;
@@ -1038,6 +1042,8 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
+				Logger.getLogger("mmud").finest("anItemInstanceId=" + anItemInstanceId + 
+					",anItemId=" + anItemId);
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
 				Item anItem = null;
 				if (anItemDef instanceof ContainerDef)

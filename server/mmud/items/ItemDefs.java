@@ -68,7 +68,7 @@ public final class ItemDefs
 			throw new RuntimeException("theItemDefs vector is null");
 		}
 		ItemDef myItemDef = null;
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aItemDefNr=" + aItemDefNr);
 		for (int i=0;i < theItemDefs.size(); i++)
 		{
 			myItemDef = (ItemDef) theItemDefs.elementAt(i);

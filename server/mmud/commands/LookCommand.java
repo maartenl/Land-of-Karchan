@@ -61,6 +61,7 @@ public class LookCommand extends NormalCommand
 	private boolean LookItem(User aUser, Vector aItems)
 	throws ItemException
 	{
+		Logger.getLogger("mmud").finer("");
 		Item myItem = (Item) aItems.elementAt(0);
 		if (myItem == null)
 		{
@@ -75,6 +76,7 @@ public class LookCommand extends NormalCommand
 	private boolean LookInItem(User aUser, Vector aItems)
 	throws ItemException, MudException
 	{
+		Logger.getLogger("mmud").finer("");
 		Iterator myIterator = aItems.iterator();
 		while (myIterator.hasNext())
 		{
