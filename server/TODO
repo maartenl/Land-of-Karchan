@@ -123,13 +123,16 @@ not be sold/bought.
 You can only buy items that the shopkeepers has in his/her inventory.
 
 Issue: how do I determine what a shopkeeper has for sale at the moment.
+answer: special item? in database with special attribute?
 
 Issue: how do I determine how much a shopkeeper is willing to give for a
 certain item?
+answer: show item
 
 Current commands for shopkeepers:
 buy <item> from <shopkeeper>
 sell <item> to <shopkeeper>
+show <item> to <shopkeeper>
 
 Money
 -----
