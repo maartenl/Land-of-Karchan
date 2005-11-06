@@ -35,10 +35,7 @@ import mmud.ParseException;
 import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
-import mmud.database.Database;
-import mmud.database.ItemsDb;
 import mmud.items.Item;
-import mmud.items.ItemDefs;
 import mmud.items.ItemException;
 
 /**

@@ -27,19 +27,18 @@ maarten_l@yahoo.com
 
 package mmud.common;
 
-import java.util.logging.Logger;
-import java.util.Random;
 import java.io.StringReader;
+import java.util.Random;
+import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.rooms.Rooms;
-import mmud.characters.Persons;
-import simkin.Interpreter;
+
+import org.xml.sax.SAXException;
+
 import simkin.ExecutableContext;
 import simkin.MethodNotSupportedException;
 import simkin.ParseException;
 import simkin.XMLExecutable;
-import org.xml.sax.SAXException;
 
 /**
  * The interpreter used for executing user defined scripts in the mud.

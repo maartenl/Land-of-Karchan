@@ -27,7 +27,6 @@ maarten_l@yahoo.com
 package mmud.items;     
 
 import java.util.TreeMap;
-import java.util.logging.Logger;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;

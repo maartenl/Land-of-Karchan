@@ -27,16 +27,9 @@ maarten_l@yahoo.com
 
 package mmud.common;
 
-import java.util.logging.Logger;
-import java.util.Random;
-
-import mmud.Constants;
-import mmud.rooms.Rooms;
 import mmud.characters.Persons;
+import mmud.rooms.Rooms;
 import simkin.Interpreter;
-import simkin.ExecutableContext;
-import simkin.MethodNotSupportedException;
-import simkin.ParseException;
 
 /**
  * The interpreter used for executing user defined scripts in the mud.
