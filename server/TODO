@@ -56,6 +56,29 @@ The following kind of items are possible:
 - MAGICITEM
 - NORMAL
 
+Containers
+----------
+
+Containers are special items that can contain other items. Containers, teh
+same as normal items, have an ItemDefinition.
+
+The ItemDefinition determines if an item is a container or not.
+It does this in a variety of ways. First of all, if the 'container' field is
+set to 'yes', the item is a container, capable of containing other items.
+
+If the 'isopenable' field is set to 'yes' the container can be opened and
+closed.
+
+if the 'keyid' field is set to a VALID itemdefinition, an item of that
+definition is to be used to lock or unlock the container.
+
+As this means that a container has a varying number of states, attributes
+are used per container:
+
+name: islocked value: false value_type: boolean
+name: isopen value: true value_type: boolean
+name: isopenable value: true value_type: boolean
+
 Clans
 -----
 
