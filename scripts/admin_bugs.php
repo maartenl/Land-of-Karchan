@@ -55,7 +55,7 @@ if (isset($_REQUEST{"title"}))
 
 // show results
 $result = mysql_query("select *, creation+0 as creation3, date_format(creation, \"%Y-%m-%d %T\") as
-	creation2 from bugs order by creation"
+	creation2 from bugs order by creation desc"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
