@@ -157,9 +157,18 @@ whenever a change takes place on the record in question.
 <H4><A HREF="#contents"><A NAME="mm_admin">mm_admin</A></H4>
 <DL>
 <DT>name
-<DD>the name of the administrator
+<DD>the name of the administrator. This is usually related to the
+<I>owner</I> field in other tables.
 <DT>passwd
 <DD>the password of the administrator encoded in SHA1() method.
+<DT>ip
+<DD>the ip address last logged of the person entering (currently not used)
+<DT>created
+<DD>date/time of creation of the row.
+<DT>validuntil
+<DD>the date until which the account is active.
+<DT>email
+<DD>email address of the administrator.
 </DL>
 <PRE>
 +---------------------+
@@ -167,6 +176,10 @@ whenever a change takes place on the record in question.
 +---------------------+
 |*name                |
 | passwd              |
+| ip                  |
+| created             |
+| validuntil          |
+| email               |
 +---------------------+
 </PRE>
 <H4><A HREF="#contents"><A NAME="mm_commands">mm_commands</A></H4>

@@ -45,11 +45,13 @@ import mmud.items.Item;
 import mmud.items.ItemDef;
 import mmud.items.ItemDefs;
 import mmud.items.ItemDoesNotExistException;
+import mmud.common.MudInterpreter;
+import mmud.common.MudXMLExecutable;
+import simkin.Interpreter;
 import simkin.Executable;
 import simkin.ExecutableContext;
 import simkin.ExecutableIterator;
 import simkin.FieldNotSupportedException;
-import simkin.Interpreter;
 import simkin.MethodNotSupportedException;
 import simkin.Null;
 import simkin.XMLExecutable;
@@ -575,14 +577,12 @@ public class Room implements Executable, AttributeContainer
 		try
 		{
 			// Create an interpreter and a context
-			Interpreter interp=new Interpreter();
-			interp.addGlobalVariable("rooms", Rooms.create());                  
-			interp.addGlobalVariable("persons", Persons.create());                  
+			Interpreter interp=new MudInterpreter();
 			ExecutableContext ctxt=new ExecutableContext(interp);
 																																							
 			// create an XMLExecutable object with the xml string
 			XMLExecutable executable =
-				new XMLExecutable(getId() + "", new StringReader(aScript));
+				new MudXMLExecutable(getId() + "", new StringReader(aScript));
 																																							
 			// call the "main" method with the person as an argument
 			Object args[]={this};

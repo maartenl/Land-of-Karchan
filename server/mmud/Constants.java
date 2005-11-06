@@ -1361,15 +1361,22 @@ public final class Constants
 	{
 		if (aValue == 0)
 		{
+			logger.finest("returns: no money=[]");
 			return "";
 		}
 		int gold = aValue / 100;
 		int silver = (aValue % 100) / 10;
 		int copper = aValue % 10;
-		String copperstr = copper + " copper coin" + (copper == 1? "":"s");
-		String silverstr = silver + " silver coin" + (silver == 1? "":"s") + ", ";
-		String goldstr = gold + " gold coin" + (gold == 1? "":"s") + ", ";
-		String total = goldstr + silverstr + copperstr;
+		String total = copper + " copper coin" + (copper == 1? "":"s");
+		if (silver != 0)
+		{
+			total = silver + " silver coin" + (silver == 1? "":"s") + ", " + total;
+		}
+		if (gold != 0)
+		{
+			String goldstr = gold + " gold coin" + (gold == 1? "":"s") + ", " + total;
+		}
+		logger.finest("returns: [" + total + "]");
 		return total;
 	}
 

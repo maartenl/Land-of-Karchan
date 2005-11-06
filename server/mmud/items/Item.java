@@ -42,6 +42,8 @@ import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.database.MudDatabaseException;
 import mmud.rooms.Rooms;
+import mmud.common.MudInterpreter;
+import mmud.common.MudXMLExecutable;
 import simkin.Executable;
 import simkin.ExecutableContext;
 import simkin.ExecutableIterator;
@@ -214,11 +216,11 @@ public class Item implements Executable, AttributeContainer
    /**
 	 * Returns the value of the item.
 	 * @return String description of the amount of money.
-	 * @see mmud.items.ItemDef#getDescriptionOfMoney
+	 * @see Constants#getDescriptionOfMoney
 	 */
 	public String getDescriptionOfMoney()   
 	{
-		String total = theItemDef.getDescriptionOfMoney();
+		String total = Constants.getDescriptionOfMoney(getMoney());
 		Logger.getLogger("mmud").finer("returns '" + total + "'");
 		return total;
 	}
@@ -664,14 +666,12 @@ public class Item implements Executable, AttributeContainer
 		try
 		{
 			// Create an interpreter and a context
-			Interpreter interp=new Interpreter();
-			interp.addGlobalVariable("rooms", Rooms.create());
-			interp.addGlobalVariable("persons", Persons.create());
+			Interpreter interp=new MudInterpreter();
 			ExecutableContext ctxt=new ExecutableContext(interp);
 	
 			// create an XMLExecutable object with the xml string
 			XMLExecutable executable = 
-				new XMLExecutable(getId() + "", new StringReader(aScript));
+				new MudXMLExecutable(getId() + "", new StringReader(aScript));
 	
 			// call the "main" method with the person as an argument
 			// or with the person as well as the command (split into

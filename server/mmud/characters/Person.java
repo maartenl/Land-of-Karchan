@@ -54,6 +54,8 @@ import mmud.items.PersonPositionEnum;
 import mmud.races.Race;
 import mmud.rooms.Room;
 import mmud.rooms.Rooms;
+import mmud.common.MudInterpreter;
+import mmud.common.MudXMLExecutable;
 import simkin.Executable;
 import simkin.ExecutableContext;
 import simkin.ExecutableIterator;
@@ -979,14 +981,12 @@ public class Person implements Executable, AttributeContainer
 		try
 		{
 			// Create an interpreter and a context
-			Interpreter interp=new Interpreter();
-			interp.addGlobalVariable("rooms", Rooms.create());
-			interp.addGlobalVariable("persons", Persons.create());
+			Interpreter interp=new MudInterpreter();
 			ExecutableContext ctxt=new ExecutableContext(interp);
 	
 			// create an XMLExecutable object with the xml string
 			XMLExecutable executable = 
-				new XMLExecutable(getName(), new StringReader(aScript));
+				new MudXMLExecutable(getName(), new StringReader(aScript));
 	
 			// call the "main" method with the person as an argument
 			// or with the person as well as the command (split into

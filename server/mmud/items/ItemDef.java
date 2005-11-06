@@ -145,18 +145,6 @@ public class ItemDef implements AttributeContainer
 	}
 	
 	/**
-	* Returns the amount of money that you are carrying.
-	* @return String description of the amount of money.
-	* @see Constants#getDescriptionOfMoney
-	*/
-	public String getDescriptionOfMoney()
-	{
-		String total = Constants.getDescriptionOfMoney(theCopper);
-		Logger.getLogger("mmud").finer("returns '" + total + "'");
-		return total;
-	}
-
-	/**
 	* Return the amount of copper it costs.
 	* @return integer containing number of copper coins.
 	*/
