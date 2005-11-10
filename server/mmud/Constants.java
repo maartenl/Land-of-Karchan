@@ -923,7 +923,7 @@ public final class Constants
 		while (myI.hasNext())
 		{
 			UserCommandInfo myCom = (UserCommandInfo) myI.next();
-			logger.finer("retrieved usercommand " + myCom.getCommand());
+			logger.finest("retrieved usercommand " + myCom.getCommand());
 			if (aCommand.matches(myCom.getCommand()))
 			{
 				logger.finer("matches " + myCom.getCommand());
@@ -1354,7 +1354,7 @@ public final class Constants
 	 * <LI>1 gold = 10 silver
 	 * </UL>
 	 * @return String description of the amount of money, for example 
-	 * "<I>3 gold coins, 2 silver coins, 0 copper coins</I>". Returns an
+	 * "<I>3 gold coins, 2 silver coins</I>". Returns an
 	 * empty string if no money is present.
 	 */
 	public static String getDescriptionOfMoney(int aValue)
@@ -1367,14 +1367,30 @@ public final class Constants
 		int gold = aValue / 100;
 		int silver = (aValue % 100) / 10;
 		int copper = aValue % 10;
-		String total = copper + " copper coin" + (copper == 1? "":"s");
+		boolean foundsome= false;
+		String total = "";
+		if (copper != 0)
+		{
+			total = copper + " copper coin" + (copper == 1? "":"s");
+			foundsome = true;
+		}
 		if (silver != 0)
 		{
-			total = silver + " silver coin" + (silver == 1? "":"s") + ", " + total;
+			if (foundsome)
+			{
+				total = ", " + total;
+			}
+			total = silver + " silver coin" + (silver == 1? "":"s") + total;
+			foundsome = true;
 		}
 		if (gold != 0)
 		{
-			String goldstr = gold + " gold coin" + (gold == 1? "":"s") + ", " + total;
+			if (foundsome)
+			{
+				total = ", " + total;
+			}
+			total = gold + " gold coin" + (gold == 1? "":"s") + total;
+			foundsome = true;
 		}
 		logger.finest("returns: [" + total + "]");
 		return total;

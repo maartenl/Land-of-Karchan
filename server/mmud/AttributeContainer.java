@@ -27,6 +27,7 @@ maarten_l@yahoo.com
 
 package mmud;
 
+import java.util.Vector;
 
 /**
  * Interface to indicate that an object can contain attributes.
@@ -40,6 +41,16 @@ public interface AttributeContainer
 	 * @param anAttribute the attribute to be set.
 	 */
 	public void setAttribute(Attribute anAttribute)
+	throws MudException;
+
+	/**
+	 * Set the attributes found in the vector. 
+	 * Adds the attribute, if the attribute does not
+	 * exist yet.
+	 * @param anAttributeVector a vector containing the attributes to be set.
+	 * May be null.
+	 */
+	public void setAttributes(Vector anAttributeVector)
 	throws MudException;
 
 	/**

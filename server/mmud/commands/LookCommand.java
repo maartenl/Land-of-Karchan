@@ -59,7 +59,7 @@ public class LookCommand extends NormalCommand
 	}
 
 	private boolean LookItem(User aUser, Vector aItems)
-	throws ItemException
+	throws ItemException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Item myItem = (Item) aItems.elementAt(0);

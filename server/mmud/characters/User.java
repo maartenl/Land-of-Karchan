@@ -385,7 +385,7 @@ public class User extends mmud.characters.Person
 	 */
 	public int getFrames()
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finest("returns " + theFrames);
 		return theFrames;
 	}
 
@@ -539,7 +539,7 @@ public class User extends mmud.characters.Person
 	 */
 	public String getUrl(String aCommand)
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finest("aCommand=" + aCommand);
 		return Constants.mudcgi + "?command=" + aCommand + "&name=" +
 			getName() + "&frames=" +
 			(getFrames() + 1);

@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud;
 
+import java.util.logging.Logger;
+
 /**
  * An attri ute data class, containing name, value, valuetype.
  * This class is ummutable.
@@ -45,7 +47,14 @@ public class Attribute
 	 * type of value (string, number, boolean, etc)
 	 */
 	public Attribute(String aName, String aValue, String aValueType)
+	throws MudException
 	{
+		Logger.getLogger("mmud").finer("aName=" + aName +
+			", aValue=" + aValue + ",aValueType=" + aValueType);
+   		if ((aName == null) || (aValue == null) || (aValueType == null))
+		{
+			throw new MudException("error creating attribute, one of the properties was empty.");
+		}
 		theName = aName;
 		theValue = aValue;
 		theValueType = aValueType;
@@ -56,6 +65,7 @@ public class Attribute
 	 * @param anAttribute the attribute to be copied.
 	 */
 	public Attribute(Attribute anAttribute)
+	throws MudException
 	{
 		this(anAttribute.getName(),
 			anAttribute.getValue(), anAttribute.getValueType());

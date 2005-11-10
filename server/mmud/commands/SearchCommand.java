@@ -38,6 +38,8 @@ import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
 import mmud.items.ItemException;
+import mmud.items.Container;
+import mmud.items.StdItemContainer;
 
 /**
  * Retrieve item from another item in the room: "search shrubbery".
@@ -92,12 +94,13 @@ public class SearchCommand extends NormalCommand
 				aUser.writeMessage("You search but find nothing.<BR>\r\n");
 				return true;
 			}
-			Item aContainer = (Item) myItems.elementAt(0);
-			if (!aContainer.isAttribute("container"))
+			if (myItems.elementAt(0) instanceof StdItemContainer)
 			{
-				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " but find%VERB2 nothing.<BR>\r\n");
+				Item item = (Item) myItems.elementAt(0);
+				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + item.getDescription() + " but find%VERB2 nothing.<BR>\r\n");
 				return true;
 			}
+			StdItemContainer aContainer = (StdItemContainer) myItems.elementAt(0);
 			myItems = ItemsDb.getItemsFromContainer(aContainer);
 			if (myItems.size() == 0)
 			{

@@ -297,7 +297,7 @@ public class Database
 	throws MudDatabaseException
 	{
 
-		Logger.getLogger("mmud").finer("aQuery=" + aQuery);
+		Logger.getLogger("mmud").finest("aQuery=" + aQuery);
 		checkConnection();
 		PreparedStatement aStatement = null;
 		try
@@ -329,7 +329,7 @@ public class Database
 		throws MudDatabaseException
 	{
 
-		Logger.getLogger("mmud").finer("aQuery=" + aQuery);
+		Logger.getLogger("mmud").finest("aQuery=" + aQuery);
 		checkConnection();
 		PreparedStatement aStatement = null;
 		try
@@ -764,32 +764,36 @@ public class Database
 	}
 
 	/**
-	 * Add all attributes found in the database regarding a certain item to
-	 * that item object. Basically fills up the attribute list of the item.
-	 * @param anItem item object
+	 * Get all attributes found in the database regarding a certain item. 
+	 * Basically fills up the attribute list of the item.<P>
+	 * The reason that these attributes are not automatically added to the
+	 * item, is because some atttributes can have an impact
+	 * on what kind of item is created.
+	 * @param anItem item id of an item
+	 * @returns a Vector containing the Attributes.
 	 */
-	public static void getItemAttributes(Item anItem)
+	static Vector getItemAttributes(int anItemId)
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-
+		Vector result = new Vector();
 		ResultSet res;
 		try
 		{
 		PreparedStatement sqlGetItemAttributes = prepareStatement(sqlGetItemAttributesString);
-		sqlGetItemAttributes.setInt(1, anItem.getId());
+		sqlGetItemAttributes.setInt(1, anItemId);
 		res = sqlGetItemAttributes.executeQuery();
 		if (res == null)
 		{
 			Logger.getLogger("mmud").info("resultset null");
-			return;
+			return result;
 		}
 		while (res.next())
 		{
 			Attribute myAttrib = new Attribute(res.getString("name"),
 				res.getString("value"),
 				res.getString("value_type"));
-			anItem.setAttribute(myAttrib);
+			result.add(myAttrib);
 		}
 		res.close();
 		sqlGetItemAttributes.close();
@@ -798,7 +802,7 @@ public class Database
 		{
 			throw new MudDatabaseException("database error getting attributes of item.", e);
 		}
-		return;
+		return result;
 	}
 
 	/**

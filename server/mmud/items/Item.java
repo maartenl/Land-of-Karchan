@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;
@@ -72,8 +73,10 @@ public class Item implements Executable, AttributeContainer
 	 * This method is usually only used by the database.
 	 * @param anItemDef definition of the item
 	 * @param anId integer identification of the item
+	 * @param aPosBody the place on the body that this item is worn on 
+	 * or wielded.
 	 */
-	public Item(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody)
+	Item(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody)
 	{
 		this(anItemDef, anId);
 		thePlaceOnBody = aPosBody;
@@ -85,7 +88,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anItemDef definition of the item
 	 * @param anId integer identification of the item
 	 */
-	public Item(ItemDef anItemDef, int anId)
+	Item(ItemDef anItemDef, int anId)
 	{
 		theItemDef = anItemDef;
 		theId = anId;
@@ -97,7 +100,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anItemDef integer definition identification of the item
 	 * @param anId integer identification of the item
 	 */
-	public Item(int anItemDef, int anId, PersonPositionEnum aPosBody)
+	Item(int anItemDef, int anId, PersonPositionEnum aPosBody)
 	throws MudDatabaseException
 	{
 		this(ItemDefs.getItemDef(anItemDef), anId, aPosBody);
@@ -109,7 +112,7 @@ public class Item implements Executable, AttributeContainer
 	 * @param anItemDef integer definition identification of the item
 	 * @param anId integer identification of the item
 	 */
-	public Item(int anItemDef, int anId)
+	Item(int anItemDef, int anId)
 	throws MudDatabaseException
 	{
 		this(ItemDefs.getItemDef(anItemDef), anId);
@@ -273,6 +276,7 @@ public class Item implements Executable, AttributeContainer
 	 * @return String containing the description.
 	 */
 	public String getLongDescription()
+	throws MudException
 	{
 		StringBuffer myString = new StringBuffer(isAttribute("description") ? 
 				getAttribute("description").getValue() : 
@@ -316,6 +320,26 @@ public class Item implements Executable, AttributeContainer
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
 		AttributeDb.setAttribute(anAttribute, this);
+	}
+	
+	/**
+	 * Set or add a number of attributes of this item.
+	 * @param anAttributeVector vector containing the attributes
+	 * to be added/set. This does not use the database, i.e. should
+	 * be used <I>by</I> the database, upon creation of items.
+	 */
+	public void setAttributes(Vector anAttributeVector)
+	throws MudException
+	{
+		if (anAttributeVector == null)
+		{
+			return;
+		}
+		for (int i=0; i<anAttributeVector.size(); i++)
+		{
+			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
+			theAttributes.put(attrib.getName(), attrib);
+		}
 	}
 
 	/**
@@ -544,9 +568,18 @@ public class Item implements Executable, AttributeContainer
 				{
 					mType = "boolean";
 				}
-				Attribute mAttrib = new Attribute((String) arguments[0],
+				Attribute mAttrib = null;
+				try
+				{
+					mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not set attribute.");
+				}
 				try
 				{
 					setAttribute(mAttrib);
@@ -610,7 +643,7 @@ public class Item implements Executable, AttributeContainer
 				{
 					myItem = ItemsDb.addItem(myItemDef);
 				}
-				catch (MudDatabaseException e2)
+				catch (MudException e2)
 				{
 					throw new MethodNotSupportedException(e2.getMessage());
 				}
@@ -642,7 +675,7 @@ public class Item implements Executable, AttributeContainer
 	}
 
 	/**
-	 * Executes a script with this person as the focus point.
+	 * Executes a script with this item as the focus point.
 	 * @param aScript a String containing the script to execute.
 	 * @param aXmlMethodName the name of the method in the xml
 	 * script that you wish to execute.
@@ -696,7 +729,7 @@ public class Item implements Executable, AttributeContainer
 	}
 
 	/**
-	 * Executes a script with this person as the focus point.
+	 * Executes a script with this item as the focus point.
 	 * @param aScript a String containing the script to execute.
 	 * @param aXmlMethodName the name of the method in the xml
 	 * script that you wish to execute.

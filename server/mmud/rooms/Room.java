@@ -963,7 +963,7 @@ public class Room implements Executable, AttributeContainer
 				{
 					myItem = ItemsDb.addItem(myItemDef);
 				}
-				catch (MudDatabaseException e2)
+				catch (MudException e2)
 				{
 					throw new MethodNotSupportedException(e2.getMessage());
 				}
@@ -1078,9 +1078,18 @@ public class Room implements Executable, AttributeContainer
 				{
 					mType = "boolean";
 				}
-				Attribute mAttrib = new Attribute((String) arguments[0],
-					arguments[1] + "", 
-					mType);
+				Attribute mAttrib = null;
+				try
+				{
+					mAttrib = new Attribute((String) arguments[0],
+						arguments[1] + "", 
+						mType);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(method_name +
+						" could not set attribute.");
+				}
 				try
 				{
 					setAttribute(mAttrib);
@@ -1119,6 +1128,26 @@ public class Room implements Executable, AttributeContainer
 	{
 		AttributeDb.setAttribute(anAttribute, this);
 		theAttributes.put(anAttribute.getName(), anAttribute);
+	}
+
+	/**
+	 * Set or add an attribute of this item.
+	 * @param anAttributeVector vector containing the attributes
+	 * to be added/set. This does not use the database, i.e. should
+	 * be used <I>by</I> the database, upon creation of items.
+	 */
+	public void setAttributes(Vector anAttributeVector)
+	throws MudException
+	{
+		if (anAttributeVector == null)
+		{
+			return;
+		}
+		for (int i=0; i<anAttributeVector.size(); i++)
+		{
+			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
+			theAttributes.put(attrib.getName(), attrib);
+		}
 	}
 
 	/**

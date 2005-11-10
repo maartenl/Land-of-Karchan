@@ -853,6 +853,26 @@ public class Person implements Executable, AttributeContainer
 	}
 
 	/**
+	 * Set a number of attributes of this person.
+	 * @param anAttributeVector vector containing the attributes
+	 * to be added/set. This does not use the database, i.e. should
+	 * be used <I>by</I> the database, upon creation of items.
+	 */
+	public void setAttributes(Vector anAttributeVector)
+	throws MudException
+	{
+		if (anAttributeVector == null)
+		{
+			return;
+		}
+		for (int i=0; i<anAttributeVector.size(); i++)
+		{
+			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
+			theAttributes.put(attrib.getName(), attrib);
+		}
+	}
+
+	/**
 	 * returns the attribute found with name aName or null
 	 * if it does not exist.
 	 * @param aName the string with the name to search for
@@ -873,8 +893,9 @@ public class Person implements Executable, AttributeContainer
 	public void removeAttribute(String aName)
 	throws MudDatabaseException
 	{
+		Attribute attrib = getAttribute(aName);
 		theAttributes.remove(aName);
-		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
+		AttributeDb.removeAttribute(attrib, this);
 	}
 
 	/**
@@ -1233,7 +1254,7 @@ public class Person implements Executable, AttributeContainer
 				{
 					myItem = ItemsDb.addItem(myItemDef);
 				}
-				catch (MudDatabaseException e)
+				catch (MudException e)
 				{
 					throw new MethodNotSupportedException(e.getMessage());
 				}
@@ -1429,9 +1450,18 @@ public class Person implements Executable, AttributeContainer
 				{
 					mType = "boolean";
 				}
-				Attribute mAttrib = new Attribute((String) arguments[0],
+				Attribute mAttrib = null;
+				try
+				{
+					mAttrib = new Attribute((String) arguments[0],
 					arguments[1] + "", 
 					mType);
+				}
+				catch (MudException e)
+				{
+					throw new MethodNotSupportedException(
+						"unable to set attribute" +  e);
+				}
 				try
 				{
 					setAttribute(mAttrib);

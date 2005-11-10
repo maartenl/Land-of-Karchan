@@ -27,10 +27,12 @@ maarten_l@yahoo.com
 package mmud.items;     
 
 import java.util.TreeMap;
+import java.util.Vector;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;
 import mmud.Constants;
+import mmud.MudException;
 
 /**
  * The definition of an item. The analogy with Java would be the difference
@@ -200,6 +202,26 @@ public class ItemDef implements AttributeContainer
 	public void setAttribute(Attribute anAttribute)
 	{
 		theAttributes.put(anAttribute.getName(), anAttribute);
+	}
+
+	/**
+	 * Set or add an attribute of this item.
+	 * @param anAttributeVector vector containing the attributes
+	 * to be added/set. This does not use the database, i.e. should
+	 * be used <I>by</I> the database, upon creation of items.
+	 */
+	public void setAttributes(Vector anAttributeVector)
+	throws MudException
+	{
+		if (anAttributeVector == null)
+		{
+			return;
+		}
+		for (int i=0; i<anAttributeVector.size(); i++)
+		{
+			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
+			theAttributes.put(attrib.getName(), attrib);
+		}
 	}
 
 	/**

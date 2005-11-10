@@ -52,9 +52,12 @@ The following kind of items are possible:
 - ARMOUR
 - WEAPON
 - JEWELRY
-- CLANITEM
+- GUILDITEM
 - MAGICITEM
 - NORMAL
+
+An Item has a getter "isSellable" containing most of the logic about wehter
+or not an item is sellable.
 
 Containers
 ----------
@@ -79,60 +82,63 @@ name: islocked value: false value_type: boolean
 name: isopen value: true value_type: boolean
 name: isopenable value: true value_type: boolean
 
-Clans
+A container cannot contain a non-empty container. We are not going to have
+infinite-level-depth containers. That way madness lies.
+
+Guilds
 -----
 
 A. Below text issues the following commands:
-- admin clancreate CLANNAME DAYSCLANDEATH MINCLANMEMBERS BOSSNAME
-- clanapply CLANNAME
-- clanqual
-- clandetails USERNAME
-- clanaccept USERNAME
-- clanreject USERNAME
-- clanassign USERNAME, "ROLE"
-- clanexile USERNAME, REASON
-- clantalk MESSAGE
-- clanhome
-- clandonate
-- clanhomeset
-- clandonateset
+- admin guildcreate GUILDNAME DAYSGUILDDEATH MINGUILDMEMBERS BOSSNAME
+- guildapply GUILDNAME
+- guildqual
+- guilddetails USERNAME
+- guildaccept USERNAME
+- guildreject USERNAME
+- guildassign USERNAME, "ROLE"
+- guildexile USERNAME, REASON
+- guildtalk MESSAGE
+- guildhome
+- guilddonate
+- guildhomeset
+- guilddonateset
 
-mm_clans
+mm_guilds
 * name
-  daysclandeath
-  minclanmembers
-  clandescription
-  clanurl
+  daysguilddeath
+  minguildmembers
+  guilddescription
+  guildurl
 attributes:
-- clanname
+- guildname
 
-First, you need to use the clancreate command to create a new clan. You
-have to get at least MINCLANMEMBERS amount of new members before it will
+First, you need to use the guildcreate command to create a new guild. You
+have to get at least MINGUILDMEMBERS amount of new members before it will
 activate you (Set in the INI file). Activation means you will be visible in
-the listing, can buy land for the clan, can have clan bank accounts, and can
+the listing, can buy land for the guild, can have guild bank accounts, and can
 hire mobs, as well as have politics with others.
 
-Once you've made your clan, people can 'clanapply' to the clan. Of course,
-the person has to be at least level MINCLANLEVEL (Set in the INI file).
-'clanapply' can be done even if you're the only one online. Clan bosses can
-set qualifications to the clan with the 'clanqual' command and both bosses
-and leaders will see new applicants in their 'clandetails' screen, at which
-point, they can 'clanaccept' or 'clanreject' the player (regardless of
-online status). Clan bosses can also 'clanassign' people roles, such as
+Once you've made your guild, people can 'guildapply' to the guild. Of course,
+the person has to be at least level MINGUILDLEVEL (Set in the INI file).
+'guildapply' can be done even if you're the only one online. Clan bosses can
+set qualifications to the guild with the 'guildqual' command and both bosses
+and leaders will see new applicants in their 'guilddetails' screen, at which
+point, they can 'guildaccept' or 'guildreject' the player (regardless of
+online status). Clan bosses can also 'guildassign' people roles, such as
 treasurer, leader, or even boss. Clan bosses and leaders may, at any time,
-'clanexile' a member - as well as members can 'clanresign'
+'guildexile' a member - as well as members can 'guildresign'
 
-Once you're accepted into a clan, you can use the clantalk channel to talk
-to your clan, as well as use the 'Clan Home' and 'Clan Donate' spells. The
-'clanhome' location and the 'clandonate' location can be set by bosses using
-the 'clanhomeset' and 'clandonateset' commands. Bosses and treasurers may
-deal with any Clan bankers in your game. If MINCLANMEMBERS don't at least
-login in DAYSCLANDEATH days, then the clan will be purged automatically. 
+Once you're accepted into a guild, you can use the guildtalk channel to talk
+to your guild, as well as use the 'Clan Home' and 'Clan Donate' spells. The
+'guildhome' location and the 'guilddonate' location can be set by bosses using
+the 'guildhomeset' and 'guilddonateset' commands. Bosses and treasurers may
+deal with any Clan bankers in your game. If MINGUILDMEMBERS don't at least
+login in DAYSGUILDDEATH days, then the guild will be purged automatically. 
 http://www.turf.org/helps/
 
-CLANITEMS=> a clan should have special items, that can only be shared/used
-among clanmembers. Changes from clan to another clan automatically destroy
-clanitems or something.
+GUILDITEMS=> a guild should have special items, that can only be shared/used
+among guildmembers. Changes from guild to another guild automatically destroy
+guilditems or something.
 
 Shopkeepers
 -----------
@@ -146,7 +152,8 @@ not be sold/bought.
 You can only buy items that the shopkeepers has in his/her inventory.
 
 Issue: how do I determine what a shopkeeper has for sale at the moment.
-answer: special item? in database with special attribute?
+answer: special item? in database with special attribute? A sort of "View"
+item.
 
 Issue: how do I determine how much a shopkeeper is willing to give for a
 certain item?

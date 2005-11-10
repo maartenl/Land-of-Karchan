@@ -155,6 +155,7 @@ public class StdItemContainer extends Item implements Container
 	 * @return String containing the description.
 	 */
 	public String getLongDescription()
+	throws MudException
 	{
 		String isopen = "";
 		if (isOpenable())
@@ -166,5 +167,11 @@ public class StdItemContainer extends Item implements Container
 		return super.getLongDescription() + 
 			"It can contain other items.<BR>\r\n" + 
 			isopen;
+	}
+	
+	public boolean isEmpty()
+	throws MudException
+	{
+		return ItemsDb.isEmpty(this);
 	}
 }

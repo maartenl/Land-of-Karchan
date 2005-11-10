@@ -45,6 +45,8 @@ import mmud.items.ItemDoesNotExistException;
 import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
 import mmud.items.StdItemContainer;
+import mmud.items.ItemFactory;
+import mmud.items.Container;
 import mmud.rooms.Room;
 
 /**
@@ -177,6 +179,11 @@ public class ItemsDb
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_itemitemtable.id and "
         + "containerid = ?";
+
+	public static String sqlIsContainerEmpty =
+		"select \"no\" as no "
+		+ "from mm_itemitemtable "
+		+ "where ? = mm_itemitemtable.containerid";
 	public static String sqlTransferItemString =
 		"update mm_charitemtable "
 		+ "set belongsto = ? "
@@ -256,31 +263,80 @@ public class ItemsDb
 		int getable = (itemdefnr < 0 ? 0 : res.getInt("getable"));
 		if ( (drinkable != null) && (!drinkable.trim().equals("")) )
 		{
-			myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for drinking.", e);
+			}
 		}
 		if ( (eatable != null) && (!eatable.trim().equals("")) )
 		{
-			myItemDef.setAttribute(new Attribute("eatable", eatable, "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("eatable", eatable, "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for eatable.", e);
+			}
 		}
 		if ( (readable != null) && (!readable.trim().equals("")) )
 		{
-			myItemDef.setAttribute(new Attribute("readable", readable, "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("readable", readable, "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for readable.", e);
+			}
 		}
 		if (dropable == 0)
 		{
-			myItemDef.setAttribute(new Attribute("notdropable", "", "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("notdropable", "", "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for notdropable.", e);
+			}
 		}
 		if (getable == 0)
 		{
-			myItemDef.setAttribute(new Attribute("notgetable", "", "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("notgetable", "", "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for notgetable.", e);
+			}
 		}
 		if (visible == 0)
 		{
-			myItemDef.setAttribute(new Attribute("invisible", "", "string"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("invisible", "", "string"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for invisible.", e);
+			}
 		}
 		if (wearable != 0)
 		{
-			myItemDef.setAttribute(new Attribute("wearable", wearable+"", "integer"));
+			try
+			{
+				myItemDef.setAttribute(new Attribute("wearable", wearable+"", "integer"));
+			}
+			catch (MudException e)
+			{
+				throw new MudDatabaseException("unable to set attribute for wearable.", e);
+			}
 		}
 		res.close();
 		sqlGetItemDef.close();
@@ -351,10 +407,6 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			throw new MudDatabaseException("database error getting inventory.", e);
-		}
-		if (aPerson.getMoney() != 0)
-		{
-			myInventory.append("<P><LI>" + aPerson.getDescriptionOfMoney());
 		}
 		Logger.getLogger("mmud").finer("returns: " + myInventory);
 		return myInventory.toString();
@@ -629,7 +681,7 @@ public class ItemsDb
 	 * @see ItemsDb#addItemToContainer
 	 */
 	public static Item addItem(ItemDef anItemDef)
-	throws MudDatabaseException
+	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Item myItem = null;
@@ -642,14 +694,7 @@ public class ItemsDb
 			System.out.println(res);
 			if (res.next())
 			{
-				if (anItemDef instanceof ContainerDef)
-				{
-					myItem = new StdItemContainer((ContainerDef) anItemDef, res.getInt(1));
-				}
-				else
-				{
-					myItem = new Item(anItemDef, res.getInt(1));
-				}
+				myItem = ItemFactory.createItem(anItemDef, res.getInt(1));
 			}
 			sqlAddItem.close();
 		}
@@ -802,16 +847,9 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId);
-				}
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(anItemDef, anItemInstanceId,
+					attribs);
 				items.add(anItem);
 			}
 			res.close();
@@ -857,16 +895,9 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId);
-				}
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(anItemDef, anItemInstanceId,
+					attribs);
 				items.add(anItem);
 			}
 			res.close();
@@ -923,16 +954,11 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId);
-				}
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(anItemDef, 
+					anItemInstanceId,
+					attribs
+					);
 				items.add(anItem);
 			}
 			res.close();
@@ -948,10 +974,10 @@ public class ItemsDb
 
 	/**
 	 * Retrieve all items from a container.
-	 * @param aContainer the item where said items are located
+	 * @param aContainer the container where said items are located
 	 * @return Vector containing all Item objects found.
 	 */
-	public static Vector getItemsFromContainer(Item aContainer)
+	public static Vector getItemsFromContainer(Container aContainer)
 	throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
@@ -974,16 +1000,12 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef, anItemInstanceId);
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId);
-				}
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(
+					anItemDef, 
+					anItemInstanceId,
+					attribs
+					);
 				items.add(anItem);
 			}
 			res.close();
@@ -995,6 +1017,45 @@ public class ItemsDb
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;
+	}
+
+	/**
+	 * Check to see if the container is empty or not.
+	 * @param aContainer the container in question.
+	 * @return boolean, true if the container does not contain any items,
+	 * otherwise it is false.
+	 */
+	public static boolean isEmpty(Container aContainer)
+	throws MudDatabaseException, MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement statementIsEmpty = Database.prepareStatement(sqlIsContainerEmpty);
+			statementIsEmpty.setString(1, aContainer.getId()+"");
+			res = statementIsEmpty.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return true;
+			}
+			if (res.next())
+			{
+				res.close();
+				statementIsEmpty.close();
+				return false;
+			}
+			res.close();
+			statementIsEmpty.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error checking if container is empty.", e);
+		}
+		Logger.getLogger("mmud").finer("returns: " + items);
+		return true;
 	}
 
 	/**
@@ -1045,20 +1106,13 @@ public class ItemsDb
 				Logger.getLogger("mmud").finest("anItemInstanceId=" + anItemInstanceId + 
 					",anItemId=" + anItemId);
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef,
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(
+						anItemDef,
 						anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				
-				Database.getItemAttributes(anItem);
+						PersonPositionEnum.get(res.getInt("wearing")),
+						attribs
+						);
 				items.add(anItem);
 			}
 			res.close();
@@ -1104,20 +1158,13 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef,
-						anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(
+					anItemDef,
+					anItemInstanceId,
+					PersonPositionEnum.get(res.getInt("wearing")),
+					attribs
+					);
 				items.add(anItem);
 			}
 			res.close();
@@ -1167,20 +1214,13 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Item anItem = null;
-				if (anItemDef instanceof ContainerDef)
-				{
-					anItem = new StdItemContainer((ContainerDef) anItemDef,
-						anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				else
-				{
-					anItem = new Item(anItemDef, anItemInstanceId, 
-						PersonPositionEnum.get(res.getInt("wearing")));
-				}
-				
-				Database.getItemAttributes(anItem);
+				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(
+					anItemDef, 
+					anItemInstanceId, 
+					PersonPositionEnum.get(res.getInt("wearing")),
+					attribs
+					);
 				Logger.getLogger("mmud").finer("returns: " + anItem);
 				res.close();
 				sqlGetItem.close();

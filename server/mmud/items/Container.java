@@ -101,5 +101,17 @@ public interface Container
 	 */
 	public void setLidsNLocks(boolean isOpenable, boolean newIsOpen, ItemDef newHasLock, boolean newIsLocked)
 	throws MudException;
+	
+	/**
+	 * Returns true if there are no items present in the container.
+	 */
+	public boolean isEmpty()
+	throws MudException;
+
+	/**
+	 * Returns the identification number of the container.
+	 * @returns integer containing the id of the container.
+	 */
+	public int getId();
 
 }

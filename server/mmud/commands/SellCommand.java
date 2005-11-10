@@ -39,6 +39,7 @@ import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
 import mmud.items.ItemException;
+import mmud.items.Container;
 
 /**
  * Selling an item to a bot. Syntax : sell &lt;item&gt; to &lt;character&gt;
@@ -148,6 +149,14 @@ public class SellCommand extends NormalCommand
 				if (myItem.isAttribute("notsellable"))
 				{
 					aUser.writeMessage("You cannot sell that item.<BR>\r\n");
+					success = false;
+				}
+				if ( 
+					(myItem instanceof Container) && 
+					(!( (Container) myItem).isEmpty()) 
+					)
+				{
+					aUser.writeMessage(myItem.getDescription() + " still contains other items.<BR>\r\n");
 					success = false;
 				}
 				if (myItem.getMoney() == 0)
