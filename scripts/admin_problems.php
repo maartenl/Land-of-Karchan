@@ -182,6 +182,19 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["id"], $myrow["id"]);
 }
 
+$result = mysql_query("select * from mm_itemtable "
+	." where not exists (select id from mm_charitemtable where mm_charitemtable.id=mm_itemtable.id) and"
+	." not exists (select id from mm_itemitemtable where mm_itemitemtable.id=mm_itemtable.id) and"
+	." not exists (select id from mm_roomitemtable where mm_roomitemtable.id=mm_itemtable.id)"
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>item:</b> <A HREF=\"/scripts//admin_items.php?item=%s\">%s</A> 
+	(item exists but is not used by a character/room/container)<BR>",
+$myrow["id"], $myrow["id"]);
+}
+
 $result = mysql_query("select * from mm_items "
 	." where not exists (select id from mm_itemtable where itemid=mm_items.id)"
 	, $dbhandle)
