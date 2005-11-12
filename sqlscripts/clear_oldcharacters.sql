@@ -15,6 +15,8 @@ from mm_charitemtable, mm_itemitemtable
 where mm_charitemtable.belongsto = "$1" and
 mm_itemitemtable.containerid = mm_charitemtable.id;
 
+delete from mm_itemattributes
+where id in (select id from tmptable);
 delete from mm_itemitemtable
 where id in (select id from tmptable);
 delete from mm_itemtable
@@ -29,6 +31,8 @@ select mm_charitemtable.id
 from mm_charitemtable
 where mm_charitemtable.belongsto = "$1";
 
+delete from mm_itemattributes
+where id in (select id from tmptable);
 delete from mm_charitemtable
 where id in (select id from tmptable);
 delete from mm_itemtable
