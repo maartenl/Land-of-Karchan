@@ -1,9 +1,0 @@
-#!/bin/sh
-
-export MYSQL_BIN="/usr/bin/mysql"
-export MYSQL_PWD=`cat /karchan/password.sql`
-export MYSQL_HOST="localhost"
-export MYSQL_USR="mud"
-export MYSQL_DB="mmud"
-
-export MYSQL_DUMP="/usr/bin/mysqldump"
