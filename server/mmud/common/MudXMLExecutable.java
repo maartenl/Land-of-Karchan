@@ -41,9 +41,14 @@ import simkin.ParseException;
 import simkin.XMLExecutable;
 
 /**
- * The interpreter used for executing user defined scripts in the mud.
- * This is derived from the simkin interpreter so we can
- * implement some global methods and global variables.
+ * The executable that needs to be executed by the interpreter.
+ * This is derived from the simkin XMLExecutable so we can
+ * implement some global methods.<P>
+ * The methods in question are:
+ * <UL><LI>int random(int) : returns a random integer
+ * <LI>boolean isAdverb(string) : returns true if the string is an adverb
+ * defined in the game, for example "evilly".
+ * </UL>
  */ 
 public class MudXMLExecutable extends XMLExecutable
 {
@@ -57,6 +62,9 @@ public class MudXMLExecutable extends XMLExecutable
 		super(aName, aStringReader);
 	}
 
+	/**
+	 * Implements standard methods specific for the mud.
+	 */
 	public Object method(String method_name, Object[]
 		arguments, ExecutableContext ctxt)
 	throws MethodNotSupportedException, ParseException

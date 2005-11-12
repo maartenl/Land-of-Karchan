@@ -61,7 +61,11 @@ public class PutCommand extends NormalCommand
 
 	/**
 	 * This method will make a <I>best effort</I> regarding transferring of
-	 * items into items. 
+	 * items into items. Some requirements:
+	 * <UL><LI>the item where the items are to be put in must be a container
+	 * <LI>the item to be put in the container may not be a non-empty container
+	 * (it has been decided that what we do not need are bags in bags in bags.)
+	 * </UL>
 	 * @throws ItemException in case the item requested could not be located
 	 * or is not allowed to be put into the container.
 	 * @throws ParseException in case the user entered an illegal amount of
@@ -147,10 +151,25 @@ public class PutCommand extends NormalCommand
 				// here needs to be a check for validity of the item
 				boolean success = true;
 				Item myItem = (Item) myItems.elementAt(i);
-				Database.writeLog(aUser.getName(), "put " + myItem + " in container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
-				ItemsDb.deleteItemFromChar(myItem);
-				ItemsDb.addItemToContainer(myItem, aContainer);
-				Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " in " + aContainer.getDescription() + ".<BR>\r\n");
+				// enter check to see if the item to be put in the container
+				// is not a non-empty container.
+				if (myItem instanceof Container)
+				{
+					Container bag = (Container) myItem;
+					if (!bag.isEmpty())
+					{
+						Logger.getLogger("mmud").finer("it is not allowed to insert a non-empty bag in another bag.");
+						Persons.sendMessage(aUser, "%SNAME attempt%VERB2 to put " + myItem.getDescription() + " in " + aContainer.getDescription() + ", but fails because it contains items.<BR>\r\n");
+						success = false;
+					}
+				}
+				if (success)
+				{
+					Database.writeLog(aUser.getName(), "put " + myItem + " in container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
+					ItemsDb.deleteItemFromChar(myItem);
+					ItemsDb.addItemToContainer(myItem, aContainer);
+					Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " in " + aContainer.getDescription() + ".<BR>\r\n");
+				}
 				j++;
 			}
 			return true;

@@ -757,4 +757,15 @@ public class Item implements Executable, AttributeContainer
 		return theItemDef.isAdjective(anAdjective);
 	}
 	 
+	/**
+	 * Determines if this item can be sold.
+	 * @return boolean, true if the item can be sold, false otherwise.
+	 */
+	public boolean isSellable()
+	throws MudException
+	{
+		return (!isAttribute("notsellable")) && (getMoney() != 0) && 
+			(!isWearing());
+	}
+
 }

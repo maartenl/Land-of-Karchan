@@ -7,7 +7,7 @@ Provides for the Main class that starts up the program.
 
 Currently the relationships between objects in the game is as follows:
 <UL>
-<li> items can contain items (bag)
+<li> items can contain items (bag)<SUPERSCRIPT>*)</SUPERSCRIPT>
 <li> characters can contain items
 <li> rooms can contain characters
 <li> rooms can contain items
@@ -19,6 +19,9 @@ Currently the relationships between objects in the game is as follows:
 <li> rooms can contain attributes
 <li> the game can contain (global) attributes
 </UL>
+
+*) This is not necessarily an infinite level. The only bag that can be put
+into another bag is an empty one.<P>
 
 In a schematic, it would look something like this:
 <PRE>

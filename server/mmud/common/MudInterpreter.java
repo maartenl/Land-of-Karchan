@@ -34,7 +34,11 @@ import simkin.Interpreter;
 /**
  * The interpreter used for executing user defined scripts in the mud.
  * This is derived from the simkin interpreter so we can
- * implement some global methods and global variables.
+ * implement some standard global variables.<P>
+ * The variables in question are:
+ * <UL><LI>rooms : contains all rooms
+ * <LI>persons : contains all <I>active</I> persons
+ * </UL>
  */ 
 public class MudInterpreter extends Interpreter
 {

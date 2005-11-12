@@ -93,9 +93,9 @@ public class StdItemContainer extends Item implements Container
 
 	public boolean isOpenable()
 	{
-		if (isAttribute("isOpenable"))
+		if (isAttribute("isopenable"))
 		{
-			return getAttribute("isOpenable").getValue().equals("true");
+			return getAttribute("isopenable").getValue().equals("true");
 		}
 		return ((ContainerDef) getItemDef()).isOpenable();
 	}
@@ -173,5 +173,19 @@ public class StdItemContainer extends Item implements Container
 	throws MudException
 	{
 		return ItemsDb.isEmpty(this);
+	}
+	
+	/**
+	 * Added requirement here is that the container must be empty
+	 * before it can be sold.
+	 */
+	public boolean isSellable()
+	throws MudException
+	{
+		if (!isEmpty())
+		{
+			return false;
+		}
+		return super.isSellable();
 	}
 }

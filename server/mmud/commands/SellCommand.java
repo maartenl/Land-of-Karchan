@@ -146,19 +146,6 @@ public class SellCommand extends NormalCommand
 				// here needs to be a check for validity of the item
 				boolean success = true;
 				Item myItem = (Item) myItems.elementAt(i);
-				if (myItem.isAttribute("notsellable"))
-				{
-					aUser.writeMessage("You cannot sell that item.<BR>\r\n");
-					success = false;
-				}
-				if ( 
-					(myItem instanceof Container) && 
-					(!( (Container) myItem).isEmpty()) 
-					)
-				{
-					aUser.writeMessage(myItem.getDescription() + " still contains other items.<BR>\r\n");
-					success = false;
-				}
 				if (myItem.getMoney() == 0)
 				{
 					String message = "That item is not worth anything.";
@@ -166,26 +153,23 @@ public class SellCommand extends NormalCommand
 					aUser.writeMessage(toChar, aUser, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
 					success = false;
 				}
-				if (myItem.isWearing())
+				if (!myItem.isSellable())
 				{
-					String message = "You cannot sell that, you are wearing or wielding that item.";
-					aUser.writeMessage(toChar, aUser, message + "<BR>\r\n");
+					aUser.writeMessage("You cannot sell that item.<BR>\r\n");
 					success = false;
 				}
 				if (success)
 				{
-					// transfer money to user
 					int totalitemvalue = myItem.getMoney();
 					// transfer item to shopkeeper
-					if (success)
-					{
-						ItemsDb.transferItem(myItem, toChar);
-						Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
-						toChar.transferMoneyTo(totalitemvalue, aUser);
-						Database.writeLog(aUser.getName(), "received " + totalitemvalue + " copper from " + toChar);
-						Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
-						j++;
-					}
+					ItemsDb.transferItem(myItem, toChar);
+					Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
+					// transfer money to user
+					toChar.transferMoneyTo(totalitemvalue, aUser);
+					Database.writeLog(aUser.getName(), "received " + totalitemvalue + " copper from " + toChar);
+					Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
+					Persons.sendMessage(aUser, toChar, "%SNAME receive%VERB2 " + myItem.getDescriptionOfMoney() + " from %TNAME.<BR>\r\n");
+					j++;
 				}
 			}
 			return true;
