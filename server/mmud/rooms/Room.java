@@ -1169,8 +1169,12 @@ public class Room implements Executable, AttributeContainer
 	public void removeAttribute(String aName)
 	throws MudException
 	{
+		Attribute attrib = getAttribute(aName);
 		theAttributes.remove(aName);
-		AttributeDb.removeAttribute(new Attribute(aName, null, null), this);
+		if (attrib != null)
+		{
+			AttributeDb.removeAttribute(attrib, this);
+		}
 	}
 
 	/**

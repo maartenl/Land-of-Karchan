@@ -895,7 +895,10 @@ public class Person implements Executable, AttributeContainer
 	{
 		Attribute attrib = getAttribute(aName);
 		theAttributes.remove(aName);
-		AttributeDb.removeAttribute(attrib, this);
+		if (attrib != null)
+		{
+			AttributeDb.removeAttribute(attrib, this);
+		}
 	}
 
 	/**
