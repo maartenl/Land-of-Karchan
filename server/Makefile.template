@@ -46,19 +46,19 @@ TARGETS = compile javadoc release
 compile: mmud/*.java
 	$(CC) $(COPTS) mmud/*.java mmud/items/*.java mmud/commands/*.java \
 	mmud/rooms/*.java mmud/characters/*.java mmud/database/*.java \
-	mmud/boards/*.java mmud/races/*.java
+	mmud/boards/*.java mmud/races/*.java mmud/common/*.java
 #    mmud/communication/*.java mmud/configuration/*.java
 
 javadoc: compile
 	$(JAVADOC) -source 1.4 -private -d \
 	$(JAVADOCDIR) \
 	mmud mmud.items mmud.commands mmud.rooms mmud.characters mmud.database \
-	mmud.boards mmud.races
+	mmud.boards mmud.races mmud.common
 
 clean:
 	rm -rf jclasses/* *~ mmud/*~ mmud/items/*~ mmud/commands/*~ \
 	mmud/rooms/*~ mmud/characters/*~ mmud/database/*~ \
-	mmud/boards/*~ mmud/races/*~ \
+	mmud/boards/*~ mmud/races/*~ mmud/common/*~ \
 	mmud/communication/*~ mmud/configuration/*~
 
 dist-clean:
@@ -69,7 +69,7 @@ all: $(TARGETS)
 jar:
 	cd jclasses;$(JAVAJAR) -cmvf ../MANIFEST.MF ../runme.jar -C . .
 
-html:
+javasrc:
 	$(JAVA) -jar j2h.jar -d $(JAVASRCDIR) -js . -jd $(JAVADOCDIR)
 
 run: jar

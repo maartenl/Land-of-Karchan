@@ -46,6 +46,7 @@ the "callable" field in the database is deactivated.
 
 Items
 -----
+
 The following kind of items are possible:
 - DRINK
 - FOOD
@@ -55,6 +56,8 @@ The following kind of items are possible:
 - GUILDITEM
 - MAGICITEM
 - NORMAL
+- CONTAINER
+- SHOPKEERPITEM
 
 An Item has a getter "isSellable" containing most of the logic about wehter
 or not an item is sellable.
@@ -63,7 +66,9 @@ Containers
 ----------
 
 Containers are special items that can contain other items. Containers, teh
-same as normal items, have an ItemDefinition.
+same as normal items have a ItemDefinition, have an ContainerDefinition. It
+contains, besides the usual stuff of ItemDefinition, specific default
+behaviour about the containers.
 
 The ItemDefinition determines if an item is a container or not.
 It does this in a variety of ways. First of all, if the 'container' field is
@@ -91,27 +96,39 @@ Guilds
 A. Below text issues the following commands:
 - admin guildcreate GUILDNAME DAYSGUILDDEATH MINGUILDMEMBERS BOSSNAME
 - guildapply GUILDNAME
-- guildqual
-- guilddetails USERNAME
-- guildaccept USERNAME
-- guildreject USERNAME
-- guildassign USERNAME, "ROLE"
-- guildexile USERNAME, REASON
+- (BOSS) guildqual MINGUILDLEVEL
+- (BOSS) guilddetails
+- (BOSS) guildaccept USERNAME
+- (BOSS) guildreject USERNAME
+- (BOSS) guildassign USERNAME, "RANK"
+- (BOSS) guildexile USERNAME, REASON
 - guildtalk MESSAGE
 - guildhome
 - guilddonate
-- guildhomeset
-- guilddonateset
+- admin guildhomeset
 
 mm_guilds
 * name
+  title -> userdefined
   daysguilddeath
   minguildmembers
-  guilddescription
-  guildurl
-attributes:
-- guildname
-
+  minguildlevel -> userdefined
+  guilddescription -> userdefined
+  guildurl => userdefined
+  bossname
+  active
+  creation
+  owner
+mm_charattributes
+name: guildrank
+value: 'sergeant'
+value_type: string
+charname: Karn
+mm_guildranks
+* name
+  title
+  guildlevel -> 1=bottom rung, 100=top rung=automatic BOSS
+* guildname
 First, you need to use the guildcreate command to create a new guild. You
 have to get at least MINGUILDMEMBERS amount of new members before it will
 activate you (Set in the INI file). Activation means you will be visible in
@@ -130,8 +147,8 @@ treasurer, leader, or even boss. Clan bosses and leaders may, at any time,
 
 Once you're accepted into a guild, you can use the guildtalk channel to talk
 to your guild, as well as use the 'Clan Home' and 'Clan Donate' spells. The
-'guildhome' location and the 'guilddonate' location can be set by bosses using
-the 'guildhomeset' and 'guilddonateset' commands. Bosses and treasurers may
+'guildhome' location can be set by bosses using
+the 'guildhomeset' commands. Bosses and treasurers may
 deal with any Clan bankers in your game. If MINGUILDMEMBERS don't at least
 login in DAYSGUILDDEATH days, then the guild will be purged automatically. 
 http://www.turf.org/helps/

@@ -252,6 +252,18 @@ on update cascade;
 - alter table mm_log drop primary key;
 - create index primaryindex on mm_log (creation, name);
 - alter table mm_items add (notes text);
+- alter table mm_answers
+add foreign key (name) references mm_usertable (name)
+on delete restrict
+on update cascade;
+- alter table mm_itemtable
+add foreign key (owner) references mm_admin (name)
+on delete restrict
+on update cascade;
+- alter table mm_unbantable
+add foreign key (name) references mm_usertable (name)
+on delete restrict
+on update cascade;
 
 creating board system
 ---------------------
