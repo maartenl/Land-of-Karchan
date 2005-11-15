@@ -43,6 +43,17 @@ Mmud - Admin
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 printf("<H2>Problems with Users</H2>\r\n");
+$result = mysql_query("select distinct name from mm_answers ".
+	" where name not in (select name ".
+	" from mm_usertable ".
+	" where mm_usertable.name = mm_answers.name)"
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>name:</b> %s(appears in the mm_answers table, but is not a character)<BR>",
+	$myrow["name"]);
+}
 $result = mysql_query("select name from mm_unbantable ".
 	" where name not in (select name ".
 	" from mm_usertable ".
