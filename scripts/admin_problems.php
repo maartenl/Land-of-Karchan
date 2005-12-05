@@ -302,8 +302,9 @@ while ($myrow = mysql_fetch_array($result))
 $myrow["name"], $myrow["id"]);
 }
 
-$result = mysql_query("select room1.name, room1.charname from mm_charattributes as room1 left join"
-	." mm_usertable as room2 on room1.charname = room2.name where room2.name is null"
+$result = mysql_query("select name, charname from mm_charattributes ".
+	"where not exists (select name from mm_usertable ".
+	"where mm_charattributes.charname = mm_usertable.name)"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 
