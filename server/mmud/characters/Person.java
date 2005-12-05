@@ -1141,6 +1141,12 @@ public class Person implements Executable, AttributeContainer
 		{
 			return getSex().toString();
 		}
+		if (field_name.equals("guild"))
+		{
+			// Person does not automatically have a guild
+			// only users have a guild.
+			return null;
+		}
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
@@ -1574,7 +1580,7 @@ public class Person implements Executable, AttributeContainer
 	public String getDescriptionOfMoney()
 	{
 		String total = Constants.getDescriptionOfMoney(theCopper);
-        Logger.getLogger("mmud").finer("returns '" + total + "'");
+		Logger.getLogger("mmud").finer("returns '" + total + "'");
 		return total;
 	}
 

@@ -65,7 +65,7 @@ public class User extends mmud.characters.Person
 	private boolean theGod;
 	private Calendar rightNow;
 	private boolean thePkill;
-
+	private Guild theGuild;
 
 	/**
 	 * create an instance of User, based on Database data. 
@@ -111,6 +111,8 @@ public class User extends mmud.characters.Person
 	 * @param aRoom the room where this character is.
 	 * @param aGod boolean, indicates wether or not the User has special
 	 * privileges; also known as <I>Administrator</I>.
+	 * @param aGuild the guild to which this user belongs. Not necessarily
+	 * filled in, may be null.
 	 */
 	public User(String aName, 
 		String aPassword, 
@@ -142,7 +144,8 @@ public class User extends mmud.characters.Person
 		int aAlignment,
 		int aMovement,
 		int aCopper,
-		Room aRoom)
+		Room aRoom,
+		Guild aGuild)
 	throws MudException
 	{
 		super(aName, aTitle,
@@ -176,13 +179,16 @@ public class User extends mmud.characters.Person
 		theGod = aGod;
 		setSessionPassword(aCookie);
 		thePkill = aPkill;
+		theGuild = aGuild;
 		setNow();
 	}
 
 	/**
 	 * create an instance of User. Usually used if you need a standard User
 	 * created. Use the other constructor when you need to load a User
-	 * from the database.
+	 * from the database. The difference with the previous constructor
+	 * is that a large number of fields in the object will have either
+	 * default values are will be empty.
 	 * @param aName the name of the character
 	 * @param aPassword the password of the character
 	 * @param anAddress the address of the computer connecting
@@ -458,8 +464,8 @@ public class User extends mmud.characters.Person
 	{
 		Logger.getLogger("mmud").finer("");
 		String myString = "";
-	    if (getFrames() == 0)
-    	{
+		if (getFrames() == 0)
+		{
 			myString = "<SCRIPT language=\"JavaScript\">\r\n"+
 				"<!-- In hiding!\r\n"+
 				"function setfocus() {\r\n"+
@@ -630,7 +636,7 @@ public class User extends mmud.characters.Person
 			" This is probably a big bug!.");
 	}
 
-     
+	 
 	/**
 	 * Returns true, this person can fight.
 	 * @return boolean true value.
@@ -640,4 +646,64 @@ public class User extends mmud.characters.Person
 		return true;
 	}
 
+	/**
+	 * Set the guild of a person. Can be set to null, incase the person
+	 * is not part of a guild. Cannot be set to another guild if the
+	 * person is already part of a guild. Wat I mean is, first leave the guild
+	 * before joining another one!
+	 * @param aGuild the guild this person belongs to.   
+	 */
+	public void setGuild(Guild aGuild)
+	throws MudException
+	{
+		if( (aGuild != null) && (theGuild != null) )
+		{
+			throw new MudException("Person " + getName() + 
+				" cannot become member of " + aGuild.getName() + 
+				" because is already member of " + theGuild.getName() + ".");
+		}
+		theGuild = aGuild;
+		Database.setGuild(this);
+	}  
+
+	/**
+	 * Returns the guild a person belongs to.  
+	 * @return the guild a person belongs to. Returns null if person
+	 * does not belong to a guild.
+	 */
+	public Guild getGuild()
+	{
+		return theGuild;
+	}
+
+	public String getStatistics()
+	throws MudDatabaseException  
+	{
+		String result = super.getStatistics();
+		if (getGuild() != null)
+		{
+			if (getGuild().getBossName().equals(getName()))
+			{
+				result += "You are the Guildmaster of <B>" + getGuild().getTitle() + "</B>.<BR>";
+			}
+			else
+			{
+				result += "You are a member of <B>" + getGuild().getTitle() + "</B>.<BR>";
+			}
+		}
+		return result;
+	}
+
+	public Object getValue(String field_name, String
+		attrib_name, ExecutableContext ctxt)
+	throws FieldNotSupportedException
+	{
+		Logger.getLogger("mmud").finer("field_name=" + field_name +
+			", atttrib_name=" + attrib_name);
+		if (field_name.equals("guild"))
+		{
+			return (getGuild() == null ? null : getGuild().getName());
+		}
+		return super.getValue(field_name, attrib_name, ctxt);
+	}
 }

@@ -62,7 +62,12 @@ HREF="#mm_events">mm_events</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></
 to the linux crontab. Can execute methodsat specific recurring times in the
 game.</TD></TR> 
 <TR valign=top><TD><A
-HREF="#mm_help">mm_help</A></TD><TD></TD></TR> 
+HREF="#mm_guilds">mm_guilds</A></TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>The different guilds that are
+available in the game</TD></TR> 
+<TR valign=top><TD><A
+HREF="#mm_help">mm_help</A></TD><TD>Contains help <I>manpages</I> on individual
+(standard) commands</TD></TR> 
 <TR valign=top><TD><A
 HREF="#mm_itemattributes">mm_itemattributes</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Attributes
 of a certain item.</TD></TR> 
@@ -564,6 +569,49 @@ session.
 |*name                |
 |*question            |
 | answer              |
++---------------------+
+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_guilds">mm_guilds</A></H4>
+<DL>
+<DT>name
+<DD>the name of the guild, unique identifies each guild.
+<DT>daysguilddeath
+<DD>this is a counter that starts counting the days when the number of guild members
+falls below the <I>minguildmembers</I> threshhold.
+session.
+<DT>maxguilddeath
+<DD>this is the maximum threshhold. If the <I>daysguilddeath</I> counter
+reaches this, the guild will be purged from the database automatically.
+<DT>minguildmembers
+<DD>the minimum amount of members a guild must have before it becomes
+active, and to prevent it from being purged.
+<DT>minguildlevel
+<DD>the minimum level of a player character before he/she is allowed to
+apply to the guild.
+<DT>bossname
+<DD>the original guild master of the guild.
+<DT>active
+<DD>wether or not the guild is active, 1=active, 0=inactive. A new guild is
+by default inactive and becomes active when it reaches the minimum required
+amount of guildmembers. See <I>minguildmembers</I>.
+</DL>
+<PRE>
++---------------------+
+| mm_guilds           |
++---------------------+
+|*name                |
+| title               |
+| daysguilddeath      |
+| maxguilddeath       |
+| minguildmembers     |
+| minguildlevel       |
+| guilddescription    |
+| guildurl            |
+| bossname            |
+| active              |
+| creation            |
+| owner               |
 +---------------------+
 
 <A NAME="mm_help">

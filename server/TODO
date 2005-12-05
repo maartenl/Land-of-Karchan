@@ -102,6 +102,7 @@ A. Below text issues the following commands:
 - (BOSS) guildreject USERNAME
 - (BOSS) guildassign USERNAME, "RANK"
 - (BOSS) guildexile USERNAME, REASON
+- (BOSS) guildrefresh
 - guildtalk MESSAGE
 - guildhome
 - guilddonate
@@ -111,6 +112,7 @@ mm_guilds
 * name
   title -> userdefined
   daysguilddeath
+  maxguilddeath
   minguildmembers
   minguildlevel -> userdefined
   guilddescription -> userdefined

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: Bot.java 1005 2005-10-30 13:21:36Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -24,53 +24,54 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
 
-import java.util.logging.Logger;
+package mmud.characters;
+
+import java.util.TreeMap;
 
 import mmud.MudException;
-import mmud.characters.User;
+import mmud.database.Database;
 
 /**
- * Show the inventory: "inventory".
+ * This class contains the properties of a guild.
+ * @see User
  */
-public class InventoryCommand extends NormalCommand
+public class GuildFactory
 {
 
-	private String theResult;
+	private static TreeMap theGuilds = new TreeMap();
 
-	public InventoryCommand(String aRegExpr)
+	/**
+	 * Default Constructor privatised.
+	 */
+	public GuildFactory()
 	{
-		super(aRegExpr);
+		// disable default constructor
 	}
 
-	public boolean run(User aUser)
+	/**
+	 * Returns a guild based on the guildname.
+	 * @param aGuildName the name of the guild
+	 * @returns the guild itself.
+	 */
+	public static Guild createGuild(String aGuildName)
 	throws MudException
 	{
-		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		Guild guild = (Guild) theGuilds.get(aGuildName);
+		if (guild == null)
 		{
-			return false;
+			guild = Database.getGuild(aGuildName);
+			if (guild == null)
+			{
+				throw new MudException("Guild not found!");
+			}
+			theGuilds.put(guild.getName(), guild);
 		}
-		String invent = aUser.inventory();
-		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
-			+ " have " + (invent.equals("")?"absolutely nothing.<P>":" <UL>" 
-			+ aUser.inventory() + 
-			(aUser.getMoney() != 0 ? "<P><LI>" + aUser.getDescriptionOfMoney() : "") + 
-			"</UL>") 
-			+ aUser.printForm();
-		return true;
+		if (guild == null)
+		{
+			throw new MudException("Guild not found!");
+		}
+		return guild;
 	}
 
-	public String getResult()
-	{
-		Logger.getLogger("mmud").finer("");
-		return theResult;
-	}
-
-	public Command createCommand()
-	{
-		return new InventoryCommand(getRegExpr());
-	}
-	
 }

@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: PkillCommand.java 994 2005-10-23 10:19:20Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -24,22 +24,30 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
 import mmud.MudException;
+import mmud.Attribute;
 import mmud.characters.User;
+import mmud.characters.GuildFactory;
+import mmud.characters.Guild;
+import mmud.database.Database;
+import mmud.commands.NormalCommand;
+import mmud.commands.Command;
 
 /**
- * Show the inventory: "inventory".
+ * Makes you apply to a guild. There are some requirements to follow:
+ * <UL><LI>the guild must exist
+ * <LI>you must not already belong to a guild
+ * </UL>
+ * Command syntax something like : <TT>guildapply &lt;guildname&gt;</TT>
  */
-public class InventoryCommand extends NormalCommand
+public class ApplyCommand extends NormalCommand
 {
 
-	private String theResult;
-
-	public InventoryCommand(String aRegExpr)
+	public ApplyCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -52,25 +60,30 @@ public class InventoryCommand extends NormalCommand
 		{
 			return false;
 		}
-		String invent = aUser.inventory();
-		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
-			+ " have " + (invent.equals("")?"absolutely nothing.<P>":" <UL>" 
-			+ aUser.inventory() + 
-			(aUser.getMoney() != 0 ? "<P><LI>" + aUser.getDescriptionOfMoney() : "") + 
-			"</UL>") 
-			+ aUser.printForm();
+		String[] myParsed = getParsedCommand();
+		Guild guild = null;
+		try
+		{
+			guild = GuildFactory.createGuild(myParsed[1]);
+		}
+		catch (MudException e)
+		{
+			aUser.writeMessage("Unable to find guild <I>" + myParsed[1] + "</I>.<BR>\r\n");
+			return false;
+		}
+		if (aUser.getGuild() != null)
+		{
+			aUser.writeMessage("You already belong to guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+			return false;
+		}
+		aUser.setAttribute(new Attribute("guildwish", guild.getName(), "string"));
+		aUser.writeMessage("You have applied to guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
 		return true;
-	}
-
-	public String getResult()
-	{
-		Logger.getLogger("mmud").finer("");
-		return theResult;
 	}
 
 	public Command createCommand()
 	{
-		return new InventoryCommand(getRegExpr());
+		return new ApplyCommand(getRegExpr());
 	}
 	
 }

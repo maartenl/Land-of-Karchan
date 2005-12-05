@@ -51,6 +51,8 @@ import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.characters.UserNotFoundException;
+import mmud.characters.Guild;
+import mmud.characters.GuildFactory;
 import mmud.items.Item;
 import mmud.races.RaceFactory;
 import mmud.rooms.Area;
@@ -68,7 +70,16 @@ public class Database
 {
 
 	private static Connection theConnection = null;
-
+	public static String sqlSetGuild = "update mm_guilds " +
+	"set title = ?, " +
+	"minguildlevel = ?, " +
+	"guilddescription= ?, " +
+	"guildurl = ?, " +
+	"active = ? where name = ?";
+	public static String sqlGetGuild = "select * from mm_guilds " +
+	"where name = ?";
+	public static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
+	public static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
 	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
 	public static String sqlGetUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
 	public static String sqlGetActiveUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
@@ -80,6 +91,7 @@ public class Database
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, sha1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
 	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
+	public static String sqlSetUserGuildString = "update mm_usertable set guild=? where name = ?";
 	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
 	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
 	public static String sqlSetMoneyString = "update mm_usertable set copper=? where name = ?";
@@ -383,6 +395,11 @@ public class Database
 		}
 		if (res.first())
 		{
+			Guild guild = null;
+			if (res.getString("guild") != null)
+			{
+				guild = GuildFactory.createGuild(res.getString("guild"));
+			}
 			myUser  = new User(
 				res.getString("name"), 
 				(res.getString("encrypted").equals(res.getString("password")) ? 
@@ -416,7 +433,8 @@ public class Database
 				res.getInt("alignment"),
 				res.getInt("movementstats"),
 				res.getInt("copper"),
-				Rooms.getRoom(res.getInt("room")));
+				Rooms.getRoom(res.getInt("room")),
+				guild);
 
 		}
 		res.close();
@@ -471,6 +489,11 @@ public class Database
 		}
 		if (res.first())
 		{
+			Guild guild = null;
+			if (res.getString("guild") != null)
+			{
+				guild = GuildFactory.createGuild(res.getString("guild"));
+			}
 			myUser  = new User(
 				res.getString("name"), 
 				(res.getString("encrypted").equals(res.getString("password")) ? 
@@ -504,8 +527,8 @@ public class Database
 				res.getInt("alignment"),
 				res.getInt("movementstats"),
 				res.getInt("copper"),
-				Rooms.getRoom(res.getInt("room")));
-
+				Rooms.getRoom(res.getInt("room")),
+				guild);
 		}
 		res.close();
 		sqlGetUser.close();
@@ -879,6 +902,11 @@ public class Database
 			Logger.getLogger("mmud").info("name: " + myName);
 			if (res.getInt("god") < 2)
 			{
+				Guild guild = null;
+				if (res.getString("guild") != null)
+				{
+					guild = GuildFactory.createGuild(res.getString("guild"));
+				}
 				User myRealUser = new User(myName, 
 					null,
 					res.getString("address"),
@@ -909,7 +937,8 @@ public class Database
 					res.getInt("alignment"),
 					res.getInt("movementstats"),
 					res.getInt("copper"),
-					Rooms.getRoom(res.getInt("room")));
+					Rooms.getRoom(res.getInt("room")),
+					guild);
 				String mySessionPwd = res.getString("lok");
 				if (mySessionPwd != null)
 				{
@@ -1691,6 +1720,41 @@ public class Database
 	}
 
 	/**
+	 * set the guild of a character
+	 * @param aUser the user with new guild
+	 */
+	public static void setGuild(User aUser)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+		PreparedStatement statSetUserGuild = prepareStatement(sqlSetUserGuildString);
+		if (aUser.getGuild() == null)
+		{
+			statSetUserGuild.setString(1, null);
+		}
+		else
+		{
+			statSetUserGuild.setString(1, aUser.getGuild().getName());
+		}
+		statSetUserGuild.setString(2, aUser.getName());
+		int res = statSetUserGuild.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+		}
+		statSetUserGuild.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error setting guild.", e);
+		}
+	}
+
+	/**
 	 * set the drinkstats of a character
 	 * @param aPerson Person with changed drinkstats
 	 */
@@ -1833,6 +1897,170 @@ public class Database
 		{
 			throw new MudDatabaseException("database error setting room.", e);
 		}
+	}
+
+	/**
+	 * set the guild.
+	 * @param aGuild the guild to store/update in the database.
+	 */
+	public static void setGuild(Guild aGuild)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+		PreparedStatement statSetGuild = prepareStatement(sqlSetGuild);
+		statSetGuild.setString(1, aGuild.getTitle());
+		statSetGuild.setInt(2, aGuild.getMinGuildLevel());
+		statSetGuild.setString(3, aGuild.getDescription());
+		statSetGuild.setString(4, aGuild.getGuildUrl());
+		statSetGuild.setInt(5, (aGuild.isActive() ? 1 : 0));
+		statSetGuild.setString(6, aGuild.getName());
+		int res = statSetGuild.executeUpdate();
+		if (res != 1)
+		{
+			throw new MudDatabaseException("no guild information updated. Guild not found.");
+		}
+		statSetGuild.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error updating/creating guild " + aGuild.getName() + ".", e);
+		}
+	}
+
+	/**
+	 * returns a guild object retrieved from the database.
+	 * @return Guild object.
+	 * @param aName the name of the guild to be retrieved.
+	 * @throws MudException if the guild does not exist.
+	 */
+	public static Guild getGuild(String aName)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aName == null)
+		{
+			throw new MudDatabaseException("name of guild was null.");
+		}
+
+		ResultSet res;
+		Guild guild = null;
+		try
+		{
+
+		PreparedStatement statGetGuild = prepareStatement(sqlGetGuild);
+		statGetGuild.setString(1, aName);
+		res = statGetGuild.executeQuery();
+		if (res != null)
+		{
+			if (res.next())
+			{
+				guild = new Guild(aName,
+					res.getInt("maxguilddeath"),
+					res.getInt("daysguilddeath"),
+					res.getInt("minguildmembers"),
+					res.getString("bossname"),
+					res.getString("title"),
+					res.getInt("minguildlevel"),
+					res.getString("guilddescription"),
+					res.getString("guildurl"),
+					res.getInt("active") == 1
+					);
+			}
+			else
+			{
+				throw new MudDatabaseException("guild " + aName + " does not exist in database.");
+			}
+			res.close();
+		}
+		statGetGuild.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guild.", e);
+		}
+		return guild;
+	}
+
+	/**
+	 * returns an vector of Strings that contain the members of a guild.
+	 * @return String array of guild members.
+	 * @param aGuild the guild
+	 * @throws MudException if something goes wrong.
+	 */
+	public static Vector getGuildMembers(Guild aGuild)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aGuild == null)
+		{
+			throw new MudDatabaseException("guild was null.");
+		}
+		Vector list = new Vector();
+		ResultSet res;
+		try
+		{
+
+		PreparedStatement statGetGuildMembers = prepareStatement(sqlGetGuildMembers);
+		statGetGuildMembers.setString(1, aGuild.getName());
+		res = statGetGuildMembers.executeQuery();
+		if (res != null)
+		{
+			while (res.next())
+			{
+				list.add(res.getString("name"));
+			}
+		}
+		res.close();
+		statGetGuildMembers.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guild members.", e);
+		}
+		return list;
+	}
+
+	/**
+	 * returns an vector of Strings that contain the characters that wish to
+	 * become a member of a guild.
+	 * @return String array of guild hopefuls.
+	 * @param aGuild the guild
+	 * @throws MudException if something goes wrong.
+	 */
+	public static Vector getGuildHopefuls(Guild aGuild)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aGuild == null)
+		{
+			throw new MudDatabaseException("guild was null.");
+		}
+		Vector list = new Vector();
+		ResultSet res;
+		try
+		{
+
+		PreparedStatement statGetGuildHopefuls = prepareStatement(sqlGetGuildHopefuls);
+		statGetGuildHopefuls.setString(1, aGuild.getName());
+		res = statGetGuildHopefuls.executeQuery();
+		if (res != null)
+		{
+			while (res.next())
+			{
+				list.add(res.getString("charname"));
+			}
+		}
+		res.close();
+		statGetGuildHopefuls.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guild hopefuls.", e);
+		}
+		return list;
 	}
 
 	/**

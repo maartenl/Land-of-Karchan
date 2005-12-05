@@ -111,6 +111,10 @@ import mmud.commands.WhimpyCommand;
 import mmud.commands.WhisperCommand;
 import mmud.commands.WhoCommand;
 import mmud.commands.WieldCommand;
+import mmud.commands.guilds.ApplyCommand;
+import mmud.commands.guilds.DetailsCommand;
+import mmud.commands.guilds.AcceptCommand;
+import mmud.commands.guilds.RejectCommand;
 
 /**
  * Used constants in the game. Constants might have been read from a
@@ -844,6 +848,12 @@ public final class Constants
 		theCommandStructure.put("title", new TitleCommand("title .+"));
 		theCommandStructure.put("admin", new AdminCommand("admin .+"));
 		theCommandStructure.put("roleplay", new PostRpgBoardCommand("roleplay .+"));
+
+		// guild commands
+		theCommandStructure.put("guildapply", new ApplyCommand("guildapply (\\w)+"));
+		theCommandStructure.put("guilddetails", new DetailsCommand("guilddetails"));
+		theCommandStructure.put("guildaccept", new AcceptCommand("guildaccept (\\w)+"));
+		theCommandStructure.put("guildreject", new RejectCommand("guildreject (\\w)+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{
