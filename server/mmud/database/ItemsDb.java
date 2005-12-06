@@ -784,8 +784,6 @@ public class ItemsDb
 		try
 		{
 			PreparedStatement sqlDropItem = Database.prepareStatement(sqlTransferItemString);
-			System.out.println(sqlTransferItemString + ":"
-+aPerson.getName()+ ":"+anItem.getId());
 			sqlDropItem.setString(1, aPerson.getName());
 			sqlDropItem.setInt(2, anItem.getId());
 			res = sqlDropItem.executeUpdate();
