@@ -40,13 +40,9 @@ import mmud.commands.NormalCommand;
 import mmud.commands.Command;
 
 /**
- * Makes you, as guildmaster, accept a new member to the guild.
- * There are some requirements to follow:
- * <UL><LI>the user must exist and be a normal player
- * <LI>the user must have a <I>guildwish</I>
- * <LI>the user must not already be a member of a guild
- * </UL>
- * Command syntax something like : <TT>guildaccept &lt;username&gt;</TT>
+ * Provides all the necessary details about the current guild that you 
+ * are a member of.
+ * Command syntax something like : <TT>guilddetails</TT>
  */
 public class DetailsCommand extends GuildCommand
 {

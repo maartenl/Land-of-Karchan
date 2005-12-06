@@ -35,7 +35,7 @@ import mmud.commands.NormalCommand;
 
 /**
  * An abstract class for the commands that may only be executed
- * by the owner of a guild, the <I>guildmaster</I>.
+ * by a member of a guild.
  */
 public abstract class GuildCommand extends NormalCommand
 {
