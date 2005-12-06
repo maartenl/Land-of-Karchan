@@ -260,10 +260,6 @@ on update cascade;
 add foreign key (owner) references mm_admin (name)
 on delete restrict
 on update cascade;
-- alter table mm_unbantable
-add foreign key (name) references mm_usertable (name)
-on delete restrict
-on update cascade;
 - create table mm_guilds (name varchar(20) not null primary key,
 title varchar(100), 
 daysguilddeath int default 10, 

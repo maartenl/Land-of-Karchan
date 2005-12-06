@@ -47,6 +47,8 @@ import mmud.database.MudDatabaseException;
 import mmud.races.Race;
 import mmud.rooms.Room;
 import mmud.rooms.Rooms;
+import simkin.ExecutableContext;
+import simkin.FieldNotSupportedException;
 
 /**
  * Class containing all the information of a user connecting to the game.
