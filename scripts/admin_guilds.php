@@ -214,6 +214,11 @@ if (isset($_REQUEST{"removeguildname"}))
 }
 if (isset($_REQUEST{"addguildname"}))
 {
+	// guildname must be at least 5 characters.
+	if (strlen($_REQUEST{"addguildname"})<5)
+	{
+		error_message("Guild name must be at least 5 characters.");
+	}
 	// check that guild not already exists
 	$result = mysql_query("select name from mm_guilds where name=\"".
 	quote_smart($_REQUEST{"addguildname"})."\""
