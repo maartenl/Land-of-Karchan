@@ -53,7 +53,7 @@ public class DateCommand extends NormalCommand
 		}
 		Calendar myCalendar = Calendar.getInstance();
 		aUser.writeMessage("Current date is " 
-			+ myCalendar.get(Calendar.MONTH) + "-" +
+			+ (myCalendar.get(Calendar.MONTH)+1) + "-" +
 			+ myCalendar.get(Calendar.DAY_OF_MONTH) + "-" +
 			+ myCalendar.get(Calendar.YEAR)
 			+ ".<BR>\r\n");

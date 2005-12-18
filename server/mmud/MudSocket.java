@@ -615,12 +615,12 @@ public class MudSocket extends Thread
 		catch (PersonException e)
 		{
 			e.printStackTrace();
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 		catch (MudException e)
 		{
 			e.printStackTrace();
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 	}
 
@@ -714,12 +714,12 @@ public class MudSocket extends Thread
 		catch (PersonException e)
 		{
 			e.printStackTrace();
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 		catch (MudException e)
 		{
 			e.printStackTrace();
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 	}
 
@@ -927,11 +927,11 @@ public class MudSocket extends Thread
 		}
 		catch (PersonException e)
 		{
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 		catch (MudException e)
 		{
-			return Database.getErrorMessage(e.getMessage());
+			return Database.getErrorMessage(e);
 		}
 	}
 

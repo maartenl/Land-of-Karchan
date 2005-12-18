@@ -277,6 +277,7 @@ foreign key (owner) references mm_admin (name) on update cascade
 ) ENGINE=InnoDB;
 - alter table mm_usertable add foreign key (guild) references mm_guilds (name) 
 on update cascade;
+- alter table mm_usertable alter guild set default null;
 
 creating board system
 ---------------------

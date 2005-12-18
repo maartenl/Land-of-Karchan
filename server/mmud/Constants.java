@@ -301,14 +301,6 @@ public final class Constants
 		" BORDER=\"0\"></A><P>" +
 		" </BODY>" +
 		" </HTML>";
-	public static String unknownerrormessage = "<HTML><HEAD>" +
-		"<HTML><HEAD><TITLE>Unknown Error</TITLE></HEAD>\n\n" +
-		"<BODY>\n" +
-		"<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Unknown Error</H1><HR>\n" +
-		"An unknown error has occurred. Please try to relogin to the game.<P>\r\n" +
-		"<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n" +
-		"</body>\n" +
-		"</HTML>\n";
 
 	public static final String[] whimpy = {
 		"",

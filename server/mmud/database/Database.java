@@ -37,6 +37,9 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.util.Calendar;
 
 import mmud.Attribute;
 import mmud.Constants;
@@ -1314,17 +1317,17 @@ public class Database
 	 * @return String containing a description of what the user
 	 * should see. Usually this is in the format of a web page.
 	 */
-	public static String getErrorMessage(String originalErr)
+	public static String getErrorMessage(Throwable originalErr)
 	{
 
 		ResultSet res;
 		User myUser = null;
-		String myErrMsg = Constants.unknownerrormessage;
+		String myErrMsg = null;
 		try
 		{
 
 		PreparedStatement sqlGetErrMsg = prepareStatement(sqlGetErrMsgString);
-		sqlGetErrMsg.setString(1, originalErr);
+		sqlGetErrMsg.setString(1, originalErr.getMessage());
 		res = sqlGetErrMsg.executeQuery();
 		if (res != null)
 		{
@@ -1346,9 +1349,23 @@ public class Database
 		}
 		if (myErrMsg == null)
 		{
-			myErrMsg = "<HTML><HEAD><TITLE>"+originalErr+"</TITLE>"+
-				"</HEAD><BODY BGCOLOR=#FFFFFF><H1>Error: "+originalErr+
-				"</H1>The following error occurred.</BODY></HTML>";
+			Calendar myCalendar = Calendar.getInstance();
+			StringWriter aWriter = new StringWriter();
+			PrintWriter aPrintWriter = new PrintWriter(aWriter);
+			originalErr.printStackTrace(aPrintWriter);
+			myErrMsg = "<HTML><HEAD><TITLE>"+originalErr.getMessage()+"</TITLE>"+
+				"</HEAD><BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>"+originalErr.getMessage()+
+				"</H1>The error occurred on "
+				+ (myCalendar.get(Calendar.MONTH)+1) + "-"
+				+ myCalendar.get(Calendar.DAY_OF_MONTH) + "-"
+				+ myCalendar.get(Calendar.YEAR) + " "
+				+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":"
+				+ myCalendar.get(Calendar.MINUTE) + ":"
+				+ myCalendar.get(Calendar.SECOND) +
+				". When reporting this error" +
+				" please include the following text along with when it happened and what you did:<PRE>" + 
+				aWriter +
+				"</PRE></BODY></HTML>";
 		}
 		Logger.getLogger("mmud").info("originalErr=" + originalErr +
 			",myErrMsg=" + myErrMsg);
@@ -1686,6 +1703,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
+			Logger.getLogger("mmud").throwing("mmud.Database","createUser", e);
 			throw new MudDatabaseException("database error creating user.", e);
 		}
 	}
@@ -1715,6 +1733,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
+			Logger.getLogger("mmud").throwing("mmud.Database","setTitle", e);
 			throw new MudDatabaseException("database error setting title.", e);
 		}
 	}
@@ -1750,6 +1769,7 @@ public class Database
 		}
 		catch (SQLException e)
 		{
+			Logger.getLogger("mmud").throwing("mmud.Database","setGuild", e);
 			throw new MudDatabaseException("database error setting guild.", e);
 		}
 	}

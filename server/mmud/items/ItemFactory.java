@@ -91,12 +91,15 @@ public class ItemFactory
 		}
 		Item item = null;
 		String shopkeeperList = null;
-		for (int i=0;i<anAttribVector.size();i++)
+		if (anAttribVector != null)
 		{
-			Attribute attrib = (Attribute) anAttribVector.elementAt(i);
-			if (attrib.getName().equals("shopkeeperlist"))
+			for (int i=0;i<anAttribVector.size();i++)
 			{
-				shopkeeperList = attrib.getValue();
+				Attribute attrib = (Attribute) anAttribVector.elementAt(i);
+				if (attrib.getName().equals("shopkeeperlist"))
+				{
+					shopkeeperList = attrib.getValue();
+				}
 			}
 		}
 		if (shopkeeperList != null)

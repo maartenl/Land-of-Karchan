@@ -1000,7 +1000,8 @@ public class Person implements Executable, AttributeContainer
 		String[] aCommandArray)
 	throws MudException
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aXmlMethodName=" + aXmlMethodName +
+		",aScript=" + aScript + ",aCommandArray=" + aCommandArray);
 		try
 		{
 			// Create an interpreter and a context
@@ -1252,11 +1253,14 @@ public class Person implements Executable, AttributeContainer
 				}
 				catch (MudDatabaseException e)
 				{
+					Logger.getLogger("mmud").throwing("mmud.characters.Person","method(addItem)", e);
 					throw new MethodNotSupportedException(e.getMessage());
 				}
 				if (myItemDef == null)
 				{
-					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
+					MethodNotSupportedException e2 = new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
+					Logger.getLogger("mmud").throwing("mmud.characters.Person","method(addItem)", e2);
+					throw e2;
 				}
 				Item myItem = null;
 				try
