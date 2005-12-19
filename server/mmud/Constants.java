@@ -112,6 +112,9 @@ import mmud.commands.WhisperCommand;
 import mmud.commands.WhoCommand;
 import mmud.commands.WieldCommand;
 import mmud.commands.guilds.ApplyCommand;
+import mmud.commands.guilds.SetDescriptionCommand;
+import mmud.commands.guilds.SetTitleCommand;
+import mmud.commands.guilds.SetUrlCommand;
 import mmud.commands.guilds.DetailsCommand;
 import mmud.commands.guilds.AcceptCommand;
 import mmud.commands.guilds.RejectCommand;
@@ -846,6 +849,9 @@ public final class Constants
 		theCommandStructure.put("guilddetails", new DetailsCommand("guilddetails"));
 		theCommandStructure.put("guildaccept", new AcceptCommand("guildaccept (\\w)+"));
 		theCommandStructure.put("guildreject", new RejectCommand("guildreject (\\w)+"));
+		theCommandStructure.put("guilddescription", new SetDescriptionCommand("guilddescription .+"));
+		theCommandStructure.put("guildtitle", new SetTitleCommand("guildtitle .+"));
+		theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{

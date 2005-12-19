@@ -94,15 +94,20 @@ Guilds
 -----
 
 A. Below text issues the following commands:
-- admin guildcreate GUILDNAME DAYSGUILDDEATH MINGUILDMEMBERS BOSSNAME
-- guildapply GUILDNAME
+V guildapply GUILDNAME
 - (BOSS) guildqual MINGUILDLEVEL
-- (BOSS) guilddetails
-- (BOSS) guildaccept USERNAME
-- (BOSS) guildreject USERNAME
+V guilddetails
+V (BOSS) guildaccept USERNAME
+V (BOSS) guildreject USERNAME
 - (BOSS) guildassign USERNAME, "RANK"
 - (BOSS) guildexile USERNAME, REASON
 - (BOSS) guildrefresh
+
+- (BOSS) guilddescription
+- (BOSS) guildtitle
+- (BOSS) guildurl
+- (BOSS) guildlevel
+
 - guildtalk MESSAGE
 - guildhome
 - guilddonate
