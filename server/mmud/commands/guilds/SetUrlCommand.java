@@ -65,7 +65,7 @@ public class SetUrlCommand extends GuildMasterCommand
 			);
 		Database.writeLog(aUser.getName(), " set guildtitle of " + 
 			" guild " + aUser.getGuild().getName());
-		aUser.writeMessage("You have set a new title for your guild.<BR>\r\n");
+		aUser.writeMessage("You have set a new homepage for your guild.<BR>\r\n");
 		return true;
 	}
 
