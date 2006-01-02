@@ -49,6 +49,7 @@ adding guild:
 - does bossname exist?
 - is the bossman already a guildmaster?
 - does the bossman have a guildwish?
+- is the guildname at least 3 characters?
 changing guild:
 - does the guild exist?
 - does bossname exist?
@@ -215,9 +216,9 @@ if (isset($_REQUEST{"removeguildname"}))
 if (isset($_REQUEST{"addguildname"}))
 {
 	// guildname must be at least 5 characters.
-	if (strlen($_REQUEST{"addguildname"})<5)
+	if (strlen($_REQUEST{"addguildname"})<3)
 	{
-		error_message("Guild name must be at least 5 characters.");
+		error_message("Guild name must be at least 3 characters.");
 	}
 	// check that guild not already exists
 	$result = mysql_query("select name from mm_guilds where name=\"".
