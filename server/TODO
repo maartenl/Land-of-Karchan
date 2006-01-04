@@ -101,13 +101,16 @@ V (BOSS) guildaccept USERNAME
 V (BOSS) guildreject USERNAME
 - (BOSS) guildassign USERNAME, "RANK"
 - (BOSS) guildexile USERNAME, REASON
+- (BOSS) guildkick USERNAME, REASON
+- guildleave
 - (BOSS) guildrefresh
 
-- (BOSS) guilddescription
-- (BOSS) guildtitle
-- (BOSS) guildurl
+V (BOSS) guilddescription
+V (BOSS) guildtitle
+V (BOSS) guildurl
 - (BOSS) guildlevel
 
+- (BOSS) guildmessage LOGONMESSSAGE
 - guildtalk MESSAGE
 - guildhome
 - guilddonate
@@ -126,6 +129,7 @@ mm_guilds
   active
   creation
   owner
+  logonmessage text -> new
 mm_charattributes
 name: guildrank
 value: 'sergeant'

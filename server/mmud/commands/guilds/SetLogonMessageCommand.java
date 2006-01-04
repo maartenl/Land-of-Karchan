@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 
 import mmud.MudException;
 import mmud.Attribute;
+import mmud.characters.User;
 import mmud.characters.Person;
 import mmud.characters.Persons;
-import mmud.characters.User;
 import mmud.characters.GuildFactory;
 import mmud.characters.Guild;
 import mmud.database.Database;
@@ -40,18 +40,15 @@ import mmud.commands.NormalCommand;
 import mmud.commands.Command;
 
 /**
- * Makes you, as guildmaster, reject a person wanting to join your guild.
- * There are some requirements to follow:
- * <UL><LI>the user must exist and be a normal player
- * <LI>the user must have a <I>guildwish</I>
- * <LI>the user must not already be a member of a guild
- * </UL>
- * Command syntax something like : <TT>guildreject &lt;username&gt;</TT>
+ * Makes you, as guildmaster, set the logon message of the guild.
+ * The logon message is always displayed whenever a guild member enters 
+ * the game.
+ * Command syntax something like : <TT>guildmessage &lt;logon message&gt;</TT>
  */
-public class RejectCommand extends GuildMasterCommand
+public class SetLogonMessageCommand extends GuildMasterCommand
 {
 
-	public RejectCommand(String aRegExpr)
+	public SetLogonMessageCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -65,35 +62,18 @@ public class RejectCommand extends GuildMasterCommand
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
-		Person toChar2 = (User) Persons.retrievePerson(myParsed[1]);
-		if ((toChar2 == null) || (!(toChar2 instanceof User)))
-		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			return true;
-		}
-		User toChar = (User) toChar2;
-		if (!toChar.isAttribute("guildwish") && 
-			aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue()))
-		{
-			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
-			return false;
-		}
-		if (toChar.getGuild() != null)
-		{
-			throw new MudException("error occurred, a person is a member of a guild, yet has a guildwish parameter!");
-		}
-		toChar.removeAttribute("guildwish");
-		Database.writeLog(aUser.getName(), "denied " + 
-			toChar.getName() + " membership into guild " + 
-			aUser.getGuild().getName());
-		aUser.writeMessage("You have denied " + toChar.getName() + " admittance to your guild.<BR>\r\n");
-		toChar.writeMessage("You have been denied membership of guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		aUser.getGuild().setLogonMessage(
+			getCommand().substring(myParsed[0].length() + 1)
+			);
+		Database.writeLog(aUser.getName(), " set logonmessage of " + 
+			" guild " + aUser.getGuild().getName());
+		aUser.writeMessage("You have set a new logonmesssage for your guild.<BR>\r\n");
 		return true;
 	}
 
 	public Command createCommand()
 	{
-		return new RejectCommand(getRegExpr());
+		return new SetLogonMessageCommand(getRegExpr());
 	}
 	
 }

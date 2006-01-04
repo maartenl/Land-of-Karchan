@@ -34,6 +34,7 @@ import mmud.Constants;
 import mmud.MudException;
 import mmud.characters.Person;
 import mmud.characters.Persons;
+import mmud.characters.GuildFactory;
 import mmud.characters.User;
 import mmud.database.Database;
 import mmud.items.ItemDefs;
@@ -97,6 +98,13 @@ public class AdminCommand extends NormalCommand
 			Rooms.init();
 			Persons.init();
 			aUser.writeMessage("Rooms have been reset.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin reset guilds"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'reset guilds' executed");
+			GuildFactory.init();
+			aUser.writeMessage("Guilds have been reset.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset characters"))
@@ -172,7 +180,8 @@ public class AdminCommand extends NormalCommand
 				"<DT>admin reset itemdefs<DD>reset the cached item definitions, required every time you make a change to an itemdefinition" +
 				"<DT>admin reset rooms<DD>reset the cached rooms, required every time"
 				+ " you make a change to a room. Also implicitly runs " +
-				"<I>admin reset characters</I>." +
+				"<DT>admin reset guilds<DD>reset the cached guilds, required every time"
+				+ " you make a change to a guild." +
 				"<DT>admin reset commands<DD>reset the cached <I>special</I> commands. " +
 				"Necessary if a command has been deleted, added or changed." +
 				"<DT>admin reload<DD>reloads the settings from the config" +

@@ -77,7 +77,7 @@ public class Database
 	"set title = ?, " +
 	"minguildlevel = ?, " +
 	"guilddescription= ?, " +
-	"guildurl = ?, " +
+	"guildurl = ?, logonmessage = ?, " +
 	"active = ? where name = ?";
 	public static String sqlGetGuild = "select * from mm_guilds " +
 	"where name = ?";
@@ -1935,8 +1935,9 @@ public class Database
 		statSetGuild.setInt(2, aGuild.getMinGuildLevel());
 		statSetGuild.setString(3, aGuild.getDescription());
 		statSetGuild.setString(4, aGuild.getGuildUrl());
-		statSetGuild.setInt(5, (aGuild.isActive() ? 1 : 0));
-		statSetGuild.setString(6, aGuild.getName());
+		statSetGuild.setString(5, aGuild.getLogonMessage());
+		statSetGuild.setInt(6, (aGuild.isActive() ? 1 : 0));
+		statSetGuild.setString(7, aGuild.getName());
 		int res = statSetGuild.executeUpdate();
 		if (res != 1)
 		{
@@ -1986,6 +1987,7 @@ public class Database
 					res.getInt("minguildlevel"),
 					res.getString("guilddescription"),
 					res.getString("guildurl"),
+					res.getString("logonmessage"),
 					res.getInt("active") == 1
 					);
 			}

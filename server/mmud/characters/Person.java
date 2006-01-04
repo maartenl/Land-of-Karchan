@@ -956,7 +956,7 @@ public class Person implements Executable, AttributeContainer
 	 * @return String containing all the statistics in html format.
 	 */
 	public String getStatistics()
-	throws MudDatabaseException
+	throws MudException
 	{
 		String stuff = ItemsDb.getWearablesFromChar(this);
 		stuff = stuff.replaceAll("%SHISHER", "your");

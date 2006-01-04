@@ -51,6 +51,7 @@ public class Guild
 	private int theMinGuildLevel;
 	private String theGuildDescription;
 	private String theGuildUrl;
+	private String theLogonMessage;
 
 	private boolean theActive;
 
@@ -98,6 +99,8 @@ public class Guild
 	 : @param aActive boolean, true if it is an active guild, false if it is 
 	 * a new guild that has not yet had the required number of guild members.
 	 * @see Guild(String,int,int,int,String,boolean)
+	 * @param aLogonMessage a logon message that is made visible
+	 * when a member of the guild logs onto the game.
 	 */
 	public Guild(String aName,
 		int aMaxDaysGuildDeath,
@@ -108,6 +111,7 @@ public class Guild
 		int aMinGuildLevel,
 		String aGuildDescription,
 		String aGuildUrl,
+		String aLogonMessage,
 		boolean aActive)
 	throws MudException
 	{
@@ -117,12 +121,20 @@ public class Guild
 		theMinGuildLevel = aMinGuildLevel;
 		theGuildDescription = aGuildDescription;
 		theGuildUrl = aGuildUrl;
+		theLogonMessage = aLogonMessage;
 	}
 
 	public void setTitle(String aTitle)
 	throws MudException
 	{
 		theTitle = aTitle;
+		Database.setGuild(this);
+	}
+
+	public void setLogonMessage(String aLogonMessage)
+	throws MudException
+	{
+		theLogonMessage = aLogonMessage;
 		Database.setGuild(this);
 	}
 
@@ -177,6 +189,11 @@ public class Guild
 		return theTitle;
 	}
 	
+	public String getLogonMessage()
+	{
+		return theLogonMessage;
+	}
+	
 	public int getMinGuildLevel()
 	{
 		return theMinGuildLevel;
@@ -211,6 +228,11 @@ public class Guild
 	{
 		Vector list = Database.getGuildMembers(this);
 		StringBuffer result = new StringBuffer();
+		if (theLogonMessage != null)
+		{
+			result.append("<B>Logonmessage:</B>" + theLogonMessage + "<P>");
+		}
+		result.append("<B>Members</B><P>");
 		for (int i=0;i<list.size();i++)
 		{
 			result.append((String) list.get(i));
@@ -228,7 +250,7 @@ public class Guild
 			+ ").<BR>The current guildmaster is <I>" + getBossName() 
 			+ "</I>.<BR>The guild is <I>" 
 			+ (isActive() ? "active" : "inactive")
-			+ "</I>.<P><B>Members</B><P>" + result + "<P>";
+			+ "</I>.<P>" + result + "<P>";
 
 	}
 }

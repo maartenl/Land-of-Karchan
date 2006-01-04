@@ -67,7 +67,7 @@ public class User extends mmud.characters.Person
 	private boolean theGod;
 	private Calendar rightNow;
 	private boolean thePkill;
-	private Guild theGuild;
+	private String theGuild;
 
 	/**
 	 * create an instance of User, based on Database data. 
@@ -181,7 +181,10 @@ public class User extends mmud.characters.Person
 		theGod = aGod;
 		setSessionPassword(aCookie);
 		thePkill = aPkill;
-		theGuild = aGuild;
+		if (aGuild != null)
+		{
+			theGuild = aGuild.getName();
+		}
 		setNow();
 	}
 
@@ -662,9 +665,16 @@ public class User extends mmud.characters.Person
 		{
 			throw new MudException("Person " + getName() + 
 				" cannot become member of " + aGuild.getName() + 
-				" because is already member of " + theGuild.getName() + ".");
+				" because is already member of " + theGuild + ".");
 		}
-		theGuild = aGuild;
+		if (aGuild == null)
+		{
+			theGuild = null;
+		}
+		else
+		{
+			theGuild = aGuild.getName();
+		}
 		Database.setGuild(this);
 	}  
 
@@ -674,12 +684,13 @@ public class User extends mmud.characters.Person
 	 * does not belong to a guild.
 	 */
 	public Guild getGuild()
+	throws MudException
 	{
-		return theGuild;
+		return GuildFactory.createGuild(theGuild);
 	}
 
 	public String getStatistics()
-	throws MudDatabaseException  
+	throws MudDatabaseException, MudException
 	{
 		String result = super.getStatistics();
 		if (getGuild() != null)
@@ -704,7 +715,14 @@ public class User extends mmud.characters.Person
 			", atttrib_name=" + attrib_name);
 		if (field_name.equals("guild"))
 		{
-			return (getGuild() == null ? null : getGuild().getName());
+			try
+			{
+				return (getGuild() == null ? null : getGuild().getName());
+			}
+			catch (MudException e)
+			{
+				throw new FieldNotSupportedException("unable to retrieve guild");
+			}
 		}
 		return super.getValue(field_name, attrib_name, ctxt);
 	}

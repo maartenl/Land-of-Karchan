@@ -50,13 +50,18 @@ public class GuildFactory
 	}
 
 	/**
-	 * Returns a guild based on the guildname.
+	 * Returns a guild based on the guildname. If the guildname is null
+	 * it will automatically return null.
 	 * @param aGuildName the name of the guild
 	 * @returns the guild itself.
 	 */
 	public static Guild createGuild(String aGuildName)
 	throws MudException
 	{
+		if (aGuildName == null)
+		{
+			return null;
+		}
 		Guild guild = (Guild) theGuilds.get(aGuildName);
 		if (guild == null)
 		{
@@ -74,4 +79,12 @@ public class GuildFactory
 		return guild;
 	}
 
+	/**
+	 * Re-initialise the known guilds to an empty list. This is a good
+	 * thing to do if the guild information in the database has changed.
+	 */
+	public static void init()
+	{
+		theGuilds = new TreeMap();
+	}
 }

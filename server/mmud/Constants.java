@@ -112,12 +112,14 @@ import mmud.commands.WhisperCommand;
 import mmud.commands.WhoCommand;
 import mmud.commands.WieldCommand;
 import mmud.commands.guilds.ApplyCommand;
+import mmud.commands.guilds.LeaveCommand;
 import mmud.commands.guilds.SetDescriptionCommand;
 import mmud.commands.guilds.SetTitleCommand;
 import mmud.commands.guilds.SetUrlCommand;
 import mmud.commands.guilds.DetailsCommand;
 import mmud.commands.guilds.AcceptCommand;
 import mmud.commands.guilds.RejectCommand;
+import mmud.commands.guilds.SetLogonMessageCommand;
 
 /**
  * Used constants in the game. Constants might have been read from a
@@ -846,12 +848,14 @@ public final class Constants
 
 		// guild commands
 		theCommandStructure.put("guildapply", new ApplyCommand("guildapply (\\w)+"));
+		theCommandStructure.put("guildleave", new LeaveCommand("guildleave"));
 		theCommandStructure.put("guilddetails", new DetailsCommand("guilddetails"));
 		theCommandStructure.put("guildaccept", new AcceptCommand("guildaccept (\\w)+"));
 		theCommandStructure.put("guildreject", new RejectCommand("guildreject (\\w)+"));
 		theCommandStructure.put("guilddescription", new SetDescriptionCommand("guilddescription .+"));
 		theCommandStructure.put("guildtitle", new SetTitleCommand("guildtitle .+"));
 		theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));
+		theCommandStructure.put("guildmessage", new SetLogonMessageCommand("guildmessage .+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{
