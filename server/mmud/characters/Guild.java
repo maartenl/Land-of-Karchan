@@ -214,6 +214,15 @@ public class Guild
 		return theActive;
 	}
 
+	public boolean equals(Guild aGuild)
+	{
+		if (aGuild == null)
+		{
+			return false;
+		}
+		return getName().equals(aGuild.getName());
+	}
+	
 	public String toString()
 	{
 		return super.toString() + ":" + getName();

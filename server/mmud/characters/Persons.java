@@ -372,6 +372,38 @@ public final class Persons implements Executable
 	}
 
 	/**
+	 * paging all guild members. If the Guild provided is null,
+	 * no guild message is sent.
+	 * @param aGuild the guild to which the user must belong
+	 * @param aMessage message to be sent to all users.
+	 */
+	public static void sendGuildMessage(Guild aGuild, String aMessage)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("aGuild=" + 
+			aGuild + ",aMessage=" + aMessage);
+		if (aGuild == null)
+		{
+			// no messages if no guild is provided
+			return;
+		}
+		for (int i=0;i < thePersons.size();i++)
+		{
+			if (thePersons.elementAt(i) instanceof User)
+			{
+				// it has to be a user, that is the only
+				// one that can be the member of a guild.
+				User myChar = (User) thePersons.elementAt(i);
+				if (aGuild.equals(myChar.getGuild()))
+				{
+					// only write the message if the proper guild member
+					myChar.writeMessage("<FONT COLOR=green>" + aMessage + "</FONT>");
+				}
+			}
+		}
+	}
+
+	/**
 	 * character communication method to everyone in the room. The message
 	 * is parsed, based on who is sending the message.
 	 * @param aPerson the person who is the source of the message.

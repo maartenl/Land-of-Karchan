@@ -116,6 +116,12 @@ V (BOSS) guildurl
 - guilddonate
 - admin guildhomeset
 
+Need to check the following into Database.java:
+- check Attribute on mm_charattributes
+- check guildname on mm_usertable
+- remove Attribute from mm_charattributes
+- set guildname in mm_usertable
+
 mm_guilds
 * name
   title -> userdefined

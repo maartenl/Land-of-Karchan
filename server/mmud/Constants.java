@@ -113,6 +113,7 @@ import mmud.commands.WhoCommand;
 import mmud.commands.WieldCommand;
 import mmud.commands.guilds.ApplyCommand;
 import mmud.commands.guilds.LeaveCommand;
+import mmud.commands.guilds.MessageCommand;
 import mmud.commands.guilds.SetDescriptionCommand;
 import mmud.commands.guilds.SetTitleCommand;
 import mmud.commands.guilds.SetUrlCommand;
@@ -856,6 +857,7 @@ public final class Constants
 		theCommandStructure.put("guildtitle", new SetTitleCommand("guildtitle .+"));
 		theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));
 		theCommandStructure.put("guildmessage", new SetLogonMessageCommand("guildmessage .+"));
+		theCommandStructure.put("guild", new MessageCommand("guild .+"));
 
 		for (int i=0;i<emotions.length;i++)
 		{
