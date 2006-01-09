@@ -397,7 +397,7 @@ public final class Persons implements Executable
 				if (aGuild.equals(myChar.getGuild()))
 				{
 					// only write the message if the proper guild member
-					myChar.writeMessage("<FONT COLOR=green>" + aMessage + "</FONT>");
+					myChar.writeMessage("<FONT COLOR=green>[guild] " + aMessage + "</FONT>");
 				}
 			}
 		}

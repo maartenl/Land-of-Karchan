@@ -73,7 +73,7 @@ public interface Container
 	 * Returns wether or not the container is locked. If it can be locked,
 	 * it needs a key.
 	 * @return boolean true if the container is locked.
-	 * @see getKeyId
+	 * @see #getKeyId()
 	 */
 	public boolean isLocked();
 
@@ -110,7 +110,7 @@ public interface Container
 
 	/**
 	 * Returns the identification number of the container.
-	 * @returns integer containing the id of the container.
+	 * @return integer containing the id of the container.
 	 */
 	public int getId();
 

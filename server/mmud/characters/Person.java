@@ -848,6 +848,10 @@ public class Person implements Executable, AttributeContainer
 	public void setAttribute(Attribute anAttribute)
 	throws MudDatabaseException
 	{
+		if (theAttributes == null)
+		{
+			throw new RuntimeException("theAttributes is null!");
+		}
 		theAttributes.put(anAttribute.getName(), anAttribute);
 		AttributeDb.setAttribute(anAttribute, this);
 	}
@@ -868,6 +872,10 @@ public class Person implements Executable, AttributeContainer
 		for (int i=0; i<anAttributeVector.size(); i++)
 		{
 			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
+			if (theAttributes == null)
+			{
+				throw new RuntimeException("theAttributes is null!");
+			}
 			theAttributes.put(attrib.getName(), attrib);
 		}
 	}
@@ -880,6 +888,10 @@ public class Person implements Executable, AttributeContainer
 	 */
 	public Attribute getAttribute(String aName)
 	{
+		if (theAttributes == null)
+		{
+			throw new RuntimeException("theAttributes is null!");
+		}
 		Attribute myAttrib = (Attribute) theAttributes.get(aName);
 		return myAttrib;
 	}
@@ -894,6 +906,10 @@ public class Person implements Executable, AttributeContainer
 	throws MudDatabaseException
 	{
 		Attribute attrib = getAttribute(aName);
+		if (theAttributes == null)
+		{
+			throw new RuntimeException("theAttributes is null!");
+		}
 		theAttributes.remove(aName);
 		if (attrib != null)
 		{
@@ -909,6 +925,10 @@ public class Person implements Executable, AttributeContainer
 	 */
 	public boolean isAttribute(String aName)
 	{
+		if (theAttributes == null)
+		{
+			throw new RuntimeException("theAttributes is null!");
+		}
 		return theAttributes.containsKey(aName);
 	}
 

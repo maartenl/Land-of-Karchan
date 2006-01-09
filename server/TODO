@@ -102,7 +102,7 @@ V (BOSS) guildreject USERNAME
 - (BOSS) guildassign USERNAME, "RANK"
 - (BOSS) guildexile USERNAME, REASON
 - (BOSS) guildkick USERNAME, REASON
-- guildleave
+V guildleave
 - (BOSS) guildrefresh
 
 V (BOSS) guilddescription
@@ -110,8 +110,8 @@ V (BOSS) guildtitle
 V (BOSS) guildurl
 - (BOSS) guildlevel
 
-- (BOSS) guildmessage LOGONMESSSAGE
-- guildtalk MESSAGE
+V (BOSS) guildmessage LOGONMESSSAGE
+V guild MESSAGE
 - guildhome
 - guilddonate
 - admin guildhomeset
@@ -121,6 +121,9 @@ Need to check the following into Database.java:
 - check guildname on mm_usertable
 - remove Attribute from mm_charattributes
 - set guildname in mm_usertable
+This is only required for the follwoing commands:
+V (BOSS) guildaccept USERNAME
+V (BOSS) guildreject USERNAME
 
 mm_guilds
 * name

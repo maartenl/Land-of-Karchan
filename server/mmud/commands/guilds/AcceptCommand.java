@@ -66,17 +66,29 @@ public class AcceptCommand extends GuildMasterCommand
 		}
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = (User) Persons.retrievePerson(myParsed[1]);
+		boolean playing = true;
+		if (toChar2 == null)
+		{
+			// the person is not playing the game...
+			// we'll need to look him up "outside"
+			toChar2 = Database.getUser(myParsed[1], null);
+			playing = false;
+		}
 		if ((toChar2 == null) || (!(toChar2 instanceof User)))
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
+		if (toChar2 == null)
+		{
+			throw new RuntimeException("toChar2 is null! Impossible!");
+		}
 		User toChar = (User) toChar2;
-		if (!toChar.isAttribute("guildwish") && 
-			aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue()))
+		if (!toChar.isAttribute("guildwish") ||
+			(!aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue())))
 		{
 			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
-			return false;
+			return true;
 		}
 		if (toChar.getGuild() != null)
 		{
@@ -87,7 +99,10 @@ public class AcceptCommand extends GuildMasterCommand
 		Database.writeLog(aUser.getName(), " accepted " + 
 			toChar.getName() + " into guild " + aUser.getGuild().getName());
 		aUser.writeMessage(toChar.getName() + " has joined your guild.<BR>\r\n");
-		toChar.writeMessage("You have joined guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		if (playing)
+		{
+			toChar.writeMessage("You have joined guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		}
 		return true;
 	}
 

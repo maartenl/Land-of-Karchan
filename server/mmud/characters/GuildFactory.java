@@ -53,7 +53,7 @@ public class GuildFactory
 	 * Returns a guild based on the guildname. If the guildname is null
 	 * it will automatically return null.
 	 * @param aGuildName the name of the guild
-	 * @returns the guild itself.
+	 * @return the guild itself.
 	 */
 	public static Guild createGuild(String aGuildName)
 	throws MudException

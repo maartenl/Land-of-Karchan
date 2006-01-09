@@ -66,17 +66,26 @@ public class RejectCommand extends GuildMasterCommand
 		}
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = (User) Persons.retrievePerson(myParsed[1]);
+		boolean playing = true;
+		if (toChar2 == null)
+		{
+			// the person is not playing the game...
+			// we'll need to look him up "outside"
+			toChar2 = Database.getUser(myParsed[1], null);
+			playing = false;
+		}
+		
 		if ((toChar2 == null) || (!(toChar2 instanceof User)))
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
 		User toChar = (User) toChar2;
-		if (!toChar.isAttribute("guildwish") && 
-			aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue()))
+		if (!toChar.isAttribute("guildwish") ||
+			(!aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue())))
 		{
 			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
-			return false;
+			return true;
 		}
 		if (toChar.getGuild() != null)
 		{
@@ -87,7 +96,10 @@ public class RejectCommand extends GuildMasterCommand
 			toChar.getName() + " membership into guild " + 
 			aUser.getGuild().getName());
 		aUser.writeMessage("You have denied " + toChar.getName() + " admittance to your guild.<BR>\r\n");
-		toChar.writeMessage("You have been denied membership of guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		if (playing)
+		{
+			toChar.writeMessage("You have been denied membership of guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		}
 		return true;
 	}
 

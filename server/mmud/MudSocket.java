@@ -119,7 +119,7 @@ public class MudSocket extends Thread
 	 * with the retrieved information.
 	 * @param aWriter the writer to write output to.
 	 * @param aReader the reader to read input from.
-	 * @see enterMud
+	 * @see #enterMud
 	 * @throws MudException when either reading of the input
 	 * goes wrong, or executing mud functionality goes wrong.
 	 */
@@ -162,7 +162,7 @@ public class MudSocket extends Thread
 	 * a specific command for a playing user in the mud.
 	 * @param aWriter the writer to write output to.
 	 * @param aReader the reader to read input from.
-	 * @see executeMud
+	 * @see #executeMud
 	 * @throws MudException when either reading of the input
 	 * goes wrong, or executing mud functionality goes wrong.
 	 */
@@ -221,7 +221,7 @@ public class MudSocket extends Thread
 	 * Will also automatically log the new player in on the game.
 	 * @param aWriter the writer to write output to.
 	 * @param aReader the reader to read input from.
-	 * @see newUserMud
+	 * @see #newUserMud
 	 * @throws MudException when either reading of the input
 	 * goes wrong, or executing mud functionality goes wrong.
 	 */

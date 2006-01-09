@@ -845,7 +845,7 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(anItemDef, anItemInstanceId,
 					attribs);
 				items.add(anItem);
@@ -893,7 +893,7 @@ public class ItemsDb
 			{
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(anItemDef, anItemInstanceId,
 					attribs);
 				items.add(anItem);
@@ -952,7 +952,7 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(anItemDef, 
 					anItemInstanceId,
 					attribs
@@ -998,7 +998,7 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(
 					anItemDef, 
 					anItemInstanceId,
@@ -1104,7 +1104,7 @@ public class ItemsDb
 				Logger.getLogger("mmud").finest("anItemInstanceId=" + anItemInstanceId + 
 					",anItemId=" + anItemId);
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(
 						anItemDef,
 						anItemInstanceId, 
@@ -1126,7 +1126,7 @@ public class ItemsDb
 
 	/**
 	 * Retrieve the item from the inventory of a character.
-	 * @param anItemDef the required itemdefinition.
+	 * @param aItemDef the required itemdefinition.
 	 * @param aChar the character who has the item in his/her inventory.
 	 * @return Vector containing all Item objects found.
 	 */
@@ -1156,7 +1156,7 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(
 					anItemDef,
 					anItemInstanceId,
@@ -1212,7 +1212,7 @@ public class ItemsDb
 				anItemInstanceId = res.getInt("id");
 				anItemId = res.getInt("itemid");
 				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
-				Vector attribs = Database.getItemAttributes(anItemInstanceId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
 				Item anItem = ItemFactory.createItem(
 					anItemDef, 
 					anItemInstanceId, 

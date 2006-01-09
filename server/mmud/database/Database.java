@@ -144,16 +144,6 @@ public class Database
 		"from mm_commands " +
 		"where callable = 1";
 
-	public static String sqlGetCharAttributesString =
-		"select * from mm_charattributes "
-		+ "where charname = ?";
-	public static String sqlGetItemAttributesString =
-		"select * from mm_itemattributes "
-		+ "where id = ?";
-	public static String sqlGetRoomAttributesString =
-		"select * from mm_roomattributes "
-		+ "where id = ?";
-
 	public static String sqlGetAnswers = 
 		"select * from mm_answers where ? like question and name = ?";
 		
@@ -405,7 +395,7 @@ public class Database
 			}
 			myUser  = new User(
 				res.getString("name"), 
-				(res.getString("encrypted").equals(res.getString("password")) ? 
+				(res.getString("password").equals(res.getString("encrypted")) ? 
 					aPassword:
 					null),
 				res.getString("address"),
@@ -449,7 +439,7 @@ public class Database
 		}
 		if (myUser != null)
 		{
-			getCharAttributes(myUser);
+			myUser.setAttributes(AttributeDb.getAttributes(myUser));
 		}
 		return myUser;
 	}
@@ -542,7 +532,7 @@ public class Database
 		}
 		if (myUser != null)
 		{
-			getCharAttributes(myUser);
+			myUser.setAttributes(AttributeDb.getAttributes(myUser));
 		}
 		return myUser;
 	}
@@ -790,88 +780,6 @@ public class Database
 	}
 
 	/**
-	 * Get all attributes found in the database regarding a certain item. 
-	 * Basically fills up the attribute list of the item.<P>
-	 * The reason that these attributes are not automatically added to the
-	 * item, is because some atttributes can have an impact
-	 * on what kind of item is created.
-	 * @param anItem item id of an item
-	 * @returns a Vector containing the Attributes.
-	 */
-	static Vector getItemAttributes(int anItemId)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-		Vector result = new Vector();
-		ResultSet res;
-		try
-		{
-		PreparedStatement sqlGetItemAttributes = prepareStatement(sqlGetItemAttributesString);
-		sqlGetItemAttributes.setInt(1, anItemId);
-		res = sqlGetItemAttributes.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return result;
-		}
-		while (res.next())
-		{
-			Attribute myAttrib = new Attribute(res.getString("name"),
-				res.getString("value"),
-				res.getString("value_type"));
-			result.add(myAttrib);
-		}
-		res.close();
-		sqlGetItemAttributes.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error getting attributes of item.", e);
-		}
-		return result;
-	}
-
-	/**
-	 * Add all attributes found in the database regarding a certain
-	 * character to
-	 * that character object. Basically fills up the attribute list of the
-	 * character.
-	 * @param aPerson character whose attributes we need
-	 */
-	public static void getCharAttributes(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer(aPerson + "");
-
-		ResultSet res;
-		try
-		{
-		PreparedStatement sqlGetCharAttributes = prepareStatement(sqlGetCharAttributesString);
-		sqlGetCharAttributes.setString(1, aPerson.getName());
-		res = sqlGetCharAttributes.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return;
-		}
-		while (res.next())
-		{
-			Attribute myAttrib = new Attribute(res.getString("name"),
-				res.getString("value"),
-				res.getString("value_type"));
-			aPerson.setAttribute(myAttrib);
-		}
-		res.close();
-		sqlGetCharAttributes.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error getting attributes from character.", e);
-		}
-		return;
-	}
-
-	/**
 	 * Returns all currently active persons in the game. This method is
 	 * usually used only when starting the server, as during server time
 	 * the adding and deleting of users is handled by the server itself.
@@ -948,7 +856,7 @@ public class Database
 					myRealUser.setSessionPassword(mySessionPwd);
 				}
 				myVector.add(myRealUser);
-				getCharAttributes(myRealUser);
+				myRealUser.setAttributes(AttributeDb.getAttributes(myRealUser));
 			}
 			else if (res.getInt("god") == 2)
 			{
@@ -977,7 +885,7 @@ public class Database
 					res.getInt("copper"),
 					Rooms.getRoom(res.getInt("room")));
 				myVector.add(myNewChar);
-				getCharAttributes(myNewChar);
+				myNewChar.setAttributes(AttributeDb.getAttributes(myNewChar));
 			}
 			else
 			{
@@ -1006,7 +914,7 @@ public class Database
 					res.getInt("copper"),
 					Rooms.getRoom(res.getInt("room")));
 				myVector.add(myNewChar);
-				getCharAttributes(myNewChar);
+				myNewChar.setAttributes(AttributeDb.getAttributes(myNewChar));
 			}
 		}
 		res.close();
