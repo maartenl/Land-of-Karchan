@@ -279,6 +279,7 @@ foreign key (owner) references mm_admin (name) on update cascade
 on update cascade;
 - alter table mm_usertable alter guild set default null;
 - alter table mm_guilds add (logonmessage text);
+- alter table mm_guilds change owner owner varchar(20);
 
 creating board system
 ---------------------

@@ -61,6 +61,12 @@ public class ApplyCommand extends NormalCommand
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
+		if (myParsed.length == 1)
+		{
+			aUser.removeAttribute("guildwish");
+			aUser.writeMessage("You have no longer applied to any guild.<BR>\r\n");
+			return true;
+		}
 		Guild guild = null;
 		try
 		{

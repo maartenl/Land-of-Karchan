@@ -848,7 +848,7 @@ public final class Constants
 		theCommandStructure.put("roleplay", new PostRpgBoardCommand("roleplay .+"));
 
 		// guild commands
-		theCommandStructure.put("guildapply", new ApplyCommand("guildapply (\\w)+"));
+		theCommandStructure.put("guildapply", new ApplyCommand("guildapply( (\\w)+)?"));
 		theCommandStructure.put("guildleave", new LeaveCommand("guildleave"));
 		theCommandStructure.put("guilddetails", new DetailsCommand("guilddetails"));
 		theCommandStructure.put("guildaccept", new AcceptCommand("guildaccept (\\w)+"));
