@@ -45,6 +45,8 @@ include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 to take place:
 
 adding guild:
+- the guildname should be at least 5 characters
+- the guildname is not allowed to contain spaces
 - does the guild not already exist?
 - does bossname exist?
 - is the bossman already a guildmaster?
@@ -164,15 +166,28 @@ else
 			printf("<TR><TD><b>minguildlevel:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"minguildlevel\" VALUE=\"%s\"  SIZE=\"10\" MAXLENGTH=\"10\"></TD></TR>", $myrow["minguildlevel"]);
 			printf("<TR><TD><b>guilddescription:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"guilddescription\" VALUE=\"%s\"  SIZE=\"100\" MAXLENGTH=\"100\"></TD></TR>", $myrow["guilddescription"]);
 			printf("<TR><TD><b>guildurl:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"guildurl\" VALUE=\"%s\"  SIZE=\"100\" MAXLENGTH=\"100\"></TD></TR>", $myrow["guildurl"]);
+			printf("<TR><TD><b>logonmessage:</b></TD><TD>%s</TD></TR>", $myrow["logonmessage"]);
 			printf("<TR><TD><b>bossname:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"bossname\" VALUE=\"%s\"  SIZE=\"20\" MAXLENGTH=\"20\"></TD></TR>", $myrow["bossname"]);
-			printf("<TR><TD><b>active:</b></TD><TD>%s<BR>", ($myrow["active"] == 1 ? "yes":"no"));
-			printf("<TR><TD><b>owner:</b></TD><TD>%s<BR>", $myrow["owner"]);
-			printf("<TR><TD><b>creation:</b></TD><TD>%s<BR>", $myrow["creation2"]);
-			printf("</TD></TR> ");
+			printf("<TR><TD><b>active:</b></TD><TD>%s</TD></TR>", ($myrow["active"] == 1 ? "yes":"no"));
+			printf("<TR><TD><b>owner:</b></TD><TD>%s</TD></TR>", $myrow["owner"]);
+			printf("<TR><TD><b>creation:</b></TD><TD>%s</TD></TR>", $myrow["creation2"]);
 			printf("</TABLE>");
 			printf("<INPUT TYPE=\"submit\" VALUE=\"Change Guild\">");
 			printf("</b>   ");
 			printf("</FORM>");
+?>
+<FORM METHOD="GET" ACTION="/scripts/admin_ownership.php">
+<b>
+<INPUT TYPE="hidden" NAME="id" VALUE="<?php echo $myrow["name"] ?>">
+<INPUT TYPE="hidden" NAME="removeownership" VALUE="8">
+<INPUT TYPE="submit" VALUE="Remove Ownership">
+</FORM>
+</b><P>
+<FORM METHOD="GET" ACTION="/scripts/admin_guilds.php">
+<INPUT TYPE="hidden" NAME="removeguildname" VALUE="<?php echo $myrow["name"] ?>"> 
+<INPUT TYPE="submit" VALUE="Delete Guild">
+</FORM>
+<?php
 		}
 		else
 		{
@@ -184,6 +199,7 @@ else
 			printf("<b>minguildlevel:</b> %s<BR>", $myrow["minguildlevel"]);
 			printf("<b>guilddescription:</b> %s<BR>", $myrow["guilddescription"]);
 			printf("<b>guildurl:</b> %s<BR>", $myrow["guildurl"]);
+			printf("<b>logonmessage:</b> %s<BR>", $myrow["logonmessage"]);
 			printf("<b>bossname:</b> <A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A><BR>", $myrow["bossname"], $myrow["bossname"]);
 			printf("<b>active:</b> %s<BR>", ($myrow["active"] == 1 ? "yes":"no"));
 			printf("<b>owner:</b> %s<BR>", $myrow["owner"]);
@@ -207,11 +223,30 @@ else
 		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result)) 
 	{
-		printf("<A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A> ", $myrow["name"], $myrow["name"]);
+		printf("<A HREF=\"/scripts/admin_chars.php?char=%s\">%s</A> ", $myrow["charname"], $myrow["charname"]);
 	}
 }
 if (isset($_REQUEST{"removeguildname"}))
 {
+	// check that guild exists
+	$result = mysql_query("select name from mm_guilds where name=\"".
+	quote_smart($_REQUEST{"removeguildname"})."\""
+	, $dbhandle)
+	or error_message("Query(2) failed : " . mysql_error());
+	if (mysql_num_rows($result) == 0)
+	{
+		error_message("Guild does not exist.");
+	}
+	
+	$query = "delete from mm_guilds ".
+	"where name = '".
+	quote_smart($_REQUEST{"removeguildname"}).
+	"' and (owner is null or owner = \"\" or owner = '".
+	quote_smart($_COOKIE["karchanadminname"]).
+	"')";
+	mysql_query($query, $dbhandle)
+	or error_message("Query (".$query.") failed : " . mysql_error());
+	writeLogLong($dbhandle, "Removed guild ".$_REQUEST{"removeguildname"}.".", $query);
 }
 if (isset($_REQUEST{"addguildname"}))
 {

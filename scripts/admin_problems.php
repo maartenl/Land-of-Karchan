@@ -43,6 +43,15 @@ Mmud - Admin
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
 printf("<H2>Problems with Users</H2>\r\n");
+$result = mysql_query("select distinct name from mm_usertable ".
+	" where god = 1"
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("<b>name:</b> %s(appears to be a god, but that fields is no longer used for that)<BR>",
+	$myrow["name"]);
+}
 $result = mysql_query("select distinct name from mm_answers ".
 	" where name not in (select name ".
 	" from mm_usertable ".

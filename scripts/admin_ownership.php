@@ -94,6 +94,10 @@ if (isset($_REQUEST{"removeownership"}))
 	{
 		$table = "mm_usertable";$row = "name";
 	}
+	else if ($_REQUEST{"removeownership"} == "8")
+	{
+		$table = "mm_guilds";$row = "name";
+	}
 	else
 	{
 		error_message("Unknown table row to claim ownership on...");
