@@ -164,7 +164,7 @@ else
 			printf("<TR><TD><b>maxguilddeath:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"maxguilddeath\" VALUE=\"%s\"  SIZE=\"10\" MAXLENGTH=\"10\"></TD></TR>", $myrow["maxguilddeath"]);
 			printf("<TR><TD><b>minguildmembers:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"minguildmembers\" VALUE=\"%s\"  SIZE=\"10\" MAXLENGTH=\"10\"></TD></TR>", $myrow["minguildmembers"]);
 			printf("<TR><TD><b>minguildlevel:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"minguildlevel\" VALUE=\"%s\"  SIZE=\"10\" MAXLENGTH=\"10\"></TD></TR>", $myrow["minguildlevel"]);
-			printf("<TR><TD><b>guilddescription:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"guilddescription\" VALUE=\"%s\"  SIZE=\"100\" MAXLENGTH=\"100\"></TD></TR>", $myrow["guilddescription"]);
+			printf("<TR><TD><b>guilddescription:</b></TD><TD><TEXTAREA NAME=\"guilddescription\"  ROWS=\"14\" COLS=\"85\">%s</TEXTAREA></TD></TR>", $myrow["guilddescription"]);
 			printf("<TR><TD><b>guildurl:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"guildurl\" VALUE=\"%s\"  SIZE=\"100\" MAXLENGTH=\"100\"></TD></TR>", $myrow["guildurl"]);
 			printf("<TR><TD><b>logonmessage:</b></TD><TD>%s</TD></TR>", $myrow["logonmessage"]);
 			printf("<TR><TD><b>bossname:</b></TD><TD><INPUT TYPE=\"text\" NAME=\"bossname\" VALUE=\"%s\"  SIZE=\"20\" MAXLENGTH=\"20\"></TD></TR>", $myrow["bossname"]);
