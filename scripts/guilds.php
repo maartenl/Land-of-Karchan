@@ -29,7 +29,7 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Mmud - Admin
+Mmud - Guilds
 </TITLE>
 </HEAD>
                                                                                                                       
