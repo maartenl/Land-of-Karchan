@@ -57,8 +57,10 @@ changing guild:
 - does bossname exist?
 - is the bossman already a guildmaster of another guild?
 - are numeric fields numeric?
+- is the administrator the owner of the guild.
 deleting guild:
 - any guild members left?
+- is the administrator the owner of the guild.
 */
 $owner = false;
 
