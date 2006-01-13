@@ -257,6 +257,11 @@ if (isset($_REQUEST{"addguildname"}))
 	{
 		error_message("Guild name must be at least 3 characters.");
 	}
+	// guildname must not contain spaces
+	if (strpos($_REQUEST{"addguildname"}, " ") > 0)
+	{
+		error_message("Guild name must not contain spaces.");
+	}
 	// check that guild not already exists
 	$result = mysql_query("select name from mm_guilds where name=\"".
 	quote_smart($_REQUEST{"addguildname"})."\""
