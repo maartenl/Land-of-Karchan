@@ -73,9 +73,35 @@ mysql_close($dbhandle);
 </UL>
 <hr>
 
-<a HREF="/karchan/index.html">
-<img SRC="/images/gif/webpic/buttono.gif"  
-BORDER="0"></a><p>
+<script language="JavaScript">
 
+<!-- In hiding!
+ browserName = navigator.appName;          
+           browserVer = parseInt(navigator.appVersion);
+               backon = new Image;          
+               backon.src = "/images/gif/webpic/new/buttono.gif";
+               
+               
+               backoff = new Image;
+               backoff.src = "/images/gif/webpic/buttono.gif";
+               
+
+function img_act(imgName) {
+        imgOn = eval(imgName + "on.src");
+        document [imgName].src = imgOn;
+}
+
+function img_inact(imgName) {
+        imgOff = eval(imgName + "off.src");
+        document [imgName].src = imgOff;
+}
+
+//-->
+</SCRIPT>
+<P><BR><BR>
+<A HREF="/karchan/index.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
+<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
+<DIV ALIGN=right>Last Updated $Date$
+</DIV>
 </BODY>
 </HTML>

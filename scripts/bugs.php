@@ -99,10 +99,36 @@ Description:<BR>
 } 
 ?>
 
-<A HREF="/karchan/help/helpindex.html">
-<IMG SRC="/images/gif/webpic/buttono.gif"  
-BORDER="0"></A><P>
+<script language="JavaScript">
 
+<!-- In hiding!
+ browserName = navigator.appName;          
+           browserVer = parseInt(navigator.appVersion);
+               backon = new Image;          
+               backon.src = "/images/gif/webpic/new/buttono.gif";
+               
+               
+               backoff = new Image;
+               backoff.src = "/images/gif/webpic/buttono.gif";
+               
+
+function img_act(imgName) {
+        imgOn = eval(imgName + "on.src");
+        document [imgName].src = imgOn;
+}
+
+function img_inact(imgName) {
+        imgOff = eval(imgName + "off.src");
+        document [imgName].src = imgOff;
+}
+
+//-->
+</SCRIPT>
+<P>
+<A HREF="/karchan/help/helpindex.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
+<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
+<DIV ALIGN=right>Last Updated $Date$
+</DIV>
 </BODY>
 </HTML>
 

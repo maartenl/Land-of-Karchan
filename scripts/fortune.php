@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: wholist.php 992 2005-10-23 08:03:45Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -29,72 +29,45 @@ maarten_l@yahoo.com
 <HTML>
 <HEAD>
 <TITLE>
-Land of Karchan - Character Sheets
+Land of Karchan - Fortune 100
 </TITLE>
 </HEAD>
                                                                                                                       
 <BODY>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
-<H1>
+<H2>
 <IMG SRC="/images/gif/dragon.gif">
-Character Sheets</H1>
-
-I feel the following needs a little explanation. Below you see a list of
-available Character Sheets. They contain personal information like name,
-title, place of birth, and the story line of characters, and references to
-other characters. In each case these are put together by the people that
-originally created the character on the game.<P> It provides valuable
-insights into the story behind this Game.<P> Now you can add your piece of
-information as well. Just fill in your name and password of the character
-you created on the mud, and you will be presented with a form that you can
-fill out, and change later in the same way.<P>
-<TABLE ALIGN=top BORDER=1><TR><TD><UL>
-
+List of Rich People</H2>
+<TABLE>
+<TR><TD><B>Position</B></TD><TD><B>Name</B></TD><TD><B>Money</B></TD></TR>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
-$result = mysql_query("select concat(\"<A
-	HREF=\\\"/scripts/charactersheet.php?name=\",mm_usertable.name,\"\\\">\",mm_usertable.name,\"</A>\") 
-	, mm_usertable.name from characterinfo, mm_usertable 
-	where mm_usertable.name=characterinfo.name"
+$result = mysql_query("select name, floor(copper/100) as gold, floor((copper % 100)/10) as silver, copper % 10 as copper
+	from mm_usertable 
+	where god<=1
+	order by gold desc, silver desc, copper desc, name asc
+	limit 100"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
-$numrows = ceil(mysql_num_rows($result) / 5);
-$beginstuff = 'x';
-$counter = 1;
+//	error_message("Query failed : " . mysql_error());
+$i = 1;
 while ($myrow = mysql_fetch_array($result)) 
 {
-	$myrow[1] = ucfirst($myrow[1]);
-	if ($myrow[1]{0} != $beginstuff)
-	{
-		$beginstuff = $myrow[1]{0};
-		printf("</UL><H1>%s</H1><UL>\r\n", $beginstuff);
-	}
-	printf("%s<BR>", $myrow[0]);
-	if ($counter++ > $numrows)
-   {
-		printf("</TD>\r\n<TD>");
-		$counter=1;
-   }
+		if ($i < 4) 
+		{
+			printf("<TR><TD>%s</TD><TD><B>%s</B></TD><TD><B>%s gold, %s silver, %s copper</B></TD></TR>\r\n",
+			$i++, $myrow["name"], $myrow["gold"], $myrow["silver"], $myrow["copper"]);
+		}
+		else
+		{
+			printf("<TR><TD>%s</TD><TD>%s</TD><TD>%s gold, %s silver, %s copper</TD></TR>\r\n",
+			$i++, $myrow["name"], $myrow["gold"], $myrow["silver"], $myrow["copper"]);
+		}
 }
 mysql_close($dbhandle);
 ?>
-</TR></TABLE>
-
-
-<?php
-if (($_COOKIE{"karchanpassword"} != "") &&
-	($_COOKIE["karchanname"] != ""))
-{
-?>
-</UL>
-<FORM METHOD="GET" ACTION="/scripts/editcharactersheet.php">
-<INPUT TYPE="submit" VALUE="Edit Your Character Sheet">
-</FORM>
+</TABLE>
 <hr>
-
-<?php
-}
-?>
 
 <script language="JavaScript">
 
@@ -121,10 +94,10 @@ function img_inact(imgName) {
 
 //-->
 </SCRIPT>
-<P>
+<P><BR><BR>
 <A HREF="/karchan/chronicles/chronicles2.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
 <IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
-<DIV ALIGN=right>Last Updated $Date$
+<DIV ALIGN=right>Last Updated $Date: 2003-11-27 23:34:25 +0100 (Thu, 27 Nov 2003) $
 </DIV>
 </BODY>
 </HTML>
