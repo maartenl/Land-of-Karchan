@@ -30,6 +30,8 @@
                backon.src = "/images/gif/webpic/new/buttono.gif";
                guildson = new Image;          
                guildson.src = "/images/gif/webpic/new/button.guilds.gif";
+               fortuneson = new Image;          
+               fortuneson.src = "/images/gif/webpic/new/button.fortunes.gif";
                
                
                toc1off = new Image;
@@ -52,6 +54,8 @@
                backoff.src = "/images/gif/webpic/buttono.gif";
                guildsoff = new Image;
                guildsoff.src = "/images/gif/webpic/button.guilds.gif";
+               fortunesoff = new Image;
+               fortunesoff.src = "/images/gif/webpic/button.fortunes.gif";
                
 
 function img_act(imgName) {
@@ -94,6 +98,12 @@ function img_inact(imgName) {
                 <TD>
 <A HREF="/scripts/charactersheets.php" onMouseOver="img_act('toc8')" onMouseOut="img_inact('toc8')">
 <IMG ALT="CharacterInfo" SRC="/images/gif/webpic/buttont.gif" BORDER="0" name="toc8"></A><br> </TD>
+                <TD></TD>
+                        </TR>
+                        <TR>
+                <TD>
+<A HREF="/scripts/fortune.php" onMouseOver="img_act('fortunes')" onMouseOut="img_inact('fortunes')">
+<IMG ALT="Fortunes" SRC="/images/gif/webpic/button.fortunes.gif" BORDER="0" name="fortunes"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
