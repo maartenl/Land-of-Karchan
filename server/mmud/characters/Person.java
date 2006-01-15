@@ -1282,6 +1282,12 @@ public class Person implements Executable, AttributeContainer
 					Logger.getLogger("mmud").throwing("mmud.characters.Person","method(addItem)", e2);
 					throw e2;
 				}
+				if (myItemDef.getMoney() > 0)
+				{
+					MethodNotSupportedException e2 = new MethodNotSupportedException(method_name + " tried to create an item that is worth money.");
+					Logger.getLogger("mmud").throwing("mmud.characters.Person","method(addItem)", e2);
+					throw e2;
+				}
 				Item myItem = null;
 				try
 				{

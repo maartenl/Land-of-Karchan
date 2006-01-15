@@ -244,3 +244,26 @@ Items can be repaired, bringing their condition back to 'mint' by repairmen.
 There are general items, specific items, that can be <I>mended</I> by
 <I>menders</I> (think: repairmen).
 
+
+Quests
+------
+
+Quests are basically where you have to ask some guy, get some stuff, ask
+some other guy.
+
+A quest table in the database could look like this:
+mm_quests
+* questid		int not null
+  name          varchar(255) not null
+  description   text not null
+  minlevel      int,
+  maxlevel      int,
+  exp           int not null,
+  fromperson	varchar(20) not null,
+  toperson      varchar(20) not null,
+  creation
+  owner
+mm_questitems
+* itemid		int not null
+* questid 		int not null
+  amount  		int not null default 1

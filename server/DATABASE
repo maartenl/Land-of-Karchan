@@ -280,6 +280,16 @@ on update cascade;
 - alter table mm_usertable alter guild set default null;
 - alter table mm_guilds add (logonmessage text);
 - alter table mm_guilds change owner owner varchar(20);
+- create table mm_guildranks (title varchar(255) not null,
+guildlevel int default 0 not null,
+guildname varchar(20) not null,
+accept_access tinyint(1) not null default 0,
+reject_access tinyint(1) not null default 0,
+settings_access tinyint(1) not null default 0,
+logonmessage_access tinyint(1) not null default 0,
+foreign key (guildname) references mm_guilds (name) on update cascade,
+primary key (guildlevel, guildname)
+) ENGINE=InnoDB;
 
 creating board system
 ---------------------
