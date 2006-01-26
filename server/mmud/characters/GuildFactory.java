@@ -33,8 +33,9 @@ import mmud.MudException;
 import mmud.database.Database;
 
 /**
- * This class contains the properties of a guild.
- * @see User
+ * This class can create a new guild.
+ * It also keeps an internal list of cached guilds for quick lookups.
+ * @see Guild
  */
 public class GuildFactory
 {

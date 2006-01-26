@@ -308,7 +308,7 @@ public class Person implements Executable, AttributeContainer
 	throws MudException
 	{
 		theTitle = aNewTitle;
-		Database.setTitle(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class Person implements Executable, AttributeContainer
 	throws MudException
 	{
 		theWhimpy = aWhimpy;
-		Database.setWhimpy(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -412,7 +412,7 @@ public class Person implements Executable, AttributeContainer
 	{
 		if (!canDrink()) return;
 		theDrinkstats = i;
-		Database.setDrinkstats(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -467,7 +467,7 @@ public class Person implements Executable, AttributeContainer
 	{
 		if (!canEat()) return;
 		theEatstats = i;
-		Database.setEatstats(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -595,7 +595,7 @@ public class Person implements Executable, AttributeContainer
 	throws MudException
 	{
 		theSleep = aSleep;
-		Database.setSleep(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -615,7 +615,7 @@ public class Person implements Executable, AttributeContainer
 	throws MudException
 	{
 		theRoom = aRoom;
-		Database.setRoom(this);
+		Database.setPerson(this);
 	}
 
 	/**
@@ -1599,7 +1599,7 @@ public class Person implements Executable, AttributeContainer
 			throw new MudMoneyException("You do not have enough money.");
 		}
 		theCopper += amount;
-		Database.setMoney(this);
+		Database.setPerson(this);
 	}
 
 	/**

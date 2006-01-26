@@ -93,15 +93,9 @@ public class Database
 	public static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, sha1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
-	public static String sqlSetTitleString = "update mm_usertable set title=? where name = ?";
+	public static String sqlSetPersonString = "update mm_usertable set title=?, drinkstats=?, eatstats=?, copper=?, sleep=?, room=?, whimpy=? where name = ?";
 	public static String sqlSetUserGuildString = "update mm_usertable set guild=? where name = ?";
-	public static String sqlSetDrinkstatsString = "update mm_usertable set drinkstats=? where name = ?";
-	public static String sqlSetEatstatsString = "update mm_usertable set eatstats=? where name = ?";
-	public static String sqlSetMoneyString = "update mm_usertable set copper=? where name = ?";
 	public static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
-	public static String sqlSetSleepString = "update mm_usertable set sleep=? where name = ?";
-	public static String sqlSetRoomString = "update mm_usertable set room=? where name = ?";
-	public static String sqlSetWhimpyString = "update mm_usertable set whimpy = ? where name = ?";
 	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 
 	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
@@ -1617,10 +1611,10 @@ public class Database
 	}
 
 	/**
-	 * set the title of a character
-	 * @param aPerson Person with changed title
+	 * update the information of a person.
+	 * @param aPerson Person with changed information that must be stored.
 	 */
-	public static void setTitle(Person aPerson)
+	public static void setPerson(Person aPerson)
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
@@ -1628,21 +1622,27 @@ public class Database
 		try
 		{
 
-		PreparedStatement sqlSetTitleUser = prepareStatement(sqlSetTitleString);
-		sqlSetTitleUser.setString(1, aPerson.getTitle());
-		sqlSetTitleUser.setString(2, aPerson.getName());
-		int res = sqlSetTitleUser.executeUpdate();
+		PreparedStatement statSetPersonInfo = prepareStatement(sqlSetPersonString);
+		statSetPersonInfo.setString(1, aPerson.getTitle());
+		statSetPersonInfo.setInt(2, aPerson.getDrinkstats());
+		statSetPersonInfo.setInt(3, aPerson.getEatstats());
+		statSetPersonInfo.setInt(4, aPerson.getMoney());
+		statSetPersonInfo.setInt(5, (aPerson.isaSleep() ? 1 : 0));
+		statSetPersonInfo.setInt(6, aPerson.getRoom().getId());
+		statSetPersonInfo.setInt(7, aPerson.getWhimpy());
+		statSetPersonInfo.setString(8, aPerson.getName());
+		int res = statSetPersonInfo.executeUpdate();
 		if (res != 1)
 		{
 			// error, not correct number of results returned
 			// TOBEDONE
 		}
-		sqlSetTitleUser.close();
+		statSetPersonInfo.close();
 		}
 		catch (SQLException e)
 		{
-			Logger.getLogger("mmud").throwing("mmud.Database","setTitle", e);
-			throw new MudDatabaseException("database error setting title.", e);
+			Logger.getLogger("mmud").throwing("mmud.Database","setPerson", e);
+			throw new MudDatabaseException("database error setting person.", e);
 		}
 	}
 
@@ -1679,151 +1679,6 @@ public class Database
 		{
 			Logger.getLogger("mmud").throwing("mmud.Database","setGuild", e);
 			throw new MudDatabaseException("database error setting guild.", e);
-		}
-	}
-
-	/**
-	 * set the drinkstats of a character
-	 * @param aPerson Person with changed drinkstats
-	 */
-	public static void setDrinkstats(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetDrinkstatsUser = prepareStatement(sqlSetDrinkstatsString);
-		sqlSetDrinkstatsUser.setInt(1, aPerson.getDrinkstats());
-		sqlSetDrinkstatsUser.setString(2, aPerson.getName());
-		int res = sqlSetDrinkstatsUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetDrinkstatsUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting drink stats.", e);
-		}
-	}
-
-	/**
-	 * set the eatstats of a character
-	 * @param aPerson Person with changed eatstats
-	 */
-	public static void setEatstats(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetEatstatsUser = prepareStatement(sqlSetEatstatsString);
-		sqlSetEatstatsUser.setInt(1, aPerson.getEatstats());
-		sqlSetEatstatsUser.setString(2, aPerson.getName());
-		int res = sqlSetEatstatsUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetEatstatsUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting eat stats.", e);
-		}
-	}
-
-	/**
-	 * set the money of a character
-	 * @param aPerson Person with changed money.
-	 */
-	public static void setMoney(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetMoneyUser = prepareStatement(sqlSetMoneyString);
-		sqlSetMoneyUser.setInt(1, aPerson.getMoney());
-		sqlSetMoneyUser.setString(2, aPerson.getName());
-		int res = sqlSetMoneyUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetMoneyUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting money.", e);
-		}
-	}
-
-	/**
-	 * set the sleep status of a character
-	 * @param aPerson Person with changed sleep
-	 */
-	public static void setSleep(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetSleepUser = prepareStatement(sqlSetSleepString);
-		sqlSetSleepUser.setInt(1, (aPerson.isaSleep() ? 1 : 0));
-		sqlSetSleepUser.setString(2, aPerson.getName());
-		int res = sqlSetSleepUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetSleepUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database erorr setting sleep.", e);
-		}
-	}
-
-	/**
-	 * set the room of a character
-	 * @param aPerson Person with changed room
-	 */
-	public static void setRoom(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetRoomUser = prepareStatement(sqlSetRoomString);
-		sqlSetRoomUser.setInt(1, aPerson.getRoom().getId());
-		sqlSetRoomUser.setString(2, aPerson.getName());
-		int res = sqlSetRoomUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetRoomUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting room.", e);
 		}
 	}
 
@@ -1991,35 +1846,6 @@ public class Database
 			throw new MudDatabaseException("database error while retrieving guild hopefuls.", e);
 		}
 		return list;
-	}
-
-	/**
-	 * set the whimpy of a character
-	 * @param aPerson Person with new whimpy setting
-	 */
-	public static void setWhimpy(Person aPerson)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-
-		try
-		{
-
-		PreparedStatement sqlSetWhimpyUser = prepareStatement(sqlSetWhimpyString);
-		sqlSetWhimpyUser.setInt(1, aPerson.getWhimpy());
-		sqlSetWhimpyUser.setString(2, aPerson.getName());
-		int res = sqlSetWhimpyUser.executeUpdate();
-		if (res != 1)
-		{
-			// error, not correct number of results returned
-			// TOBEDONE
-		}
-		sqlSetWhimpyUser.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting whimpy.", e);
-		}
 	}
 
 	/**
