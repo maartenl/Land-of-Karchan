@@ -84,7 +84,7 @@ public class Bot extends Person implements CommunicationListener
 	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
-	public Bot(String aName, 
+	Bot(String aName, 
 		String aTitle,
 		Race aRace,
 		Sex aSex,

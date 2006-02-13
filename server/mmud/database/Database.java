@@ -56,6 +56,7 @@ import mmud.characters.User;
 import mmud.characters.UserNotFoundException;
 import mmud.characters.Guild;
 import mmud.characters.GuildFactory;
+import mmud.characters.CharacterFactory;
 import mmud.items.Item;
 import mmud.races.RaceFactory;
 import mmud.rooms.Area;
@@ -387,7 +388,7 @@ public class Database
 			{
 				guild = GuildFactory.createGuild(res.getString("guild"));
 			}
-			myUser  = new User(
+			myUser = CharacterFactory.create(
 				res.getString("name"), 
 				(res.getString("password").equals(res.getString("encrypted")) ? 
 					aPassword:
@@ -481,7 +482,7 @@ public class Database
 			{
 				guild = GuildFactory.createGuild(res.getString("guild"));
 			}
-			myUser  = new User(
+			myUser  = CharacterFactory.create(
 				res.getString("name"), 
 				(res.getString("encrypted").equals(res.getString("password")) ? 
 					aPassword:
@@ -812,7 +813,7 @@ public class Database
 				{
 					guild = GuildFactory.createGuild(res.getString("guild"));
 				}
-				User myRealUser = new User(myName, 
+				User myRealUser = CharacterFactory.create(myName, 
 					null,
 					res.getString("address"),
 					res.getString("realname"),
@@ -852,38 +853,9 @@ public class Database
 				myVector.add(myRealUser);
 				myRealUser.setAttributes(AttributeDb.getAttributes(myRealUser));
 			}
-			else if (res.getInt("god") == 2)
-			{
-				Bot myNewChar = new Bot(myName,
-					res.getString("title"),
-					RaceFactory.createFromString(res.getString("race")),
-					Sex.createFromString(res.getString("sex")),
-					res.getString("age"),
-					res.getString("length"),
-					res.getString("width"),
-					res.getString("complexion"),
-					res.getString("eyes"),
-					res.getString("face"),
-					res.getString("hair"),
-					res.getString("beard"),
-					res.getString("arm"),
-					res.getString("leg"),
-					res.getInt("sleep") == 1,
-					res.getInt("whimpy"),
-					res.getInt("drinkstats"),
-					res.getInt("eatstats"),
-					res.getInt("experience"),
-					res.getInt("vitals"),
-					res.getInt("alignment"),
-					res.getInt("movementstats"),
-					res.getInt("copper"),
-					Rooms.getRoom(res.getInt("room")));
-				myVector.add(myNewChar);
-				myNewChar.setAttributes(AttributeDb.getAttributes(myNewChar));
-			}
 			else
 			{
-				Mob myNewChar = new Mob(myName,
+				Person myNewChar = CharacterFactory.create(myName,
 					res.getString("title"),
 					RaceFactory.createFromString(res.getString("race")),
 					Sex.createFromString(res.getString("sex")),
@@ -906,7 +878,8 @@ public class Database
 					res.getInt("alignment"),
 					res.getInt("movementstats"),
 					res.getInt("copper"),
-					Rooms.getRoom(res.getInt("room")));
+					Rooms.getRoom(res.getInt("room")),
+					res.getInt("god"));
 				myVector.add(myNewChar);
 				myNewChar.setAttributes(AttributeDb.getAttributes(myNewChar));
 			}

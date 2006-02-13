@@ -82,7 +82,7 @@ public class Mob extends Person implements CommunicationListener
 	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
-	public Mob(String aName, 
+	Mob(String aName, 
 		String aTitle,
 		Race aRace,
 		Sex aSex,

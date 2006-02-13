@@ -49,7 +49,7 @@ public class StdItemContainer extends Item implements Container
 	 * @param anItemDef definition of the container
 	 * @param anId integer identification of the item
 	 */
-	public StdItemContainer(ContainerDef anItemDef, int anId, PersonPositionEnum aPosBody)
+	StdItemContainer(ContainerDef anItemDef, int anId, PersonPositionEnum aPosBody)
 	{
 		super(anItemDef, anId, aPosBody);
 	} 
@@ -60,7 +60,7 @@ public class StdItemContainer extends Item implements Container
 	 * @param anItemDef definition of the container
 	 * @param anId integer identification of the item
 	 */
-	public StdItemContainer(ContainerDef anItemDef, int anId)
+	StdItemContainer(ContainerDef anItemDef, int anId)
 	{
 		super(anItemDef, anId);
 	} 

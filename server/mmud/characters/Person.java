@@ -134,7 +134,7 @@ public class Person implements Executable, AttributeContainer
 	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
-	public Person(String aName, 
+	Person(String aName, 
 		String aTitle,
 		Race aRace,
 		Sex aSex,

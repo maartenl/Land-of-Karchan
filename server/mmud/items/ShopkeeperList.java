@@ -77,7 +77,7 @@ public class ShopkeeperList extends Item implements Executable, AttributeContain
 	 * @param aPerson the person whos inventory should be seen by looking 
 	 * at this item.
 	 */
-	public ShopkeeperList(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
+	ShopkeeperList(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
 	{
 		super(anItemDef, anId, aPosBody);
 		thePerson = aPerson;
@@ -91,7 +91,7 @@ public class ShopkeeperList extends Item implements Executable, AttributeContain
 	 * @param aPerson the person whos inventory should be seen by looking 
 	 * at this item.
 	 */
-	public ShopkeeperList(ItemDef anItemDef, int anId, Person aPerson)
+	ShopkeeperList(ItemDef anItemDef, int anId, Person aPerson)
 	{
 		super(anItemDef, anId);
 		thePerson = aPerson;
@@ -105,7 +105,7 @@ public class ShopkeeperList extends Item implements Executable, AttributeContain
 	 * @param aPerson the person whos inventory should be seen by looking 
 	 * at this item.
 	 */
-	public ShopkeeperList(int anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
+	ShopkeeperList(int anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
 	throws MudDatabaseException
 	{
 		super(ItemDefs.getItemDef(anItemDef), anId, aPosBody);
@@ -120,7 +120,7 @@ public class ShopkeeperList extends Item implements Executable, AttributeContain
 	 * @param aPerson the person whos inventory should be seen by looking 
 	 * at this item.
 	 */
-	public ShopkeeperList(int anItemDef, int anId, Person aPerson)
+	ShopkeeperList(int anItemDef, int anId, Person aPerson)
 	throws MudDatabaseException
 	{
 		super(ItemDefs.getItemDef(anItemDef), anId);

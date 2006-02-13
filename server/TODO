@@ -249,7 +249,30 @@ Quests
 ------
 
 Quests are basically where you have to ask some guy, get some stuff, ask
-some other guy.
+some other guy. 
+
+Addendum: you also have to kill certain bad guys. This is solved by having
+each of the specific badguys carry an invisible (?) questitem or something
+similar.
+
+Addendum: Some quests are repeatable, and some are not. Quests that are repeatable
+need not have an attribute set.
+Quests are chainable, which means a quest can only be aquired when another
+quest has been completed. Quests are in fact linked.
+
+Have questionmarks next to the name of a bot that are clickable. One
+questionmark for each quest. -> global change, make all persons return a
+'normalname' and a 'clickable name'. The same should go for items.
+
+When monsters die they must respawn in a set interval.
+
+Preconditions for accepting the quest:
+- person must not already have the quest (check attribute)
+- previous quest must have been complete when this quest is accepted.
+- persons level must be >= minlevel
+- persons level must be <= maxlevel
+- fromperson must be a bot
+- toperson must be a bot
 
 A quest table in the database could look like this:
 mm_quests
@@ -261,9 +284,13 @@ mm_quests
   exp           int not null,
   fromperson	varchar(20) not null,
   toperson      varchar(20) not null,
+  previousquest	int, (can be null, then a non-chained quest)
+  attribute		varchar(29), indicates which attribute must be set on a user
+when he/she completes a quest. Attribute most likely a boolean.
   creation
   owner
 mm_questitems
 * itemid		int not null
 * questid 		int not null
   amount  		int not null default 1
+  visible       int(1) not null default 1

@@ -76,7 +76,7 @@ public class StdShopKeeper extends Person implements ShopKeeper
 	 * no more movement possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom the room where this character is.
 	 */
-	public StdShopKeeper(String aName, 
+	StdShopKeeper(String aName, 
 		String aTitle,
 		Race aRace,
 		Sex aSex,
