@@ -216,78 +216,6 @@ public class MudSocket extends Thread
 	}
 
 	/**
-	 * Used primarily for receiving information for a <I>new</I> player
-	 * and executing the functionality for adding it to the database.
-	 * Will also automatically log the new player in on the game.
-	 * @param aWriter the writer to write output to.
-	 * @param aReader the reader to read input from.
-	 * @see #newUserMud
-	 * @throws MudException when either reading of the input
-	 * goes wrong, or executing mud functionality goes wrong.
-	 */
-	private void readNewcharInfoFromSocket(PrintWriter aWriter,
-		BufferedReader aReader)
-	throws MudException
-	{
-		aWriter.println("Name:");
-		String name = readLine(aReader);
-		aWriter.println("Password:");
-		String password = readLine(aReader);
-		aWriter.println("Cookie:");
-		String cookie = readLine(aReader);
-		aWriter.println("Frames:");
-		String frames = readLine(aReader);
-		int frame = 1;
-		try
-		{
-			frame = Integer.parseInt(frames);
-		}
-		catch (NumberFormatException e)
-		{
-			Logger.getLogger("mmud").warning(
-				"unable to interpret frame information, defaulting to 0.");
-			e.printStackTrace();
-		}
-		aWriter.println("Realname:");
-		String realname = readLine(aReader);
-		aWriter.println("Email:");
-		String email = readLine(aReader);
-		aWriter.println("Title:");
-		String title = readLine(aReader);
-		aWriter.println("Race:");
-		String race = readLine(aReader);
-		aWriter.println("Sex:");
-		String sex = readLine(aReader);
-		aWriter.println("Age:");
-		String age = readLine(aReader);
-		aWriter.println("Length:");
-		String length = readLine(aReader);
-		aWriter.println("width:");
-		String width = readLine(aReader);
-		aWriter.println("Complexion:");
-		String complexion = readLine(aReader);
-		aWriter.println("Eyes:");
-		String eyes = readLine(aReader);
-		aWriter.println("Face:");
-		String face = readLine(aReader);
-		aWriter.println("Hair:");
-		String hair = readLine(aReader);
-		aWriter.println("Beard:");
-		String beard = readLine(aReader);
-		aWriter.println("Arms:");
-		String arms = readLine(aReader);
-		aWriter.println("Legs:");
-		String legs = readLine(aReader);
-		aWriter.println(
-			newUserMud(name, password,
-			theSocket.getInetAddress().getCanonicalHostName(),
-			realname, email, title, race, Sex.createFromString(sex), 
-			age, length,
-			width, complexion, eyes, face, hair, beard, arms,
-			legs, cookie, frame-1) + "\n.\n");
-	}
-
-	/**
 	 * Run method of the thread. This is started when the start method
 	 * is called. Reads from and writes to the socket provided
 	 * upon creation of this thread.<P>The protocol description is
@@ -401,10 +329,6 @@ public class MudSocket extends Thread
 			else if (myAction.equals("mud"))
 			{
 				readCommandInfoFromSocket(myOutputStream, myInputStream);
-			}
-			else if (myAction.equals("newchar"))
-			{
-				readNewcharInfoFromSocket(myOutputStream, myInputStream);
 			}
 			else
 			{
@@ -608,13 +532,7 @@ public class MudSocket extends Thread
 			{
 				throw new MudException(f.getMessage());
 			}
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + aName + "\">\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"password\" VALUE=\"" + aPassword + "\">\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + (aFrames + 1) + "\">\n";
-			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
-			myString += "<INPUT TYPE=\"reset\" VALUE=\"Clear\">\n";
-			myString += "</FORM></BODY></HTML>\n";
-			Database.writeLog(aName, "new character.");
+			Database.writeLog(aName, "unknown character.");
 			return myString;
 		}
 		catch (PersonException e)
@@ -802,142 +720,6 @@ public class MudSocket extends Thread
 		} 
 		Logger.getLogger("mmud").finer("returns: [" + returnStuff + "]");
 		return returnStuff;
-	}
-
-	/**
-	 * create a new user and log him in 
-	 */
-	private String newUserMud(String aName, String aPassword, String anAddress,
-		String aRealName,
-		String aEmail,
-		String aTitle,
-		String aRace,
-		Sex aSex,
-		String aAge,
-		String aLength,
-		String aWidth,
-		String aComplexion,
-		String aEyes,
-		String aFace,
-		String aHair,
-		String aBeard,
-		String aArms,
-		String aLegs,
-		String aCookie, int aFrames)
-	{
-		Logger.getLogger("mmud").finer("");
-		try
-		{
-		try
-		{
-		String myOfflineString = isOffline();
-		if (myOfflineString != null) 
-		{
-			return myOfflineString;
-		}
-		}
-		catch (IOException e)
-		{
-			throw new MudException(e.getMessage());
-		}
-		if (!aName.matches("[A-Z|_|a-z]{3,}"))
-		{
-			Logger.getLogger("mmud").info("invalid name " + aName);
-			return Constants.logoninputerrormessage;
-		}
-		if (aPassword.length() < 5)
-		{
-			Logger.getLogger("mmud").info("password too short " + aPassword);
-			return Constants.logoninputerrormessage;
-		}
-		if (Database.isUserBanned(aName, anAddress))
-		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.USERBANNEDERROR);
-			throw new MudException(Constants.USERBANNEDERROR);
-		}
-		User myUser = Persons.createUser(aName,
-			aPassword, anAddress, aRealName,
-			aEmail,
-			aTitle,
-			RaceFactory.createFromString(aRace),
-			aSex,
-			aAge,
-			aLength,
-			aWidth,
-			aComplexion,
-			aEyes,
-			aFace,
-			aHair,
-			aBeard,
-			aArms,
-			aLegs,
-			aCookie);
-		myUser.generateSessionPassword();
-		myUser.setFrames(aFrames);
-		myUser.writeMessage(Database.getLogonMessage());
-		if (MailDb.hasUserNewMail(myUser)) 
-		{
-			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
-		}
-		else
-		{
-			myUser.writeMessage("You have new Mudmail!<P>\r\n");
-		}
-		String returnStuff = "sessionpassword=" + myUser.getSessionPassword() + "\n";
-		switch (myUser.getFrames())
-		{
-			case 0 :
-			{
-				returnStuff += gameMain(myUser, "me has entered the game...");
-				break;
-			}
-			case 1 :
-			{
-				returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - " + myUser.getName() + "</TITLE></HEAD>\r\n";
-				returnStuff += "<FRAMESET ROWS=\"*,50\">\r\n";
-				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-				returnStuff += "	 <FRAME SRC=" + myUser.getUrl("me+has+entered+the+game...") + " NAME=\"main\" border=0>\r\n";
-				returnStuff += "	 <FRAME SRC=" + Constants.leftframecgi + "?name=" + myUser.getName() + "&password=" + myUser.getPassword() + " NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " </FRAMESET>\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.logonframecgi + "?name=" + myUser.getName() + "&password=" + myUser.getPassword() + " NAME=\"logon\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += "</FRAMESET>\r\n";
-				returnStuff += "</HTML>\r\n";
-				break;
-			}
-			case 2 :
-			{
-				returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - " + myUser.getName() + "</TITLE></HEAD>\r\n";
-				returnStuff += "<FRAMESET ROWS=\"*,50,0,0\">\r\n";
-				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-				returnStuff += "	 <FRAMESET ROWS=\"60%,40%\">\r\n";
-				returnStuff += "	 <FRAME SRC=" + myUser.getUrl("me+has+entered+the+game...") + " NAME=\"statusFrame\" border=0>\r\n";
-				returnStuff += "	 <FRAME SRC=/karchan/empty.html NAME=\"logFrame\">\r\n";
-				returnStuff += "	 </FRAMESET>\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.nph_leftframecgi + "?name=" + myUser.getName() + "&password=" + myUser.getPassword() + " NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " </FRAMESET>\r\n\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.nph_logonframecgi + "?name=" + myUser.getName() + "&password=" + myUser.getPassword() + " NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.nph_javascriptframecgi + "?name=" + myUser.getName() + "&password=" + myUser.getPassword() + " NAME=\"javascriptFrame\">\r\n";
-				returnStuff += " <FRAME SRC=/karchan/empty.html NAME=\"duhFrame\">\r\n";
-				returnStuff += "</FRAMESET>\r\n";
-				returnStuff += "</HTML>\r\n";
-				break;
-			}
-			default :
-			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDFRAMEERROR);
-				throw new InvalidFrameException();
-			}
-		}
-		return returnStuff;
-		}
-		catch (PersonException e)
-		{
-			return Database.getErrorMessage(e);
-		}
-		catch (MudException e)
-		{
-			return Database.getErrorMessage(e);
-		}
 	}
 
 	/**

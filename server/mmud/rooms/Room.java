@@ -958,10 +958,11 @@ public class Room implements Executable, AttributeContainer
 				{
 					throw new MethodNotSupportedException(method_name + " tried to use an unknown item definition.");
 				}
-				if (myItemDef.getMoney() > 0)
-				{
-					throw new MethodNotSupportedException(method_name + " tried to create an item that is worth money.");
-				}
+				// TODO
+				// if (myItemDef.getMoney() > 0)
+				// {
+				// 	throw new MethodNotSupportedException(method_name + " tried to create an item that is worth money.");
+				// }
 				Item myItem = null;
 				try
 				{
