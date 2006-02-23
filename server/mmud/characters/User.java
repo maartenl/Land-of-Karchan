@@ -382,6 +382,11 @@ public class User extends mmud.characters.Person
 	public void setSessionPassword(String aSessionPassword)
 	{
 		Logger.getLogger("mmud").finer("");
+		if (aSessionPassword == null)
+		{
+			theSessionPassword = null;
+			return;
+		}
 		theSessionPassword =
 			(aSessionPassword.trim().equals("") ? null : aSessionPassword);
 	}
