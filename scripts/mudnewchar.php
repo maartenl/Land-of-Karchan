@@ -26,92 +26,242 @@ Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
-<?php
-	header ("Content-type: text/html");
-   
-// Hack prevention.
-//	$headers = apache_request_headers();
-//	header()
-//	setcookie();
-	ob_start();
+<HTML>
+<HEAD>
+<TITLE>
+A New Character - <?php echo $_REQUEST{"name"} ?>
+</TITLE>
+</HEAD>
+                                                                                                                      
+<BODY>
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 
-//	foreach ($headers as $header => $value) 
-//	{
-//		echo "$header: $value <br />\n";
-//	}
-	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
-	if (!$fp) 
+<?php
+include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
+
+ 
+function writeLogLong ($dbhandle, $arg, $addendum)
+{
+	mysql_query("insert into mm_log (name, message, addendum) values(".
+		"\"".quote_smart($_REQUEST{"name"})."\",\"".
+		quote_smart($arg)."\",\"".
+		quote_smart($addendum)
+		."\")"
+		, $dbhandle)
+		or error_message("Query failed : " . mysql_error());
+}
+ 
+ // check for offline mud
+if (file_exists ("/home/karchan/offline.txt")) 
+{
+	$file = fopen ("/home/karchan/offline.txt", "r");
+	while (!feof ($file)) 
 	{
-		echo "$errstr ($errno)<br>\n";
-	} 
-	else 
-	{
-		// RealName, EMAIL, mysex, myrealage, mycountry,
-	 	// myoccupation, mycomments, myinternal, myexternal
-		// title, race, sex, age, length,  width, complexion
-		// eyes, face, hair, beard, arms, legs
-		fgets ($fp,128); // Mmud id
-		fgets ($fp,128); // action
-		fputs ($fp, "newchar\n");
-		fgets ($fp,128); // name
-		fputs ($fp, $_COOKIE["karchanname"]."\n");
-		fgets ($fp,128); // password
-		fputs ($fp, $_REQUEST{"password"}."\n");
-		fgets ($fp,128); // cookie
-		fputs ($fp, $_COOKIE["karchanpassword"]."\n");
-		fgets ($fp,128); // frames
-		fputs ($fp, $_REQUEST{"frames"}."\n");
-		fgets ($fp,128); // realname
-		fputs ($fp, $_REQUEST{"RealName"}."\n");
-		fgets ($fp,128); // email
-		fputs ($fp, $_REQUEST{"EMAIL"}."\n");
-		fgets ($fp,128); // title
-		fputs ($fp, $_REQUEST{"title"}."\n");
-		fgets ($fp,128); // race
-		fputs ($fp, $_REQUEST{"race"}."\n");
-		fgets ($fp,128); // sex
-		fputs ($fp, $_REQUEST{"sex"}."\n");
-		fgets ($fp,128); // age
-		fputs ($fp, $_REQUEST{"age"}."\n");
-		fgets ($fp,128); // length
-		fputs ($fp, $_REQUEST{"length"}."\n");
-		fgets ($fp,128); // width
-		fputs ($fp, $_REQUEST{"width"}."\n");
-		fgets ($fp,128); // complexion
-		fputs ($fp, $_REQUEST{"complexion"}."\n");
-		fgets ($fp,128); // eyes
-		fputs ($fp, $_REQUEST{"eyes"}."\n");
-		fgets ($fp,128); // face
-		fputs ($fp, $_REQUEST{"face"}."\n");
-		fgets ($fp,128); // hair
-		fputs ($fp, $_REQUEST{"hair"}."\n");
-		fgets ($fp,128); // beard
-		fputs ($fp, $_REQUEST{"beard"}."\n");
-		fgets ($fp,128); // arms
-		fputs ($fp, $_REQUEST{"arms"}."\n");
-		fgets ($fp,128); // legs
-		fputs ($fp, $_REQUEST{"legs"}."\n");
-		// retrieve cookie that is always sent when attempting a newchar.
-		$cookie = fgets ($fp,128);
-		if (strstr($cookie, "sessionpassword=") != FALSE)
-		{
-			$cookie = substr($cookie, 16);
-			$cookie = substr_replace($cookie, "", -1, 1);
-			setcookie("karchanpassword", $cookie);
-		}
-		else
-		{
-			echo $cookie;
-		}
-		$readline = fgets ($fp,128);
-		while ((!feof($fp)) && ($readline != ".\n"))
-		{
-			echo $readline;
-			$readline = fgets ($fp,128);
-		}
-  		fputs ($fp, "\nOk\nOk\n");
-		fclose ($fp);
+		$line = fgets ($file, 1024);
+		echo $line;
 	}
-	ob_end_flush();
+	fclose($file);
 	exit;
+}
+		
+// aName must match [A-Z|_|a-z]{3,}
+if (preg_match("/([A-Z]|_|[a-z]){3,}/", $_REQUEST{"name"}) == 0)
+{
 ?>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Error Creating Character - Name invalid</H1>
+Unable to create character, because the name is invalid.
+The following rules govern if your name is accepted or not:
+<UL><LI>at least three letters in length
+<LI>may contain only letters and an underscore (_)
+</UL>
+Regards, Karn.
+<P><a HREF="/karchan/newchar.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+</BODY></HTML>
+<?php
+die();
+}
+
+// aPassword must length > 5
+if (strlen($_REQUEST{"password"}) < 5)
+{
+?>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Error Creating Character - Password length less than 5</H1>
+Unable to create character, because the length of the password
+was less than the mandatory 5 characters.
+<P>Regards, Karn.
+<P><a HREF="/karchan/newchar.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+</BODY></HTML>
+<?php
+die();
+}
+
+//  is sqlGetBan1String > 0 => user banned
+$banned = false;
+$result = mysql_query("select count(name) as count from mm_sillynamestable 
+		where '".quote_smart($_REQUEST{"name"})."' like name"
+	, $dbhandle)
+	or error_idmessage(1, "Query failed : " . mysql_error());
+$myrow =  mysql_fetch_array($result);
+if ($myrow["count"] != "0")
+{
+	$banned = true;
+}
+//	sqlGetBan2String > 0 => user not banned
+$result = mysql_query("select count(name) as count from mm_unbantable 
+	where name = '".quote_smart($_REQUEST{"name"})."'"
+	, $dbhandle)
+	or error_idmessage(2, "Query failed : " . mysql_error());
+$myrow =  mysql_fetch_array($result);
+if ($myrow["count"] != "0")
+{
+	$banned = false;
+}
+else
+{
+	//	sqlGetBan4String > 0 => user banned
+	$result = mysql_query("select count(address) as count from mm_bantable 
+		where '".quote_smart(gethostbyaddr($_SERVER['REMOTE_ADDR']))."' like address or 
+		'".quote_smart($_SERVER['REMOTE_ADDR'])."' like address"
+		, $dbhandle)
+		or error_idmessage(3, "Query failed : " . mysql_error());
+	$myrow =  mysql_fetch_array($result);
+	if ($myrow["count"] != "0")
+	{
+		$banned = true;
+	}
+		//	sqlGetBan3String > 0 => user banned
+	$result = mysql_query("select count(*) as count from mm_bannednamestable 
+		where name = '".quote_smart($_REQUEST{"name"})."'"
+		, $dbhandle)
+		or error_idmessage(4, "Query failed : " . mysql_error());
+	$myrow =  mysql_fetch_array($result);
+	if ($myrow["count"] != "0")
+	{
+		$banned = true;
+	}
+}
+
+if ($banned)
+{
+?>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Error Creating Character - You are banned</h1>
+You, or someone in your domain,  has angered the gods by behaving badly on
+this mud. Your ip domain/charactername is therefore banned from the game.<P>
+
+If you have not misbehaved or even have never before played the 
+game, and wish
+to play with your current IP address, email to 
+<A HREF="mailto:deputy@karchan.org">deputy@karchan.org</A> and ask 
+them to make an exception in your case. Do <I>not</I> forget to provide your 
+Character name.<P>
+You'll be okay as long as you follow the rules.
+<P>Regards, Karn.
+<P><a HREF="/karchan/newchar.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+</BODY></HTML>
+<?php
+die();
+}
+
+// user must NOT exist in mm_usertable
+$result = mysql_query("select mm_usertable.name from mm_usertable
+		where mm_usertable.name = '".quote_smart($_REQUEST{"name"})."'"
+	, $dbhandle)
+	or error_idmessage(5, "Query failed : " . mysql_error());
+if (mysql_num_rows($result) != 0)
+{
+?>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Error Creating Character - Character Exists</H1>
+Unable to create character, because someone already created a character
+with that particular name. Please choose a different name and try again.
+<P>Regards, Karn.
+<P><a HREF="/karchan/newchar.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+</BODY></HTML>
+<?php
+die();
+}
+
+?><H1>
+<IMG SRC="/images/gif/dragon.gif">
+<?php echo $_REQUEST{"name"} ?> - A New Character</H1>
+<?php
+if (isset($_REQUEST{"name"}))
+{
+	// make that change.
+	$query = "insert into mm_usertable ".
+		"(name, address, password, title, realname, email, race, sex, age, 
+		length, width, complexion, eyes, face, hair, beard, arm, leg, lok, 
+		active, lastlogin, birth) ".
+		"values(\"".
+		quote_smart($_REQUEST{"name"}).
+		"\", \"".
+		quote_smart($_SERVER['REMOTE_ADDR']).
+		"\", sha1(\"".
+		quote_smart($_REQUEST{"password"}).
+		"\"), \"".
+		quote_smart($_REQUEST{"title"}).
+		"\", \"".
+		quote_smart($_REQUEST{"realname"}).
+		"\", \"".
+		quote_smart($_REQUEST{"email"}).
+		"\", \"".
+		quote_smart($_REQUEST{"race"}).
+		"\", \"".
+		quote_smart($_REQUEST{"sex"}).
+		"\", \"".
+		quote_smart($_REQUEST{"age"}).
+		"\", \"".
+		quote_smart($_REQUEST{"length"}).
+		"\", \"".
+		quote_smart($_REQUEST{"width"}).
+		"\", \"".
+		quote_smart($_REQUEST{"complexion"}).
+		"\", \"".
+		quote_smart($_REQUEST{"eyes"}).
+		"\", \"".
+		quote_smart($_REQUEST{"face"}).
+		"\", \"".
+		quote_smart($_REQUEST{"hair"}).
+		"\", \"".
+		quote_smart($_REQUEST{"beard"}).
+		"\", \"".
+		quote_smart($_REQUEST{"arms"}).
+		"\", \"".
+		quote_smart($_REQUEST{"legs"}).
+		"\", null, 1, now(), now())";
+	mysql_query($query
+		, $dbhandle)
+		or error_idmessage(6, "Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Created new user ".$_REQUEST{"name"}." from ".
+	$_SERVER['REMOTE_ADDR'].".", $query);
+}
+
+mysql_close($dbhandle);
+
+?>
+
+The new character has been created. Click on the link <I>Back</I> below 
+to return to the logon screen. In the logon screen fill out the name
+and the password of the newly created character.
+<p>
+<a HREF="/karchan/index.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+
+</BODY>
+</HTML>
