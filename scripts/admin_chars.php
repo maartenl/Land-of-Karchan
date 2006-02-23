@@ -169,6 +169,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>arm:</b> %s<BR>", $myrow["arm"]);
 	printf("<b>leg:</b> %s<BR>", $myrow["leg"]);
 	printf("<b>lok:</b> %s<BR>", $myrow["lok"]);
+	printf("<b>guild:</b> %s<BR>", $myrow["guild"]);
 	printf("<b>whimpy:</b> %s<BR>", $myrow["whimpy"]);
 	printf("<b>sleep:</b> %s<BR>", $myrow["sleep"]);
 	printf("<b>copper:</b> %s<BR>", $myrow["copper"]);

@@ -333,7 +333,7 @@ while ($myrow = mysql_fetch_array($result))
 <?php
 	$claimed = true;
 }
-$result = mysql_query("select belongsto ".
+$result = mysql_query("select belongsto, wearing ".
 	" from mm_charitemtable".
 	" where mm_charitemtable.id =
 	".quote_smart($_REQUEST{"item"})
@@ -346,7 +346,8 @@ while ($myrow = mysql_fetch_array($result))
 <INPUT TYPE="hidden" NAME="removeitemfromchar" VALUE="<?php echo $_REQUEST{"item"} ?>">
 <INPUT TYPE="hidden" NAME="item" VALUE="<?php echo $_REQUEST{"item"} ?>">
 <INPUT TYPE="submit" VALUE="Remove From Character">
-<b>Item belongsto character:</b> <A HREF="/scripts/admin_chars.php?char=<?php echo $myrow[0] ?>"><?php echo $myrow[0] ?></A><BR>
+<b>Item belongsto character:</b> <A HREF="/scripts/admin_chars.php?char=<?php echo $myrow[0] ?>">
+<?php echo $myrow[0] ?></A> (<?php echo $myrow["wearing"] ?>)<BR>
 </FORM>
 <?php
 	$claimed = true;

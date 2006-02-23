@@ -243,7 +243,7 @@ if (isset($_REQUEST{"name"}))
 		quote_smart($_REQUEST{"arms"}).
 		"\", \"".
 		quote_smart($_REQUEST{"legs"}).
-		"\", null, 1, now(), now())";
+		"\", null, 0, now(), now())";
 	mysql_query($query
 		, $dbhandle)
 		or error_idmessage(6, "Query(8) failed : " . mysql_error());
