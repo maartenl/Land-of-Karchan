@@ -103,6 +103,25 @@ BORDER="0"></a><p>
 die();
 }
 
+// apassword must be the same as the second entered password
+if ($_REQUEST{"password"} != $_REQUEST{"password2"})
+{
+?>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Error Creating Character - Password does not match</H1>
+Unable to create character, because the password does not match.
+On the form it is required that the password is typed twice for
+verification. Apparently the first password was different
+from the second password.<P>
+Regards, Karn.
+<P><a HREF="/karchan/newchar.html">
+<img SRC="/images/gif/webpic/buttono.gif"  
+BORDER="0"></a><p>
+</BODY></HTML>
+<?php
+die();
+}
 //  is sqlGetBan1String > 0 => user banned
 $banned = false;
 $result = mysql_query("select count(name) as count from mm_sillynamestable 
