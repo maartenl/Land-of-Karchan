@@ -29,10 +29,13 @@ package mmud.characters;
 
 import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.TreeMap;
+import java.util.Iterator;
 
 import mmud.MudException;
 import mmud.database.MudDatabaseException;
 import mmud.database.Database;
+import mmud.Attribute;
 
 /**
  * This class contains the properties of a guild.
@@ -54,6 +57,8 @@ public class Guild
 	private String theLogonMessage;
 
 	private boolean theActive;
+	
+	private TreeMap theRanks = new TreeMap();
 
 	/**
 	 * Constructor, to be used for newly created guilds.
@@ -214,8 +219,17 @@ public class Guild
 		return theActive;
 	}
 
-	public boolean equals(Guild aGuild)
+	public boolean equals(Object obj)
 	{
+		if (obj == null)
+		{
+			return false;
+		}
+		if (!(obj instanceof Guild))
+		{
+			return false;
+		}
+		Guild aGuild = (Guild) obj;
 		if (aGuild == null)
 		{
 			return false;
@@ -241,18 +255,54 @@ public class Guild
 		{
 			result.append("<B>Logonmessage:</B>" + theLogonMessage + "<P>");
 		}
-		result.append("<B>Members</B><P>");
+		result.append("<B>Members</B><P><TABLE>");
 		for (int i=0;i<list.size();i++)
 		{
-			result.append((String) list.get(i));
-			result.append(" ");
+			Person character = (Person) list.get(i);
+			result.append("<TR><TD>");
+			if (character.isActive())
+			{
+				result.append("<B>");
+			}
+			result.append(character.getName());
+			result.append("</TD><TD>");
+			if (character.isAttribute("guildrank"))
+			{
+				Attribute attrib = character.getAttribute("guildrank");
+				int title = Integer.parseInt(attrib.getValue());
+				GuildRank rank = getRank(title);
+				if (rank == null)
+				{
+					result.append(" Initiate");
+				}
+				else
+				{
+					result.append(" " + rank.getTitle());
+				}
+			}
+			else
+			{
+				result.append(" Initiate");
+			}
+			if (character.isActive())
+			{
+				result.append("</B>");
+			}
+			result.append("</TD></TR>");
 		}
-		result.append("<P><B>Hopefuls</B><BR>");
+		result.append("</TABLE><P><B>Hopefuls</B><BR>");
 		list = Database.getGuildHopefuls(this);
 		for (int i=0;i<list.size();i++)
 		{
 			result.append((String) list.get(i));
 			result.append(" ");
+		}
+		result.append("<P><B>Guildranks</B><BR>");
+		Iterator ranks = theRanks.values().iterator();
+		while (ranks.hasNext())
+		{
+			GuildRank rank = (GuildRank) ranks.next();
+			result.append(rank.getTitle() + "(" + rank.getId() + ")<BR>");
 		}
 		return "<H1><IMG SRC=\"/images/gif/money.gif\">" + getTitle() + "</H1>You"
 			+ " are a member of the <I>" + getTitle() + "</I> (" + getName()
@@ -261,5 +311,41 @@ public class Guild
 			+ (isActive() ? "active" : "inactive")
 			+ "</I>.<P>" + result + "<P>";
 
+	}
+	
+	/**
+	 * Removes all guildranks and starts with a clean slate.
+	 */
+	public void setRanks(TreeMap aRanks)
+	{
+		if (aRanks == null)
+		{
+			throw new RuntimeException("ranks was null.");
+		}
+		theRanks = aRanks;
+	}
+	
+	/**
+	 * Returns the rank based on the rank id.
+	 * In case the rank id does not exist, an
+	 * Exception will be thrown.
+	 */
+	public GuildRank getRank(int id)
+	{
+		return (GuildRank) theRanks.get(new Integer(id));
+	}
+	
+	public void addRank(GuildRank aRank)
+	throws MudException
+	{
+		theRanks.put(new Integer(aRank.getId()), aRank);
+		Database.addGuildRank(this, aRank);
+	}
+
+	public void removeRank(GuildRank aRank)
+	throws MudException
+	{
+		theRanks.remove(new Integer(aRank.getId()));
+		Database.removeGuildRank(this, aRank);
 	}
 }

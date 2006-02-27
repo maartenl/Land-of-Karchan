@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-svninfo: $Id: PkillCommand.java 994 2005-10-23 10:19:20Z maartenl $
+svninfo: $Id: Bot.java 1005 2005-10-30 13:21:36Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -24,54 +24,53 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands.guilds;
+
+package mmud.characters;
 
 import java.util.logging.Logger;
+import java.util.Vector;
 
 import mmud.MudException;
-import mmud.Attribute;
-import mmud.characters.User;
-import mmud.characters.GuildFactory;
-import mmud.characters.Guild;
+import mmud.database.MudDatabaseException;
 import mmud.database.Database;
-import mmud.commands.NormalCommand;
-import mmud.commands.Command;
 
 /**
- * Makes you leave a guild. There are some requirements to follow:
- * <UL>
- * <LI>you must already belong to a guild
- * </UL>
- * Command syntax something like : <TT>guildleave</TT>
+ * This class contains a possible rank in a guild.
+ * @see Guild
  */
-public class LeaveCommand extends GuildCommand
+public class GuildRank
 {
 
-	public LeaveCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+	private int theId;
+	private String theTitle;
 
-	public boolean run(User aUser)
+	/**
+	 * Constructor, to be used for newly created guilds.
+	 */
+	public GuildRank(int aId,
+		String aDesc)
 	throws MudException
 	{
-		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if ((aId < 0) || (aDesc == null))
 		{
-			return false;
+			throw new MudException("illegal id or rankdescription unknown!");
 		}
-		Guild guild = aUser.getGuild();
-		aUser.removeAttribute("guildrank");
-		aUser.setGuild(null);
-		aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "left guild " +
-			guild.getName());
-		return true;
-	}
-
-	public Command createCommand()
-	{
-		return new LeaveCommand(getRegExpr());
+		theId = aId;
+		theTitle = aDesc;
 	}
 	
+	public int getId()
+	{
+		return theId;
+	}
+	
+	public String getTitle()
+	{
+		return theTitle;
+	}
+
+	public String toString()
+	{
+		return theId + ":" + theTitle;
+	}	
 }

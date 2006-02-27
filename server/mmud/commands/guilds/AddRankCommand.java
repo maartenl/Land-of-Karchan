@@ -31,23 +31,23 @@ import java.util.logging.Logger;
 import mmud.MudException;
 import mmud.Attribute;
 import mmud.characters.User;
+import mmud.characters.Person;
+import mmud.characters.Persons;
 import mmud.characters.GuildFactory;
 import mmud.characters.Guild;
+import mmud.characters.GuildRank;
 import mmud.database.Database;
 import mmud.commands.NormalCommand;
 import mmud.commands.Command;
 
 /**
- * Makes you leave a guild. There are some requirements to follow:
- * <UL>
- * <LI>you must already belong to a guild
- * </UL>
- * Command syntax something like : <TT>guildleave</TT>
+ * Makes you, as guildmaster, add a rank to the guild.
+ * Command syntax something like : <TT>guildaddrank &lt;id&gt; &lt;title&gt;</TT>
  */
-public class LeaveCommand extends GuildCommand
+public class AddRankCommand extends GuildMasterCommand
 {
 
-	public LeaveCommand(String aRegExpr)
+	public AddRankCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -60,18 +60,29 @@ public class LeaveCommand extends GuildCommand
 		{
 			return false;
 		}
-		Guild guild = aUser.getGuild();
-		aUser.removeAttribute("guildrank");
-		aUser.setGuild(null);
-		aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "left guild " +
-			guild.getName());
+		String[] myParsed = getParsedCommand();
+		int id = 0;
+		try
+		{
+			id = Integer.parseInt(myParsed[1]);
+		}
+		catch (NumberFormatException e)
+		{
+			aUser.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
+			return true;
+		}
+		String title = getCommand().substring(myParsed[0].length() + 1 + myParsed[1].length() + 1);
+		GuildRank rank = new GuildRank(id,title);
+		aUser.getGuild().addRank(rank);
+		Database.writeLog(aUser.getName(), " added guildrank of " + 
+			" guild " + aUser.getGuild().getName() + " called " + rank);
+		aUser.writeMessage("You have added a new rank to your guild.<BR>\r\n");
 		return true;
 	}
 
 	public Command createCommand()
 	{
-		return new LeaveCommand(getRegExpr());
+		return new AddRankCommand(getRegExpr());
 	}
 	
 }

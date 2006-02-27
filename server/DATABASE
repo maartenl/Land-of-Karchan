@@ -287,10 +287,12 @@ accept_access tinyint(1) not null default 0,
 reject_access tinyint(1) not null default 0,
 settings_access tinyint(1) not null default 0,
 logonmessage_access tinyint(1) not null default 0,
-foreign key (guildname) references mm_guilds (name) on update cascade,
+foreign key (guildname) references mm_guilds (name) on update cascade on
+delete restrict,
 primary key (guildlevel, guildname)
 ) ENGINE=InnoDB;
 - alter table mm_usertable drop gold, drop silver;
+- alter table mm_items drop gold, drop silver;
 
 creating board system
 ---------------------

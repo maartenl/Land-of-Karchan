@@ -97,6 +97,7 @@ public class Person implements Executable, AttributeContainer
 	private TreeMap theAttributes = new TreeMap();
 	private Person theFightingWith = null;
 	private int theCopper = 0;
+	private boolean theActive = false;
 
 	/**
 	 * Constructor. Create a person.
@@ -1637,4 +1638,17 @@ public class Person implements Executable, AttributeContainer
 		}
 	}
 
+	public void activate()
+	{
+		theActive = true;
+	}
+	
+	/**
+	 * Can tell you if a person is playing the game or not.
+	 * @return boolean, true if the person is playing, false otherwise.
+	 */
+	public boolean isActive()
+	{
+		return theActive;
+	}
 }

@@ -99,7 +99,9 @@ V guildapply GUILDNAME
 V guilddetails
 V (BOSS) guildaccept USERNAME
 V (BOSS) guildreject USERNAME
-- (BOSS) guildassign USERNAME, "RANK"
+- (BOSS) guildassign USERNAME "RANK"
+- (BOSS) guildaddrank "RANKID" "RANK DESC"
+- (BOSS) guilddelrank "RANKID"
 - (BOSS) guildexile USERNAME, REASON
 - (BOSS) guildkick USERNAME, REASON
 V guildleave
@@ -141,8 +143,8 @@ mm_guilds
   logonmessage text -> new
 mm_charattributes
 name: guildrank
-value: 'sergeant'
-value_type: string
+value: 20
+value_type: integer
 charname: Karn
 mm_guildranks
 * name
@@ -204,17 +206,17 @@ show <item> to <shopkeeper>
 Money
 -----
 
-- remove gold,silver from mm_usertable. Keep copper for use as a base-value
+V remove gold,silver from mm_usertable. Keep copper for use as a base-value
 for the amount of money someone has.
-- remove gold, silver from mm_items. Keep copper for use as a base-value
+V remove gold, silver from mm_items. Keep copper for use as a base-value
 for the amount of money someone has.
 Money is not an Item unless it is part of a room/item.
 When retrieving money from a room/corpse => moneybag, moneypouch, coinbag
 There is never any loose change.
 - a Room does not contain coins, a room contains moneybags.
-- There is never 10 silver coins, it is always 1 gold
-- There is never 10 copper coins, it is always 1 silver
-- Fortune 500 list
+V There is never 10 silver coins, it is always 1 gold
+V There is never 10 copper coins, it is always 1 silver
+V Fortune 500 list
 - Ziektekostenverzekering
 - een Baan (blacksmith, fisherman)
 
@@ -294,3 +296,22 @@ mm_questitems
 * questid 		int not null
   amount  		int not null default 1
   visible       int(1) not null default 1
+
+Ignore lists
+------------
+
+Ignore lists are lists containing people that are ignoring other people.
+People can add or delete members from their ignorelist.
+
+mm_ignore
+	fromperson varchar(20) not null,
+	toperson varchar(20) not null,
+	foreignkey fromperson -> usertable
+	forgeinkey toperson -> usertable
+
+commands:
+ignore <person>
+acknowledge <person>
+
+Change the output/input methods (messages/personal) to check for
+ignoring characters.

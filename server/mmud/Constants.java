@@ -121,6 +121,9 @@ import mmud.commands.guilds.DetailsCommand;
 import mmud.commands.guilds.AcceptCommand;
 import mmud.commands.guilds.RejectCommand;
 import mmud.commands.guilds.SetLogonMessageCommand;
+import mmud.commands.guilds.DelRankCommand;
+import mmud.commands.guilds.AddRankCommand;
+import mmud.commands.guilds.AssignRankCommand;
 
 /**
  * Used constants in the game. Constants might have been read from a
@@ -853,6 +856,9 @@ public final class Constants
 		theCommandStructure.put("guilddetails", new DetailsCommand("guilddetails"));
 		theCommandStructure.put("guildaccept", new AcceptCommand("guildaccept (\\w)+"));
 		theCommandStructure.put("guildreject", new RejectCommand("guildreject (\\w)+"));
+		theCommandStructure.put("guildaddrank", new AddRankCommand("guildaddrank (\\d)+ .+"));
+		theCommandStructure.put("guildassign", new AssignRankCommand("guildassign (\\d)+ (\\w)+"));
+		theCommandStructure.put("guilddelrank", new DelRankCommand("guilddelrank (\\d)+"));
 		theCommandStructure.put("guilddescription", new SetDescriptionCommand("guilddescription .+"));
 		theCommandStructure.put("guildtitle", new SetTitleCommand("guildtitle .+"));
 		theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));

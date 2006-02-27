@@ -31,23 +31,23 @@ import java.util.logging.Logger;
 import mmud.MudException;
 import mmud.Attribute;
 import mmud.characters.User;
+import mmud.characters.Person;
+import mmud.characters.Persons;
 import mmud.characters.GuildFactory;
 import mmud.characters.Guild;
+import mmud.characters.GuildRank;
 import mmud.database.Database;
 import mmud.commands.NormalCommand;
 import mmud.commands.Command;
 
 /**
- * Makes you leave a guild. There are some requirements to follow:
- * <UL>
- * <LI>you must already belong to a guild
- * </UL>
- * Command syntax something like : <TT>guildleave</TT>
+ * Makes you, as guildmaster, remove a rank from the guild.
+ * Command syntax something like : <TT>guilddelrank &lt;id&gt;</TT>
  */
-public class LeaveCommand extends GuildCommand
+public class DelRankCommand extends GuildMasterCommand
 {
 
-	public LeaveCommand(String aRegExpr)
+	public DelRankCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -60,18 +60,29 @@ public class LeaveCommand extends GuildCommand
 		{
 			return false;
 		}
-		Guild guild = aUser.getGuild();
-		aUser.removeAttribute("guildrank");
-		aUser.setGuild(null);
-		aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "left guild " +
-			guild.getName());
+		String[] myParsed = getParsedCommand();
+		int id = 0;
+		try
+		{
+			id = Integer.parseInt(myParsed[1]);
+		}
+		catch (NumberFormatException e)
+		{
+			aUser.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
+			return true;
+		}
+		GuildRank rank = aUser.getGuild().getRank(id);
+		aUser.getGuild().removeRank(rank);
+		Database.writeLog(aUser.getName(), " removed guildrank of " + 
+			" guild " + aUser.getGuild().getName() + " called " + rank);
+		aUser.writeMessage("You have removed the " + rank.getTitle() +
+			" rank from your guild.<BR>\r\n");
 		return true;
 	}
 
 	public Command createCommand()
 	{
-		return new LeaveCommand(getRegExpr());
+		return new DelRankCommand(getRegExpr());
 	}
 	
 }

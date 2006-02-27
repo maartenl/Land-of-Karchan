@@ -218,6 +218,7 @@ public final class Persons implements Executable
 		// everything seems to be okay
 		myUser.setAddress(anAddress);
 		Database.activateUser(myUser);
+		myUser.activate();
 		thePersons.addElement(myUser);
 		return myUser;
 	}
@@ -324,6 +325,7 @@ public final class Persons implements Executable
 			aLegs,
 			aCookie);
 		Database.createUser(myUser);
+		myUser.activate();
 		thePersons.addElement(myUser);
 		return myUser;
 	}
@@ -666,6 +668,28 @@ public final class Persons implements Executable
 	public static Iterator getIterator()
 	{
 		return thePersons.iterator();
+	}
+
+	/**
+	 * Retrieve a person whose name corresponds to aName.
+	 * The person can either be playing or not (this can be checked
+	 * with the isActive() method) and can be a bot or mob or user or
+	 * whatever.
+	 * @see Person#isActive()
+	 * @param aName the name of the character to be retrieved
+	 * @return Person object containing hopefully all necessary stuff.
+	 */
+	public static Person getPerson(String aName)
+	throws MudException
+	{
+		Person toChar2 = Persons.retrievePerson(aName);
+		if (toChar2 == null)   
+		{
+			// the person is not playing the game...
+			// we'll need to look him up "outside"  
+			return Database.getUser(aName, null);
+		}
+		return toChar2;
 	}
 
 }

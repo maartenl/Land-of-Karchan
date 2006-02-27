@@ -35,6 +35,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collection;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.io.StringWriter;
@@ -55,6 +56,7 @@ import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.characters.UserNotFoundException;
 import mmud.characters.Guild;
+import mmud.characters.GuildRank;
 import mmud.characters.GuildFactory;
 import mmud.characters.CharacterFactory;
 import mmud.items.Item;
@@ -82,6 +84,15 @@ public class Database
 	"active = ? where name = ?";
 	public static String sqlGetGuild = "select * from mm_guilds " +
 	"where name = ?";
+	public static String sqlGetGuildRanks = "select * from mm_guildranks " +
+		"where guildname = ?";
+	public static String sqlAddGuildRank = 
+		"replace into mm_guildranks " +
+		"(title, guildlevel, guildname) " +
+		"values(?, ?, ?)";
+	public static String sqlDelGuildRank = 
+		"delete from mm_guildranks " +
+		"where guildname = ? and guildlevel = ?";
 	public static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
 	public static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
 	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
@@ -802,8 +813,6 @@ public class Database
 		{
 			String myName = res.getString("name");
 			String myPasswd = res.getString("password");
-			int gold = res.getInt("gold");
-			int silver = res.getInt("silver");
 			int copper = res.getInt("copper");
 			Logger.getLogger("mmud").info("name: " + myName);
 			if (res.getInt("god") < 2)
@@ -850,6 +859,7 @@ public class Database
 				{
 					myRealUser.setSessionPassword(mySessionPwd);
 				}
+				myRealUser.activate();
 				myVector.add(myRealUser);
 				myRealUser.setAttributes(AttributeDb.getAttributes(myRealUser));
 			}
@@ -1739,7 +1749,114 @@ public class Database
 		{
 			throw new MudDatabaseException("database error while retrieving guild.", e);
 		}
+		guild.setRanks(getGuildRanks(guild));
 		return guild;
+	}
+
+	/**
+	 * retrieves the guild ranks from the database
+	 * and adds them to the guild.
+	 * @param aGuild the guild that is to contain the guild ranks.
+	 * @throws MudException if there is a problem determining guildranks.
+	 */
+	public static TreeMap getGuildRanks(Guild aGuild)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aGuild == null)
+		{
+			throw new MudDatabaseException("guild was null.");
+		}
+		TreeMap result = new TreeMap();
+		ResultSet res;
+		try
+		{
+
+		PreparedStatement statGetGuildRanks = prepareStatement(sqlGetGuildRanks);
+		statGetGuildRanks.setString(1, aGuild.getName());
+		res = statGetGuildRanks.executeQuery();
+		if (res != null)
+		{
+			while (res.next())
+			{
+				result.put(new Integer(res.getInt("guildlevel")), 
+					new GuildRank(
+					res.getInt("guildlevel"), 
+					res.getString("title")));
+			}
+			res.close();
+		}
+		statGetGuildRanks.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guildranks.", e);
+		}
+		return result;
+	}
+
+	/**
+	 * add a guild rank.
+	 * @param aGuild the guild of which a new rank must be added.
+	 * @param aRank the rank to be added.
+	 */
+	public static void addGuildRank(Guild aGuild, GuildRank aRank)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement statAddGuildRank = prepareStatement(sqlAddGuildRank);
+		statAddGuildRank.setString(1, aRank.getTitle());
+		statAddGuildRank.setInt(2, aRank.getId());
+		statAddGuildRank.setString(3, aGuild.getName());
+		int res = statAddGuildRank.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+		}
+		statAddGuildRank.close();
+		}
+		catch (SQLException e)
+		{
+			Logger.getLogger("mmud").throwing("mmud.Database","addGuildRank", e);
+			throw new MudDatabaseException("database error adding guildrank.", e);
+		}
+	}
+
+	/**
+	 * remove a guild rank.
+	 * @param aGuild the guild of which a rank must be deleted.
+	 * @param aRank the rank to be deleted.
+	 */
+	public static void removeGuildRank(Guild aGuild, GuildRank aRank)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement statRemoveGuildRank = prepareStatement(sqlDelGuildRank);
+		statRemoveGuildRank.setString(1, aGuild.getName());
+		statRemoveGuildRank.setInt(2, aRank.getId());
+		int res = statRemoveGuildRank.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+			// guildrank does not exist
+		}
+		statRemoveGuildRank.close();
+		}
+		catch (SQLException e)
+		{
+			Logger.getLogger("mmud").throwing("mmud.Database","removeGuildRank", e);
+			throw new MudDatabaseException("database error removing guildrank.", e);
+		}
 	}
 
 	/**
@@ -1768,7 +1885,7 @@ public class Database
 		{
 			while (res.next())
 			{
-				list.add(res.getString("name"));
+				list.add(Persons.getPerson(res.getString("name")));
 			}
 		}
 		res.close();
