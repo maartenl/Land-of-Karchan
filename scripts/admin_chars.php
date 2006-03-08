@@ -263,6 +263,18 @@ New password:
 	}
 }
 
+printf("<H2>Ignore List</H2>");
+
+$result = mysql_query("select  ".
+	" toperson from mm_ignore where fromperson =".
+	"\"".quote_smart($_REQUEST{"char"})."\""
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result)) 
+{
+	printf("%s ", $myrow["toperson"]);
+}
+
 printf("<H2><A HREF=\"/karchan/admin/help/attributes.html\" target=\"_blank\">
 <IMG SRC=\"/images/icons/9pt4a.gif\" BORDER=\"0\"></A>Attributes</H2>");
 
