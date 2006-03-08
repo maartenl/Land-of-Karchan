@@ -28,7 +28,8 @@ Legend:<DL><DT>[ro]<DD>read only field</DL><P>
 	</UL>
 	<UL><B>Methods</B>
 	<LI>sendMessage(string)
-	<LI>getItems(integer)
+	<LI>sendMessage(person, string)
+	<LI>item[] getItems(integer)
 	<LI>Item addItem(integer)
 
 	<LI>string/integer/boolean getAttribute(string)
@@ -47,10 +48,10 @@ Legend:<DL><DT>[ro]<DD>read only field</DL><P>
 	<LI>personal(string)
 	<LI>sendMessage( [person, ] string)
 	<LI>sendMessageExcl( [person, ] string)
-	<LI>Item addItem(integer)
+	<LI>item addItem(integer)
 	<LI>removeItem(Item)
-	<LI>Item wornItem(integer)
-	<LI>Item getItem(integer)
+	<LI>item wornItem(integer)
+	<LI>item[] getItem(integer)
 
 	<LI>string/integer/boolean getAttribute(string)
 	<LI>setAttribute(string, object/string/integer/boolean)
@@ -62,7 +63,7 @@ Legend:<DL><DT>[ro]<DD>read only field</DL><P>
 	<LI>integer itemdef [ro]
 	</UL>
 	<UL><B>Methods</B>
-	<LI>Item addItem(integer)
+	<LI>item addItem(integer)
 	<LI>boolean isWielding()
 
 	<LI>string/integer/boolean getAttribute(string)
