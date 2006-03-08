@@ -70,6 +70,12 @@ public class WhisperCommand extends NormalCommand
 			}
 			else
 			{
+				if (aUser.isIgnored(toChar))
+				{
+					aUser.writeMessage(toChar.getName() + 
+						" is ignoring you fully.<BR>\r\n");
+					return true;
+				}
 				String message = command.substring(command.indexOf(myParsed[3], 7 + 1 + 2 + 1 + myParsed[2].length())).trim();
 				aUser.writeMessage("<B>You whisper [to " + toChar.getName() + "]</B> : " + message + "<BR>\r\n");
 				toChar.writeMessage("<B>" + aUser.getName() + " whispers [to you]</B> : " + message + "<BR>\r\n");
@@ -80,13 +86,11 @@ public class WhisperCommand extends NormalCommand
 						CommunicationListener.WHISPER, message);
 				}
 			}
+			return true;
 		}
-		else
-		{
-			String message = command.substring(7 + 1).trim();
-			aUser.writeMessage("<B>You whisper</B> : " + message + "<BR>\r\n");
-			Persons.sendMessageExcl(aUser, "%SNAME whisper%VERB2 : " + message + "<BR>\r\n");
-		}
+		String message = command.substring(7 + 1).trim();
+		aUser.writeMessage("<B>You whisper</B> : " + message + "<BR>\r\n");
+		Persons.sendMessageExcl(aUser, "%SNAME whisper%VERB2 : " + message + "<BR>\r\n");
 		return true;
 	}
 

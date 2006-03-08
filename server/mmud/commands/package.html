@@ -4,7 +4,105 @@
 <body bgcolor="white">
 
 Provides all the commands that are executable in the game. Commands can only
-be executed by characters.
+be executed by characters.<P>
+The commands have an inheritance structure like this:
 
+<PRE>
+      +----------+
+      | Command  |  (Interface)
+      +----------+
+            |
+    +---------------+ 
+    | NormalCommand |
+    +---------------+
+            |
+    +---------------+
+    |  GuildCommand |
+    +---------------+
+            |
+ +---------------------+
+ |  GuildMasterCommand |
+ +---------------------+
+</PRE>
+The following commands have been split up into specific
+groups/functionality:
+
+<H3>Communication</H3>
+<UL><LI>AskCommand
+<LI>SayCommand
+<LI>ShoutCommand
+<LI>WhisperCommand
+<LI>TellCommand
+</UL>
+<H3>Misc</H3>
+<UL><LI>AcknowledgeCommand
+<LI>AdminCommand
+<LI>AlreadyAsleepCommand
+<LI>AwakenCommand
+<LI>BigTalkCommand
+<LI>BogusCommand
+<LI>BowCommand
+<LI>BuyCommand
+<LI>ClearCommand
+<LI>CloseCommand
+<LI>Command
+<LI>CurtseyCommand
+<LI>DateCommand
+<LI>DeleteMailCommand
+<LI>DownCommand
+<LI>DrinkCommand
+<LI>DropCommand
+<LI>EastCommand
+<LI>EatCommand
+<LI>EmotionCommand
+<LI>EmotionToCommand
+<LI>EyebrowCommand
+<LI>FightCommand
+<LI>GetCommand
+<LI>GiveCommand
+<LI>GoCommand
+<LI>HelpCommand
+<LI>IgnoreCommand
+<LI>InventoryCommand
+<LI>ListMailCommand
+<LI>LockCommand
+<LI>LookCommand
+<LI>MailCommand
+<LI>MeCommand
+<LI>NorthCommand
+<LI>OpenCommand
+<LI>PkillCommand
+<LI>PostBoardCommand
+<LI>PostPublicCommand
+<LI>PostRpgBoardCommand
+<LI>PutCommand
+<LI>QuitCommand
+<LI>ReadBoardCommand
+<LI>ReadCommand
+<LI>ReadMailCommand
+<LI>ReadPublicCommand
+<LI>ReadRpgBoardCommand
+<LI>RetrieveCommand
+<LI>ScriptCommand
+<LI>SearchCommand
+<LI>SellCommand
+<LI>SendMailCommand
+<LI>ShowCommand
+<LI>SleepCommand
+<LI>SouthCommand
+<LI>StatsCommand
+<LI>StopFightingCommand
+<LI>TimeCommand
+<LI>TitleCommand
+<LI>UnlockCommand
+<LI>UnwearCommand
+<LI>UnwieldCommand
+<LI>UpCommand
+<LI>WearCommand
+<LI>WestCommand
+<LI>WhimpyCommand
+<LI>WhoCommand
+<LI>WieldCommand
+</UL>
 </body>
 </html>

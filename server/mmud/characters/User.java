@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import mmud.Constants;
@@ -68,6 +69,7 @@ public class User extends mmud.characters.Person
 	private Calendar rightNow;
 	private boolean thePkill;
 	private String theGuild;
+	private TreeMap theIsBeingIgnoredBy;
 
 	/**
 	 * create an instance of User, based on Database data. 
@@ -730,5 +732,46 @@ public class User extends mmud.characters.Person
 			}
 		}
 		return super.getValue(field_name, attrib_name, ctxt);
+	}
+
+	/**
+	 * Set the ignore list. Usually used by the database class.
+	 * @param aList the list of persons to be ignored.
+	 */
+	public void setIgnoreList(TreeMap aList)
+	{
+		theIsBeingIgnoredBy = aList;
+	}
+
+	/**
+	 * Determines if this current user is being ignored by aPerson.
+	 * @param aPerson the user that could be ignoring this person.
+	 * @return true if we are being ignored, false otherwise.
+	 */
+	public boolean isIgnored(Person aPerson)
+	{
+		return theIsBeingIgnoredBy.containsKey(aPerson.getName());
+	}
+
+	/**
+	 * Adds a name to the ignorelist.
+	 * @param aName the name to be added of the user that is ignoring us.
+	 */
+	public void addName(User aUser)
+	throws MudException
+	{
+		theIsBeingIgnoredBy.put(aUser.getName(), null);
+		Database.addIgnore(aUser, this);
+	}
+
+	/**
+	 * Removes a name from the ignorelist.
+	 * @param aName the name to be removed of the user that is ignoring us.
+	 */
+	public void removeName(User aUser)
+	throws MudException
+	{
+		theIsBeingIgnoredBy.remove(aUser.getName());
+		Database.removeIgnore(aUser, this);
 	}
 }

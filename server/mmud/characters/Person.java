@@ -667,7 +667,10 @@ public class Person implements Executable, AttributeContainer
 
 	/**
 	 * writes a message to the log file of the character that contains
-	 * all communication and messages.
+	 * all communication and messages.<P><B>Important!</B> : Use this
+	 * method only for Environmental communication, as it does not check
+	 * the Ignore Flag. Use the writeMessage(Person aSource, String aMessage)
+	 * for specific communication between users.
 	 * @param aMessage the message to be written to the logfile.
 	 * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
 	 * @see #writeMessage(Person aSource, String aMessage)
@@ -738,6 +741,11 @@ public class Person implements Executable, AttributeContainer
 	public void writeMessage(Person aSource, Person aTarget, String aMessage)
 	{
 		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
+		if (aSource.isIgnored(this))
+		{
+			Logger.getLogger("mmud").finer(aSource + " is being ignored by " + this);
+			return;
+		}
 		String message = aMessage;
 		if (aTarget == this)
 		{
@@ -793,6 +801,11 @@ public class Person implements Executable, AttributeContainer
 	public void writeMessage(Person aSource, String aMessage)
 	{
 		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
+		if (aSource.isIgnored(this))
+		{
+			Logger.getLogger("mmud").finer(aSource + " is being ignored by " + this);
+			return;
+		}
 		String message = aMessage;
 		if (aSource == this)
 		{
@@ -1393,7 +1406,7 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name + 
 						" error retrieving item from database. "  + e);
 				}
-				return b;
+				return b.toArray(new Item[0]);
 			}
 		}
 //		throw new MethodNotSupportedException(method_name + " not found.");
@@ -1650,5 +1663,14 @@ public class Person implements Executable, AttributeContainer
 	public boolean isActive()
 	{
 		return theActive;
+	}
+
+	/**
+	 * The default is that nobody is ignoring you.
+	 * @return false, nobody is ignoring you.
+	 */
+	public boolean isIgnored(Person aPerson)
+	{
+		return false;
 	}
 }

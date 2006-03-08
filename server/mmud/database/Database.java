@@ -93,6 +93,15 @@ public class Database
 	public static String sqlDelGuildRank = 
 		"delete from mm_guildranks " +
 		"where guildname = ? and guildlevel = ?";
+	public static String sqlGetIgnoreList = "select * from mm_ignore " +
+		"where toperson = ?";
+	public static String sqlAddIgnore = 
+		"replace into mm_ignore " +
+		"(fromperson, toperson) " +
+		"values(?, ?)";
+	public static String sqlDelIgnore = 
+		"delete from mm_ignore " +
+		"where fromperson = ? and toperson = ?";
 	public static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
 	public static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
 	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
@@ -447,6 +456,7 @@ public class Database
 		{
 			myUser.setAttributes(AttributeDb.getAttributes(myUser));
 		}
+		myUser.setIgnoreList(getIgnoreList(myUser));
 		return myUser;
 	}
 
@@ -540,6 +550,7 @@ public class Database
 		{
 			myUser.setAttributes(AttributeDb.getAttributes(myUser));
 		}
+		myUser.setIgnoreList(getIgnoreList(myUser));
 		return myUser;
 	}
 
@@ -860,6 +871,7 @@ public class Database
 					myRealUser.setSessionPassword(mySessionPwd);
 				}
 				myRealUser.activate();
+				myRealUser.setIgnoreList(getIgnoreList(myRealUser));
 				myVector.add(myRealUser);
 				myRealUser.setAttributes(AttributeDb.getAttributes(myRealUser));
 			}
@@ -1851,6 +1863,107 @@ public class Database
 			// guildrank does not exist
 		}
 		statRemoveGuildRank.close();
+		}
+		catch (SQLException e)
+		{
+			Logger.getLogger("mmud").throwing("mmud.Database","removeGuildRank", e);
+			throw new MudDatabaseException("database error removing guildrank.", e);
+		}
+	}
+
+	/**
+	 * retrieves the ignore list from the database.
+	 * @param aUser the player to be ignored.
+	 * @throws MudException if there is a problem determining the list of ignores.
+	 */
+	public static TreeMap getIgnoreList(User aUser)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aUser == null)
+		{
+			throw new MudDatabaseException("user was null.");
+		}
+		TreeMap result = new TreeMap();
+		ResultSet res;
+		try
+		{
+
+		PreparedStatement statGetIgnoreList = prepareStatement(sqlGetIgnoreList);
+		statGetIgnoreList.setString(1, aUser.getName());
+		res = statGetIgnoreList.executeQuery();
+		if (res != null)
+		{
+			while (res.next())
+			{
+				result.put(res.getString("fromperson"), null);
+			}
+			res.close();
+		}
+		statGetIgnoreList.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guildranks.", e);
+		}
+		return result;
+	}
+
+	/**
+	 * add a guild rank.
+	 * @param aGuild the guild of which a new rank must be added.
+	 * @param aRank the rank to be added.
+	 */
+	public static void addIgnore(User aUser, User aToBeIgnored)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement statAddIgnore = prepareStatement(sqlAddIgnore);
+		statAddIgnore.setString(1, aUser.getName());
+		statAddIgnore.setString(2, aToBeIgnored.getName());
+		int res = statAddIgnore.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+		}
+		statAddIgnore.close();
+		}
+		catch (SQLException e)
+		{
+			Logger.getLogger("mmud").throwing("mmud.Database","addGuildRank", e);
+			throw new MudDatabaseException("database error adding guildrank.", e);
+		}
+	}
+
+	/**
+	 * remove a guild rank.
+	 * @param aGuild the guild of which a rank must be deleted.
+	 * @param aRank the rank to be deleted.
+	 */
+	public static void removeIgnore(User aUser, User aToBeAcknowledged)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+		PreparedStatement statRemoveIgnore = prepareStatement(sqlDelIgnore);
+		statRemoveIgnore.setString(1, aUser.getName());
+		statRemoveIgnore.setString(2, aToBeAcknowledged.getName());
+		int res = statRemoveIgnore.executeUpdate();
+		if (res != 1)
+		{
+			// error, not correct number of results returned
+			// TOBEDONE
+			// guildrank does not exist
+		}
+		statRemoveIgnore.close();
 		}
 		catch (SQLException e)
 		{

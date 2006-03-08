@@ -99,9 +99,9 @@ V guildapply GUILDNAME
 V guilddetails
 V (BOSS) guildaccept USERNAME
 V (BOSS) guildreject USERNAME
-- (BOSS) guildassign USERNAME "RANK"
-- (BOSS) guildaddrank "RANKID" "RANK DESC"
-- (BOSS) guilddelrank "RANKID"
+V (BOSS) guildassign USERNAME "RANK"
+V (BOSS) guildaddrank "RANKID" "RANK DESC"
+V (BOSS) guilddelrank "RANKID"
 - (BOSS) guildexile USERNAME, REASON
 - (BOSS) guildkick USERNAME, REASON
 V guildleave
@@ -315,3 +315,12 @@ acknowledge <person>
 
 Change the output/input methods (messages/personal) to check for
 ignoring characters.
+
+Every User character should have a "isBeingIgnoredBy" list. It gets updated
+whenever they logon to the game.
+
+It gets changed whenever someone issues an Ignore/Ack command.
+
+communication+mudmail+boards must perform a check before sending to see if the
+perosn
+is being ignored by the target.

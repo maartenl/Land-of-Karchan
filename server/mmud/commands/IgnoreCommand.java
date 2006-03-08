@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: SayCommand.java 994 2005-10-23 10:19:20Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -36,14 +36,13 @@ import mmud.characters.Persons;
 import mmud.characters.User;
 
 /**
- * Tell to someone something. The difference with normal communication
- * commands, is that this one is mandatory to a person and the person does
- * not need to be in the same room: "tell to Karn Help!".
+ * Ignore everything someone says.
+ * Syntax: <TT>ignore &lt;name&gt;</TT>
  */
-public class TellCommand extends NormalCommand
+public class IgnoreCommand extends NormalCommand
 {
 
-	public TellCommand(String aRegExpr)
+	public IgnoreCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -58,36 +57,26 @@ public class TellCommand extends NormalCommand
 		}
 		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length <= 3 || (!myParsed[1].equalsIgnoreCase("to")))
+		if (myParsed.length <= 2)
 		{
 			return false;
 		}
 		Person toChar = Persons.retrievePerson(myParsed[2]);
-		if (toChar == null)
+		if ( (toChar == null) || (!(toChar instanceof User)) )
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		if (aUser.isIgnored(toChar))
-		{
-			aUser.writeMessage(toChar.getName() + 
-				" is ignoring you fully.<BR>\r\n");
-			return true;
-		}
-		String message = command.substring(command.indexOf(myParsed[3], 4 + 1 + 2 + 1 + myParsed[2].length())).trim();
-		aUser.writeMessage("<B>You tell " + toChar.getName() + "</B> : " + message + "<BR>\r\n");
-		toChar.writeMessage("<B>" + aUser.getName() + " tells you</B> : " + message + "<BR>\r\n");
-		if (toChar instanceof CommunicationListener)
-		{
-			((CommunicationListener) toChar).commEvent(aUser, 
-				CommunicationListener.TELL, message);
-		}
+		((User) toChar).addName(aUser);
+		Persons.sendMessageExcl(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
+		aUser.writeMessage(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
+		toChar.writeMessage(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
 		return true;
 	}
 
 	public Command createCommand()
 	{
-		return new TellCommand(getRegExpr());
+		return new IgnoreCommand(getRegExpr());
 	}
 	
 }

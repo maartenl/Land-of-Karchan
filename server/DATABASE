@@ -293,6 +293,12 @@ primary key (guildlevel, guildname)
 ) ENGINE=InnoDB;
 - alter table mm_usertable drop gold, drop silver;
 - alter table mm_items drop gold, drop silver;
+- create table mm_ignore (fromperson varchar(20) not null,
+toperson varchar(20) not null,
+foreign key (fromperson) references mm_usertable (name),
+foreign key (toperson) references mm_usertable (name),
+primary key (fromperson, toperson)
+) ENGINE=InnoDB;
 
 creating board system
 ---------------------

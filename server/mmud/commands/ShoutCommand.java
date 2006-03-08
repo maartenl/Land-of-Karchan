@@ -69,38 +69,40 @@ public class ShoutCommand extends NormalCommand
 			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				return true;
 			}
-			else
+			if (aUser.isIgnored(toChar))
 			{
-				String message = command.substring(command.indexOf(myParsed[3], 5 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				Persons.sendMessageExcl(aUser, toChar, "%SNAME shout%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
-				aUser.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				toChar.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
-				Persons.sendMessage(aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
-				if (toChar instanceof CommunicationListener)
-				{
-					((CommunicationListener) toChar).commEvent(aUser, 
-						CommunicationListener.SHOUT, message);
-				}
+				aUser.writeMessage(toChar.getName() + 
+				" is ignoring you fully.<BR>\r\n");
+				return true;
 			}
+			String message = command.substring(command.indexOf(myParsed[3], 5 + 1 + 2 + 1 + myParsed[2].length())).trim();
+			Persons.sendMessageExcl(aUser, toChar, "%SNAME shout%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
+			aUser.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+			toChar.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
+			Persons.sendMessage(aUser, aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
+			if (toChar instanceof CommunicationListener)
+			{
+				((CommunicationListener) toChar).commEvent(aUser, 
+					CommunicationListener.SHOUT, message);
+			}
+			return true;
 		}
-		else
-		{
-			String message = command.substring(5 + 1).trim();
-			Persons.sendMessageExcl(aUser, "%SNAME shout%VERB2 : " + message + "<BR>\r\n");
-			aUser.writeMessage(aUser, "<B>%SNAME shout%VERB2</B> : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
-		}
+		String message = command.substring(5 + 1).trim();
+		Persons.sendMessageExcl(aUser, "%SNAME shout%VERB2 : " + message + "<BR>\r\n");
+		aUser.writeMessage(aUser, "<B>%SNAME shout%VERB2</B> : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
 		return true;
 	}
 

@@ -62,12 +62,20 @@ HREF="#mm_events">mm_events</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></
 to the linux crontab. Can execute methodsat specific recurring times in the
 game.</TD></TR> 
 <TR valign=top><TD><A
+HREF="#mm_guildranks">mm_guildranks</A></TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>The different ranks that can exist
+within a guild</TD></TR> 
+<TR valign=top><TD><A
 HREF="#mm_guilds">mm_guilds</A></TD><TD><A
 HREF="#important"><SUP>(Note)</SUP></A>The different guilds that are
 available in the game</TD></TR> 
 <TR valign=top><TD><A
 HREF="#mm_help">mm_help</A></TD><TD>Contains help <I>manpages</I> on individual
 (standard) commands</TD></TR> 
+<TR valign=top><TD><A
+HREF="#mm_ignore">mm_ignore</A></TD><TD><A
+HREF="#important"><SUP>(Note)</SUP></A>Contains a list of people playing the
+game that are ignoring other people playing the game.</TD></TR> 
 <TR valign=top><TD><A
 HREF="#mm_itemattributes">mm_itemattributes</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Attributes
 of a certain item.</TD></TR> 
@@ -615,6 +623,56 @@ amount of guildmembers. See <I>minguildmembers</I>.
 | creation            |
 | owner               |
 | logonmessage        |
++---------------------+
+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_guildranks">mm_guildranks</A></H4>
+<DL>
+<DT>title
+<DD>the title of a rank within the guild, for example 'Head Honcho'.
+<DT>guildlevel
+<DD>a number that specifies the position of the rank in the hierarchie
+of ranks. Usually 0 is lowest rank and 100 is highest rank.
+<DT>guildname
+<DD>a reference to the guild to which this rank belongs.
+<DT>accept_access
+<DD>NOT USED
+<DT>reject_access
+<DD>NOT USED
+<DT>settings_access
+<DD>NOT USED
+<DT>logonmessage_access
+<DD>NOT USED
+</DL>
+
+<PRE>
++---------------------+
+| mm_guildranks       |
++---------------------+
+| title               |
+|*guildlevel          |
+|*guildname           |
+| accept_access       |
+| reject_access       |
+| settings_access     |
+| logonmessage_access |
++---------------------+
+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_ignore">mm_ignore</A></H4>
+<DL>
+<DT>fromperson
+<DD>the person who is ignoring someone
+<DT>toperson
+<DD>the person that is being ignored.
+</DL>
+
+<PRE>
++---------------------+
+| mm_ignore           |
++---------------------+
+|*fromperson          |
+|*toperson            |
 +---------------------+
 
 <A NAME="mm_help">

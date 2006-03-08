@@ -36,7 +36,10 @@ import mmud.characters.Persons;
 import mmud.characters.User;
 
 /**
- * Say something : "say Good morning, everyone."
+ * Say something :<UL>
+ * <LI>"say Good morning, everyone." or 
+ * <LI>"say to Karn Good morning, Karn."
+ * </UL>
  */
 public class SayCommand extends NormalCommand
 {
@@ -69,6 +72,12 @@ public class SayCommand extends NormalCommand
 			}
 			else
 			{
+				if (aUser.isIgnored(toChar))
+				{
+					aUser.writeMessage(toChar.getName() + 
+						" is ignoring you fully.<BR>\r\n");
+					return true;
+				}
 				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
 				Persons.sendMessageExcl(aUser, toChar, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");

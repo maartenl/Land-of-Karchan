@@ -70,6 +70,8 @@ import mmud.commands.GetCommand;
 import mmud.commands.GiveCommand;
 import mmud.commands.GoCommand;
 import mmud.commands.HelpCommand;
+import mmud.commands.IgnoreCommand;
+import mmud.commands.AcknowledgeCommand;
 import mmud.commands.InventoryCommand;
 import mmud.commands.ListMailCommand;
 import mmud.commands.LockCommand;
@@ -805,6 +807,8 @@ public final class Constants
 		theCommandStructure.put("down", new DownCommand("down"));
 		theCommandStructure.put("go", new GoCommand("go (up|down|north|south|east|west)?"));
 		theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
+		theCommandStructure.put("fully", new IgnoreCommand("fully ignore (\\w)+"));
+		theCommandStructure.put("acknowledge", new AcknowledgeCommand("acknowledge (\\w)+"));
 		theCommandStructure.put("bigtalk", new BigTalkCommand("bigtalk"));
 		theCommandStructure.put("curtsey", new CurtseyCommand("curtsey( to (\\w)+)?"));
 		theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));

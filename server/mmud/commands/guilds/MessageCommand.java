@@ -57,7 +57,7 @@ public class MessageCommand extends GuildCommand
 		}
 		String command = getCommand();
 		String message = command.substring("guild".length() + 1).trim();
-		Persons.sendGuildMessage(aUser.getGuild(), "<B>" + aUser.getName() + "</B>: " + message + "<BR>\r\n");
+		Persons.sendGuildMessage(aUser, aUser.getGuild(), "<B>" + aUser.getName() + "</B>: " + message + "<BR>\r\n");
 		return true;
 	}
 

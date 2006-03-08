@@ -378,8 +378,9 @@ public final class Persons implements Executable
 	 * no guild message is sent.
 	 * @param aGuild the guild to which the user must belong
 	 * @param aMessage message to be sent to all users.
+	 * @param aPerson the person sending the guild message.
 	 */
-	public static void sendGuildMessage(Guild aGuild, String aMessage)
+	public static void sendGuildMessage(Person aPerson, Guild aGuild, String aMessage)
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("aGuild=" + 
@@ -428,7 +429,11 @@ public final class Persons implements Executable
 
 	/**
 	 * room communication method to everyone in the room. The message
-	 * is not parsed.
+	 * is not parsed. Bear in mind that this method should only be used
+	 * for communication about environmental issues.
+	 * If the communication originates from a User/Person, you should
+	 * use sendMessage(aPerson, aMessage). Otherwise the Ignore
+	 * functionality will be omitted.
 	 * @param aRoom the room that is to display the message. If the room is
 	 * null, do not do anything.
 	 * @param aMessage the message
@@ -448,6 +453,37 @@ public final class Persons implements Executable
 			if ( (myChar.getRoom() == aRoom))
 			{
 				myChar.writeMessage(aMessage);
+			}
+		}
+	}
+
+	/**
+	 * room communication method to everyone in the room. The message
+	 * is not parsed.
+	 * @param aPerson the person that wishes to communicate in a room.
+	 * @param aRoom the room that is to display the message. If the room is
+	 * null, do not do anything.
+	 * @param aMessage the message
+	 * @see mmud.characters.Person#writeMessage(java.lang.String) 
+	 */
+	public static void sendMessage(Person aPerson, Room aRoom, String aMessage)
+	{
+		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
+			",aMessage=" + aMessage);
+		if (aRoom == null)
+		{
+			return;
+		}
+		if (aPerson == null)
+		{
+			throw new RuntimeException("person is null");
+		}
+		for (int i=0;i < thePersons.size();i++)
+		{
+			Person myChar = (Person) thePersons.elementAt(i);
+			if ( (myChar.getRoom() == aRoom))
+			{
+				myChar.writeMessage(aPerson, aMessage);
 			}
 		}
 	}

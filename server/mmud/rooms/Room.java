@@ -37,6 +37,7 @@ import mmud.AttributeContainer;
 import mmud.MudException;
 import mmud.characters.Persons;
 import mmud.characters.User;
+import mmud.characters.Person;
 import mmud.database.AttributeDb;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
@@ -553,9 +554,20 @@ public class Room implements Executable, AttributeContainer
 	 * room events.
 	 * @param aMessage the message to be sent
 	 */
-	public void sendMessage(String aMessage) 
+	private void sendMessage(String aMessage) 
 	{
 		Persons.sendMessage(this, aMessage);
+	}
+
+	/**
+	 * Sends a message to everyone in this room, originating from a certain
+	 * person.
+	 * @param aPerson the person  sending the message.
+	 * @param aMessage the message to be sent
+	 */
+	private void sendMessage(Person aPerson, String aMessage) 
+	{
+		Persons.sendMessage(aPerson, this, aMessage);
 	}
 
 	/**
@@ -904,7 +916,22 @@ public class Room implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name +
 						" does not contain a String as argument.");
 				}
-				Persons.sendMessage(this, (String) arguments[0]);
+				sendMessage((String) arguments[0]);
+				return null;
+			}
+			if (arguments.length == 2)
+			{
+				if (!(arguments[0] instanceof Person))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a Person  as first argument.");
+				}
+				if (!(arguments[1] instanceof String))
+				{
+					throw new MethodNotSupportedException(method_name +
+						" does not contain a String as second argument.");
+				}
+				sendMessage((Person) arguments[0], (String) arguments[1]);
 				return null;
 			}
 		}

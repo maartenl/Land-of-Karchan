@@ -66,18 +66,22 @@ public class AskCommand extends NormalCommand
 			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				return true;
 			}
-			else
+			if (aUser.isIgnored(toChar))
 			{
-				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				Persons.sendMessageExcl(aUser, toChar, "%SNAME ask%VERB2 %TNAME: " + message + "<BR>\r\n");
-				aUser.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
-				toChar.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
-				if (toChar instanceof CommunicationListener)
-				{
-					((CommunicationListener) toChar).commEvent(aUser, 
-						CommunicationListener.ASK, message);
-				}
+				aUser.writeMessage(toChar.getName() + 
+					" is ignoring you fully.<BR>\r\n");
+				return true;
+			}
+			String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
+			Persons.sendMessageExcl(aUser, toChar, "%SNAME ask%VERB2 %TNAME: " + message + "<BR>\r\n");
+			aUser.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
+			toChar.writeMessage(aUser, toChar, "<B>%SNAME ask%VERB2 %TNAME</B>: " + message + "<BR>\r\n");
+			if (toChar instanceof CommunicationListener)
+			{
+				((CommunicationListener) toChar).commEvent(aUser, 
+					CommunicationListener.ASK, message);
 			}
 		}
 		else
