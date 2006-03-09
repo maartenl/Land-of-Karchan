@@ -691,7 +691,6 @@ public class ItemsDb
 			sqlAddItem.setInt(1, anItemDef.getId());
 			sqlAddItem.executeUpdate();
 			ResultSet res = sqlAddItem.getGeneratedKeys();
-			System.out.println(res);
 			if (res.next())
 			{
 				myItem = ItemFactory.createItem(anItemDef, res.getInt(1));
