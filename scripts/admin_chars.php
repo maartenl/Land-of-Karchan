@@ -184,7 +184,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>birth:</b> %s<BR>", $myrow["birth"]);
 	printf("<b>Creation:</b> %s<BR>", $myrow["creation2"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
-	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow[21], $myrow[21]);
+	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["room"], $myrow["room"]);
 	$owner = false;
 	if ($myrow["owner"] == null || $myrow["owner"] == "" ||
 		$myrow["owner"] == $_COOKIE["karchanadminname"])
