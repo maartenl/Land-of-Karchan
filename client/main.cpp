@@ -11,6 +11,8 @@
 // ----------------------------------------------------------------------------
 #include <ExampleApplication.h>
 
+namespace Mmud {
+
 // ----------------------------------------------------------------------------
 // Define the application object
 // This is derived from ExampleApplication which is the class OGRE provides to
@@ -74,3 +76,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+} // end of namespace 

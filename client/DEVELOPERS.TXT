@@ -1,0 +1,30 @@
+The following stuff is usefull to know:
+
+Root object -> the object to start the whole shebang
+SceneManager -> used to create things
+	ResourceManager -> 	
+		TextureManager
+MeshObject -> an entity in 'the world' , .mesh files
+	SubMesh -> part of an Mesh, for differing textures.
+		Material -> .material files
+	SkeletonAnimation -> moving bones .skeleton files.
+(if mesh=one material => one submesh)
+Entity -> instance of movable object in a scene (based on a MeshObject)
+	SubEntity ->one on one mapping with the submeshes 
+		(usefull for creating individual looking entities)
+		Material
+	Animation State Object
+Scenemanager::createEntity(name, name of mesh)
+Entities are attached to a SceneNode
+Overlays -> for HUDS
+	OverlayElement
+	OverlayContainer -> can contain OverlayElements and OverlayContainers
+		.overlay files
+CEGui can be used instead of OverLays...
+	LUA is part of CEGui
+
+The following scripts exist:
+- Material scripts, .material
+- Particle scripts, .particle
+- Overlay scripts, .overlay
+- Font Definition scripts, .fontdef, .ttf
