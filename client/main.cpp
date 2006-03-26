@@ -42,6 +42,34 @@ protected:
         myLight->setPosition(0, 40, 0);
         myLight->setDiffuseColour(1, 1, 1);
         myLight->setSpecularColour(1, 1, 1);
+
+        Plane plane( Vector3::UNIT_Y, 0 );
+        MeshManager::getSingleton().createPlane("ground",
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
+            1500,1500,20,20,true,1,5,5,Vector3::UNIT_Z);
+        Entity *ent = mSceneMgr->createEntity( "GroundEntity", "ground" );
+        mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
+        ent->setMaterialName("Examples/Rockwall");
+        ent->setCastShadows(false);
+
+        // create an entity
+        Entity *ent1 = mSceneMgr->createEntity( "Robot", "chair.mesh" );
+        // create a child node attached to the root scene node.
+        SceneNode *node1 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "RobotNode" );
+        // around the z-axis, counterclockwise
+        //node1->yaw( Degree( -90 ) );
+        // rotate around the x-axis, counterclockwise
+        //node1->pitch( Degree( -90 ) );
+        // rotate around the y-axis, counterclockwise
+        node1->roll( Degree( 90 ) );
+        node1->yaw( Degree( 15 ) );
+        node1->translate( Vector3( 0, 6, 0 ) );
+        ent1->setMaterialName("Mmud/ashwood");
+        ent1->setCastShadows(true);
+
+        // attach the robot to the scene node.
+        node1->attachObject( ent1 );
+
     }
 };
 
@@ -77,4 +105,4 @@ int main(int argc, char **argv)
     return 0;
 }
 
-} // end of namespace 
+} // end of namespace
