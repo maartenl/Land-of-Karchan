@@ -33,7 +33,9 @@ protected:
     // Just override the mandatory create scene method
     void createScene(void)
     {
-        // Create the SkyBox
+        LogManager *logger = Ogre::LogManager::getSingletonPtr();
+        logger->logMessage("entering createScene()");
+                // Create the SkyBox
         mSceneMgr->setSkyBox(true, "Examples/CloudyNoonSkyBox");
 
         // Create a light
@@ -64,12 +66,14 @@ protected:
         node1->roll( Degree( 90 ) );
         node1->yaw( Degree( 15 ) );
         node1->translate( Vector3( 0, 6, 0 ) );
-        ent1->setMaterialName("Mmud/ashwood");
+
+        // already included in the mesh.
+        //ent1->setMaterialName("Mmud/ashwood");
         ent1->setCastShadows(true);
 
         // attach the robot to the scene node.
         node1->attachObject( ent1 );
-
+        logger->logMessage("leaving createScene()");
     }
 
     virtual void createCamera(void)
