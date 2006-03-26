@@ -71,6 +71,40 @@ protected:
         node1->attachObject( ent1 );
 
     }
+
+    virtual void createCamera(void)
+    {
+        /**
+        The following steps are logical:
+        - the scenemanager creates a new camera.
+        - the renderwindow knows which cameras to use to display on the screen
+        - the part of the renderwindow to use for the camera is called
+          the ViewPort.
+        */
+        // create the camera
+        mCamera = mSceneMgr->createCamera("PlayerCam");
+         // set its position, direction
+        mCamera->setPosition(Vector3(0,10,500));
+        mCamera->lookAt(Vector3(0,0,0));
+        // make sure that objects that are really really close are not visible
+        mCamera->setNearClipDistance(5);
+        // make sure that objects that are far away are not visible,
+        // optimalisation.
+        // mCamera->setFarClipDistance(5000);
+        // Create one viewport, entire window
+
+
+    }
+
+    virtual void createViewports(void)
+    {
+        Viewport* vp = mWindow->addViewport(mCamera, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+        vp->setBackgroundColour(ColourValue(0,0,0));
+        // Alter the camera aspect ratio to match the viewport
+        // not really necessary as we are using the entire screen,
+        // but what the hell
+        mCamera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
+    }
 };
 
 
