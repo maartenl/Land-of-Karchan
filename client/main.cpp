@@ -21,11 +21,11 @@ namespace Mmud {
 // specialise the setup routine, otherwise the only mandatory override is the
 // 'createScene' method which is where you set up your own personal scene.
 // ----------------------------------------------------------------------------
-class SampleApp : public ExampleApplication
+class Main : public ExampleApplication
 {
 public:
     // Basic constructor
-    SampleApp()
+    Main()
     {}
 
 protected:
@@ -51,7 +51,7 @@ protected:
             1500,1500,20,20,true,1,5,5,Vector3::UNIT_Z);
         Entity *ent = mSceneMgr->createEntity( "GroundEntity", "ground" );
         mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
-        ent->setMaterialName("Examples/Rockwall");
+        ent->setMaterialName("Mmud/rockwall");
         ent->setCastShadows(false);
 
         // create an entity
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 #endif
 {
     // Create application object
-    SampleApp app;
+    Main app;
 
     try
     {
