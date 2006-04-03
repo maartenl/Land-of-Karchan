@@ -27,6 +27,12 @@ cupboard_open.blend
 
 Derived from cupboard.blend but with a cutout on the back.
 
+bar.blend
+
+Created a standard bar, contained of two cubes joined.
+
+Dimensions: w x b x h	2 x 18 x 4
+
 xxxx.combined.blend
 
 This file is usually a combination of all the different meshes into one
