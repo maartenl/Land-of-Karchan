@@ -21,11 +21,11 @@ cupboard.blend
 
 Created a standard cupboard, contained of a couple of cubes.
 
+Dimensions: w x b x h    2 x 6 x 7.5
+
 cupboard_open.blend
 
 Derived from cupboard.blend but with a cutout on the back.
-
-Dimensions: w x b x h    4 x 6 x 3.5, seat is less than 0.5 thick.
 
 xxxx.combined.blend
 
