@@ -10,6 +10,23 @@ The cubes have been rotated at an angle of 15 degrees.
 
 Dimensions: w x b x h    3 x 3.5 x 5.5, seat is less than 0.5 thick.
 
+table.blend
+
+Created a table, contained of a couple of cubes.
+The cubes have been rotated at an angle of 15 degrees.
+
+Dimensions: w x b x h    4 x 6 x 3.5, seat is less than 0.5 thick.
+
+cupboard.blend
+
+Created a standard cupboard, contained of a couple of cubes.
+
+cupboard_open.blend
+
+Derived from cupboard.blend but with a cutout on the back.
+
+Dimensions: w x b x h    4 x 6 x 3.5, seat is less than 0.5 thick.
+
 xxxx.combined.blend
 
 This file is usually a combination of all the different meshes into one
