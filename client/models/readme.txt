@@ -33,6 +33,18 @@ Created a standard bar, contained of two cubes joined.
 
 Dimensions: w x b x h	2 x 18 x 4
 
+door.blend
+
+Created a standard door, contained of one cubes, one cylinder, one sphere.
+
+Dimensions: w x b x h	1 x 7.2 x 10.5
+
+inn.blend
+
+Created an empty box with a roof to contain the inn.
+
+Dimensions: w x b x h	40 x 22 x 14
+
 xxxx.combined.blend
 
 This file is usually a combination of all the different meshes into one
