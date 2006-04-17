@@ -299,6 +299,9 @@ foreign key (fromperson) references mm_usertable (name),
 foreign key (toperson) references mm_usertable (name),
 primary key (fromperson, toperson)
 ) ENGINE=InnoDB;
+---------------------------------------------------------------
+latest version: database_setup_002.sql
+---------------------------------------------------------------
 
 creating board system
 ---------------------
