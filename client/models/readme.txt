@@ -39,11 +39,23 @@ Created a standard door, contained of one cubes, one cylinder, one sphere.
 
 Dimensions: w x b x h	1 x 7.2 x 10.5
 
+window.blend
+
+Created a window for putting in empty spaces in building.
+
+Dimensions: w x b x h	1 x 7.2 x 7.2
+
 inn.blend
 
 Created an empty box with a roof to contain the inn.
 
-Dimensions: w x b x h	40 x 22 x 14
+Dimensions: w x b x h	50 x 27 x 34
+
+chest.blend
+
+Created from an empty box and an empty cylinder.
+
+Dimensions: w x b x h	
 
 xxxx.combined.blend
 
