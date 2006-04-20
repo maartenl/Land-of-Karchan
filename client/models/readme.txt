@@ -55,7 +55,11 @@ chest.blend
 
 Created from an empty box and an empty cylinder.
 
-Dimensions: w x b x h	
+Dimensions: w x b x h	3 x 6 x 3+2 (rim=0.3)
+
+tree.blend
+
+Dimensions: w x b x h	6 x 6 x 80
 
 xxxx.combined.blend
 
