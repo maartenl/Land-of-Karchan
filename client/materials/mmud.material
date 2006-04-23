@@ -17,6 +17,120 @@ material Mmud/ashwood
 	}
 }
 
+material Mmud/chest_box
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
+material Mmud/chest_lid
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
+material Mmud/cupboard
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
+material Mmud/leftcupboarddoor
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
+material Mmud/rightcupboarddoor
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
+material Mmud/table
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000 1.000000
+			diffuse 0.640000 0.640000 0.640000 1.000000
+			specular 0.500000 0.500000 0.500000 1.000000 12.500000
+			emissive 0.000000 0.000000 0.000000 1.000000
+			texture_unit
+			{
+				texture ashwood.jpg
+			}
+		}
+	}
+}
+
 material Mmud/rockwall
 {
 	technique
@@ -49,17 +163,6 @@ material Mmud/ground
 				texture grass.png
 				scale 0.1 0.1
 			}
-			texture_unit
-			{
-				texture alpha_dirt.png
-				colour_op alpha_blend
-			}
-			texture_unit
-			{
-				texture dirt.png
-				scale 0.1 0.1
-				colour_op_ex blend_current_alpha src_texture src_current
-			}
 		}
 
 		// dirt pass
@@ -71,17 +174,18 @@ material Mmud/ground
 			// blend with former pass
 			scene_blend alpha_blend
 
- // blend with former pass
-            scene_blend alpha_blend
+			// blend with former pass
+			scene_blend alpha_blend
 
-            // only overwrite fragments with the same depth
-            depth_func equal
+			// only overwrite fragments with the same depth
+			depth_func equal
 
             // alpha map for the dirt
             texture_unit
             {
                 texture alpha_dirt.png
 
+                scale 5 5
                 // use alpha from this texture
                 alpha_op_ex source1 src_texture src_texture
                 // and colour from last pass
