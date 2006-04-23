@@ -26,6 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 #include "OgreApplication.h"
 
+namespace Mmud
+{
 //-------------------------------------------------------------------------------------
 OgreApplication::OgreApplication(void)
  : mRoot(0)
@@ -301,3 +303,4 @@ void OgreApplication::createFrameListener(void)
 }
 
 
+} // end of namespace

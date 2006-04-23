@@ -24,48 +24,32 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-#ifndef __OgreApplication_h__
-#define __OgreApplication_h__
+#ifndef __Network_h__
+#define __Network_h__
 
+#include <stdio.h>
+#include <string.h>
 #include <ogre.h>
-#include <OgreFrameListener.h>
-#include <ExampleFrameListener.h>
+#include <winsock2.h>
 
 using namespace Ogre;
-namespace Mmud {
+namespace Mmud
+{
 
-class OgreApplication
+class Network
 {
 public:
-   OgreApplication(void);
-   virtual ~OgreApplication(void);
+   Network(void);
+   virtual ~Network(void);
 
-   virtual void go(void);
+   virtual void open(void);//const String&,  const int);
+   virtual void send(void);//const String& aMessage);
+   virtual void receive(void);
+   virtual void close(void);
 
 protected:
-   virtual bool setup();
-   virtual bool configure(void);
-   virtual void chooseSceneManager(void);
-   virtual void setupResources(void);
-   virtual void createCamera(void);
-   virtual void createViewports(void);
-   virtual void createScene(void);
-   virtual void createResourceListener(void);
-   virtual void loadResources(void);
-   virtual void destroyScene(void);
-
-   virtual void createFrameListener(void);
-
-   // Framelistener overridden functions
-   virtual bool frameStarted(const FrameEvent& evt);
-   virtual bool frameEnded(const FrameEvent& evt);
-
-   Root *mRoot;
-   Camera* mCamera;
-   SceneManager* mSceneMgr;
-   RenderWindow* mWindow;
-   ExampleFrameListener* mFrameListener;
+   SOCKET m_socket;
 };
 
 } // end of namespace
-#endif // __OgreApplication_h__
+#endif // __Network_h__
