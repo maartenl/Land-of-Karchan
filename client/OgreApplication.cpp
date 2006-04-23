@@ -164,13 +164,13 @@ void OgreApplication::createScene(void)
         1500,1500,20,20,true,1,5,5,Vector3::UNIT_Z);
     Entity *ent = mSceneMgr->createEntity( "GroundEntity", "ground" );
     mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(ent);
-    ent->setMaterialName("Mmud/rockwall");
+    ent->setMaterialName("Mmud/ground");
     ent->setCastShadows(false);
 
     // create an entity
-    Entity *ent1 = mSceneMgr->createEntity( "Robot", "chair.mesh" );
+    Entity *ent1 = mSceneMgr->createEntity( "Chair", "chair.mesh" );
     // create a child node attached to the root scene node.
-    SceneNode *node1 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "RobotNode" );
+    SceneNode *node1 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "ChairNode" );
     // around the z-axis, counterclockwise
     //node1->yaw( Degree( -90 ) );
     // rotate around the x-axis, counterclockwise
@@ -184,8 +184,54 @@ void OgreApplication::createScene(void)
     //ent1->setMaterialName("Mmud/ashwood");
     ent1->setCastShadows(true);
 
+    Entity *ent2 = mSceneMgr->createEntity( "Table", "table.mesh" );
+    SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "TableNode" );
+    //node2->roll( Degree( 90 ) );
+    //node2->yaw( Degree( 90 ) );
+    node2->pitch( Degree( -90 ) );
+    node2->translate( Vector3( 6, 3, 18 ) );
+    ent2->setCastShadows(true);
+
+    Entity *ent3 = mSceneMgr->createEntity( "Cupboard", "cupboard.mesh" );
+    SceneNode *node3 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "CupboardNode" );
+    //node3->roll( Degree( 90 ) );
+    //node3->yaw( Degree( 15 ) );
+    node3->translate( Vector3( 0, 4, 12 ) );
+    //node3->pitch( Degree( -90 ) );
+    ent3->setCastShadows(true);
+    Entity *ent4 = mSceneMgr->createEntity( "Cupboard_leftdoor", "leftcupboarddoor.mesh" );
+    SceneNode *node4 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "Cupboard_LeftdoorNode" );
+    //node4->roll( Degree( 90 ) );
+    //node4->yaw( Degree( 15 ) );
+    node4->translate( Vector3( 1, 0.5, 18 ) );
+    ent4->setCastShadows(true);
+    Entity *ent5 = mSceneMgr->createEntity( "Cupboard_rightdoor", "rightcupboarddoor.mesh" );
+    SceneNode *node5 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "Cupboard_RightdoorNode" );
+    //node5->roll( Degree( 90 ) );
+    //node5->yaw( Degree( 15 ) );
+    node5->translate( Vector3( 1, 0.5, 12 ) );
+    ent5->setCastShadows(true);
+    Entity *ent6 = mSceneMgr->createEntity( "Chestbox", "chest_box.mesh" );
+    SceneNode *node6 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "ChestBoxNode" );
+    //node6->roll( Degree( 90 ) );
+    //node6->yaw( Degree( 15 ) );
+    node6->translate( Vector3( 0, 1, 0 ) );
+    ent6->setCastShadows(true);
+    Entity *ent7 = mSceneMgr->createEntity( "Chestlid", "chest_cylinder.mesh" );
+    SceneNode *node7 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "ChestLidNode" );
+    //node7->roll( Degree( 90 ) );
+    //node7->yaw( Degree( 15 ) );
+    node7->translate( Vector3( 0, 2.25, 0 ) );    // x up x
+    ent7->setCastShadows(true);
+
     // attach the robot to the scene node.
     node1->attachObject( ent1 );
+    node2->attachObject( ent2 );
+    node3->attachObject( ent3 );
+    node4->attachObject( ent4 );
+    node5->attachObject( ent5 );
+    node6->attachObject( ent6 );
+    node7->attachObject( ent7 );
     logger->logMessage("leaving createScene()");
 }
 
