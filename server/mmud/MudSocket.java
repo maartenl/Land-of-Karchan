@@ -454,10 +454,13 @@ public class MudSocket extends Thread
 		{
 			myUser.writeMessage("You have no new Mudmail...<P>\r\n");
 		}
-		if ( (myUser.getGuild() != null) && 
-			(myUser.getGuild().getLogonMessage() != null) )
+		if (myUser.getGuild() != null)
 		{
-			myUser.writeMessage(myUser.getGuild().getLogonMessage() +"<HR>");
+			if (myUser.getGuild().getLogonMessage() != null) 
+			{
+				myUser.writeMessage(myUser.getGuild().getLogonMessage() +"<HR>");
+			}
+			myUser.writeMessage(myUser.getGuild().getAlarmDescription() +"<HR>");
 		}
 		String returnStuff;
 		Database.writeLog(myUser.getName(), "entered game.");

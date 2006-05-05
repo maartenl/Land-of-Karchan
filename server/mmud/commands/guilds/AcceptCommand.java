@@ -88,6 +88,7 @@ public class AcceptCommand extends GuildMasterCommand
 		}
 		toChar.removeAttribute("guildwish");
 		toChar.setGuild(aUser.getGuild());
+		aUser.getGuild().increaseAmountOfMembers();
 		Database.writeLog(aUser.getName(), " accepted " + 
 			toChar.getName() + " into guild " + aUser.getGuild().getName());
 		aUser.writeMessage(toChar.getName() + " has joined your guild.<BR>\r\n");
@@ -95,6 +96,7 @@ public class AcceptCommand extends GuildMasterCommand
 		{
 			toChar.writeMessage("You have joined guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
 		}
+		aUser.getGuild().increaseAmountOfMembers();
 		return true;
 	}
 

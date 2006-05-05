@@ -56,6 +56,8 @@ public class Guild
 	private String theGuildUrl;
 	private String theLogonMessage;
 
+	private int theAmountOfMembers;
+
 	private boolean theActive;
 	
 	private TreeMap theRanks = new TreeMap();
@@ -81,11 +83,12 @@ public class Guild
 		theMinGuildMembers = aMinGuildMembers;
 		theBossName = aBossName;
 		theActive = aActive;
+		theAmountOfMembers = 1;
 	}
 		
 
 	/**
-	 * Constructor. Create a guild.
+	 * Constructor, to be used for database retrieval. Create a guild.
 	 * @param aName the name of the guild, a unique identifier. Usually 
 	 * just one word.
 	 * @param aMaxDaysGuildDeath the TTL (time-to-live) for a guild
@@ -117,7 +120,8 @@ public class Guild
 		String aGuildDescription,
 		String aGuildUrl,
 		String aLogonMessage,
-		boolean aActive)
+		boolean aActive,
+		int aAmountOfMembers)
 	throws MudException
 	{
 		this(aName, aMaxDaysGuildDeath, aDaysGuildDeath, aMinGuildMembers, aBossName, aActive);
@@ -127,8 +131,43 @@ public class Guild
 		theGuildDescription = aGuildDescription;
 		theGuildUrl = aGuildUrl;
 		theLogonMessage = aLogonMessage;
+		theAmountOfMembers = aAmountOfMembers;
 	}
 
+	/**
+	 * Returns how many people are a guild member
+	 * of this guild.
+	 * @return an integer indicating how many members this guild has.
+	 * @see #decreaseAmountOfMembers()
+	 * @see #increaseAmountOfMembers()
+	 */
+	public int getAmountOfMembers()
+	{
+		return theAmountOfMembers;
+	}
+	
+	/**
+	 * Is called whenever someone is either kicked out of the guild
+	 * or whenever someone has left the guild.
+	 */
+	public void decreaseAmountOfMembers()
+	{
+		theAmountOfMembers --;
+	}
+	
+	/**
+	 * Is called whenever someone new has become a member of this guild.
+	 */
+	public void increaseAmountOfMembers()
+	throws MudException
+	{
+		theAmountOfMembers ++;
+		if (theAmountOfMembers >= theMinGuildMembers)
+		{
+			activate();
+		}
+	}
+	
 	public void setTitle(String aTitle)
 	throws MudException
 	{
@@ -219,6 +258,20 @@ public class Guild
 		return theActive;
 	}
 
+	/**
+	 * Activate this guild when it has at least the required
+	 * minimum amount of members.
+	 */
+	public void activate()
+	throws MudException
+	{
+		if (!theActive)
+		{
+			theActive = true;
+			Database.setGuild(this);
+		}
+	}
+
 	public boolean equals(Object obj)
 	{
 		if (obj == null)
@@ -242,6 +295,30 @@ public class Guild
 		return super.toString() + ":" + getName();
 	}
 
+	/**
+	 * Returns a description in case the guild is in danger of being 
+	 * purged from the database. This is necessary to make sure there
+	 * is not a plethora of guilds with few members.<P>The following
+	 * preconditions are in effect:
+	 * <UL>
+	 * <LI>the guild is active
+	 * <LI>there are too few guildmembers (minguildmembers > amountofmembers)
+	 * </UL>
+	 * @return String indicating if there are too few members, usually 
+	 * should be the empty string if all is well.
+	 */
+	public String getAlarmDescription()
+	{
+		if ((!isActive()) ||
+			(theMinGuildMembers <= theAmountOfMembers))
+		{
+			return "";
+		}
+		return "The minimum amount of members of this guild is " + theMinGuildMembers
+			 + ".<BR>The guild has too few members, and will be removed in "
+			 + theDaysGuildDeath + " days.";
+	}
+	
 	/**
 	 * This is primarily used for displaying the current status of the guild
 	 * to a member of the guild.
@@ -309,7 +386,8 @@ public class Guild
 			+ ").<BR>The current guildmaster is <I>" + getBossName() 
 			+ "</I>.<BR>The guild is <I>" 
 			+ (isActive() ? "active" : "inactive")
-			+ "</I>.<P>" + result + "<P>";
+			+ "</I>.<BR>The guild has " + getAmountOfMembers()
+			+ " members." + getAlarmDescription() + "<P>" + result + "<P>";
 
 	}
 	

@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import mmud.MudException;
 import mmud.Attribute;
 import mmud.characters.User;
+import mmud.characters.Person;
+import mmud.characters.Persons;
 import mmud.characters.GuildFactory;
 import mmud.characters.Guild;
 import mmud.database.Database;
@@ -38,16 +40,13 @@ import mmud.commands.NormalCommand;
 import mmud.commands.Command;
 
 /**
- * Makes you leave a guild. There are some requirements to follow:
- * <UL>
- * <LI>you must already belong to a guild
- * </UL>
- * Command syntax something like : <TT>guildleave</TT>
+ * Makes you, as guildmaster, remove a member of the guild forcibly.
+ * Command syntax something like : <TT>guildremove &lt;person&gt;</TT>
  */
-public class LeaveCommand extends GuildCommand
+public class RemoveCommand extends GuildMasterCommand
 {
 
-	public LeaveCommand(String aRegExpr)
+	public RemoveCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
@@ -61,19 +60,38 @@ public class LeaveCommand extends GuildCommand
 			return false;
 		}
 		Guild guild = aUser.getGuild();
-		aUser.removeAttribute("guildrank");
+		String[] myParsed = getParsedCommand();
+		Person toChar2 = Persons.getPerson(myParsed[1]);
+		
+		if ((toChar2 == null) || (!(toChar2 instanceof User)))
+		{
+			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			return true;
+		}
+		User toChar = (User) toChar2;
+		if (!aUser.getGuild().equals(toChar.getGuild()))
+		{
+			aUser.writeMessage("That person is not a member of your guild.<BR>\r\n");
+			return true;
+		}
+		toChar.setGuild(null);
 		aUser.getGuild().decreaseAmountOfMembers();
-		aUser.setGuild(null);
-		aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "left guild " +
-			guild.getName());
-		guild.decreaseAmountOfMembers();
+		Database.writeLog(aUser.getName(), "removed " + 
+			toChar.getName() + " from guild " + 
+			aUser.getGuild().getName());
+		aUser.writeMessage("You have removed " + toChar.getName() + " from your guild.<BR>\r\n");
+		Persons.sendGuildMessage(aUser, aUser.getGuild(), "<B>" + toChar.getName() + 
+			"</B> has been removed from the guild.<BR>\r\n");
+		if (toChar.isActive())
+		{
+			toChar.writeMessage("You have been removed from the guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+		}
 		return true;
 	}
 
 	public Command createCommand()
 	{
-		return new LeaveCommand(getRegExpr());
+		return new RemoveCommand(getRegExpr());
 	}
 	
 }

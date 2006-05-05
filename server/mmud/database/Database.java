@@ -103,6 +103,7 @@ public class Database
 		"delete from mm_ignore " +
 		"where fromperson = ? and toperson = ?";
 	public static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
+	public static String sqlGetGuildMembersAmount = "select count(name) as amount from mm_usertable where guild = ?";
 	public static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
 	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
 	public static String sqlGetUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
@@ -1710,6 +1711,50 @@ public class Database
 	}
 
 	/**
+	 * returns the number of members currently in a guild.
+	 * @return integer providing the amount of members of a guild.
+	 * @param aName the name of the guild to be looked up.
+	 * @throws MudException if the guild does not exist or some such.
+	 */
+	public static int getAmountOfMembersInGuild(String aName)
+	throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+		if (aName == null)
+		{
+			throw new MudDatabaseException("name of guild was null.");
+		}
+		int result = 0;
+		ResultSet res;
+		Guild guild = null;
+		try
+		{
+
+		PreparedStatement statGetGuild = prepareStatement(sqlGetGuildMembersAmount);
+		statGetGuild.setString(1, aName);
+		res = statGetGuild.executeQuery();
+		if (res != null)
+		{
+			if (res.next())
+			{
+				result = res.getInt("amount");
+			}
+			else
+			{
+				throw new MudDatabaseException("guild " + aName + " does not exist in database.");
+			}
+			res.close();
+		}
+		statGetGuild.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error while retrieving guild.", e);
+		}
+		return result;
+	}
+
+	/**
 	 * returns a guild object retrieved from the database.
 	 * @return Guild object.
 	 * @param aName the name of the guild to be retrieved.
@@ -1719,6 +1764,7 @@ public class Database
 	throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
+		int amountOfMembers = getAmountOfMembersInGuild(aName);
 		if (aName == null)
 		{
 			throw new MudDatabaseException("name of guild was null.");
@@ -1746,7 +1792,8 @@ public class Database
 					res.getString("guilddescription"),
 					res.getString("guildurl"),
 					res.getString("logonmessage"),
-					res.getInt("active") == 1
+					res.getInt("active") == 1, 
+					amountOfMembers
 					);
 			}
 			else
