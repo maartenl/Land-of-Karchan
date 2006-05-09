@@ -197,9 +197,36 @@ public class CharacterFactory
 			aCopper,
 			aRoom); 
 		}
-		if (aGod > 2)
+		if (aGod == 3)
 		{
 			return new Mob(aName,
+			aTitle,
+			aRace, 
+			aSex,  
+			aAge,  
+			aLength,
+			aWidth, 
+			aComplexion,
+			aEyes,
+			aFace,
+			aHair,
+			aBeard,
+			aArms, 
+			aLegs, 
+			aSleep,
+			aWhimpy,
+			aDrinkstats,
+			aEatstats,  
+			aLevel, 
+			aHealth,
+			anAlignment,
+			aMovement,  
+			aCopper,
+			aRoom); 
+		}
+		if (aGod == 4)
+		{
+			return new StdShopKeeper(aName,
 			aTitle,
 			aRace, 
 			aSex,  

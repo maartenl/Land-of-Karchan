@@ -61,7 +61,7 @@ public class ItemsDb
 	 * Items that are being worn are not a part of this list.
 	 */
 	public static String sqlGetInventoryPersonString = 
-		  "select count(*) as amount, adject1, adject2, adject3, name "
+		  "select count(*) as amount, adject1, adject2, adject3, name, mm_items.copper "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_charitemtable.id = mm_itemtable.id and "
@@ -142,6 +142,12 @@ public class ItemsDb
 		+ "mm_itemtable.id = mm_charitemtable.id and "
         + "belongsto = ? and "
 		+ "mm_items.id = ?";
+	public static String sqlGetItemPerson3String =
+		"select mm_itemtable.itemid, mm_charitemtable.* "
+		+ "from mm_charitemtable, mm_itemtable, mm_items "
+		+ "where mm_itemtable.itemid = mm_items.id and "
+		+ "mm_itemtable.id = mm_charitemtable.id and "
+	        + "belongsto = ?";
 	public static String sqlGetItemContainerString =
 		"select mm_itemtable.itemid, mm_itemitemtable.* "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
@@ -355,11 +361,21 @@ public class ItemsDb
 	 * @param aPerson the person whos inventory we are interested in.
 	 * @return String containing the bulleted list of items the
 	 * person is carrying.
+	 * @param aFormat an integer indicating which format to return.
+	 * Possible values:
+	 * <UL><LI>1 - a person wishes to list his inventory
+	 * <LI>2 - a shopkeeper wishes to list his inventory
+	 * </UL>
 	 */
-	public static String getInventory(Person aPerson)
+	public static String getInventory(Person aPerson, int aFormat)
 	throws MudDatabaseException
 	{
-		Logger.getLogger("mmud").finer("");
+		Logger.getLogger("mmud").finer("aPerson=" + aPerson + 
+			", aFormat=" + aFormat);
+		if ((aFormat < 1) || (aFormat > 2))
+		{
+			throw new RuntimeException("Illegal format.");
+		}
 		StringBuffer myInventory = new StringBuffer("");
 		ResultSet res;
 		try
@@ -376,6 +392,7 @@ public class ItemsDb
 		while (res.next())
 		{
 			int amount = res.getInt("amount");
+			int acopper = res.getInt("copper");
 			String desc = ItemDef.getDescription(res.getString("adject1"),
 				res.getString("adject2"),
 				res.getString("adject3"),
@@ -393,13 +410,27 @@ public class ItemsDb
 					// remove 'a '
 					desc = desc.substring(2);
 				}
-				myInventory.append("<LI>" + amount + " " + desc +	"s.\r\n");
+				myInventory.append("<LI>" + amount + " " + desc);
+				if (!desc.endsWith("s"))
+				{
+					myInventory.append("s");
+				}
 			}
 			else
 			{
 				// a gold, hard cup
-				myInventory.append("<LI>" + desc + ".\r\n");
+				myInventory.append("<LI>" + desc);
 			}
+			if (aFormat == 2)
+			{
+				String money = Constants.getDescriptionOfMoney(acopper);
+				if (!money.equals(""))
+				{
+					myInventory.append(", ");
+				}
+				myInventory.append(money);
+			}
+			myInventory.append(".\r\n");
 		}
 		res.close();
 		sqlGetInventories.close();
@@ -1170,6 +1201,54 @@ public class ItemsDb
 		catch (SQLException e)
 		{
 			throw new MudDatabaseException("database error getting items of " + aItemDef + " from " + aChar, e);
+		}
+		Logger.getLogger("mmud").finer("returns: " + items);
+		return items;
+	}
+
+	/**
+	 * Retrieve the inventory of a character.
+	 * @param aChar the character who has the item in his/her inventory.
+	 * @return Vector containing all Item objects found.
+	 */
+	public static Vector getItemsFromChar(Person aChar)
+	throws MudDatabaseException, MudException
+	{
+		Logger.getLogger("mmud").finer("char=" + aChar.getName());
+		ResultSet res;
+		Vector items = new Vector();
+		try
+		{
+			PreparedStatement sqlGetItem = Database.prepareStatement(sqlGetItemPerson3String);
+			sqlGetItem.setString(1, aChar.getName()+"");
+			res = sqlGetItem.executeQuery();
+			if (res == null)
+			{
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			int anItemId = 0;
+			int anItemInstanceId = 0;
+			while (res.next())
+			{
+				anItemInstanceId = res.getInt("id");
+				anItemId = res.getInt("itemid");
+				ItemDef anItemDef = ItemDefs.getItemDef(anItemId);
+				Vector attribs = AttributeDb.getAttributesItem(anItemInstanceId);
+				Item anItem = ItemFactory.createItem(
+					anItemDef,
+					anItemInstanceId,
+					PersonPositionEnum.get(res.getInt("wearing")),
+					attribs
+					);
+				items.add(anItem);
+			}
+			res.close();
+			sqlGetItem.close();
+		}
+		catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error getting items from " + aChar, e);
 		}
 		Logger.getLogger("mmud").finer("returns: " + items);
 		return items;

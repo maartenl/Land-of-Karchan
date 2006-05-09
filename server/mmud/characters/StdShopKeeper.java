@@ -27,17 +27,21 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
+import java.util.logging.Logger;
+
 import mmud.MudException;
 import mmud.Sex;
 import mmud.items.Item;
 import mmud.races.Race;
 import mmud.rooms.Room;
+import mmud.database.MudDatabaseException;
+import mmud.database.ItemsDb;
 
 /**
  * Class containing a default shopkeeper implementation. (currently not a
  * player)
  */
-public class StdShopKeeper extends Person implements ShopKeeper
+public class StdShopKeeper extends Bot implements ShopKeeper
 {
 
 	/**
@@ -144,6 +148,18 @@ public class StdShopKeeper extends Person implements ShopKeeper
 	public String getStoreList()
 	{
 		return "";
+	}
+
+	/**
+	 * Returns a string describing the persons inventory. Difference with a
+	 * normal person is that here the costs per item are included.
+	 * @return a string containing a html list.
+	 */
+	public String inventory()
+	throws MudDatabaseException
+	{
+		Logger.getLogger("mmud").finer("");                    
+		return ItemsDb.getInventory(this, 2);
 	}
 
 }

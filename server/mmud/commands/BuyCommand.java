@@ -33,6 +33,7 @@ import mmud.Constants;
 import mmud.MudException;
 import mmud.ParseException;
 import mmud.characters.Person;
+import mmud.characters.ShopKeeper;
 import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.database.Database;
@@ -75,7 +76,7 @@ public class BuyCommand extends NormalCommand
 	 * gold ring from Karcas</I>".
 	 * <li>shopkeeper selling the item should
 	 * <ol><li> exist, <li>be in the same room and<li>
-	 * have a occupation-attribute set to "shopkeeper"
+	 * have a god==4 to indicate "shopkeeper"
 	 * and<li>has the appropriate item for sale</ol>
 	 * <li>the customer should be able to afford the item
 	 * </ol>
@@ -114,9 +115,7 @@ public class BuyCommand extends NormalCommand
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
-			if ( (!toChar.isAttribute("occupation")) || 
-				(!"shopkeeper".equals(
-				toChar.getAttribute("occupation").getValue())) )
+			if (!(toChar instanceof ShopKeeper))
 			{
 				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;

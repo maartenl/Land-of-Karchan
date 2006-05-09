@@ -302,6 +302,7 @@ primary key (fromperson, toperson)
 ---------------------------------------------------------------
 latest version: database_setup_002.sql
 ---------------------------------------------------------------
+- alter table mm_usertable add (notes text);
 
 creating board system
 ---------------------

@@ -33,6 +33,7 @@ import mmud.Constants;
 import mmud.MudException;
 import mmud.ParseException;
 import mmud.characters.Person;
+import mmud.characters.ShopKeeper;
 import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.database.Database;
@@ -61,7 +62,7 @@ public class SellCommand extends NormalCommand
 	 * to Karcas</I>".
 	 * <li>shopkeeper buying the item should
 	 * <ol><li> exist, <li>be in the same room and<li>
-	 * have a occupation-attribute set to "shopkeeper"
+	 * have a god==4 to indicate a "shopkeeper"
 	 * and<li>has enough money</ol>
 	 * <li>the customer should have the item
 	 * <li>the item itself should <I>NOT</I> have a attribute called "notsellable".
@@ -96,9 +97,7 @@ public class SellCommand extends NormalCommand
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
-			if ( (!toChar.isAttribute("occupation")) || 
-				(!"shopkeeper".equals(
-				toChar.getAttribute("occupation").getValue())) )
+			if (!(toChar instanceof ShopKeeper))
 			{
 				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;

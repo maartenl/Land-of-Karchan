@@ -831,6 +831,7 @@ public class Person implements Executable, AttributeContainer
 			message = message.replaceAll("%SHASHAVE", "has");
 			message = message.replaceAll("%SYOUPOSS", aSource.getName() + "s");
 			message = message.replaceAll("%VERB1", "es");
+			message = message.replaceAll("y%VERB2", "ies");
 			message = message.replaceAll("%VERB2", "s");
 		}
 		writeMessage(message);
@@ -953,7 +954,8 @@ public class Person implements Executable, AttributeContainer
 	public String inventory()
 	throws MudDatabaseException
 	{
-		return ItemsDb.getInventory(this);
+		Logger.getLogger("mmud").finer("");
+		return ItemsDb.getInventory(this, 1);
 	}
 
 	/**
