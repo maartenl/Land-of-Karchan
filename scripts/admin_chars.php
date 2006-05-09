@@ -59,6 +59,7 @@ changing character:
 - does room exist
 - check if sex is correct
 - is copper>=0
+- is god 1,2,3,4
 deleting character:   
 - checking attributes
 - checking items (mm_charitemtable)
@@ -89,6 +90,14 @@ if (isset($_REQUEST{"race"}))
 	{
 		error_message("Amount of money should always at least be 0.");
 	}
+	if ($_REQUEST{"god"} < 0)
+	{
+		error_message("God value must be between 0 and 4.");
+	}
+	if ($_REQUEST{"god"} > 4)
+	{
+		error_message("God value must be between 0 and 4.");
+	}
 	$result = mysql_query("select id from mm_rooms where id = \"".
 		quote_smart($_REQUEST{"room"})."\""
 		, $dbhandle)
@@ -98,6 +107,7 @@ if (isset($_REQUEST{"race"}))
 		error_message("Room does not exist.");
 	}
 	// make that change.
+	$notes = $_REQUEST["notes"];
 	$query = "update mm_usertable set race=\"".
 		quote_smart($_REQUEST{"race"}).
 		"\", sex=\"".
@@ -132,7 +142,9 @@ if (isset($_REQUEST{"race"}))
 		quote_smart($_REQUEST{"god"}).
 		"\", active=\"".
 		quote_smart($_REQUEST{"active"}).
-		"\", owner=\"".
+		"\", notes=". ($notes==""?"null": 
+		"\"".quote_smart($notes)."\"").
+		", owner=\"".
 		quote_smart($_COOKIE["karchanadminname"]).
 		"\" where name = \"".
 		quote_smart($_REQUEST{"char"}).
@@ -168,6 +180,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>beard:</b> %s<BR>", $myrow["beard"]);
 	printf("<b>arm:</b> %s<BR>", $myrow["arm"]);
 	printf("<b>leg:</b> %s<BR>", $myrow["leg"]);
+	printf("<b>notes:</b> %s<BR>", $myrow["notes"]);
 	printf("<b>lok:</b> %s<BR>", $myrow["lok"]);
 	printf("<b>guild:</b> %s<BR>", $myrow["guild"]);
 	printf("<b>whimpy:</b> %s<BR>", $myrow["whimpy"]);
@@ -178,6 +191,7 @@ while ($myrow = mysql_fetch_array($result))
 	if ($myrow["god"] == "1") {$god = "deputy";}
 	if ($myrow["god"] == "2") {$god = "bot";}
 	if ($myrow["god"] == "3") {$god = "mob";}
+	if ($myrow["god"] == "4") {$god = "shopkeeper";}
 	printf("<b>god:</b> %s<BR>", $god);
 	printf("<b>active:</b> %s<BR>", $myrow["active"]);
 	printf("<b>lastlogin:</b> %s<BR>", $myrow["lastlogin"]);
@@ -231,6 +245,8 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>beard</TD><TD><INPUT TYPE="text" NAME="beard" VALUE="<?php echo $myrow["beard"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>arm</TD><TD><INPUT TYPE="text" NAME="arm" VALUE="<?php echo $myrow["arm"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>leg</TD><TD><INPUT TYPE="text" NAME="leg" VALUE="<?php echo $myrow["leg"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>notes</TD><TD><TEXTAREA NAME="notes" ROWS="10" COLS="85">
+<?php echo htmlspecialchars($myrow["notes"]) ?></TEXTAREA><P></TD></TR>
 <TR><TD>room</TD><TD><INPUT TYPE="text" NAME="room" VALUE="<?php echo $myrow["room"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>experience</TD><TD><INPUT TYPE="text" NAME="experience" VALUE="<?php echo $myrow["experience"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>copper</TD><TD><INPUT TYPE="text" NAME="copper" VALUE="<?php echo $myrow["copper"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
@@ -239,6 +255,7 @@ while ($myrow = mysql_fetch_array($result))
 <OPTION VALUE="1" <?php if ($myrow["god"] == "1") {printf("selected");} ?>>deputy
 <OPTION VALUE="2" <?php if ($myrow["god"] == "2") {printf("selected");} ?>>bot
 <OPTION VALUE="3" <?php if ($myrow["god"] == "3") {printf("selected");} ?>>mob
+<OPTION VALUE="4" <?php if ($myrow["god"] == "4") {printf("selected");} ?>>shopkeeper
 </SELECT></TD></TR>
 <TR><TD>active</TD><TD><INPUT TYPE="text" NAME="active" VALUE="<?php echo $myrow["active"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 </TABLE>
