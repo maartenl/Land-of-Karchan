@@ -51,6 +51,7 @@ if (isset($_REQUEST{"title"}))
 	mysql_query($query
 		, $dbhandle)
 		or error_message("Query failed : " . mysql_error());
+	writeLogLong($dbhandle, "Changed bugreport  ".$_REQUEST{"bug"}.".", $query);
 }
 
 // show results
