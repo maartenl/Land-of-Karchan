@@ -113,7 +113,7 @@ public class DropCommand extends NormalCommand
 					aUser.writeMessage("You are wearing or wielding that item.<BR>\r\n");
 					valid = false;
 				}
-				if (myItem.isAttribute("notdroppable"))
+				if (myItem.isAttribute("notdropable"))
 				{
 					aUser.writeMessage("You cannot drop that item.<BR>\r\n");
 					valid = false;

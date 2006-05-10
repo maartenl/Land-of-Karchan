@@ -54,8 +54,8 @@ public class InventoryCommand extends NormalCommand
 		}
 		String invent = aUser.inventory();
 		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
-			+ " have " + (invent.equals("")?"absolutely nothing.<P>":" <UL>" 
-			+ aUser.inventory() + 
+			+ " have " + (invent.equals("") && (aUser.getMoney() == 0)?"absolutely nothing.<P>":" <UL>" 
+			+ invent + 
 			(aUser.getMoney() != 0 ? "<P><LI>" + aUser.getDescriptionOfMoney() : "") + 
 			"</UL>") 
 			+ aUser.printForm();

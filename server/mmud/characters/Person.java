@@ -831,6 +831,7 @@ public class Person implements Executable, AttributeContainer
 			message = message.replaceAll("%SHASHAVE", "has");
 			message = message.replaceAll("%SYOUPOSS", aSource.getName() + "s");
 			message = message.replaceAll("%VERB1", "es");
+			message = message.replaceAll("say%VERB2", "says");
 			message = message.replaceAll("y%VERB2", "ies");
 			message = message.replaceAll("%VERB2", "s");
 		}
