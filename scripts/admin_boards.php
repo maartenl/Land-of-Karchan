@@ -42,6 +42,23 @@ Mmud - Admin
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
 
+if ( (isset($_REQUEST{"id"})) &&
+	(isset($_REQUEST{"name"})) &&
+	(isset($_REQUEST{"posttime"})) )
+{
+	// checkit
+	$query = "update mm_boardmessages set removed = 1 where boardid = ".
+		quote_smart($_REQUEST{"id"}).
+		" and name = \"".
+		quote_smart($_REQUEST{"name"}).
+		"\" and posttime+0 = ".
+		quote_smart($_REQUEST{"posttime"});
+	mysql_query($query
+		, $dbhandle)  
+		or error_message("Query(8) failed : " . mysql_error());
+	writeLogLong($dbhandle, "Removed board message due to offensive content.", $query);
+}
+
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
         creation2 from mm_boards"
 	, $dbhandle)
@@ -53,6 +70,22 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>owner:</b> %s ", $myrow["owner"]);
 	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
 	printf("<b>description:</b> %s<BR>", $myrow["description"]);
+	$result2 = mysql_query("select *, posttime + 0 as stuff from mm_boardmessages where boardid = ".
+		$myrow["id"].
+		" and week(posttime)=week(now()) and year(posttime)=year(now())"
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+	while ($myrow2 = mysql_fetch_array($result2)) 
+	{
+		if ($myrow2["removed"] == 0)
+		{
+			printf("<A HREF=\"/scripts/admin_boards.php?id=%s&name=%s&posttime=%s\">Remove</A> ",
+				 $myrow2["boardid"], $myrow2["name"], $myrow2["stuff"]);
+		}
+		printf("<b>name:</b> %s ", $myrow2["name"]);
+		printf("<b>posttime:</b> %s ", $myrow2["posttime"]);
+		printf("<b>removed:</b> %s<BR>", ($myrow2["removed"] == 1?"yes":"no"));
+	}
 }
 
 mysql_close($dbhandle);
