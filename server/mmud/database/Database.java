@@ -76,69 +76,69 @@ public class Database
 {
 
 	private static Connection theConnection = null;
-	public static String sqlSetGuild = "update mm_guilds " +
+	private static String sqlSetGuild = "update mm_guilds " +
 	"set title = ?, " +
 	"minguildlevel = ?, " +
 	"guilddescription= ?, " +
 	"guildurl = ?, logonmessage = ?, " +
 	"active = ? where name = ?";
-	public static String sqlGetGuild = "select * from mm_guilds " +
+	private static String sqlGetGuild = "select * from mm_guilds " +
 	"where name = ?";
-	public static String sqlGetGuildRanks = "select * from mm_guildranks " +
+	private static String sqlGetGuildRanks = "select * from mm_guildranks " +
 		"where guildname = ?";
-	public static String sqlAddGuildRank = 
+	private static String sqlAddGuildRank = 
 		"replace into mm_guildranks " +
 		"(title, guildlevel, guildname) " +
 		"values(?, ?, ?)";
-	public static String sqlDelGuildRank = 
+	private static String sqlDelGuildRank = 
 		"delete from mm_guildranks " +
 		"where guildname = ? and guildlevel = ?";
-	public static String sqlGetIgnoreList = "select * from mm_ignore " +
+	private static String sqlGetIgnoreList = "select * from mm_ignore " +
 		"where toperson = ?";
-	public static String sqlAddIgnore = 
+	private static String sqlAddIgnore = 
 		"replace into mm_ignore " +
 		"(fromperson, toperson) " +
 		"values(?, ?)";
-	public static String sqlDelIgnore = 
+	private static String sqlDelIgnore = 
 		"delete from mm_ignore " +
 		"where fromperson = ? and toperson = ?";
-	public static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
-	public static String sqlGetGuildMembersAmount = "select count(name) as amount from mm_usertable where guild = ?";
-	public static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
-	public static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
-	public static String sqlGetUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
-	public static String sqlGetActiveUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
-	public static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
-	public static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
-	public static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
-	public static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
-	public static String sqlCreateUserString = "insert into mm_usertable " +
+	private static String sqlGetGuildMembers = "select name from mm_usertable where guild = ?";
+	private static String sqlGetGuildMembersAmount = "select count(name) as amount from mm_usertable where guild = ?";
+	private static String sqlGetGuildHopefuls = "select charname from mm_charattributes where name = \"guildwish\" and value = ?";
+	private static String sqlConvertPasswordString = "update mm_usertable set password = sha1(?) where name = ? and password = old_password(?)";
+	private static String sqlGetUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 0 and god < 2";
+	private static String sqlGetActiveUserString = "select *, sha1(?) as encrypted from mm_usertable where name = ? and active = 1 and god < 2";
+	private static String sqlGetPersonsString = "select * from mm_usertable where active = 1";
+	private static String sqlSetSessPwdString = "update mm_usertable set lok = ? where name = ?";
+	private static String sqlActivateUserString = "update mm_usertable set active=1, address = ?, lastlogin=now() where name = ?";
+	private static String sqlDeActivateUserString = "update mm_usertable set active=0, lok=\"\", lastlogin=now() where name = ?";
+	private static String sqlCreateUserString = "insert into mm_usertable " +
 		"(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "+
 		"values(?, ?, sha1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
-	public static String sqlSetPersonString = "update mm_usertable set title=?, drinkstats=?, eatstats=?, copper=?, sleep=?, room=?, whimpy=? where name = ?";
-	public static String sqlSetUserGuildString = "update mm_usertable set guild=? where name = ?";
-	public static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
-	public static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
+	private static String sqlSetPersonString = "update mm_usertable set title=?, drinkstats=?, eatstats=?, copper=?, sleep=?, room=?, whimpy=? where name = ?";
+	private static String sqlSetUserGuildString = "update mm_usertable set guild=? where name = ?";
+	private static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
+	private static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 
-	public static String sqlGetRoomString = "select * from mm_rooms where id = ?";
-	public static String sqlWriteRoomString = "update mm_rooms set north = ?, south = ?, east = ?, west = ?, up = ?, down = ?, contents = ? where id = ?";
+	private static String sqlGetRoomString = "select * from mm_rooms where id = ?";
+	private static String sqlWriteRoomString = "update mm_rooms set north = ?, south = ?, east = ?, west = ?, up = ?, down = ?, contents = ? where id = ?";
 
-	public static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
-	public static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
-	public static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
-	public static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
-	public static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
-	public static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
-	public static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
-	public static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
-	public static String sqlGetHelpString = "select contents from mm_help where command = ?";
-	public static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
+	private static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
+	private static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
+	private static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
+	private static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
+	private static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
+	private static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
+	private static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
+	private static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
+	private static String sqlGetHelpString = "select contents from mm_help where command = ?";
+	private static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
 
-	public static String sqlDeactivateEvent = 
+	private static String sqlDeactivateEvent = 
 		"update mm_events " +
 		"set callable = 0 " +
 		"where eventid = ?";
-	public static String sqlGetEvents = "select mm_methods.name as method_name, " +
+	private static String sqlGetEvents = "select mm_methods.name as method_name, " +
 		"mm_events.name, src, room, mm_events.eventid from mm_events, mm_methods " +
 		"where callable = 1 " +
 		"and mm_methods.name = mm_events.method_name " +
@@ -148,22 +148,22 @@ public class Database
 		"and ( minute = -1 or minute = MINUTE(NOW()) ) " +
 		"and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )" +
 		"and ( month <> -1 or dayofmonth <> -1 or hour <> -1 or minute <> -1 or dayofweek <> -1 )";
-	public static String sqlDeactivateCommand = 
+	private static String sqlDeactivateCommand = 
 		"update mm_commands " +
 		"set callable = 0 " +
 		"where id = ?";
-	public static String sqlGetMethod = "select src " +
+	private static String sqlGetMethod = "select src " +
 		"from mm_methods " +
 		"where name = ?";
-	public static String sqlGetUserCommands = 
+	private static String sqlGetUserCommands = 
 		"select * " +
 		"from mm_commands " +
 		"where callable = 1";
 
-	public static String sqlGetAnswers = 
+	private static String sqlGetAnswers = 
 		"select * from mm_answers where ? like question and name = ?";
 		
-	public static String sqlGetAreaString = 
+	private static String sqlGetAreaString = 
 		"select mm_area.* from mm_area, mm_rooms where mm_rooms.id = ? "
 		+ "and mm_rooms.area = mm_area.area";
 

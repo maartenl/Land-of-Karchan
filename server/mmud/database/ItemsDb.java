@@ -60,7 +60,7 @@ public class ItemsDb
 	 * Gets an inventory list of a person.
 	 * Items that are being worn are not a part of this list.
 	 */
-	public static String sqlGetInventoryPersonString = 
+	private static String sqlGetInventoryPersonString = 
 		  "select count(*) as amount, adject1, adject2, adject3, name, mm_items.copper "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -70,7 +70,7 @@ public class ItemsDb
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 
-	public static String sqlGetInventoryRoomString =
+	private static String sqlGetInventoryRoomString =
 		  "select count(*) as amount, adject1, adject2, adject3, name "
 		+ "from mm_roomitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -79,7 +79,7 @@ public class ItemsDb
 		+ "search is null and "
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
-	public static String sqlGetInventoryContainerString =
+	private static String sqlGetInventoryContainerString =
 		  "select count(*) as amount, adject1, adject2, adject3, name "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -88,28 +88,28 @@ public class ItemsDb
 		+ "visible = 1 "
 		+ "group by adject1, adject2, adject3, name";
 
-	public static String sqlDeleteItemCharString =
+	private static String sqlDeleteItemCharString =
 		"delete from mm_charitemtable "
 		+ "where id = ?";
-	public static String sqlDeleteItemRoomString =
+	private static String sqlDeleteItemRoomString =
 		"delete from mm_roomitemtable "
 		+ "where id = ?";
-	public static String sqlDeleteItemItemString =
+	private static String sqlDeleteItemItemString =
 		"delete from mm_itemitemtable "
 		+ "where id = ?";
-	public static String sqlAddItemCharString =
+	private static String sqlAddItemCharString =
 		"insert into mm_charitemtable "
 		+ "(id, belongsto) "
 		+ "values(?, ?)";
-	public static String sqlAddItemRoomString =
+	private static String sqlAddItemRoomString =
 		"insert into mm_roomitemtable "
 		+ "(id, room) "
 		+ "values(?, ?)";
-	public static String sqlAddItemItemString =
+	private static String sqlAddItemItemString =
 		"insert into mm_itemitemtable "
 		+ "(id, containerid) "
 		+ "values(?, ?)";
-	public static String sqlGetItemRoomString =
+	private static String sqlGetItemRoomString =
 		"select mm_itemtable.* "
 		+ "from mm_roomitemtable, mm_items, mm_itemtable "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -119,13 +119,13 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
-	public static String sqlGetItemRoom2String =
+	private static String sqlGetItemRoom2String =
 		"select mm_itemtable.* "
 		+ "from mm_roomitemtable, mm_itemtable "
 		+ "where mm_itemtable.itemid = ? and "
 		+ "mm_itemtable.id = mm_roomitemtable.id and "
         + "mm_roomitemtable.room = ?";
-	public static String sqlGetItemPersonString =
+	private static String sqlGetItemPersonString =
 		"select mm_itemtable.itemid, mm_charitemtable.* "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -135,20 +135,20 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
-	public static String sqlGetItemPerson2String =
+	private static String sqlGetItemPerson2String =
 		"select mm_itemtable.itemid, mm_charitemtable.* "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
         + "belongsto = ? and "
 		+ "mm_items.id = ?";
-	public static String sqlGetItemPerson3String =
+	private static String sqlGetItemPerson3String =
 		"select mm_itemtable.itemid, mm_charitemtable.* "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
 	        + "belongsto = ?";
-	public static String sqlGetItemContainerString =
+	private static String sqlGetItemContainerString =
 		"select mm_itemtable.itemid, mm_itemitemtable.* "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -158,13 +158,13 @@ public class ItemsDb
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0 and "
 		+ "field(?, adject1, adject2, adject3, \"\")!=0";
-	public static String sqlGetWearingInventoryString =
+	private static String sqlGetWearingInventoryString =
 		"select adject1, adject2, adject3, name, wearing "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_charitemtable.id and "
         + "belongsto = ? and mm_charitemtable.wearing is not null";
-	public static String sqlGetWearingItemAtPositionString =
+	private static String sqlGetWearingItemAtPositionString =
 		"select mm_itemtable.itemid, mm_charitemtable.* "
 		+ "from mm_charitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
@@ -175,34 +175,34 @@ public class ItemsDb
 	 * Makes one specific item either being worn or not being worn
 	 * or wielded or not being wielded.
 	 */
-	public static String sqlSetWearingItemPersonString =
+	private static String sqlSetWearingItemPersonString =
 		"update mm_charitemtable set wearing = ? "
 		+ "where mm_charitemtable.id = ?";
 
-	public static String sqlGetAllItemContainerString =
+	private static String sqlGetAllItemContainerString =
 		"select mm_itemtable.itemid, mm_itemitemtable.* "
 		+ "from mm_itemitemtable, mm_itemtable, mm_items "
 		+ "where mm_itemtable.itemid = mm_items.id and "
 		+ "mm_itemtable.id = mm_itemitemtable.id and "
         + "containerid = ?";
 
-	public static String sqlIsContainerEmpty =
+	private static String sqlIsContainerEmpty =
 		"select \"no\" as no "
 		+ "from mm_itemitemtable "
 		+ "where ? = mm_itemitemtable.containerid";
-	public static String sqlTransferItemString =
+	private static String sqlTransferItemString =
 		"update mm_charitemtable "
 		+ "set belongsto = ? "
 		+ "where id = ? and wearing is null";
-	public static String sqlDeleteItemString =
+	private static String sqlDeleteItemString =
 		"delete from mm_itemtable "
 		+ "where id = ?";
-	public static String sqlAddItemString =
+	private static String sqlAddItemString =
 		"insert into mm_itemtable "
 		+ "(itemid) "
 		+ "values(?)";
 
-	public static String sqlGetItemDefString = "select * from mm_items where id = ?";
+	private static String sqlGetItemDefString = "select * from mm_items where id = ?";
 
 	/**
 	 * Returns the itemdefinition based on the itemdefinition id.
@@ -271,7 +271,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("drinkable", drinkable, "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.DRINKABLE, drinkable, "string"));
 			}
 			catch (MudException e)
 			{
@@ -282,7 +282,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("eatable", eatable, "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.EATABLE, eatable, "string"));
 			}
 			catch (MudException e)
 			{
@@ -293,7 +293,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("readable", readable, "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.READABLE, readable, "string"));
 			}
 			catch (MudException e)
 			{
@@ -304,7 +304,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("notdropable", "", "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.NOTDROPABLE, "", "string"));
 			}
 			catch (MudException e)
 			{
@@ -315,7 +315,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("notgetable", "", "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.NOTGETABLE, "", "string"));
 			}
 			catch (MudException e)
 			{
@@ -326,7 +326,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("invisible", "", "string"));
+				myItemDef.setAttribute(new Attribute(Attribute.INVISIBLE, "", "string"));
 			}
 			catch (MudException e)
 			{
@@ -337,7 +337,7 @@ public class ItemsDb
 		{
 			try
 			{
-				myItemDef.setAttribute(new Attribute("wearable", wearable+"", "integer"));
+				myItemDef.setAttribute(new Attribute(Attribute.WEARABLE, wearable+"", "integer"));
 			}
 			catch (MudException e)
 			{

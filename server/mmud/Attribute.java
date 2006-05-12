@@ -35,6 +35,75 @@ import java.util.logging.Logger;
  */
 public class Attribute
 {
+	/**
+	 * Attribute indicating that this item is a list of items
+	 * that is sold by a certain shopkeeper.
+	 */
+	public final static String SHOPKEEPERLIST = "shopkeeperlist";
+	
+	/**
+	 * Attribute containing the description of when you drink something.
+	 * Can also be used to indicate if something is drinkable.
+	 */
+	public final static String DRINKABLE = "drinkable";
+	
+	/**
+	 * Attribute containing the description of when you eat something.
+	 * Can also be used to indicate if something is eatable.
+	 */
+	public final static String EATABLE = "eatable";
+	
+	/**
+	 * Attribute containing the description of when you read something.
+	 * Can also be used to indicate if something is readable.
+	 */
+	public final static String READABLE = "readable";
+	
+	/**
+	 * Attribute indicating that something cannot be dropped.
+	 */
+	public final static String NOTDROPABLE = "notdropable";
+	
+	/**
+	 * Attribute indicating that something cannot be retrieved from the floor.
+	 */
+	public final static String NOTGETABLE = "notgetable";
+	
+	/**
+	 * Attribute indicating that something is invisible. This means
+	 * it will not show up in any inventories or room descriptions.
+	 */
+	public final static String INVISIBLE = "invisible";
+	
+	/**
+	 * Attribute indicating that something is wearable/wieldable.
+	 */
+	public final static String WEARABLE = "wearable";
+	
+	/**
+	 * Attribute indicating that someone wishes to join a certain guild.
+	 */
+	public final static String GUILDWISH = "guildwish";
+	
+	/**
+	 * Attribute indicating that someone has a specific rank in a guild.
+	 */
+	public final static String GUILDRANK = "guildrank";
+	
+	/**
+	 * Attribute indicating that an item can be opened.
+	 */
+	public final static String ISOPENABLE = "isopenable";
+	
+	/**
+	 * Attribute indicating that an item is open or not.
+	 */
+	public final static String ISOPEN = "isopen";
+	
+	/**
+	 * Attribute indicating that an item is locked.
+	 */
+	public final static String ISLOCKED = "islocked";
 	private String theName;
 	private String theValue;
 	private String theValueType;

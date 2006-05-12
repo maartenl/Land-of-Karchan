@@ -46,31 +46,31 @@ import mmud.MudException;
  */
 public class AttributeDb
 {
-
-	public static String sqlSetAttributeRoom = 
+	
+	private final static String sqlSetAttributeRoom = 
 		"replace into mm_roomattributes (name, value, value_type, id) " +
 		"values(?, ?, ?, ?)";
-	public static String sqlSetAttributeChar = 
+	private final static String sqlSetAttributeChar = 
 		"replace into mm_charattributes (name, value, value_type, charname) " +
 		"values(?, ?, ?, ?)";
-	public static String sqlSetAttributeItem = 
+	private final static String sqlSetAttributeItem = 
 		"replace into mm_itemattributes (name, value, value_type, id) " +
 		"values(?, ?, ?, ?)";
 
-	public static String sqlRemoveAttributeRoom = 
+	private final static String sqlRemoveAttributeRoom = 
 		"delete from mm_roomattributes where name = ? and id = ?";
-	public static String sqlRemoveAttributeChar = 
+	private final static String sqlRemoveAttributeChar = 
 		"delete from mm_charattributes where name = ? and charname = ?";
-	public static String sqlRemoveAttributeItem = 
+	private final static String sqlRemoveAttributeItem = 
 		"delete from mm_itemattributes where name = ? and id = ?";
 
-	public static String sqlGetAttributesChar =
+	private final static String sqlGetAttributesChar =
 		"select * from mm_charattributes "
 		+ "where charname = ?";
-	public static String sqlGetAttributesItem =
+	private final static String sqlGetAttributesItem =
 		"select * from mm_itemattributes "
 		+ "where id = ?";
-	public static String sqlGetAttributesRoom =
+	private final static String sqlGetAttributesRoom =
 		"select * from mm_roomattributes "
 		+ "where id = ?";
 

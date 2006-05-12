@@ -143,9 +143,9 @@ public class StdItemContainer extends Item implements Container
 		boolean newIsLocked)
 	throws MudException
 	{
-		setAttribute(new Attribute("isopenable", "" + isOpenable, "boolean"));
-		setAttribute(new Attribute("isopen", "" + newIsOpen, "boolean"));
-		setAttribute(new Attribute("islocked", "" + newIsLocked, "boolean"));
+		setAttribute(new Attribute(Attribute.ISOPENABLE, "" + isOpenable, "boolean"));
+		setAttribute(new Attribute(Attribute.ISOPEN, "" + newIsOpen, "boolean"));
+		setAttribute(new Attribute(Attribute.ISLOCKED, "" + newIsLocked, "boolean"));
 		theKeyId = newLock;
 	}
 

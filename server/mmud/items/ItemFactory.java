@@ -96,7 +96,7 @@ public class ItemFactory
 			for (int i=0;i<anAttribVector.size();i++)
 			{
 				Attribute attrib = (Attribute) anAttribVector.elementAt(i);
-				if (attrib.getName().equals("shopkeeperlist"))
+				if (attrib.getName().equals(Attribute.SHOPKEEPERLIST))
 				{
 					shopkeeperList = attrib.getValue();
 				}

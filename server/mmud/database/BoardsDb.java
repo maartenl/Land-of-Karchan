@@ -41,28 +41,28 @@ import mmud.boards.BoardFormatEnum;
 public class BoardsDb
 {
 
-	public static final String sqlPostBoardString = 
+	private static final String sqlPostBoardString = 
 		"insert into mm_boardmessages (boardid, name, message) " +
 		"select id, ?, ? " +
 		"from mm_boards " +
 		"where name = ?";
 		// sequence: username, message, boardname
-	public static final String sqlReadBoardString = 
+	private static final String sqlReadBoardString = 
 		"select * " +
 		"from mm_boards " + 
 		"where mm_boards.name = ?";
 		// boardname
-	public static final String sqlReadBoardMessageString = 
+	private static final String sqlReadBoardMessageString = 
 		"select concat('<HR noshade>From: <B>', mm_boardmessages.name, '</B><BR>" +
-		"Posted: <B>', date_format(posttime, '%W, %M %e, %H:%i:%s'), '</B><P>\r\n', message, " +
-		"'<BR>') as message " +
+		"Posted: <B>', date_format(posttime, '%W, %M %e, %H:%i:%s'), '</B><P>\r\n'" +
+		") as header, message, removed " +
 		"from mm_boardmessages, mm_boards " + 
 		"where mm_boards.name = ? and " +
 		"mm_boards.id = mm_boardmessages.boardid and " +
 		"week(posttime)=week(now()) and year(posttime)=year(now()) " +
 		"order by posttime";
 		// boardname
-	public static final String sqlReadBoardMessage2String = 
+	private static final String sqlReadBoardMessage2String = 
 		"select concat('<HR>" +
 		"', date_format(posttime, '%W, %M %e, %H:%i'), '<P>\r\n', message, " +
 		"'<p><I>', mm_boardmessages.name, '</I>') as message " +
@@ -130,10 +130,6 @@ public class BoardsDb
 		{
 			query = sqlReadBoardMessage2String;
 		}
-		else
-		{
-			query = sqlReadBoardMessageString;
-		}
 		StringBuffer result = new StringBuffer();
 		try
 		{
@@ -146,7 +142,16 @@ public class BoardsDb
 			{
 				while (res.next())
 				{
-					result.append(res.getString("message"));
+					String temp = res.getString("message");
+					if (aFormat != BoardFormatEnum.SIMPLE)
+					{
+						if (res.getInt("removed") == 1)
+						{
+							temp = "<FONT COLOR=red>[Message has been removed due to offensive content.]</FONT>";
+						}
+						temp = res.getString("header") + temp + "<BR>";
+					}
+					result.append(temp);
 				}
 				result.append("<HR>");
 				res.close();

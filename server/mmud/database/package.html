@@ -466,6 +466,8 @@ anything in between. The default is 8.
 <DT>movementstats
 <DD>the ability to move, 0 is exhausted and cannot move, 1000 is fine. The
 default is 1000.
+<DT>notes
+<DD>notes concerning this user. Can be entered by deputies.
 </DL>
 <PRE>
 +---------------------+
@@ -476,6 +478,7 @@ default is 1000.
 | god                 |
 | alignment           |
 | movementstats       |
+| notes               |
 +---------------------+
 
 <A NAME="mm_logonmessage">
@@ -700,7 +703,22 @@ of ranks. Usually 0 is lowest rank and 100 is highest rank.
 | creation            |
 +---------------------+
 
-<A NAME="mm_boardmessages">
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_boardmessages">mm_boardmessages</A></H4>
+<DL>
+<DT>boardid
+<DD>indicates on which board this message belongs, see mm_boards.
+<DT>name
+<DD>the person posting a message
+<DT>posttime
+<DD>timestamp on whn the person posted the message
+<DT>message
+<DD>the message itself
+<DT>removed
+<DD>0 or 1, 1 if message has been removed for offending content by a deputy
+</DL>
+
+<PRE>
 +---------------------+
 | mm_boardmessgages   |
 +---------------------+
@@ -708,6 +726,7 @@ of ranks. Usually 0 is lowest rank and 100 is highest rank.
 |*name                |
 |*posttime            |
 | message             |
+| removed             |
 +---------------------+
 </PRE>
 

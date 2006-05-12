@@ -43,13 +43,13 @@ import mmud.characters.User;
 public class MailDb
 {
 
-	public static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
-	public static String sqlListMailString = "select name, haveread, newmail, header from mm_mailtable where toname = ? order by whensent asc";
-	public static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
-	public static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
-	public static String sqlUpdateMailString = "update mm_mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
-	public static String sqlRemoveNewMailFlagString = "update mm_mailtable set newmail=0 where toname = ?";
-	public static String sqlSendMailString = "insert into mm_mailtable " +
+	private final static String sqlYouHaveNewMailString = "select count(*) as count from mm_mailtable where toname = ? and newmail = 1";
+	private final static String sqlListMailString = "select name, haveread, newmail, header from mm_mailtable where toname = ? order by whensent asc";
+	private final static String sqlReadMailString = "select * from mm_mailtable where toname = ? order by whensent asc";
+	private final static String sqlDeleteMailString = "delete from mm_mailtable where name = ? and toname = ? and whensent = ? ";
+	private final static String sqlUpdateMailString = "update mm_mailtable set haveread=1 where name = ? and toname = ? and whensent = ? ";
+	private final static String sqlRemoveNewMailFlagString = "update mm_mailtable set newmail=0 where toname = ?";
+	private final static String sqlSendMailString = "insert into mm_mailtable " +
 		"(name, toname, header, whensent, haveread, newmail, message) " +
 		"values (?, ?, ?, now(), 0, 1, ?)";
 

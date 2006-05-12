@@ -62,6 +62,12 @@ The following kind of items are possible:
 An Item has a getter "isSellable" containing most of the logic about wehter
 or not an item is sellable.
 
+Creating Items
+--------------
+
+Items should be able to be created by combining any number of <I>other</I>
+items.
+
 Containers
 ----------
 
@@ -103,7 +109,7 @@ V (BOSS) guildassign USERNAME "RANK"
 V (BOSS) guildaddrank "RANKID" "RANK DESC"
 V (BOSS) guilddelrank "RANKID"
 - (BOSS) guildexile USERNAME, REASON
-- (BOSS) guildkick USERNAME, REASON
+V (BOSS) guildremove USERNAME
 V guildleave
 - (BOSS) guildrefresh
 
@@ -324,3 +330,40 @@ It gets changed whenever someone issues an Ignore/Ack command.
 communication+mudmail+boards must perform a check before sending to see if the
 perosn
 is being ignored by the target.
+
+Economy
+-------
+
+The economy of a mud is a very important aspect.
+
+Over time, the amount of posessions in the mud is going to increase.
+Therefore, inflation will occur. This is a common characteristic to all
+mud/mmorpg/mush/moos.
+
+One of the main reasons for a increase in inflation is a direct consequence
+of Administration. There are a few ways to curtail the following
+occurrences:
+- too many items occur
+- too powerful/expensive items occur
+
+Both of these are a direct result of improper administration of
+Wizards/Deputies/Gods of the mud. It is vital that the administration of the
+mud is curtailed by rules/measures.
+
+The following measures can be taken:
+- gold/silver/copper cannot be set for an item, it is computed by the worth
+of an item
+- the worth of an item consists of a combination of factors:
+	- how fast does an item deteriorate
+	- what level of armour does it provide
+	- what level of damage does it provide per second
+	- what bonus/buffs does it have
+- droprate cannot be set for an item, it is computed by the worth of an
+item, droprate is the amount of times the item will be dropped by certain
+monsters
+- level cannot be set for an item, it is computed by the worth of an item,
+level is the level at which the item can be used by a player/bot.
+- the aquirement of items is not instantaneous... ALL stuff that can be done
+must be done within a defined timeframe. This can differ from 1 second to 1
+minute.
+- any action taken, interrupts the action in progress

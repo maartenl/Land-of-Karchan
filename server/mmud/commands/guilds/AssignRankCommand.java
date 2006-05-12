@@ -90,7 +90,7 @@ public class AssignRankCommand extends GuildMasterCommand
 			return true;
 		}
 		
-		Attribute attrib = new Attribute("guildrank", rank.getId() + "", "number");
+		Attribute attrib = new Attribute(Attribute.GUILDRANK, rank.getId() + "", "number");
 		toChar.setAttribute(attrib);
 		Database.writeLog(aUser.getName(), " assigned " + rank.getTitle() + " of " + 
 			" guild " + aUser.getGuild().getName() + " to " + toChar.getName());

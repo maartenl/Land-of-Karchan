@@ -82,7 +82,7 @@ public class ApplyCommand extends NormalCommand
 			aUser.writeMessage("You already belong to guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
 			return false;
 		}
-		aUser.setAttribute(new Attribute("guildwish", guild.getName(), "string"));
+		aUser.setAttribute(new Attribute(Attribute.GUILDWISH, guild.getName(), "string"));
 		aUser.writeMessage("You have applied to guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
 		return true;
 	}
