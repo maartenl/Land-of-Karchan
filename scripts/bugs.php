@@ -68,9 +68,9 @@ while ($myrow = mysql_fetch_array($result))
 {
 	printf("<TR><TD><A HREF=\"/scripts/bugs.php?bug=".$myrow["creation3"]."
 		\">".$myrow["creation2"].
-		"</A></TD><TD>".$myrow["title"].
-		"</TD><TD>".$myrow["name"].
-		"</TD><TD>".($myrow["closed"]==1?"Closed":"Open")."</TD></TR>");
+		"</A></TD><TD>".($myrow["closed"]==1?"<FONT COLOR=grey>":"").$myrow["title"].
+		"</TD><TD>".($myrow["closed"]==1?"<FONT COLOR=grey>":"").$myrow["name"].
+		"</TD><TD>".($myrow["closed"]==1?"<FONT COLOR=grey>":"").($myrow["closed"]==1?"Closed":"Open")."</TD></TR>");
 	if (isset($_REQUEST{"bug"}) && 
 		($myrow["creation3"]==$_REQUEST{"bug"}))
 	{
