@@ -49,7 +49,8 @@ if (!isset($_REQUEST{"message"}))
 {   
 	error_message("Form information missing.");
 }
-$result = mysql_query("replace into mm_boardmessages 
+$result = mysql_query("replace into mm_boardmessages (boardid, name,
+	posttime, message) 
 	values(2, \"".quote_smart($_COOKIE["karchanadminname"])."\", now(),\"".
 	quote_smart($_REQUEST{"message"})."\")"
 	, $dbhandle)
