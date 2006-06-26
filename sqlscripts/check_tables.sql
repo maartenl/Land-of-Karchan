@@ -49,4 +49,4 @@ check table poll_values;
 check table polls;
 check table scratchpad;
 
-END_OF_DATA;
+END_OF_DATA

@@ -49,4 +49,4 @@ repair table poll_values;
 repair table polls;
 repair table scratchpad;
 
-END_OF_DATA;
+END_OF_DATA
