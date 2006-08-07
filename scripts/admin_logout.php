@@ -1,4 +1,4 @@
-<?
+<?php
 /*-------------------------------------------------------------------------
 svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL

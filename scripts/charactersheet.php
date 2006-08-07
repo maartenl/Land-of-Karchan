@@ -98,12 +98,11 @@ function familyValues($arg)
 {
 	$result = mysql_query("select familyvalues.description, toname,
 		characterinfo.name 
-		from family, familyvalues 
-		left join characterinfo 
-		on characterinfo.name = family.toname 
+		from family, familyvalues, characterinfo 
 		where family.name =
 		'".quote_smart($_REQUEST{"name"})."' and 
-		family.description = familyvalues.id", $arg)
+		family.description = familyvalues.id and
+		characterinfo.name = family.toname", $arg)
 		or error_message("Query failed : " . mysql_error());
 	printf("<B>Family Relations:</B><BR><UL>");
 	while ($myrow = mysql_fetch_array($result))

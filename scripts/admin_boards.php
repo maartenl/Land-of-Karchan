@@ -1,4 +1,4 @@
-<?
+<?php
 /*-------------------------------------------------------------------------
 svninfo: $Id$
 Maarten's Mud, WWW-based MUD using MYSQL
@@ -41,24 +41,7 @@ Mmud - Admin
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A><P>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-
-if ( (isset($_REQUEST{"id"})) &&
-	(isset($_REQUEST{"name"})) &&
-	(isset($_REQUEST{"posttime"})) )
-{
-	// checkit
-	$query = "update mm_boardmessages set removed = 1 where boardid = ".
-		quote_smart($_REQUEST{"id"}).
-		" and name = \"".
-		quote_smart($_REQUEST{"name"}).
-		"\" and posttime+0 = ".
-		quote_smart($_REQUEST{"posttime"});
-	mysql_query($query
-		, $dbhandle)  
-		or error_message("Query(8) failed : " . mysql_error());
-	writeLogLong($dbhandle, "Removed board message due to offensive content.", $query);
-}
-
+$selection="";
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
         creation2 from mm_boards"
 	, $dbhandle)
@@ -70,26 +53,52 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>owner:</b> %s ", $myrow["owner"]);
 	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
 	printf("<b>description:</b> %s<BR>", $myrow["description"]);
-	$result2 = mysql_query("select *, posttime + 0 as stuff from mm_boardmessages where boardid = ".
-		$myrow["id"].
-		" and week(posttime)=week(now()) and year(posttime)=year(now())"
-	, $dbhandle)
-	or error_message("Query failed : " . mysql_error());
-	while ($myrow2 = mysql_fetch_array($result2)) 
+	$selection .= "<option value=\"".$myrow["id"]."\">".$myrow["name"];
+}
+if ((isset($_REQUEST{"boardid"})) &&
+	(isset($_REQUEST{"name"})))
+{
+	if (isset($_REQUEST{"posttime"}))
 	{
-		if ($myrow2["removed"] == 0)
-		{
-			printf("<A HREF=\"/scripts/admin_boards.php?id=%s&name=%s&posttime=%s\">Remove</A> ",
-				 $myrow2["boardid"], $myrow2["name"], $myrow2["stuff"]);
-		}
-		printf("<b>name:</b> %s ", $myrow2["name"]);
-		printf("<b>posttime:</b> %s ", $myrow2["posttime"]);
-		printf("<b>removed:</b> %s<BR>", ($myrow2["removed"] == 1?"yes":"no"));
+		$query = "update mm_boardmessages set removed = if(removed=1,0,1)
+			where boardid=\"".
+				quote_smart($_REQUEST{"boardid"})."\" and name=\"".
+				quote_smart($_REQUEST{"name"})."\" and posttime=\"".
+				quote_smart($_REQUEST{"posttime"})."\"";
+		mysql_query($query, $dbhandle)
+			or error_message("Query failed : " . mysql_error());
+		writeLogLong($dbhandle, "Removed/Unremoved message (".$_REQUEST{"boardid"}.", ".$_REQUEST{"name"}.", ".$_REQUEST{"posttime"}.").", $query);
+	}
+	$query = "select *, date_format(posttime, \"%Y-%m-%d %T\") as
+    	    creation2 from mm_boardmessages where boardid=\"".
+			quote_smart($_REQUEST{"boardid"})."\" and name=\"".
+			quote_smart($_REQUEST{"name"})."\" order by posttime";
+	$result = mysql_query($query, $dbhandle)
+		or error_message("Query failed : " . mysql_error());
+	while ($myrow = mysql_fetch_array($result)) 
+	{
+		printf("[<A HREF=\"/scripts/admin_boards.php?boardid=%s&name=%s&posttime=%s\">%s</A>]",
+			$myrow["boardid"], $myrow["name"], $myrow["posttime"],
+			($myrow["removed"] == "1"? "ündo remove":"remove"));
+		printf("<b>name:</b> %s ", $myrow["name"]);
+		printf("<b>posttime:</b> %s <BR>", $myrow["creation2"]);
+		printf("<b>contents:</b> %s <BR>", ($removed==1?"-removed-":$myrow["message"]));
 	}
 }
 
 mysql_close($dbhandle);
 ?>
 
+<FORM METHOD="GET" ACTION="/scripts/admin_boards.php">
+<TABLE>
+<TR><TD><B>Board:</b></TD><TD><SELECT NAME="boardid">
+<?php	echo $selection;
+?>
+</SELECT></TD></TR>
+<TR><TD><B>Character name:</b></TD><TD><INPUT TYPE="text" NAME="name" VALUE="" SIZE="40" MAXLENGTH="40"></TD></TR>
+</TABLE>
+<INPUT TYPE="submit" VALUE="Search for Userposts">
+</b>
+</FORM>
 </BODY>
 </HTML>
