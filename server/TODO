@@ -283,7 +283,7 @@ Preconditions for accepting the quest:
 - toperson must be a bot
 
 A quest table in the database could look like this:
-mm_quests
+mm_quests : indicates a certain quest to be fulfilled
 * questid		int not null
   name          varchar(255) not null
   description   text not null
@@ -293,15 +293,19 @@ mm_quests
   fromperson	varchar(20) not null,
   toperson      varchar(20) not null,
   previousquest	int, (can be null, then a non-chained quest)
-  attribute		varchar(29), indicates which attribute must be set on a user
-when he/she completes a quest. Attribute most likely a boolean.
   creation
   owner
-mm_questitems
+mm_questitems : indicates how many of which item are needed to complete a
+certain quest. 
 * itemid		int not null
 * questid 		int not null
   amount  		int not null default 1
   visible       int(1) not null default 1
+mm_questchar : indicates which persons have completed a certain quest
+* questid		int not null
+* name 			varchar(20) not null
+
+
 
 Ignore lists
 ------------
