@@ -203,6 +203,8 @@ public class Database
 			return;
 		}
 
+		// jdbc:mysql://[host][,failoverhost...][:port]/[database]
+		// [?propertyName1][=propertyValue1][&propertyName2][=propertyValue2]...
 		String theUrl = Constants.dburl + "://" +
 			Constants.dbhost + 
 			Constants.dbdomain + "/" +
