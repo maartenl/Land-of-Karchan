@@ -678,32 +678,43 @@ public class Person implements Executable, AttributeContainer
 	public void writeMessage(String aMessage)
 	{
 		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
-		String message = aMessage;
-		boolean check = false;
 		int i = 0;
-		while (!check)
+		int state = 0;
+		int foundit = -1;
+		while ((i < aMessage.length()) && (foundit == -1))
 		{
-			if (message.charAt(i) == '<')
+			if (state == 0)
 			{
-				while (message.charAt(i) != '>') { i++; }
-				i++;
-			}
-			if (message.charAt(i) != ' ')
-			{
-				check = true;
-			}
+				if (aMessage.charAt(i) == '<')
+				{
+					state = 1;
+				} else
+				if (aMessage.charAt(i) != ' ')
+				{
+					foundit = i;
+				}
+			} 
 			else
+			if (state == 1)
 			{
-				i++;
+				if (aMessage.charAt(i) == '>')
+				{
+					state = 0;
+				}
 			}
+			i++;
 		}
-		message = message.substring(0, i) + 
-			message.substring(i, i + 1).toUpperCase() +
-			message.substring(i + 1);
+		if (foundit != -1)
+		{
+			aMessage = aMessage.substring(0, foundit) +
+			aMessage.substring(foundit, foundit + 1).toUpperCase() +
+			aMessage.substring(foundit + 1);
+		}
+		 
 		try
 		{
 			FileWriter myFileWriter = new FileWriter(theLogFile, true);
-			myFileWriter.write(message, 0, message.length());
+			myFileWriter.write(aMessage, 0, aMessage.length());
 			myFileWriter.close();
 		}
 		catch (Exception e)
