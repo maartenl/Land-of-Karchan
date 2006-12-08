@@ -263,6 +263,8 @@ public final class Constants
 	public static int mudportnumber = MUDPORTNUMBER;
 	public static String mudhost = MUDHOST;
 
+	// jdbc:mysql://[host][,failoverhost...][:port]/[database]
+	// [?propertyName1][=propertyValue1][&propertyName2][=propertyValue2]...
 	public static String dbname = DBNAME;
 	public static boolean shutdown = SHUTDOWN;
 	public static String dbhost = DBHOST;
