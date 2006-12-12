@@ -304,6 +304,7 @@ latest version: database_setup_002.sql
 ---------------------------------------------------------------
 - alter table mm_usertable add (notes text);
 - alter table mm_boardmessages add (removed int(1));
+- drop table mm_logonmessage;
 
 creating board system
 ---------------------
