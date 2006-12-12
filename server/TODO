@@ -293,6 +293,8 @@ mm_quests : indicates a certain quest to be fulfilled
   fromperson	varchar(20) not null,
   toperson      varchar(20) not null,
   previousquest	int, (can be null, then a non-chained quest)
+  methodname varchar(52), (can be null, thenno script is run on completing the
+quest)
   creation
   owner
 mm_questitems : indicates how many of which item are needed to complete a

@@ -128,7 +128,6 @@ public class Database
 	private static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
 	private static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
 	private static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
-	private static String sqlGetLogonMessageString = "select message from mm_logonmessage where id=0";
 	private static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
 	private static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
 	private static String sqlGetHelpString = "select contents from mm_help where command = ?";
