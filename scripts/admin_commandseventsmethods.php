@@ -601,10 +601,25 @@ Methods</H2>
 
 if (isset($_REQUEST{"methodname"}) && isset($_REQUEST{"src"}))
 {
+    // check that the method is the proper owner.
+    // check it.
+    $result = mysql_query("select name from mm_methods where name = \"".
+        quote_smart($_REQUEST{"methodname"}).  
+        "\" and (owner is null or owner = \"".   
+        quote_smart($_COOKIE["karchanadminname"]).
+        "\")"
+        , $dbhandle)
+        or error_message("Query(1) failed : " . mysql_error());
+    if (mysql_num_rows($result) != 1)
+    {
+        error_message("You are not the owner of this method.");
+    }
 	// make that change
 	$query = "update mm_methods set src=\"".
 		quote_smart($_REQUEST{"src"}).
-		"\" where name = \"".
+		"\", owner=\"".
+		quote_smart($_COOKIE["karchanadminname"]).
+                "\" where name = \"".
 		quote_smart($_REQUEST{"methodname"}).
 		"\"";
     mysql_query($query
