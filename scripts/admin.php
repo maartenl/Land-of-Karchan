@@ -83,7 +83,18 @@ Your logon information will expire in 2 hours.
 
 if ($_COOKIE["karchanadminname"] == "Karn")
 {
+printf("<TABLE>");
+printf("<tr><td><b>name</b></TD><td><b>valid until</b></td><td><b>email</b></td></tr>", $myrow["name"], $myrow["validuntil"], $myrow["email"]);
+$result = mysql_query("select * from mm_admin"
+  , $dbhandle)
+or error_message("Query failed : " . mysql_error());
+while ($myrow = mysql_fetch_array($result))
+{
+  printf("<tr><td>%s</TD><td>%s</td><td>%s</td></tr>", $myrow["name"], $myrow["validuntil"], $myrow["email"]);
+}
+printf("</TABLE>");
 ?>
+
 <FORM METHOD="GET" ACTION="/scripts/admin_extendperiod.php">
 Extend Admin with name:
 <INPUT TYPE="text" NAME="char" VALUE="" SIZE="20" MAXLENGTH="20"><P>
