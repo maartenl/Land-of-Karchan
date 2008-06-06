@@ -118,7 +118,7 @@ public class Main
 		}
 		Constants.logger.info("Starting tickerthread...");
 		TickerThread myTicker = new TickerThread();
-		myTicker.start();
+		Constants.getThreadPool().execute(myTicker);
 		Constants.logger.info("Loading user commands...");
 		try
 		{
@@ -170,8 +170,10 @@ public class Main
 			{
 				Socket mySocket = myServerSocket.accept();
 				MudSocket myMudSocket = new MudSocket(mySocket);
-				myMudSocket.start();
+				Constants.getThreadPool().execute(myMudSocket);
 			}
+			Constants.logger.log(Level.INFO, "Shutting down Threadpool");
+			Constants.getThreadPool().shutdown();
 		}
 		catch (Exception e)
 		{

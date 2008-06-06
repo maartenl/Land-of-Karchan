@@ -50,10 +50,12 @@ import mmud.races.RaceFactory;
  * the class that takes care of all the socket communication. Is basically
  * a thread that terminates when the socket communication is terminated.
  */
-public class MudSocket extends Thread
+public class MudSocket implements Runnable
 {
 	private Socket theSocket = null;
 	private boolean theSuccess = true;
+	
+	private boolean theThreadCountDone = false;
 
 	/**
 	 * Checks to see if the mud is temporarily offline or not. 
@@ -290,6 +292,7 @@ public class MudSocket extends Thread
 	 */
 	public void run()
 	{
+		Constants.incrementThreadsRunning();
 		Logger.getLogger("mmud").finer("");
 		PrintWriter myOutputStream = null;  
 		BufferedReader myInputStream = null;
@@ -304,6 +307,7 @@ public class MudSocket extends Thread
 			theSuccess = false;
 			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
 			Database.writeLog("root", e);
+			setThreadCounters();
 			return;
 		} 
 		catch (IOException e) 
@@ -311,6 +315,7 @@ public class MudSocket extends Thread
 			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
 			Database.writeLog("root", e);
 			theSuccess = false;
+			setThreadCounters();
 			return;
 		}
 
@@ -366,6 +371,7 @@ public class MudSocket extends Thread
 			theSuccess = false;
 			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e);
 			Database.writeLog("root", e);
+			setThreadCounters();
 			return;
 		}
 		catch (RuntimeException e2)
@@ -373,10 +379,23 @@ public class MudSocket extends Thread
 			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e2);
 			Database.writeLog("root", e2);
 			theSuccess = false;
+			setThreadCounters();
 			return;
 		}
+		setThreadCounters();
 		theSuccess = true;
 		return;
+	}
+
+	private void setThreadCounters()
+	{
+		if (theThreadCountDone)
+		{
+			throw new RuntimeException("Error! Already stepped thread counters.");
+		}
+		theThreadCountDone=true;
+		Constants.decrementThreadsRunning();
+		Constants.incrementThreadsProcessed();
 	}
 
 	/**

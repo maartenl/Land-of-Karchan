@@ -39,6 +39,7 @@ import mmud.characters.User;
 import mmud.database.Database;
 import mmud.items.ItemDefs;
 import mmud.rooms.Rooms;
+import mmud.MemoryManager;
 
 /**
  * Admin command. Necessary for resetting several caching stuff like:
@@ -76,6 +77,13 @@ public class AdminCommand extends NormalCommand
 		if (!aUser.isGod())
 		{
 			aUser.writeMessage("You are not an administrator.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().toLowerCase().startsWith("admin status"))
+		{
+			Database.writeLog(aUser.getName(), "admin command 'status' executed");
+			aUser.writeMessage(MemoryManager.MEMORY_MANAGER + "" +
+				Constants.returnThreadStatus());
 			return true;
 		}
 		if (getCommand().toLowerCase().startsWith("admin kick "))
@@ -174,6 +182,7 @@ public class AdminCommand extends NormalCommand
 			Database.writeLog(aUser.getName(), "admin command 'help' executed");
 			aUser.writeMessage("Possible commands are:<DL>" +
 				"<DT>admin help<DD>this help text" +
+				"<DT>admin status<DD>shows a view of the status of the program." +
 				"<DT>admin kick &lt;character name&gt;<DD>kicks the character off the game immediately." +
 				"<DT>admin reset characters<DD>reset the cached characters, required every time you make a change to a character. " +
 				"Already active characters are reloaded into the cache from the database." +

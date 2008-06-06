@@ -42,13 +42,12 @@ import mmud.database.Database;
  * <li>cleaning up of idle users.
  * </ul>
  */
-public class TickerThread extends Thread
+public class TickerThread implements Runnable
 {
 	private static boolean theStarted = false;
 
 	public TickerThread()
 	{
-		super("ticker");
 		Logger.getLogger("mmud").finer("");
 	}
 
@@ -66,7 +65,7 @@ public class TickerThread extends Thread
 		theStarted = true;
 		try
 		{
-			sleep(3000);
+			Thread.sleep(3000);
 		}
 		catch (InterruptedException e)
 		{
@@ -75,7 +74,7 @@ public class TickerThread extends Thread
 		{
 			try
 			{
-				sleep(60000);
+				Thread.sleep(60000);
 			}
 			catch (InterruptedException e)
 			{

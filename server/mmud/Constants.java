@@ -43,7 +43,9 @@ import java.util.Vector;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+  
 import mmud.commands.AdminCommand;
 import mmud.commands.AskCommand;
 import mmud.commands.AwakenCommand;
@@ -189,6 +191,57 @@ public final class Constants
 	 */
 	public final static int DEFAULT_MOVEMENT = 1000;
 	
+	private static int theThreadsProcessed = 0;
+	
+	private static int theThreadsRunning = 1;
+	
+	/**
+	 * Maximum amount of possible threads in use at the same time.
+	 * The game will always have at least one thread, called the
+	 * TickerThread running.
+	 * @see TickerThread
+	 */
+	public final static int THREADS_MAX = 51;
+
+	/**
+	 * Increments the counter that maintains how many 
+	 * threads have finished.
+	 */
+	public static synchronized void incrementThreadsProcessed()
+	{
+		theThreadsProcessed ++;
+	}
+
+	/**
+	 * Increments the counter that maintains how many 
+	 * threads are running at the moment.
+	 */
+	public static synchronized void incrementThreadsRunning()
+	{
+		theThreadsRunning ++;
+	}
+
+	/**
+	 * Decrements the counter that maintains how many 
+	 * threads are running at the moment.
+	 */
+	public static synchronized void decrementThreadsRunning()
+	{
+		theThreadsRunning --;
+	}
+
+	/**
+	 * Returns an html formatted string containing the status
+	 * of the threads. Can be used to check on hanging threads.
+	 */
+	public static synchronized String returnThreadStatus()
+	{
+		return "Thread Management<HR>" +
+		"Threads processed: " + theThreadsProcessed +
+		"<BR>Threads running: " + theThreadsRunning +
+		"<BR>Threads max: " + THREADS_MAX + "<P>";
+	}
+
 	/**
 	 * the logger for logging messages. The log level is set in the 
 	 * properties file and is provided both to the logger as well as
@@ -209,6 +262,16 @@ public final class Constants
 	 * started. This is used in admin commands.
 	 */
 	public final static Calendar theGameStartupTime = Calendar.getInstance();
+
+	/**
+	 * The thread pool.
+	 */
+	private static ExecutorService theThreadPool = Executors.newFixedThreadPool(THREADS_MAX);
+
+	public static ExecutorService getThreadPool()
+	{
+		return theThreadPool;
+	}
 
 	/**
 	 * a property list with the default values
