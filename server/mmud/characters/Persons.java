@@ -62,6 +62,17 @@ public final class Persons implements Executable
 	}
 	
 	/**
+	 * Get the number of characters that are cached.
+	 * Both NPCs as PCs.
+	 * @param int, containing the amount of characters in the cache.
+	 */
+	public static int getSize() 
+	{
+		return thePersons.size();
+	}
+ 
+ 
+ 	/**
 	 * Initialise this object by retrieving all persons from the
 	 * database that are playing the game.
 	 * @see mmud.database.Database#getPersons
@@ -719,10 +730,10 @@ public final class Persons implements Executable
 	throws MudException
 	{
 		Person toChar2 = Persons.retrievePerson(aName);
-		if (toChar2 == null)   
+		if (toChar2 == null) 
 		{
 			// the person is not playing the game...
-			// we'll need to look him up "outside"  
+			// we'll need to look him up "outside"
 			return Database.getUser(aName, null);
 		}
 		return toChar2;

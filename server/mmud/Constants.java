@@ -236,10 +236,10 @@ public final class Constants
 	 */
 	public static synchronized String returnThreadStatus()
 	{
-		return "Thread Management<HR>" +
+		return "Thread Management<HR>\n" +
 		"Threads processed: " + theThreadsProcessed +
-		"<BR>Threads running: " + theThreadsRunning +
-		"<BR>Threads max: " + THREADS_MAX + "<P>";
+		"<BR>\nThreads running: " + theThreadsRunning +
+		"<BR>\nThreads max: " + THREADS_MAX + "<P>";
 	}
 
 	/**

@@ -55,6 +55,15 @@ public final class ItemDefs
 	}
 
 	/**
+	 * Get the number of ItemDefs that are cached.
+	 * @param int, containing the amount of ItemDefs in the cache.
+	 */
+	public static int getSize()
+	{
+		return theItemDefs.size();
+	}
+ 
+ 	/**
 	 * Return the itemdefinition from the list. Returns a null
 	 * if the item definition could not be found.
 	 * @param aItemDefNr identification number of an itemdefinition.

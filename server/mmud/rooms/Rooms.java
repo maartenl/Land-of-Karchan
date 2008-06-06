@@ -66,6 +66,15 @@ public final class Rooms implements Executable
 	}
 
 	/**
+	 * Get the number of rooms that are cached.
+	 * @param int, containing the amount of rooms in the cache.
+	 */
+	public static int getSize()
+	{
+		return theRooms.size();
+	}
+	
+	/**
 	 * retrieves a room based on the roomnumber.
 	 * @param aRoomNr the number of the room to retrieve
 	 * @return Room object containing the room requested. Returns a null

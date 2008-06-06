@@ -59,15 +59,15 @@ public class MemoryManager
 	public String toString()
 	{
 		StringBuffer myBuffer = new StringBuffer();
-		myBuffer.append("Memory Management<HR>Available Processors: ");
+		myBuffer.append("Memory Management<HR>\nAvailable Processors: ");
 		myBuffer.append(itsRuntime.availableProcessors() + "");
-		myBuffer.append("<BR>used Memory: ");
+		myBuffer.append("<BR>\nused Memory: ");
 		myBuffer.append((itsRuntime.totalMemory() - itsRuntime.freeMemory()) + "");
-		myBuffer.append("<BR>free Memory: ");
+		myBuffer.append("<BR>\nfree Memory: ");
 		myBuffer.append(itsRuntime.freeMemory() + "");
-		myBuffer.append("<BR>total Memory: ");
+		myBuffer.append("<BR>\ntotal Memory: ");
 		myBuffer.append(itsRuntime.totalMemory() + "");
-		myBuffer.append("<BR>max Memory: ");
+		myBuffer.append("<BR>\nmax Memory: ");
 		myBuffer.append(itsRuntime.maxMemory() + "<P>");
 		
 		return myBuffer.toString();
