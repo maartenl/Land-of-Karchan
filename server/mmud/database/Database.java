@@ -1521,7 +1521,7 @@ public class Database
 		if (res != 1)
 		{
 			// error, not correct number of results returned
-			// TOBEDONE
+			throw new MudDatabaseException("user not found.");
 		}
 		sqlActivateUser.close();
 		}

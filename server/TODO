@@ -373,3 +373,43 @@ level is the level at which the item can be used by a player/bot.
 must be done within a defined timeframe. This can differ from 1 second to 1
 minute.
 - any action taken, interrupts the action in progress
+
+Christmas
+=========
+
+How to switch the images over to christmas:
+
+cd /projects/www.karchan.org/public/images/gif/webpic/
+
+cp back4.christmas.gif back4.gif
+cp regel1a.christmas.gif regel1a.gif
+
+How to switch back to the usual everyday stuff:
+
+cd /projects/www.karchan.org/public/images/gif/webpic/
+
+cp back4.gif.original back4.gif
+cp regel1a.gif.original regel1a.gif
+
+/projects/www.karchan.org/public/images/christmas
+/projects/www.karchan.org/public/images/christmas/sant.gif
+/projects/www.karchan.org/public/images/christmas/candles_moving.gif
+/projects/www.karchan.org/public/images/christmas/noel5.gif
+/projects/www.karchan.org/public/images/christmas/noel6.gif
+/projects/www.karchan.org/public/images/christmas/noel7.gif
+/projects/www.karchan.org/public/images/christmas/Cacand3.gif
+/projects/www.karchan.org/public/images/christmas/xbow.gif
+/projects/www.karchan.org/public/images/christmas/Cacandle.gif
+/projects/www.karchan.org/public/images/christmas/jacko.gif
+/projects/www.karchan.org/public/images/christmas/Anixmasc.gif
+/projects/www.karchan.org/public/images/christmas/cake.gif
+/projects/www.karchan.org/public/images/christmas/santa5.gif
+/projects/www.karchan.org/public/images/christmas/shcupid.gif
+/projects/www.karchan.org/public/images/christmas/bells.gif
+/projects/www.karchan.org/public/images/christmas/wreath7.gif
+/projects/www.karchan.org/public/images/christmas/santa_chim.gif
+/projects/www.karchan.org/public/images/christmas/wabbit.gif
+/projects/www.karchan.org/public/images/christmas/Xmas1a.gif
+/projects/www.karchan.org/public/images/christmas/sclaus.gif
+/projects/www.karchan.org/public/images/christmas/rab_anm.gif
+/projects/www.karchan.org/public/images/christmas/santa_claus.gif

@@ -461,6 +461,10 @@ public class MudSocket implements Runnable
 			Logger.getLogger("mmud").info("thrown " + Constants.USERBANNEDERROR);
 			throw new MudException(Constants.USERBANNEDERROR);
 		}
+		if (!Database.existsUser(aName))
+		{
+			throw new UserNotFoundException();
+		}
 		User myUser = Persons.activateUser(aName, aPassword, aAddress, aCookie);
 		myUser.generateSessionPassword();
 		myUser.setFrames(aFrames);

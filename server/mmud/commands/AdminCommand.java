@@ -82,14 +82,8 @@ public class AdminCommand extends NormalCommand
 		if (getCommand().toLowerCase().startsWith("admin status"))
 		{
 			Database.writeLog(aUser.getName(), "admin command 'status' executed");
-			String myCache = "Cache Manager<HR>Persons: " +
-				Persons.getSize() + 
-				"<BR>\nRooms: " +
-				Rooms.getSize() +
-				"<BR>\nItem definitions: " +
-				ItemDefs.getSize() + "<P>";
-			aUser.writeMessage(MemoryManager.MEMORY_MANAGER + "" +
-				Constants.returnThreadStatus() + myCache);
+			aUser.writeMessage(MemoryManager.MEMORY_MANAGER + "" + Constants.getObjectCount() +
+				Constants.returnThreadStatus());
 			return true;
 		}
 		if (getCommand().toLowerCase().startsWith("admin kick "))

@@ -47,6 +47,18 @@ public final class ItemDefs
 	}
 
 	/**
+	 * Returns a string describing the contents.
+	 */
+	 public static String getDescription()
+	 {
+	 	if (theItemDefs == null)
+	 	{
+	 		throw new RuntimeException("Item Definitions is null!");
+		}
+		return "Item Definitions amount (Capacity) = " + theItemDefs.size() + "(" + theItemDefs.capacity() + ")<BR>";
+	}
+
+	/**
 	 * Initialise this object with an empty list.
 	 */
 	public static void init()

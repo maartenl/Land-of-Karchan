@@ -51,6 +51,18 @@ public final class Rooms implements Executable
 	}
 
 	/**
+	 * Returns a string describing the contents.
+	 */
+	public static String getDescription()
+	{
+		if (theRooms == null)
+		{
+			throw new RuntimeException("Rooms is null!");
+		}
+		return "Rooms amount (Capacity) = " + theRooms.size() + "(" + theRooms.capacity() + ")<BR>";
+	}
+
+	/**
 	 * Creation of Rooms object.
 	 */
 	public Rooms()

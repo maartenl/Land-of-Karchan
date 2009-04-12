@@ -129,6 +129,9 @@ import mmud.commands.guilds.SetLogonMessageCommand;
 import mmud.commands.guilds.DelRankCommand;
 import mmud.commands.guilds.AddRankCommand;
 import mmud.commands.guilds.AssignRankCommand;
+import mmud.rooms.Rooms;
+import mmud.characters.Persons;
+import mmud.items.ItemDefs;
 
 /**
  * Used constants in the game. Constants might have been read from a
@@ -240,6 +243,17 @@ public final class Constants
 		"Threads processed: " + theThreadsProcessed +
 		"<BR>\nThreads running: " + theThreadsRunning +
 		"<BR>\nThreads max: " + THREADS_MAX + "<P>";
+	}
+
+	/**
+	 * Returns the number of in cache memory objects.
+	 */
+	public static synchronized String getObjectCount()
+	{
+		return "Object Management<HR>" +
+		Rooms.getDescription() +
+		ItemDefs.getDescription() +
+		Persons.getDescription() + "<BR>";
 	}
 
 	/**

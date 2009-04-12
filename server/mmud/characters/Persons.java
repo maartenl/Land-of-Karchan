@@ -62,6 +62,19 @@ public final class Persons implements Executable
 	}
 	
 	/**
+	 * Returns a string describing the contents.
+	 */
+	 public static String getDescription()
+	 {
+	 	if (thePersons == null)
+		{
+			throw new RuntimeException("Persons is null!");
+		}
+		return "Persons amount (Capacity) = " + thePersons.size() + "(" + thePersons.capacity() + ")<BR>";
+	}
+
+
+	/**
 	 * Get the number of characters that are cached.
 	 * Both NPCs as PCs.
 	 * @param int, containing the amount of characters in the cache.
