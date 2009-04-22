@@ -56,5 +56,7 @@ where name = "$1";
 
 insert into mm_log (name, message) values("$1", "deleted during cleanup, not logged on since $2 $3.");
 
+select "$1 deleted during cleanup, not logged on since $2 $3.";
+
 END_OF_DATA
 

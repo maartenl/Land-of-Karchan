@@ -7,7 +7,7 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 # update the description of a specific board.
 #
 
-select name, lastlogin
+select concat("\"", name, "\"") as name, lastlogin
 from mm_usertable 
 where lastlogin < date_sub(curdate(),interval 6 month)
 and god < 2;
