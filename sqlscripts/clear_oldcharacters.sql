@@ -7,7 +7,6 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 # totally delete a specific user from the database.
 #
 
-
 # delete all items in containers that belong to the user
 create temporary table tmptable
 select mm_itemitemtable.id 
@@ -40,6 +39,9 @@ where id in (select id from tmptable);
 
 drop table tmptable;
 # end of 'delete all items that belong to the user
+
+# delete all entries from mm_ignore
+delete from mm_ignore where fromperson = "$1" or toperson = "$1";
 
 # delete all mudmail from and to the user
 delete from mm_mailtable where
