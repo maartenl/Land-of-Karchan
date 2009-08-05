@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -45,61 +45,56 @@ public class BowCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
 		{
 			return false;
 		}
-		String command = getCommand();
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
 		{
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ((toChar == null) ||
-				(!toChar.getRoom().equals(aUser.getRoom())))
+			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			}
-			else
+			} else
 			{
 				if (myParsed.length == 4)
 				{
 					// bow evilly
 					if (Constants.existsAdverb(myParsed[3]))
 					{
-							Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB2 to %TNAME "
-								 + myParsed[3].toLowerCase() + ".<BR>\r\n");
-					}
-					else
+						Persons.sendMessage(aUser, toChar,
+								"%SNAME bow%VERB2 to %TNAME "
+										+ myParsed[3].toLowerCase()
+										+ ".<BR>\r\n");
+					} else
 					{
-					   aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+						aUser.writeMessage("Unknown adverb found.<BR>\r\n");
 					}
-				}
-				else
+				} else
 				{
-					Persons.sendMessage(aUser, toChar, "%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
+					Persons.sendMessage(aUser, toChar,
+							"%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
 				}
 			}
-		}
-		else
+		} else
 		{
 			if (myParsed.length == 2)
 			{
 				// bow evilly
 				if (Constants.existsAdverb(myParsed[1]))
 				{
-						Persons.sendMessage(aUser, "%SNAME bow%VERB2 "
-							 + myParsed[1].toLowerCase() + ".<BR>\r\n");
-				}
-				else
+					Persons.sendMessage(aUser, "%SNAME bow%VERB2 "
+							+ myParsed[1].toLowerCase() + ".<BR>\r\n");
+				} else
 				{
-				   aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+					aUser.writeMessage("Unknown adverb found.<BR>\r\n");
 				}
-			}
-			else
+			} else
 			{
 				Persons.sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
 			}
@@ -111,5 +106,5 @@ public class BowCommand extends NormalCommand
 	{
 		return new BowCommand(getRegExpr());
 	}
-	
+
 }

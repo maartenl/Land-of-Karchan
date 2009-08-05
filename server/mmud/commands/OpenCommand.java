@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -42,6 +42,7 @@ import mmud.items.ItemException;
 
 /**
  * Open a container: "open chest".
+ * 
  * @see CloseCommand
  * @see LockCommand
  * @see UnlockCommand
@@ -52,37 +53,39 @@ public class OpenCommand extends NormalCommand
 	private String adject1;
 	private String adject2;
 	private String adject3;
-	private int amount;
 
 	public OpenCommand(String aRegExpr)
 	{
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
 		{
 			return false;
 		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 1);
 			adject1 = (String) stuff.elementAt(1);
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myContainers = 
-				aUser.getItems(adject1, adject2, adject3, name);
+			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+					name);
 			if (myContainers.size() < 1)
 			{
 				myContainers = aUser.getRoom().getItems(adject1, adject2,
-					adject3, name);
+						adject3, name);
 				if (myContainers.size() < 1)
 				{
 					aUser.writeMessage("You cannot find that item.<BR>\r\n");
@@ -92,39 +95,41 @@ public class OpenCommand extends NormalCommand
 			Item anItem = (Item) myContainers.elementAt(0);
 			if (!(anItem instanceof Container))
 			{
-				aUser.writeMessage("You cannot open " + anItem.getDescription() + ".<BR>\r\n");
+				aUser.writeMessage("You cannot open " + anItem.getDescription()
+						+ ".<BR>\r\n");
 				return true;
 			}
 			Container aContainer = (Container) anItem;
 			if (!aContainer.isOpenable())
 			{
-				aUser.writeMessage(anItem.getDescription() + " cannot be opened.<BR>\r\n");
+				aUser.writeMessage(anItem.getDescription()
+						+ " cannot be opened.<BR>\r\n");
 				return true;
 			}
 			if (aContainer.isOpen())
 			{
-				aUser.writeMessage(anItem.getDescription() + " is already open.<BR>\r\n");
+				aUser.writeMessage(anItem.getDescription()
+						+ " is already open.<BR>\r\n");
 				return true;
 			}
 			if (aContainer.isLocked())
 			{
-				aUser.writeMessage(anItem.getDescription() + " is locked.<BR>\r\n");
+				aUser.writeMessage(anItem.getDescription()
+						+ " is locked.<BR>\r\n");
 				return true;
 			}
-			aContainer.setLidsNLocks(
-				aContainer.isOpenable(),
-				true,
-				aContainer.getKeyId(),
-				aContainer.isLocked());
-			Persons.sendMessage(aUser, "%SNAME open%VERB2 " + anItem.getDescription() + ".<BR>\r\n");
+			aContainer.setLidsNLocks(aContainer.isOpenable(), true, aContainer
+					.getKeyId(), aContainer.isLocked());
+			Persons.sendMessage(aUser, "%SNAME open%VERB2 "
+					+ anItem.getDescription() + ".<BR>\r\n");
 			if (anItem.isAttribute("openevent"))
 			{
-				String mySource =
-					Database.getMethodSource(
-						anItem.getAttribute("openevent").getValue());
-				if ( (mySource == null) || (mySource.trim().equals("")) )
+				String mySource = Database.getMethodSource(anItem.getAttribute(
+						"openevent").getValue());
+				if ((mySource == null) || (mySource.trim().equals("")))
 				{
-					throw new MethodDoesNotExistException("openevent of item " + anItem.getId());
+					throw new MethodDoesNotExistException("openevent of item "
+							+ anItem.getId());
 				}
 				anItem.runScript("openevent", mySource, aUser);
 			}
@@ -137,5 +142,5 @@ public class OpenCommand extends NormalCommand
 	{
 		return new OpenCommand(getRegExpr());
 	}
-	
+
 }

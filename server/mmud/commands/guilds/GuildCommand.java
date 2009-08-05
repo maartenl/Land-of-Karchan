@@ -26,9 +26,6 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands.guilds;
 
-import java.util.logging.Logger;
-
-import mmud.Constants;
 import mmud.MudException;
 import mmud.characters.User;
 import mmud.commands.NormalCommand;

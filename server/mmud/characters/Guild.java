@@ -27,15 +27,14 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.logging.Logger;
-import java.util.Vector;
-import java.util.TreeMap;
 import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.database.MudDatabaseException;
-import mmud.database.Database;
 import mmud.Attribute;
+import mmud.MudException;
+import mmud.database.Database;
 
 /**
  * This class contains the properties of a guild.

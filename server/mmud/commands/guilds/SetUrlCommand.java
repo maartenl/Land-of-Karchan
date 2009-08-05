@@ -29,15 +29,9 @@ package mmud.commands.guilds;
 import java.util.logging.Logger;
 
 import mmud.MudException;
-import mmud.Attribute;
 import mmud.characters.User;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.GuildFactory;
-import mmud.characters.Guild;
-import mmud.database.Database;
-import mmud.commands.NormalCommand;
 import mmud.commands.Command;
+import mmud.database.Database;
 
 /**
  * Makes you, as guildmaster, set the description of the guild.

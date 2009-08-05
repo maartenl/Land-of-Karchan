@@ -27,50 +27,39 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
-import java.util.logging.Logger;
-import java.util.Vector;
-
 import mmud.MudException;
-import mmud.database.MudDatabaseException;
-import mmud.database.Database;
 
 /**
  * This class contains a possible rank in a guild.
+ * 
  * @see Guild
  */
-public class GuildRank
-{
+public class GuildRank {
 
-	private int theId;
-	private String theTitle;
+	private final int theId;
+	private final String theTitle;
 
 	/**
 	 * Constructor, to be used for newly created guilds.
 	 */
-	public GuildRank(int aId,
-		String aDesc)
-	throws MudException
-	{
-		if ((aId < 0) || (aDesc == null))
-		{
+	public GuildRank(int aId, String aDesc) throws MudException {
+		if ((aId < 0) || (aDesc == null)) {
 			throw new MudException("illegal id or rankdescription unknown!");
 		}
 		theId = aId;
 		theTitle = aDesc;
 	}
-	
-	public int getId()
-	{
+
+	public int getId() {
 		return theId;
 	}
-	
-	public String getTitle()
-	{
+
+	public String getTitle() {
 		return theTitle;
 	}
 
-	public String toString()
-	{
+	@Override
+	public String toString() {
 		return theId + ":" + theTitle;
-	}	
+	}
 }

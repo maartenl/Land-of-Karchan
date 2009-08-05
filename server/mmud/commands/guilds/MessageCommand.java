@@ -28,10 +28,7 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.Constants;
 import mmud.MudException;
-import mmud.characters.CommunicationListener;
-import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.commands.Command;

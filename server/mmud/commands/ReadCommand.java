@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -40,7 +40,8 @@ import mmud.items.ItemException;
 
 /**
  * Read stuff: "read sign". There are two different possibilities:
- * <ul><li>read something in your inventory.
+ * <ul>
+ * <li>read something in your inventory.
  * <li>read something in the room that you occupy
  * </ul>
  */
@@ -54,8 +55,7 @@ public class ReadCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	private boolean ReadItem(User aUser, Vector aItems)
-	throws ItemException
+	private boolean ReadItem(User aUser, Vector aItems) throws ItemException
 	{
 		int i = 0;
 		Item myItem = (Item) aItems.elementAt(0);
@@ -78,25 +78,27 @@ public class ReadCommand extends NormalCommand
 		Attribute attrib = myItem.getAttribute("readable");
 		theResult = attrib.getValue();
 		theResult += aUser.printForm();
-		Persons.sendMessage(aUser, "%SNAME read%VERB2 " + myItem.getDescription() + ".<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME read%VERB2 "
+				+ myItem.getDescription() + ".<BR>\r\n");
 		return true;
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
 		{
 			return false;
 		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		theResult = null;
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
-			int amount = 1;
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 1);
 			String adject1 = (String) stuff.elementAt(1);
 			String adject2 = (String) stuff.elementAt(2);
 			String adject3 = (String) stuff.elementAt(3);
@@ -110,12 +112,13 @@ public class ReadCommand extends NormalCommand
 			myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
 			if (myItems.size() != 0)
 			{
-				return ReadItem(aUser, myItems);	
+				return ReadItem(aUser, myItems);
 			}
 		}
 		return false;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -126,5 +129,5 @@ public class ReadCommand extends NormalCommand
 	{
 		return new ReadCommand(getRegExpr());
 	}
-	
+
 }

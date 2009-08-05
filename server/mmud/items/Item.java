@@ -29,8 +29,8 @@ package mmud.items;
 import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.Attribute;
 import mmud.AttributeContainer;

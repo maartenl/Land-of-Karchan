@@ -28,7 +28,6 @@ maarten_l@yahoo.com
 package mmud.characters;
 
 import mmud.MudException;
-import mmud.database.Database;
 import mmud.Sex;
 import mmud.races.Race;
 import mmud.rooms.Room;

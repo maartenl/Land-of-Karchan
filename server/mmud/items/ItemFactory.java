@@ -29,8 +29,8 @@ package mmud.items;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import mmud.MudException;
 import mmud.Attribute;
+import mmud.MudException;
 import mmud.characters.Persons;
 
 /**

@@ -33,14 +33,13 @@ import mmud.Constants;
 import mmud.MudException;
 import mmud.ParseException;
 import mmud.characters.Person;
-import mmud.characters.ShopKeeper;
 import mmud.characters.Persons;
+import mmud.characters.ShopKeeper;
 import mmud.characters.User;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
 import mmud.items.ItemException;
-import mmud.items.Container;
 
 /**
  * Selling an item to a bot. Syntax : sell &lt;item&gt; to &lt;character&gt;

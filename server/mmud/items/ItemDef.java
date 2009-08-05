@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.items;     
+package mmud.items;
 
 import java.util.TreeMap;
 import java.util.Vector;
@@ -38,37 +38,40 @@ import mmud.MudException;
  * The definition of an item. The analogy with Java would be the difference
  * between a class and an object.
  */
-public class ItemDef implements AttributeContainer
-{
-	private String theVerb;
-	private String theAdjective1;
-	private String theAdjective2;
-	private String theAdjective3;
-	private String theDescription;
-	private int theId;
-	private int theGold;
-	private int theSilver;
-	private int theCopper;
-	private int theWearable;
-	private TreeMap theAttributes = new TreeMap();
+public class ItemDef implements AttributeContainer {
+	private final String theVerb;
+	private final String theAdjective1;
+	private final String theAdjective2;
+	private final String theAdjective3;
+	private final String theDescription;
+	private final int theId;
+	private final int theCopper;
+	private final int theWearable;
+	private final TreeMap theAttributes = new TreeMap();
 
 	/**
-	* Create an item definition.
-	* @param anId identification of the item definition
-	* @param anAdjective1 the first adjective of the item
-	* @param anAdjective2 the second adjective of the item
-	* @param anAdjective3 the third adjective of the item
-	* @param aVerb the verb/name of the item
-	* @param aDescription a long description of the item
-	* @param aCopper the number of copper coins the item costs (base value)
-	* @param aWearable the possible positions that the item
-	* can be worn on.
-	*/
-	public ItemDef(int anId, String anAdjective1, String anAdjective2, 
-		String anAdjective3, String aVerb, String aDescription, 
-		int aCopper,
-		int aWearable)
-	{
+	 * Create an item definition.
+	 * 
+	 * @param anId
+	 *            identification of the item definition
+	 * @param anAdjective1
+	 *            the first adjective of the item
+	 * @param anAdjective2
+	 *            the second adjective of the item
+	 * @param anAdjective3
+	 *            the third adjective of the item
+	 * @param aVerb
+	 *            the verb/name of the item
+	 * @param aDescription
+	 *            a long description of the item
+	 * @param aCopper
+	 *            the number of copper coins the item costs (base value)
+	 * @param aWearable
+	 *            the possible positions that the item can be worn on.
+	 */
+	public ItemDef(int anId, String anAdjective1, String anAdjective2,
+			String anAdjective3, String aVerb, String aDescription,
+			int aCopper, int aWearable) {
 		theId = anId;
 		theVerb = aVerb;
 		theAdjective1 = anAdjective1;
@@ -77,193 +80,185 @@ public class ItemDef implements AttributeContainer
 		theDescription = aDescription;
 		theCopper = aCopper;
 		theWearable = aWearable;
-	} 
+	}
 
 	/**
-	* Standard copy constructor.
-	* @param anItemDef the original Item Definition.
-	*/
-	public ItemDef(ItemDef anItemDef)
-	{
-		this(anItemDef.getId(),
-			anItemDef.getAdjective1(),
-			anItemDef.getAdjective2(),
-			anItemDef.getAdjective3(),
-			anItemDef.getVerb(),
-			anItemDef.getLongDescription(),
-			anItemDef.getMoney(),
-			anItemDef.getWearable());
-	} 
+	 * Standard copy constructor.
+	 * 
+	 * @param anItemDef
+	 *            the original Item Definition.
+	 */
+	public ItemDef(ItemDef anItemDef) {
+		this(anItemDef.getId(), anItemDef.getAdjective1(), anItemDef
+				.getAdjective2(), anItemDef.getAdjective3(), anItemDef
+				.getVerb(), anItemDef.getLongDescription(), anItemDef
+				.getMoney(), anItemDef.getWearable());
+	}
 
 	/**
-	* Return the id.
-	* @return integer containing the identification number of the item
-	* definition.
-	*/
-	public int getId()
-	{
+	 * Return the id.
+	 * 
+	 * @return integer containing the identification number of the item
+	 *         definition.
+	 */
+	public int getId() {
 		return theId;
 	}
 
 	/**
-	* Return the verb.
-	* @return String containing the verb of the item
-	* definition.
-	*/
-	public String getVerb()
-	{
+	 * Return the verb.
+	 * 
+	 * @return String containing the verb of the item definition.
+	 */
+	public String getVerb() {
 		return theVerb;
 	}
 
 	/**
-	* Return the first adjective.
-	* @return String containing the first adjective of the item
-	* definition.
-	*/
-	String getAdjective1()
-	{
+	 * Return the first adjective.
+	 * 
+	 * @return String containing the first adjective of the item definition.
+	 */
+	String getAdjective1() {
 		return theAdjective1;
 	}
 
 	/**
-	* Return the second adjective.
-	* @return String containing the second adjective of the item
-	* definition.
-	*/
-	String getAdjective2()
-	{
+	 * Return the second adjective.
+	 * 
+	 * @return String containing the second adjective of the item definition.
+	 */
+	String getAdjective2() {
 		return theAdjective2;
 	}
 
 	/**
-	* Return the third adjective.
-	* @return String containing the third adjective of the item
-	* definition.
-	*/
-	String getAdjective3()
-	{
+	 * Return the third adjective.
+	 * 
+	 * @return String containing the third adjective of the item definition.
+	 */
+	String getAdjective3() {
 		return theAdjective3;
-	}
-	
-	/**
-	* Return the amount of copper it costs.
-	* @return integer containing number of copper coins.
-	*/
-	public int getMoney()
-	{
-		return theCopper;
-	}
-	
-	/**
-	* Return the wearable on setting.
-	* @return integer containing different positions that this
-	* thing is wearable on.
-	*/
-	private int getWearable()
-	{
-		return theWearable;
-	}
-	
-	/**
-	* Return if the position entered is a member
-	* of the possible positions that this item can be worn on.
-	* @return boolean, true if this item is wearable there.
-	*/
-	public boolean isWearable(PersonPositionEnum aPos)
-	{
-		return PersonPositionEnum.isIn(theWearable, aPos);
-	}
-	
-	/**
-	* standard to string implementation.
-	* @return String in format id+adject1+adject2+adject3+verb.
-	*/
-	public String toString()
-	{
-		return theId + " " + theAdjective1 + " " +
-			theAdjective2 + " " +
-			theAdjective3 + " " +
-			theVerb;
 	}
 
 	/**
-	* Return the long description.
-	* @return String containing the long description.
-	*/
-	public String getLongDescription()
-	{
+	 * Return the amount of copper it costs.
+	 * 
+	 * @return integer containing number of copper coins.
+	 */
+	public int getMoney() {
+		return theCopper;
+	}
+
+	/**
+	 * Return the wearable on setting.
+	 * 
+	 * @return integer containing different positions that this thing is
+	 *         wearable on.
+	 */
+	private int getWearable() {
+		return theWearable;
+	}
+
+	/**
+	 * Return if the position entered is a member of the possible positions that
+	 * this item can be worn on.
+	 * 
+	 * @return boolean, true if this item is wearable there.
+	 */
+	public boolean isWearable(PersonPositionEnum aPos) {
+		return PersonPositionEnum.isIn(theWearable, aPos);
+	}
+
+	/**
+	 * standard to string implementation.
+	 * 
+	 * @return String in format id+adject1+adject2+adject3+verb.
+	 */
+	@Override
+	public String toString() {
+		return theId + " " + theAdjective1 + " " + theAdjective2 + " "
+				+ theAdjective3 + " " + theVerb;
+	}
+
+	/**
+	 * Return the long description.
+	 * 
+	 * @return String containing the long description.
+	 */
+	public String getLongDescription() {
 		return theDescription;
 	}
 
 	/**
-	* Set or add an attribute for this itemdefinition.
-	* @param anAttribute the attribute to be set or added.
-	*/
-	public void setAttribute(Attribute anAttribute)
-	{
+	 * Set or add an attribute for this itemdefinition.
+	 * 
+	 * @param anAttribute
+	 *            the attribute to be set or added.
+	 */
+	public void setAttribute(Attribute anAttribute) {
 		theAttributes.put(anAttribute.getName(), anAttribute);
 	}
 
 	/**
 	 * Set or add an attribute of this item.
-	 * @param anAttributeVector vector containing the attributes
-	 * to be added/set. This does not use the database, i.e. should
-	 * be used <I>by</I> the database, upon creation of items.
+	 * 
+	 * @param anAttributeVector
+	 *            vector containing the attributes to be added/set. This does
+	 *            not use the database, i.e. should be used <I>by</I> the
+	 *            database, upon creation of items.
 	 */
-	public void setAttributes(Vector anAttributeVector)
-	throws MudException
-	{
-		if (anAttributeVector == null)
-		{
+	public void setAttributes(Vector anAttributeVector) throws MudException {
+		if (anAttributeVector == null) {
 			return;
 		}
-		for (int i=0; i<anAttributeVector.size(); i++)
-		{
+		for (int i = 0; i < anAttributeVector.size(); i++) {
 			Attribute attrib = (Attribute) anAttributeVector.elementAt(i);
 			theAttributes.put(attrib.getName(), attrib);
 		}
 	}
 
 	/**
-	* Retrieve an attribute for this itemdefinition.
-	* @param aName the name of the attribute.
-	* @return Attribute object if found, otherwise null.
-	*/
-	public Attribute getAttribute(String aName)
-	{
+	 * Retrieve an attribute for this itemdefinition.
+	 * 
+	 * @param aName
+	 *            the name of the attribute.
+	 * @return Attribute object if found, otherwise null.
+	 */
+	public Attribute getAttribute(String aName) {
 		return (Attribute) theAttributes.get(aName);
 	}
 
 	/**
-	* Remove an attribute for this itemdefinition.
-	* @param aName the name of the attribute.
-	*/
-	public void removeAttribute(String aName)
-	{
+	 * Remove an attribute for this itemdefinition.
+	 * 
+	 * @param aName
+	 *            the name of the attribute.
+	 */
+	public void removeAttribute(String aName) {
 		theAttributes.remove(aName);
 	}
 
 	/**
-	* Check if an attribute exists.
-	* @param aName the name of the attribute to search for.
-	* @return boolean, true if the attribute exists.
-	*/
-	public boolean isAttribute(String aName)
-	{
+	 * Check if an attribute exists.
+	 * 
+	 * @param aName
+	 *            the name of the attribute to search for.
+	 * @return boolean, true if the attribute exists.
+	 */
+	public boolean isAttribute(String aName) {
 		return theAttributes.containsKey(aName);
 	}
 
 	/**
-	* default equals implementation.
-	*/
-	public boolean equals(Object r)
-	{
-		if (r == null)
-		{
+	 * default equals implementation.
+	 */
+	@Override
+	public boolean equals(Object r) {
+		if (r == null) {
 			return false;
 		}
-		if (!(r instanceof ItemDef))
-		{
+		if (!(r instanceof ItemDef)) {
 			return false;
 		}
 		ItemDef u = (ItemDef) r;
@@ -272,47 +267,46 @@ public class ItemDef implements AttributeContainer
 
 	/**
 	 * get a description of the item.
-	 * @return String containing the description in the format: "an/a
-	 * [adject1], [adject2], [adject3] [verb]".
+	 * 
+	 * @return String containing the description in the format: "an/a [adject1],
+	 *         [adject2], [adject3] [verb]".
 	 */
-	public String getDescription()
-	{
-		return ItemDef.getDescription(getAdjective1(), 
-			getAdjective2(), getAdjective3(), getVerb());
+	public String getDescription() {
+		return ItemDef.getDescription(getAdjective1(), getAdjective2(),
+				getAdjective3(), getVerb());
 	}
 
 	/**
 	 * get a description based on the adjectives and the verb.
-	 * @param adject1 String containing the first adjective.
-	 * @param adject2 String containing the second adjective.
-	 * @param adject3 String containing the third adjective.
-	 * @param verb String containing the verb.
-	 * @return String containing the description in the format: "an/a
-	 * [adject1], [adject2], [adject3] [verb]".
+	 * 
+	 * @param adject1
+	 *            String containing the first adjective.
+	 * @param adject2
+	 *            String containing the second adjective.
+	 * @param adject3
+	 *            String containing the third adjective.
+	 * @param verb
+	 *            String containing the verb.
+	 * @return String containing the description in the format: "an/a [adject1],
+	 *         [adject2], [adject3] [verb]".
 	 */
-	public static String getDescription(String adject1, String adject2, 
-		String adject3, String verb)
-	{
+	public static String getDescription(String adject1, String adject2,
+			String adject3, String verb) {
 		int i = 0;
 		StringBuffer buf = new StringBuffer();
-		if ( (adject1 != null) && !adject1.trim().equals(""))
-		{
+		if ((adject1 != null) && !adject1.trim().equals("")) {
 			i++;
 			buf.append(adject1);
 		}
-		if ( (adject2 != null) && !adject2.trim().equals(""))
-		{
-			if (i == 1)
-			{
+		if ((adject2 != null) && !adject2.trim().equals("")) {
+			if (i == 1) {
 				buf.append(", ");
 			}
 			buf.append(adject2);
 			i++;
 		}
-		if ( (adject3 != null) && !adject3.trim().equals(""))
-		{
-			if (i > 0)
-			{
+		if ((adject3 != null) && !adject3.trim().equals("")) {
+			if (i > 0) {
 				buf.append(", ");
 			}
 			buf.append(adject3);
@@ -320,22 +314,21 @@ public class ItemDef implements AttributeContainer
 		}
 		buf.append(" " + verb);
 		String total = buf.toString();
-		return (Constants.isQwerty(total.charAt(0)) ?
-			 "an " : "a ") + total;
+		return (Constants.isQwerty(total.charAt(0)) ? "an " : "a ") + total;
 	}
 
 	/**
 	 * determines whether an adjective is actually part of this items
 	 * description.
-	 * @param anAdjective String containing the adjective to look for.
-	 * @return boolean true if the adjective entered is part of the
-	 * description of this item.
+	 * 
+	 * @param anAdjective
+	 *            String containing the adjective to look for.
+	 * @return boolean true if the adjective entered is part of the description
+	 *         of this item.
 	 */
-	public boolean isAdjective(String anAdjective)
-	{
-		return 
-			( (getAdjective1().equalsIgnoreCase(anAdjective)) || 
-			  (getAdjective2().equalsIgnoreCase(anAdjective)) ||
-			  (getAdjective3().equalsIgnoreCase(anAdjective)) );
+	public boolean isAdjective(String anAdjective) {
+		return ((getAdjective1().equalsIgnoreCase(anAdjective))
+				|| (getAdjective2().equalsIgnoreCase(anAdjective)) || (getAdjective3()
+				.equalsIgnoreCase(anAdjective)));
 	}
 }

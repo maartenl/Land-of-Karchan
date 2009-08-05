@@ -29,13 +29,10 @@ package mmud.commands.guilds;
 import java.util.logging.Logger;
 
 import mmud.MudException;
-import mmud.Attribute;
-import mmud.characters.User;
-import mmud.characters.GuildFactory;
 import mmud.characters.Guild;
-import mmud.database.Database;
-import mmud.commands.NormalCommand;
+import mmud.characters.User;
 import mmud.commands.Command;
+import mmud.database.Database;
 
 /**
  * Makes you leave a guild. There are some requirements to follow:

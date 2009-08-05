@@ -24,377 +24,338 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.database; 
+package mmud.database;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Logger;
-import java.util.Vector;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 import mmud.Attribute;
+import mmud.MudException;
 import mmud.characters.Person;
 import mmud.items.Item;
 import mmud.rooms.Room;
-import mmud.MudException;
 
 /**
- * Used for queries towards the database regarding attributes. Attributes
- * are quite general and can be related to characters, items and room
- * instances.
+ * Used for queries towards the database regarding attributes. Attributes are
+ * quite general and can be related to characters, items and room instances.
+ * 
  * @see Database
  */
-public class AttributeDb
-{
-	
-	private final static String sqlSetAttributeRoom = 
-		"replace into mm_roomattributes (name, value, value_type, id) " +
-		"values(?, ?, ?, ?)";
-	private final static String sqlSetAttributeChar = 
-		"replace into mm_charattributes (name, value, value_type, charname) " +
-		"values(?, ?, ?, ?)";
-	private final static String sqlSetAttributeItem = 
-		"replace into mm_itemattributes (name, value, value_type, id) " +
-		"values(?, ?, ?, ?)";
+public class AttributeDb {
 
-	private final static String sqlRemoveAttributeRoom = 
-		"delete from mm_roomattributes where name = ? and id = ?";
-	private final static String sqlRemoveAttributeChar = 
-		"delete from mm_charattributes where name = ? and charname = ?";
-	private final static String sqlRemoveAttributeItem = 
-		"delete from mm_itemattributes where name = ? and id = ?";
+	private final static String sqlSetAttributeRoom = "replace into mm_roomattributes (name, value, value_type, id) "
+			+ "values(?, ?, ?, ?)";
+	private final static String sqlSetAttributeChar = "replace into mm_charattributes (name, value, value_type, charname) "
+			+ "values(?, ?, ?, ?)";
+	private final static String sqlSetAttributeItem = "replace into mm_itemattributes (name, value, value_type, id) "
+			+ "values(?, ?, ?, ?)";
 
-	private final static String sqlGetAttributesChar =
-		"select * from mm_charattributes "
-		+ "where charname = ?";
-	private final static String sqlGetAttributesItem =
-		"select * from mm_itemattributes "
-		+ "where id = ?";
-	private final static String sqlGetAttributesRoom =
-		"select * from mm_roomattributes "
-		+ "where id = ?";
+	private final static String sqlRemoveAttributeRoom = "delete from mm_roomattributes where name = ? and id = ?";
+	private final static String sqlRemoveAttributeChar = "delete from mm_charattributes where name = ? and charname = ?";
+	private final static String sqlRemoveAttributeItem = "delete from mm_itemattributes where name = ? and id = ?";
+
+	private final static String sqlGetAttributesChar = "select * from mm_charattributes "
+			+ "where charname = ?";
+	private final static String sqlGetAttributesItem = "select * from mm_itemattributes "
+			+ "where id = ?";
+	private final static String sqlGetAttributesRoom = "select * from mm_roomattributes "
+			+ "where id = ?";
 
 	/**
 	 * Set the attribute belonging to a certain room.
-	 * @param anAttribute attribute to be set/added.
-	 * @param aRoom the room that is to have this attribute.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be set/added.
+	 * @param aRoom
+	 *            the room that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Room aRoom)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statSetAttrib =
-				Database.prepareStatement(sqlSetAttributeRoom);
+		try {
+			PreparedStatement statSetAttrib = Database
+					.prepareStatement(sqlSetAttributeRoom);
 			statSetAttrib.setString(1, anAttribute.getName());
 			statSetAttrib.setString(2, anAttribute.getValue());
 			statSetAttrib.setString(3, anAttribute.getValueType());
 			statSetAttrib.setInt(4, aRoom.getId());
-			res = statSetAttrib.executeUpdate();
+			statSetAttrib.executeUpdate();
 			statSetAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting attribute of room.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error setting attribute of room.", e);
 		}
 	}
 
 	/**
 	 * Set the attribute belonging to a certain person.
-	 * @param anAttribute attribute to be set/added.
-	 * @param aPerson the person that is to have this attribute.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be set/added.
+	 * @param aPerson
+	 *            the person that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Person aPerson)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statSetAttrib =
-				Database.prepareStatement(sqlSetAttributeChar);
+		try {
+			PreparedStatement statSetAttrib = Database
+					.prepareStatement(sqlSetAttributeChar);
 			statSetAttrib.setString(1, anAttribute.getName());
 			statSetAttrib.setString(2, anAttribute.getValue());
 			statSetAttrib.setString(3, anAttribute.getValueType());
 			statSetAttrib.setString(4, aPerson.getName());
-			res = statSetAttrib.executeUpdate();
+			statSetAttrib.executeUpdate();
 			statSetAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting attribute of character.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error setting attribute of character.", e);
 		}
 	}
 
 	/**
 	 * Set the attribute belonging to a certain item.
-	 * @param anAttribute attribute to be set/added.
-	 * @param anItem the item that is to have this attribute.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be set/added.
+	 * @param anItem
+	 *            the item that is to have this attribute.
 	 */
 	public static void setAttribute(Attribute anAttribute, Item anItem)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statSetAttrib =
-				Database.prepareStatement(sqlSetAttributeItem);
+		try {
+			PreparedStatement statSetAttrib = Database
+					.prepareStatement(sqlSetAttributeItem);
 			statSetAttrib.setString(1, anAttribute.getName());
 			statSetAttrib.setString(2, anAttribute.getValue());
 			statSetAttrib.setString(3, anAttribute.getValueType());
 			statSetAttrib.setInt(4, anItem.getId());
-			res = statSetAttrib.executeUpdate();
+			statSetAttrib.executeUpdate();
 			statSetAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error setting attribute of item.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error setting attribute of item.", e);
 		}
 	}
 
 	/**
-	 * Remove the attribute belonging to a certain room. When the attribute
-	 * does not exist, this does nothing.
-	 * @param anAttribute attribute to be removed.
-	 * @param aRoom the room that is to not have this attribute anymore.
+	 * Remove the attribute belonging to a certain room. When the attribute does
+	 * not exist, this does nothing.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be removed.
+	 * @param aRoom
+	 *            the room that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Room aRoom)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statRemoveAttrib =
-				Database.prepareStatement(sqlRemoveAttributeRoom);
+		try {
+			PreparedStatement statRemoveAttrib = Database
+					.prepareStatement(sqlRemoveAttributeRoom);
 			statRemoveAttrib.setString(1, anAttribute.getName());
 			statRemoveAttrib.setInt(2, aRoom.getId());
-			res = statRemoveAttrib.executeUpdate();
+			statRemoveAttrib.executeUpdate();
 			statRemoveAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error removing attribute from room.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error removing attribute from room.", e);
 		}
 	}
 
 	/**
 	 * Remove the attribute belonging to a certain person. When the attribute
 	 * does not exist, this does nothing.
-	 * @param anAttribute attribute to be removed.
-	 * @param aPerson the person that is to not have this attribute anymore.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be removed.
+	 * @param aPerson
+	 *            the person that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Person aPerson)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statRemoveAttrib =
-				Database.prepareStatement(sqlRemoveAttributeChar);
+		try {
+			PreparedStatement statRemoveAttrib = Database
+					.prepareStatement(sqlRemoveAttributeChar);
 			statRemoveAttrib.setString(1, anAttribute.getName());
 			statRemoveAttrib.setString(2, aPerson.getName());
-			res = statRemoveAttrib.executeUpdate();
+			statRemoveAttrib.executeUpdate();
 			statRemoveAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error removing attribute from character.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error removing attribute from character.", e);
 		}
 	}
 
-
 	/**
-	 * Remove the attribute belonging to a certain item. When the attribute
-	 * does not exist, this does nothing.
-	 * @param anAttribute attribute to be removed.
-	 * @param anItem the item that is to not have this attribute anymore.
+	 * Remove the attribute belonging to a certain item. When the attribute does
+	 * not exist, this does nothing.
+	 * 
+	 * @param anAttribute
+	 *            attribute to be removed.
+	 * @param anItem
+	 *            the item that is to not have this attribute anymore.
 	 */
 	public static void removeAttribute(Attribute anAttribute, Item anItem)
-	throws MudDatabaseException
-	{
+			throws MudDatabaseException {
 		Logger.getLogger("mmud").finer("");
-		int res = 0;
-		try
-		{
-			PreparedStatement statRemoveAttrib =
-				Database.prepareStatement(sqlRemoveAttributeItem);
+		try {
+			PreparedStatement statRemoveAttrib = Database
+					.prepareStatement(sqlRemoveAttributeItem);
 			statRemoveAttrib.setString(1, anAttribute.getName());
 			statRemoveAttrib.setInt(2, anItem.getId());
-			res = statRemoveAttrib.executeUpdate();
+			statRemoveAttrib.executeUpdate();
 			statRemoveAttrib.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error removing atttribute from item.", e);
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error removing atttribute from item.", e);
 		}
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain person.
-	 * When the person  
-	 * does not exist or has no attributes, this returns an empty array.
-	 * @param aName the name of the person whose attributes need to be retrieved.
+	 * Retrieve all the attributes belonging to a certain person. When the
+	 * person does not exist or has no attributes, this returns an empty array.
+	 * 
+	 * @param aName
+	 *            the name of the person whose attributes need to be retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributesPerson(String aName)
-	throws MudException
-	{
+	public static Vector getAttributesPerson(String aName) throws MudException {
 		Logger.getLogger("mmud").finer("aName=" + aName);
 		ResultSet res;
 		Vector result = new Vector();
-		try
-		{
-		PreparedStatement sqlGetCharAttributes = 
-			Database.prepareStatement(sqlGetAttributesChar);
-		sqlGetCharAttributes.setString(1, aName);
-		res = sqlGetCharAttributes.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		while (res.next())
-		{
-			Attribute myAttrib = new Attribute(res.getString("name"),
-				res.getString("value"),
-				res.getString("value_type"));
-			result.add(myAttrib);
-		}
-		res.close();
-		sqlGetCharAttributes.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error getting attributes from character.", e);
+		try {
+			PreparedStatement sqlGetCharAttributes = Database
+					.prepareStatement(sqlGetAttributesChar);
+			sqlGetCharAttributes.setString(1, aName);
+			res = sqlGetCharAttributes.executeQuery();
+			if (res == null) {
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			while (res.next()) {
+				Attribute myAttrib = new Attribute(res.getString("name"), res
+						.getString("value"), res.getString("value_type"));
+				result.add(myAttrib);
+			}
+			res.close();
+			sqlGetCharAttributes.close();
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error getting attributes from character.", e);
 		}
 		return result;
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain item.
-	 * When the item 
+	 * Retrieve all the attributes belonging to a certain item. When the item
 	 * does not exist or has no attributes, this returns an empty array.
-	 * @param anItemId the identification of the item which attributes need to be retrieved.
+	 * 
+	 * @param anItemId
+	 *            the identification of the item which attributes need to be
+	 *            retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributesItem(int anItemId)
-	throws MudException
-	{
+	public static Vector getAttributesItem(int anItemId) throws MudException {
 		Logger.getLogger("mmud").finer("anItemId=" + anItemId);
 		ResultSet res;
 		Vector result = new Vector();
-		try
-		{
-		PreparedStatement sqlGetItemAttributes = 
-			Database.prepareStatement(sqlGetAttributesItem);
-		sqlGetItemAttributes.setInt(1, anItemId);
-		res = sqlGetItemAttributes.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		while (res.next())
-		{
-			Attribute myAttrib = new Attribute(res.getString("name"),
-				res.getString("value"),
-				res.getString("value_type"));
-			result.add(myAttrib);
-		}
-		res.close();
-		sqlGetItemAttributes.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error getting attributes from item.", e);
+		try {
+			PreparedStatement sqlGetItemAttributes = Database
+					.prepareStatement(sqlGetAttributesItem);
+			sqlGetItemAttributes.setInt(1, anItemId);
+			res = sqlGetItemAttributes.executeQuery();
+			if (res == null) {
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			while (res.next()) {
+				Attribute myAttrib = new Attribute(res.getString("name"), res
+						.getString("value"), res.getString("value_type"));
+				result.add(myAttrib);
+			}
+			res.close();
+			sqlGetItemAttributes.close();
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error getting attributes from item.", e);
 		}
 		return result;
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain room.
-	 * When the room 
+	 * Retrieve all the attributes belonging to a certain room. When the room
 	 * does not exist or has no attributes, this returns an empty array.
-	 * @param aRoom the room which attributes need to be retrieved.
+	 * 
+	 * @param aRoom
+	 *            the room which attributes need to be retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributes(Room aRoom)
-	throws MudException
-	{
-		return (aRoom == null ? null :
-			getAttributesRoom(aRoom.getId()));
+	public static Vector getAttributes(Room aRoom) throws MudException {
+		return (aRoom == null ? null : getAttributesRoom(aRoom.getId()));
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain item.
-	 * When the item
+	 * Retrieve all the attributes belonging to a certain item. When the item
 	 * does not exist or has no attributes, this returns an empty array.
-	 * @param anItem the item which attributes need to be retrieved.
+	 * 
+	 * @param anItem
+	 *            the item which attributes need to be retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributes(Item anItem)
-	throws MudException
-	{
-		return (anItem == null ? null :
-			getAttributesItem(anItem.getId()));
+	public static Vector getAttributes(Item anItem) throws MudException {
+		return (anItem == null ? null : getAttributesItem(anItem.getId()));
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain person.
-	 * When the person
-	 * does not exist or has no attributes, this returns an empty array.
-	 * @param aPerson the person whose attributes need to be retrieved.
+	 * Retrieve all the attributes belonging to a certain person. When the
+	 * person does not exist or has no attributes, this returns an empty array.
+	 * 
+	 * @param aPerson
+	 *            the person whose attributes need to be retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributes(Person aPerson)
-	throws MudException
-	{
-		return (aPerson == null ? null :
-			getAttributesPerson(aPerson.getName()));
+	public static Vector getAttributes(Person aPerson) throws MudException {
+		return (aPerson == null ? null : getAttributesPerson(aPerson.getName()));
 	}
 
 	/**
-	 * Retrieve all the attributes belonging to a certain room.
-	 * When the room 
+	 * Retrieve all the attributes belonging to a certain room. When the room
 	 * does not exist or has no attributes, this returns an empty array.
-	 * @param aRoomId the identification of the room which attributes need to be retrieved.
+	 * 
+	 * @param aRoomId
+	 *            the identification of the room which attributes need to be
+	 *            retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributesRoom(int aRoomId)
-	throws MudException
-	{
+	public static Vector getAttributesRoom(int aRoomId) throws MudException {
 		Logger.getLogger("mmud").finer("aRoomId=" + aRoomId);
 		ResultSet res;
 		Vector result = new Vector();
-		try
-		{
-		PreparedStatement sqlGetRoomAttributes = 
-			Database.prepareStatement(sqlGetAttributesRoom);
-		sqlGetRoomAttributes.setInt(1, aRoomId);
-		res = sqlGetRoomAttributes.executeQuery();
-		if (res == null)
-		{
-			Logger.getLogger("mmud").info("resultset null");
-			return null;
-		}
-		while (res.next())
-		{
-			Attribute myAttrib = new Attribute(res.getString("name"),
-				res.getString("value"),
-				res.getString("value_type"));
-			result.add(myAttrib);
-		}
-		res.close();
-		sqlGetRoomAttributes.close();
-		}
-		catch (SQLException e)
-		{
-			throw new MudDatabaseException("database error getting attributes from room.", e);
+		try {
+			PreparedStatement sqlGetRoomAttributes = Database
+					.prepareStatement(sqlGetAttributesRoom);
+			sqlGetRoomAttributes.setInt(1, aRoomId);
+			res = sqlGetRoomAttributes.executeQuery();
+			if (res == null) {
+				Logger.getLogger("mmud").info("resultset null");
+				return null;
+			}
+			while (res.next()) {
+				Attribute myAttrib = new Attribute(res.getString("name"), res
+						.getString("value"), res.getString("value_type"));
+				result.add(myAttrib);
+			}
+			res.close();
+			sqlGetRoomAttributes.close();
+		} catch (SQLException e) {
+			throw new MudDatabaseException(
+					"database error getting attributes from room.", e);
 		}
 		return result;
 	}

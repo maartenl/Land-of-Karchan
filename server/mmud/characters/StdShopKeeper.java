@@ -31,11 +31,11 @@ import java.util.logging.Logger;
 
 import mmud.MudException;
 import mmud.Sex;
+import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
 import mmud.items.Item;
 import mmud.races.Race;
 import mmud.rooms.Room;
-import mmud.database.MudDatabaseException;
-import mmud.database.ItemsDb;
 
 /**
  * Class containing a default shopkeeper implementation. (currently not a

@@ -26,9 +26,6 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.items;     
 
-import java.util.Vector;
-
-import mmud.MudException;
 
 /**
  * An interface for a viewer. A viewer is an item that has a link to another 
