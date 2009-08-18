@@ -9,7 +9,7 @@ JAVADIR = [what is the place where the java binaries are installed?]
 JAVADOCDIR = [where should the javadocumentation be put]
 JAVASRCDIR = [where should the html-ed source be put]
 # added by Sander, 2007-10-11
-RUNOPTS = -Xms32m -Xmx32m
+RUNOPTS = -Xms32m -Xmx32m -XX:+HeapDumpOnOutOfMemoryError
 
 #
 # Options that can be used to the make command
@@ -41,7 +41,7 @@ SOURCEDIR = $(HOMEDIR)
 # COPTS = -g -m486 // option for Linux versions running gcc < 3.0
 CLASSPATH =  mysql-connector-java-3.1.7-bin.jar:crimson.jar:Simkin.jar:runme.jar
 CLASSPATH2 =  mysql-connector-java-3.1.7-bin.jar:crimson.jar:Simkin.jar
-COPTS = -source 1.4 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR)
+COPTS = -source 1.5 -classpath $(CLASSPATH2) -d $(INSTALLDIR) -sourcepath $(SOURCEDIR) -Xlint:unchecked
 
 TARGETS = compile javadoc release
 
