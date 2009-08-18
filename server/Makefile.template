@@ -9,7 +9,7 @@ JAVADIR = [what is the place where the java binaries are installed?]
 JAVADOCDIR = [where should the javadocumentation be put]
 JAVASRCDIR = [where should the html-ed source be put]
 # added by Sander, 2007-10-11
-RUNOPTS = -Xms32m -Xmx32m -XX:+HeapDumpOnOutOfMemoryError
+RUNOPTS = -Xms32m -Xmx32m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintClassHistogram
 
 #
 # Options that can be used to the make command
