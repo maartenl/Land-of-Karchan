@@ -46,7 +46,6 @@ import mmud.database.MudDatabaseException;
 public class Main
 {
 
-
 	/**
 	 * Connects to the database and does error handling.
 	 */
@@ -55,45 +54,49 @@ public class Main
 		try
 		{
 			Database.connect();
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
-			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out
+					.println("An sql error occurred while attempting to contact the database.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
 			System.exit(1);
-		}
-		catch (InstantiationException e2)
+		} catch (InstantiationException e2)
 		{
-			System.out.println("An instantiation error occurred while attempting to contact the database.");
+			System.out
+					.println("An instantiation error occurred while attempting to contact the database.");
 			System.out.println("The message was : " + e2.getMessage());
-			Constants.logger.throwing("mmud.database.Database", "connect()", e2);
+			Constants.logger
+					.throwing("mmud.database.Database", "connect()", e2);
 			System.out.println("Exiting mud...");
 			System.exit(2);
-		}
-		catch (ClassNotFoundException e3)
+		} catch (ClassNotFoundException e3)
 		{
-			System.out.println("Java driver for the mysql database is not found.");
+			System.out
+					.println("Java driver for the mysql database is not found.");
 			System.out.println("The message was : " + e3.getMessage());
-			Constants.logger.throwing("mmud.database.Database", "connect()", e3);
+			Constants.logger
+					.throwing("mmud.database.Database", "connect()", e3);
 			System.out.println("Exiting mud...");
 			System.exit(3);
-		}
-		catch (IllegalAccessException e4)
+		} catch (IllegalAccessException e4)
 		{
-			System.out.println("An illegal access to a class was attempted while attempting to contact the database.");
+			System.out
+					.println("An illegal access to a class was attempted while attempting to contact the database.");
 			System.out.println("The message was : " + e4.getMessage());
-			Constants.logger.throwing("mmud.database.Database", "connect()", e4);
+			Constants.logger
+					.throwing("mmud.database.Database", "connect()", e4);
 			System.out.println("Exiting mud...");
 			System.exit(4);
 		}
 	}
-	
+
 	/**
 	 * the default method that is called when the server is started.
-	 * @param args The arguments provided when attempting to start the
-	 * program.
+	 * 
+	 * @param args
+	 *            The arguments provided when attempting to start the program.
 	 */
 	public static void main(String[] args)
 	{
@@ -101,16 +104,16 @@ public class Main
 		Constants.init();
 		dbConnect();
 		Constants.logger.info("Starting server");
-		Database.writeLog("root","Starting server");
+		Database.writeLog("root", "Starting server");
 		ServerSocket myServerSocket = null;
 		Constants.logger.info("Retrieving characters...");
 		try
 		{
 			Persons.init();
-		}
-		catch (MudException e)
+		} catch (MudException e)
 		{
-			System.out.println("An mud database error occurred while attempting to initialise users.");
+			System.out
+					.println("An mud database error occurred while attempting to initialise users.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.characters.Persons", "init()", e);
 			System.out.println("Exiting mud...");
@@ -123,26 +126,27 @@ public class Main
 		try
 		{
 			Constants.setUserCommands(Database.getUserCommands());
-		}
-		catch (MudDatabaseException e)
+		} catch (MudDatabaseException e)
 		{
-			System.out.println("An mud database error occurred while attempting to retrieve user commands.");
+			System.out
+					.println("An mud database error occurred while attempting to retrieve user commands.");
 			System.out.println("The message was : " + e.getMessage());
-			Constants.logger.throwing("mmud.database.Database", "getUserCommand()", e);
+			Constants.logger.throwing("mmud.database.Database",
+					"getUserCommand()", e);
 			System.out.println("Exiting mud...");
 			System.exit(1);
 		}
-		Constants.logger.info("Creating Server Socket...");
+		Constants.logger.info("Creating Server Socket on " + Constants.mudhost
+				+ " on port " + Constants.mudportnumber + "...");
 		InetAddress myAddress = null;
 		try
 		{
-			myAddress = 
-				("all".equals(Constants.mudhost) ? null :
-				InetAddress.getByName(Constants.mudhost));
-		}
-		catch (UnknownHostException e)
+			myAddress = ("all".equals(Constants.mudhost) ? null : InetAddress
+					.getByName(Constants.mudhost));
+		} catch (UnknownHostException e)
 		{
-			System.out.println("The host " + Constants.mudhost + " is unknown.");
+			System.out
+					.println("The host " + Constants.mudhost + " is unknown.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
@@ -150,15 +154,12 @@ public class Main
 		}
 		try
 		{
-			myServerSocket = new ServerSocket(
-				Constants.mudportnumber,
-				0, // default
-				myAddress
-				);
-		}
-		catch (IOException e)
+			myServerSocket = new ServerSocket(Constants.mudportnumber, 0, // default
+					myAddress);
+		} catch (IOException e)
 		{
-			System.out.println("An Input/Output error occurred while attempting to create a server socket.");
+			System.out
+					.println("An Input/Output error occurred while attempting to create a server socket.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
@@ -174,8 +175,12 @@ public class Main
 			}
 			Constants.logger.log(Level.INFO, "Shutting down Threadpool");
 			Constants.getThreadPool().shutdown();
-		}
-		catch (Exception e)
+		} catch (OutOfMemoryError mem_error)
+		{
+			mem_error.printStackTrace();
+			Constants.logger.log(Level.WARNING, "exception {0}", mem_error);
+			throw mem_error;
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			Constants.logger.log(Level.WARNING, "exception {0}", e);
@@ -184,23 +189,23 @@ public class Main
 		try
 		{
 			myServerSocket.close();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
-			System.out.println("An Input/output error occurred while attempting to close the server socket.");
+			System.out
+					.println("An Input/output error occurred while attempting to close the server socket.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
 			System.exit(1);
 		}
-		Database.writeLog("root","Stopping server");
+		Database.writeLog("root", "Stopping server");
 		try
 		{
 			Database.disconnect();
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
-			System.out.println("An sql error occurred while attempting to contact the database.");
+			System.out
+					.println("An sql error occurred while attempting to contact the database.");
 			System.out.println("The message was : " + e.getMessage());
 			Constants.logger.throwing("mmud.database.Database", "connect()", e);
 			System.out.println("Exiting mud...");
