@@ -34,10 +34,10 @@ import mmud.characters.Persons;
 import mmud.database.Database;
 
 /**
- * the class that takes care of the passing of time and the events that
- * can occur with the passing of time.
- * Examples of this are:
- * <ul><li>setting sun
+ * the class that takes care of the passing of time and the events that can
+ * occur with the passing of time. Examples of this are:
+ * <ul>
+ * <li>setting sun
  * <li>deteriorating items
  * <li>cleaning up of idle users.
  * </ul>
@@ -52,8 +52,8 @@ public class TickerThread implements Runnable
 	}
 
 	/**
-	 * Run method of the thread. This is started when the start method
-	 * is called.
+	 * Run method of the thread. This is started when the start method is
+	 * called.
 	 */
 	public void run()
 	{
@@ -66,8 +66,7 @@ public class TickerThread implements Runnable
 		try
 		{
 			Thread.sleep(3000);
-		}
-		catch (InterruptedException e)
+		} catch (InterruptedException e)
 		{
 		}
 		while (!Constants.shutdown)
@@ -75,15 +74,17 @@ public class TickerThread implements Runnable
 			try
 			{
 				Thread.sleep(60000);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 			try
 			{
 				Persons.removeIdleUsers();
-			}
-			catch (PersonException e)
+			} catch (PersonException e)
+			{
+				Database.writeLog("root", e);
+				e.printStackTrace();
+			} catch (MudException e)
 			{
 				Database.writeLog("root", e);
 				e.printStackTrace();
@@ -91,14 +92,12 @@ public class TickerThread implements Runnable
 			try
 			{
 				Database.runEvents();
-			}
-			catch (MudException e)
+			} catch (MudException e)
 			{
 				Database.writeLog("root", e);
 				e.printStackTrace();
 			}
 		} // neverending loop.
 	}
-
 
 }

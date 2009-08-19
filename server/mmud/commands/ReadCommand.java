@@ -55,7 +55,7 @@ public class ReadCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	private boolean ReadItem(User aUser, Vector aItems) throws ItemException
+	private boolean ReadItem(User aUser, Vector aItems) throws MudException
 	{
 		int i = 0;
 		Item myItem = (Item) aItems.elementAt(0);

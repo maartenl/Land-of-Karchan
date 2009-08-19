@@ -24,8 +24,9 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
+import mmud.MudException;
 import mmud.boards.Board;
 import mmud.characters.Persons;
 import mmud.characters.User;
@@ -43,18 +44,22 @@ public abstract class PostBoardCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-    /**
-     * Posts a message of a user to a board.
-     * @param aUser the user posting to the board. Used to convey messages.
-     * @param aBoardName the name of the board. 
-     * @param aRoomId the identification number of the room where
-     * this board is active.
-     * @return boolean, false if a message was not properly posted.
-     */
-	protected boolean postMessage(User aUser, 
-		String aBoardName, 
-		int aRoomId, 
-		String aMessage)
+	/**
+	 * Posts a message of a user to a board.
+	 * 
+	 * @param aUser
+	 *            the user posting to the board. Used to convey messages.
+	 * @param aBoardName
+	 *            the name of the board.
+	 * @param aRoomId
+	 *            the identification number of the room where this board is
+	 *            active.
+	 * @return boolean, false if a message was not properly posted.
+	 * @throws MudException
+	 *             room not found
+	 */
+	protected boolean postMessage(User aUser, String aBoardName, int aRoomId,
+			String aMessage) throws MudException
 	{
 		if (aUser.getRoom().getId() != aRoomId)
 		{
@@ -64,8 +69,7 @@ public abstract class PostBoardCommand extends NormalCommand
 		try
 		{
 			myBoard = BoardsDb.getBoard(aBoardName);
-		}
-		catch (MudDatabaseException e)
+		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
@@ -73,14 +77,13 @@ public abstract class PostBoardCommand extends NormalCommand
 		try
 		{
 			myBoard.post(aUser, aMessage);
-		}
-		catch (MudDatabaseException e)
+		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		Persons.sendMessage(aUser, "%SNAME posted something on the " +
-			myBoard.getName() + " board.<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME posted something on the "
+				+ myBoard.getName() + " board.<BR>\r\n");
 		return true;
 	}
 

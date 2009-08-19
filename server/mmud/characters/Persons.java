@@ -47,9 +47,10 @@ import simkin.FieldNotSupportedException;
 import simkin.MethodNotSupportedException;
 
 /**
- * Collection class containing all persons at the moment active in the game.
- * Can contain not only users, but also bots and the like. As long as the
- * base class is Person.
+ * Collection class containing all persons at the moment active in the game. Can
+ * contain not only users, but also bots and the like. As long as the base class
+ * is Person.
+ * 
  * @see mmud.characters.Person
  */
 public final class Persons implements Executable
@@ -60,38 +61,37 @@ public final class Persons implements Executable
 	{
 		return new Persons();
 	}
-	
+
 	/**
 	 * Returns a string describing the contents.
 	 */
-	 public static String getDescription()
-	 {
-	 	if (thePersons == null)
+	public static String getDescription()
+	{
+		if (thePersons == null)
 		{
 			throw new RuntimeException("Persons is null!");
 		}
-		return "Persons amount (Capacity) = " + thePersons.size() + "(" + thePersons.capacity() + ")<BR>";
+		return "Persons amount (Capacity) = " + thePersons.size() + "("
+				+ thePersons.capacity() + ")<BR>";
 	}
 
-
 	/**
-	 * Get the number of characters that are cached.
-	 * Both NPCs as PCs.
+	 * Get the number of characters that are cached. Both NPCs as PCs.
+	 * 
 	 * @param int, containing the amount of characters in the cache.
 	 */
-	public static int getSize() 
+	public static int getSize()
 	{
 		return thePersons.size();
 	}
- 
- 
- 	/**
-	 * Initialise this object by retrieving all persons from the
-	 * database that are playing the game.
+
+	/**
+	 * Initialise this object by retrieving all persons from the database that
+	 * are playing the game.
+	 * 
 	 * @see mmud.database.Database#getPersons
 	 */
-	public static void init()
-	throws MudException
+	public static void init() throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		thePersons = Database.getPersons();
@@ -108,10 +108,12 @@ public final class Persons implements Executable
 	/**
 	 * retrieve the character from the list of characters currently active in
 	 * the game.
-	 * @param aName name of the character to search for.
+	 * 
+	 * @param aName
+	 *            name of the character to search for.
 	 * @return Person object containing all relevant information of the
-	 * character. Will return null pointer if character not active
-	 * in the game.
+	 *         character. Will return null pointer if character not active in
+	 *         the game.
 	 */
 	public static Person retrievePerson(String aName)
 	{
@@ -120,10 +122,11 @@ public final class Persons implements Executable
 			throw new RuntimeException("thePersons vector was null.");
 		}
 		Logger.getLogger("mmud").finer("aName=" + aName);
-		for (int i=0;i < thePersons.size(); i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ((myChar != null) && (myChar.getName().compareToIgnoreCase(aName) == 0))
+			if ((myChar != null)
+					&& (myChar.getName().compareToIgnoreCase(aName) == 0))
 			{
 				return myChar;
 			}
@@ -134,16 +137,17 @@ public final class Persons implements Executable
 	/**
 	 * clean all characters from the list of active players that have been
 	 * inactive for more than an hour.
+	 * 
+	 * @throws MudException
 	 */
-	public static void removeIdleUsers()
-	throws PersonException
+	public static void removeIdleUsers() throws MudException
 	{
 		if (thePersons == null)
 		{
 			throw new RuntimeException("thePersons vector was null.");
 		}
 		Logger.getLogger("mmud").finer("");
-		for (int i=0;i < thePersons.size(); i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
 			if ((myChar != null) && (myChar instanceof User))
@@ -151,16 +155,16 @@ public final class Persons implements Executable
 				User myUser = (User) myChar;
 				if (myUser.isIdleTooLong())
 				{
-					Persons.sendMessage(myUser, 
-						"%SNAME fade%VERB2 slowly from existence.<BR>\r\n");
+					Persons.sendMessage(myUser,
+							"%SNAME fade%VERB2 slowly from existence.<BR>\r\n");
 					try
 					{
 						deactivateUser(myUser);
 						Database.writeLog(myUser.getName(), "idled out.");
-					}
-					catch (MudDatabaseException e)
+					} catch (MudDatabaseException e)
 					{
-						Constants.logger.throwing("mmud.characters.Persons", "removeIdleUsers", e);
+						Constants.logger.throwing("mmud.characters.Persons",
+								"removeIdleUsers", e);
 						// ignore it, so we cannot remove idle users, so what.
 					}
 				}
@@ -170,25 +174,30 @@ public final class Persons implements Executable
 
 	/**
 	 * activate a character
-	 * @throws PersonException if something is wrong
-	 * @param aName String containing the name of the Person
-	 * @param aPassword String containing the password of the Person
-	 * @param anAddress String containing the ip address (more likely the
-	 * hostname) of the user logging in.
-	 * @param aCookie String containing the session password. It is
-	 * possible that this is "null", if the user was not logged in
-	 * before.
-	 * @return User containing all information. If the class would not
-	 * be user but a Person, it means that it is not a valid player in
-	 * the game, but more likely a bot.
+	 * 
+	 * @throws PersonException
+	 *             if something is wrong
+	 * @param aName
+	 *            String containing the name of the Person
+	 * @param aPassword
+	 *            String containing the password of the Person
+	 * @param anAddress
+	 *            String containing the ip address (more likely the hostname) of
+	 *            the user logging in.
+	 * @param aCookie
+	 *            String containing the session password. It is possible that
+	 *            this is "null", if the user was not logged in before.
+	 * @return User containing all information. If the class would not be user
+	 *         but a Person, it means that it is not a valid player in the game,
+	 *         but more likely a bot.
 	 */
- 	public static User activateUser(String aName, String aPassword, 
-		String anAddress, String aCookie)
-	throws PersonException, MudException
+	public static User activateUser(String aName, String aPassword,
+			String anAddress, String aCookie) throws PersonException,
+			MudException
 	{
-		Logger.getLogger("mmud").finer("aName=" + aName +
-			",aPassword=" + aPassword +
-			",aCookie=" + aCookie);
+		Logger.getLogger("mmud").finer(
+				"aName=" + aName + ",aPassword=" + aPassword + ",aCookie="
+						+ aCookie);
 		Person myChar = retrievePerson(aName);
 		if ((myChar != null) && (!(myChar instanceof User)))
 		{
@@ -202,41 +211,46 @@ public final class Persons implements Executable
 			myUser = Database.getUser(aName, aPassword);
 			if (myUser == null)
 			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.USERNOTFOUNDERROR);
+				Logger.getLogger("mmud").info(
+						"thrown: " + Constants.USERNOTFOUNDERROR);
 				throw new UserNotFoundException();
 			}
-		}
-		else
+		} else
 		{
 			if (myUser.getPassword() == null)
 			{
 				User tempUser = Database.getActiveUser(aName, aPassword);
-				if( (tempUser == null) || (!tempUser.verifyPassword(aPassword)))
+				if ((tempUser == null) || (!tempUser.verifyPassword(aPassword)))
 				{
-					Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
+					Logger.getLogger("mmud").info(
+							"thrown: " + Constants.PWDINCORRECTERROR);
 					throw new PwdIncorrectException();
 				}
 				myUser.setPassword(aPassword);
 			}
-			if ((aCookie != null) &&
-				(!aCookie.equals(myUser.getSessionPassword())) &&
-				!aCookie.equals("") )
+			if ((aCookie != null)
+					&& (!aCookie.equals(myUser.getSessionPassword()))
+					&& !aCookie.equals(""))
 			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.MULTIUSERERROR);
+				Logger.getLogger("mmud").info(
+						"thrown: " + Constants.MULTIUSERERROR);
 				throw new MultiUserException();
 			}
 			if (!myUser.verifyPassword(aPassword))
 			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
+				Logger.getLogger("mmud").info(
+						"thrown: " + Constants.PWDINCORRECTERROR);
 				throw new PwdIncorrectException();
 			}
-			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYACTIVEERROR);
+			Logger.getLogger("mmud").info(
+					"thrown: " + Constants.USERALREADYACTIVEERROR);
 			throw new UserAlreadyActiveException();
 		}
 
 		if (!myUser.verifyPassword(aPassword))
 		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.PWDINCORRECTERROR);
+			Logger.getLogger("mmud").info(
+					"thrown: " + Constants.PWDINCORRECTERROR);
 			throw new PwdIncorrectException();
 		}
 		// everything seems to be okay
@@ -249,11 +263,14 @@ public final class Persons implements Executable
 
 	/**
 	 * deactivate a character (usually because someone typed quit.)
-	 * @param aUser the player to be deactivated
-	 * @throws PersonException if something is wrong
+	 * 
+	 * @param aUser
+	 *            the player to be deactivated
+	 * @throws PersonException
+	 *             if something is wrong
 	 */
- 	public static void deactivateUser(User aUser)
-	throws PersonException, MudDatabaseException
+	public static void deactivateUser(User aUser) throws PersonException,
+			MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("aUser=" + aUser);
 		Database.deactivateUser(aUser);
@@ -262,92 +279,76 @@ public final class Persons implements Executable
 
 	/**
 	 * create a new character
-	 * @throws PersonException if something is wrong
-	 * @param aName the name of the character
-	 * @param aPassword the password of the character
-	 * @param anAddress the address of the computer connecting
-	 * @param aRealName the real name of the person behind the keyboard.
-	 * @param aEmail an email address of the person
-	 * @param aTitle the title of the character
-	 * @param aRace the race of the character
-	 * @param aSex the gender of the character (male or female)
-	 * @param aAge the age of the character (young, very young, old,
-	 * very old, etc.)
-	 * @param aLength the length of the character (ex. tall)
-	 * @param aWidth the width of the character (ex. athletic)
-	 * @param aComplexion the complexion of the character (ex.
-	 * dark-skinned)
-	 * @param aEyes the eye colour of the character (ex. blue-eyed)
-	 * @param aFace the face of the character (ex. dimple-faced)
-	 * @param aHair the hair of the character (ex. black-haired)
-	 * @param aBeard the beard of the character (ex. with ponytail)
-	 * @param aArms the arms of the character (ex. long-armed)
-	 * @param aLegs the legs of the character (ex. long-legged)
-	 * @param aCookie the sessionpassword
+	 * 
+	 * @throws PersonException
+	 *             if something is wrong
+	 * @param aName
+	 *            the name of the character
+	 * @param aPassword
+	 *            the password of the character
+	 * @param anAddress
+	 *            the address of the computer connecting
+	 * @param aRealName
+	 *            the real name of the person behind the keyboard.
+	 * @param aEmail
+	 *            an email address of the person
+	 * @param aTitle
+	 *            the title of the character
+	 * @param aRace
+	 *            the race of the character
+	 * @param aSex
+	 *            the gender of the character (male or female)
+	 * @param aAge
+	 *            the age of the character (young, very young, old, very old,
+	 *            etc.)
+	 * @param aLength
+	 *            the length of the character (ex. tall)
+	 * @param aWidth
+	 *            the width of the character (ex. athletic)
+	 * @param aComplexion
+	 *            the complexion of the character (ex. dark-skinned)
+	 * @param aEyes
+	 *            the eye colour of the character (ex. blue-eyed)
+	 * @param aFace
+	 *            the face of the character (ex. dimple-faced)
+	 * @param aHair
+	 *            the hair of the character (ex. black-haired)
+	 * @param aBeard
+	 *            the beard of the character (ex. with ponytail)
+	 * @param aArms
+	 *            the arms of the character (ex. long-armed)
+	 * @param aLegs
+	 *            the legs of the character (ex. long-legged)
+	 * @param aCookie
+	 *            the sessionpassword
 	 * @return User object
 	 */
-	public static User createUser(String aName, String aPassword, String anAddress,
-		String aRealName,
-		String aEmail,
-		String aTitle,
-		Race aRace,
-		Sex aSex,
-		String aAge,
-		String aLength,
-		String aWidth,
-		String aComplexion,
-		String aEyes,
-		String aFace,
-		String aHair,
-		String aBeard,
-		String aArms,
-		String aLegs,
-		String aCookie)
-		throws PersonException, MudException
+	public static User createUser(String aName, String aPassword,
+			String anAddress, String aRealName, String aEmail, String aTitle,
+			Race aRace, Sex aSex, String aAge, String aLength, String aWidth,
+			String aComplexion, String aEyes, String aFace, String aHair,
+			String aBeard, String aArms, String aLegs, String aCookie)
+			throws PersonException, MudException
 	{
 		Logger.getLogger("mmud").finer(
-			"aName=" + aName + 
-			",aPassword=" + aPassword + 
-			",anAddress=" + anAddress +
-			",aRealName=" + aRealName +
-			",aEmail=" + aEmail +
-			",aTitle=" + aTitle +
-			",aRace=" + aRace +
-			",aSex=" + aSex +
-			",aAge=" + aAge +
-			",aLength=" + aLength +
-			",aWidth=" + aWidth +
-			",aComplexion=" + aComplexion +
-			",aEyes=" + aEyes +
-			",aFace=" + aFace +
-			",aHair=" + aHair +
-			",aBeard=" + aBeard +
-			",aArms=" + aArms +
-			",aLegs=" + aLegs +
-			",aCookie=" + aCookie);
+				"aName=" + aName + ",aPassword=" + aPassword + ",anAddress="
+						+ anAddress + ",aRealName=" + aRealName + ",aEmail="
+						+ aEmail + ",aTitle=" + aTitle + ",aRace=" + aRace
+						+ ",aSex=" + aSex + ",aAge=" + aAge + ",aLength="
+						+ aLength + ",aWidth=" + aWidth + ",aComplexion="
+						+ aComplexion + ",aEyes=" + aEyes + ",aFace=" + aFace
+						+ ",aHair=" + aHair + ",aBeard=" + aBeard + ",aArms="
+						+ aArms + ",aLegs=" + aLegs + ",aCookie=" + aCookie);
 		if (Database.existsUser(aName))
 		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.USERALREADYEXISTSERROR);
+			Logger.getLogger("mmud").info(
+					"thrown: " + Constants.USERALREADYEXISTSERROR);
 			throw new UserAlreadyExistsException();
 		}
 		// everything seems to be okay
-		User myUser = new User(aName, aPassword, anAddress,
-			aRealName,
-			aEmail,
-			aTitle,
-			aRace,
-			aSex,
-			aAge,
-			aLength,
-			aWidth,
-			aComplexion,
-			aEyes,
-			aFace,
-			aHair,
-			aBeard,
-			aArms,
-			aLegs,
-			aCookie);
+		User myUser = new User(aName, aPassword, anAddress, aRealName, aEmail,
+				aTitle, aRace, aSex, aAge, aLength, aWidth, aComplexion, aEyes,
+				aFace, aHair, aBeard, aArms, aLegs, aCookie);
 		Database.createUser(myUser);
 		myUser.activate();
 		thePersons.addElement(myUser);
@@ -356,28 +357,32 @@ public final class Persons implements Executable
 
 	/**
 	 * Returns a description of everyone visible in a room.
-	 * @param aRoom the room of which the description is required.
-	 * @param aUser the user (in most cases we want a description of
-	 * everyone in the room, except ourselves.
-	 * @return String containing the description of everyone visible in
-	 * the room.
+	 * 
+	 * @param aRoom
+	 *            the room of which the description is required.
+	 * @param aUser
+	 *            the user (in most cases we want a description of everyone in
+	 *            the room, except ourselves.
+	 * @return String containing the description of everyone visible in the
+	 *         room.
+	 * @throws MudException
+	 *             if the room is not correct
 	 */
 	public static String descriptionOfPersonsInRoom(Room aRoom, User aUser)
+			throws MudException
 	{
-		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
-			",aUser=" + aUser);
+		Logger.getLogger("mmud").finer("aRoom=" + aRoom + ",aUser=" + aUser);
 		String myOutput = new String();
-		
-		for (int i=0;i < thePersons.size();i++)
+
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aRoom) &&
-				(myChar != aUser) )
+			if ((myChar.getRoom() == aRoom) && (myChar != aUser))
 			{
-				myOutput = myOutput + "A " + myChar.getRace() + 
-					" called <A HREF=\"" + 
-					aUser.getUrl("look+at+" + myChar.getName()) + 
-					"\">" + myChar.getName() + "</A> is here.<BR>\r\n";
+				myOutput = myOutput + "A " + myChar.getRace()
+						+ " called <A HREF=\""
+						+ aUser.getUrl("look+at+" + myChar.getName()) + "\">"
+						+ myChar.getName() + "</A> is here.<BR>\r\n";
 			}
 		}
 		return myOutput;
@@ -385,12 +390,14 @@ public final class Persons implements Executable
 
 	/**
 	 * paging all users
-	 * @param aMessage message to be sent to all users.
+	 * 
+	 * @param aMessage
+	 *            message to be sent to all users.
 	 */
 	public static void sendWall(String aMessage)
 	{
 		Logger.getLogger("mmud").finer("aMessage=" + aMessage);
-		for (int i=0;i < thePersons.size();i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
 			myChar.writeMessage(aMessage);
@@ -398,23 +405,27 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * paging all guild members. If the Guild provided is null,
-	 * no guild message is sent.
-	 * @param aGuild the guild to which the user must belong
-	 * @param aMessage message to be sent to all users.
-	 * @param aPerson the person sending the guild message.
+	 * paging all guild members. If the Guild provided is null, no guild message
+	 * is sent.
+	 * 
+	 * @param aGuild
+	 *            the guild to which the user must belong
+	 * @param aMessage
+	 *            message to be sent to all users.
+	 * @param aPerson
+	 *            the person sending the guild message.
 	 */
-	public static void sendGuildMessage(Person aPerson, Guild aGuild, String aMessage)
-	throws MudException
+	public static void sendGuildMessage(Person aPerson, Guild aGuild,
+			String aMessage) throws MudException
 	{
-		Logger.getLogger("mmud").finer("aGuild=" + 
-			aGuild + ",aMessage=" + aMessage);
+		Logger.getLogger("mmud").finer(
+				"aGuild=" + aGuild + ",aMessage=" + aMessage);
 		if (aGuild == null)
 		{
 			// no messages if no guild is provided
 			return;
 		}
-		for (int i=0;i < thePersons.size();i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			if (thePersons.elementAt(i) instanceof User)
 			{
@@ -424,27 +435,34 @@ public final class Persons implements Executable
 				if (aGuild.equals(myChar.getGuild()))
 				{
 					// only write the message if the proper guild member
-					myChar.writeMessage("<FONT COLOR=green>[guild] " + aMessage + "</FONT>");
+					myChar.writeMessage("<FONT COLOR=green>[guild] " + aMessage
+							+ "</FONT>");
 				}
 			}
 		}
 	}
 
 	/**
-	 * character communication method to everyone in the room. The message
-	 * is parsed, based on who is sending the message.
-	 * @param aPerson the person who is the source of the message.
-	 * @param aMessage the message
-	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String) 
+	 * character communication method to everyone in the room. The message is
+	 * parsed, based on who is sending the message.
+	 * 
+	 * @param aPerson
+	 *            the person who is the source of the message.
+	 * @param aMessage
+	 *            the message
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String)
 	 */
 	public static void sendMessage(Person aPerson, String aMessage)
+			throws MudException
 	{
-		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
-			",aMessage=" + aMessage);
-		for (int i=0;i < thePersons.size();i++)
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson + ",aMessage=" + aMessage);
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()))
+			if ((myChar.getRoom() == aPerson.getRoom()))
 			{
 				myChar.writeMessage(aPerson, aMessage);
 			}
@@ -452,29 +470,34 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * room communication method to everyone in the room. The message
-	 * is not parsed. Bear in mind that this method should only be used
-	 * for communication about environmental issues.
-	 * If the communication originates from a User/Person, you should
-	 * use sendMessage(aPerson, aMessage). Otherwise the Ignore
-	 * functionality will be omitted.
-	 * @param aRoom the room that is to display the message. If the room is
-	 * null, do not do anything.
-	 * @param aMessage the message
-	 * @see mmud.characters.Person#writeMessage(java.lang.String) 
+	 * room communication method to everyone in the room. The message is not
+	 * parsed. Bear in mind that this method should only be used for
+	 * communication about environmental issues. If the communication originates
+	 * from a User/Person, you should use sendMessage(aPerson, aMessage).
+	 * Otherwise the Ignore functionality will be omitted.
+	 * 
+	 * @param aRoom
+	 *            the room that is to display the message. If the room is null,
+	 *            do not do anything.
+	 * @param aMessage
+	 *            the message
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(java.lang.String)
 	 */
 	public static void sendMessage(Room aRoom, String aMessage)
+			throws MudException
 	{
-		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
-			",aMessage=" + aMessage);
+		Logger.getLogger("mmud").finer(
+				"aRoom=" + aRoom + ",aMessage=" + aMessage);
 		if (aRoom == null)
 		{
 			return;
 		}
-		for (int i=0;i < thePersons.size();i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aRoom))
+			if ((myChar.getRoom() == aRoom))
 			{
 				myChar.writeMessage(aMessage);
 			}
@@ -482,18 +505,25 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * room communication method to everyone in the room. The message
-	 * is not parsed.
-	 * @param aPerson the person that wishes to communicate in a room.
-	 * @param aRoom the room that is to display the message. If the room is
-	 * null, do not do anything.
-	 * @param aMessage the message
-	 * @see mmud.characters.Person#writeMessage(java.lang.String) 
+	 * room communication method to everyone in the room. The message is not
+	 * parsed.
+	 * 
+	 * @param aPerson
+	 *            the person that wishes to communicate in a room.
+	 * @param aRoom
+	 *            the room that is to display the message. If the room is null,
+	 *            do not do anything.
+	 * @param aMessage
+	 *            the message
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(java.lang.String)
 	 */
 	public static void sendMessage(Person aPerson, Room aRoom, String aMessage)
+			throws MudException
 	{
-		Logger.getLogger("mmud").finer("aRoom=" + aRoom +
-			",aMessage=" + aMessage);
+		Logger.getLogger("mmud").finer(
+				"aRoom=" + aRoom + ",aMessage=" + aMessage);
 		if (aRoom == null)
 		{
 			return;
@@ -502,10 +532,10 @@ public final class Persons implements Executable
 		{
 			throw new RuntimeException("person is null");
 		}
-		for (int i=0;i < thePersons.size();i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aRoom))
+			if ((myChar.getRoom() == aRoom))
 			{
 				myChar.writeMessage(aPerson, aMessage);
 			}
@@ -514,21 +544,26 @@ public final class Persons implements Executable
 
 	/**
 	 * character communication method to everyone in the room excluded the
-	 * person mentioned in the parameters. The message
-	 * is parsed, based on who is sending the message.
-	 * @param aPerson the person who is the source of the message.
-	 * @param aMessage the message
-	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String) 
+	 * person mentioned in the parameters. The message is parsed, based on who
+	 * is sending the message.
+	 * 
+	 * @param aPerson
+	 *            the person who is the source of the message.
+	 * @param aMessage
+	 *            the message
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,java.lang.String)
 	 */
 	public static void sendMessageExcl(Person aPerson, String aMessage)
+			throws MudException
 	{
-		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
-			",aMessage=" + aMessage);
-		for (int i=0;i < thePersons.size();i++)
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson + ",aMessage=" + aMessage);
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()) &&
-				myChar != aPerson)
+			if ((myChar.getRoom() == aPerson.getRoom()) && myChar != aPerson)
 			{
 				myChar.writeMessage(aPerson, aMessage);
 			}
@@ -536,24 +571,31 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * character communication method to everyone in the room.
-	 * The first person is the source of the message.
-	 * The second person is the target of the message.
-	 * The message is parsed based on the source and target.
-	 * @param aPerson the person doing the communicatin'.
-	 * @param aSecondPerson the person communicated to.
-	 * @param aMessage the message to be sent
-	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person, mmud.characters.Person,java.lang.String) 
+	 * character communication method to everyone in the room. The first person
+	 * is the source of the message. The second person is the target of the
+	 * message. The message is parsed based on the source and target.
+	 * 
+	 * @param aPerson
+	 *            the person doing the communicatin'.
+	 * @param aSecondPerson
+	 *            the person communicated to.
+	 * @param aMessage
+	 *            the message to be sent
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,
+	 *      mmud.characters.Person,java.lang.String)
 	 */
-	public static void sendMessage(Person aPerson, Person aSecondPerson, String aMessage)
+	public static void sendMessage(Person aPerson, Person aSecondPerson,
+			String aMessage) throws MudException
 	{
-		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
-			",aSecondPerson=" + aSecondPerson +
-			",aMessage=" + aMessage);
-		for (int i=0;i < thePersons.size();i++)
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson + ",aSecondPerson=" + aSecondPerson
+						+ ",aMessage=" + aMessage);
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()))
+			if ((myChar.getRoom() == aPerson.getRoom()))
 			{
 				myChar.writeMessage(aPerson, aSecondPerson, aMessage);
 			}
@@ -561,24 +603,32 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * character communication method to everyone in the room except 
-	 * to the two persons mentioned in the header.
-	 * The message is parsed based on the source and target.
-	 * @param aPerson the person doing the communicatin'.
-	 * @param aSecondPerson the person communicated to.
-	 * @param aMessage the message to be sent
-	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person, mmud.characters.Person,java.lang.String)
+	 * character communication method to everyone in the room except to the two
+	 * persons mentioned in the header. The message is parsed based on the
+	 * source and target.
+	 * 
+	 * @param aPerson
+	 *            the person doing the communicatin'.
+	 * @param aSecondPerson
+	 *            the person communicated to.
+	 * @param aMessage
+	 *            the message to be sent
+	 * @throws MudException
+	 *             if the room is not correct
+	 * @see mmud.characters.Person#writeMessage(mmud.characters.Person,
+	 *      mmud.characters.Person,java.lang.String)
 	 */
-	public static void sendMessageExcl(Person aPerson, Person aSecondPerson, String aMessage)
+	public static void sendMessageExcl(Person aPerson, Person aSecondPerson,
+			String aMessage) throws MudException
 	{
-		Logger.getLogger("mmud").finer("aPerson=" + aPerson +
-			",aSecondPerson=" + aSecondPerson +
-			",aMessage=" + aMessage);
-		for (int i=0;i < thePersons.size();i++)
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson + ",aSecondPerson=" + aSecondPerson
+						+ ",aMessage=" + aMessage);
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
-			if ( (myChar.getRoom() == aPerson.getRoom()) &&
-				myChar != aPerson && myChar != aSecondPerson)
+			if ((myChar.getRoom() == aPerson.getRoom()) && myChar != aPerson
+					&& myChar != aSecondPerson)
 			{
 				myChar.writeMessage(aPerson, aSecondPerson, aMessage);
 			}
@@ -587,43 +637,48 @@ public final class Persons implements Executable
 
 	/**
 	 * returns a list of persons currently playing the game
+	 * 
 	 * @return String containing who's who.
 	 */
-	public static String getWhoList()
-	throws MudException
+	public static String getWhoList() throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String myString = "<UL>";
 		int count = 0;
-		for (int i=0;i < thePersons.size();i++)
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
 			if (myChar instanceof User)
 			{
 				User myUser = (User) myChar;
 				Area myArea = myChar.getRoom().getArea();
-				myString += "<LI>" + myUser.getName() + ", " + myUser.getTitle();
+				myString += "<LI>" + myUser.getName() + ", "
+						+ myUser.getTitle();
 				if (!myArea.getName().equals("Main"))
 				{
 					myString += " in " + myArea.getShortDescription();
 				}
-				myString += (myUser.isaSleep()?", sleeping ":" ") + myUser.getIdleTime() + "\r\n";
+				myString += (myUser.isaSleep() ? ", sleeping " : " ")
+						+ myUser.getIdleTime() + "\r\n";
 				count++;
 			}
 		}
-		myString = "<H2>List of All Users</H2><I>There are " + count + " persons active in the game.</I><P>" + myString + "</UL>";
+		myString = "<H2>List of All Users</H2><I>There are " + count
+				+ " persons active in the game.</I><P>" + myString + "</UL>";
 		return myString;
 	}
 
 	/**
 	 * Standard tostring implementation.
+	 * 
 	 * @return String containing the characters in the list.
 	 */
+	@Override
 	public String toString()
 	{
 		String myOutput = new String();
-		
-		for (int i=0;i < thePersons.size();i++)
+
+		for (int i = 0; i < thePersons.size(); i++)
 		{
 			Person myChar = (Person) thePersons.elementAt(i);
 			if (myChar != null)
@@ -634,23 +689,21 @@ public final class Persons implements Executable
 		return myOutput;
 	}
 
-	public void setValue(String field_name, String attrib_name,
-		Object value, ExecutableContext ctxt)
-	throws FieldNotSupportedException
+	public void setValue(String field_name, String attrib_name, Object value,
+			ExecutableContext ctxt) throws FieldNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("field_name=" + field_name +
-			", atttrib_name=" + attrib_name + ", value=" + 
-			value + "[" + value.getClass() + "]");
+		Logger.getLogger("mmud").finer(
+				"field_name=" + field_name + ", atttrib_name=" + attrib_name
+						+ ", value=" + value + "[" + value.getClass() + "]");
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
-	public void setValueAt(Object array_index, 
-		String attrib_name, 
-		Object value, ExecutableContext ctxt)
+	public void setValueAt(Object array_index, String attrib_name,
+			Object value, ExecutableContext ctxt)
 	{
-		Logger.getLogger("mmud").finer("array_index=" + array_index +
-			", atttrib_name=" + attrib_name + ", value=" + 
-			value);
+		Logger.getLogger("mmud").finer(
+				"array_index=" + array_index + ", atttrib_name=" + attrib_name
+						+ ", value=" + value);
 	}
 
 	public ExecutableIterator createIterator()
@@ -683,37 +736,35 @@ public final class Persons implements Executable
 		return null;
 	}
 
-	public Object getValue(String field_name, String
-		attrib_name, ExecutableContext ctxt)
-	throws FieldNotSupportedException
+	public Object getValue(String field_name, String attrib_name,
+			ExecutableContext ctxt) throws FieldNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("field_name=" + field_name +
-			", atttrib_name=" + attrib_name);
+		Logger.getLogger("mmud").finer(
+				"field_name=" + field_name + ", atttrib_name=" + attrib_name);
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
-	public Object getValueAt(Object array_index,
-		String attrib_name, ExecutableContext ctxt)
+	public Object getValueAt(Object array_index, String attrib_name,
+			ExecutableContext ctxt)
 	{
-		Logger.getLogger("mmud").finer("array_index=" + array_index +
-			", atttrib_name=" + attrib_name);
+		Logger.getLogger("mmud").finer(
+				"array_index=" + array_index + ", atttrib_name=" + attrib_name);
 		return null;
 	}
 
-	public Object method(String method_name, Object[]
-		arguments, ExecutableContext ctxt)
-	throws MethodNotSupportedException
+	public Object method(String method_name, Object[] arguments,
+			ExecutableContext ctxt) throws MethodNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("method_name=" + method_name +
-			", arguments=" + arguments);
+		Logger.getLogger("mmud").finer(
+				"method_name=" + method_name + ", arguments=" + arguments);
 		if (method_name.equals("find"))
 		{
 			if (arguments.length == 1)
 			{
 				if (!(arguments[0] instanceof String))
 				{
-					throw new MethodNotSupportedException(method_name + 
-						" does not contain a String as argument.");
+					throw new MethodNotSupportedException(method_name
+							+ " does not contain a String as argument.");
 				}
 				return retrievePerson((String) arguments[0]);
 			}
@@ -723,6 +774,7 @@ public final class Persons implements Executable
 
 	/**
 	 * Returns the iterator so we can cycle through all available players.
+	 * 
 	 * @return Iterator for cycling through all available players.
 	 */
 	public static Iterator getIterator()
@@ -731,19 +783,19 @@ public final class Persons implements Executable
 	}
 
 	/**
-	 * Retrieve a person whose name corresponds to aName.
-	 * The person can either be playing or not (this can be checked
-	 * with the isActive() method) and can be a bot or mob or user or
-	 * whatever.
+	 * Retrieve a person whose name corresponds to aName. The person can either
+	 * be playing or not (this can be checked with the isActive() method) and
+	 * can be a bot or mob or user or whatever.
+	 * 
 	 * @see Person#isActive()
-	 * @param aName the name of the character to be retrieved
+	 * @param aName
+	 *            the name of the character to be retrieved
 	 * @return Person object containing hopefully all necessary stuff.
 	 */
-	public static Person getPerson(String aName)
-	throws MudException
+	public static Person getPerson(String aName) throws MudException
 	{
 		Person toChar2 = Persons.retrievePerson(aName);
-		if (toChar2 == null) 
+		if (toChar2 == null)
 		{
 			// the person is not playing the game...
 			// we'll need to look him up "outside"

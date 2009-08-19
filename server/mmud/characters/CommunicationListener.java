@@ -27,11 +27,11 @@ maarten_l@yahoo.com
 
 package mmud.characters;
 
+import mmud.MudException;
 
 /**
- * Event that is triggered when either a say/tell/ask/whisper/shout
- * command is executed. It is triggered usually on the person spoken
- * to.
+ * Event that is triggered when either a say/tell/ask/whisper/shout command is
+ * executed. It is triggered usually on the person spoken to.
  */
 public interface CommunicationListener
 {
@@ -44,7 +44,7 @@ public interface CommunicationListener
 
 	public final class CommType
 	{
-		private String theType;
+		private final String theType;
 
 		public static final CommType SAY = new CommType("say");
 		public static final CommType WHISPER = new CommType("whisper");
@@ -59,27 +59,32 @@ public interface CommunicationListener
 
 		/**
 		 * returns the communication type.
+		 * 
 		 * @return returns "ask", "say", "whisper", "shout", "tell".
 		 */
+		@Override
 		public String toString()
 		{
 			return theType;
 		}
 
-
 	}
 
-
-    /**
-     * An event method, triggered when someone issues a communication
-     * command towards this person. Enables this person to react
-	 * appropriately
-     * to the command. This is usually reserved for bots.  
-     * @param aSentence the string that is being communicated.
-	 * @param aType the type of communication. Cannot be null.
-	 * @param aPerson the person that issued the communication command.
+	/**
+	 * An event method, triggered when someone issues a communication command
+	 * towards this person. Enables this person to react appropriately to the
+	 * command. This is usually reserved for bots.
+	 * 
+	 * @param aSentence
+	 *            the string that is being communicated.
+	 * @param aType
+	 *            the type of communication. Cannot be null.
+	 * @param aPerson
+	 *            the person that issued the communication command.
+	 * @throws MudException
 	 * @see CommType
-     */
-	public void commEvent(Person aPerson, CommType aType, String aSentence);
+	 */
+	public void commEvent(Person aPerson, CommType aType, String aSentence)
+			throws MudException;
 
 }

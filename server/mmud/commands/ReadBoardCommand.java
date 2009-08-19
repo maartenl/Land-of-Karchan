@@ -24,10 +24,11 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
+import mmud.MudException;
 import mmud.boards.Board;
 import mmud.characters.Persons;
 import mmud.characters.User;
@@ -48,13 +49,18 @@ public abstract class ReadBoardCommand extends NormalCommand
 
 	/**
 	 * Reads a board for a user.
-	 * @param aUser the user reading the board. Used to convey messages.
-	 * @param aBoardName the name of the board. 
-	 * @param aRoomId the identification number of the room where
-	*  this board is active.
+	 * 
+	 * @param aUser
+	 *            the user reading the board. Used to convey messages.
+	 * @param aBoardName
+	 *            the name of the board.
+	 * @param aRoomId
+	 *            the identification number of the room where this board is
+	 *            active.
+	 * @throws MudException
 	 */
-	protected boolean readMessage(User aUser, 
-		String aBoardName, int aRoomId)
+	protected boolean readMessage(User aUser, String aBoardName, int aRoomId)
+			throws MudException
 	{
 		if (aUser.getRoom().getId() != aRoomId)
 		{
@@ -65,27 +71,26 @@ public abstract class ReadBoardCommand extends NormalCommand
 		try
 		{
 			myBoard = BoardsDb.getBoard(aBoardName);
-		}
-		catch (MudDatabaseException e)
+		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 		try
 		{
-			theResult = myBoard.getDescription() + 
-				myBoard.read() + aUser.printForm();
-		}
-		catch (MudDatabaseException e)
+			theResult = myBoard.getDescription() + myBoard.read()
+					+ aUser.printForm();
+		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		Persons.sendMessage(aUser, "%SNAME read%VERB2 the " + myBoard.getName() 
-			+ " board.<BR>\r\n");
+		Persons.sendMessage(aUser, "%SNAME read%VERB2 the " + myBoard.getName()
+				+ " board.<BR>\r\n");
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");

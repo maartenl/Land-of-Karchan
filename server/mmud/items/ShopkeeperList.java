@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.items;     
+package mmud.items;
 
 import java.util.logging.Logger;
 
@@ -36,80 +36,97 @@ import mmud.database.MudDatabaseException;
 import simkin.Executable;
 
 /**
- * An item in the mud.
- * Basically consists of an ItemDefinition and a number of Attributes
- * specific to this item.
+ * An item in the mud. Basically consists of an ItemDefinition and a number of
+ * Attributes specific to this item.
  */
-public class ShopkeeperList extends Item implements Executable, AttributeContainer, Viewer
+public class ShopkeeperList extends Item implements Executable,
+		AttributeContainer, Viewer
 {
 
 	/**
-	 * Contains the person/shopkeeper whos inventory must be
-	 * visible.
+	 * Contains the person/shopkeeper whos inventory must be visible.
 	 */
-	private Person thePerson;
+	private final Person thePerson;
 
 	/**
 	 * Create this item object with a default ShopkeeperList Definition and id.
 	 * This method is usually only used by the database.
-	 * @param anItemDef definition of the item
-	 * @param anId integer identification of the item
-	 * @param aPosBody the place on the body that this item is worn on 
-	 * or wielded.
-	 * @param aPerson the person whos inventory should be seen by looking 
-	 * at this item.
+	 * 
+	 * @param anItemDef
+	 *            definition of the item
+	 * @param anId
+	 *            integer identification of the item
+	 * @param aPosBody
+	 *            the place on the body that this item is worn on or wielded.
+	 * @param aPerson
+	 *            the person whos inventory should be seen by looking at this
+	 *            item.
 	 */
-	ShopkeeperList(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
+	ShopkeeperList(ItemDef anItemDef, int anId, PersonPositionEnum aPosBody,
+			Person aPerson)
 	{
 		super(anItemDef, anId, aPosBody);
 		thePerson = aPerson;
-	} 
+	}
 
 	/**
 	 * Create this item object with a default ShopkeeperList Definition and id.
 	 * This method is usually only used by the database.
-	 * @param anItemDef definition of the item
-	 * @param anId integer identification of the item
-	 * @param aPerson the person whos inventory should be seen by looking 
-	 * at this item.
+	 * 
+	 * @param anItemDef
+	 *            definition of the item
+	 * @param anId
+	 *            integer identification of the item
+	 * @param aPerson
+	 *            the person whos inventory should be seen by looking at this
+	 *            item.
 	 */
 	ShopkeeperList(ItemDef anItemDef, int anId, Person aPerson)
 	{
 		super(anItemDef, anId);
 		thePerson = aPerson;
-	} 
+	}
 
 	/**
 	 * Create this item object with a default ShopkeeperList Definition and id.
 	 * This method is usually only used by the database.
-	 * @param anItemDef integer definition identification of the item
-	 * @param anId integer identification of the item
-	 * @param aPerson the person whos inventory should be seen by looking 
-	 * at this item.
+	 * 
+	 * @param anItemDef
+	 *            integer definition identification of the item
+	 * @param anId
+	 *            integer identification of the item
+	 * @param aPerson
+	 *            the person whos inventory should be seen by looking at this
+	 *            item.
 	 */
-	ShopkeeperList(int anItemDef, int anId, PersonPositionEnum aPosBody, Person aPerson)
-	throws MudDatabaseException
+	ShopkeeperList(int anItemDef, int anId, PersonPositionEnum aPosBody,
+			Person aPerson) throws MudDatabaseException
 	{
 		super(ItemDefs.getItemDef(anItemDef), anId, aPosBody);
 		thePerson = aPerson;
-	} 
+	}
 
 	/**
 	 * Create this item object with a default ShopkeeperList Definition and id.
 	 * This method is usually only used by the database.
-	 * @param anItemDef integer definition identification of the item
-	 * @param anId integer identification of the item
-	 * @param aPerson the person whos inventory should be seen by looking 
-	 * at this item.
+	 * 
+	 * @param anItemDef
+	 *            integer definition identification of the item
+	 * @param anId
+	 *            integer identification of the item
+	 * @param aPerson
+	 *            the person whos inventory should be seen by looking at this
+	 *            item.
 	 */
 	ShopkeeperList(int anItemDef, int anId, Person aPerson)
-	throws MudDatabaseException
+			throws MudDatabaseException
 	{
 		super(ItemDefs.getItemDef(anItemDef), anId);
 		thePerson = aPerson;
-	} 
+	}
 
-	public Attribute getAttribute(String aName)
+	@Override
+	public Attribute getAttribute(String aName) throws MudDatabaseException
 	{
 		Attribute attrib = super.getAttribute(aName);
 		if ((aName.equals("readable")) && (attrib != null))
@@ -117,30 +134,29 @@ public class ShopkeeperList extends Item implements Executable, AttributeContain
 			try
 			{
 				String inventory = thePerson.inventory();
-				attrib = new Attribute(attrib.getName(),
-					attrib.getValue().replaceAll("%VIEW", inventory), 
-					attrib.getValueType());
-			}
-			catch (MudException e)
+				attrib = new Attribute(attrib.getName(), attrib.getValue()
+						.replaceAll("%VIEW", inventory), attrib.getValueType());
+			} catch (MudException e)
 			{
-				Logger.getLogger("mmud").throwing("mmud.items.ShopkeeperList", "getAttribute()", e);
+				Logger.getLogger("mmud").throwing("mmud.items.ShopkeeperList",
+						"getAttribute()", e);
 				return attrib;
 			}
 		}
 		return attrib;
 	}
-	
+
 	/**
 	 * get the description of the item (the long one). If the attribute
-	 * <I>description</I> exists, than this one is used instead.
-	 * However, seeing as this is a ShopkeeperListItem, if the description
-	 * contains the tag "<I>%VIEW</I>", it is replaced with a n
-	 * unnumbered list containing all items for sale with their 
-	 * prices.
+	 * <I>description</I> exists, than this one is used instead. However, seeing
+	 * as this is a ShopkeeperListItem, if the description contains the tag
+	 * "<I>%VIEW</I>", it is replaced with a n unnumbered list containing all
+	 * items for sale with their prices.
+	 * 
 	 * @return String containing the description.
 	 */
-	public String getLongDescription()
-	throws MudException
+	@Override
+	public String getLongDescription() throws MudException
 	{
 		String desc = super.getLongDescription();
 		String inventory = thePerson.inventory();

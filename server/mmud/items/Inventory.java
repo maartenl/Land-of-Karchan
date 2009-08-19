@@ -31,13 +31,14 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
+import mmud.database.MudDatabaseException;
 
 /**
  * Collection class for storing of items.
  */
 public class Inventory
 {
-	private Vector theItems;
+	private final Vector theItems;
 
 	/**
 	 * Creates an inventory object with an empty list.
@@ -49,9 +50,10 @@ public class Inventory
 	}
 
 	/**
-	 * appends an item to the list of items in this inventory
-	 * (use with care)
-	 * @param anItem the item to be added.
+	 * appends an item to the list of items in this inventory (use with care)
+	 * 
+	 * @param anItem
+	 *            the item to be added.
 	 */
 	public void append(Item anItem)
 	{
@@ -59,17 +61,20 @@ public class Inventory
 	}
 
 	/**
-	 * deletes an item from the list of items in this inventory
-	 * (use with care)
-	 * @param anItem the item to be deleted.
+	 * deletes an item from the list of items in this inventory (use with care)
+	 * 
+	 * @param anItem
+	 *            the item to be deleted.
 	 */
 	public void delete(Item anItem)
 	{
 	}
 
-	/** 
+	/**
 	 * Add an item.
-	 * @param anItem the item to be added.
+	 * 
+	 * @param anItem
+	 *            the item to be added.
 	 */
 	public void add(Item anItem)
 	{
@@ -77,41 +82,48 @@ public class Inventory
 		theItems.addElement(anItem);
 	}
 
-	/** 
+	/**
 	 * Remove an item from the list.
-	 * @param anItem the item to be removed.
+	 * 
+	 * @param anItem
+	 *            the item to be removed.
 	 */
-	public void remove(Item anItem)
-		throws ItemException
+	public void remove(Item anItem) throws ItemException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!theItems.remove(anItem))
 		{
-			Logger.getLogger("mmud").info("thrown: " + Constants.ITEMDOESNOTEXISTERROR);
+			Logger.getLogger("mmud").info(
+					"thrown: " + Constants.ITEMDOESNOTEXISTERROR);
 			throw new ItemDoesNotExistException();
 		}
 	}
 
 	/**
-	 * returns the item existing in the inventory that fits
-	 * the desription.
-	 * @param parsedarray required array parsedarray[startpos..endpos-1].
-	 * @param startpos first required part of the description of the item.
-	 * @param endpos last required part of the description of the item.
-	 * endpos must be <I>at least</I> startpos+1.
+	 * returns the item existing in the inventory that fits the desription.
+	 * 
+	 * @param parsedarray
+	 *            required array parsedarray[startpos..endpos-1].
+	 * @param startpos
+	 *            first required part of the description of the item.
+	 * @param endpos
+	 *            last required part of the description of the item. endpos must
+	 *            be <I>at least</I> startpos+1.
+	 * @throws MudDatabaseException
 	 */
 	public Item getItem(String[] parsedarray, int startpos, int endpos)
+			throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
-		for (int i=0;i<theItems.size();i++)
+		for (int i = 0; i < theItems.size(); i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
 			if (myItem != null)
 			{
-				if (myItem.getVerb().equalsIgnoreCase(parsedarray[endpos-1]))
+				if (myItem.getVerb().equalsIgnoreCase(parsedarray[endpos - 1]))
 				{
 					boolean found = true;
-					for (int j=startpos;j<endpos-1;j++)
+					for (int j = startpos; j < endpos - 1; j++)
 					{
 						if (!myItem.isAdjective(parsedarray[j]))
 						{
@@ -130,29 +142,34 @@ public class Inventory
 	}
 
 	/**
-	 * returns the number of items existing in the inventory that fits
-	 * the description.
-	 * @param parsedarray the required array parsedarray[startpos..endpos-1].
-	 * @param startpos the first required part of the description of the
-	 * item.
-	 * @param endpos the last required part of the description of the item.
-	 * endpos must be <I>at least</I> startpos+1.
-	 * @return integer providing the number of items available in the
-	 * inventory list.
+	 * returns the number of items existing in the inventory that fits the
+	 * description.
+	 * 
+	 * @param parsedarray
+	 *            the required array parsedarray[startpos..endpos-1].
+	 * @param startpos
+	 *            the first required part of the description of the item.
+	 * @param endpos
+	 *            the last required part of the description of the item. endpos
+	 *            must be <I>at least</I> startpos+1.
+	 * @return integer providing the number of items available in the inventory
+	 *         list.
+	 * @throws MudDatabaseException
 	 */
 	public int getItemCount(String[] parsedarray, int startpos, int endpos)
+			throws MudDatabaseException
 	{
 		int myCount = 0;
 		Logger.getLogger("mmud").finer("");
-		for (int i=0;i<theItems.size();i++)
+		for (int i = 0; i < theItems.size(); i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
 			if (myItem != null)
 			{
-				if (myItem.getVerb().equalsIgnoreCase(parsedarray[endpos-1]))
+				if (myItem.getVerb().equalsIgnoreCase(parsedarray[endpos - 1]))
 				{
 					boolean found = true;
-					for (int j=startpos;j<endpos-1;j++)
+					for (int j = startpos; j < endpos - 1; j++)
 					{
 						if (!myItem.isAdjective(parsedarray[j]))
 						{
@@ -161,7 +178,8 @@ public class Inventory
 					}
 					if (found)
 					{
-						myCount++;found = false;
+						myCount++;
+						found = false;
 					}
 				}
 			}
@@ -172,18 +190,21 @@ public class Inventory
 
 	/**
 	 * Attempts to create a description of all items in the inventory.
-	 * @return String containing description of all items in the inventory
-	 * in the form of a bulleted html list.
+	 * 
+	 * @return String containing description of all items in the inventory in
+	 *         the form of a bulleted html list.
+	 * @throws MudDatabaseException
 	 */
-	public String returnItemList()
+	public String returnItemList() throws MudDatabaseException
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");
-		for (int i=0;i<theItems.size();i++)
+		for (int i = 0; i < theItems.size(); i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
-			if ((myItem != null) && (!myItem.isAttribute("invisible")) )
+			if ((myItem != null) && (!myItem.isAttribute("invisible")))
 			{
-				myStringBuffer.append("<LI>" + myItem.getDescription() + ".<BR>\r\n");
+				myStringBuffer.append("<LI>" + myItem.getDescription()
+						+ ".<BR>\r\n");
 			}
 		}
 		return myStringBuffer.toString();
@@ -191,18 +212,22 @@ public class Inventory
 
 	/**
 	 * Attempts to create a decsription of all items in a room.
-	 * @return String containing description of all items in the room
-	 * in the form of a bulleted html list.
+	 * 
+	 * @return String containing description of all items in the room in the
+	 *         form of a bulleted html list.
+	 * @throws MudDatabaseException
 	 */
-	public String returnRoomItemList()
+	public String returnRoomItemList() throws MudDatabaseException
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");
-		for (int i=0;i<theItems.size();i++)
+		for (int i = 0; i < theItems.size(); i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
-			if ( (myItem != null) && (!myItem.isAttribute("invisible")) )
+			if ((myItem != null) && (!myItem.isAttribute("invisible")))
 			{
-				myStringBuffer.append("A" + myItem.getDescription().substring(1) + " is here .<BR>\r\n");
+				myStringBuffer.append("A"
+						+ myItem.getDescription().substring(1)
+						+ " is here .<BR>\r\n");
 			}
 		}
 		return myStringBuffer.toString();
@@ -210,13 +235,15 @@ public class Inventory
 
 	/**
 	 * Standard tostring implementation.
+	 * 
 	 * @return String containing a description of all items.
 	 * @see Item#toString
 	 */
+	@Override
 	public String toString()
 	{
 		StringBuffer myStringBuffer = new StringBuffer("");
-		for (int i=0;i<theItems.size();i++)
+		for (int i = 0; i < theItems.size(); i++)
 		{
 			Item myItem = (Item) theItems.elementAt(i);
 			if (myItem != null)
@@ -228,4 +255,3 @@ public class Inventory
 	}
 
 }
-

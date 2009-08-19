@@ -29,6 +29,8 @@ package mmud;
 
 import java.util.Vector;
 
+import mmud.database.MudDatabaseException;
+
 /**
  * Interface to indicate that an object can contain attributes.
  */
@@ -36,47 +38,51 @@ public interface AttributeContainer
 {
 
 	/**
-	 * Set the attribute. Adds the attribute, if the attribute does not
-	 * exist yet.
-	 * @param anAttribute the attribute to be set.
+	 * Set the attribute. Adds the attribute, if the attribute does not exist
+	 * yet.
+	 * 
+	 * @param anAttribute
+	 *            the attribute to be set.
 	 */
-	public void setAttribute(Attribute anAttribute)
-	throws MudException;
+	public void setAttribute(Attribute anAttribute) throws MudException;
 
 	/**
-	 * Set the attributes found in the vector. 
-	 * Adds the attribute, if the attribute does not
-	 * exist yet.
-	 * @param anAttributeVector a vector containing the attributes to be set.
-	 * May be null.
+	 * Set the attributes found in the vector. Adds the attribute, if the
+	 * attribute does not exist yet.
+	 * 
+	 * @param anAttributeVector
+	 *            a vector containing the attributes to be set. May be null.
 	 */
-	public void setAttributes(Vector anAttributeVector)
-	throws MudException;
+	public void setAttributes(Vector anAttributeVector) throws MudException;
 
 	/**
-	 * returns the attribute found with name aName or null
-	 * if it does not exist.
-	 * @param aName the string with the name to search for
+	 * returns the attribute found with name aName or null if it does not exist.
+	 * 
+	 * @param aName
+	 *            the string with the name to search for
 	 * @return Attribute with the specific name
+	 * @throws MudDatabaseException
 	 */
-	public Attribute getAttribute(String aName);
+	public Attribute getAttribute(String aName) throws MudDatabaseException;
 
 	/**
-	 * Remove an attribute with a specific name from the list of
-	 * attributes. If the attribute did not exist in the first place
-	 * the method does not have any effect.
-	 * @param aName the string with the name of the attribute to be
-	 * removed.
+	 * Remove an attribute with a specific name from the list of attributes. If
+	 * the attribute did not exist in the first place the method does not have
+	 * any effect.
+	 * 
+	 * @param aName
+	 *            the string with the name of the attribute to be removed.
 	 */
-	public void removeAttribute(String aName)
-	throws MudException;
-	
+	public void removeAttribute(String aName) throws MudException;
+
 	/**
-	 * returns true if the attribute with name aName
-	 * exists.
-	 * @param aName the name of the attribute to search for
+	 * returns true if the attribute with name aName exists.
+	 * 
+	 * @param aName
+	 *            the name of the attribute to search for
 	 * @return boolean, true if found otherwise false
+	 * @throws MudDatabaseException
 	 */
-	public boolean isAttribute(String aName);
+	public boolean isAttribute(String aName) throws MudDatabaseException;
 
 }

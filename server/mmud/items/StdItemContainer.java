@@ -24,18 +24,19 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.items;     
+package mmud.items;
 
 import java.util.Vector;
 
 import mmud.Attribute;
 import mmud.MudException;
 import mmud.database.ItemsDb;
+import mmud.database.MudDatabaseException;
 
 /**
- * An item in the mud that can contain other items.
- * Basically consists of an ItemDefinition and a number of Attributes
- * specific to this item but has some additional properties.
+ * An item in the mud that can contain other items. Basically consists of an
+ * ItemDefinition and a number of Attributes specific to this item but has some
+ * additional properties.
  */
 public class StdItemContainer extends Item implements Container
 {
@@ -44,54 +45,65 @@ public class StdItemContainer extends Item implements Container
 	private Types theType;
 
 	/**
-	 * Create this item object with a default Item Definition and id.
-	 * This method is usually only used by the database.
-	 * @param anItemDef definition of the container
-	 * @param anId integer identification of the item
+	 * Create this item object with a default Item Definition and id. This
+	 * method is usually only used by the database.
+	 * 
+	 * @param anItemDef
+	 *            definition of the container
+	 * @param anId
+	 *            integer identification of the item
 	 */
-	StdItemContainer(ContainerDef anItemDef, int anId, PersonPositionEnum aPosBody)
+	StdItemContainer(ContainerDef anItemDef, int anId,
+			PersonPositionEnum aPosBody)
 	{
 		super(anItemDef, anId, aPosBody);
-	} 
+	}
 
 	/**
-	 * Create this item object with a default Item Definition and id.
-	 * This method is usually only used by the database.
-	 * @param anItemDef definition of the container
-	 * @param anId integer identification of the item
+	 * Create this item object with a default Item Definition and id. This
+	 * method is usually only used by the database.
+	 * 
+	 * @param anItemDef
+	 *            definition of the container
+	 * @param anId
+	 *            integer identification of the item
 	 */
 	StdItemContainer(ContainerDef anItemDef, int anId)
 	{
 		super(anItemDef, anId);
-	} 
+	}
 
 	/**
 	 * Retrieve items from this container.
-	 * @param adject1 the first adjective
-	 * @param adject2 the second adjective
-	 * @param adject3 the third adjective
-	 * @param name the name of the item
+	 * 
+	 * @param adject1
+	 *            the first adjective
+	 * @param adject2
+	 *            the second adjective
+	 * @param adject3
+	 *            the third adjective
+	 * @param name
+	 *            the name of the item
 	 * @return Vector containing item objects found.
 	 * @see mmud.database.ItemsDb#getItemsFromContainer
 	 */
-	public Vector getItems(String adject1, String adject2, String adject3, String name) 
-	throws MudException
+	public Vector getItems(String adject1, String adject2, String adject3,
+			String name) throws MudException
 	{
-		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name, this);
+		return ItemsDb.getItemsFromContainer(adject1, adject2, adject3, name,
+				this);
 	}
 
-
-	public int getCapacity()
+	public int getCapacity() throws NumberFormatException, MudDatabaseException
 	{
 		if (isAttribute("capacity"))
 		{
-			return new
-				Integer(getAttribute("capacity").getValue()).intValue();
+			return new Integer(getAttribute("capacity").getValue()).intValue();
 		}
 		return ((ContainerDef) getItemDef()).getCapacity();
 	}
 
-	public boolean isOpenable()
+	public boolean isOpenable() throws MudDatabaseException
 	{
 		if (isAttribute("isopenable"))
 		{
@@ -100,12 +112,12 @@ public class StdItemContainer extends Item implements Container
 		return ((ContainerDef) getItemDef()).isOpenable();
 	}
 
-	public boolean hasLock()
+	public boolean hasLock() throws MudDatabaseException
 	{
 		return getKeyId() != null || ((ContainerDef) getItemDef()).hasLock();
 	}
 
-	public boolean isLocked()
+	public boolean isLocked() throws MudDatabaseException
 	{
 		if (isAttribute("islocked"))
 		{
@@ -114,7 +126,7 @@ public class StdItemContainer extends Item implements Container
 		return false;
 	}
 
-	public boolean isOpen()
+	public boolean isOpen() throws MudDatabaseException
 	{
 		if (isAttribute("isopen"))
 		{
@@ -123,7 +135,7 @@ public class StdItemContainer extends Item implements Container
 		return false;
 	}
 
-	public ItemDef getKeyId()
+	public ItemDef getKeyId() throws MudDatabaseException
 	{
 		if (theKeyId != null)
 		{
@@ -137,50 +149,47 @@ public class StdItemContainer extends Item implements Container
 		return theType;
 	}
 
-	public void setLidsNLocks(boolean isOpenable, 
-		boolean newIsOpen,
-		ItemDef newLock, 
-		boolean newIsLocked)
-	throws MudException
+	public void setLidsNLocks(boolean isOpenable, boolean newIsOpen,
+			ItemDef newLock, boolean newIsLocked) throws MudException
 	{
-		setAttribute(new Attribute(Attribute.ISOPENABLE, "" + isOpenable, "boolean"));
+		setAttribute(new Attribute(Attribute.ISOPENABLE, "" + isOpenable,
+				"boolean"));
 		setAttribute(new Attribute(Attribute.ISOPEN, "" + newIsOpen, "boolean"));
-		setAttribute(new Attribute(Attribute.ISLOCKED, "" + newIsLocked, "boolean"));
+		setAttribute(new Attribute(Attribute.ISLOCKED, "" + newIsLocked,
+				"boolean"));
 		theKeyId = newLock;
 	}
 
 	/**
-	 * Basically does the same as the operation in the parent class, but
-	 * adds that this item can contain items.
+	 * Basically does the same as the operation in the parent class, but adds
+	 * that this item can contain items.
+	 * 
 	 * @return String containing the description.
 	 */
-	public String getLongDescription()
-	throws MudException
+	@Override
+	public String getLongDescription() throws MudException
 	{
 		String isopen = "";
 		if (isOpenable())
 		{
-			isopen = (isOpen() ?
-				"It is open.<BR>\r\n" :
-				"It is closed.<BR>\r\n");
+			isopen = (isOpen() ? "It is open.<BR>\r\n"
+					: "It is closed.<BR>\r\n");
 		}
-		return super.getLongDescription() + 
-			"It can contain other items.<BR>\r\n" + 
-			isopen;
+		return super.getLongDescription()
+				+ "It can contain other items.<BR>\r\n" + isopen;
 	}
-	
-	public boolean isEmpty()
-	throws MudException
+
+	public boolean isEmpty() throws MudException
 	{
 		return ItemsDb.isEmpty(this);
 	}
-	
+
 	/**
-	 * Added requirement here is that the container must be empty
-	 * before it can be sold.
+	 * Added requirement here is that the container must be empty before it can
+	 * be sold.
 	 */
-	public boolean isSellable()
-	throws MudException
+	@Override
+	public boolean isSellable() throws MudException
 	{
 		if (!isEmpty())
 		{
