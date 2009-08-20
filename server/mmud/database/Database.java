@@ -894,7 +894,9 @@ public class Database
 					Person aPerson = Persons.retrievePerson(myName);
 					if (aPerson == null)
 					{
-						throw new UserNotFoundException();
+						throw new UserNotFoundException("Unable to find user "
+								+ myName + " for method "
+								+ res.getString("method_name"));
 					}
 					try
 					{
@@ -913,7 +915,9 @@ public class Database
 					Room aRoom = Rooms.getRoom(myRoom);
 					if (aRoom == null)
 					{
-						throw new RoomNotFoundException();
+						throw new RoomNotFoundException("Unable to find room "
+								+ myRoom + " for method "
+								+ res.getString("method_name"));
 					}
 					try
 					{
