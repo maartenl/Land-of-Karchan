@@ -59,7 +59,8 @@ public final class Rooms implements Executable
 		{
 			throw new RuntimeException("Rooms is null!");
 		}
-		return "Rooms amount (Capacity) = " + theRooms.size() + "(" + theRooms.capacity() + ")<BR>";
+		return "Rooms amount (Capacity) = " + theRooms.size() + "("
+				+ theRooms.capacity() + ")<BR>";
 	}
 
 	/**
@@ -79,33 +80,35 @@ public final class Rooms implements Executable
 
 	/**
 	 * Get the number of rooms that are cached.
+	 * 
 	 * @param int, containing the amount of rooms in the cache.
 	 */
 	public static int getSize()
 	{
 		return theRooms.size();
 	}
-	
+
 	/**
 	 * retrieves a room based on the roomnumber.
-	 * @param aRoomNr the number of the room to retrieve
-	 * @return Room object containing the room requested. Returns a null
-	 * pointer if the room does not exist.
+	 * 
+	 * @param aRoomNr
+	 *            the number of the room to retrieve
+	 * @return Room object containing the room requested. Returns a null pointer
+	 *         if the room does not exist.
 	 */
-	public static Room getRoom(int aRoomNr)
-	throws MudException
+	public static Room getRoom(int aRoomNr) throws MudException
 	{
 		if (theRooms == null)
 		{
 			throw new RuntimeException("theRooms vector is null");
 		}
 		Room myRoom = null;
-		Logger.getLogger("mmud").finer("");
-		if (aRoomNr == 0) 
+		// Logger.getLogger("mmud").finer("");
+		if (aRoomNr == 0)
 		{
 			return null;
 		}
-		for (int i=0;i < theRooms.size(); i++)
+		for (int i = 0; i < theRooms.size(); i++)
 		{
 			myRoom = (Room) theRooms.elementAt(i);
 			if ((myRoom != null) && (myRoom.getId() == aRoomNr))
@@ -121,23 +124,21 @@ public final class Rooms implements Executable
 		return myRoom;
 	}
 
-	public void setValue(String field_name, String attrib_name,
-		Object value, ExecutableContext ctxt)
-	throws FieldNotSupportedException
+	public void setValue(String field_name, String attrib_name, Object value,
+			ExecutableContext ctxt) throws FieldNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("field_name=" + field_name +
-			", atttrib_name=" + attrib_name + ", value=" + 
-			value + "[" + value.getClass() + "]");
+		Logger.getLogger("mmud").finer(
+				"field_name=" + field_name + ", atttrib_name=" + attrib_name
+						+ ", value=" + value + "[" + value.getClass() + "]");
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
-	public void setValueAt(Object array_index, 
-		String attrib_name, 
-		Object value, ExecutableContext ctxt)
+	public void setValueAt(Object array_index, String attrib_name,
+			Object value, ExecutableContext ctxt)
 	{
-		Logger.getLogger("mmud").finer("array_index=" + array_index +
-			", atttrib_name=" + attrib_name + ", value=" + 
-			value);
+		Logger.getLogger("mmud").finer(
+				"array_index=" + array_index + ", atttrib_name=" + attrib_name
+						+ ", value=" + value);
 	}
 
 	public ExecutableIterator createIterator()
@@ -170,46 +171,43 @@ public final class Rooms implements Executable
 		return null;
 	}
 
-	public Object getValue(String field_name, String
-		attrib_name, ExecutableContext ctxt)
-	throws FieldNotSupportedException
+	public Object getValue(String field_name, String attrib_name,
+			ExecutableContext ctxt) throws FieldNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("field_name=" + field_name +
-			", atttrib_name=" + attrib_name);
+		Logger.getLogger("mmud").finer(
+				"field_name=" + field_name + ", atttrib_name=" + attrib_name);
 		throw new FieldNotSupportedException(field_name + " not found.");
 	}
 
-	public Object getValueAt(Object array_index,
-		String attrib_name, ExecutableContext ctxt)
+	public Object getValueAt(Object array_index, String attrib_name,
+			ExecutableContext ctxt)
 	{
-		Logger.getLogger("mmud").finer("array_index=" + array_index +
-			", atttrib_name=" + attrib_name);
+		Logger.getLogger("mmud").finer(
+				"array_index=" + array_index + ", atttrib_name=" + attrib_name);
 		return null;
 	}
 
-	public Object method(String method_name, Object[]
-		arguments, ExecutableContext ctxt)
-	throws MethodNotSupportedException
+	public Object method(String method_name, Object[] arguments,
+			ExecutableContext ctxt) throws MethodNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("method_name=" + method_name +
-			", arguments=" + arguments);
+		Logger.getLogger("mmud").finer(
+				"method_name=" + method_name + ", arguments=" + arguments);
 		if (method_name.equals("find"))
 		{
 			if (arguments.length == 1)
 			{
 				if (!(arguments[0] instanceof Integer))
 				{
-					throw new MethodNotSupportedException(method_name + 
-						" does not contain a Integer as argument.");
+					throw new MethodNotSupportedException(method_name
+							+ " does not contain a Integer as argument.");
 				}
 				try
 				{
 					return getRoom(((Integer) arguments[0]).intValue());
-				}
-				catch (MudException e)
+				} catch (MudException e)
 				{
-					throw new MethodNotSupportedException(method_name + 
-						" error searching for room. " + e);
+					throw new MethodNotSupportedException(method_name
+							+ " error searching for room. " + e);
 				}
 			}
 		}

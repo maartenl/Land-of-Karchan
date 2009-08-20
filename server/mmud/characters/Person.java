@@ -325,6 +325,10 @@ public class Person implements Executable, AttributeContainer
 	 */
 	public void setTitle(String aNewTitle) throws MudException
 	{
+		if (aNewTitle == null || aNewTitle.trim().equals(""))
+		{
+			throw new MudException("Attempt to set an empty title.");
+		}
 		theTitle = aNewTitle;
 		Database.setPerson(this);
 	}

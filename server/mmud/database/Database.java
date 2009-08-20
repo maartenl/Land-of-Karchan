@@ -74,7 +74,8 @@ public class Database
 	private static Connection theConnection = null;
 	private static String sqlSetGuild = "update mm_guilds " + "set title = ?, "
 			+ "minguildlevel = ?, " + "guilddescription= ?, "
-			+ "guildurl = ?, logonmessage = ?, " + "active = ? where name = ?";
+			+ "guildurl = ?, logonmessage = ?, bossname = ?, "
+			+ "active = ? where name = ?";
 	private static String sqlGetGuild = "select * from mm_guilds "
 			+ "where name = ?";
 	private static String sqlGetGuildRanks = "select * from mm_guildranks "
@@ -429,8 +430,8 @@ public class Database
 		if (myUser != null)
 		{
 			myUser.setAttributes(AttributeDb.getAttributes(myUser));
+			myUser.setIgnoreList(getIgnoreList(myUser));
 		}
-		myUser.setIgnoreList(getIgnoreList(myUser));
 		return myUser;
 	}
 
@@ -1640,8 +1641,9 @@ public class Database
 			statSetGuild.setString(3, aGuild.getDescription());
 			statSetGuild.setString(4, aGuild.getGuildUrl());
 			statSetGuild.setString(5, aGuild.getLogonMessage());
-			statSetGuild.setInt(6, (aGuild.isActive() ? 1 : 0));
-			statSetGuild.setString(7, aGuild.getName());
+			statSetGuild.setString(6, aGuild.getBossName());
+			statSetGuild.setInt(7, (aGuild.isActive() ? 1 : 0));
+			statSetGuild.setString(8, aGuild.getName());
 			int res = statSetGuild.executeUpdate();
 			if (res != 1)
 			{
