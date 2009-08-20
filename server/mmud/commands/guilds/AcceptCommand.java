@@ -54,8 +54,7 @@ public class AcceptCommand extends GuildMasterCommand
 	}
 
 	@Override
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
@@ -74,25 +73,31 @@ public class AcceptCommand extends GuildMasterCommand
 			throw new RuntimeException("toChar2 is null! Impossible!");
 		}
 		User toChar = (User) toChar2;
-		if (!toChar.isAttribute("guildwish") ||
-			(!aUser.getGuild().getName().equalsIgnoreCase(anotherString)(toChar.getAttribute("guildwish").getValue())))
+		if (!toChar.isAttribute("guildwish")
+				|| (!aUser.getGuild().getName().equalsIgnoreCase(
+						toChar.getAttribute("guildwish").getValue())))
 		{
-			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
+			aUser.writeMessage(toChar.getName()
+					+ " does not wish to join your guild.<BR>\r\n");
 			return true;
 		}
 		if (toChar.getGuild() != null)
 		{
-			throw new MudException("error occurred, a person is a member of a guild, yet has a guildwish parameter!");
+			throw new MudException(
+					"error occurred, a person is a member of a guild, yet has a guildwish parameter!");
 		}
 		toChar.removeAttribute("guildwish");
 		toChar.setGuild(aUser.getGuild());
 		aUser.getGuild().increaseAmountOfMembers();
-		Database.writeLog(aUser.getName(), " accepted " + 
-			toChar.getName() + " into guild " + aUser.getGuild().getName());
-		aUser.writeMessage(toChar.getName() + " has joined your guild.<BR>\r\n");
+		Database.writeLog(aUser.getName(), " accepted " + toChar.getName()
+				+ " into guild " + aUser.getGuild().getName());
+		aUser
+				.writeMessage(toChar.getName()
+						+ " has joined your guild.<BR>\r\n");
 		if (toChar.isActive())
 		{
-			toChar.writeMessage("You have joined guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+			toChar.writeMessage("You have joined guild <I>"
+					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
 		}
 		aUser.getGuild().increaseAmountOfMembers();
 		return true;
