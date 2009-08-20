@@ -36,9 +36,10 @@ import mmud.commands.Command;
 import mmud.database.Database;
 
 /**
- * Makes you, as guildmaster, reject a person wanting to join your guild.
- * There are some requirements to follow:
- * <UL><LI>the user must exist and be a normal player
+ * Makes you, as guildmaster, reject a person wanting to join your guild. There
+ * are some requirements to follow:
+ * <UL>
+ * <LI>the user must exist and be a normal player
  * <LI>the user must have a <I>guildwish</I>
  * <LI>the user must not already be a member of a guild
  * </UL>
@@ -52,8 +53,8 @@ public class RejectCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
@@ -62,31 +63,35 @@ public class RejectCommand extends GuildMasterCommand
 		}
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = Persons.getPerson(myParsed[1]);
-		
+
 		if ((toChar2 == null) || (!(toChar2 instanceof User)))
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
 		User toChar = (User) toChar2;
-		if (!toChar.isAttribute("guildwish") ||
-			(!aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue())))
+		if (!toChar.isAttribute("guildwish")
+				|| (!aUser.getGuild().getName().equalsIgnoreCase(
+						toChar.getAttribute("guildwish").getValue())))
 		{
-			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
+			aUser.writeMessage(toChar.getName()
+					+ " does not wish to join your guild.<BR>\r\n");
 			return true;
 		}
 		if (toChar.getGuild() != null)
 		{
-			throw new MudException("error occurred, a person is a member of a guild, yet has a guildwish parameter!");
+			throw new MudException(
+					"error occurred, a person is a member of a guild, yet has a guildwish parameter!");
 		}
 		toChar.removeAttribute("guildwish");
-		Database.writeLog(aUser.getName(), "denied " + 
-			toChar.getName() + " membership into guild " + 
-			aUser.getGuild().getName());
-		aUser.writeMessage("You have denied " + toChar.getName() + " admittance to your guild.<BR>\r\n");
+		Database.writeLog(aUser.getName(), "denied " + toChar.getName()
+				+ " membership into guild " + aUser.getGuild().getName());
+		aUser.writeMessage("You have denied " + toChar.getName()
+				+ " admittance to your guild.<BR>\r\n");
 		if (toChar.isActive())
 		{
-			toChar.writeMessage("You have been denied membership of guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+			toChar.writeMessage("You have been denied membership of guild <I>"
+					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
 		}
 		return true;
 	}
@@ -95,5 +100,5 @@ public class RejectCommand extends GuildMasterCommand
 	{
 		return new RejectCommand(getRegExpr());
 	}
-	
+
 }

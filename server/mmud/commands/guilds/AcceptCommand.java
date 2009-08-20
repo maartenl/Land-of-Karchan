@@ -36,9 +36,10 @@ import mmud.commands.Command;
 import mmud.database.Database;
 
 /**
- * Makes you, as guildmaster, accept a new member to the guild.
- * There are some requirements to follow:
- * <UL><LI>the user must exist and be a normal player
+ * Makes you, as guildmaster, accept a new member to the guild. There are some
+ * requirements to follow:
+ * <UL>
+ * <LI>the user must exist and be a normal player
  * <LI>the user must have a <I>guildwish</I>
  * <LI>the user must not already be a member of a guild
  * </UL>
@@ -52,6 +53,7 @@ public class AcceptCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
+	@Override
 	public boolean run(User aUser)
 	throws MudException
 	{
@@ -73,7 +75,7 @@ public class AcceptCommand extends GuildMasterCommand
 		}
 		User toChar = (User) toChar2;
 		if (!toChar.isAttribute("guildwish") ||
-			(!aUser.getGuild().getName().equals(toChar.getAttribute("guildwish").getValue())))
+			(!aUser.getGuild().getName().equalsIgnoreCase(anotherString)(toChar.getAttribute("guildwish").getValue())))
 		{
 			aUser.writeMessage(toChar.getName() + " does not wish to join your guild.<BR>\r\n");
 			return true;
@@ -100,5 +102,5 @@ public class AcceptCommand extends GuildMasterCommand
 	{
 		return new AcceptCommand(getRegExpr());
 	}
-	
+
 }
