@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mmud.characters.InvalidFrameException;
@@ -463,7 +464,7 @@ public class MudSocket implements Runnable
 				}
 			} catch (IOException e)
 			{
-				throw new MudException(e.getMessage());
+				throw new MudException(e.getMessage(), e);
 			}
 			if (!aName.matches("[A-Z|_|a-z]{3,}"))
 			{
@@ -611,11 +612,13 @@ public class MudSocket implements Runnable
 			return myString;
 		} catch (PersonException e)
 		{
-			e.printStackTrace();
+			Logger.getLogger("mmud").log(Level.WARNING, "Exception detected!",
+					e);
 			return Database.getErrorMessage(e);
 		} catch (MudException e)
 		{
-			e.printStackTrace();
+			Logger.getLogger("mmud").log(Level.WARNING, "Exception detected!",
+					e);
 			return Database.getErrorMessage(e);
 		}
 	}
