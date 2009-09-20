@@ -27,7 +27,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
+//include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 
 /**
  * verify form information
@@ -54,14 +54,14 @@ if (!isset($_REQUEST{"command"}) &&
 	} 
 	else 
 	{
-		if (trim($_REQUEST{"command"}) != "")
-		{
-			mysql_query("insert into mm_commandlog (name, command) values(\"".
-				quote_smart($_COOKIE["karchanname"])."\", \"".
-				quote_smart($_REQUEST{"command"})."\")"
-				, $dbhandle)
-				or error_message("Query failed : " . mysql_error());
-		}
+//		if (trim($_REQUEST{"command"}) != "")
+//		{
+//			mysql_query("insert into mm_commandlog (name, command) values(\"".
+//				quote_smart($_COOKIE["karchanname"])."\", \"".
+//				quote_smart($_REQUEST{"command"})."\")"
+//				, $dbhandle)
+//				or error_message("Query failed : " . mysql_error());
+//		}
 		fgets ($fp,128); // mud id
 		fgets ($fp,128); // action
 		fputs ($fp, "mud\n");
