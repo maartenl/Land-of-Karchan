@@ -242,10 +242,21 @@ printf("<H2>Current date/time</H2>".$myrow["now"]."<P>");
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
 Events</H2>
 <?php
+if (isset($_REQUEST{"eventid"}))
+{
+$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+	from mm_events where eventid = ".
+	quote_smart($_REQUEST{"eventid"})
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+}
+else
+{
 $result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
 	from mm_events"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
+}
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ( ($myrow["owner"] == null || $myrow["owner"] == "" ||
