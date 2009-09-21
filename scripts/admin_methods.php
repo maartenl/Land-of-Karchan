@@ -65,6 +65,34 @@ METHODS
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
 Methods</H2>
 
+<A HREF="/scripts/admin_methods.php?methodstartswith=A">A</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=B">B</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=C">C</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=D">D</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=E">E</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=F">F</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=G">G</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=H">H</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=I">I</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=J">J</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=K">K</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=L">L</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=M">M</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=N">N</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=O">O</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=P">P</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=Q">Q</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=R">R</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=S">S</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=T">T</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=U">U</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=V">V</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=W">W</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=X">X</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=Y">Y</A>
+<A HREF="/scripts/admin_methods.php?methodstartswith=Z">Z</A>
+<P>
+
 <?php
 
 if (isset($_REQUEST{"methodname"}) && isset($_REQUEST{"src"}))
@@ -142,16 +170,44 @@ if (isset($_REQUEST{"deletemethodname"}))
     writeLogLong($dbhandle, "Removed method ".$_REQUEST{"deletemethodname"}.".", $query);
 }
 
-$result = mysql_query("select *, 
-replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\") 
-as src2, date_format(creation, \"%Y-%m-%d %T\") as creation2 
-	from mm_methods"
+if (isset($_REQUEST{"methodname"}))
+{
+        $result = mysql_query("select *, 
+        replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\") 
+        as src2, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+	from mm_methods where name like \"".
+	quote_smart($_REQUEST{"methodname"}).
+	"%\""
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
+}
+else
+{
+        if (isset($_REQUEST{"methodstartswith"}))
+        {
+        $result = mysql_query("select *, 
+        replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\") 
+        as src2, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+	from mm_methods where name like \"".
+	quote_smart($_REQUEST{"methodstartswith"}).
+	"%\""
+	, $dbhandle)
+	or error_message("Query failed : " . mysql_error());
+	}
+	else
+	{
+	$result = mysql_query("select *, 
+	replace(replace(replace(src, \"&\", \"&amp;\"), \">\",\"&gt;\"), \"<\", \"&lt;\") 
+	as src2, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+  	from mm_methods where name = \"completebogyd\""
+	, $dbhandle)
+  	or error_message("Query failed : " . mysql_error());
+  	}
+}	
 while ($myrow = mysql_fetch_array($result)) 
 {
 	printf("<b>name:</b> <A
-HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ",
+HREF=\"/scripts/admin_methods.php?methodname=%s\">%s</A> ",
 	$myrow["name"], $myrow["name"]);
 	printf("<b>owner:</b> %s ", $myrow["owner"]);
 	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
@@ -164,13 +220,13 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ",
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_methods.php">
 <b>
 <INPUT TYPE="hidden" NAME="deletemethodname" VALUE="<?php echo $myrow["name"] ?>">
 <INPUT TYPE="submit" VALUE="Delete Method">
 </b>
 </FORM>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_methods.php">
 <I>(Refresh the command list in the game, after changing a method.)</I><BR>
 <b>
 <INPUT TYPE="hidden" NAME="methodname" VALUE="<?php echo $myrow["name"] ?>">
@@ -189,14 +245,42 @@ $myrow["src2"] ?></TEXTAREA></TD></TR>
 <INPUT TYPE="submit" VALUE="Remove Ownership">
 </b>
 </FORM>
+<H3>Related Commands</H3><UL>
 <?php
+	$getcommands = mysql_query("select id, command 
+  	from mm_commands where method_name = \"".
+  	$_REQUEST{"methodname"}.
+  	"\""
+	, $dbhandle)
+  	or error_message("Query failed : " . mysql_error());
+  	while ($mycommand = mysql_fetch_array($getcommands)) 
+  	{
+  	  ?>
+  	  <LI><A HREF="/scripts/admin_commands.php?commandid=<?php echo $mycommand["id"] ?>">
+  	  <?php echo $mycommand["command"] ?></A><BR>
+  	  <?php
+  	}
+  	echo "</UL><H3>Related Events</H3><UL>";
+	$getevents = mysql_query("select eventid 
+  	from mm_events where method_name = \"".
+  	$_REQUEST{"methodname"}.
+  	"\""
+	, $dbhandle)
+  	or error_message("Query failed : " . mysql_error());
+  	while ($myevent = mysql_fetch_array($getevents)) 
+  	{
+  	  ?>
+  	  <LI><A HREF="/scripts/mm_events.php?eventid=<?php echo $myevent["eventid"] ?>">
+  	  <?php echo $myevent["eventid"] ?></A><BR>
+  	  <?php
+  	}
 	}
 }
 
 mysql_close($dbhandle);
 ?>
-
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+</UL>
+<FORM METHOD="POST" ACTION="/scripts/admin_methods.php">
 <b>
 Method name: <INPUT TYPE="text" NAME="addmethodname" VALUE="">
 <INPUT TYPE="submit" VALUE="Add Method">

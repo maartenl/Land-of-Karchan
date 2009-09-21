@@ -57,6 +57,34 @@ COMMANDS
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
 Commands</H1>
 
+<A HREF="/scripts/admin_commands.php?commandstartswith=A">A</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=B">B</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=C">C</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=D">D</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=E">E</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=F">F</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=G">G</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=H">H</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=I">I</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=J">J</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=K">K</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=L">L</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=M">M</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=N">N</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=O">O</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=P">P</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=Q">Q</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=R">R</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=S">S</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=T">T</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=U">U</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=V">V</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=W">W</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=X">X</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=Y">Y</A>
+<A HREF="/scripts/admin_commands.php?commandstartswith=Z">Z</A>
+<P>
+
 <?php
 if ( isset($_REQUEST{"commandid"})
 	&& isset($_REQUEST{"commandroom"})
@@ -191,17 +219,41 @@ if (isset($_REQUEST{"deletecommandid"}))
 	}
     writeLogLong($dbhandle, "Removed command ".$_REQUEST{"deletecommandid"}.".", $query);
 }
-$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
-	from mm_commands"
-	, $dbhandle)
-	or error_message("Query failed : " . mysql_error());
+if (isset($_REQUEST{"commandid"}))
+{
+	$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+		from mm_commands where id like ".
+			quote_smart($_REQUEST{"commandid"}).
+			""
+		, $dbhandle)
+		or error_message("Query failed : " . mysql_error());
+}
+else
+{
+	if (isset($_REQUEST{"commandstartswith"}))
+	{
+	$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+		from mm_commands where command like \"".
+			quote_smart($_REQUEST{"commandstartswith"}).
+			"%\""
+		, $dbhandle)
+		or error_message("Query failed : " . mysql_error());
+	}
+	else
+	{
+	$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 
+		from mm_commands where command = \"completelybogyd\""
+		, $dbhandle)
+		or error_message("Query failed : " . mysql_error());
+	}
+}
 while ($myrow = mysql_fetch_array($result)) 
 {
 	if ( ($myrow["owner"] == null || $myrow["owner"] == "" ||
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 		printf("<b>id:</b> <A
-    	   HREF=\"/scripts/admin_commandseventsmethods.php?commandid=%s\">%s</A> ",
+    	   HREF=\"/scripts/admin_commands.php?commandid=%s\">%s</A> ",
 	       $myrow["id"], $myrow["id"]);
 	}
 	else
@@ -212,7 +264,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>callable:</b> %s ", ($myrow["callable"]=="1"?"yes":"no"));
 	printf("<b>command:</b> %s ", $myrow["command"]);
 	printf("<b>method_name:</b> <A
-HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow["method_name"], $myrow["method_name"]);
+HREF=\"/scripts/admin_methods.php?methodname=%s\">%s</A> ", $myrow["method_name"], $myrow["method_name"]);
 	if ($myrow["room"] != null)
 	{
 		printf("<b>room:</b> <A
@@ -226,13 +278,13 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commands.php">
 <b>
 <INPUT TYPE="hidden" NAME="deletecommandid" VALUE="<?php echo $myrow["id"] ?>">
 <INPUT TYPE="submit" VALUE="Delete Command">
 </b>
 </FORM>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commands.php">
 <b>
 <INPUT TYPE="hidden" NAME="commandid" VALUE="<?php echo $myrow["id"] ?>">
 <TABLE>
@@ -259,7 +311,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 	}
 }
 ?>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_commands.php">
 <b>
 Command name: <INPUT TYPE="text" NAME="addcommandname" VALUE="">
 <BR>

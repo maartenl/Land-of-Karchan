@@ -252,7 +252,7 @@ while ($myrow = mysql_fetch_array($result))
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 		printf("<b>eventid:</b> <A
-    	   HREF=\"/scripts/admin_commandseventsmethods.php?eventid=%s\">%s</A> ",
+    	   HREF=\"/scripts/admin_events.php?eventid=%s\">%s</A> ",
 	       $myrow["eventid"], $myrow["eventid"]);
 	}
 	else
@@ -294,7 +294,7 @@ while ($myrow = mysql_fetch_array($result))
 	}
 	printf("<b>callable:</b> %s ", ($myrow["callable"]=="1"?"yes":"no"));
 	printf("<b>method_name:</b> <A
-HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow["method_name"], $myrow["method_name"]);
+HREF=\"/scripts/admin_methods.php?methodname=%s\">%s</A> ", $myrow["method_name"], $myrow["method_name"]);
 	printf("<b>owner:</b> %s ", $myrow["owner"]);
 	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
 	if ( ($_REQUEST{"eventid"} == $myrow["eventid"]) &&
@@ -302,13 +302,13 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 		$myrow["owner"] == $_COOKIE["karchanadminname"]) )
 	{
 ?>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_events.php">
 <b>
 <INPUT TYPE="hidden" NAME="deleteeventid" VALUE="<?php echo $myrow["eventid"] ?>">
 <INPUT TYPE="submit" VALUE="Delete Event">
 </b>
 </FORM>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_events.php">
 <b>
 <INPUT TYPE="hidden" NAME="eventid" VALUE="<?php echo $myrow["eventid"] ?>">
 <TABLE>
@@ -341,7 +341,7 @@ HREF=\"/scripts/admin_commandseventsmethods.php?methodname=%s\">%s</A> ", $myrow
 	}
 }
 ?>
-<FORM METHOD="POST" ACTION="/scripts/admin_commandseventsmethods.php">
+<FORM METHOD="POST" ACTION="/scripts/admin_events.php">
 <b>
 Method name: <INPUT TYPE="text" NAME="addeventmethodname" VALUE="">
 <INPUT TYPE="submit" VALUE="Add Event">
