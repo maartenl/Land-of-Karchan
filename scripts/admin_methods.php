@@ -270,7 +270,7 @@ $myrow["src2"] ?></TEXTAREA></TD></TR>
   	while ($myevent = mysql_fetch_array($getevents)) 
   	{
   	  ?>
-  	  <LI><A HREF="/scripts/mm_events.php?eventid=<?php echo $myevent["eventid"] ?>">
+  	  <LI><A HREF="/scripts/admin_events.php?eventid=<?php echo $myevent["eventid"] ?>">
   	  <?php echo $myevent["eventid"] ?></A><BR>
   	  <?php
   	}
