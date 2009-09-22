@@ -47,4 +47,5 @@ mudbackground=/images/gif/webpic/back4.gif
 # possibilities include:
 # severe, warning, info, config, fine, finer, finest, all, off
 logginglevel=off
+events_active=true
 

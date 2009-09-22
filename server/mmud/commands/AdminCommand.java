@@ -28,6 +28,7 @@ package mmud.commands;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import mmud.Constants;
@@ -49,9 +50,61 @@ import mmud.rooms.Rooms;
  * <li>itemdefs
  * </ul>
  */
-public class AdminCommand extends NormalCommand {
-	public AdminCommand(String aRegExpr) {
+public class AdminCommand extends NormalCommand
+{
+	public AdminCommand(String aRegExpr)
+	{
 		super(aRegExpr);
+	}
+
+	/**
+	 * Parses the string given, and tries to run the event from the Database.
+	 * 
+	 * @param aStringToParse
+	 *            the string containing the eventid and either the roomnumber or
+	 *            the name or nothing at all.
+	 * @throws MudException
+	 *             whenever something cannot be parsed or the event throws an
+	 *             error.
+	 */
+	public void runEvent(String aStringToParse) throws MudException
+	{
+		StringTokenizer stuff = new StringTokenizer(aStringToParse, " ");
+		String name = null;
+		int eventid = 0;
+		int room = 0;
+
+		if (!stuff.hasMoreTokens())
+		{
+			throw new MudException("Empty runevent admin '" + aStringToParse
+					+ "' command.");
+		}
+		try
+		{
+			eventid = Integer.parseInt(stuff.nextToken());
+		} catch (NumberFormatException e)
+		{
+			throw new MudException(
+					"Admincommand runevent could not be parsed. Missing eventid. String was '"
+							+ aStringToParse + "'");
+		}
+		if (stuff.hasMoreTokens())
+		{
+			name = stuff.nextToken();
+			try
+			{
+				room = Integer.parseInt(name);
+				name = null;
+			} catch (NumberFormatException e)
+			{
+				// seems like things have worked out.
+				// could not parse into number, so probably a name.
+			}
+		}
+
+		// run the event
+		Database.runEvent(eventid, name, room);
+
 	}
 
 	/**
@@ -59,29 +112,36 @@ public class AdminCommand extends NormalCommand {
 	 * administration of the server.
 	 */
 	@Override
-	public boolean run(User aUser) throws MudException {
+	public boolean run(User aUser) throws MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser)) {
+		if (!super.run(aUser))
+		{
 			return false;
 		}
 		// initialise string, important otherwise previous instances will return
 		// this
-		if (!aUser.isGod()) {
+		if (!aUser.isGod())
+		{
 			aUser.writeMessage("You are not an administrator.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().toLowerCase().startsWith("admin status")) {
+		if (getCommand().toLowerCase().startsWith("admin status"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'status' executed");
 			aUser.writeMessage(MemoryManager.MEMORY_MANAGER + ""
 					+ Constants.getObjectCount()
-					+ Constants.returnThreadStatus());
+					+ Constants.returnThreadStatus()
+					+ Constants.returnSettings());
 			return true;
 		}
-		if (getCommand().toLowerCase().startsWith("admin kick ")) {
+		if (getCommand().toLowerCase().startsWith("admin kick "))
+		{
 			Person myPerson = Persons
 					.retrievePerson(getCommand().substring(11));
-			if ((myPerson == null) || (!(myPerson instanceof User))) {
+			if ((myPerson == null) || (!(myPerson instanceof User)))
+			{
 				aUser.writeMessage("Person not found.<BR>\r\n");
 				return true;
 			}
@@ -92,7 +152,8 @@ public class AdminCommand extends NormalCommand {
 					"%SNAME boot%VERB2 %TNAME from the game.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reset rooms")) {
+		if (getCommand().equalsIgnoreCase("admin reset rooms"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reset rooms' executed");
 			Rooms.init();
@@ -100,14 +161,16 @@ public class AdminCommand extends NormalCommand {
 			aUser.writeMessage("Rooms have been reset.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reset guilds")) {
+		if (getCommand().equalsIgnoreCase("admin reset guilds"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reset guilds' executed");
 			GuildFactory.init();
 			aUser.writeMessage("Guilds have been reset.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reset characters")) {
+		if (getCommand().equalsIgnoreCase("admin reset characters"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reset characters' executed");
 			Persons.init();
@@ -115,7 +178,8 @@ public class AdminCommand extends NormalCommand {
 					.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reset commands")) {
+		if (getCommand().equalsIgnoreCase("admin reset commands"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reset commands' executed");
 			Constants.setUserCommands(Database.getUserCommands());
@@ -123,21 +187,40 @@ public class AdminCommand extends NormalCommand {
 					.writeMessage("User commands have been reloaded from database.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reset itemdefs")) {
+		if (getCommand().equalsIgnoreCase("admin reset itemdefs"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reset itemdefs' executed");
 			ItemDefs.init();
 			aUser.writeMessage("Item Definitions have been reset.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin shutdown")) {
+		if (getCommand().equalsIgnoreCase("admin shutdown"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'shutdown' executed");
 			Constants.shutdown = true;
 			aUser.writeMessage("Shutdown started.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().startsWith("admin wall")) {
+		if (getCommand().equalsIgnoreCase("admin events off"))
+		{
+			Database.writeLog(aUser.getName(),
+					"admin command 'events off' executed");
+			Constants.events_active = false;
+			aUser.writeMessage("Events have been turned off.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin events on"))
+		{
+			Database.writeLog(aUser.getName(),
+					"admin command 'events on' executed");
+			Constants.events_active = true;
+			aUser.writeMessage("Events have been turned on.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().startsWith("admin wall"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'wall' executed ("
 							+ getCommand().substring(11) + ")");
@@ -145,14 +228,26 @@ public class AdminCommand extends NormalCommand {
 			aUser.writeMessage("Wall message sent.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin reload")) {
+		if (getCommand().startsWith("admin runevent"))
+		{
+			Database.writeLog(aUser.getName(),
+					"admin command 'runevent' executed ("
+							+ getCommand().substring(15) + ")");
+			runEvent(getCommand().substring(15));
+			aUser.writeMessage("Event " + getCommand().substring(15)
+					+ " started.<BR>\r\n");
+			return true;
+		}
+		if (getCommand().equalsIgnoreCase("admin reload"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'reload' executed");
 			Constants.loadInfo();
 			aUser.writeMessage("Reload done.<BR>\r\n");
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin uptime")) {
+		if (getCommand().equalsIgnoreCase("admin uptime"))
+		{
 			Database.writeLog(aUser.getName(),
 					"admin command 'uptime' executed");
 			Calendar time = Calendar.getInstance();
@@ -171,7 +266,8 @@ public class AdminCommand extends NormalCommand {
 					+ ".<BR>\r\n" + uptime);
 			return true;
 		}
-		if (getCommand().equalsIgnoreCase("admin help")) {
+		if (getCommand().equalsIgnoreCase("admin help"))
+		{
 			Database.writeLog(aUser.getName(), "admin command 'help' executed");
 			aUser
 					.writeMessage("Possible commands are:<DL>"
@@ -187,6 +283,8 @@ public class AdminCommand extends NormalCommand {
 							+ " you make a change to a guild."
 							+ "<DT>admin reset commands<DD>reset the cached <I>special</I> commands. "
 							+ "Necessary if a command has been deleted, added or changed."
+							+ "<DT>admin runevent eventid<DD>runs an event, in order to see if it works."
+							+ "<DT>admin events on|off<DD>turns off or on the triggering of events."
 							+ "<DT>admin reload<DD>reloads the settings from the config"
 							+ "file. Used when the config file has changed. Database connection changes "
 							+ "require a reboot."
@@ -200,7 +298,8 @@ public class AdminCommand extends NormalCommand {
 		return false;
 	}
 
-	public Command createCommand() {
+	public Command createCommand()
+	{
 		return new AdminCommand(getRegExpr());
 	}
 

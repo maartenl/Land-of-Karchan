@@ -122,8 +122,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setSouth(Room aSouth) throws MudException
 	{
-		intsouth = 0;
 		Database.writeRoom(this);
+		intsouth = (aSouth == null ? 0 : aSouth.getId());
 	}
 
 	/**
@@ -134,8 +134,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setNorth(Room aNorth) throws MudException
 	{
-		intnorth = 0;
 		Database.writeRoom(this);
+		intnorth = (aNorth == null ? 0 : aNorth.getId());
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setEast(Room aEast) throws MudException
 	{
-		inteast = 0;
 		Database.writeRoom(this);
+		inteast = (aEast == null ? 0 : aEast.getId());
 	}
 
 	/**
@@ -158,8 +158,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setWest(Room aWest) throws MudException
 	{
-		intwest = 0;
 		Database.writeRoom(this);
+		intwest = (aWest == null ? 0 : aWest.getId());
 	}
 
 	/**
@@ -170,8 +170,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setUp(Room aUp) throws MudException
 	{
-		intup = 0;
 		Database.writeRoom(this);
+		intup = (aUp == null ? 0 : aUp.getId());
 	}
 
 	/**
@@ -182,8 +182,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setDown(Room aDown) throws MudException
 	{
-		intdown = 0;
 		Database.writeRoom(this);
+		intdown = (aDown == null ? 0 : aDown.getId());
 	}
 
 	/**

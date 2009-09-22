@@ -196,6 +196,11 @@ public final class Constants
 	 */
 	public final static int DEFAULT_MOVEMENT = 1000;
 
+	/**
+	 * The default value for if events should be run or not. They are run.
+	 */
+	public final static boolean EVENTS_ACTIVE = true;
+
 	private static int theThreadsProcessed = 0;
 
 	private static int theThreadsRunning = 1;
@@ -243,6 +248,15 @@ public final class Constants
 		return "Thread Management<HR>\n" + "Threads processed: "
 				+ theThreadsProcessed + "<BR>\nThreads running: "
 				+ theThreadsRunning + "<BR>\nThreads max: " + THREADS_MAX
+				+ "<P>";
+	}
+
+	/**
+	 * Returns an html formatted string containing the settings used in the mud
+	 */
+	public static synchronized String returnSettings()
+	{
+		return "Events are " + (events_active ? "on" : "off") + ".<HR>\n"
 				+ "<P>";
 	}
 
@@ -1117,6 +1131,7 @@ public final class Constants
 	 */
 	public static void loadInfo(String aFilename)
 	{
+		System.out.println("Loading settings from file " + aFilename);
 		logger.finer("aFilename=" + aFilename);
 		try
 		{
@@ -1139,6 +1154,8 @@ public final class Constants
 		dbpasswd = theValues.getProperty("dbpasswd");
 		dbjdbcclass = theValues.getProperty("dbjdbcclass");
 		dburl = theValues.getProperty("dburl");
+		events_active = theValues.getProperty("events_active")
+				.equalsIgnoreCase("true");
 
 		try
 		{
@@ -1264,6 +1281,12 @@ public final class Constants
 	}
 
 	private static String theOfflineDescription = null;
+
+	/**
+	 * Indicates wether or not events should be run or ignored. True means
+	 * events are triggered, false means events are not triggered.
+	 */
+	public static boolean events_active = EVENTS_ACTIVE;
 
 	/**
 	 * Returns the offline description. Either this is read from file, or it is

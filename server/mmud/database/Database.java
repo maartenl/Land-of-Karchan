@@ -133,6 +133,10 @@ public class Database
 			+ "and ( minute = -1 or minute = MINUTE(NOW()) ) "
 			+ "and ( dayofweek = -1 or dayofweek = DAYOFWEEK(NOW()) )"
 			+ "and ( month <> -1 or dayofmonth <> -1 or hour <> -1 or minute <> -1 or dayofweek <> -1 )";
+	private static String sqlGetEvent = "select mm_methods.name as method_name, "
+			+ "mm_events.name, src, room, mm_events.eventid from mm_events, mm_methods "
+			+ "where mm_methods.name = mm_events.method_name "
+			+ "and mm_events.eventid = ?";
 	private static String sqlDeactivateCommand = "update mm_commands "
 			+ "set callable = 0 " + "where id = ?";
 	private static String sqlGetMethod = "select src " + "from mm_methods "
@@ -940,6 +944,90 @@ public class Database
 		} catch (SQLException e)
 		{
 			throw new MudDatabaseException("database error runevents.", e);
+		}
+	}
+
+	/**
+	 * Retrieves a single event from the database and, if possible, executes it.
+	 * Events can take place originating from a certain character or originating
+	 * in a certain room, or originating in a global game event type thingy.
+	 * This is primarily used for debugging.
+	 * 
+	 * @see #runEvent
+	 */
+	public static void runEvent(int anEventId, String myName, int myRoom)
+			throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetEvents = prepareStatement(sqlGetEvent);
+			statGetEvents.setInt(1, anEventId);
+			res = statGetEvents.executeQuery();
+			if (res == null)
+			{
+				return;
+			}
+			if (res.next())
+			{
+				String mySource = res.getString("src");
+				res.getInt("eventid");
+				if (myName != null)
+				{
+					// character detected
+					Logger.getLogger("mmud").info(
+							"method_name=" + res.getString("method_name")
+									+ ", person=" + myName);
+					Person aPerson = Persons.retrievePerson(myName);
+					if (aPerson == null)
+					{
+						throw new UserNotFoundException("Unable to find user "
+								+ myName + " for method "
+								+ res.getString("method_name"));
+					}
+					try
+					{
+						aPerson.runScript("event", mySource);
+					} catch (MudException myMudException)
+					{
+						throw myMudException;
+					}
+				} else if (myRoom != 0)
+				{
+					// room detected
+					Logger.getLogger("mmud").info(
+							"method_name=" + res.getString("method_name")
+									+ ", room=" + myRoom);
+					Room aRoom = Rooms.getRoom(myRoom);
+					if (aRoom == null)
+					{
+						throw new RoomNotFoundException("Unable to find room "
+								+ myRoom + " for method "
+								+ res.getString("method_name"));
+					}
+					try
+					{
+						aRoom.runScript("event", mySource);
+					} catch (MudException myMudException)
+					{
+						throw myMudException;
+					}
+				} else
+				{
+					// neither detected, overall game executing.
+					Logger.getLogger("mmud").info(
+							"method_name=" + res.getString("method_name"));
+					// TODO: not implemented yet
+				}
+			}
+			res.close();
+			statGetEvents.close();
+		} catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error runevent.", e);
 		}
 	}
 

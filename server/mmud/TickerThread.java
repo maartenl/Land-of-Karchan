@@ -91,7 +91,10 @@ public class TickerThread implements Runnable
 			}
 			try
 			{
-				Database.runEvents();
+				if (Constants.events_active)
+				{
+					Database.runEvents();
+				}
 			} catch (MudException e)
 			{
 				Database.writeLog("root", e);
