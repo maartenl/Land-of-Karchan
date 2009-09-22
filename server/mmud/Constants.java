@@ -1154,8 +1154,11 @@ public final class Constants
 		dbpasswd = theValues.getProperty("dbpasswd");
 		dbjdbcclass = theValues.getProperty("dbjdbcclass");
 		dburl = theValues.getProperty("dburl");
-		events_active = theValues.getProperty("events_active")
-				.equalsIgnoreCase("true");
+		String events_active_string = theValues.getProperty("events_active");
+		if (events_active_string != null)
+		{
+			events_active = events_active_string.equalsIgnoreCase("true");
+		}
 
 		try
 		{
