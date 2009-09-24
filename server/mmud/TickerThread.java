@@ -52,6 +52,11 @@ public class TickerThread implements Runnable
 	}
 
 	/**
+	 * Starts counting the minutes from the start of the game.
+	 */
+	int theCounter = 0;
+
+	/**
 	 * Run method of the thread. This is started when the start method is
 	 * called.
 	 */
@@ -77,9 +82,22 @@ public class TickerThread implements Runnable
 			} catch (InterruptedException e)
 			{
 			}
+			Logger.getLogger("mmud").finer("counter=" + theCounter);
 			try
 			{
-				Persons.removeIdleUsers();
+				/* every hour on the hour */
+				if (theCounter % 60 == 0)
+				{
+					Persons.removeIdleUsers();
+				}
+				if (theCounter == 0)
+				{
+					Database.moveLogsToOld();
+				}
+				if (Constants.events_active)
+				{
+					Database.runEvents();
+				}
 			} catch (PersonException e)
 			{
 				Database.writeLog("root", e);
@@ -89,16 +107,14 @@ public class TickerThread implements Runnable
 				Database.writeLog("root", e);
 				e.printStackTrace();
 			}
-			try
+
+			theCounter++;
+			if (theCounter == 24 * 60)
 			{
-				if (Constants.events_active)
-				{
-					Database.runEvents();
-				}
-			} catch (MudException e)
-			{
-				Database.writeLog("root", e);
-				e.printStackTrace();
+				/**
+				 * reset after one full day.
+				 */
+				theCounter = 0;
 			}
 		} // neverending loop.
 	}

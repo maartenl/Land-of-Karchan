@@ -149,6 +149,9 @@ public class Database
 	private static String sqlGetAreaString = "select mm_area.* from mm_area, mm_rooms where mm_rooms.id = ? "
 			+ "and mm_rooms.area = mm_area.area";
 
+	private static String sqlMoveLogs1 = "insert into mm_oldlog select * from mm_log where date(creation) != date(now())";
+	private static String sqlMoveLogs2 = "delete from mm_log where date(creation) != date(now())";
+
 	/**
 	 * Connects to the database using an url. The url looks something like
 	 * "jdbc:mysql://localhost.localdomain/mud?user=root&password=". Uses the
@@ -2075,6 +2078,33 @@ public class Database
 					"removeGuildRank", e);
 			throw new MudDatabaseException(
 					"database error removing guildrank.", e);
+		}
+	}
+
+	/**
+	 * Moved the logs from mm_log over to mm_oldlog if they're older than a day.
+	 * 
+	 * @throws MudException
+	 *             throws a mudexception if something's wrong with teh database.
+	 */
+	public static void moveLogsToOld() throws MudException
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+
+			PreparedStatement statMoveLog1 = prepareStatement(sqlMoveLogs1);
+			statMoveLog1.executeUpdate();
+			statMoveLog1.close();
+			PreparedStatement statMoveLog2 = prepareStatement(sqlMoveLogs2);
+			statMoveLog2.executeUpdate();
+			statMoveLog2.close();
+		} catch (SQLException e)
+		{
+			Logger.getLogger("mmud").throwing("mmud.Database", "moveLogsToOld",
+					e);
+			throw new MudDatabaseException("database error moving old logs.", e);
 		}
 	}
 
