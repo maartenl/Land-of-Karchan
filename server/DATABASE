@@ -370,3 +370,18 @@ text, closed int(1) default 0, name varchar(20) not null,
 creation datetime not null
 primary key);
 
+logging
+-------
+
+ALTER TABLE mm_log RENAME TO mm_oldlog;
+
+DROP TABLE IF EXISTS `mm_log`;
+CREATE TABLE `mm_log` (
+  `creation` timestamp NOT NULL default CURRENT_TIMESTAMP on update
+CURRENT_TIMESTAMP,
+  `name` varchar(20) NOT NULL default '',
+  `message` varchar(255) NOT NULL default '',
+  `addendum` text,
+  PRIMARY KEY  (`creation`,`name`,`message`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
