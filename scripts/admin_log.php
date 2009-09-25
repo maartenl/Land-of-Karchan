@@ -37,45 +37,79 @@ Mmud - Admin
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
 <IMG SRC="/images/gif/dragon.gif">
-Logs <?php echo $_REQUEST{"status"} ?></H1>
+Logs</H1>
+
+<TABLE>
 
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/admin_authorize.php";
-if ($_REQUEST{"status"} == "1")
-{
-	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
-		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log order by creation";
-}
-if ($_REQUEST{"status"} == "2")
-{
-	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
-		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - 7000000 order by creation";
-}
-if ($_REQUEST{"status"} == "3")
-{
-	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message,
-		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log where creation > now() - 1000000 order by creation";
-}
-$result = mysql_query($query
-	, $dbhandle)
-	or error_message("Query failed : " . mysql_error());
-while ($myrow = mysql_fetch_array($result)) 
-{
-	if ($myrow["addendum"] == "")
-	{
-		printf("<b>creation:</b> %s <b>name:</b> %s <b>message:</b> %s<BR> ", $myrow[0],
-			$myrow[1], $myrow[2]);
-	}
-	else
-	{
-		printf("<b>creation:</b> %s <b>name:</b> %s <b>message:</b>
-			%s<BR>%s<BR> ", $myrow[0],
-			$myrow[1], $myrow[2], $myrow["addendum"]);
-	}
-}
+#	$query = "select date_format(creation, \"%Y-%m-%d %T\"), name, message, 
+#		replace(replace(addendum,'>','&gt;'),'<','&lt;') as addendum from mm_log order by creation";
 
+if (isset($_REQUEST{"specifics"}))
+{
+?>
+<TABLE>
+<TR><TH>creation</TH><TH>name</TH><TH>message</TH></TR>
+<?php
+	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message, addendum
+		from mm_log where creation = \"".
+		$_REQUEST{"specifics"}.
+		"\"";
+        $result = mysql_query($query
+            	, $dbhandle)
+          	or error_message("Query failed : " . mysql_error());
+        while ($myrow = mysql_fetch_array($result)) 
+        {
+	      printf("<TR><TD><A HREF=\"/scripts/admin_log.php?specifics=%s\">%s</A></TD><TD>%s</TD><TD>%s</TD></TR>".
+	      "<TR><TD colspan=\"3\">%s</TD></TR>\r\n", $myrow["thetime"],
+                    $myrow["thetime"], $myrow["name"], $myrow["message"], $myrow["addendum"]);
+        }
+	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message, addendum
+		from mm_oldlog where creation = \"".
+		$_REQUEST{"specifics"}.
+		"\"";
+        $result = mysql_query($query
+            	, $dbhandle)
+          	or error_message("Query failed : " . mysql_error());
+        while ($myrow = mysql_fetch_array($result)) 
+        {
+	      printf("<TR><TD><A HREF=\"/scripts/admin_log.php?specifics=%s\">%s</A></TD><TD>%s</TD><TD>%s</TD></TR>".
+	      "<TR><TD colspan=\"3\">%s</TD></TR>\r\n", $myrow["thetime"],
+                    $myrow["thetime"], $myrow["name"], $myrow["message"], $myrow["addendum"]);
+        }
+}
+else
+{
+?>
+<TABLE>
+<TR><TH>creation</TH><TH>name</TH><TH>message</TH></TR>
+<?php
+if (isset($_REQUEST{"day"}))
+{
+	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message
+		from mm_oldlog where date(creation) = date(\"".
+		$_REQUEST{"day"}."-".
+		$_REQUEST{"month"}."-".
+		$_REQUEST{"year"}.
+		"\") order by creation";
+} else
+{
+	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message
+		from mm_log order by creation";
+}
+        $result = mysql_query($query
+            	, $dbhandle)
+          	or error_message("Query failed : " . mysql_error());
+        while ($myrow = mysql_fetch_array($result)) 
+        {
+	      printf("<TR><TD><A HREF=\"/scripts/admin_log.php?specifics=%s\">%s</A></TD><TD>%s</TD><TD>%s</TD></TR>\r\n ", $myrow["thetime"],
+                    $myrow["thetime"], $myrow["name"], $myrow["message"]);
+        }
+}
 mysql_close($dbhandle);
 ?>
+</TABLE>
 
 <a HREF="/karchan/admin/showlog.html">
 <img SRC="/images/gif/webpic/buttono.gif"  
