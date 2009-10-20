@@ -240,7 +240,7 @@ if (isset($_REQUEST{"west"}))
 		quote_smart($_REQUEST{"contents"}).
 		", title=\"".
 		quote_smart($_REQUEST{"title"}).
-		", picture=\"".
+		"\", picture=\"".
 		quote_smart($_REQUEST{"picture"}).
 		"\", area=\"".
 		quote_smart($_REQUEST{"area"}).
