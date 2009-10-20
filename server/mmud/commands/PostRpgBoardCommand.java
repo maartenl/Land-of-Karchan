@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -43,20 +43,17 @@ public class PostRpgBoardCommand extends PostBoardCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		return postMessage(aUser, "roleplaying", 13, getCommand().substring(8 + 1).trim());
+		return postMessage(aUser, "roleplaying", 13, getCommand().substring(
+				8 + 1).trim());
 	}
 
 	public Command createCommand()
 	{
 		return new PostRpgBoardCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,45 +44,54 @@ public abstract class NormalCommand implements Command
 	/**
 	 * the regular expression the command structure must follow
 	 */
-	private String theRegExpr;
+	private final String theRegExpr;
 
 	public String getRegExpr()
 	{
 		return theRegExpr;
 	}
-	
+
 	/**
 	 * Constructor.
-	 * @param aRegExpr a regular expression to which the command should
-	 * follow. For example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
-	 * parameter that can be used when the name of the character playing
-	 * is requested.
+	 * 
+	 * @param aRegExpr
+	 *            a regular expression to which the command should follow. For
+	 *            example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
+	 *            parameter that can be used when the name of the character
+	 *            playing is requested.
 	 */
 	public NormalCommand(String aRegExpr)
 	{
 		theRegExpr = aRegExpr;
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean start(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("theRegExpr=" + theRegExpr);
 		aUser.setNow();
 		String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
 		boolean result = true;
-		if (myregexpr.endsWith(".+") && getCommand().indexOf('\n')!=-1)
+		if (myregexpr.endsWith(".+") && getCommand().indexOf('\n') != -1)
 		{
-			String stuff = getCommand().substring(0, getCommand().indexOf('\n'));
+			String stuff = getCommand()
+					.substring(0, getCommand().indexOf('\n'));
 			result = stuff.matches(myregexpr);
 			Logger.getLogger("mmud").finer("returns case 1 " + result);
-		}
-		else
+		} else
 		{
 			result = (getCommand().matches(myregexpr));
 			Logger.getLogger("mmud").finer("returns case 2 " + result);
 		}
-		return result;
+		if (!result)
+		{
+			/** didn't match the case, exiting */
+			return result;
+		}
+		/** continue with the actual command */
+		return run(aUser);
 	}
+
+	public abstract boolean run(User aUser) throws MudException;
 
 	public String getResult()
 	{

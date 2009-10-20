@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -45,19 +45,16 @@ public class WhoCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		theString = null;
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		theString = Persons.getWhoList() + aUser.printForm();
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -68,5 +65,5 @@ public class WhoCommand extends NormalCommand
 	{
 		return new WhoCommand(getRegExpr());
 	}
-	
+
 }

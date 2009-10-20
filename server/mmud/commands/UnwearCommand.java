@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -40,8 +40,8 @@ import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
 
 /**
- * Stop you wearing an item on you.
- * Syntax: remove &lt;item&gt; from &lt;body position&gt;
+ * Stop you wearing an item on you. Syntax: remove &lt;item&gt; from &lt;body
+ * position&gt;
  */
 public class UnwearCommand extends NormalCommand
 {
@@ -51,95 +51,64 @@ public class UnwearCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
-		// determine the appropriate body position entered by the 
+		// determine the appropriate body position entered by the
 		// user
-		String pos = myParsed[myParsed.length-1];
+		String pos = myParsed[myParsed.length - 1];
 		PersonPositionEnum position = null;
 		if (pos.equalsIgnoreCase("head"))
 		{
 			position = PersonPositionEnum.ON_HEAD;
-		}
-		else
-		if (pos.equalsIgnoreCase("neck"))
+		} else if (pos.equalsIgnoreCase("neck"))
 		{
 			position = PersonPositionEnum.ON_NECK;
-		}
-		else
-		if (pos.equalsIgnoreCase("torso"))
+		} else if (pos.equalsIgnoreCase("torso"))
 		{
 			position = PersonPositionEnum.ON_TORSO;
-		}
-		else
-		if (pos.equalsIgnoreCase("arms"))
+		} else if (pos.equalsIgnoreCase("arms"))
 		{
 			position = PersonPositionEnum.ON_ARMS;
-		}
-		else
-		if (pos.equalsIgnoreCase("leftwrist"))
+		} else if (pos.equalsIgnoreCase("leftwrist"))
 		{
 			position = PersonPositionEnum.ON_LEFT_WRIST;
-		}
-		else
-		if (pos.equalsIgnoreCase("rightwrist"))
+		} else if (pos.equalsIgnoreCase("rightwrist"))
 		{
 			position = PersonPositionEnum.ON_RIGHT_WRIST;
-		}
-		else
-		if (pos.equalsIgnoreCase("leftfinger"))
+		} else if (pos.equalsIgnoreCase("leftfinger"))
 		{
 			position = PersonPositionEnum.ON_LEFT_FINGER;
-		}
-		else
-		if (pos.equalsIgnoreCase("rightfinger"))
+		} else if (pos.equalsIgnoreCase("rightfinger"))
 		{
 			position = PersonPositionEnum.ON_RIGHT_FINGER;
-		}
-		else
-		if (pos.equalsIgnoreCase("feet"))
+		} else if (pos.equalsIgnoreCase("feet"))
 		{
 			position = PersonPositionEnum.ON_FEET;
-		}
-		else
-		if (pos.equalsIgnoreCase("hands"))
+		} else if (pos.equalsIgnoreCase("hands"))
 		{
 			position = PersonPositionEnum.ON_HANDS;
-		}
-		else
-		if (pos.equalsIgnoreCase("waist"))
+		} else if (pos.equalsIgnoreCase("waist"))
 		{
 			position = PersonPositionEnum.ON_WAIST;
-		}
-		else
-		if (pos.equalsIgnoreCase("legs"))
+		} else if (pos.equalsIgnoreCase("legs"))
 		{
 			position = PersonPositionEnum.ON_LEGS;
-		}
-		else
-		if (pos.equalsIgnoreCase("eyes"))
+		} else if (pos.equalsIgnoreCase("eyes"))
 		{
 			position = PersonPositionEnum.ON_EYES;
-		}
-		else
-		if (pos.equalsIgnoreCase("ears"))
+		} else if (pos.equalsIgnoreCase("ears"))
 		{
 			position = PersonPositionEnum.ON_EARS;
-		}
-		else
-		if (pos.equalsIgnoreCase("body"))
+		} else if (pos.equalsIgnoreCase("body"))
 		{
 			position = PersonPositionEnum.ABOUT_BODY;
-		}
-		else
+		} else
 		{
 			aUser.writeMessage("Cannot wear something there.<BR>\r\n");
 			return true;
@@ -147,7 +116,8 @@ public class UnwearCommand extends NormalCommand
 
 		Logger.getLogger("mmud").finer("position=" + position);
 		// check for item in posession
-		Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+		Vector stuff = Constants.parseItemDescription(myParsed, 1,
+				myParsed.length - 3);
 		int amount = ((Integer) stuff.elementAt(0)).intValue();
 		String adject1 = (String) stuff.elementAt(1);
 		String adject2 = (String) stuff.elementAt(2);
@@ -174,8 +144,11 @@ public class UnwearCommand extends NormalCommand
 			{
 				// transfer item to other person
 				myItem.setWearing(null);
-				Database.writeLog(aUser.getName(), "remove " + myItem + " from " + position);
-				Persons.sendMessage(aUser, "%SNAME remove%VERB2 " + myItem.getDescription() + " from " + position + ".<BR>\r\n");
+				Database.writeLog(aUser.getName(), "remove " + myItem
+						+ " from " + position);
+				Persons.sendMessage(aUser, "%SNAME remove%VERB2 "
+						+ myItem.getDescription() + " from " + position
+						+ ".<BR>\r\n");
 				return true;
 			}
 		}
@@ -186,5 +159,5 @@ public class UnwearCommand extends NormalCommand
 	{
 		return new UnwearCommand(getRegExpr());
 	}
-	
+
 }

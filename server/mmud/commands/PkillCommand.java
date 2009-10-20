@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,26 +44,24 @@ public class PkillCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
 			boolean isOn = myParsed[1].equalsIgnoreCase("on");
 			aUser.setPkill(isOn);
 			Database.setPkill(aUser);
-			aUser.writeMessage("Pkill is now " + (isOn ? "on" : "off") + ".<BR>\r\n");
+			aUser.writeMessage("Pkill is now " + (isOn ? "on" : "off")
+					+ ".<BR>\r\n");
 			return true;
 		}
 		if (myParsed.length == 1)
 		{
-			aUser.writeMessage("Your pkill is " + (aUser.isPkill() ? "on" : "off") + ".<BR>\r\n");
+			aUser.writeMessage("Your pkill is "
+					+ (aUser.isPkill() ? "on" : "off") + ".<BR>\r\n");
 			return true;
 		}
 		return false;
@@ -73,5 +71,5 @@ public class PkillCommand extends NormalCommand
 	{
 		return new PkillCommand(getRegExpr());
 	}
-	
+
 }

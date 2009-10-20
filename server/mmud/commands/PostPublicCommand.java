@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -43,20 +43,17 @@ public class PostPublicCommand extends PostBoardCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1).trim());
+		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1)
+				.trim());
 	}
 
 	public Command createCommand()
 	{
 		return new PostPublicCommand(getRegExpr());
 	}
-	
+
 }

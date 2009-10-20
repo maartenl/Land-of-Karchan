@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -45,37 +45,32 @@ public class MailCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		if (command.trim().equalsIgnoreCase("mail"))
 		{
 			theString = "<H1>Mail To</H1><HR noshade>\r\n";
 
-			theString += "<SCRIPT language=\"JavaScript\">\r\n" +
-				"<!-- In hiding!\r\n" +
-				"function setfocus() {\r\n" +
-				" document.CommandForm.mailto.focus();\r\n" +
-				" return;\r\n" +
-				" }\r\n" +
-				"//-->\r\n" +
-				"</SCRIPT>\r\n";
-		
+			theString += "<SCRIPT language=\"JavaScript\">\r\n"
+					+ "<!-- In hiding!\r\n" + "function setfocus() {\r\n"
+					+ " document.CommandForm.mailto.focus();\r\n"
+					+ " return;\r\n" + " }\r\n" + "//-->\r\n" + "</SCRIPT>\r\n";
+
 			theString += "<TABLE BORDER=0>";
-			theString += "<TR><TD>From:</TD><TD><B>" + aUser.getName() + "</B></TD></TR>\r\n";
-			theString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi + "\" NAME=\"CommandForm\">\n";
+			theString += "<TR><TD>From:</TD><TD><B>" + aUser.getName()
+					+ "</B></TD></TR>\r\n";
+			theString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi
+					+ "\" NAME=\"CommandForm\">\n";
 			theString += "<TR><TD>To: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailto\" VALUE=\"\"></TD></TR>\r\n";
 			theString += "<TR><TD>Header: </TD><TD><INPUT TYPE=\"text\" NAME=\"mailheader\" SIZE=80 VALUE=\"\"></TD></TR>\r\n";
 			theString += "<TR><TD>Body:</TD><TD>\r\n";
 			theString += "<TEXTAREA NAME=\"mailbody\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n";
 			theString += "</TD></TR></TABLE><INPUT TYPE=\"hidden\" NAME=\"command\" VALUE=\"sendmail\">\n";
-			theString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + aUser.getName() + "\">\n";
+			theString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
+					+ aUser.getName() + "\">\n";
 			theString += "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n";
 			theString += "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n";
 			theString += "</FORM><P>\r\n";
@@ -85,6 +80,7 @@ public class MailCommand extends NormalCommand
 		return false;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -95,5 +91,5 @@ public class MailCommand extends NormalCommand
 	{
 		return new MailCommand(getRegExpr());
 	}
-	
+
 }

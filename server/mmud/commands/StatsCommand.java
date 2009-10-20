@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,23 +44,18 @@ public class StatsCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String invent = aUser.getStatistics();
 		invent = invent.replaceAll("%SHESHE", "You");
 		invent = invent.replaceAll("%SISARE", "are");
-		theResult = "<H1>Stats</H1>"
-			+ invent
-			+ aUser.printForm();
+		theResult = "<H1>Stats</H1>" + invent + aUser.printForm();
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -71,5 +66,5 @@ public class StatsCommand extends NormalCommand
 	{
 		return new StatsCommand(getRegExpr());
 	}
-	
+
 }

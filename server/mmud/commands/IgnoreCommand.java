@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -35,8 +35,7 @@ import mmud.characters.Persons;
 import mmud.characters.User;
 
 /**
- * Ignore everything someone says.
- * Syntax: <TT>ignore &lt;name&gt;</TT>
+ * Ignore everything someone says. Syntax: <TT>ignore &lt;name&gt;</TT>
  */
 public class IgnoreCommand extends NormalCommand
 {
@@ -46,14 +45,10 @@ public class IgnoreCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length <= 2)
@@ -61,15 +56,18 @@ public class IgnoreCommand extends NormalCommand
 			return false;
 		}
 		Person toChar = Persons.retrievePerson(myParsed[2]);
-		if ( (toChar == null) || (!(toChar instanceof User)) )
+		if ((toChar == null) || (!(toChar instanceof User)))
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
 		((User) toChar).addName(aUser);
-		Persons.sendMessageExcl(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
-		aUser.writeMessage(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
-		toChar.writeMessage(aUser, toChar, "%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
+		Persons.sendMessageExcl(aUser, toChar,
+				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
+		aUser.writeMessage(aUser, toChar,
+				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
+		toChar.writeMessage(aUser, toChar,
+				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
 		return true;
 	}
 
@@ -77,5 +75,5 @@ public class IgnoreCommand extends NormalCommand
 	{
 		return new IgnoreCommand(getRegExpr());
 	}
-	
+
 }

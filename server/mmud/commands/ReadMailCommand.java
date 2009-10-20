@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -48,26 +48,23 @@ public class ReadMailCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MailException, MudException
+	@Override
+	public boolean run(User aUser) throws MailException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
-			
+
 			try
 			{
-				theString = MailDb.readMail(aUser, Integer.parseInt(myParsed[1]));
+				theString = MailDb.readMail(aUser, Integer
+						.parseInt(myParsed[1]));
 				theString += aUser.printForm();
-			}
-			catch (NumberFormatException e)
+			} catch (NumberFormatException e)
 			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
+				Logger.getLogger("mmud").info(
+						"thrown: " + Constants.INVALIDMAILERROR);
 				throw new InvalidMailException();
 			}
 			return true;
@@ -76,6 +73,7 @@ public class ReadMailCommand extends NormalCommand
 		return false;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -86,5 +84,5 @@ public class ReadMailCommand extends NormalCommand
 	{
 		return new ReadMailCommand(getRegExpr());
 	}
-	
+
 }

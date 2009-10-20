@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -34,13 +34,14 @@ import mmud.characters.CommunicationListener;
 import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
+import mmud.characters.CommunicationListener.CommType;
 
 /**
- * Tell to someone something. The difference with normal communication
- * commands, is that this one is mandatory to a person and the person does
- * not need to be in the same room: "tell to Karn Help!".
+ * Tell to someone something. The difference with normal communication commands,
+ * is that this one is mandatory to a person and the person does not need to be
+ * in the same room: "tell to Karn Help!".
  */
-public class TellCommand extends NormalCommand
+public class TellCommand extends CommunicationCommand
 {
 
 	public TellCommand(String aRegExpr)
@@ -48,14 +49,14 @@ public class TellCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	/*
+	 * Once again, this one is special, because tell works across all rooms, and
+	 * is only ever targeted to only one person directly.
+	 */
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length <= 3 || (!myParsed[1].equalsIgnoreCase("to")))
@@ -70,24 +71,35 @@ public class TellCommand extends NormalCommand
 		}
 		if (aUser.isIgnored(toChar))
 		{
-			aUser.writeMessage(toChar.getName() + 
-				" is ignoring you fully.<BR>\r\n");
+			aUser.writeMessage(toChar.getName()
+					+ " is ignoring you fully.<BR>\r\n");
 			return true;
 		}
-		String message = command.substring(command.indexOf(myParsed[3], 4 + 1 + 2 + 1 + myParsed[2].length())).trim();
-		aUser.writeMessage("<B>You tell " + toChar.getName() + "</B> : " + message + "<BR>\r\n");
-		toChar.writeMessage("<B>" + aUser.getName() + " tells you</B> : " + message + "<BR>\r\n");
+		setMessage(command.substring(
+				command.indexOf(myParsed[3], getCommType().toString().length()
+						+ 1 + 2 + 1 + myParsed[2].length())).trim());
+		aUser.writeMessage("<B>You tell " + toChar.getName() + "</B> : "
+				+ getMessage() + "<BR>\r\n");
+		toChar.writeMessage("<B>" + aUser.getName() + " tells you</B> : "
+				+ getMessage() + "<BR>\r\n");
 		if (toChar instanceof CommunicationListener)
 		{
-			((CommunicationListener) toChar).commEvent(aUser, 
-				CommunicationListener.TELL, message);
+			((CommunicationListener) toChar).commEvent(aUser,
+					CommunicationListener.TELL, getMessage());
 		}
 		return true;
 	}
 
+	@Override
 	public Command createCommand()
 	{
 		return new TellCommand(getRegExpr());
 	}
-	
+
+	@Override
+	public CommType getCommType()
+	{
+		return CommType.TELL;
+	}
+
 }

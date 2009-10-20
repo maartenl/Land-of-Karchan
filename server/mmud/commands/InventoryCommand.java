@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,24 +44,23 @@ public class InventoryCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String invent = aUser.inventory();
 		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
-			+ " have " + (invent.equals("") && (aUser.getMoney() == 0)?"absolutely nothing.<P>":" <UL>" 
-			+ invent + 
-			(aUser.getMoney() != 0 ? "<P><LI>" + aUser.getDescriptionOfMoney() : "") + 
-			"</UL>") 
-			+ aUser.printForm();
+				+ " have "
+				+ (invent.equals("") && (aUser.getMoney() == 0) ? "absolutely nothing.<P>"
+						: " <UL>"
+								+ invent
+								+ (aUser.getMoney() != 0 ? "<P><LI>"
+										+ aUser.getDescriptionOfMoney() : "")
+								+ "</UL>") + aUser.printForm();
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -72,5 +71,5 @@ public class InventoryCommand extends NormalCommand
 	{
 		return new InventoryCommand(getRegExpr());
 	}
-	
+
 }

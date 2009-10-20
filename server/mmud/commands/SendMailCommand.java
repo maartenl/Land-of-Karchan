@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -39,10 +39,9 @@ import mmud.database.Database;
 import mmud.database.MailDb;
 
 /**
- * Send a mudmail to someone.
- * expected command something like :<P>
- * <B>sendmail [to] [header length] [header] [body]
- * </B>
+ * Send a mudmail to someone. expected command something like :
+ * <P>
+ * <B>sendmail [to] [header length] [header] [body] </B>
  */
 public class SendMailCommand extends NormalCommand
 {
@@ -52,14 +51,10 @@ public class SendMailCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MailException, MudException
+	@Override
+	public boolean run(User aUser) throws MailException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		String[] myParsed = Constants.parseCommand(command);
 		if (myParsed.length > 4)
@@ -81,14 +76,15 @@ public class SendMailCommand extends NormalCommand
 			try
 			{
 				size = Integer.parseInt(myParsed[2]);
-			}
-			catch (NumberFormatException e)
+			} catch (NumberFormatException e)
 			{
-				Logger.getLogger("mmud").info("thrown: " + Constants.INVALIDMAILERROR);
+				Logger.getLogger("mmud").info(
+						"thrown: " + Constants.INVALIDMAILERROR);
 				throw new InvalidMailException();
 			}
 			Logger.getLogger("mmud").finer("");
-			start = 8 + 1 + toUser.getName().length() + 1 + myParsed[2].length() + 1;
+			start = 8 + 1 + toUser.getName().length() + 1
+					+ myParsed[2].length() + 1;
 			header = command.substring(start, size + start);
 			message = command.substring(start + size + 1 - 1);
 			MailDb.sendMail(aUser, toUser, header, message);
@@ -102,5 +98,5 @@ public class SendMailCommand extends NormalCommand
 	{
 		return new SendMailCommand(getRegExpr());
 	}
-	
+
 }

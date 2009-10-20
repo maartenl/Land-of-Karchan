@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -35,6 +35,7 @@ import mmud.rooms.Room;
 
 /**
  * Proceed to the room in the north, if possible : "north".
+ * 
  * @see GoCommand
  */
 public class NorthCommand extends NormalCommand
@@ -45,22 +46,17 @@ public class NorthCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getNorth() != null)
 		{
 			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 north.<BR>\r\n");
 			aUser.setRoom(myRoom.getNorth());
 			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
-		}
-		else
+		} else
 		{
 			aUser.writeMessage("You cannot go north.<BR>\r\n");
 		}
@@ -71,5 +67,5 @@ public class NorthCommand extends NormalCommand
 	{
 		return new NorthCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,18 +44,15 @@ public class ClearCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		theUser = aUser;
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -67,8 +64,7 @@ public class ClearCommand extends NormalCommand
 			theUser.createLog();
 			theUser.writeMessage("You cleared your mind.<BR>\r\n");
 			return returnStuff;
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -79,5 +75,5 @@ public class ClearCommand extends NormalCommand
 	{
 		return new ClearCommand(getRegExpr());
 	}
-	
+
 }

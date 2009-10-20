@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -45,30 +45,24 @@ public class QuitCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		Persons.sendMessage(aUser, "%SNAME left the game.<BR>\r\n");
 		try
 		{
 			MailDb.resetNewMailFlag(aUser);
 			Persons.deactivateUser(aUser);
 			Database.writeLog(aUser.getName(), "left the game.");
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		try
 		{
 			theResult = Constants.readFile(Constants.goodbyefile);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			theResult = Constants.goodbyemessage;
@@ -76,6 +70,7 @@ public class QuitCommand extends NormalCommand
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -86,5 +81,5 @@ public class QuitCommand extends NormalCommand
 	{
 		return new QuitCommand(getRegExpr());
 	}
-	
+
 }

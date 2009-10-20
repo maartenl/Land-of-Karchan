@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -43,6 +43,7 @@ import mmud.items.ItemException;
 
 /**
  * Selling an item to a bot. Syntax : sell &lt;item&gt; to &lt;character&gt;
+ * 
  * @see BuyCommand
  */
 public class SellCommand extends NormalCommand
@@ -54,43 +55,52 @@ public class SellCommand extends NormalCommand
 	}
 
 	/**
-	 * Tries out the sell command. There are a couple of requirements that
-	 * need to be met, before a successful sale takes place.
-	 * <ol><li>command struct. should be "<I>sell 
-	 * &lt;item&gt; to &lt;character&gt;</I>", for example: "<I>sell gold ring
-	 * to Karcas</I>".
+	 * Tries out the sell command. There are a couple of requirements that need
+	 * to be met, before a successful sale takes place.
+	 * <ol>
+	 * <li>command struct. should be "<I>sell &lt;item&gt; to
+	 * &lt;character&gt;</I>", for example: "<I>sell gold ring to Karcas</I>".
 	 * <li>shopkeeper buying the item should
-	 * <ol><li> exist, <li>be in the same room and<li>
-	 * have a god==4 to indicate a "shopkeeper"
-	 * and<li>has enough money</ol>
+	 * <ol>
+	 * <li>exist,
+	 * <li>be in the same room and
+	 * <li>
+	 * have a god==4 to indicate a "shopkeeper" and
+	 * <li>has enough money
+	 * </ol>
 	 * <li>the customer should have the item
-	 * <li>the item itself should <I>NOT</I> have a attribute called "notsellable".
+	 * <li>the item itself should <I>NOT</I> have a attribute called
+	 * "notsellable".
 	 * </ol>
 	 * A best effort is tried, this means the following sequence of events:
-	 * <ol><li>the item is transferred into the inventory of the shopkeeper
+	 * <ol>
+	 * <li>the item is transferred into the inventory of the shopkeeper
 	 * <li>money is transferred into the inventory of the customer
 	 * <li>continue with next item
 	 *</ol>
-	 * @param aUser the character doing the selling.
-	 * @throws ItemException in case the appropriate items could not be
-	 * properly processed.
-	 * @throws ParseException if the item description or the number of
-	 * items requested is illegal.
+	 * 
+	 * @param aUser
+	 *            the character doing the selling.
+	 * @throws ItemException
+	 *             in case the appropriate items could not be properly
+	 *             processed.
+	 * @throws ParseException
+	 *             if the item description or the number of items requested is
+	 *             illegal.
 	 */
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		// parse command string
-		if (myParsed.length >= 4 && myParsed[myParsed.length-2].equalsIgnoreCase("to"))
+		if (myParsed.length >= 4
+				&& myParsed[myParsed.length - 2].equalsIgnoreCase("to"))
 		{
 			// determine if appropriate shopkeeper is found.
-			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
+			Person toChar = Persons
+					.retrievePerson(myParsed[myParsed.length - 1]);
 			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
@@ -102,13 +112,14 @@ public class SellCommand extends NormalCommand
 				return true;
 			}
 			// check for item in posession of customer
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 3);
 			int amount = ((Integer) stuff.elementAt(0)).intValue();
 			String adject1 = (String) stuff.elementAt(1);
 			String adject2 = (String) stuff.elementAt(2);
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
-			
+
 			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
@@ -116,26 +127,31 @@ public class SellCommand extends NormalCommand
 				{
 					aUser.writeMessage("You do not have that item.<BR>\r\n");
 					return true;
-				}
-				else
+				} else
 				{
-					aUser.writeMessage("You do not have that many items.<BR>\r\n");
+					aUser
+							.writeMessage("You do not have that many items.<BR>\r\n");
 					return true;
 				}
 			}
 
 			int sumvalue = 0;
-			for (int i=0; i<amount; i++)
+			for (int i = 0; i < amount; i++)
 			{
 				Item myItem = (Item) myItems.elementAt(i);
 				sumvalue += myItem.getMoney();
 			}
-			Logger.getLogger("mmud").finer(aUser.getName() + " has items worth " + sumvalue + " copper");
-			Logger.getLogger("mmud").finer(toChar.getName() + " has " + 
-				toChar.getMoney() + " copper coins");
-			if (toChar.getMoney() < sumvalue )
+			Logger.getLogger("mmud").finer(
+					aUser.getName() + " has items worth " + sumvalue
+							+ " copper");
+			Logger.getLogger("mmud").finer(
+					toChar.getName() + " has " + toChar.getMoney()
+							+ " copper coins");
+			if (toChar.getMoney() < sumvalue)
 			{
-				aUser.writeMessage(toChar.getName() + " mutters something about not having enough money.<BR>\r\n");
+				aUser
+						.writeMessage(toChar.getName()
+								+ " mutters something about not having enough money.<BR>\r\n");
 				return true;
 			}
 			int j = 0;
@@ -147,8 +163,12 @@ public class SellCommand extends NormalCommand
 				if (myItem.getMoney() == 0)
 				{
 					String message = "That item is not worth anything.";
-					Persons.sendMessageExcl(toChar, aUser, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
-					aUser.writeMessage(toChar, aUser, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
+					Persons.sendMessageExcl(toChar, aUser,
+							"%SNAME say%VERB2 [to %TNAME] : " + message
+									+ "<BR>\r\n");
+					aUser.writeMessage(toChar, aUser,
+							"<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message
+									+ "<BR>\r\n");
 					success = false;
 				}
 				if (!myItem.isSellable())
@@ -161,12 +181,18 @@ public class SellCommand extends NormalCommand
 					int totalitemvalue = myItem.getMoney();
 					// transfer item to shopkeeper
 					ItemsDb.transferItem(myItem, toChar);
-					Database.writeLog(aUser.getName(), "sold " + myItem + " to " + toChar + " in room " + toChar.getRoom().getId());
+					Database.writeLog(aUser.getName(), "sold " + myItem
+							+ " to " + toChar + " in room "
+							+ toChar.getRoom().getId());
 					// transfer money to user
 					toChar.transferMoneyTo(totalitemvalue, aUser);
-					Database.writeLog(aUser.getName(), "received " + totalitemvalue + " copper from " + toChar);
-					Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
-					Persons.sendMessage(aUser, toChar, "%SNAME receive%VERB2 " + myItem.getDescriptionOfMoney() + " from %TNAME.<BR>\r\n");
+					Database.writeLog(aUser.getName(), "received "
+							+ totalitemvalue + " copper from " + toChar);
+					Persons.sendMessage(aUser, toChar, "%SNAME sell%VERB2 "
+							+ myItem.getDescription() + " to %TNAME.<BR>\r\n");
+					Persons.sendMessage(aUser, toChar, "%SNAME receive%VERB2 "
+							+ myItem.getDescriptionOfMoney()
+							+ " from %TNAME.<BR>\r\n");
 					j++;
 				}
 			}
@@ -179,5 +205,5 @@ public class SellCommand extends NormalCommand
 	{
 		return new SellCommand(getRegExpr());
 	}
-	
+
 }

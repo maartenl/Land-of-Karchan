@@ -41,25 +41,26 @@ import mmud.items.ItemException;
 /**
  * Drink an item: "drink beer".
  */
-public class DrinkCommand extends NormalCommand {
+public class DrinkCommand extends NormalCommand
+{
 
 	String theResult = null;
 
-	public DrinkCommand(String aRegExpr) {
+	public DrinkCommand(String aRegExpr)
+	{
 		super(aRegExpr);
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException {
+	public boolean run(User aUser) throws ItemException, MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser)) {
-			return false;
-		}
 		// initialise string, important otherwise previous instances will return
 		// this
 		theResult = null;
 		String[] myParsed = getParsedCommand();
-		if (myParsed.length > 1) {
+		if (myParsed.length > 1)
+		{
 			Vector stuff = Constants.parseItemDescription(myParsed, 1,
 					myParsed.length - 1);
 			String adject1 = (String) stuff.elementAt(1);
@@ -68,26 +69,31 @@ public class DrinkCommand extends NormalCommand {
 			String name = (String) stuff.elementAt(4);
 
 			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
-			if (myItems.size() == 0) {
+			if (myItems.size() == 0)
+			{
 				aUser
 						.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
 				return true;
 			}
 			Item myItem = (Item) myItems.elementAt(0);
-			if (!myItem.isAttribute("drinkable")) {
+			if (!myItem.isAttribute("drinkable"))
+			{
 				aUser.writeMessage("You cannot drink that.<BR>\r\n");
 				return true;
 			}
 			theResult = myItem.getItemDef().getAttribute("drinkable")
 					.getValue();
-			if (theResult == null) {
+			if (theResult == null)
+			{
 				aUser.writeMessage("You cannot drink that.<BR>\r\n");
 				return true;
 			}
 			theResult += aUser.printForm();
-			if (myItem.isAttribute("alcoholic")) {
+			if (myItem.isAttribute("alcoholic"))
+			{
 				// do stuff
-			} else {
+			} else
+			{
 				// do some other stuff
 			}
 
@@ -103,12 +109,14 @@ public class DrinkCommand extends NormalCommand {
 	}
 
 	@Override
-	public String getResult() {
+	public String getResult()
+	{
 		Logger.getLogger("mmud").finer("");
 		return theResult;
 	}
 
-	public Command createCommand() {
+	public Command createCommand()
+	{
 		return new DrinkCommand(getRegExpr());
 	}
 

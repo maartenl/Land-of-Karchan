@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -36,8 +36,10 @@ import mmud.characters.User;
 import mmud.database.Database;
 
 /**
- * Fight another person. Syntax is :<P>
- * <TT>fight &lt;name&gt;</TT><P>
+ * Fight another person. Syntax is :
+ * <P>
+ * <TT>fight &lt;name&gt;</TT>
+ * <P>
  * Persons available currently are as follows:
  * <UL>
  * <LI>Person
@@ -50,7 +52,8 @@ import mmud.database.Database;
  * <LI>the person should exist
  * <LI>the person should be playing the game
  * <LI>the person should be in the same room as the player issuing the command
- * <LI>if person is User -> only fighting if playerkill is active for both parties
+ * <LI>if person is User -> only fighting if playerkill is active for both
+ * parties
  * <LI>if person is Bot -> only fighting if bot if a MOB instead of an NPC.
  * </UL>
  * TODO: make fighting available in <I>Arena</I>(s), check bot is fightable.
@@ -63,18 +66,14 @@ public class FightCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		// determine if appropriate fighter is found.
-		Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
-		if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+		Person toChar = Persons.retrievePerson(myParsed[myParsed.length - 1]);
+		if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 		{
 			aUser.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
@@ -84,12 +83,14 @@ public class FightCommand extends NormalCommand
 			// check for playerkill flag (on both sides!)
 			if (!aUser.isPkill())
 			{
-				aUser.writeMessage("You do not have <I>pkill</I> active.<BR>\r\n");
+				aUser
+						.writeMessage("You do not have <I>pkill</I> active.<BR>\r\n");
 				return true;
 			}
 			if (!((User) toChar).isPkill())
 			{
-				aUser.writeMessage("Your opponent does not have <I>pkill</I> active.<BR>\r\n");
+				aUser
+						.writeMessage("Your opponent does not have <I>pkill</I> active.<BR>\r\n");
 				return true;
 			}
 		}
@@ -105,8 +106,10 @@ public class FightCommand extends NormalCommand
 		}
 		aUser.setFightingPerson(toChar);
 		toChar.setFightingPerson(aUser);
-		Persons.sendMessage(aUser, toChar, "%SNAME start%VERB2 to fight against %TNAME.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "starts fighting " +toChar.getName() + ".");
+		Persons.sendMessage(aUser, toChar,
+				"%SNAME start%VERB2 to fight against %TNAME.<BR>\r\n");
+		Database.writeLog(aUser.getName(), "starts fighting "
+				+ toChar.getName() + ".");
 		Logger.getLogger("mmud").finer("waking up fighting thread...");
 		Constants.wakeupFightingThread();
 		return true;
@@ -116,5 +119,5 @@ public class FightCommand extends NormalCommand
 	{
 		return new FightCommand(getRegExpr());
 	}
-	
+
 }

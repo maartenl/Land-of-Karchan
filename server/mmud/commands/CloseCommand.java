@@ -47,27 +47,28 @@ import mmud.items.ItemException;
  * @see LockCommand
  * @see UnlockCommand
  */
-public class CloseCommand extends NormalCommand {
+public class CloseCommand extends NormalCommand
+{
 	private String name;
 	private String adject1;
 	private String adject2;
 	private String adject3;
 
-	public CloseCommand(String aRegExpr) {
+	public CloseCommand(String aRegExpr)
+	{
 		super(aRegExpr);
 	}
 
 	@Override
 	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException {
+			MudException
+	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser)) {
-			return false;
-		}
 		// initialise string, important otherwise previous instances will return
 		// this
 		String[] myParsed = getParsedCommand();
-		if (myParsed.length > 1) {
+		if (myParsed.length > 1)
+		{
 			Vector stuff = Constants.parseItemDescription(myParsed, 1,
 					myParsed.length - 1);
 			adject1 = (String) stuff.elementAt(1);
@@ -77,32 +78,38 @@ public class CloseCommand extends NormalCommand {
 
 			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
 					name);
-			if (myContainers.size() < 1) {
+			if (myContainers.size() < 1)
+			{
 				myContainers = aUser.getRoom().getItems(adject1, adject2,
 						adject3, name);
-				if (myContainers.size() < 1) {
+				if (myContainers.size() < 1)
+				{
 					aUser.writeMessage("You cannot find that item.<BR>\r\n");
 					return true;
 				}
 			}
 			Item anItem = (Item) myContainers.elementAt(0);
-			if (!(anItem instanceof Container)) {
+			if (!(anItem instanceof Container))
+			{
 				aUser.writeMessage("You cannot close "
 						+ anItem.getDescription() + ".<BR>\r\n");
 				return true;
 			}
 			Container aContainer = (Container) anItem;
-			if (!aContainer.isOpenable()) {
+			if (!aContainer.isOpenable())
+			{
 				aUser.writeMessage(anItem.getDescription()
 						+ " cannot be closed.<BR>\r\n");
 				return true;
 			}
-			if (!aContainer.isOpen()) {
+			if (!aContainer.isOpen())
+			{
 				aUser.writeMessage(anItem.getDescription()
 						+ " is already closed.<BR>\r\n");
 				return true;
 			}
-			if (aContainer.isLocked()) {
+			if (aContainer.isLocked())
+			{
 				aUser.writeMessage(anItem.getDescription()
 						+ " is locked.<BR>\r\n");
 				return true;
@@ -111,10 +118,12 @@ public class CloseCommand extends NormalCommand {
 					.getKeyId(), aContainer.isLocked());
 			Persons.sendMessage(aUser, "%SNAME close%VERB2 "
 					+ anItem.getDescription() + ".<BR>\r\n");
-			if (anItem.isAttribute("closeevent")) {
+			if (anItem.isAttribute("closeevent"))
+			{
 				String mySource = Database.getMethodSource(anItem.getAttribute(
 						"closeevent").getValue());
-				if ((mySource == null) || (mySource.trim().equals(""))) {
+				if ((mySource == null) || (mySource.trim().equals("")))
+				{
 					throw new MethodDoesNotExistException("closeevent of item "
 							+ anItem.getId());
 				}
@@ -125,7 +134,8 @@ public class CloseCommand extends NormalCommand {
 		return false;
 	}
 
-	public Command createCommand() {
+	public Command createCommand()
+	{
 		return new CloseCommand(getRegExpr());
 	}
 

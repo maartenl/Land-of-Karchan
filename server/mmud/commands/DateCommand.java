@@ -43,20 +43,15 @@ public class DateCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		Calendar myCalendar = Calendar.getInstance();
-		aUser.writeMessage("Current date is " 
-			+ (myCalendar.get(Calendar.MONTH)+1) + "-" +
-			+ myCalendar.get(Calendar.DAY_OF_MONTH) + "-" +
-			+ myCalendar.get(Calendar.YEAR)
-			+ ".<BR>\r\n");
+		aUser.writeMessage("Current date is "
+				+ (myCalendar.get(Calendar.MONTH) + 1) + "-"
+				+ +myCalendar.get(Calendar.DAY_OF_MONTH) + "-"
+				+ +myCalendar.get(Calendar.YEAR) + ".<BR>\r\n");
 		return true;
 	}
 
@@ -64,5 +59,5 @@ public class DateCommand extends NormalCommand
 	{
 		return new DateCommand(getRegExpr());
 	}
-	
+
 }

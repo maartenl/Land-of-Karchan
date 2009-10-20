@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -46,33 +46,27 @@ public class HelpCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		theUser = aUser;
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
 			theHelp = Database.getHelp(null);
 			return true;
-		}
-		else
-		if (myParsed.length == 2)
+		} else if (myParsed.length == 2)
 		{
 			theHelp = Database.getHelp(myParsed[1]);
-		}
-		else
+		} else
 		{
 			theHelp = Database.getHelp("sorry");
 		}
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -81,8 +75,7 @@ public class HelpCommand extends NormalCommand
 			String aString = theHelp;
 			aString += theUser.printForm();
 			return aString;
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -93,6 +86,5 @@ public class HelpCommand extends NormalCommand
 	{
 		return new HelpCommand(getRegExpr());
 	}
-	
 
 }

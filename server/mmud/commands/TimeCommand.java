@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Calendar;
 import java.util.logging.Logger;
@@ -43,20 +43,15 @@ public class TimeCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		Calendar myCalendar = Calendar.getInstance();
-		aUser.writeMessage("Current time is " 
-			+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":" +
-			+ myCalendar.get(Calendar.MINUTE) + ":" +
-			+ myCalendar.get(Calendar.SECOND)
-			+ ".<BR>\r\n");
+		aUser.writeMessage("Current time is "
+				+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":"
+				+ +myCalendar.get(Calendar.MINUTE) + ":"
+				+ +myCalendar.get(Calendar.SECOND) + ".<BR>\r\n");
 		return true;
 	}
 
@@ -64,5 +59,5 @@ public class TimeCommand extends NormalCommand
 	{
 		return new TimeCommand(getRegExpr());
 	}
-	
+
 }

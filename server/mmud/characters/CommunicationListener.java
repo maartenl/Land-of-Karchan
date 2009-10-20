@@ -41,20 +41,29 @@ public interface CommunicationListener
 	public static final CommType SHOUT = CommType.SHOUT;
 	public static final CommType TELL = CommType.TELL;
 	public static final CommType ASK = CommType.ASK;
+	public static final CommType SING = CommType.SING;
+	public static final CommType SCREAM = CommType.SCREAM;
+	public static final CommType CRY = CommType.CRY;
 
 	public final class CommType
 	{
 		private final String theType;
+		private final String thePlural;
 
-		public static final CommType SAY = new CommType("say");
-		public static final CommType WHISPER = new CommType("whisper");
-		public static final CommType SHOUT = new CommType("shout");
-		public static final CommType TELL = new CommType("tell");
-		public static final CommType ASK = new CommType("ask");
+		public static final CommType SAY = new CommType("say", "says");
+		public static final CommType SING = new CommType("sing", "sings");
+		public static final CommType SCREAM = new CommType("scream", "screams");
+		public static final CommType CRY = new CommType("cry", "cries");
+		public static final CommType WHISPER = new CommType("whisper",
+				"whispers");
+		public static final CommType SHOUT = new CommType("shout", "shouts");
+		public static final CommType TELL = new CommType("tell", "tells");
+		public static final CommType ASK = new CommType("ask", "asks");
 
-		private CommType(String aType)
+		private CommType(String aType, String aPlural)
 		{
 			theType = aType;
+			thePlural = aPlural;
 		}
 
 		/**
@@ -66,6 +75,16 @@ public interface CommunicationListener
 		public String toString()
 		{
 			return theType;
+		}
+
+		/**
+		 * Returns the conjugation of the verb or some such stuff.
+		 * 
+		 * @return for example, say becomes "says", but cry becomes "cries".
+		 */
+		public String getPlural()
+		{
+			return thePlural;
 		}
 
 	}

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -36,18 +36,20 @@ import mmud.database.Database;
 
 /**
  * The Script Command. Runs a script.
+ * 
  * @see mmud.Constants#getCommand
  */
 public class ScriptCommand extends NormalCommand
 {
-	private UserCommandInfo theCommandInfo;
+	private final UserCommandInfo theCommandInfo;
 
 	private String theResult;
 
 	/**
 	 * Constructor for the script command.
-	 * @param aCommandInfo data class containing information about
-	 * the command.
+	 * 
+	 * @param aCommandInfo
+	 *            data class containing information about the command.
 	 */
 	public ScriptCommand(UserCommandInfo aCommandInfo)
 	{
@@ -55,30 +57,28 @@ public class ScriptCommand extends NormalCommand
 		theCommandInfo = aCommandInfo;
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if ((theCommandInfo.getRoom() != null)
+				&& (aUser.getRoom().getId() != theCommandInfo.getRoom()
+						.intValue()))
 		{
 			return false;
 		}
-		if ( (theCommandInfo.getRoom() != null) && 
-			(aUser.getRoom().getId() != theCommandInfo.getRoom().intValue()) )
-		{
-			return false;
-		}
-		String mySource = Database.getMethodSource(theCommandInfo.getMethodName());
+		String mySource = Database.getMethodSource(theCommandInfo
+				.getMethodName());
 		Object stuff = null;
 		try
 		{
 			if (mySource == null)
 			{
-				throw new MethodDoesNotExistException(" (" + theCommandInfo.getMethodName() + ")");
+				throw new MethodDoesNotExistException(" ("
+						+ theCommandInfo.getMethodName() + ")");
 			}
 			stuff = aUser.runScript("command", mySource, getParsedCommand());
-		}
-		catch (MudException e)
+		} catch (MudException e)
 		{
 			theCommandInfo.deactivateCommand();
 			throw e;
@@ -94,10 +94,11 @@ public class ScriptCommand extends NormalCommand
 			theResult = null;
 			return false;
 		}
-		theResult +=  aUser.printForm();
+		theResult += aUser.printForm();
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -105,16 +106,16 @@ public class ScriptCommand extends NormalCommand
 	}
 
 	/**
-	 * There are too many parameters required for this one
-	 * to be automatically created using the standard.
-	 * Instead, this method will return the object on which it
-	 * was called. This should not be a problem, as script commands
+	 * There are too many parameters required for this one to be automatically
+	 * created using the standard. Instead, this method will return the object
+	 * on which it was called. This should not be a problem, as script commands
 	 * are always created anew.
+	 * 
 	 * @return <I>this</I>
 	 */
 	public Command createCommand()
 	{
 		return this;
 	}
-	
+
 }

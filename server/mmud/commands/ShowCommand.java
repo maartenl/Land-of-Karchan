@@ -91,10 +91,6 @@ public class ShowCommand extends NormalCommand
 			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		// parse command string
 		if (myParsed.length >= 4

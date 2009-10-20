@@ -24,24 +24,21 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.Constants;
 import mmud.MudException;
-import mmud.characters.CommunicationListener;
-import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
+import mmud.characters.CommunicationListener.CommType;
 
 /**
- * Shout to someone "shout Help!". Or just shout in general.
- * The interesting part about this command is, because shouting is
- * louder in general than simple talking, that the shout can be heard
- * in neighbouring rooms.
+ * Shout to someone "shout Help!". Or just shout in general. The interesting
+ * part about this command is, because shouting is louder in general than simple
+ * talking, that the shout can be heard in neighbouring rooms.
  */
-public class ShoutCommand extends NormalCommand
+public class ShoutCommand extends CommunicationCommand
 {
 
 	public ShoutCommand(String aRegExpr)
@@ -49,66 +46,45 @@ public class ShoutCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	/*
+	 * * Different behaviour than the standard, shouting must be heard in
+	 * neighbouring rooms.
+	 */
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (!super.run(aUser))
 		{
 			return false;
 		}
-		String command = getCommand();
-		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length <= 1)
-		{
-			return false;
-		}
-		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
-		{
-			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
-			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
-				return true;
-			}
-			if (aUser.isIgnored(toChar))
-			{
-				aUser.writeMessage(toChar.getName() + 
-				" is ignoring you fully.<BR>\r\n");
-				return true;
-			}
-			String message = command.substring(command.indexOf(myParsed[3], 5 + 1 + 2 + 1 + myParsed[2].length())).trim();
-			Persons.sendMessageExcl(aUser, toChar, "%SNAME shout%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
-			aUser.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-			toChar.writeMessage(aUser, toChar, "<B>%SNAME shout%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
-			Persons.sendMessage(aUser, aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
-			if (toChar instanceof CommunicationListener)
-			{
-				((CommunicationListener) toChar).commEvent(aUser, 
-					CommunicationListener.SHOUT, message);
-			}
-			return true;
-		}
-		String message = command.substring(5 + 1).trim();
-		Persons.sendMessageExcl(aUser, "%SNAME shout%VERB2 : " + message + "<BR>\r\n");
-		aUser.writeMessage(aUser, "<B>%SNAME shout%VERB2</B> : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone shouts : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone shouts : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getWest(), "Someone shouts : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getEast(), "Someone shouts : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : " + message + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getDown(), "Someone shouts : " + message + "<BR>\r\n");
+
+		Persons.sendMessage(aUser, aUser.getRoom().getSouth(),
+				"Someone shouts : " + getMessage() + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getNorth(),
+				"Someone shouts : " + getMessage() + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getWest(),
+				"Someone shouts : " + getMessage() + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getEast(),
+				"Someone shouts : " + getMessage() + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : "
+				+ getMessage() + "<BR>\r\n");
+		Persons.sendMessage(aUser, aUser.getRoom().getDown(),
+				"Someone shouts : " + getMessage() + "<BR>\r\n");
+
 		return true;
 	}
 
+	@Override
 	public Command createCommand()
 	{
 		return new ShoutCommand(getRegExpr());
 	}
-	
+
+	@Override
+	public CommType getCommType()
+	{
+		return CommType.SHOUT;
+	}
+
 }

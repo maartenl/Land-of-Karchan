@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -40,8 +40,8 @@ import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
 
 /**
- * Stops you wielding an item.
- * Syntax: wear &lt;item&gt; on &lt;body position&gt;
+ * Stops you wielding an item. Syntax: wear &lt;item&gt; on &lt;body
+ * position&gt;
  */
 public class UnwieldCommand extends NormalCommand
 {
@@ -51,45 +51,34 @@ public class UnwieldCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
-		// determine the appropriate body position entered by the 
+		// determine the appropriate body position entered by the
 		// user
-		String pos = myParsed[myParsed.length-1];
+		String pos = myParsed[myParsed.length - 1];
 		PersonPositionEnum position = null;
 		if (pos.equalsIgnoreCase("lefthand"))
 		{
 			position = PersonPositionEnum.WIELD_LEFT;
-		}
-		else
-		if (pos.equalsIgnoreCase("righthand"))
+		} else if (pos.equalsIgnoreCase("righthand"))
 		{
 			position = PersonPositionEnum.WIELD_RIGHT;
-		}
-		else
-		if (pos.equalsIgnoreCase("hands"))
+		} else if (pos.equalsIgnoreCase("hands"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
-		if (pos.equalsIgnoreCase("both"))
+		} else if (pos.equalsIgnoreCase("both"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
-		if (pos.equalsIgnoreCase("bothhands"))
+		} else if (pos.equalsIgnoreCase("bothhands"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
+		} else
 		{
 			aUser.writeMessage("Cannot wield something that way.<BR>\r\n");
 			return true;
@@ -97,7 +86,8 @@ public class UnwieldCommand extends NormalCommand
 
 		Logger.getLogger("mmud").finer("position=" + position);
 		// check for item in posession
-		Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+		Vector stuff = Constants.parseItemDescription(myParsed, 1,
+				myParsed.length - 3);
 		int amount = ((Integer) stuff.elementAt(0)).intValue();
 		String adject1 = (String) stuff.elementAt(1);
 		String adject2 = (String) stuff.elementAt(2);
@@ -124,8 +114,11 @@ public class UnwieldCommand extends NormalCommand
 			{
 				// transfer item to other person
 				myItem.setWearing(null);
-				Database.writeLog(aUser.getName(), "stops wielding " + myItem + " " + position);
-				Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding " + myItem.getDescription() + " " + position + ".<BR>\r\n");
+				Database.writeLog(aUser.getName(), "stops wielding " + myItem
+						+ " " + position);
+				Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
+						+ myItem.getDescription() + " " + position
+						+ ".<BR>\r\n");
 				return true;
 			}
 		}
@@ -136,5 +129,5 @@ public class UnwieldCommand extends NormalCommand
 	{
 		return new UnwieldCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,69 +24,90 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import mmud.MudException;
 import mmud.characters.User;
 
 /**
- * The interface used for all commands to be executed. Commands are executed
- * by characters.
+ * The interface used for all commands to be executed. Commands are executed by
+ * characters.
  */
 public interface Command
 {
+
+	/**
+	 * Starts the command, this method is used for default behaviour that needs
+	 * to take place before the run command is issued. This method starts the
+	 * run command.
+	 * 
+	 * @param aUser
+	 *            the user that executed the command
+	 * @return true or false, depending on success.
+	 * @throws MudException
+	 *             when anything goes wrong.
+	 */
+	public boolean start(User aUser) throws MudException;
+
 	/**
 	 * Runs the command. The usual sequence of events is:
-	 * <UL><LI>parsing the command string
-	 * <LI>retrieving the appropriate information
-	 * items/rooms/characters/etc)
+	 * <UL>
+	 * <LI>parsing the command string
+	 * <LI>retrieving the appropriate information items/rooms/characters/etc)
 	 * <LI>doing the action
 	 * <LI>composing a return message for the user.
 	 * </UL>
-	 * @param aUser the user that is executing the command
-	 * @return boolean, wether or not the command was
-	 * successfull.
-	 * @throws MudException if something goes wrong.
+	 * 
+	 * @param aUser
+	 *            the user that is executing the command
+	 * @return boolean, wether or not the command was successfull.
+	 * @throws MudException
+	 *             if something goes wrong.
 	 */
-	public boolean run(User aUser)
-		throws MudException;
+	public boolean run(User aUser) throws MudException;
 
 	/**
-	 * Sets the command originally used to execute this command. Useful
-	 * for parsing.
-	 * @param aCommand String containing the original command.
+	 * Sets the command originally used to execute this command. Useful for
+	 * parsing.
+	 * 
+	 * @param aCommand
+	 *            String containing the original command.
 	 */
 	public void setCommand(String aCommand);
 
 	/**
-         * returns the regular expression the command structure must follow.
-         * @return String containing the regular expression.
-         */
+	 * returns the regular expression the command structure must follow.
+	 * 
+	 * @return String containing the regular expression.
+	 */
 	public String getRegExpr();
 
 	/**
-	 * Gets the command originally used to execute this command. Useful
-	 * for parsing.
+	 * Gets the command originally used to execute this command. Useful for
+	 * parsing.
+	 * 
 	 * @return String containing the original command.
 	 */
 	public String getCommand();
 
 	/**
 	 * Gets the command parsed into words.
+	 * 
 	 * @return String[] containing the individual words in the command.
 	 */
 	public String[] getParsedCommand();
-	
+
 	/**
 	 * creates a new instance of the current object.
 	 */
 	public Command createCommand();
-	
+
 	/**
 	 * Returns the appropriate view for a player.
-	 * @return String containing the view of a player.
-	 * Header, description, form, logfile, footer.
+	 * 
+	 * @return String containing the view of a player. Header, description,
+	 *         form, logfile, footer.
 	 */
 	public String getResult();
-	
+
 }

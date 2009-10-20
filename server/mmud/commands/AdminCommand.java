@@ -115,10 +115,6 @@ public class AdminCommand extends NormalCommand
 	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		// initialise string, important otherwise previous instances will return
 		// this
 		if (!aUser.isGod())

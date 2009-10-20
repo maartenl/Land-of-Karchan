@@ -49,10 +49,6 @@ public class BowCommand extends NormalCommand
 	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
 		{

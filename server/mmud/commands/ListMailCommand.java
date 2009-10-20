@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,20 +44,17 @@ public class ListMailCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		theString = "<H2>List of Mail</H2>\r\n";
 		theString += aUser.getListOfMail();
 		theString += aUser.printForm();
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
@@ -68,5 +65,5 @@ public class ListMailCommand extends NormalCommand
 	{
 		return new ListMailCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -41,9 +41,9 @@ import mmud.items.ItemException;
 import mmud.items.StdItemContainer;
 
 /**
- * Retrieve item from another item in the room: "search shrubbery".
- * Basically, you search <i>inside</i> an item for items.
- * The first item found will be returned into your inventory, if possible.
+ * Retrieve item from another item in the room: "search shrubbery". Basically,
+ * you search <i>inside</i> an item for items. The first item found will be
+ * returned into your inventory, if possible.
  */
 public class SearchCommand extends NormalCommand
 {
@@ -59,35 +59,37 @@ public class SearchCommand extends NormalCommand
 	}
 
 	/**
-	 * This method will make a <I>best effort</I> regarding searching for
-	 * items inside items. The first item in the container that 
-	 * we are able to get is returned.
-	 * @throws ItemException in case the item requested could not be located
-	 * or is not allowed to be retrieved from the container.
-	 * @throws ParseException in case the user entered an illegal amount of
-	 * items. Illegal being defined as smaller than 1.
+	 * This method will make a <I>best effort</I> regarding searching for items
+	 * inside items. The first item in the container that we are able to get is
+	 * returned.
+	 * 
+	 * @throws ItemException
+	 *             in case the item requested could not be located or is not
+	 *             allowed to be retrieved from the container.
+	 * @throws ParseException
+	 *             in case the user entered an illegal amount of items. Illegal
+	 *             being defined as smaller than 1.
 	 */
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 1);
 			amount = 1;
 			adject1 = (String) stuff.elementAt(1);
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = 
-				aUser.getRoom().getItems(adject1, adject2, adject3, name);
+			Vector myItems = aUser.getRoom().getItems(adject1, adject2,
+					adject3, name);
 			if (myItems.size() < amount)
 			{
 				aUser.writeMessage("You search but find nothing.<BR>\r\n");
@@ -96,22 +98,31 @@ public class SearchCommand extends NormalCommand
 			if (myItems.elementAt(0) instanceof StdItemContainer)
 			{
 				Item item = (Item) myItems.elementAt(0);
-				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + item.getDescription() + " but find%VERB2 nothing.<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+						+ item.getDescription()
+						+ " but find%VERB2 nothing.<BR>\r\n");
 				return true;
 			}
-			StdItemContainer aContainer = (StdItemContainer) myItems.elementAt(0);
+			StdItemContainer aContainer = (StdItemContainer) myItems
+					.elementAt(0);
 			myItems = ItemsDb.getItemsFromContainer(aContainer);
 			if (myItems.size() == 0)
 			{
-				Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " but find%VERB1 nothing.<BR>\r\n");
+				Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+						+ aContainer.getDescription()
+						+ " but find%VERB1 nothing.<BR>\r\n");
 				return true;
 			}
 			Item firstItem = (Item) myItems.elementAt(0);
 			// here needs to be a check for validity of the item
-			Database.writeLog(aUser.getName(), "searched " + aContainer + " in room " + aUser.getRoom().getId() + " and found " + firstItem);
+			Database.writeLog(aUser.getName(), "searched " + aContainer
+					+ " in room " + aUser.getRoom().getId() + " and found "
+					+ firstItem);
 			ItemsDb.deleteItemFromContainer(firstItem);
 			ItemsDb.addItemToChar(firstItem, aUser);
-			Persons.sendMessage(aUser, "%SNAME search%VERB1 " + aContainer.getDescription() + " and find%VERB2 " + firstItem.getDescription() + ".<BR>\r\n");
+			Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+					+ aContainer.getDescription() + " and find%VERB2 "
+					+ firstItem.getDescription() + ".<BR>\r\n");
 			return true;
 		}
 		return false;
@@ -121,5 +132,5 @@ public class SearchCommand extends NormalCommand
 	{
 		return new SearchCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -43,15 +43,12 @@ public class ReadPublicCommand extends ReadBoardCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		return readMessage(aUser, "public", 3);
 	}
 
@@ -59,5 +56,5 @@ public class ReadPublicCommand extends ReadBoardCommand
 	{
 		return new ReadPublicCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -34,7 +34,8 @@ import mmud.characters.User;
 import mmud.database.Database;
 
 /**
- * Stop fighting with another person. Syntax is :<P>
+ * Stop fighting with another person. Syntax is :
+ * <P>
  * <TT>stop fighting</TT>
  */
 public class StopFightingCommand extends NormalCommand
@@ -45,21 +46,19 @@ public class StopFightingCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		if (!aUser.isFighting())
 		{
 			aUser.writeMessage("You are not fighting anyone.<BR>\r\n");
 			return true;
 		}
-		Persons.sendMessage(aUser, aUser.getFightingPerson(), "%SNAME stop%VERB2 fighting against %TNAME.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "stops fighting " +aUser.getFightingPerson().getName() + ".");
+		Persons.sendMessage(aUser, aUser.getFightingPerson(),
+				"%SNAME stop%VERB2 fighting against %TNAME.<BR>\r\n");
+		Database.writeLog(aUser.getName(), "stops fighting "
+				+ aUser.getFightingPerson().getName() + ".");
 		aUser.setFightingPerson(null);
 		return true;
 	}
@@ -68,5 +67,5 @@ public class StopFightingCommand extends NormalCommand
 	{
 		return new StopFightingCommand(getRegExpr());
 	}
-	
+
 }

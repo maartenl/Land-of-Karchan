@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -43,39 +43,38 @@ public class WhimpyCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		command = command.trim();
 		if (command.equalsIgnoreCase("whimpy help"))
 		{
-			aUser.writeMessage("Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well" +
-				"<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt" +
-				"<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt" +
-				"<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
+			aUser
+					.writeMessage("Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
+							+ "<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
+							+ "<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
+							+ "<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
 			return true;
 
 		}
 		if (command.equalsIgnoreCase("whimpy"))
 		{
-			aUser.writeMessage("Current whimpy setting: <B>" +
-				Constants.whimpy[aUser.getWhimpy()/10] + "</B>.<BR>\r\n");
+			aUser.writeMessage("Current whimpy setting: <B>"
+					+ Constants.whimpy[aUser.getWhimpy() / 10]
+					+ "</B>.<BR>\r\n");
 			return true;
 
 		}
 		String myString = command.substring(7);
-		for (int i=0;i<Constants.whimpy.length;i++)
+		for (int i = 0; i < Constants.whimpy.length; i++)
 		{
 			if (myString.equalsIgnoreCase(Constants.whimpy[i]))
 			{
-				aUser.writeMessage("Whimpy level set to : " + Constants.whimpy[i] + ".<BR>\r\n");
-				aUser.setWhimpy(i*10);
+				aUser.writeMessage("Whimpy level set to : "
+						+ Constants.whimpy[i] + ".<BR>\r\n");
+				aUser.setWhimpy(i * 10);
 				return true;
 			}
 		}
@@ -87,5 +86,5 @@ public class WhimpyCommand extends NormalCommand
 	{
 		return new WhimpyCommand(getRegExpr());
 	}
-	
+
 }

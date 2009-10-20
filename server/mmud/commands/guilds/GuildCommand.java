@@ -31,22 +31,20 @@ import mmud.characters.User;
 import mmud.commands.NormalCommand;
 
 /**
- * An abstract class for the commands that may only be executed
- * by a member of a guild.
+ * An abstract class for the commands that may only be executed by a member of a
+ * guild.
  */
 public abstract class GuildCommand extends NormalCommand
 {
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	/*
+	 * * basically returns true if the user is part of a guild.
+	 */
+	public boolean run(User aUser) throws MudException
 	{
-		if (aUser.getGuild() == null)
-		{
-			return false;
-		}
-		return super.run(aUser);
+		return (aUser.getGuild() != null);
 	}
-
 
 	public GuildCommand(String aRegExpr)
 	{

@@ -24,24 +24,18 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
-import java.util.logging.Logger;
-
-import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.CommunicationListener;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.characters.CommunicationListener.CommType;
 
 /**
- * Say something :<UL>
- * <LI>"say Good morning, everyone." or 
+ * Say something :
+ * <UL>
+ * <LI>"say Good morning, everyone." or
  * <LI>"say to Karn Good morning, Karn."
  * </UL>
  */
-public class SayCommand extends NormalCommand
+public class SayCommand extends CommunicationCommand
 {
 
 	public SayCommand(String aRegExpr)
@@ -49,58 +43,15 @@ public class SayCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		String command = getCommand();
-		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length <= 1)
-		{
-			return false;
-		}
-		if (myParsed.length > 3 && myParsed[1].equalsIgnoreCase("to"))
-		{
-			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
-			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			}
-			else
-			{
-				if (aUser.isIgnored(toChar))
-				{
-					aUser.writeMessage(toChar.getName() + 
-						" is ignoring you fully.<BR>\r\n");
-					return true;
-				}
-				String message = command.substring(command.indexOf(myParsed[3], 3 + 1 + 2 + 1 + myParsed[2].length())).trim();
-				Persons.sendMessageExcl(aUser, toChar, "%SNAME say%VERB2 [to %TNAME] : " + message + "<BR>\r\n");
-				aUser.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				toChar.writeMessage(aUser, toChar, "<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message + "<BR>\r\n");
-				if (toChar instanceof CommunicationListener)
-				{
-					((CommunicationListener) toChar).commEvent(aUser, 
-						CommunicationListener.SAY, message);
-				}
-			}
-		}
-		else
-		{
-			String message = command.substring(3 + 1).trim();
-			Persons.sendMessageExcl(aUser, "%SNAME say%VERB2 : " + message + "<BR>\r\n");
-			aUser.writeMessage(aUser, "<B>%SNAME say%VERB2</B> : " + message + "<BR>\r\n");
-		}
-		return true;
-	}
-
+	@Override
 	public Command createCommand()
 	{
 		return new SayCommand(getRegExpr());
 	}
-	
+
+	@Override
+	public CommType getCommType()
+	{
+		return CommType.SAY;
+	}
 }

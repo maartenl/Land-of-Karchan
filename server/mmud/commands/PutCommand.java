@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -42,14 +42,16 @@ import mmud.items.ItemException;
 import mmud.rooms.Room;
 
 /**
- * Put an item into a container: "put ring in sack".
- * Requirements for it to be successfull:
- * <ul><li>the item to put must be in your inventory
+ * Put an item into a container: "put ring in sack". Requirements for it to be
+ * successfull:
+ * <ul>
+ * <li>the item to put must be in your inventory
  * <li>the container must be in your inventory or in the room
  * <li>the container must be a container
  * </ul>
  * The possible syntax can range from: "put ring in sack" to
  * "put 8 old gold shiny ring in new leather beaten sack".
+ * 
  * @see RetrieveCommand
  */
 public class PutCommand extends NormalCommand
@@ -68,86 +70,92 @@ public class PutCommand extends NormalCommand
 	/**
 	 * This method will make a <I>best effort</I> regarding transferring of
 	 * items into items. Some requirements:
-	 * <UL><LI>the item where the items are to be put in must be a container
+	 * <UL>
+	 * <LI>the item where the items are to be put in must be a container
 	 * <LI>the item to be put in the container may not be a non-empty container
 	 * (it has been decided that what we do not need are bags in bags in bags.)
 	 * </UL>
-	 * @throws ItemException in case the item requested could not be located
-	 * or is not allowed to be put into the container.
-	 * @throws ParseException in case the user entered an illegal amount of
-	 * items. Illegal being defined as smaller than 1.
+	 * 
+	 * @throws ItemException
+	 *             in case the item requested could not be located or is not
+	 *             allowed to be put into the container.
+	 * @throws ParseException
+	 *             in case the user entered an illegal amount of items. Illegal
+	 *             being defined as smaller than 1.
 	 */
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
 			// check for in.
 			int intopos = 0;
-			while (!myParsed[intopos].equalsIgnoreCase("in")) 
+			while (!myParsed[intopos].equalsIgnoreCase("in"))
 			{
 				intopos++;
 			}
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, intopos - 1);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					intopos - 1);
 			amount = ((Integer) stuff.elementAt(0)).intValue();
 			adject1 = (String) stuff.elementAt(1);
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = 
-				aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
 					aUser.writeMessage("You do not have that item.<BR>\r\n");
-				}
-				else
+				} else
 				{
-					aUser.writeMessage("You do not have that many items.<BR>\r\n");
+					aUser
+							.writeMessage("You do not have that many items.<BR>\r\n");
 				}
 				return true;
 			}
 
-			stuff = Constants.parseItemDescription(myParsed, intopos+1, myParsed.length - intopos - 1);
+			stuff = Constants.parseItemDescription(myParsed, intopos + 1,
+					myParsed.length - intopos - 1);
 			adject1 = (String) stuff.elementAt(1);
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 			Room someRoom = null;
 
-			Vector myContainers = 
-				aUser.getItems(adject1, adject2, adject3, name);
+			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+					name);
 			if (myContainers.size() < 1)
 			{
-				myContainers = 
-					aUser.getRoom().getItems(adject1, adject2, adject3, name);
+				myContainers = aUser.getRoom().getItems(adject1, adject2,
+						adject3, name);
 				someRoom = aUser.getRoom(); // usefull for the writeLog.
 				if (myContainers.size() < 1)
 				{
-					aUser.writeMessage("You do not have that container.<BR>\r\n");
+					aUser
+							.writeMessage("You do not have that container.<BR>\r\n");
 					return true;
 				}
 			}
 			Item aContainer = (Item) myContainers.elementAt(0);
 			if (!(aContainer instanceof Container))
 			{
-				aUser.writeMessage(aContainer.getDescription() + " is not a container.<BR>\r\n");
+				aUser.writeMessage(aContainer.getDescription()
+						+ " is not a container.<BR>\r\n");
 				return true;
 			}
 
 			Container myCon = (Container) aContainer;
 			if (!myCon.isOpen())
 			{
-				aUser.writeMessage(aContainer.getDescription() + " is closed.<BR>\r\n");
+				aUser.writeMessage(aContainer.getDescription()
+						+ " is closed.<BR>\r\n");
 				return true;
 			}
 
@@ -164,17 +172,34 @@ public class PutCommand extends NormalCommand
 					Container bag = (Container) myItem;
 					if (!bag.isEmpty())
 					{
-						Logger.getLogger("mmud").finer("it is not allowed to insert a non-empty bag in another bag.");
-						Persons.sendMessage(aUser, "%SNAME attempt%VERB2 to put " + myItem.getDescription() + " in " + aContainer.getDescription() + ", but fails because it contains items.<BR>\r\n");
+						Logger
+								.getLogger("mmud")
+								.finer(
+										"it is not allowed to insert a non-empty bag in another bag.");
+						Persons
+								.sendMessage(
+										aUser,
+										"%SNAME attempt%VERB2 to put "
+												+ myItem.getDescription()
+												+ " in "
+												+ aContainer.getDescription()
+												+ ", but fails because it contains items.<BR>\r\n");
 						success = false;
 					}
 				}
 				if (success)
 				{
-					Database.writeLog(aUser.getName(), "put " + myItem + " in container " + aContainer + (someRoom != null? " in room " + someRoom.getId() : ""));
+					Database.writeLog(aUser.getName(), "put "
+							+ myItem
+							+ " in container "
+							+ aContainer
+							+ (someRoom != null ? " in room "
+									+ someRoom.getId() : ""));
 					ItemsDb.deleteItemFromChar(myItem);
 					ItemsDb.addItemToContainer(myItem, aContainer);
-					Persons.sendMessage(aUser, "%SNAME put%VERB2 " + myItem.getDescription() + " in " + aContainer.getDescription() + ".<BR>\r\n");
+					Persons.sendMessage(aUser, "%SNAME put%VERB2 "
+							+ myItem.getDescription() + " in "
+							+ aContainer.getDescription() + ".<BR>\r\n");
 				}
 				j++;
 			}
@@ -187,5 +212,5 @@ public class PutCommand extends NormalCommand
 	{
 		return new PutCommand(getRegExpr());
 	}
-	
+
 }

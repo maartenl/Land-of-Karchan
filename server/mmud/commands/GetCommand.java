@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -56,48 +56,50 @@ public class GetCommand extends NormalCommand
 	}
 
 	/**
-	 * This method will make a <I>best effort</I> regarding picking up of
-	 * the items requested. This means that, if you request 5 items, and
-	 * there are 5 or more items in the room, this method will attempt to
-	 * aquire 5 items. It is possible that not all items are available, in which 
-	 * case you
-	 * could conceivably only receive 3 items or instance.
-	 * @throws ItemException in case the item requested could not be located
-	 * or is not allowed to be picked up.
-	 * @throws ParseException in case the user entered an illegal amount of
-	 * items. Illegal being defined as smaller than 1.
+	 * This method will make a <I>best effort</I> regarding picking up of the
+	 * items requested. This means that, if you request 5 items, and there are 5
+	 * or more items in the room, this method will attempt to aquire 5 items. It
+	 * is possible that not all items are available, in which case you could
+	 * conceivably only receive 3 items or instance.
+	 * 
+	 * @throws ItemException
+	 *             in case the item requested could not be located or is not
+	 *             allowed to be picked up.
+	 * @throws ParseException
+	 *             in case the user entered an illegal amount of items. Illegal
+	 *             being defined as smaller than 1.
 	 */
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length > 1)
 		{
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 1);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 1);
 			amount = ((Integer) stuff.elementAt(0)).intValue();
 			adject1 = (String) stuff.elementAt(1);
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = 
-				aUser.getRoom().getItems(adject1, adject2, adject3, name);
+			Vector myItems = aUser.getRoom().getItems(adject1, adject2,
+					adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage("You cannot find that item in the room.<BR>\r\n");
+					aUser
+							.writeMessage("You cannot find that item in the room.<BR>\r\n");
 					return true;
-				}
-				else
+				} else
 				{
-					aUser.writeMessage("You cannot find that many items in the room.<BR>\r\n");
+					aUser
+							.writeMessage("You cannot find that many items in the room.<BR>\r\n");
 					return true;
 				}
 			}
@@ -108,10 +110,12 @@ public class GetCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (!myItem.isAttribute("notgetable"))
 				{
-					Database.writeLog(aUser.getName(), "got " + myItem + " from room " + aUser.getRoom().getId());
+					Database.writeLog(aUser.getName(), "got " + myItem
+							+ " from room " + aUser.getRoom().getId());
 					ItemsDb.deleteItemFromRoom(myItem);
 					ItemsDb.addItemToChar(myItem, aUser);
-					Persons.sendMessage(aUser, "%SNAME get%VERB2 " + myItem.getDescription() + ".<BR>\r\n");
+					Persons.sendMessage(aUser, "%SNAME get%VERB2 "
+							+ myItem.getDescription() + ".<BR>\r\n");
 					j++;
 				}
 			}
@@ -124,5 +128,5 @@ public class GetCommand extends NormalCommand
 	{
 		return new GetCommand(getRegExpr());
 	}
-	
+
 }

@@ -61,120 +61,107 @@ public class User extends mmud.characters.Person
 	private String theAddress;
 	private String theSessionPassword;
 
-	private String theRealName;
-	private String theEmail;
+	private final String theRealName;
+	private final String theEmail;
 
 	private int theFrames;
-	private boolean theGod;
+	private final boolean theGod;
 	private Calendar rightNow;
 	private boolean thePkill;
 	private String theGuild;
 	private TreeMap theIsBeingIgnoredBy;
 
 	/**
-	 * create an instance of User, based on Database data. 
-	 * @param aName the name of the character
-	 * @param aPassword the password of the character
-	 * @param anAddress the address of the computer connecting
-	 * @param aRealName the real name of the person behind the keyboard.
-	 * @param aEmail an email address of the person
-	 * @param aTitle the title of the character
-	 * @param aRace the race of the character
-	 * @param aSex the gender of the character (male or female)
-	 * @param aAge the age of the character (young, very young, old,
-	 * very old, etc.)
-	 * @param aLength the length of the character (ex. tall)
-	 * @param aWidth the width of the character (ex. athletic)
-	 * @param aComplexion the complexion of the character (ex.
-	 * dark-skinned)
-	 * @param aEyes the eye colour of the character (ex. blue-eyed)
-	 * @param aFace the face of the character (ex. dimple-faced)
-	 * @param aHair the hair of the character (ex. black-haired)
-	 * @param aBeard the beard of the character (ex. with ponytail)
-	 * @param aArms the arms of the character (ex. long-armed)
-	 * @param aLegs the legs of the character (ex. long-legged)
-	 * @param aSleep the status of the character, either asleep
-	 * or awake.
-	 * @param aCookie the sessionpassword
-	 * @param aWhimpy the boundary of the general condition of the
-	 * character. If the condition worsens beyond this, the character will
-	 * automatically flee from a fight.
-	 * @param aPkill wether or not this character is allowed
-	 * to kill other players or be killed by other players.
-	 * @param aDrinkstats describes the state of thirst, negative values
-	 * usually mean intoxication.
-	 * @param aEatstats describes the state of nourishment/hunger
-	 * @param aLevel describes the level of the character.
-	 * The level is level/1000. The experience is level%1000.
-	 * @param aHealth describes the state of health. 0 is dead, 1000 is
-	 * excellent health.
-	 * @param aAlignment describes the alignment of the character.
-	 * -90 is evil, 90 is good.
-	 * @param aMovement describes the amount of movement left. 0 is
-	 * no more movement possible, rest needed. 1000 is excellent movement.
-	 * @param aRoom the room where this character is.
-	 * @param aGod boolean, indicates wether or not the User has special
-	 * privileges; also known as <I>Administrator</I>.
-	 * @param aGuild the guild to which this user belongs. Not necessarily
-	 * filled in, may be null.
+	 * create an instance of User, based on Database data.
+	 * 
+	 * @param aName
+	 *            the name of the character
+	 * @param aPassword
+	 *            the password of the character
+	 * @param anAddress
+	 *            the address of the computer connecting
+	 * @param aRealName
+	 *            the real name of the person behind the keyboard.
+	 * @param aEmail
+	 *            an email address of the person
+	 * @param aTitle
+	 *            the title of the character
+	 * @param aRace
+	 *            the race of the character
+	 * @param aSex
+	 *            the gender of the character (male or female)
+	 * @param aAge
+	 *            the age of the character (young, very young, old, very old,
+	 *            etc.)
+	 * @param aLength
+	 *            the length of the character (ex. tall)
+	 * @param aWidth
+	 *            the width of the character (ex. athletic)
+	 * @param aComplexion
+	 *            the complexion of the character (ex. dark-skinned)
+	 * @param aEyes
+	 *            the eye colour of the character (ex. blue-eyed)
+	 * @param aFace
+	 *            the face of the character (ex. dimple-faced)
+	 * @param aHair
+	 *            the hair of the character (ex. black-haired)
+	 * @param aBeard
+	 *            the beard of the character (ex. with ponytail)
+	 * @param aArms
+	 *            the arms of the character (ex. long-armed)
+	 * @param aLegs
+	 *            the legs of the character (ex. long-legged)
+	 * @param aSleep
+	 *            the status of the character, either asleep or awake.
+	 * @param aCookie
+	 *            the sessionpassword
+	 * @param aWhimpy
+	 *            the boundary of the general condition of the character. If the
+	 *            condition worsens beyond this, the character will
+	 *            automatically flee from a fight.
+	 * @param aPkill
+	 *            wether or not this character is allowed to kill other players
+	 *            or be killed by other players.
+	 * @param aDrinkstats
+	 *            describes the state of thirst, negative values usually mean
+	 *            intoxication.
+	 * @param aEatstats
+	 *            describes the state of nourishment/hunger
+	 * @param aLevel
+	 *            describes the level of the character. The level is level/1000.
+	 *            The experience is level%1000.
+	 * @param aHealth
+	 *            describes the state of health. 0 is dead, 1000 is excellent
+	 *            health.
+	 * @param aAlignment
+	 *            describes the alignment of the character. -90 is evil, 90 is
+	 *            good.
+	 * @param aMovement
+	 *            describes the amount of movement left. 0 is no more movement
+	 *            possible, rest needed. 1000 is excellent movement.
+	 * @param aRoom
+	 *            the room where this character is.
+	 * @param aGod
+	 *            boolean, indicates wether or not the User has special
+	 *            privileges; also known as <I>Administrator</I>.
+	 * @param aGuild
+	 *            the guild to which this user belongs. Not necessarily filled
+	 *            in, may be null.
 	 */
-	public User(String aName, 
-		String aPassword, 
-		String anAddress, 
-		String aRealName,
-		String aEmail,
-		String aTitle,
-		Race aRace,
-		Sex aSex,
-		String aAge,
-		String aLength,
-		String aWidth,
-		String aComplexion,
-		String aEyes,
-		String aFace,
-		String aHair,
-		String aBeard,
-		String aArms,
-		String aLegs,
-		boolean aSleep,
-  		boolean aGod, 
-		String aCookie, 
-		int aWhimpy,
-		boolean aPkill,
-		int aDrinkstats,
-		int aEatstats,
-		int aLevel,
-		int aHealth,
-		int aAlignment,
-		int aMovement,
-		int aCopper,
-		Room aRoom,
-		Guild aGuild)
-	throws MudException
+	public User(String aName, String aPassword, String anAddress,
+			String aRealName, String aEmail, String aTitle, Race aRace,
+			Sex aSex, String aAge, String aLength, String aWidth,
+			String aComplexion, String aEyes, String aFace, String aHair,
+			String aBeard, String aArms, String aLegs, boolean aSleep,
+			boolean aGod, String aCookie, int aWhimpy, boolean aPkill,
+			int aDrinkstats, int aEatstats, int aLevel, int aHealth,
+			int aAlignment, int aMovement, int aCopper, Room aRoom, Guild aGuild)
+			throws MudException
 	{
-		super(aName, aTitle,
-			aRace,
-			aSex,
-			aAge,
-			aLength,
-			aWidth,
-			aComplexion,
-			aEyes,
-			aFace,
-			aHair,
-			aBeard,
-			aArms,
-			aLegs,
-			aSleep,
-			aWhimpy,
-			aDrinkstats,
-			aEatstats,
-			aLevel,
-			aHealth,
-			aAlignment,
-			aMovement,
-			aCopper,
-			aRoom);
+		super(aName, aTitle, aRace, aSex, aAge, aLength, aWidth, aComplexion,
+				aEyes, aFace, aHair, aBeard, aArms, aLegs, aSleep, aWhimpy,
+				aDrinkstats, aEatstats, aLevel, aHealth, aAlignment, aMovement,
+				aCopper, aRoom);
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
 		theAddress = anAddress;
@@ -192,76 +179,65 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * create an instance of User. Usually used if you need a standard User
-	 * created. Use the other constructor when you need to load a User
-	 * from the database. The difference with the previous constructor
-	 * is that a large number of fields in the object will have either
-	 * default values are will be empty.
-	 * @param aName the name of the character
-	 * @param aPassword the password of the character
-	 * @param anAddress the address of the computer connecting
-	 * @param aRealName the real name of the person behind the keyboard.
-	 * @param aEmail an email address of the person
-	 * @param aTitle the title of the character
-	 * @param aRace the race of the character
-	 * @param aSex the gender of the character (male or female)
-	 * @param aAge the age of the character (young, very young, old,
-	 * very old, etc.)
-	 * @param aLength the length of the character (ex. tall)
-	 * @param aWidth the width of the character (ex. athletic)
-	 * @param aComplexion the complexion of the character (ex.
-	 * dark-skinned)
-	 * @param aEyes the eye colour of the character (ex. blue-eyed)
-	 * @param aFace the face of the character (ex. dimple-faced)
-	 * @param aHair the hair of the character (ex. black-haired)
-	 * @param aBeard the beard of the character (ex. with ponytail)
-	 * @param aArms the arms of the character (ex. long-armed)
-	 * @param aLegs the legs of the character (ex. long-legged)
-	 * @param aCookie the sessionpassword
+	 * created. Use the other constructor when you need to load a User from the
+	 * database. The difference with the previous constructor is that a large
+	 * number of fields in the object will have either default values are will
+	 * be empty.
+	 * 
+	 * @param aName
+	 *            the name of the character
+	 * @param aPassword
+	 *            the password of the character
+	 * @param anAddress
+	 *            the address of the computer connecting
+	 * @param aRealName
+	 *            the real name of the person behind the keyboard.
+	 * @param aEmail
+	 *            an email address of the person
+	 * @param aTitle
+	 *            the title of the character
+	 * @param aRace
+	 *            the race of the character
+	 * @param aSex
+	 *            the gender of the character (male or female)
+	 * @param aAge
+	 *            the age of the character (young, very young, old, very old,
+	 *            etc.)
+	 * @param aLength
+	 *            the length of the character (ex. tall)
+	 * @param aWidth
+	 *            the width of the character (ex. athletic)
+	 * @param aComplexion
+	 *            the complexion of the character (ex. dark-skinned)
+	 * @param aEyes
+	 *            the eye colour of the character (ex. blue-eyed)
+	 * @param aFace
+	 *            the face of the character (ex. dimple-faced)
+	 * @param aHair
+	 *            the hair of the character (ex. black-haired)
+	 * @param aBeard
+	 *            the beard of the character (ex. with ponytail)
+	 * @param aArms
+	 *            the arms of the character (ex. long-armed)
+	 * @param aLegs
+	 *            the legs of the character (ex. long-legged)
+	 * @param aCookie
+	 *            the sessionpassword
 	 */
-	public User(String aName, 
-		String aPassword, 
-		String anAddress, 
-		String aRealName,
-		String aEmail,
-		String aTitle,
-		Race aRace,
-		Sex aSex,
-		String aAge,
-		String aLength,
-		String aWidth,
-		String aComplexion,
-		String aEyes,
-		String aFace,
-		String aHair,
-		String aBeard,
-		String aArms,
-		String aLegs,
-		String aCookie)
-	throws MudException
+	public User(String aName, String aPassword, String anAddress,
+			String aRealName, String aEmail, String aTitle, Race aRace,
+			Sex aSex, String aAge, String aLength, String aWidth,
+			String aComplexion, String aEyes, String aFace, String aHair,
+			String aBeard, String aArms, String aLegs, String aCookie)
+			throws MudException
 	{
-		super(aName, aTitle,
-			aRace,
-			aSex,
-			aAge,
-			aLength,
-			aWidth,
-			aComplexion,
-			aEyes,
-			aFace,
-			aHair,
-			aBeard,
-			aArms,
-			aLegs,
-			false,
--			Constants.DEFAULT_WHIMPY,
-			Constants.DEFAULT_DRINK,
-			Constants.DEFAULT_EAT,
-			Constants.DEFAULT_LEVEL,
-			Constants.DEFAULT_HEALTH,
-			Constants.DEFAULT_ALIGNMENT,
-			Constants.DEFAULT_MOVEMENT,
-			Constants.DEFAULT_COPPER,
-			Rooms.getRoom(Constants.DEFAULT_ROOM));
+		super(aName, aTitle, aRace, aSex, aAge, aLength, aWidth, aComplexion,
+				aEyes, aFace, aHair, aBeard, aArms, aLegs, false,
+				-Constants.DEFAULT_WHIMPY, Constants.DEFAULT_DRINK,
+				Constants.DEFAULT_EAT, Constants.DEFAULT_LEVEL,
+				Constants.DEFAULT_HEALTH, Constants.DEFAULT_ALIGNMENT,
+				Constants.DEFAULT_MOVEMENT, Constants.DEFAULT_COPPER, Rooms
+						.getRoom(Constants.DEFAULT_ROOM));
 		Logger.getLogger("mmud").finer("");
 		thePassword = aPassword;
 		theAddress = anAddress;
@@ -275,6 +251,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Returns the password
+	 * 
 	 * @return String containing password
 	 */
 	public String getPassword()
@@ -285,9 +262,11 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Sets the password. The password can only be set, if it has not been
-	 * previously set, i.e. when the password provided in the constructor
-	 * is the null value.
-	 * @param aPassword String containing password
+	 * previously set, i.e. when the password provided in the constructor is the
+	 * null value.
+	 * 
+	 * @param aPassword
+	 *            String containing password
 	 */
 	public void setPassword(String aPassword)
 	{
@@ -301,9 +280,10 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Verifies the password
-	 * @return boolean, returns true if password provided is an exact
-	 * match.
-	 * @param aPassword the password that needs to be verified.
+	 * 
+	 * @return boolean, returns true if password provided is an exact match.
+	 * @param aPassword
+	 *            the password that needs to be verified.
 	 */
 	public boolean verifyPassword(String aPassword)
 	{
@@ -313,6 +293,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Returns the address
+	 * 
 	 * @return String containing the address
 	 */
 	public String getAddress()
@@ -323,7 +304,9 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Sets the address
-	 * @param anAddress String containing the address
+	 * 
+	 * @param anAddress
+	 *            String containing the address
 	 */
 	public void setAddress(String anAddress)
 	{
@@ -332,24 +315,25 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
-	 * generate a session password to be used by player during game session
-	 * Use getSessionPassword to return a String containing 25 random
-	 * digits, capitals and smallcaps.
+	 * generate a session password to be used by player during game session Use
+	 * getSessionPassword to return a String containing 25 random digits,
+	 * capitals and smallcaps.
 	 */
-	public void generateSessionPassword()
-	throws MudException
+	public void generateSessionPassword() throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		char[] myCharArray =
-			{'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-			'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-			'1','2','3','4','5','6','7','8','9','0'};
+		{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+				'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+				'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+				'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 		StringBuffer myString = new StringBuffer(26);
 		Random myRandom = new Random();
-		for (int i=1; i < 26; i++)
+		for (int i = 1; i < 26; i++)
 		{
-			
-			myString.append(myCharArray[ myRandom.nextInt(myCharArray.length) ] );
+
+			myString.append(myCharArray[myRandom.nextInt(myCharArray.length)]);
 		}
 		Database.setSessionPassword(getName(), myString.toString());
 		theSessionPassword = myString.toString();
@@ -357,6 +341,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * retrieve sessionpassword
+	 * 
 	 * @return String containing the session password
 	 */
 	public String getSessionPassword()
@@ -367,19 +352,24 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * verify sessionpassword
-	 * @param aSessionPassword the sessionpassword to be verified.
-	 * @return boolean, true if the sessionpassword provided is an exact
-	 * match with the original sessionpassword.
+	 * 
+	 * @param aSessionPassword
+	 *            the sessionpassword to be verified.
+	 * @return boolean, true if the sessionpassword provided is an exact match
+	 *         with the original sessionpassword.
 	 */
 	public boolean verifySessionPassword(String aSessionPassword)
 	{
 		Logger.getLogger("mmud").finer("");
-		return (theSessionPassword == null ? false : theSessionPassword.equals(aSessionPassword));
+		return (theSessionPassword == null ? false : theSessionPassword
+				.equals(aSessionPassword));
 	}
 
 	/**
 	 * set sessionpassword
-	 * @param aSessionPassword sets the session password.
+	 * 
+	 * @param aSessionPassword
+	 *            sets the session password.
 	 */
 	public void setSessionPassword(String aSessionPassword)
 	{
@@ -389,17 +379,19 @@ public class User extends mmud.characters.Person
 			theSessionPassword = null;
 			return;
 		}
-		theSessionPassword =
-			(aSessionPassword.trim().equals("") ? null : aSessionPassword);
+		theSessionPassword = (aSessionPassword.trim().equals("") ? null
+				: aSessionPassword);
 	}
 
 	/**
 	 * retrieve the frame number.
+	 * 
 	 * @return integer,
-	 * <UL><LI>0 = normal operation
-	 * <LI>1 = operation with frames
-	 * <LI>2 = operation with frames and server push
-	 * </UL>
+	 *         <UL>
+	 *         <LI>0 = normal operation
+	 *         <LI>1 = operation with frames
+	 *         <LI>2 = operation with frames and server push
+	 *         </UL>
 	 */
 	public int getFrames()
 	{
@@ -409,20 +401,23 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * set the frame number to be used.
-	 * @param i 
-	 * <UL><LI>0 = normal operation
-	 * <LI>1 = operation with frames
-	 * <LI>2 = operation with frames and server push
-	 * </UL>
+	 * 
+	 * @param i
+	 *            <UL>
+	 *            <LI>0 = normal operation
+	 *            <LI>1 = operation with frames
+	 *            <LI>2 = operation with frames and server push
+	 *            </UL>
 	 */
 	public void setFrames(int i)
 	{
 		Logger.getLogger("mmud").finer("");
-		theFrames  = i;
+		theFrames = i;
 	}
 
 	/**
 	 * Is this character an administrator?
+	 * 
 	 * @return boolean, true if administrator
 	 */
 	public boolean isGod()
@@ -433,6 +428,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Get the real name of the person playing.
+	 * 
 	 * @return String containing the real name.
 	 */
 	public String getRealname()
@@ -442,6 +438,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Get the email of the person playing.
+	 * 
 	 * @return String containing the email address
 	 */
 	public String getEmail()
@@ -451,6 +448,7 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Is the player allowed to kill other players or be killed.
+	 * 
 	 * @return boolean, true if playerkill is allowed.
 	 */
 	public boolean isPkill()
@@ -460,7 +458,9 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Set the pkill of the player.
-	 * @param newPkill the new value of the pkill status.
+	 * 
+	 * @param newPkill
+	 *            the new value of the pkill status.
 	 */
 	public void setPkill(boolean newPkill)
 	{
@@ -469,8 +469,8 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * print the standard form for accepting input from the user.
-	 * @return String containing the form to be printed on the browser
-	 * screen.
+	 * 
+	 * @return String containing the form to be printed on the browser screen.
 	 */
 	public String printForm()
 	{
@@ -478,17 +478,16 @@ public class User extends mmud.characters.Person
 		String myString = "";
 		if (getFrames() == 0)
 		{
-			myString = "<SCRIPT language=\"JavaScript\">\r\n"+
-				"<!-- In hiding!\r\n"+
-				"function setfocus() {\r\n"+
-				"	   document.CommandForm.command.focus();\r\n"+
-				"   return;\r\n"+
-				"   }\r\n"+
-				"//-->\r\n"+
-				"</SCRIPT>\r\n";
-			myString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi + "\" NAME=\"CommandForm\">\n";
+			myString = "<SCRIPT language=\"JavaScript\">\r\n"
+					+ "<!-- In hiding!\r\n" + "function setfocus() {\r\n"
+					+ "	   document.CommandForm.command.focus();\r\n"
+					+ "   return;\r\n" + "   }\r\n" + "//-->\r\n"
+					+ "</SCRIPT>\r\n";
+			myString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi
+					+ "\" NAME=\"CommandForm\">\n";
 			myString += "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + getName() + "\">\n";
+			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
+					+ getName() + "\">\n";
 			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n";
 			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
 			myString += "</FORM><P>\n";
@@ -497,14 +496,15 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
-	 * Get the date/time of the last command the user executed.
-	 * Used for computing the idle time of the user.
-	 * @return Calendar containing the date/time when the last command
-	 * was executed.
+	 * Get the date/time of the last command the user executed. Used for
+	 * computing the idle time of the user.
+	 * 
+	 * @return Calendar containing the date/time when the last command was
+	 *         executed.
 	 */
 	public Calendar getNow()
 	{
-		if (rightNow == null) 
+		if (rightNow == null)
 		{
 			setNow();
 		}
@@ -512,8 +512,8 @@ public class User extends mmud.characters.Person
 	}
 
 	/**
-	 * Set the date/time of the user to "now". It means that this is 
-	 * a good indication of when the user was last active.
+	 * Set the date/time of the user to "now". It means that this is a good
+	 * indication of when the user was last active.
 	 */
 	public void setNow()
 	{
@@ -523,66 +523,69 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Returns the time that a user was inactive.
-	 * @return String the number of minutes and seconds that the player
-	 * has been idle in the following format: "(<min> min, <sec> sec
-	 * idle".
+	 * 
+	 * @return String the number of minutes and seconds that the player has been
+	 *         idle in the following format: "(<min> min, <sec> sec idle".
 	 */
 	public String getIdleTime()
 	{
 		Logger.getLogger("mmud").finer("");
 		Calendar tempNow = Calendar.getInstance();
-		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis())/1000;
+		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis()) / 1000;
 		return "(" + myTemp / 60 + " min, " + myTemp % 60 + " sec idle)";
 	}
 
 	/**
 	 * Check to see if the User was inactive for more than an hour.
-	 * @return boolean, true if the User was inactive (i.e. has not entered
-	 * a command) for more than an hour.
+	 * 
+	 * @return boolean, true if the User was inactive (i.e. has not entered a
+	 *         command) for more than an hour.
 	 */
 	public boolean isIdleTooLong()
 	{
-//		Logger.getLogger("mmud").finer("");
+		// Logger.getLogger("mmud").finer("");
 		Calendar tempNow = Calendar.getInstance();
-		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis())/1000;
+		long myTemp = (tempNow.getTimeInMillis() - getNow().getTimeInMillis()) / 1000;
 		return myTemp > 3600;
 	}
 
 	/**
 	 * Get an url containing the name, command and frames.
-	 * @param aCommand the command that has to be changed
-	 * into a valid URL.
+	 * 
+	 * @param aCommand
+	 *            the command that has to be changed into a valid URL.
 	 * @return String containing an url in the format:
-	 * "/cgi-bin/mud.cgi?command=<command>&name=<name>&frames=<frames>"
+	 *         "/cgi-bin/mud.cgi?command=<command>&name=<name>&frames=<frames>"
 	 */
 	public String getUrl(String aCommand)
 	{
 		Logger.getLogger("mmud").finest("aCommand=" + aCommand);
-		return Constants.mudcgi + "?command=" + aCommand + "&name=" +
-			getName() + "&frames=" +
-			(getFrames() + 1);
+		return Constants.mudcgi + "?command=" + aCommand + "&name=" + getName()
+				+ "&frames=" + (getFrames() + 1);
 	}
 
 	/**
 	 * Returns a list of mudmails.
+	 * 
 	 * @return String containing list of mails.
 	 * @see mmud.database.MailDb#getListOfMail
 	 */
-	public String getListOfMail()
-	throws MudDatabaseException
+	public String getListOfMail() throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 		return MailDb.getListOfMail(this);
 	}
 
 	/**
-	 * Reads the log of the user from file. Returns an empty string
-	*  if the frame setting is 2.
+	 * Reads the log of the user from file. Returns an empty string if the frame
+	 * setting is 2.
+	 * 
 	 * @return String containing the entire log of the user.
 	 */
+	@Override
 	public String readLog()
 	{
-		if (getFrames()==2)
+		if (getFrames() == 2)
 		{
 			return "";
 		}
@@ -591,24 +594,26 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Runs a specific command.
-	 * @param aCommand the command to be run
+	 * 
+	 * @param aCommand
+	 *            the command to be run
 	 */
-	public void runCommand(Command aCommand)
-	throws MudException
+	public void runCommand(Command aCommand) throws MudException
 	{
-		aCommand.run(this);
+		aCommand.start(this);
 	}
 
 	/**
-	 * Runs a specific command. If this person appears to be asleep,
-	 * the only possible commands are "quit" and "awaken". If the command
-	 * found returns a false, i.e. nothing is executed, the method will call
-	 * the standard BogusCommand.
-	 * @param aCommand the command to be run
+	 * Runs a specific command. If this person appears to be asleep, the only
+	 * possible commands are "quit" and "awaken". If the command found returns a
+	 * false, i.e. nothing is executed, the method will call the standard
+	 * BogusCommand.
+	 * 
+	 * @param aCommand
+	 *            the command to be run
 	 * @return String containing the result of the command executed.
 	 */
-	public String runCommand(String aCommand)
-	throws MudException
+	public String runCommand(String aCommand) throws MudException
 	{
 		Command boguscommand = new BogusCommand(".+");
 		Command command = boguscommand;
@@ -617,17 +622,15 @@ public class User extends mmud.characters.Person
 			if (aCommand.trim().equalsIgnoreCase("awaken"))
 			{
 				command = new AwakenCommand("awaken");
-			} 
-			else if (aCommand.trim().equalsIgnoreCase("quit"))
+			} else if (aCommand.trim().equalsIgnoreCase("quit"))
 			{
 				command = new QuitCommand("quit");
-			}
-			else
+			} else
 			{
 				command = new AlreadyAsleepCommand(".+");
 			}
 			command.setCommand(aCommand);
-			command.run(this);
+			command.start(this);
 			return command.getResult();
 		}
 
@@ -638,95 +641,96 @@ public class User extends mmud.characters.Person
 			command = (Command) myI.next();
 			command = command.createCommand();
 			command.setCommand(aCommand);
-			if (command.run(this))
+			if (command.start(this))
 			{
 				return command.getResult();
 			}
 		}
-		throw new MudException("We shouldn't reach this point." +
-			" At least the bogus command should execute successfully." + 
-			" This is probably a big bug!.");
+		throw new MudException("We shouldn't reach this point."
+				+ " At least the bogus command should execute successfully."
+				+ " This is probably a big bug!.");
 	}
 
-	 
 	/**
 	 * Returns true, this person can fight.
+	 * 
 	 * @return boolean true value.
 	 */
+	@Override
 	public boolean isFightable()
 	{
 		return true;
 	}
 
 	/**
-	 * Set the guild of a person. Can be set to null, incase the person
-	 * is not part of a guild. Cannot be set to another guild if the
-	 * person is already part of a guild. Wat I mean is, first leave the guild
-	 * before joining another one!
-	 * @param aGuild the guild this person belongs to.   
+	 * Set the guild of a person. Can be set to null, incase the person is not
+	 * part of a guild. Cannot be set to another guild if the person is already
+	 * part of a guild. Wat I mean is, first leave the guild before joining
+	 * another one!
+	 * 
+	 * @param aGuild
+	 *            the guild this person belongs to.
 	 */
-	public void setGuild(Guild aGuild)
-	throws MudException
+	public void setGuild(Guild aGuild) throws MudException
 	{
-		if( (aGuild != null) && (theGuild != null) )
+		if ((aGuild != null) && (theGuild != null))
 		{
-			throw new MudException("Person " + getName() + 
-				" cannot become member of " + aGuild.getName() + 
-				" because is already member of " + theGuild + ".");
+			throw new MudException("Person " + getName()
+					+ " cannot become member of " + aGuild.getName()
+					+ " because is already member of " + theGuild + ".");
 		}
 		if (aGuild == null)
 		{
 			theGuild = null;
-		}
-		else
+		} else
 		{
 			theGuild = aGuild.getName();
 		}
 		Database.setGuild(this);
-	}  
+	}
 
 	/**
-	 * Returns the guild a person belongs to.  
-	 * @return the guild a person belongs to. Returns null if person
-	 * does not belong to a guild.
+	 * Returns the guild a person belongs to.
+	 * 
+	 * @return the guild a person belongs to. Returns null if person does not
+	 *         belong to a guild.
 	 */
-	public Guild getGuild()
-	throws MudException
+	public Guild getGuild() throws MudException
 	{
 		return GuildFactory.createGuild(theGuild);
 	}
 
-	public String getStatistics()
-	throws MudDatabaseException, MudException
+	@Override
+	public String getStatistics() throws MudDatabaseException, MudException
 	{
 		String result = super.getStatistics();
 		if (getGuild() != null)
 		{
 			if (getGuild().getBossName().equals(getName()))
 			{
-				result += "You are the Guildmaster of <B>" + getGuild().getTitle() + "</B>.<BR>";
-			}
-			else
+				result += "You are the Guildmaster of <B>"
+						+ getGuild().getTitle() + "</B>.<BR>";
+			} else
 			{
-				result += "You are a member of <B>" + getGuild().getTitle() + "</B>.<BR>";
+				result += "You are a member of <B>" + getGuild().getTitle()
+						+ "</B>.<BR>";
 			}
 		}
 		return result;
 	}
 
-	public Object getValue(String field_name, String
-		attrib_name, ExecutableContext ctxt)
-	throws FieldNotSupportedException
+	@Override
+	public Object getValue(String field_name, String attrib_name,
+			ExecutableContext ctxt) throws FieldNotSupportedException
 	{
-		Logger.getLogger("mmud").finer("field_name=" + field_name +
-			", atttrib_name=" + attrib_name);
+		Logger.getLogger("mmud").finer(
+				"field_name=" + field_name + ", atttrib_name=" + attrib_name);
 		if (field_name.equals("guild"))
 		{
 			try
 			{
 				return (getGuild() == null ? null : getGuild().getName());
-			}
-			catch (MudException e)
+			} catch (MudException e)
 			{
 				throw new FieldNotSupportedException("unable to retrieve guild");
 			}
@@ -736,7 +740,9 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Set the ignore list. Usually used by the database class.
-	 * @param aList the list of persons to be ignored.
+	 * 
+	 * @param aList
+	 *            the list of persons to be ignored.
 	 */
 	public void setIgnoreList(TreeMap aList)
 	{
@@ -745,9 +751,12 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Determines if this current user is being ignored by aPerson.
-	 * @param aPerson the user that could be ignoring this person.
+	 * 
+	 * @param aPerson
+	 *            the user that could be ignoring this person.
 	 * @return true if we are being ignored, false otherwise.
 	 */
+	@Override
 	public boolean isIgnored(Person aPerson)
 	{
 		return theIsBeingIgnoredBy.containsKey(aPerson.getName());
@@ -755,10 +764,11 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Adds a name to the ignorelist.
-	 * @param aName the name to be added of the user that is ignoring us.
+	 * 
+	 * @param aName
+	 *            the name to be added of the user that is ignoring us.
 	 */
-	public void addName(User aUser)
-	throws MudException
+	public void addName(User aUser) throws MudException
 	{
 		theIsBeingIgnoredBy.put(aUser.getName(), null);
 		Database.addIgnore(aUser, this);
@@ -766,10 +776,11 @@ public class User extends mmud.characters.Person
 
 	/**
 	 * Removes a name from the ignorelist.
-	 * @param aName the name to be removed of the user that is ignoring us.
+	 * 
+	 * @param aName
+	 *            the name to be removed of the user that is ignoring us.
 	 */
-	public void removeName(User aUser)
-	throws MudException
+	public void removeName(User aUser) throws MudException
 	{
 		theIsBeingIgnoredBy.remove(aUser.getName());
 		Database.removeIgnore(aUser, this);

@@ -38,7 +38,8 @@ import mmud.commands.NormalCommand;
 
 /**
  * Makes you apply to a guild. There are some requirements to follow:
- * <UL><LI>the guild must exist
+ * <UL>
+ * <LI>the guild must exist
  * <LI>you must not already belong to a guild
  * </UL>
  * Command syntax something like : <TT>guildapply &lt;guildname&gt;</TT>
@@ -51,38 +52,38 @@ public class ApplyCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
 			aUser.removeAttribute("guildwish");
-			aUser.writeMessage("You have no longer applied to any guild.<BR>\r\n");
+			aUser
+					.writeMessage("You have no longer applied to any guild.<BR>\r\n");
 			return true;
 		}
 		Guild guild = null;
 		try
 		{
 			guild = GuildFactory.createGuild(myParsed[1]);
-		}
-		catch (MudException e)
+		} catch (MudException e)
 		{
-			aUser.writeMessage("Unable to find guild <I>" + myParsed[1] + "</I>.<BR>\r\n");
+			aUser.writeMessage("Unable to find guild <I>" + myParsed[1]
+					+ "</I>.<BR>\r\n");
 			return false;
 		}
 		if (aUser.getGuild() != null)
 		{
-			aUser.writeMessage("You already belong to guild <I>" + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+			aUser.writeMessage("You already belong to guild <I>"
+					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
 			return false;
 		}
-		aUser.setAttribute(new Attribute(Attribute.GUILDWISH, guild.getName(), "string"));
-		aUser.writeMessage("You have applied to guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
+		aUser.setAttribute(new Attribute(Attribute.GUILDWISH, guild.getName(),
+				"string"));
+		aUser.writeMessage("You have applied to guild <I>" + guild.getTitle()
+				+ "</I>.<BR>\r\n");
 		return true;
 	}
 
@@ -90,5 +91,5 @@ public class ApplyCommand extends NormalCommand
 	{
 		return new ApplyCommand(getRegExpr());
 	}
-	
+
 }

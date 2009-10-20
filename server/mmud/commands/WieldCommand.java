@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -40,8 +40,7 @@ import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
 
 /**
- * Starts you wielding an item.
- * Syntax: wield &lt;item&gt; with
+ * Starts you wielding an item. Syntax: wield &lt;item&gt; with
  * &lt;lefthand|righthand|both|hands|bothhandsd&gt;
  */
 public class WieldCommand extends NormalCommand
@@ -52,45 +51,34 @@ public class WieldCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
-		// determine the appropriate body position entered by the 
+		// determine the appropriate body position entered by the
 		// user
-		String pos = myParsed[myParsed.length-1];
+		String pos = myParsed[myParsed.length - 1];
 		PersonPositionEnum position = null;
 		if (pos.equalsIgnoreCase("lefthand"))
 		{
 			position = PersonPositionEnum.WIELD_LEFT;
-		}
-		else
-		if (pos.equalsIgnoreCase("righthand"))
+		} else if (pos.equalsIgnoreCase("righthand"))
 		{
 			position = PersonPositionEnum.WIELD_RIGHT;
-		}
-		else
-		if (pos.equalsIgnoreCase("hands"))
+		} else if (pos.equalsIgnoreCase("hands"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
-		if (pos.equalsIgnoreCase("both"))
+		} else if (pos.equalsIgnoreCase("both"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
-		if (pos.equalsIgnoreCase("bothhands"))
+		} else if (pos.equalsIgnoreCase("bothhands"))
 		{
 			position = PersonPositionEnum.WIELD_BOTH;
-		}
-		else
+		} else
 		{
 			aUser.writeMessage("Cannot wield something that way.<BR>\r\n");
 			return true;
@@ -101,12 +89,9 @@ public class WieldCommand extends NormalCommand
 		// oh well, works for now I guess.
 		/* check to see if something is already being wielded there. */
 		Item alreadyWieldedItem = null;
-		Item alreadyWieldedItem1 =
-			aUser.isWorn(PersonPositionEnum.WIELD_LEFT);
-		Item alreadyWieldedItem2 =
-			aUser.isWorn(PersonPositionEnum.WIELD_RIGHT);
-		Item alreadyWieldedItem3 = 
-			aUser.isWorn(PersonPositionEnum.WIELD_BOTH);
+		Item alreadyWieldedItem1 = aUser.isWorn(PersonPositionEnum.WIELD_LEFT);
+		Item alreadyWieldedItem2 = aUser.isWorn(PersonPositionEnum.WIELD_RIGHT);
+		Item alreadyWieldedItem3 = aUser.isWorn(PersonPositionEnum.WIELD_BOTH);
 		PersonPositionEnum alreadyPosition = null;
 		if (position == PersonPositionEnum.WIELD_BOTH)
 		{
@@ -115,19 +100,22 @@ public class WieldCommand extends NormalCommand
 			// nor both are occupied.
 			if (alreadyWieldedItem1 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in lefthand");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in lefthand");
 				alreadyWieldedItem = alreadyWieldedItem1;
 				alreadyPosition = PersonPositionEnum.WIELD_LEFT;
 			}
 			if (alreadyWieldedItem2 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in righthand");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in righthand");
 				alreadyWieldedItem = alreadyWieldedItem2;
 				alreadyPosition = PersonPositionEnum.WIELD_RIGHT;
 			}
 			if (alreadyWieldedItem3 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in both hands");
 				alreadyWieldedItem = alreadyWieldedItem3;
 				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
 			}
@@ -139,13 +127,15 @@ public class WieldCommand extends NormalCommand
 			// are occupied
 			if (alreadyWieldedItem1 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in lefthand");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in lefthand");
 				alreadyWieldedItem = alreadyWieldedItem1;
 				alreadyPosition = PersonPositionEnum.WIELD_LEFT;
 			}
 			if (alreadyWieldedItem3 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in both hands");
 				alreadyWieldedItem = alreadyWieldedItem3;
 				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
 			}
@@ -157,13 +147,15 @@ public class WieldCommand extends NormalCommand
 			// are occupied
 			if (alreadyWieldedItem2 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in righthand");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in righthand");
 				alreadyWieldedItem = alreadyWieldedItem2;
 				alreadyPosition = PersonPositionEnum.WIELD_RIGHT;
 			}
 			if (alreadyWieldedItem3 != null)
 			{
-				Logger.getLogger("mmud").finer("already wielding something in both hands");
+				Logger.getLogger("mmud").finer(
+						"already wielding something in both hands");
 				alreadyWieldedItem = alreadyWieldedItem3;
 				alreadyPosition = PersonPositionEnum.WIELD_BOTH;
 			}
@@ -171,15 +163,16 @@ public class WieldCommand extends NormalCommand
 
 		if (alreadyWieldedItem != null)
 		{
-			String stuff2 = "You are already wielding " +
-				alreadyWieldedItem.getDescription() + " " + 
-				alreadyPosition + ".<BR>\r\n";
-			stuff2 = stuff2.replaceAll("%SHISHER","your"); 
+			String stuff2 = "You are already wielding "
+					+ alreadyWieldedItem.getDescription() + " "
+					+ alreadyPosition + ".<BR>\r\n";
+			stuff2 = stuff2.replaceAll("%SHISHER", "your");
 			aUser.writeMessage(stuff2);
 			return true;
 		}
 		// check for item in posession
-		Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+		Vector stuff = Constants.parseItemDescription(myParsed, 1,
+				myParsed.length - 3);
 		int amount = ((Integer) stuff.elementAt(0)).intValue();
 		String adject1 = (String) stuff.elementAt(1);
 		String adject2 = (String) stuff.elementAt(2);
@@ -210,8 +203,11 @@ public class WieldCommand extends NormalCommand
 			{
 				// transfer item to other person
 				myItem.setWearing(position);
-				Database.writeLog(aUser.getName(), "wields " + myItem + " " + position);
-				Persons.sendMessage(aUser, "%SNAME wield%VERB2 " + myItem.getDescription() + " " + position + ".<BR>\r\n");
+				Database.writeLog(aUser.getName(), "wields " + myItem + " "
+						+ position);
+				Persons.sendMessage(aUser, "%SNAME wield%VERB2 "
+						+ myItem.getDescription() + " " + position
+						+ ".<BR>\r\n");
 				return true;
 			}
 		}
@@ -222,5 +218,5 @@ public class WieldCommand extends NormalCommand
 	{
 		return new WieldCommand(getRegExpr());
 	}
-	
+
 }

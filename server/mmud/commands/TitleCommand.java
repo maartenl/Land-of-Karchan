@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -42,17 +42,14 @@ public class TitleCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String command = getCommand();
 		aUser.setTitle(command.substring(6));
-		aUser.writeMessage("Changed your title to : '" + aUser.getTitle() + "'.<BR>\r\n");
+		aUser.writeMessage("Changed your title to : '" + aUser.getTitle()
+				+ "'.<BR>\r\n");
 		return true;
 	}
 
@@ -60,5 +57,5 @@ public class TitleCommand extends NormalCommand
 	{
 		return new TitleCommand(getRegExpr());
 	}
-	
+
 }

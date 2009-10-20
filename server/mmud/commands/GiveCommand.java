@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -43,8 +43,8 @@ import mmud.items.ItemDoesNotExistException;
 import mmud.items.ItemException;
 
 /**
- * Give an item in your inventory to another character.
- * Syntax: give &lt;item&gt; to &lt;character&gt;
+ * Give an item in your inventory to another character. Syntax: give
+ * &lt;item&gt; to &lt;character&gt;
  */
 public class GiveCommand extends NormalCommand
 {
@@ -54,22 +54,21 @@ public class GiveCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws ItemException, ParseException, MudException
+	@Override
+	public boolean run(User aUser) throws ItemException, ParseException,
+			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
-		// initialise string, important otherwise previous instances will return this
+		// initialise string, important otherwise previous instances will return
+		// this
 		String[] myParsed = getParsedCommand();
-		if (myParsed.length >= 4 && 
-			myParsed[myParsed.length-2].equalsIgnoreCase("to")) 
+		if (myParsed.length >= 4
+				&& myParsed[myParsed.length - 2].equalsIgnoreCase("to"))
 		{
 			// determine if appropriate target is found.
-			Person toChar = Persons.retrievePerson(myParsed[myParsed.length-1]);
-			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+			Person toChar = Persons
+					.retrievePerson(myParsed[myParsed.length - 1]);
+			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
@@ -77,8 +76,8 @@ public class GiveCommand extends NormalCommand
 
 			// check for money
 			// "give [x] [gold,silver,copper] coin[s] to <person>"
-			if (myParsed[myParsed.length-3].equalsIgnoreCase("coins") ||
-				myParsed[myParsed.length-3].equalsIgnoreCase("coin") )
+			if (myParsed[myParsed.length - 3].equalsIgnoreCase("coins")
+					|| myParsed[myParsed.length - 3].equalsIgnoreCase("coin"))
 			{
 				Logger.getLogger("mmud").finer("DEBUG!");
 				int amount = 1;
@@ -95,53 +94,53 @@ public class GiveCommand extends NormalCommand
 							return true;
 						}
 					}
-					if (myParsed[myParsed.length-4].equalsIgnoreCase("gold"))
+					if (myParsed[myParsed.length - 4].equalsIgnoreCase("gold"))
 					{
 						newamount = amount * 100;
 						currency = "gold";
-					} 
-					else if (myParsed[myParsed.length-4].equalsIgnoreCase("silver"))
+					} else if (myParsed[myParsed.length - 4]
+							.equalsIgnoreCase("silver"))
 					{
 						newamount = amount * 10;
 						currency = "silver";
-					} 
-					else if (myParsed[myParsed.length-4].equalsIgnoreCase("copper"))
+					} else if (myParsed[myParsed.length - 4]
+							.equalsIgnoreCase("copper"))
 					{
 						newamount = amount;
 						currency = "copper";
 					}
-					Logger.getLogger("mmud").finer("amount=" + amount + ",currency=" + currency + ",newamount=" + newamount);
+					Logger.getLogger("mmud").finer(
+							"amount=" + amount + ",currency=" + currency
+									+ ",newamount=" + newamount);
 					if (newamount != 0)
 					{
 						try
 						{
 							aUser.transferMoneyTo(newamount, toChar);
-						}
-						catch (MudMoneyException e)
+						} catch (MudMoneyException e)
 						{
-							aUser.writeMessage("You do not have that much money.<BR>\r\n");
+							aUser
+									.writeMessage("You do not have that much money.<BR>\r\n");
 							return true;
 						}
-						Database.writeLog(aUser.getName(), "gave " + newamount + " copper to " + toChar);
-						Persons.sendMessage(aUser, toChar, 
-							"%SNAME give%VERB2 " + 
-							amount + 
-							" " + 
-							currency + 
-							" coin" + 
-							(amount == 1 ? "" : "s") +
-							" to %TNAME.<BR>\r\n");
+						Database.writeLog(aUser.getName(), "gave " + newamount
+								+ " copper to " + toChar);
+						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 "
+								+ amount + " " + currency + " coin"
+								+ (amount == 1 ? "" : "s")
+								+ " to %TNAME.<BR>\r\n");
 						return true;
 					}
-				}
-				catch (NumberFormatException e)
+				} catch (NumberFormatException e)
 				{
-					// ignore this, pass it through to the standard give functionality.
+					// ignore this, pass it through to the standard give
+					// functionality.
 				}
 			}
 
 			// check for item in posession of this person
-			Vector stuff = Constants.parseItemDescription(myParsed, 1, myParsed.length - 3);
+			Vector stuff = Constants.parseItemDescription(myParsed, 1,
+					myParsed.length - 3);
 			int amount = ((Integer) stuff.elementAt(0)).intValue();
 			String adject1 = (String) stuff.elementAt(1);
 			String adject2 = (String) stuff.elementAt(2);
@@ -154,10 +153,10 @@ public class GiveCommand extends NormalCommand
 				if (amount == 1)
 				{
 					aUser.writeMessage("You do not have that item.<BR>\r\n");
-				}
-				else
+				} else
 				{
-					aUser.writeMessage("You do not have that many items.<BR>\r\n");
+					aUser
+							.writeMessage("You do not have that many items.<BR>\r\n");
 				}
 				return true;
 			}
@@ -174,7 +173,8 @@ public class GiveCommand extends NormalCommand
 				}
 				if (myItem.isWearing())
 				{
-					aUser.writeMessage("You are wearing or wielding that item.<BR>\r\n");
+					aUser
+							.writeMessage("You are wearing or wielding that item.<BR>\r\n");
 					valid = false;
 				}
 				if (valid)
@@ -183,13 +183,17 @@ public class GiveCommand extends NormalCommand
 					try
 					{
 						ItemsDb.transferItem(myItem, toChar);
-						Database.writeLog(aUser.getName(), "gave " + myItem + " to " + toChar.getName());
-						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 " + myItem.getDescription() + " to %TNAME.<BR>\r\n");
+						Database.writeLog(aUser.getName(), "gave " + myItem
+								+ " to " + toChar.getName());
+						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 "
+								+ myItem.getDescription()
+								+ " to %TNAME.<BR>\r\n");
 						j++;
-					}
-					catch (ItemDoesNotExistException e)
+					} catch (ItemDoesNotExistException e)
 					{
-						Database.writeLog(aUser.getName(), "tried to give " + myItem + " to " + toChar.getName() + " but failed.");
+						Database.writeLog(aUser.getName(), "tried to give "
+								+ myItem + " to " + toChar.getName()
+								+ " but failed.");
 						// skipping this itemm, heading over to the next one.
 					}
 				}
@@ -203,5 +207,5 @@ public class GiveCommand extends NormalCommand
 	{
 		return new GiveCommand(getRegExpr());
 	}
-	
+
 }

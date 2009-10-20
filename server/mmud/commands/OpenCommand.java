@@ -64,10 +64,6 @@ public class OpenCommand extends NormalCommand
 			MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		// initialise string, important otherwise previous instances will return
 		// this
 		String[] myParsed = getParsedCommand();

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -34,9 +34,8 @@ import mmud.characters.User;
 import mmud.rooms.Room;
 
 /**
- * Go down below: "down".
- * This is the same command as the command "go down", except the other
- * way to execute it.
+ * Go down below: "down". This is the same command as the command "go down",
+ * except the other way to execute it.
  */
 public class DownCommand extends NormalCommand
 {
@@ -46,22 +45,17 @@ public class DownCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		Room myRoom = aUser.getRoom();
 		if (myRoom.getDown() != null)
 		{
 			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 down.<BR>\r\n");
 			aUser.setRoom(myRoom.getDown());
 			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
-		}
-		else
+		} else
 		{
 			aUser.writeMessage("You cannot go down.<BR>\r\n");
 		}
@@ -72,5 +66,5 @@ public class DownCommand extends NormalCommand
 	{
 		return new DownCommand(getRegExpr());
 	}
-	
+
 }

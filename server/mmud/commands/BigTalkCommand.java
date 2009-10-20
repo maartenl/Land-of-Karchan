@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -33,8 +33,8 @@ import mmud.MudException;
 import mmud.characters.User;
 
 /**
- * Sometimes the space in the fillout form is not enough, than this command
- * will show a bigger entry form : "bigtalk".
+ * Sometimes the space in the fillout form is not enough, than this command will
+ * show a bigger entry form : "bigtalk".
  */
 public class BigTalkCommand extends NormalCommand
 {
@@ -46,44 +46,46 @@ public class BigTalkCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		theUser = aUser;
 		return true;
 	}
 
+	@Override
 	public String getResult()
 	{
 		Logger.getLogger("mmud").finer("");
 		try
 		{
-			String aString = "Due to the size of the area, this is where the really big messages are " +
-				"typed. This is ideally suited for exampe mudmail.<P>\r\n" +
-				"<SCRIPT language=\"JavaScript\">\r\n" +
-				"<!-- In hiding!\r\n" +
-				"function setfocus() {\r\n" +
-				"	   document.CommandForm.command.focus();\r\n" +
-				"   return;\r\n" +
-				"   }\r\n" +
-				"//-->\r\n" +
-				"</SCRIPT>\r\n" +
-				"<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi + "\" NAME=\"CommandForm\">\n" +
-				"<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n" +
-				"<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\"" + theUser.getName() + "\">\n" +
-				"<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"" + (theUser.getFrames()+1) + "\">\n" +
-				"<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n" +
-				"</FORM><P>\n";
+			String aString = "Due to the size of the area, this is where the really big messages are "
+					+ "typed. This is ideally suited for exampe mudmail.<P>\r\n"
+					+ "<SCRIPT language=\"JavaScript\">\r\n"
+					+ "<!-- In hiding!\r\n"
+					+ "function setfocus() {\r\n"
+					+ "	   document.CommandForm.command.focus();\r\n"
+					+ "   return;\r\n"
+					+ "   }\r\n"
+					+ "//-->\r\n"
+					+ "</SCRIPT>\r\n"
+					+ "<FORM METHOD=\"POST\" ACTION=\""
+					+ Constants.mudcgi
+					+ "\" NAME=\"CommandForm\">\n"
+					+ "<TEXTAREA NAME=\"command\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n"
+					+ "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
+					+ theUser.getName()
+					+ "\">\n"
+					+ "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\""
+					+ (theUser.getFrames() + 1)
+					+ "\">\n"
+					+ "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n"
+					+ "</FORM><P>\n";
 
 			aString += theUser.readLog();
 			return aString;
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -94,5 +96,5 @@ public class BigTalkCommand extends NormalCommand
 	{
 		return new BigTalkCommand(getRegExpr());
 	}
-	
+
 }

@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -44,33 +44,29 @@ public class CurtseyCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
 			if (myParsed[2].equalsIgnoreCase(aUser.getName()))
 			{
-				aUser.writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
+				aUser
+						.writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
 				return true;
 			}
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ( (toChar == null) || (toChar.getRoom() != aUser.getRoom()) )
+			if ((toChar == null) || (toChar.getRoom() != aUser.getRoom()))
 			{
 				aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			}
-			else
+			} else
 			{
-				Persons.sendMessage(aUser, toChar, "%SNAME drop%VERB2 a curtsey to %TNAME.<BR>\r\n");
+				Persons.sendMessage(aUser, toChar,
+						"%SNAME drop%VERB2 a curtsey to %TNAME.<BR>\r\n");
 			}
-		}
-		else
+		} else
 		{
 			Persons.sendMessage(aUser, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
 		}
@@ -81,5 +77,5 @@ public class CurtseyCommand extends NormalCommand
 	{
 		return new CurtseyCommand(getRegExpr());
 	}
-	
+
 }

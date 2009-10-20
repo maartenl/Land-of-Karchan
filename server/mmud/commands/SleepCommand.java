@@ -24,7 +24,7 @@ Nederland
 Europe
 maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
-package mmud.commands;  
+package mmud.commands;
 
 import java.util.logging.Logger;
 
@@ -43,20 +43,15 @@ public class SleepCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	@Override
+	public boolean run(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
-		{
-			return false;
-		}
 
 		if (aUser.isaSleep())
 		{
 			aUser.writeMessage("You already are asleep.<BR>\r\n");
-		}
-		else
+		} else
 		{
 			aUser.setSleep(true);
 			Persons.sendMessage(aUser, "%SNAME go%VERB1 to sleep.<BR>\r\n");
@@ -68,5 +63,5 @@ public class SleepCommand extends NormalCommand
 	{
 		return new SleepCommand(getRegExpr());
 	}
-	
+
 }
