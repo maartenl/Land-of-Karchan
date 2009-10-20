@@ -306,6 +306,10 @@ latest version: database_setup_002.sql
 - alter table mm_boardmessages add (removed int(1));
 - drop table mm_logonmessage;
 
+alter table mm_rooms add (title varchar(120) not null default "");
+alter table mm_rooms add (picture varchar(120));
+
+
 creating board system
 ---------------------
 create table mm_boardmessages
