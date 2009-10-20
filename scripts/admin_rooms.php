@@ -238,7 +238,7 @@ if (isset($_REQUEST{"west"}))
 		quote_smart($down).
 		", contents=\"".
 		quote_smart($_REQUEST{"contents"}).
-		", title=\"".
+		"\", title=\"".
 		quote_smart($_REQUEST{"title"}).
 		"\", picture=\"".
 		quote_smart($_REQUEST{"picture"}).
