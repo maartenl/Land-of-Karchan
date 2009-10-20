@@ -238,6 +238,10 @@ if (isset($_REQUEST{"west"}))
 		quote_smart($down).
 		", contents=\"".
 		quote_smart($_REQUEST{"contents"}).
+		", title=\"".
+		quote_smart($_REQUEST{"title"}).
+		", picture=\"".
+		quote_smart($_REQUEST{"picture"}).
 		"\", area=\"".
 		quote_smart($_REQUEST{"area"}).
 		"\", owner=\"".
@@ -281,6 +285,8 @@ while ($myrow = mysql_fetch_array($result))
 	{
 		printf("<b>down:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["down"], $myrow["down"]);
 	}
+	printf("<b>title:</b> %s<BR>", $myrow["title"]);
+	printf("<b>picture:</b> %s<BR>", $myrow["picture"]);
 	printf("<b>contents:</b> %s<BR>", $myrow["contents"]);
 	printf("<b>owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>creation:</b> %s<BR>", $myrow["creation2"]);
@@ -299,6 +305,8 @@ while ($myrow = mysql_fetch_array($result))
 <TR><TD>south</TD><TD><INPUT TYPE="text" NAME="south" VALUE="<?php echo $myrow["south"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>up</TD><TD><INPUT TYPE="text" NAME="up" VALUE="<?php echo $myrow["up"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>down</TD><TD><INPUT TYPE="text" NAME="down" VALUE="<?php echo $myrow["down"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>title</TD><TD><INPUT TYPE="text" NAME="title" VALUE="<?php echo $myrow["title"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD>picture</TD><TD><INPUT TYPE="text" NAME="picture" VALUE="<?php echo $myrow["picture"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
 <TR><TD>contents</TD><TD><TEXTAREA NAME="contents" ROWS="14" COLS="85"><?php echo $myrow["contents"] ?></TEXTAREA></TD></TR>
 <TR><TD>area</TD><TD><SELECT NAME="area">
 <?php
