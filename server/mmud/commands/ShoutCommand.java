@@ -59,18 +59,30 @@ public class ShoutCommand extends CommunicationCommand
 			return false;
 		}
 
-		Persons.sendMessage(aUser, aUser.getRoom().getSouth(),
-				"Someone shouts : " + getMessage() + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getNorth(),
-				"Someone shouts : " + getMessage() + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getWest(),
-				"Someone shouts : " + getMessage() + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getEast(),
-				"Someone shouts : " + getMessage() + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getUp(), "Someone shouts : "
-				+ getMessage() + "<BR>\r\n");
-		Persons.sendMessage(aUser, aUser.getRoom().getDown(),
-				"Someone shouts : " + getMessage() + "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getWest(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getEast(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getUp(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
+		Persons
+				.sendMessage(aUser, aUser.getRoom().getDown(), "Someone "
+						+ getCommType().getPlural() + " : " + getMessage()
+						+ "<BR>\r\n");
 
 		return true;
 	}

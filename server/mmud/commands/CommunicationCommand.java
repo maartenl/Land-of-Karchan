@@ -53,7 +53,7 @@ public abstract class CommunicationCommand extends NormalCommand
 						+ getCommType().getPlural() + " [to %TNAME] : "
 						+ getMessage() + "<BR>\r\n");
 				aUser.writeMessage(aUser, toChar, "<B>%SNAME "
-						+ getCommType().getPlural() + " [to %TNAME]</B> : "
+						+ getCommType().toString() + " [to %TNAME]</B> : "
 						+ getMessage() + "<BR>\r\n");
 				toChar.writeMessage(aUser, toChar, "<B>%SNAME "
 						+ getCommType().getPlural() + " [to %TNAME]</B> : "
@@ -71,7 +71,7 @@ public abstract class CommunicationCommand extends NormalCommand
 			Persons.sendMessageExcl(aUser, "%SNAME "
 					+ getCommType().getPlural() + " : " + getMessage()
 					+ "<BR>\r\n");
-			aUser.writeMessage(aUser, "<B>%SNAME " + getCommType().getPlural()
+			aUser.writeMessage(aUser, "<B>%SNAME " + getCommType().toString()
 					+ "</B> : " + getMessage() + "<BR>\r\n");
 		}
 		return true;

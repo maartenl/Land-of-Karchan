@@ -58,6 +58,7 @@ import mmud.commands.BuyCommand;
 import mmud.commands.ClearCommand;
 import mmud.commands.CloseCommand;
 import mmud.commands.Command;
+import mmud.commands.CryCommand;
 import mmud.commands.CurtseyCommand;
 import mmud.commands.DateCommand;
 import mmud.commands.DeleteMailCommand;
@@ -95,12 +96,14 @@ import mmud.commands.ReadPublicCommand;
 import mmud.commands.ReadRpgBoardCommand;
 import mmud.commands.RetrieveCommand;
 import mmud.commands.SayCommand;
+import mmud.commands.ScreamCommand;
 import mmud.commands.ScriptCommand;
 import mmud.commands.SearchCommand;
 import mmud.commands.SellCommand;
 import mmud.commands.SendMailCommand;
 import mmud.commands.ShoutCommand;
 import mmud.commands.ShowCommand;
+import mmud.commands.SingCommand;
 import mmud.commands.SleepCommand;
 import mmud.commands.SouthCommand;
 import mmud.commands.StatsCommand;
@@ -696,8 +699,13 @@ public final class Constants
 		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
 		theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
+		theCommandStructure
+				.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
+		theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
 		theCommandStructure.put("shout", new ShoutCommand(
 				"shout (to (\\w )+)?.+"));
+		theCommandStructure.put("scream", new ScreamCommand(
+				"scream (to (\\w )+)?.+"));
 		theCommandStructure.put("whisper", new WhisperCommand(
 				"whisper (to (\\w)+ )?.+"));
 		theCommandStructure.put("clear", new ClearCommand("clear"));
