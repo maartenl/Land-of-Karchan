@@ -109,7 +109,7 @@ public class Database
 	private static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
 
 	private static String sqlGetRoomString = "select * from mm_rooms where id = ?";
-	private static String sqlWriteRoomString = "update mm_rooms set north = ?, south = ?, east = ?, west = ?, up = ?, down = ?, contents = ? where id = ?";
+	private static String sqlWriteRoomString = "update mm_rooms set north = ?, south = ?, east = ?, west = ?, up = ?, down = ?, contents = ?, title = ?, picture = ? where id = ?";
 
 	private static String sqlGetErrMsgString = "select description from mm_errormessages where msg = ?";
 	private static String sqlGetBan1String = "select count(name) as count from mm_sillynamestable where ? like name";
@@ -628,10 +628,11 @@ public class Database
 				return null;
 			}
 			res.first();
-			myRoom = new Room(res.getInt("id"), "title as yet unknown", res
+			myRoom = new Room(res.getInt("id"), res.getString("title"), res
 					.getString("contents"), res.getInt("south"), res
 					.getInt("north"), res.getInt("east"), res.getInt("west"),
-					res.getInt("up"), res.getInt("down"));
+					res.getInt("up"), res.getInt("down"), res
+							.getString("picture"));
 			res.close();
 			sqlGetRoom.close();
 		} catch (SQLException e)
@@ -742,7 +743,9 @@ public class Database
 				statWriteRoom.setInt(6, aRoom.getDown().getId());
 			}
 			statWriteRoom.setString(7, aRoom.getDescription());
-			statWriteRoom.setInt(8, aRoom.getId());
+			statWriteRoom.setString(8, aRoom.getTitle());
+			statWriteRoom.setString(9, aRoom.getPicture());
+			statWriteRoom.setInt(10, aRoom.getId());
 			statWriteRoom.executeUpdate();
 			statWriteRoom.close();
 		} catch (SQLException e)

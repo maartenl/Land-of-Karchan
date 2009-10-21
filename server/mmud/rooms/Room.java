@@ -63,10 +63,32 @@ import simkin.XMLExecutable;
 public class Room implements Executable, AttributeContainer
 {
 	private final int theId;
-	private final String theTitle;
+	private String theTitle;
 	private String theDescription;
 	private int intsouth, intnorth, inteast, intwest, intup, intdown;
 	private final TreeMap theAttributes = new TreeMap();
+	private String thePicture;
+
+	/**
+	 * Set the title of the room.
+	 * 
+	 * @param aTitle
+	 *            the title of the room.
+	 */
+	public void setTitle(String aTitle)
+	{
+		theTitle = aTitle;
+	}
+
+	/**
+	 * Get the title of the room.
+	 * 
+	 * @return the title of the room.
+	 */
+	public String getTitle()
+	{
+		return theTitle;
+	}
 
 	/**
 	 * Create a new room.
@@ -91,7 +113,8 @@ public class Room implements Executable, AttributeContainer
 	 *            identification of the room down (0 if not applicable)
 	 */
 	public Room(int anId, String aTitle, String aDescription, int asouth,
-			int anorth, int aeast, int awest, int aup, int adown)
+			int anorth, int aeast, int awest, int aup, int adown,
+			String aPicture)
 	{
 		theId = anId;
 		theTitle = aTitle;
@@ -102,6 +125,7 @@ public class Room implements Executable, AttributeContainer
 		intwest = awest;
 		intup = aup;
 		intdown = adown;
+		setPicture(aPicture);
 	}
 
 	/**
@@ -314,6 +338,17 @@ public class Room implements Executable, AttributeContainer
 	}
 
 	/**
+	 * 
+	 * @param aDescription
+	 * @return <IMG SRC='/images/gif/letters/y.gif' ALIGN=left>
+	 */
+	private String getCapitalLetter(String aDescription)
+	{
+		return "<IMG SRC='/images/gif/letters/"
+				+ aDescription.toLowerCase().charAt(1) + ".gif' ALIGN=left>";
+	}
+
+	/**
 	 * Returns the description of the room, suitable for webbrowsers.
 	 * 
 	 * @param aUser
@@ -323,162 +358,197 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public String getDescription(User aUser) throws MudException
 	{
-		String result = (getDescription() == null ? "<H1>Cardboard</H1>"
-				+ "Everywhere around you you notice cardboard. It seems as if this part"
-				+ " has either not been finished yet or you encountered an error"
-				+ " in retrieving the room description from the server.<P>"
-				: getDescription());
-		result += "[ ";
+		StringBuffer result = new StringBuffer();
+		if (getDescription() == null)
+		{
+			return "<H1>Cardboard</H1>"
+					+ "Everywhere around you you notice cardboard. It seems as if this part"
+					+ " has either not been finished yet or you encountered an error"
+					+ " in retrieving the room description from the server.<P>";
+		}
+		result.append("<H1>");
+		if ((getPicture() != null) && (!getPicture().trim().equals("")))
+		{
+			result.append("<IMG SRC=\"" + getPicture() + "\" hspace=10>");
+		}
+		result.append(getTitle() + "</H1>");
+		result.append(getCapitalLetter(getDescription())
+				+ getDescription().substring(2) + "[");
 		if (getWest() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("w") + "\">west </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("w") + "\">west </A>");
 		}
 		if (getEast() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("e") + "\">east </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("e") + "\">east </A>");
 		}
 		if (getNorth() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("n") + "\">north </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("n") + "\">north </A>");
 		}
 		if (getSouth() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("s") + "\">south </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("s") + "\">south </A>");
 		}
 		if (getUp() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("up") + "\">up </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("up") + "\">up </A>");
 		}
 		if (getDown() != null)
 		{
-			result += "<A HREF=\"" + aUser.getUrl("down") + "\">down </A>";
+			result.append("<A HREF=\"" + aUser.getUrl("down") + "\">down </A>");
 		}
-		result += "]<P>\r\n";
+		result.append("]<P>\r\n");
 		if (aUser.getFrames() == 0)
 		{
-			result += "<TABLE ALIGN=right>\n";
-			result += "<TR><TD><IMG ALIGN=right SRC=\"/images/gif/roos.gif\" USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>";
+			result
+					.append("<TABLE ALIGN=right>\n"
+							+ "<TR><TD><IMG ALIGN=right SRC=\"/images/gif/roos.gif\" USEMAP=\"#roosmap\" BORDER=\"0\" ISMAP ALT=\"N-S-E-W\"><P>");
 
 			if (aUser.isaSleep())
 			{
-				result += "<script language=\"JavaScript\">\r\n";
+				result.append("<script language=\"JavaScript\">\r\n");
 
-				result += "<!-- In hiding!\r\n";
-				result += " browserName = navigator.appName;\r\n";
-				result += "		   browserVer = parseInt(navigator.appVersion);\r\n";
-				result += "			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n";
-				result += "\"n3\";\r\n";
-				result += "			   else version = \"n2\";\r\n";
+				result.append("<!-- In hiding!\r\n");
+				result.append(" browserName = navigator.appName;\r\n");
+				result
+						.append("		   browserVer = parseInt(navigator.appVersion);\r\n");
+				result
+						.append("			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+				result.append("\"n3\";\r\n");
+				result.append("			   else version = \"n2\";\r\n");
 
-				result += "			   if (version == \"n3\"){				\r\n";
-				result += "			   toc1on = new Image;\r\n";
-				result += "			   toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n";
+				result.append("			   if (version == \"n3\"){				\r\n");
+				result.append("			   toc1on = new Image;\r\n");
+				result
+						.append("			   toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
 
-				result += "			   toc1off = new Image;\r\n";
-				result += "			   toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n";
+				result.append("			   toc1off = new Image;\r\n");
+				result
+						.append("			   toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
 
-				result += "		}\r\n";
+				result.append("		}\r\n");
 
-				result += "function img_act(imgName) {\r\n";
-				result += "		if (version == \"n3\") {\r\n";
-				result += "		imgOn = eval(imgName + \"on.src\";\r\n";
-				result += "		document [imgName].src = imgOn;\r\n";
-				result += "		}\r\n";
-				result += "}\r\n";
+				result.append("function img_act(imgName) {\r\n");
+				result.append("		if (version == \"n3\") {\r\n");
+				result.append("		imgOn = eval(imgName + \"on.src\";\r\n");
+				result.append("		document [imgName].src = imgOn;\r\n");
+				result.append("		}\r\n");
+				result.append("}\r\n");
 
-				result += "function img_inact(imgName) {\r\n";
-				result += "		if (version == \"n3\") {\r\n";
-				result += "		imgOff = eval(imgName + \"off.src\";\r\n";
-				result += "		document [imgName].src = imgOff;\r\n";
-				result += "		}\r\n";
-				result += "}\r\n";
+				result.append("function img_inact(imgName) {\r\n");
+				result.append("		if (version == \"n3\") {\r\n");
+				result.append("		imgOff = eval(imgName + \"off.src\";\r\n");
+				result.append("		document [imgName].src = imgOff;\r\n");
+				result.append("		}\r\n");
+				result.append("}\r\n");
 
-				result += "//-->\r\n";
+				result.append("//-->\r\n");
 
-				result += "</SCRIPT>\r\n";
-				result += "<TR><TD><A HREF=\""
-						+ aUser.getUrl("awaken")
-						+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
-				result += "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n";
+				result.append("</SCRIPT>\r\n");
+				result
+						.append("<TR><TD><A HREF=\""
+								+ aUser.getUrl("awaken")
+								+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n");
+				result
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n");
 			} else
 			{
-				result += "<script language=\"JavaScript\">\r\n";
+				result.append("<script language=\"JavaScript\">\r\n");
 
-				result += "<!-- In hiding!\r\n";
-				result += " browserName = navigator.appName;\r\n";
-				result += "		   browserVer = parseInt(navigator.appVersion);\r\n";
-				result += "			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n";
-				result += "\"n3\";\r\n";
-				result += "			   else version = \"n2\";\r\n";
+				result.append("<!-- In hiding!\r\n");
+				result.append(" browserName = navigator.appName;\r\n");
+				result
+						.append("		   browserVer = parseInt(navigator.appVersion);\r\n");
+				result
+						.append("			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
+				result.append("\"n3\";\r\n");
+				result.append("			   else version = \"n2\";\r\n");
 
-				result += "			   if (version == \"n3\"){				\r\n";
-				result += "			   toc1on = new Image;\r\n";
-				result += "			   toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n";
-				result += "			   toc2on = new Image;\r\n";
-				result += "			   toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n";
-				result += "			   toc3on = new Image;\r\n";
-				result += "			   toc3on.src =\"../images/gif/webpic/new/buttonr.gif\";\r\n";
+				result.append("			   if (version == \"n3\"){				\r\n");
+				result.append("			   toc1on = new Image;\r\n");
+				result
+						.append("			   toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
+				result.append("			   toc2on = new Image;\r\n");
+				result
+						.append("			   toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
+				result.append("			   toc3on = new Image;\r\n");
+				result
+						.append("			   toc3on.src =\"../images/gif/webpic/new/buttonr.gif\";\r\n");
 
-				result += "			   toc1off = new Image;\r\n";
-				result += "			   toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n";
-				result += "			   toc2off = new Image;\r\n";
-				result += "			   toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n";
-				result += "			   toc3off = new Image;\r\n";
-				result += "			   toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n";
+				result.append("			   toc1off = new Image;\r\n");
+				result
+						.append("			   toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
+				result.append("			   toc2off = new Image;\r\n");
+				result
+						.append("			   toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
+				result.append("			   toc3off = new Image;\r\n");
+				result
+						.append("			   toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
 
-				result += "		}\r\n";
+				result.append("		}\r\n");
 
-				result += "function img_act(imgName) {\r\n";
-				result += "		if (version == \"n3\") {\r\n";
-				result += "		imgOn = eval(imgName + \"on.src\";\r\n";
-				result += "		document [imgName].src = imgOn;\r\n";
-				result += "		}\r\n";
-				result += "}\r\n";
+				result.append("function img_act(imgName) {\r\n");
+				result.append("		if (version == \"n3\") {\r\n");
+				result.append("		imgOn = eval(imgName + \"on.src\";\r\n");
+				result.append("		document [imgName].src = imgOn;\r\n");
+				result.append("		}\r\n");
+				result.append("}\r\n");
 
-				result += "function img_inact(imgName) {\r\n";
-				result += "		if (version == \"n3\") {\r\n";
-				result += "		imgOff = eval(imgName + \"off.src\";\r\n";
-				result += "		document [imgName].src = imgOff;\r\n";
-				result += "		}\r\n";
-				result += "}\r\n";
+				result.append("function img_inact(imgName) {\r\n");
+				result.append("		if (version == \"n3\") {\r\n");
+				result.append("		imgOff = eval(imgName + \"off.src\";\r\n");
+				result.append("		document [imgName].src = imgOff;\r\n");
+				result.append("		}\r\n");
+				result.append("}\r\n");
 
-				result += "//-->\r\n";
+				result.append("//-->\r\n");
 
-				result += "</SCRIPT>\r\n";
+				result.append("</SCRIPT>\r\n");
 
-				result += "<TR><TD><A HREF=\""
-						+ aUser.getUrl("quit")
-						+ "\" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n";
-				result += "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n";
+				result
+						.append("<TR><TD><A HREF=\""
+								+ aUser.getUrl("quit")
+								+ "\" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n");
+				result
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n");
 
-				result += "<TR><TD><A HREF=\""
-						+ aUser.getUrl("sleep")
-						+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n";
-				result += "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n";
+				result
+						.append("<TR><TD><A HREF=\""
+								+ aUser.getUrl("sleep")
+								+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n");
+				result
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n");
 
-				result += "<TR><TD><A HREF=\""
-						+ aUser.getUrl("clear")
-						+ "\" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n";
-				result += "<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n";
+				result
+						.append("<TR><TD><A HREF=\""
+								+ aUser.getUrl("clear")
+								+ "\" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n");
+				result
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n");
 			}
-			result += "</TABLE>\n";
-			result += "<MAP NAME=\"roosmap\">\n";
-			result += "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\""
-					+ aUser.getUrl("n") + "\">\n";
-			result += "<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\""
-					+ aUser.getUrl("s") + "\">\n";
-			result += "<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\""
-					+ aUser.getUrl("w") + "\">\n";
-			result += "<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\""
-					+ aUser.getUrl("e") + "\">\n";
-			result += "</MAP>\n";
+			result.append("</TABLE>\n");
+			result.append("<MAP NAME=\"roosmap\">\n");
+			result
+					.append("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,63,0,0,0\" HREF=\""
+							+ aUser.getUrl("n") + "\">\n");
+			result
+					.append("<AREA SHAPE=\"POLY\" COORDS=\"0,63,33,31,63,63,0,63\" HREF=\""
+							+ aUser.getUrl("s") + "\">\n");
+			result
+					.append("<AREA SHAPE=\"POLY\" COORDS=\"0,0,33,31,0,63,0,0\" HREF=\""
+							+ aUser.getUrl("w") + "\">\n");
+			result
+					.append("<AREA SHAPE=\"POLY\" COORDS=\"63,0,33,31,63,63,63,0\" HREF=\""
+							+ aUser.getUrl("e") + "\">\n");
+			result.append("</MAP>\n");
 		} /* end if fmudstruct->frames dude */
 
 		// print characters in room
-		result += Persons.descriptionOfPersonsInRoom(this, aUser);
+		result.append(Persons.descriptionOfPersonsInRoom(this, aUser));
 		// print items in room
-		result += inventory();
-		return result;
+		result.append(inventory());
+		return result.toString();
 	}
 
 	/**
@@ -1244,6 +1314,29 @@ public class Room implements Executable, AttributeContainer
 	public boolean isAttribute(String aName)
 	{
 		return theAttributes.containsKey(aName);
+	}
+
+	/**
+	 * Set the filename where the picture can be found that belongs to the room.
+	 * Can also be a http link if required.
+	 * 
+	 * @param aPicture
+	 *            string containing where the picture can be found.
+	 */
+	public void setPicture(String aPicture)
+	{
+		thePicture = aPicture;
+	}
+
+	/**
+	 * Get the filename where the picture can be found that belongs to the room.
+	 * Can also be a http link if required.
+	 * 
+	 * @return string containing where the picture can be found.
+	 */
+	public String getPicture()
+	{
+		return thePicture;
 	}
 
 }

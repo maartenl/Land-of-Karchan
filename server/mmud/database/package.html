@@ -416,7 +416,6 @@ is neither being worn nor wielded.
 | containerid         |
 +---------------------+
 
-<A NAME="mm_rooms">
 +---------------------+
 | mm_rooms            |
 +---------------------+
@@ -431,7 +430,30 @@ is neither being worn nor wielded.
 | owner               |
 | creation            |
 | area                |
+| title               |
+| picture             |
 +---------------------+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_rooms">mm_rooms</A></H4>
+<DL>
+<DT>id
+<DD>identification of the room
+<DT>west, east, north, south, up, down
+<DD>ids of neighbouring rooms
+<DT>contents
+<DD>description of the room
+<DT>owner
+<DD>the owner of the object, i.e. the one that is allowed to make changes.
+If this is NULL, the first one to make any changes owns the item.
+<DT>creation
+<DT>area
+<DD>the area to which the room belongs.
+<DT>title
+<DD>title of the room, it will be visible nicely at the top in header format
+<DT>picture
+<DD>the picture of the room
+</DL>
+<PRE>
 
 <A NAME="mm_area">
 +---------------------+
