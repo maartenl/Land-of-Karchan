@@ -309,6 +309,29 @@ latest version: database_setup_002.sql
 alter table mm_rooms add (title varchar(120) not null default "");
 alter table mm_rooms add (picture varchar(120));
 
+update mm_rooms set contents = replace(contents, "<h1>", "<H1>");
+update mm_rooms set contents = replace(contents, "</h1>", "</H1>");
+update mm_rooms set title =
+trim(replace(replace(substring_index(SUBSTRING_INDEX(contents, '</H1>', 1),
+'>', -1), "\r", " "), "\n", " "));
+update mm_rooms set title = "Fix Title!" where title = "";
+
+update mm_rooms set contents = replace(contents, "IMG\nSRC",  "IMG SRC");
+update mm_rooms set contents = replace(contents, "IMG\n\rSRC",  "IMG SRC");
+update mm_rooms set contents = replace(contents, "IMG\n\r SRC",  "IMG SRC");
+update mm_rooms set contents = replace(contents, "IMG\r\n SRC",  "IMG SRC");
+update mm_rooms set picture = substring(contents, locate("<IMG SRC=",
+contents)+10);
+update mm_rooms set picture = replace(picture, "\"", "\'");
+update mm_rooms set picture = substring(picture, 1, locate("\'", picture) -
+1);
+update mm_rooms set picture = replace(picture, "\n", "");
+update mm_rooms set picture = replace(picture, "\r", "");
+update mm_rooms set picture = null where trim(picture) = "" or picture like
+"%letter%";
+
+update mm_rooms set title = replace(title, "  ", " ");
+update mm_rooms set title = trim(title);
 
 creating board system
 ---------------------
