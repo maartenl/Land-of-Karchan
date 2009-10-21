@@ -27,8 +27,34 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
+
+/**
+ * the host that runs the mysql daemon
+ */
 $host="localhost";
+
+/**
+ * the name of the mysql database
+ */
 $db="dbname";
+
+/**
+ * the user to connect with to the database server
+ */
 $user="username";
+
+/**
+ * the password of the user of the database server
+ */
 $passwd="password";
+
+/**
+ * the host that runs the mmud daemon
+ */
+$server_host="localhost";
+
+/**
+ * the port on which the mmud daemon is listening
+ */
+$server_port=3340;
 ?>

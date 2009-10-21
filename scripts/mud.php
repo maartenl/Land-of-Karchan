@@ -27,7 +27,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-//include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
+include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php";
 
 /**
  * verify form information
@@ -47,10 +47,36 @@ if (!isset($_REQUEST{"command"}) &&
 //	{
 //		echo "$header: $value <br />\n";
 //	}
-	$fp = fsockopen ("localhost", 3340, $errno, $errstr, 30);
+	$fp = fsockopen ($server_host, $server_port, $errno, $errstr, 30);
 	if (!$fp) 
-	{
-		echo "$errstr ($errno)<br>\n";
+	{?>
+		<HTML>
+		<TITLE>An Error Occured Attempting to Play To The Mud
+		</TITLE>
+		<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
+		<H1><IMG SRC="/images/gif/dragon.gif">An Error Occured Attempting To Logon To The Mud</H1><HR>
+		An error occurred whilst attempting to connect to host <?php echo $server_host; ?>
+		 on port number <?php echo $server_port ?>.<P>
+		The following error occured:<P><TT>
+		<?php
+		echo "$errstr ($errno)<p>\n";
+		if ($errno == "111")
+		{
+		?>Error code <B>111</B> usually indicates that the mud server has crashed or has
+		been deactivated. It needs to be restarted.<P><?php
+		}
+		if ($errno == "13")
+		{
+		?>Error code <B>13</B> usually indicates that httpd server is not allowing network connections being made from within scripts. For example when using SELinux.<P><?php
+		}
+		?>
+		Please contact Karn (at <A HREF-"mailto:karn@karchan.org">karn@karchan.org</A>) 
+		as soon as possible to mention this problem and 
+		please mention the error message and error code.<P>
+		Thank you.
+		</BODY>
+		</HTML>	
+	<?php
 	} 
 	else 
 	{

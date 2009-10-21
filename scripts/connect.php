@@ -27,7 +27,7 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <?php
-include("/projects/www.karchan.org/karchan_config/keys.php");
+include("/var/www/html/scripts/keys_test.php");
 
 // Quote variable to make safe
 function quote_smart($value)
