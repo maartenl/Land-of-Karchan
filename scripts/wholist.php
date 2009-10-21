@@ -42,7 +42,7 @@ Land of Karchan - Who
 List of All Active Users</H2>
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/scripts/connect.php"; 
-$result = mysql_query("select name, title, sleep, 
+$result = mysql_query("select name, mm_usertable.title, sleep, 
 	floor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,
 	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec,
 	if (mm_area.area <> \"Main\", concat(\" in \" , mm_area.shortdesc), \"\") as area
