@@ -78,6 +78,24 @@ if ( isset($_REQUEST{"command"}) &&
 	// make that change.
 	$query = "update mm_help set contents=\"".
 		quote_smart($_REQUEST{"contents"}).
+		"\", synopsis=\"".
+		quote_smart($_REQUEST{"synopsis"}).
+		"\", seealso=\"".
+		quote_smart($_REQUEST{"seealso"}).
+		"\", example1=\"".
+		quote_smart($_REQUEST{"example1"}).
+		"\", example1a=\"".
+		quote_smart($_REQUEST{"example1a"}).
+		"\", example1b=\"".
+		quote_smart($_REQUEST{"example1b"}).
+		"\", example2=\"".
+		quote_smart($_REQUEST{"example2"}).
+		"\", example2a=\"".
+		quote_smart($_REQUEST{"example2a"}).
+		"\", example2b=\"".
+		quote_smart($_REQUEST{"example2b"}).
+		"\", example2c=\"".
+		quote_smart($_REQUEST{"example2c"}).
 		"\" where command = \"".
 		quote_smart($_REQUEST{"command"})."\"";
 	mysql_query($query
@@ -85,7 +103,7 @@ if ( isset($_REQUEST{"command"}) &&
 		or error_message("Query(8) failed : " . mysql_error());
 	writeLogLong($dbhandle, "Changed help on command ".$_REQUEST{"command"}.".", $query);
 }
-$result = mysql_query("select command, contents from mm_help order by
+$result = mysql_query("select * from mm_help order by
 command"
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
@@ -98,13 +116,26 @@ HREF=\"/scripts/admin_helptext.php?command=%s\">%s</A> ",
 		($_REQUEST{"command"}== $myrow["command"]) )
 	{
 ?>
-<b>contents:</b> <?php echo $myrow["contents"]; ?>
+<b>contents:</b><BR> <?php echo $myrow["contents"]; ?>
 <FORM METHOD="GET" ACTION="/scripts/admin_helptext.php">
 <b>
 <INPUT TYPE="hidden" NAME="command" VALUE="<?php echo $myrow["command"] ?>">
-contents<BR><TEXTAREA NAME="contents" ROWS="14" COLS="85"><?php
+<TABLE>
+<TR><TD><B>Synopsis:</B> </TD><TD><INPUT TYPE="text" NAME="synopsis" VALUE="<?php echo $myrow["synopsis"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+</TABLE>
+Description<BR><TEXTAREA NAME="contents" ROWS="14" COLS="85"><?php
 echo $myrow["contents"] ?></TEXTAREA>
 <BR>
+<TABLE>
+<TR><TD><B>Example 1:</B> </TD><TD><INPUT TYPE="text" NAME="example1" VALUE="<?php echo $myrow["example1"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Me:</B> </TD><TD><INPUT TYPE="text" NAME="example1a" VALUE="<?php echo $myrow["example1a"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Everyone else:</B> </TD><TD><INPUT TYPE="text" NAME="example1b" VALUE="<?php echo $myrow["example1b"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Example 2:</B> </TD><TD><INPUT TYPE="text" NAME="example2" VALUE="<?php echo $myrow["example2"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Me:</B> </TD><TD><INPUT TYPE="text" NAME="example2a" VALUE="<?php echo $myrow["example2a"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Marvin:</B> </TD><TD><INPUT TYPE="text" NAME="example2b" VALUE="<?php echo $myrow["example2b"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>Everyone else:</B> </TD><TD><INPUT TYPE="text" NAME="example2c" VALUE="<?php echo $myrow["example2c"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+<TR><TD><B>See also:</B> </TD><TD><INPUT TYPE="text" NAME="seealso" VALUE="<?php echo $myrow["seealso"] ?>" SIZE="80" MAXLENGTH="120"></TD></TR>
+</TABLE>
 <INPUT TYPE="submit" VALUE="Change Help">
 </b>   
 </FORM>
