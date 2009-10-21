@@ -118,7 +118,7 @@ public class Database
 	private static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
 	private static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
 	private static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
-	private static String sqlGetHelpString = "select contents from mm_help where command = ?";
+	private static String sqlGetHelpString = "select * from mm_help where command = ?";
 	private static String sqlAuthorizeString = "select \"yes\" from mm_admin where name = ? and validuntil > now()";
 
 	private static String sqlDeactivateEvent = "update mm_events "
@@ -1328,7 +1328,7 @@ public class Database
 	 *            general help will be requested.
 	 * @return String containing the man page of the command.
 	 */
-	public static String getHelp(String aCommand) throws MudException
+	public static HelpData getHelp(String aCommand) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aCommand == null)
@@ -1337,7 +1337,7 @@ public class Database
 		}
 
 		ResultSet res;
-		String result = null;
+		HelpData result = null;
 		try
 		{
 
@@ -1348,7 +1348,17 @@ public class Database
 			{
 				if (res.next())
 				{
-					result = res.getString("contents");
+					result = new HelpData(res.getString("command"), res
+							.getString("contents"), res.getString("synopsis"),
+							res.getString("seealso"));
+					result
+							.setFirstExample(res.getString("example1"), res
+									.getString("example1a"), res
+									.getString("example1b"));
+					result.setSecondExample(res.getString("example2"), res
+							.getString("example2a"),
+							res.getString("example2b"), res
+									.getString("example2c"));
 				}
 				res.close();
 			}

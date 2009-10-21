@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import mmud.MudException;
 import mmud.characters.User;
 import mmud.database.Database;
+import mmud.database.HelpData;
 
 /**
  * Show help regarding possible commands: "help".
@@ -38,7 +39,7 @@ import mmud.database.Database;
 public class HelpCommand extends NormalCommand
 {
 
-	private String theHelp;
+	private HelpData theHelp;
 	private User theUser;
 
 	public HelpCommand(String aRegExpr)
@@ -72,7 +73,7 @@ public class HelpCommand extends NormalCommand
 		Logger.getLogger("mmud").finer("");
 		try
 		{
-			String aString = theHelp;
+			String aString = theHelp.toString();
 			aString += theUser.printForm();
 			return aString;
 		} catch (Exception e)

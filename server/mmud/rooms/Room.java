@@ -74,10 +74,12 @@ public class Room implements Executable, AttributeContainer
 	 * 
 	 * @param aTitle
 	 *            the title of the room.
+	 * @throws MudException
 	 */
-	public void setTitle(String aTitle)
+	public void setTitle(String aTitle) throws MudException
 	{
 		theTitle = aTitle;
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -125,7 +127,7 @@ public class Room implements Executable, AttributeContainer
 		intwest = awest;
 		intup = aup;
 		intdown = adown;
-		setPicture(aPicture);
+		thePicture = aPicture;
 	}
 
 	/**
@@ -146,8 +148,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setSouth(Room aSouth) throws MudException
 	{
-		Database.writeRoom(this);
 		intsouth = (aSouth == null ? 0 : aSouth.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -158,8 +160,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setNorth(Room aNorth) throws MudException
 	{
-		Database.writeRoom(this);
 		intnorth = (aNorth == null ? 0 : aNorth.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -170,8 +172,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setEast(Room aEast) throws MudException
 	{
-		Database.writeRoom(this);
 		inteast = (aEast == null ? 0 : aEast.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -182,8 +184,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setWest(Room aWest) throws MudException
 	{
-		Database.writeRoom(this);
 		intwest = (aWest == null ? 0 : aWest.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -194,8 +196,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setUp(Room aUp) throws MudException
 	{
-		Database.writeRoom(this);
 		intup = (aUp == null ? 0 : aUp.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -206,8 +208,8 @@ public class Room implements Executable, AttributeContainer
 	 */
 	public void setDown(Room aDown) throws MudException
 	{
-		Database.writeRoom(this);
 		intdown = (aDown == null ? 0 : aDown.getId());
+		Database.writeRoom(this);
 	}
 
 	/**
@@ -345,7 +347,9 @@ public class Room implements Executable, AttributeContainer
 	private String getCapitalLetter(String aDescription)
 	{
 		return "<IMG SRC='/images/gif/letters/"
-				+ aDescription.toLowerCase().charAt(1) + ".gif' ALIGN=left>";
+				+ aDescription.toLowerCase().charAt(0)
+				+ ".gif' ALIGN=left ALT="
+				+ aDescription.toLowerCase().charAt(0) + ">";
 	}
 
 	/**
@@ -373,7 +377,7 @@ public class Room implements Executable, AttributeContainer
 		}
 		result.append(getTitle() + "</H1>");
 		result.append(getCapitalLetter(getDescription())
-				+ getDescription().substring(2) + "[");
+				+ getDescription().substring(1) + "<P>[");
 		if (getWest() != null)
 		{
 			result.append("<A HREF=\"" + aUser.getUrl("w") + "\">west </A>");
@@ -719,6 +723,50 @@ public class Room implements Executable, AttributeContainer
 			throw new FieldNotSupportedException(field_name
 					+ " not set, not string.");
 		}
+		if (field_name.equals("title"))
+		{
+			if (value instanceof Null)
+			{
+				throw new FieldNotSupportedException(field_name
+						+ " not set, cannot be null.");
+			}
+			if (value instanceof String)
+			{
+				try
+				{
+					setTitle((String) value);
+				} catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name
+							+ " unable to change title " + e);
+				}
+				return;
+			}
+			throw new FieldNotSupportedException(field_name
+					+ " not set, not string.");
+		}
+		if (field_name.equals("picture"))
+		{
+			if (value instanceof Null)
+			{
+				throw new FieldNotSupportedException(field_name
+						+ " not set, cannot be null.");
+			}
+			if (value instanceof String)
+			{
+				try
+				{
+					setPicture((String) value);
+				} catch (MudException e)
+				{
+					throw new FieldNotSupportedException(field_name
+							+ " unable to change picture " + e);
+				}
+				return;
+			}
+			throw new FieldNotSupportedException(field_name
+					+ " not set, not string.");
+		}
 		if (field_name.equals("east"))
 		{
 			if (value instanceof Null)
@@ -944,6 +992,14 @@ public class Room implements Executable, AttributeContainer
 			if (field_name.equals("room"))
 			{
 				return new Integer(getId());
+			}
+			if (field_name.equals("title"))
+			{
+				return new Integer(getTitle());
+			}
+			if (field_name.equals("picture"))
+			{
+				return new Integer(getPicture());
 			}
 			if (field_name.equals("east"))
 			{
@@ -1322,10 +1378,12 @@ public class Room implements Executable, AttributeContainer
 	 * 
 	 * @param aPicture
 	 *            string containing where the picture can be found.
+	 * @throws MudException
 	 */
-	public void setPicture(String aPicture)
+	public void setPicture(String aPicture) throws MudException
 	{
 		thePicture = aPicture;
+		Database.writeRoom(this);
 	}
 
 	/**

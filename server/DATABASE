@@ -333,6 +333,34 @@ update mm_rooms set picture = null where trim(picture) = "" or picture like
 update mm_rooms set title = replace(title, "  ", " ");
 update mm_rooms set title = trim(title);
 
+update mm_rooms set contents = substring_index(contents,
+"/images/gif/letters/", -1) where contents like "%/images/gif/letters/%";
+
+update mm_rooms set contents = replace(contents, ".gif\"\r\nALIGN=left>",
+"");
+update mm_rooms set contents = replace(contents, ".gif\"\nALIGN=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\"\rALIGN=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\" ALIGN=left>", "");
+
+update mm_rooms set contents = replace(contents, ".gif\'\r\nALIGN=left>",
+"");
+update mm_rooms set contents = replace(contents, ".gif\'\nALIGN=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\'\rALIGN=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\' ALIGN=left>", "");
+
+update mm_rooms set contents = replace(contents, ".gif\"\r\nalign=left>",
+"");
+update mm_rooms set contents = replace(contents, ".gif\"\nalign=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\"\ralign=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\" align=left>", "");
+
+update mm_rooms set contents = replace(contents, ".gif\'\r\nalign=left>",
+"");
+update mm_rooms set contents = replace(contents, ".gif\'\nalign=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\'\ralign=left>", "");
+update mm_rooms set contents = replace(contents, ".gif\' align=left>", "");
+
+
 creating board system
 ---------------------
 create table mm_boardmessages
