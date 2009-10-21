@@ -176,7 +176,7 @@ else
 		or error_message("Query failed : " . mysql_error());
 	while ($myrow = mysql_fetch_array($result))
 	{
-		printf("%s<BR>", $myrow["id"]);
+		printf("<A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["id"], $myrow["id"]);
 	}
 	printf("</TD><TD><H2>Boards</H2>");
 	$result = mysql_query("select id as id from mm_boards
