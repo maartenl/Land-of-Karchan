@@ -360,6 +360,17 @@ update mm_rooms set contents = replace(contents, ".gif\'\nalign=left>", "");
 update mm_rooms set contents = replace(contents, ".gif\'\ralign=left>", "");
 update mm_rooms set contents = replace(contents, ".gif\' align=left>", "");
 
+alter table mm_help add (synopsis varchar(120));
+alter table mm_help add (seealso varchar(120));
+alter table mm_help add (example1 varchar(120));
+alter table mm_help add (example1a varchar(120));
+alter table mm_help add (example1b varchar(120));
+
+alter table mm_help add (example2 varchar(120));
+alter table mm_help add (example2a varchar(120));
+alter table mm_help add (example2b varchar(120));
+alter table mm_help add (example2c varchar(120));
+
 
 creating board system
 ---------------------

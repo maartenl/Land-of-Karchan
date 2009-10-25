@@ -99,6 +99,10 @@ public class HelpData
 
 	private String getCSynopsis()
 	{
+		if (getSynopsis() == null)
+		{
+			return "";
+		}
 		return getSynopsis().replaceAll("<", "&lt;").replaceAll(">", "&gt;")
 				.replaceAll("\"", "&quot;").replaceAll(getCommand(),
 						"<B>" + getCommand() + "</B>");
@@ -168,7 +172,7 @@ public class HelpData
 
 	public String getSeealso()
 	{
-		return theSeealso;
+		return (theSeealso==null ? null : theSeealso);
 	}
 
 	public void setSecondExample(String anExample, String aMe, String aTarget,
