@@ -478,14 +478,10 @@ public class User extends mmud.characters.Person
 		String myString = "";
 		if (getFrames() == 0)
 		{
-			myString = "<SCRIPT language=\"JavaScript\">\r\n"
-					+ "<!-- In hiding!\r\n" + "function setfocus() {\r\n"
-					+ "	   document.CommandForm.command.focus();\r\n"
-					+ "   return;\r\n" + "   }\r\n" + "//-->\r\n"
-					+ "</SCRIPT>\r\n";
 			myString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi
-					+ "\" NAME=\"CommandForm\">\n";
-			myString += "<INPUT TYPE=\"text\" NAME=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n";
+					+ "\" NAME=\"CommandForm\" id=\"CommandForm\"" + ">\n";
+			myString += "<IMG SRC=\"/images/icons/bigtalk.ico\" alt=\"big2talk\" name=\"big2talk\" id=\"big2talk\" border=\"0\" align=\"top\" onclick=\"bigtalk()\">";
+			myString += "<INPUT TYPE=\"text\" NAME=\"command\" ID=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n";
 			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
 					+ getName() + "\">\n";
 			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n";

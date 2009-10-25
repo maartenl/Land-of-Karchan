@@ -51,7 +51,6 @@ import mmud.commands.AcknowledgeCommand;
 import mmud.commands.AdminCommand;
 import mmud.commands.AskCommand;
 import mmud.commands.AwakenCommand;
-import mmud.commands.BigTalkCommand;
 import mmud.commands.BogusCommand;
 import mmud.commands.BowCommand;
 import mmud.commands.BuyCommand;
@@ -728,7 +727,6 @@ public final class Constants
 				"fully ignore (\\w)+"));
 		theCommandStructure.put("acknowledge", new AcknowledgeCommand(
 				"acknowledge (\\w)+"));
-		theCommandStructure.put("bigtalk", new BigTalkCommand("bigtalk"));
 		theCommandStructure.put("curtsey", new CurtseyCommand(
 				"curtsey( to (\\w)+)?"));
 		theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));

@@ -411,105 +411,14 @@ public class Room implements Executable, AttributeContainer
 
 			if (aUser.isaSleep())
 			{
-				result.append("<script language=\"JavaScript\">\r\n");
-
-				result.append("<!-- In hiding!\r\n");
-				result.append(" browserName = navigator.appName;\r\n");
-				result
-						.append("		   browserVer = parseInt(navigator.appVersion);\r\n");
-				result
-						.append("			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-				result.append("\"n3\";\r\n");
-				result.append("			   else version = \"n2\";\r\n");
-
-				result.append("			   if (version == \"n3\"){				\r\n");
-				result.append("			   toc1on = new Image;\r\n");
-				result
-						.append("			   toc1on.src = \"../images/gif/webpic/new/buttonl.gif\";\r\n");
-
-				result.append("			   toc1off = new Image;\r\n");
-				result
-						.append("			   toc1off.src = \"../images/gif/webpic/buttonl.gif\";\r\n");
-
-				result.append("		}\r\n");
-
-				result.append("function img_act(imgName) {\r\n");
-				result.append("		if (version == \"n3\") {\r\n");
-				result.append("		imgOn = eval(imgName + \"on.src\";\r\n");
-				result.append("		document [imgName].src = imgOn;\r\n");
-				result.append("		}\r\n");
-				result.append("}\r\n");
-
-				result.append("function img_inact(imgName) {\r\n");
-				result.append("		if (version == \"n3\") {\r\n");
-				result.append("		imgOff = eval(imgName + \"off.src\";\r\n");
-				result.append("		document [imgName].src = imgOff;\r\n");
-				result.append("		}\r\n");
-				result.append("}\r\n");
-
-				result.append("//-->\r\n");
-
-				result.append("</SCRIPT>\r\n");
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("awaken")
-								+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n");
+								+ "\" onMouseOver=\"img_act('tocAwaken')\" onMouseOut=\"img_inact('tocAwaken')\">\n");
 				result
-						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"toc1\"></A><P>\n");
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"tocAwaken\"></A><P>\n");
 			} else
 			{
-				result.append("<script language=\"JavaScript\">\r\n");
-
-				result.append("<!-- In hiding!\r\n");
-				result.append(" browserName = navigator.appName;\r\n");
-				result
-						.append("		   browserVer = parseInt(navigator.appVersion);\r\n");
-				result
-						.append("			   if (browserName == \"Netscape\" && browserVer >= 3) version =\r\n");
-				result.append("\"n3\";\r\n");
-				result.append("			   else version = \"n2\";\r\n");
-
-				result.append("			   if (version == \"n3\"){				\r\n");
-				result.append("			   toc1on = new Image;\r\n");
-				result
-						.append("			   toc1on.src = \"../images/gif/webpic/new/buttonk.gif\";\r\n");
-				result.append("			   toc2on = new Image;\r\n");
-				result
-						.append("			   toc2on.src = \"../images/gif/webpic/new/buttonj.gif\";\r\n");
-				result.append("			   toc3on = new Image;\r\n");
-				result
-						.append("			   toc3on.src =\"../images/gif/webpic/new/buttonr.gif\";\r\n");
-
-				result.append("			   toc1off = new Image;\r\n");
-				result
-						.append("			   toc1off.src = \"../images/gif/webpic/buttonk.gif\";\r\n");
-				result.append("			   toc2off = new Image;\r\n");
-				result
-						.append("			   toc2off.src = \"../images/gif/webpic/buttonj.gif\";\r\n");
-				result.append("			   toc3off = new Image;\r\n");
-				result
-						.append("			   toc3off.src = \"../images/gif/webpic/buttonr.gif\";\r\n");
-
-				result.append("		}\r\n");
-
-				result.append("function img_act(imgName) {\r\n");
-				result.append("		if (version == \"n3\") {\r\n");
-				result.append("		imgOn = eval(imgName + \"on.src\";\r\n");
-				result.append("		document [imgName].src = imgOn;\r\n");
-				result.append("		}\r\n");
-				result.append("}\r\n");
-
-				result.append("function img_inact(imgName) {\r\n");
-				result.append("		if (version == \"n3\") {\r\n");
-				result.append("		imgOff = eval(imgName + \"off.src\";\r\n");
-				result.append("		document [imgName].src = imgOff;\r\n");
-				result.append("		}\r\n");
-				result.append("}\r\n");
-
-				result.append("//-->\r\n");
-
-				result.append("</SCRIPT>\r\n");
-
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("quit")

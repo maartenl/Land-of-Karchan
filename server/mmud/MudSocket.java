@@ -524,8 +524,10 @@ public class MudSocket implements Runnable
 			{
 				returnStuff = "sessionpassword=" + myUser.getSessionPassword()
 						+ "\n";
-				returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - "
-						+ myUser.getName() + "</TITLE></HEAD>\r\n";
+				returnStuff += "<HTML><HEAD>";
+				returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
+				returnStuff += "<TITLE>Land of Karchan - " + myUser.getName()
+						+ "</TITLE></HEAD>\r\n";
 				returnStuff += "<FRAMESET ROWS=\"*,50\">\r\n";
 				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
 				returnStuff += "	 <FRAME SRC="
@@ -548,8 +550,10 @@ public class MudSocket implements Runnable
 			{
 				returnStuff = "sessionpassword=" + myUser.getSessionPassword()
 						+ "\n";
-				returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - "
-						+ myUser.getName() + "</TITLE></HEAD>\r\n";
+				returnStuff += "<HTML><HEAD>";
+				returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
+				returnStuff += "<TITLE>Land of Karchan - " + myUser.getName()
+						+ "</TITLE></HEAD>\r\n";
 				returnStuff += "<FRAMESET ROWS=\"*,50,0,0\">\r\n";
 				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
 				returnStuff += "	 <FRAMESET ROWS=\"60%,40%\">\r\n";
@@ -773,7 +777,9 @@ public class MudSocket implements Runnable
 		}
 		case 1:
 		{
-			returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - " + aName
+			returnStuff += "<HTML><HEAD>";
+			returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
+			returnStuff += "<TITLE>Land of Karchan - " + aName
 					+ "</TITLE></HEAD>\r\n";
 			returnStuff += "<FRAMESET ROWS=\"*,50\">\r\n";
 			returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
@@ -791,7 +797,9 @@ public class MudSocket implements Runnable
 		}
 		case 2:
 		{
-			returnStuff += "<HTML><HEAD><TITLE>Land of Karchan - " + aName
+			returnStuff += "<HTML><HEAD>";
+			returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
+			returnStuff += "<TITLE>Land of Karchan - " + aName
 					+ "</TITLE></HEAD>\r\n";
 			returnStuff += "<FRAMESET ROWS=\"*,50,0,0\">\r\n";
 			returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
@@ -845,6 +853,7 @@ public class MudSocket implements Runnable
 			returnStuff = "sessionpassword=\n<HTML>\n";
 		}
 		returnStuff += "<HEAD>\n";
+		returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
 		returnStuff += "<TITLE>\n";
 		returnStuff += Constants.mudtitle;
 		returnStuff += "\n</TITLE>\n";
