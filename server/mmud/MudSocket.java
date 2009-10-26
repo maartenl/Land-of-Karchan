@@ -509,79 +509,85 @@ public class MudSocket implements Runnable
 				myUser.writeMessage(myUser.getGuild().getAlarmDescription()
 						+ "<HR>");
 			}
-			String returnStuff;
+			StringBuffer returnStuff = new StringBuffer();
 			Database.writeLog(myUser.getName(), "entered game.");
 			switch (myUser.getFrames())
 			{
 			case 0:
 			{
-				returnStuff = "sessionpassword=" + myUser.getSessionPassword()
-						+ "\n";
-				returnStuff += gameMain(myUser, "me has entered the game...");
+				returnStuff.append("sessionpassword="
+						+ myUser.getSessionPassword() + "\n");
+				returnStuff.append(gameMain(myUser,
+						"me has entered the game..."));
 				break;
 			}
 			case 1:
 			{
-				returnStuff = "sessionpassword=" + myUser.getSessionPassword()
-						+ "\n";
-				returnStuff += "<HTML><HEAD>";
-				returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
-				returnStuff += "<TITLE>Land of Karchan - " + myUser.getName()
-						+ "</TITLE></HEAD>\r\n";
-				returnStuff += "<FRAMESET ROWS=\"*,50\">\r\n";
-				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-				returnStuff += "	 <FRAME SRC="
-						+ myUser.getUrl("me+has+entered+the+game...")
-						+ " NAME=\"main\" border=0>\r\n";
-				returnStuff += "	 <FRAME SRC=" + Constants.leftframecgi
+				returnStuff.append("sessionpassword="
+						+ myUser.getSessionPassword() + "\n");
+				returnStuff
+						.append("<HTML><HEAD>"
+								+ "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n"
+								+ "<TITLE>Land of Karchan - ");
+				returnStuff.append(myUser.getName());
+				returnStuff.append("</TITLE></HEAD>\r\n"
+						+ "<FRAMESET ROWS=\"*,50\">\r\n"
+						+ " <FRAMESET COLS=\"*,180\">\r\n" + "	 <FRAME SRC=");
+				returnStuff.append(myUser.getUrl("me+has+entered+the+game..."));
+				returnStuff.append(" NAME=\"main\" border=0>\r\n"
+						+ "	 <FRAME SRC=" + Constants.leftframecgi + "?name="
+						+ myUser.getName() + "&password="
+						+ myUser.getPassword()
+						+ " NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n");
+				returnStuff.append(" </FRAMESET>\r\n");
+				returnStuff.append(" <FRAME SRC=" + Constants.logonframecgi
 						+ "?name=" + myUser.getName() + "&password="
 						+ myUser.getPassword()
-						+ " NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " </FRAMESET>\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.logonframecgi
-						+ "?name=" + myUser.getName() + "&password="
-						+ myUser.getPassword()
-						+ " NAME=\"logon\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += "</FRAMESET>\r\n";
-				returnStuff += "</HTML>\r\n";
+						+ " NAME=\"logon\" scrolling=\"no\" border=0>\r\n"
+						+ "</FRAMESET>\r\n</HTML>\r\n");
 				break;
 			}
 			case 2:
 			{
-				returnStuff = "sessionpassword=" + myUser.getSessionPassword()
-						+ "\n";
-				returnStuff += "<HTML><HEAD>";
-				returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
-				returnStuff += "<TITLE>Land of Karchan - " + myUser.getName()
-						+ "</TITLE></HEAD>\r\n";
-				returnStuff += "<FRAMESET ROWS=\"*,50,0,0\">\r\n";
-				returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-				returnStuff += "	 <FRAMESET ROWS=\"60%,40%\">\r\n";
-				returnStuff += "	 <FRAME SRC="
-						+ myUser.getUrl("me+has+entered+the+game...")
-						+ " NAME=\"statusFrame\" border=0>\r\n";
-				returnStuff += "	 <FRAME SRC=/karchan/empty.html NAME=\"logFrame\">\r\n";
-				returnStuff += "	 </FRAMESET>\r\n";
-				returnStuff += " <FRAME SRC=" + Constants.nph_leftframecgi
-						+ "?name=" + myUser.getName() + "&password="
-						+ myUser.getPassword()
-						+ " NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " </FRAMESET>\r\n\r\n";
-				returnStuff += " <FRAME SRC="
-						+ Constants.nph_logonframecgi
-						+ "?name="
-						+ myUser.getName()
-						+ "&password="
-						+ myUser.getPassword()
-						+ " NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n";
-				returnStuff += " <FRAME SRC="
+				returnStuff.append("sessionpassword="
+						+ myUser.getSessionPassword() + "\n");
+				returnStuff
+						.append("<HTML><HEAD>"
+								+ "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n"
+								+ "<TITLE>Land of Karchan - ");
+				returnStuff.append(myUser.getName());
+				returnStuff
+						.append("</TITLE></HEAD>\r\n"
+								+ "<FRAMESET ROWS=\"*,50,0,0\">\r\n"
+								+ " <FRAMESET COLS=\"*,180\">\r\n"
+								+ "	 <FRAMESET ROWS=\"60%,40%\">\r\n"
+								+ "	 <FRAME SRC=");
+				returnStuff.append(myUser.getUrl("me+has+entered+the+game..."));
+				returnStuff
+						.append(" NAME=\"statusFrame\" border=0>\r\n"
+								+ "	 <FRAME SRC=/karchan/empty.html NAME=\"logFrame\">\r\n"
+								+ "	 </FRAMESET>\r\n" + " <FRAME SRC=");
+				returnStuff.append(Constants.nph_leftframecgi + "?name="
+						+ myUser.getName() + "&password="
+						+ myUser.getPassword());
+				returnStuff
+						.append(" NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n"
+								+ " </FRAMESET>\r\n\r\n"
+								+ " <FRAME SRC="
+								+ Constants.nph_logonframecgi
+								+ "?name="
+								+ myUser.getName()
+								+ "&password="
+								+ myUser.getPassword()
+								+ " NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n");
+				returnStuff.append(" <FRAME SRC="
 						+ Constants.nph_javascriptframecgi + "?name="
 						+ myUser.getName() + "&password="
 						+ myUser.getPassword()
-						+ " NAME=\"javascriptFrame\">\r\n";
-				returnStuff += " <FRAME SRC=/karchan/empty.html NAME=\"duhFrame\">\r\n";
-				returnStuff += "</FRAMESET>\r\n";
-				returnStuff += "</HTML>\r\n";
+						+ " NAME=\"javascriptFrame\">\r\n");
+				returnStuff
+						.append(" <FRAME SRC=/karchan/empty.html NAME=\"duhFrame\">\r\n"
+								+ "</FRAMESET>\r\n" + "</HTML>\r\n");
 				break;
 			}
 			default:
@@ -592,7 +598,7 @@ public class MudSocket implements Runnable
 			}
 			}
 			Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
-			return returnStuff;
+			return returnStuff.toString();
 		} catch (UserAlreadyActiveException e)
 		{
 			// already active user wishes to relogin
@@ -718,13 +724,14 @@ public class MudSocket implements Runnable
 				throw new MudException(Constants.PWDINCORRECTERROR);
 			}
 			myUser.setFrames(aFrames);
-			String returnStuff;
-			returnStuff = gameMain(myUser, aCommand);
-			returnStuff += "<HR><FONT Size=1><DIV ALIGN=right>"
-					+ Constants.mudcopyright + "<DIV ALIGN=left></FONT>";
-			returnStuff += "</BODY></HTML>";
+			StringBuffer returnStuff;
+			returnStuff = new StringBuffer(gameMain(myUser, aCommand));
+			returnStuff.append("<HR><FONT Size=1><DIV ALIGN=right>");
+			returnStuff.append(Constants.mudcopyright);
+			returnStuff.append("<DIV ALIGN=left></FONT>");
+			returnStuff.append("</BODY></HTML>");
 			Logger.getLogger("mmud").finest("returns: " + returnStuff);
-			return returnStuff;
+			return returnStuff.toString();
 		} catch (PersonException e)
 		{
 			e.printStackTrace();
@@ -743,83 +750,105 @@ public class MudSocket implements Runnable
 			int aFrames) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
-		String returnStuff;
+		StringBuffer returnStuff;
 		aUser.generateSessionPassword();
 		aUser.setFrames(aFrames);
-		returnStuff = "sessionpassword=" + aUser.getSessionPassword() + "\n";
+		returnStuff = new StringBuffer("sessionpassword="
+				+ aUser.getSessionPassword() + "\n");
 		switch (aFrames)
 		{
 		case 0:
 		{
-			returnStuff += "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n";
-			returnStuff += "<BODY>\n";
-			returnStuff += "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n";
-			returnStuff += "You tried to start a session which is already in progress. You can't play \n";
-			returnStuff += "two sessions at the same time! Please check below to try again. In case you \n";
-			returnStuff += "accidently turned of your computerterminal or Netscape or Lynx without first \n";
-			returnStuff += "having typed <B>QUIT</B> while you were in the MUD, you can reenter the game \n";
-			returnStuff += "by using the second link. You have to sit at the same computer as you did \n";
-			returnStuff += "when you logged in.<P>\n";
-			returnStuff += "<A HREF=\"/karchan/enter.html\">Click here to\n";
-			returnStuff += "retry</A><P>\n";
+			returnStuff.append("<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n");
+			returnStuff.append("<BODY>\n");
+			returnStuff
+					.append("<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Already Active</H1><HR>\n");
+			returnStuff
+					.append("You tried to start a session which is already in progress. You can't play \n");
+			returnStuff
+					.append("two sessions at the same time! Please check below to try again. In case you \n");
+			returnStuff
+					.append("accidently turned of your computerterminal or Netscape or Lynx without first \n");
+			returnStuff
+					.append("having typed <B>QUIT</B> while you were in the MUD, you can reenter the game \n");
+			returnStuff
+					.append("by using the second link. You have to sit at the same computer as you did \n");
+			returnStuff.append("when you logged in.<P>\n");
+			returnStuff
+					.append("<A HREF=\"/karchan/enter.html\">Click here to\n");
+			returnStuff.append("retry</A><P>\n");
 
-			returnStuff += "Do you wish to enter into the active character?<BR><UL><LI>";
-			returnStuff += "<A HREF=\"" + Constants.mudcgi
+			returnStuff
+					.append("Do you wish to enter into the active character?<BR><UL><LI>");
+			returnStuff.append("<A HREF=\"" + Constants.mudcgi
 					+ "?command=me+entered+the+game+again...&name=" + aName
-					+ "&frames=" + (aFrames + 1) + "\">Yes</A>";
-			returnStuff += "<LI><A HREF=\"/karchan/index.html\">No</A></UL>";
-			returnStuff += "<HR><FONT Size=1><DIV ALIGN=right>"
-					+ Constants.mudcopyright;
-			returnStuff += "<DIV ALIGN=left><P>";
-			returnStuff += "</body>\n";
-			returnStuff += "</HTML>\n";
+					+ "&frames=" + (aFrames + 1) + "\">Yes</A>");
+			returnStuff
+					.append("<LI><A HREF=\"/karchan/index.html\">No</A></UL>");
+			returnStuff.append("<HR><FONT Size=1><DIV ALIGN=right>"
+					+ Constants.mudcopyright);
+			returnStuff.append("<DIV ALIGN=left><P>");
+			returnStuff.append("</body>\n");
+			returnStuff.append("</HTML>\n");
 			break;
 		}
 		case 1:
 		{
-			returnStuff += "<HTML><HEAD>";
-			returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
-			returnStuff += "<TITLE>Land of Karchan - " + aName
-					+ "</TITLE></HEAD>\r\n";
-			returnStuff += "<FRAMESET ROWS=\"*,50\">\r\n";
-			returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-			returnStuff += "	 <FRAME SRC=\"/karchan/already_active.html\" NAME=\"main\" border=0>\r\n";
-			returnStuff += "	 <FRAME SRC=\"" + Constants.leftframecgi
+			returnStuff.append("<HTML><HEAD>");
+			returnStuff
+					.append("<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n");
+			returnStuff.append("<TITLE>Land of Karchan - " + aName
+					+ "</TITLE></HEAD>\r\n");
+			returnStuff.append("<FRAMESET ROWS=\"*,50\">\r\n");
+			returnStuff.append(" <FRAMESET COLS=\"*,180\">\r\n");
+			returnStuff
+					.append("	 <FRAME SRC=\"/karchan/already_active.html\" NAME=\"main\" border=0>\r\n");
+			returnStuff.append("	 <FRAME SRC=\"" + Constants.leftframecgi
 					+ "?name=" + aName + "&password=" + aPassword
-					+ "\" NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n";
-			returnStuff += " </FRAMESET>\r\n";
-			returnStuff += " <FRAME SRC=\"" + Constants.logonframecgi
+					+ "\" NAME=\"leftframe\" scrolling=\"no\" border=0>\r\n");
+			returnStuff.append(" </FRAMESET>\r\n");
+			returnStuff.append(" <FRAME SRC=\"" + Constants.logonframecgi
 					+ "?name=" + aName + "&password=" + aPassword
-					+ "\" NAME=\"logon\" scrolling=\"no\" border=0>\r\n";
-			returnStuff += "</FRAMESET>\r\n";
-			returnStuff += "</HTML>\r\n";
+					+ "\" NAME=\"logon\" scrolling=\"no\" border=0>\r\n");
+			returnStuff.append("</FRAMESET>\r\n");
+			returnStuff.append("</HTML>\r\n");
 			break;
 		}
 		case 2:
 		{
-			returnStuff += "<HTML><HEAD>";
-			returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
-			returnStuff += "<TITLE>Land of Karchan - " + aName
-					+ "</TITLE></HEAD>\r\n";
-			returnStuff += "<FRAMESET ROWS=\"*,50,0,0\">\r\n";
-			returnStuff += " <FRAMESET COLS=\"*,180\">\r\n";
-			returnStuff += "	 <FRAMESET ROWS=\"60%,40%\">\r\n";
-			returnStuff += "	 <FRAME SRC=\"/karchan/already_active.html\" NAME=\"statusFrame\" border=0>\r\n";
-			returnStuff += "	 <FRAME SRC=\"/empty.html\" NAME=\"logFrame\">\r\n";
-			returnStuff += "	 </FRAMESET>\r\n";
-			returnStuff += " <FRAME SRC=\"" + Constants.nph_leftframecgi
+			returnStuff.append("<HTML><HEAD>");
+			returnStuff
+					.append("<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n");
+			returnStuff.append("<TITLE>Land of Karchan - " + aName
+					+ "</TITLE></HEAD>\r\n");
+			returnStuff.append("<FRAMESET ROWS=\"*,50,0,0\">\r\n");
+			returnStuff.append(" <FRAMESET COLS=\"*,180\">\r\n");
+			returnStuff.append("	 <FRAMESET ROWS=\"60%,40%\">\r\n");
+			returnStuff
+					.append("	 <FRAME SRC=\"/karchan/already_active.html\" NAME=\"statusFrame\" border=0>\r\n");
+			returnStuff
+					.append("	 <FRAME SRC=\"/empty.html\" NAME=\"logFrame\">\r\n");
+			returnStuff.append("	 </FRAMESET>\r\n");
+			returnStuff.append(" <FRAME SRC=\"" + Constants.nph_leftframecgi
 					+ "?name=" + aName + "&password=" + aPassword
-					+ "\" NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n";
-			returnStuff += " </FRAMESET>\r\n\r\n";
-			returnStuff += " <FRAME SRC=\"" + Constants.nph_logonframecgi
-					+ "?name=" + aName + "&password=" + aPassword
-					+ "\" NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n";
-			returnStuff += " <FRAME SRC=\"" + Constants.nph_javascriptframecgi
-					+ "?name=" + aName + "&password=" + aPassword
-					+ "\" NAME=\"javascriptFrame\">\r\n";
-			returnStuff += " <FRAME SRC=\"/karchan/empty.html\" NAME=\"duhFrame\">\r\n";
-			returnStuff += "</FRAMESET>\r\n";
-			returnStuff += "</HTML>\r\n";
+					+ "\" NAME=\"leftFrame\" scrolling=\"no\" border=0>\r\n");
+			returnStuff.append(" </FRAMESET>\r\n\r\n");
+			returnStuff
+					.append(" <FRAME SRC=\""
+							+ Constants.nph_logonframecgi
+							+ "?name="
+							+ aName
+							+ "&password="
+							+ aPassword
+							+ "\" NAME=\"commandFrame\" scrolling=\"no\" border=0>\r\n");
+			returnStuff.append(" <FRAME SRC=\""
+					+ Constants.nph_javascriptframecgi + "?name=" + aName
+					+ "&password=" + aPassword
+					+ "\" NAME=\"javascriptFrame\">\r\n");
+			returnStuff
+					.append(" <FRAME SRC=\"/karchan/empty.html\" NAME=\"duhFrame\">\r\n");
+			returnStuff.append("</FRAMESET>\r\n");
+			returnStuff.append("</HTML>\r\n");
 			break;
 		}
 		default:
@@ -828,7 +857,7 @@ public class MudSocket implements Runnable
 		}
 		}
 		Logger.getLogger("mmud").finer("returns: [" + returnStuff + "]");
-		return returnStuff;
+		return returnStuff.toString();
 	}
 
 	/**
@@ -847,37 +876,40 @@ public class MudSocket implements Runnable
 	{
 		Logger.getLogger("mmud").finer(
 				"aUser=" + aUser.getName() + ",aCommand=" + aCommand);
-		String returnStuff = "<HTML>\n";
+		StringBuffer returnStuff = new StringBuffer("<HTML>\n");
 		if (aCommand.equalsIgnoreCase("quit"))
 		{
-			returnStuff = "sessionpassword=\n<HTML>\n";
+			returnStuff = new StringBuffer("sessionpassword=\n<HTML>\n");
 		}
-		returnStuff += "<HEAD>\n";
-		returnStuff += "<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n";
-		returnStuff += "<TITLE>\n";
-		returnStuff += Constants.mudtitle;
-		returnStuff += "\n</TITLE>\n";
-		returnStuff += "</HEAD>\n";
+		returnStuff.append("<HEAD>\n");
+		returnStuff
+				.append("<script language=\"JavaScript\" src=\"/karchan/js/karchan.js\"></script>\r\n");
+		returnStuff.append("<TITLE>\n");
+		returnStuff.append(Constants.mudtitle);
+		returnStuff.append("\n</TITLE>\n");
+		returnStuff.append("</HEAD>\n");
 		switch (aUser.getFrames())
 		{
 		case 0:
 		{
-			returnStuff += "<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
-					+ Constants.mudbackground + "\" onLoad=\"setfocus()\">\n";
+			returnStuff.append("<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
+					+ Constants.mudbackground + "\" onLoad=\"setfocus()\">\n");
 			break;
 		}
 		case 1:
 		{
-			returnStuff += "<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
-					+ Constants.mudbackground
-					+ "\" OnLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n";
+			returnStuff
+					.append("<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
+							+ Constants.mudbackground
+							+ "\" OnLoad=\"top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()\">\n");
 			break;
 		}
 		case 2:
 		{
-			returnStuff += "<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
-					+ Constants.mudbackground
-					+ "\"onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n";
+			returnStuff
+					.append("<BODY BGCOLOR=#FFFFFF BACKGROUND=\""
+							+ Constants.mudbackground
+							+ "\"onLoad=\"top.frames[3].document.myForm.command.value='';top.frames[3].document.myForm.command.focus()\">\n");
 			break;
 		}
 		default:
@@ -898,14 +930,14 @@ public class MudSocket implements Runnable
 		}
 		if (result == null)
 		{
-			returnStuff += aUser.getRoom().getDescription(aUser);
-			returnStuff += aUser.printForm();
-			returnStuff += aUser.readLog();
+			returnStuff.append(aUser.getRoom().getDescription(aUser));
+			returnStuff.append(aUser.printForm());
+			returnStuff.append(aUser.readLog());
 		} else
 		{
-			returnStuff += result;
+			returnStuff.append(result);
 		}
-		return returnStuff;
+		return returnStuff.toString();
 	}
 
 }

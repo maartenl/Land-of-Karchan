@@ -628,7 +628,7 @@ public final class Constants
 		int i = myFileReader.read(myArray, 0, myArray.length);
 		while (i > 0)
 		{
-			myResult.append(new String(myArray, 0, i));
+			myResult.append(myArray, 0, i);
 			i = myFileReader.read(myArray, 0, myArray.length);
 		}
 		myFileReader.close();
