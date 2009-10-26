@@ -27,10 +27,14 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 ?>
 <HTML>
-<BODY BGCOLOR=#FFFFFF>
+<HEAD>
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
+</HEAD>
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <DIV ALIGN=CENTER>
-<FORM METHOD="GET" ACTION="/scripts/mud.php" NAME="myForm" TARGET="main">
-<INPUT TYPE="text" NAME="command" SIZE="60" VALUE="">
+<FORM METHOD="GET" ACTION="/scripts/mud.php" id="CommandForm" NAME="myForm" TARGET="main">
+<IMG SRC="/images/icons/bigtalk.ico" alt="big2talk" name="big2talk" id="big2talk" border="0" align="top" onclick="bigtalk()">
+<INPUT TYPE="text" ID="command" NAME="command" SIZE="60" VALUE="">
 <INPUT TYPE="submit" VALUE="Submit" onClick='document.myForm.command.command=""'>
 <INPUT TYPE="hidden" NAME="name" VALUE="<?php echo $_COOKIE["karchanname"] ?>">
 <INPUT TYPE="hidden" NAME="frames" VALUE="2">
