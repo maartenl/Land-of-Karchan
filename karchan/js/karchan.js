@@ -1,20 +1,3 @@
-var toc1on = new Image;
-toc1on.src = "../images/gif/webpic/new/buttonk.gif";
-var toc2on = new Image;
-toc2on.src = "../images/gif/webpic/new/buttonj.gif";
-var toc3on = new Image;
-toc3on.src ="../images/gif/webpic/new/buttonr.gif";
-var toc1off = new Image;
-toc1off.src = "../images/gif/webpic/buttonk.gif";
-var toc2off = new Image;
-toc2off.src = "../images/gif/webpic/buttonj.gif";
-var toc3off = new Image;
-toc3off.src = "../images/gif/webpic/buttonr.gif";
-var tocAwakenon = new Image;
-tocAwakenon.src = "../images/gif/webpic/new/buttonl.gif";
-var tocAwakenoff = new Image;
-tocAwakenoff.src = "../images/gif/webpic/buttonl.gif";
-
 function bigtalk() 
 {
 	var form = document.getElementById("CommandForm");;
@@ -59,15 +42,36 @@ function setfocus()
 	document.CommandForm.command.focus();
 }
 
-function img_act(imgName) 
+/**
+ * changes the image of the button. Useful for mouseover and mouseout
+ * There are two types of buttons:
+ * a. http://localhost/images/gif/webpic/new/button3.gif
+ * b. http://localhost/images/gif/webpic/button3.gif
+ * This method strips or adds the 'new' whenever appropriate.
+ * @param imgName the id of the image
+ */
+function changeImage(imgName)
 {
-	imgOn = eval(imgName + "on.src");
-	document [imgName].src = imgOn;
+	var theImage = document.getElementById(imgName);
+	if (theImage == null)
+	{
+		alert("Id not found in html dom");
+		return;
+	}
+	if (theImage.src.indexOf("webpic/new/") != -1)
+	{
+		var mybutton =
+		theImage.src.substring(theImage.src.indexOf("webpic/new/") +
+		11);
+		theImage.src = "/images/gif/webpic/" + 
+			mybutton;
+	}
+	else
+	{
+		var mybutton =
+		theImage.src.substring(theImage.src.indexOf("webpic/") +
+		7);
+		theImage.src = "/images/gif/webpic/new/" +
+			mybutton;
+	}
 }
-
-function img_inact(imgName) 
-{
-	imgOff = eval(imgName + "off.src");
-	document [imgName].src = imgOff;
-}
-

@@ -15,85 +15,10 @@ chat, fun, talk, mush, moo, dungeon, dragon, www, forms, cgi, free" />
 <meta HTTP-EQUIV="Content-language" content="en-GB" />
 <meta name="author" content="Maarten van Leunen karn@karchan.org" />
 <link rel="stylesheet" type="text/css" href="/karchan/css/karchan.css" />
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
 </head>
 
 <body>
-
-<script language="JavaScript" type="/text/javascript">
-
-<!-- In hiding!
- browserName = navigator.appName;          
-           browserVer = parseInt(navigator.appVersion);
-               toc2on = new Image;          
-               toc2on.src = "/images/gif/webpic/new/button3.gif";
-               toc3on = new Image;          
-               toc3on.src = "/images/gif/webpic/new/button1.gif";
-               toc4on = new Image;          
-               toc4on.src = "/images/gif/webpic/new/button4.gif";
-               toc5on = new Image;          
-               toc5on.src = "/images/gif/webpic/new/buttoni.gif";
-               toc6on = new Image;          
-               toc6on.src = "/images/gif/webpic/new/button6.gif";
-               toc7on = new Image;          
-               toc7on.src = "/images/gif/webpic/new/button7.gif";
-               toc8on = new Image;          
-               toc8on.src = "/images/gif/webpic/new/button8.gif";
-               toc9on = new Image;          
-               toc9on.src = "/images/gif/webpic/new/button9.gif";
-               toc10on = new Image;          
-               toc10on.src = "/images/gif/webpic/new/buttona.gif";
-               toc11on = new Image;          
-               toc11on.src = "/images/gif/webpic/new/buttonb.gif";
-               toc12on = new Image;          
-               toc12on.src = "/images/gif/webpic/new/buttonq.gif";
-               toc13on = new Image;          
-               toc13on.src = "/images/gif/webpic/new/buttons.gif";
-               toc14on = new Image;          
-               toc14on.src = "/images/gif/webpic/new/button.links.gif";
-               
-               
-               toc2off = new Image;
-               toc2off.src = "/images/gif/webpic/button3.gif";
-               toc3off = new Image;
-               toc3off.src = "/images/gif/webpic/button1.gif";
-               toc4off = new Image;
-               toc4off.src = "/images/gif/webpic/button4.gif";
-               toc5off = new Image;
-               toc5off.src = "/images/gif/webpic/buttoni.gif";
-               toc6off = new Image;
-               toc6off.src = "/images/gif/webpic/button6.gif";
-               toc7off = new Image;
-               toc7off.src = "/images/gif/webpic/button7.gif";
-               toc8off = new Image;
-               toc8off.src = "/images/gif/webpic/button8.gif";
-               toc9off = new Image;
-               toc9off.src = "/images/gif/webpic/button9.gif";
-               toc10off = new Image;
-               toc10off.src = "/images/gif/webpic/buttona.gif";
-               toc11off = new Image;
-               toc11off.src = "/images/gif/webpic/buttonb.gif";
-               toc12off = new Image;
-               toc12off.src = "/images/gif/webpic/buttonq.gif";
-               toc13off = new Image;
-               toc13off.src = "/images/gif/webpic/buttons.gif";
-               toc14off = new Image;
-               toc14off.src = "/images/gif/webpic/button.links.gif";
-               
-
-function img_act(imgName) {
-        imgOn = eval(imgName + "on.src");
-        document [imgName].src = imgOn;
-}
-
-function img_inact(imgName) {
-        imgOff = eval(imgName + "off.src");
-        document [imgName].src = imgOff;
-}
-
-//-->
-   
-
-</SCRIPT>
 
         <table align=left width=100%>
         <tr>
@@ -105,58 +30,63 @@ function img_inact(imgName) {
             </tr>
             <tr>
                 <td>
-<a href="intro.html" onMouseOver="img_act('toc2')" onMouseOut="img_inact('toc2')">
-<img alt="Introduction" SRC="/images/gif/webpic/button3.gif" name="toc2"
-/></A><br /></td>
+<a href="intro.html">
+<img alt="Introduction" SRC="/images/gif/webpic/button3.gif" name="toc2" id="toc2"
+onMouseOver="changeImage('toc2');" onMouseOut="changeImage('toc2');"/></A><br /></td>
                 <td> </td>
                         </tr>
                         <tr>
                 <td>
-<a href="chronicles/chronicles2.html" onMouseOver="img_act('toc4')" onMouseOut="img_inact('toc4')">
+<a href="chronicles/chronicles2.html" onMouseOver="changeImage('toc4')" onMouseOut="changeImage('toc4')">
 <img alt="Chronicles" SRC="/images/gif/webpic/button4.gif" name="toc4"
+id="toc4"
 /></A><br /> </td>
                 <td></td>
                         </tr>
                         <tr>
                 <td>
-<a href="enter.html" onMouseOver="img_act('toc5')" onMouseOut="img_inact('toc5')">
+<a href="enter.html" onMouseOver="changeImage('toc5')" onMouseOut="changeImage('toc5')">
 <img alt="Logonscreen" SRC="/images/gif/webpic/buttoni.gif" name="toc5"
+id="toc5"
 /><br /></A> </td>
                 <td></td>
                         </tr>
                         <tr>
                 <td>
-<a href="/scripts/wholist.php" onMouseOver="img_act('toc6')" onMouseOut="img_inact('toc6')">
+<a href="/scripts/wholist.php" onMouseOver="changeImage('toc6')" onMouseOut="changeImage('toc6')">
 <img alt="List of Active Users" SRC="/images/gif/webpic/button6.gif" name="toc6"
+id="toc6"
 /><br /></A> </td>
                 <td></td>
                         </tr>
                         <tr>
                 <td>
-<a href="help/thelaw.html" onMouseOver="img_act('toc13')" OnMouseOut="img_inact('toc13')">
+<a href="help/thelaw.html" onMouseOver="changeImage('toc13')" OnMouseOut="changeImage('toc13')">
 <img alt="Rules and Regulations Regarding the Game" SRC="/images/gif/webpic/buttons.gif"  name="toc13"
+id="toc13"
 /><br /></A> </td>
                 <td></td>
                         </tr>
                         <tr>
                 <td>
-<a href="help/helpindex.html" onMouseOver="img_act('toc8')" onMouseOut="img_inact('toc8')">
-<img alt="Help" SRC="/images/gif/webpic/button8.gif" name="toc8"
+<a href="help/helpindex.html" onMouseOver="changeImage('toc8')" onMouseOut="changeImage('toc8')">
+<img alt="Help" SRC="/images/gif/webpic/button8.gif" name="toc8" id="toc8"
 /></A><br /> </td>
                 <td></td>
                         </tr>
                         <tr>
                 <td>
-<a href="source.html" onMouseOver="img_act('toc12')" onMouseOut="img_inact('toc12')">
+<a href="source.html" onMouseOver="changeImage('toc12')" onMouseOut="changeImage('toc12')">
 <img alt="Source" SRC="/images/gif/webpic/buttonq.gif" name="toc12"
+id="toc12"
 /></A><br /> </td>
                 <td></td>
             </tr>
 <tr>                <td>
-<a href="/scripts/links.php" onMouseOver="img_act('toc14')"
-onMouseOut="img_inact('toc14')">
+<a href="/scripts/links.php" onMouseOver="changeImage('toc14')"
+onMouseOut="changeImage('toc14')">
 <img alt="Links" SRC="/images/gif/webpic/button.links.gif" 
-name="toc14" /></A><br /> </td>
+name="toc14" id="toc14" /></A><br /> </td>
                 <td></td>
             </tr>
 <tr><td><hr />
