@@ -1,66 +1,10 @@
 <HTML>
 <HEAD>
 <TITLE>Land of Karchan</TITLE>
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
 </HEAD>
 
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
-
-<script language="JavaScript">
-
-<!-- In hiding!
- browserName = navigator.appName;          
-           browserVer = parseInt(navigator.appVersion);
-               toc1on = new Image;          
-               toc1on.src = "/images/gif/webpic/new/button8.gif";
-               toc2on = new Image;          
-               toc2on.src = "/images/gif/webpic/new/button7.gif";
-               toc3on = new Image;          
-               toc3on.src = "/images/gif/webpic/new/button9.gif";
-               toc4on = new Image;          
-               toc4on.src = "/images/gif/webpic/new/buttona.gif";
-               toc5on = new Image;          
-               toc5on.src = "/images/gif/webpic/new/buttonb.gif";
-               toc6on = new Image;          
-               toc6on.src = "/images/gif/webpic/new/buttons.gif";
-               bugson = new Image;          
-               bugson.src = "/images/gif/webpic/new/button.bugs2.gif";
-               backon = new Image;          
-               backon.src = "/images/gif/webpic/new/buttono.gif";
-               
-               
-               toc1off = new Image;
-               toc1off.src = "/images/gif/webpic/button8.gif";
-               toc2off = new Image;
-               toc2off.src = "/images/gif/webpic/button7.gif";
-               toc3off = new Image;
-               toc3off.src = "/images/gif/webpic/button9.gif";
-               toc4off = new Image;
-               toc4off.src = "/images/gif/webpic/buttona.gif";
-               toc5off = new Image;
-               toc5off.src = "/images/gif/webpic/buttonb.gif";
-               toc6off = new Image;
-               toc6off.src = "/images/gif/webpic/buttons.gif";
-               bugsoff = new Image;
-               bugsoff.src = "/images/gif/webpic/button.bugs.gif";
-               backoff = new Image;
-               backoff.src = "/images/gif/webpic/buttono.gif";
-               
-
-function img_act(imgName) {
-        imgOn = eval(imgName + "on.src");
-        document [imgName].src = imgOn;
-}
-
-function img_inact(imgName) {
-        imgOff = eval(imgName + "off.src");
-        document [imgName].src = imgOff;
-}
-
-//-->
-   
-
-</SCRIPT>
-
 <CENTER>
         <TABLE align=left BORDER=0 width=100%>
         <TR>
@@ -72,50 +16,63 @@ function img_inact(imgName) {
             </TR>
             <TR>
                 <TD>
-<A HREF="help.html" onMouseOver="img_act('toc1')" onMouseOut="img_inact('toc1')">
-<IMG ALT="Manual" SRC="/images/gif/webpic/button8.gif" BORDER="0" name="toc1"></A><br> </TD>
+<A HREF="help.html" onMouseOver="changeImage('toc1')"
+                onMouseOut="changeImage('toc1')">
+<IMG ALT="Manual" SRC="/images/gif/webpic/button8.gif" BORDER="0" id="toc1" name="toc1"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
 		<TD>
-<A HREF="/scripts/news.php" onMouseOver="img_act('toc2')" onMouseOut="img_inact('toc2')">
-<IMG ALT="News" SRC="/images/gif/webpic/button7.gif" BORDER="0" name="toc2"></A><br> </TD>
+<A HREF="/scripts/news.php" onMouseOver="changeImage('toc2')"
+		onMouseOut="changeImage('toc2')">
+<IMG ALT="News" SRC="/images/gif/webpic/button7.gif" BORDER="0" id="toc2" name="toc2"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
                 <TD>
-<A HREF="faq.html" onMouseOver="img_act('toc3')" onMouseOut="img_inact('toc3')">
-<IMG ALT="MUD Frequently Asked Questions" SRC="/images/gif/webpic/button9.gif" BORDER="0" name="toc3"></A><br> </TD>
+<A HREF="faq.html" onMouseOver="changeImage('toc3')" onMouseOut="changeImage('toc3')">
+<IMG ALT="MUD Frequently Asked Questions" SRC="/images/gif/webpic/button9.gif" BORDER="0"
+id="toc3" name="toc3"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
                 <TD>
-<A HREF="tech.html" onMouseOver="img_act('toc4')" onMouseOut="img_inact('toc4')">
-<IMG ALT="Tech Specs" SRC="/images/gif/webpic/buttona.gif" BORDER="0" name="toc4"></A><br> </TD>
+<A HREF="tech.html" onMouseOver="changeImage('toc4')"
+                onMouseOut="changeImage('toc4')">
+<IMG ALT="Tech Specs" SRC="/images/gif/webpic/buttona.gif" BORDER="0"
+                id="toc4" name="toc4"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
                 <TD>
-<A HREF="/scripts/bugs.php" onMouseOver="img_act('bugs')" onMouseOut="img_inact('bugs')">
-<IMG ALT="Bugs" SRC="/images/gif/webpic/button.bugs.gif" BORDER="0" name="bugs"></A><br> </TD>
+<A HREF="/scripts/bugs.php" onMouseOver="changeImage('bugs')"
+                onMouseOut="changeImage('bugs')">
+<IMG ALT="Bugs" SRC="/images/gif/webpic/button.bugs.gif" BORDER="0"
+                id="bugs" name="bugs"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
                 <TD>
-<A HREF="/scripts/status.php" onMouseOver="img_act('toc5')" onMouseOut="img_inact('toc5')">
-<IMG ALT="Mud Status" SRC="/images/gif/webpic/buttonb.gif" BORDER="0" name="toc5"></A><br></TD>
+<A HREF="/scripts/status.php" onMouseOver="changeImage('toc5')"
+                onMouseOut="changeImage('toc5')">
+<IMG ALT="Mud Status" SRC="/images/gif/webpic/buttonb.gif" BORDER="0"
+                id="toc5" name="toc5"></A><br></TD>
                 <TD></TD>
 			</TR>
 			<TR>
 		<TD>
-<A HREF="thelaw.html" onMouseOver="img_act('toc6')" onMouseOut="img_inact('toc6')">
-<IMG ALT="Rules and Regulations Regarding the Game" SRC="/images/gif/webpic/buttons.gif" BORDER="0" name="toc6"></A><br><HR> </TD>
+<A HREF="thelaw.html" onMouseOver="changeImage('toc6')"
+		onMouseOut="changeImage('toc6')">
+<IMG ALT="Rules and Regulations Regarding the Game" SRC="/images/gif/webpic/buttons.gif" BORDER="0"
+		id="toc6" name="toc6"></A><br><HR> </TD>
                 <TD></TD>
 			</TR>
 			<TR>
 		<TD>
-<A HREF="../index.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
-<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
+<A HREF="../index.html" onMouseOver="changeImage('back')"
+		onMouseOut="changeImage('back')">
+<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0"
+		id="back" name="back"><br></A> </TD>
 		<TD></TD>
 			</TR>
 

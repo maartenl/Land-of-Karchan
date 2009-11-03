@@ -1,66 +1,10 @@
 <HTML>
 <HEAD>
 <TITLE>Land of Karchan</TITLE>
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
 </HEAD>
 
 <BODY BGCOLOR=#FFFFFF BACKGROUND="../images/gif/webpic/back4.gif">
-
-<script language="JavaScript">
-
-<!-- In hiding!
- browserName = navigator.appName;          
-           browserVer = parseInt(navigator.appVersion);
-               toc1on = new Image;          
-               toc1on.src = "../images/gif/webpic/new/button4.gif";
-               toc2on = new Image;          
-               toc2on.src = "../images/gif/webpic/new/buttonc.gif";
-               toc3on = new Image;          
-               toc3on.src = "../images/gif/webpic/new/buttonm.gif";
-               toc4on = new Image;          
-               toc4on.src = "../images/gif/webpic/new/buttonn.gif";
-               toc5on = new Image;          
-               toc5on.src = "../images/gif/webpic/new/buttone.gif";
-               toc6on = new Image;          
-               toc6on.src = "../images/gif/webpic/new/buttonf.gif";
-               toc7on = new Image;          
-               toc7on.src = "../images/gif/webpic/new/buttong.gif";
-               backon = new Image;          
-               backon.src = "../images/gif/webpic/new/buttono.gif";
-               
-               
-               toc1off = new Image;
-               toc1off.src = "../images/gif/webpic/button4.gif";
-               toc2off = new Image;
-               toc2off.src = "../images/gif/webpic/buttonc.gif";
-               toc3off = new Image;
-               toc3off.src = "../images/gif/webpic/buttonm.gif";
-               toc4off = new Image;
-               toc4off.src = "../images/gif/webpic/buttonn.gif";
-               toc5off = new Image;
-               toc5off.src = "../images/gif/webpic/buttone.gif";
-               toc6off = new Image;
-               toc6off.src = "../images/gif/webpic/buttonf.gif";
-               toc7off = new Image;
-               toc7off.src = "../images/gif/webpic/buttong.gif";
-               backoff = new Image;
-               backoff.src = "../images/gif/webpic/buttono.gif";
-               
-
-function img_act(imgName) {
-        imgOn = eval(imgName + "on.src");
-        document [imgName].src = imgOn;
-}
-
-function img_inact(imgName) {
-        imgOff = eval(imgName + "off.src");
-        document [imgName].src = imgOff;
-}
-
-//-->
-   
-
-</SCRIPT>
-
 <CENTER>
         <TABLE align=left BORDER=0 width=100%>
         <TR>
@@ -72,8 +16,9 @@ function img_inact(imgName) {
             </TR>
             <TR>
                 <TD>
-<A HREF="chronicles.html" onMouseOver="img_act('toc1')" onMouseOut="img_inact('toc1')">
-<IMG ALT="Chronicles" SRC="../images/gif/webpic/button4.gif" BORDER="0" name="toc1"></A><br> </TD>
+<A HREF="chronicles.html" onMouseOver="changeImage('toc1')" onMouseOut="changeImage('toc1')">
+<IMG ALT="Chronicles" SRC="../images/gif/webpic/button4.gif" BORDER="0"
+id="toc1" name="toc1"></A><br> </TD>
                 <TD></TD>
                         </TR>
                         <TR>
@@ -82,12 +27,14 @@ function img_inact(imgName) {
                         </TR>
                         <TR>
                 <TD><DL><DD>
-<A HREF="timeline.html" onMouseOver="img_act('toc7')" onMouseOut="img_inact('toc7')">
-<IMG ALT="TimeLine" SRC="../images/gif/webpic/buttong.gif" BORDER="0" name="toc7"></A></DL></TD>
+<A HREF="timeline.html" onMouseOver="changeImage('toc7')" onMouseOut="changeImage('toc7')">
+<IMG ALT="TimeLine" SRC="../images/gif/webpic/buttong.gif" BORDER="0"
+id="toc7" name="toc7"></A></DL></TD>
             </TR>
               <TD>
-<A HREF="http://www.karchan.org/karchan/index.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
-<IMG ALT="Backitup!" SRC="../images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
+<A HREF="http://www.karchan.org/karchan/index.html" onMouseOver="changeImage('back')" onMouseOut="changeImage('back')">
+<IMG ALT="Backitup!" SRC="../images/gif/webpic/buttono.gif" BORDER="0"
+id="back" name="back"><br></A> </TD>
               <TD></TD>
                       </TR>
 	<TR><TD><HR></TD></TR>

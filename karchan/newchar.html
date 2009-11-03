@@ -1,6 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>New Character</TITLE>
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
 </HEAD>
 <BODY>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif"><H1>The Room of Lost Souls</H1>
@@ -235,36 +236,11 @@ Legs:
 <INPUT TYPE="reset" VALUE="Clear">
 </FORM>
 <P>
-<script language="JavaScript">
 
-<!-- In hiding!
- browserName = navigator.appName;          
-           browserVer = parseInt(navigator.appVersion);
-               backon = new Image;          
-               backon.src = "/images/gif/webpic/new/buttono.gif";
-               
-               backoff = new Image;
-               backoff.src = "/images/gif/webpic/buttono.gif";
-               
-
-function img_act(imgName) {
-        imgOn = eval(imgName + "on.src");
-        document [imgName].src = imgOn;
-}
-
-function img_inact(imgName) {
-        imgOff = eval(imgName + "off.src");
-        document [imgName].src = imgOff;
-}
-
-//-->
-   
-
-</SCRIPT>
-
-
-<A HREF="/karchan/index.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
-<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
+<A HREF="/karchan/index.html" onMouseOver="changeImage('back')"
+onMouseOut="changeImage('back')">
+<IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0"
+id="back" name="back"><br></A> </TD>
 <P>
 <HR>
 <DIV ALIGN=right>Last Updated $Date: 2006-01-15 10:25:22 +0100 (Sun, 15 Jan 2006) $
