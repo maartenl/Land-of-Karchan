@@ -414,31 +414,31 @@ public class Room implements Executable, AttributeContainer
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("awaken")
-								+ "\" onMouseOver=\"img_act('tocAwaken')\" onMouseOut=\"img_inact('tocAwaken')\">\n");
+								+ "\" onMouseOver=\"changeImage('tocAwaken')\" onMouseOut=\"changeImage('tocAwaken')\">\n");
 				result
-						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" NAME=\"tocAwaken\"></A><P>\n");
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonl.gif\" BORDER=0 ALT=\"AWAKEN\" id=\"tocAwaken\" NAME=\"tocAwaken\"></A><P>\n");
 			} else
 			{
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("quit")
-								+ "\" onMouseOver=\"img_act('toc2')\" onMouseOut=\"img_inact('toc2')\">\n");
+								+ "\" onMouseOver=\"changeImage('toc2')\" onMouseOut=\"changeImage('toc2')\">\n");
 				result
-						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" NAME=\"toc2\"></A><P>\n");
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonj.gif\" BORDER=0 ALT=\"QUIT\" id=\"toc2\" NAME=\"toc2\"></A><P>\n");
 
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("sleep")
-								+ "\" onMouseOver=\"img_act('toc1')\" onMouseOut=\"img_inact('toc1')\">\n");
+								+ "\" onMouseOver=\"changeImage('toc1')\" onMouseOut=\"changeImage('toc1')\">\n");
 				result
-						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" NAME=\"toc1\"></A><P>\n");
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonk.gif\" BORDER=0 ALT=\"SLEEP\" id=\"toc1\" NAME=\"toc1\"></A><P>\n");
 
 				result
 						.append("<TR><TD><A HREF=\""
 								+ aUser.getUrl("clear")
-								+ "\" onMouseOver=\"img_act('toc3')\" onMouseOut=\"img_inact('toc3')\">\n");
+								+ "\" onMouseOver=\"changeImage('toc3')\" onMouseOut=\"changeImage('toc3')\">\n");
 				result
-						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" NAME=\"toc3\"></A><P>\n");
+						.append("<IMG ALIGN=left SRC=\"/images/gif/webpic/buttonr.gif\" BORDER=0 ALT=\"CLEAR\" id=\"toc3\" NAME=\"toc3\"></A><P>\n");
 			}
 			result.append("</TABLE>\n");
 			result.append("<MAP NAME=\"roosmap\">\n");
