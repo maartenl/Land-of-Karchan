@@ -57,4 +57,10 @@ $server_host="localhost";
  * the port on which the mmud daemon is listening
  */
 $server_port=3340;
+
+/**
+ * the path in which all the log files are dumped
+ */
+$mudfilepath="/tmp";
+
 ?>
