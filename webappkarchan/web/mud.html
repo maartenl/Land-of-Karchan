@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<script language="JavaScript" src="/karchan/js/karchan.js"></script>
+<script language="JavaScript" src="/karchan/js/LogonObject.js"></script>
+<TITLE>Land of Karchan</TITLE>
+<script language="JavaScript" type="text/javascript">
+	var oLogonObject = new LogonObject();
+
+	function sendFormStuff(command) 
+	{
+		// alert("sendFormStuff");
+		try 
+		{
+			var oCommandNode = document.getElementById("command");
+			var oNameNode = document.getElementById("name");
+			var oFramesNode = document.getElementById("frames");
+			if (command == undefined)
+			{
+				oLogonObject.load(escape(oCommandNode.value), escape(oNameNode.value), escape(oFramesNode.value));
+			}
+			else
+			{
+				oLogonObject.load(escape(command), escape(oNameNode.value), escape(oFramesNode.value));
+			}
+		} catch (e) 
+		{
+			// do nothing
+			alert("sendFormStuff: - " + e.name + ", " + e.message);
+		}
+		oCommandNode.value = "";
+		oCommandNode.focus();
+		// so the form will not be submitted
+		// we're using ajax for that, remember.
+		// funny, innit?
+		return false;
+	}
+</script>
+</HEAD>
+
+<BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif" onLoad="sendFormStuff('l');">
+<DIV id="mudroomdescription" name="mudroomdescription">
+</DIV>
+[<A onclick="sendFormStuff('west');">west </A><A
+onclick="sendFormStuff('east');">east </A><A
+onclick="sendFormStuff('north');">north </A><A
+onclick="sendFormStuff('south');">south</A>]<P>
+<TABLE ALIGN=right>
+<TR><TD><IMG ALIGN=right SRC="/images/gif/roos.gif" USEMAP="#roosmap" BORDER="0" ISMAP ALT="N-S-E-W"><P>
+<TR><TD><A onclick="sendFormStuff('quit');" onMouseOver="changeImage('toc2')" onMouseOut="changeImage('toc2')">
+<IMG ALIGN=left SRC="/images/gif/webpic/buttonj.gif" BORDER=0 ALT="QUIT" id="toc2" NAME="toc2"></A><P>
+<TR><TD><A onclick="sendFormStuff('sleep');" onMouseOver="changeImage('toc1')" onMouseOut="changeImage('toc1')">
+<IMG ALIGN=left SRC="/images/gif/webpic/buttonk.gif" BORDER=0 ALT="SLEEP" id="toc1" NAME="toc1"></A><P>
+<TR><TD><A onclick="sendFormStuff('clear');" onMouseOver="changeImage('toc3')" onMouseOut="changeImage('toc3')">
+<IMG ALIGN=left SRC="/images/gif/webpic/buttonr.gif" BORDER=0 ALT="CLEAR" id="toc3" NAME="toc3"></A><P>
+</TABLE>
+<MAP NAME="roosmap">
+    <AREA SHAPE="POLY" COORDS="0,0,33,31,63,0,0,0" onclick="sendFormStuff('n');" alt="noth">
+<AREA SHAPE="POLY" COORDS="0,63,33,31,63,63,0,63" onclick="sendFormStuff('s');" alt="south">
+<AREA SHAPE="POLY" COORDS="0,0,33,31,0,63,0,0" onclick="sendFormStuff('w');" alt="west">
+<AREA SHAPE="POLY" COORDS="63,0,33,31,63,63,63,0" onclick="sendFormStuff('e');" alt="east">
+</MAP>
+
+<FORM NAME="CommandForm" onsubmit="return sendFormStuff();" id="CommandForm">
+<IMG SRC="/images/icons/bigtalk.ico" alt="big2talk" name="big2talk" id="big2talk" border="0" align="top" onclick="bigtalk()">
+<INPUT TYPE="text" NAME="command" ID="command" VALUE="" SIZE="50"><P>
+<INPUT TYPE="hidden" NAME="name" ID="name" VALUE="Karn">
+<INPUT TYPE="hidden" NAME="frames" ID="frames" VALUE="1">
+<IMG ALIGN=left SRC="/images/gif/webpic/buttonk.gif" BORDER=0 ALT="Submit" onclick="sendFormStuff();">
+</FORM><P>
+
+<DIV id="mudlog" name="mudlog">
+</DIV>
+</BODY>
+</HTML>
