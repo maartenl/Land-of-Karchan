@@ -46,6 +46,7 @@ maarten_l@yahoo.com
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Bug Reports
 </H1>
+<a href="/karchan/player/scripts/bugs.jsp">Create a bug report</a><p/>
 <table>
 
 <%

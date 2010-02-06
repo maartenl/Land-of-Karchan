@@ -49,7 +49,8 @@ maarten_l@yahoo.com
 Hello, and welcome to the <I>Links</I> page. Here I put links to other
 homepages concerning both Karchan (indirect and direct) and anything
 relating to fantasy.
-
+<p/>
+<a href="/karchan/player/scripts/links.jsp">Add a link?</a><p/>
 <H1>Homepages of Other Karchanians</H1>
 <ul>
 <%!

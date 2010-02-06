@@ -68,6 +68,7 @@ if (!rst.next())
 <IMG SRC="/images/gif/dragon.gif" alt=""dragon">
 Character Sheet of <%=rst.getString("name")%></H1>
 <HR>
+<a href="/karchan/player/scripts/editcharsheet.jsp">Edit your Charactersheet</a><p/>
 <B>Name:</B><%=rst.getString("name")%><BR>
 <B>Title:</B><%=rst.getString("title")%><BR>
 <B>Sex:</B><%=rst.getString("sex")%><BR>
