@@ -3,7 +3,7 @@
 <sun-web-app error-url="">
   <context-root>/karchan/admin</context-root>
   <security-role-mapping>
-    <role-name>ROLE_DEPUTY</role-name>
+    <role-name>deputies</role-name>
     <group-name>deputies</group-name>
   </security-role-mapping>
   <class-loader delegate="true"/>

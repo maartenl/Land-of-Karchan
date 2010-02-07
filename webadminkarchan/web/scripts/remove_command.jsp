@@ -62,7 +62,19 @@ private String itsPlayerSessionId;
     </head>
 <BODY BGCOLOR=#FFFFFF>
 
-<H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Remove Ownership</H1>
+<H1>
+<IMG SRC="/images/gif/dragon.gif">
+Table of Contents</H1>
+<A HREF="#introduction">Introduction</A><P>
+<A HREF="#bannedpeople">Banned People</A><P>
+<A HREF="#unbannedchars">Unbanned Characters</A><P>
+<A HREF="#bannedchars">Banned Characters</A><P>
+<A HREF="#sillynames">Silly Names</A><P>
+
+<A NAME="introduction"><H1><A HREF="/karchan/admin/help/banning.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
+Removing a Ban</H1>
+
 <%
 
 if (itsPlayerName == null)
@@ -73,16 +85,6 @@ if (!request.isUserInRole("deputies"))
 {
     throw new RuntimeException("User does not have role 'deputies'.");
 }
-/*
-showing the different areas and what rooms belong to which area.
-
-the following constraints need to be checked before any kind of update
-is to take place:
-
-changing area:
-- the area must exist
-- is the administrator the owner of the area
-*/
 
 Connection con=null;
 ResultSet rst=null;
@@ -108,28 +110,38 @@ if (!rst.next())
 // end authorization check
 // ===============================================================================
 rst.close();
-stmt.close();
 
-String table = request.getParameter("table");
-String id = request.getParameter("id");
-if (table == null || id == null)
+// remove banned people
+String query = "select ?";
+String which_one = "1";
+if (request.getParameter("remove_banned") != null)
 {
-    throw new RuntimeException("Missing parameters!");
+    query = "delete from mm_bantable where trim(address) = ?";
+    which_one = request.getParameter("remove_banned");
+}
+if (request.getParameter("remove_unban") != null)
+{
+    query = "delete from mm_unbantable where name = ?";
+    which_one = request.getParameter("remove_unban");
+}
+if (request.getParameter("remove_sillyname") != null)
+{
+    query = "delete from mm_sillynamestable where name = ?";
+    which_one = request.getParameter("remove_sillyname");
+}
+if (request.getParameter("remove_bannedname") != null)
+{
+    query = "delete from mm_bannednamestable where name = ?";
+    which_one = request.getParameter("remove_bannedname");
+}
+if (request.getParameter("remove_banned") != null)
+{
+    query = "delete from mm_bantable where trim(address) = ?";
+    which_one = request.getParameter("remove_banned");
 }
 
-String query = "select 1";
-
-if ("area".equals(table))
-{
-        query = "update mm_area set owner = null where area = ? and owner = ?";
-}
-if ("commands".equals(table))
-{
-        query = "update mm_commands set owner = null where id = ? and owner = ?";
-}
 stmt=con.prepareStatement(query);
-stmt.setString(1, id);
-stmt.setString(2, itsPlayerName);
+stmt.setString(1, which_one);
 stmt.executeQuery();
 stmt.close();
 con.close();

@@ -17,7 +17,7 @@
         </web-resource-collection>
         <auth-constraint>
             <description/>
-            <role-name>ROLE_DEPUTY</role-name>
+            <role-name>deputies</role-name>
         </auth-constraint>
     </security-constraint>
     <login-config>

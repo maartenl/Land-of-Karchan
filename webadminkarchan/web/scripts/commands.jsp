@@ -35,6 +35,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
+<%@ page language="java" import="mmud.web.StandardFormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -62,9 +63,47 @@ private String itsPlayerSessionId;
     </head>
 <BODY BGCOLOR=#FFFFFF>
 
-<H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Remove Ownership</H1>
+<H1><A HREF="/karchan/admin/help/scripting2.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
+Commands</H1>
+
+<A HREF="commands.jsp?idstartswith=A">A</A>
+<A HREF="commands.jsp?idstartswith=B">B</A>
+<A HREF="commands.jsp?idstartswith=C">C</A>
+<A HREF="commands.jsp?idstartswith=D">D</A>
+<A HREF="commands.jsp?idstartswith=E">E</A>
+<A HREF="commands.jsp?idstartswith=F">F</A>
+<A HREF="commands.jsp?idstartswith=G">G</A>
+<A HREF="commands.jsp?idstartswith=H">H</A>
+<A HREF="commands.jsp?idstartswith=I">I</A>
+<A HREF="commands.jsp?idstartswith=J">J</A>
+<A HREF="commands.jsp?idstartswith=K">K</A>
+<A HREF="commands.jsp?idstartswith=L">L</A>
+<A HREF="commands.jsp?idstartswith=M">M</A>
+<A HREF="commands.jsp?idstartswith=N">N</A>
+<A HREF="commands.jsp?idstartswith=O">O</A>
+<A HREF="commands.jsp?idstartswith=P">P</A>
+<A HREF="commands.jsp?idstartswith=Q">Q</A>
+<A HREF="commands.jsp?idstartswith=R">R</A>
+<A HREF="commands.jsp?idstartswith=S">S</A>
+<A HREF="commands.jsp?idstartswith=T">T</A>
+<A HREF="commands.jsp?idstartswith=U">U</A>
+<A HREF="commands.jsp?idstartswith=V">V</A>
+<A HREF="commands.jsp?idstartswith=W">W</A>
+<A HREF="commands.jsp?idstartswith=X">X</A>
+<A HREF="commands.jsp?idstartswith=Y">Y</A>
+<A HREF="commands.jsp?idstartswith=Z">Z</A>
+<P>
+
 <%
 
+/* the following constraints need to be checked before any kind of update is
+to take place:
+
+changing command:
+adding command:
+- check that method exists
+*/
 if (itsPlayerName == null)
 {
     throw new RuntimeException("User undefined.");
@@ -110,38 +149,24 @@ if (!rst.next())
 rst.close();
 stmt.close();
 
-String table = request.getParameter("table");
-String id = request.getParameter("id");
-if (table == null || id == null)
-{
-    throw new RuntimeException("Missing parameters!");
-}
+StandardFormProcessor processor = new StandardFormProcessor("mm_commands", itsPlayerName);
 
-String query = "select 1";
+String[] columns = {"id", "command", "room", "method_name", "callable"};
+String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
+processor.setColums(columns);
+processor.setDisplayNames(displays);
+out.println(processor.getList(request));
 
-if ("area".equals(table))
-{
-        query = "update mm_area set owner = null where area = ? and owner = ?";
-}
-if ("commands".equals(table))
-{
-        query = "update mm_commands set owner = null where id = ? and owner = ?";
-}
-stmt=con.prepareStatement(query);
-stmt.setString(1, id);
-stmt.setString(2, itsPlayerName);
-stmt.executeQuery();
-stmt.close();
-con.close();
-}
-catch(Exception e)
-{
-out.println(e.getMessage());
-e.printStackTrace(new PrintWriter(out));
-%><%=e.getMessage()%>
-<%
-}
 %>
+
+<FORM METHOD="POST" ACTION="add_command.jsp">
+<b>
+Command name: <INPUT TYPE="text" NAME="addcommandname" VALUE="">
+<BR>
+Method name: <INPUT TYPE="text" NAME="addcommandmethodname" VALUE="">
+<INPUT TYPE="submit" VALUE="Add Command">
+</b>
+</FORM>
 
 </body>
 </html>
