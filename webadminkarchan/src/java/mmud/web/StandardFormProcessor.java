@@ -28,13 +28,8 @@ maarten_l@yahoo.com
 package mmud.web;
 
 import javax.naming.InitialContext;
-import java.io.PrintWriter;
-import java.io.IOException;
-import javax.naming.Context;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Enumeration;
-import java.util.List;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Maarten van Leunen
  */
-public class StandardFormProcessor
+public class StandardFormProcessor implements FormProcessor
 {
     private Connection itsConnection;
 
@@ -135,10 +130,10 @@ public class StandardFormProcessor
 
             if (accessGranted)
             {
-                result.append("<td><a HREF=\"remove_" + itsTableName.toLowerCase() +
+                result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
                         ".jsp?id=" + rst.getString("id") + "\">X</a></td>");
                 result.append("<td><a HREF=\"remove_ownership.jsp?id=" +
-                        rst.getString("id") + "&table=" + itsTableName + "\">O</a></td>");
+                        rst.getString("id") + "&table=" + itsTableName.replace("mm_", "") + "\">O</a></td>");
             }
             else
             {
@@ -170,13 +165,15 @@ public class StandardFormProcessor
             if (accessGranted && (rst.getString(itsColumns[0]).equals(request.getParameter("id"))))
             {
                 // put some editing form here.
-                result.append("<tr><td><FORM METHOD=\"POST\" ACTION=\"" + itsTableName.toLowerCase() + ".jsp\">");
+                result.append("<tr><td><FORM METHOD=\"POST\" ACTION=\"" + 
+                        itsTableName.replace("mm_", "").toLowerCase() +
+                        ".jsp\">");
                 for (int i=0; i < itsColumns.length; i++)
                 {
                     result.append("<b>" + itsDisplay[i] + ": </b>");
                     if (itsColumns[i].equals("callable"))
                     {
-                        result.append("<SELECT NAME=\"commandcallable\" SIZE=\"2\">");
+                        result.append("<SELECT NAME=\"callable\" SIZE=\"2\">");
                         result.append("<option value=\"1\" " +
                                 ("1".equals(rst.getString("callable")) ? "selected " : " ") + ">yes");
                         result.append("<option value=\"0\" " +
@@ -190,7 +187,7 @@ public class StandardFormProcessor
                             rst.getString(itsColumns[i]) + "\" SIZE=\"40\" MAXLENGTH=\"40\">");
                     }
                 }
-                result.append("<INPUT TYPE=\"submit\" VALUE=\"Change Command\">");
+                result.append("<INPUT TYPE=\"submit\" VALUE=\"Change " + itsTableName.replace("mm_", "") + "\">");
                 result.append("</FORM></td></tr>");
             }
         }
@@ -202,12 +199,79 @@ public class StandardFormProcessor
     }
 
     public void addEntry(HttpServletRequest request)
+            throws SQLException
     {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
 
+        // add one
+        query.append("insert into " + itsTableName + " values(");
+        String appendstuff = "";
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            query.append(itsColumns[i]);
+            appendstuff+="?";
+            if (i != itsColumns.length - 1)
+            {
+                query.append(",");
+                appendstuff+=",";
+            }
+        }
+        query.append(") " + appendstuff + ")");
+
+        stmt=itsConnection.prepareStatement(query.toString());
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            if (itsColumns[i].equals("owner"))
+            {
+                stmt.setString(i + 1, itsPlayerName);
+            }
+            else
+            {
+                stmt.setString(i + 1, request.getParameter(itsColumns[i]));
+            }
+        }
+
+        stmt.executeUpdate(query.toString());
+        stmt.close();
     }
 
     public void removeEntry(HttpServletRequest request)
+    throws SQLException
     {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("delete from " + itsTableName + " where ? = ? and owner = ?values(");
+        String appendstuff = "";
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            query.append(itsColumns[i]);
+            appendstuff+="?";
+            if (i != itsColumns.length - 1)
+            {
+                query.append(",");
+                appendstuff+=",";
+            }
+        }
+        query.append(") " + appendstuff + ")");
+
+        stmt=itsConnection.prepareStatement(query.toString());
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            if (itsColumns[i].equals("owner"))
+            {
+                stmt.setString(i + 1, itsPlayerName);
+            }
+            else
+            {
+                stmt.setString(i + 1, request.getParameter(itsColumns[i]));
+            }
+        }
+
+        stmt.executeUpdate(query.toString());
+        stmt.close();
     }
 
     public void removeOwnershipFromEntry(HttpServletRequest request)

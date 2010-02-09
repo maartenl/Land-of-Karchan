@@ -12,10 +12,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <%@include file="includes/head.jsp" %>
     </head>
     <body>
         <h1>Hello World!</h1>
-        Click here to login <a href="enter.jsp">Enter</a><p/>
-        Click here to edit your charsheet <a href="scripts/editcharsheet.jsp">Enter</a><p/>
+        Click here to see answers <a href="scripts/answers.jsp">Enter</a><p/>
+        Click here to edit areas<a href="scripts/areas.jsp">Enter</a><p/>
+        Click here to edit banned<a href="scripts/banned.jsp">Enter</a><p/>
+        Click here to edit commands<a href="scripts/commands.jsp">Enter</a><p/>
     </body>
 </html>

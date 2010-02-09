@@ -35,7 +35,8 @@ maarten_l@yahoo.com
 <%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
-<%@ page language="java" import="mmud.web.StandardFormProcessor"%>
+<%@ page language="java" import="mmud.web.FormProcessorFactory"%>
+<%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -60,11 +61,12 @@ private String itsPlayerSessionId;
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mmud - Admin</title>
+                <%@include file="includes/head.jsp" %>
     </head>
-<BODY BGCOLOR=#FFFFFF>
+<body>
 
 <H1><A HREF="/karchan/admin/help/scripting2.html" target="_blank">
-<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0" alt=""info"></A>
 Commands</H1>
 
 <A HREF="commands.jsp?idstartswith=A">A</A>
@@ -149,14 +151,21 @@ if (!rst.next())
 rst.close();
 stmt.close();
 
-StandardFormProcessor processor = new StandardFormProcessor("mm_commands", itsPlayerName);
+FormProcessor processor = FormProcessorFactory.create("mm_commands", itsPlayerName);
 
 String[] columns = {"id", "command", "room", "method_name", "callable"};
 String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
 processor.setColums(columns);
 processor.setDisplayNames(displays);
 out.println(processor.getList(request));
-
+}
+catch (SQLException e)
+        {
+    out.println(e.getMessage());
+e.printStackTrace(new PrintWriter(out));
+%><%=e.getMessage()%>
+<%
+    }
 %>
 
 <FORM METHOD="POST" ACTION="add_command.jsp">

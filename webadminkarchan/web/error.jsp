@@ -1,7 +1,31 @@
-<%-- 
-    Document   : error
-    Created on : Jan 26, 2010, 8:56:59 PM
-    Author     : maartenl
+<%--
+-----------------------------------------------------------------------
+svninfo: $Id: charactersheets.php 1078 2006-01-15 09:25:36Z maartenl $
+Maarten's Mud, WWW-based MUD using MYSQL
+Copyright (C) 1998  Maarten van Leunen
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Maarten van Leunen
+Appelhof 27
+5345 KA Oss
+Nederland
+Europe
+maarten_l@yahoo.com
+-----------------------------------------------------------------------
+
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -11,13 +35,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Error Page</title>
+        <title>Land of Karchan - Admin Authentication Error Page</title>
+        <%@include file="includes/head.jsp" %>
     </head>
     <body>
- <h1>Invalid user name or password.</h1>
+ <h1>Invalid user name or password for adminship.</h1>
 <p>Please enter a user name or password that is authorized to access this
 application. For this application, this means a user that has been created in the
 <code>file</code> realm and has been assigned to the <em>group</em> of
-<code>players</code>. Click here to <a href="${url}">Try Again</a></p>
+<code>players</code>. Click here to <a href="enter.jsp">Try Again</a></p>
     </body>
 </html>
