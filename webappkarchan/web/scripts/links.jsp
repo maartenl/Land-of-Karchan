@@ -163,6 +163,8 @@ HREF="http://www.sourceforge.net/projects/mmud">http://sourceforge.net/projects/
 <DIV ALIGN=right>Last Updated $Date: 2005-10-23 10:03:45 +0200 (Sun, 23 Oct 2005) $
 </DIV>
 
+<A HREF="/karchan/player/scripts/links.jsp">Links</A><P>
+
 <A HREF="/karchan/index.jsp"><IMG SRC="/images/gif/webpic/buttono.gif" BORDER="0" alt="Back"></A><P>
 </body>
 </html>
