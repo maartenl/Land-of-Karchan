@@ -35,7 +35,7 @@ maarten_l@yahoo.com
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Land of Karchan</title>
+        <title>Land of Karchan - Logon Screen</title>
         <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
     </head>
     <body>
