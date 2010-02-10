@@ -39,143 +39,117 @@ maarten_l@yahoo.com
 <%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-<%!
-// authentication && authorization
+    <%!// authentication && authorization
 
-/* name of the current user logged in */
-private String itsPlayerName;
+    /* name of the current user logged in */
+    private String itsPlayerName;
 
-/* password of the current user logged in, unsure if used */
-private String itsPlayerPassword = "";
+    /* password of the current user logged in, unsure if used */
+    private String itsPlayerPassword = "";
 
-/* sessionid/cookiepassword of current user */
-private String itsPlayerSessionId;
-%>
-<%
-  itsPlayerName = request.getRemoteUser();
-  itsPlayerSessionId = request.getSession(true).getId();
-%>
+    /* sessionid/cookiepassword of current user */
+    private String itsPlayerSessionId;
+    %>
+    <%
+            itsPlayerName = request.getRemoteUser();
+            itsPlayerSessionId = request.getSession(true).getId();
+    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mmud - Admin</title>
-                <%@include file="includes/head.jsp" %>
+        <%@include file="/includes/head.jsp" %>
     </head>
-<body>
+    <body>
 
-<H1><A HREF="/karchan/admin/help/scripting2.html" target="_blank">
-<IMG SRC="/images/icons/9pt4a.gif" BORDER="0" alt=""info"></A>
-Commands</H1>
+        <H1><A HREF="/karchan/admin/help/scripting2.html" target="_blank">
+                <IMG SRC="/images/icons/9pt4a.gif" BORDER="0" alt=""info"></A>
+            Commands</H1>
 
-<A HREF="commands.jsp?idstartswith=A">A</A>
-<A HREF="commands.jsp?idstartswith=B">B</A>
-<A HREF="commands.jsp?idstartswith=C">C</A>
-<A HREF="commands.jsp?idstartswith=D">D</A>
-<A HREF="commands.jsp?idstartswith=E">E</A>
-<A HREF="commands.jsp?idstartswith=F">F</A>
-<A HREF="commands.jsp?idstartswith=G">G</A>
-<A HREF="commands.jsp?idstartswith=H">H</A>
-<A HREF="commands.jsp?idstartswith=I">I</A>
-<A HREF="commands.jsp?idstartswith=J">J</A>
-<A HREF="commands.jsp?idstartswith=K">K</A>
-<A HREF="commands.jsp?idstartswith=L">L</A>
-<A HREF="commands.jsp?idstartswith=M">M</A>
-<A HREF="commands.jsp?idstartswith=N">N</A>
-<A HREF="commands.jsp?idstartswith=O">O</A>
-<A HREF="commands.jsp?idstartswith=P">P</A>
-<A HREF="commands.jsp?idstartswith=Q">Q</A>
-<A HREF="commands.jsp?idstartswith=R">R</A>
-<A HREF="commands.jsp?idstartswith=S">S</A>
-<A HREF="commands.jsp?idstartswith=T">T</A>
-<A HREF="commands.jsp?idstartswith=U">U</A>
-<A HREF="commands.jsp?idstartswith=V">V</A>
-<A HREF="commands.jsp?idstartswith=W">W</A>
-<A HREF="commands.jsp?idstartswith=X">X</A>
-<A HREF="commands.jsp?idstartswith=Y">Y</A>
-<A HREF="commands.jsp?idstartswith=Z">Z</A>
-<P>
+        <a HREF="commands.jsp">All</a><p/>
 
-<%
+        <A HREF="commands.jsp?idstartswith=A">A</A>
+        <A HREF="commands.jsp?idstartswith=B">B</A>
+        <A HREF="commands.jsp?idstartswith=C">C</A>
+        <A HREF="commands.jsp?idstartswith=D">D</A>
+        <A HREF="commands.jsp?idstartswith=E">E</A>
+        <A HREF="commands.jsp?idstartswith=F">F</A>
+        <A HREF="commands.jsp?idstartswith=G">G</A>
+        <A HREF="commands.jsp?idstartswith=H">H</A>
+        <A HREF="commands.jsp?idstartswith=I">I</A>
+        <A HREF="commands.jsp?idstartswith=J">J</A>
+        <A HREF="commands.jsp?idstartswith=K">K</A>
+        <A HREF="commands.jsp?idstartswith=L">L</A>
+        <A HREF="commands.jsp?idstartswith=M">M</A>
+        <A HREF="commands.jsp?idstartswith=N">N</A>
+        <A HREF="commands.jsp?idstartswith=O">O</A>
+        <A HREF="commands.jsp?idstartswith=P">P</A>
+        <A HREF="commands.jsp?idstartswith=Q">Q</A>
+        <A HREF="commands.jsp?idstartswith=R">R</A>
+        <A HREF="commands.jsp?idstartswith=S">S</A>
+        <A HREF="commands.jsp?idstartswith=T">T</A>
+        <A HREF="commands.jsp?idstartswith=U">U</A>
+        <A HREF="commands.jsp?idstartswith=V">V</A>
+        <A HREF="commands.jsp?idstartswith=W">W</A>
+        <A HREF="commands.jsp?idstartswith=X">X</A>
+        <A HREF="commands.jsp?idstartswith=Y">Y</A>
+        <A HREF="commands.jsp?idstartswith=Z">Z</A>
+        <P>
 
-/* the following constraints need to be checked before any kind of update is
-to take place:
+            <%
 
-changing command:
-adding command:
-- check that method exists
-*/
-if (itsPlayerName == null)
-{
-    throw new RuntimeException("User undefined.");
-}
-if (!request.isUserInRole("deputies"))
-{
-    throw new RuntimeException("User does not have role 'deputies'.");
-}
-/*
-showing the different areas and what rooms belong to which area.
+            /* the following constraints need to be checked before any kind of update is
+            to take place:
 
-the following constraints need to be checked before any kind of update
-is to take place:
+            changing command:
+            adding command:
+            - check that method exists
+             */
+            if (itsPlayerName == null) {
+                throw new RuntimeException("User undefined.");
+            }
+            if (!request.isUserInRole("deputies")) {
+                throw new RuntimeException("User does not have role 'deputies'.");
+            }
+            /*
+            showing the different areas and what rooms belong to which area.
 
-changing area:
-- the area must exist
-- is the administrator the owner of the area
-*/
+            the following constraints need to be checked before any kind of update
+            is to take place:
 
-Connection con=null;
-ResultSet rst=null;
-PreparedStatement stmt=null;
+            changing area:
+            - the area must exist
+            - is the administrator the owner of the area
+             */
+            FormProcessor processor = null;
+            try {
 
-try
-{
-Context ctx = new InitialContext();
-DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-con = ds.getConnection();
+                processor = FormProcessorFactory.create("mm_commands", itsPlayerName);
+                String[] columns = {"id", "command", "room", "method_name", "callable"};
+                String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
+                processor.setColums(columns);
+                processor.setDisplayNames(displays);
+                out.println(processor.getList(request));
+            } catch (SQLException e) {
+                out.println(e.getMessage());
+                e.printStackTrace(new PrintWriter(out));
+            %><%=e.getMessage()%>
+            <%
+            } finally {
+                if (processor != null) {processor.closeConnection();}
+            }
+            %>
 
+        <FORM METHOD="POST" ACTION="add_command.jsp">
+            <b>
+                Command name: <INPUT TYPE="text" NAME="addcommandname" VALUE="">
+                <BR>
+                Method name: <INPUT TYPE="text" NAME="addcommandmethodname" VALUE="">
+                <INPUT TYPE="submit" VALUE="Add Command">
+            </b>
+        </FORM>
 
-// ===============================================================================
-// begin authorization check
-stmt=con.prepareStatement("select * from mm_admin where name =	'" +
-        itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
-rst=stmt.executeQuery();
-if (!rst.next())
-{
-    // error getting the info, user not found?
-    throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
-}
-// end authorization check
-// ===============================================================================
-rst.close();
-stmt.close();
-
-FormProcessor processor = FormProcessorFactory.create("mm_commands", itsPlayerName);
-
-String[] columns = {"id", "command", "room", "method_name", "callable"};
-String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
-processor.setColums(columns);
-processor.setDisplayNames(displays);
-out.println(processor.getList(request));
-}
-catch (SQLException e)
-        {
-    out.println(e.getMessage());
-e.printStackTrace(new PrintWriter(out));
-%><%=e.getMessage()%>
-<%
-    }
-%>
-
-<FORM METHOD="POST" ACTION="add_command.jsp">
-<b>
-Command name: <INPUT TYPE="text" NAME="addcommandname" VALUE="">
-<BR>
-Method name: <INPUT TYPE="text" NAME="addcommandmethodname" VALUE="">
-<INPUT TYPE="submit" VALUE="Add Command">
-</b>
-</FORM>
-
-</body>
+    </body>
 </html>

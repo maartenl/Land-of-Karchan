@@ -52,10 +52,45 @@ public class StandardFormProcessor implements FormProcessor
 
     private String itsPlayerName;
 
+    public void checkAuthorization()
+    throws SQLException
+    {
+        ResultSet rst = null;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            // ===============================================================================
+            // begin authorization check
+            stmt = itsConnection.prepareStatement("select * from mm_admin where name =	'" +
+                    itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
+            rst = stmt.executeQuery();
+            if (!rst.next()) {
+                // error getting the info, user not found?
+                throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
+            }
+            // end authorization check
+            // ===============================================================================
+        }
+        finally
+        {
+            if (rst != null) {rst.close();}
+            stmt.close();
+        }
+    }
+
+    public void closeConnection()
+    throws SQLException
+    {
+        // itsConnection.commit();
+        itsConnection.close();
+    }
+
     /**
      * Initialises the object with a connection to the database.
      */
     public StandardFormProcessor(String aTableName, String aPlayerName)
+    throws SQLException
     {
         if (aTableName == null || aTableName.trim().equals(""))
         {
@@ -75,10 +110,7 @@ public class StandardFormProcessor implements FormProcessor
         {
             throw new RuntimeException("Getting the datasource failed!", e);
         }
-        catch (SQLException e)
-        {
-            throw new RuntimeException("Getting an appropriate connection failed!!", e);
-        }
+        checkAuthorization();
     }
 
     /**
@@ -125,52 +157,58 @@ public class StandardFormProcessor implements FormProcessor
         {
             result.append("<tr>");
             boolean accessGranted = itsPlayerName.equals(rst.getString("owner")) ||
-                rst.getString("owner") == null ||
-                rst.getString("owner").trim().equals("");
+                    rst.getString("owner") == null ||
+                    rst.getString("owner").trim().equals("");
+            
+           if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
+           {
+               if (accessGranted)
+                {
+                    result.append("<td><a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
+                            ".jsp?id=" + rst.getString("id") + "\">EX</a></td>");
+                    result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
+                            ".jsp?id=" + rst.getString("id") + "\">X</a></td>");
+                    result.append("<td><a HREF=\"remove_ownership.jsp?id=" +
+                            rst.getString("id") + "&table=" + itsTableName.replace("mm_", "") + "\">O</a></td>");
+                }
+                else
+                {
+                    result.append("<td></td><td></td><td></td>");
+                }
 
-            if (accessGranted)
-            {
-                result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
-                        ".jsp?id=" + rst.getString("id") + "\">X</a></td>");
-                result.append("<td><a HREF=\"remove_ownership.jsp?id=" +
-                        rst.getString("id") + "&table=" + itsTableName.replace("mm_", "") + "\">O</a></td>");
-            }
-            else
-            {
-                result.append("<td></td><td></td>");
-            }
-
-            for (int i=0; i < itsColumns.length; i++)
-            {
-                if (rst.getString(itsColumns[i]) == null)
-                {
-                    result.append("<td></td>");
-                }
-                else
-                if ("0".equals(rst.getString(itsColumns[i])))
-                {
-                    result.append("<td><b>" + itsDisplay[i] + ":</b> No</td>");
-                }
-                else
-                if ("1".equals(rst.getString(itsColumns[i])))
-                {
-                    result.append("<td><b>" + itsDisplay[i] + ":</b> Yes</td>");
-                }
-                else
-                {
-                    result.append("<td><b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + "</td>");
-                }
-            }
-            result.append("</tr>");
-            if (accessGranted && (rst.getString(itsColumns[0]).equals(request.getParameter("id"))))
-            {
-                // put some editing form here.
-                result.append("<tr><td><FORM METHOD=\"POST\" ACTION=\"" + 
-                        itsTableName.replace("mm_", "").toLowerCase() +
-                        ".jsp\">");
                 for (int i=0; i < itsColumns.length; i++)
                 {
-                    result.append("<b>" + itsDisplay[i] + ": </b>");
+                    if (rst.getString(itsColumns[i]) == null)
+                    {
+                        result.append("<td></td>");
+                    }
+                    else
+                    if ("0".equals(rst.getString(itsColumns[i])))
+                    {
+                        result.append("<td><b>" + itsDisplay[i] + ":</b> No</td>");
+                    }
+                    else
+                    if ("1".equals(rst.getString(itsColumns[i])))
+                    {
+                        result.append("<td><b>" + itsDisplay[i] + ":</b> Yes</td>");
+                    }
+                    else
+                    {
+                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + "</td>");
+                    }
+                }
+                result.append("</tr>");
+           }
+           else
+            {
+                // put some editing form here.
+                result.append("<tr><td><table><tr><FORM METHOD=\"POST\" ACTION=\"" +
+                        itsTableName.replace("mm_", "").toLowerCase() +
+                        ".jsp\">");
+                result.append("<td><b>" + itsDisplay[0] + ": </b></td><td>" + rst.getString(itsColumns[0]) + "</td></tr>");
+                for (int i=1; i < itsColumns.length; i++)
+                {
+                    result.append("<td><b>" + itsDisplay[i] + ": </b></td><td>");
                     if (itsColumns[i].equals("callable"))
                     {
                         result.append("<SELECT NAME=\"callable\" SIZE=\"2\">");
@@ -178,16 +216,17 @@ public class StandardFormProcessor implements FormProcessor
                                 ("1".equals(rst.getString("callable")) ? "selected " : " ") + ">yes");
                         result.append("<option value=\"0\" " +
                                 ("0".equals(rst.getString("callable")) ? "selected " : " ") + ">no");
-                        result.append("</SELECT>");
+                        result.append("</SELECT><br/>");
                     }
                     else
                     {
                         result.append("<INPUT TYPE=\"text\" NAME=\"" +
                             itsColumns[i] + "\" VALUE=\"" +
-                            rst.getString(itsColumns[i]) + "\" SIZE=\"40\" MAXLENGTH=\"40\">");
+                            rst.getString(itsColumns[i]) + "\" SIZE=\"40\" MAXLENGTH=\"40\"><br/>");
                     }
+                    result.append("</td></tr>");
                 }
-                result.append("<INPUT TYPE=\"submit\" VALUE=\"Change " + itsTableName.replace("mm_", "") + "\">");
+                result.append("</table><INPUT TYPE=\"submit\" VALUE=\"Change " + itsTableName.replace("mm_", "") + "\">");
                 result.append("</FORM></td></tr>");
             }
         }

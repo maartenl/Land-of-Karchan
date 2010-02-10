@@ -14,6 +14,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface FormProcessor {
 
+
+    void closeConnection() throws SQLException;
+
+    void checkAuthorization() throws SQLException;
+
     void addEntry(HttpServletRequest request) throws SQLException;
 
     String getList(HttpServletRequest request) throws SQLException;

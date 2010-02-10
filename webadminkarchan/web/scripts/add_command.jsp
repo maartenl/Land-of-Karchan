@@ -59,6 +59,7 @@ private String itsPlayerSessionId;
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mmud - Admin</title>
+        <%@include file="/includes/head.jsp" %>
     </head>
 <BODY BGCOLOR=#FFFFFF>
 <%
