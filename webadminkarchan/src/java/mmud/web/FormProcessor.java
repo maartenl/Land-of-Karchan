@@ -21,6 +21,8 @@ public interface FormProcessor {
 
     void addEntry(HttpServletRequest request) throws SQLException;
 
+    void changeEntry(HttpServletRequest request) throws SQLException;
+
     String getList(HttpServletRequest request) throws SQLException;
 
     void removeEntry(HttpServletRequest request) throws SQLException;
@@ -30,7 +32,7 @@ public interface FormProcessor {
     /**
      * @param itsColums the itsColums to set
      */
-    void setColums(String[] itsColums);
+    void setColumns(String[] itsColums);
 
     /**
      * @param itsDisplay the itsDisplay to set

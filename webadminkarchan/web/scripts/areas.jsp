@@ -118,55 +118,24 @@ String shortdesc = request.getParameter("shortdesc");
 if (area == null || description==null || shortdesc == null)
 {
     // show list of areas
-    if (area != null)
-    {
-        stmt=con.prepareStatement("select area, description, shortdesc, owner, 	date_format(creation, \"%Y-%m-%d %T\") as creation2	from mm_area where area = ?");
-        stmt.setString(1, area);
-    }
-    else
-    {
-        stmt=con.prepareStatement("select area, description, shortdesc, owner, 	date_format(creation, \"%Y-%m-%d %T\") as creation2	from mm_area order by area");
-    }
-    rst=stmt.executeQuery();
-    while (rst.next())
-    {
-            boolean accessGranted = itsPlayerName.equals(rst.getString("owner")) ||
-                    rst.getString("owner") == null ||
-                    rst.getString("owner").trim().equals("");
-%>
-<B>Area:</b> <%=rst.getString("area")%><BR>
-<B>Short Description:</b> <%=rst.getString("shortdesc")%><BR>
-<B>Long Description:</b> <%=rst.getString("description")%><BR>
-<B>owner:</b> <%=rst.getString("owner")%><BR>
-<B>creation:</B> <%=rst.getString("creation2")%><BR>
-                <%
-            if (rst.getString("area").equals(area) && accessGranted)
-            {
-%>
-<FORM METHOD="GET" ACTION="areas.jsp">
-<table>
-<TR><TD><b>Area:</b></TD><TD> <%=rst.getString("area")%>?></TD></TR>
-<INPUT TYPE="hidden" NAME="area" VALUE="<%=rst.getString("area")%>">
-<TR><TD><b>Short Description:</b></TD><TD><INPUT TYPE="text" NAME="shortdesc" VALUE="<%=rst.getString("shortdesc")%>" SIZE="40" MAXLENGTH="255"></TD></TR>
-<TR><TD><b>Long Description:</b></TD><TD><TEXTAREA NAME="description" ROWS="14" COLS="85"><%=rst.getString("description")%></TEXTAREA></TD></TR>
-<TR><TD><b>owner:</b></TD><TD><%=rst.getString("owner")%></TD></TR>
-<TR><TD><b>creation:</b></TD><TD><%=rst.getString("creation2")%></TD></TR>
-</table>
-<INPUT TYPE="submit" VALUE="Change Area">
-</b>
-</FORM>
-<FORM METHOD="GET" ACTION="remove_ownership.jsp">
-<INPUT TYPE="hidden" NAME="table" VALUE="area">
-<INPUT TYPE="hidden" NAME="id" VALUE="<%=rst.getString("area")%>">
-<INPUT TYPE="submit" VALUE="Remove Ownership">
-</FORM>
-<BR>
+            FormProcessor processor = null;
+            try {
 
-<%
+                processor = FormProcessorFactory.create("mm_areas", itsPlayerName);
+                String[] columns = {"area", "shortdesc", "description", "owner", "creation"};
+                String[] displays = {"Area", "Short Description", "Long Description", "Owner", "Created on"};
+                processor.setColums(columns);
+                processor.setDisplayNames(displays);
+                out.println(processor.getList(request));
+            } catch (SQLException e) {
+                out.println(e.getMessage());
+                e.printStackTrace(new PrintWriter(out));
+            %><%=e.getMessage()%>
+            <%
+            } finally {
+                if (processor != null) {processor.closeConnection();}
             }
-    }
-    rst.close();
-    stmt.close();
+
 }
 else
 {

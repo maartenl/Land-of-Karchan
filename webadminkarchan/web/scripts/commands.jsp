@@ -113,16 +113,6 @@ maarten_l@yahoo.com
             if (!request.isUserInRole("deputies")) {
                 throw new RuntimeException("User does not have role 'deputies'.");
             }
-            /*
-            showing the different areas and what rooms belong to which area.
-
-            the following constraints need to be checked before any kind of update
-            is to take place:
-
-            changing area:
-            - the area must exist
-            - is the administrator the owner of the area
-             */
             FormProcessor processor = null;
             try {
 

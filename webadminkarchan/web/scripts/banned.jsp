@@ -107,50 +107,31 @@ if (!request.isUserInRole("deputies"))
 {
     throw new RuntimeException("User does not have role 'deputies'.");
 }
-/*
-showing the different areas and what rooms belong to which area.
 
-the following constraints need to be checked before any kind of update
-is to take place:
+      FormProcessor processor = null;
+    try {
 
-changing area:
-- the area must exist
-- is the administrator the owner of the area
-*/
+        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName);
+        String[] columns = {"address", "days", "IP", "name", "deputy", "date", "reason"};
+        String[] displays = {"Address", "Days to go", "IPaddress", "Name", "Deputy", "Date of occurrence", "Reason"};
+        processor.setColums(columns);
+        processor.setDisplayNames(displays);
+        out.println(processor.getList(request));
+    } catch (SQLException e) {
+        out.println(e.getMessage());
+        e.printStackTrace(new PrintWriter(out));
+    %><%=e.getMessage()%>
+    <%
+    } finally {
+        if (processor != null) {processor.closeConnection();}
+    }
+    %>
 
-Connection con=null;
-ResultSet rst=null;
-PreparedStatement stmt=null;
-
-try
-{
-Context ctx = new InitialContext();
-DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-con = ds.getConnection();
-
-
-// ===============================================================================
-// begin authorization check
-stmt=con.prepareStatement("select * from mm_admin where name =	'" +
-        itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
-rst=stmt.executeQuery();
-if (!rst.next())
-{
-    // error getting the info, user not found?
-    throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
-}
-// end authorization check
-// ===============================================================================
-rst.close();
-stmt.close();
-
-// show list of banned people
-stmt=con.prepareStatement("select * from mm_bantable");
-rst=stmt.executeQuery();
-while (rst.next())
+    while (rst.next())
 {
 %>
-<TR><TD><a HREF="remove_banned.jsp?remove_banned=<%=rst.getString("address")%>">X</a></TD><TD> <%=rst.getString("address")%></TD>
+<TR><TD><a HREF="remove_banned.jsp?
+           remove_banned=<%=rst.getString("address")%>">X</a></TD><TD> <%=rst.getString("address")%></TD>
 <TD><%=rst.getString("days")%>
 <TD><%=rst.getString("IP")%>
 <TD><%=rst.getString("name")%>

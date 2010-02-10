@@ -30,6 +30,7 @@ package mmud.web;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.text.DateFormat;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
@@ -116,14 +117,22 @@ public class StandardFormProcessor implements FormProcessor
     /**
      * @param itsColums the itsColums to set
      */
-    public void setColums(String[] itsColums) {
-        this.itsColumns = itsColums;
+    public void setColumns(String[] itsColumns) {
+        if (itsDisplay != null && itsColumns.length != itsDisplay.length)
+        {
+            throw new RuntimeException("Design failure. Not equivalent number of names and columns.");
+        }
+        this.itsColumns = itsColumns;
     }
 
     /**
      * @param itsDisplay the itsDisplay to set
      */
     public void setDisplayNames(String[] itsDisplay) {
+        if (itsColumns != null && itsColumns.length != itsDisplay.length)
+        {
+            throw new RuntimeException("Design failure. Not equivalent number of names and columns.");
+        }
         this.itsDisplay = itsDisplay;
     }
 
@@ -162,10 +171,11 @@ public class StandardFormProcessor implements FormProcessor
             
            if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
            {
+               // put the list here
                if (accessGranted)
                 {
                     result.append("<td><a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString("id") + "\">EX</a></td>");
+                            ".jsp?id=" + rst.getString("id") + "\">E</a></td>");
                     result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
                             ".jsp?id=" + rst.getString("id") + "\">X</a></td>");
                     result.append("<td><a HREF=\"remove_ownership.jsp?id=" +
@@ -191,6 +201,13 @@ public class StandardFormProcessor implements FormProcessor
                     if ("1".equals(rst.getString(itsColumns[i])))
                     {
                         result.append("<td><b>" + itsDisplay[i] + ":</b> Yes</td>");
+                    }
+                    else
+                    if (itsColumns[i].equals("creation"))
+                    {
+                        Date creation = rst.getDate(itsColumns[i]);
+                        DateFormat formatter = DateFormat.getInstance();
+                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + formatter.format(creation) + "</td>");
                     }
                     else
                     {
@@ -220,9 +237,11 @@ public class StandardFormProcessor implements FormProcessor
                     }
                     else
                     {
+                        String disp = rst.getString(itsColumns[i]);
+                        disp = (disp == null ? "" : disp);
                         result.append("<INPUT TYPE=\"text\" NAME=\"" +
                             itsColumns[i] + "\" VALUE=\"" +
-                            rst.getString(itsColumns[i]) + "\" SIZE=\"40\" MAXLENGTH=\"40\"><br/>");
+                            disp + "\" SIZE=\"40\" MAXLENGTH=\"40\"><br/>");
                     }
                     result.append("</td></tr>");
                 }
@@ -237,6 +256,12 @@ public class StandardFormProcessor implements FormProcessor
         return result.toString();
     }
 
+    /**
+     * <pre>insert into mm_areas values(area, desc, shordesc)
+     * (?, ?, ?)</pre>
+     * @param request
+     * @throws SQLException
+     */
     public void addEntry(HttpServletRequest request)
             throws SQLException
     {
@@ -256,7 +281,7 @@ public class StandardFormProcessor implements FormProcessor
                 appendstuff+=",";
             }
         }
-        query.append(") " + appendstuff + ")");
+        query.append(") (" + appendstuff + ")");
 
         stmt=itsConnection.prepareStatement(query.toString());
         for (int i=0; i < itsColumns.length; i++)
@@ -275,6 +300,12 @@ public class StandardFormProcessor implements FormProcessor
         stmt.close();
     }
 
+    /**
+     * <pre>delete from mm_areas where 
+     * where (owner = "" or owner = null or owner = ?) and area = ?</pre>
+     * @param request
+     * @throws SQLException
+     */
     public void removeEntry(HttpServletRequest request)
     throws SQLException
     {
@@ -282,38 +313,97 @@ public class StandardFormProcessor implements FormProcessor
         PreparedStatement stmt=null;
 
         // add one
-        query.append("delete from " + itsTableName + " where ? = ? and owner = ?values(");
-        String appendstuff = "";
-        for (int i=0; i < itsColumns.length; i++)
+        query.append("delete from " + itsTableName + 
+                " where (owner = \"\" or owner = null or owner = ?) and " + itsColumns[0] + " = ?");
+        stmt=itsConnection.prepareStatement(query.toString());
+        stmt.setString(1, itsPlayerName);
+        stmt.setString(2, request.getParameter("id"));
+        stmt.executeUpdate(query.toString());
+        stmt.close();
+    }
+
+    /**
+     * Sends an update statement, in the following form:
+     * <p/>
+     * <pre>update mm_areas set desc = ?, short = ?
+     * where (owner = "" or owner = null or owner = ?) and area = ?</pre>
+     * And fills it up with:
+     * <ul><li>desc
+     * <li>short
+     * <li>itsPlayerName
+     * <li>area
+     * </ul>
+     * @param request
+     * @throws SQLException
+     */
+    public void changeEntry(HttpServletRequest request)
+    throws SQLException
+    {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("update " + itsTableName + " set ");
+        for (int i=1; i < itsColumns.length; i++)
         {
-            query.append(itsColumns[i]);
-            appendstuff+="?";
+            if ("creation".equals(itsColumns[i]))
+            {
+                // creation timestamp! skip it!
+                continue;
+            }
+            query.append(itsColumns[i] + " = ?");
             if (i != itsColumns.length - 1)
             {
-                query.append(",");
-                appendstuff+=",";
+                query.append(", ");
             }
         }
-        query.append(") " + appendstuff + ")");
-
+        query.append(" where (owner = \"\" or owner = null or owner = ?) and " + itsColumns[0] + " = ?");
         stmt=itsConnection.prepareStatement(query.toString());
-        for (int i=0; i < itsColumns.length; i++)
+        for (int i=1; i < itsColumns.length; i++)
         {
+            if ("creation".equals(itsColumns[i]))
+            {
+                // creation timestamp! skip it!
+                continue;
+            }
             if (itsColumns[i].equals("owner"))
             {
-                stmt.setString(i + 1, itsPlayerName);
+                stmt.setString(i, itsPlayerName);
             }
             else
             {
-                stmt.setString(i + 1, request.getParameter(itsColumns[i]));
+                stmt.setString(i, request.getParameter(itsColumns[i]));
             }
         }
+        stmt.setString(itsColumns.length + 1, itsPlayerName);
+        stmt.setString(itsColumns.length + 2, request.getParameter(itsColumns[0]));
 
         stmt.executeUpdate(query.toString());
         stmt.close();
     }
 
+    /**
+     * Sends an update statement, removing the ownership from a table row.
+€     * <p/>
+     * <pre>update mm_areas set ownership = null
+     * where (owner = "" or owner = null or owner = ?) and area = ?</pre>
+     * @param request
+     * @throws SQLException
+     */
     public void removeOwnershipFromEntry(HttpServletRequest request)
+    throws SQLException
     {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("update " + itsTableName + " set owner = null " +
+               " where (owner = \"\" or owner = null or owner = ?) and " +
+                itsColumns[0] + " = ?");
+        stmt=itsConnection.prepareStatement(query.toString());
+        stmt.setString(1, itsPlayerName);
+        stmt.setString(1, request.getParameter("id"));
+        stmt.executeUpdate(query.toString());
+        stmt.close();
     }
 }
