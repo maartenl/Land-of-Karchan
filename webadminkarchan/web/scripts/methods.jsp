@@ -64,10 +64,40 @@ private String itsPlayerSessionId;
         <%@include file="/includes/head.jsp" %>
     </head>
 <BODY BGCOLOR=#FFFFFF>
+<H1>
+<IMG SRC="/images/gif/dragon.gif"  alt="dragon">Methods</H1>
+<H2><A HREF="/karchan/admin/help/scripting3.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
+Methods</H2>
 
-<H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Answers</H1>
-This script is used for manipulating the answers that can be provided by bots.<P>
-The following bots have answers:<p/>
+<A HREF="methods.jsp?idstartswith=A">A</A>
+<A HREF="methods.jsp?idstartswith=B">B</A>
+<A HREF="methods.jsp?idstartswith=C">C</A>
+<A HREF="methods.jsp?idstartswith=D">D</A>
+<A HREF="methods.jsp?idstartswith=E">E</A>
+<A HREF="methods.jsp?idstartswith=F">F</A>
+<A HREF="methods.jsp?idstartswith=G">G</A>
+<A HREF="methods.jsp?idstartswith=H">H</A>
+<A HREF="methods.jsp?idstartswith=I">I</A>
+<A HREF="methods.jsp?idstartswith=J">J</A>
+<A HREF="methods.jsp?idstartswith=K">K</A>
+<A HREF="methods.jsp?idstartswith=L">L</A>
+<A HREF="methods.jsp?idstartswith=M">M</A>
+<A HREF="methods.jsp?idstartswith=N">N</A>
+<A HREF="methods.jsp?idstartswith=O">O</A>
+<A HREF="methods.jsp?idstartswith=P">P</A>
+<A HREF="methods.jsp?idstartswith=Q">Q</A>
+<A HREF="methods.jsp?idstartswith=R">R</A>
+<A HREF="methods.jsp?idstartswith=S">S</A>
+<A HREF="methods.jsp?idstartswith=T">T</A>
+<A HREF="methods.jsp?idstartswith=U">U</A>
+<A HREF="methods.jsp?idstartswith=V">V</A>
+<A HREF="methods.jsp?idstartswith=W">W</A>
+<A HREF="methods.jsp?idstartswith=X">X</A>
+<A HREF="methods.jsp?idstartswith=Y">Y</A>
+<A HREF="methods.jsp?idstartswith=Z">Z</A>
+<P>
+
 <%
 
 if (itsPlayerName == null)
@@ -78,100 +108,44 @@ if (!request.isUserInRole("deputies"))
 {
     throw new RuntimeException("User does not have role 'deputies'.");
 }
+/*
+showing the different areas and what rooms belong to which area.
 
-Connection con=null;
-ResultSet rst=null;
-PreparedStatement stmt=null;
+the following constraints need to be checked before any kind of update
+is to take place:
 
-try
-{
-Context ctx = new InitialContext();
-DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-con = ds.getConnection();
+changing area:
+- the area must exist
+- is the administrator the owner of the area
+*/
 
 
-// ===============================================================================
-// begin authorization check
-stmt=con.prepareStatement("select * from mm_admin where name =	'" +
-        itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
-rst=stmt.executeQuery();
-if (!rst.next())
-{
-    // error getting the info, user not found?
-    throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
-}
-// end authorization check
-// ===============================================================================
-rst.close();
-stmt.close();
+// show list of areas
+FormProcessor processor = null;
+try {
 
-String bot = request.getParameter("bot");
-
-if (bot == null)
-{
-    stmt=con.prepareStatement("select distinct name from mm_answers");
-    rst=stmt.executeQuery();
-    while (rst.next())
+    if (request.getParameter("id") != null)
     {
-            out.println("<A HREF=\"scripts/answers.jsp?bot=" + rst.getString("name") + "\">" + rst.getString("name") + "</A><BR>");
+        String[] columns = {"name", "name", "owner", "creation", "src"};
+        String[] displays = {"Name", "Name", "Owner", "Created on", "Method Source"};
+        processor = FormProcessorFactory.create("mm_methods", itsPlayerName, displays, columns);
     }
-    rst.close();
-    stmt.close();
-}
-else
-{
-%> <%= bot%> has the following answers available:
-<BR><table><TR><TD><B>Question</B></TD><TD><B>Answer</B></TD></TR>
-<%
-
-stmt=con.prepareStatement("select question, answer from mm_answers where name = \"" + bot + "\"");
-rst=stmt.executeQuery();
-while (rst.next())
-{%>
-<TR><TD><%=rst.getString("question")%></TD><TD><%=rst.getString("answer")%></TD></TR>
-<%}
-rst.close();
-stmt.close();
-%></table><%
-
-String question = request.getParameter("question");
-String answer = request.getParameter("answer");
-
-boolean isChanged = (question != null && answer != null);
-
-if (isChanged)
-{
-stmt=con.prepareStatement("replace into mm_answers (name, question, answer) " +
-			"values( ?, ?, ?)");
-stmt.setString(1, bot);
-stmt.setString(2, question);
-stmt.setString(3, answer);
-stmt.executeQuery();
-stmt.close();
-}
-%>
-<FORM METHOD="POST" ACTION="answers.jsp">
-<b>
-<INPUT TYPE="hidden" NAME="bot" VALUE="<%=bot%>">
-Question: <INPUT TYPE="text" SIZE="100" NAME="question" VALUE="<%=(question == null ? "":question)%>"><BR>
-Answer: <INPUT TYPE="text" SIZE="100" NAME="answer" VALUE="<%=(answer==null ? "" : answer)%>"><BR>
-<INPUT TYPE="submit" VALUE="Submit Answer">
-</b>
-</FORM>
-<%
-
-}
-catch(Exception e)
-{
-out.println(e.getMessage());
-e.printStackTrace(new PrintWriter(out));
+    else
+    {
+        String[] columns = {"name", "name", "owner", "creation"};
+        String[] displays = {"Name", "Name", "Owner", "Created on"};
+        processor = FormProcessorFactory.create("mm_methods", itsPlayerName, displays, columns);
+    }
+    out.println(processor.getList(request, false));
+} catch (SQLException e) {
+    out.println(e.getMessage());
+    e.printStackTrace(new PrintWriter(out));
 %><%=e.getMessage()%>
 <%
+} finally {
+    if (processor != null) {processor.closeConnection();}
 }
-finally
-{
-    con.close();
-}
+
 %>
 
 </body>

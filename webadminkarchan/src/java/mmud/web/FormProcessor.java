@@ -25,6 +25,8 @@ public interface FormProcessor {
 
     String getList(HttpServletRequest request) throws SQLException;
 
+    String getList(HttpServletRequest request, boolean newLines) throws SQLException;
+
     void removeEntry(HttpServletRequest request) throws SQLException;
 
     void removeOwnershipFromEntry(HttpServletRequest request) throws SQLException;

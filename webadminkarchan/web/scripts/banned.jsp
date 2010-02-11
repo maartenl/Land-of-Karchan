@@ -35,6 +35,8 @@ maarten_l@yahoo.com
 <%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
+<%@ page language="java" import="mmud.web.FormProcessorFactory"%>
+<%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -111,11 +113,9 @@ if (!request.isUserInRole("deputies"))
       FormProcessor processor = null;
     try {
 
-        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName);
         String[] columns = {"address", "days", "IP", "name", "deputy", "date", "reason"};
         String[] displays = {"Address", "Days to go", "IPaddress", "Name", "Deputy", "Date of occurrence", "Reason"};
-        processor.setColums(columns);
-        processor.setDisplayNames(displays);
+        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns);
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());
@@ -127,22 +127,6 @@ if (!request.isUserInRole("deputies"))
     }
     %>
 
-    while (rst.next())
-{
-%>
-<TR><TD><a HREF="remove_banned.jsp?
-           remove_banned=<%=rst.getString("address")%>">X</a></TD><TD> <%=rst.getString("address")%></TD>
-<TD><%=rst.getString("days")%>
-<TD><%=rst.getString("IP")%>
-<TD><%=rst.getString("name")%>
-<TD><%=rst.getString("deputy")%>
-<TD><%=rst.getString("date")%>
-<TD><%=rst.getString("reason")%></TD></TR>
-<%
-    }
-rst.close();
-stmt.close();
-%>
 </TABLE>
 Add Ban:<FORM METHOD="GET" ACTION="add_banned.jsp">
 Address:<INPUT TYPE="text" NAME="ban_address" VALUE="" SIZE="40" MAXLENGTH="40"><P>
@@ -158,24 +142,30 @@ Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><
 <TABLE><TR><TD>
 <%
 // show list of banned people
-stmt=con.prepareStatement("select * from mm_unbantable order by name");
-rst=stmt.executeQuery();
-int count = 1;
-while (rst.next())
-{
-    out.println("<a HREF=\"remove_banned.jsp?remove_unban=" +
-            rst.getString(0) + "\">X</a> " +
-            rst.getString(0) + "<BR>");
+    try {
+
+        String[] columns = {"name"};
+        String[] displays = {"Name"};
+        processor = FormProcessorFactory.create("mm_unbantable", itsPlayerName, displays, columns);
+        out.println(processor.getList(request));
+    } catch (SQLException e) {
+        out.println(e.getMessage());
+        e.printStackTrace(new PrintWriter(out));
+    %><%=e.getMessage()%>
+    <%
+    } finally {
+        if (processor != null) {processor.closeConnection();}
+    }
+    %>
+<%--int count = 1;
     count ++;
     if (count > 40)
     {
             count = 1;
             out.println("</TD><TD>");
     }
-}
-rst.close();
-stmt.close();
-%>
+}--%>
+
 
 Add Unbanname:<FORM METHOD="GET" ACTION="add_banned.jsp">
 <INPUT TYPE="text" NAME="unbanname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
@@ -188,23 +178,20 @@ Add Unbanname:<FORM METHOD="GET" ACTION="add_banned.jsp">
 </B></TD><TD><B>Days</B></TD><TD><B>Reason</B></TD></TR>
 <%
 // show list of banned people
-stmt=con.prepareStatement("select * from mm_bannednamestable order by name");
-rst=stmt.executeQuery();
-while (rst.next())
-{
-    %>
-<tr>
-    <td><a HREF="remove_banned.jsp?remove_bannedname=<%=rst.getString("name")%>">"X</a></td>
-    <td><%=rst.getString("name")%></A></TD>
-    <TD><%=rst.getString("deputy")%></TD>
-    <TD><%=rst.getString("creation")%></TD>
-    <TD><%=rst.getString("days")%></TD>
-    <TD><%=rst.getString("reason")%></TD>
-</tr>
-            <%
-}
-rst.close();
-stmt.close();
+    try {
+
+        String[] columns = {"name", "deputy", "creation", "days", "reason"};
+        String[] displays = {"Name", "Deputy", "creation", "days", "reason"};
+        processor = FormProcessorFactory.create("mm_bannednamestable", itsPlayerName, displays, columns);
+        out.println(processor.getList(request));
+    } catch (SQLException e) {
+        out.println(e.getMessage());
+        e.printStackTrace(new PrintWriter(out));
+    %><%=e.getMessage()%>
+    <%
+    } finally {
+        if (processor != null) {processor.closeConnection();}
+    }
 %>
 
             Add Banned name:<FORM METHOD="GET" ACTION="add_banned.jsp">
@@ -219,38 +206,23 @@ Reason:<INPUT TYPE="text" NAME="add_banreason" VALUE="" SIZE="40" MAXLENGTH="255
 <table><tr>
             <%
 // show list of banned people
-stmt=con.prepareStatement("select * from mm_sillynamestable order by name");
-rst=stmt.executeQuery();
-count = 1;
-while (rst.next())
-{
-    out.println("<A HREF=\"remove_banned.jsp?remove_sillyname=" +
-            rst.getString(0) + "\">X</a> " +
-            rst.getString(0) + "<BR>");
-    count ++;
-    if (count > 40)
-    {
-            count = 1;
-            out.println("</TD><TD>");
-    }
-}
-rst.close();
-stmt.close();
-%>
-    </tr></table>
+    try {
 
-<%
-con.close();
-}
-}
-catch(Exception e)
-{
-out.println(e.getMessage());
-e.printStackTrace(new PrintWriter(out));
-%><%=e.getMessage()%>
-<%
-}
+        String[] columns = {"name"};
+        String[] displays = {"Name"};
+        processor = FormProcessorFactory.create("mm_sillynamestable", itsPlayerName, displays, columns);
+        out.println(processor.getList(request));
+    } catch (SQLException e) {
+        out.println(e.getMessage());
+        e.printStackTrace(new PrintWriter(out));
+    %><%=e.getMessage()%>
+    <%
+    } finally {
+        if (processor != null) {processor.closeConnection();}
+    }
+
 %>
+
 Add Sillyname:<FORM METHOD="GET" ACTION="add_banned.jsp">
 <INPUT TYPE="text" NAME="sillyname" VALUE="" SIZE="20" MAXLENGTH="20"><P>
 <INPUT TYPE="submit" VALUE="Submit">

@@ -20,5 +20,7 @@
         Click here to edit areas<a href="scripts/areas.jsp">Enter</a><p/>
         Click here to edit banned<a href="scripts/banned.jsp">Enter</a><p/>
         Click here to edit commands<a href="scripts/commands.jsp">Enter</a><p/>
+        Click here to edit boards<a href="scripts/boards.jsp">Enter</a><p/>
+        Click here to edit methods<a href="scripts/methods.jsp?idstartswith=A">Enter</a><p/>
     </body>
 </html>

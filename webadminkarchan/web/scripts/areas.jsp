@@ -35,6 +35,8 @@ maarten_l@yahoo.com
 <%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
+<%@ page language="java" import="mmud.web.FormProcessorFactory"%>
+<%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -85,31 +87,7 @@ changing area:
 - is the administrator the owner of the area
 */
 
-Connection con=null;
-ResultSet rst=null;
-PreparedStatement stmt=null;
 
-try
-{
-Context ctx = new InitialContext();
-DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-con = ds.getConnection();
-
-
-// ===============================================================================
-// begin authorization check
-stmt=con.prepareStatement("select * from mm_admin where name =	'" +
-        itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
-rst=stmt.executeQuery();
-if (!rst.next())
-{
-    // error getting the info, user not found?
-    throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
-}
-// end authorization check
-// ===============================================================================
-rst.close();
-stmt.close();
 
 String area = request.getParameter("area");
 String description = request.getParameter("description");
@@ -118,46 +96,32 @@ String shortdesc = request.getParameter("shortdesc");
 if (area == null || description==null || shortdesc == null)
 {
     // show list of areas
-            FormProcessor processor = null;
-            try {
+    FormProcessor processor = null;
+    try {
 
-                processor = FormProcessorFactory.create("mm_areas", itsPlayerName);
-                String[] columns = {"area", "shortdesc", "description", "owner", "creation"};
-                String[] displays = {"Area", "Short Description", "Long Description", "Owner", "Created on"};
-                processor.setColums(columns);
-                processor.setDisplayNames(displays);
-                out.println(processor.getList(request));
-            } catch (SQLException e) {
-                out.println(e.getMessage());
-                e.printStackTrace(new PrintWriter(out));
-            %><%=e.getMessage()%>
-            <%
-            } finally {
-                if (processor != null) {processor.closeConnection();}
-            }
-
+        String[] columns = {"area", "shortdesc", "description", "owner", "creation"};
+        String[] displays = {"Area", "Short Description", "Long Description", "Owner", "Created on"};
+        processor = FormProcessorFactory.create("mm_area", itsPlayerName, displays, columns);
+        out.println(processor.getList(request, true));
+    } catch (SQLException e) {
+        out.println(e.getMessage());
+        e.printStackTrace(new PrintWriter(out));
+    %><%=e.getMessage()%>
+    <%
+    } finally {
+        if (processor != null) {processor.closeConnection();}
+    }
 }
-else
-{
 // change the area
-stmt=con.prepareStatement("update mm_area set description = ?, shortdesc = ?, owner = ? where (owner is null or owner = \"\" or owner = ?) and area = ?");
-stmt.setString(1, description);
-stmt.setString(2, shortdesc);
-stmt.setString(3, itsPlayerName);
-stmt.setString(4, itsPlayerName);
-stmt.setString(5, area);
-stmt.executeQuery();
-stmt.close();
-con.close();
-}
-}
-catch(Exception e)
-{
-out.println(e.getMessage());
-e.printStackTrace(new PrintWriter(out));
-%><%=e.getMessage()%>
-<%
-}
+// stmt=con.prepareStatement("update mm_area set description = ?, shortdesc = ?, owner = ? where (owner is null or owner = \"\" or owner = ?) and area = ?");
+// stmt.setString(1, description);
+// stmt.setString(2, shortdesc);
+// stmt.setString(3, itsPlayerName);
+// stmt.setString(4, itsPlayerName);
+// stmt.setString(5, area);
+// stmt.executeQuery();
+// stmt.close();
+
 %>
 
 </body>

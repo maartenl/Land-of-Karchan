@@ -43,15 +43,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class StandardFormProcessor implements FormProcessor
 {
-    private Connection itsConnection;
+    public static final String CREATION = "creation";
+    public static final String OWNER = "owner";
+    protected Connection itsConnection;
 
-    private String itsTableName;
+    protected String itsTableName;
 
-    private String[] itsColumns;
+    protected String[] itsColumns;
 
-    private String[] itsDisplay;
+    protected String[] itsDisplay;
 
-    private String itsPlayerName;
+    protected String itsPlayerName;
 
     public void checkAuthorization()
     throws SQLException
@@ -139,7 +141,15 @@ public class StandardFormProcessor implements FormProcessor
     public String getList(HttpServletRequest request)
             throws SQLException
     {
+        return getList(request, false);
+    }
+
+    public String getList(HttpServletRequest request, boolean newLines)
+            throws SQLException
+    {
         StringBuffer result = new StringBuffer();
+        String td = (!newLines ? "<td>" : "");
+        String nottd = (!newLines ? "</td>" : "<br/>");
         result.append("<table>");
         ResultSet rst=null;
         PreparedStatement stmt=null;
@@ -165,55 +175,58 @@ public class StandardFormProcessor implements FormProcessor
         while (rst.next())
         {
             result.append("<tr>");
-            boolean accessGranted = itsPlayerName.equals(rst.getString("owner")) ||
-                    rst.getString("owner") == null ||
-                    rst.getString("owner").trim().equals("");
+            boolean accessGranted = itsPlayerName.equals(rst.getString(OWNER)) ||
+                    rst.getString(OWNER) == null ||
+                    rst.getString(OWNER).trim().equals("");
             
            if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
            {
+
+               if (newLines) { result.append("<td>");}
                // put the list here
                if (accessGranted)
                 {
-                    result.append("<td><a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString("id") + "\">E</a></td>");
-                    result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString("id") + "\">X</a></td>");
-                    result.append("<td><a HREF=\"remove_ownership.jsp?id=" +
-                            rst.getString("id") + "&table=" + itsTableName.replace("mm_", "") + "\">O</a></td>");
+                    result.append(td + "<a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
+                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">E</a> ");
+                    result.append("<a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
+                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">X</a> ");
+                    result.append("<a HREF=\"remove_ownership.jsp?id=" +
+                            rst.getString(itsColumns[0]) + "&table=" + itsTableName.replace("mm_", "") + "\">O</a>" + nottd);
                 }
                 else
                 {
-                    result.append("<td></td><td></td><td></td>");
+                    result.append(td + nottd);
                 }
 
                 for (int i=0; i < itsColumns.length; i++)
                 {
                     if (rst.getString(itsColumns[i]) == null)
                     {
-                        result.append("<td></td>");
+                        result.append(td + nottd);
                     }
                     else
                     if ("0".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> No</td>");
+                        result.append(td + "<b>" + itsDisplay[i] + ":</b> No" + nottd);
                     }
                     else
                     if ("1".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> Yes</td>");
+                        result.append(td + "<b>" + itsDisplay[i] + ":</b> Yes" + nottd);
                     }
                     else
-                    if (itsColumns[i].equals("creation"))
+                    if (itsColumns[i].equals(CREATION))
                     {
                         Date creation = rst.getDate(itsColumns[i]);
                         DateFormat formatter = DateFormat.getInstance();
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + formatter.format(creation) + "</td>");
+                        result.append(td + "<b>" + itsDisplay[i] + ":</b> " + formatter.format(creation) + nottd);
                     }
                     else
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + "</td>");
+                        result.append(td + "<b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + nottd);
                     }
                 }
+                if (newLines) { result.append("</td>");}
                 result.append("</tr>");
            }
            else
@@ -286,7 +299,7 @@ public class StandardFormProcessor implements FormProcessor
         stmt=itsConnection.prepareStatement(query.toString());
         for (int i=0; i < itsColumns.length; i++)
         {
-            if (itsColumns[i].equals("owner"))
+            if (itsColumns[i].equals(OWNER))
             {
                 stmt.setString(i + 1, itsPlayerName);
             }
@@ -346,7 +359,7 @@ public class StandardFormProcessor implements FormProcessor
         query.append("update " + itsTableName + " set ");
         for (int i=1; i < itsColumns.length; i++)
         {
-            if ("creation".equals(itsColumns[i]))
+            if (CREATION.equals(itsColumns[i]))
             {
                 // creation timestamp! skip it!
                 continue;
@@ -361,12 +374,12 @@ public class StandardFormProcessor implements FormProcessor
         stmt=itsConnection.prepareStatement(query.toString());
         for (int i=1; i < itsColumns.length; i++)
         {
-            if ("creation".equals(itsColumns[i]))
+            if (CREATION.equals(itsColumns[i]))
             {
                 // creation timestamp! skip it!
                 continue;
             }
-            if (itsColumns[i].equals("owner"))
+            if (itsColumns[i].equals(OWNER))
             {
                 stmt.setString(i, itsPlayerName);
             }
@@ -406,4 +419,5 @@ public class StandardFormProcessor implements FormProcessor
         stmt.executeUpdate(query.toString());
         stmt.close();
     }
+
 }
