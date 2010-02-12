@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud.web;
 
+import java.util.Date;
+
 /**
  *
  * @author maartenl
@@ -45,6 +47,7 @@ public interface Formatter {
 
     void addRowItem(String item);
 
-    String getTable();
+    @Override
+    String toString();
     
 }

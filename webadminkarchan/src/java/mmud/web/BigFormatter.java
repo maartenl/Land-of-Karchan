@@ -34,20 +34,20 @@ import java.util.Date;
  *
  * @author maartenl
  */
-public class StandardFormatter implements Formatter {
+public class BigFormatter implements Formatter {
+
+    public BigFormatter() {
+    }
 
     private StringBuffer theContent = new StringBuffer("<table>");
     private boolean firstRow = true;
-
-    public StandardFormatter() {
-    }
 
     @Override
     public String returnOptionsString(String tableName, String id) {
         StringBuffer result = new StringBuffer();
         if (tableName == null || id == null)
         {
-            result.append("");
+            result.append("<br/>");
         }
         else
         {
@@ -64,19 +64,19 @@ public class StandardFormatter implements Formatter {
     public void addRow() {
         if (!firstRow)
         {
-            theContent.append("</tr>");
+            theContent.append("</td></tr>");
         }
-        theContent.append("<tr>");
+        theContent.append("<tr><td>");
         firstRow = false;
     }
 
     public void addRowString(String display, String value) {
-        theContent.append("<td><b>" + display + ": </b>" +
-                value + "</td>");
+        theContent.append("<b>" + display + ": </b>" +
+                value + "<br/>");
     }
 
     public void addRowItem(String item) {
-        theContent.append("<td>" + item + "</td>");
+        theContent.append("" + item + "<br/>");
     }
 
     public String toString() {
@@ -84,17 +84,17 @@ public class StandardFormatter implements Formatter {
         {
             return theContent.toString() + "</table>";
         }
-        return theContent.toString() + "</tr></table>";
+        return theContent.toString() + "</td></tr></table>";
     }
 
     public void addRowBoolean(String display, boolean value) {
-        theContent.append("<td><b>" + display + ": </b>" +
-                (value ? "Yes" : "No") + "</td>");
+        theContent.append("<b>" + display + ": </b>" +
+                (value ? "Yes" : "No") + "<br/>");
     }
 
     public void addRowDate(String display, Date value) {
         DateFormat formatter = DateFormat.getInstance();
-        theContent.append("<td><b>" + display + ":</b> " + formatter.format(value) + "</td>");
+        theContent.append("<b>" + display + ":</b> " + formatter.format(value) + "<br/>");
     }
 
 

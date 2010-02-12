@@ -36,6 +36,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
+<%@ page language="java" import="mmud.web.BigFormatter"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -101,7 +102,7 @@ if (area == null || description==null || shortdesc == null)
 
         String[] columns = {"area", "shortdesc", "description", "owner", "creation"};
         String[] displays = {"Area", "Short Description", "Long Description", "Owner", "Created on"};
-        processor = FormProcessorFactory.create("mm_area", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_area", itsPlayerName, displays, columns, new BigFormatter());
         out.println(processor.getList(request, true));
     } catch (SQLException e) {
         out.println(e.getMessage());

@@ -28,7 +28,6 @@ maarten_l@yahoo.com
 package mmud.web;
 
 import java.sql.*;
-import java.text.DateFormat;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -114,14 +113,13 @@ public class StandardFormProcessor extends BaseFormProcessor
                     }
                     else
                     {
-                        itsFormatterresult.append(td + "<b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + nottd);
+                        itsFormatter.addRowString(itsDisplay[i], rst.getString(itsColumns[i]));
                     }
                 }
-                if (newLines) { result.append("</td>");}
-                result.append("</tr>");
            }
            else
             {
+                StringBuffer result = new StringBuffer();
                 // put some editing form here.
                 result.append("<tr><td><table><tr><FORM METHOD=\"POST\" ACTION=\"" +
                         itsTableName.replace("mm_", "").toLowerCase() +
@@ -149,15 +147,13 @@ public class StandardFormProcessor extends BaseFormProcessor
                     }
                     result.append("</td></tr>");
                 }
-                result.append("</table><INPUT TYPE=\"submit\" VALUE=\"Change " + itsTableName.replace("mm_", "") + "\">");
+                result.append("<INPUT TYPE=\"submit\" VALUE=\"Change " + itsTableName.replace("mm_", "") + "\">");
                 result.append("</FORM></td></tr>");
             }
         }
         rst.close();
         stmt.close();
-        result.append("</table>");
-
-        return result.toString();
+        return itsFormatter.toString();
     }
 
     /**

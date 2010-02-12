@@ -27,12 +27,8 @@ maarten_l@yahoo.com
 
 package mmud.web;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.sql.*;
 import java.text.DateFormat;
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -50,8 +46,6 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
     public String getList(HttpServletRequest request, boolean newLines)
             throws SQLException
     {
-        StringBuffer result = new StringBuffer();
-        result.append("<table>");
         ResultSet rst=null;
         PreparedStatement stmt=null;
 
@@ -75,7 +69,7 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
         rst=stmt.executeQuery();
         while (rst.next())
         {
-            result.append("<tr>");
+            itsFormatter.addRow();
             boolean accessGranted = true;
 
            if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
@@ -83,50 +77,48 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
                // put the list here
                if (accessGranted)
                 {
-                   result.append(itsFormatter.returnOptionsString(itsTableName, rst.getString(itsColumns[0])));
+                   itsFormatter.addRowItem(itsFormatter.returnOptionsString(itsTableName, rst.getString(itsColumns[0])));
                 }
                 else
                 {
-                   result.append(itsFormatter.returnOptionsString(null ,null));
+                   itsFormatter.addRowItem("");
                 }
 
                 for (int i=0; i < itsColumns.length; i++)
                 {
                     if (rst.getString(itsColumns[i]) == null)
                     {
-                        result.append("<td></td>");
+                        itsFormatter.addRowItem("");
                     }
-                    else
                     if ("0".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> No</td>");
+                        itsFormatter.addRowBoolean(itsDisplay[i], false);
                     }
                     else
                     if ("1".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> Yes</td>");
+                        itsFormatter.addRowBoolean(itsDisplay[i], true);
                     }
                     else
                     if (itsColumns[i].equals(CREATION))
                     {
-                        Date creation = rst.getDate(itsColumns[i]);
-                        DateFormat formatter = DateFormat.getInstance();
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + formatter.format(creation) + "</td>");
+                        itsFormatter.addRowDate(itsDisplay[i], rst.getDate(itsColumns[i]));
                     }
+                    else
                     if (itsColumns[i].equals("src"))
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> " +
-                                rst.getString(itsColumns[i]).replace("&", "&amp;").replace(">","&gt;").replace("<", "&lt;") + "</td>");
+                        itsFormatter.addRowString(itsDisplay[i],
+                                rst.getString(itsColumns[i]).replace("&", "&amp;").replace(">","&gt;").replace("<", "&lt;"));
                     }
                     else
                     {
-                        result.append("<td><b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + "</td>");
+                        itsFormatter.addRowString(itsDisplay[i], rst.getString(itsColumns[i]));
                     }
                 }
-                result.append("</tr>");
            }
            else
             {
+                StringBuffer result = new StringBuffer();
                 // put some editing form here.
                 result.append("<tr><td><table><tr><FORM METHOD=\"POST\" ACTION=\"" +
                         itsTableName.replace("mm_", "").toLowerCase() +
@@ -175,9 +167,8 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
         }
         rst.close();
         stmt.close();
-        result.append("</table>");
 
-        return result.toString();
+        return itsFormatter.toString();
     }
 
     @Override

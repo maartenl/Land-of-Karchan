@@ -34,12 +34,15 @@ import java.util.Date;
  *
  * @author maartenl
  */
-public class StandardFormatter implements Formatter {
+public class TableFormatter implements Formatter {
 
-    private StringBuffer theContent = new StringBuffer("<table>");
-    private boolean firstRow = true;
+    private StringBuffer theContent = new StringBuffer();
+    private boolean starting = true;
+    private boolean firstrow = true;
 
-    public StandardFormatter() {
+    StringBuffer header = new StringBuffer("<table>");
+
+    public TableFormatter() {
     }
 
     @Override
@@ -62,39 +65,55 @@ public class StandardFormatter implements Formatter {
     }
 
     public void addRow() {
-        if (!firstRow)
+        if (!starting)
         {
             theContent.append("</tr>");
+            firstrow = false;
         }
         theContent.append("<tr>");
-        firstRow = false;
+        starting = false;
     }
 
     public void addRowString(String display, String value) {
-        theContent.append("<td><b>" + display + ": </b>" +
-                value + "</td>");
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
+        theContent.append("<td>" + value + "</td>");
     }
 
     public void addRowItem(String item) {
+        if (firstrow)
+        {
+           header.append("<td></td>");
+        }
         theContent.append("<td>" + item + "</td>");
     }
 
     public String toString() {
-        if (firstRow)
+        if (starting)
         {
-            return theContent.toString() + "</table>";
+            return header.toString() + theContent.toString() + "</table>";
         }
-        return theContent.toString() + "</tr></table>";
+        return "<tr>" + header.toString() + "</tr>" + theContent.toString() + "</tr></table>";
     }
 
     public void addRowBoolean(String display, boolean value) {
-        theContent.append("<td><b>" + display + ": </b>" +
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
+        theContent.append("<td>" +
                 (value ? "Yes" : "No") + "</td>");
     }
 
     public void addRowDate(String display, Date value) {
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
         DateFormat formatter = DateFormat.getInstance();
-        theContent.append("<td><b>" + display + ":</b> " + formatter.format(value) + "</td>");
+        theContent.append("<td>" + formatter.format(value) + "</td>");
     }
 
 

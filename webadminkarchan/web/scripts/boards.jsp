@@ -38,7 +38,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@ page language="java" import="mmud.web.Formatter"%>
-<%@ page language="java" import="mmud.web.StandardFormatter"%>
+<%@ page language="java" import="mmud.web.BigFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -99,8 +99,7 @@ try {
 
     String[] columns = {"id", "name", "owner", "creation", "description"};
     String[] displays = {"Id", "Name", "Owner", "Created on", "Long Description"};
-    Formatter formatter = new StandardFormatter(true);
-    processor = FormProcessorFactory.create("mm_boards", itsPlayerName, displays, columns, formatter);
+    processor = FormProcessorFactory.create("mm_boards", itsPlayerName, displays, columns, new BigFormatter());
     out.println(processor.getList(request), true);
 } catch (SQLException e) {
     out.println(e.getMessage());

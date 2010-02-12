@@ -116,10 +116,9 @@ maarten_l@yahoo.com
             }
             FormProcessor processor = null;
             try {
-                Formatter formatter = new StandardFormatter(false);
                 String[] columns = {"id", "command", "room", "method_name", "callable"};
                 String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
-                processor = FormProcessorFactory.create("mm_commands", itsPlayerName, displays, columns, formatter);
+                processor = FormProcessorFactory.create("mm_commands", itsPlayerName, displays, columns);
                 out.println(processor.getList(request));
             } catch (SQLException e) {
                 out.println(e.getMessage());

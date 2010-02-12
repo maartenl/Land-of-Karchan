@@ -61,14 +61,7 @@ public class FormProcessorFactory {
         FormProcessor result = null;
         if (formatter == null)
         {
-            if (isOwnerFound)
-            {
-                formatter = new StandardFormatterNoOwner(false);
-            }
-            else
-            {
-                formatter = new StandardFormatter(false);
-            }
+            formatter = new StandardFormatter();
         }
         if (isOwnerFound)
         {

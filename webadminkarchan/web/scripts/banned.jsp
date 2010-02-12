@@ -37,6 +37,8 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
+<%@ page language="java" import="mmud.web.TableFormatter"%>
+<%@ page language="java" import="mmud.web.MultiColumnFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -96,9 +98,6 @@ the Banned people table, the character is <I>banned</I>
 </OL>
 
 <A NAME="bannedpeople"><H1>Banned People</H1>
-<TABLE><TR><TD></TD><TD><B>Address</B></TD><TD><B>Days</B></TD><TD><B>Ip
-</B></TD><TD><B>Name</B></TD><TD><B>Deputy</B></TD><TD><B>Date
-</B></TD><TD><B>Reason</B></TD></TR>
 <%
 
 if (itsPlayerName == null)
@@ -115,7 +114,7 @@ if (!request.isUserInRole("deputies"))
 
         String[] columns = {"address", "days", "IP", "name", "deputy", "date", "reason"};
         String[] displays = {"Address", "Days to go", "IPaddress", "Name", "Deputy", "Date of occurrence", "Reason"};
-        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns, new TableFormatter());
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());
@@ -127,7 +126,6 @@ if (!request.isUserInRole("deputies"))
     }
     %>
 
-</TABLE>
 Add Ban:<FORM METHOD="GET" ACTION="add_banned.jsp">
 Address:<INPUT TYPE="text" NAME="ban_address" VALUE="" SIZE="40" MAXLENGTH="40"><P>
 Days:<INPUT TYPE="text" NAME="ban_days" VALUE="" SIZE="3" MAXLENGTH="3"><P>
@@ -139,14 +137,13 @@ Reason:<INPUT TYPE="text" NAME="ban_reason" VALUE="" SIZE="40" MAXLENGTH="255"><
 </FORM>
 
 <A NAME="unbannedchars"><H1>Unbanned Characters</H1>
-<TABLE><TR><TD>
 <%
 // show list of banned people
     try {
 
         String[] columns = {"name"};
         String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_unbantable", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_unbantable", itsPlayerName, displays, columns, new MultiColumnFormatter());
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());
@@ -174,15 +171,13 @@ Add Unbanname:<FORM METHOD="GET" ACTION="add_banned.jsp">
 </FORM>
 
 <A NAME="bannedchars"><H1>Banned Characters</H1>
-<TABLE><TR><TD></TD><TD><B>Name</B></TD><TD><B>Deputy</B></TD><TD><B>Creation
-</B></TD><TD><B>Days</B></TD><TD><B>Reason</B></TD></TR>
 <%
 // show list of banned people
     try {
 
         String[] columns = {"name", "deputy", "creation", "days", "reason"};
         String[] displays = {"Name", "Deputy", "creation", "days", "reason"};
-        processor = FormProcessorFactory.create("mm_bannednamestable", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_bannednamestable", itsPlayerName, displays, columns, new TableFormatter());
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());
@@ -203,14 +198,13 @@ Reason:<INPUT TYPE="text" NAME="add_banreason" VALUE="" SIZE="40" MAXLENGTH="255
 </FORM>
 
 <A NAME="sillynames"><H1>Banned Silly Names</H1>
-<table><tr>
             <%
 // show list of banned people
     try {
 
         String[] columns = {"name"};
         String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_sillynamestable", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_sillynamestable", itsPlayerName, displays, columns, new MultiColumnFormatter(80));
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());

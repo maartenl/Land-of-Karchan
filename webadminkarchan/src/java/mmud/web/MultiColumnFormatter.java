@@ -34,12 +34,23 @@ import java.util.Date;
  *
  * @author maartenl
  */
-public class StandardFormatter implements Formatter {
+public class MultiColumnFormatter implements Formatter {
 
-    private StringBuffer theContent = new StringBuffer("<table>");
-    private boolean firstRow = true;
+    private StringBuffer theContent = new StringBuffer("<table><tr><td>");
+    private boolean starting = true;
+    private boolean firstrow = true;
 
-    public StandardFormatter() {
+    private int count = 0;
+
+    private int itsColumnHeight = 40;
+
+    StringBuffer header = new StringBuffer();
+
+    public MultiColumnFormatter(int columnHeight) {
+        itsColumnHeight = columnHeight;
+    }
+
+    public MultiColumnFormatter() {
     }
 
     @Override
@@ -62,39 +73,67 @@ public class StandardFormatter implements Formatter {
     }
 
     public void addRow() {
-        if (!firstRow)
+        if (!starting)
         {
-            theContent.append("</tr>");
+            theContent.append("");
+            firstrow = false;
         }
-        theContent.append("<tr>");
-        firstRow = false;
+        theContent.append("");
+        starting = false;
     }
 
     public void addRowString(String display, String value) {
-        theContent.append("<td><b>" + display + ": </b>" +
-                value + "</td>");
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
+        theContent.append(value + "<br/>");
+        nextColumn();
     }
 
     public void addRowItem(String item) {
-        theContent.append("<td>" + item + "</td>");
+        if (firstrow)
+        {
+           header.append("<td></td>");
+        }
+        theContent.append(item + " ");
+        nextColumn();
     }
 
     public String toString() {
-        if (firstRow)
+        if (starting)
         {
             return theContent.toString() + "</table>";
         }
-        return theContent.toString() + "</tr></table>";
+        return theContent.toString() + "</td></tr></table>";
     }
 
     public void addRowBoolean(String display, boolean value) {
-        theContent.append("<td><b>" + display + ": </b>" +
-                (value ? "Yes" : "No") + "</td>");
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
+        theContent.append((value ? "Yes" : "No") + "<br/>");
+        nextColumn();
     }
 
     public void addRowDate(String display, Date value) {
+        if (firstrow)
+        {
+           header.append("<td><b>" + display + "</b></td>");
+        }
         DateFormat formatter = DateFormat.getInstance();
-        theContent.append("<td><b>" + display + ":</b> " + formatter.format(value) + "</td>");
+        theContent.append(formatter.format(value) + "<br/>");
+        nextColumn();
+    }
+
+    private void nextColumn()
+    {
+        if (count++ > itsColumnHeight)
+        {
+            theContent.append("</td><td>");count = 0;
+        }
+
     }
 
 
