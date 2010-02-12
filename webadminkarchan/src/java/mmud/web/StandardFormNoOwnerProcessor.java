@@ -1,7 +1,29 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/*-----------------------------------------------------------------------
+svninfo: $Id: charactersheets.php 1078 2006-01-15 09:25:36Z maartenl $
+Maarten's Mud, WWW-based MUD using MYSQL
+Copyright (C) 1998  Maarten van Leunen
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Maarten van Leunen
+Appelhof 27
+5345 KA Oss
+Nederland
+Europe
+maarten_l@yahoo.com
+-----------------------------------------------------------------------*/
 
 package mmud.web;
 
@@ -17,15 +39,15 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author maartenl
  */
-public class StandardFormNoOwnerProcessor extends StandardFormProcessor {
+public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
 
-    public StandardFormNoOwnerProcessor(String aTablename, String aPlayerName)
+    public StandardFormNoOwnerProcessor(String aTablename, String aPlayerName, Formatter formatter)
     throws SQLException
     {
-       super(aTablename, aPlayerName);
+       super(aTablename, aPlayerName, formatter);
     }
 
-    public String getList(HttpServletRequest request)
+    public String getList(HttpServletRequest request, boolean newLines)
             throws SQLException
     {
         StringBuffer result = new StringBuffer();
@@ -61,14 +83,11 @@ public class StandardFormNoOwnerProcessor extends StandardFormProcessor {
                // put the list here
                if (accessGranted)
                 {
-                    result.append("<td><a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">E</a></td>");
-                    result.append("<td><a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">X</a></td>");
+                   result.append(itsFormatter.returnOptionsString(itsTableName, rst.getString(itsColumns[0])));
                 }
                 else
                 {
-                    result.append("<td></td><td></td><td></td>");
+                   result.append(itsFormatter.returnOptionsString(null ,null));
                 }
 
                 for (int i=0; i < itsColumns.length; i++)
@@ -161,6 +180,134 @@ public class StandardFormNoOwnerProcessor extends StandardFormProcessor {
         return result.toString();
     }
 
+    @Override
+    public void removeOwnershipFromEntry(HttpServletRequest request)
+    throws SQLException
+    {
+        // do nothing,
+    }
 
-    
+    /**
+     * Sends an update statement, in the following form:
+     * <p/>
+     * <pre>update mm_areas set desc = ?, short = ?
+     * where area = ?</pre>
+     * And fills it up with:
+     * <ul><li>desc
+     * <li>short
+     * <li>area
+     * </ul>
+     * @param request
+     * @throws SQLException
+     */
+    public void changeEntry(HttpServletRequest request)
+    throws SQLException
+    {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("update " + itsTableName + " set ");
+        for (int i=1; i < itsColumns.length; i++)
+        {
+            if (CREATION.equals(itsColumns[i]))
+            {
+                // creation timestamp! skip it!
+                continue;
+            }
+            query.append(itsColumns[i] + " = ?");
+            if (i != itsColumns.length - 1)
+            {
+                query.append(", ");
+            }
+        }
+        query.append(" where " + itsColumns[0] + " = ?");
+        stmt=itsConnection.prepareStatement(query.toString());
+        for (int i=1; i < itsColumns.length; i++)
+        {
+            if (CREATION.equals(itsColumns[i]))
+            {
+                // creation timestamp! skip it!
+                continue;
+            }
+            if (itsColumns[i].equals(OWNER))
+            {
+                stmt.setString(i, itsPlayerName);
+            }
+            else
+            {
+                stmt.setString(i, request.getParameter(itsColumns[i]));
+            }
+        }
+        stmt.setString(itsColumns.length + 1, request.getParameter(itsColumns[0]));
+
+        stmt.executeUpdate(query.toString());
+        stmt.close();
+    }
+
+        /**
+     * <pre>delete from mm_areas where
+     * where (owner = "" or owner = null or owner = ?) and area = ?</pre>
+     * @param request
+     * @throws SQLException
+     */
+    public void removeEntry(HttpServletRequest request)
+    throws SQLException
+    {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("delete from " + itsTableName +
+                " where " + itsColumns[0] + " = ?");
+        stmt=itsConnection.prepareStatement(query.toString());
+        stmt.setString(1, request.getParameter("id"));
+        stmt.executeUpdate(query.toString());
+        stmt.close();
+    }
+
+        /**
+     * <pre>insert into mm_areas values(area, desc, shordesc)
+     * (?, ?, ?)</pre>
+     * @param request
+     * @throws SQLException
+     */
+    public void addEntry(HttpServletRequest request)
+            throws SQLException
+    {
+        StringBuffer query = new StringBuffer();
+        PreparedStatement stmt=null;
+
+        // add one
+        query.append("insert into " + itsTableName + " values(");
+        String appendstuff = "";
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            query.append(itsColumns[i]);
+            appendstuff+="?";
+            if (i != itsColumns.length - 1)
+            {
+                query.append(",");
+                appendstuff+=",";
+            }
+        }
+        query.append(") (" + appendstuff + ")");
+
+        stmt=itsConnection.prepareStatement(query.toString());
+        for (int i=0; i < itsColumns.length; i++)
+        {
+            if (itsColumns[i].equals(OWNER))
+            {
+                stmt.setString(i + 1, itsPlayerName);
+            }
+            else
+            {
+                stmt.setString(i + 1, request.getParameter(itsColumns[i]));
+            }
+        }
+
+        stmt.executeUpdate(query.toString());
+        stmt.close();
+    }
+
 }

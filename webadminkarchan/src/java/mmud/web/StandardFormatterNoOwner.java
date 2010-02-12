@@ -27,40 +27,37 @@ maarten_l@yahoo.com
 
 package mmud.web;
 
-import java.sql.SQLException;
-import javax.servlet.http.HttpServletRequest;
-
 /**
  *
- * @author Gebruiker
+ * @author maartenl
  */
-public interface FormProcessor {
+public class StandardFormatterNoOwner implements Formatter {
 
+    private boolean itsNewlines;
+    private String td;
+    private String nottd;
 
-    void closeConnection() throws SQLException;
+    public StandardFormatterNoOwner(boolean newLines) {
+        itsNewlines = newLines;
+        td = (!newLines ? "<td>" : "");
+        nottd = (!newLines ? "</td>" : "<br/>");
 
-    void checkAuthorization() throws SQLException;
+    }
 
-    void addEntry(HttpServletRequest request) throws SQLException;
-
-    void changeEntry(HttpServletRequest request) throws SQLException;
-
-    String getList(HttpServletRequest request) throws SQLException;
-
-    String getList(HttpServletRequest request, boolean newLines) throws SQLException;
-
-    void removeEntry(HttpServletRequest request) throws SQLException;
-
-    void removeOwnershipFromEntry(HttpServletRequest request) throws SQLException;
-
-    /**
-     * @param itsColums the itsColums to set
-     */
-    void setColumns(String[] itsColums);
-
-    /**
-     * @param itsDisplay the itsDisplay to set
-     */
-    void setDisplayNames(String[] itsDisplay);
-
+    @Override
+    public String returnOptionsString(String tableName, String id) {
+        StringBuffer result = new StringBuffer();
+        if (tableName == null || id == null)
+        {
+            result.append(td + nottd);
+        }
+        else
+        {
+            result.append(td + "<a HREF=\"" + tableName.replace("mm_", "").toLowerCase() +
+                    ".jsp?id=" + id + "\">E</a> ");
+            result.append("<a HREF=\"remove_" + tableName.replace("mm_", "").toLowerCase() +
+                    ".jsp?id=" + id + "\">X</a> " + nottd);
+        }
+        return result.toString();
+    }
 }

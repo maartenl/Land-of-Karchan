@@ -37,6 +37,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
+<%@ page language="java" import="mmud.web.Formatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -115,10 +116,10 @@ maarten_l@yahoo.com
             }
             FormProcessor processor = null;
             try {
-
+                Formatter formatter = new StandardFormatter(false);
                 String[] columns = {"id", "command", "room", "method_name", "callable"};
                 String[] displays = {"Id", "Command", "Room", "Method name", "Callable"};
-                processor = FormProcessorFactory.create("mm_commands", itsPlayerName, displays, columns);
+                processor = FormProcessorFactory.create("mm_commands", itsPlayerName, displays, columns, formatter);
                 out.println(processor.getList(request));
             } catch (SQLException e) {
                 out.println(e.getMessage());

@@ -27,12 +27,8 @@ maarten_l@yahoo.com
 
 package mmud.web;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.sql.*;
 import java.text.DateFormat;
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -41,116 +37,18 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Maarten van Leunen
  */
-public class StandardFormProcessor implements FormProcessor
+public class StandardFormProcessor extends BaseFormProcessor
 {
-    public static final String CREATION = "creation";
-    public static final String OWNER = "owner";
-    protected Connection itsConnection;
 
-    protected String itsTableName;
-
-    protected String[] itsColumns;
-
-    protected String[] itsDisplay;
-
-    protected String itsPlayerName;
-
-    public void checkAuthorization()
+    public StandardFormProcessor(String aTablename, String aPlayerName, Formatter formatter)
     throws SQLException
     {
-        ResultSet rst = null;
-        PreparedStatement stmt = null;
-
-        try
-        {
-            // ===============================================================================
-            // begin authorization check
-            stmt = itsConnection.prepareStatement("select * from mm_admin where name =	'" +
-                    itsPlayerName + "' and validuntil >= now()"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
-            rst = stmt.executeQuery();
-            if (!rst.next()) {
-                // error getting the info, user not found?
-                throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
-            }
-            // end authorization check
-            // ===============================================================================
-        }
-        finally
-        {
-            if (rst != null) {rst.close();}
-            stmt.close();
-        }
-    }
-
-    public void closeConnection()
-    throws SQLException
-    {
-        // itsConnection.commit();
-        itsConnection.close();
-    }
-
-    /**
-     * Initialises the object with a connection to the database.
-     */
-    public StandardFormProcessor(String aTableName, String aPlayerName)
-    throws SQLException
-    {
-        if (aTableName == null || aTableName.trim().equals(""))
-        {
-            throw new RuntimeException("aTableName is empty.");
-        }
-        itsTableName = aTableName;
-        itsPlayerName = aPlayerName;
-
-        Context ctx = null;
-        try
-        {
-            ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-            itsConnection = ds.getConnection();
-        }
-        catch (NamingException e)
-        {
-            throw new RuntimeException("Getting the datasource failed!", e);
-        }
-        checkAuthorization();
-    }
-
-    /**
-     * @param itsColums the itsColums to set
-     */
-    public void setColumns(String[] itsColumns) {
-        if (itsDisplay != null && itsColumns.length != itsDisplay.length)
-        {
-            throw new RuntimeException("Design failure. Not equivalent number of names and columns.");
-        }
-        this.itsColumns = itsColumns;
-    }
-
-    /**
-     * @param itsDisplay the itsDisplay to set
-     */
-    public void setDisplayNames(String[] itsDisplay) {
-        if (itsColumns != null && itsColumns.length != itsDisplay.length)
-        {
-            throw new RuntimeException("Design failure. Not equivalent number of names and columns.");
-        }
-        this.itsDisplay = itsDisplay;
-    }
-
-    public String getList(HttpServletRequest request)
-            throws SQLException
-    {
-        return getList(request, false);
+       super(aTablename, aPlayerName, formatter);
     }
 
     public String getList(HttpServletRequest request, boolean newLines)
             throws SQLException
     {
-        StringBuffer result = new StringBuffer();
-        String td = (!newLines ? "<td>" : "");
-        String nottd = (!newLines ? "</td>" : "<br/>");
-        result.append("<table>");
         ResultSet rst=null;
         PreparedStatement stmt=null;
 
@@ -174,56 +72,49 @@ public class StandardFormProcessor implements FormProcessor
         rst=stmt.executeQuery();
         while (rst.next())
         {
-            result.append("<tr>");
             boolean accessGranted = itsPlayerName.equals(rst.getString(OWNER)) ||
                     rst.getString(OWNER) == null ||
                     rst.getString(OWNER).trim().equals("");
             
            if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
            {
-
-               if (newLines) { result.append("<td>");}
+                itsFormatter.addRow();
                // put the list here
                if (accessGranted)
-                {
-                    result.append(td + "<a HREF=\"" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">E</a> ");
-                    result.append("<a HREF=\"remove_" + itsTableName.replace("mm_", "").toLowerCase() +
-                            ".jsp?id=" + rst.getString(itsColumns[0]) + "\">X</a> ");
-                    result.append("<a HREF=\"remove_ownership.jsp?id=" +
-                            rst.getString(itsColumns[0]) + "&table=" + itsTableName.replace("mm_", "") + "\">O</a>" + nottd);
+               {
+                   itsFormatter.addRowItem(
+                           itsFormatter.returnOptionsString(itsTableName, rst.getString(itsColumns[0]))
+                           );
                 }
                 else
                 {
-                    result.append(td + nottd);
+                   itsFormatter.addRowItem("");
                 }
 
                 for (int i=0; i < itsColumns.length; i++)
                 {
                     if (rst.getString(itsColumns[i]) == null)
                     {
-                        result.append(td + nottd);
+                       itsFormatter.addRowItem("");
                     }
                     else
                     if ("0".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append(td + "<b>" + itsDisplay[i] + ":</b> No" + nottd);
+                        itsFormatter.addRowBoolean(itsDisplay[i], false);
                     }
                     else
                     if ("1".equals(rst.getString(itsColumns[i])))
                     {
-                        result.append(td + "<b>" + itsDisplay[i] + ":</b> Yes" + nottd);
+                        itsFormatter.addRowBoolean(itsDisplay[i], true);
                     }
                     else
                     if (itsColumns[i].equals(CREATION))
                     {
-                        Date creation = rst.getDate(itsColumns[i]);
-                        DateFormat formatter = DateFormat.getInstance();
-                        result.append(td + "<b>" + itsDisplay[i] + ":</b> " + formatter.format(creation) + nottd);
+                        itsFormatter.addRowDate(itsDisplay[i], rst.getDate(itsColumns[i]));
                     }
                     else
                     {
-                        result.append(td + "<b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + nottd);
+                        itsFormatterresult.append(td + "<b>" + itsDisplay[i] + ":</b> " + rst.getString(itsColumns[i]) + nottd);
                     }
                 }
                 if (newLines) { result.append("</td>");}
@@ -397,12 +288,13 @@ public class StandardFormProcessor implements FormProcessor
 
     /**
      * Sends an update statement, removing the ownership from a table row.
-€     * <p/>
+     * <p/>
      * <pre>update mm_areas set ownership = null
      * where (owner = "" or owner = null or owner = ?) and area = ?</pre>
      * @param request
      * @throws SQLException
      */
+    @Override
     public void removeOwnershipFromEntry(HttpServletRequest request)
     throws SQLException
     {
