@@ -140,10 +140,10 @@ public abstract class BaseFormProcessor implements FormProcessor {
     }
 
     public String getList(HttpServletRequest request) throws SQLException {
-        return getList(request, false);
+        return getList(request, null);
     }
 
-    public abstract String getList(HttpServletRequest request, boolean newLines) throws SQLException;
+    public abstract String getList(HttpServletRequest request, String query) throws SQLException;
 
     /**
      * <pre>delete from mm_areas where

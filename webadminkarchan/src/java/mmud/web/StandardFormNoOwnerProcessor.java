@@ -43,13 +43,26 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
        super(aTablename, aPlayerName, formatter);
     }
 
-    public String getList(HttpServletRequest request, boolean newLines)
+    public String getList(HttpServletRequest request, String query)
             throws SQLException
     {
         ResultSet rst=null;
         PreparedStatement stmt=null;
 
         // show list of commands
+        if (query != null)
+        {
+            stmt=itsConnection.prepareStatement(query);
+            if (query.contains("?"))
+            {
+                if (request.getParameter("id") == null)
+                {
+                    throw new RuntimeException("Id was null!");
+                }
+                stmt.setString(1, request.getParameter("id"));
+            }
+        }
+        else
         if (request.getParameter("id") != null)
         {
             stmt=itsConnection.prepareStatement("select * from " + itsTableName + " where " + itsColumns[0] + " like ?");

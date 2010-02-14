@@ -109,7 +109,7 @@ if (!request.isUserInRole("deputies"))
     throw new RuntimeException("User does not have role 'deputies'.");
 }
 
-      FormProcessor processor = null;
+    FormProcessor processor = null;
     try {
 
         String[] columns = {"address", "days", "IP", "name", "deputy", "date", "reason"};

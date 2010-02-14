@@ -47,7 +47,7 @@ public interface FormProcessor {
 
     String getList(HttpServletRequest request) throws SQLException;
 
-    String getList(HttpServletRequest request, boolean newLines) throws SQLException;
+    String getList(HttpServletRequest request, String query) throws SQLException;
 
     void removeEntry(HttpServletRequest request) throws SQLException;
 

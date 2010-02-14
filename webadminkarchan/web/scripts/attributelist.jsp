@@ -36,8 +36,9 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
-<%@ page language="java" import="mmud.web.TableFormatter"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
+<%@ page language="java" import="mmud.web.Formatter"%>
+<%@ page language="java" import="mmud.web.TableFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -64,11 +65,13 @@ private String itsPlayerSessionId;
         <title>Mmud - Admin</title>
         <%@include file="/includes/head.jsp" %>
     </head>
-<BODY BGCOLOR=#FFFFFF>
+<body>
+<H1>
+<IMG SRC="/images/gif/dragon.gif" alt="dragon">Attribute <%= request.getParameter("name") %></H1>
 
-<H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Answers</H1>
-This script is used for manipulating the answers that can be provided by bots.<P>
-The following bots have answers:<p/>
+<A HREF="/karchan/admin/help/attributes.html" target="_blank">
+<IMG SRC="/images/icons/9pt4a.gif" BORDER="0" alt="info"></A><P>
+
 <%
 
 if (itsPlayerName == null)
@@ -80,55 +83,53 @@ if (!request.isUserInRole("deputies"))
     throw new RuntimeException("User does not have role 'deputies'.");
 }
 
-String bot = request.getParameter("id");
-
-if (bot == null)
-{
-    // show all bots that have answers
-    FormProcessor processor = null;
-    try {
-        String[] columns = {"name"};
-        String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns, new TableFormatter());
-        out.println(processor.getList(request, "select distinct name from mm_answers"));
-    } catch (SQLException e) {
-        out.println(e.getMessage());
-        e.printStackTrace(new PrintWriter(out));
-    %><%=e.getMessage()%>
-    <%
-    } finally {
-        if (processor != null) {processor.closeConnection();}
-    }
+FormProcessor processor = null;
+try {
+   String[] columns = {"name", "value", "value_type", "charname"};
+   String[] displays = {"Name", "Value", "Valuetype", "Character"};
+   processor = FormProcessorFactory.create("mm_charattributes",
+           itsPlayerName, displays, columns, new TableFormatter());
+    out.println(processor.getList(request));
+} catch (SQLException e) {
+    out.println(e.getMessage());
+    e.printStackTrace(new PrintWriter(out));
+%><%=e.getMessage()%>
+<%
+} finally {
+    if (processor != null) {processor.closeConnection();}
 }
-else
-{
-    // show all answers of a certain bot
-    %> <%= bot%> has the following answers available:<p/><%
-    FormProcessor processor = null;
-    try {
-        String[] columns = {"name", "question", "answer"};
-        String[] displays = {"Name", "Question", "Answer"};
-        processor = FormProcessorFactory.create("mm_answers", itsPlayerName, displays, columns, new TableFormatter());
-        out.println(processor.getList(request));
-    } catch (SQLException e) {
-        out.println(e.getMessage());
-        e.printStackTrace(new PrintWriter(out));
-    %><%=e.getMessage()%>
-    <%
-    } finally {
-        if (processor != null) {processor.closeConnection();}
-    }
+
+try {
+   String[] columns = {"name", "value", "value_type", "id"};
+   String[] displays = {"Name", "Value", "Valuetype", "Room id"};
+   processor = FormProcessorFactory.create("mm_roomattributes",
+           itsPlayerName, displays, columns, new TableFormatter());
+    out.println(processor.getList(request));
+} catch (SQLException e) {
+    out.println(e.getMessage());
+    e.printStackTrace(new PrintWriter(out));
+%><%=e.getMessage()%>
+<%
+} finally {
+    if (processor != null) {processor.closeConnection();}
+}
+
+try {
+   String[] columns = {"name", "value", "value_type", "id"};
+   String[] displays = {"Name", "Value", "Valuetype", "Item id"};
+   processor = FormProcessorFactory.create("mm_itemattributes",
+           itsPlayerName, displays, columns, new TableFormatter());
+    out.println(processor.getList(request));
+} catch (SQLException e) {
+    out.println(e.getMessage());
+    e.printStackTrace(new PrintWriter(out));
+%><%=e.getMessage()%>
+<%
+} finally {
+    if (processor != null) {processor.closeConnection();}
 }
 
 %>
-<FORM METHOD="POST" ACTION="answers.jsp">
-<b>
-<INPUT TYPE="hidden" NAME="id" VALUE="<%=bot%>">
-Question: <INPUT TYPE="text" SIZE="100" NAME="question" VALUE=""><BR>
-Answer: <INPUT TYPE="text" SIZE="100" NAME="answer" VALUE=""><BR>
-<INPUT TYPE="submit" VALUE="Submit Answer">
-</b>
-</FORM>
 
 </body>
 </html>

@@ -1,26 +1,43 @@
-<%-- 
-    Document   : index
-    Created on : Jan 20, 2010, 5:41:58 PM
-    Author     : Gebruiker
---%>
+<%--
+-----------------------------------------------------------------------
+svninfo: $Id: charactersheets.php 1078 2006-01-15 09:25:36Z maartenl $
+Maarten's Mud, WWW-based MUD using MYSQL
+Copyright (C) 1998  Maarten van Leunen
 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Maarten van Leunen
+Appelhof 27
+5345 KA Oss
+Nederland
+Europe
+maarten_l@yahoo.com
+-----------------------------------------------------------------------
+
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>Mmud Administration</TITLE>
+<%@include file="includes/head.jsp" %>
+</HEAD>
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <%@include file="includes/head.jsp" %>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        Click here to see answers <a href="scripts/answers.jsp">Enter</a><p/>
-        Click here to edit areas<a href="scripts/areas.jsp">Enter</a><p/>
-        Click here to edit banned<a href="scripts/banned.jsp">Enter</a><p/>
-        Click here to edit commands<a href="scripts/commands.jsp">Enter</a><p/>
-        Click here to edit boards<a href="scripts/boards.jsp">Enter</a><p/>
-        Click here to edit methods<a href="scripts/methods.jsp?idstartswith=A">Enter</a><p/>
-    </body>
-</html>
+<FRAMESET COLS="190,*">
+<FRAME SRC="menu.html" name="MenuFrame">
+<FRAME SRC="/karchan/admin/scripts/admin.jsp" name="MainFrame">
+</FRAMESET>

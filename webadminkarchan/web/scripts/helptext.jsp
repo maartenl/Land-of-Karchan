@@ -36,99 +36,97 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
-<%@ page language="java" import="mmud.web.TableFormatter"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
+<%@ page language="java" import="mmud.web.Formatter"%>
+<%@ page language="java" import="mmud.web.BigFormatter"%>
+<%@ page language="java" import="mmud.web.MultiColumnFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-<%!
-// authentication && authorization
+    <%!// authentication && authorization
 
-/* name of the current user logged in */
-private String itsPlayerName;
+    /* name of the current user logged in */
+    private String itsPlayerName;
 
-/* password of the current user logged in, unsure if used */
-private String itsPlayerPassword = "";
+    /* password of the current user logged in, unsure if used */
+    private String itsPlayerPassword = "";
 
-/* sessionid/cookiepassword of current user */
-private String itsPlayerSessionId;
-%>
-<%
-  itsPlayerName = request.getRemoteUser();
-  itsPlayerSessionId = request.getSession(true).getId();
-%>
+    /* sessionid/cookiepassword of current user */
+    private String itsPlayerSessionId;
+    %>
+    <%
+            itsPlayerName = request.getRemoteUser();
+            itsPlayerSessionId = request.getSession(true).getId();
+    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mmud - Admin</title>
         <%@include file="/includes/head.jsp" %>
     </head>
-<BODY BGCOLOR=#FFFFFF>
+    <body>
 
-<H1><IMG SRC="/images/gif/dragon.gif" alt="dragon">Answers</H1>
-This script is used for manipulating the answers that can be provided by bots.<P>
-The following bots have answers:<p/>
-<%
+        <H1><A HREF="/karchan/admin/help/scripting2.html" target="_blank">
+                <IMG SRC="/images/icons/9pt4a.gif" BORDER="0" alt=""info"></A>
+            Events</H1>
 
-if (itsPlayerName == null)
-{
+
+            <%
+
+if (itsPlayerName == null) {
     throw new RuntimeException("User undefined.");
 }
-if (!request.isUserInRole("deputies"))
-{
+if (!request.isUserInRole("deputies")) {
     throw new RuntimeException("User does not have role 'deputies'.");
 }
-
-String bot = request.getParameter("id");
-
-if (bot == null)
+FormProcessor processor = null;
+if (request.getParameter("id") != null)
 {
-    // show all bots that have answers
-    FormProcessor processor = null;
     try {
-        String[] columns = {"name"};
-        String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns, new TableFormatter());
-        out.println(processor.getList(request, "select distinct name from mm_answers"));
+        String[] columns = {"command", "command", "synopsis", "contents", "example1", "example1a",
+        "example1b", "example2", "example2a", "example2b", "example2c",
+        "seealso"};
+        String[] displays = {"Command", "Command", "Synopsis", "Description", "Example 1",
+        "Me", "Everyone else", "<br/>Example 2", "Me",
+        "Marvin", "Everyone else", "See also"};
+        processor = FormProcessorFactory.create("mm_help", itsPlayerName, displays, columns, new BigFormatter());
+        out.println(processor.getList(request));
+        // print the members of each guild
+        // print the hopefulls of each guild
     } catch (SQLException e) {
         out.println(e.getMessage());
         e.printStackTrace(new PrintWriter(out));
-    %><%=e.getMessage()%>
-    <%
+        %><%=e.getMessage()%>
+        <%
     } finally {
         if (processor != null) {processor.closeConnection();}
     }
 }
 else
 {
-    // show all answers of a certain bot
-    %> <%= bot%> has the following answers available:<p/><%
-    FormProcessor processor = null;
     try {
-        String[] columns = {"name", "question", "answer"};
-        String[] displays = {"Name", "Question", "Answer"};
-        processor = FormProcessorFactory.create("mm_answers", itsPlayerName, displays, columns, new TableFormatter());
+        String[] columns = {"command", "command"};
+        String[] displays = {"Command", "Command"};
+        processor = FormProcessorFactory.create("mm_help", itsPlayerName, displays, columns, new MultiColumnFormatter());
         out.println(processor.getList(request));
+        // print the members of each guild
+        // print the hopefulls of each guild
     } catch (SQLException e) {
         out.println(e.getMessage());
         e.printStackTrace(new PrintWriter(out));
-    %><%=e.getMessage()%>
-    <%
+        %><%=e.getMessage()%>
+        <%
     } finally {
         if (processor != null) {processor.closeConnection();}
     }
 }
+    %>
 
-%>
-<FORM METHOD="POST" ACTION="answers.jsp">
-<b>
-<INPUT TYPE="hidden" NAME="id" VALUE="<%=bot%>">
-Question: <INPUT TYPE="text" SIZE="100" NAME="question" VALUE=""><BR>
-Answer: <INPUT TYPE="text" SIZE="100" NAME="answer" VALUE=""><BR>
-<INPUT TYPE="submit" VALUE="Submit Answer">
-</b>
-</FORM>
+<form METHOD="GET" ACTION="helptext.jsp">
+command: <INPUT TYPE="text" NAME="newcommand" VALUE="">
+<INPUT TYPE="submit" VALUE="Create Help">
+</form>
 
 </body>
 </html>

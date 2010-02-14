@@ -38,7 +38,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
 <%@ page language="java" import="mmud.web.Formatter"%>
-<%@ page language="java" import="mmud.web.StandardFormatter"%>
+<%@ page language="java" import="mmud.web.TableFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -129,16 +129,16 @@ try {
     {
         String[] columns = {"name", "name", "owner", "creation", "src"};
         String[] displays = {"Name", "Name", "Owner", "Created on", "Method Source"};
-        processor = FormProcessorFactory.create("mm_methods", itsPlayerName, displays, columns);
+        processor = FormProcessorFactory.create("mm_methods", itsPlayerName, displays, columns, new TableFormatter());
     }
     else
     {
         String[] columns = {"name", "name", "owner", "creation"};
         String[] displays = {"Name", "Name", "Owner", "Created on"};
         processor = FormProcessorFactory.create("mm_methods", itsPlayerName, 
-                displays, columns);
+                displays, columns, new TableFormatter());
     }
-    out.println(processor.getList(request, false));
+    out.println(processor.getList(request));
 } catch (SQLException e) {
     out.println(e.getMessage());
     e.printStackTrace(new PrintWriter(out));
