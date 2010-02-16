@@ -84,9 +84,17 @@ public class StandardFormNoOwnerProcessor extends BaseFormProcessor {
         {
             itsFormatter.addRow();
             boolean accessGranted = true;
-
-           if (!rst.getString(itsColumns[0]).equals(request.getParameter("id")))
-           {
+            String firstParam = null;
+            if (CREATION.equals(itsColumns[0]))
+            {
+                firstParam = rst.getTimestamp(itsColumns[0]).toString();
+            }
+            else
+            {
+                firstParam = rst.getString(itsColumns[0]);
+            }
+            if (!firstParam.equals(request.getParameter("id")))
+            {
                // put the list here
                if (accessGranted)
                 {

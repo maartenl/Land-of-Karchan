@@ -38,6 +38,6 @@ maarten_l@yahoo.com
 </HEAD>
 
 <FRAMESET COLS="190,*">
-<FRAME SRC="menu.html" name="MenuFrame">
-<FRAME SRC="/karchan/admin/scripts/admin.jsp" name="MainFrame">
+<FRAME SRC="menu.jsp" name="MenuFrame">
+<FRAME SRC="scripts/admin.jsp" name="MainFrame">
 </FRAMESET>
