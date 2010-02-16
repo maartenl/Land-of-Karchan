@@ -9,15 +9,15 @@ Scripts</H1>
 
 <A HREF="help/scripting2.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
-<A HREF="/scripts/admin_commands.php">Commands</A>
+<A HREF="scripts/commands.jsp">Commands</A>
 <P>
 <A HREF="help/scripting1.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
-<A HREF="/scripts/admin_events.php">Events</A>
+<A HREF="scripts/events.jsp">Events</A>
 <P>
 <A HREF="help/scripting3.html" target="_blank">
 <IMG SRC="/images/icons/9pt4a.gif" BORDER="0"></A>
-<A HREF="/scripts/admin_methods.php">Methods</A>
+<A HREF="scripts/methods.jsp">Methods</A>
 <P>
 
 </body>

@@ -3,10 +3,10 @@
 </TITLE>
 <BODY BGCOLOR=#FFFFFF BACKGROUND="/images/gif/webpic/back4.gif">
 <H1>
-<IMG SRC="/images/gif/dragon.gif">
+<IMG SRC="/images/gif/dragon.gif" alt="dragon">
 Logs</H1>
-<A HREF="/scripts/admin_log.php">Show Today</A><P>
-<FORM METHOD="GET" ACTION="/scripts/admin_log.php">
+<A HREF="scripts/log.jsp">Show Today</A><P>
+<FORM METHOD="GET" ACTION="scripts/log.jsp">
 <P>
 
 Day: <SELECT id="day" NAME="day">
@@ -57,6 +57,7 @@ Month: <SELECT id="month" NAME="month">
 <option id=month_12 value=12>December</option>
 </SELECT>
 Year: <SELECT id="year" NAME="year">
+<option id=2010 value=2010>2010</option>
 <option id=2009 value=2009>2009</option>
 <option id=2008 value=2008>2008</option>
 <option id=2007 value=2007>2007</option>

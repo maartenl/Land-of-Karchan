@@ -3,8 +3,8 @@
 </TITLE>
             <%@include file="includes/head.jsp" %>
 <body>
-<A HREF="/karchan/admin/scripts/admin_bugs.jsp">Show all bugs</A><P>
-<FORM METHOD="GET" ACTION="/karchan/admin/scripts/admin_bugs.php">
+<A HREF="scripts/bugs.jsp">Show all bugs</A><P>
+<FORM METHOD="GET" ACTION="scripts/bugs.jsp">
 Show bugs that are:
 <SELECT NAME="open">
 <option value=0 selected>Open

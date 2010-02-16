@@ -73,7 +73,7 @@ background="/images/gif/webpic/back4.gif">
 	<td align="right">
 <input type="submit" value="Submit">
 <input type="reset" value="Reset">
-/td>
+</td>
 </tr>
 </table>
 </td></tr></table>

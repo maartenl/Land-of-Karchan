@@ -3,13 +3,12 @@
 </TITLE>
             <%@include file="includes/head.jsp" %>
 <body>
-<FORM METHOD="GET" ACTION="/scripts/admin_rooms.php">
-Show Room with id:
-<INPUT TYPE="text" NAME="room" VALUE="" SIZE="19" MAXLENGTH="19"><P>
+<FORM METHOD="GET" ACTION="scripts/chars.jsp">
+Show Character with name:
+<INPUT TYPE="text" NAME="id" VALUE="" SIZE="20" MAXLENGTH="20"><P>
 <INPUT TYPE="submit" VALUE="Submit">
 <INPUT TYPE="reset" VALUE="Clear"><P>
 </FORM>
-
 </body>
 
 </HTML>
