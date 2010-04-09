@@ -69,7 +69,7 @@ try
 DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
 con = ds.getConnection();
 
-stmt=con.prepareStatement("select mm_boardmessages.name, date_format(posttime, \"%W, %M %e %Y, %H:%i\") as posttime, message from mm_boardmessages, mm_boards where boardid=id and	mm_boards.name = \"logonmessage\" order by mm_boardmessages.posttime desc");
+stmt=con.prepareStatement("select mm_boardmessages.name, date_format(posttime, \"%W, %M %e %Y, %H:%i\") as posttime, message from mm_boardmessages, mm_boards where boardid=id and	mm_boards.name = \"logonmessage\" order by mm_boardmessages.posttime desc limit 10");
 rst=stmt.executeQuery();
 while(rst.next())
 {

@@ -57,7 +57,7 @@ hierachy is as follows:<P>
 <LI>Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls
 </UL>
 <H3>Administrators</H3>
-<UL>
+<ul>
 <%
 
 Connection con=null;
