@@ -29,7 +29,7 @@
         </security-constraint>
     <login-config>
         <auth-method>FORM</auth-method>
-        <realm-name>file</realm-name>
+        <realm-name>mmudRealm</realm-name>
         <form-login-config>
             <form-login-page>/enter.jsp</form-login-page>
             <form-error-page>/error.jsp</form-error-page>
