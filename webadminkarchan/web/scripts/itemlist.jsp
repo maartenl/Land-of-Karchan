@@ -37,7 +37,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="mmud.web.FormProcessorFactory"%>
 <%@ page language="java" import="mmud.web.FormProcessor"%>
-<%@ page language="java" import="mmud.web.Formatter"%>
+<%@ page language="java" import="mmud.web.TableFormatter"%>
 <%@ page language="java" import="mmud.web.BigFormatter"%>
 <%@ page language="java" import="mmud.web.MultiColumnFormatter"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -128,7 +128,7 @@ else
     try {
         String[] columns = {"id", "name", "adject1", "adject2", "adject3"};
         String[] displays = {"Id", "Name", "First Adjective", "Second Adjective", "Third Adjective"};
-        processor = FormProcessorFactory.create("mm_help", itsPlayerName, displays, columns, new TableFormatter());
+        processor = FormProcessorFactory.create("mm_items", itsPlayerName, displays, columns, new TableFormatter());
         out.println(processor.getList(request));
         // print the members of each guild
         // print the hopefulls of each guild

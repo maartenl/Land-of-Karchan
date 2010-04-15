@@ -89,7 +89,7 @@ if (bot == null)
     try {
         String[] columns = {"name"};
         String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_bantable", itsPlayerName, displays, columns, new TableFormatter());
+        processor = FormProcessorFactory.create("mm_answers", itsPlayerName, displays, columns, new TableFormatter());
         out.println(processor.getList(request, "select distinct name from mm_answers"));
     } catch (SQLException e) {
         out.println(e.getMessage());

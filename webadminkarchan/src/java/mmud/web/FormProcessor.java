@@ -37,28 +37,78 @@ import javax.servlet.http.HttpServletRequest;
 public interface FormProcessor {
 
 
+    /**
+     * Closes the JDBC connection safely.
+     * @throws SQLException
+     */
     void closeConnection() throws SQLException;
 
+    /**
+     * Checks if the person who is logged on (LoginPrincipal) has enough
+     * rights to do stuff. I.e. if the 'owner' field in the table matches
+     * his identity.
+     * @throws SQLException
+     */
     void checkAuthorization() throws SQLException;
 
+    /**
+     * Add an entry to the table.
+     * @param request
+     * @throws SQLException
+     */
     void addEntry(HttpServletRequest request) throws SQLException;
 
+    /**
+     * Change an entry of the table.
+     * @param request
+     * @throws SQLException
+     */
     void changeEntry(HttpServletRequest request) throws SQLException;
 
+    /**
+     * Show a list of the table in different forms in html.
+     * @param request
+     * @return a string depicting the table list.
+     * @throws SQLException
+     */
     String getList(HttpServletRequest request) throws SQLException;
 
+    /**
+     * Shows a list of the table in different forms in the html,
+     * but based on a non-standard query.
+     * @param request
+     * @param query the query to use to retrieve information.
+     * @return a list of the table in html.
+     * @throws SQLException
+     */
     String getList(HttpServletRequest request, String query) throws SQLException;
 
+    /**
+     * Remove an entry from the table.
+     * @param request
+     * @throws SQLException
+     */
     void removeEntry(HttpServletRequest request) throws SQLException;
 
+    /**
+     * Remove the ownership of an entry in the table. The only way this can be
+     * done if you yourself are the owner. Bear in mind that, once you do this,
+     * everyone with admin rights has access to the object.
+     * @param request
+     * @throws SQLException
+     */
     void removeOwnershipFromEntry(HttpServletRequest request) throws SQLException;
 
     /**
+     * Just sets the columns, so we know what table columns to get from
+     * the query. These must match up with the display names.
      * @param itsColums the itsColums to set
      */
     void setColumns(String[] itsColums);
 
     /**
+     * Just sets the names that are going to be displayed.
+     * These must match up with the column names.
      * @param itsDisplay the itsDisplay to set
      */
     void setDisplayNames(String[] itsDisplay);

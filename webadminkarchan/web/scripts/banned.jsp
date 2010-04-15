@@ -204,7 +204,7 @@ Reason:<INPUT TYPE="text" NAME="add_banreason" VALUE="" SIZE="40" MAXLENGTH="255
 
         String[] columns = {"name"};
         String[] displays = {"Name"};
-        processor = FormProcessorFactory.create("mm_sillynamestable", itsPlayerName, displays, columns, new MultiColumnFormatter(80));
+        processor = FormProcessorFactory.create("mm_sillynamestable", itsPlayerName, displays, columns, new MultiColumnFormatter(120));
         out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());

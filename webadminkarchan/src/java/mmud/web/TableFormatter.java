@@ -55,11 +55,11 @@ public class TableFormatter implements Formatter {
         else
         {
             result.append("<a HREF=\"" + tableName.replace("mm_", "").toLowerCase() +
-                    ".jsp?id=" + id + "\">E</a> ");
+                    ".jsp?id=" + id + "\"><img src=\"/images/icons/ok-icon.png\" alt=\"Edit Object\" style=\"width:1.8em;\"/></a> ");
             result.append("<a HREF=\"remove_" + tableName.replace("mm_", "").toLowerCase() +
-                    ".jsp?id=" + id + "\">X</a> ");
+                    ".jsp?id=" + id + "\"><img src=\"/images/icons/cross-icon.png\" alt=\"Delete Object\" style=\"width:1.8em;\"/></a> ");
             result.append("<a HREF=\"remove_ownership.jsp?id=" +
-                    id + "&table=" + tableName.replace("mm_", "") + "\">O</a>");
+                    id + "&table=" + tableName.replace("mm_", "") + "\"><img src=\"/images/icons/minus-icon.png\" alt=\"Remove Ownership\" style=\"width:1.8em;\" /></a>");
         }
         return result.toString();
     }

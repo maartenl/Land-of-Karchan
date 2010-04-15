@@ -103,7 +103,7 @@ if (area == null || description==null || shortdesc == null)
         String[] columns = {"area", "shortdesc", "description", "owner", "creation"};
         String[] displays = {"Area", "Short Description", "Long Description", "Owner", "Created on"};
         processor = FormProcessorFactory.create("mm_area", itsPlayerName, displays, columns, new BigFormatter());
-        out.println(processor.getList(request, true));
+        out.println(processor.getList(request));
     } catch (SQLException e) {
         out.println(e.getMessage());
         e.printStackTrace(new PrintWriter(out));
