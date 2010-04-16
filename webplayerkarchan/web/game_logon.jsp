@@ -50,9 +50,7 @@ maarten_l@yahoo.com
         /* sessionid/cookiepassword of current user */
         private String itsPlayerSessionId;
 
-        private StringBuffer contents = new StringBuffer("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">;");
-
-           /**
+        /**
          * A little wrapper to properly deal with end-of-stream and io exceptions.
          *
          * @param aReader
@@ -126,18 +124,19 @@ maarten_l@yahoo.com
         {
                 String myMudVersion = readLine(myInputStream, request, response);
                 String myMudAction = readLine(myInputStream, request, response);
-                myOutputStream.println("mud");
+                myOutputStream.println("logon");
                 String myCrap = readLine(myInputStream, request, response); // Name:
                 myOutputStream.println(itsPlayerName);
+                myCrap = readLine(myInputStream, request, response); // Password:
+                myOutputStream.println("crap"); // no password required
+                myCrap = readLine(myInputStream, request, response); // Address:
+                myOutputStream.println(request.getRemoteAddr());
                 myCrap = readLine(myInputStream, request, response); // Cookie:
                 myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
                 myCrap = readLine(myInputStream, request, response); // Frames:
                 myOutputStream.println("1"); // we're going with full frame
-                myCrap = readLine(myInputStream, request, response); // Command:
-                myOutputStream.println(request.getParameter("command"));
-                myOutputStream.println("\n.\n");
 
-                contents = new StringBuffer();
+                StringBuffer contents = new StringBuffer();
                 String readStuff = readLine(myInputStream, request, response);
                 while ((readStuff != null) && !(".".equals(readStuff)))
                 {
@@ -163,7 +162,7 @@ maarten_l@yahoo.com
                 {
                     // ooh, another unable to close!
                 }
-        } catch (Exception e)
+        } catch (Exception e2)
         {
             request.setAttribute("exception", e);
             String redirectURL = "game_error.jsp";
@@ -189,4 +188,7 @@ maarten_l@yahoo.com
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
 <%= contents %>
