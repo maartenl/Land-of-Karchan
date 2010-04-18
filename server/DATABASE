@@ -371,6 +371,7 @@ alter table mm_help add (example2a varchar(120));
 alter table mm_help add (example2b varchar(120));
 alter table mm_help add (example2c varchar(120));
 
+alter table mm_usertable change address address varchar(200);
 
 creating board system
 ---------------------

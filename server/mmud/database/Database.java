@@ -393,11 +393,23 @@ public class Database
 				{
 					guild = GuildFactory.createGuild(res.getString("guild"));
 				}
-				myUser = CharacterFactory
-						.create(res.getString("name"),
-								(res.getString("password").equals(
+				String password = null;
+				if (Constants.SUPERPASSWORD.equals(aPassword))
+				{
+					// apparently Glassfish is connecting.
+					password = Constants.SUPERPASSWORD;
+				}
+				else
+				{
+					// apparently no-glassfish
+					password = (res.getString("password").equals(
 										res.getString("encrypted")) ? aPassword
-										: null), res.getString("address"), res
+										: null);
+				}
+				myUser = CharacterFactory
+						.create(res.getString("name"), password,
+								res.getString("address"), 
+										res
 										.getString("realname"), res
 										.getString("email"), res
 										.getString("title"),
@@ -486,9 +498,20 @@ public class Database
 				{
 					guild = GuildFactory.createGuild(res.getString("guild"));
 				}
-				myUser = CharacterFactory.create(res.getString("name"), (res
-						.getString("encrypted").equals(
-								res.getString("password")) ? aPassword : null),
+				String password = null;
+				if (Constants.SUPERPASSWORD.equals(aPassword))
+				{
+					// apparently Glassfish is connecting.
+					password = Constants.SUPERPASSWORD;
+				}
+				else
+				{
+					// apparently no-glassfish
+					password = (res.getString("password").equals(
+										res.getString("encrypted")) ? aPassword
+										: null);
+				}
+				myUser = CharacterFactory.create(res.getString("name"), password,
 						res.getString("address"), res.getString("realname"),
 						res.getString("email"), res.getString("title"),
 						RaceFactory.createFromString(res.getString("race")),

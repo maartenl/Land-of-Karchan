@@ -179,6 +179,8 @@ public class Main
 		{
 			mem_error.printStackTrace();
 			Constants.logger.log(Level.WARNING, "exception {0}", mem_error);
+			System.out.println("Exiting abnormally.");
+			System.exit(1);
 			throw mem_error;
 		} catch (Exception e)
 		{
@@ -213,5 +215,7 @@ public class Main
 		}
 		// Log a simple INFO message.
 		Constants.logger.info("Stopping server");
+		System.out.println("Exiting mud...");
+		System.exit(0);
 	}
 }

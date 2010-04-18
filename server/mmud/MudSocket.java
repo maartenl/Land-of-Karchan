@@ -387,6 +387,13 @@ public class MudSocket implements Runnable
 			Database.writeLog("root", e);
 			setThreadCounters();
 			return;
+		} catch (OutOfMemoryError mem_error)
+		{
+                        mem_error.printStackTrace();
+                        Constants.logger.log(Level.WARNING, "exception {0}", mem_error);
+                        System.out.println("Exiting abnormally.");
+                        System.exit(1);
+			return;
 		} catch (RuntimeException e2)
 		{
 			Logger.getLogger("mmud").throwing("mmud.MudSocket", "run", e2);

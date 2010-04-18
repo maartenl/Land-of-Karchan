@@ -207,6 +207,8 @@ public final class Constants
 
 	private static int theThreadsRunning = 1;
 
+	public final static String SUPERPASSWORD = "s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK";
+
 	/**
 	 * Maximum amount of possible threads in use at the same time. The game will
 	 * always have at least one thread, called the TickerThread running.
