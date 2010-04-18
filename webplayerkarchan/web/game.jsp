@@ -27,7 +27,6 @@ maarten_l@yahoo.com
 -----------------------------------------------------------------------
 
 --%>
-
 <%@ page language="java" import="java.io.BufferedReader"%>
 <%@ page language="java" import="java.io.IOException"%>
 <%@ page language="java" import="java.io.InputStreamReader"%>
@@ -52,7 +51,7 @@ maarten_l@yahoo.com
 
         private StringBuffer contents = new StringBuffer("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">;");
 
-           /**
+        /**
          * A little wrapper to properly deal with end-of-stream and io exceptions.
          *
          * @param aReader
@@ -61,33 +60,24 @@ maarten_l@yahoo.com
          * @throws MudException
          *             incase of problems of end-of-stream reached.
          */
-        private String readLine(BufferedReader aReader, 
+        private String readLine(BufferedReader aReader,
                 HttpServletRequest request,
                 HttpServletResponse response) throws Exception
         {
-                try
+                String read = aReader.readLine();
+                if (read == null)
                 {
-                    String read = aReader.readLine();
-                    if (read == null)
-                    {
-                        request.setAttribute("exception", new Exception("unexpected end of connection detected."));
-                        String redirectURL = "game_error.jsp";
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-                        rd.forward(request, response);
-                        return null;
-                    }
-                    return read;
-                } catch (IOException e)
-                {
-                    request.setAttribute("exception", e);
-                    String redirectURL = "game_error.jsp";
+                    request.setAttribute("exception", new Exception("unexpected end of connection detected."));
+                    String redirectURL = "/game_error.jsp";
                     RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
                     rd.forward(request, response);
                     return null;
                 }
+                return read;
                 // this point is never reached. There is a return in the try statement.
         }
 %>
+
 <%
     itsPlayerName = request.getRemoteUser();
     itsPlayerSessionId = request.getSession(true).getId();
@@ -99,79 +89,84 @@ maarten_l@yahoo.com
     catch (Exception e)
     {
         request.setAttribute("exception", e);
-        String redirectURL = "game_error.jsp";
+        String redirectURL = "/game_error.jsp";
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
+        rd.forward(request, response);
+        return;
+    }
+    PrintWriter myOutputStream = null;
+    BufferedReader myInputStream = null;
+    try
+    {
+            myOutputStream = new PrintWriter(mySocket.getOutputStream(), true);
+            myInputStream = new BufferedReader(new InputStreamReader(mySocket
+                            .getInputStream()));
+
+    } catch (IOException e)
+    {
+        try
+        {
+            mySocket.close();
+        }
+        catch (IOException ioexception)
+        {
+            out.println("Error closing socket.");
+        }
+        request.setAttribute("exception", e);
+        String redirectURL = "/game_error.jsp";
         RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
         rd.forward(request, response);
         return;
     }
     try
     {
-        PrintWriter myOutputStream = null;
-        BufferedReader myInputStream = null;
-        try
-        {
-                myOutputStream = new PrintWriter(mySocket.getOutputStream(), true);
-                myInputStream = new BufferedReader(new InputStreamReader(mySocket
-                                .getInputStream()));
+            String myMudVersion = readLine(myInputStream, request, response);
+            String myMudAction = readLine(myInputStream, request, response);
+            myOutputStream.println("mud");
+            String myCrap = readLine(myInputStream, request, response); // Name:
+            myOutputStream.println(itsPlayerName);
+            myCrap = readLine(myInputStream, request, response); // Cookie:
+            //myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // cookies are no longer an issue, let glassfish take care of it
+            myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
+            myCrap = readLine(myInputStream, request, response); // Frames:
+            myOutputStream.println("1"); // we're going with full frame
+            myCrap = readLine(myInputStream, request, response); // Command:
+            myOutputStream.println(request.getParameter("command"));
+            myOutputStream.println("\n.\n");
 
-        } catch (IOException e)
-        {
-            request.setAttribute("exception", e);
-            String redirectURL = "game_error.jsp";
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-            rd.forward(request, response);
-            return;
-        }
-        try
-        {
-                String myMudVersion = readLine(myInputStream, request, response);
-                String myMudAction = readLine(myInputStream, request, response);
-                myOutputStream.println("mud");
-                String myCrap = readLine(myInputStream, request, response); // Name:
-                myOutputStream.println(itsPlayerName);
-                myCrap = readLine(myInputStream, request, response); // Cookie:
-                myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
-                myCrap = readLine(myInputStream, request, response); // Frames:
-                myOutputStream.println("1"); // we're going with full frame
-                myCrap = readLine(myInputStream, request, response); // Command:
-                myOutputStream.println(request.getParameter("command"));
-                myOutputStream.println("\n.\n");
+            contents = new StringBuffer();
+            String readStuff = readLine(myInputStream, request, response);
+            while ((readStuff != null) && !(".".equals(readStuff)))
+            {
+                    contents.append(readStuff);
+                    readStuff = readLine(myInputStream, request, response);
+            }
+            myOutputStream.println("\nOk\nOk\n");
+            myOutputStream.flush();
+            myOutputStream.close();
 
-                contents = new StringBuffer();
-                String readStuff = readLine(myInputStream, request, response);
-                while ((readStuff != null) && !(".".equals(readStuff)))
-                {
-                        contents.append(readStuff);
-                        readStuff = readLine(myInputStream, request, response);
-                }
-                myOutputStream.println("\nOk\nOk\n");
-                myOutputStream.flush();
-                myOutputStream.close();
+            try
+            {
+                myInputStream.close();
+            } catch (IOException e)
+            {
+                // oooh, should print something here or something
+            }
 
-                try
-                {
-                    myInputStream.close();
-                } catch (IOException e)
-                {
-                    // oooh, should print something here or something
-                }
-
-                try
-                {
-                    mySocket.close();
-                } catch (IOException e)
-                {
-                    // ooh, another unable to close!
-                }
-        } catch (Exception e)
-        {
-            request.setAttribute("exception", e);
-            String redirectURL = "game_error.jsp";
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-            rd.forward(request, response);
-            return;
-        }
-
+            try
+            {
+                mySocket.close();
+            } catch (IOException e2)
+            {
+                // ooh, another unable to close!
+            }
+    } catch (Exception e3)
+    {
+        request.setAttribute("exception", e3);
+        String redirectURL = "/game_error.jsp";
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
+        rd.forward(request, response);
+        return;
     }
     finally
     {
@@ -179,14 +174,17 @@ maarten_l@yahoo.com
         {
             mySocket.close();
         }
-        catch (IOException e)
+        catch (IOException e4)
         {
             out.println("Error closing socket.");
         }
 
     }
-}
-%>
 
+%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%= contents %>
+<html>
+    <head><title>Try me</title></head>
+    <body><%= contents %>
+    </body>
+</html>

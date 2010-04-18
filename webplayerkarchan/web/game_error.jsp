@@ -28,8 +28,14 @@ maarten_l@yahoo.com
 
 --%>
 <%@ page language="java" import="java.io.IOException"%>
+<%@ page language="java" import="java.io.StringWriter"%>
+<%@ page language="java" import="java.io.PrintWriter"%>
 <%
     Exception e = (Exception) request.getAttribute("exception");
+    e.printStackTrace();
+    StringWriter outError = new StringWriter();
+    PrintWriter errorWriter = new PrintWriter( outError );
+    e.printStackTrace(errorWriter);
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -52,6 +58,8 @@ maarten_l@yahoo.com
         been deactivated. It needs to be restarted.<P><%
         }
         %>
+        <%= outError.toString() %>
+
         Please contact Karn (at <A HREF="mailto:karn@karchan.org">karn@karchan.org</A>)
         as soon as possible to mention this problem and
         please mention the error message and error code.<P>

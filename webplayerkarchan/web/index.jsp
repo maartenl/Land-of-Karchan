@@ -16,6 +16,9 @@
     <body>
         <h1>Hello World!</h1>
         Click here to login <a href="enter.jsp">Enter</a><p/>
+        Click here to enter the game <a href="game_logon.jsp">Enter</a><p/>
+        Click here to continue playing the game <a href="game.jsp">Enter</a><p/>
+        Click here to login <a href="enter.jsp">Enter</a><p/>
         Click here to edit your charsheet <a href="scripts/editcharsheet.jsp">Enter</a><p/>
     </body>
 </html>

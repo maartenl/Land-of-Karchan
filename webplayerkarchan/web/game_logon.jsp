@@ -50,6 +50,8 @@ maarten_l@yahoo.com
         /* sessionid/cookiepassword of current user */
         private String itsPlayerSessionId;
 
+        private StringBuffer contents = new StringBuffer("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+
         /**
          * A little wrapper to properly deal with end-of-stream and io exceptions.
          *
@@ -114,6 +116,13 @@ maarten_l@yahoo.com
 
         } catch (IOException e)
         {
+            try
+            {
+                mySocket.close();
+            } catch (IOException ioexception)
+            {
+                // ooh, another unable to close!
+            }
             request.setAttribute("exception", e);
             String redirectURL = "game_error.jsp";
             RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
@@ -122,19 +131,25 @@ maarten_l@yahoo.com
         }
         try
         {
+                // contents.append(itsPlayerName);
                 String myMudVersion = readLine(myInputStream, request, response);
+                // contents.append("<br/>Received:" + myMudVersion);
                 String myMudAction = readLine(myInputStream, request, response);
+                // contents.append("<br/>Received:" + myMudAction);
                 myOutputStream.println("logon");
                 String myCrap = readLine(myInputStream, request, response); // Name:
                 myOutputStream.println(itsPlayerName);
                 myCrap = readLine(myInputStream, request, response); // Password:
-                myOutputStream.println("crap"); // no password required
+                myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // no password required
                 myCrap = readLine(myInputStream, request, response); // Address:
                 myOutputStream.println(request.getRemoteAddr());
+                // contents.append(request.getRemoteAddr());
                 myCrap = readLine(myInputStream, request, response); // Cookie:
                 myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
                 myCrap = readLine(myInputStream, request, response); // Frames:
+                // contents.append("<br/>Received:" + myCrap);
                 myOutputStream.println("1"); // we're going with full frame
+                // contents.append("debug2");
 
                 StringBuffer contents = new StringBuffer();
                 String readStuff = readLine(myInputStream, request, response);
@@ -154,17 +169,9 @@ maarten_l@yahoo.com
                 {
                     // oooh, should print something here or something
                 }
-
-                try
-                {
-                    mySocket.close();
-                } catch (IOException e)
-                {
-                    // ooh, another unable to close!
-                }
         } catch (Exception e2)
         {
-            request.setAttribute("exception", e);
+            request.setAttribute("exception", e2);
             String redirectURL = "game_error.jsp";
             RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
             rd.forward(request, response);
@@ -184,11 +191,16 @@ maarten_l@yahoo.com
         }
 
     }
-}
+
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-
+<% if (contents.toString().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"))
+{
+    String redirectURL = "/game.jsp";
+    RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
+    rd.forward(request, response);
+    return;
+}
+    %>
 <%= contents %>
