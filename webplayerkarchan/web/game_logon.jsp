@@ -28,179 +28,78 @@ maarten_l@yahoo.com
 
 --%>
 
-<%@ page language="java" import="java.io.BufferedReader"%>
-<%@ page language="java" import="java.io.IOException"%>
-<%@ page language="java" import="java.io.InputStreamReader"%>
-<%@ page language="java" import="java.io.PrintWriter"%>
-<%@ page language="java" import="java.io.StringWriter"%>
-<%@ page language="java" import="java.net.Socket"%>
-<%@ page language="java" import="java.net.UnknownHostException"%>
-<%@ page language="java" import="java.io.InputStream"%>
-<%@ page language="java" import="java.io.OutputStream"%>
-<%@ page language="java" import="java.io.IOException"%>
-<%!
-        // authentication && authorization
-
-        /* name of the current user logged in */
-        private String itsPlayerName;
-
-        /* password of the current user logged in, unsure if used */
-        private String itsPlayerPassword = "";
-
-        /* sessionid/cookiepassword of current user */
-        private String itsPlayerSessionId;
-
-        private StringBuffer contents = new StringBuffer("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-
-        /**
-         * A little wrapper to properly deal with end-of-stream and io exceptions.
-         *
-         * @param aReader
-         *            the reader stream, should be opened already.
-         * @return String read.
-         * @throws MudException
-         *             incase of problems of end-of-stream reached.
-         */
-        private String readLine(BufferedReader aReader, 
-                HttpServletRequest request,
-                HttpServletResponse response) throws Exception
-        {
-                try
-                {
-                    String read = aReader.readLine();
-                    if (read == null)
-                    {
-                        request.setAttribute("exception", new Exception("unexpected end of connection detected."));
-                        String redirectURL = "game_error.jsp";
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-                        rd.forward(request, response);
-                        return null;
-                    }
-                    return read;
-                } catch (IOException e)
-                {
-                    request.setAttribute("exception", e);
-                    String redirectURL = "game_error.jsp";
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-                    rd.forward(request, response);
-                    return null;
-                }
-                // this point is never reached. There is a return in the try statement.
-        }
-%>
-<%
-    itsPlayerName = request.getRemoteUser();
-    itsPlayerSessionId = request.getSession(true).getId();
-    Socket mySocket = null;
-    try
-    {
-        mySocket = new Socket("localhost", 3340);
-    }
-    catch (Exception e)
-    {
-        request.setAttribute("exception", e);
-        String redirectURL = "game_error.jsp";
-        RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-        rd.forward(request, response);
-        return;
-    }
-    try
-    {
-        PrintWriter myOutputStream = null;
-        BufferedReader myInputStream = null;
-        try
-        {
-                myOutputStream = new PrintWriter(mySocket.getOutputStream(), true);
-                myInputStream = new BufferedReader(new InputStreamReader(mySocket
-                                .getInputStream()));
-
-        } catch (IOException e)
-        {
-            try
-            {
-                mySocket.close();
-            } catch (IOException ioexception)
-            {
-                // ooh, another unable to close!
-            }
-            request.setAttribute("exception", e);
-            String redirectURL = "game_error.jsp";
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-            rd.forward(request, response);
-            return;
-        }
-        try
-        {
-                // contents.append(itsPlayerName);
-                String myMudVersion = readLine(myInputStream, request, response);
-                // contents.append("<br/>Received:" + myMudVersion);
-                String myMudAction = readLine(myInputStream, request, response);
-                // contents.append("<br/>Received:" + myMudAction);
-                myOutputStream.println("logon");
-                String myCrap = readLine(myInputStream, request, response); // Name:
-                myOutputStream.println(itsPlayerName);
-                myCrap = readLine(myInputStream, request, response); // Password:
-                myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // no password required
-                myCrap = readLine(myInputStream, request, response); // Address:
-                myOutputStream.println(request.getRemoteAddr());
-                // contents.append(request.getRemoteAddr());
-                myCrap = readLine(myInputStream, request, response); // Cookie:
-                myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
-                myCrap = readLine(myInputStream, request, response); // Frames:
-                // contents.append("<br/>Received:" + myCrap);
-                myOutputStream.println("1"); // we're going with full frame
-                // contents.append("debug2");
-
-                StringBuffer contents = new StringBuffer();
-                String readStuff = readLine(myInputStream, request, response);
-                while ((readStuff != null) && !(".".equals(readStuff)))
-                {
-                        contents.append(readStuff);
-                        readStuff = readLine(myInputStream, request, response);
-                }
-                myOutputStream.println("\nOk\nOk\n");
-                myOutputStream.flush();
-                myOutputStream.close();
-
-                try
-                {
-                    myInputStream.close();
-                } catch (IOException e)
-                {
-                    // oooh, should print something here or something
-                }
-        } catch (Exception e2)
-        {
-            request.setAttribute("exception", e2);
-            String redirectURL = "game_error.jsp";
-            RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-            rd.forward(request, response);
-            return;
-        }
-
-    }
-    finally
-    {
-        try
-        {
-            mySocket.close();
-        }
-        catch (IOException e)
-        {
-            out.println("Error closing socket.");
-        }
-
-    }
-
-%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% if (contents.toString().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"))
-{
-    String redirectURL = "/game.jsp";
-    RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
-    rd.forward(request, response);
-    return;
-}
-    %>
-<%= contents %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Land of Karchan - Logon Screen</title>
+        <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+    </head>
+    <body>
+<DIV ALIGN=center>
+<script type="text/javascript"><!--
+google_ad_client = "pub-1476585918448696";
+/* MyFIrstAd */
+google_ad_slot = "2319287585";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<H1>Game Logon screen</H1>
+
+<form method="POST" action="game.jsp">
+<table border="1" cellspacing="0"><tr><td>
+<table border="0" frame="box" bgcolor="#AACCFF" width="400"
+background="/images/gif/webpic/back4.gif">
+<tr>
+	<td width="25%">
+	Name: </td><td>
+
+<input type="text" maxlength="19" size="36" name="name"></td>
+</tr>
+<tr>
+	<td>
+	Password:</td><td>
+<input type="password" name="password" size="36" maxlength="39"></td>
+<input type="hidden" name="action" value="logon"></td>
+</tr>
+<tr colspan="2" border="above">
+	<td></td>
+	<td align="right">
+<input type="submit" value="Submit">
+<input type="reset" value="Reset">
+</td>
+</tr>
+<tr>
+	<td>Frames:</td><td>
+	<input type="radio" name="frames" value="1" checked>No frames<BR>
+	<input type="radio" name="frames" value="2">Yes frames</td>
+</tr>
+</table>
+</td></tr></table>
+</form>
+
+<I>If you wish to create a new character, click <A
+HREF="/karchan/newchar.html">here</A>.</I>
+<P>
+<script type="text/javascript"><!--
+google_ad_client = "pub-1476585918448696";
+/* MyFIrstAd */
+google_ad_slot = "2319287585";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+</div>
+    </body>
+</html>

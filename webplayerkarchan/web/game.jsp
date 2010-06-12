@@ -26,7 +26,13 @@ Europe
 maarten_l@yahoo.com
 -----------------------------------------------------------------------
 
---%>
+--%><%@ page language="java" import="javax.naming.InitialContext"%>
+<%@ page language="java" import="java.io.PrintWriter"%>
+<%@ page language="java" import="java.io.IOException"%>
+<%@ page language="java" import="javax.naming.Context"%>
+<%@ page language="java" import="javax.sql.DataSource"%>
+<%@ page language="java" import="java.sql.*"%>
+<%@ page language="java" import="java.util.Enumeration"%>
 <%@ page language="java" import="java.io.BufferedReader"%>
 <%@ page language="java" import="java.io.IOException"%>
 <%@ page language="java" import="java.io.InputStreamReader"%>
@@ -37,11 +43,14 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.io.InputStream"%>
 <%@ page language="java" import="java.io.OutputStream"%>
 <%@ page language="java" import="java.io.IOException"%>
+<%@ page language="java" import="java.util.logging.*"%>
 <%!
         // authentication && authorization
 
         /* name of the current user logged in */
         private String itsPlayerName;
+
+        private Logger itsLog = Logger.getLogger("mmud");
 
         /* password of the current user logged in, unsure if used */
         private String itsPlayerPassword = "";
@@ -81,6 +90,64 @@ maarten_l@yahoo.com
 <%
     itsPlayerName = request.getRemoteUser();
     itsPlayerSessionId = request.getSession(true).getId();
+    itsLog.entering(this.getClass().getCanonicalName(), "begin");
+    String command = request.getParameter("command");
+    if (command == null)
+    {
+        command = "l";
+    }
+    String itsAction = request.getParameter("action");
+    if (!"logon".equals(itsAction))
+    {
+        itsAction = "mud";
+    }
+    itsLog.fine("begin itsAction=" + itsAction +
+            ",name=" + request.getParameter("name") + "/" + itsPlayerName +
+            ",password=" + request.getParameter("password") +
+            ",cookie=" + session.getAttribute("cookie") +
+            ",command=" + request.getParameter("command")+ "/" + command);
+    if (session.getAttribute("cookie") == null)
+    {
+        itsLog.fine("cookie not in cookiejar.");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+
+        try
+        {
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
+            con = ds.getConnection();
+
+
+            // ===============================================================================
+            // begin authorization check
+            stmt=con.prepareStatement("select * from mm_usertable where mm_usertable.name =	'" +
+                    itsPlayerName + "'"); //  and mm_usertable.lok = '" + itsPlayerSessionId + "'
+            rst=stmt.executeQuery();
+            if (rst.next())
+            {
+                 // full charactersheet
+                session.setAttribute("cookie", rst.getString("lok"));
+                itsLog.fine("cookie set to " + session.getAttribute("cookie"));
+            }
+            else
+            {
+                // error getting the info, user not found?
+                throw new RuntimeException("Cannot find " + itsPlayerName + " in the database!");
+            }
+            rst.close();
+            stmt.close();
+            // end authorization check
+            // ===============================================================================
+
+            con.close();
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getCanonicalName(), "error getting cookie", e);
+        }
+    }
     Socket mySocket = null;
     try
     {
@@ -122,23 +189,52 @@ maarten_l@yahoo.com
     {
             String myMudVersion = readLine(myInputStream, request, response);
             String myMudAction = readLine(myInputStream, request, response);
-            myOutputStream.println("mud");
+            myOutputStream.println(itsAction);
             String myCrap = readLine(myInputStream, request, response); // Name:
-            myOutputStream.println(itsPlayerName);
-            myCrap = readLine(myInputStream, request, response); // Cookie:
-            //myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // cookies are no longer an issue, let glassfish take care of it
-            myOutputStream.println("crap"); // cookies are no longer an issue, let glassfish take care of it
-            myCrap = readLine(myInputStream, request, response); // Frames:
-            myOutputStream.println("1"); // we're going with full frame
-            myCrap = readLine(myInputStream, request, response); // Command:
-            myOutputStream.println(request.getParameter("command"));
-            myOutputStream.println("\n.\n");
+            if (itsAction.equals("logon"))
+            {
+                itsLog.fine("branch: logon");
+                myOutputStream.println(request.getParameter("name"));
+                myCrap = readLine(myInputStream, request, response); // Password:
+                myOutputStream.println(request.getParameter("password")); // no password required
+                myCrap = readLine(myInputStream, request, response); // Address:
+                myOutputStream.println(request.getRemoteAddr());
+                // contents.append(request.getRemoteAddr());
+                myCrap = readLine(myInputStream, request, response); // Cookie:
+                myOutputStream.println(""); // cookies are no longer an issue, let glassfish take care of it
+                // myOutputStream.println(session.getAttribute("cookie")); // cookies are no longer an issue, let glassfish take care of it
+                myCrap = readLine(myInputStream, request, response); // Frames:
+                // contents.append("<br/>Received:" + myCrap);
+                myOutputStream.println("1"); // we're going with full frame
+                // contents.append("debug2");
+            }
+            else
+            {
+                itsLog.fine("branch: mmud");
+                myOutputStream.println(itsPlayerName);
+                myCrap = readLine(myInputStream, request, response); // Cookie:
+                //myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // cookies are no longer an issue, let glassfish take care of it
+                myOutputStream.println(session.getAttribute("cookie")); // cookies are no longer an issue, let glassfish take care of it
+                myCrap = readLine(myInputStream, request, response); // Frames:
+                myOutputStream.println("1"); // we're going with full frame
+                myCrap = readLine(myInputStream, request, response); // Command:
+                myOutputStream.println(request.getParameter("command"));
+                myOutputStream.println(".\n");
+            }
 
             contents = new StringBuffer();
             String readStuff = readLine(myInputStream, request, response);
             while ((readStuff != null) && !(".".equals(readStuff)))
             {
-                    contents.append(readStuff);
+                    if (readStuff.startsWith("sessionpassword="))
+                    {
+                        session.setAttribute("cookie", readStuff.substring("sessionpassword=".length()));
+                    }
+                    else
+                    {
+                        contents.append(readStuff);
+                        contents.append("\r\n");
+                    }
                     readStuff = readLine(myInputStream, request, response);
             }
             myOutputStream.println("\nOk\nOk\n");
@@ -180,11 +276,11 @@ maarten_l@yahoo.com
         }
 
     }
-
+    if ("quit".equalsIgnoreCase(request.getParameter("command")))
+    {
+        session.setAttribute("cookie", null);
+        session.invalidate();
+    }
+    itsLog.exiting(this.getClass().getCanonicalName(), "end");
 %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<html>
-    <head><title>Try me</title></head>
-    <body><%= contents %>
-    </body>
-</html>
+<%= contents.toString().replace("/scripts/mud.php", "game.jsp") %>
