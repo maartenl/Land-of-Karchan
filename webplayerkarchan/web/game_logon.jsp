@@ -86,7 +86,7 @@ background="/images/gif/webpic/back4.gif">
 </form>
 
 <I>If you wish to create a new character, click <A
-HREF="/karchan/newchar.html">here</A>.</I>
+HREF="/karchan/newchar.jsp">here</A>.</I>
 <P>
 <script type="text/javascript"><!--
 google_ad_client = "pub-1476585918448696";
