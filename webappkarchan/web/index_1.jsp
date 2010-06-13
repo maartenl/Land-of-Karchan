@@ -136,7 +136,7 @@
 
 
                                             <p>If you wish to create a new character, click <a
-                                                    href="/karchan/newchar.html">here</A>.</p>
+                                                    href="/karchan/newchar.jsp">here</A>.</p>
 
                                             <p><i>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost
                                                     Souls)</i></p>
