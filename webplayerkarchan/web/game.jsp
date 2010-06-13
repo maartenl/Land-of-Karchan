@@ -101,6 +101,11 @@ maarten_l@yahoo.com
     {
         itsAction = "mud";
     }
+    String itsFrames = request.getParameter("frames");
+    if (itsFrames == null)
+    {
+        itsFrames = "1";
+    }
     itsLog.fine("begin itsAction=" + itsAction +
             ",name=" + request.getParameter("name") + "/" + itsPlayerName +
             ",password=" + request.getParameter("password") +
@@ -205,7 +210,7 @@ maarten_l@yahoo.com
                 // myOutputStream.println(session.getAttribute("cookie")); // cookies are no longer an issue, let glassfish take care of it
                 myCrap = readLine(myInputStream, request, response); // Frames:
                 // contents.append("<br/>Received:" + myCrap);
-                myOutputStream.println("1"); // we're going with full frame
+                myOutputStream.println(itsFrames);
                 // contents.append("debug2");
             }
             else
@@ -216,7 +221,7 @@ maarten_l@yahoo.com
                 //myOutputStream.println("s4e.~79vba4w5owv45b9a27ba2v7nav297t;2SE%;2~&FGO* YBIJK"); // cookies are no longer an issue, let glassfish take care of it
                 myOutputStream.println(session.getAttribute("cookie")); // cookies are no longer an issue, let glassfish take care of it
                 myCrap = readLine(myInputStream, request, response); // Frames:
-                myOutputStream.println("1"); // we're going with full frame
+                myOutputStream.println(itsFrames); 
                 myCrap = readLine(myInputStream, request, response); // Command:
                 myOutputStream.println(request.getParameter("command"));
                 myOutputStream.println(".\n");
@@ -282,5 +287,9 @@ maarten_l@yahoo.com
         session.invalidate();
     }
     itsLog.exiting(this.getClass().getCanonicalName(), "end");
+
+    String parsed_contents = contents.toString().replace("/scripts/mud.php", "game.jsp").replace("index.html", "index.jsp");
+    parsed_contents = parsed_contents.replace("/scripts/mudleftframe.php", "leftframe.jsp");
+    parsed_contents = parsed_contents.replace("/scripts/mudlogonframe.php", "logonframe.jsp");
 %>
-<%= contents.toString().replace("/scripts/mud.php", "game.jsp") %>
+<%= parsed_contents %>
