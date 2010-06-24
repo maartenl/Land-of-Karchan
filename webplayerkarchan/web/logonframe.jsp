@@ -34,6 +34,7 @@ maarten_l@yahoo.com
 
 <html>
     <head>
+        <script language="JavaScript" src="/karchan/js/karchan.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Land of Karchan</title>
         <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
@@ -41,6 +42,7 @@ maarten_l@yahoo.com
     <body>
 <div align=CENTER>
 <form method="GET" ACTION="game.jsp" name="myForm" target="main">
+<img src="/images/icons/bigtalk.ico" alt="big2talk" name="big2talk" id="big2talk" border="0" align="top" onclick="bigtalk()">
 <input type="text" name="command" size="60" value="">
 <input type="submit" value="Submit" onClick='document.myForm.command.command=""'>
 <input type="hidden" name="name" value="<%= request.getParameter("name") %>">

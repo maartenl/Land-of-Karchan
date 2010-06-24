@@ -291,5 +291,12 @@ maarten_l@yahoo.com
     String parsed_contents = contents.toString().replace("/scripts/mud.php", "game.jsp").replace("index.html", "index.jsp");
     parsed_contents = parsed_contents.replace("/scripts/mudleftframe.php", "leftframe.jsp");
     parsed_contents = parsed_contents.replace("/scripts/mudlogonframe.php", "logonframe.jsp");
+    parsed_contents = parsed_contents.replace("/scripts/bugs.php", "/karchan/scripts/bugs.jsp");
+    String new_string = parsed_contents.substring(parsed_contents.indexOf("</HTML>") + 7);
+    if (new_string.contains("</HTML>"))
+    {
+        parsed_contents = new_string;
+    }
+
 %>
 <%= parsed_contents %>

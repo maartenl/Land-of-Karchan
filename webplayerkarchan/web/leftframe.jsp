@@ -36,7 +36,8 @@ maarten_l@yahoo.com
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Land of Karchan</title>
-        <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+<% //        <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+%>
     </head>
     <body style="">
 <IMG SRC="/images/gif/roos.gif"
@@ -47,18 +48,18 @@ USEMAP="#roosmap" BORDER="0" ISMAP ALT="compass"><P>
 
 browserName = navigator.appName;
  toc1on = new Image;
- toc1on.src ="../images/gif/webpic/new/buttonk.gif";
+ toc1on.src ="/images/gif/webpic/new/buttonk.gif";
  toc2on = new Image;
- toc2on.src ="../images/gif/webpic/new/buttonj.gif";
+ toc2on.src ="/images/gif/webpic/new/buttonj.gif";
  toc3on = new Image;
- toc3on.src ="../images/gif/webpic/new/buttonr.gif";
+ toc3on.src ="/images/gif/webpic/new/buttonr.gif";
 
  toc1off = new Image;
- toc1off.src ="../images/gif/webpic/buttonk.gif";
+ toc1off.src ="/images/gif/webpic/buttonk.gif";
  toc2off = new Image;
- toc2off.src ="../images/gif/webpic/buttonj.gif";
+ toc2off.src ="/images/gif/webpic/buttonj.gif";
  toc3off = new Image;
- toc3off.src ="../images/gif/webpic/buttonr.gif";
+ toc3off.src ="/images/gif/webpic/buttonr.gif";
 
 function img_act(imgName) {
 imgOn = eval(imgName + "on.src");
