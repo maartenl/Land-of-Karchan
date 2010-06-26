@@ -61,7 +61,7 @@ public class QuitCommand extends NormalCommand
 		}
 		try
 		{
-			theResult = Constants.readFile(Constants.goodbyefile);
+			theResult = Constants.readFile("goodbye.html");
 		} catch (Exception e)
 		{
 			e.printStackTrace();

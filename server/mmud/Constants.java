@@ -387,10 +387,7 @@ public final class Constants
 	public static String mudofflinefile = "offline.txt";
 	public static String mudhelpfile = "help.txt";
 	public static String mudauditfile = "audit.trail.txt";
-	public static String mudbigfile = "bigfile.txt";
 	public static String muderrorfile = "error.txt";
-	public static String mudnewcharfile = "newchar.html";
-	public static String goodbyefile = "goodbye.html";
 
 	public static String mudcgi = "/cgi-bin/mud.cgi";
 	public static String leftframecgi = "/cgi-bin/leftframe.cgi";
@@ -403,24 +400,21 @@ public final class Constants
 	public static String mudbackground = "/images/gif/webpic/back4.gif";
 	public static String mudcopyright = "&copy; Copyright Maarten van Leunen";
 
-	public static String logoninputerrormessage = "<HTML><HEAD>"
-			+ "<HTML><HEAD><TITLE>Error</TITLE></HEAD>\n\n"
-			+ "<BODY>\n"
-			+ "<BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>Error</H1><HR>\n"
+	public static String logoninputerrormessage = 
+			"<H1>Error</H1><HR>\n"
 			+ "The following rules need to be followed when filling out a name and password:<P>\r\n"
 			+ "<UL><LI>the following characters are valid in a name: {A..Z, a..z, _}"
 			+ "<LI>all characters are valid in a password except {\"} and {'}"
 			+ "<LI>at least 3 characters are required for a name"
 			+ "<LI>at least 5 characters are required for a password"
 			+ "</UL><P>These are the rules.<P>\r\n"
-			+ "<A HREF=\"/karchan/enter.html\">Click here to retry</A></body>\n"
-			+ "</body>\n" + "</HTML>\n";
+			+ "<A HREF=\"/karchan/player/game_logon.jsp\">Click here to retry</a>\n";
 	public static String goodbyemessage = "<H1><IMG SRC=\"/images/gif/dragon.gif\">Goodbye</H1>"
 			+ " Your game has been saved, and we look forward to seeing you again in the"
 			+ " near future.<P>"
-			+ " <A HREF=\"/karchan/index.html\">"
+			+ " <A HREF=\"/karchan/index.jsp\">"
 			+ " <IMG SRC=\"/images/gif/webpic/buttono.gif\""
-			+ " BORDER=\"0\"></A><P>" + " </BODY>" + " </HTML>";
+			+ " BORDER=\"0\"></A><P>";
 
 	public static final String[] whimpy =
 	{ "", "feeling well", "feeling fine", "feeling quite nice",
@@ -652,11 +646,11 @@ public final class Constants
 		return readFile(new File(aFilename));
 	}
 
-	private static TreeMap theCommandStructure = new TreeMap<String, NormalCommand>();
-	private static Collection theUserCommandStructure = new Vector<Object>();
-	private static TreeMap<String, String> theEmotionStructure = new TreeMap();
-	private static TreeMap theEmotion2Structure = new TreeMap<String, String>();
-	private static TreeSet theAdverbStructure = new TreeSet<String>();
+	private static TreeMap<String, Command> theCommandStructure = new TreeMap<String, Command>();
+	private static Collection<UserCommandInfo> theUserCommandStructure = new Vector<UserCommandInfo>();
+	private static TreeMap<String, String> theEmotionStructure = new TreeMap<String, String>();
+	private static TreeMap<String, String> theEmotion2Structure = new TreeMap<String, String>();
+	private static TreeSet<String> theAdverbStructure = new TreeSet<String>();
 
 	static
 	{
@@ -671,10 +665,7 @@ public final class Constants
 		theDefaults.setProperty("mudofflinefile", "offline.txt");
 		theDefaults.setProperty("mudhelpfile", "help.txt");
 		theDefaults.setProperty("mudauditfile", "audit.trail.txt");
-		theDefaults.setProperty("mudbigfile", "bigfile.txt");
 		theDefaults.setProperty("muderrorfile", "error.txt");
-		theDefaults.setProperty("mudnewcharfile", "newchar.html");
-		theDefaults.setProperty("goodbyefile", "goodbye.html");
 		theDefaults.setProperty("mudcgi", "/cgi-bin/mud.cgi");
 		theDefaults.setProperty("leftframecgi", "/cgi-bin/leftframe.cgi");
 		theDefaults.setProperty("logonframecgi", "/cgi-bin/logonframe.cgi");
@@ -860,7 +851,7 @@ public final class Constants
 	/**
 	 * set the user command structure for using user commands.
 	 */
-	public static void setUserCommands(Collection aCollection)
+	public static void setUserCommands(Collection<UserCommandInfo> aCollection)
 	{
 		logger.finer("aCollection=" + aCollection);
 		theUserCommandStructure = aCollection;
@@ -910,7 +901,7 @@ public final class Constants
 	public static Collection getCommand(String aCommand)
 	{
 		logger.finer("aCommand=" + aCommand);
-		Vector result = new Vector(5);
+		Vector<Command> result = new Vector<Command>(5);
 		Iterator myI = theUserCommandStructure.iterator();
 		while (myI.hasNext())
 		{
@@ -1118,7 +1109,7 @@ public final class Constants
 				throw new ParseException();
 			}
 		}
-		Vector myVector = new Vector();
+		Vector<Object> myVector = new Vector<Object>();
 		myVector.add(new Integer(amount));
 		myVector.add(adject1);
 		myVector.add(adject2);
@@ -1183,18 +1174,11 @@ public final class Constants
 		mudofflinefile = theValues.getProperty("mudofflinefile");
 		mudhelpfile = theValues.getProperty("mudhelpfile");
 		mudauditfile = theValues.getProperty("mudauditfile");
-		mudbigfile = theValues.getProperty("mudbigfile");
 		muderrorfile = theValues.getProperty("muderrorfile");
-		mudnewcharfile = theValues.getProperty("mudnewcharfile");
-		goodbyefile = theValues.getProperty("goodbyefile");
 
 		mudcgi = theValues.getProperty("mudcgi");
 		leftframecgi = theValues.getProperty("leftframecgi");
 		logonframecgi = theValues.getProperty("logonframecgi");
-		nph_leftframecgi = theValues.getProperty("nph_leftframecgi");
-		nph_logonframecgi = theValues.getProperty("nph_logonframecgi");
-		nph_javascriptframecgi = theValues
-				.getProperty("nph_javascriptframecgi");
 
 		mudtitle = theValues.getProperty("mudtitle");
 		mudbackground = theValues.getProperty("mudbackground");

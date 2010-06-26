@@ -1301,10 +1301,7 @@ public class Database
 			StringWriter aWriter = new StringWriter();
 			PrintWriter aPrintWriter = new PrintWriter(aWriter);
 			originalErr.printStackTrace(aPrintWriter);
-			myErrMsg = "<HTML><HEAD><TITLE>"
-					+ originalErr.getMessage()
-					+ "</TITLE>"
-					+ "</HEAD><BODY BGCOLOR=#FFFFFF BACKGROUND=\"/images/gif/webpic/back4.gif\"><H1>"
+			myErrMsg = "<H1>"
 					+ originalErr.getMessage()
 					+ "</H1>The error occurred on "
 					+ (myCalendar.get(Calendar.MONTH) + 1)
@@ -1320,7 +1317,7 @@ public class Database
 					+ myCalendar.get(Calendar.SECOND)
 					+ ". When reporting this error"
 					+ " please include the following text along with when it happened and what you did:<PRE>"
-					+ aWriter + "</PRE></BODY></HTML>";
+					+ aWriter + "</PRE>";
 		}
 		Logger.getLogger("mmud").info(
 				"originalErr=" + originalErr + ",myErrMsg=" + myErrMsg);
