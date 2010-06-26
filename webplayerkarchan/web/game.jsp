@@ -58,7 +58,7 @@ maarten_l@yahoo.com
         /* sessionid/cookiepassword of current user */
         private String itsPlayerSessionId;
 
-        private StringBuffer contents = new StringBuffer("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">;");
+        private StringBuffer contents = new StringBuffer("");
 
         /**
          * A little wrapper to properly deal with end-of-stream and io exceptions.
@@ -283,20 +283,49 @@ maarten_l@yahoo.com
     }
     if ("quit".equalsIgnoreCase(request.getParameter("command")))
     {
-        session.setAttribute("cookie", null);
-        session.invalidate();
+        itsLog.exiting(this.getClass().getCanonicalName(), "end of game session");
+        String redirectURL = "/karchan/player/game_goodbye.jsp";
+        response.sendRedirect(redirectURL);
+     //   RequestDispatcher rd = getServletContext().getRequestDispatcher(redirectURL);
+       // rd.forward(request, response);
+        return;
+
     }
     itsLog.exiting(this.getClass().getCanonicalName(), "end");
 
-    String parsed_contents = contents.toString().replace("/scripts/mud.php", "game.jsp").replace("index.html", "index.jsp");
+    String parsed_contents = contents.toString();
+    /*.toString().replace("/scripts/mud.php", "game.jsp").replace("index.html", "index.jsp");
     parsed_contents = parsed_contents.replace("/scripts/mudleftframe.php", "leftframe.jsp");
     parsed_contents = parsed_contents.replace("/scripts/mudlogonframe.php", "logonframe.jsp");
-    parsed_contents = parsed_contents.replace("/scripts/bugs.php", "/karchan/scripts/bugs.jsp");
+    parsed_contents = parsed_contents.replace("/scripts/bugs.php", "/karchan/scripts/bugs.jsp");*/
     String new_string = parsed_contents.substring(parsed_contents.indexOf("</HTML>") + 7);
-    if (new_string.contains("</HTML>"))
+    if (new_string.contains("</HTML>") && !"quit".equalsIgnoreCase(request.getParameter("command")))
     {
         parsed_contents = new_string;
     }
 
 %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script language="JavaScript" src="/karchan/js/karchan.js"></script>
+        <title>Land of Karchan</title>
+        <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+    </head>
+    <% if (!parsed_contents.contains("FRAMES"))
+{
+        if ("1".equals(itsFrames))
+            { %><body onLoad="setfocus()"><%
+            }
+        else
+            {%><body OnLoad="top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()"><%
+            }
+}
+           %>
 <%= parsed_contents %>
+    <%= (parsed_contents.contains("FRAMES") ? "" : "</body>") %>
+</html>
