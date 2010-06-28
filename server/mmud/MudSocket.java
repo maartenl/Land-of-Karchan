@@ -48,7 +48,18 @@ import mmud.database.MailDb;
 
 /**
  * the class that takes care of all the socket communication. Is basically a
- * thread that terminates when the socket communication is terminated.
+ * thread that terminates when the socket communication is terminated.<p/>
+ * Now there are a couple of use cases that are worth mentioning:
+ * <ol><li>A person logs onto the mud
+ * <li>A person plays the mud
+ * <li>A person logs off of the mud
+ * <li>A person logs onto the mud, but is already playing
+ * </ol>
+ * 1. A Person logs onto the mud<p/>
+ * 2. A person plays the mud<p/>
+ * 3. A person logs off of the mud<p/>
+ * 4. A person logs onto the mud, but is already playing<p/>
+ * 
  */
 public class MudSocket implements Runnable
 {
@@ -261,48 +272,6 @@ public class MudSocket implements Runnable
 	 * <FONT COLOR="green">look around<BR>
 	 * .</FONT>
 	 * 
-	 * <P>
-	 * <FONT COLOR="red">Action (logon, mud, newchar):</FONT><BR>
-	 * <FONT COLOR="green">newchar</FONT><BR>
-	 * <FONT COLOR="red">Name:</FONT><BR>
-	 * <FONT COLOR="green">Karn</FONT><BR>
-	 * <FONT COLOR="red">Password:</FONT><BR>
-	 * <FONT COLOR="green">some damnable password thingy</FONT><BR>
-	 * <FONT COLOR="red">Cookie:</FONT><BR>
-	 * <FONT COLOR="green">bdf87d7dfbb8fdbf87dfb7dfb</FONT><BR>
-	 * <FONT COLOR="red">Frames:</FONT><BR>
-	 * <FONT COLOR="green">1</FONT><BR>
-	 * <FONT COLOR="red">Realname:</FONT><BR>
-	 * <FONT COLOR="green">Maarten van Leunen</FONT><BR>
-	 * <FONT COLOR="red">Email:</FONT><BR>
-	 * <FONT COLOR="green">maarten_l@yahoo.com</FONT><BR>
-	 * <FONT COLOR="red">Title:</FONT><BR>
-	 * <FONT COLOR="green">Ruler of Karchan, Keeper of the Key to the Room of
-	 * Lost Souls</FONT><BR>
-	 * <FONT COLOR="red">Race:</FONT><BR>
-	 * <FONT COLOR="green">human</FONT><BR>
-	 * <FONT COLOR="red">Sex:</FONT><BR>
-	 * <FONT COLOR="green">male</FONT><BR>
-	 * <FONT COLOR="red">Age:</FONT><BR>
-	 * <FONT COLOR="green">very old</FONT><BR>
-	 * <FONT COLOR="red">Length:</FONT><BR>
-	 * <FONT COLOR="green">tall</FONT><BR>
-	 * <FONT COLOR="red">width:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Complexion:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Eyes:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Face:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Hair:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Beard:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Arms:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT><BR>
-	 * <FONT COLOR="red">Legs:</FONT><BR>
-	 * <FONT COLOR="green">none</FONT>
 	 * <P>
 	 * Bear in mind that the <I>Command</I> field must end in a "." on a
 	 * separate line.
