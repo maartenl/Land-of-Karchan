@@ -89,5 +89,9 @@ System.out.println(e.getMessage());
 }
 %>
 
+<A HREF="../index.jsp" onMouseOver="changeImage('back')"
+		onMouseOut="changeImage('back')">
+<IMG ALT="Back" SRC="/images/gif/webpic/buttono.gif" BORDER="0"
+		id="back" name="back"></A><br>
     </body>
 </html>
