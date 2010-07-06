@@ -20,7 +20,7 @@
                     <ul class="menu1">
                         <li><a href="/karchan/intro.html">Introduction</a></li>
                         <li><a href="/karchan/chronicles/chronicles2.html">Chronicles</a></li>
-                        <li><a href="/karchan/player/enter.jsp">Logon</a></li>
+                        <li><a href="/karchan/player/">Logon</a></li>
                         <li><a href="/karchan/scripts/wholist.jsp">Active Users</a></li>
                         <li><a href="/karchan/help/thelaw.html">The Law</a></li>
                         <li><a href="/karchan/help/helpindex.html">Help</a></li>
