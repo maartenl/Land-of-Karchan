@@ -19,5 +19,6 @@
         Click here to enter the game <a href="game_logon.jsp">Enter</a><p/>
         Click here to continue playing the game <a href="game.jsp">Enter</a><p/>
         Click here to edit your charsheet <a href="scripts/editcharsheet.jsp">Enter</a><p/>
+        Click here to check your mudmail <a href="scripts/mudmail.jsp">Mudmail</a><p/>
     </body>
 </html>
