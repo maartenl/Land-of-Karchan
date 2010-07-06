@@ -1,2 +1,2 @@
 <hr>
-<div align="center">Maarten van Leunen</div>
+<div style="float:right;">&copy; Copyright Maarten van Leunen 2009</div>
