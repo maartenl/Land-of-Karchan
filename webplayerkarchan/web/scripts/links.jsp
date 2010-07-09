@@ -36,16 +36,7 @@ maarten_l@yahoo.com
 
 <html>
     <%!
-// authentication && authorization
 
-/* name of the current user logged in */
-private String itsPlayerName = "";
-
-/* password of the current user logged in, unsure if used */
-private String itsPlayerPassword = "";
-
-/* sessionid/cookiepassword of current user */
-private String itsPlayerSessionId = "";
 %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -53,6 +44,17 @@ private String itsPlayerSessionId = "";
     </head>
 <BODY BGCOLOR=#FFFFFF>
             <%
+    // authentication && authorization
+
+    /* name of the current user logged in */
+    String itsPlayerName;
+
+    /* password of the current user logged in, unsure if used */
+    String itsPlayerPassword = "";
+
+    /* sessionid/cookiepassword of current user */
+    String itsPlayerSessionId;
+
             if (request.getParameter("linkname") != null)
                 {
             Connection con=null;

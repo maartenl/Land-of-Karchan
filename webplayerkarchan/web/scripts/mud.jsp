@@ -36,24 +36,23 @@ maarten_l@yahoo.com
    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-    <%!
-// authentication && authorization
-
-/* name of the current user logged in */
-private String itsPlayerName = "";
-
-/* password of the current user logged in, unsure if used */
-private String itsPlayerPassword = "";
-
-/* sessionid/cookiepassword of current user */
-private String itsPlayerSessionId = "";
-%>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Land of Karchan - Links</title>
     </head>
 <BODY BGCOLOR=#FFFFFF>
             <%
+    // authentication && authorization
+
+    /* name of the current user logged in */
+    String itsPlayerName;
+
+    /* password of the current user logged in, unsure if used */
+    String itsPlayerPassword = "";
+
+    /* sessionid/cookiepassword of current user */
+    String itsPlayerSessionId;
+
 Socket mySocket = new Socket(getServletContext().getInitParameter("mudhost"),
         new Integer(getServletContext().getInitParameter("mudport")));
 InputStream myInputStream = mySocket.getInputStream();

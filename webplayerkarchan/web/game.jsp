@@ -45,20 +45,8 @@ maarten_l@yahoo.com
 <%@ page language="java" import="java.io.IOException"%>
 <%@ page language="java" import="java.util.logging.*"%>
 <%!
-        // authentication && authorization
-
-        /* name of the current user logged in */
-        private String itsPlayerName;
-
         private Logger itsLog = Logger.getLogger("mmud");
 
-        /* password of the current user logged in, unsure if used */
-        private String itsPlayerPassword = "";
-
-        /* sessionid/cookiepassword of current user */
-        private String itsPlayerSessionId;
-
-        private StringBuffer contents = new StringBuffer("");
 
         /**
          * A little wrapper to properly deal with end-of-stream and io exceptions.
@@ -88,6 +76,18 @@ maarten_l@yahoo.com
 %>
 
 <%
+    // authentication && authorization
+
+    /* name of the current user logged in */
+    String itsPlayerName;
+
+    /* password of the current user logged in, unsure if used */
+    String itsPlayerPassword = "";
+
+    /* sessionid/cookiepassword of current user */
+    String itsPlayerSessionId;
+
+    StringBuffer contents = new StringBuffer("");
     itsPlayerName = request.getRemoteUser();
     itsPlayerSessionId = request.getSession(true).getId();
     itsLog.entering(this.getClass().getCanonicalName(), "begin");

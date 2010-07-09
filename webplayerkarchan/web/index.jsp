@@ -8,17 +8,6 @@
 <!DOCTYPE html PUBliC "-//W3C//Dtd XHTML 1.0 Strict//EN" "http://www.w3.org/tr/xhtml1/Dtd/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%!
-// authentication && authorization
-
-/* name of the current user logged in */
-private String itsPlayerName;
-
-/* password of the current user logged in, unsure if used */
-private String itsPlayerPassword = "";
-
-/* sessionid/cookiepassword of current user */
-private String itsPlayerSessionId;
-
 
 /**
  *
@@ -36,6 +25,17 @@ public static String transform(String s)
 
 %>
 <%
+    // authentication && authorization
+
+    /* name of the current user logged in */
+    String itsPlayerName;
+
+    /* password of the current user logged in, unsure if used */
+    String itsPlayerPassword = "";
+
+    /* sessionid/cookiepassword of current user */
+    String itsPlayerSessionId;
+
   itsPlayerName = request.getRemoteUser();
   itsPlayerSessionId = request.getSession(true).getId();
 %>
@@ -55,6 +55,7 @@ public static String transform(String s)
                         <li><a href="game.jsp">Continue</a></li>
                         <li><a href="scripts/editcharsheet.jsp">Edit</a></li>
                         <li><a href="scripts/mudmail.jsp">Mail</a></li>
+                        <li><a href="/karchan/index.jsp?logout=true">Logout</a></li>
                         <li><a href="/karchan/index.jsp">Back</a></li>
                         </li>
                     </ul>
