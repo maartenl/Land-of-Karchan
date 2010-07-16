@@ -91,8 +91,12 @@ maarten_l@yahoo.com
     itsPlayerName = request.getRemoteUser();
     itsPlayerSessionId = request.getSession(true).getId();
     itsLog.entering(this.getClass().getCanonicalName(), "begin");
-    String command = request.getParameter("command");
-    if (command == null)
+    String command = request.getParameter("bigtalk");
+    if (command == null || "".equals(command))
+    {
+        command = request.getParameter("command");
+    }
+    if (command == null || "".equals(command))
     {
         command = "l";
     }
@@ -223,7 +227,7 @@ maarten_l@yahoo.com
                 myCrap = readLine(myInputStream, request, response); // Frames:
                 myOutputStream.println(itsFrames); 
                 myCrap = readLine(myInputStream, request, response); // Command:
-                myOutputStream.println(request.getParameter("command"));
+                myOutputStream.println(command);
                 myOutputStream.println(".\n");
             }
 
@@ -281,7 +285,7 @@ maarten_l@yahoo.com
         }
 
     }
-    if ("quit".equalsIgnoreCase(request.getParameter("command")))
+    if ("quit".equalsIgnoreCase(command))
     {
         itsLog.exiting(this.getClass().getCanonicalName(), "end of game session");
         String redirectURL = "/karchan/player/game_goodbye.jsp";
@@ -299,7 +303,7 @@ maarten_l@yahoo.com
     parsed_contents = parsed_contents.replace("/scripts/mudlogonframe.php", "logonframe.jsp");
     parsed_contents = parsed_contents.replace("/scripts/bugs.php", "/karchan/scripts/bugs.jsp");*/
     String new_string = parsed_contents.substring(parsed_contents.indexOf("</HTML>") + 7);
-    if (new_string.contains("</HTML>") && !"quit".equalsIgnoreCase(request.getParameter("command")))
+    if (new_string.contains("</HTML>") && !"quit".equalsIgnoreCase(command))
     {
         parsed_contents = new_string;
     }
@@ -322,7 +326,7 @@ maarten_l@yahoo.com
             { %><body onLoad="setfocus()"><%
             }
         else
-            {%><body OnLoad="top.frames[2].document.myForm.command.value='';top.frames[2].document.myForm.command.focus()"><%
+            {%><body><%
             }
 }
            %>

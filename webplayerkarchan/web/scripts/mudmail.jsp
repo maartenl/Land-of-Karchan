@@ -45,17 +45,26 @@ maarten_l@yahoo.com
 <%!
 
 /**
- *
+ * Replaces all manner of things.
  * Character Entity Code
  * <    &lt;
  * >    &gt;
  * &    &amp;
  * ’    &#039;
  * "    &#034;
+ * \n   -
  */
 public static String transform(String s)
 {
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\'", "&#039;").replace("\"", "&#034;");
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\'", "&#039;").replace("\"", "&#034;").replace("\n", "");
+}
+
+/**
+ * Removed "script" everywhere in the string, as well as proper ', no \n and the " will remain the same.
+ */
+public static String removeScriptTags(String s)
+{
+    return s.replace("script", "").replace("\'", "&#039;").replace("\n", "");
 }
 
 %>
@@ -154,7 +163,7 @@ while (rst.next())
     String name = rst.getString("name");
      // write mail
     %>['<%= (rst.getInt("haveread") != 0 ? "X" : "") %>',
-    '<%= rst.getInt("newmail") != 0 ? "X" : "" %>','<%= transform(rst.getString("name")) %>','<%= transform(rst.getString("header")) %>','<%= newFormat.format(rst.getTimestamp("whensent")) %>']
+                '<%= rst.getInt("newmail") != 0 ? "X" : "" %>','<%= transform(rst.getString("name")) %>','<%= transform(rst.getString("header")) %>','<%= newFormat.format(rst.getTimestamp("whensent")) %>', '<%= removeScriptTags(rst.getString("message")) %>']
 <%  first = false;
 
 }
@@ -181,7 +190,8 @@ e.printStackTrace(new PrintWriter(out));
            {name: 'newmail'},
            {name: 'from'},
            {name: 'subject'},
-           {name: 'whensent', type: 'date', dateFormat: 'Y-m-d H:i:s'}
+           {name: 'whensent', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+           {name: 'body'}
         ]
     });
           // manually load local data
@@ -198,17 +208,54 @@ e.printStackTrace(new PrintWriter(out));
                 renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s'), dataIndex: 'whensent'}
     ]);
 
-    // create the Grid
+     // create the Grid
     var grid = new Ext.grid.GridPanel({
         store: ds,
         colModel: colModel,
-        height: 300,
-        width: 800,
-        title: 'My MudMail - <%=itsPlayerName%>'
+                id: 'gridPanel',
+                height: 200,
+                region: 'north',
+                split: true,
+                bodyStyle: {
+                        background: '#ffffff',
+                },
     });
 
-    // render the grid to the specified div in the page
-    grid.render('mailgrid');
+    // define a template to use for the detail view
+    var mailTplMarkup = [
+            '<div style="float:left;margin:0px 20px 0px 0px;"><b>Subject:</b> <br/>',
+            '<b>From:</b> <br/>',
+            '<b>Sent:</b></div><div style="float:left;clear:right;">{subject} <br/>{from} <br/>{whensent:date("Y-m-d H:i:s")}<br/>',
+            '</div><div style="clear:both;"><p><b>Body:</b></p> {body:stripScripts()}<br/></div>'
+    ];
+    var mailTpl = new Ext.Template(mailTplMarkup);
+
+    var ct = new Ext.Panel({
+            renderTo: 'mailgrid',
+            frame: true,
+            title: 'My MudMail - <%=itsPlayerName%>',
+            width: 765,
+            height: 400,
+            layout: 'border',
+            items: [
+                    grid,
+                    {
+                            id: 'detailPanel',
+                            region: 'center',
+                            autoScroll: true,
+                            bodyStyle: {
+                                    background: '#ffffff',
+                                    padding: '7px'
+                            },
+                            html: 'Please select a mail.'
+                    }
+            ]
+    })
+
+    grid.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
+            var detailPanel = Ext.getCmp('detailPanel');
+            mailTpl.overwrite(detailPanel.body, r.data);
+    });
 
     Ext.QuickTips.init();
 
@@ -217,7 +264,7 @@ e.printStackTrace(new PrintWriter(out));
 
     var bd = Ext.getBody();
 
-        }); //end onReady
+}); //end onReady
         </script>
 
     </head>

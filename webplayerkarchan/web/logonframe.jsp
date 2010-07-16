@@ -34,21 +34,116 @@ maarten_l@yahoo.com
 
 <html>
     <head>
-        <script language="JavaScript" src="/karchan/js/karchan.js"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Land of Karchan</title>
         <link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+        <!-- ** CSS ** -->
+        <!-- base library -->
+        <link rel="stylesheet" type="text/css" href="/ext-3.2.1/resources/css/ext-all.css" />
+                <!-- overrides to base library -->
+
+
+        <!-- ** Javascript ** -->
+        <!-- ExtJS library: base/adapter -->
+         <script type="text/javascript" src="/ext-3.2.1/adapter/ext/ext-base.js"></script>
+        <!-- ExtJS library: all widgets -->
+         <script type="text/javascript" src="/ext-3.2.1/ext-all-debug.js"></script>
+
+        <!-- overrides to base library -->
+
+        <!-- extensions -->
+
+        <!-- page specific -->
+
+        <script type="text/javascript">
+         // Path to the blank image should point to a valid location on your server
+        Ext.BLANK_IMAGE_URL = '/ext-3.2.1/resources/images/default/s.gif';
+
+Ext.onReady(function(){
+   var top = new Ext.FormPanel({
+        labelAlign: 'top',
+        frame:true,
+        bodyStyle:'padding:0px 0px 0',
+        width: 600,
+        standardSubmit: true,
+        url:'game.jsp',
+        items: [
+                {
+                        id:'command',
+                        xtype:'textfield',
+                        name: 'command',
+                        anchor:'95%',
+                },
+                {
+                        id:'frames',
+                        xtype:'hidden',
+                        name: 'frames',
+                        anchor:'95%',
+                        value: 2
+                }
+                ],
+        keys: [
+                { key: [Ext.EventObject.ENTER], handler: function() {
+                        top.getForm().getEl().dom.target = 'main';
+                        top.getForm().submit();
+                        top.getForm().reset();
+                        }
+                }
+                ]
+        });
+        var diminish = null;
+    // explicit enlarge
+    var enlarge = top.addButton({
+        text: 'Enlarge',
+        handler: function(b){
+                        b.hide();
+                        diminish.show();
+                        top.findById('command').destroy();
+                        var bigtalk = top.add({
+                                xtype:'htmleditor',
+                                id:'bigtalk',
+                                name: 'bigtalk',
+                                height:200,
+                                anchor:'98%',
+                        });
+                        top.doLayout();             // refresh the layout
+                        Ext.get("bigtalk").focus();
+        }
+    });
+    // explicit dinish
+    diminish = top.addButton({
+        text: 'Diminish',
+        hidden:true,
+        handler: function(b){
+                        b.hide();
+                        enlarge.show();
+                        top.findById('bigtalk').destroy();
+                        var command = top.add({
+                                id:'command',
+                                xtype:'textfield',
+                                name: 'command',
+                                anchor:'95%'
+                        });
+                        top.doLayout();             // refresh the layout
+                        Ext.get("command").focus();
+        }
+    });
+    var submittem = top.addButton({
+        text: 'Submit',
+        handler: function(b){
+                top.getForm().getEl().dom.target = 'main';
+                top.getForm().submit();
+                top.getForm().reset();
+        }
+    });
+        top.render("CommandForm");
+        Ext.get("command").focus();
+        }); //end onReady
+
+</script>
+
     </head>
     <body>
-<div align=CENTER>
-<form method="GET" ACTION="game.jsp" name="myForm" target="main">
-<img src="/images/icons/bigtalk.ico" alt="big2talk" name="big2talk" id="big2talk" border="0" align="top" onclick="bigtalk()">
-<input type="text" name="command" size="60" value="">
-<input type="submit" value="Submit" onClick='document.myForm.command.command=""'>
-<input type="hidden" name="name" value="<%= request.getParameter("name") %>">
-<input type="hidden" name="frames" value="2">
-<P>
-</form>
-</div>
+        <div align="CENTER" id="CommandForm"></div>
     </body>
 </html>
