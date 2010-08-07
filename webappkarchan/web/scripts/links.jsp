@@ -53,7 +53,7 @@ relating to fantasy.
 <a href="/karchan/player/scripts/links.jsp">Add a link?</a><p/>
 <H1>Homepages of Other Karchanians</H1>
 <ul>
-<%!
+<%
 Connection con=null;
 ResultSet rst=null;
 PreparedStatement stmt=null;
@@ -77,13 +77,6 @@ while(rst.next())
 }
            rst.close();
         stmt.close();
-        }
-        catch(Exception e)
-        {
-        System.out.println(e.getMessage());
-            %><%=e.getMessage()%>
-            <%
-            }
             %>
 
 </ul>
@@ -92,9 +85,7 @@ while(rst.next())
 
 <ul>
     <%
-                try
-            {
-
+ 
     stmt=con.prepareStatement("select * from links where type = 2 order by creation");
 rst=stmt.executeQuery();
 while(rst.next())
@@ -103,24 +94,12 @@ while(rst.next())
 		rst.getString("linkname") + "</A> (<i>" +
                 rst.getString("name") + "</i>)<P>");
 }
-           rst.close();
-        stmt.close();
-        }
-        catch (Exception e)
-        {
-        System.out.println(e.getMessage());
-            %><%=e.getMessage()%>
-            <%
-            }
             %>
 </ul>
 
 <H1>Guild Homepages</H1>
 <ul>
         <%
-                    try
-            {
-
     stmt=con.prepareStatement("select * from links where type = 3 order by creation");
 rst=stmt.executeQuery();
 while(rst.next())
@@ -138,12 +117,15 @@ while(rst.next())
             %><%=e.getMessage()%>
             <%
             }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
             %>
 
 </ul>
-<%
-        con.close();
-%>
 <H1>Programming Karchan Homepages</H1>
 
 <ul>

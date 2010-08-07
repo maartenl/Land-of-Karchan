@@ -35,6 +35,7 @@ maarten_l@yahoo.com
 <%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.logging.*"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -47,7 +48,9 @@ maarten_l@yahoo.com
 <H2>
 <IMG SRC="/images/gif/dragon.gif" alt="dragon">
 List of All Active Users</H2>
-
+<%!
+        private Logger itsLog = Logger.getLogger("mmud");
+%>
 <%
 
 Connection con=null;
@@ -59,7 +62,7 @@ try
 Context ctx = new InitialContext();
 DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
 con = ds.getConnection();
-
+itsLog.finest(this.getClass().getName() + ": connection with database opened.");
 stmt=con.prepareStatement("select name, mm_usertable.title, sleep, 	floor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec,	if (mm_area.area <> \"Main\", concat(\" in \" , mm_area.shortdesc), \"\") as area	from mm_usertable, mm_rooms, mm_area 	where god<=1 and active=1 and mm_rooms.id = mm_usertable.room and	mm_rooms.area = mm_area.area");
 rst=stmt.executeQuery();
 while(rst.next())
@@ -68,15 +71,19 @@ while(rst.next())
 <li><%=rst.getString("name")%>, <%=rst.getString("title")%>, <%=(rst.getInt("sleep") != 1 ? "" : "sleeping")%> <%=rst.getString("area")%> (logged on <%=rst.getString("min")%> min, <%=rst.getString("sec")%> sec ago)
     <%
 }
-rst.close();
-stmt.close();
-con.close();
 }
 catch(Exception e)
 {
 System.out.println(e.getMessage());
 %><%=e.getMessage()%>
 <%
+}
+finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
+    itsLog.finest(this.getClass().getName() + ": connection with database closed.");
 }
 %>
 <P><BR><BR>

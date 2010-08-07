@@ -217,8 +217,6 @@ if (!isBanned && !alreadyExists)
     stmt.close();
 }
 
-con.close();
-
 if (alreadyExists)
 {
     %><h1>
@@ -286,6 +284,12 @@ catch(Exception e)
     %><%=e.getMessage()%>
     <%
     return;
+}
+finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
 }
 %>
 

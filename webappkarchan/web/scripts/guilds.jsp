@@ -54,6 +54,8 @@ maarten_l@yahoo.com
             Connection con=null;
             ResultSet rst=null;
             PreparedStatement stmt=null;
+            ResultSet rst2=null;
+            PreparedStatement stmt2=null;
 
             try
             {
@@ -77,8 +79,8 @@ while(rst.next())
     }
     out.println("<DD>" + rst.getString("guilddescription"));
     out.println("Created on " + rst.getString("creation2") + ".<BR>");
-PreparedStatement stmt2=con.prepareStatement("select count(*) as count from mm_usertable where guild=\"" + rst.getString("name") + "\"");
-ResultSet rst2=stmt2.executeQuery();
+stmt2=con.prepareStatement("select count(*) as count from mm_usertable where guild=\"" + rst.getString("name") + "\"");
+rst2=stmt2.executeQuery();
 if(rst2.next())
 {
     out.println("Currently has " + rst2.getString("count") + " members.<p/>");
@@ -86,9 +88,6 @@ if(rst2.next())
         rst2.close();
         stmt2.close();
         }
-        rst.close();
-        stmt.close();
-        con.close();
         }
         catch(Exception e)
         {
@@ -96,6 +95,15 @@ if(rst2.next())
             %><%=e.getMessage()%>
             <%
             }
+        finally
+        {
+            if (rst2 != null) {try {rst2.close();} catch (Exception e){}}
+            if (stmt2 != null) {try {stmt2.close();} catch (Exception e){}}
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+
             %>
 
 </DL>

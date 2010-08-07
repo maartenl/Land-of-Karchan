@@ -116,7 +116,7 @@ while (rst.next())
     }
     else
     {
-	out.println("<LI>" + rst.getString("description") + " of <a href=\"/karchan/scripts/charactersheet.php?name=" + rst.getString("toname") + "\">" + rst.getString("toname") + "</A><BR>");
+	out.println("<LI>" + rst.getString("description") + " of <a href=\"/karchan/scripts/charactersheet.jsp?name=" + rst.getString("toname") + "\">" + rst.getString("toname") + "</A><BR>");
     }
     out.println("</ul>");
 }
@@ -127,9 +127,6 @@ while (rst.next())
 <b>Storyline:</b> <%=storyline%><br/>
 
 <%
-rst.close();
-stmt.close();
-con.close();
 }
 catch(Exception e)
 {
@@ -137,6 +134,13 @@ System.out.println(e.getMessage());
 %><%=e.getMessage()%>
 <%
 }
+finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
+}
+
 %>
 
 <p/>

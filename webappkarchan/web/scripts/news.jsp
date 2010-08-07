@@ -77,15 +77,18 @@ while(rst.next())
 		rst.getString("message") + "<p><i>" +
                 rst.getString("name") + "</i>");
 }
-rst.close();
-stmt.close();
-con.close();
 }
 catch(Exception e)
 {
 System.out.println(e.getMessage());
 %><%=e.getMessage()%>
 <%
+}
+finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
 }
 %>
 
