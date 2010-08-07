@@ -227,6 +227,14 @@ e.printStackTrace(new PrintWriter(out));
 %><%=e.getMessage()%>
 <%
 }
+finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
+}
+
+
 %>
 
 <p>

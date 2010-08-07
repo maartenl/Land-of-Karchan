@@ -52,7 +52,8 @@ maarten_l@yahoo.com
 
     /* sessionid/cookiepassword of current user */
     String itsPlayerSessionId;
-
+  itsPlayerName = request.getRemoteUser();
+  itsPlayerSessionId = request.getSession(true).getId();
 Socket mySocket = new Socket(getServletContext().getInitParameter("mudhost"),
         new Integer(getServletContext().getInitParameter("mudport")));
 InputStream myInputStream = mySocket.getInputStream();

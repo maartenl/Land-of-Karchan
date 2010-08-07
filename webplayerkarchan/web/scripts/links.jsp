@@ -28,6 +28,9 @@ maarten_l@yahoo.com
 
 --%>
 <%@ page language="java"%>
+<%@ page language="java" import="javax.naming.InitialContext"%>
+<%@ page language="java" import="javax.naming.Context"%>
+<%@ page language="java" import="javax.sql.DataSource"%>
 <%@ page language="java" import="java.sql.*"%>
 <%@ page language="java" import="java.util.Enumeration"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -54,7 +57,9 @@ maarten_l@yahoo.com
 
     /* sessionid/cookiepassword of current user */
     String itsPlayerSessionId;
-
+    itsPlayerName = request.getRemoteUser();
+    itsPlayerSessionId = request.getSession(true).getId();
+    
             if (request.getParameter("linkname") != null)
                 {
             Connection con=null;
@@ -82,7 +87,13 @@ stmt.executeQuery();
         System.out.println(e.getMessage());
             %><%=e.getMessage()%>
             <%
-            }
+            }finally
+{
+    if (rst != null) {try {rst.close();} catch (Exception e){}}
+    if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+    if (con != null) {try {con.close();} catch (Exception e){}}
+}
+
             }
             else
                 {%>
