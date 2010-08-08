@@ -44,16 +44,16 @@ maarten_l@yahoo.com
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-    <%!// authentication && authorization
+    <%// authentication && authorization
 
     /* name of the current user logged in */
-    private String itsPlayerName;
+    String itsPlayerName;
 
     /* password of the current user logged in, unsure if used */
-    private String itsPlayerPassword = "";
+    String itsPlayerPassword = "";
 
     /* sessionid/cookiepassword of current user */
-    private String itsPlayerSessionId;
+    String itsPlayerSessionId;
     %>
     <%
             itsPlayerName = request.getRemoteUser();

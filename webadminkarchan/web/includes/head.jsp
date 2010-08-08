@@ -21,3 +21,25 @@ chat, fun, talk, mush, moo, dungeon, dragon, www, forms, cgi, free" />
 <![endif]-->
 
 <link rel="stylesheet" type="text/css" href="/css/main.css" />
+<link rel="stylesheet" type="text/css" href="/css/karchangame.css" />
+
+<!-- ** CSS ** -->
+<!-- base library -->
+<link rel="stylesheet" type="text/css" href="/ext-3.2.1/resources/css/ext-all.css" />
+<!-- overrides to base library -->
+
+<!-- ** Javascript ** -->
+<!-- ExtJS library: base/adapter -->
+ <script type="text/javascript" src="/ext-3.2.1/adapter/ext/ext-base.js"></script>
+<!-- ExtJS library: all widgets -->
+ <script type="text/javascript" src="/ext-3.2.1/ext-all-debug.js"></script>
+
+<!-- overrides to base library -->
+
+<!-- extensions -->
+
+<!-- page specific -->
+<script type="text/javascript">
+    // Path to the blank image should point to a valid location on your server
+    Ext.BLANK_IMAGE_URL = '/ext-3.2.1/resources/images/default/s.gif';
+</script>

@@ -130,7 +130,7 @@ public abstract class BaseFormProcessor implements FormProcessor {
             if (rst != null) {
                 rst.close();
             }
-            stmt.close();
+            if (stmt != null) {stmt.close();}
         }
     }
 
