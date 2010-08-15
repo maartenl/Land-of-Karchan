@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author maartenl
  */
 @XmlRootElement
-public class LogonMessage {
+public class LogonMessage extends MmudObject {
 
     public LogonMessage() {
     }

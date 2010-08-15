@@ -27,7 +27,6 @@ maarten_l@yahoo.com
 package mmud.webservices.webentities;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * A result message, used by Sencha. Has XmlRootElement property, for proper formatting
@@ -54,22 +53,23 @@ public class Result {
      * @param errorMessage new value of errorMessage
      */
     public void setErrorMessage(String errorMessage) {
+        this.success = false;
         this.errorMessage = errorMessage;
     }
 
     /**
      * Get the result.
-     * @return an Object.
+     * @return an MmudObject.
      */
-    public LogonMessage getData() {
+    public MmudObject getData() {
         return data;
     }
 
     /**
      * Set the result.
-     * @param data the object which indicates the result.
+     * @param data the MmudObject which indicates the result.
      */
-    public void setData(LogonMessage data) {
+    public void setData(MmudObject data) {
         this.data = data;
     }
 
@@ -94,7 +94,7 @@ public class Result {
      * @param success
      * @param data
      */
-    public Result(LogonMessage data) {
+    public Result(MmudObject data) {
         this.success = true;
         this.data = data;
     }
@@ -110,11 +110,21 @@ public class Result {
 
     /**
      * Default constructor. Constructs
-     * a successfull, albeit empty result object.
+     * a successfull, albeit empty result MmudObject.
      */
     public Result() {
     }
 
-    private boolean success = true;
-    private LogonMessage data = null;
+    private boolean success = false;
+    private MmudObject data = null;
+
+    @Override
+    public String toString()
+    {
+        if (errorMessage != null)
+        {
+            return "success=" + success + ", errorMessage=" + errorMessage;
+        }
+        return "success=" + success + ", data=" + data;
+    }
 }

@@ -42,6 +42,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import mmud.webservices.webentities.Character;
 import mmud.webservices.webentities.LogonMessage;
 import mmud.webservices.webentities.Result;
 import javax.ws.rs.core.Context;
@@ -85,7 +87,7 @@ public class AdminWebService {
         Connection con=null;
         ResultSet rst=null;
         PreparedStatement stmt=null;
-        LogonMessage result = null;
+        Result result = new Result();
 
         try
         {
@@ -95,10 +97,9 @@ public class AdminWebService {
             rst=stmt.executeQuery();
             if (rst.next())
             {
-                result = new LogonMessage(rst.getString("name"),
+                result = new Result(new LogonMessage(rst.getString("name"),
                         rst.getString("message"),
-                        rst.getTimestamp("posttime"));
-                itsLog.info(result.toString());
+                        rst.getTimestamp("posttime")));
             }
             rst.close();
             stmt.close();
@@ -106,11 +107,8 @@ public class AdminWebService {
         }
         catch(Exception e)
         {
-            Result res = new Result();
-            res.setSuccess(false);
-            res.setErrorMessage(e.getMessage());
+            result.setErrorMessage(e.getMessage());
             itsLog.throwing(this.getClass().getName(), "getLogonMessage", e);
-            return res;
         }
         finally
         {
@@ -119,8 +117,8 @@ public class AdminWebService {
             if (con != null) {try {con.close();} catch (Exception e){}}
         }
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.exiting(this.getClass().getName(), "getLogonMessage");
-        return new Result(result);
+        itsLog.exiting(this.getClass().getName(), "getLogonMessage " + result.toString());
+        return result;
     }
 
     /**
@@ -217,6 +215,79 @@ public class AdminWebService {
         }
         itsLog.exiting(this.getClass().getName(), "changeLogonMessage");
         return new Result();
+    }
+
+
+    /**
+     * Returns the character.
+     * @return JSON formatted Result object, in the form:
+     * {success: "true", data: {name:"Karn",etc...}}
+     * or
+     * {success: "false", errorMessage:"Houston, we have a problem."}
+     */
+    @GET
+    @Path("character/{name}")
+    public Result getCharacter(@PathParam("name") String name)
+    {
+        itsLog.entering(this.getClass().getName(), "getCharacter");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        Character result = null;
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("select * from mm_usertable where name = ?");
+            stmt.setString(1, name);
+            rst=stmt.executeQuery();
+            if (rst.next())
+            {
+                result = new Character(rst.getString("name"),
+                        rst.getString("password"),
+                        rst.getString("address"),
+                        rst.getString("title"),
+                        rst.getString("realname"),
+                        rst.getString("email"),
+                        rst.getString("race"),
+                        rst.getString("sex"),
+                        rst.getString("age"),
+                        rst.getString("length"),
+                        rst.getString("width"),
+                        rst.getString("complexion"),
+                        rst.getString("eyes"),
+                        rst.getString("face"),
+                        rst.getString("hair"),
+                        rst.getString("beard"),
+                        rst.getString("arm"),
+                        rst.getString("leg"),
+                        rst.getString("notes")
+                        );
+
+                itsLog.info(result.toString());
+            }
+            rst.close();
+            stmt.close();
+            con.close();
+        }
+        catch(Exception e)
+        {
+            Result res = new Result();
+            res.setSuccess(false);
+            res.setErrorMessage(e.getMessage());
+            itsLog.throwing(this.getClass().getName(), "getCharacter", e);
+            return res;
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        itsLog.exiting(this.getClass().getName(), "getCharacter");
+        return new Result(result);
     }
 
     private Connection getDatabaseConnection() throws SQLException, NamingException {

@@ -30,7 +30,9 @@ package mmud.webservices;
 import com.sun.jersey.api.json.JSONJAXBContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 import mmud.webservices.webentities.LogonMessage;
 import mmud.webservices.webentities.Result;
@@ -39,13 +41,17 @@ import mmud.webservices.webentities.Result;
  *
  * @author maartenl
  */
+@Provider
 public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
 {
+       private Logger itsLog = Logger.getLogger("mmudrest");
+
        private JAXBContext context;
-       private Class[] types = {LogonMessage.class, Result.class};
+       private Class[] types = {Result.class, LogonMessage.class, Character.class};
 
        public MmudJAXBContextResolver() throws Exception 
        {
+           itsLog.entering(this.getClass().getName(), "MmudJAXBContextResolver");
            Map props = new HashMap<String, Object>();
            props.put(JSONJAXBContext.JSON_NOTATION, JSONJAXBContext.JSONNotation.MAPPED);
            props.put(JSONJAXBContext.JSON_ROOT_UNWRAPPING, Boolean.TRUE);
@@ -58,12 +64,26 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
            //this.context = new JSONJAXBContext(
            //        JSONConfiguration.natural().build(),
            //        types);
+           itsLog.exiting(this.getClass().getName(), "MmudJAXBContextResolver");
+
        }
 
        @Override
        public JAXBContext getContext(Class<?> objectType)
        {
-           return (types[0].equals(objectType)) ? context : null;
+           itsLog.entering(this.getClass().getName(), "getContext");
+
+           for (Class myObjectType : types)
+           {
+               if (myObjectType.equals(objectType))
+               {
+                   itsLog.exiting(this.getClass().getName(), "getContext context");
+                   return context;
+               }
+           }
+           itsLog.exiting(this.getClass().getName(), "getContext null");
+           return null;
+           // return (types.contains(objectType)) ? context : null;
        }
 
 }
