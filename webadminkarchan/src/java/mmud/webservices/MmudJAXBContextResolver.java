@@ -38,6 +38,7 @@ import javax.xml.bind.JAXBContext;
 import mmud.webservices.webentities.LogonMessage;
 import mmud.webservices.webentities.Result;
 import mmud.webservices.webentities.Results;
+import mmud.webservices.webentities.Character;
 import mmud.webservices.webentities.Room;
 
 /**
@@ -50,7 +51,7 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
        private Logger itsLog = Logger.getLogger("mmudrest");
 
        private JAXBContext context;
-       private Class[] types = {Result.class, Results.class, LogonMessage.class, Character.class, Room.class};
+       private Class[] types = {Result.class, Results.class, LogonMessage.class, mmud.webservices.webentities.Character.class, Room.class};
 
        public MmudJAXBContextResolver() throws Exception 
        {
