@@ -39,7 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Character extends MmudObject {
 
-    public Character(String name, String password, String address, String title, String realname, String email, String race, String sex, String age, String length, String width, String complexion, String eyes, String face, String hair, String beard, String arm, String leg, String notes) {
+    public Character(String name, String password, String address, String title, String realname, String email, String race, String sex, String age, String length, String width, String complexion, String eyes, String face, String hair, String beard, String arm, String leg, String notes, String owner) 
+    throws Exception
+    {
         this.name = name;
         this.password = password;
         this.address = address;
@@ -47,7 +49,7 @@ public class Character extends MmudObject {
         this.realname = realname;
         this.email = email;
         this.race = race;
-        this.sex = sex;
+        setSex(sex);
         this.age = age;
         this.length = length;
         this.width = width;
@@ -59,6 +61,7 @@ public class Character extends MmudObject {
         this.arm = arm;
         this.leg = leg;
         this.notes = notes;
+        this.owner = owner;
     }
 
     public Character() {
@@ -105,6 +108,25 @@ public class Character extends MmudObject {
     private String arm;
     private String leg;
     private String notes;
+    private String owner;
+
+    /**
+     * Get the value of owner
+     *
+     * @return the value of owner
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * Set the value of owner
+     *
+     * @param owner new value of owner
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     /**
      * Get the value of notes
@@ -318,8 +340,20 @@ public class Character extends MmudObject {
      *
      * @param sex new value of sex
      */
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setSex(String sex)
+    throws Exception
+    {
+        if ("male".equalsIgnoreCase(sex))
+        {
+            this.sex = "male";
+            return;
+        }
+        if ("female".equalsIgnoreCase(sex))
+        {
+            this.sex = "female";
+            return;
+        }
+        throw new Exception("sex is undefined.");
     }
 
     /**

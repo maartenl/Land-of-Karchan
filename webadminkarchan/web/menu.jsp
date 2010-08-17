@@ -3,26 +3,38 @@
 </TITLE>
 <%@include file="includes/head.jsp" %>
 <body>
-<H1>Menu</H1>
-<HR><A HREF="/karchan/admin/scripts/admin.jsp" TARGET="MainFrame">Logon</A><BR>
-<HR><A HREF="/karchan/admin/scripts/configuration.jsp" TARGET="MainFrame">Settings</A><BR>
-<HR><A HREF="/karchan/admin/scripts/problems.jsp" TARGET="MainFrame">Problems</A><BR>
-<HR><A HREF="bugs.jsp" TARGET="MainFrame">Bug List</A><BR>
-<HR><A HREF="/karchan/admin/scripts/itemlist.jsp" TARGET="MainFrame">Item List</A><BR>
-<HR><A HREF="/karchan/admin/scripts/answers.jsp" TARGET="MainFrame">Answer List</A><BR>
-<HR><A HREF="/karchan/admin/scripts/banned.jsp" TARGET="MainFrame">Banned People</A><BR>
-<HR><A HREF="/karchan/admin/showlog.html" TARGET="MainFrame">Show Log</A><BR>
-<HR><A HREF="/karchan/admin/chars.jsp" TARGET="MainFrame">Show Character</A><BR>
-<HR><A HREF="/karchan/admin/rooms.jsp" TARGET="MainFrame">Show Room</A><BR>
-<HR><A HREF="/karchan/admin/scripts/areas.jsp" TARGET="MainFrame">Show Areas</A><BR>
-<HR><A HREF="/karchan/admin/scripts/boards.jsp" TARGET="MainFrame">Show Boards</A><BR>
-<HR><A HREF="/karchan/admin/scripts/guilds.jsp" TARGET="MainFrame">Guilds</A><BR>
-<HR><A HREF="/karchan/admin/scripts/helptext.jsp" TARGET="MainFrame">Show Help</A><BR>
-<HR><A HREF="/karchan/admin/scripts/polls.jsp" TARGET="MainFrame">Show Polls</A><BR>
-<HR><A HREF="/karchan/admin/scripts/ownership.jsp" TARGET="MainFrame">Show Ownership</A><BR>
-<HR><A HREF="/karchan/admin/logonmessage.jsp" TARGET="MainFrame">Add Logonmessage</A><BR>
-<HR><A HREF="/karchan/admin/karchan/admin/scripts.jsp" TARGET="MainFrame">Scripting</A><BR>
-<HR><A HREF="/karchan/admin/help/help.html" TARGET="MainFrame">Help</A><BR>
+            <div class="containerMain">
+            <div class="header">Menu</div>
+            <div class="columns">
+                <div class="column1">
+                    <ul class="menu1">
+                        <li><a href="/karchan/admin/scripts/admin.jsp" target="MainFrame">Logon</a></li>
+                        <li><a href="/karchan/admin/scripts/configuration.jsp" target="MainFrame">Settings</a></li>
+                        <li><a href="/karchan/admin/scripts/problems.jsp" target="MainFrame">Problems</a></li>
+                        <li><a href="bugs.jsp" target="MainFrame">Bug List</a></li>
+                        <li><a href="/karchan/admin/scripts/itemlist.jsp" target="MainFrame">Item List</a></li>
+                        <li><a href="/karchan/admin/scripts/answers.jsp" target="MainFrame">Answer List</a></li>
+                        <li><a href="/karchan/admin/scripts/banned.jsp" target="MainFrame">Banned People</a></li>
+                        <li><a href="/karchan/admin/showlog.html" target="MainFrame">Show Log</a></li>
+                        <li><a href="/karchan/admin/chars.jsp" target="MainFrame">Show Character</a></li>
+                        <li><a href="/karchan/admin/rooms.jsp" target="MainFrame">Show Room</a></li>
+                        <li><a href="/karchan/admin/scripts/areas.jsp" target="MainFrame">Show Areas</a></li>
+                        <li><a href="/karchan/admin/scripts/boards.jsp" target="MainFrame">Show Boards</a></li>
+                        <li><a href="/karchan/admin/scripts/guilds.jsp" target="MainFrame">Guilds</a></li>
+                        <li><a href="/karchan/admin/scripts/helptext.jsp" target="MainFrame">Show Help</a></li>
+                        <li><a href="/karchan/admin/scripts/polls.jsp" target="MainFrame">Show Polls</a></li>
+                        <li><a href="/karchan/admin/scripts/ownership.jsp" target="MainFrame">Show Ownership</a></li>
+                        <li><a href="/karchan/admin/logonmessage.jsp" target="MainFrame">Add Logonmessage</a></li>
+                        <li><a href="/karchan/admin/karchan/admin/scripts.jsp" target="MainFrame">Scripting</a></li>
+                        <li><a href="/karchan/admin/help/help.html" target="MainFrame">Help</a></li>
+                        <li><a href="/karchan/index.jsp?logout=true">Logout</a></li>
+                        <li><a href="/karchan/index.jsp">Back</a></li>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer"></div>
+        </div>
 </body>
 
 </HTML>

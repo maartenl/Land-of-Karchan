@@ -183,6 +183,7 @@ public class AdminWebService {
         PreparedStatement stmt=null;
         String userName = context.getUserPrincipal().getName();
         Result res = new Result();
+        res.setSuccess(true);
 
         if (!userName.equals(aChangedMessage.getName()))
         {
@@ -314,7 +315,8 @@ public class AdminWebService {
                         rst.getString("beard"),
                         rst.getString("arm"),
                         rst.getString("leg"),
-                        rst.getString("notes")
+                        rst.getString("notes"),
+                        rst.getString("owner")
                         );
 
                 itsLog.info("getCharacter: Found character: " + result.toString());
@@ -349,9 +351,79 @@ public class AdminWebService {
         return res;
     }
 
+    /**
+     * Change the existing character. THe following constraints are checked
+     * before any  update is to take place:
+     * <ul><li>check tnge is approved, ie. is owner or is null
+     * </li><li>check that the se><li>does the room exist?
+     * </li><li>is copper >=0
+     * </li><li>3,4
+     * </li></ul>
+     * @param aCharacter the updated character, in the following format:
+     * {name:"Karn"}.
+     * @param context the security context.
+     */
+    @PUT
+    @Path("characters/{name}")
+    public Result changeCharacter(Character aCharacter, @Context SecurityContext context)
+    {
+        itsLog.entering(this.getClass().getName(), "changeCharacter");
+        Connection con=null;
+        PreparedStatement stmt=null;
+        String userName = context.getUserPrincipal().getName();
+        Result res = new Result();
+        res.setSuccess(true);
+
+        if (aCharacter.getOwner() != null && !userName.equals(aCharacter.getOwner()))
+        {
+            return new Result("Trying to change a character that is not owned by you.");
+        }
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("update mm_usertable set title = ? , realname = ?, email = ? , race = ? , sex = ?, age = ?, length = ?, width = ?," +
+                    "beard = ?, arm = ?, leg = ?, notes = ?, owner = ? " +
+                    "where name = ? and (owner is null or owner = ?)");
+            stmt.setString(1, aCharacter.getTitle());
+            stmt.setString(2, aCharacter.getRealname());
+            stmt.setString(3, aCharacter.getEmail());
+            stmt.setString(4, aCharacter.getRace());
+            stmt.setString(5, aCharacter.getSex());
+            stmt.setString(6, aCharacter.getAge());
+            stmt.setString(7, aCharacter.getLength());
+            stmt.setString(8, aCharacter.getWidth());
+            stmt.setString(9, aCharacter.getBeard());
+            stmt.setString(10, aCharacter.getArm());
+            stmt.setString(11, aCharacter.getLeg());
+            stmt.setString(12, aCharacter.getNotes());
+            stmt.setString(13, userName);
+            stmt.setString(14, aCharacter.getName());
+            stmt.setString(15, userName);
+            if (stmt.executeUpdate() != 1)
+            {
+                throw new NullPointerException("Problems changing character. character not found or not yours.");
+            }
+        }
+        catch(Exception e)
+        {
+            res = new Result();
+            res.setSuccess(false);
+            res.setErrorMessage(e.getMessage());
+            itsLog.throwing(this.getClass().getName(), "changeCharacter", e);
+        }
+        finally
+        {
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+        itsLog.exiting(this.getClass().getName(), "changeCharacter");
+        return res;
+    }
 
     /**
-     * Returns a list of character names.
+     * Returns a list of room ids.
      * @return JSON formatted array of Strings, in the form:
      * {success: "true", data: {name:"Karn",etc...}}
      * or
@@ -458,6 +530,78 @@ public class AdminWebService {
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.exiting(this.getClass().getName(), "getRoom " + result.toString());
         return result;
+    }
+
+    /**
+     * Change the existing room. THe following constraints are checked
+     * before any  update is to take place:
+     * <ul><li>first check that the change is approved (i.e. owner or null)
+     * </li><li>does room south exist
+     * </li><li>does room north exist
+     * </li><li>does room east exist
+     * </li><li>does room west exist
+     * </li><li>does room up exist
+     * </li><li>does room down exist
+     * </li><li>does area exist
+     * </li></ul>
+     * @param aRoom the updated room, in the following format:
+     * {id:"1"}.
+     * @param context the security context.
+     */
+    @PUT
+    @Path("rooms/{id}")
+    public Result changeRoom(Room aRoom, @Context SecurityContext context)
+    {
+        itsLog.entering(this.getClass().getName(), "changeRoom");
+        Connection con=null;
+        PreparedStatement stmt=null;
+        String userName = context.getUserPrincipal().getName();
+        Result res = new Result();
+        res.setSuccess(true);
+
+        if (aRoom.getOwner() != null && !userName.equals(aRoom.getOwner()))
+        {
+            return new Result("Trying to change a room that is not owned by you.");
+        }
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("update mm_rooms set title = ? , picture = ?, contents = ? , north = ?, south = ?, west = ?, east = ?, up = ?," +
+                    "down = ?, owner = ? " +
+                    "where id = ? and (owner is null or owner = ?)");
+            stmt.setString(1, aRoom.getTitle());
+            stmt.setString(2, aRoom.getPicture());
+            stmt.setString(3, aRoom.getContents());
+            stmt.setInt(4, aRoom.getNorth());
+            stmt.setInt(5, aRoom.getSouth());
+            stmt.setInt(6, aRoom.getWest());
+            stmt.setInt(7, aRoom.getEast());
+            stmt.setInt(8, aRoom.getUp());
+            stmt.setInt(9, aRoom.getDown());
+            stmt.setString(10, userName);
+            stmt.setInt(11, aRoom.getId());
+            stmt.setString(12, userName);
+            if (stmt.executeUpdate() != 1)
+            {
+                throw new NullPointerException("Problems changing room. room not found or not yours.");
+            }
+        }
+        catch(Exception e)
+        {
+            res = new Result();
+            res.setSuccess(false);
+            res.setErrorMessage(e.getMessage());
+            itsLog.throwing(this.getClass().getName(), "changeRoom", e);
+        }
+        finally
+        {
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+        itsLog.exiting(this.getClass().getName(), "changeRoom");
+        return res;
     }
 
     private Connection getDatabaseConnection() throws SQLException, NamingException {

@@ -51,7 +51,7 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
        private Logger itsLog = Logger.getLogger("mmudrest");
 
        private JAXBContext context;
-       private Class[] types = {Result.class, Results.class, LogonMessage.class, mmud.webservices.webentities.Character.class, Room.class};
+       private Class[] types = {Result.class, Results.class, LogonMessage.class, Character.class, Room.class};
 
        public MmudJAXBContextResolver() throws Exception 
        {
