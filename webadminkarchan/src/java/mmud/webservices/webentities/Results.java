@@ -26,18 +26,41 @@ maarten_l@yahoo.com
 -----------------------------------------------------------------------*/
 package mmud.webservices.webentities;
 
-import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A result message, used by Sencha. Has XmlRootElement property, for proper formatting
+ * A result message containing one or more results in an appopriate array.
+ * Has XmlRootElement property, for proper formatting
  * into JSON.
  * @author maartenl
  */
 @XmlRootElement
-public class Result {
+public class Results {
+
+    /**
+     * Get the list
+     *
+     * @return the list
+     */
+    public List<String> getList() {
+        return list;
+    }
+
+    /**
+     * Set the list
+     *
+     * @param list 
+     */
+
+    public void setList(List<String> list) {
+        this.list = list;
+    }
 
     private String errorMessage;
+    
+    private List<String> list = new ArrayList<String>();
 
     /**
      * Get the value of errorMessage
@@ -59,22 +82,6 @@ public class Result {
     }
 
     /**
-     * Get the result.
-     * @return an MmudObject.
-     */
-    public MmudObject getData() {
-        return data;
-    }
-
-    /**
-     * Set the result.
-     * @param data the MmudObject which indicates the result.
-     */
-    public void setData(MmudObject data) {
-        this.data = data;
-    }
-
-    /**
      * Has the result been successfully determined?
      * @return false, if problems, true if success.
      */
@@ -92,19 +99,18 @@ public class Result {
 
     /**
      * Constructor
-     * @param success
-     * @param data
+     * @param aList the list
      */
-    public Result(MmudObject data) {
+    public Results(ArrayList<String> aList) {
+        this.list = aList;
         this.success = true;
-        this.data = data;
     }
 
     /**
      * Constructor
      * @param errorMessage
      */
-    public Result(String errorMessage) {
+    public Results(String errorMessage) {
         this.errorMessage = errorMessage;
         this.success = false;
     }
@@ -113,12 +119,10 @@ public class Result {
      * Default constructor. Constructs
      * a successfull, albeit empty result MmudObject.
      */
-    public Result() {
+    public Results() {
     }
 
     private boolean success = false;
-
-    private MmudObject data = null;
 
     @Override
     public String toString()
@@ -127,6 +131,6 @@ public class Result {
         {
             return "success=" + success + ", errorMessage=" + errorMessage;
         }
-        return "success=" + success + ", data=" + data;
+        return "success=" + success + ", list=" + list;
     }
 }

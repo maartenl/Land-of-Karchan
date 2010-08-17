@@ -28,6 +28,7 @@ maarten_l@yahoo.com
 
 package mmud.webservices.webentities;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -434,6 +435,7 @@ public class Character extends MmudObject {
      *
      * @return the value of name
      */
+    @XmlElement
     public String getName() {
         return name;
     }
@@ -447,4 +449,9 @@ public class Character extends MmudObject {
         this.name = name;
     }
 
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }

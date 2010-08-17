@@ -29,6 +29,7 @@ package mmud.webservices;
 
 import com.sun.jersey.api.json.JSONJAXBContext;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ws.rs.ext.ContextResolver;
@@ -36,6 +37,8 @@ import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 import mmud.webservices.webentities.LogonMessage;
 import mmud.webservices.webentities.Result;
+import mmud.webservices.webentities.Results;
+import mmud.webservices.webentities.Room;
 
 /**
  *
@@ -47,7 +50,7 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
        private Logger itsLog = Logger.getLogger("mmudrest");
 
        private JAXBContext context;
-       private Class[] types = {Result.class, LogonMessage.class, Character.class};
+       private Class[] types = {Result.class, Results.class, LogonMessage.class, Character.class, Room.class};
 
        public MmudJAXBContextResolver() throws Exception 
        {
@@ -55,8 +58,12 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
            Map props = new HashMap<String, Object>();
            props.put(JSONJAXBContext.JSON_NOTATION, JSONJAXBContext.JSONNotation.MAPPED);
            props.put(JSONJAXBContext.JSON_ROOT_UNWRAPPING, Boolean.TRUE);
-           //props.put(JSONJAXBContext.JSON_ARRAYS, new HashSet<String>(1){{add("jobs");}});
-           //props.put(JSONJAXBContext.JSON_NON_STRINGS, new HashSet<String>(1){{add("pages"); add("tonerRemaining");}});
+           HashSet arrays = new HashSet<String>();
+           arrays.add("list");
+           props.put(JSONJAXBContext.JSON_ARRAYS, arrays);
+           HashSet non_strings = new HashSet<String>();
+           non_strings.add("success");
+           props.put(JSONJAXBContext.JSON_NON_STRINGS, non_strings);
 
            this.context = new JSONJAXBContext(types, props);
 

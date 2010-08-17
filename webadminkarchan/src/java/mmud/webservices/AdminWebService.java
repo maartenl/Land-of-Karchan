@@ -32,6 +32,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -48,6 +49,8 @@ import mmud.webservices.webentities.LogonMessage;
 import mmud.webservices.webentities.Result;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
+import mmud.webservices.webentities.Results;
+import mmud.webservices.webentities.Room;
 
 /**
  * The Java class will be hosted at the URI path "/karchan/admin/resources/admin"
@@ -156,7 +159,6 @@ public class AdminWebService {
             res.setSuccess(false);
             res.setErrorMessage(e.getMessage());
             itsLog.throwing(this.getClass().getName(), "addLogonMessage", e);
-            return;
         }
         finally
         {
@@ -180,6 +182,7 @@ public class AdminWebService {
         Connection con=null;
         PreparedStatement stmt=null;
         String userName = context.getUserPrincipal().getName();
+        Result res = new Result();
 
         if (!userName.equals(aChangedMessage.getName()))
         {
@@ -202,11 +205,10 @@ public class AdminWebService {
         }
         catch(Exception e)
         {
-            Result res = new Result();
+            res = new Result();
             res.setSuccess(false);
             res.setErrorMessage(e.getMessage());
             itsLog.throwing(this.getClass().getName(), "changeLogonMessage", e);
-            return new Result(e.getMessage());
         }
         finally
         {
@@ -214,7 +216,56 @@ public class AdminWebService {
             if (con != null) {try {con.close();} catch (Exception e){}}
         }
         itsLog.exiting(this.getClass().getName(), "changeLogonMessage");
-        return new Result();
+        return res;
+    }
+
+    /**
+     * Returns a list of character names.
+     * @return JSON formatted array of Strings, in the form:
+     * {success: "true", data: {name:"Karn",etc...}}
+     * or
+     * {success: "false", errorMessage:"Houston, we have a problem."}
+     */
+    @GET
+    @Path("characters")
+    public Results getCharacters()
+    {
+        itsLog.entering(this.getClass().getName(), "getCharacters");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        ArrayList<String> result = new ArrayList<String>();
+        Results res = null;
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("select name from mm_usertable limit 100");
+            rst=stmt.executeQuery();
+            while (rst.next())
+            {
+                result.add(rst.getString("name"));
+            }
+            rst.close();
+            stmt.close();
+            con.close();
+            res = new Results(result);
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "getCharacters", e);
+            res = new Results(e.getMessage());
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        itsLog.exiting(this.getClass().getName(), "getCharacters: result= " + result.size());
+        return res;
     }
 
 
@@ -226,14 +277,15 @@ public class AdminWebService {
      * {success: "false", errorMessage:"Houston, we have a problem."}
      */
     @GET
-    @Path("character/{name}")
+    @Path("characters/{name}")
     public Result getCharacter(@PathParam("name") String name)
     {
-        itsLog.entering(this.getClass().getName(), "getCharacter");
+        itsLog.entering(this.getClass().getName(), "getCharacter " + name);
         Connection con=null;
         ResultSet rst=null;
         PreparedStatement stmt=null;
         Character result = null;
+        Result res = new Result();
 
         try
         {
@@ -265,7 +317,7 @@ public class AdminWebService {
                         rst.getString("notes")
                         );
 
-                itsLog.info(result.toString());
+                itsLog.info("getCharacter: Found character: " + result.toString());
             }
             rst.close();
             stmt.close();
@@ -273,11 +325,68 @@ public class AdminWebService {
         }
         catch(Exception e)
         {
-            Result res = new Result();
             res.setSuccess(false);
             res.setErrorMessage(e.getMessage());
             itsLog.throwing(this.getClass().getName(), "getCharacter", e);
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+
+
+        if (result == null)
+        {
+            res = new Result("Character " + name + " not found.");
+            itsLog.exiting(this.getClass().getName(), "getCharacter " + res);
             return res;
+        }
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        res = new Result(result);
+        itsLog.exiting(this.getClass().getName(), "getCharacter " + res);
+        return res;
+    }
+
+
+    /**
+     * Returns a list of character names.
+     * @return JSON formatted array of Strings, in the form:
+     * {success: "true", data: {name:"Karn",etc...}}
+     * or
+     * {success: "false", errorMessage:"Houston, we have a problem."}
+     */
+    @GET
+    @Path("rooms")
+    public Results getRooms()
+    {
+        itsLog.entering(this.getClass().getName(), "getRooms");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        ArrayList<String> result = new ArrayList<String>();
+        Results res = null;
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("select id from mm_rooms limit 100");
+            rst=stmt.executeQuery();
+            while (rst.next())
+            {
+                result.add(rst.getString("id"));
+            }
+            rst.close();
+            stmt.close();
+            con.close();
+            res = new Results(result);
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "getRooms", e);
+            res = new Results(e.getMessage());
         }
         finally
         {
@@ -286,8 +395,69 @@ public class AdminWebService {
             if (con != null) {try {con.close();} catch (Exception e){}}
         }
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.exiting(this.getClass().getName(), "getCharacter");
-        return new Result(result);
+        itsLog.exiting(this.getClass().getName(), "getRooms: result= " + result.size());
+        return res;
+    }
+
+    /**
+     * Returns the room details.
+     * @return JSON formatted Result object, in the form:
+     * {success: "true", data: {id:"3",title:"Our house"}}
+     * or
+     * {success: "false", errorMessage:"Houston, we have a problem."}
+     */
+    @GET
+    @Path("rooms/{id}")
+    public Result getRoom(@PathParam("id") int id)
+    {
+        itsLog.entering(this.getClass().getName(), "getRoom");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        Result result = new Result();
+
+        try
+        {
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement("select * from mm_rooms where id = ?");
+            stmt.setInt(1, id);
+            rst=stmt.executeQuery();
+            if (rst.next())
+            {
+                result = new Result(new Room(rst.getInt("id"),
+                        rst.getString("title"),
+                        rst.getString("picture"),
+                        rst.getString("area"),
+                        rst.getTimestamp("creation"),
+                        rst.getString("contents"),
+                        rst.getString("owner"),
+                        rst.getInt("west"),
+                        rst.getInt("east"),
+                        rst.getInt("north"),
+                        rst.getInt("south"),
+                        rst.getInt("up"),
+                        rst.getInt("down")
+                        ));
+            }
+            rst.close();
+            stmt.close();
+            con.close();
+        }
+        catch(Exception e)
+        {
+            result.setErrorMessage(e.getMessage());
+            itsLog.throwing(this.getClass().getName(), "getRoom", e);
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+        }
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        itsLog.exiting(this.getClass().getName(), "getRoom " + result.toString());
+        return result;
     }
 
     private Connection getDatabaseConnection() throws SQLException, NamingException {
