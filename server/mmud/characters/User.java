@@ -492,15 +492,7 @@ public class User extends mmud.characters.Person
 		String myString = "";
 		if (getFrames() == 0)
 		{
-			myString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi
-					+ "\" NAME=\"CommandForm\" id=\"CommandForm\"" + ">\n";
-			myString += "<IMG SRC=\"/images/icons/bigtalk.ico\" alt=\"big2talk\" name=\"big2talk\" id=\"big2talk\" border=\"0\" align=\"top\" onclick=\"bigtalk()\">";
-			myString += "<INPUT TYPE=\"text\" NAME=\"command\" ID=\"command\" VALUE=\"\" SIZE=\"50\"><P>\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
-					+ getName() + "\">\n";
-			myString += "<INPUT TYPE=\"hidden\" NAME=\"frames\" VALUE=\"1\">\n";
-			myString += "<INPUT TYPE=\"submit\" VALUE=\"Submit\">\n";
-			myString += "</FORM><P>\n";
+			myString += " <p/><div style=\"margin:15px;\" id=\"CommandForm\"></div><p/>";
 		}
 		return myString;
 	}

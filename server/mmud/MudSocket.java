@@ -232,9 +232,10 @@ public class MudSocket implements Runnable
 		{
 			command = new StringBuffer("l");
 		}
-		aWriter.println(executeMud(name, theSocket.getInetAddress()
+		String result = executeMud(name, theSocket.getInetAddress()
 				.getCanonicalHostName(), cookie, frame - 1, command.toString())
-				+ "\n.\n");
+				+ "\n.\n";
+		aWriter.println(result);
 		// }
 	}
 
@@ -502,7 +503,7 @@ public class MudSocket implements Runnable
 				returnStuff.append("sessionpassword="
 						+ myUser.getSessionPassword() + "\n");
 				returnStuff
-						.append("<FRAMESET ROWS=\"*,50\">\r\n"
+						.append("<FRAMESET ROWS=\"*,80\">\r\n"
 						+ " <FRAMESET COLS=\"*,180\">\r\n" + "	 <FRAME SRC=");
 				returnStuff.append(myUser.getUrl("me+has+entered+the+game..."));
 				returnStuff.append(" NAME=\"main\" border=0>\r\n"

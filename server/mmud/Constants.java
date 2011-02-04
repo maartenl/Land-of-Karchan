@@ -60,7 +60,6 @@ import mmud.commands.Command;
 import mmud.commands.CryCommand;
 import mmud.commands.CurtseyCommand;
 import mmud.commands.DateCommand;
-import mmud.commands.DeleteMailCommand;
 import mmud.commands.DownCommand;
 import mmud.commands.DrinkCommand;
 import mmud.commands.DropCommand;
@@ -76,10 +75,8 @@ import mmud.commands.GoCommand;
 import mmud.commands.HelpCommand;
 import mmud.commands.IgnoreCommand;
 import mmud.commands.InventoryCommand;
-import mmud.commands.ListMailCommand;
 import mmud.commands.LockCommand;
 import mmud.commands.LookCommand;
-import mmud.commands.MailCommand;
 import mmud.commands.MeCommand;
 import mmud.commands.NormalCommand;
 import mmud.commands.NorthCommand;
@@ -90,7 +87,6 @@ import mmud.commands.PostRpgBoardCommand;
 import mmud.commands.PutCommand;
 import mmud.commands.QuitCommand;
 import mmud.commands.ReadCommand;
-import mmud.commands.ReadMailCommand;
 import mmud.commands.ReadPublicCommand;
 import mmud.commands.ReadRpgBoardCommand;
 import mmud.commands.RetrieveCommand;
@@ -99,7 +95,6 @@ import mmud.commands.ScreamCommand;
 import mmud.commands.ScriptCommand;
 import mmud.commands.SearchCommand;
 import mmud.commands.SellCommand;
-import mmud.commands.SendMailCommand;
 import mmud.commands.ShoutCommand;
 import mmud.commands.ShowCommand;
 import mmud.commands.SingCommand;
@@ -726,13 +721,6 @@ public final class Constants
 		theCommandStructure.put("whimpy",
 				new WhimpyCommand("whimpy( .+|help)?"));
 		theCommandStructure.put("who", new WhoCommand("who"));
-		theCommandStructure.put("deletemail", new DeleteMailCommand(
-				"deletemail (\\d)+"));
-		theCommandStructure.put("listmail", new ListMailCommand("listmail"));
-		theCommandStructure.put("readmail", new ReadMailCommand(
-				"readmail (\\d)+"));
-		theCommandStructure.put("mail", new MailCommand("mail"));
-		theCommandStructure.put("sendmail", new SendMailCommand("sendmail .+"));
 		theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
 		theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 		theCommandStructure.put("stop", new FightCommand("stop fighting"));

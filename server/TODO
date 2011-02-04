@@ -719,14 +719,14 @@ Christmas
 
 How to switch the images over to christmas:
 
-cd /projects/www.karchan.org/public/images/gif/webpic/
+cd /glassfishv3/glassfish/domains/domain1/docroot/images/gif/webpic/
 
 cp back4.christmas.gif back4.gif
 cp regel1a.christmas.gif regel1a.gif
 
 How to switch back to the usual everyday stuff:
 
-cd /projects/www.karchan.org/public/images/gif/webpic/
+cd /glassfishv3/glassfish/domains/domain1/docroot/images/gif/webpic/
 
 cp back4.gif.original back4.gif
 cp regel1a.gif.original regel1a.gif
