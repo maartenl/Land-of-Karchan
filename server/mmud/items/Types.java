@@ -35,7 +35,7 @@ public class Types
 {
 
 	private String theTypeName;
-	private static TreeMap theMap = new TreeMap();
+	private static TreeMap<String, Types> theMap = new TreeMap<String, Types>();
 
 	public static final Types ANYTHING = new Types("anything");
 

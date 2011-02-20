@@ -60,7 +60,7 @@ public class Guild
 
 	private boolean theActive;
 
-	private TreeMap theRanks = new TreeMap();
+	private TreeMap<Integer, GuildRank> theRanks = new TreeMap<Integer, GuildRank>();
 
 	/**
 	 * Constructor, to be used for newly created guilds.
@@ -387,7 +387,7 @@ public class Guild
 	/**
 	 * Removes all guildranks and starts with a clean slate.
 	 */
-	public void setRanks(TreeMap aRanks)
+	public void setRanks(TreeMap<Integer, GuildRank> aRanks)
 	{
 		if (aRanks == null)
 		{

@@ -861,13 +861,13 @@ public class ItemsDb
 	 *            the room where said item should be located
 	 * @return Vector containing all Item objects found.
 	 */
-	public static Vector getItemsFromRoom(String adject1, String adject2,
+	public static Vector<Item> getItemsFromRoom(String adject1, String adject2,
 			String adject3, String name, Room aRoom)
 			throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -916,13 +916,13 @@ public class ItemsDb
 	 *            the room where said item(s) should be located
 	 * @return Vector containing all Item objects found.
 	 */
-	public static Vector getItemsFromRoom(ItemDef anItemDef, Room aRoom)
+	public static Vector<Item> getItemsFromRoom(ItemDef anItemDef, Room aRoom)
 			throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer(
 				"anItemDef=" + anItemDef + ", aRoom=" + aRoom);
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -976,12 +976,12 @@ public class ItemsDb
 	 *            the item where said item(s) should be located
 	 * @return Vector containing all Item objects found.
 	 */
-	public static Vector getItemsFromContainer(String adject1, String adject2,
+	public static Vector<Item> getItemsFromContainer(String adject1, String adject2,
 			String adject3, String name, Item aContainer) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -1026,14 +1026,14 @@ public class ItemsDb
 	 * 
 	 * @param aContainer
 	 *            the container where said items are located
-	 * @return Vector containing all Item objects found.
+	 * @return Vector<Item> containing all Item objects found.
 	 */
-	public static Vector getItemsFromContainer(Container aContainer)
+	public static Vector<Item> getItemsFromContainer(Container aContainer)
 			throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -1082,7 +1082,7 @@ public class ItemsDb
 	{
 		Logger.getLogger("mmud").finer("");
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement statementIsEmpty = Database
@@ -1130,7 +1130,7 @@ public class ItemsDb
 	 *            the character who has the item in his/her inventory.
 	 * @return Vector containing all Item objects found.
 	 */
-	public static Vector getItemsFromChar(String adject1, String adject2,
+	public static Vector<Item> getItemsFromChar(String adject1, String adject2,
 			String adject3, String name, Person aChar)
 			throws MudDatabaseException, MudException
 	{
@@ -1139,7 +1139,7 @@ public class ItemsDb
 						+ adject3 + ",name=" + name + ",char="
 						+ aChar.getName());
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -1190,15 +1190,15 @@ public class ItemsDb
 	 *            the required itemdefinition.
 	 * @param aChar
 	 *            the character who has the item in his/her inventory.
-	 * @return Vector containing all Item objects found.
+	 * @return Vector<Item> containing all Item objects found.
 	 */
-	public static Vector getItemsFromChar(ItemDef aItemDef, Person aChar)
+	public static Vector<Item> getItemsFromChar(ItemDef aItemDef, Person aChar)
 			throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer(
 				"aItemDef=" + aItemDef + ",char=" + aChar.getName());
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database
@@ -1241,14 +1241,14 @@ public class ItemsDb
 	 * 
 	 * @param aChar
 	 *            the character who has the item in his/her inventory.
-	 * @return Vector containing all Item objects found.
+	 * @return Vector<Item> containing all Item objects found.
 	 */
-	public static Vector getItemsFromChar(Person aChar)
+	public static Vector<Item> getItemsFromChar(Person aChar)
 			throws MudDatabaseException, MudException
 	{
 		Logger.getLogger("mmud").finer("char=" + aChar.getName());
 		ResultSet res;
-		Vector items = new Vector();
+		Vector<Item> items = new Vector<Item>();
 		try
 		{
 			PreparedStatement sqlGetItem = Database

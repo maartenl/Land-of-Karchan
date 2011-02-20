@@ -47,7 +47,7 @@ public class ItemDef implements AttributeContainer {
 	private final int theId;
 	private final int theCopper;
 	private final int theWearable;
-	private final TreeMap theAttributes = new TreeMap();
+	private final TreeMap<String, Attribute> theAttributes = new TreeMap<String, Attribute>();
 
 	/**
 	 * Create an item definition.

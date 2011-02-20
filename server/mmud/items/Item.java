@@ -60,7 +60,7 @@ public class Item implements Executable, AttributeContainer
 {
 	private final int theItemDef;
 	private final int theId;
-	private final TreeMap theAttributes = new TreeMap();
+	private final TreeMap<String, Attribute> theAttributes = new TreeMap<String, Attribute>();
 
 	/**
 	 * Default is null pointer, if it is not being worn/wielded.

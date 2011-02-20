@@ -55,7 +55,7 @@ import simkin.MethodNotSupportedException;
  */
 public final class Persons implements Executable
 {
-	private static Vector thePersons = new Vector();
+	private static Vector<Person> thePersons = new Vector<Person>();
 
 	public static Persons create()
 	{

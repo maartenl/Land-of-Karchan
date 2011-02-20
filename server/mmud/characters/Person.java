@@ -95,7 +95,7 @@ public class Person implements Executable, AttributeContainer
 	private int theHealth = Constants.DEFAULT_HEALTH;
 	private int theAlignment = Constants.DEFAULT_ALIGNMENT;
 	private int theMovement = Constants.DEFAULT_MOVEMENT;
-	private final TreeMap theAttributes = new TreeMap();
+	private final TreeMap<String, Attribute> theAttributes = new TreeMap<String, Attribute>();
 	private Person theFightingWith = null;
 	private int theCopper = 0;
 	private boolean theActive = false;
@@ -1071,7 +1071,7 @@ public class Person implements Executable, AttributeContainer
 	 *            not use the database, i.e. should be used <I>by</I> the
 	 *            database, upon creation of items.
 	 */
-	public void setAttributes(Vector anAttributeVector) throws MudException
+	public void setAttributes(Vector<Attribute> anAttributeVector) throws MudException
 	{
 		if (anAttributeVector == null)
 		{
@@ -1166,7 +1166,7 @@ public class Person implements Executable, AttributeContainer
 	 * @return Vector containing item objects found.
 	 * @see mmud.database.ItemsDb#getItemsFromChar
 	 */
-	public Vector getItems(String adject1, String adject2, String adject3,
+	public Vector<Item> getItems(String adject1, String adject2, String adject3,
 			String name) throws MudException
 	{
 		return ItemsDb.getItemsFromChar(adject1, adject2, adject3, name, this);
@@ -1641,7 +1641,7 @@ public class Person implements Executable, AttributeContainer
 					throw new MethodNotSupportedException(method_name
 							+ " does not contain a Integer as argument.");
 				}
-				Vector b = null;
+				Vector<Item> b = null;
 				try
 				{
 					b = ItemsDb.getItemsFromChar(ItemDefs

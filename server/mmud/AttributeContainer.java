@@ -53,7 +53,7 @@ public interface AttributeContainer
 	 * @param anAttributeVector
 	 *            a vector containing the attributes to be set. May be null.
 	 */
-	public void setAttributes(Vector anAttributeVector) throws MudException;
+	public void setAttributes(Vector<Attribute> anAttributeVector) throws MudException;
 
 	/**
 	 * returns the attribute found with name aName or null if it does not exist.

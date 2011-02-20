@@ -225,10 +225,10 @@ public class AttributeDb {
 	 *            the name of the person whose attributes need to be retrieved.
 	 * @return Attribute Vector containing the attributes.
 	 */
-	public static Vector getAttributesPerson(String aName) throws MudException {
+	public static Vector<Attribute> getAttributesPerson(String aName) throws MudException {
 		Logger.getLogger("mmud").finer("aName=" + aName);
 		ResultSet res;
-		Vector result = new Vector();
+		Vector<Attribute> result = new Vector<Attribute>();
 		try {
 			PreparedStatement sqlGetCharAttributes = Database
 					.prepareStatement(sqlGetAttributesChar);
@@ -259,12 +259,12 @@ public class AttributeDb {
 	 * @param anItemId
 	 *            the identification of the item which attributes need to be
 	 *            retrieved.
-	 * @return Attribute Vector containing the attributes.
+	 * @return Attribute Vector<Attribute> containing the attributes.
 	 */
-	public static Vector getAttributesItem(int anItemId) throws MudException {
+	public static Vector<Attribute> getAttributesItem(int anItemId) throws MudException {
 		Logger.getLogger("mmud").finer("anItemId=" + anItemId);
 		ResultSet res;
-		Vector result = new Vector();
+		Vector<Attribute> result = new Vector<Attribute>();
 		try {
 			PreparedStatement sqlGetItemAttributes = Database
 					.prepareStatement(sqlGetAttributesItem);
@@ -294,9 +294,9 @@ public class AttributeDb {
 	 * 
 	 * @param aRoom
 	 *            the room which attributes need to be retrieved.
-	 * @return Attribute Vector containing the attributes.
+	 * @return Attribute Vector<Attribute> containing the attributes.
 	 */
-	public static Vector getAttributes(Room aRoom) throws MudException {
+	public static Vector<Attribute> getAttributes(Room aRoom) throws MudException {
 		return (aRoom == null ? null : getAttributesRoom(aRoom.getId()));
 	}
 
@@ -306,9 +306,9 @@ public class AttributeDb {
 	 * 
 	 * @param anItem
 	 *            the item which attributes need to be retrieved.
-	 * @return Attribute Vector containing the attributes.
+	 * @return Attribute Vector<Attribute> containing the attributes.
 	 */
-	public static Vector getAttributes(Item anItem) throws MudException {
+	public static Vector<Attribute> getAttributes(Item anItem) throws MudException {
 		return (anItem == null ? null : getAttributesItem(anItem.getId()));
 	}
 
@@ -318,9 +318,9 @@ public class AttributeDb {
 	 * 
 	 * @param aPerson
 	 *            the person whose attributes need to be retrieved.
-	 * @return Attribute Vector containing the attributes.
+	 * @return Attribute Vector<Attribute> containing the attributes.
 	 */
-	public static Vector getAttributes(Person aPerson) throws MudException {
+	public static Vector<Attribute> getAttributes(Person aPerson) throws MudException {
 		return (aPerson == null ? null : getAttributesPerson(aPerson.getName()));
 	}
 
@@ -331,12 +331,12 @@ public class AttributeDb {
 	 * @param aRoomId
 	 *            the identification of the room which attributes need to be
 	 *            retrieved.
-	 * @return Attribute Vector containing the attributes.
+	 * @return Attribute Vector<Attribute> containing the attributes.
 	 */
-	public static Vector getAttributesRoom(int aRoomId) throws MudException {
+	public static Vector<Attribute> getAttributesRoom(int aRoomId) throws MudException {
 		Logger.getLogger("mmud").finer("aRoomId=" + aRoomId);
 		ResultSet res;
-		Vector result = new Vector();
+		Vector<Attribute> result = new Vector<Attribute>();
 		try {
 			PreparedStatement sqlGetRoomAttributes = Database
 					.prepareStatement(sqlGetAttributesRoom);

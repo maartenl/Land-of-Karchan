@@ -40,7 +40,7 @@ import mmud.database.Database;
 public class GuildFactory
 {
 
-	private static TreeMap theGuilds = new TreeMap();
+	private static TreeMap<String, Guild> theGuilds = new TreeMap<String, Guild>();
 
 	/**
 	 * Default Constructor privatised.
@@ -86,6 +86,6 @@ public class GuildFactory
 	 */
 	public static void init()
 	{
-		theGuilds = new TreeMap();
+		theGuilds = new TreeMap<String, Guild>();
 	}
 }

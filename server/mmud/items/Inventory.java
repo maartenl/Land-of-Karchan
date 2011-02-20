@@ -38,7 +38,7 @@ import mmud.database.MudDatabaseException;
  */
 public class Inventory
 {
-	private final Vector theItems;
+	private final Vector<Item> theItems;
 
 	/**
 	 * Creates an inventory object with an empty list.
@@ -46,7 +46,7 @@ public class Inventory
 	public Inventory()
 	{
 		Logger.getLogger("mmud").finer("");
-		theItems = new Vector();
+		theItems = new Vector<Item>();
 	}
 
 	/**

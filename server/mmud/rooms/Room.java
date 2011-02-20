@@ -66,7 +66,7 @@ public class Room implements Executable, AttributeContainer
 	private String theTitle;
 	private String theDescription;
 	private int intsouth, intnorth, inteast, intwest, intup, intdown;
-	private final TreeMap theAttributes = new TreeMap();
+	private final TreeMap<String, Attribute> theAttributes = new TreeMap<String, Attribute>();
 	private String thePicture;
 
 	/**

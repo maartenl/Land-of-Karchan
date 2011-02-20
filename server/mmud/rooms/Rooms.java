@@ -43,7 +43,7 @@ import simkin.MethodNotSupportedException;
  */
 public final class Rooms implements Executable
 {
-	private static Vector theRooms = new Vector();
+	private static Vector<Room> theRooms = new Vector<Room>();
 
 	public static Rooms create()
 	{
@@ -75,7 +75,7 @@ public final class Rooms implements Executable
 	 */
 	public static void init()
 	{
-		theRooms = new Vector();
+		theRooms = new Vector<Room>();
 	}
 
 	/**

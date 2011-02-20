@@ -784,11 +784,11 @@ public class Database
 	 * 
 	 * @return Vector containing all currently active persons in the game.
 	 */
-	public static Vector getPersons() throws MudException
+	public static Vector<Person> getPersons() throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 
-		Vector myVector = new Vector(50);
+		Vector<Person> myVector = new Vector<Person>(50);
 		ResultSet res;
 		try
 		{
@@ -798,7 +798,7 @@ public class Database
 			if (res == null)
 			{
 				Logger.getLogger("mmud").info("resultset null");
-				return new Vector();
+				return new Vector<Person>();
 			}
 			while (res.next())
 			{
@@ -1129,11 +1129,11 @@ public class Database
 	 *         special UserCommandInfo class.
 	 * @see mmud.UserCommandInfo
 	 */
-	public static Collection getUserCommands() throws MudDatabaseException
+	public static Vector<UserCommandInfo> getUserCommands() throws MudDatabaseException
 	{
 		Logger.getLogger("mmud").finer("");
 
-		Vector myResult = new Vector(25);
+		Vector<UserCommandInfo> myResult = new Vector<UserCommandInfo>(25);
 		ResultSet res;
 		try
 		{
@@ -1897,14 +1897,14 @@ public class Database
 	 * @throws MudException
 	 *             if there is a problem determining guildranks.
 	 */
-	public static TreeMap getGuildRanks(Guild aGuild) throws MudException
+	public static TreeMap<Integer, GuildRank> getGuildRanks(Guild aGuild) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aGuild == null)
 		{
 			throw new MudDatabaseException("guild was null.");
 		}
-		TreeMap result = new TreeMap();
+		TreeMap<Integer, GuildRank> result = new TreeMap<Integer, GuildRank>();
 		ResultSet res;
 		try
 		{
@@ -2011,14 +2011,14 @@ public class Database
 	 * @throws MudException
 	 *             if there is a problem determining the list of ignores.
 	 */
-	public static TreeMap getIgnoreList(User aUser) throws MudException
+	public static TreeMap<String, String> getIgnoreList(User aUser) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aUser == null)
 		{
 			throw new MudDatabaseException("user was null.");
 		}
-		TreeMap result = new TreeMap();
+		TreeMap<String, String> result = new TreeMap<String, String>();
 		ResultSet res;
 		try
 		{
@@ -2142,7 +2142,7 @@ public class Database
 	}
 
 	/**
-	 * returns an vector of Strings that contain the members of a guild.
+	 * returns an vector of Persons that contain the members of a guild.
 	 * 
 	 * @return String array of guild members.
 	 * @param aGuild
@@ -2150,14 +2150,14 @@ public class Database
 	 * @throws MudException
 	 *             if something goes wrong.
 	 */
-	public static Vector getGuildMembers(Guild aGuild) throws MudException
+	public static Vector<Person> getGuildMembers(Guild aGuild) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aGuild == null)
 		{
 			throw new MudDatabaseException("guild was null.");
 		}
-		Vector list = new Vector();
+		Vector<Person> list = new Vector<Person>();
 		ResultSet res;
 		try
 		{
@@ -2192,14 +2192,14 @@ public class Database
 	 * @throws MudException
 	 *             if something goes wrong.
 	 */
-	public static Vector getGuildHopefuls(Guild aGuild) throws MudException
+	public static Vector<String> getGuildHopefuls(Guild aGuild) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if (aGuild == null)
 		{
 			throw new MudDatabaseException("guild was null.");
 		}
-		Vector list = new Vector();
+		Vector<String> list = new Vector<String>();
 		ResultSet res;
 		try
 		{

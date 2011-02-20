@@ -69,7 +69,7 @@ public class User extends mmud.characters.Person
 	private Calendar rightNow;
 	private boolean thePkill;
 	private String theGuild;
-	private TreeMap theIsBeingIgnoredBy;
+	private TreeMap<String, String> theIsBeingIgnoredBy;
 
 	/**
 	 * create an instance of User, based on Database data.
@@ -746,7 +746,7 @@ public class User extends mmud.characters.Person
 	 * @param aList
 	 *            the list of persons to be ignored.
 	 */
-	public void setIgnoreList(TreeMap aList)
+	public void setIgnoreList(TreeMap<String, String> aList)
 	{
 		theIsBeingIgnoredBy = aList;
 	}

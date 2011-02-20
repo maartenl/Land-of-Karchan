@@ -37,7 +37,7 @@ import mmud.database.MudDatabaseException;
  */
 public final class ItemDefs 
 {
-	private static Vector theItemDefs = new Vector();
+	private static Vector<ItemDef> theItemDefs = new Vector<ItemDef>();
 
 	/**
 	 * Create a new itemdefs object.
@@ -63,7 +63,7 @@ public final class ItemDefs
 	 */
 	public static void init()
 	{
-		theItemDefs = new Vector();
+		theItemDefs = new Vector<ItemDef>();
 	}
 
 	/**

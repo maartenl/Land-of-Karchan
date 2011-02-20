@@ -519,6 +519,14 @@ public class MudSocket implements Runnable
 						+ "</FRAMESET>\r\n");
 				break;
 			}
+			case 2:
+			{
+				returnStuff.append("sessionpassword="
+						+ myUser.getSessionPassword() + "\n");
+				returnStuff.append(gameMain(myUser,
+						"me has entered the game..."));
+				break;
+			}
 			default:
 			{
 				Logger.getLogger("mmud").info(
@@ -655,9 +663,12 @@ public class MudSocket implements Runnable
 			myUser.setFrames(aFrames);
 			StringBuffer returnStuff;
 			returnStuff = new StringBuffer(gameMain(myUser, aCommand));
-			returnStuff.append("<HR><FONT Size=1><DIV ALIGN=right>");
-			returnStuff.append(Constants.mudcopyright);
-			returnStuff.append("<DIV ALIGN=left></FONT>");
+			if (myUser.getFrames() != 2)
+			{
+				returnStuff.append("<HR><FONT Size=1><DIV ALIGN=right>");
+				returnStuff.append(Constants.mudcopyright);
+				returnStuff.append("<DIV ALIGN=left></FONT>");
+			}
 			Logger.getLogger("mmud").finest("returns: " + returnStuff);
 			return returnStuff.toString();
 		} catch (PersonException e)
@@ -770,7 +781,7 @@ public class MudSocket implements Runnable
 		if (result == null)
 		{
 			returnStuff.append(aUser.getRoom().getDescription(aUser));
-			returnStuff.append(aUser.printForm());
+			if (aUser.getFrames() != 2) {returnStuff.append(aUser.printForm());}
 			returnStuff.append(aUser.readLog());
 		} else
 		{
