@@ -198,6 +198,11 @@ public final class Constants
 	 */
 	public final static boolean EVENTS_ACTIVE = true;
 
+	/**
+	 * The default is that Karn is the only one that has debugging on all the time.
+	 */
+	public final static String DEBUG_USERS = ",Karn,";
+
 	private static int theThreadsProcessed = 0;
 
 	private static int theThreadsRunning = 1;
@@ -282,6 +287,11 @@ public final class Constants
 	 * root logger.
 	 */
 	public final static Logger logger = Logger.getLogger("mmud");
+
+	/**
+	 * the logger for debugging specific players. The log level is set to FINEST.
+	 */
+	public final static Logger dlogger = Logger.getLogger("mmud_debug");
 
 	// the defaults
 	public final static boolean SHUTDOWN = false;
@@ -1147,6 +1157,11 @@ public final class Constants
 			events_active = events_active_string.equalsIgnoreCase("true");
 		}
 
+		if (theValues.getProperty("debug_users") != null)
+		{
+			debug_users = theValues.getProperty("debug_users");
+		}
+
 		try
 		{
 			mudportnumber = Integer.parseInt(theValues
@@ -1215,10 +1230,12 @@ public final class Constants
 		Handler[] handlers = Logger.getLogger("").getHandlers();
 		for (int index = 0; index < handlers.length; index++)
 		{
-			handlers[index].setLevel(logLevel);
+			handlers[index].setLevel(Level.FINEST); //logLevel);
 		}
 		logger.setLevel(logLevel);
+		dlogger.setLevel(Level.FINEST);
 		logger.info("Logging level set to " + level);
+		dlogger.info("Logging level set to FINEST.");
 		logger.finest("\nsevere :" + logger.isLoggable(Level.SEVERE)
 				+ "\nwarning:" + logger.isLoggable(Level.WARNING)
 				+ "\nconfig :" + logger.isLoggable(Level.CONFIG) + "\nfinest :"
@@ -1226,6 +1243,13 @@ public final class Constants
 				+ logger.isLoggable(Level.FINE) + "\nfiner  :"
 				+ logger.isLoggable(Level.FINER) + "\nfinest :"
 				+ logger.isLoggable(Level.FINEST));
+		dlogger.finest("\nsevere :" + dlogger.isLoggable(Level.SEVERE)
+				+ "\nwarning:" + dlogger.isLoggable(Level.WARNING)
+				+ "\nconfig :" + dlogger.isLoggable(Level.CONFIG) + "\nfinest :"
+				+ dlogger.isLoggable(Level.INFO) + "\nfine   :"
+				+ dlogger.isLoggable(Level.FINE) + "\nfiner  :"
+				+ dlogger.isLoggable(Level.FINER) + "\nfinest :"
+				+ dlogger.isLoggable(Level.FINEST));
 	}
 
 	/**
@@ -1270,6 +1294,18 @@ public final class Constants
 	 * events are triggered, false means events are not triggered.
 	 */
 	public static boolean events_active = EVENTS_ACTIVE;
+
+	/**
+	 * Indicates which users are to have full debugging on.
+	 */
+	public static String debug_users = DEBUG_USERS;
+	
+	public static boolean debugOn(String name)
+	{
+		return debug_users.contains("," + name + ",") ||
+			debug_users.startsWith(name) ||
+			debug_users.endsWith(name);
+	}
 
 	/**
 	 * Returns the offline description. Either this is read from file, or it is

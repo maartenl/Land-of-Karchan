@@ -411,9 +411,8 @@ public class MudSocket implements Runnable
 	 * @param aFrames
 	 *            the user interface to use
 	 *            <ul>
-	 *            <li>0 = single window <li>1 = multiple windows (frames) <li>2
-	 *            = multiple windows with serverpush and javascript and all
-	 *            sorts of other stuff.
+	 *            <li>0 = single window </li><li>1 = multiple windows (frames) </li><li>2
+	 *            = drupal</li>
 	 *            </ul>
 	 * @return String containing the text to be sent to the user
 	 * @throws MudException
@@ -426,6 +425,13 @@ public class MudSocket implements Runnable
 				"aName=" + aName + ",aPassword=" + aPassword + ",aAddress="
 						+ aAddress + ",aCookie=" + aCookie + ",aFrames="
 						+ aFrames);
+		if (Constants.debugOn(aName))
+		{
+			Logger.getLogger("mmud_debug").finest(
+				"enterMud aName=" + aName + ",aPassword=" + aPassword + ",aAddress="
+						+ aAddress + ",aCookie=" + aCookie + ",aFrames="
+						+ aFrames);
+		}
 		if ((aAddress == null) || ("".equals(aAddress.trim())))
 		{
 			throw new MudException("address unknown");
@@ -437,6 +443,7 @@ public class MudSocket implements Runnable
 				String myOfflineString = isOffline();
 				if (myOfflineString != null)
 				{
+					if (aFrames == 2) {return "Karchan is offline.";}
 					return myOfflineString;
 				}
 			} catch (IOException e)
@@ -446,22 +453,26 @@ public class MudSocket implements Runnable
 			if (!aName.matches("[A-Z|_|a-z]{3,}"))
 			{
 				Logger.getLogger("mmud").info("invalid name " + aName);
+				if (aFrames == 2) {return "Name contains illegal characters.";}
 				return Constants.logoninputerrormessage;
 			}
 			if (aPassword.length() < 5)
 			{
 				Logger.getLogger("mmud")
 						.info("password too short " + aPassword);
+				if (aFrames == 2) {return "Password needs at least 5 characters.";}
 				return Constants.logoninputerrormessage;
 			}
 			if (Database.isUserBanned(aName, aAddress))
 			{
 				Logger.getLogger("mmud").info(
 						"thrown " + Constants.USERBANNEDERROR);
+				if (aFrames == 2) {return "Player is banned from playing.";}
 				throw new MudException(Constants.USERBANNEDERROR);
 			}
 			if (!Database.existsUser(aName))
 			{
+				if (aFrames == 2) {return "Player not found.";}
 				throw new UserNotFoundException();
 			}
 			User myUser = Persons.activateUser(aName, aPassword, aAddress,
@@ -523,8 +534,7 @@ public class MudSocket implements Runnable
 			{
 				returnStuff.append("sessionpassword="
 						+ myUser.getSessionPassword() + "\n");
-				returnStuff.append(gameMain(myUser,
-						"me has entered the game..."));
+				returnStuff.append("Ok");
 				break;
 			}
 			default:
@@ -534,10 +544,18 @@ public class MudSocket implements Runnable
 				throw new InvalidFrameException();
 			}
 			}
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").finest("returns: [" + returnStuff + "]");
+			}
 			Logger.getLogger("mmud").finest("returns: [" + returnStuff + "]");
 			return returnStuff.toString();
 		} catch (UserAlreadyActiveException e)
 		{
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").throwing(this.getClass().getName(), "enterMud", e);
+			}
 			// already active user wishes to relogin
 			User user = (User) Persons.retrievePerson(aName);
 			String returnStuff = reloginMud(user, aName, aPassword, aFrames);
@@ -546,6 +564,10 @@ public class MudSocket implements Runnable
 			return returnStuff;
 		} catch (UserNotFoundException e)
 		{
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").throwing(this.getClass().getName(), "enterMud", e);
+			}
 			// new user
 			String myString = "";
 			try
@@ -556,14 +578,23 @@ public class MudSocket implements Runnable
 				throw new MudException(f.getMessage());
 			}
 			Database.writeLog(aName, "unknown character.");
+			if (aFrames == 2) {return "Player not found.";}
 			return myString;
 		} catch (PersonException e)
 		{
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").throwing(this.getClass().getName(), "enterMud", e);
+			}
 			Logger.getLogger("mmud").log(Level.WARNING, "Exception detected!",
 					e);
 			return Database.getErrorMessage(e);
 		} catch (MudException e)
 		{
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").throwing(this.getClass().getName(), "enterMud", e);
+			}
 			Logger.getLogger("mmud").log(Level.WARNING, "Exception detected!",
 					e);
 			return Database.getErrorMessage(e);
@@ -600,6 +631,10 @@ public class MudSocket implements Runnable
 	private String executeMud(String aName, String aAddress, String aCookie,
 			int aFrames, String aCommand)
 	{
+		if (Constants.debugOn(aName))
+		{
+			Logger.getLogger("mmud_debug").finest("executeMud [" + aCommand + "]");
+		}
 		Logger.getLogger("mmud").finer(
 				"aName=" + aName + ",aAddress=" + aAddress + ",aCookie="
 						+ aCookie + ",aFrames=" + aFrames + ",aCommand="
@@ -743,12 +778,25 @@ public class MudSocket implements Runnable
 			returnStuff.append("</FRAMESET>\r\n");
 			break;
 		}
+		case 2:
+		{
+			returnStuff.append("Player is already active.");
+			break;
+		}
 		default:
 		{
+			if (Constants.debugOn(aName))
+			{
+				Logger.getLogger("mmud_debug").logp(Level.FINEST, this.getClass().getName(), "reloginMud", "Invalid frame " + aFrames);
+			}
 			throw new MudException(Constants.INVALIDFRAMEERROR);
 		}
 		}
 		Logger.getLogger("mmud").finer("returns: [" + returnStuff + "]");
+		if (Constants.debugOn(aName))
+		{
+			Logger.getLogger("mmud_debug").logp(Level.FINEST, this.getClass().getName(), "reloginMud", "returns: [" + returnStuff + "]");
+		}
 		return returnStuff.toString();
 	}
 
