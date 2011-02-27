@@ -818,6 +818,7 @@ public class MudSocket implements Runnable
 				"aUser=" + aUser.getName() + ",aCommand=" + aCommand);
 		StringBuffer returnStuff = new StringBuffer("");
 		String result = null;
+		Database.writeCommandLog(aUser.getName(), aCommand);
 		try
 		{
 			result = aUser.runCommand(aCommand);

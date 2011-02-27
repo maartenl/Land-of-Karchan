@@ -116,6 +116,7 @@ public class Database
 	private static String sqlGetBan2String = "select count(name) as count from mm_unbantable where name = ?";
 	private static String sqlGetBan3String = "select count(address) as count from mm_bantable where ? like address";
 	private static String sqlGetBan4String = "select count(*) as count from mm_bannednamestable where name = ?";
+	private static String sqlWriteCommandLogString = "insert into mm_commandlog (name, command) values(?, ?)";
 	private static String sqlWriteLogString = "insert into mm_log (name, message) values(?, ?)";
 	private static String sqlWriteLog2String = "insert into mm_log (name, message, addendum) values(?, ?, ?)";
 	private static String sqlGetHelpString = "select * from mm_help where command = ?";
@@ -2279,6 +2280,41 @@ public class Database
 			PreparedStatement sqlWriteLog = prepareStatement(sqlWriteLogString);
 			sqlWriteLog.setString(1, aName);
 			sqlWriteLog.setString(2, aMessage);
+			int res = sqlWriteLog.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				// TOBEDONE
+			}
+			sqlWriteLog.close();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		} catch (MudDatabaseException e2)
+		{
+			e2.printStackTrace();
+		}
+	}
+
+	/**
+	 * write a command to the database. This log facility is primarily used
+	 * to keep a chatrecord.
+	 * 
+	 * @param aName
+	 *            the name of the person to be inscribed in the log table
+	 * @param aCommand
+	 *            the command that is to be executed written in the log, may not be larger than
+	 *            255 characters.
+	 */
+	public static void writeCommandLog(String aName, String aCommand)
+	{
+		Logger.getLogger("mmud").finer("");
+
+		try
+		{
+			PreparedStatement sqlWriteLog = prepareStatement(sqlWriteCommandLogString);
+			sqlWriteLog.setString(1, aName);
+			sqlWriteLog.setString(2, aCommand);
 			int res = sqlWriteLog.executeUpdate();
 			if (res != 1)
 			{

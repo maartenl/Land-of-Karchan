@@ -587,10 +587,6 @@ public class User extends mmud.characters.Person
 	@Override
 	public String readLog()
 	{
-		if (getFrames() == 2)
-		{
-			return "";
-		}
 		return super.readLog();
 	}
 

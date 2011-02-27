@@ -452,3 +452,12 @@ CURRENT_TIMESTAMP,
   PRIMARY KEY  (`creation`,`name`,`message`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+drop table mm_commandlog;
+create table mm_commandlog (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `name` varchar(20) NOT NULL,
+  `command` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
