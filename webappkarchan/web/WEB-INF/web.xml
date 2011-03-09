@@ -12,6 +12,15 @@
         <param-name>mudhost</param-name>
         <param-value>localhost</param-value>
     </context-param>
+    <servlet>
+        <servlet-name>ServletAdaptor</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletAdaptor</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
