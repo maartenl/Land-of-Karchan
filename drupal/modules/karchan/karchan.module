@@ -1,0 +1,105 @@
+<?php
+// $Id: webform.module,v 1.279 2011/01/12 07:09:54 quicksketch Exp $
+
+/**
+ * This module provides some ways to get things moving along with karchan.
+ *
+ * @author Maarten van Leunen <maarten_l@yahoo.com>
+ */
+
+require("mudnewchar.php");
+require("mudlogon.php");
+
+/**
+* Display help and module information
+* @param path which path of the site we're displaying help
+* @param arg array that holds the current path as would be returned from arg() function
+* @return help text for the path
+*/
+function karchan_help($path, $arg) {
+    _karchan_log("karchan_help");
+    $output = '';
+    // $output = '<p>'.  t("Karchan module is a simple module for interfacing with the game and game database.");
+    //    The line above outputs in ALL admin/module pages
+    switch ($path) {
+        case "admin/help/karchan":
+        $output = '<p>'.  t("Karchan module is a simple module for interfacing with the game and game database.") .'</p>';
+            break;
+    }
+    return $output;
+} // function karchan_help
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function karchan_form_alter(&$form, &$form_state, $form_id) {
+  _karchan_log("karchan_form_alter ". $form_id);
+  // Affect all Webform forms.
+  //  if (substr($form_id, 0, 20) == 'webform_client_form_') {
+  if ($form_id == 'webform_client_form_19') {
+    // Add the submit handler after the existing Webform submit handler,
+    // but before the second Webform handler. Pop off the first one and add
+    // ours second.
+    $first = array_shift($form['#submit']);
+    array_unshift($form['#submit'], $first, 'karchan_mudlogon');
+  }
+  if ($form_id == 'webform_client_form_18') {
+    // Add the submit handler after the existing Webform submit handler,
+    // but before the second Webform handler. Pop off the first one and add
+    // ours second.
+    $first = array_shift($form['#submit']);
+    array_unshift($form['#submit'], $first, 'karchan_mudnewchar');
+  }
+}
+
+/**
+ * FAPI #submit handler. Execute PHP submit handling.
+ * Takes care of creating a new character.
+ */
+function karchan_mudnewchar($form, &$form_state) {
+  $node = node_load($form_state['values']['details']['nid']);
+  $message = "karchan_mudnewchar ";
+  // process $form_state['values']
+  foreach ($form_state['values']['submitted_tree'] as $key => $value)
+  {
+    $message = $message . " $key=$value";
+  }
+  _karchan_log($message);
+  $my_form = $form_state['values']['submitted_tree'];
+  mudnewchar($my_form['fictional_name'], 
+  $my_form['password'], 
+  $my_form['password2'], 
+  $my_form['title_except_name'], 
+  $my_form['real_name'], 
+  $my_form['email'], 
+  $my_form['race'], 
+  $my_form['sex'], 
+  $my_form['age'], 
+  $my_form['length'], 
+  $my_form['width'], 
+  $my_form['complexion'], 
+  $my_form['eyes'], 
+  $my_form['face'], 
+  $my_form['hair'], 
+  $my_form['beard'], 
+  $my_form['arms'], 
+  $my_form['legs']);
+}
+
+/**
+ * FAPI #submit handler. Execute PHP submit handling.
+ * Takes care of logging a person into the game.
+ */
+function karchan_mudlogon($form, &$form_state) {
+  $node = node_load($form_state['values']['details']['nid']);
+  $message = "karchan_mudlogon ";
+  // process $form_state['values']
+  foreach ($form_state['values']['submitted_tree'] as $key => $value)
+  {
+    $message = $message . " $key=$value";
+  }
+  _karchan_log($message);
+  $my_form = $form_state['values']['submitted_tree'];
+  mudlogin($my_form['name'], $my_form['password'], $my_form['frames']);
+}
+

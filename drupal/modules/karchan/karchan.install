@@ -1,0 +1,7 @@
+<?php
+// $Id
+
+/**
+ * @file
+ *   Karchan module install/schema hooks.
+ */
