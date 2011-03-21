@@ -312,6 +312,8 @@ h1#site-name {
 }
 #site-name a {
   font-weight: normal;
+  /* Maarten's stuff */
+  font-family: 'GabrielleRegular';
 }
 #site-slogan {
   font-size: 0.929em;
@@ -334,6 +336,31 @@ h1#site-name {
   margin: 0;
   padding: 0;
 }
+/* Maarten's Stuff */
+a.karchanbutton {
+  font-family: 'GabrielleRegular';
+  line-height: 18px;
+  text-decoration: none;
+  height: 34px;
+  display: block;
+  color: #FFFFFF;
+  background: transparent url('/images/gif/webpic/button.gif') no-repeat scroll top right;
+  font-weight: bold;
+}
+a.karchanbutton span {
+  display: block;
+  padding: 5px 0px 5px 18px;
+  font-size: 2.0em;
+  font-weight: 400;
+}
+a.karchanbutton:active {
+    color: yellow;
+    outline: none; /* hide dotted outline in Firefox */
+}
+
+a.karchanbutton:active span {
+} 
+/* end Maarten's stuff */
 .region-header .block li {
   list-style: none;
   list-style-image: none;
@@ -468,6 +495,8 @@ h1#site-name {
   font-size: 0.929em;
   margin: 0;
   padding: 0 15px;
+  /* Maarten's Stuff */
+  font-family: 'GabrielleRegular';
 }
 #main-menu-links li {
   float: left; /* LTR */
@@ -1654,4 +1683,12 @@ div.admin-panel .description {
 }
 #footer-wrapper .poll .bar .foreground {
   background-color: #ddd;
+}
+/* Maarten's stuff */
+@font-face {
+	font-family: 'GabrielleRegular';
+	src: url('/themes/bartik/fonts/gabrielle-webfont.eot');
+	src: local('☺'), url('/themes/bartik/fonts/gabrielle-webfont.woff') format('woff'), url('/themes/bartik/fonts/gabrielle-webfont.ttf') format('truetype'), url('/themes/bartik/fonts/gabrielle-webfont.svg#webfontY3fz51hm') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
