@@ -1,0 +1,6 @@
+Karchan 1.x Changelog
+---------------------
+
+- created appropriate files
+
+$Id$
