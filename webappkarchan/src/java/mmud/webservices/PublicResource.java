@@ -1,8 +1,31 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+-----------------------------------------------------------------------
+svninfo: $Id: charactersheets.php 1078 2006-01-15 09:25:36Z maartenl $
+Maarten's Mud, WWW-based MUD using MYSQL
+Copyright (C) 1998  Maarten van Leunen
 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Maarten van Leunen
+Regent Bannenbergstraat 44
+5272 BR Sint Michielsgestel
+Nederland
+Europe
+maarten_l@yahoo.com
+-----------------------------------------------------------------------
+*/
 package mmud.webservices;
 
 import javax.naming.NamingException;
@@ -20,18 +43,27 @@ import javax.ws.rs.Produces;
 import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
- * The REST service will be hosted at the URI path "/karchan/resources/admin"
+ * The REST service will be hosted at the URI path "/karchan/resources/public"
  * @author maartenl
  */
 @Path("public")
 @Consumes("application/json")
 @Produces("application/json")
 public class PublicResource {
+    public static final String CHARACTERSHEETS_SQL = "select mm_usertable.name from characterinfo, mm_usertable where mm_usertable.name=characterinfo.name order by mm_usertable.name";
+    public static final String CHARACTERSHEET_SQL = "select mm_usertable.name, title, sex, concat(age, if(length = \'none\', \'\', concat(\', \',length)),if(width = \'none\', \'\', concat(\', \',width)), if(complexion = \'none\', \'\', concat(\', \',complexion)),        if(eyes = \'none\', \'\', concat(\', \',eyes)),        if(face = \'none\', \'\', concat(\', \',face)),        if(hair = \'none\', \'\', concat(\', \',hair)),        if(beard = \'none\', \'\', concat(\', \',beard)),        if(arm = \'none\', \'\', concat(\', \',arm)),        if(leg = \'none\', \'\', concat(\', \',leg)),        \' \', sex, \' \', race) as description,         concat(\'<IMG SRC=\"\',imageurl,\'\">\') as imageurl,         guild,   homepageurl,         dateofbirth, cityofbirth, mm_usertable.lastlogin, storyline         from mm_usertable, characterinfo         where mm_usertable.name = ? and mm_usertable.name = characterinfo.name";
+    public static final String FAMILYVALUES_CHARACTERSHEET_SQL = "select familyvalues.description, toname,\t\tcharacterinfo.name \t\tfrom family, familyvalues, characterinfo \t\twhere family.name = ? and \t\tfamily.description = familyvalues.id and\t\tcharacterinfo.name = family.toname";
+    public static final String FORTUNES_SQL = "select name, floor(copper/100) as gold, floor((copper % 100)/10) as silver, copper % 10 as copper\tfrom mm_usertable\twhere god<=1\torder by gold desc, silver desc, copper desc, name asc\tlimit 100";
+    public static final String GUILDS_SQL = "select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 from mm_guilds order by title";
+    public static final String NEWS_SQL = "select mm_boardmessages.name, date_format(posttime, \"%W, %M %e %Y, %H:%i\") as posttime, message from mm_boardmessages, mm_boards where boardid=id and\tmm_boards.name = \"logonmessage\" order by mm_boardmessages.posttime desc limit 10";
+    public static final String STATUS_SQL = "select mm_admin.name, title from mm_admin, mm_usertable where mm_admin.name = mm_usertable.name and mm_admin.validuntil > now()";
+    public static final String WHO_SQL = "select name, mm_usertable.title, sleep, \tfloor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,\t((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec,\tif (mm_area.area <> \"Main\", concat(\" in \" , mm_area.shortdesc), \"\") as area\tfrom mm_usertable, mm_rooms, mm_area \twhere god<=1 and active=1 and mm_rooms.id = mm_usertable.room and\tmm_rooms.area = mm_area.area";
     @Context
     private UriInfo context;
 
@@ -94,7 +126,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select name, mm_usertable.title, sleep, 	floor((unix_timestamp(NOW())-unix_timestamp(lastlogin)) / 60) as min,	((unix_timestamp(NOW())-unix_timestamp(lastlogin)) % 60) as sec,	if (mm_area.area <> \"Main\", concat(\" in \" , mm_area.shortdesc), \"\") as area	from mm_usertable, mm_rooms, mm_area 	where god<=1 and active=1 and mm_rooms.id = mm_usertable.room and	mm_rooms.area = mm_area.area");
+            stmt=con.prepareStatement(WHO_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -143,7 +175,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select mm_boardmessages.name, date_format(posttime, \"%W, %M %e %Y, %H:%i\") as posttime, message from mm_boardmessages, mm_boards where boardid=id and	mm_boards.name = \"logonmessage\" order by mm_boardmessages.posttime desc limit 10");
+            stmt=con.prepareStatement(NEWS_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -188,7 +220,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select mm_admin.name, title from mm_admin, mm_usertable where mm_admin.name = mm_usertable.name and mm_admin.validuntil > now()");
+            stmt=con.prepareStatement(STATUS_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -233,7 +265,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select mm_usertable.name from characterinfo, mm_usertable where mm_usertable.name=characterinfo.name order by mm_usertable.name");
+            stmt=con.prepareStatement(CHARACTERSHEETS_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -278,7 +310,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select name, floor(copper/100) as gold, floor((copper % 100)/10) as silver, copper % 10 as copper	from mm_usertable	where god<=1	order by gold desc, silver desc, copper desc, name asc	limit 100");
+            stmt=con.prepareStatement(FORTUNES_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -324,7 +356,7 @@ public class PublicResource {
 
             con = getDatabaseConnection();
 
-            stmt=con.prepareStatement("select *, date_format(creation, \"%Y-%m-%d %T\") as creation2 from mm_guilds order by title");
+            stmt=con.prepareStatement(GUILDS_SQL);
             rst=stmt.executeQuery();
             while(rst.next())
             {
@@ -355,6 +387,64 @@ public class PublicResource {
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.exiting(this.getClass().getName(), "guilds");
+        return res;
+    }
+
+    /**
+     * Returns all the info of a character.
+     */
+    @GET
+    @Path("charactersheets/{name}")
+    public JSONObject charactersheet(@PathParam("name") String name)
+    {
+        itsLog.entering(this.getClass().getName(), "charactersheet");
+        Connection con=null;
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        JSONObject res = new JSONObject();
+        try
+        {
+
+            con = getDatabaseConnection();
+
+            stmt=con.prepareStatement(CHARACTERSHEET_SQL);
+            stmt.setString(1, name);
+            rst=stmt.executeQuery();
+            while(rst.next())
+            {
+                res.put("name", rst.getString("name"));
+                res.put("title", rst.getString("title"));
+                res.put("sex", rst.getString("sex"));
+                res.put("description", rst.getString("description"));
+                res.put("imageurl", rst.getString("imageurl"));
+                res.put("guild", rst.getString("guild"));
+                res.put("homepageurl", rst.getString("homepageurl"));
+                res.put("dateofbirth", rst.getString("dateofbirth"));
+                res.put("cityofbirth", rst.getString("cityofbirth"));
+                res.put("lastlogin", rst.getString("lastlogin"));
+                res.put("storyline", rst.getString("storyline"));
+            }
+            stmt=con.prepareStatement(FAMILYVALUES_CHARACTERSHEET_SQL);
+            stmt.setString(1, name);
+            rst=stmt.executeQuery();
+            while(rst.next())
+            {
+            }
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "charactersheet", e);
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+            itsLog.finest(this.getClass().getName() + ": connection with database closed.");
+        }
+
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        itsLog.exiting(this.getClass().getName(), "charactersheet");
         return res;
     }
 
