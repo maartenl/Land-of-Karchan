@@ -310,6 +310,10 @@ ul.tips {
 h1#site-name {
   margin: 0;
 }
+/* Maarten's stuff */
+#karchangame_width {
+  width: 100%;
+}
 #site-name a {
   font-weight: normal;
   /* Maarten's stuff */
