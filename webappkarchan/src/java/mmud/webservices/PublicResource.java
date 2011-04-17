@@ -49,6 +49,9 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
+ * This REST service is used for all public access to specific resources
+ * of the land of karchan. To think about the guild list, characterlist
+ * and the like.
  * The REST service will be hosted at the URI path "/karchan/resources/public"
  * @author maartenl
  */
