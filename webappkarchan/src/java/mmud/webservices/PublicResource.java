@@ -44,7 +44,9 @@ import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -160,6 +162,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "who", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -206,6 +209,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "news", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -250,6 +254,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "status", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -295,6 +300,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "charactersheets", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -342,6 +348,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "fortunes", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -393,6 +400,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "guilds", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
@@ -458,6 +466,7 @@ public class PublicResource {
         catch(Exception e)
         {
             itsLog.throwing(this.getClass().getName(), "charactersheet", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         finally
         {
