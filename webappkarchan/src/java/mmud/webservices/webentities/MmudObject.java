@@ -27,6 +27,8 @@ maarten_l@yahoo.com
 
 package mmud.webservices.webentities;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author maartenl
