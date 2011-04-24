@@ -70,9 +70,11 @@ public class PrivateResource {
 
     public static final String GETMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_mailtable.id = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ?";
 
-    public static final String NEWMAIL_SQL = "insert into mm_mailtable (name, toname, subject, body) values(?, ?, ?, ?)";
+    public static final String NEWMAIL_SQL = "insert into mm_mailtable (name, toname, subject, body, whensent, newmail, haveread) values(?, ?, ?, ?, now(), 1, 0)";
 
-    public static final String AUTHORIZE_SQL = "select 1 from mm_usertable where name = ? and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ?";
+    public static final String AUTHORIZE_SQL = "select 1 from mm_usertable where name = ? and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and (god = 0 or god = 1)";
+
+    public static final String FINDUSER_SQL = "select 1 from mm_usertable where name = ? and (god = 0 or god = 1)";
 
     @Context
     private UriInfo context;
@@ -114,7 +116,6 @@ public class PrivateResource {
         res.setErrorMessage(null);
         res.setSuccess(true);
         res.setData("Hello, world!");
-        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.exiting(this.getClass().getName(), "helloWorld");
         return res;
     }
@@ -136,7 +137,6 @@ public class PrivateResource {
         Connection con=null;
         ResultSet rst=null;
         PreparedStatement stmt=null;
-        //JSONArray res = new JSONArray();
         List<MmudMail> res = new ArrayList<MmudMail>();
         try
         {
@@ -154,17 +154,6 @@ public class PrivateResource {
             {
                 MmudMail mail = new MmudMail(null, rst.getString("toname"), rst.getString("name"), rst.getString("subject"), rst.getString("body"),
                         rst.getLong("id"), rst.getBoolean("haveread"), rst.getBoolean("newmail"), rst.getDate("whensent"));
-/*
-                JSONObject myJSONObject = new JSONObject();
-                myJSONObject.put("id", rst.getInt("id"));
-                myJSONObject.put("name", rst.getString("name"));
-                myJSONObject.put("toname", rst.getString("toname"));
-                myJSONObject.put("haveread", rst.getBoolean("haveread"));
-                myJSONObject.put("newmail", rst.getBoolean("newmail"));
-                myJSONObject.put("whensent", rst.getDate("whensent"));
-                myJSONObject.put("subject", rst.getString("subject"));
-                myJSONObject.put("body", rst.getString("body"));
-                res.put(myJSONObject);*/
                 res.add(mail);
             }
         }
@@ -186,7 +175,6 @@ public class PrivateResource {
             itsLog.finest(this.getClass().getName() + ": connection with database closed.");
         }
 
-        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.exiting(this.getClass().getName(), "listMail");
         return res;
     }
@@ -214,15 +202,15 @@ public class PrivateResource {
             con = getDatabaseConnection();
 
             authentication(con, name, lok);
+            verify(con, newMail.getToname());
 
             stmt=con.prepareStatement(NEWMAIL_SQL); // name, toname, subject, body
             stmt.setString(1, name);
             stmt.setString(2, newMail.getToname());
             stmt.setString(3, newMail.getSubject());
             stmt.setString(4, newMail.getBody());
-            itsLog.warning("newMail: " + newMail);
 
-            int result = 1; // stmt.executeUpdate();
+            int result = stmt.executeUpdate();
             if (result != 1)
             {
                 itsLog.severe("Unable to store new mud mail.");
@@ -309,7 +297,6 @@ public class PrivateResource {
             itsLog.finest(this.getClass().getName() + ": connection with database closed.");
         }
 
-        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.exiting(this.getClass().getName(), "getMail");
         return res;
     }
@@ -353,6 +340,52 @@ public class PrivateResource {
             if (!rst.next())
             {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+        }
+        catch(WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "authentication", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            itsLog.finest(this.getClass().getName() + ": resultset/statement with database closed.");
+        }
+    }
+
+    /**
+     * This method should be called to verify that the target of a certain
+     * action is indeed a proper user.
+     * @param con the connection to the database
+     * @param name the name to identify the person
+     * @throws WebApplicationException NOT_FOUND, if the user is either
+     * not found or is not a proper user.
+     * BAD_REQUEST if an unexpected exception crops up or provided info
+     * is really not proper.
+     */
+    private void verify(Connection con, String name)
+    {
+        if (name == null || "".equals(name.trim()))
+        {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        ResultSet rst=null;
+        PreparedStatement stmt=null;
+        try
+        {
+            stmt=con.prepareStatement(FINDUSER_SQL);
+            stmt.setString(1, name);
+            rst=stmt.executeQuery();
+            if (!rst.next())
+            {
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
             }
         }
         catch(WebApplicationException e)
