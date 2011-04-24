@@ -34,6 +34,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -49,7 +51,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import org.codehaus.jettison.json.JSONArray;
+import mmud.webservices.webentities.MmudMail;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
@@ -128,13 +130,14 @@ public class PrivateResource {
      */
     @GET
     @Path("{name}/mail")
-    public JSONArray listMail(@PathParam("name") String name, @QueryParam("offset") int offset, @QueryParam("lok") String lok)
+    public List<MmudMail> listMail(@PathParam("name") String name, @QueryParam("offset") int offset, @QueryParam("lok") String lok)
     {
         itsLog.entering(this.getClass().getName(), "listMail");
         Connection con=null;
         ResultSet rst=null;
         PreparedStatement stmt=null;
-        JSONArray res = new JSONArray();
+        //JSONArray res = new JSONArray();
+        List<MmudMail> res = new ArrayList<MmudMail>();
         try
         {
 
@@ -149,6 +152,9 @@ public class PrivateResource {
             rst=stmt.executeQuery();
             while(rst.next())
             {
+                MmudMail mail = new MmudMail(null, rst.getString("toname"), rst.getString("name"), rst.getString("subject"), rst.getString("body"),
+                        rst.getLong("id"), rst.getBoolean("haveread"), rst.getBoolean("newmail"), rst.getDate("whensent"));
+/*
                 JSONObject myJSONObject = new JSONObject();
                 myJSONObject.put("id", rst.getInt("id"));
                 myJSONObject.put("name", rst.getString("name"));
@@ -158,7 +164,8 @@ public class PrivateResource {
                 myJSONObject.put("whensent", rst.getDate("whensent"));
                 myJSONObject.put("subject", rst.getString("subject"));
                 myJSONObject.put("body", rst.getString("body"));
-                res.put(myJSONObject);
+                res.put(myJSONObject);*/
+                res.add(mail);
             }
         }
         catch(WebApplicationException e)
@@ -194,7 +201,7 @@ public class PrivateResource {
      */
     @POST
     @Path("{name}/mail")
-    public Response newMail(JSONObject newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response newMail(MmudMail newMail, @PathParam("name") String name)
     {
         itsLog.entering(this.getClass().getName(), "newMail");
         Connection con=null;
@@ -202,6 +209,7 @@ public class PrivateResource {
         PreparedStatement stmt=null;
         try
         {
+            String lok = newMail.getLok();
 
             con = getDatabaseConnection();
 
@@ -209,10 +217,12 @@ public class PrivateResource {
 
             stmt=con.prepareStatement(NEWMAIL_SQL); // name, toname, subject, body
             stmt.setString(1, name);
-            stmt.setString(2, newMail.getString("toname"));
-            stmt.setString(3, newMail.getString("subject"));
-            stmt.setString(4, newMail.getString("body"));
-            int result = stmt.executeUpdate();
+            stmt.setString(2, newMail.getToname());
+            stmt.setString(3, newMail.getSubject());
+            stmt.setString(4, newMail.getBody());
+            itsLog.warning("newMail: " + newMail);
+
+            int result = 1; // stmt.executeUpdate();
             if (result != 1)
             {
                 itsLog.severe("Unable to store new mud mail.");

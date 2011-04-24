@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
+import mmud.webservices.webentities.MmudMail;
 import mmud.webservices.webentities.Result;
 import mmud.webservices.webentities.Results;
 
@@ -49,7 +50,7 @@ public class MmudJAXBContextResolver implements ContextResolver<JAXBContext>
        private Logger itsLog = Logger.getLogger("mmudrest");
 
        private JAXBContext context;
-       private Class[] types = {Result.class, Results.class};
+       private Class[] types = {MmudMail.class, Result.class, Results.class};
 
        public MmudJAXBContextResolver() throws Exception 
        {
