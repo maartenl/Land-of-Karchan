@@ -47,6 +47,8 @@ public class MmudMail extends MmudObject {
     private Boolean haveread;
     private Boolean newmail;
     private Date whensent;
+    private Boolean deleted;
+    private Long item_id;
 
     /**
      * @return the lok
@@ -178,6 +180,34 @@ public class MmudMail extends MmudObject {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @return the deleted
+     */
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * @param deleted the deleted to set
+     */
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    /**
+     * @return the item_id
+     */
+    public Long getItem_id() {
+        return item_id;
+    }
+
+    /**
+     * @param item_id the item_id to set
+     */
+    public void setItem_id(Long item_id) {
+        this.item_id = item_id;
     }
 
 }
