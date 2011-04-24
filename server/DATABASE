@@ -461,3 +461,83 @@ create table mm_commandlog (
   `command` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- Table structure for table `mm_mailtable` DROP TABLE IF EXISTS
+`mm_mailtable`; CREATE TABLE `mm_mailtable` (
+  CONSTRAINT `mm_mailtable_ibfk_1` FOREIGN KEY (`name`) REFERENCES
+  `mm_usertable` (`name`) ON UPDATE CASCADE, CONSTRAINT
+  `mm_mailtable_ibfk_2` FOREIGN KEY (`toname`) REFERENCES `mm_usertable`
+  (`name`) ON UPDATE CASCADE
+
+-- Table structure for table `mm_mailtable2` DROP TABLE IF EXISTS
+drop table mm_mailtable2;
+CREATE TABLE `mm_mailtable2` (  
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name varchar(20) not null,
+  toname varchar(20) not null,
+  subject varchar(100) not null,
+  whensent datetime not null,
+  haveread tinyint(4),
+  newmail tinyint(4),
+  body text not null,
+  CONSTRAINT `mm_mailtable2_ibfk_1` FOREIGN KEY (`name`) REFERENCES
+  `mm_usertable` (`name`) ON UPDATE CASCADE, 
+  CONSTRAINT `mm_mailtable2_ibfk_2` FOREIGN KEY (`toname`) REFERENCES 
+  `mm_usertable` (`name`) ON UPDATE CASCADE,
+  index name_index (name),
+  index toname_index (toname)
+);
+
+CREATE [UNIQUE|FULLTEXT|SPATIAL] INDEX mm
+    [index_type]
+    ON tbl_name (index_col_name,...)
+    [index_type]
+
+index_col_name:
+    col_name [(length)] [ASC | DESC]
+
+index_type:
+    USING {BTREE | HASH}
+
+
+mysql> show fields from mm_mailtable;
++----------+--------------+------+-----+---------------------+-------+
+| Field    | Type         | Null | Key | Default             | Extra |
++----------+--------------+------+-----+---------------------+-------+
+| name     | varchar(20)  | NO   | PRI |                     |       |
+| toname   | varchar(20)  | NO   | MUL |                     |       |
+| header   | varchar(100) | YES  |     | NULL                |       |
+| whensent | datetime     | NO   | PRI | 0000-00-00 00:00:00 |       |
+| haveread | tinyint(4)   | YES  |     | NULL                |       |
+| newmail  | tinyint(4)   | YES  |     | NULL                |       |
+| message  | text         | NO   |     | NULL                |       |
++----------+--------------+------+-----+---------------------+-------+
+7 rows in set (0.00 sec)
+
+insert into mm_mailtable2
+(name, toname, subject, whensent, haveread, newmail, body)
+select * from mm_mailtable order by whensent;
+
+
+CREATE TABLE `mm_mailtable_new` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `toname` varchar(20) NOT NULL,
+  `subject` varchar(100) NOT NULL,
+  `whensent` datetime NOT NULL,
+  `haveread` tinyint(4) DEFAULT NULL,
+  `newmail` tinyint(4) DEFAULT NULL,
+  `body` text NOT NULL,
+  `deleted` tinyint(4) not null default 0,
+  `item_id` int(7) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name_index` (`name`),
+  KEY `toname_index` (`toname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;    
+
+alter table mm_mailtable rename mm_mailtable_old2;
+alter table mm_mailtable_new rename mm_mailtable;
+
+alter table mm_mailtable add foreign key (item_id) references mm_items (id);
+alter table mm_mailtable add foreign key (name) references mm_usertable (name);
+alter table mm_mailtable add foreign key (toname) references mm_usertable (name);
+
