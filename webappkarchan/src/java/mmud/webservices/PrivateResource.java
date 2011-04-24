@@ -45,6 +45,7 @@ import javax.ws.rs.Produces;
 import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -66,18 +67,17 @@ import org.codehaus.jettison.json.JSONObject;
 @Produces("application/json")
 public class PrivateResource {
 
-    public static final String LISTMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? order by id limit ?, 20";
+    public static final String LISTMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and mm_mailtable.deleted <> 1 order by id desc limit ?, 20";
 
-    public static final String GETMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_mailtable.id = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ?";
+    public static final String GETMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_mailtable.id = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and mm_mailtable.deleted <> 1 ";
+
+    public static final String DELETEMAIL_SQL = "update mm_mailtable, mm_usertable set deleted = 1 where toname = ? and mm_mailtable.id = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and mm_mailtable.deleted <> 1";
 
     public static final String NEWMAIL_SQL = "insert into mm_mailtable (name, toname, subject, body, whensent, newmail, haveread) values(?, ?, ?, ?, now(), 1, 0)";
 
     public static final String AUTHORIZE_SQL = "select 1 from mm_usertable where name = ? and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and (god = 0 or god = 1)";
 
     public static final String FINDUSER_SQL = "select 1 from mm_usertable where name = ? and (god = 0 or god = 1)";
-
-    @Context
-    private UriInfo context;
 
     private Logger itsLog = Logger.getLogger("mmudrest");
 
@@ -299,6 +299,58 @@ public class PrivateResource {
 
         itsLog.exiting(this.getClass().getName(), "getMail");
         return res;
+    }
+
+    /**
+     * Deletes a single mail based by id.
+     * @param lok the hash to use for verification of the user, is the lok setting
+     * in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @param id the id of the mail to delete
+     * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+     * BAD_REQUEST if an unexpected exception crops up.
+     */
+    @DELETE
+    @Path("{name}/mail/{id}")
+    public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
+    {
+        itsLog.entering(this.getClass().getName(), "deleteMail");
+        Connection con=null;
+        PreparedStatement stmt=null;
+        try
+        {
+            con = getDatabaseConnection();
+            authentication(con, name, lok);
+
+            stmt=con.prepareStatement(DELETEMAIL_SQL);
+            stmt.setString(1, name);
+            stmt.setLong(2, id);
+            stmt.setString(3, lok);
+            int rst = stmt.executeUpdate();
+            if (rst != 1)
+            {
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
+            }
+        }
+        catch(WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "deleteMail", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        finally
+        {
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
+            itsLog.finest(this.getClass().getName() + ": connection with database closed.");
+        }
+
+        itsLog.exiting(this.getClass().getName(), "deleteMail");
+        return Response.ok().build();
     }
 
     private Connection getDatabaseConnection() throws SQLException, NamingException {
