@@ -233,6 +233,7 @@
 
       $('#karchan_mail').each(function() {
         if (window.console) console.log("#karchan_mail #" + $.cookie("karchanname") + "#" + $.cookie("karchanpassword") + "#");
+        $offset = 0;
         if ($.cookie("karchanname") === undefined ||
           $.cookie("karchanpassword") == undefined ||
           $.cookie("karchanname") === "" ||
@@ -260,13 +261,37 @@
             if (window.console) console.log("complete"); 
           }),        
           dataType: 'json', //define the type of data that is going to get back from the server
-          data: 'lok=' + $.cookie("karchanpassword") //Pass a key/value pair
+          data: {'lok' : $.cookie("karchanpassword"), 'offset':$offset} //Pass a key/value pair
         }); // end of ajax
       
+      var getMail = function() {
+        if (window.console) console.log("getMail");
+        $.ajax({
+          type: 'GET',
+          // url: "/resources/private/Karn/mail/", // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
+          success: (function(data) {updateMail(data); }),
+          error: (function(transport) { 
+            if(transport.status != 401) {
+             alert("An error occurred. Please notify Karn or one of the deps."); }}),
+             
+          complete: (function(transport) { 
+            if(transport.status == 401) {
+                $('#page-title').html("You are not authorized.");
+                $('#karchan_mail').html(""); // data.products);
+            }
+               
+            if (window.console) console.log("complete"); 
+          }),        
+          dataType: 'json', //define the type of data that is going to get back from the server
+          data: {'lok' : $.cookie("karchanpassword"), 'offset':$offset} //Pass a key/value pair
+        }); // end of ajax
+      }
+
       var showMail = function(object, data) {
         if (window.console) console.log("showMail");
         if (window.console) console.log(object);
-        var data_pos = $(object.target).parent().attr("id");
+        var data_pos = $(object.target).parent().parent().attr("id");
         data_pos = data_pos.substring(5);
         var formatted_html = "<p><b>Subject</b>: " + data.mmudMail[data_pos].subject + "</p>" +
           "<p><b>From</b>: " + data.mmudMail[data_pos].name + "</p>" +
@@ -276,30 +301,74 @@
         
       }
 
+      var deleteMail = function(object, data) {
+        if (window.console) console.log("deleteMail");
+        var data_pos = $(object.target).parent().parent().attr("id");
+        data_pos = data_pos.substring(5);
+        if (window.console) console.log(data_pos);
+        if (window.console) console.log(data.mmudMail[data_pos]);
+        if (window.console) console.log(data.mmudMail[data_pos].id);
+        $.ajax({
+          type: 'DELETE',
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.mmudMail[data_pos].id + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+          success: (function(data) {
+            $(object.target).parent().parent().toggle();
+          }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); })        
+          //data: 'lok=' + $.cookie("karchanpassword") //Pass a key/value pair
+        }); // end of ajax
+      }
+
       var updateMail = function(data) {
         if (window.console) console.log("updateMail");
         // The data parameter is a JSON object.
         var formatted_html = "";
-        if (data == undefined || data.mmudMail == undefined)
+        formatted_html += "<p><a href=\"#\" id=\"karchan_previous_page\">Previous</a> <a href=\"#\" id=\"karchan_refresh_page\">Refresh</a> <a href=\"#\" id=\"karchan_next_page\">Next</a></p> <table class=\"sticky-enabled\">";
+        formatted_html += "<thead><tr></th><th>Subject</a></th><th>Author</a></th><th>Sent</th><th></th></tr></thead>";
+        formatted_html += "<tbody>";
+        if (data != undefined && data.mmudMail != undefined)
         {
-          formatted_html += "Character not found.";
-        }
-        else
-        {
-          formatted_html += "<table class=\"sticky-enabled\">";
-          formatted_html += "<thead><tr></th><th>Subject</a></th><th>Author</a></th><th>Sent</th></tr></thead>";
-          formatted_html += "<tbody>";
           for(i=0; i<data.mmudMail.length; i++) 
           { 
             formatted_html += "<tr id=\"data_" + i + "\" class=\""
-              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + data.mmudMail[i].subject + "</td><td>" + data.mmudMail[i].name + "</td><td>" + data.mmudMail[i].whensent + "</td></tr>";
+              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + data.mmudMail[i].subject + "</td><td>" + data.mmudMail[i].name + 
+              "</td><td>" + data.mmudMail[i].whensent + 
+              "</td><td><a href=\"#\">Read</a> <a href=\"#\">Delete</a></td></tr>";
           }
-          formatted_html += "</tbody></table>";
         }
+        formatted_html += "</tbody></table>";
         $('#karchan_mail').html(formatted_html); // data.products);
         $('#page-title').html($.cookie("karchanname") + "'s Mail");
-        $("td").click(function (object) { 
-          showMail(object,data);
+        $('#karchan_refresh_page').click(function (object) { 
+          getMail();
+          return false;
+        });
+        $('#karchan_previous_page').click(function (object) { 
+          $offset -= 20;
+          if ($offset < 0)
+          {
+            $offset = 0;
+          }
+          getMail();
+          return false;
+        });
+        $('#karchan_next_page').click(function (object) { 
+          $offset += 20;
+          getMail();
+          return false;
+        });
+        $("td a").click(function (object) { 
+          if (window.console) console.log($(object.target).html());
+          if ($(object.target).html() == "Read")
+          {
+            showMail(object,data);
+          }
+          if ($(object.target).html() == "Delete")
+          {
+            deleteMail(object,data);
+          }
+          return false;
         });
                    
       } // updateMail
@@ -328,14 +397,17 @@
             name : $.cookie("karchanname"),
             toname : $('#edit-submitted-to').val(),
             subject : $('#edit-submitted-subject').val(),
-            body : $('#edit-submitted-body').val(),
+            // body : $('#edit-submitted-body').val(),
+            body : tinyMCE.get('edit-submitted-body').getContent(),
             lok: $.cookie("karchanpassword")
           }
         );
         $.ajax({
           type: 'POST',
           url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
-          success: (function(data) {alert("Mail send."); }),
+          success: (function(data) {
+            alert("Mail send."); 
+          }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
           dataType: 'json', //define the type of data that is going to get back from the server
