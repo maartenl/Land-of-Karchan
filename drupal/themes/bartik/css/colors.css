@@ -43,7 +43,8 @@ a:active {
 }
 #page-wrapper,
 #footer-wrapper {
-  background: #292929;
+  background-color: #48A9E4;
+  background-image: -moz-linear-gradient(-90deg, #0779BF, #48A9E4);
 }
 .region-header,
 .region-header a,
