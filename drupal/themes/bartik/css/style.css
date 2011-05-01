@@ -355,7 +355,7 @@ a.karchanbutton span {
   display: block;
   padding: 5px 0px 5px 18px;
   font-size: 2.0em;
-  font-weight: 400;
+  font-weight: bold;
 }
 a.karchanbutton:active {
     color: yellow;
