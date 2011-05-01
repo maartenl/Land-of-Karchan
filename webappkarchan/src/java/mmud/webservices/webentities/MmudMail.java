@@ -26,7 +26,7 @@ public class MmudMail extends MmudObject {
         this.body = body;
     }
 
-    public MmudMail(String lok, String toname, String name, String subject, String body, Long id, Boolean haveread, Boolean newmail, Date whensent) {
+    public MmudMail(String lok, String toname, String name, String subject, String body, Long id, Boolean haveread, Boolean newmail, Date whensent, Boolean deleted, Integer item_id) {
         this.lok = lok;
         this.toname = toname;
         this.name = name;
@@ -36,6 +36,8 @@ public class MmudMail extends MmudObject {
         this.haveread = haveread;
         this.newmail = newmail;
         this.whensent = whensent;
+        this.deleted = deleted;
+        this.item_id = item_id;
     }
 
     private String lok;
@@ -48,7 +50,7 @@ public class MmudMail extends MmudObject {
     private Boolean newmail;
     private Date whensent;
     private Boolean deleted;
-    private Long item_id;
+    private Integer item_id;
 
     /**
      * @return the lok
@@ -199,14 +201,14 @@ public class MmudMail extends MmudObject {
     /**
      * @return the item_id
      */
-    public Long getItem_id() {
+    public Integer getItem_id() {
         return item_id;
     }
 
     /**
      * @param item_id the item_id to set
      */
-    public void setItem_id(Long item_id) {
+    public void setItem_id(Integer item_id) {
         this.item_id = item_id;
     }
 
