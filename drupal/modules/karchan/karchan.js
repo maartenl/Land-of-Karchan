@@ -296,9 +296,43 @@
         var formatted_html = "<p><b>Subject</b>: " + data.mmudMail[data_pos].subject + "</p>" +
           "<p><b>From</b>: " + data.mmudMail[data_pos].name + "</p>" +
           "<p><b>Sent</b>: " + data.mmudMail[data_pos].whensent + "</p>" +
-          "<p><b>Body</b>:</p><div> " + data.mmudMail[data_pos].body + "</div>";
+          "<p><b>Body</b>:</p><div> " + data.mmudMail[data_pos].body;
+        if (data.mmudMail[data_pos].item_id == 0)
+        {
+          formatted_html += "</div>" +
+          "<select name=\"karchan_create_item\" id=\"karchan_create_item\">" + 
+          "<option value=\"0\">an old faded yellow parchment</option>" + 
+          "<option value=\"1\">a crumpled piece of paper</option>" + 
+          "<option value=\"2\">an official-looking sealed legal document</option>" + 
+          "<option value=\"3\">an impressive-looking forged legal document</option>" + 
+          "<option value=\"4\">a hand-written folded ink-spattered letter</option>" + 
+          "<option value=\"5\">a short rushed squareshaped memo</option>" + 
+          "<option value=\"6\">an embossed beautifully written leaflet</option>" + 
+          "<option value=\"7\">an embossed beautifully written invitation</select>";
+        }
+        formatted_html += 
+          "<a href=\"#\" id=\"karchan_create_mudmail_object\" title=\"Create a copy of the mudmail in your inventory\">" +
+          "<span>Create</span></a>";
         $('#karchan_singlemail').html(formatted_html); // data.products);
-        
+        $('#karchan_create_mudmail_object').click(function (object) { 
+          createMudMailObject(data.mmudMail[data_pos]);
+          return false;
+        });
+      }
+
+      var createMudMailObject = function(mmudMail) {
+        if (window.console) console.log("createMudMailObject");
+        var item_id = ($('#karchan_create_item').val() === undefined ? 0 : $('#karchan_create_item').val());
+        $.ajax({
+          type: 'GET',
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + mmudMail.id + "/createMailItem/" + $('#karchan_create_item').val(), // Which url should be handle the ajax request.
+          success: (function(data) {
+            alert("You've written a " + $('#karchan_create_item :selected').text());
+          }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); }),        
+          data: 'lok=' + $.cookie("karchanpassword") //Pass a key/value pair
+        }); // end of ajax
       }
 
       var deleteMail = function(object, data) {
