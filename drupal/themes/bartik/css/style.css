@@ -311,6 +311,15 @@ h1#site-name {
   margin: 0;
 }
 /* Maarten's stuff */
+#karchan_letterhead {
+  font-size: 2.821em;
+  font-family: 'GabrielleRegular';
+}
+#karchan_letterbody {
+}
+#karchan_letterfooter {
+  font-style: italic; 
+}
 #karchangame_width {
   width: 100%;
 }
