@@ -65,6 +65,7 @@ import mmud.commands.DrinkCommand;
 import mmud.commands.DropCommand;
 import mmud.commands.EastCommand;
 import mmud.commands.EatCommand;
+import mmud.commands.DestroyCommand;
 import mmud.commands.EmotionCommand;
 import mmud.commands.EmotionToCommand;
 import mmud.commands.EyebrowCommand;
@@ -740,6 +741,7 @@ public final class Constants
 		theCommandStructure.put("drink", new DrinkCommand(
 				"drink( (\\w|-)+){1,4}"));
 		theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
+		theCommandStructure.put("destroy", new DestroyCommand("destroy( (\\w|-)+){1,4}"));
 		theCommandStructure.put("wear", new WearCommand(
 				"wear( (\\w|-)+){1,4} on (\\w)+"));
 		theCommandStructure.put("remove", new UnwearCommand(

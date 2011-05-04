@@ -533,23 +533,33 @@ should not be a problem unless rather large conversations take place.
 </PRE>
 <H4><A HREF="#contents"><A NAME="mm_mailtable">mm_mailtable</A></H4>
 <DL>
+<DT>id
+<DD>the id of the mail, a unique reference id that is automatically
+assigned.
 <DT>haveread
 <DD>if the mail items has been read or not. (read=1, not read=0)
 <DT>newmail
 <DD>if the mail is new (i.e. has not been read since the previous
 session.
+<DT>deleted
+<DD>indicates that the message has been deleted.
+<DT>item_id
+<DD>indicates that this message has its representative item in the game.
 </DL>
 <PRE>
 +---------------------+
 | mm_mailtable        |
 +---------------------+
-|*name                |
+|*id                  |
+| name                |
 | toname              |
-| header              |
-|*whensent            |
+| subject             |
+| whensent            |
 | haveread            |
 | newmail             |
-| message             |
+| body                |
+| deleted             |
+| item_id             |
 +---------------------+
 
 
