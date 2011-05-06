@@ -323,11 +323,12 @@
       var createMudMailObject = function(mmudMail) {
         if (window.console) console.log("createMudMailObject");
         var item_id = ($('#karchan_create_item').val() === undefined ? 0 : $('#karchan_create_item').val());
+        var item_name = ($('#karchan_create_item').val() === undefined ? "another copy of the mail" :  $('#karchan_create_item :selected').text());
         $.ajax({
           type: 'GET',
           url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + mmudMail.id + "/createMailItem/" + $('#karchan_create_item').val(), // Which url should be handle the ajax request.
           success: (function(data) {
-            alert("You've written a " + $('#karchan_create_item :selected').text());
+            alert("You've written " + item_name);
           }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
