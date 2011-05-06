@@ -34,6 +34,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -84,6 +85,7 @@ public class PrivateResource {
         8015
     };
 
+
     public static final String LISTMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and mm_mailtable.deleted <> 1 order by id desc limit ?, 20";
 
     public static final String GETMAIL_SQL = "select mm_mailtable.* from mm_mailtable, mm_usertable where toname = ? and mm_mailtable.id = ? and mm_usertable.name = mm_mailtable.toname and mm_usertable.lok is not null and trim(mm_usertable.lok) <> \"\" and mm_usertable.lok = ? and mm_mailtable.deleted <> 1 ";
@@ -103,10 +105,13 @@ public class PrivateResource {
     public static final String CHECKITEMDEF_SQL = "select 1 from mm_items where id = ?";
 
     public static final String CREATEMAILITEM_IN_INVENTORY_SQL = "insert into mm_charitemtable (id, belongsto) values(?, ?)";
+    public static final String CREATEMAILITEM_INSTANCE_SQL = "insert into mm_itemtable (itemid, owner) values(?, \"Karn\")";
 
     public static final String CREATEMAILITEMDEF_SQL = "insert into mm_items " +
             "(id, name, adject1, adject2, adject3, getable, dropable, visible, description, readdescr, copper, owner, notes) " +
-            "select ?, name, adject1, adject2, adject3, getable, dropable, visible, description, readdescr, copper, owner, notes " +
+            "select ?, name, adject1, adject2, adject3, getable, dropable, visible, description, " +
+            "replace(replace(replace(readdescr, \"letterhead\", ?), \"letterbody\", ?), \"letterfooter\", ?), " +
+            "copper, owner, notes " +
             "from mm_items where id = ?";
 
     private Logger itsLog = Logger.getLogger("mmudrest");
@@ -171,7 +176,7 @@ public class PrivateResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             authentication(con, name, lok);
 
@@ -230,16 +235,16 @@ public class PrivateResource {
         {
             String lok = newMail.getLok();
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             authentication(con, name, lok);
             verify(con, newMail.getToname());
 
             stmt=con.prepareStatement(NEWMAIL_SQL); // name, toname, subject, body
             stmt.setString(1, name);
-            stmt.setString(2, newMail.getToname());
-            stmt.setString(3, newMail.getSubject());
-            stmt.setString(4, newMail.getBody());
+            stmt.setString(2, Utils.security(newMail.getToname()));
+            stmt.setString(3, Utils.security(newMail.getSubject()));
+            stmt.setString(4, Utils.security(newMail.getBody()));
 
             int result = stmt.executeUpdate();
             if (result != 1)
@@ -326,7 +331,7 @@ public class PrivateResource {
         MmudMail res = null;
         try
         {
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
             authentication(con, name, lok);
 
             res = getMyMail(con, name, id, lok);
@@ -382,23 +387,25 @@ public class PrivateResource {
         MmudMail res = null;
         try
         {
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
+            itsLog.entering(this.getClass().getName(), "createMailItem: authentication");
             authentication(con, name, lok);
 
             // get the sepcific mail with id {id}
+            itsLog.entering(this.getClass().getName(), "createMailItem: getMail");
             res = getMyMail(con, name, id, lok);
 
             int item_id = 0;
-            if (res.getItem_id() == null)
+            if (res.getItem_id() == null || res.getItem_id() == 0)
             {
                 int max_id = 0;
                 // retrieve max item_id
+                itsLog.entering(this.getClass().getName(), "createMailItem: retrieve max id");
                 stmt=con.prepareStatement(GETMAXIDITEMDEF_SQL);
                 rst=stmt.executeQuery();
                 if (rst.next())
                 {
                     max_id = rst.getInt("max");
-                            //rst.getBoolean("haveread"), rst.getBoolean("newmail"), rst.getDate("whensent"), rst.getBoolean("deleted"), rst.getLong("item_id"));
                 }
                 else
                 {
@@ -406,9 +413,13 @@ public class PrivateResource {
                     throw new WebApplicationException(Response.Status.BAD_REQUEST);
                 }
                 // create item definition
+                itsLog.entering(this.getClass().getName(), "createMailItem: create item definition");
                 stmt=con.prepareStatement(CREATEMAILITEMDEF_SQL);
                 stmt.setInt(1, max_id + 1);
-                stmt.setInt(2, ITEMS[item]);
+                stmt.setString(2, "<div id=\"karchan_letterhead\">" + res.getSubject() + "</div>");
+                stmt.setString(3, "<div id=\"karchan_letterbody\">" + res.getBody() + "</div>");
+                stmt.setString(4, "<div id=\"karchan_letterfooter\">" + res.getName() + "</div>");
+                stmt.setInt(5, ITEMS[item]);
                 int result = stmt.executeUpdate();
                 if (result != 1)
                 {
@@ -417,6 +428,7 @@ public class PrivateResource {
                 }
 
                 // set item definition into the mail
+                itsLog.entering(this.getClass().getName(), "createMailItem: set itemdefinition into the mail");
                 stmt=con.prepareStatement(SETIDITEMDEF_IN_MAIL_SQL);
                 stmt.setInt(1, max_id + 1);
                 stmt.setLong(2, id);
@@ -431,6 +443,7 @@ public class PrivateResource {
             else
             {
                 // retrieve item definition
+                itsLog.entering(this.getClass().getName(), "createMailItem: retrieve item def");
                 stmt=con.prepareStatement(CHECKITEMDEF_SQL);
                 stmt.setLong(1, res.getItem_id());
                 rst=stmt.executeQuery();
@@ -449,14 +462,28 @@ public class PrivateResource {
             }
 
             // create item instance
-            // put item instance into inventory
-            stmt=con.prepareStatement(CREATEMAILITEM_IN_INVENTORY_SQL);
+            itsLog.entering(this.getClass().getName(), "createMailItem: create instance object " + item_id + " " + name);
+            stmt=con.prepareStatement(CREATEMAILITEM_INSTANCE_SQL, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, item_id);
-            stmt.setString(2, name);
             int result = stmt.executeUpdate();
             if (result != 1)
             {
                 itsLog.entering(this.getClass().getName(), "createMailItem: could not create item instance");
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+            ResultSet keys = stmt.getGeneratedKeys();
+            keys.next();
+            int key = keys.getInt(1);
+
+            // put item instance into inventory
+            itsLog.entering(this.getClass().getName(), "createMailItem: create inventory object " + key + " " + name);
+            stmt=con.prepareStatement(CREATEMAILITEM_IN_INVENTORY_SQL);
+            stmt.setInt(1, key);
+            stmt.setString(2, name);
+            result = stmt.executeUpdate();
+            if (result != 1)
+            {
+                itsLog.entering(this.getClass().getName(), "createMailItem: could not add item instance to inventory");
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
 
@@ -501,7 +528,7 @@ public class PrivateResource {
         PreparedStatement stmt=null;
         try
         {
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
             authentication(con, name, lok);
 
             stmt=con.prepareStatement(DELETEMAIL_SQL);
@@ -535,14 +562,6 @@ public class PrivateResource {
         return Response.ok().build();
     }
 
-    private Connection getDatabaseConnection() throws SQLException, NamingException {
-        itsLog.finest(this.getClass().getName() + ": connection with database opened.");
-        Connection con;
-        javax.naming.Context ctx = new InitialContext();
-        DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-        con = ds.getConnection();
-        return con;
-    }
 
     /**
      * This method should be called preceding to each method that is part of this
@@ -639,5 +658,7 @@ public class PrivateResource {
             itsLog.finest(this.getClass().getName() + ": resultset/statement with database closed.");
         }
     }
+
+
 
 }
