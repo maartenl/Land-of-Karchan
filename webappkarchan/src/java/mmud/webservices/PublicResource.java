@@ -143,7 +143,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(WHO_SQL);
             rst=stmt.executeQuery();
@@ -193,7 +193,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(NEWS_SQL);
             rst=stmt.executeQuery();
@@ -239,7 +239,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(STATUS_SQL);
             rst=stmt.executeQuery();
@@ -285,7 +285,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(CHARACTERSHEETS_SQL);
             rst=stmt.executeQuery();
@@ -331,7 +331,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(FORTUNES_SQL);
             rst=stmt.executeQuery();
@@ -378,7 +378,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(GUILDS_SQL);
             rst=stmt.executeQuery();
@@ -430,7 +430,7 @@ public class PublicResource {
         try
         {
 
-            con = getDatabaseConnection();
+            con = Utils.getDatabaseConnection();
 
             stmt=con.prepareStatement(CHARACTERSHEET_SQL);
             stmt.setString(1, name);
@@ -481,12 +481,4 @@ public class PublicResource {
         return res;
     }
 
-    private Connection getDatabaseConnection() throws SQLException, NamingException {
-        itsLog.finest(this.getClass().getName() + ": connection with database opened.");
-        Connection con;
-        javax.naming.Context ctx = new InitialContext();
-        DataSource ds = (DataSource) ctx.lookup("jdbc/mmud");
-        con = ds.getConnection();
-        return con;
-    }
 }
