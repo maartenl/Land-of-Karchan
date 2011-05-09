@@ -311,6 +311,10 @@ h1#site-name {
   margin: 0;
 }
 /* Maarten's stuff */
+.karchan_guild {
+  /* do not display, unless clicked */
+  display:none;
+}
 #karchan_letterhead {
   font-size: 2.821em;
   font-family: 'GabrielleRegular';
