@@ -4,4 +4,6 @@ description = Module for things relating to the Land of Karchan
 core = 7.x
 configure = admin/config/content/karchan
 ;
-scripts[] = karchan.js
+scripts[] = karchan_general.js
+scripts[] = karchan_mail.js
+scripts[] = karchan.js 
