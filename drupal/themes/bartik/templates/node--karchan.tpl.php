@@ -128,6 +128,10 @@ if (!isset($_COOKIE["karchanname"]))
 {
     drupal_goto("/node/30");
 }
+if (!isset($_SESSION["frames"]))
+{
+    drupal_goto("/node/30");
+}
     $frames = $_SESSION["frames"];
     $password = $_COOKIE["karchanpassword"];
     $name = $_COOKIE["karchanname"];
