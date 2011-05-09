@@ -8,13 +8,13 @@
  * @see http://drupal.org/node/756722
  */
 (function ($) {
-      Karchan.getMail = function() {
+      var getMail = function() {
         if (window.console) console.log("getMail");
         $.ajax({
           type: 'GET',
           // url: "/resources/private/Karn/mail/", // Which url should be handle the ajax request.
           url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
-          success: (function(data) {updateMail(data); }),
+          success: (function(data) {Karchan.updateMail(data); }),
           error: (function(transport) { 
             if(transport.status != 401) {
              alert("An error occurred. Please notify Karn or one of the deps."); }}),
@@ -32,7 +32,7 @@
         }); // end of ajax
       } // getMail
 
-      Karchan.showMail = function(object, data) {
+      var showMail = function(object, data) {
         if (window.console) console.log("showMail");
         if (window.console) console.log(object);
         var data_pos = $(object.target).parent().parent().attr("id");
@@ -64,7 +64,7 @@
         });
       } // showMail
 
-      Karchan.createMudMailObject = function(mmudMail) {
+      var createMudMailObject = function(mmudMail) {
         if (window.console) console.log("createMudMailObject");
         var item_id = ($('#karchan_create_item').val() === undefined ? 0 : $('#karchan_create_item').val());
         var item_name = ($('#karchan_create_item').val() === undefined ? "another copy of the mail" :  $('#karchan_create_item :selected').text());
@@ -80,7 +80,7 @@
         }); // end of ajax
       } // createMudMailObject
 
-      Karchan.deleteMail = function(object, data) {
+      var deleteMail = function(object, data) {
         if (window.console) console.log("deleteMail");
         var data_pos = $(object.target).parent().parent().attr("id");
         data_pos = data_pos.substring(5);
