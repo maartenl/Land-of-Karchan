@@ -88,7 +88,7 @@
       var updateGuilds = function(data) {
         if (window.console) console.log("updateGuilds");
         // The data parameter is a JSON object.
-        var formatted_html = "<p><a href=\"#\" id=\"karchan_show_all\">Expand all</a><a href=\"#\" id=\"karchan_collapse_all\">Collapse all</a></p>";
+        var formatted_html = "<p><a href=\"#\" id=\"karchan_show_all\">Expand all</a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"#\" id=\"karchan_collapse_all\">Collapse all</a></p>";
         for(i=0; i<data.length; i++) 
         { 
              if (data[i].title == undefined || data[i].title == "")
@@ -213,6 +213,7 @@
         }
         else
         {
+          formatted_html += "<p><img src=\"" + data.imageurl + "\"/></p>";
           formatted_html += "<p><b>Name:</b> " + data.name + "</p>";
           formatted_html += "<p><b>Title:</b> " + data.title + "</p>";
           formatted_html += "<p><b>Sex:</b> " + data.sex + "</p>";
@@ -226,7 +227,7 @@
             for(i=0; i<data.familyvalues.length; i++) 
             { 
                 var record = data.familyvalues[i];
-                if (record.name === undefined)
+                if (record.has_char_sheet === undefined || record.has_char_sheet === false)
                 {
                    formatted_html += "<p>* " + record.description + " of " + record.toname + "</p>";
                 }
@@ -243,6 +244,139 @@
         $('#page-title').html("Character Sheet of " + data.name);
       } // updateCharactersheet
       }); // karchan_charactersheet
+
+      $('#karchan_edit_charactersheet').each(function() {
+        if (window.console) console.log("#karchan_edit_charactersheet");
+        if ($.cookie("karchanname") === undefined ||
+          $.cookie("karchanpassword") == undefined ||
+          $.cookie("karchanname") === "" ||
+          $.cookie("karchanpassword") == "")
+        {
+          $('#page-title').html("You are not logged in.");
+          $('#karchan_edit_charactersheet').html(""); // data.products);
+          return;
+        }
+        $.ajax({
+          type: 'GET',
+          url: "/resources/public/charactersheets/" + $.cookie("karchanname"), // Which url should be handle the ajax request.
+          success: (function(data) {getCharactersheet(data); }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); }),        
+          dataType: 'json', //define the type of data that is going to get back from the server
+          data: 'js=1' //Pass a key/value pair
+        }); // end of ajax
+      
+
+      var getCharactersheet = function(data) {
+        if (window.console) console.log("getCharactersheet");
+        if (window.console) console.log(data);
+        // The data parameter is a JSON object.
+        $('#karchan_edit_charactersheet').html("");
+        if (data == undefined || data.name == undefined)
+        {
+          $('#page-title').html("Character not found.");
+          return;
+        }
+        var formatted_html = "";
+        $("#edit-submitted-homepage-url").val(data.homepageurl);
+        $("#edit-submitted-image-url").val(data.imageurl);
+        $("#edit-submitted-date-of-birth").val(data.dateofbirth);
+        $("#edit-submitted-city-of-birth").val(data.cityofbirth);
+        $("#edit-submitted-storyline").val(data.storyline);
+        $("#karchan_example_img").attr("src",data.imageurl);
+          formatted_html += "<p><b>Family relations:</b></p><table class=\"sticky-enabled\">";
+          formatted_html += "<thead><tr></th><th>Relation</a></th><th>Of</a></th><th>Character</th><th></th></tr></thead><tbody id=\"karchan_table_famvalues\">";
+                  
+          if (data.familyvalues !== undefined)
+          {
+            for(i=0; i<data.familyvalues.length; i++) 
+            { 
+                var record = data.familyvalues[i];
+                formatted_html += "<tr id=\"data_" + i + "\" class=\""
+                          + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + record.description + "</td><td>of</td><td>" + record.toname +
+                                        "</td><td><a href=\"#\">Delete</a></td></tr>";
+            }
+          }
+        formatted_html += "</tbody></table>";
+        $('#page-title').html("Edit Character Sheet of " + data.name);
+        $('#karchan_edit_charactersheet').html(formatted_html);
+        $('td a').click(function(object){
+          removeFamilyRelation(object);
+          return false;
+        });
+        $('#edit-submit').click(function(){
+          updateCharactersheet();
+          return false;
+        });
+      } // getCharactersheet
+      
+      var removeFamilyRelation = function(object) {
+        if (window.console) console.log("removeFamilyRelation");
+        var toptr = $(object.target).closest("tr");
+        var tds = toptr.children();
+        //if (window.console) console.log($(tds[0]).html());
+        //if (window.console) console.log($(tds[1]).html());
+        //if (window.console) console.log($(tds[2]).html());
+        $.ajax({
+          type: 'DELETE',
+          url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet/familyvalues/" + $(tds[2]).html() + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+          success: (function(data) {
+             toptr.hide();
+          }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); })
+        }); // end of ajax
+        
+      } // removeFamilyRelation
+
+      var updateCharactersheet = function() {
+        if (window.console) console.log("updateCharactersheet");
+        // The data parameter is a JSON object.
+        var jsonString = JSON.stringify(
+        {
+          lok: $.cookie("karchanpassword"),
+          name : $.cookie("karchanname"),
+          imageurl : $("#edit-submitted-image-url").val(),
+          homepageurl : $("#edit-submitted-homepage-url").val(),
+          dateofbirth : $("#edit-submitted-date-of-birth").val(),
+          cityofbirth : $("#edit-submitted-city-of-birth").val(),
+          // body : tinyMCE.get('edit-submitted-body').getContent(),
+          storyline : tinyMCE.get('edit-submitted-storyline').getContent()
+        });
+        $.ajax({
+          type: 'PUT',
+          url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet", // Which url should be handle the ajax request.
+          success: (function(data) {
+             alert("You've updated your character sheet.");    
+          }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); }),        
+          dataType: 'json', //define the type of data that is going to get back from the server
+          contentType: 'application/json; charset=utf-8',
+          data: jsonString // Pass a key/value pair
+        }); // end of ajax
+        if ($("#edit-submitted-add-family-relation").val() != 0)
+        {
+          $.ajax({
+          // $("#edit-submitted-add-family-relation :selected").text()
+            type: 'PUT',
+            url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet/familyvalues/" + $("#edit-submitted-of").val() + "/"
+              + $("#edit-submitted-add-family-relation").val() + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+            success: (function(data) {
+               // alert("You've added a relation.");    
+               $("#karchan_table_famvalues").html($("#karchan_table_famvalues").html() + "<tr class=\"even\"><td>" + $("#edit-submitted-add-family-relation :selected").text()
+               + "</td><td>of</td><td>" + $("#edit-submitted-of").val() + "</td><td></td></tr>");
+            }),
+            error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+            complete: (function() { if (window.console) console.log("complete"); }),        
+            // dataType: 'json', //define the type of data that is going to get back from the server
+            // contentType: 'application/json; charset=utf-8',
+            //data: {'lok' : $.cookie("karchanpassword") } // Pass a key/value pair
+          }); // end of ajax
+        }
+      } // updateCharactersheet
+            
+      }); // karchan_edit_charactersheet
 
       $('#karchan_mail').each(function() {
         if (window.console) console.log("#karchan_mail #" + $.cookie("karchanname") + "#" + $.cookie("karchanpassword") + "#");
@@ -267,10 +401,10 @@
              
           complete: (function(transport) { 
             if(transport.status == 401) {
-                $('#page-title').html("You are not authorized.");
-                $('#karchan_mail').html(""); // data.products);
+              $('#page-title').html("You are not authorized.");
+              $('#karchan_mail').html(""); // data.products);
             }
-               
+
             if (window.console) console.log("complete"); 
           }),        
           dataType: 'json', //define the type of data that is going to get back from the server
