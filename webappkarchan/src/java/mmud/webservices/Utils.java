@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 /**
  * Util class for some methods that are very often used.
  * @author maartenl
+ * @deprecated
  */
 public class Utils {
 

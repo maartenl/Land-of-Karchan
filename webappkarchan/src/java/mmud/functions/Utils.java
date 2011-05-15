@@ -55,4 +55,21 @@ public class Utils {
         CleanResults cr = as.scan(dirtyInput, policy);
         return cr.getCleanHTML(); // some custom function
     }
+
+    /**
+     * Returns a safe string, containing no html tags at all, in other words:
+     * <ul>
+     * <li><blaat> is erplaced with empty string</li>
+     * <li>'&' is replaced with &amp;</li>
+     * <li>'<' is replaced with &lt;</li>
+     * <li>'>' is replaced with &gt;</li>
+     * </ul>
+     * @param dirtyInput the original string.
+     * @return the new string, replaced html tags.
+     */
+    public static String topSecurity(String dirtyInput)
+    throws Exception
+    {
+        return dirtyInput.replaceAll("<.*>","").replace("&", "&amp;").replace("<","&lt;").replace(">","&gt;").replace("\"", "&quot;"); // some custom function
+    }
 }
