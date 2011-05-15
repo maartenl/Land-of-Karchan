@@ -150,8 +150,8 @@ public class Mail {
 
             stmt=con.prepareStatement(NEWMAIL_SQL); // name, toname, subject, body
             stmt.setString(1, name);
-            stmt.setString(2, Utils.security(newMail.getToname()));
-            stmt.setString(3, Utils.security(newMail.getSubject()));
+            stmt.setString(2, Utils.topSecurity(newMail.getToname()));
+            stmt.setString(3, Utils.topSecurity(newMail.getSubject()));
             stmt.setString(4, Utils.security(newMail.getBody()));
 
             int result = stmt.executeUpdate();

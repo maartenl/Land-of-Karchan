@@ -28,6 +28,7 @@ maarten_l@yahoo.com
 */
 package mmud.webservices;
 
+import mmud.webservices.webentities.CharacterInfo;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -51,6 +52,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import mmud.functions.CharacterSheets;
 import mmud.functions.mail.Mail;
 import mmud.webservices.webentities.MmudMail;
 
@@ -196,6 +198,58 @@ public class PrivateResource {
         return Response.ok().build();
     }
 
+    /**
+     * Adds or updates your current character info.
+     * @param name the name of the user
+     * @param toname the name of the user you are related to
+     * @param description the description of the family relation, for example "mother".
+     * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+     * BAD_REQUEST if an unexpected exception crops up.
+     */
+    @PUT
+    @Path("{name}/charactersheet")
+    public Response updateCharacterSheet(@PathParam("name") String name, CharacterInfo cinfo)
+    {
+        cinfo.setName(name);
+        (new CharacterSheets()).updateCharactersheet(cinfo);
+        return Response.ok().build();
+    }
+
+    /**
+     * Add or updates some family values from your family tree.
+     * @param lok the hash to use for verification of the user, is the lok setting
+     * in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @param toname the name of the user you are related to
+     * @param description the description of the family relation, for example "mother".
+     * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+     * BAD_REQUEST if an unexpected exception crops up.
+     */
+    @PUT
+    @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
+    public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
+    {
+        (new CharacterSheets()).updateFamilyValues(name, toname, lok, description);
+        return Response.ok().build();
+    }
+
+
+    /**
+     * Deletes some family values from your family tree.
+     * @param lok the hash to use for verification of the user, is the lok setting
+     * in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @param toname the name of the user you are related to
+     * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+     * BAD_REQUEST if an unexpected exception crops up.
+     */
+    @DELETE
+    @Path("{name}/charactersheet/familyvalues/{toname}")
+    public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
+    {
+        (new CharacterSheets()).deleteFamilyValues(name, toname, lok);
+        return Response.ok().build();
+    }
 
 
 
