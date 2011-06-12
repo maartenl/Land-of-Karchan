@@ -42,6 +42,7 @@ import mmud.items.PersonPositionEnum;
 /**
  * Starts you wearing an item on you. Syntax: wear &lt;item&gt; on &lt;body
  * position&gt;
+ * @see mmud.commands.WearCommand
  */
 public class WearCommand extends NormalCommand
 {

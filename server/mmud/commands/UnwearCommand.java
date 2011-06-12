@@ -42,6 +42,7 @@ import mmud.items.PersonPositionEnum;
 /**
  * Stop you wearing an item on you. Syntax: remove &lt;item&gt; from &lt;body
  * position&gt;
+ * @see mmud.command.WearCommand
  */
 public class UnwearCommand extends NormalCommand
 {

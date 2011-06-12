@@ -171,7 +171,7 @@ public class PersonPositionEnum
 	public static final PersonPositionEnum WIELD_BOTH = 
 		new PersonPositionEnum(262144, "with both %SHISHER hands");
 
-	private static final PersonPositionEnum[] list =
+	public static final PersonPositionEnum[] list =
 		{ON_HEAD, 
 		ON_NECK, 
 		ON_TORSO, 
