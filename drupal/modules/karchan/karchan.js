@@ -140,7 +140,17 @@
       var updateCharactersheets = function(data) {
         if (window.console) console.log("updateCharactersheets");
         // The data parameter is a JSON object.
-        var formatted_html = "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
+        var formatted_html = "";
+        var cookiesname = "";
+        if ($.cookie("karchanname") != undefined &&
+          $.cookie("karchanpassword") != undefined &&
+          $.cookie("karchanname") != "" &&
+          $.cookie("karchanpassword") != "")
+        {
+          cookiesname = $.cookie("karchanname");
+          formatted_html += "<p>To change or create your charactersheet, click <a href=\"/node/49\">here</a>.</p>";
+        }
+        formatted_html += "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
         var column_length = (data.length / 6) + 1;
         var column_pos = 0;
         var first_letter = "A";
@@ -158,7 +168,14 @@
                formatted_html += "<br/><p><img src=\"/images/gif/letters/" + 
                first_letter.toLowerCase() + ".gif\"></p>";
              }
-             formatted_html += "<a href=\"/node/43?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
+             if (data[i].name == cookiesname)
+             {
+               formatted_html += "<a href=\"/node/49\"><b>"+ data[i].name + "</b></a><br/>";
+             }
+             else
+             {
+               formatted_html += "<a href=\"/node/43?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
+             }
         }
         formatted_html += "</td></tr></table>";
         $('#karchan_charactersheets').html(formatted_html); // data.products);
@@ -272,9 +289,13 @@
         if (window.console) console.log(data);
         // The data parameter is a JSON object.
         $('#karchan_edit_charactersheet').html("");
+        $('#edit-submit').click(function(){
+          updateCharactersheet();
+          return false;
+        });
         if (data == undefined || data.name == undefined)
         {
-          $('#page-title').html("Character not found.");
+          $('#page-title').html("Charactersheet doesn't exist.");
           return;
         }
         var formatted_html = "";
@@ -302,10 +323,6 @@
         $('#karchan_edit_charactersheet').html(formatted_html);
         $('td a').click(function(object){
           removeFamilyRelation(object);
-          return false;
-        });
-        $('#edit-submit').click(function(){
-          updateCharactersheet();
           return false;
         });
       } // getCharactersheet
