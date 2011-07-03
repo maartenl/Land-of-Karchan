@@ -104,7 +104,7 @@ public class CharacterFactory
 	int aMovement, 
 	int aCopper,   
 	Room aRoom,
-	Guild aGuild)
+	Guild aGuild, String aState)
 	throws MudException
 	{
 		return new User(aName,
@@ -138,7 +138,7 @@ public class CharacterFactory
 	aMovement, 
 	aCopper,   
 	aRoom,
-	aGuild);
+	aGuild, aState);
 	}
 
 	public static Person create(String aName, 
@@ -165,7 +165,7 @@ public class CharacterFactory
 		int aMovement,
 		int aCopper,
 		Room aRoom,
-		int aGod)
+		int aGod, String aState)
 	throws MudException
 	{
 		if (aGod == 2)
@@ -193,7 +193,7 @@ public class CharacterFactory
 			anAlignment,
 			aMovement,  
 			aCopper,
-			aRoom); 
+			aRoom, aState);
 		}
 		if (aGod == 3)
 		{
@@ -220,7 +220,7 @@ public class CharacterFactory
 			anAlignment,
 			aMovement,  
 			aCopper,
-			aRoom); 
+			aRoom, aState);
 		}
 		if (aGod == 4)
 		{
@@ -247,7 +247,7 @@ public class CharacterFactory
 			anAlignment,
 			aMovement,  
 			aCopper,
-			aRoom); 
+			aRoom, aState);
 		}
 		throw new RuntimeException("unknown god value (" + aGod + 
 		"). This method does not create normal users.");

@@ -102,7 +102,8 @@ public class StdShopKeeper extends Bot implements ShopKeeper
 		int aAlignment,
 		int aMovement,
 		int aCopper,
-		Room aRoom)
+		Room aRoom,
+                String aState)
 	throws MudException
 	{
 		super(aName, 
@@ -128,7 +129,8 @@ public class StdShopKeeper extends Bot implements ShopKeeper
 			aAlignment,
 			aMovement,
 			aCopper,
-			aRoom);
+			aRoom,
+                        aState);
 	}
 
 	// see interface description

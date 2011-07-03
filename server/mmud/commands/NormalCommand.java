@@ -110,6 +110,11 @@ public abstract class NormalCommand implements Command
 		return theCommand;
 	}
 
+        /**
+         * Returns the different words that the command consisted of. For example:
+         * "say something" would return string[2] = {"say", "something"}.
+         * @return String array containing the words.
+         */
 	public String[] getParsedCommand()
 	{
 		return theParsedCommand;

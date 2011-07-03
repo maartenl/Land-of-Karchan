@@ -67,6 +67,7 @@ import mmud.commands.EastCommand;
 import mmud.commands.EatCommand;
 import mmud.commands.DestroyCommand;
 import mmud.commands.EmotionCommand;
+import mmud.commands.ConditionCommand;
 import mmud.commands.EmotionToCommand;
 import mmud.commands.EyebrowCommand;
 import mmud.commands.FightCommand;
@@ -699,6 +700,7 @@ public final class Constants
 		theCommandStructure.put("me", new MeCommand("me .+"));
 		theCommandStructure.put("quit", new QuitCommand("quit"));
 		theCommandStructure.put("sleep", new SleepCommand("sleep"));
+		theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
 		theCommandStructure.put("awaken", new AwakenCommand("awaken"));
 		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));

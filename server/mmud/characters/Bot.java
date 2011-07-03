@@ -110,12 +110,12 @@ public class Bot extends Person implements CommunicationListener
 			String aFace, String aHair, String aBeard, String aArms,
 			String aLegs, boolean aSleep, int aWhimpy, int aDrinkstats,
 			int aEatstats, int aLevel, int aHealth, int anAlignment,
-			int aMovement, int aCopper, Room aRoom) throws MudException
+			int aMovement, int aCopper, Room aRoom, String aState) throws MudException
 	{
 		super(aName, aTitle, aRace, aSex, aAge, aLength, aWidth, aComplexion,
 				aEyes, aFace, aHair, aBeard, aArms, aLegs, aSleep, aWhimpy,
 				aDrinkstats, aEatstats, aLevel, aHealth, anAlignment,
-				aMovement, aCopper, aRoom);
+				aMovement, aCopper, aRoom, aState);
 		Logger.getLogger("mmud").finer("");
 	}
 

@@ -163,6 +163,10 @@ public class LookCommand extends NormalCommand
 				stuff2 = stuff2.replaceAll("%SHISHER", toChar.getSex()
 						.posession());
 				stuff2 = stuff2.replaceAll("%SISARE", "is");
+                                if (toChar.getState() != null)
+                                {
+                                    stuff2 += toChar.getState() + "<br/>\r\n";
+                                }
 				aUser.writeMessage(stuff2);
 				return true;
 			}

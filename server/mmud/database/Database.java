@@ -101,7 +101,7 @@ public class Database
 	private static String sqlCreateUserString = "insert into mm_usertable "
 			+ "(name, address, password, title, realname, email, race, sex, age, length, width, complexion, eyes, face, hair, beard, arm, leg, lok, active, lastlogin, birth) "
 			+ "values(?, ?, sha1(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, now(), now())";
-	private static String sqlSetPersonString = "update mm_usertable set title=?, drinkstats=?, eatstats=?, copper=?, sleep=?, room=?, whimpy=? where name = ?";
+	private static String sqlSetPersonString = "update mm_usertable set title=?, drinkstats=?, eatstats=?, copper=?, sleep=?, room=?, whimpy=?, state=? where name = ?";
 	private static String sqlSetUserGuildString = "update mm_usertable set guild=? where name = ?";
 	private static String sqlExistsUserString = "select 1 from mm_usertable where name = ?";
 	private static String sqlUpdatePkillString = "update mm_usertable set fightable = ? where name = ?";
@@ -435,7 +435,7 @@ public class Database
 										.getInt("alignment"), res
 										.getInt("movementstats"), res
 										.getInt("copper"), Rooms.getRoom(res
-										.getInt("room")), guild);
+										.getInt("room")), guild, res.getString("state"));
 
 			}
 			res.close();
@@ -527,7 +527,7 @@ public class Database
 						res.getInt("eatstats"), res.getInt("experience"), res
 								.getInt("vitals"), res.getInt("alignment"), res
 								.getInt("movementstats"), res.getInt("copper"),
-						Rooms.getRoom(res.getInt("room")), guild);
+						Rooms.getRoom(res.getInt("room")), guild, res.getString("state"));
 			}
 			res.close();
 			sqlGetUser.close();
@@ -842,7 +842,7 @@ public class Database
 											.getInt("alignment"), res
 											.getInt("movementstats"), res
 											.getInt("copper"), Rooms
-											.getRoom(res.getInt("room")), guild);
+											.getRoom(res.getInt("room")), guild, res.getString("state"));
 					String mySessionPwd = res.getString("lok");
 					if (mySessionPwd != null)
 					{
@@ -870,7 +870,7 @@ public class Database
 							res.getInt("vitals"), res.getInt("alignment"), res
 									.getInt("movementstats"), res
 									.getInt("copper"), Rooms.getRoom(res
-									.getInt("room")), res.getInt("god"));
+									.getInt("room")), res.getInt("god"), res.getString("state"));
 					myVector.add(myNewChar);
 					myNewChar.setAttributes(AttributeDb
 							.getAttributes(myNewChar));
@@ -1697,7 +1697,8 @@ public class Database
 			statSetPersonInfo.setInt(5, (aPerson.isaSleep() ? 1 : 0));
 			statSetPersonInfo.setInt(6, aPerson.getRoom().getId());
 			statSetPersonInfo.setInt(7, aPerson.getWhimpy());
-			statSetPersonInfo.setString(8, aPerson.getName());
+			statSetPersonInfo.setString(8, aPerson.getState());
+			statSetPersonInfo.setString(9, aPerson.getName());
 			int res = statSetPersonInfo.executeUpdate();
 			if (res != 1)
 			{
