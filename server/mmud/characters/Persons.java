@@ -37,7 +37,6 @@ import mmud.MudException;
 import mmud.Sex;
 import mmud.database.Database;
 import mmud.database.MudDatabaseException;
-import mmud.races.Race;
 import mmud.rooms.Area;
 import mmud.rooms.Room;
 import simkin.Executable;
@@ -325,7 +324,7 @@ public final class Persons implements Executable
 	 */
 	public static User createUser(String aName, String aPassword,
 			String anAddress, String aRealName, String aEmail, String aTitle,
-			Race aRace, Sex aSex, String aAge, String aLength, String aWidth,
+			String aRace, Sex aSex, String aAge, String aLength, String aWidth,
 			String aComplexion, String aEyes, String aFace, String aHair,
 			String aBeard, String aArms, String aLegs, String aCookie)
 			throws PersonException, MudException

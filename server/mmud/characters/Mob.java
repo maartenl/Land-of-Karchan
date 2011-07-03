@@ -34,7 +34,6 @@ import mmud.MudException;
 import mmud.Sex;
 import mmud.database.Database;
 import mmud.database.MudDatabaseException;
-import mmud.races.Race;
 import mmud.rooms.Room;
 
 /**
@@ -104,7 +103,7 @@ public class Mob extends Person implements CommunicationListener
 	 * @param aRoom
 	 *            the room where this character is.
 	 */
-	Mob(String aName, String aTitle, Race aRace, Sex aSex, String aAge,
+	Mob(String aName, String aTitle, String aRace, Sex aSex, String aAge,
 			String aLength, String aWidth, String aComplexion, String aEyes,
 			String aFace, String aHair, String aBeard, String aArms,
 			String aLegs, boolean aSleep, int aWhimpy, int aDrinkstats,

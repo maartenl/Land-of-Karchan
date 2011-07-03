@@ -53,7 +53,6 @@ import mmud.items.ItemDef;
 import mmud.items.ItemDefs;
 import mmud.items.ItemDoesNotExistException;
 import mmud.items.PersonPositionEnum;
-import mmud.races.Race;
 import mmud.rooms.Room;
 import mmud.rooms.Rooms;
 import simkin.Executable;
@@ -74,7 +73,7 @@ public class Person implements Executable, AttributeContainer
 	private final String theName;
 	private int theRoom;
 	private String theTitle;
-	private final Race theRace;
+	private final String theRace;
 	private final Sex theSex;
 	private final String theAge;
 	private final String theLength;
@@ -158,7 +157,7 @@ public class Person implements Executable, AttributeContainer
 	 * @param aRoom
 	 *            the room where this character is.
 	 */
-	Person(String aName, String aTitle, Race aRace, Sex aSex, String aAge,
+	Person(String aName, String aTitle, String aRace, Sex aSex, String aAge,
 			String aLength, String aWidth, String aComplexion, String aEyes,
 			String aFace, String aHair, String aBeard, String aArms,
 			String aLegs, boolean aSleep, int aWhimpy, int aDrinkstats,
@@ -527,9 +526,9 @@ public class Person implements Executable, AttributeContainer
 	/**
 	 * returns the race of the character.
 	 * 
-	 * @return Race containing the race
+	 * @return String containing the race
 	 */
-	public Race getRace()
+	public String getRace()
 	{
 		return theRace;
 	}

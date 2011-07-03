@@ -1,6 +1,11 @@
 TODO
 ----
 
+- Not important but I noticed alota character sheet links to see peoples list
+of fam and friends dont work at all now
+- option for people to remove people from character pages 
+- And maybe sporadaic deletion for people who don't show up after a year or so.
+- create wishlist with votings for people to indicate what they would want to see.
 - make the admin scripts so that deps can make changes and changes are
 committed to the log and the owner of the object is changed appropriately.
 - Add 'plurals' to the items. (bucket -> buckets)
