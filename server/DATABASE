@@ -543,5 +543,5 @@ alter table mm_mailtable add foreign key (toname) references mm_usertable (name)
 
 ALTER TABLE mm_usertable MODIFY race varchar(50) not null DEFAULT 'human';
 
-alter table mm_usertable add (condition varchar(255));
+alter table mm_usertable add (state varchar(255));
 
