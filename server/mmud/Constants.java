@@ -1245,7 +1245,6 @@ public final class Constants
 		logger.setLevel(logLevel);
 		dlogger.setLevel(Level.FINEST);
                 severelogger.setLevel(Level.FINEST);
-                severelogger.addHandler(null);
 		logger.info("Logging level set to " + level);
 		dlogger.info("Logging level set to FINEST.");
 		logger.finest("\nsevere :" + logger.isLoggable(Level.SEVERE)
