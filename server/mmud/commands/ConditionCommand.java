@@ -50,6 +50,11 @@ public class ConditionCommand extends NormalCommand
                 String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
+                    if (aUser.getState() == null)
+                    {
+			aUser.writeMessage("You do not have a current condition.<br/>\r\n");
+                        return true;
+                    }
 			aUser.writeMessage("Your current condition is \"" + aUser.getState() + "\".<br/>\r\n");
                         return true;
 		}
