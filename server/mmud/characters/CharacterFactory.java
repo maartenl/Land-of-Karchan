@@ -29,7 +29,6 @@ package mmud.characters;
 
 import mmud.MudException;
 import mmud.Sex;
-import mmud.races.Race;
 import mmud.rooms.Room;
 
 /**
@@ -80,7 +79,7 @@ public class CharacterFactory
 	String aRealName,
 	String aEmail,  
 	String aTitle, 
-	Race aRace,
+	String aRace,
 	Sex aSex,  
 	String aAge,   
 	String aLength,
@@ -144,7 +143,7 @@ public class CharacterFactory
 
 	public static Person create(String aName, 
 		String aTitle,
-		Race aRace,
+		String aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,

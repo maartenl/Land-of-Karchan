@@ -45,7 +45,6 @@ import mmud.commands.QuitCommand;
 import mmud.database.Database;
 import mmud.database.MailDb;
 import mmud.database.MudDatabaseException;
-import mmud.races.Race;
 import mmud.rooms.Room;
 import mmud.rooms.Rooms;
 import simkin.ExecutableContext;
@@ -149,7 +148,7 @@ public class User extends mmud.characters.Person
 	 *            in, may be null.
 	 */
 	public User(String aName, String aPassword, String anAddress,
-			String aRealName, String aEmail, String aTitle, Race aRace,
+			String aRealName, String aEmail, String aTitle, String aRace,
 			Sex aSex, String aAge, String aLength, String aWidth,
 			String aComplexion, String aEyes, String aFace, String aHair,
 			String aBeard, String aArms, String aLegs, boolean aSleep,
@@ -228,7 +227,7 @@ public class User extends mmud.characters.Person
 	 *            the sessionpassword
 	 */
 	public User(String aName, String aPassword, String anAddress,
-			String aRealName, String aEmail, String aTitle, Race aRace,
+			String aRealName, String aEmail, String aTitle, String aRace,
 			Sex aSex, String aAge, String aLength, String aWidth,
 			String aComplexion, String aEyes, String aFace, String aHair,
 			String aBeard, String aArms, String aLegs, String aCookie)

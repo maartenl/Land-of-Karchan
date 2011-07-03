@@ -34,7 +34,6 @@ import mmud.Sex;
 import mmud.database.ItemsDb;
 import mmud.database.MudDatabaseException;
 import mmud.items.Item;
-import mmud.races.Race;
 import mmud.rooms.Room;
 
 /**
@@ -82,7 +81,7 @@ public class StdShopKeeper extends Bot implements ShopKeeper
 	 */
 	StdShopKeeper(String aName, 
 		String aTitle,
-		Race aRace,
+		String aRace,
 		Sex aSex,
 		String aAge,
 		String aLength,

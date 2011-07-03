@@ -290,6 +290,12 @@ public final class Constants
 	public final static Logger logger = Logger.getLogger("mmud");
 
 	/**
+	 * the logger for logging severe error messages. Will dump
+         * everything to file.
+	 */
+	public final static Logger severelogger = Logger.getLogger("mmud_severe");
+
+        /**
 	 * the logger for debugging specific players. The log level is set to FINEST.
 	 */
 	public final static Logger dlogger = Logger.getLogger("mmud_debug");
@@ -1236,6 +1242,8 @@ public final class Constants
 		}
 		logger.setLevel(logLevel);
 		dlogger.setLevel(Level.FINEST);
+                severelogger.setLevel(Level.FINEST);
+                severelogger.addHandler(null);
 		logger.info("Logging level set to " + level);
 		dlogger.info("Logging level set to FINEST.");
 		logger.finest("\nsevere :" + logger.isLoggable(Level.SEVERE)

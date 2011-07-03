@@ -37,7 +37,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -56,7 +55,6 @@ import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
 import mmud.characters.UserNotFoundException;
-import mmud.races.RaceFactory;
 import mmud.rooms.Area;
 import mmud.rooms.Room;
 import mmud.rooms.RoomNotFoundException;
@@ -414,8 +412,7 @@ public class Database
 										.getString("realname"), res
 										.getString("email"), res
 										.getString("title"),
-								RaceFactory.createFromString(res
-										.getString("race")),
+                                                                                res.getString("race"),
 								Sex.createFromString(res.getString("sex")), res
 										.getString("age"), res
 										.getString("length"), res
@@ -515,7 +512,7 @@ public class Database
 				myUser = CharacterFactory.create(res.getString("name"), password,
 						res.getString("address"), res.getString("realname"),
 						res.getString("email"), res.getString("title"),
-						RaceFactory.createFromString(res.getString("race")),
+						res.getString("race"),
 						Sex.createFromString(res.getString("sex")), res
 								.getString("age"), res.getString("length"), res
 								.getString("width"), res
@@ -819,9 +816,8 @@ public class Database
 							.create(myName, null, res.getString("address"), res
 									.getString("realname"), res
 									.getString("email"),
-									res.getString("title"), RaceFactory
-											.createFromString(res
-													.getString("race")), Sex
+									res.getString("title"), res
+													.getString("race"), Sex
 											.createFromString(res
 													.getString("sex")), res
 											.getString("age"), res
@@ -860,8 +856,7 @@ public class Database
 				} else
 				{
 					Person myNewChar = CharacterFactory.create(myName, res
-							.getString("title"), RaceFactory
-							.createFromString(res.getString("race")), Sex
+							.getString("title"), res.getString("race"), Sex
 							.createFromString(res.getString("sex")), res
 							.getString("age"), res.getString("length"), res
 							.getString("width"), res.getString("complexion"),
@@ -1654,7 +1649,7 @@ public class Database
 			sqlCreateUser.setString(4, aUser.getTitle());
 			sqlCreateUser.setString(5, aUser.getRealname());
 			sqlCreateUser.setString(6, aUser.getEmail());
-			sqlCreateUser.setString(7, aUser.getRace().toString());
+			sqlCreateUser.setString(7, aUser.getRace());
 			sqlCreateUser.setString(8, aUser.getSex().toString());
 			sqlCreateUser.setString(9, aUser.getAge());
 			sqlCreateUser.setString(10, aUser.getLength());
