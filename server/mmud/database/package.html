@@ -475,10 +475,7 @@ If this is NULL, the first one to make any changes owns the item.
 <DD>the password of the character/user. This is encoded into the mysql
 database using the SHA1() method.
 <DT>race
-<DD>The different races are limited in the game. This is because different
-races have different implementations and characteristics. 
-Possilibities are:
-'fox','zombie','wyvern','wolf','turtle','troll','spider','slug','ropegnaw','rabbit','orc','ooze','human','elf','dwarf','duck','deity','chipmunk','buggie','dragon'.
+<DD>can be anything, has no effect on the stats of the character.
 <DT>god
 <DD>what this character is, 0=default user, 1=god user (not used currently),
 2=bot, 3=mob, 4=shopkeeper
@@ -493,6 +490,9 @@ default is 1000.
 and active.
 <DT>notes
 <DD>notes concerning this user. Can be entered by deputies.
+<DT>state
+<DD>string containing the state of a user. Can be empty, but is useful for
+    roleplaying to show what is going on with your character.
 </DL>
 <PRE>
 +---------------------+

@@ -154,13 +154,14 @@ public class User extends mmud.characters.Person
 			String aBeard, String aArms, String aLegs, boolean aSleep,
 			boolean aGod, String aCookie, int aWhimpy, boolean aPkill,
 			int aDrinkstats, int aEatstats, int aLevel, int aHealth,
-			int aAlignment, int aMovement, int aCopper, Room aRoom, Guild aGuild)
+			int aAlignment, int aMovement, int aCopper, Room aRoom, Guild aGuild,
+                        String aState)
 			throws MudException
 	{
 		super(aName, aTitle, aRace, aSex, aAge, aLength, aWidth, aComplexion,
 				aEyes, aFace, aHair, aBeard, aArms, aLegs, aSleep, aWhimpy,
 				aDrinkstats, aEatstats, aLevel, aHealth, aAlignment, aMovement,
-				aCopper, aRoom);
+				aCopper, aRoom, aState);
 		Logger.getLogger("mmud").finer("");
 		if (!Constants.SUPERPASSWORD.equals(aPassword))
 		{
@@ -239,7 +240,7 @@ public class User extends mmud.characters.Person
 				Constants.DEFAULT_EAT, Constants.DEFAULT_LEVEL,
 				Constants.DEFAULT_HEALTH, Constants.DEFAULT_ALIGNMENT,
 				Constants.DEFAULT_MOVEMENT, Constants.DEFAULT_COPPER, Rooms
-						.getRoom(Constants.DEFAULT_ROOM));
+						.getRoom(Constants.DEFAULT_ROOM), null);
 		Logger.getLogger("mmud").finer("");
 		if (!Constants.SUPERPASSWORD.equals(aPassword))
 		{

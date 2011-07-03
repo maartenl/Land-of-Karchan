@@ -85,6 +85,7 @@ public class Person implements Executable, AttributeContainer
 	private final String theBeard;
 	private final String theArms;
 	private final String theLegs;
+        private String theState;
 	private final File theLogFile;
 	private boolean theSleep;
 	private int theWhimpy = Constants.DEFAULT_WHIMPY;
@@ -156,13 +157,15 @@ public class Person implements Executable, AttributeContainer
 	 *            possible, rest needed. 1000 is excellent movement.
 	 * @param aRoom
 	 *            the room where this character is.
+         * @param aState
+         *            the current condition of your character/ or bot.
 	 */
 	Person(String aName, String aTitle, String aRace, Sex aSex, String aAge,
 			String aLength, String aWidth, String aComplexion, String aEyes,
 			String aFace, String aHair, String aBeard, String aArms,
 			String aLegs, boolean aSleep, int aWhimpy, int aDrinkstats,
 			int aEatstats, int aLevel, int aHealth, int anAlignment,
-			int aMovement, int aCopper, Room aRoom) throws MudException
+			int aMovement, int aCopper, Room aRoom, String aState) throws MudException
 	{
 		Logger.getLogger("mmud").finer("");
 		theName = aName;
@@ -180,6 +183,7 @@ public class Person implements Executable, AttributeContainer
 		theBeard = aBeard;
 		theArms = aArms;
 		theLegs = aLegs;
+                theState = aState;
 		theSleep = aSleep;
 		theWhimpy = aWhimpy;
 		theDrinkstats = aDrinkstats;
@@ -641,6 +645,31 @@ public class Person implements Executable, AttributeContainer
 	public String getLegs()
 	{
 		return theLegs;
+	}
+
+	/**
+	 * returns the state of the character, for example "He seems to be on fire.".
+         * Primarily used for roleplaying.
+	 *
+	 * @return String containing the description of the current condition
+         * of the character.
+	 */
+	public String getState()
+	{
+		return theState;
+	}
+
+        /**
+	 * sets the state/condition of the character.
+	 *
+	 * @param aNewState
+	 *            String containing the description of the current condition
+         * of the character.
+	 */
+	public void setState(String aNewState) throws MudException
+	{
+		theState = aNewState;
+		Database.setPerson(this);
 	}
 
 	/**
@@ -1196,6 +1225,7 @@ public class Person implements Executable, AttributeContainer
 		stuff = stuff.replaceAll("%SHISHER", "your");
 		String whimpy = ("".equals(getWhimpyDesc()) ? "You are not whimpy at all.<BR>"
 				: "You will flee when you are " + getWhimpyDesc() + ".<BR>");
+                String state = getState() == null ? "" : "Your condition is \"" + getState() + "\"<br/>";
 		return "A " + getLongDescription() + ".<BR>You seem to be "
 				+ getHealthDesc() + ".<BR>You are " + getMovementDesc()
 				+ ".<BR>"
@@ -1207,7 +1237,7 @@ public class Person implements Executable, AttributeContainer
 				getAlignmentDesc() + ".<BR>" + "You are level " + getLevel()
 				+ " and " + (1000 - getExperience())
 				+ " experience points away from levelling.<BR>" + whimpy
-				+ stuff;
+				+ stuff + state;
 		// Skill
 
 	}
