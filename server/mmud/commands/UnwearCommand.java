@@ -47,6 +47,14 @@ import mmud.items.PersonPositionEnum;
 public class UnwearCommand extends NormalCommand
 {
 
+        /**
+         * For special purposes of the "UndressCommand".
+         */
+	public UnwearCommand()
+	{
+            super("");
+	}
+
 	public UnwearCommand(String aRegExpr)
 	{
 		super(aRegExpr);
@@ -143,18 +151,28 @@ public class UnwearCommand extends NormalCommand
 			}
 			if (success)
 			{
-				// transfer item to other person
-				myItem.setWearing(null);
-				Database.writeLog(aUser.getName(), "remove " + myItem
-						+ " from " + position);
-				Persons.sendMessage(aUser, "%SNAME remove%VERB2 "
-						+ myItem.getDescription() + " from " + position
-						+ ".<BR>\r\n");
-				return true;
+                                return stopWearing(myItem, aUser, position);
 			}
 		}
 		return false;
 	}
+
+        public boolean stopWearing(Item item, User aUser, PersonPositionEnum position)
+                throws ItemException, ParseException,
+			MudException
+        {
+            if (item == null)
+            {
+                return false;
+            }
+            item.setWearing(null);
+            Database.writeLog(aUser.getName(), "remove " + item
+                            + " from " + position);
+            Persons.sendMessage(aUser, "%SNAME remove%VERB2 "
+                            + item.getDescription() + " from " + position
+                            + ".<BR>\r\n");
+            return true;
+        }
 
 	public Command createCommand()
 	{

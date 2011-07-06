@@ -80,7 +80,7 @@ import mmud.commands.InventoryCommand;
 import mmud.commands.LockCommand;
 import mmud.commands.LookCommand;
 import mmud.commands.MeCommand;
-import mmud.commands.NormalCommand;
+import mmud.commands.UndressCommand;
 import mmud.commands.NorthCommand;
 import mmud.commands.OpenCommand;
 import mmud.commands.PkillCommand;
@@ -754,6 +754,8 @@ public final class Constants
 				"wear( (\\w|-)+){1,4} on (\\w)+"));
 		theCommandStructure.put("remove", new UnwearCommand(
 				"remove( (\\w|-)+){1,4} from (\\w)+"));
+		theCommandStructure.put("undress", new UndressCommand(
+				"undress"));
 		theCommandStructure.put("wield", new WieldCommand(
 				"wield( (\\w|-)+){1,4} with (\\w)+"));
 		theCommandStructure.put("unwield", new UnwieldCommand(
