@@ -46,6 +46,14 @@ import mmud.items.PersonPositionEnum;
 public class UnwieldCommand extends NormalCommand
 {
 
+        /**
+         * For special purposes of the "DisarmCommand".
+         */
+	public UnwieldCommand()
+	{
+            super("");
+	}
+
 	public UnwieldCommand(String aRegExpr)
 	{
 		super(aRegExpr);
@@ -113,17 +121,29 @@ public class UnwieldCommand extends NormalCommand
 			if (success)
 			{
 				// transfer item to other person
-				myItem.setWearing(null);
-				Database.writeLog(aUser.getName(), "stops wielding " + myItem
-						+ " " + position);
-				Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
-						+ myItem.getDescription() + " " + position
-						+ ".<BR>\r\n");
-				return true;
+
+				return stopWielding(myItem, aUser, position);
 			}
 		}
 		return false;
 	}
+
+        public boolean stopWielding(Item item, User aUser, PersonPositionEnum position)
+        throws ItemException, ParseException,
+                MudException
+        {
+            if (item == null)
+            {
+                return false;
+            }
+            item.setWearing(null);
+            Database.writeLog(aUser.getName(), "stops wielding " + item
+                            + " " + position);
+            Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
+                            + item.getDescription() + " " + position
+                            + ".<BR>\r\n");
+            return true;
+        }
 
 	public Command createCommand()
 	{
