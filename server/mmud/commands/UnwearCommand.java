@@ -64,6 +64,10 @@ public class UnwearCommand extends NormalCommand
 	public boolean run(User aUser) throws ItemException, ParseException,
 			MudException
 	{
+	        if (Constants.debugOn(aUser.getName()))
+		{   
+		        Logger.getLogger("mmud_debug").finest("run");
+                }
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
 		// this
@@ -157,7 +161,7 @@ public class UnwearCommand extends NormalCommand
 		return false;
 	}
 
-        public boolean stopWearing(Item item, User aUser, PersonPositionEnum position)
+        public static boolean stopWearing(Item item, User aUser, PersonPositionEnum position)
                 throws ItemException, ParseException,
 			MudException
         {

@@ -55,6 +55,10 @@ public class WieldCommand extends NormalCommand
 	public boolean run(User aUser) throws ItemException, ParseException,
 			MudException
 	{
+	        if (Constants.debugOn(aUser.getName()))
+		{   
+		        Logger.getLogger("mmud_debug").finest("run");
+		}
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
 		// this

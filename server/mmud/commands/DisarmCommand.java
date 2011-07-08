@@ -34,6 +34,7 @@ import mmud.characters.User;
 import mmud.database.ItemsDb;
 import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
+import mmud.Constants;
 
 /**
  * You start removing what you are carrying in either left hand, right hand
@@ -52,23 +53,27 @@ public class DisarmCommand extends NormalCommand
 	public boolean run(User aUser) throws ItemException, ParseException,
 			MudException
 	{
+	        if (Constants.debugOn(aUser.getName()))
+		{   
+		        Logger.getLogger("mmud_debug").finest("run");
+                }
 		Logger.getLogger("mmud").finer("");
                 UnwieldCommand unwield = new UnwieldCommand();
-                return unwield(unwield, aUser, PersonPositionEnum.WIELD_LEFT) ||
-                unwield(unwield, aUser, PersonPositionEnum.WIELD_RIGHT) ||
-                unwield(unwield, aUser, PersonPositionEnum.WIELD_BOTH);
+                return unwield(aUser, PersonPositionEnum.WIELD_LEFT) |
+                unwield(aUser, PersonPositionEnum.WIELD_RIGHT) |
+                unwield(aUser, PersonPositionEnum.WIELD_BOTH);
 	}
 
-        private boolean unwield(UnwieldCommand unwieldcom, User aUser, PersonPositionEnum position)
+        private boolean unwield(User aUser, PersonPositionEnum position)
                 throws ItemException, ParseException,
 			MudException
         {
-            return unwieldcom.stopWielding(ItemsDb.getWornItemFromChar(aUser, position), aUser, position);
+            return UnwieldCommand.stopWielding(ItemsDb.getWornItemFromChar(aUser, position), aUser, position);
         }
 
 	public Command createCommand()
 	{
-		return new UnwearCommand(getRegExpr());
+		return new DisarmCommand(getRegExpr());
 	}
 
 }
