@@ -81,6 +81,7 @@ import mmud.commands.LockCommand;
 import mmud.commands.LookCommand;
 import mmud.commands.MeCommand;
 import mmud.commands.UndressCommand;
+import mmud.commands.DisarmCommand;
 import mmud.commands.NorthCommand;
 import mmud.commands.OpenCommand;
 import mmud.commands.PkillCommand;
@@ -756,6 +757,8 @@ public final class Constants
 				"remove( (\\w|-)+){1,4} from (\\w)+"));
 		theCommandStructure.put("undress", new UndressCommand(
 				"undress"));
+		theCommandStructure.put("disarm", new DisarmCommand(
+				"disarm"));
 		theCommandStructure.put("wield", new WieldCommand(
 				"wield( (\\w|-)+){1,4} with (\\w)+"));
 		theCommandStructure.put("unwield", new UnwieldCommand(
