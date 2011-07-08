@@ -63,6 +63,10 @@ public class UnwieldCommand extends NormalCommand
 	public boolean run(User aUser) throws ItemException, ParseException,
 			MudException
 	{
+	        if (Constants.debugOn(aUser.getName()))
+		{   
+		        Logger.getLogger("mmud_debug").finest("run");
+		}
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
 		// this
@@ -128,22 +132,22 @@ public class UnwieldCommand extends NormalCommand
 		return false;
 	}
 
-        public boolean stopWielding(Item item, User aUser, PersonPositionEnum position)
-        throws ItemException, ParseException,
-                MudException
-        {
-            if (item == null)
-            {
-                return false;
-            }
-            item.setWearing(null);
-            Database.writeLog(aUser.getName(), "stops wielding " + item
-                            + " " + position);
-            Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
-                            + item.getDescription() + " " + position
-                            + ".<BR>\r\n");
-            return true;
-        }
+	public static boolean stopWielding(Item item, User aUser, PersonPositionEnum position)
+	throws ItemException, ParseException,
+		MudException
+	{
+	    if (item == null)
+	    {
+		return false;
+	    }
+	    item.setWearing(null);
+	    Database.writeLog(aUser.getName(), "stops wielding " + item
+			    + " " + position);
+	    Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
+			    + item.getDescription() + " " + position
+			    + ".<BR>\r\n");
+	    return true;
+	}
 
 	public Command createCommand()
 	{
