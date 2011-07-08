@@ -97,6 +97,9 @@ events in thelife of characters and administrators.</TD></TR>
 HREF="#mm_oldlog">mm_oldlog</A></TD><TD>Logging table backup, contains
 everything older than a day.</TD></TR> 
 <TR valign=top><TD><A
+HREF="#mm_macro">mm_macro</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
+macros created by players in the game.</TD></TR> 
+<TR valign=top><TD><A
 HREF="#mm_mailtable">mm_mailtable</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
 mud mail of characters in the game</TD></TR> 
 <TR valign=top><TD><A
@@ -528,6 +531,29 @@ should not be a problem unless rather large conversations take place.
 | stamp               |
 | name                |
 | command             |
++---------------------+
+
+</PRE>
+<H4><A HREF="#contents"><A NAME="mm_macro">mm_macro</A></H4>
+<DL>
+<DT>id
+<DD>the id of the macro, a unique reference id that is automatically
+assigned.
+<DT>macroname
+<DD>the name of the macro, defined by the user.
+<DT>contents
+<DD>contents of the macro.
+<DT>name
+<DD>name of the user that defined this macro.
+</DL>
+<PRE>
++---------------------+
+| mm_macro            |
++---------------------+
+|*id                  |
+| name                |
+| macroname           |
+| contents            |
 +---------------------+
 
 </PRE>
