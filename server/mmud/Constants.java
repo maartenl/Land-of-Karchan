@@ -71,6 +71,7 @@ import mmud.commands.ConditionCommand;
 import mmud.commands.EmotionToCommand;
 import mmud.commands.EyebrowCommand;
 import mmud.commands.FightCommand;
+import mmud.commands.MacroCommand;
 import mmud.commands.GetCommand;
 import mmud.commands.GiveCommand;
 import mmud.commands.GoCommand;
@@ -706,6 +707,7 @@ public final class Constants
 		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
 		theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
+		theCommandStructure.put("macro", new MacroCommand("macro( (\\w)+ .+)?"));
 		theCommandStructure
 				.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
 		theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));

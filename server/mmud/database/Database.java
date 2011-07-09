@@ -36,7 +36,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -51,6 +53,7 @@ import mmud.characters.CharacterFactory;
 import mmud.characters.Guild;
 import mmud.characters.GuildFactory;
 import mmud.characters.GuildRank;
+import mmud.characters.Macro;
 import mmud.characters.Person;
 import mmud.characters.Persons;
 import mmud.characters.User;
@@ -151,7 +154,13 @@ public class Database
 	private static String sqlMoveLogs1 = "insert into mm_oldlog select * from mm_log where date(creation) != date(now())";
 	private static String sqlMoveLogs2 = "delete from mm_log where date(creation) != date(now())";
 
-	/**
+        private static String sqlSetMacro = "replace into mm_macro (name, macroname, contents) values(?, ?, ?)";
+        private static String sqlGetMacro = "select * from mm_macro where name = ? and macroname = ?";
+        private static String sqlDeleteMacro = "delete mm_macro where name = ? and macroname = ?";
+        private static String sqlListMacro = "select * form mm_macro where name = ?";
+
+
+        /**
 	 * Connects to the database using an url. The url looks something like
 	 * "jdbc:mysql://localhost.localdomain/mud?user=root&password=". Uses the
 	 * classname in Constants.dbjdbcclass to get the right class for interfacing
@@ -1214,6 +1223,153 @@ public class Database
 	}
 
 	/**
+	 * Retrieves the macros a user has defined. Maybe an empty list.
+	 *
+	 * @return List<Macro>
+	 * @param aPerson
+	 *            the person that is being asked the question.
+	 */
+	public static List<Macro> getMacros(Person aPerson)
+			throws MudDatabaseException
+	{
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson);
+
+		List<Macro> result = new ArrayList<Macro>();
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetMacros = prepareStatement(sqlListMacro);
+			statGetMacros.setString(1, aPerson.getName());
+			res = statGetMacros.executeQuery();
+			if (res == null)
+			{
+				return result;
+			}
+			while (res.next())
+			{
+				Macro newMacro = new Macro(res.getString("macroname"), res.getString("contents"));
+                                result.add(newMacro);
+			}
+			res.close();
+			statGetMacros.close();
+		} catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error getting all macros.", e);
+		}
+		Logger.getLogger("mmud").finer("returns " + result);
+		return result;
+	}
+
+	/**
+	 * Retrieves a specific macro a user has defined.
+	 *
+	 * @return Macro, or null if not found.
+	 * @param aPerson
+	 *            the person that is being asked the question.
+         * @param macroname the name of the macro to find.
+	 */
+	public static Macro getMacro(Person aPerson, String macroname)
+			throws MudDatabaseException
+	{
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson);
+
+		Macro result = null;
+		ResultSet res;
+		try
+		{
+
+			PreparedStatement statGetMacro = prepareStatement(sqlGetMacro);
+                        statGetMacro.setString(1, aPerson.getName());
+			statGetMacro.setString(2, macroname);
+			res = statGetMacro.executeQuery();
+			if (res == null)
+			{
+				return result;
+			}
+			if (res.next())
+			{
+				result = new Macro(res.getString("macroname"), res.getString("contents"));
+			}
+			res.close();
+			statGetMacro.close();
+		} catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error getting a macro.", e);
+		}
+		Logger.getLogger("mmud").finer("returns " + result);
+		return result;
+	}
+
+        /**
+	 * Update or add the macro to the database. It assumes that if
+         * the macro does not yet have an id, it's supposed to be a new one.
+	 *
+	 * @param aPerson
+	 *            the person that is being asked the question.
+         * @param macro the macro to update, or save.
+	 */
+	public static void setMacro(Person aPerson, Macro macro)
+			throws MudDatabaseException
+	{
+		Logger.getLogger("mmud").finer(
+				"aPerson=" + aPerson);
+		try
+		{
+                        // "replace mm_macro (name, macroname, contents) values(?, ?, ?)";
+                        PreparedStatement statSetMacro = prepareStatement(sqlSetMacro);
+                        statSetMacro.setString(1, aPerson.getName());
+                        statSetMacro.setString(2, macro.getMacroname());
+                        statSetMacro.setString(3, macro.getContents());
+			int res = statSetMacro.executeUpdate();
+			if (res != 1)
+			{
+				// error, not correct number of results returned
+				throw new MudDatabaseException("macro not found/stored.");
+			}
+
+			statSetMacro.close();
+		} catch (SQLException e)
+		{
+			throw new MudDatabaseException("database error setting macro.", e);
+		}
+	}
+
+        /**
+         * Removed a macro.
+         *
+         * @param aPerson
+         *            the person that is being asked the question.
+         * @param macroname the macro to remove.
+         */
+        public static void removeMacro(Person aPerson, String macroname)
+                        throws MudDatabaseException
+        {
+                Logger.getLogger("mmud").finer(
+                                "aPerson=" + aPerson);
+                try
+                {
+                        PreparedStatement statRemoveMacro = prepareStatement(sqlDeleteMacro);
+                        statRemoveMacro.setString(1, aPerson.getName());
+                        statRemoveMacro.setString(2, macroname);
+                        int res = statRemoveMacro.executeUpdate();
+                        if (res != 1)
+                        {
+                                // error, not correct number of results
+                                // returned
+                                // ignore.
+                        }
+
+                        statRemoveMacro.close();
+                } catch (SQLException e)
+                {
+                        throw new MudDatabaseException("database error removing macro.", e);
+                }
+        }
+
+        /**
 	 * Retrieves the source of a method from the database.
 	 * 
 	 * @return String containing the source of the method. Returns null if the
