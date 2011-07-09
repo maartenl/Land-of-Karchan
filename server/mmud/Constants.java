@@ -707,7 +707,7 @@ public final class Constants
 		theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 		theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
 		theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
-		theCommandStructure.put("macro", new MacroCommand("macro( (\\w)+ .+)?"));
+		theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
 		theCommandStructure
 				.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
 		theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));

@@ -156,8 +156,8 @@ public class Database
 
         private static String sqlSetMacro = "replace into mm_macro (name, macroname, contents) values(?, ?, ?)";
         private static String sqlGetMacro = "select * from mm_macro where name = ? and macroname = ?";
-        private static String sqlDeleteMacro = "delete mm_macro where name = ? and macroname = ?";
-        private static String sqlListMacro = "select * form mm_macro where name = ?";
+        private static String sqlDeleteMacro = "delete from mm_macro where name = ? and macroname = ?";
+        private static String sqlListMacro = "select * from mm_macro where name = ?";
 
 
         /**
@@ -1324,12 +1324,6 @@ public class Database
                         statSetMacro.setString(2, macro.getMacroname());
                         statSetMacro.setString(3, macro.getContents());
 			int res = statSetMacro.executeUpdate();
-			if (res != 1)
-			{
-				// error, not correct number of results returned
-				throw new MudDatabaseException("macro not found/stored.");
-			}
-
 			statSetMacro.close();
 		} catch (SQLException e)
 		{

@@ -546,12 +546,10 @@ ALTER TABLE mm_usertable MODIFY race varchar(50) not null DEFAULT 'human';
 alter table mm_usertable add (state varchar(255));
 
 create table mm_macro (
-	id bigint(20) NOT NULL AUTO_INCREMENT,
 	name varchar(20) NOT NULL,
 	macroname varchar(20) not null,
 	contents text not null,
-	PRIMARY KEY (`id`),
-	UNIQUE KEY (name, macroname) 
+	PRIMARY KEY (`name`, macroname)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 alter table mm_macro add foreign key (name) references mm_usertable (name);
