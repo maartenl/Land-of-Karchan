@@ -86,7 +86,7 @@ public class MacroCommand extends NormalCommand
         {
             List<Macro> list = Database.getMacros(aUser);
             Logger.getLogger("mmud").finer("writeMacros");
-            StringBuffer sb = new StringBuffer("<H1>Macros</H1><table><tr><td>macro</td><td>contents</td></tr>");
+            StringBuffer sb = new StringBuffer("<h1>Macros</h1><table><tr><td><b>macro</b></td><td><b>contents</b></td></tr>");
             for (Macro m : list)
             {
                 sb.append("<tr><td>" + m.getMacroname() + "</td><td>" + m.getContents() + "</td></tr>");

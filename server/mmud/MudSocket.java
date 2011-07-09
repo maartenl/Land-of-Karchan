@@ -36,6 +36,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mmud.characters.Macro;
 import mmud.characters.InvalidFrameException;
 import mmud.characters.Person;
 import mmud.characters.PersonException;
@@ -697,7 +698,51 @@ public class MudSocket implements Runnable
 			}
 			myUser.setFrames(aFrames);
 			StringBuffer returnStuff;
-			returnStuff = new StringBuffer(gameMain(myUser, aCommand));
+			
+			if (aCommand.indexOf(';') != -1 && (!aCommand.toLowerCase().startsWith("macro ")))
+			{
+				Logger.getLogger("mmud").finest("multiple commands");
+				if (Constants.debugOn(aName))
+				{
+					Logger.getLogger("mmud_debug").logp(Level.FINEST, this.getClass().getName(), "executeMud", "multiple commands");
+				}
+				returnStuff = new StringBuffer(runMultipleCommands(myUser, aCommand));
+			} 
+			else
+			{
+				String[] parsedCommand = aCommand.split(" ");
+				Macro macro = null;
+				if (parsedCommand.length <= 2 && (!aCommand.toLowerCase().startsWith("macro ")))
+				{
+					macro = Database.getMacro(myUser, parsedCommand[0]);
+				}
+				if (macro == null || macro.getContents() == null || macro.getContents().trim().equals(""))
+				{
+					// single command
+					Logger.getLogger("mmud").finest("single command");
+					if (Constants.debugOn(aName))
+					{
+						Logger.getLogger("mmud_debug").logp(Level.FINEST, this.getClass().getName(), "executeMud", "single command");
+					}
+					returnStuff = new StringBuffer(gameMain(myUser, aCommand));
+				}
+				else
+				{
+					Logger.getLogger("mmud").finest("macro");
+					if (Constants.debugOn(aName))
+					{
+						Logger.getLogger("mmud_debug").logp(Level.FINEST, this.getClass().getName(), "executeMud", "macro");
+					}
+					aCommand = macro.getContents();
+					// macro
+					if (parsedCommand.length == 2)
+					{
+						aCommand = aCommand.replaceAll("%t", parsedCommand[1]);
+					}
+					returnStuff = new StringBuffer(runMultipleCommands(myUser, aCommand));
+				}
+				
+			}
 			if (myUser.getFrames() != 2)
 			{
 				returnStuff.append("<HR><FONT Size=1><DIV ALIGN=right>");
@@ -715,6 +760,19 @@ public class MudSocket implements Runnable
 			e.printStackTrace();
 			return Database.getErrorMessage(e);
 		}
+	}
+
+	private String runMultipleCommands(User aUser, String aCommand)
+		throws MudException
+	{
+		// multiple commands
+		String[] splitted = aCommand.split(";");
+		String stuff = null;
+		for (String str : splitted)
+		{
+			stuff = gameMain(aUser, str.trim());
+		}
+		return stuff;
 	}
 
 	/**
