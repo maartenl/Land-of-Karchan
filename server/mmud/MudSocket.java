@@ -699,7 +699,7 @@ public class MudSocket implements Runnable
 			myUser.setFrames(aFrames);
 			StringBuffer returnStuff;
 			
-			if (aCommand.indexOf(';') != -1 && (!aCommand.toLowerCase().startsWith("macro ")))
+			if (aCommand.contains(" ; ") && (!aCommand.toLowerCase().startsWith("macro ")))
 			{
 				Logger.getLogger("mmud").finest("multiple commands");
 				if (Constants.debugOn(aName))
@@ -766,7 +766,7 @@ public class MudSocket implements Runnable
 		throws MudException
 	{
 		// multiple commands
-		String[] splitted = aCommand.split(";");
+		String[] splitted = aCommand.split(" ; ");
 		String stuff = null;
 		for (String str : splitted)
 		{
