@@ -35,12 +35,21 @@
       var showMail = function(object, data) {
         if (window.console) console.log("showMail");
         if (window.console) console.log(object);
+        if (window.console) console.log(data);
         var data_pos = $(object.target).parent().parent().attr("id");
         data_pos = data_pos.substring(5);
+        if (window.console) console.log(data_pos);
         var formatted_html = "<p><b>Subject</b>: " + data.mmudMail[data_pos].subject + "</p>" +
           "<p><b>From</b>: " + data.mmudMail[data_pos].name + "</p>" +
           "<p><b>Sent</b>: " + data.mmudMail[data_pos].whensent + "</p>" +
           "<p><b>Body</b>:</p><div> " + data.mmudMail[data_pos].body;
+        $.ajax({
+          type: 'GET',
+          // url: "/resources/private/Karn/mail/12354", // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.mmudMail[data_pos].id, // Which url should be handle the ajax request.
+          dataType: 'json', //define the type of data that is going to get back from the server
+          data: {'lok' : $.cookie("karchanpassword")} //Pass a key/value pair
+        }); // end of ajax
         if (data.mmudMail[data_pos].item_id == 0)
         {
           formatted_html += "</div>" +
@@ -108,11 +117,23 @@
         formatted_html += "<tbody>";
         if (data != undefined && data.mmudMail != undefined)
         {
+          var bold = "";
+          var unbold = "";
           for(i=0; i<data.mmudMail.length; i++) 
           { 
+            if (data.mmudMail[i].haveread == "false")
+            {
+              bold = "<b>";
+              unbold = "</b>";
+            }
+            else
+            {
+              bold = "";
+              unbold = "";
+            }
             formatted_html += "<tr id=\"data_" + i + "\" class=\""
-              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + data.mmudMail[i].subject + "</td><td>" + data.mmudMail[i].name + 
-              "</td><td>" + data.mmudMail[i].whensent + 
+              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + bold + data.mmudMail[i].subject + unbold + "</td><td>" + bold + data.mmudMail[i].name + 
+              unbold + "</td><td>" + bold + data.mmudMail[i].whensent + unbold + 
               "</td><td><a href=\"#\">Read</a> <a href=\"#\">Delete</a></td></tr>";
           }
         }

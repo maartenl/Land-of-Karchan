@@ -19,6 +19,38 @@
         return results[1] || 0;
       }
 
+      $('#block-block-2').each(function() {
+        if ($.cookie("karchanname") != undefined &&
+          $.cookie("karchanpassword") != undefined &&
+          $.cookie("karchanname") != "" &&
+          $.cookie("karchanpassword") != "")
+        {
+          var stuff = "";
+          if ($.cookie("newmail") == undefined)
+          {
+            $.ajax({
+              type: 'GET',
+              url: "/resources/private/" + $.cookie("karchanname") + "/newmail?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+              success: (function() {
+                $.cookie('newmail', "true", { path: '/' });
+              }),
+              async: false,
+              error: (function() {
+                $.cookie('newmail', "false", { path: '/' });
+                }),
+              complete: (function() { if (window.console) console.log("complete"); }),        
+              dataType: 'json', //define the type of data that is going to get back from the server
+              data: 'js=1' //Pass a key/value pair
+            }); // end of ajax
+          }
+          if ($.cookie("newmail") == "true")
+          {
+            stuff = ". You have new mail";
+          }
+          $('#block-block-2').html("<div class=\"content\">Welcome, " + $.cookie("karchanname") + stuff + ".</div>");
+        }
+      });
+
       // $('.example', context).click(function () {
       // $(this).next('ul').toggle('show');
       // alert("Karn is working on it, yes...");
@@ -407,6 +439,8 @@
           $('#karchan_mail').html(""); // data.products);
           return;
         }
+        // turn off newmail, after all, we're reading the mail now, aren't we?
+        $.cookie('newmail', "false", { path: '/' });
         $.ajax({
           type: 'GET',
           // url: "/resources/private/Karn/mail/", // Which url should be handle the ajax request.
