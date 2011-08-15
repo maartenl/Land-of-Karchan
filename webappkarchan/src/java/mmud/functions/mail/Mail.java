@@ -5,28 +5,13 @@
 
 package mmud.functions.mail;
 
-import mmud.functions.Utils;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.functions.Authentication;
@@ -74,6 +59,12 @@ public class Mail {
 
     public static final String SETIDITEMDEF_IN_MAIL_SQL = "update mm_mailtable set item_id = ? where id = ?";
 
+    public static final String TURNON_HAVEREAD_IN_MAIL_SQL = "update mm_mailtable set haveread = 1 where id = ?";
+
+    public static final String TURNOFF_NEWMAIL_IN_MAIL_SQL = "update mm_mailtable set newmail = 0 where toname = ?";
+
+    public static final String CHECK_NEWMAIL_IN_MAIL_SQL = "select 1 from mm_mailtable where newmail = 1 and deleted = 0 and toname = ?";
+
     public static final String CHECKITEMDEF_SQL = "select 1 from mm_items where id = ?";
 
     public static final String CREATEMAILITEM_IN_INVENTORY_SQL = "insert into mm_charitemtable (id, belongsto) values(?, ?)";
@@ -111,6 +102,11 @@ public class Mail {
                         rst.getBoolean("deleted"), rst.getInt("item_id"));
                 res.add(mail);
             }
+
+            // turn off the "newmail" sign.
+            stmt=con.prepareStatement(TURNOFF_NEWMAIL_IN_MAIL_SQL);
+            stmt.setString(1, name);
+            stmt.executeUpdate();
         }
         catch(WebApplicationException e)
         {
@@ -132,6 +128,12 @@ public class Mail {
         return res;
     }
 
+    /**
+     * Creates a new mudmail.
+     * @param newMail the new mud mail to create
+     * @param name the name of the person to create the mudmail from.
+     * @return true upon success, false otherwise.
+     */
     public boolean newMail(MmudMail newMail, String name)
     {
         itsLog.entering(this.getClass().getName(), "newMail");
@@ -196,6 +198,15 @@ public class Mail {
             (new Authentication()).authentication(con, name, lok);
 
             res = getMyMail(con, name, id, lok);
+
+            // turn off the "have not read" sign.
+            stmt=con.prepareStatement(TURNON_HAVEREAD_IN_MAIL_SQL);
+            stmt.setLong(1, id);
+            int result = stmt.executeUpdate();
+            if (result != 1)
+            {
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
+            }
         }
         catch(WebApplicationException e)
         {
@@ -429,5 +440,38 @@ public class Mail {
         }
 
         itsLog.exiting(this.getClass().getName(), "deleteMail");
+    }
+
+    public boolean hasNewMail(String name, String lok) {
+        itsLog.entering(this.getClass().getName(), "hasNewMail");
+        Connection con=null;
+        PreparedStatement stmt=null;
+        ResultSet rst=null;
+        boolean result = false;
+        try
+        {
+            con = Utils.getDatabaseConnection();
+            (new Authentication()).authentication(con, name, lok);
+
+            stmt=con.prepareStatement(CHECK_NEWMAIL_IN_MAIL_SQL);
+            stmt.setString(1, name);
+            rst=stmt.executeQuery();
+            if(rst.next())
+            {
+                result = true;
+            }
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "getMyMail", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        finally
+        {
+            if (rst != null) {try {rst.close();} catch (Exception e){}}
+            if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            itsLog.finest(this.getClass().getName() + "hasNewMail: resultset closed.");
+        }
+        return result;
     }
 }

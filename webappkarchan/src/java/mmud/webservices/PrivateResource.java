@@ -29,14 +29,6 @@ maarten_l@yahoo.com
 package mmud.webservices;
 
 import mmud.webservices.webentities.CharacterInfo;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -45,7 +37,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
@@ -126,6 +117,27 @@ public class PrivateResource {
     {
         itsLog.entering(this.getClass().getName(), "listMail");
         return (new Mail()).listMail(name, offset, lok);
+    }
+
+    /**
+     * Returns a boolean, indicating if you have new mail. (i.e. mail since you last checked)
+     * @param lok the hash to use for verification of the user, is the lok setting
+     * in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+     * BAD_REQUEST if an unexpected exception crops up.
+     */
+    @GET
+    @Path("{name}/newmail")
+    public Response newMail(@PathParam("name") String name, @QueryParam("lok") String lok)
+    {
+        itsLog.entering(this.getClass().getName(), "newMail");
+        Boolean result = (new Mail()).hasNewMail(name, lok);
+        if (!result)
+        {
+            return Response.noContent().build();
+        }
+        return Response.ok().build();
     }
 
     /**
