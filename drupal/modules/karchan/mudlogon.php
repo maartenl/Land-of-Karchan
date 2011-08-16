@@ -77,12 +77,12 @@ _karchan_log("mudlogin " . $name);
 	// retrieve cookie that is always sent when attempting a login.
 	$cookie = $readme = fgets ($fp,128);
 	_karchan_log("mudlogin " . $readme);
-	setcookie("karchanname", $name);
+	setcookie("karchanname", $name, 0, "/");
 	if (strstr($cookie, "sessionpassword=") != FALSE)
 	{
 		$cookie = substr($cookie, 16);
 		$cookie = substr_replace($cookie, "", -1, 1);
-		setcookie("karchanpassword", $cookie);
+		setcookie("karchanpassword", $cookie, 0, "/");
         	$readline = fgets ($fp,128);
                 $_SESSION["karchan_errormsg"] = $readline;
 	}
