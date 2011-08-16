@@ -19,6 +19,11 @@
         return results[1] || 0;
       }
 
+      $('#remove-all-cookies').each(function() {
+        $.cookie('karchanname', null, { path: '/' });
+        $.cookie('karchanpassword', null, { path: '/' });
+        $.cookie('newmail', null, { path: '/' });
+      });
       $('#block-block-2').each(function() {
         if ($.cookie("karchanname") != undefined &&
           $.cookie("karchanpassword") != undefined &&
@@ -31,8 +36,14 @@
             $.ajax({
               type: 'GET',
               url: "/resources/private/" + $.cookie("karchanname") + "/newmail?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
-              success: (function() {
-                $.cookie('newmail', "true", { path: '/' });
+              success: (function(data1, data2, data3) {
+                if (data3.status == 204) {
+                  $.cookie('newmail', "false", { path: '/' });
+                }
+                else
+                {
+                  $.cookie('newmail', "true", { path: '/' });
+                }
               }),
               async: false,
               error: (function() {
