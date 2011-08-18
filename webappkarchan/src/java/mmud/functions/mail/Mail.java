@@ -234,6 +234,7 @@ public class Mail {
     {
         PreparedStatement stmt=null;
         ResultSet rst=null;
+        MmudMail result = null;
         try
         {
             stmt=con.prepareStatement(GETMAIL_SQL);
@@ -243,10 +244,8 @@ public class Mail {
             rst=stmt.executeQuery();
             if(rst.next())
             {
-                MmudMail result = new MmudMail(null, rst.getString("toname"), rst.getString("name"), rst.getString("subject"), rst.getString("body"), rst.getLong("id"),
+                result = new MmudMail(null, rst.getString("toname"), rst.getString("name"), rst.getString("subject"), rst.getString("body"), rst.getLong("id"),
                         rst.getBoolean("haveread"), rst.getBoolean("newmail"), rst.getDate("whensent"), rst.getBoolean("deleted"), rst.getInt("item_id"));
-
-                return result;
             }
             else
             {
@@ -264,6 +263,7 @@ public class Mail {
             if (stmt != null) {try {stmt.close();} catch (Exception e){}}
             itsLog.finest(this.getClass().getName() + "getMyMail: resultset closed.");
         }
+        return result;
     }
 
     public void createMailItem(String name, String lok, long id, int item)
@@ -470,6 +470,7 @@ public class Mail {
         {
             if (rst != null) {try {rst.close();} catch (Exception e){}}
             if (stmt != null) {try {stmt.close();} catch (Exception e){}}
+            if (con != null) {try {con.close();} catch (Exception e){}}
             itsLog.finest(this.getClass().getName() + "hasNewMail: resultset closed.");
         }
         return result;
