@@ -20,7 +20,7 @@ import javax.sql.DataSource;
  */
 public class Utils {
 
-    private static final String POLICY_FILE_LOCATION = "/home/maartenl/mmud/server/antisamy-myspace-1.4.4.xml";
+    private static final String POLICY_FILE_LOCATION = "/usr/share/glassfish3/glassfish/domains/domain1/config/antisamy-myspace-1.4.4.xml";
 
     private static Logger itsLog = Logger.getLogger("mmudrest");
 
