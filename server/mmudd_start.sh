@@ -11,7 +11,7 @@
 #
 
 # paths and names and stuff
-mudpath=/home/maartenl/mmud/server
+mudpath=/home/maartenl/Land-of-Karchan/server
 prog=mmud
 
 # start the darned thing

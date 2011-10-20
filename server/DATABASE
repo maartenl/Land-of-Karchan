@@ -553,3 +553,5 @@ create table mm_macro (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 alter table mm_macro add foreign key (name) references mm_usertable (name);
+
+alter table mm_usertable change state state text;
