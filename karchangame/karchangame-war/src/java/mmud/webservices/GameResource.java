@@ -62,15 +62,16 @@ public class GameResource
         GameBeanLocal example;
         try {
             InitialContext initialContext = new InitialContext();
-
-            // INFO: Portable JNDI names for EJB MyFirstBean :
-            // java:global/karchan_core/karchan_core-ejb/ConverterBean
             example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
-            return example.helloWorld();
+            if (example == null)
+            {
+                throw new WebApplicationException(Status.BAD_REQUEST);
+            }
         } catch (NamingException ex) {
             Logger.getLogger(GameResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
+        return example.helloWorld();
     }
 
     /**

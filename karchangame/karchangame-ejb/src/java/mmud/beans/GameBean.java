@@ -17,6 +17,8 @@
 package mmud.beans;
 
 import javax.ejb.Stateless;
+import mmud.exceptions.AuthenticationException;
+import mmud.exceptions.NotFoundException;
 
 /**
  * The bean that can be used to enter, exit, play the game, register, etc.
@@ -30,6 +32,40 @@ public class GameBean implements GameBeanLocal
     public String helloWorld()
     {
         return "Hello, world.";
+    }
+
+    @Override
+    public String getSessionPassword(final String name, final String password) throws AuthenticationException, NotFoundException
+    {
+        return null;
+    }
+
+    @Override
+    public void register()
+    {
+    }
+
+    @Override
+    public void remove(final String name, final String password)
+    {
+    }
+
+    @Override
+    public CommandOutput enter(final String name, final String password)
+    {
+        return null;
+    }
+
+    @Override
+    public CommandOutput play(final String name, final String sessionpwd, final String command)
+    {
+        return null;
+    }
+
+    @Override
+    public MmudLog getLog(final String name, final String sessionpwd, final Integer offset)
+    {
+        return null;
     }
 
 }
