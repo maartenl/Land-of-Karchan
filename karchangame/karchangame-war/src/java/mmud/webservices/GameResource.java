@@ -16,18 +16,25 @@
  */
 package mmud.webservices;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.enterprise.context.RequestScoped;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+import mmud.beans.GameBeanLocal;
 
 /**
- * REST Web Service
+ * REST Web Service for the game.
+ * Url at http://localhost:8080/karchangame-war/resources/game
  *
  * @author maartenl
  */
@@ -52,8 +59,18 @@ public class GameResource
     @Produces("application/json")
     public String getJson()
     {
-        //TODO return proper representation object
-        throw new UnsupportedOperationException();
+        GameBeanLocal example;
+        try {
+            InitialContext initialContext = new InitialContext();
+
+            // INFO: Portable JNDI names for EJB MyFirstBean :
+            // java:global/karchan_core/karchan_core-ejb/ConverterBean
+            example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
+            return example.helloWorld();
+        } catch (NamingException ex) {
+            Logger.getLogger(GameResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new WebApplicationException(Status.BAD_REQUEST);
+        }
     }
 
     /**

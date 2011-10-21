@@ -26,4 +26,10 @@ import javax.ejb.Local;
 public interface GameBeanLocal
 {
 
+    /**
+     * For testing purposes.
+     * @return the String "Hello, World."
+     */
+    public String helloWorld();
+
 }

@@ -19,14 +19,17 @@ package mmud.beans;
 import javax.ejb.Stateless;
 
 /**
- *
+ * The bean that can be used to enter, exit, play the game, register, etc.
  * @author maartenl
  */
 @Stateless
 public class GameBean implements GameBeanLocal
 {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @Override
+    public String helloWorld()
+    {
+        return "Hello, world.";
+    }
 
 }
