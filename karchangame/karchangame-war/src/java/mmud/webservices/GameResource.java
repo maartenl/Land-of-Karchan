@@ -16,8 +16,8 @@
  */
 package mmud.webservices;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -25,9 +25,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
-import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 import mmud.beans.GameBeanLocal;
@@ -39,10 +39,15 @@ import mmud.beans.GameBeanLocal;
  * @author maartenl
  */
 @Path("game")
+@Consumes("application/json")
+@Produces("application/json")
 @RequestScoped
 public class GameResource
 {
 
+    private static final Logger itsLog = Logger.getLogger("mmudrest");
+
+    GameBeanLocal gameBean = lookupGameBeanLocal();
     @Context
     private UriInfo context;
 
@@ -59,19 +64,25 @@ public class GameResource
     @Produces("application/json")
     public String getJson()
     {
-        GameBeanLocal example;
-        try {
+        itsLog.entering(this.getClass().getName(), "getJson");
+        String result = null;
+        try
+        {
+            GameBeanLocal example = lookupGameBeanLocal();
             InitialContext initialContext = new InitialContext();
             example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
             if (example == null)
             {
                 throw new WebApplicationException(Status.BAD_REQUEST);
             }
-        } catch (NamingException ex) {
-            Logger.getLogger(GameResource.class.getName()).log(Level.SEVERE, null, ex);
+            result = example.helloWorld();
+        } catch (Exception ex)
+        {
+            itsLog.throwing(this.getClass().getName(), "getJson", ex);
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
-        return example.helloWorld();
+        itsLog.exiting(this.getClass().getName(), "getJson");
+        return result;
     }
 
     /**
@@ -83,5 +94,53 @@ public class GameResource
     @Consumes("application/json")
     public void putJson(String content)
     {
+    }
+
+    /**
+     * Retrieves representation of an instance of mmud.webservices.GameResource
+     * @return an instance of java.lang.String PathParam
+     * http://localhost:8080/karchangame-war/resources/game/Karn/sessionpassword?password=simple
+     */
+    @GET
+    @Path("sessionpassword")
+    @Produces("application/json")
+    public String getSessionPassword(@QueryParam("name") String name, @QueryParam("password") String password)
+    {
+        itsLog.entering(this.getClass().getName(), "getSessionPassword");
+        String sessionpwd = null;
+        try
+        {
+            GameBeanLocal example = lookupGameBeanLocal();
+            InitialContext initialContext = new InitialContext();
+            example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
+            if (example == null)
+            {
+                throw new WebApplicationException(Status.BAD_REQUEST);
+            }
+            sessionpwd = example.helloWorld();//getSessionPassword(name, password);
+        } catch (Exception ex)
+        {
+            itsLog.throwing(this.getClass().getName(), "getSessionPassword", ex);
+            throw new WebApplicationException(Status.BAD_REQUEST);
+        }
+        itsLog.exiting(this.getClass().getName(), "getSessionPassword");
+        return sessionpwd;
+    }
+
+    private GameBeanLocal lookupGameBeanLocal()
+    {
+        itsLog.entering(this.getClass().getName(), "lookupGameBeanLocal");
+        GameBeanLocal gbl = null;
+        try
+        {
+            javax.naming.Context c = new InitialContext();
+            gbl = (GameBeanLocal) c.lookup("java:global/karchangame/karchangame-ejb/GameBean!mmud.beans.GameBeanLocal");
+        } catch (NamingException ne)
+        {
+            itsLog.throwing(this.getClass().getName(), "lookupGameBeanLocal", ne);
+            throw new RuntimeException(ne);
+        }
+        itsLog.exiting(this.getClass().getName(), "lookupGameBeanLocal");
+        return gbl;
     }
 }
