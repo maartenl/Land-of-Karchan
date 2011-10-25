@@ -33,6 +33,8 @@ import mmud.exceptions.NotFoundException;
 public class GameBean implements GameBeanLocal
 {
 
+    private static final boolean karchanOffline = true;
+
     private static final Logger itsLog = Logger.getLogger("mmudbeans");
     @PersistenceContext(unitName = "karchangame-ejbPU")
     private EntityManager em;
@@ -78,13 +80,62 @@ public class GameBean implements GameBeanLocal
 
     @Override
     public CommandOutput enter(final String name, final String password)
+            throws NotFoundException, AuthenticationException
     {
-        return null;
+        /*
+         * The steps:
+         * - validate params
+         * - user banned?
+         * - user exists?
+         * Tasks:
+         * - activate user
+         * - generate session pwd
+         * - set frames
+         * - write logon message
+         * - check new mudmail
+         * - check guild log message
+         */
+        itsLog.entering(this.getClass().getName(), "enter");
+
+        if (name == null || password == null || name.trim().equals("") || password.trim().equals(""))
+        {
+            throw new NullPointerException();
+        }
+        if (password.length() < 5)
+        {
+            throw new AuthenticationException("password too short.");
+        }
+        if (karchanOffline)
+        {
+            CommandOutput commandOutput = new CommandOutput();
+            commandOutput.setTitle("Land of Karchan is Temporarily Offline");
+            commandOutput.setImage("some image");
+            commandOutput.setDescription("the description");
+            return commandOutput;
+        }
+        Person player = em.find(Person.class, name);
+        if (player == null)
+        {
+            throw new NotFoundException("player " + name + " not found.");
+        }
+
+        CommandOutput commandOutput = new CommandOutput();
+        commandOutput.setTitle("Entering");
+        commandOutput.setImage("some image");
+        commandOutput.setDescription("the description");
+
+        MmudLog log = new MmudLog();
+        log.setLog("contents of log");
+        log.setOffset(0);
+        commandOutput.setLog(log);
+        itsLog.exiting(this.getClass().getName(), "enter");
+        return commandOutput;
     }
 
     @Override
     public CommandOutput play(final String name, final String sessionpwd, final String command)
     {
+
         return null;
     }
 

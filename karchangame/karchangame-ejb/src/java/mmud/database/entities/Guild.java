@@ -95,8 +95,6 @@ public class Guild implements Serializable
     @Size(max = 65535)
     @Column(name = "logonmessage")
     private String logonmessage;
-    @OneToMany(mappedBy = "guild")
-    private Set<Person> personSet;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -230,16 +228,6 @@ public class Guild implements Serializable
     public void setLogonmessage(String logonmessage)
     {
         this.logonmessage = logonmessage;
-    }
-
-    public Set<Person> getPersonSet()
-    {
-        return personSet;
-    }
-
-    public void setPersonSet(Set<Person> personSet)
-    {
-        this.personSet = personSet;
     }
 
     public Admin getOwner()

@@ -10,6 +10,8 @@ public class CommandOutput
     private String image;
     private String description;
     private String title;
+    private MmudLog log;
+    private String sessionpassword;
 
     /**
      * Get the value of image
@@ -71,6 +73,32 @@ public class CommandOutput
     public void setDescription(String description)
     {
         this.description = description;
+    }
+
+    public MmudLog getLog()
+    {
+        return log;
+    }
+
+    public void setLog(MmudLog log)
+    {
+        this.log = log;
+    }
+
+    /**
+     * @return the sessionpassword
+     */
+    public String getSessionpassword()
+    {
+        return sessionpassword;
+    }
+
+    /**
+     * @param sessionpassword the sessionpassword to set
+     */
+    public void setSessionpassword(String sessionpassword)
+    {
+        this.sessionpassword = sessionpassword;
     }
 
 }

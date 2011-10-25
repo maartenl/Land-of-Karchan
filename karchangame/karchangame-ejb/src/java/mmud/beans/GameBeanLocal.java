@@ -62,7 +62,8 @@ public interface GameBeanLocal
      * @param password the password of the character
      * @return CommandOutput, an object to return to the user providing a view of the world.
      */
-    public CommandOutput enter(final String name, final String password);
+    public CommandOutput enter(final String name, final String password)
+            throws NotFoundException, AuthenticationException;
 
     /**
      * Play the game, issue a command.

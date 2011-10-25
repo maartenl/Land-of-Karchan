@@ -27,10 +27,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
+import mmud.beans.CommandOutput;
 import mmud.beans.GameBeanLocal;
+import mmud.exceptions.AuthenticationException;
+import mmud.exceptions.NotFoundException;
 
 /**
  * REST Web Service for the game.
@@ -45,9 +49,11 @@ import mmud.beans.GameBeanLocal;
 public class GameResource
 {
 
-    private static final Logger itsLog = Logger.getLogger("mmudrest");
+    private static final String VERSION = "version 1:";
 
-    GameBeanLocal gameBean = lookupGameBeanLocal();
+    private static final Logger itsLog = Logger.getLogger("mmudrest");
+    GameBeanLocal gameBean;
+
     @Context
     private UriInfo context;
 
@@ -61,27 +67,22 @@ public class GameResource
      * @return an instance of java.lang.String
      */
     @GET
+    @Path("helloworld")
     @Produces("application/json")
-    public String getJson()
+    public String helloworld()
     {
-        itsLog.entering(this.getClass().getName(), "getJson");
+        itsLog.entering(this.getClass().getName(), "helloworld");
         String result = null;
         try
         {
             GameBeanLocal example = lookupGameBeanLocal();
-            InitialContext initialContext = new InitialContext();
-            example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
-            if (example == null)
-            {
-                throw new WebApplicationException(Status.BAD_REQUEST);
-            }
             result = example.helloWorld();
         } catch (Exception ex)
         {
-            itsLog.throwing(this.getClass().getName(), "getJson", ex);
+            itsLog.throwing(this.getClass().getName(), "helloworld", ex);
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
-        itsLog.exiting(this.getClass().getName(), "getJson");
+        itsLog.exiting(this.getClass().getName(), "helloworld");
         return result;
     }
 
@@ -98,33 +99,67 @@ public class GameResource
 
     /**
      * Retrieves representation of an instance of mmud.webservices.GameResource
-     * @return an instance of java.lang.String PathParam
+     * @return an instance of java.lang.String
      * http://localhost:8080/karchangame-war/resources/game/Karn/sessionpassword?password=simple
      */
     @GET
-    @Path("sessionpassword")
+    @Path("{name: [a-zA-Z]{3,}}/sessionpassword")
     @Produces("application/json")
-    public String getSessionPassword(@QueryParam("name") String name, @QueryParam("password") String password)
+    public String getSessionPassword(@PathParam("name") String name, @QueryParam("password") String password)
     {
-        itsLog.entering(this.getClass().getName(), "getSessionPassword");
+        itsLog.entering(this.getClass().getName(), VERSION + "getSessionPassword");
         String sessionpwd = null;
         try
         {
             GameBeanLocal example = lookupGameBeanLocal();
-            InitialContext initialContext = new InitialContext();
-            example = (GameBeanLocal) initialContext.lookup("java:global/karchangame/karchangame-ejb/GameBean");
-            if (example == null)
-            {
-                throw new WebApplicationException(Status.BAD_REQUEST);
-            }
-            sessionpwd = example.helloWorld();//getSessionPassword(name, password);
+            sessionpwd = example.getSessionPassword(name, password);
         } catch (Exception ex)
         {
-            itsLog.throwing(this.getClass().getName(), "getSessionPassword", ex);
+            itsLog.throwing(this.getClass().getName(), VERSION + "getSessionPassword", ex);
             throw new WebApplicationException(Status.BAD_REQUEST);
         }
-        itsLog.exiting(this.getClass().getName(), "getSessionPassword");
+        itsLog.exiting(this.getClass().getName(), VERSION + "getSessionPassword");
         return sessionpwd;
+    }
+
+    /**
+     *
+     * @param name the name of the player entering the game, requires at least 3 characters, upper and lower case allowed.
+     * @param password can be anything, but needs at least 5 characters.
+     * @return a CommandOutput containing the result
+     */
+    @GET
+    @Path("{name: [a-zA-Z]{3,}}/enter")
+    @Produces("application/json")
+    public CommandOutput enter(@PathParam("name") final String name, @QueryParam("password") final String password)
+    {
+        itsLog.entering(this.getClass().getName(), VERSION + "enter name=" + name + " password=" + password);
+        if (password.length() < 5)
+        {
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        CommandOutput commandOutput = null;
+        try
+        {
+            GameBeanLocal example = lookupGameBeanLocal();
+            commandOutput = example.enter(name, password);
+        } catch (NotFoundException ex)
+        {
+            itsLog.throwing(this.getClass().getName(), VERSION + "enter", ex);
+            throw new WebApplicationException(Status.NOT_FOUND);
+
+        } catch (AuthenticationException ex)
+        {
+            itsLog.throwing(this.getClass().getName(), VERSION + "enter", ex);
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+
+        } catch (Exception ex)
+        {
+            itsLog.throwing(this.getClass().getName(), VERSION + "enter", ex);
+            throw new WebApplicationException(Status.BAD_REQUEST);
+        }
+        itsLog.exiting(this.getClass().getName(), VERSION + "enter");
+        return commandOutput;
     }
 
     private GameBeanLocal lookupGameBeanLocal()
@@ -141,6 +176,10 @@ public class GameResource
             throw new RuntimeException(ne);
         }
         itsLog.exiting(this.getClass().getName(), "lookupGameBeanLocal");
+        if (gbl == null)
+        {
+            throw new NullPointerException("unable to retrieve GameBean");
+        }
         return gbl;
     }
 }
