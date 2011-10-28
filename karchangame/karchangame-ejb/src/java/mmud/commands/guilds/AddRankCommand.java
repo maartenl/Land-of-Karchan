@@ -28,9 +28,9 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.GuildRank;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -46,11 +46,11 @@ public class AddRankCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
@@ -62,15 +62,15 @@ public class AddRankCommand extends GuildMasterCommand
 		}
 		catch (NumberFormatException e)
 		{
-			aUser.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
+			aPlayer.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
 			return true;
 		}
 		String title = getCommand().substring(myParsed[0].length() + 1 + myParsed[1].length() + 1);
 		GuildRank rank = new GuildRank(id,title);
-		aUser.getGuild().addRank(rank);
-		Database.writeLog(aUser.getName(), " added guildrank of " + 
-			" guild " + aUser.getGuild().getName() + " called " + rank);
-		aUser.writeMessage("You have added a new rank to your guild.<BR>\r\n");
+		aPlayer.getGuild().addRank(rank);
+		Database.writeLog(aPlayer.getName(), " added guildrank of " + 
+			" guild " + aPlayer.getGuild().getName() + " called " + rank);
+		aPlayer.writeMessage("You have added a new rank to your guild.<BR>\r\n");
 		return true;
 	}
 

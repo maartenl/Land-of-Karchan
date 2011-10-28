@@ -28,9 +28,9 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.Guild;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -49,20 +49,20 @@ public class LeaveCommand extends GuildCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
-		Guild guild = aUser.getGuild();
-		aUser.removeAttribute("guildrank");
-		aUser.getGuild().decreaseAmountOfMembers();
-		aUser.setGuild(null);
-		aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "left guild " +
+		Guild guild = aPlayer.getGuild();
+		aPlayer.removeAttribute("guildrank");
+		aPlayer.getGuild().decreaseAmountOfMembers();
+		aPlayer.setGuild(null);
+		aPlayer.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
+		Database.writeLog(aPlayer.getName(), "left guild " +
 			guild.getName());
 		guild.decreaseAmountOfMembers();
 		return true;

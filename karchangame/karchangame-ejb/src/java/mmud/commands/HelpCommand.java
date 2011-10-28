@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.HelpData;
 
@@ -40,7 +40,7 @@ public class HelpCommand extends NormalCommand
 {
 
 	private HelpData theHelp;
-	private User theUser;
+	private Player thePlayer;
 
 	public HelpCommand(String aRegExpr)
 	{
@@ -48,10 +48,10 @@ public class HelpCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		theUser = aUser;
+		thePlayer = aPlayer;
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
@@ -74,7 +74,7 @@ public class HelpCommand extends NormalCommand
 		try
 		{
 			String aString = theHelp.toString();
-			aString += theUser.printForm();
+			aString += thePlayer.printForm();
 			return aString;
 		} catch (Exception e)
 		{

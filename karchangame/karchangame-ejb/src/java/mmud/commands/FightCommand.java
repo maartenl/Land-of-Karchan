@@ -29,10 +29,10 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 
 /**
@@ -44,7 +44,7 @@ import mmud.database.Database;
  * <UL>
  * <LI>Person
  * <LI>Bot -> Person
- * <LI>User -> Person
+ * <LI>Player -> Person
  * <LI>StdShopKeeper -> Person
  * </UL>
  * The requirements are as follows:
@@ -52,7 +52,7 @@ import mmud.database.Database;
  * <LI>the person should exist
  * <LI>the person should be playing the game
  * <LI>the person should be in the same room as the player issuing the command
- * <LI>if person is User -> only fighting if playerkill is active for both
+ * <LI>if person is Player -> only fighting if playerkill is active for both
  * parties
  * <LI>if person is Bot -> only fighting if bot if a MOB instead of an NPC.
  * </UL>
@@ -67,48 +67,48 @@ public class FightCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
 		// determine if appropriate fighter is found.
 		Person toChar = Persons.retrievePerson(myParsed[myParsed.length - 1]);
-		if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
+		if ((toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())))
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		if (toChar instanceof User)
+		if (toChar instanceof Player)
 		{
 			// check for playerkill flag (on both sides!)
-			if (!aUser.isPkill())
+			if (!aPlayer.isPkill())
 			{
-				aUser
+				aPlayer
 						.writeMessage("You do not have <I>pkill</I> active.<BR>\r\n");
 				return true;
 			}
-			if (!((User) toChar).isPkill())
+			if (!((Player) toChar).isPkill())
 			{
-				aUser
+				aPlayer
 						.writeMessage("Your opponent does not have <I>pkill</I> active.<BR>\r\n");
 				return true;
 			}
 		}
-		if (!aUser.isFightable())
+		if (!aPlayer.isFightable())
 		{
-			aUser.writeMessage("You cannot fight.<BR>\r\n");
+			aPlayer.writeMessage("You cannot fight.<BR>\r\n");
 			return true;
 		}
 		if (!toChar.isFightable())
 		{
-			aUser.writeMessage("You cannot attack that person.<BR>\r\n");
+			aPlayer.writeMessage("You cannot attack that person.<BR>\r\n");
 			return true;
 		}
-		aUser.setFightingPerson(toChar);
-		toChar.setFightingPerson(aUser);
-		Persons.sendMessage(aUser, toChar,
+		aPlayer.setFightingPerson(toChar);
+		toChar.setFightingPerson(aPlayer);
+		Persons.sendMessage(aPlayer, toChar,
 				"%SNAME start%VERB2 to fight against %TNAME.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "starts fighting "
+		Database.writeLog(aPlayer.getName(), "starts fighting "
 				+ toChar.getName() + ".");
 		Logger.getLogger("mmud").finer("waking up fighting thread...");
 		Constants.wakeupFightingThread();

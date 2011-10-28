@@ -29,8 +29,8 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Mail something to someone.
@@ -46,7 +46,7 @@ public class MailCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
@@ -60,7 +60,7 @@ public class MailCommand extends NormalCommand
 					+ " return;\r\n" + " }\r\n" + "//-->\r\n" + "</SCRIPT>\r\n";
 
 			theString += "<TABLE BORDER=0>";
-			theString += "<TR><TD>From:</TD><TD><B>" + aUser.getName()
+			theString += "<TR><TD>From:</TD><TD><B>" + aPlayer.getName()
 					+ "</B></TD></TR>\r\n";
 			theString += "<FORM METHOD=\"POST\" ACTION=\"" + Constants.mudcgi
 					+ "\" NAME=\"CommandForm\">\n";
@@ -70,11 +70,11 @@ public class MailCommand extends NormalCommand
 			theString += "<TEXTAREA NAME=\"mailbody\" VALUE=\"\" ROWS=\"10\" COLS=\"85\"></TEXTAREA><P>\n";
 			theString += "</TD></TR></TABLE><INPUT TYPE=\"hidden\" NAME=\"command\" VALUE=\"sendmail\">\n";
 			theString += "<INPUT TYPE=\"hidden\" NAME=\"name\" VALUE=\""
-					+ aUser.getName() + "\">\n";
+					+ aPlayer.getName() + "\">\n";
 			theString += "<HR noshade><INPUT TYPE=\"submit\" VALUE=\"Sendmail\">\n";
 			theString += "<INPUT TYPE=\"reset\" VALUE=\"Resetform\">\n";
 			theString += "</FORM><P>\r\n";
-			theString += aUser.readLog();
+			theString += aPlayer.readLog();
 			return true;
 		}
 		return false;

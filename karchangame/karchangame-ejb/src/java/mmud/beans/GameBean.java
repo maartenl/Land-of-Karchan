@@ -148,7 +148,7 @@ public class GameBean implements GameBeanLocal
             commandOutput.setDescription("the description");
             return commandOutput;
         }
-        if (isUserBanned(name, address))
+        if (isPlayerBanned(name, address))
         {
             itsLog.info(
                     "thrown " + Constants.USERBANNEDERROR);
@@ -204,7 +204,7 @@ public class GameBean implements GameBeanLocal
      * @param address
      *            String, the address of the player
      */
-    private boolean isUserBanned(String name, String address)
+    private boolean isPlayerBanned(String name, String address)
     {
         // check if user has silly name
         Query query = em.createNamedQuery(Sillyname.CHECKFORSILLYNAMES);

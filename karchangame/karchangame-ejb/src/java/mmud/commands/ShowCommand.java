@@ -30,12 +30,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
 import mmud.characters.ShopKeeper;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.items.Item;
 import mmud.items.ItemException;
 
@@ -77,7 +77,7 @@ public class ShowCommand extends NormalCommand
 	 * <li>continue with next item
 	 *</ol>
 	 * 
-	 * @param aUser
+	 * @param aPlayer
 	 *            the character doing the showing.
 	 * @throws ItemException
 	 *             in case the appropriate items could not be properly
@@ -87,8 +87,8 @@ public class ShowCommand extends NormalCommand
 	 *             illegal.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
@@ -99,14 +99,14 @@ public class ShowCommand extends NormalCommand
 			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons
 					.retrievePerson(myParsed[myParsed.length - 1]);
-			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
+			if ((toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
 			if (!(toChar instanceof ShopKeeper))
 			{
-				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
+				aPlayer.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;
 			}
 			// check for item in posession of customer
@@ -118,16 +118,16 @@ public class ShowCommand extends NormalCommand
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage("You do not have that item.<BR>\r\n");
+					aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 					return true;
 				} else
 				{
-					aUser
+					aPlayer
 							.writeMessage("You do not have that many items.<BR>\r\n");
 					return true;
 				}
@@ -147,10 +147,10 @@ public class ShowCommand extends NormalCommand
 							+ myItem.getDescriptionOfMoney() + " for "
 							+ myItem.getDescription() + ".";
 				}
-				Persons.sendMessageExcl(toChar, aUser,
+				Persons.sendMessageExcl(toChar, aPlayer,
 						"%SNAME say%VERB2 [to %TNAME] : " + message
 								+ "<BR>\r\n");
-				aUser.writeMessage(toChar, aUser,
+				aPlayer.writeMessage(toChar, aPlayer,
 						"<B>%SNAME say%VERB2 [to %TNAME]</B> : " + message
 								+ "<BR>\r\n");
 			}

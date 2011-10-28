@@ -31,10 +31,10 @@ import java.util.logging.Logger;
 
 import mmud.Constants;
 import mmud.MethodDoesNotExistException;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.items.Container;
 import mmud.items.Item;
@@ -60,8 +60,8 @@ public class CloseCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -76,47 +76,47 @@ public class CloseCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+			Vector myContainers = aPlayer.getItems(adject1, adject2, adject3,
 					name);
 			if (myContainers.size() < 1)
 			{
-				myContainers = aUser.getRoom().getItems(adject1, adject2,
+				myContainers = aPlayer.getRoom().getItems(adject1, adject2,
 						adject3, name);
 				if (myContainers.size() < 1)
 				{
-					aUser.writeMessage("You cannot find that item.<BR>\r\n");
+					aPlayer.writeMessage("You cannot find that item.<BR>\r\n");
 					return true;
 				}
 			}
 			Item anItem = (Item) myContainers.elementAt(0);
 			if (!(anItem instanceof Container))
 			{
-				aUser.writeMessage("You cannot close "
+				aPlayer.writeMessage("You cannot close "
 						+ anItem.getDescription() + ".<BR>\r\n");
 				return true;
 			}
 			Container aContainer = (Container) anItem;
 			if (!aContainer.isOpenable())
 			{
-				aUser.writeMessage(anItem.getDescription()
+				aPlayer.writeMessage(anItem.getDescription()
 						+ " cannot be closed.<BR>\r\n");
 				return true;
 			}
 			if (!aContainer.isOpen())
 			{
-				aUser.writeMessage(anItem.getDescription()
+				aPlayer.writeMessage(anItem.getDescription()
 						+ " is already closed.<BR>\r\n");
 				return true;
 			}
 			if (aContainer.isLocked())
 			{
-				aUser.writeMessage(anItem.getDescription()
+				aPlayer.writeMessage(anItem.getDescription()
 						+ " is locked.<BR>\r\n");
 				return true;
 			}
 			aContainer.setLidsNLocks(aContainer.isOpenable(), false, aContainer
 					.getKeyId(), aContainer.isLocked());
-			Persons.sendMessage(aUser, "%SNAME close%VERB2 "
+			Persons.sendMessage(aPlayer, "%SNAME close%VERB2 "
 					+ anItem.getDescription() + ".<BR>\r\n");
 			if (anItem.isAttribute("closeevent"))
 			{
@@ -127,7 +127,7 @@ public class CloseCommand extends NormalCommand
 					throw new MethodDoesNotExistException("closeevent of item "
 							+ anItem.getId());
 				}
-				anItem.runScript("closeevent", mySource, aUser);
+				anItem.runScript("closeevent", mySource, aPlayer);
 			}
 			return true;
 		}

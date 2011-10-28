@@ -31,9 +31,9 @@ import java.util.logging.Logger;
 
 import mmud.Attribute;
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.items.Item;
 import mmud.items.ItemDoesNotExistException;
 import mmud.items.ItemException;
@@ -55,7 +55,7 @@ public class ReadCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	private boolean ReadItem(User aUser, Vector aItems) throws MudException
+	private boolean ReadItem(Player aPlayer, Vector aItems) throws MmudException
 	{
 		int i = 0;
 		Item myItem = (Item) aItems.elementAt(0);
@@ -77,14 +77,14 @@ public class ReadCommand extends NormalCommand
 		}
 		Attribute attrib = myItem.getAttribute("readable");
 		theResult = attrib.getValue();
-		theResult += aUser.printForm();
-		Persons.sendMessage(aUser, "%SNAME read%VERB2 "
+		theResult += aPlayer.printForm();
+		Persons.sendMessage(aPlayer, "%SNAME read%VERB2 "
 				+ myItem.getDescription() + ".<BR>\r\n");
 		return true;
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException
+	public boolean run(Player aPlayer) throws ItemException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -100,15 +100,15 @@ public class ReadCommand extends NormalCommand
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() != 0)
 			{
-				return ReadItem(aUser, myItems);
+				return ReadItem(aPlayer, myItems);
 			}
-			myItems = aUser.getRoom().getItems(adject1, adject2, adject3, name);
+			myItems = aPlayer.getRoom().getItems(adject1, adject2, adject3, name);
 			if (myItems.size() != 0)
 			{
-				return ReadItem(aUser, myItems);
+				return ReadItem(aPlayer, myItems);
 			}
 		}
 		return false;

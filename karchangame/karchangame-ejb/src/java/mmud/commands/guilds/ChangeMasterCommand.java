@@ -28,10 +28,10 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -54,45 +54,45 @@ public class ChangeMasterCommand extends GuildMasterCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = Persons.getPerson(myParsed[1]);
-		if ((toChar2 == null) || (!(toChar2 instanceof User)))
+		if ((toChar2 == null) || (!(toChar2 instanceof Player)))
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
 		if (toChar2 == null)
 		{
 			throw new RuntimeException("toChar2 is null! Impossible!");
 		}
-		User toChar = (User) toChar2;
+		Player toChar = (Player) toChar2;
 		if (toChar.getGuild() == null
 				|| (!toChar.getGuild().getName().equals(
-						aUser.getGuild().getName())))
+						aPlayer.getGuild().getName())))
 		{
-			throw new MudException(
+			throw new MmudException(
 					"error occurred, the person to promote to guildmaster is either not in a guild or not in the correct guild.");
 		}
 		if (!toChar.isActive())
 		{
-			aUser.writeMessage("That person is not currently playing.<BR>\r\n");
+			aPlayer.writeMessage("That person is not currently playing.<BR>\r\n");
 			return true;
 		}
-		Database.writeLog(aUser.getName(), " stepped down as guildmaster of "
-				+ aUser.getGuild().getName() + " in favor of "
+		Database.writeLog(aPlayer.getName(), " stepped down as guildmaster of "
+				+ aPlayer.getGuild().getName() + " in favor of "
 				+ toChar.getName());
-		aUser.getGuild().setBossName(toChar2.getName());
-		aUser.writeMessage(toChar.getName()
+		aPlayer.getGuild().setBossName(toChar2.getName());
+		aPlayer.writeMessage(toChar.getName()
 				+ " is now the guildmaster.<BR>\r\n");
 		toChar.writeMessage("You are now the guildmaster of <I>"
-				+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+				+ aPlayer.getGuild().getTitle() + "</I>.<BR>\r\n");
 		return true;
 	}
 

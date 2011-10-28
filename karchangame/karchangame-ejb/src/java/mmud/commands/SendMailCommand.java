@@ -31,10 +31,10 @@ import java.util.logging.Logger;
 import mmud.Constants;
 import mmud.InvalidMailException;
 import mmud.MailException;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.MailDb;
 
@@ -52,7 +52,7 @@ public class SendMailCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MailException, MudException
+	public boolean run(Player aPlayer) throws MailException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
@@ -62,14 +62,14 @@ public class SendMailCommand extends NormalCommand
 			Person toChar = Persons.retrievePerson(myParsed[1]);
 			if (toChar == null)
 			{
-				toChar = Database.getUser(myParsed[1], "");
+				toChar = Database.getPlayer(myParsed[1], "");
 			}
-			if ((toChar == null) || (!(toChar instanceof User)))
+			if ((toChar == null) || (!(toChar instanceof Player)))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
-			User toUser = (User) toChar;
+			Player toPlayer = (Player) toChar;
 			int size = 0, start = 0;
 			String header;
 			String message;
@@ -83,12 +83,12 @@ public class SendMailCommand extends NormalCommand
 				throw new InvalidMailException();
 			}
 			Logger.getLogger("mmud").finer("");
-			start = 8 + 1 + toUser.getName().length() + 1
+			start = 8 + 1 + toPlayer.getName().length() + 1
 					+ myParsed[2].length() + 1;
 			header = command.substring(start, size + start);
 			message = command.substring(start + size + 1 - 1);
-			MailDb.sendMail(aUser, toUser, header, message);
-			aUser.writeMessage("Mail sent.<BR>\r\n");
+			MailDb.sendMail(aPlayer, toPlayer, header, message);
+			aPlayer.writeMessage("Mail sent.<BR>\r\n");
 			return true;
 		}
 		return false;

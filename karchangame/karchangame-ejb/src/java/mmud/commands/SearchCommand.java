@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -71,8 +71,8 @@ public class SearchCommand extends NormalCommand
 	 *             being defined as smaller than 1.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -88,17 +88,17 @@ public class SearchCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getRoom().getItems(adject1, adject2,
+			Vector myItems = aPlayer.getRoom().getItems(adject1, adject2,
 					adject3, name);
 			if (myItems.size() < amount)
 			{
-				aUser.writeMessage("You search but find nothing.<BR>\r\n");
+				aPlayer.writeMessage("You search but find nothing.<BR>\r\n");
 				return true;
 			}
 			if (myItems.elementAt(0) instanceof StdItemContainer)
 			{
 				Item item = (Item) myItems.elementAt(0);
-				Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+				Persons.sendMessage(aPlayer, "%SNAME search%VERB1 "
 						+ item.getDescription()
 						+ " but find%VERB2 nothing.<BR>\r\n");
 				return true;
@@ -108,19 +108,19 @@ public class SearchCommand extends NormalCommand
 			myItems = ItemsDb.getItemsFromContainer(aContainer);
 			if (myItems.size() == 0)
 			{
-				Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+				Persons.sendMessage(aPlayer, "%SNAME search%VERB1 "
 						+ aContainer.getDescription()
 						+ " but find%VERB1 nothing.<BR>\r\n");
 				return true;
 			}
 			Item firstItem = (Item) myItems.elementAt(0);
 			// here needs to be a check for validity of the item
-			Database.writeLog(aUser.getName(), "searched " + aContainer
-					+ " in room " + aUser.getRoom().getId() + " and found "
+			Database.writeLog(aPlayer.getName(), "searched " + aContainer
+					+ " in room " + aPlayer.getRoom().getId() + " and found "
 					+ firstItem);
 			ItemsDb.deleteItemFromContainer(firstItem);
-			ItemsDb.addItemToChar(firstItem, aUser);
-			Persons.sendMessage(aUser, "%SNAME search%VERB1 "
+			ItemsDb.addItemToChar(firstItem, aPlayer);
+			Persons.sendMessage(aPlayer, "%SNAME search%VERB1 "
 					+ aContainer.getDescription() + " and find%VERB2 "
 					+ firstItem.getDescription() + ".<BR>\r\n");
 			return true;

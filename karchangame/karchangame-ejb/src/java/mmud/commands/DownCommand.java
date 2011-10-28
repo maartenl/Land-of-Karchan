@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.rooms.Room;
 
 /**
@@ -46,18 +46,18 @@ public class DownCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		Room myRoom = aUser.getRoom();
+		Room myRoom = aPlayer.getRoom();
 		if (myRoom.getDown() != null)
 		{
-			Persons.sendMessageExcl(aUser, "%SNAME leave%VERB2 down.<BR>\r\n");
-			aUser.setRoom(myRoom.getDown());
-			Persons.sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
+			Persons.sendMessageExcl(aPlayer, "%SNAME leave%VERB2 down.<BR>\r\n");
+			aPlayer.setRoom(myRoom.getDown());
+			Persons.sendMessageExcl(aPlayer, "%SNAME appear%VERB2.<BR>\r\n");
 		} else
 		{
-			aUser.writeMessage("You cannot go down.<BR>\r\n");
+			aPlayer.writeMessage("You cannot go down.<BR>\r\n");
 		}
 		return true;
 	}

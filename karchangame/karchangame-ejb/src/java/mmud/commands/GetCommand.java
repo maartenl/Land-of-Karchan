@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -70,8 +70,8 @@ public class GetCommand extends NormalCommand
 	 *             being defined as smaller than 1.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -87,18 +87,18 @@ public class GetCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getRoom().getItems(adject1, adject2,
+			Vector myItems = aPlayer.getRoom().getItems(adject1, adject2,
 					adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser
+					aPlayer
 							.writeMessage("You cannot find that item in the room.<BR>\r\n");
 					return true;
 				} else
 				{
-					aUser
+					aPlayer
 							.writeMessage("You cannot find that many items in the room.<BR>\r\n");
 					return true;
 				}
@@ -110,11 +110,11 @@ public class GetCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (!myItem.isAttribute("notgetable"))
 				{
-					Database.writeLog(aUser.getName(), "got " + myItem
-							+ " from room " + aUser.getRoom().getId());
+					Database.writeLog(aPlayer.getName(), "got " + myItem
+							+ " from room " + aPlayer.getRoom().getId());
 					ItemsDb.deleteItemFromRoom(myItem);
-					ItemsDb.addItemToChar(myItem, aUser);
-					Persons.sendMessage(aUser, "%SNAME get%VERB2 "
+					ItemsDb.addItemToChar(myItem, aPlayer);
+					Persons.sendMessage(aPlayer, "%SNAME get%VERB2 "
 							+ myItem.getDescription() + ".<BR>\r\n");
 					j++;
 				}

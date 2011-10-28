@@ -28,8 +28,8 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -47,21 +47,21 @@ public class SetLogonMessageCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
-		aUser.getGuild().setLogonMessage(
+		aPlayer.getGuild().setLogonMessage(
 			getCommand().substring(myParsed[0].length() + 1)
 			);
-		Database.writeLog(aUser.getName(), " set logonmessage of " + 
-			" guild " + aUser.getGuild().getName());
-		aUser.writeMessage("You have set a new logonmesssage for your guild.<BR>\r\n");
+		Database.writeLog(aPlayer.getName(), " set logonmessage of " + 
+			" guild " + aPlayer.getGuild().getName());
+		aPlayer.writeMessage("You have set a new logonmesssage for your guild.<BR>\r\n");
 		return true;
 	}
 

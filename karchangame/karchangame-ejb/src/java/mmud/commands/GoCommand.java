@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Go in a specific direction: "go south".
@@ -43,7 +43,7 @@ public class GoCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
@@ -75,7 +75,7 @@ public class GoCommand extends NormalCommand
 				newCommand = new DownCommand(".+");
 			}
 			newCommand.setCommand(getCommand());
-			return newCommand.run(aUser);
+			return newCommand.run(aPlayer);
 		}
 		return false;
 	}

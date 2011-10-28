@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.items.Item;
 import mmud.items.ItemException;
@@ -60,10 +60,10 @@ public class UnwieldCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
-	        if (Constants.debugOn(aUser.getName()))
+	        if (Constants.debugOn(aPlayer.getName()))
 		{   
 		        Logger.getLogger("mmud_debug").finest("run");
 		}
@@ -92,7 +92,7 @@ public class UnwieldCommand extends NormalCommand
 			position = PersonPositionEnum.WIELD_BOTH;
 		} else
 		{
-			aUser.writeMessage("Cannot wield something that way.<BR>\r\n");
+			aPlayer.writeMessage("Cannot wield something that way.<BR>\r\n");
 			return true;
 		}
 
@@ -106,10 +106,10 @@ public class UnwieldCommand extends NormalCommand
 		String adject3 = (String) stuff.elementAt(3);
 		String name = (String) stuff.elementAt(4);
 
-		Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+		Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 		if (myItems.size() == 0)
 		{
-			aUser.writeMessage("You do not have that item.<BR>\r\n");
+			aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 			return true;
 		}
 		int j = 0;
@@ -126,24 +126,24 @@ public class UnwieldCommand extends NormalCommand
 			{
 				// transfer item to other person
 
-				return stopWielding(myItem, aUser, position);
+				return stopWielding(myItem, aPlayer, position);
 			}
 		}
 		return false;
 	}
 
-	public static boolean stopWielding(Item item, User aUser, PersonPositionEnum position)
+	public static boolean stopWielding(Item item, Player aPlayer, PersonPositionEnum position)
 	throws ItemException, ParseException,
-		MudException
+		MmudException
 	{
 	    if (item == null)
 	    {
 		return false;
 	    }
 	    item.setWearing(null);
-	    Database.writeLog(aUser.getName(), "stops wielding " + item
+	    Database.writeLog(aPlayer.getName(), "stops wielding " + item
 			    + " " + position);
-	    Persons.sendMessage(aUser, "%SNAME stop%VERB2 wielding "
+	    Persons.sendMessage(aPlayer, "%SNAME stop%VERB2 wielding "
 			    + item.getDescription() + " " + position
 			    + ".<BR>\r\n");
 	    return true;

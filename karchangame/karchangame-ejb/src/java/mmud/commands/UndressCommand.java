@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Player;
 import mmud.database.ItemsDb;
 import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
@@ -49,36 +49,36 @@ public class UndressCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
-	        if (Constants.debugOn(aUser.getName()))
+	        if (Constants.debugOn(aPlayer.getName()))
 		{   
 		        Logger.getLogger("mmud_debug").finest("run");
                 }
 		Logger.getLogger("mmud").finer("");
-                return unwear(aUser, PersonPositionEnum.ON_HEAD) |
-                unwear(aUser, PersonPositionEnum.ON_NECK) |
-                unwear(aUser, PersonPositionEnum.ON_TORSO) |
-                unwear(aUser, PersonPositionEnum.ON_ARMS) |
-                unwear(aUser, PersonPositionEnum.ON_LEFT_WRIST) |
-                unwear(aUser, PersonPositionEnum.ON_RIGHT_WRIST) |
-                unwear(aUser, PersonPositionEnum.ON_LEFT_FINGER) |
-                unwear(aUser, PersonPositionEnum.ON_RIGHT_FINGER) |
-                unwear(aUser, PersonPositionEnum.ON_FEET) |
-                unwear(aUser, PersonPositionEnum.ON_HANDS) |
-                unwear(aUser, PersonPositionEnum.ON_WAIST) |
-                unwear(aUser, PersonPositionEnum.ON_LEGS) |
-                unwear(aUser, PersonPositionEnum.ON_EYES) |
-                unwear(aUser, PersonPositionEnum.ON_EARS) |
-                unwear(aUser, PersonPositionEnum.ABOUT_BODY);
+                return unwear(aPlayer, PersonPositionEnum.ON_HEAD) |
+                unwear(aPlayer, PersonPositionEnum.ON_NECK) |
+                unwear(aPlayer, PersonPositionEnum.ON_TORSO) |
+                unwear(aPlayer, PersonPositionEnum.ON_ARMS) |
+                unwear(aPlayer, PersonPositionEnum.ON_LEFT_WRIST) |
+                unwear(aPlayer, PersonPositionEnum.ON_RIGHT_WRIST) |
+                unwear(aPlayer, PersonPositionEnum.ON_LEFT_FINGER) |
+                unwear(aPlayer, PersonPositionEnum.ON_RIGHT_FINGER) |
+                unwear(aPlayer, PersonPositionEnum.ON_FEET) |
+                unwear(aPlayer, PersonPositionEnum.ON_HANDS) |
+                unwear(aPlayer, PersonPositionEnum.ON_WAIST) |
+                unwear(aPlayer, PersonPositionEnum.ON_LEGS) |
+                unwear(aPlayer, PersonPositionEnum.ON_EYES) |
+                unwear(aPlayer, PersonPositionEnum.ON_EARS) |
+                unwear(aPlayer, PersonPositionEnum.ABOUT_BODY);
 	}
 
-        private boolean unwear(User aUser, PersonPositionEnum position)
+        private boolean unwear(Player aPlayer, PersonPositionEnum position)
                 throws ItemException, ParseException,
-			MudException
+			MmudException
         {
-            return UnwearCommand.stopWearing(ItemsDb.getWornItemFromChar(aUser, position), aUser, position);
+            return UnwearCommand.stopWearing(ItemsDb.getWornItemFromChar(aPlayer, position), aPlayer, position);
         }
 
 	public Command createCommand()

@@ -29,10 +29,10 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Provides an emotional response. Acceptable format is:
@@ -48,8 +48,8 @@ public class EmotionCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
@@ -64,8 +64,8 @@ public class EmotionCommand extends NormalCommand
 			case 1:
 			{
 				// agree
-				aUser.writeMessage("You " + plural[0] + ".<BR>\r\n");
-				Persons.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + ".<BR>\r\n");
+				aPlayer.writeMessage("You " + plural[0] + ".<BR>\r\n");
+				Persons.sendMessageExcl(aPlayer, aPlayer.getName() + " " + plural[1] + ".<BR>\r\n");
 				break;
 			}
 			case 2:
@@ -73,12 +73,12 @@ public class EmotionCommand extends NormalCommand
 				// agree evilly
 				if (Constants.existsAdverb(myParsed[1]))
 				{
-					aUser.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
-					Persons.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
+					aPlayer.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
+					Persons.sendMessageExcl(aPlayer, aPlayer.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + ".<BR>\r\n");
 				}
 				else
 				{
-					aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+					aPlayer.writeMessage("Unknown adverb found.<BR>\r\n");
 				}
 				break;
 			}
@@ -88,15 +88,15 @@ public class EmotionCommand extends NormalCommand
 				if (myParsed[1].equalsIgnoreCase("to"))
 				{
 					Person toChar = Persons.retrievePerson(myParsed[2]);
-					if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+					if ( (toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())) )
 					{
-						aUser.writeMessage("Cannot find that person.<BR>\r\n");
+						aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 					}
 					else
 					{
-						aUser.writeMessage("You " + plural[0] + " to " + toChar.getName() + ".<BR>\r\n");
-						toChar.writeMessage(aUser.getName() + " " + plural[1] + " to you.<BR>\r\n");
-						Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " to " + toChar.getName() + ".<BR>\r\n");
+						aPlayer.writeMessage("You " + plural[0] + " to " + toChar.getName() + ".<BR>\r\n");
+						toChar.writeMessage(aPlayer.getName() + " " + plural[1] + " to you.<BR>\r\n");
+						Persons.sendMessageExcl(aPlayer, toChar, aPlayer.getName() + " " + plural[1] + " to " + toChar.getName() + ".<BR>\r\n");
 					}
 				}
 				else
@@ -113,19 +113,19 @@ public class EmotionCommand extends NormalCommand
 					Person toChar = Persons.retrievePerson(myParsed[3]);
 					if (toChar == null)
 					{
-						aUser.writeMessage("Cannot find that person.<BR>\r\n");
+						aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 					}
 					else
 					{
 						if (Constants.existsAdverb(myParsed[1]))
 						{
-							aUser.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
-							toChar.writeMessage(aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to you.<BR>\r\n");
-							Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
+							aPlayer.writeMessage("You " + plural[0] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
+							toChar.writeMessage(aPlayer.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to you.<BR>\r\n");
+							Persons.sendMessageExcl(aPlayer, toChar, aPlayer.getName() + " " + plural[1] + " " + myParsed[1].toLowerCase() + " to " + toChar.getName() + ".<BR>\r\n");
 						}
 						else
 						{
-							aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+							aPlayer.writeMessage("Unknown adverb found.<BR>\r\n");
 						}
 					}
 				}

@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.items.Item;
 import mmud.items.ItemException;
@@ -52,10 +52,10 @@ public class WieldCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
-	        if (Constants.debugOn(aUser.getName()))
+	        if (Constants.debugOn(aPlayer.getName()))
 		{   
 		        Logger.getLogger("mmud_debug").finest("run");
 		}
@@ -84,7 +84,7 @@ public class WieldCommand extends NormalCommand
 			position = PersonPositionEnum.WIELD_BOTH;
 		} else
 		{
-			aUser.writeMessage("Cannot wield something that way.<BR>\r\n");
+			aPlayer.writeMessage("Cannot wield something that way.<BR>\r\n");
 			return true;
 		}
 
@@ -93,9 +93,9 @@ public class WieldCommand extends NormalCommand
 		// oh well, works for now I guess.
 		/* check to see if something is already being wielded there. */
 		Item alreadyWieldedItem = null;
-		Item alreadyWieldedItem1 = aUser.isWorn(PersonPositionEnum.WIELD_LEFT);
-		Item alreadyWieldedItem2 = aUser.isWorn(PersonPositionEnum.WIELD_RIGHT);
-		Item alreadyWieldedItem3 = aUser.isWorn(PersonPositionEnum.WIELD_BOTH);
+		Item alreadyWieldedItem1 = aPlayer.isWorn(PersonPositionEnum.WIELD_LEFT);
+		Item alreadyWieldedItem2 = aPlayer.isWorn(PersonPositionEnum.WIELD_RIGHT);
+		Item alreadyWieldedItem3 = aPlayer.isWorn(PersonPositionEnum.WIELD_BOTH);
 		PersonPositionEnum alreadyPosition = null;
 		if (position == PersonPositionEnum.WIELD_BOTH)
 		{
@@ -171,7 +171,7 @@ public class WieldCommand extends NormalCommand
 					+ alreadyWieldedItem.getDescription() + " "
 					+ alreadyPosition + ".<BR>\r\n";
 			stuff2 = stuff2.replaceAll("%SHISHER", "your");
-			aUser.writeMessage(stuff2);
+			aPlayer.writeMessage(stuff2);
 			return true;
 		}
 		// check for item in posession
@@ -183,10 +183,10 @@ public class WieldCommand extends NormalCommand
 		String adject3 = (String) stuff.elementAt(3);
 		String name = (String) stuff.elementAt(4);
 
-		Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+		Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 		if (myItems.size() == 0)
 		{
-			aUser.writeMessage("You do not have that item.<BR>\r\n");
+			aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 			return true;
 		}
 		int j = 0;
@@ -207,9 +207,9 @@ public class WieldCommand extends NormalCommand
 			{
 				// transfer item to other person
 				myItem.setWearing(position);
-				Database.writeLog(aUser.getName(), "wields " + myItem + " "
+				Database.writeLog(aPlayer.getName(), "wields " + myItem + " "
 						+ position);
-				Persons.sendMessage(aUser, "%SNAME wield%VERB2 "
+				Persons.sendMessage(aPlayer, "%SNAME wield%VERB2 "
 						+ myItem.getDescription() + " " + position
 						+ ".<BR>\r\n");
 				return true;

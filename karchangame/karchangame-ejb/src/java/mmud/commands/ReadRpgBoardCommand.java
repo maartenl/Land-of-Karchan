@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.items.ItemException;
 
 /**
@@ -44,12 +44,12 @@ public class ReadRpgBoardCommand extends ReadBoardCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException
+	public boolean run(Player aPlayer) throws ItemException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
 		// this
-		return readMessage(aUser, "roleplaying", 13);
+		return readMessage(aPlayer, "roleplaying", 13);
 	}
 
 	public Command createCommand()

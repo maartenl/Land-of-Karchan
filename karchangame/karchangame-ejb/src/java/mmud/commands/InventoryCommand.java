@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Show the inventory: "inventory".
@@ -45,18 +45,18 @@ public class InventoryCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		String invent = aUser.inventory();
+		String invent = aPlayer.inventory();
 		theResult = "<H1><IMG SRC=\"/images/gif/money.gif\">Inventory</H1>You"
 				+ " have "
-				+ (invent.equals("") && (aUser.getMoney() == 0) ? "absolutely nothing.<P>"
+				+ (invent.equals("") && (aPlayer.getMoney() == 0) ? "absolutely nothing.<P>"
 						: " <UL>"
 								+ invent
-								+ (aUser.getMoney() != 0 ? "<P><LI>"
-										+ aUser.getDescriptionOfMoney() : "")
-								+ "</UL>") + aUser.printForm();
+								+ (aPlayer.getMoney() != 0 ? "<P><LI>"
+										+ aPlayer.getDescriptionOfMoney() : "")
+								+ "</UL>") + aPlayer.printForm();
 		return true;
 	}
 

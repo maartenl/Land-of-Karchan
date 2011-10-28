@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 import mmud.Constants;
 import mmud.InvalidMailException;
 import mmud.MailException;
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.database.MailDb;
 
 /**
@@ -49,7 +49,7 @@ public class DeleteMailCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MailException, MudException
+	public boolean run(Player aPlayer) throws MailException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
@@ -57,9 +57,9 @@ public class DeleteMailCommand extends NormalCommand
 		{
 			try
 			{
-				theString = MailDb.deleteMail(aUser, Integer
+				theString = MailDb.deleteMail(aPlayer, Integer
 						.parseInt(myParsed[1]));
-				theString += aUser.printForm();
+				theString += aPlayer.printForm();
 			} catch (NumberFormatException e)
 			{
 				Logger.getLogger("mmud").info(

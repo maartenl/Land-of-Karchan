@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Command used if the person is asleep, and the command is not 
@@ -45,11 +45,11 @@ public class AlreadyAsleepCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		aUser.writeMessage("You cannot do that, you are asleep.<BR>\r\n");
+		aPlayer.writeMessage("You cannot do that, you are asleep.<BR>\r\n");
 		return true;
 	}
 

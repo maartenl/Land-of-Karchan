@@ -28,10 +28,10 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Curtsey to someone: "curtsey to Karn".
@@ -45,30 +45,30 @@ public class CurtseyCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 3 && myParsed[1].equalsIgnoreCase("to"))
 		{
-			if (myParsed[2].equalsIgnoreCase(aUser.getName()))
+			if (myParsed[2].equalsIgnoreCase(aPlayer.getName()))
 			{
-				aUser
+				aPlayer
 						.writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
 				return true;
 			}
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ((toChar == null) || (toChar.getRoom() != aUser.getRoom()))
+			if ((toChar == null) || (toChar.getRoom() != aPlayer.getRoom()))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			} else
 			{
-				Persons.sendMessage(aUser, toChar,
+				Persons.sendMessage(aPlayer, toChar,
 						"%SNAME drop%VERB2 a curtsey to %TNAME.<BR>\r\n");
 			}
 		} else
 		{
-			Persons.sendMessage(aUser, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
+			Persons.sendMessage(aPlayer, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
 		}
 		return true;
 	}

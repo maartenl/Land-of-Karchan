@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.items.ItemException;
 
 /**
@@ -44,10 +44,10 @@ public class PostPublicCommand extends PostBoardCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException
+	public boolean run(Player aPlayer) throws ItemException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		return postMessage(aUser, "public", 3, getCommand().substring(6 + 1)
+		return postMessage(aPlayer, "public", 3, getCommand().substring(6 + 1)
 				.trim());
 	}
 

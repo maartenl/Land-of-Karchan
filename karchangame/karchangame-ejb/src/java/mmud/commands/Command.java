@@ -26,8 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
 
 /**
  * The interface used for all commands to be executed. Commands are executed by
@@ -40,14 +40,14 @@ public interface Command
 	 * Starts the command, this method is used for default behaviour that needs
 	 * to take place before the run command is issued. This method starts the
 	 * run command.
-	 * 
-	 * @param aUser
+	 *
+	 * @param aPlayer
 	 *            the user that executed the command
 	 * @return true or false, depending on success.
-	 * @throws MudException
+	 * @throws MmudException
 	 *             when anything goes wrong.
 	 */
-	public boolean start(User aUser) throws MudException;
+	public boolean start(Player aPlayer) throws MmudException;
 
 	/**
 	 * Runs the command. The usual sequence of events is:
@@ -57,19 +57,19 @@ public interface Command
 	 * <LI>doing the action
 	 * <LI>composing a return message for the user.
 	 * </UL>
-	 * 
-	 * @param aUser
+	 *
+	 * @param aPlayer
 	 *            the user that is executing the command
 	 * @return boolean, wether or not the command was successfull.
-	 * @throws MudException
+	 * @throws MmudException
 	 *             if something goes wrong.
 	 */
-	public boolean run(User aUser) throws MudException;
+	public boolean run(Player aPlayer) throws MmudException;
 
 	/**
 	 * Sets the command originally used to execute this command. Useful for
 	 * parsing.
-	 * 
+	 *
 	 * @param aCommand
 	 *            String containing the original command.
 	 */
@@ -77,7 +77,7 @@ public interface Command
 
 	/**
 	 * returns the regular expression the command structure must follow.
-	 * 
+	 *
 	 * @return String containing the regular expression.
 	 */
 	public String getRegExpr();
@@ -85,14 +85,14 @@ public interface Command
 	/**
 	 * Gets the command originally used to execute this command. Useful for
 	 * parsing.
-	 * 
+	 *
 	 * @return String containing the original command.
 	 */
 	public String getCommand();
 
 	/**
 	 * Gets the command parsed into words.
-	 * 
+	 *
 	 * @return String[] containing the individual words in the command.
 	 */
 	public String[] getParsedCommand();
@@ -104,7 +104,7 @@ public interface Command
 
 	/**
 	 * Returns the appropriate view for a player.
-	 * 
+	 *
 	 * @return String containing the view of a player. Header, description,
 	 *         form, logfile, footer.
 	 */

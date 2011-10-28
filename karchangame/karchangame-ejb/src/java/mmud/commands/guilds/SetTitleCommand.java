@@ -28,8 +28,8 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -45,21 +45,21 @@ public class SetTitleCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
-		aUser.getGuild().setTitle(
+		aPlayer.getGuild().setTitle(
 			getCommand().substring(myParsed[0].length() + 1)
 			);
-		Database.writeLog(aUser.getName(), " set guildtitle of " + 
-			" guild " + aUser.getGuild().getName());
-		aUser.writeMessage("You have set a new title for your guild.<BR>\r\n");
+		Database.writeLog(aPlayer.getName(), " set guildtitle of " + 
+			" guild " + aPlayer.getGuild().getName());
+		aPlayer.writeMessage("You have set a new title for your guild.<BR>\r\n");
 		return true;
 	}
 

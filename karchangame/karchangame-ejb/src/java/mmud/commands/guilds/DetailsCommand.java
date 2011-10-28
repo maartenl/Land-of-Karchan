@@ -28,8 +28,8 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 
 /**
@@ -47,15 +47,15 @@ public class DetailsCommand extends GuildCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
-		theResult = aUser.getGuild().getGuildDetails() + aUser.printForm();
+		theResult = aPlayer.getGuild().getGuildDetails() + aPlayer.printForm();
 		return true;
 	}
 

@@ -29,8 +29,8 @@ package mmud.commands;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Displays the current time: "time".
@@ -44,11 +44,11 @@ public class TimeCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();
-		aUser.writeMessage("Current time is "
+		aPlayer.writeMessage("Current time is "
 				+ myCalendar.get(Calendar.HOUR_OF_DAY) + ":"
 				+ +myCalendar.get(Calendar.MINUTE) + ":"
 				+ +myCalendar.get(Calendar.SECOND) + ".<BR>\r\n");

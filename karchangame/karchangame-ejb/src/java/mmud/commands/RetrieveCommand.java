@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Container;
@@ -80,8 +80,8 @@ public class RetrieveCommand extends NormalCommand
 	 *             being defined as smaller than 1.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -104,16 +104,16 @@ public class RetrieveCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+			Vector myContainers = aPlayer.getItems(adject1, adject2, adject3,
 					name);
 			if (myContainers.size() < 1)
 			{
-				myContainers = aUser.getRoom().getItems(adject1, adject2,
+				myContainers = aPlayer.getRoom().getItems(adject1, adject2,
 						adject3, name);
-				someRoom = aUser.getRoom(); // for the writeLog.
+				someRoom = aPlayer.getRoom(); // for the writeLog.
 				if (myContainers.size() < 1)
 				{
-					aUser
+					aPlayer
 							.writeMessage("You do not have that container.<BR>\r\n");
 					return true;
 				}
@@ -121,14 +121,14 @@ public class RetrieveCommand extends NormalCommand
 			Item aContainer2 = (Item) myContainers.elementAt(0);
 			if (!(aContainer2 instanceof Container))
 			{
-				aUser.writeMessage(aContainer2.getDescription()
+				aPlayer.writeMessage(aContainer2.getDescription()
 						+ " is not a container.<BR>\r\n");
 				return true;
 			}
 			StdItemContainer aContainer = (StdItemContainer) aContainer2;
 			if (!aContainer.isOpen())
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " is closed.<BR>\r\n");
 				return true;
 			}
@@ -145,11 +145,11 @@ public class RetrieveCommand extends NormalCommand
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage("That item was not found in "
+					aPlayer.writeMessage("That item was not found in "
 							+ aContainer.getDescription() + ".<BR>\r\n");
 				} else
 				{
-					aUser.writeMessage("Those items were not found in "
+					aPlayer.writeMessage("Those items were not found in "
 							+ aContainer.getDescription() + ".<BR>\r\n");
 				}
 				return true;
@@ -159,15 +159,15 @@ public class RetrieveCommand extends NormalCommand
 			for (int i = 0; ((i < myItems.size()) && (j != amount)); i++)
 			{
 				Item myItem = (Item) myItems.elementAt(i);
-				Database.writeLog(aUser.getName(), "retrieved "
+				Database.writeLog(aPlayer.getName(), "retrieved "
 						+ myItem
 						+ " from "
 						+ aContainer
 						+ (someRoom != null ? " from room " + someRoom.getId()
 								: ""));
 				ItemsDb.deleteItemFromContainer(myItem);
-				ItemsDb.addItemToChar(myItem, aUser);
-				Persons.sendMessage(aUser, "%SNAME retrieve%VERB2 "
+				ItemsDb.addItemToChar(myItem, aPlayer);
+				Persons.sendMessage(aPlayer, "%SNAME retrieve%VERB2 "
 						+ myItem.getDescription() + " from "
 						+ aContainer.getDescription() + ".<BR>\r\n");
 				j++;

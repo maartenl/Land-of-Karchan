@@ -30,12 +30,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
 import mmud.characters.ShopKeeper;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -99,7 +99,7 @@ public class BuyCommand extends NormalCommand
 	 * <li>continue with next item
 	 *</ol>
 	 * 
-	 * @param aUser
+	 * @param aPlayer
 	 *            the character doing the buying.
 	 * @throws ItemException
 	 *             in case the appropriate items could not be properly
@@ -109,8 +109,8 @@ public class BuyCommand extends NormalCommand
 	 *             illegal.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
@@ -121,14 +121,14 @@ public class BuyCommand extends NormalCommand
 			// determine if appropriate shopkeeper is found.
 			Person toChar = Persons
 					.retrievePerson(myParsed[myParsed.length - 1]);
-			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
+			if ((toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
 			if (!(toChar instanceof ShopKeeper))
 			{
-				aUser.writeMessage("That person is not a shopkeeper.<BR>\r\n");
+				aPlayer.writeMessage("That person is not a shopkeeper.<BR>\r\n");
 				return true;
 			}
 			// check for item in posession of shopkeeper
@@ -145,12 +145,12 @@ public class BuyCommand extends NormalCommand
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage(toChar.getName()
+					aPlayer.writeMessage(toChar.getName()
 							+ " does not have that item.<BR>\r\n");
 					return true;
 				} else
 				{
-					aUser.writeMessage(toChar.getName()
+					aPlayer.writeMessage(toChar.getName()
 							+ " does not have that many items.<BR>\r\n");
 					return true;
 				}
@@ -161,9 +161,9 @@ public class BuyCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				sumvalue += myItem.getMoney();
 			}
-			if (aUser.getMoney() < sumvalue)
+			if (aPlayer.getMoney() < sumvalue)
 			{
-				aUser.writeMessage("You do not have enough money.<BR>\r\n");
+				aPlayer.writeMessage("You do not have enough money.<BR>\r\n");
 				return true;
 			}
 			int j = 0;
@@ -174,7 +174,7 @@ public class BuyCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (myItem.isAttribute("notbuyable"))
 				{
-					aUser.writeMessage("You cannot buy that item.<BR>\r\n");
+					aPlayer.writeMessage("You cannot buy that item.<BR>\r\n");
 					success = false;
 				}
 				if (success)
@@ -183,13 +183,13 @@ public class BuyCommand extends NormalCommand
 					int totalitemvalue = myItem.getMoney();
 					if (success)
 					{
-						aUser.transferMoneyTo(totalitemvalue, toChar);
-						Database.writeLog(aUser.getName(), "paid "
+						aPlayer.transferMoneyTo(totalitemvalue, toChar);
+						Database.writeLog(aPlayer.getName(), "paid "
 								+ totalitemvalue + " copper to " + toChar);
-						ItemsDb.transferItem(myItem, aUser);
-						Database.writeLog(aUser.getName(), "bought " + myItem
+						ItemsDb.transferItem(myItem, aPlayer);
+						Database.writeLog(aPlayer.getName(), "bought " + myItem
 								+ " from " + toChar);
-						Persons.sendMessage(aUser, toChar, "%SNAME buy%VERB2 "
+						Persons.sendMessage(aPlayer, toChar, "%SNAME buy%VERB2 "
 								+ myItem.getDescription()
 								+ " from %TNAME.<BR>\r\n");
 						j++;

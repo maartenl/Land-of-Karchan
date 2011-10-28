@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Change your current title : "title Ruler of the Land".
@@ -43,12 +43,12 @@ public class TitleCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
-		aUser.setTitle(command.substring(6));
-		aUser.writeMessage("Changed your title to : '" + aUser.getTitle()
+		aPlayer.setTitle(command.substring(6));
+		aPlayer.writeMessage("Changed your title to : '" + aPlayer.getTitle()
 				+ "'.<BR>\r\n");
 		return true;
 	}

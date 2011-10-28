@@ -26,8 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands.guilds;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.commands.NormalCommand;
 
 /**
@@ -41,9 +41,9 @@ public abstract class GuildCommand extends NormalCommand
 	/*
 	 * * basically returns true if the user is part of a guild.
 	 */
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
-		return (aUser.getGuild() != null);
+		return (aPlayer.getGuild() != null);
 	}
 
 	public GuildCommand(String aRegExpr)

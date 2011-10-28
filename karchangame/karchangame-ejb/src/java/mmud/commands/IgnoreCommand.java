@@ -29,10 +29,10 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Ignore everything someone says. Syntax: <TT>ignore &lt;name&gt;</TT>
@@ -46,7 +46,7 @@ public class IgnoreCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
@@ -56,17 +56,17 @@ public class IgnoreCommand extends NormalCommand
 			return false;
 		}
 		Person toChar = Persons.retrievePerson(myParsed[2]);
-		if ((toChar == null) || (!(toChar instanceof User)))
+		if ((toChar == null) || (!(toChar instanceof Player)))
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		((User) toChar).addName(aUser);
-		Persons.sendMessageExcl(aUser, toChar,
+		((Player) toChar).addName(aPlayer);
+		Persons.sendMessageExcl(aPlayer, toChar,
 				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
-		aUser.writeMessage(aUser, toChar,
+		aPlayer.writeMessage(aPlayer, toChar,
 				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
-		toChar.writeMessage(aUser, toChar,
+		toChar.writeMessage(aPlayer, toChar,
 				"%SNAME start%VERB2 to fully ignore %TNAME.<BR>\r\n");
 		return true;
 	}

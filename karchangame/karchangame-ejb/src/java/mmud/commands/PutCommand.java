@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Container;
@@ -84,8 +84,8 @@ public class PutCommand extends NormalCommand
 	 *             being defined as smaller than 1.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -107,15 +107,15 @@ public class PutCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage("You do not have that item.<BR>\r\n");
+					aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 				} else
 				{
-					aUser
+					aPlayer
 							.writeMessage("You do not have that many items.<BR>\r\n");
 				}
 				return true;
@@ -129,16 +129,16 @@ public class PutCommand extends NormalCommand
 			name = (String) stuff.elementAt(4);
 			Room someRoom = null;
 
-			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+			Vector myContainers = aPlayer.getItems(adject1, adject2, adject3,
 					name);
 			if (myContainers.size() < 1)
 			{
-				myContainers = aUser.getRoom().getItems(adject1, adject2,
+				myContainers = aPlayer.getRoom().getItems(adject1, adject2,
 						adject3, name);
-				someRoom = aUser.getRoom(); // usefull for the writeLog.
+				someRoom = aPlayer.getRoom(); // usefull for the writeLog.
 				if (myContainers.size() < 1)
 				{
-					aUser
+					aPlayer
 							.writeMessage("You do not have that container.<BR>\r\n");
 					return true;
 				}
@@ -146,7 +146,7 @@ public class PutCommand extends NormalCommand
 			Item aContainer = (Item) myContainers.elementAt(0);
 			if (!(aContainer instanceof Container))
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " is not a container.<BR>\r\n");
 				return true;
 			}
@@ -154,7 +154,7 @@ public class PutCommand extends NormalCommand
 			Container myCon = (Container) aContainer;
 			if (!myCon.isOpen())
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " is closed.<BR>\r\n");
 				return true;
 			}
@@ -178,7 +178,7 @@ public class PutCommand extends NormalCommand
 										"it is not allowed to insert a non-empty bag in another bag.");
 						Persons
 								.sendMessage(
-										aUser,
+										aPlayer,
 										"%SNAME attempt%VERB2 to put "
 												+ myItem.getDescription()
 												+ " in "
@@ -189,7 +189,7 @@ public class PutCommand extends NormalCommand
 				}
 				if (success)
 				{
-					Database.writeLog(aUser.getName(), "put "
+					Database.writeLog(aPlayer.getName(), "put "
 							+ myItem
 							+ " in container "
 							+ aContainer
@@ -197,7 +197,7 @@ public class PutCommand extends NormalCommand
 									+ someRoom.getId() : ""));
 					ItemsDb.deleteItemFromChar(myItem);
 					ItemsDb.addItemToContainer(myItem, aContainer);
-					Persons.sendMessage(aUser, "%SNAME put%VERB2 "
+					Persons.sendMessage(aPlayer, "%SNAME put%VERB2 "
 							+ myItem.getDescription() + " in "
 							+ aContainer.getDescription() + ".<BR>\r\n");
 				}

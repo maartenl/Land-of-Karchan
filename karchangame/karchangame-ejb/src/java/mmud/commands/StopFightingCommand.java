@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 
 /**
@@ -47,19 +47,19 @@ public class StopFightingCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!aUser.isFighting())
+		if (!aPlayer.isFighting())
 		{
-			aUser.writeMessage("You are not fighting anyone.<BR>\r\n");
+			aPlayer.writeMessage("You are not fighting anyone.<BR>\r\n");
 			return true;
 		}
-		Persons.sendMessage(aUser, aUser.getFightingPerson(),
+		Persons.sendMessage(aPlayer, aPlayer.getFightingPerson(),
 				"%SNAME stop%VERB2 fighting against %TNAME.<BR>\r\n");
-		Database.writeLog(aUser.getName(), "stops fighting "
-				+ aUser.getFightingPerson().getName() + ".");
-		aUser.setFightingPerson(null);
+		Database.writeLog(aPlayer.getName(), "stops fighting "
+				+ aPlayer.getFightingPerson().getName() + ".");
+		aPlayer.setFightingPerson(null);
 		return true;
 	}
 

@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 
 /**
@@ -45,23 +45,23 @@ public class PkillCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 2)
 		{
 			boolean isOn = myParsed[1].equalsIgnoreCase("on");
-			aUser.setPkill(isOn);
-			Database.setPkill(aUser);
-			aUser.writeMessage("Pkill is now " + (isOn ? "on" : "off")
+			aPlayer.setPkill(isOn);
+			Database.setPkill(aPlayer);
+			aPlayer.writeMessage("Pkill is now " + (isOn ? "on" : "off")
 					+ ".<BR>\r\n");
 			return true;
 		}
 		if (myParsed.length == 1)
 		{
-			aUser.writeMessage("Your pkill is "
-					+ (aUser.isPkill() ? "on" : "off") + ".<BR>\r\n");
+			aPlayer.writeMessage("Your pkill is "
+					+ (aPlayer.isPkill() ? "on" : "off") + ".<BR>\r\n");
 			return true;
 		}
 		return false;

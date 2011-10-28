@@ -29,8 +29,8 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
 
 /**
  * An abstract class for the most normal commands.
@@ -53,7 +53,7 @@ public abstract class NormalCommand implements Command
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param aRegExpr
 	 *            a regular expression to which the command should follow. For
 	 *            example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
@@ -65,11 +65,11 @@ public abstract class NormalCommand implements Command
 		theRegExpr = aRegExpr;
 	}
 
-	public boolean start(User aUser) throws MudException
+	public boolean start(Person aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("theRegExpr=" + theRegExpr);
-		aUser.setNow();
-		String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
+		aPlayer.setNow();
+		String myregexpr = theRegExpr.replaceAll("%s", aPlayer.getName());
 		boolean result = true;
 		if (myregexpr.endsWith(".+") && getCommand().indexOf('\n') != -1)
 		{
@@ -88,10 +88,10 @@ public abstract class NormalCommand implements Command
 			return result;
 		}
 		/** continue with the actual command */
-		return run(aUser);
+		return run(aPlayer);
 	}
 
-	public abstract boolean run(User aUser) throws MudException;
+	public abstract boolean run(Player aPlayer) throws MmudException;
 
 	public String getResult()
 	{

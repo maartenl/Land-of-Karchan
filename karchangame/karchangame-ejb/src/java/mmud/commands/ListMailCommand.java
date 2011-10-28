@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * List the current mudmails of a character.
@@ -45,12 +45,12 @@ public class ListMailCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		theString = "<H2>List of Mail</H2>\r\n";
-		theString += aUser.getListOfMail();
-		theString += aUser.printForm();
+		theString += aPlayer.getListOfMail();
+		theString += aPlayer.printForm();
 		return true;
 	}
 

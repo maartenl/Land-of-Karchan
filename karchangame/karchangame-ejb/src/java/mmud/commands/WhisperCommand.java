@@ -29,11 +29,11 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.CommunicationListener;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.characters.CommunicationListener.CommType;
 
 /**
@@ -52,7 +52,7 @@ public class WhisperCommand extends CommunicationCommand
 	 * * Special case again, because this whisper has a very different message
 	 * when whispering to people. Other people will not understand you.
 	 */
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
@@ -65,14 +65,14 @@ public class WhisperCommand extends CommunicationCommand
 		{
 			// whisper to someone
 			Person toChar = Persons.retrievePerson(myParsed[2]);
-			if ((toChar == null) || (toChar.getRoom() != aUser.getRoom()))
+			if ((toChar == null) || (toChar.getRoom() != aPlayer.getRoom()))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			} else
 			{
-				if (aUser.isIgnored(toChar))
+				if (aPlayer.isIgnored(toChar))
 				{
-					aUser.writeMessage(toChar.getName()
+					aPlayer.writeMessage(toChar.getName()
 							+ " is ignoring you fully.<BR>\r\n");
 					return true;
 				}
@@ -80,19 +80,19 @@ public class WhisperCommand extends CommunicationCommand
 						command.indexOf(myParsed[3], getCommType().toString()
 								.length()
 								+ 1 + 2 + 1 + myParsed[2].length())).trim());
-				aUser.writeMessage("<B>You whisper [to " + toChar.getName()
+				aPlayer.writeMessage("<B>You whisper [to " + toChar.getName()
 						+ "]</B> : " + getMessage() + "<BR>\r\n");
-				toChar.writeMessage("<B>" + aUser.getName()
+				toChar.writeMessage("<B>" + aPlayer.getName()
 						+ " whispers [to you]</B> : " + getMessage()
 						+ "<BR>\r\n");
 				Persons
 						.sendMessageExcl(
-								aUser,
+								aPlayer,
 								toChar,
 								"%SNAME %SISARE whispering something to %TNAME, but you cannot hear what.<BR>\r\n");
 				if (toChar instanceof CommunicationListener)
 				{
-					((CommunicationListener) toChar).commEvent(aUser,
+					((CommunicationListener) toChar).commEvent(aPlayer,
 							CommunicationListener.WHISPER, getMessage());
 				}
 			}
@@ -100,8 +100,8 @@ public class WhisperCommand extends CommunicationCommand
 		}
 		setMessage(command.substring(getCommType().toString().length() + 1)
 				.trim());
-		aUser.writeMessage("<B>You whisper</B> : " + getMessage() + "<BR>\r\n");
-		Persons.sendMessageExcl(aUser, "%SNAME whisper%VERB2 : " + getMessage()
+		aPlayer.writeMessage("<B>You whisper</B> : " + getMessage() + "<BR>\r\n");
+		Persons.sendMessageExcl(aPlayer, "%SNAME whisper%VERB2 : " + getMessage()
 				+ "<BR>\r\n");
 		return true;
 	}

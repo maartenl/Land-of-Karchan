@@ -34,7 +34,7 @@ import mmud.exceptions.MmudException;
  * are executed often do not make very good global user commands,
  * as the load on the database might be a little too much.
  */
-public class UserCommandInfo
+public class PlayerCommandInfo
 {
 	private int theCommandId;
 
@@ -53,7 +53,7 @@ public class UserCommandInfo
 	 * a null pointer if the command is active in all rooms.
 	 * @param aCommandId the identification number for the command
 	 */
-	public UserCommandInfo(int aCommandId, String aCommand,
+	public PlayerCommandInfo(int aCommandId, String aCommand,
 		String aMethodName, Integer aRoom)
 	{
 		theCommandId = aCommandId;
@@ -69,7 +69,7 @@ public class UserCommandInfo
 	 * @param aMethodName the name of the method to call.
 	 * @param aCommandId the identification number for the command
 	 */
-	public UserCommandInfo(int aCommandId, String aCommand,
+	public PlayerCommandInfo(int aCommandId, String aCommand,
 		String aMethodName)
 	{
 		theCommandId = aCommandId;
@@ -94,11 +94,11 @@ public class UserCommandInfo
 
 	public boolean equals(Object o)
 	{
-		if (!(o instanceof UserCommandInfo))
+		if (!(o instanceof PlayerCommandInfo))
 		{
 			return false;
 		}
-		UserCommandInfo myUC = (UserCommandInfo) o;
+		PlayerCommandInfo myUC = (PlayerCommandInfo) o;
 		boolean p = myUC.getCommand().equals(getCommand());
 		p = p && myUC.getMethodName().equals(getMethodName());
 		if (getRoom() == null)
@@ -124,7 +124,7 @@ public class UserCommandInfo
 	public void deactivateCommand()
 		throws MmudException
 	{
-		Constants.removeUserCommand(this);
+		Constants.removePlayerCommand(this);
 	}
 
 }

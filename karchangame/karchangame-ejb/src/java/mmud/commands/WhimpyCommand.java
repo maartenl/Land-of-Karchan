@@ -29,8 +29,8 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Sets the whimpy or displays the whimpy of the user: "whimpy".
@@ -44,14 +44,14 @@ public class WhimpyCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
 		command = command.trim();
 		if (command.equalsIgnoreCase("whimpy help"))
 		{
-			aUser
+			aPlayer
 					.writeMessage("Syntax: <B>whimpy &lt;string&gt;</B><UL><LI>feeling well"
 							+ "<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
 							+ "<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
@@ -61,8 +61,8 @@ public class WhimpyCommand extends NormalCommand
 		}
 		if (command.equalsIgnoreCase("whimpy"))
 		{
-			aUser.writeMessage("Current whimpy setting: <B>"
-					+ Constants.whimpy[aUser.getWhimpy() / 10]
+			aPlayer.writeMessage("Current whimpy setting: <B>"
+					+ Constants.whimpy[aPlayer.getWhimpy() / 10]
 					+ "</B>.<BR>\r\n");
 			return true;
 
@@ -72,13 +72,13 @@ public class WhimpyCommand extends NormalCommand
 		{
 			if (myString.equalsIgnoreCase(Constants.whimpy[i]))
 			{
-				aUser.writeMessage("Whimpy level set to : "
+				aPlayer.writeMessage("Whimpy level set to : "
 						+ Constants.whimpy[i] + ".<BR>\r\n");
-				aUser.setWhimpy(i * 10);
+				aPlayer.setWhimpy(i * 10);
 				return true;
 			}
 		}
-		aUser.writeMessage("Cannot find that whimpy level.<BR>\r\n");
+		aPlayer.writeMessage("Cannot find that whimpy level.<BR>\r\n");
 		return true;
 	}
 

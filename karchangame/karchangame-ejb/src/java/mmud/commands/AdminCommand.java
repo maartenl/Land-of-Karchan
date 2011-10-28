@@ -33,11 +33,11 @@ import java.util.logging.Logger;
 
 import mmud.Constants;
 import mmud.MemoryManager;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.GuildFactory;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.items.ItemDefs;
 import mmud.rooms.Rooms;
@@ -63,11 +63,11 @@ public class AdminCommand extends NormalCommand
 	 * @param aStringToParse
 	 *            the string containing the eventid and either the roomnumber or
 	 *            the name or nothing at all.
-	 * @throws MudException
+	 * @throws MmudException
 	 *             whenever something cannot be parsed or the event throws an
 	 *             error.
 	 */
-	public void runEvent(String aStringToParse) throws MudException
+	public void runEvent(String aStringToParse) throws MmudException
 	{
 		StringTokenizer stuff = new StringTokenizer(aStringToParse, " ");
 		String name = null;
@@ -76,7 +76,7 @@ public class AdminCommand extends NormalCommand
 
 		if (!stuff.hasMoreTokens())
 		{
-			throw new MudException("Empty runevent admin '" + aStringToParse
+			throw new MmudException("Empty runevent admin '" + aStringToParse
 					+ "' command.");
 		}
 		try
@@ -84,7 +84,7 @@ public class AdminCommand extends NormalCommand
 			eventid = Integer.parseInt(stuff.nextToken());
 		} catch (NumberFormatException e)
 		{
-			throw new MudException(
+			throw new MmudException(
 					"Admincommand runevent could not be parsed. Missing eventid. String was '"
 							+ aStringToParse + "'");
 		}
@@ -112,21 +112,21 @@ public class AdminCommand extends NormalCommand
 	 * administration of the server.
 	 */
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
 		// this
-		if (!aUser.isGod())
+		if (!aPlayer.isGod())
 		{
-			aUser.writeMessage("You are not an administrator.<BR>\r\n");
+			aPlayer.writeMessage("You are not an administrator.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().toLowerCase().startsWith("admin status"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'status' executed");
-			aUser.writeMessage(MemoryManager.MEMORY_MANAGER + ""
+			aPlayer.writeMessage(MemoryManager.MEMORY_MANAGER + ""
 					+ Constants.getObjectCount()
 					+ Constants.returnThreadStatus()
 					+ Constants.returnSettings());
@@ -136,115 +136,115 @@ public class AdminCommand extends NormalCommand
 		{
 			Person myPerson = Persons
 					.retrievePerson(getCommand().substring(11));
-			if ((myPerson == null) || (!(myPerson instanceof User)))
+			if ((myPerson == null) || (!(myPerson instanceof Player)))
 			{
-				aUser.writeMessage("Person not found.<BR>\r\n");
+				aPlayer.writeMessage("Person not found.<BR>\r\n");
 				return true;
 			}
-			Persons.deactivateUser((User) myPerson);
-			Database.writeLog(aUser.getName(),
+			Persons.deactivatePlayer((Player) myPerson);
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'kick' executed on " + myPerson.getName());
-			Persons.sendMessage(aUser, myPerson,
+			Persons.sendMessage(aPlayer, myPerson,
 					"%SNAME boot%VERB2 %TNAME from the game.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset rooms"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reset rooms' executed");
 			Rooms.init();
 			Persons.init();
-			aUser.writeMessage("Rooms have been reset.<BR>\r\n");
+			aPlayer.writeMessage("Rooms have been reset.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset guilds"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reset guilds' executed");
 			GuildFactory.init();
-			aUser.writeMessage("Guilds have been reset.<BR>\r\n");
+			aPlayer.writeMessage("Guilds have been reset.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset characters"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reset characters' executed");
 			Persons.init();
-			aUser
+			aPlayer
 					.writeMessage("Persons have been reset, active persons reloaded.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset commands"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reset commands' executed");
-			Constants.setUserCommands(Database.getUserCommands());
-			aUser
-					.writeMessage("User commands have been reloaded from database.<BR>\r\n");
+			Constants.setPlayerCommands(Database.getPlayerCommands());
+			aPlayer
+					.writeMessage("Player commands have been reloaded from database.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reset itemdefs"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reset itemdefs' executed");
 			ItemDefs.init();
-			aUser.writeMessage("Item Definitions have been reset.<BR>\r\n");
+			aPlayer.writeMessage("Item Definitions have been reset.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin shutdown"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'shutdown' executed");
 			Constants.shutdown = true;
-			aUser.writeMessage("Shutdown started.<BR>\r\n");
+			aPlayer.writeMessage("Shutdown started.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin events off"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'events off' executed");
 			Constants.events_active = false;
-			aUser.writeMessage("Events have been turned off.<BR>\r\n");
+			aPlayer.writeMessage("Events have been turned off.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin events on"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'events on' executed");
 			Constants.events_active = true;
-			aUser.writeMessage("Events have been turned on.<BR>\r\n");
+			aPlayer.writeMessage("Events have been turned on.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().startsWith("admin wall"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'wall' executed ("
 							+ getCommand().substring(11) + ")");
 			Persons.sendWall(getCommand().substring(11));
-			aUser.writeMessage("Wall message sent.<BR>\r\n");
+			aPlayer.writeMessage("Wall message sent.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().startsWith("admin runevent"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'runevent' executed ("
 							+ getCommand().substring(15) + ")");
 			runEvent(getCommand().substring(15));
-			aUser.writeMessage("Event " + getCommand().substring(15)
+			aPlayer.writeMessage("Event " + getCommand().substring(15)
 					+ " started.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin reload"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'reload' executed");
 			Constants.loadInfo();
-			aUser.writeMessage("Reload done.<BR>\r\n");
+			aPlayer.writeMessage("Reload done.<BR>\r\n");
 			return true;
 		}
 		if (getCommand().equalsIgnoreCase("admin uptime"))
 		{
-			Database.writeLog(aUser.getName(),
+			Database.writeLog(aPlayer.getName(),
 					"admin command 'uptime' executed");
 			Calendar time = Calendar.getInstance();
 			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,
@@ -256,7 +256,7 @@ public class AdminCommand extends NormalCommand
 					+ checkem % 3600000 / 60000 + " minutes, " + checkem
 					% 60000 / 1000 + " seconds, " + checkem % 1000
 					+ " milliseconds.<BR>\r\n";
-			aUser.writeMessage("Game started on "
+			aPlayer.writeMessage("Game started on "
 					+ df.format(oldtime.getTime())
 					+ ".<BR>\r\nCurrent time is " + df.format(time.getTime())
 					+ ".<BR>\r\n" + uptime);
@@ -264,8 +264,8 @@ public class AdminCommand extends NormalCommand
 		}
 		if (getCommand().equalsIgnoreCase("admin help"))
 		{
-			Database.writeLog(aUser.getName(), "admin command 'help' executed");
-			aUser
+			Database.writeLog(aPlayer.getName(), "admin command 'help' executed");
+			aPlayer
 					.writeMessage("Possible commands are:<DL>"
 							+ "<DT>admin help<DD>this help text"
 							+ "<DT>admin status<DD>shows a view of the status of the program."

@@ -28,10 +28,10 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -46,37 +46,37 @@ public class RemoveCommand extends GuildMasterCommand {
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException {
+	public boolean run(Player aPlayer) throws MmudException {
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser)) {
+		if (!super.run(aPlayer)) {
 			return false;
 		}
-		aUser.getGuild();
+		aPlayer.getGuild();
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = Persons.getPerson(myParsed[1]);
 
-		if ((toChar2 == null) || (!(toChar2 instanceof User))) {
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+		if ((toChar2 == null) || (!(toChar2 instanceof Player))) {
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		User toChar = (User) toChar2;
-		if (!aUser.getGuild().equals(toChar.getGuild())) {
-			aUser
+		Player toChar = (Player) toChar2;
+		if (!aPlayer.getGuild().equals(toChar.getGuild())) {
+			aPlayer
 					.writeMessage("That person is not a member of your guild.<BR>\r\n");
 			return true;
 		}
 		toChar.setGuild(null);
-		aUser.getGuild().decreaseAmountOfMembers();
-		Database.writeLog(aUser.getName(), "removed " + toChar.getName()
-				+ " from guild " + aUser.getGuild().getName());
-		aUser.writeMessage("You have removed " + toChar.getName()
+		aPlayer.getGuild().decreaseAmountOfMembers();
+		Database.writeLog(aPlayer.getName(), "removed " + toChar.getName()
+				+ " from guild " + aPlayer.getGuild().getName());
+		aPlayer.writeMessage("You have removed " + toChar.getName()
 				+ " from your guild.<BR>\r\n");
-		Persons.sendGuildMessage(aUser, aUser.getGuild(), "<B>"
+		Persons.sendGuildMessage(aPlayer, aPlayer.getGuild(), "<B>"
 				+ toChar.getName()
 				+ "</B> has been removed from the guild.<BR>\r\n");
 		if (toChar.isActive()) {
 			toChar.writeMessage("You have been removed from the guild <I>"
-					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+					+ aPlayer.getGuild().getTitle() + "</I>.<BR>\r\n");
 		}
 		return true;
 	}

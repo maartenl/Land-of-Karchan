@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.items.Container;
 import mmud.items.Item;
 import mmud.items.ItemException;
@@ -65,8 +65,8 @@ public class UnlockCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -87,10 +87,10 @@ public class UnlockCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < 1)
 			{
-				aUser.writeMessage("You do not have that item.<BR>\r\n");
+				aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 				return true;
 			}
 			Item myKey = (Item) myItems.elementAt(0);
@@ -100,16 +100,16 @@ public class UnlockCommand extends NormalCommand
 			adject2 = (String) stuff.elementAt(2);
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
-			Vector myContainers = aUser.getItems(adject1, adject2, adject3,
+			Vector myContainers = aPlayer.getItems(adject1, adject2, adject3,
 					name);
 			if (myContainers.size() < 1)
 			{
-				myContainers = aUser.getRoom().getItems(adject1, adject2,
+				myContainers = aPlayer.getRoom().getItems(adject1, adject2,
 						adject3, name);
-				aUser.getRoom();
+				aPlayer.getRoom();
 				if (myContainers.size() < 1)
 				{
-					aUser
+					aPlayer
 							.writeMessage("You cannot find that container.<BR>\r\n");
 					return true;
 				}
@@ -117,7 +117,7 @@ public class UnlockCommand extends NormalCommand
 			Item aContainer = (Item) myContainers.elementAt(0);
 			if (!(aContainer instanceof Container))
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " is not a container.<BR>\r\n");
 				return true;
 			}
@@ -125,26 +125,26 @@ public class UnlockCommand extends NormalCommand
 			Container myCon = (Container) aContainer;
 			if (!myCon.hasLock())
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " does not have a lock.<BR>\r\n");
 				return true;
 			}
 			if (!myCon.isLocked())
 			{
-				aUser.writeMessage(aContainer.getDescription()
+				aPlayer.writeMessage(aContainer.getDescription()
 						+ " is already unlocked.<BR>\r\n");
 				return true;
 			}
 			if (!myCon.getKeyId().equals(myKey.getItemDef()))
 			{
-				aUser.writeMessage(myKey.getDescription()
+				aPlayer.writeMessage(myKey.getDescription()
 						+ " does not fit in the lock of "
 						+ aContainer.getDescription() + ".<BR>\r\n");
 				return true;
 			}
 			myCon.setLidsNLocks(myCon.isOpenable(), myCon.isOpen(), myCon
 					.getKeyId(), false);
-			Persons.sendMessage(aUser, "%SNAME unlock%VERB2 "
+			Persons.sendMessage(aPlayer, "%SNAME unlock%VERB2 "
 					+ aContainer.getDescription() + " with "
 					+ myKey.getDescription() + ".<BR>\r\n");
 			return true;

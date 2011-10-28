@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Clear up your log file.
@@ -37,7 +37,7 @@ import mmud.characters.User;
 public class ClearCommand extends NormalCommand
 {
 
-	private User theUser;
+	private Player thePlayer;
 
 	public ClearCommand(String aRegExpr)
 	{
@@ -45,10 +45,10 @@ public class ClearCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		theUser = aUser;
+		thePlayer = aPlayer;
 		return true;
 	}
 
@@ -58,11 +58,11 @@ public class ClearCommand extends NormalCommand
 		Logger.getLogger("mmud").finer("");
 		try
 		{
-			String returnStuff = theUser.getRoom().getDescription(theUser);
-			returnStuff += theUser.printForm();
-			returnStuff += theUser.readLog();
-			theUser.createLog();
-			theUser.writeMessage("You cleared your mind.<BR>\r\n");
+			String returnStuff = thePlayer.getRoom().getDescription(thePlayer);
+			returnStuff += thePlayer.printForm();
+			returnStuff += thePlayer.readLog();
+			thePlayer.createLog();
+			thePlayer.writeMessage("You cleared your mind.<BR>\r\n");
 			return returnStuff;
 		} catch (Exception e)
 		{

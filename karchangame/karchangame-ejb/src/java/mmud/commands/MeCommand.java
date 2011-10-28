@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * The Me Command: "me closes the fridge.".
@@ -44,11 +44,11 @@ public class MeCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
-		Persons.sendMessage(aUser, aUser.getName() + " " + command.substring(3)
+		Persons.sendMessage(aPlayer, aPlayer.getName() + " " + command.substring(3)
 				+ "<BR>\r\n");
 		return true;
 	}

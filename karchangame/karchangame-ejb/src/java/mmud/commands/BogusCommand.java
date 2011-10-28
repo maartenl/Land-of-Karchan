@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Command used if none of the other commands match.
@@ -44,11 +44,11 @@ public class BogusCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		aUser.writeMessage("I am afraid I do not understand that.<BR>\r\n");
+		aPlayer.writeMessage("I am afraid I do not understand that.<BR>\r\n");
 		return true;
 	}
 

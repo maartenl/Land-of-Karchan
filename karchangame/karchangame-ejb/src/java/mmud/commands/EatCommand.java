@@ -30,9 +30,9 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -52,7 +52,7 @@ public class EatCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException
+	public boolean run(Player aPlayer) throws ItemException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -68,29 +68,29 @@ public class EatCommand extends NormalCommand
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() == 0)
 			{
-				aUser
+				aPlayer
 						.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
 				return true;
 			}
 			Item myItem = (Item) myItems.elementAt(0);
 			if (!myItem.isAttribute("eatable"))
 			{
-				aUser.writeMessage("You cannot eat that.<BR>\r\n");
+				aPlayer.writeMessage("You cannot eat that.<BR>\r\n");
 				return true;
 			}
 			theResult = myItem.getItemDef().getAttribute("eatable").getValue();
 			if (theResult == null)
 			{
-				aUser.writeMessage("You cannot eat that.<BR>\r\n");
+				aPlayer.writeMessage("You cannot eat that.<BR>\r\n");
 				return true;
 			}
-			theResult += aUser.printForm();
-			Database.writeLog(aUser.getName(), "eaten " + myItem);
+			theResult += aPlayer.printForm();
+			Database.writeLog(aPlayer.getName(), "eaten " + myItem);
 			ItemsDb.deleteItem(myItem);
-			Persons.sendMessage(aUser, "%SNAME eat%VERB2 "
+			Persons.sendMessage(aPlayer, "%SNAME eat%VERB2 "
 					+ myItem.getDescription() + ".<BR>\r\n");
 
 			// increase eat stats

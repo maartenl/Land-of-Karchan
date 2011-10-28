@@ -29,51 +29,49 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Player;
+import mmud.exceptions.MmudException;
 
 /**
- * Stop ignoring what someone says. Syntax: <TT>acknowledge &lt;nbame&gt;</TT>
+ * Stop ignoring what someone says. Syntax: <TT>acknowledge &lt;name&gt;</TT>
  */
 public class AcknowledgeCommand extends NormalCommand
 {
 
-	public AcknowledgeCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public AcknowledgeCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	@Override
-	public boolean run(User aUser) throws MudException
-	{
-		Logger.getLogger("mmud").finer("");
-		String command = getCommand();
-		String[] myParsed = Constants.parseCommand(command);
-		if (myParsed.length <= 1)
-		{
-			return false;
-		}
-		Person toChar = Persons.retrievePerson(myParsed[1]);
-		if ((toChar == null) || (!(toChar instanceof User)))
-		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
-			return true;
-		}
-		((User) toChar).removeName(aUser);
-		Persons.sendMessageExcl(aUser, toChar,
-				"%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
-		aUser.writeMessage(aUser, toChar,
-				"%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
-		toChar.writeMessage(aUser, toChar,
-				"%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
-		return true;
-	}
+    @Override
+    public boolean run(Player aPlayer) throws MmudException
+    {
+        Logger.getLogger("mmud").finer("");
+        String command = getCommand();
+        String[] myParsed = Constants.parseCommand(command);
+        if (myParsed.length <= 1)
+        {
+            return false;
+        }
+        Person toChar = Persons.retrievePerson(myParsed[1]);
+        if ((toChar == null) || (!(toChar instanceof Player)))
+        {
+            aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
+            return true;
+        }
+        ((Player) toChar).removeName(aPlayer);
+        Persons.sendMessageExcl(aPlayer, toChar,
+                "%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
+        aPlayer.writeMessage(aPlayer, toChar,
+                "%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
+        toChar.writeMessage(aPlayer, toChar,
+                "%SNAME acknowledge%VERB2 %TNAME.<BR>\r\n");
+        return true;
+    }
 
-	public Command createCommand()
-	{
-		return new AcknowledgeCommand(getRegExpr());
-	}
-
+    @Override
+    public Command createCommand()
+    {
+        return new AcknowledgeCommand(getRegExpr());
+    }
 }

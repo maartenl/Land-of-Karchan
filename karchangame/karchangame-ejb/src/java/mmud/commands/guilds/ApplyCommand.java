@@ -29,10 +29,10 @@ package mmud.commands.guilds;
 import java.util.logging.Logger;
 
 import mmud.Attribute;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.Guild;
 import mmud.characters.GuildFactory;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.commands.NormalCommand;
 
@@ -53,14 +53,14 @@ public class ApplyCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
-			aUser.removeAttribute("guildwish");
-			aUser
+			aPlayer.removeAttribute("guildwish");
+			aPlayer
 					.writeMessage("You have no longer applied to any guild.<BR>\r\n");
 			return true;
 		}
@@ -68,21 +68,21 @@ public class ApplyCommand extends NormalCommand
 		try
 		{
 			guild = GuildFactory.createGuild(myParsed[1]);
-		} catch (MudException e)
+		} catch (MmudException e)
 		{
-			aUser.writeMessage("Unable to find guild <I>" + myParsed[1]
+			aPlayer.writeMessage("Unable to find guild <I>" + myParsed[1]
 					+ "</I>.<BR>\r\n");
 			return false;
 		}
-		if (aUser.getGuild() != null)
+		if (aPlayer.getGuild() != null)
 		{
-			aUser.writeMessage("You already belong to guild <I>"
-					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+			aPlayer.writeMessage("You already belong to guild <I>"
+					+ aPlayer.getGuild().getTitle() + "</I>.<BR>\r\n");
 			return false;
 		}
-		aUser.setAttribute(new Attribute(Attribute.GUILDWISH, guild.getName(),
+		aPlayer.setAttribute(new Attribute(Attribute.GUILDWISH, guild.getName(),
 				"string"));
-		aUser.writeMessage("You have applied to guild <I>" + guild.getTitle()
+		aPlayer.writeMessage("You have applied to guild <I>" + guild.getTitle()
 				+ "</I>.<BR>\r\n");
 		return true;
 	}

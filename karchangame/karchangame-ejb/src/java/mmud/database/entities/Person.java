@@ -16,6 +16,7 @@
  */
 package mmud.database.entities;
 
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -37,6 +38,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.types.Sex;
+import java.io.File;
+import java.io.IOException;
+import mmud.Constants;
+import mmud.exceptions.MmudException;
 
 /**
  *
@@ -199,8 +204,8 @@ public abstract class Person implements Serializable
     @Column(name = "cgiAuthType")
     private String cgiAuthType;
     @Size(max = 40)
-    @Column(name = "cgiRemoteUser")
-    private String cgiRemoteUser;
+    @Column(name = "cgiRemotePlayer")
+    private String cgiRemotePlayer;
     @Size(max = 40)
     @Column(name = "cgiRemoteIdent")
     private String cgiRemoteIdent;
@@ -211,8 +216,8 @@ public abstract class Person implements Serializable
     @Column(name = "cgiAccept")
     private String cgiAccept;
     @Size(max = 40)
-    @Column(name = "cgiUserAgent")
-    private String cgiUserAgent;
+    @Column(name = "cgiPlayerAgent")
+    private String cgiPlayerAgent;
     @Column(name = "jumpmana")
     private Integer jumpmana;
     @Column(name = "jumpmove")
@@ -1027,14 +1032,14 @@ public abstract class Person implements Serializable
         this.cgiAuthType = cgiAuthType;
     }
 
-    public String getCgiRemoteUser()
+    public String getCgiRemotePlayer()
     {
-        return cgiRemoteUser;
+        return cgiRemotePlayer;
     }
 
-    public void setCgiRemoteUser(String cgiRemoteUser)
+    public void setCgiRemotePlayer(String cgiRemotePlayer)
     {
-        this.cgiRemoteUser = cgiRemoteUser;
+        this.cgiRemotePlayer = cgiRemotePlayer;
     }
 
     public String getCgiRemoteIdent()
@@ -1067,14 +1072,14 @@ public abstract class Person implements Serializable
         this.cgiAccept = cgiAccept;
     }
 
-    public String getCgiUserAgent()
+    public String getCgiPlayerAgent()
     {
-        return cgiUserAgent;
+        return cgiPlayerAgent;
     }
 
-    public void setCgiUserAgent(String cgiUserAgent)
+    public void setCgiPlayerAgent(String cgiPlayerAgent)
     {
-        this.cgiUserAgent = cgiUserAgent;
+        this.cgiPlayerAgent = cgiPlayerAgent;
     }
 
     public Integer getJumpmana()
@@ -1175,5 +1180,94 @@ public abstract class Person implements Serializable
     public String toString()
     {
         return "mmud.database.entities.Person[ name=" + name + " ]";
+    }
+
+    /**
+     * Returns the name of the log file that is to store all communication.
+     * @return String, containing log file in the form "name.txt".
+     */
+    public File getLogFile()
+    {
+        return new File(getName() + ".txt");
+    }
+
+    /**
+     * creates a new log file and deletes the old one.
+     *
+     * @throws MudException
+     *             which indicates probably that the log file could not be
+     *             created. Possibly due to either permissions or the directory
+     *             does not exist.
+     */
+    public void createLog() throws MmudException
+    {
+        if (getLogFile().exists())
+        {
+            getLogFile().delete();
+        }
+        try
+        {
+            getLogFile().createNewFile();
+        } catch (IOException e)
+        {
+            throw new MmudException("Error creating logfile for " + getName()
+                    + " in " + Constants.MUDFILEPATH, e);
+        }
+    }
+
+    /**
+     * writes a message to the log file of the character that contains all
+     * communication and messages.
+     * <P>
+     * <B>Important!</B> : Use this method only for Environmental communication,
+     * as it does not check the Ignore Flag. Use the writeMessage(Person
+     * aSource, String aMessage) for specific communication between users.
+     *
+     * @param aMessage
+     *            the message to be written to the logfile.
+     * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
+     * @see #writeMessage(Person aSource, String aMessage)
+     */
+    public void writeMessage(String aMessage)
+    {
+        int i = 0;
+        int state = 0;
+        int foundit = -1;
+        while ((i < aMessage.length()) && (foundit == -1))
+        {
+            if (state == 0)
+            {
+                if (aMessage.charAt(i) == '<')
+                {
+                    state = 1;
+                } else if (aMessage.charAt(i) != ' ')
+                {
+                    foundit = i;
+                }
+            } else if (state == 1)
+            {
+                if (aMessage.charAt(i) == '>')
+                {
+                    state = 0;
+                }
+            }
+            i++;
+        }
+        if (foundit != -1)
+        {
+            aMessage = aMessage.substring(0, foundit)
+                    + aMessage.substring(foundit, foundit + 1).toUpperCase()
+                    + aMessage.substring(foundit + 1);
+        }
+
+        try
+        {
+            FileWriter myFileWriter = new FileWriter(getLogFile(), true);
+            myFileWriter.write(aMessage, 0, aMessage.length());
+            myFileWriter.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

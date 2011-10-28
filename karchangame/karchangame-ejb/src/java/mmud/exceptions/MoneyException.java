@@ -20,31 +20,6 @@ package mmud.exceptions;
  *
  * @author maartenl
  */
-public class MmudException extends Exception
+public class MoneyException extends MmudException
 {
-
-    /**
-     * Creates a new instance of <code>MmudException</code> without detail message.
-     */
-    public MmudException()
-    {
-    }
-
-    /**
-     * Constructs an instance of <code>MmudException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public MmudException(String msg)
-    {
-        super(msg);
-    }
-
-    /**
-     * Constructs an instance of <code>MmudException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public MmudException(String msg, Throwable e)
-    {
-        super(msg, e);
-    }
 }

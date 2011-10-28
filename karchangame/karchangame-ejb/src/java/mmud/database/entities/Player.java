@@ -41,8 +41,8 @@ import javax.validation.constraints.Size;
 @DiscriminatorValue("0")
 @NamedQueries(
 {
-    @NamedQuery(name = "User.findByAddress", query = "SELECT p FROM User p WHERE p.address = :address"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT p FROM User p WHERE p.email = :email")
+    @NamedQuery(name = "Player.findByAddress", query = "SELECT p FROM Player p WHERE p.address = :address"),
+    @NamedQuery(name = "Player.findByEmail", query = "SELECT p FROM Player p WHERE p.email = :email")
 })
 public class Player extends Person implements Serializable
 {
@@ -288,6 +288,6 @@ public class Player extends Person implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.User[ name=" + name + " ]";
+        return "mmud.database.entities.Player[ name=" + name + " ]";
     }
 }

@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Awaken from sleep: "awaken".
@@ -44,16 +44,16 @@ public class AwakenCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!aUser.isaSleep())
+		if (!aPlayer.isaSleep())
 		{
-			aUser.writeMessage("You already are awake.<BR>\r\n");
+			aPlayer.writeMessage("You already are awake.<BR>\r\n");
 		} else
 		{
-			aUser.setSleep(false);
-			Persons.sendMessage(aUser, "%SNAME awaken%VERB2.<BR>\r\n");
+			aPlayer.setSleep(false);
+			Persons.sendMessage(aPlayer, "%SNAME awaken%VERB2.<BR>\r\n");
 		}
 		return true;
 	}

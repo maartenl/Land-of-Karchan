@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Provide a list of who is currently logged onto the game: "who".
@@ -46,11 +46,11 @@ public class WhoCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		theString = null;
-		theString = Persons.getWhoList() + aUser.printForm();
+		theString = Persons.getWhoList() + aPlayer.printForm();
 		return true;
 	}
 

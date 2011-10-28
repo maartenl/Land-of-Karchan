@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Makes your character fall asleep: "sleep".
@@ -44,17 +44,17 @@ public class SleepCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 
-		if (aUser.isaSleep())
+		if (aPlayer.isaSleep())
 		{
-			aUser.writeMessage("You already are asleep.<BR>\r\n");
+			aPlayer.writeMessage("You already are asleep.<BR>\r\n");
 		} else
 		{
-			aUser.setSleep(true);
-			Persons.sendMessage(aUser, "%SNAME go%VERB1 to sleep.<BR>\r\n");
+			aPlayer.setSleep(true);
+			Persons.sendMessage(aPlayer, "%SNAME go%VERB1 to sleep.<BR>\r\n");
 		}
 		return true;
 	}

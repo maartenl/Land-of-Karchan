@@ -30,12 +30,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.MudMoneyException;
-import mmud.ParseException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.MoneyException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -55,8 +55,8 @@ public class GiveCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -68,9 +68,9 @@ public class GiveCommand extends NormalCommand
 			// determine if appropriate target is found.
 			Person toChar = Persons
 					.retrievePerson(myParsed[myParsed.length - 1]);
-			if ((toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())))
+			if ((toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())))
 			{
-				aUser.writeMessage("Cannot find that person.<BR>\r\n");
+				aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				return true;
 			}
 
@@ -90,7 +90,7 @@ public class GiveCommand extends NormalCommand
 						amount = Integer.parseInt(myParsed[1]);
 						if (amount < 0)
 						{
-							aUser.writeMessage("I beg your pardon?<BR>\r\n");
+							aPlayer.writeMessage("I beg your pardon?<BR>\r\n");
 							return true;
 						}
 					}
@@ -116,16 +116,16 @@ public class GiveCommand extends NormalCommand
 					{
 						try
 						{
-							aUser.transferMoneyTo(newamount, toChar);
-						} catch (MudMoneyException e)
+							aPlayer.transferMoneyTo(newamount, toChar);
+						} catch (MoneyException e)
 						{
-							aUser
+							aPlayer
 									.writeMessage("You do not have that much money.<BR>\r\n");
 							return true;
 						}
-						Database.writeLog(aUser.getName(), "gave " + newamount
+						Database.writeLog(aPlayer.getName(), "gave " + newamount
 								+ " copper to " + toChar);
-						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 "
+						Persons.sendMessage(aPlayer, toChar, "%SNAME give%VERB2 "
 								+ amount + " " + currency + " coin"
 								+ (amount == 1 ? "" : "s")
 								+ " to %TNAME.<BR>\r\n");
@@ -147,15 +147,15 @@ public class GiveCommand extends NormalCommand
 			String adject3 = (String) stuff.elementAt(3);
 			String name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser.writeMessage("You do not have that item.<BR>\r\n");
+					aPlayer.writeMessage("You do not have that item.<BR>\r\n");
 				} else
 				{
-					aUser
+					aPlayer
 							.writeMessage("You do not have that many items.<BR>\r\n");
 				}
 				return true;
@@ -168,12 +168,12 @@ public class GiveCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (myItem.isAttribute("notgiveable"))
 				{
-					aUser.writeMessage("You cannot give that item.<BR>\r\n");
+					aPlayer.writeMessage("You cannot give that item.<BR>\r\n");
 					valid = false;
 				}
 				if (myItem.isWearing())
 				{
-					aUser
+					aPlayer
 							.writeMessage("You are wearing or wielding that item.<BR>\r\n");
 					valid = false;
 				}
@@ -183,15 +183,15 @@ public class GiveCommand extends NormalCommand
 					try
 					{
 						ItemsDb.transferItem(myItem, toChar);
-						Database.writeLog(aUser.getName(), "gave " + myItem
+						Database.writeLog(aPlayer.getName(), "gave " + myItem
 								+ " to " + toChar.getName());
-						Persons.sendMessage(aUser, toChar, "%SNAME give%VERB2 "
+						Persons.sendMessage(aPlayer, toChar, "%SNAME give%VERB2 "
 								+ myItem.getDescription()
 								+ " to %TNAME.<BR>\r\n");
 						j++;
 					} catch (ItemDoesNotExistException e)
 					{
-						Database.writeLog(aUser.getName(), "tried to give "
+						Database.writeLog(aPlayer.getName(), "tried to give "
 								+ myItem + " to " + toChar.getName()
 								+ " but failed.");
 						// skipping this itemm, heading over to the next one.

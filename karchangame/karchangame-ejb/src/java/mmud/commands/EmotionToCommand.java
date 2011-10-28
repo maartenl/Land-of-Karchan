@@ -29,10 +29,10 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Provides an emotional response to a person. Acceptable format is:
@@ -47,8 +47,8 @@ public class EmotionToCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		String command = getCommand();
 		Logger.getLogger("mmud").finer("");
@@ -64,15 +64,15 @@ public class EmotionToCommand extends NormalCommand
 			{
 				// cuddle Karn
 				Person toChar = Persons.retrievePerson(myParsed[1]);
-				if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+				if ( (toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())) )
 				{
-					aUser.writeMessage("Cannot find that person.<BR>\r\n");
+					aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				}
 				else
 				{
-					aUser.writeMessage("You " + plural[0] + " " + toChar.getName() + ".<BR>\r\n");
-					toChar.writeMessage(aUser.getName() + " " + plural[1] + " you.<BR>\r\n");
-					Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + ".<BR>\r\n");
+					aPlayer.writeMessage("You " + plural[0] + " " + toChar.getName() + ".<BR>\r\n");
+					toChar.writeMessage(aPlayer.getName() + " " + plural[1] + " you.<BR>\r\n");
+					Persons.sendMessageExcl(aPlayer, toChar, aPlayer.getName() + " " + plural[1] + " " + toChar.getName() + ".<BR>\r\n");
 				}
 				break;
 			}
@@ -80,21 +80,21 @@ public class EmotionToCommand extends NormalCommand
 			{
 				// cuddle Karn evilly
 				Person toChar = Persons.retrievePerson(myParsed[1]);
-				if ( (toChar == null) || (!toChar.getRoom().equals(aUser.getRoom())) )
+				if ( (toChar == null) || (!toChar.getRoom().equals(aPlayer.getRoom())) )
 				{
-					aUser.writeMessage("Cannot find that person.<BR>\r\n");
+					aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 				}
 				else
 				{
 					if (Constants.existsAdverb(myParsed[2]))
 					{
-						aUser.writeMessage("You " + plural[0] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
-						toChar.writeMessage(aUser.getName() + " " + plural[1] + " you " + myParsed[2].toLowerCase() + ".<BR>\r\n");
-						Persons.sendMessageExcl(aUser, toChar, aUser.getName() + " " + plural[1] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
+						aPlayer.writeMessage("You " + plural[0] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
+						toChar.writeMessage(aPlayer.getName() + " " + plural[1] + " you " + myParsed[2].toLowerCase() + ".<BR>\r\n");
+						Persons.sendMessageExcl(aPlayer, toChar, aPlayer.getName() + " " + plural[1] + " " + toChar.getName() + " " + myParsed[2].toLowerCase() + ".<BR>\r\n");
 					}
 					else
 					{
-						aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+						aPlayer.writeMessage("Unknown adverb found.<BR>\r\n");
 					}
 				}
 				break;

@@ -28,8 +28,8 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Show the inventory: "inventory".
@@ -45,13 +45,13 @@ public class StatsCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		String invent = aUser.getStatistics();
+		String invent = aPlayer.getStatistics();
 		invent = invent.replaceAll("%SHESHE", "You");
 		invent = invent.replaceAll("%SISARE", "are");
-		theResult = "<H1>Stats</H1>" + invent + aUser.printForm();
+		theResult = "<H1>Stats</H1>" + invent + aPlayer.printForm();
 		return true;
 	}
 

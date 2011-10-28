@@ -29,8 +29,8 @@ package mmud.commands;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * Shows the current date in the game: "date".
@@ -44,11 +44,11 @@ public class DateCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Calendar myCalendar = Calendar.getInstance();
-		aUser.writeMessage("Current date is "
+		aPlayer.writeMessage("Current date is "
 				+ (myCalendar.get(Calendar.MONTH) + 1) + "-"
 				+ +myCalendar.get(Calendar.DAY_OF_MONTH) + "-"
 				+ +myCalendar.get(Calendar.YEAR) + ".<BR>\r\n");

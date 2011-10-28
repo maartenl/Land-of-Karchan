@@ -29,11 +29,11 @@ package mmud.commands.guilds;
 import java.util.logging.Logger;
 
 import mmud.Attribute;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.GuildRank;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -49,11 +49,11 @@ public class AssignRankCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
@@ -65,37 +65,37 @@ public class AssignRankCommand extends GuildMasterCommand
 		}
 		catch (NumberFormatException e)
 		{
-			aUser.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
+			aPlayer.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
 			return true;
 		}
-		GuildRank rank = aUser.getGuild().getRank(id);
+		GuildRank rank = aPlayer.getGuild().getRank(id);
 		if (rank == null)
 		{
-			aUser.writeMessage("That rank does not exist.<BR>\r\n");
+			aPlayer.writeMessage("That rank does not exist.<BR>\r\n");
 			return true;
 		}
 		Person toChar2 = Persons.getPerson(myParsed[2]);
-		if ((toChar2 == null) || (!(toChar2 instanceof User)))
+		if ((toChar2 == null) || (!(toChar2 instanceof Player)))
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		User toChar = (User) toChar2;
-		if (!aUser.getGuild().equals(toChar.getGuild()))
+		Player toChar = (Player) toChar2;
+		if (!aPlayer.getGuild().equals(toChar.getGuild()))
 		{
-			aUser.writeMessage("That person is not a member of your guild.<BR>\r\n");
+			aPlayer.writeMessage("That person is not a member of your guild.<BR>\r\n");
 			return true;
 		}
 		
 		Attribute attrib = new Attribute(Attribute.GUILDRANK, rank.getId() + "", "number");
 		toChar.setAttribute(attrib);
-		Database.writeLog(aUser.getName(), " assigned " + rank.getTitle() + " of " + 
-			" guild " + aUser.getGuild().getName() + " to " + toChar.getName());
+		Database.writeLog(aPlayer.getName(), " assigned " + rank.getTitle() + " of " + 
+			" guild " + aPlayer.getGuild().getName() + " to " + toChar.getName());
 		if (toChar.isActive())
 		{
 			toChar.writeMessage("You have been promoted to <B>" + rank.getTitle() + "</B>.<BR>\r\n");
 		}
-		aUser.writeMessage("You have promoted " + toChar.getName() + " to <B>" + rank.getTitle() + "</B>.<BR>\r\n");
+		aPlayer.writeMessage("You have promoted " + toChar.getName() + " to <B>" + rank.getTitle() + "</B>.<BR>\r\n");
 		return true;
 	}
 

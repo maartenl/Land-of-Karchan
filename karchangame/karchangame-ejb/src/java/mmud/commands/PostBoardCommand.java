@@ -26,10 +26,10 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands;
 
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.boards.Board;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.BoardsDb;
 import mmud.database.MudDatabaseException;
 
@@ -47,7 +47,7 @@ public abstract class PostBoardCommand extends NormalCommand
 	/**
 	 * Posts a message of a user to a board.
 	 * 
-	 * @param aUser
+	 * @param aPlayer
 	 *            the user posting to the board. Used to convey messages.
 	 * @param aBoardName
 	 *            the name of the board.
@@ -55,13 +55,13 @@ public abstract class PostBoardCommand extends NormalCommand
 	 *            the identification number of the room where this board is
 	 *            active.
 	 * @return boolean, false if a message was not properly posted.
-	 * @throws MudException
+	 * @throws MmudException
 	 *             room not found
 	 */
-	protected boolean postMessage(User aUser, String aBoardName, int aRoomId,
-			String aMessage) throws MudException
+	protected boolean postMessage(Player aPlayer, String aBoardName, int aRoomId,
+			String aMessage) throws MmudException
 	{
-		if (aUser.getRoom().getId() != aRoomId)
+		if (aPlayer.getRoom().getId() != aRoomId)
 		{
 			return false;
 		}
@@ -76,13 +76,13 @@ public abstract class PostBoardCommand extends NormalCommand
 		}
 		try
 		{
-			myBoard.post(aUser, aMessage);
+			myBoard.post(aPlayer, aMessage);
 		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		Persons.sendMessage(aUser, "%SNAME posted something on the "
+		Persons.sendMessage(aPlayer, "%SNAME posted something on the "
 				+ myBoard.getName() + " board.<BR>\r\n");
 		return true;
 	}

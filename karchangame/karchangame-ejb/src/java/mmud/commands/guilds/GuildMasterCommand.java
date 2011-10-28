@@ -26,8 +26,8 @@ maarten_l@yahoo.com
 -------------------------------------------------------------------------*/
 package mmud.commands.guilds;
 
-import mmud.MudException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Player;
 
 /**
  * An abstract class for the commands that may only be executed
@@ -36,14 +36,14 @@ import mmud.characters.User;
 public abstract class GuildMasterCommand extends GuildCommand
 {
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
-		if (!aUser.getName().equals(aUser.getGuild().getBossName()))
+		if (!aPlayer.getName().equals(aPlayer.getGuild().getBossName()))
 		{
 			return false;
 		}
-		return super.run(aUser);
+		return super.run(aPlayer);
 	}
 
 

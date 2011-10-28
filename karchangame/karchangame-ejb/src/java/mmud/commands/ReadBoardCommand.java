@@ -28,10 +28,10 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.boards.Board;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.BoardsDb;
 import mmud.database.MudDatabaseException;
 
@@ -50,19 +50,19 @@ public abstract class ReadBoardCommand extends NormalCommand
 	/**
 	 * Reads a board for a user.
 	 * 
-	 * @param aUser
+	 * @param aPlayer
 	 *            the user reading the board. Used to convey messages.
 	 * @param aBoardName
 	 *            the name of the board.
 	 * @param aRoomId
 	 *            the identification number of the room where this board is
 	 *            active.
-	 * @throws MudException
+	 * @throws MmudException
 	 */
-	protected boolean readMessage(User aUser, String aBoardName, int aRoomId)
-			throws MudException
+	protected boolean readMessage(Player aPlayer, String aBoardName, int aRoomId)
+			throws MmudException
 	{
-		if (aUser.getRoom().getId() != aRoomId)
+		if (aPlayer.getRoom().getId() != aRoomId)
 		{
 			return false;
 		}
@@ -79,13 +79,13 @@ public abstract class ReadBoardCommand extends NormalCommand
 		try
 		{
 			theResult = myBoard.getDescription() + myBoard.read()
-					+ aUser.printForm();
+					+ aPlayer.printForm();
 		} catch (MudDatabaseException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		Persons.sendMessage(aUser, "%SNAME read%VERB2 the " + myBoard.getName()
+		Persons.sendMessage(aPlayer, "%SNAME read%VERB2 the " + myBoard.getName()
 				+ " board.<BR>\r\n");
 		return true;
 	}

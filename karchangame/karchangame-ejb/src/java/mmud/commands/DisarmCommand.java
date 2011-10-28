@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Player;
 import mmud.database.ItemsDb;
 import mmud.items.ItemException;
 import mmud.items.PersonPositionEnum;
@@ -50,25 +50,25 @@ public class DisarmCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
-	        if (Constants.debugOn(aUser.getName()))
+	        if (Constants.debugOn(aPlayer.getName()))
 		{   
 		        Logger.getLogger("mmud_debug").finest("run");
                 }
 		Logger.getLogger("mmud").finer("");
                 UnwieldCommand unwield = new UnwieldCommand();
-                return unwield(aUser, PersonPositionEnum.WIELD_LEFT) |
-                unwield(aUser, PersonPositionEnum.WIELD_RIGHT) |
-                unwield(aUser, PersonPositionEnum.WIELD_BOTH);
+                return unwield(aPlayer, PersonPositionEnum.WIELD_LEFT) |
+                unwield(aPlayer, PersonPositionEnum.WIELD_RIGHT) |
+                unwield(aPlayer, PersonPositionEnum.WIELD_BOTH);
 	}
 
-        private boolean unwield(User aUser, PersonPositionEnum position)
+        private boolean unwield(Player aPlayer, PersonPositionEnum position)
                 throws ItemException, ParseException,
-			MudException
+			MmudException
         {
-            return UnwieldCommand.stopWielding(ItemsDb.getWornItemFromChar(aUser, position), aUser, position);
+            return UnwieldCommand.stopWielding(ItemsDb.getWornItemFromChar(aPlayer, position), aPlayer, position);
         }
 
 	public Command createCommand()

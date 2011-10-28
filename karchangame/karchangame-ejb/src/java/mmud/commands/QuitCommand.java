@@ -29,9 +29,9 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.MailDb;
 
@@ -46,22 +46,22 @@ public class QuitCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		Persons.sendMessage(aUser, "%SNAME left the game.<BR>\r\n");
+		Persons.sendMessage(aPlayer, "%SNAME left the game.<BR>\r\n");
 		try
 		{
-			MailDb.resetNewMailFlag(aUser);
-			Persons.deactivateUser(aUser);
-			Database.writeLog(aUser.getName(), "left the game.");
+			MailDb.resetNewMailFlag(aPlayer);
+			Persons.deactivatePlayer(aPlayer);
+			Database.writeLog(aPlayer.getName(), "left the game.");
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		try
 		{
-			if (aUser.getFrames() == 2)
+			if (aPlayer.getFrames() == 2)
 			{
 				theResult = "Ok\n";
 			}

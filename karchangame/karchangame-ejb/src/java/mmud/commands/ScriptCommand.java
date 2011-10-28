@@ -29,9 +29,9 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.MethodDoesNotExistException;
-import mmud.MudException;
-import mmud.UserCommandInfo;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.PlayerCommandInfo;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 
 /**
@@ -41,7 +41,7 @@ import mmud.database.Database;
  */
 public class ScriptCommand extends NormalCommand
 {
-	private final UserCommandInfo theCommandInfo;
+	private final PlayerCommandInfo theCommandInfo;
 
 	private String theResult;
 
@@ -51,18 +51,18 @@ public class ScriptCommand extends NormalCommand
 	 * @param aCommandInfo
 	 *            data class containing information about the command.
 	 */
-	public ScriptCommand(UserCommandInfo aCommandInfo)
+	public ScriptCommand(PlayerCommandInfo aCommandInfo)
 	{
 		super(aCommandInfo.getCommand());
 		theCommandInfo = aCommandInfo;
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		if ((theCommandInfo.getRoom() != null)
-				&& (aUser.getRoom().getId() != theCommandInfo.getRoom()
+				&& (aPlayer.getRoom().getId() != theCommandInfo.getRoom()
 						.intValue()))
 		{
 			return false;
@@ -77,8 +77,8 @@ public class ScriptCommand extends NormalCommand
 				throw new MethodDoesNotExistException(" ("
 						+ theCommandInfo.getMethodName() + ")");
 			}
-			stuff = aUser.runScript("command", mySource, getParsedCommand());
-		} catch (MudException e)
+			stuff = aPlayer.runScript("command", mySource, getParsedCommand());
+		} catch (MmudException e)
 		{
 			theCommandInfo.deactivateCommand();
 			throw e;
@@ -94,7 +94,7 @@ public class ScriptCommand extends NormalCommand
 			theResult = null;
 			return false;
 		}
-		theResult += aUser.printForm();
+		theResult += aPlayer.printForm();
 		return true;
 	}
 

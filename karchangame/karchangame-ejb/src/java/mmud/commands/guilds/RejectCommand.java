@@ -28,10 +28,10 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -54,44 +54,44 @@ public class RejectCommand extends GuildMasterCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 		String[] myParsed = getParsedCommand();
 		Person toChar2 = Persons.getPerson(myParsed[1]);
 
-		if ((toChar2 == null) || (!(toChar2 instanceof User)))
+		if ((toChar2 == null) || (!(toChar2 instanceof Player)))
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		User toChar = (User) toChar2;
+		Player toChar = (Player) toChar2;
 		if (!toChar.isAttribute("guildwish")
-				|| (!aUser.getGuild().getName().equalsIgnoreCase(
+				|| (!aPlayer.getGuild().getName().equalsIgnoreCase(
 						toChar.getAttribute("guildwish").getValue())))
 		{
-			aUser.writeMessage(toChar.getName()
+			aPlayer.writeMessage(toChar.getName()
 					+ " does not wish to join your guild.<BR>\r\n");
 			return true;
 		}
 		if (toChar.getGuild() != null)
 		{
-			throw new MudException(
+			throw new MmudException(
 					"error occurred, a person is a member of a guild, yet has a guildwish parameter!");
 		}
 		toChar.removeAttribute("guildwish");
-		Database.writeLog(aUser.getName(), "denied " + toChar.getName()
-				+ " membership into guild " + aUser.getGuild().getName());
-		aUser.writeMessage("You have denied " + toChar.getName()
+		Database.writeLog(aPlayer.getName(), "denied " + toChar.getName()
+				+ " membership into guild " + aPlayer.getGuild().getName());
+		aPlayer.writeMessage("You have denied " + toChar.getName()
 				+ " admittance to your guild.<BR>\r\n");
 		if (toChar.isActive())
 		{
 			toChar.writeMessage("You have been denied membership of guild <I>"
-					+ aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+					+ aPlayer.getGuild().getTitle() + "</I>.<BR>\r\n");
 		}
 		return true;
 	}

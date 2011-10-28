@@ -29,11 +29,11 @@ package mmud.commands;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.CommunicationListener;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.characters.CommunicationListener.CommType;
 
 /**
@@ -54,7 +54,7 @@ public class TellCommand extends CommunicationCommand
 	 * Once again, this one is special, because tell works across all rooms, and
 	 * is only ever targeted to only one person directly.
 	 */
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String command = getCommand();
@@ -66,25 +66,25 @@ public class TellCommand extends CommunicationCommand
 		Person toChar = Persons.retrievePerson(myParsed[2]);
 		if (toChar == null)
 		{
-			aUser.writeMessage("Cannot find that person.<BR>\r\n");
+			aPlayer.writeMessage("Cannot find that person.<BR>\r\n");
 			return true;
 		}
-		if (aUser.isIgnored(toChar))
+		if (aPlayer.isIgnored(toChar))
 		{
-			aUser.writeMessage(toChar.getName()
+			aPlayer.writeMessage(toChar.getName()
 					+ " is ignoring you fully.<BR>\r\n");
 			return true;
 		}
 		setMessage(command.substring(
 				command.indexOf(myParsed[3], getCommType().toString().length()
 						+ 1 + 2 + 1 + myParsed[2].length())).trim());
-		aUser.writeMessage("<B>You tell " + toChar.getName() + "</B> : "
+		aPlayer.writeMessage("<B>You tell " + toChar.getName() + "</B> : "
 				+ getMessage() + "<BR>\r\n");
-		toChar.writeMessage("<B>" + aUser.getName() + " tells you</B> : "
+		toChar.writeMessage("<B>" + aPlayer.getName() + " tells you</B> : "
 				+ getMessage() + "<BR>\r\n");
 		if (toChar instanceof CommunicationListener)
 		{
-			((CommunicationListener) toChar).commEvent(aUser,
+			((CommunicationListener) toChar).commEvent(aPlayer,
 					CommunicationListener.TELL, getMessage());
 		}
 		return true;

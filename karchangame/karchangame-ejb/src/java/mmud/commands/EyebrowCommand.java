@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Raises your eyebrow.
@@ -44,14 +44,14 @@ public class EyebrowCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
 			Persons
-					.sendMessage(aUser,
+					.sendMessage(aPlayer,
 							"%SNAME raise%VERB2 an eyebrow.<BR>\r\n");
 			return true;
 		}

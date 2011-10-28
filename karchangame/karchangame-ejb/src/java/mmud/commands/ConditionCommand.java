@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 
 /**
  * Gets or sets the condition/state of your character.
@@ -44,29 +44,29 @@ public class ConditionCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
                 String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
-                    if (aUser.getState() == null)
+                    if (aPlayer.getState() == null)
                     {
-			aUser.writeMessage("You do not have a current condition.<br/>\r\n");
+			aPlayer.writeMessage("You do not have a current condition.<br/>\r\n");
                         return true;
                     }
-			aUser.writeMessage("Your current condition is \"" + aUser.getState() + "\".<br/>\r\n");
+			aPlayer.writeMessage("Your current condition is \"" + aPlayer.getState() + "\".<br/>\r\n");
                         return true;
 		}
                 if (myParsed.length == 2 && myParsed[1].equals("empty"))
                 {
-                    aUser.setState(null);
-                    aUser.writeMessage("Removed your current condition.<br/>\r\n");
+                    aPlayer.setState(null);
+                    aPlayer.writeMessage("Removed your current condition.<br/>\r\n");
                     return true;
                 }
 
-                aUser.setState(getCommand().substring("condition ".length()));
-                Persons.sendMessage(aUser, "Condition set.<BR>\r\n");
+                aPlayer.setState(getCommand().substring("condition ".length()));
+                Persons.sendMessage(aPlayer, "Condition set.<BR>\r\n");
 		return true;
 	}
 

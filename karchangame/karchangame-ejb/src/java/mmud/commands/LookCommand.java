@@ -31,10 +31,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.characters.Person;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Person;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.ItemsDb;
 import mmud.items.Container;
 import mmud.items.Item;
@@ -59,8 +59,8 @@ public class LookCommand extends NormalCommand
 		super(aRegExpr);
 	}
 
-	private boolean LookItem(User aUser, Vector aItems) throws ItemException,
-			MudException
+	private boolean LookItem(Player aPlayer, Vector aItems) throws ItemException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Item myItem = (Item) aItems.elementAt(0);
@@ -69,14 +69,14 @@ public class LookCommand extends NormalCommand
 			throw new ItemDoesNotExistException("item not found... BUG!");
 		}
 		theResult = myItem.getLongDescription();
-		theResult += aUser.printForm();
-		Persons.sendMessage(aUser, "%SNAME look%VERB2 at "
+		theResult += aPlayer.printForm();
+		Persons.sendMessage(aPlayer, "%SNAME look%VERB2 at "
 				+ myItem.getDescription() + ".<BR>\r\n");
 		return true;
 	}
 
-	private boolean LookInItem(User aUser, Vector aItems) throws ItemException,
-			MudException
+	private boolean LookInItem(Player aPlayer, Vector aItems) throws ItemException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		Iterator myIterator = aItems.iterator();
@@ -90,13 +90,13 @@ public class LookCommand extends NormalCommand
 				{
 					Persons
 							.sendMessage(
-									aUser,
+									aPlayer,
 									"%SNAME attempt%VERB2 to look in "
 											+ myItem.getDescription()
 											+ ", but unfortunately it seems closed.<BR>\r\n");
 					return true;
 				}
-				Persons.sendMessage(aUser, "%SNAME look%VERB2 in "
+				Persons.sendMessage(aPlayer, "%SNAME look%VERB2 in "
 						+ myItem.getDescription() + ".<BR>\r\n");
 				theResult = "<H1>" + myItem.getDescription() + "</H1>"
 						+ "You look in " + myItem.getDescription() + ".<P>";
@@ -108,7 +108,7 @@ public class LookCommand extends NormalCommand
 				{
 					theResult += "You see<UL>" + myInvent + "</UL>";
 				}
-				theResult += aUser.printForm();
+				theResult += aPlayer.printForm();
 				return true;
 			}
 		}
@@ -116,7 +116,7 @@ public class LookCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws ItemException, MudException
+	public boolean run(Player aPlayer) throws ItemException, MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -135,26 +135,26 @@ public class LookCommand extends NormalCommand
 				String adject3 = (String) stuff.elementAt(3);
 				String name = (String) stuff.elementAt(4);
 
-				Vector myItems = aUser
+				Vector myItems = aPlayer
 						.getItems(adject1, adject2, adject3, name);
 				if (myItems.size() != 0)
 				{
-					return LookItem(aUser, myItems);
+					return LookItem(aPlayer, myItems);
 				}
-				myItems = aUser.getRoom().getItems(adject1, adject2, adject3,
+				myItems = aPlayer.getRoom().getItems(adject1, adject2, adject3,
 						name);
 				if (myItems.size() != 0)
 				{
-					return LookItem(aUser, myItems);
+					return LookItem(aPlayer, myItems);
 				}
 				Person toChar = Persons.retrievePerson(myParsed[2]);
 				if ((toChar == null)
-						|| (!toChar.getRoom().equals(aUser.getRoom())))
+						|| (!toChar.getRoom().equals(aPlayer.getRoom())))
 				{
-					aUser.writeMessage("You cannot see that.<BR>\r\n");
+					aPlayer.writeMessage("You cannot see that.<BR>\r\n");
 					return true;
 				}
-				Persons.sendMessage(aUser, toChar,
+				Persons.sendMessage(aPlayer, toChar,
 						"%SNAME look%VERB2 at %TNAME.<BR>\r\n");
 				String stuff2 = "You look at the "
 						+ toChar.getLongDescription() + "<BR>"
@@ -167,7 +167,7 @@ public class LookCommand extends NormalCommand
                                 {
                                     stuff2 += toChar.getState() + "<br/>\r\n";
                                 }
-				aUser.writeMessage(stuff2);
+				aPlayer.writeMessage(stuff2);
 				return true;
 			}
 			if (myParsed[1].equalsIgnoreCase("in"))
@@ -180,19 +180,19 @@ public class LookCommand extends NormalCommand
 				String adject3 = (String) stuff.elementAt(3);
 				String name = (String) stuff.elementAt(4);
 
-				Vector myItems = aUser
+				Vector myItems = aPlayer
 						.getItems(adject1, adject2, adject3, name);
 				if (myItems.size() != 0)
 				{
-					return LookInItem(aUser, myItems);
+					return LookInItem(aPlayer, myItems);
 				}
-				myItems = aUser.getRoom().getItems(adject1, adject2, adject3,
+				myItems = aPlayer.getRoom().getItems(adject1, adject2, adject3,
 						name);
 				if (myItems.size() != 0)
 				{
-					return LookInItem(aUser, myItems);
+					return LookInItem(aPlayer, myItems);
 				}
-				aUser.writeMessage("You cannot look in that item.<BR>\r\n");
+				aPlayer.writeMessage("You cannot look in that item.<BR>\r\n");
 				return true;
 			}
 			return false;

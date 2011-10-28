@@ -633,7 +633,7 @@ public final class Constants
         return "Values(mmversion=" + MMVERSION + ")";
     }
     private static TreeMap<String, Command> theCommandStructure = new TreeMap<String, Command>();
-    private static List<UserCommandInfo> theUserCommandStructure = new ArrayList<UserCommandInfo>();
+    private static List<PlayerCommandInfo> thePlayerCommandStructure = new ArrayList<PlayerCommandInfo>();
     private static TreeMap<String, String> theEmotionStructure = new TreeMap<String, String>();
     private static TreeMap<String, String> theEmotion2Structure = new TreeMap<String, String>();
     private static TreeSet<String> theAdverbStructure = new TreeSet<String>();
@@ -831,10 +831,10 @@ public final class Constants
     /**
      * set the user command structure for using user commands.
      */
-    public static void setUserCommands(List<UserCommandInfo> aCollection)
+    public static void setPlayerCommands(List<PlayerCommandInfo> aCollection)
     {
         logger.finer("aCollection=" + aCollection);
-        theUserCommandStructure = aCollection;
+        thePlayerCommandStructure = aCollection;
     }
 
     /**
@@ -844,14 +844,14 @@ public final class Constants
      * @param aCommand
      *            the command that is one of the collection of commands and
      *            which needs to be removed.
-     * @throws MudException
+     * @throws MmudException
      *             if the command to be removed is not present in the
      *             collection.
      */
-    public static void removeUserCommand(UserCommandInfo aCommand)
+    public static void removePlayerCommand(PlayerCommandInfo aCommand)
             throws MmudException
     {
-        if (!theUserCommandStructure.remove(aCommand))
+        if (!thePlayerCommandStructure.remove(aCommand))
         {
             throw new MmudException(
                     "Special user command to be removed not found in collection...");
@@ -882,10 +882,10 @@ public final class Constants
     {
         logger.finer("aCommand=" + aCommand);
         List<Command> result = new ArrayList<Command>(5);
-        Iterator myI = theUserCommandStructure.iterator();
+        Iterator myI = thePlayerCommandStructure.iterator();
         while (myI.hasNext())
         {
-            UserCommandInfo myCom = (UserCommandInfo) myI.next();
+            PlayerCommandInfo myCom = (PlayerCommandInfo) myI.next();
             logger.finest("retrieved usercommand " + myCom.getCommand());
             if (aCommand.matches(myCom.getCommand()))
             {

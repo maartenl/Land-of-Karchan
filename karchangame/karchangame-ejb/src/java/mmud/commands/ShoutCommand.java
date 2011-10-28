@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.characters.CommunicationListener.CommType;
 
 /**
@@ -51,36 +51,36 @@ public class ShoutCommand extends CommunicationCommand
 	 * * Different behaviour than the standard, shouting must be heard in
 	 * neighbouring rooms.
 	 */
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getSouth(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getSouth(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getNorth(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getNorth(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getWest(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getWest(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getEast(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getEast(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getUp(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getUp(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 		Persons
-				.sendMessage(aUser, aUser.getRoom().getDown(), "Someone "
+				.sendMessage(aPlayer, aPlayer.getRoom().getDown(), "Someone "
 						+ getCommType().getPlural() + " : " + getMessage()
 						+ "<BR>\r\n");
 

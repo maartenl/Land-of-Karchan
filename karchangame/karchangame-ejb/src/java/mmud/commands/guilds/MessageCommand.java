@@ -28,9 +28,9 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 
 /**
@@ -44,17 +44,17 @@ public class MessageCommand extends GuildCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
 		String command = getCommand();
 		String message = command.substring("guild".length() + 1).trim();
-		Persons.sendGuildMessage(aUser, aUser.getGuild(), "<B>" + aUser.getName() + "</B>: " + message + "<BR>\r\n");
+		Persons.sendGuildMessage(aPlayer, aPlayer.getGuild(), "<B>" + aPlayer.getName() + "</B>: " + message + "<BR>\r\n");
 		return true;
 	}
 

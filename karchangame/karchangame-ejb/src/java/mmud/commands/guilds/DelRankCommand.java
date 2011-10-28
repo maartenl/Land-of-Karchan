@@ -28,9 +28,9 @@ package mmud.commands.guilds;
 
 import java.util.logging.Logger;
 
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.GuildRank;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.commands.Command;
 import mmud.database.Database;
 
@@ -46,11 +46,11 @@ public class DelRankCommand extends GuildMasterCommand
 		super(aRegExpr);
 	}
 
-	public boolean run(User aUser)
-	throws MudException
+	public boolean run(Player aPlayer)
+	throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
-		if (!super.run(aUser))
+		if (!super.run(aPlayer))
 		{
 			return false;
 		}
@@ -62,14 +62,14 @@ public class DelRankCommand extends GuildMasterCommand
 		}
 		catch (NumberFormatException e)
 		{
-			aUser.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
+			aPlayer.writeMessage("You did not enter an appropriate rank id, which should be a number.<BR>\r\n");
 			return true;
 		}
-		GuildRank rank = aUser.getGuild().getRank(id);
-		aUser.getGuild().removeRank(rank);
-		Database.writeLog(aUser.getName(), " removed guildrank of " + 
-			" guild " + aUser.getGuild().getName() + " called " + rank);
-		aUser.writeMessage("You have removed the " + rank.getTitle() +
+		GuildRank rank = aPlayer.getGuild().getRank(id);
+		aPlayer.getGuild().removeRank(rank);
+		Database.writeLog(aPlayer.getName(), " removed guildrank of " + 
+			" guild " + aPlayer.getGuild().getName() + " called " + rank);
+		aPlayer.writeMessage("You have removed the " + rank.getTitle() +
 			" rank from your guild.<BR>\r\n");
 		return true;
 	}

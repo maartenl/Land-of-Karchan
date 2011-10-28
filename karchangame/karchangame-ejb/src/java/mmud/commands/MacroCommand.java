@@ -28,9 +28,9 @@ package mmud.commands;
 
 import java.util.List;
 import java.util.logging.Logger;
-import mmud.MudException;
+import mmud.exceptions.MmudException;
 import mmud.characters.Macro;
-import mmud.characters.User;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.MudDatabaseException;
 
@@ -53,26 +53,26 @@ public class MacroCommand extends NormalCommand
 	}
 
 	@Override
-	public boolean run(User aUser) throws MudException
+	public boolean run(Player aPlayer) throws MmudException
 	{
 		Logger.getLogger("mmud").finer("");
                 String[] myParsed = getParsedCommand();
 		if (myParsed.length == 1)
 		{
-                    return writeMacros(aUser);
+                    return writeMacros(aPlayer);
 		}
                 if (myParsed.length == 2)
                 {
-                    Database.removeMacro(aUser, myParsed[1]);
-                    aUser.writeMessage("Removed macro.<br/>\r\n");
+                    Database.removeMacro(aPlayer, myParsed[1]);
+                    aPlayer.writeMessage("Removed macro.<br/>\r\n");
                     return true;
                 }
 
 		String command = getCommand();
 
                 Macro macro = new Macro(myParsed[1], command.substring(command.indexOf(myParsed[1]) + myParsed[1].length() + 1));
-                Database.setMacro(aUser, macro);
-                aUser.writeMessage("Created/changed macro.<BR>\r\n");
+                Database.setMacro(aPlayer, macro);
+                aPlayer.writeMessage("Created/changed macro.<BR>\r\n");
 		return true;
 	}
 
@@ -82,9 +82,9 @@ public class MacroCommand extends NormalCommand
 		return new MacroCommand(getRegExpr());
 	}
 
-        private boolean writeMacros(User aUser) throws MudDatabaseException
+        private boolean writeMacros(Player aPlayer) throws MudDatabaseException
         {
-            List<Macro> list = Database.getMacros(aUser);
+            List<Macro> list = Database.getMacros(aPlayer);
             Logger.getLogger("mmud").finer("writeMacros");
             StringBuffer sb = new StringBuffer("<h1>Macros</h1><table><tr><td><b>macro</b></td><td><b>contents</b></td></tr>");
             for (Macro m : list)
@@ -92,7 +92,7 @@ public class MacroCommand extends NormalCommand
                 sb.append("<tr><td>" + m.getMacroname() + "</td><td>" + m.getContents() + "</td></tr>");
             }
             sb.append("</table>");
-            sb.append(aUser.printForm());
+            sb.append(aPlayer.printForm());
             theResult = sb.toString();
             return true;
         }

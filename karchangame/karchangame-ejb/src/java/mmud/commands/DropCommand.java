@@ -30,10 +30,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import mmud.Constants;
-import mmud.MudException;
-import mmud.ParseException;
-import mmud.characters.Persons;
-import mmud.characters.User;
+import mmud.exceptions.MmudException;
+import mmud.exceptions.ParseException;
+import mmud.database.entities.Persons;
+import mmud.database.entities.Player;
 import mmud.database.Database;
 import mmud.database.ItemsDb;
 import mmud.items.Item;
@@ -72,8 +72,8 @@ public class DropCommand extends NormalCommand
 	 *             being defined as smaller than 1.
 	 */
 	@Override
-	public boolean run(User aUser) throws ItemException, ParseException,
-			MudException
+	public boolean run(Player aPlayer) throws ItemException, ParseException,
+			MmudException
 	{
 		Logger.getLogger("mmud").finer("");
 		// initialise string, important otherwise previous instances will return
@@ -89,17 +89,17 @@ public class DropCommand extends NormalCommand
 			adject3 = (String) stuff.elementAt(3);
 			name = (String) stuff.elementAt(4);
 
-			Vector myItems = aUser.getItems(adject1, adject2, adject3, name);
+			Vector myItems = aPlayer.getItems(adject1, adject2, adject3, name);
 			if (myItems.size() < amount)
 			{
 				if (amount == 1)
 				{
-					aUser
+					aPlayer
 							.writeMessage("You cannot find that item in your inventory.<BR>\r\n");
 					return true;
 				} else
 				{
-					aUser
+					aPlayer
 							.writeMessage("You cannot find that many items in your inventory.<BR>\r\n");
 					return true;
 				}
@@ -112,22 +112,22 @@ public class DropCommand extends NormalCommand
 				Item myItem = (Item) myItems.elementAt(i);
 				if (myItem.isWearing())
 				{
-					aUser
+					aPlayer
 							.writeMessage("You are wearing or wielding that item.<BR>\r\n");
 					valid = false;
 				}
 				if (myItem.isAttribute("notdropable"))
 				{
-					aUser.writeMessage("You cannot drop that item.<BR>\r\n");
+					aPlayer.writeMessage("You cannot drop that item.<BR>\r\n");
 					valid = false;
 				}
 				if (valid)
 				{
-					Database.writeLog(aUser.getName(), "dropped " + myItem
-							+ " into room " + aUser.getRoom().getId());
+					Database.writeLog(aPlayer.getName(), "dropped " + myItem
+							+ " into room " + aPlayer.getRoom().getId());
 					ItemsDb.deleteItemFromChar(myItem);
-					ItemsDb.addItemToRoom(myItem, aUser.getRoom());
-					Persons.sendMessage(aUser, "%SNAME drop%VERB2 "
+					ItemsDb.addItemToRoom(myItem, aPlayer.getRoom());
+					Persons.sendMessage(aPlayer, "%SNAME drop%VERB2 "
 							+ myItem.getDescription() + ".<BR>\r\n");
 					j++;
 				}
