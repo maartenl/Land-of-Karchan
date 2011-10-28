@@ -18,6 +18,7 @@ package mmud.database.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -43,7 +44,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "User.findByAddress", query = "SELECT p FROM User p WHERE p.address = :address"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT p FROM User p WHERE p.email = :email")
 })
-public class User extends Person implements Serializable
+public class Player extends Person implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
@@ -74,22 +75,59 @@ public class User extends Person implements Serializable
     @JoinColumn(name = "guild", referencedColumnName = "name")
     @ManyToOne
     private Guild guild;
+    @Size(max = 40)
+    @Column(name = "lok")
+    private String lok;
 
-    public User()
+    public Player()
     {
     }
 
-    public User(String name)
+    public Player(String name)
     {
         this.name = name;
     }
 
-    public User(String name, String race, String sex, Date creation)
+    public Player(String name, String race, String sex, Date creation)
     {
         this.name = name;
         this.setRace(race);
         this.setSex(sex);
         this.setCreation(creation);
+    }
+
+    /**
+     * verify sessionpassword
+     *
+     * @param aSessionPassword
+     *            the sessionpassword to be verified.
+     * @return boolean, true if the sessionpassword provided is an exact match
+     *         with the original sessionpassword.
+     */
+    public boolean verifySessionPassword(String aSessionPassword)
+    {
+        return (lok == null ? false : lok.equals(aSessionPassword));
+    }
+
+    /**
+     * retrieve sessionpassword
+     *
+     * @return String containing the session password
+     */
+    public String getSessionPassword()
+    {
+        return lok;
+    }
+
+    /**
+     * set sessionpassword
+     *
+     * @param aSessionPassword
+     *            sets the session password.
+     */
+    public void setSessionPassword(String aSessionPassword)
+    {
+        this.lok = aSessionPassword;
     }
 
     public Date getLastlogin()
@@ -102,24 +140,85 @@ public class User extends Person implements Serializable
         this.lastlogin = lastlogin;
     }
 
+    /**
+     * Returns the address
+     *
+     * @return String containing the address
+     */
     public String getAddress()
     {
         return address;
     }
 
+    /**
+     * Sets the address
+     *
+     * @param anAddress
+     *            String containing the address
+     */
     public void setAddress(String address)
     {
         this.address = address;
     }
 
+    /**
+     * Returns the password
+     *
+     * @return String containing password
+     */
     public String getPassword()
     {
         return password;
     }
 
+    /**
+     * generate a session password to be used by player during game session Use
+     * getSessionPassword to return a String containing 25 random digits,
+     * capitals and smallcaps.
+     */
+    public void generateSessionPassword()
+    {
+        char[] myCharArray =
+        {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+            'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+        };
+        StringBuilder myString = new StringBuilder(26);
+        Random myRandom = new Random();
+        for (int i = 1; i < 26; i++)
+        {
+
+            myString.append(myCharArray[myRandom.nextInt(myCharArray.length)]);
+        }
+        lok = myString.toString();
+    }
+
+    /**
+     * Sets the password. The password can only be set, if it has not been
+     * previously set, i.e. when the password provided in the constructor is the
+     * null value.
+     *
+     * @param aPassword
+     *            String containing password
+     */
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    /**
+     * Verifies the password
+     *
+     * @return boolean, returns true if password provided is an exact match.
+     * @param aPassword
+     *            the password that needs to be verified.
+     */
+    public boolean verifyPassword(String aPassword)
+    {
+        return (password != null && password.equals(aPassword));
     }
 
     public String getRealname()
@@ -174,11 +273,11 @@ public class User extends Person implements Serializable
     public boolean equals(Object object)
     {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User))
+        if (!(object instanceof Player))
         {
             return false;
         }
-        User other = (User) object;
+        Player other = (Player) object;
         if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
         {
             return false;

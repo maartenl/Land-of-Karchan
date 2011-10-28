@@ -36,6 +36,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.types.Sex;
 
 /**
  *
@@ -44,9 +45,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "mm_usertable")
-@DiscriminatorColumn(
-        name = "god",
-        discriminatorType = DiscriminatorType.INTEGER)
+@DiscriminatorColumn(name = "god",
+discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries(
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
@@ -54,6 +54,7 @@ import javax.validation.constraints.Size;
 })
 public abstract class Person implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -61,13 +62,9 @@ public abstract class Person implements Serializable
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;
-
-
     @Size(max = 254)
     @Column(name = "title")
     private String title;
-
-
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -109,9 +106,6 @@ public abstract class Person implements Serializable
     private Integer copper;
     @Column(name = "room")
     private Integer room;
-    @Size(max = 40)
-    @Column(name = "lok")
-    private String lok;
     @Column(name = "whimpy")
     private Integer whimpy;
     @Column(name = "experience")
@@ -234,12 +228,12 @@ public abstract class Person implements Serializable
     @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
+    // TODO: rename state
+    // TODO: change length into height.
     @Lob
     @Size(max = 65535)
     @Column(name = "state")
     private String personal_description;
-
-
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -261,6 +255,11 @@ public abstract class Person implements Serializable
         this.creation = creation;
     }
 
+    /**
+     * returns the name of the character.
+     *
+     * @return String containing the name
+     */
     public String getName()
     {
         return name;
@@ -271,6 +270,11 @@ public abstract class Person implements Serializable
         this.name = name;
     }
 
+    /**
+     * returns the title of the character.
+     *
+     * @return String containing the title
+     */
     public String getTitle()
     {
         return title;
@@ -281,6 +285,11 @@ public abstract class Person implements Serializable
         this.title = title;
     }
 
+    /**
+     * returns the race of the character.
+     *
+     * @return String containing the race
+     */
     public String getRace()
     {
         return race;
@@ -291,9 +300,14 @@ public abstract class Person implements Serializable
         this.race = race;
     }
 
-    public String getSex()
+    /**
+     * returns what gender the character is.
+     *
+     * @return Sex containing either male or female.
+     */
+    public Sex getSex()
     {
-        return sex;
+        return Sex.valueOf(sex);
     }
 
     public void setSex(String sex)
@@ -301,6 +315,11 @@ public abstract class Person implements Serializable
         this.sex = sex;
     }
 
+    /**
+     * returns the age of the character.
+     *
+     * @return String containing the age
+     */
     public String getAge()
     {
         return age;
@@ -311,6 +330,11 @@ public abstract class Person implements Serializable
         this.age = age;
     }
 
+    /**
+     * returns the width of the character.
+     *
+     * @return String containing the width
+     */
     public String getWidth()
     {
         return width;
@@ -321,6 +345,11 @@ public abstract class Person implements Serializable
         this.width = width;
     }
 
+    /**
+     * returns the complexion of the character.
+     *
+     * @return String containing the complexion
+     */
     public String getComplexion()
     {
         return complexion;
@@ -331,6 +360,11 @@ public abstract class Person implements Serializable
         this.complexion = complexion;
     }
 
+    /**
+     * returns the eyes of the character.
+     *
+     * @return String containing the eyes
+     */
     public String getEyes()
     {
         return eyes;
@@ -341,6 +375,11 @@ public abstract class Person implements Serializable
         this.eyes = eyes;
     }
 
+    /**
+     * returns the face of the character.
+     *
+     * @return String containing the face
+     */
     public String getFace()
     {
         return face;
@@ -351,6 +390,11 @@ public abstract class Person implements Serializable
         this.face = face;
     }
 
+    /**
+     * returns the hair of the character.
+     *
+     * @return String containing the hair
+     */
     public String getHair()
     {
         return hair;
@@ -361,6 +405,11 @@ public abstract class Person implements Serializable
         this.hair = hair;
     }
 
+    /**
+     * returns the beard of the character.
+     *
+     * @return String containing the beard
+     */
     public String getBeard()
     {
         return beard;
@@ -371,6 +420,11 @@ public abstract class Person implements Serializable
         this.beard = beard;
     }
 
+    /**
+     * returns the arms of the character.
+     *
+     * @return String containing the arms
+     */
     public String getArm()
     {
         return arm;
@@ -381,12 +435,17 @@ public abstract class Person implements Serializable
         this.arm = arm;
     }
 
-    public String getLeg()
+    /**
+     * returns the legs of the character.
+     *
+     * @return String containing the legs
+     */
+    public String getLegs()
     {
         return leg;
     }
 
-    public void setLeg(String leg)
+    public void setLegs(String leg)
     {
         this.leg = leg;
     }
@@ -409,16 +468,6 @@ public abstract class Person implements Serializable
     public void setRoom(Integer room)
     {
         this.room = room;
-    }
-
-    public String getLok()
-    {
-        return lok;
-    }
-
-    public void setLok(String lok)
-    {
-        this.lok = lok;
     }
 
     public Integer getWhimpy()
@@ -451,16 +500,34 @@ public abstract class Person implements Serializable
         this.fightingwho = fightingwho;
     }
 
-    public Integer getSleep()
+    /**
+     * returns wether or not the character is asleep.
+     *
+     * @return boolean, true if character is asleep.
+     */
+    public boolean isAsleep()
     {
-        return sleep;
+        return sleep != 0;
     }
 
-    public void setSleep(Integer sleep)
+    /**
+     * sets the sleep status of the character.
+     *
+     * @param aSleep
+     *            boolean containing the sleep status
+     */
+    public void setSleep(boolean sleep)
     {
-        this.sleep = sleep;
+        this.sleep = (sleep ? 1 : 0);
     }
 
+    /**
+     * Returns false. Overwrite this method to return true if you wish it to be
+     * possible to fight against this person. For example, a bot will
+     * automatically return false. A mob will automatically return true.
+     *
+     * @return boolean false value.
+     */
     public Integer getFightable()
     {
         return fightable;
@@ -501,23 +568,159 @@ public abstract class Person implements Serializable
         this.mentally = mentally;
     }
 
+    /**
+     * Returns the thirst of the character
+     *
+     * @return integer containing thirst.
+     */
     public Integer getDrinkstats()
     {
         return drinkstats;
     }
 
+    /**
+     * returns a description of the thirst of the character.
+     *
+     * @return String containing the description
+     */
+    public String getDrinkstatsDesc()
+    {
+        int i = drinkstats;
+        if (i < -59)
+        {
+            return "You are out of your skull on alcohol.<BR>";
+        }
+        if (i < -49)
+        {
+            return "You are very drunk.<BR>";
+        }
+        if (i < -39)
+        {
+            return "You are drunk.<BR>";
+        }
+        if (i < -29)
+        {
+            return "You are pissed.<BR>";
+        }
+        if (i < -19)
+        {
+            return "You are a little drunk.<BR>";
+        }
+        if (i < -9)
+        {
+            return "You have a headache.<BR>";
+        }
+        if (i < 9)
+        {
+            return "You are thirsty.<BR>";
+        }
+        if (i < 19)
+        {
+            return "You can drink a whole lot more.<BR>";
+        }
+        if (i < 29)
+        {
+            return "You can drink a lot more.<BR>";
+        }
+        if (i < 39)
+        {
+            return "You can drink some.<BR>";
+        }
+        if (i < 49)
+        {
+            return "You can drink a little more.<BR>";
+        }
+        return "You cannot drink anymore.<BR>";
+    }
+
+    /**
+     * returns wether or not the person can still drink something.
+     *
+     * @return boolean, true if it is possible still to drink.
+     */
+    public boolean canDrink()
+    {
+        return ((drinkstats < 49) && (drinkstats >= 0));
+    }
+
+    /**
+     * sets the thirst of the character.
+     *
+     * @param i
+     *            Integer containing the thirst
+     */
     public void setDrinkstats(Integer drinkstats)
     {
+        if (!canDrink())
+        {
+            return;
+        }
         this.drinkstats = drinkstats;
     }
 
+    /**
+     * returns the integer providing hunger of the character.
+     *
+     * @return integer containing the hunger
+     */
     public Integer getEatstats()
     {
         return eatstats;
     }
 
+    /**
+     * returns the hunger description of the character.
+     *
+     * @return String containing the hunger
+     */
+    public String getEatstatsDesc()
+    {
+        int i = eatstats;
+        if (i < 9)
+        {
+            return "You are hungry.<BR>";
+        }
+        if (i < 19)
+        {
+            return "You can eat a whole lot more.<BR>";
+        }
+        if (i < 29)
+        {
+            return "You can eat a lot more.<BR>";
+        }
+        if (i < 39)
+        {
+            return "You can eat some.<BR>";
+        }
+        if (i < 49)
+        {
+            return "You can only eat a little more.<BR>";
+        }
+        return "You are full.<BR>";
+    }
+
+    /**
+     * returns wether or not the person can still eat something.
+     *
+     * @return boolean, true if it is possible still to eat.
+     */
+    public boolean canEat()
+    {
+        return ((eatstats < 49) && (eatstats >= 0));
+    }
+
+    /**
+     * sets the hunger of the character.
+     *
+     * @param i
+     *            Integer containing the hunger
+     */
     public void setEatstats(Integer eatstats)
     {
+        if (!canEat())
+        {
+            return;
+        }
         this.eatstats = eatstats;
     }
 
@@ -531,18 +734,27 @@ public abstract class Person implements Serializable
         this.active = active;
     }
 
+    /**
+     * When this character was created.
+     * @return birth date
+     */
     public Date getBirth()
     {
         return birth;
     }
 
+    /**
+     *  Sets the birth date of this character
+     * @param birth the new birthdate.
+     */
     public void setBirth(Date birth)
     {
         this.birth = birth;
     }
 
     /**
-     * what this character is, 0=default user, 1=god user (not used currently), 2=bot, 3=mob, 4=shopkeeper
+     * what this character is, 0=default user, 1=god user (not used currently), 2=bot, 3=mob, 4=shopkeeper.
+     * This is also the discriminator of the class structure.
      * @return
      */
     public Integer getGod()
@@ -964,5 +1176,4 @@ public abstract class Person implements Serializable
     {
         return "mmud.database.entities.Person[ name=" + name + " ]";
     }
-
 }

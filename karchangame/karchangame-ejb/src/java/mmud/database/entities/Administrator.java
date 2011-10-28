@@ -26,7 +26,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("1")
-public class Administrator extends User implements Serializable
+public class Administrator extends Player implements Serializable
 {
 
     private static final long serialVersionUID = 1L;

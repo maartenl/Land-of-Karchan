@@ -38,17 +38,15 @@ import javax.validation.constraints.Size;
 @Table(name = "mm_bantable")
 @NamedQueries(
 {
-    @NamedQuery(name = "Bantable.findAll", query = "SELECT b FROM Bantable b"),
-    @NamedQuery(name = "Bantable.findByAddress", query = "SELECT b FROM Bantable b WHERE b.address = :address"),
-    @NamedQuery(name = "Bantable.findByDays", query = "SELECT b FROM Bantable b WHERE b.days = :days"),
-    @NamedQuery(name = "Bantable.findByIp", query = "SELECT b FROM Bantable b WHERE b.ip = :ip"),
-    @NamedQuery(name = "Bantable.findByName", query = "SELECT b FROM Bantable b WHERE b.name = :name"),
-    @NamedQuery(name = "Bantable.findByDeputy", query = "SELECT b FROM Bantable b WHERE b.deputy = :deputy"),
-    @NamedQuery(name = "Bantable.findByDate", query = "SELECT b FROM Bantable b WHERE b.date = :date"),
-    @NamedQuery(name = "Bantable.findByReason", query = "SELECT b FROM Bantable b WHERE b.reason = :reason")
+    @NamedQuery(name = "BannedAddress.findAll", query = "SELECT b FROM BannedAddress b"),
+    @NamedQuery(name = BannedAddress.CHECKFORADDRESS, query = "select count(b) as count from BannedAddress b where :address like address")
+
 })
-public class Bantable implements Serializable
+public class BannedAddress implements Serializable
 {
+
+        public static final String CHECKFORADDRESS = "BannedAddress.findByAddress";
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -82,16 +80,16 @@ public class Bantable implements Serializable
     @Column(name = "reason")
     private String reason;
 
-    public Bantable()
+    public BannedAddress()
     {
     }
 
-    public Bantable(String address)
+    public BannedAddress(String address)
     {
         this.address = address;
     }
 
-    public Bantable(String address, String ip, String name, String deputy, String reason)
+    public BannedAddress(String address, String ip, String name, String deputy, String reason)
     {
         this.address = address;
         this.ip = ip;
@@ -182,11 +180,11 @@ public class Bantable implements Serializable
     public boolean equals(Object object)
     {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Bantable))
+        if (!(object instanceof BannedAddress))
         {
             return false;
         }
-        Bantable other = (Bantable) object;
+        BannedAddress other = (BannedAddress) object;
         if ((this.address == null && other.address != null) || (this.address != null && !this.address.equals(other.address)))
         {
             return false;
@@ -197,7 +195,7 @@ public class Bantable implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.Bantable[ address=" + address + " ]";
+        return "mmud.database.entities.BannedAddress[ address=" + address + " ]";
     }
 
 }

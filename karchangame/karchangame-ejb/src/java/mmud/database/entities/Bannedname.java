@@ -38,17 +38,15 @@ import javax.validation.constraints.Size;
 @Table(name = "mm_bannednamestable")
 @NamedQueries(
 {
-    @NamedQuery(name = "Bannedname.findAll", query = "SELECT b FROM Bannedname b"),
-    @NamedQuery(name = "Bannedname.findByName", query = "SELECT b FROM Bannedname b WHERE b.name = :name"),
-    @NamedQuery(name = "Bannedname.findByDeputy", query = "SELECT b FROM Bannedname b WHERE b.deputy = :deputy"),
-    @NamedQuery(name = "Bannedname.findByCreation", query = "SELECT b FROM Bannedname b WHERE b.creation = :creation"),
-    @NamedQuery(name = "Bannedname.findByDays", query = "SELECT b FROM Bannedname b WHERE b.days = :days"),
-    @NamedQuery(name = "Bannedname.findByReason", query = "SELECT b FROM Bannedname b WHERE b.reason = :reason")
+    @NamedQuery(name = Bannedname.CHECKFORBANNEDNAME, query = "SELECT b FROM Bannedname b WHERE b.name = :name")
 })
 public class Bannedname implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    @Id
+
+    public static final String CHECKFORBANNEDNAME = "Bannedname.findByName";
+
+    @Id 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)

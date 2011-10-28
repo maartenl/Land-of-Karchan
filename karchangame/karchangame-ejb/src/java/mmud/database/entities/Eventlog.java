@@ -20,7 +20,14 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -30,9 +37,18 @@ import javax.validation.constraints.Size;
  *
  * @author maartenl
  */
-@Embeddable
-public class MmudErrorLogPK implements Serializable
+@Entity
+@Table(name = "mm_eventlog")
+public class Eventlog implements Serializable
 {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "id")
+    private Long id;
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
@@ -48,16 +64,31 @@ public class MmudErrorLogPK implements Serializable
     @Size(min = 1, max = 255)
     @Column(name = "message")
     private String message;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "addendum")
+    private String addendum;
 
-    public MmudErrorLogPK()
+    public Eventlog()
     {
     }
 
-    public MmudErrorLogPK(Date creation, String name, String message)
+    public Eventlog(String name, String message, String addendum)
     {
-        this.creation = creation;
+        this.creation = new Date();
         this.name = name;
         this.message = message;
+        this.addendum = addendum;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public Date getCreation()
@@ -90,13 +121,21 @@ public class MmudErrorLogPK implements Serializable
         this.message = message;
     }
 
+    public String getAddendum()
+    {
+        return addendum;
+    }
+
+    public void setAddendum(String addendum)
+    {
+        this.addendum = addendum;
+    }
+
     @Override
     public int hashCode()
     {
         int hash = 0;
-        hash += (creation != null ? creation.hashCode() : 0);
-        hash += (name != null ? name.hashCode() : 0);
-        hash += (message != null ? message.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -104,20 +143,12 @@ public class MmudErrorLogPK implements Serializable
     public boolean equals(Object object)
     {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MmudErrorLogPK))
+        if (!(object instanceof Eventlog))
         {
             return false;
         }
-        MmudErrorLogPK other = (MmudErrorLogPK) object;
-        if ((this.creation == null && other.creation != null) || (this.creation != null && !this.creation.equals(other.creation)))
-        {
-            return false;
-        }
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-        {
-            return false;
-        }
-        if ((this.message == null && other.message != null) || (this.message != null && !this.message.equals(other.message)))
+        Eventlog other = (Eventlog) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
         {
             return false;
         }
@@ -127,7 +158,6 @@ public class MmudErrorLogPK implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.MmudErrorLogPK[ creation=" + creation + ", name=" + name + ", message=" + message + " ]";
+        return "mmud.database.entities.Eventlog[ id=" + id + " ]";
     }
-
 }

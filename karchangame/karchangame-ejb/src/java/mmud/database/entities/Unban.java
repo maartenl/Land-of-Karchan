@@ -28,7 +28,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Contains all the people that were banned, even though they didn't do anything.
+ * Hence, this table, it explicitly unbans certain players by name.
  * @author maartenl
  */
 @Entity
@@ -36,10 +37,12 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "Unban.findAll", query = "SELECT u FROM Unban u"),
-    @NamedQuery(name = "Unban.findByName", query = "SELECT u FROM Unban u WHERE u.name = :name")
+    @NamedQuery(name = Unban.CHECKFORUNBAN, query = "SELECT u FROM Unban u WHERE u.name = :name"),
 })
 public class Unban implements Serializable
 {
+    public static final String CHECKFORUNBAN = "Unban.findByName";
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -96,5 +99,4 @@ public class Unban implements Serializable
     {
         return "mmud.database.entities.Unban[ name=" + name + " ]";
     }
-
 }

@@ -60,9 +60,12 @@ public interface GameBeanLocal
      * Enter the game.
      * @param name the name of the character
      * @param password the password of the character
+     * @param address the address of the person connecting.
+     * @param cookie the sessionpassword to verify the current session.
      * @return CommandOutput, an object to return to the user providing a view of the world.
      */
-    public CommandOutput enter(final String name, final String password)
+    public CommandOutput enter(final String name, final String password,
+            final String address, final String cookie)
             throws NotFoundException, AuthenticationException;
 
     /**

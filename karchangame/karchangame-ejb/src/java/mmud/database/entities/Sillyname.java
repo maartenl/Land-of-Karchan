@@ -36,10 +36,13 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "Sillyname.findAll", query = "SELECT s FROM Sillyname s"),
-    @NamedQuery(name = "Sillyname.findByName", query = "SELECT s FROM Sillyname s WHERE s.name = :name")
+    @NamedQuery(name = "Sillyname.findByName", query = "SELECT s FROM Sillyname s WHERE s.name = :name"),
+    @NamedQuery(name = Sillyname.CHECKFORSILLYNAMES, query = "select count(s) as count from Sillyname s where :name like name")
 })
 public class Sillyname implements Serializable
 {
+    public static final String CHECKFORSILLYNAMES = "Sillyname.checkForSillyNames";
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

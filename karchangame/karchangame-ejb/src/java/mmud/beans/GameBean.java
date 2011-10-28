@@ -16,12 +16,21 @@
  */
 package mmud.beans;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import mmud.Constants;
+import mmud.database.entities.BannedAddress;
+import mmud.database.entities.Bannedname;
+import mmud.database.entities.Eventlog;
 import mmud.database.entities.Person;
+import mmud.database.entities.Player;
+import mmud.database.entities.Sillyname;
+import mmud.database.entities.Unban;
 import mmud.exceptions.AuthenticationException;
 import mmud.exceptions.NotFoundException;
 
@@ -34,7 +43,6 @@ public class GameBean implements GameBeanLocal
 {
 
     private static final boolean karchanOffline = true;
-
     private static final Logger itsLog = Logger.getLogger("mmudbeans");
     @PersistenceContext(unitName = "karchangame-ejbPU")
     private EntityManager em;
@@ -45,6 +53,28 @@ public class GameBean implements GameBeanLocal
         itsLog.entering(this.getClass().getName(), "helloWorld");
 
         return "Hello, world.";
+    }
+
+    /**
+     * Creates a nice new event log.
+     * @param name character/player name
+     * @param message the message
+     */
+    public void log(String name, String message)
+    {
+        log(name, message, null);
+    }
+
+    /**
+     * Creates a nice new event log.
+     * @param name character/player name
+     * @param message the message
+     * @param addendum addendum, for example a stack trace.
+     */
+    public void log(String name, String message, String addendum)
+    {
+        Eventlog aNewLog = new Eventlog(name, message, addendum);
+        em.persist(aNewLog);
     }
 
     @Override
@@ -79,12 +109,13 @@ public class GameBean implements GameBeanLocal
     }
 
     @Override
-    public CommandOutput enter(final String name, final String password)
+    public CommandOutput enter(final String name, final String password, final String address, final String cookie)
             throws NotFoundException, AuthenticationException
     {
         /*
          * The steps:
          * - validate params
+         * - karchan online?
          * - user banned?
          * - user exists?
          * Tasks:
@@ -105,6 +136,10 @@ public class GameBean implements GameBeanLocal
         {
             throw new AuthenticationException("password too short.");
         }
+        if ((address == null) || ("".equals(address.trim())))
+        {
+            throw new AuthenticationException("address unknown");
+        }
         if (karchanOffline)
         {
             CommandOutput commandOutput = new CommandOutput();
@@ -113,7 +148,13 @@ public class GameBean implements GameBeanLocal
             commandOutput.setDescription("the description");
             return commandOutput;
         }
-        Person player = em.find(Person.class, name);
+        if (isUserBanned(name, address))
+        {
+            itsLog.info(
+                    "thrown " + Constants.USERBANNEDERROR);
+            throw new AuthenticationException(Constants.USERBANNEDERROR);
+        }
+        Player player = em.find(Player.class, name);
         if (player == null)
         {
             throw new NotFoundException("player " + name + " not found.");
@@ -148,5 +189,63 @@ public class GameBean implements GameBeanLocal
     public void persist(Object object)
     {
         em.persist(object);
+    }
+
+    /**
+     * search for the username amongst the banned users list in the database.
+     * First checks the mm_sillynamestable in the database, if found returns
+     * true. Then checks the mm_unbantable, if found returns false. Then checks
+     * the mm_bannednamestable, if found returns true. And as last check checks
+     * the mm_bantable, if found returns true, otherwise returns false.
+     *
+     * @return boolean, true if found, false if not found
+     * @param username
+     *            String, name of the playercharacter
+     * @param address
+     *            String, the address of the player
+     */
+    private boolean isUserBanned(String name, String address)
+    {
+        // check if user has silly name
+        Query query = em.createNamedQuery(Sillyname.CHECKFORSILLYNAMES);
+        query.setParameter("name", name);
+        Integer i = (Integer) query.getSingleResult();
+        if (i != null && i > 0)
+        {
+            // you've used a silly name! Banned!
+            log(name, "silly name, banned!");
+            return true;
+        }
+        // check if users name has specifically been unbanned
+        query = em.createNamedQuery(Unban.CHECKFORUNBAN);
+        query.setParameter("name", name);
+        i = (Integer) query.getSingleResult();
+        if (i != null && i > 0)
+        {
+            // you've been specially selected to continue! Unbanned!
+            log(name, "especially selected not to be banned!");
+            return false;
+        }
+        // check if users name has been banned
+        query = em.createNamedQuery(Bannedname.CHECKFORBANNEDNAME);
+        query.setParameter("name", name);
+        i = (Integer) query.getSingleResult();
+        if (i != null && i > 0)
+        {
+            // the char using this name has been banned
+            log(name, "banned!");
+            return true;
+        }
+        // check if users address has been banned
+        query = em.createNamedQuery(BannedAddress.CHECKFORADDRESS);
+        query.setParameter("address", address);
+        i = (Integer) query.getSingleResult();
+        if (i != null && i > 0)
+        {
+            // the address has been banned
+            log(name, "address banned!");
+            return true;
+        }
+        return false;
     }
 }
