@@ -555,3 +555,15 @@ create table mm_macro (
 alter table mm_macro add foreign key (name) references mm_usertable (name);
 
 alter table mm_usertable change state state text;
+
+CREATE TABLE `mm_eventlog` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE
+CURRENT_TIMESTAMP,
+  `name` varchar(20) NOT NULL DEFAULT '',
+  `message` varchar(255) NOT NULL DEFAULT '',
+  `addendum` text,
+  PRIMARY KEY (`id`),
+  INDEX search_index (`creation`,`name`,`message`)
+); 
+
