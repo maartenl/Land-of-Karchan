@@ -46,7 +46,9 @@ import javax.validation.constraints.Size;
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
-    @NamedQuery(name = "Person.getFortunes", query = "SELECT p FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC")
+    @NamedQuery(name = "Person.getFortunes", query = "SELECT p FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
+    @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 ")
+
 })
 public class Person implements Serializable
 {
@@ -116,8 +118,9 @@ public class Person implements Serializable
     private String leg;
     @Column(name = "copper")
     private Integer copper;
-    @Column(name = "room")
-    private Integer room;
+    @JoinColumn(name = "room", referencedColumnName = "id")
+    @ManyToOne
+    private Room room;
     @Size(max = 40)
     @Column(name = "lok")
     private String lok;
@@ -469,12 +472,12 @@ public class Person implements Serializable
         this.copper = copper;
     }
 
-    public Integer getRoom()
+    public Room getRoom()
     {
         return room;
     }
 
-    public void setRoom(Integer room)
+    public void setRoom(Room room)
     {
         this.room = room;
     }

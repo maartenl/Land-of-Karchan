@@ -17,6 +17,8 @@
 package mmud.rest.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -31,6 +33,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.game.Person;
 import mmud.rest.webentities.Fortune;
+import mmud.rest.webentities.PublicPerson;
 
 /**
  * Contains all rest calls that are available to the world, without authentication
@@ -94,4 +97,44 @@ public class PublicBean
         itsLog.exiting(this.getClass().getName(), "fortunes");
         return res;
     }
+
+    /**
+     * Returns a List of people currently online.
+     * The URL: /karchangame/resources/public/who.
+     * Can produce both application/xml and application/json.
+     */
+    @GET
+    @Path("who")
+    public List<PublicPerson> who()
+    {
+        itsLog.entering(this.getClass().getName(), "who");
+        List<PublicPerson> res = new ArrayList<>();
+        try
+        {
+            Query query = getEntityManager().createNamedQuery("Person.who");
+            List<Person> list = query.getResultList();
+
+            for (Person person : list)
+            {
+                PublicPerson publicPerson = new PublicPerson();
+                publicPerson.name = person.getName();
+                publicPerson.title = person.getTitle();
+                publicPerson.sleep = person.getSleep() ==1 ? "sleeping" :"";
+                publicPerson.area = person.getRoom().getArea().getShortdesc();
+                Long now = (new Date()).getTime();
+                Long backThen = person.getLastlogin().getTime();
+                publicPerson.min = (now-backThen) / 60000;
+                publicPerson.sec = ((now-backThen) / 1000) % 60;
+                res.add(publicPerson);
+            }
+        }
+        catch(Exception e)
+        {
+            itsLog.throwing(this.getClass().getName(), "who", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.exiting(this.getClass().getName(), "who");
+        return res;
+    }
+
 }
