@@ -19,20 +19,7 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -47,11 +34,12 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
     @NamedQuery(name = "Person.getFortunes", query = "SELECT p FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
-    @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 ")
-
+    @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
+    @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
 })
 public class Person implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -1012,7 +1000,6 @@ public class Person implements Serializable
 //        this.state = state;
 //    }
 
-
     public Guild getGuild()
     {
         return guild;
@@ -1072,5 +1059,4 @@ public class Person implements Serializable
     {
         return "mmud.database.entities.game.Person[ name=" + name + " ]";
     }
-
 }

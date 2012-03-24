@@ -16,6 +16,9 @@
  */
 package mmud.rest.services;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +82,7 @@ public class PublicBean
     })
     public List<Fortune> fortunes()
     {
-        itsLog.debug("entering", "fortunes");
+        itsLog.debug("entering fortunes");
 
         List<Fortune> res = new ArrayList<>();
         try
@@ -94,12 +97,12 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("throws ", "fortunes", e);
+            itsLog.debug("throws fortunes", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.debug("exiting ", "fortunes");
+        itsLog.debug("exiting fortunes");
         return res;
     }
 
@@ -110,9 +113,13 @@ public class PublicBean
      */
     @GET
     @Path("who")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
     public List<PublicPerson> who()
     {
-        itsLog.debug("entering ", "who");
+        itsLog.debug("entering who");
         List<PublicPerson> res = new ArrayList<>();
         try
         {
@@ -134,18 +141,24 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("throws ", "who", e);
+            itsLog.debug("throws who", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        itsLog.debug("exiting ", "who");
+        itsLog.debug("exiting who");
         return res;
     }
 
     /**
-     * Returns a List of news, recent first.
+     * Returns a List of news, recent first. The URL:
+     * /karchangame/resources/public/news. Can produce both application/xml and
+     * application/json.
      */
     @GET
     @Path("news")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
     public List<News> news()
     {
         itsLog.debug("entering news");
@@ -172,7 +185,6 @@ public class PublicBean
                 news.posttime = message.getPosttime();
                 news.message = message.getMessage();
                 res.add(news);
-                itsLog.debug("news ", news);
             }
         } catch (Exception e)
         {
@@ -182,6 +194,44 @@ public class PublicBean
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.debug("exiting news");
+        return res;
+    }
+
+    /**
+     * Returns a List of current active and paid up deputies. The URL:
+     * /karchangame/resources/public/status. Can produce both application/xml
+     * and application/json.
+     */
+    @GET
+    @Path("status")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
+    public List<PublicPerson> status()
+    {
+        itsLog.debug("entering status");
+
+        List<PublicPerson> res = new ArrayList<>();
+        try
+        {
+            Query query = getEntityManager().createNamedQuery("Person.status");
+            List<Person> list = query.getResultList();
+
+            for (Person person : list)
+            {
+                PublicPerson publicPerson = new PublicPerson();
+                publicPerson.name = person.getName();
+                publicPerson.title = person.getTitle();
+                res.add(publicPerson);
+            }
+        } catch (Exception e)
+        {
+            itsLog.debug("status: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+
+        itsLog.debug("exiting status");
         return res;
     }
 }
