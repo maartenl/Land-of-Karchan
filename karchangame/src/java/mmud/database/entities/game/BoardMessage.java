@@ -46,11 +46,9 @@ public class BoardMessage implements Serializable
     @JoinColumn(name = "boardid", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Board board;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "name")
-    //@ManyToOne
-    private String person;
+    @JoinColumn(name = "name", referencedColumnName = "name")
+    @ManyToOne(optional = false)
+    private Person person;
     @Basic(optional = false)
     @NotNull
     @Column(name = "posttime")
@@ -109,12 +107,12 @@ public class BoardMessage implements Serializable
         this.id = id;
     }
 
-    public String getPerson()
+    public Person getPerson()
     {
         return person;
     }
 
-    public void setPerson(String person)
+    public void setPerson(Person person)
     {
         this.person = person;
     }

@@ -168,7 +168,7 @@ public class PublicBean
             for (BoardMessage message : list)
             {
                 News news = new News();
-                news.name = message.getPerson();
+                news.name = message.getPerson().getName();
                 news.posttime = message.getPosttime();
                 news.message = message.getMessage();
                 res.add(news);
