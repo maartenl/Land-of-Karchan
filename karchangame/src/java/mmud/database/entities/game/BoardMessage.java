@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
 {
     @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
     @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
-    @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board = 2 and b.removed = false order by b.id desc")
+    @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.removed = false order by b.id desc")
 })
 public class BoardMessage implements Serializable
 {
@@ -43,11 +43,9 @@ public class BoardMessage implements Serializable
     @NotNull
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "boardid")
-    //@ManyToOne
-    private Integer board;
+    @JoinColumn(name = "boardid", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Board board;
     @Basic(optional = false)
     @NotNull
     @Column(name = "name")
@@ -91,12 +89,12 @@ public class BoardMessage implements Serializable
         this.removed = removed;
     }
 
-    public Integer getBoard()
+    public Board getBoard()
     {
         return board;
     }
 
-    public void setBoard(Integer board)
+    public void setBoard(Board board)
     {
         this.board = board;
     }
