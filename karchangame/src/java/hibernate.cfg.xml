@@ -7,5 +7,7 @@
     <property name="hibernate.connection.url">jdbc:mysql://sherlock:3306/mmud</property>
     <property name="hibernate.connection.username">mmud</property>
     <property name="hibernate.connection.password">mmud</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
   </session-factory>
 </hibernate-configuration>

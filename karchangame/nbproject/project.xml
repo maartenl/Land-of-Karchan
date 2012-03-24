@@ -10,20 +10,7 @@
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>karchangame</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-            <web-module-libraries>
-                <library dirs="200">
-                    <file>${libs.hibernate-support.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${file.reference.mysql-connector-java-5.1.13-bin.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
-                    <file>${libs.restlib_gfv3ee6.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-            </web-module-libraries>
+            <web-module-libraries/>
             <web-module-additional-libraries/>
             <source-roots>
                 <root id="src.dir"/>

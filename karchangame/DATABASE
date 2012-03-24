@@ -1,0 +1,29 @@
+=== database commands to fix it for "karchangame" in ejb mode ===
+
+drop table mm_boardmessages2;
+
+create table mm_boardmessages2 (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  boardid int(11) NOT NULL,
+  name varchar(20) NOT NULL DEFAULT '',
+  posttime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  message text not null,
+  removed int(1) not null default 0,
+  UNIQUE INDEX natural_key (boardid, name, posttime),
+  foreign key (boardid) references mm_boards (id),
+  CONSTRAINT FOREIGN KEY (`name`) REFERENCES
+  `mm_usertable` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+insert into mm_boardmessages2
+(boardid, name, posttime, message, removed)
+select *
+from mm_boardmessages
+where exists (select * from mm_usertable
+where name = mm_boardmessages.name)
+order by posttime;
+
+rename table mm_boardmessages to mm_boardmessages_old;
+rename table mm_boardmessages2 to mm_boardmessages;
+

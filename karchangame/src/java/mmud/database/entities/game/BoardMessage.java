@@ -18,14 +18,7 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,16 +31,33 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
-    @NamedQuery(name = "BoardMessage.findByBoardid", query = "SELECT b FROM BoardMessage b WHERE b.boardMessagePK.boardid = :boardid"),
-    @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.boardMessagePK.name = :name"),
-    @NamedQuery(name = "BoardMessage.findByPosttime", query = "SELECT b FROM BoardMessage b WHERE b.boardMessagePK.posttime = :posttime"),
-    @NamedQuery(name = "BoardMessage.findByRemoved", query = "SELECT b FROM BoardMessage b WHERE b.removed = :removed")
+    @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
+    @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board = 2 and b.removed = false order by b.id desc")
 })
 public class BoardMessage implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected BoardMessagePK boardMessagePK;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "id")
+    private Integer id;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "boardid")
+    //@ManyToOne
+    private Integer board;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "name")
+    //@ManyToOne
+    private String person;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "posttime")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date posttime;
     @Basic(optional = false)
     @NotNull
     @Lob
@@ -55,36 +65,10 @@ public class BoardMessage implements Serializable
     @Column(name = "message")
     private String message;
     @Column(name = "removed")
-    private Integer removed;
+    private Boolean removed;
 
     public BoardMessage()
     {
-    }
-
-    public BoardMessage(BoardMessagePK boardMessagePK)
-    {
-        this.boardMessagePK = boardMessagePK;
-    }
-
-    public BoardMessage(BoardMessagePK boardMessagePK, String message)
-    {
-        this.boardMessagePK = boardMessagePK;
-        this.message = message;
-    }
-
-    public BoardMessage(String boardid, String name, Date posttime)
-    {
-        this.boardMessagePK = new BoardMessagePK(boardid, name, posttime);
-    }
-
-    public BoardMessagePK getBoardMessagePK()
-    {
-        return boardMessagePK;
-    }
-
-    public void setBoardMessagePK(BoardMessagePK boardMessagePK)
-    {
-        this.boardMessagePK = boardMessagePK;
     }
 
     public String getMessage()
@@ -97,21 +81,61 @@ public class BoardMessage implements Serializable
         this.message = message;
     }
 
-    public Integer getRemoved()
+    public Boolean getRemoved()
     {
         return removed;
     }
 
-    public void setRemoved(Integer removed)
+    public void setRemoved(Boolean removed)
     {
         this.removed = removed;
+    }
+
+    public Integer getBoard()
+    {
+        return board;
+    }
+
+    public void setBoard(Integer board)
+    {
+        this.board = board;
+    }
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
+    }
+
+    public String getPerson()
+    {
+        return person;
+    }
+
+    public void setPerson(String person)
+    {
+        this.person = person;
+    }
+
+    public Date getPosttime()
+    {
+        return posttime;
+    }
+
+    public void setPosttime(Date posttime)
+    {
+        this.posttime = posttime;
     }
 
     @Override
     public int hashCode()
     {
         int hash = 0;
-        hash += (boardMessagePK != null ? boardMessagePK.hashCode() : 0);
+        hash += id.hashCode();
         return hash;
     }
 
@@ -124,7 +148,7 @@ public class BoardMessage implements Serializable
             return false;
         }
         BoardMessage other = (BoardMessage) object;
-        if ((this.boardMessagePK == null && other.boardMessagePK != null) || (this.boardMessagePK != null && !this.boardMessagePK.equals(other.boardMessagePK)))
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
         {
             return false;
         }
@@ -134,7 +158,6 @@ public class BoardMessage implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.game.BoardMessage[ boardMessagePK=" + boardMessagePK + " ]";
+        return "mmud.database.entities.game.BoardMessage[ id=" + id + " ]";
     }
-
 }

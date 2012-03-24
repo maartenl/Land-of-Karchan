@@ -14,28 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.webentities;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package mmud;
 
 /**
  *
  * @author maartenl
  */
-@XmlRootElement
-public class PublicPerson
+public class Constants
 {
-
-    public String name;
-    public String url;
-    public String title;
-    public String sleep;
-    public String area;
-    public Long min;
-    public Long sec;
-
-    public PublicPerson()
-    {
-    }
 
 }

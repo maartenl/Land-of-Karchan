@@ -16,6 +16,7 @@
  */
 package mmud.rest.webentities;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,19 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author maartenl
  */
 @XmlRootElement
-public class PublicPerson
+public class News
 {
 
-    public String name;
-    public String url;
-    public String title;
-    public String sleep;
-    public String area;
-    public Long min;
-    public Long sec;
-
-    public PublicPerson()
+    public String toString()
     {
+        return "News{" + "name=" + name + ", posttime=" + posttime + ", message=" + message + '}';
     }
+
+    public String name;
+    public Date posttime;
+    public String message;
 
 }

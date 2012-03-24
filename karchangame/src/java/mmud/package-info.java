@@ -14,28 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.webentities;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author maartenl
+ * <p>General info</p>
+ * <h1>Logging</h1>
+ * The mud uses the SLF4J to do its logging. You can add the bridge you like to
+ * make it output to the logging you need.
  */
-@XmlRootElement
-public class PublicPerson
-{
-
-    public String name;
-    public String url;
-    public String title;
-    public String sleep;
-    public String area;
-    public Long min;
-    public Long sec;
-
-    public PublicPerson()
-    {
-    }
-
-}
+package mmud;
