@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import com.sun.org.apache.xml.internal.serializer.utils.Utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,9 +35,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Person;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
+import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +104,6 @@ public class PublicBean
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
-        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.debug("exiting fortunes");
         return res;
     }
@@ -192,7 +194,6 @@ public class PublicBean
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
-        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
         itsLog.debug("exiting news");
         return res;
     }
@@ -232,6 +233,51 @@ public class PublicBean
         }
 
         itsLog.debug("exiting status");
+        return res;
+    }
+
+    /**
+     * Returns a list of Guilds. The URL: /karchangame/resources/public/guilds.
+     * Can produce both application/xml and application/json.
+     */
+    @GET
+    @Path("guilds")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
+    public List<PublicGuild> guilds()
+    {
+        itsLog.debug("entering guilds");
+        List<PublicGuild> res = new ArrayList<>();
+        try
+        {
+            Query query = getEntityManager().createNamedQuery("Guild.findAll");
+            List<Guild> list = query.getResultList();
+
+            for (Guild guild : list)
+            {
+                PublicGuild newGuild = new PublicGuild();
+                newGuild.guildurl = guild.getGuildurl();
+                newGuild.title = guild.getTitle();
+                if (guild.getBossname() == null)
+                {
+                    itsLog.warn("guilds: no boss found for guild " + guild.getName());
+                } else
+                {
+                    newGuild.bossname = guild.getBossname().getName();
+                }
+                newGuild.guilddescription = guild.getGuilddescription();
+                newGuild.creation = guild.getCreation();
+                res.add(newGuild);
+            }
+        } catch (Exception e)
+        {
+            itsLog.debug("status: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+
+        itsLog.debug("exiting guilds");
         return res;
     }
 }

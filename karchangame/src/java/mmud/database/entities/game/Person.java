@@ -230,11 +230,11 @@ public class Person implements Serializable
     private Integer jumpmove;
     @Column(name = "jumpvital")
     private Integer jumpvital;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "creation")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date creation;
     @Lob
     @Size(max = 65535)
     @Column(name = "notes")
@@ -267,7 +267,7 @@ public class Person implements Serializable
         this.name = name;
         this.race = race;
         this.sex = sex;
-        this.creation = creation;
+        // this.creation = creation;
     }
 
     public String getName()
@@ -969,16 +969,16 @@ public class Person implements Serializable
     {
         this.jumpvital = jumpvital;
     }
-
-    public Date getCreation()
-    {
-        return creation;
-    }
-
-    public void setCreation(Date creation)
-    {
-        this.creation = creation;
-    }
+//
+//    public Date getCreation()
+//    {
+//        return creation;
+//    }
+//
+//    public void setCreation(Date creation)
+//    {
+//        this.creation = creation;
+//    }
 
     public String getNotes()
     {

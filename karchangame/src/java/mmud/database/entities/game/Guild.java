@@ -44,7 +44,7 @@ import javax.validation.constraints.Size;
 @Table(name = "mm_guilds", catalog = "mmud", schema = "")
 @NamedQueries(
 {
-    @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g"),
+    @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
     @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
     @NamedQuery(name = "Guild.findByTitle", query = "SELECT g FROM Guild g WHERE g.title = :title"),
     @NamedQuery(name = "Guild.findByDaysguilddeath", query = "SELECT g FROM Guild g WHERE g.daysguilddeath = :daysguilddeath"),
@@ -57,6 +57,7 @@ import javax.validation.constraints.Size;
 })
 public class Guild implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -86,9 +87,8 @@ public class Guild implements Serializable
     @NotNull
     @Column(name = "active")
     private short active;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
+//    @Basic(optional = false)
+//    @Column(name =  "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
     @Lob
@@ -301,5 +301,4 @@ public class Guild implements Serializable
     {
         return "mmud.database.entities.game.Guild[ name=" + name + " ]";
     }
-
 }

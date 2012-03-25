@@ -1,0 +1,1 @@
+{"requestUrl":"http://micemouse:8080/karchangame/resources/public/guilds","requestMethod":"GET","requestBody":"","headers":["Accept","application/json","Content-Type","application/json"]}
