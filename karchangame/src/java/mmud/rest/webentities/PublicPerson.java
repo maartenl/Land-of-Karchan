@@ -16,6 +16,7 @@
  */
 package mmud.rest.webentities;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -31,11 +32,19 @@ public class PublicPerson
     public String title;
     public String sleep;
     public String area;
+    public String sex;
+    public String description;
+    public String imageurl;
+    public String guild;
+    public String homepageurl;
+    public String dateofbirth;
+    public String cityofbirth;
+    public Date lastlogin;
+    public String storyline;
     public Long min;
     public Long sec;
 
     public PublicPerson()
     {
     }
-
 }

@@ -5,32 +5,13 @@
 
 package mmud.functions;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import mmud.webservices.webentities.DisplayResult;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import mmud.functions.mail.Mail;
 import mmud.webservices.webentities.CharacterInfo;
-import mmud.webservices.webentities.MmudMail;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -60,7 +41,7 @@ public class CharacterSheets {
             "from familyvalues, family left join characterinfo on characterinfo.name=  family.toname " +
             "where family.name = ? " +
             "and family.description = familyvalues.id";
-            
+
     private static Logger itsLog = Logger.getLogger("mmudrest");
 
     /**

@@ -28,15 +28,13 @@ import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Person;
+import mmud.database.entities.web.CharacterInfo;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
@@ -278,6 +276,114 @@ public class PublicBean
         }
 
         itsLog.debug("exiting guilds");
+        return res;
+    }
+    public static final String FAMILYVALUES_CHARACTERSHEET_SQL =
+            "select familyvalues.description, toname, characterinfo.name "
+            + "from familyvalues, family left join characterinfo on characterinfo.name=  family.toname "
+            + "where family.name = ? "
+            + "and family.description = familyvalues.id";
+
+    /**
+     * Returns all the info of a character. The URL:
+     * /karchangame/resources/public/charactersheets/&lt;name&gt;. Can produce
+     * both application/xml and application/json.
+     */
+    @GET
+    @Path("charactersheets/{name}")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
+    public PublicPerson charactersheet(@PathParam("name") String name)
+    {
+        itsLog.debug("entering charactersheet");
+        PublicPerson res = new PublicPerson();
+        try
+        {
+            Person person = getEntityManager().find(Person.class, name);
+            if (person == null)
+            {
+                itsLog.debug("charactersheet not found");
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
+            }
+            //stmt=con.prepareStatement(CHARACTERSHEET_SQL);
+            res.name = person.getName();
+            res.title = person.getTitle();
+            res.sex = person.getSex();
+            res.description = person.getDescription();
+            CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+            if (characterInfo != null)
+            {
+                res.imageurl = characterInfo.getImageurl();
+                res.homepageurl = characterInfo.getHomepageurl();
+                res.dateofbirth = characterInfo.getDateofbirth();
+                res.cityofbirth = characterInfo.getCityofbirth();
+                res.storyline = characterInfo.getStoryline();
+            }
+            if (person.getGuild() != null)
+            {
+                res.guild = person.getGuild().getTitle();
+            }
+
+            //stmt=con.prepareStatement(FAMILYVALUES_CHARACTERSHEET_SQL);
+
+//            while (rst.next())
+//            {
+//                JSONObject fvalue = new JSONObject();
+//                fvalue.put("name", name);
+//                fvalue.put("description", rst.getString("description"));
+//                fvalue.put("toname", rst.getString("toname"));
+//                fvalue.put("has_char_sheet", rst.getString("name") != null);
+//                familyvalues.put(fvalue);
+//            }
+//            res.put("familyvalues", familyvalues);
+        } catch (Exception e)
+        {
+            itsLog.debug("charactersheet: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+
+        // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
+        itsLog.debug("exiting charactersheet");
+        return res;
+    }
+
+    /**
+     * Returns a List of characters and their profiles. The URL:
+     * /karchangame/resources/public/charactersheets. Can produce both
+     * application/xml and application/json.
+     */
+    @GET
+    @Path("charactersheets")
+    @Produces(
+    {
+        "application/xml", "application/json"
+    })
+    public List<PublicPerson> charactersheets()
+    {
+
+        itsLog.debug("entering charactersheets");
+
+        List<PublicPerson> res = new ArrayList<PublicPerson>();
+        try
+        {
+            Query query = getEntityManager().createNamedQuery("CharacterInfo.findAll");
+            List<CharacterInfo> list = query.getResultList();
+
+            for (CharacterInfo info : list)
+            {
+                PublicPerson person = new PublicPerson();
+                person.name = info.getName();
+                person.url = "/karchangame/resources/public/charactersheets/" + info.getName();
+                res.add(person);
+            }
+        } catch (Exception e)
+        {
+            itsLog.debug("charactersheets: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting charactersheets");
         return res;
     }
 }

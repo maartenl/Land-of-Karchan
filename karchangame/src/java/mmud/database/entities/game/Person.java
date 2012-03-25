@@ -1030,6 +1030,39 @@ public class Person implements Serializable
         this.charattributeCollection = charattributeCollection;
     }
 
+    private void addDescriptionPiece(StringBuilder builder, String part)
+    {
+        if (part != null && !"none".equalsIgnoreCase(part))
+        {
+            builder.append(", ").append(part);
+        }
+    }
+
+    /**
+     * Returns the description of the character. All characteristics, if
+     * possible, are taken into account. Does not provide any info
+     * on the name or title. It contains a strictly visual cue.
+     *
+     * @return String containing the description
+     */
+    public String getDescription()
+    {
+        StringBuilder builder = new StringBuilder(getAge());
+        // TODO MLE : add getLength but with proper name, not an sql keyword.
+        // addDescriptionPiece(builder, getLength());
+        addDescriptionPiece(builder, getWidth());
+        addDescriptionPiece(builder, getComplexion());
+        addDescriptionPiece(builder, getEyes());
+        addDescriptionPiece(builder, getFace());
+        addDescriptionPiece(builder, getHair());
+        addDescriptionPiece(builder, getBeard());
+        addDescriptionPiece(builder, getArm());
+        addDescriptionPiece(builder, getLeg());
+        addDescriptionPiece(builder, getFace());
+        builder.append(" ").append(getSex()).append(" ").append(getRace());
+        return builder.toString();
+    }
+
     @Override
     public int hashCode()
     {
