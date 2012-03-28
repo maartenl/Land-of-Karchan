@@ -16,38 +16,14 @@
  */
 package mmud.rest.webentities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author maartenl
  */
-@XmlRootElement
-public class PublicPerson
+public class PublicFamily
 {
 
-    public String name;
-    public String url;
-    public String title;
-    public String sleep;
-    public String area;
-    public String sex;
+    public String toname;
     public String description;
-    public String imageurl;
-    public String guild;
-    public String homepageurl;
-    public String dateofbirth;
-    public String cityofbirth;
-    public Date lastlogin;
-    public String storyline;
-    public Long min;
-    public Long sec;
-    public List<PublicFamily> familyvalues = new ArrayList<>();
-    
-    public PublicPerson()
-    {
-    }
+    boolean has_char_sheet = true;
 }

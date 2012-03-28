@@ -16,15 +16,11 @@
  */
 package mmud.rest.services;
 
-import com.sun.org.apache.xml.internal.serializer.utils.Utils;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -35,10 +31,8 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.web.CharacterInfo;
-import mmud.rest.webentities.Fortune;
-import mmud.rest.webentities.News;
-import mmud.rest.webentities.PublicGuild;
-import mmud.rest.webentities.PublicPerson;
+import mmud.database.entities.web.Family;
+import mmud.rest.webentities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -326,18 +320,18 @@ public class PublicBean
                 res.guild = person.getGuild().getTitle();
             }
 
-            //stmt=con.prepareStatement(FAMILYVALUES_CHARACTERSHEET_SQL);
+                    Query query = getEntityManager().createNamedQuery("Family.findByName");
+                    query.setParameter("name", person.getName());
+            List<Family> list = query.getResultList();
+            for (Family fam : list)
+            {
+                itsLog.debug(fam + "");
+                PublicFamily pfam = new PublicFamily();
+                pfam.description=fam.getDescription() + "";
+                pfam.toname=fam.getFamilyPK().getToname();
+                res.familyvalues.add(pfam);
 
-//            while (rst.next())
-//            {
-//                JSONObject fvalue = new JSONObject();
-//                fvalue.put("name", name);
-//                fvalue.put("description", rst.getString("description"));
-//                fvalue.put("toname", rst.getString("toname"));
-//                fvalue.put("has_char_sheet", rst.getString("name") != null);
-//                familyvalues.put(fvalue);
-//            }
-//            res.put("familyvalues", familyvalues);
+            }
         } catch (Exception e)
         {
             itsLog.debug("charactersheet: throws ", e);
