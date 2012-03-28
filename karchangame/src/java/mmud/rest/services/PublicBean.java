@@ -327,7 +327,7 @@ public class PublicBean
             {
                 itsLog.debug(fam + "");
                 PublicFamily pfam = new PublicFamily();
-                pfam.description=fam.getDescription() + "";
+                pfam.description=fam.getDescription().getDescription();
                 pfam.toname=fam.getFamilyPK().getToname();
                 res.familyvalues.add(pfam);
 

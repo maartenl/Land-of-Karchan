@@ -17,12 +17,7 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *
@@ -42,8 +37,9 @@ public class Family implements Serializable
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected FamilyPK familyPK;
-    @Column(name = "description")
-    private Integer description;
+    @JoinColumn(name = "description", referencedColumnName = "id")
+    @ManyToOne
+    private FamilyValue description;
 
     public Family()
     {
@@ -69,12 +65,12 @@ public class Family implements Serializable
         this.familyPK = familyPK;
     }
 
-    public Integer getDescription()
+    public FamilyValue getDescription()
     {
         return description;
     }
 
-    public void setDescription(Integer description)
+    public void setDescription(FamilyValue description)
     {
         this.description = description;
     }
