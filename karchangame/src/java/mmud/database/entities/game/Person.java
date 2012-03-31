@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
-    @NamedQuery(name = "Person.getFortunes", query = "SELECT p FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
+    @NamedQuery(name = "Person.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
     @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
     @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
 })
@@ -106,8 +106,8 @@ public class Person implements Serializable
     private String leg;
     @Column(name = "copper")
     private Integer copper;
-    @JoinColumn(name = "room", referencedColumnName = "id")
-    @ManyToOne
+    @JoinColumn(name = "room", nullable=false, referencedColumnName = "id")
+    @ManyToOne(optional=false, fetch = FetchType.LAZY)
     private Room room;
     @Size(max = 40)
     @Column(name = "lok")
@@ -245,10 +245,10 @@ public class Person implements Serializable
 //    @Column(name = "state")
 //    private String state;
     @JoinColumn(name = "guild", referencedColumnName = "name")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Guild guild;
     @JoinColumn(name = "owner", referencedColumnName = "name")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     private Collection<Charattribute> charattributeCollection;

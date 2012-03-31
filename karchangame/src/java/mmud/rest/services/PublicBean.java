@@ -82,13 +82,13 @@ public class PublicBean
         List<Fortune> res = new ArrayList<>();
         try
         {
-            Query query = getEntityManager().createNamedQuery("Person.getFortunes");
+            Query query = getEntityManager().createNamedQuery("Person.fortunes");
             query.setMaxResults(100);
-            List<Person> list = query.getResultList();
+            List<Object[]> list = query.getResultList();
 
-            for (Person person : list)
+            for (Object[] objectarray : list)
             {
-                res.add(new Fortune(person));
+                res.add(new Fortune((String) objectarray[0], (Integer) objectarray[1]));
             }
         } catch (Exception e)
         {
@@ -160,15 +160,8 @@ public class PublicBean
         List<News> res = new ArrayList<>();
         try
         {
-            itsLog.debug("news: getting board");
-
-            Query query = getEntityManager().createNamedQuery("Board.findByName");
-            query.setParameter("name", "logonmessage");
-            Board board = (Board) query.getSingleResult();
-
             itsLog.debug("news: getting news");
-            query = getEntityManager().createNamedQuery("BoardMessage.news");
-            //query.setParameter("board", board);
+            Query query = getEntityManager().createNamedQuery("BoardMessage.news");
             query.setMaxResults(10);
             List<BoardMessage> list = query.getResultList();
             itsLog.debug("news: found " + list.size() + " entries.");
@@ -301,7 +294,6 @@ public class PublicBean
                 itsLog.debug("charactersheet not found");
                 throw new WebApplicationException(Response.Status.NOT_FOUND);
             }
-            //stmt=con.prepareStatement(CHARACTERSHEET_SQL);
             res.name = person.getName();
             res.title = person.getTitle();
             res.sex = person.getSex();
@@ -320,15 +312,15 @@ public class PublicBean
                 res.guild = person.getGuild().getTitle();
             }
 
-                    Query query = getEntityManager().createNamedQuery("Family.findByName");
-                    query.setParameter("name", person.getName());
+            Query query = getEntityManager().createNamedQuery("Family.findByName");
+            query.setParameter("name", person.getName());
             List<Family> list = query.getResultList();
             for (Family fam : list)
             {
                 itsLog.debug(fam + "");
                 PublicFamily pfam = new PublicFamily();
-                pfam.description=fam.getDescription().getDescription();
-                pfam.toname=fam.getFamilyPK().getToname();
+                pfam.description = fam.getDescription().getDescription();
+                pfam.toname = fam.getFamilyPK().getToname();
                 res.familyvalues.add(pfam);
 
             }

@@ -19,25 +19,20 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * A room. Bear in mind that this room has potential exits to the north, south,
+ * east, west, up and down, which are also rooms. The structure forms a kind of
+ * graph. In order for Hibernate/JPA not to load the entire structure eagerly due to ManyToOne
+ * annotations,
+ * it is required that the hibernate.cfg.xml file has hibernate.ejb.use_class_enhancer
+ * set to true. Also means that Hibernate as JPA provider should be used
+ * in full-blown JEE environment.
+ * @see http://justonjava.blogspot.com/2010_09_01_archive.html
+ * @see http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/configuration.html
  * @author maartenl
  */
 @Entity
@@ -80,36 +75,49 @@ public class Room implements Serializable
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
+
     @OneToMany(mappedBy = "down")
     private Collection<Room> roomCollection;
+
     @JoinColumn(name = "down", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room down;
+
     @OneToMany(mappedBy = "up")
     private Collection<Room> roomCollection1;
+
     @JoinColumn(name = "up", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room up;
+
     @OneToMany(mappedBy = "west")
     private Collection<Room> roomCollection2;
+
     @JoinColumn(name = "west", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room west;
+
     @OneToMany(mappedBy = "east")
     private Collection<Room> roomCollection3;
+
     @JoinColumn(name = "east", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room east;
+
     @OneToMany(mappedBy = "south")
     private Collection<Room> roomCollection4;
+
     @JoinColumn(name = "south", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room south;
+
     @OneToMany(mappedBy = "north")
     private Collection<Room> roomCollection5;
+
     @JoinColumn(name = "north", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room north;
+
     @JoinColumn(name = "area", referencedColumnName = "area")
     @ManyToOne(optional = false)
     private Area area;

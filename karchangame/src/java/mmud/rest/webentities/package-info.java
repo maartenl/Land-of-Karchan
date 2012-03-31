@@ -14,33 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.webentities;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author maartenl
+ * Provides snapshots of database entities, specifically for the web.
+ * This has the following advantages:
+ * <ul><li>security, not all the fields are automatically exported to the web</li>
+ * <li>security, you can have 'layers', in our case the private info on the web
+ * and the public info on the web.</li>
+ * <li>the REST library will not try and resolve the entire database entity tree
+ * for consumption (leading to stack overflow due to recursion)
+ * </li></ul>
  */
-@XmlRootElement
-public class Fortune
-{
-
-    public String name;
-    public Integer gold;
-    public Integer silver;
-    public Integer copper;
-
-    public Fortune()
-    {
-    }
-
-
-    public Fortune(String name, int copper)
-    {
-        this.name = name;
-        gold = copper / 100;
-        silver = (copper % 100) / 10;
-        this.copper = copper % 10;
-    }
-}
+package mmud.rest.webentities;

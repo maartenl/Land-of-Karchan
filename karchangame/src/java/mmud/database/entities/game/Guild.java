@@ -100,7 +100,7 @@ public class Guild implements Serializable
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
-    @JoinColumn(name = "bossname", referencedColumnName = "name")
+    @JoinColumn(name = "bossname", nullable=false, referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Person bossname;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
