@@ -359,17 +359,17 @@ public class PublicBean
 
         itsLog.debug("entering charactersheets");
 
-        List<PublicPerson> res = new ArrayList<PublicPerson>();
+        List<PublicPerson> res = new ArrayList<>();
         try
         {
-            Query query = getEntityManager().createNamedQuery("CharacterInfo.findAll");
-            List<CharacterInfo> list = query.getResultList();
+            Query query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets");
+            List<String> list = query.getResultList();
 
-            for (CharacterInfo info : list)
+            for (String name : list)
             {
                 PublicPerson person = new PublicPerson();
-                person.name = info.getName();
-                person.url = "/karchangame/resources/public/charactersheets/" + info.getName();
+                person.name = name;
+                person.url = "/karchangame/resources/public/charactersheets/" + name;
                 res.add(person);
             }
         } catch (Exception e)
