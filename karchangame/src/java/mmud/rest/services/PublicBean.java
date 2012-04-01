@@ -258,7 +258,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("status: throws ", e);
+            itsLog.debug("guilds: throws ", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 

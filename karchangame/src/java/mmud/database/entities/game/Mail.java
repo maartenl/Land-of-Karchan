@@ -49,10 +49,13 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
     @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
     @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-    @NamedQuery(name = "Mail.findByDeleted", query = "SELECT m FROM Mail m WHERE m.deleted = :deleted")
-})
+    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = 0 and m.toname = :name"),
+    @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = 0 WHERE m.toname = :name"),
+    @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(*) FROM Mail m WHERE newmail = 1 and deleted = 0 and toname = :name")
+    })
 public class Mail implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,9 +74,9 @@ public class Mail implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Date whensent;
     @Column(name = "haveread")
-    private Short haveread;
+    private Boolean haveread;
     @Column(name = "newmail")
-    private Short newmail;
+    private Boolean newmail;
     @Basic(optional = false)
     @NotNull
     @Lob
@@ -83,7 +86,7 @@ public class Mail implements Serializable
     @Basic(optional = false)
     @NotNull
     @Column(name = "deleted")
-    private short deleted;
+    private Boolean deleted;
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     @ManyToOne
     private ItemDefinition itemId;
@@ -96,20 +99,6 @@ public class Mail implements Serializable
 
     public Mail()
     {
-    }
-
-    public Mail(Long id)
-    {
-        this.id = id;
-    }
-
-    public Mail(Long id, String subject, Date whensent, String body, short deleted)
-    {
-        this.id = id;
-        this.subject = subject;
-        this.whensent = whensent;
-        this.body = body;
-        this.deleted = deleted;
     }
 
     public Long getId()
@@ -142,22 +131,22 @@ public class Mail implements Serializable
         this.whensent = whensent;
     }
 
-    public Short getHaveread()
+    public Boolean getHaveread()
     {
         return haveread;
     }
 
-    public void setHaveread(Short haveread)
+    public void setHaveread(Boolean haveread)
     {
         this.haveread = haveread;
     }
 
-    public Short getNewmail()
+    public Boolean getNewmail()
     {
         return newmail;
     }
 
-    public void setNewmail(Short newmail)
+    public void setNewmail(Boolean newmail)
     {
         this.newmail = newmail;
     }
@@ -172,12 +161,12 @@ public class Mail implements Serializable
         this.body = body;
     }
 
-    public short getDeleted()
+    public Boolean getDeleted()
     {
         return deleted;
     }
 
-    public void setDeleted(short deleted)
+    public void setDeleted(Boolean deleted)
     {
         this.deleted = deleted;
     }
@@ -241,5 +230,4 @@ public class Mail implements Serializable
     {
         return "mmud.database.entities.game.Mail[ id=" + id + " ]";
     }
-
 }

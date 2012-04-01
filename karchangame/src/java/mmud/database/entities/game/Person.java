@@ -22,6 +22,8 @@ import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,6 +41,8 @@ import javax.validation.constraints.Size;
 })
 public class Person implements Serializable
 {
+
+    private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -106,8 +110,8 @@ public class Person implements Serializable
     private String leg;
     @Column(name = "copper")
     private Integer copper;
-    @JoinColumn(name = "room", nullable=false, referencedColumnName = "id")
-    @ManyToOne(optional=false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "room", nullable = false, referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Room room;
     @Size(max = 40)
     @Column(name = "lok")
@@ -1040,8 +1044,8 @@ public class Person implements Serializable
 
     /**
      * Returns the description of the character. All characteristics, if
-     * possible, are taken into account. Does not provide any info
-     * on the name or title. It contains a strictly visual cue.
+     * possible, are taken into account. Does not provide any info on the name
+     * or title. It contains a strictly visual cue.
      *
      * @return String containing the description
      */
@@ -1061,6 +1065,19 @@ public class Person implements Serializable
         addDescriptionPiece(builder, getFace());
         builder.append(" ").append(getSex()).append(" ").append(getRace());
         return builder.toString();
+    }
+
+    /**
+     * verify sessionpassword
+     *
+     * @param aSessionPassword the sessionpassword to be verified.
+     * @return boolean, true if the sessionpassword provided is an exact match
+     * with the original sessionpassword.
+     */
+    public boolean verifySessionPassword(String aSessionPassword)
+    {
+        itsLog.debug("entering verifySessionPassword");
+        return lok == null ? false : lok.equals(aSessionPassword);
     }
 
     @Override
