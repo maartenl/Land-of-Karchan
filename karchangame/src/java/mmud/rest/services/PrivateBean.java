@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -26,11 +27,11 @@ import javax.persistence.Query;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import mmud.database.entities.game.Guild;
-import mmud.database.entities.game.Mail;
-import mmud.database.entities.game.Person;
+import mmud.Utils;
+import mmud.database.entities.game.*;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.rest.webentities.PrivateMail;
+import mmud.rest.webentities.PrivatePerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,23 @@ public class PrivateBean
     public static final int MAX_MAILS = 20;
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
+    /**
+     * Contains the item ids of the different items that represent letters/mail.
+     * The readdescription of said letters looks a little like the following:
+     * <p>"stuffletterhead letterbody letterfooter"</p> That way, the
+     * letterhead, letterbody and letterfooter are automatically replaced.
+     */
+    public static final int[] ITEMS =
+    {
+        8008,
+        8009,
+        8010,
+        8011,
+        8012,
+        8013,
+        8014,
+        8015
+    };
 
     /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
@@ -67,12 +85,27 @@ public class PrivateBean
     }
     private static final Logger itsLog = LoggerFactory.getLogger(PrivateBean.class);
 
+    /**
+     * This method should be called to verify that the target of a certain
+     * action is indeed a proper authenticated user.
+     *
+     * @param lok session password
+     * @param name the name to identify the person
+     * @throws WebApplicationException NOT_FOUND, if the user is either not
+     * found or is not a proper user. BAD_REQUEST if an unexpected exception
+     * crops up or provided info is really not proper. UNAUTHORIZED if session
+     * passwords do not match.
+     */
     private Person authenticate(String name, String lok)
     {
         Person person = getEntityManager().find(Person.class, name);
         if (person == null)
         {
             throw new WebApplicationException(Status.NOT_FOUND);
+        }
+        if (!person.isUser())
+        {
+            throw new WebApplicationException(Status.BAD_REQUEST);
         }
         if (!person.verifySessionPassword(lok))
         {
@@ -117,18 +150,7 @@ public class PrivateBean
             List<Mail> list = query.getResultList();
             for (Mail mail : list)
             {
-
-                PrivateMail pmail = new PrivateMail();
-                pmail.name = mail.getName().getName();
-                pmail.toname = mail.getToname().getName();
-                pmail.subject = mail.getSubject();
-                pmail.body = mail.getBody();
-                pmail.id = mail.getId();
-                pmail.haveread = mail.getHaveread();
-                pmail.newmail = mail.getNewmail();
-                pmail.whensent = mail.getWhensent();
-                pmail.deleted = false;
-                pmail.item_id = mail.getItemId() != null ? mail.getItemId().getId() : null;
+                PrivateMail pmail = new PrivateMail(mail);
                 res.add(pmail);
             }
 
@@ -164,9 +186,9 @@ public class PrivateBean
     {
         "application/xml", "application/json"
     })
-    public Response newMail(@PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response hasNewMail(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering newMail");
+        itsLog.debug("entering hasNewMail");
         Person person = authenticate(name, lok);
         boolean result = false;
         try
@@ -181,7 +203,7 @@ public class PrivateBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("newMail: throws ", e);
+            itsLog.debug("hasNewMail: throws ", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         if (!result)
@@ -206,10 +228,73 @@ public class PrivateBean
     {
         "application/xml", "application/json"
     })
-    public Response newMail(PrivateMail newMail, @PathParam("name") String name)
+    public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        // (new Mail()).newMail(newMail, name);
+        itsLog.debug("entering newMail");
+        if (name == null || newMail.name == null || !name.equals(newMail.name))
+        {
+            itsLog.warn("name of authenticated user {} not same as name {} in mail ", name, newMail.name);
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        Person person = authenticate(name, lok);
+        Person toperson = getEntityManager().find(Person.class, newMail.name);
+        if (toperson == null)
+        {
+            itsLog.warn("name of non existing user {} in mail ", newMail.name);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        if (!toperson.isUser())
+        {
+            itsLog.warn("user not proper user, {} in mail ", newMail.name);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        try
+        {
+            Mail mail = new Mail();
+            mail.setBody(newMail.body);
+            mail.setDeleted(Boolean.FALSE);
+            mail.setHaveread(Boolean.FALSE);
+            mail.setItemId(null);
+            mail.setId(null);
+            mail.setName(person);
+            mail.setNewmail(Boolean.TRUE);
+            mail.setSubject(newMail.subject);
+            mail.setToname(toperson);
+            mail.setWhensent(new Date());
+            getEntityManager().persist(mail);
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("newMail: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting newMail");
         return Response.ok().build();
+    }
+
+    private Mail getMail(String toname, Long id)
+    {
+        Mail mail = getEntityManager().find(Mail.class, id);
+
+        if (mail == null)
+        {
+            itsLog.warn("mail {} not found", id);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        if (mail.getDeleted())
+        {
+            itsLog.warn("mail {} deleted", id);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        if (!mail.getToname().getName().equals(toname))
+        {
+            itsLog.warn("mail {} not for {}", id, toname);
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        return mail;
     }
 
     /**
@@ -230,21 +315,39 @@ public class PrivateBean
     })
     public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
-        return new PrivateMail();//(new Mail()).getMail(name, lok, id);
+        itsLog.debug("entering getMail");
+
+        Person person = authenticate(name, lok);
+
+        Mail mail = getMail(person.getName(), id);
+
+        // turn off the "have not read" sign.
+        mail.setHaveread(Boolean.TRUE);
+        itsLog.debug("exiting getMail");
+
+        return new PrivateMail(mail);
     }
 
     /**
-     * Creates an item instance (and, if required, an item definition)
-     * representing an in-game version of a single mail based by id.
+     * Creates an itemDefinitionId instance (and, if required, an
+     * itemDefinitionId definition) representing an in-game version of a single
+     * mail based by id. <img
+     * src="../../../images/PrivateBean_createMailItem.png">
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to get
-     * @param item the kind of item that is to be made.
+     * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
      * @see PrivateResource#ITEMS
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
+     *
+     * @startuml PrivateBean_createMailItem.png (*) --> "check params" -->
+     * "getMail" if "has Item Definition" then ->[true] "create instance object"
+     * else ->[false] "get maxid" --> "create itemDefinitionId definition" -->
+     * "set itemdefinition into the mail" --> "create instance object" endif -->
+     * "create inventory object" -->(*) @enduml
      */
     @GET
     @Path("{name}/mail/{id}/createMailItem/{item}")
@@ -252,9 +355,84 @@ public class PrivateBean
     {
         "application/xml", "application/json"
     })
-    public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int item)
+    public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
-        //(new Mail()).createMailItem(name, lok, id, item);
+
+        itsLog.debug("entering createMailItem");
+        if (itemDefinitionId >= ITEMS.length && itemDefinitionId < 0)
+        {
+            itsLog.debug("createMailItem: wrong item def");
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        Person person = authenticate(name, lok);
+
+        try
+        {
+            // get the specific mail with id {id}
+            Mail mail = getMail(person.getName(), id);
+
+            itsLog.debug("createMailItem: retrieve template item definition");
+            ItemDefinition definition = getEntityManager().find(ItemDefinition.class, ITEMS[itemDefinitionId]);
+
+            ItemDefinition newdef = null;
+            if (mail.getItemId() == null)
+            {
+
+
+                int max_id = 0;
+                // retrieve max item_idItemDefinition.maxid
+                itsLog.debug("createMailItem: retrieve max id");
+                Query query = getEntityManager().createNamedQuery("ItemDefinition.maxid");
+                max_id = (Integer) query.getSingleResult();
+
+                // create itemDefinitionId definition
+                itsLog.debug("createMailItem: create item definition");
+                newdef = new ItemDefinition();
+                newdef.setId(max_id + 1);
+                newdef.setName(definition.getName());
+                newdef.setAdject1(definition.getAdject1());
+                newdef.setAdject2(definition.getAdject2());
+                newdef.setAdject3(definition.getAdject3());
+                newdef.setGetable(definition.getGetable());
+                newdef.setDropable(definition.getDropable());
+                newdef.setVisible(definition.getVisible());
+
+                newdef.setDescription(definition.getReaddescr().replace("letterhead", "<div id=\"karchan_letterhead\">" + mail.getSubject() + "</div>").replace("letterbody", "<div id=\"karchan_letterbody\">" + mail.getBody() + "</div>").replace("letterfooter", "<div id=\"karchan_letterfooter\">" + mail.getName() + "</div>"));
+
+                newdef.setCopper(definition.getCopper());
+                newdef.setOwner(definition.getOwner());
+                newdef.setNotes(definition.getNotes());
+                getEntityManager().persist(newdef);
+
+                // set itemDefinitionId definition into the mail
+                itsLog.debug("createMailItem: set itemdefinition into the mail");
+                mail.setItemId(newdef);
+            }
+
+            // create itemDefinitionId instance
+            itsLog.debug("createMailItem: create instance object " + mail.getItemId() + " " + name);
+
+            Item item = new Item();
+            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
+            item.setItemid(mail.getItemId());
+            getEntityManager().persist(item);
+
+            // put item instance into inventory
+            itsLog.debug("createMailItem: create inventory object for " + name);
+            CharitemTable inventory = new CharitemTable();
+            inventory.setBelongsto(person);
+            inventory.setItem(item);
+            getEntityManager().persist(inventory);
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("createMailItem: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting createMailItem");
         return Response.ok().build();
     }
 
@@ -276,7 +454,24 @@ public class PrivateBean
     })
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
-        //(new Mail()).deleteMail(name, lok, id);
+        itsLog.debug("entering deleteMail");
+        Person person = authenticate(name, lok);
+        try
+        {
+            // get the specific mail with id {id}
+            Mail mail = getMail(person.getName(), id);
+            mail.setDeleted(Boolean.TRUE);
+
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("deleteMail: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting deleteMail");
         return Response.ok().build();
     }
 
@@ -296,10 +491,44 @@ public class PrivateBean
     {
         "application/xml", "application/json"
     })
-    public Response updateCharacterSheet(@PathParam("name") String name, CharacterInfo cinfo)
+    public Response updateCharacterSheet(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson cinfo)
     {
-        //cinfo.setName(name);
-        //(new CharacterSheets()).updateCharactersheet(cinfo);
+        itsLog.debug("entering updateCharacterSheet");
+        Person person = authenticate(name, lok);
+        if (!person.getName().equals(cinfo.name))
+        {
+            itsLog.debug("updateCharacterSheet: names not the same {} and {}", person.getName(), cinfo.name);
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        try
+        {
+            CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+            boolean isNew = false;
+            if (characterInfo == null)
+            {
+                isNew = true;
+                characterInfo = new CharacterInfo();
+                characterInfo.setName(person.getName());
+            }
+            characterInfo.setImageurl(cinfo.imageurl);
+            characterInfo.setHomepageurl(cinfo.homepageurl);
+            characterInfo.setDateofbirth(Utils.alphanumericalandpuntuation(cinfo.dateofbirth));
+            characterInfo.setCityofbirth(Utils.alphanumericalandpuntuation(cinfo.cityofbirth));
+            characterInfo.setStoryline(Utils.security(cinfo.storyline));
+            if (isNew)
+            {
+                getEntityManager().persist(characterInfo);
+            }
+
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("updateCharacterSheet: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
         return Response.ok().build();
     }
 

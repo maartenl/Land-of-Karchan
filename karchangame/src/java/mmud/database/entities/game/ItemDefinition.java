@@ -45,31 +45,8 @@ import javax.validation.constraints.Size;
 {
     @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
     @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
-    @NamedQuery(name = "ItemDefinition.findByName", query = "SELECT i FROM ItemDefinition i WHERE i.name = :name"),
-    @NamedQuery(name = "ItemDefinition.findByAdject1", query = "SELECT i FROM ItemDefinition i WHERE i.adject1 = :adject1"),
-    @NamedQuery(name = "ItemDefinition.findByAdject2", query = "SELECT i FROM ItemDefinition i WHERE i.adject2 = :adject2"),
-    @NamedQuery(name = "ItemDefinition.findByAdject3", query = "SELECT i FROM ItemDefinition i WHERE i.adject3 = :adject3"),
-    @NamedQuery(name = "ItemDefinition.findByManaincrease", query = "SELECT i FROM ItemDefinition i WHERE i.manaincrease = :manaincrease"),
-    @NamedQuery(name = "ItemDefinition.findByHitincrease", query = "SELECT i FROM ItemDefinition i WHERE i.hitincrease = :hitincrease"),
-    @NamedQuery(name = "ItemDefinition.findByVitalincrease", query = "SELECT i FROM ItemDefinition i WHERE i.vitalincrease = :vitalincrease"),
-    @NamedQuery(name = "ItemDefinition.findByMovementincrease", query = "SELECT i FROM ItemDefinition i WHERE i.movementincrease = :movementincrease"),
-    @NamedQuery(name = "ItemDefinition.findByRoom", query = "SELECT i FROM ItemDefinition i WHERE i.room = :room"),
-    @NamedQuery(name = "ItemDefinition.findByLightable", query = "SELECT i FROM ItemDefinition i WHERE i.lightable = :lightable"),
-    @NamedQuery(name = "ItemDefinition.findByGetable", query = "SELECT i FROM ItemDefinition i WHERE i.getable = :getable"),
-    @NamedQuery(name = "ItemDefinition.findByDropable", query = "SELECT i FROM ItemDefinition i WHERE i.dropable = :dropable"),
-    @NamedQuery(name = "ItemDefinition.findByVisible", query = "SELECT i FROM ItemDefinition i WHERE i.visible = :visible"),
-    @NamedQuery(name = "ItemDefinition.findByWieldable", query = "SELECT i FROM ItemDefinition i WHERE i.wieldable = :wieldable"),
-    @NamedQuery(name = "ItemDefinition.findByWearable", query = "SELECT i FROM ItemDefinition i WHERE i.wearable = :wearable"),
-    @NamedQuery(name = "ItemDefinition.findByCopper", query = "SELECT i FROM ItemDefinition i WHERE i.copper = :copper"),
-    @NamedQuery(name = "ItemDefinition.findByWeight", query = "SELECT i FROM ItemDefinition i WHERE i.weight = :weight"),
-    @NamedQuery(name = "ItemDefinition.findByPasdefense", query = "SELECT i FROM ItemDefinition i WHERE i.pasdefense = :pasdefense"),
-    @NamedQuery(name = "ItemDefinition.findByDamageresistance", query = "SELECT i FROM ItemDefinition i WHERE i.damageresistance = :damageresistance"),
-    @NamedQuery(name = "ItemDefinition.findByContainer", query = "SELECT i FROM ItemDefinition i WHERE i.container = :container"),
-    @NamedQuery(name = "ItemDefinition.findByCreation", query = "SELECT i FROM ItemDefinition i WHERE i.creation = :creation"),
-    @NamedQuery(name = "ItemDefinition.findByCapacity", query = "SELECT i FROM ItemDefinition i WHERE i.capacity = :capacity"),
-    @NamedQuery(name = "ItemDefinition.findByIsopenable", query = "SELECT i FROM ItemDefinition i WHERE i.isopenable = :isopenable"),
-    @NamedQuery(name = "ItemDefinition.findByKeyid", query = "SELECT i FROM ItemDefinition i WHERE i.keyid = :keyid"),
-    @NamedQuery(name = "ItemDefinition.findByContaintype", query = "SELECT i FROM ItemDefinition i WHERE i.containtype = :containtype")
+    @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(id) FROM ItemDefinition i")
+
 })
 public class ItemDefinition implements Serializable
 {
@@ -77,6 +54,7 @@ public class ItemDefinition implements Serializable
     @Id
     @Basic(optional = false)
     @NotNull
+    // TODO : fix this, make it automatically get an id.
     @Column(name = "id")
     private Integer id;
     @Size(max = 100)

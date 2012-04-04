@@ -30,7 +30,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- *
+ * A coupling entity between an item and who has it and what they are doing with it.
+ * TODO : needs a rename to Charitem or something.
  * @author maartenl
  */
 @Entity

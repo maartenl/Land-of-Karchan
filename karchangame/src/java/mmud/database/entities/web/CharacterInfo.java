@@ -27,6 +27,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import mmud.exceptions.MudException;
+import org.apache.commons.validator.routines.UrlValidator;
 
 /**
  *
@@ -46,6 +50,7 @@ import javax.validation.constraints.Size;
 })
 public class CharacterInfo implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -94,21 +99,49 @@ public class CharacterInfo implements Serializable
         return imageurl;
     }
 
-    public void setImageurl(String imageurl)
+    public void setImageurl(String imageurl) throws MudException
     {
+        String[] schemes =
+        {
+            "http", "https"
+        };
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(imageurl))
+        {
+            throw new MudException("imageurl '" + imageurl + "' invalid");
+        }
         this.imageurl = imageurl;
     }
 
+    /**
+     * An url to the homepage of a player. Only http and https are supported.
+     *
+     * @return
+     */
     public String getHomepageurl()
     {
         return homepageurl;
     }
 
-    public void setHomepageurl(String homepageurl)
+    public void setHomepageurl(String homepageurl) throws MudException
     {
+        String[] schemes =
+        {
+            "http", "https"
+        };
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(homepageurl))
+        {
+            throw new MudException("homepageurl '" + homepageurl + "' invalid");
+        }
         this.homepageurl = homepageurl;
     }
 
+    /**
+     * An url of an image of a player. Only http and https are supported.
+     *
+     * @return
+     */
     public String getDateofbirth()
     {
         return dateofbirth;
@@ -168,5 +201,4 @@ public class CharacterInfo implements Serializable
     {
         return "mmud.database.entities.web.CharacterInfo[ name=" + name + " ]";
     }
-
 }

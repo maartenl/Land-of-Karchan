@@ -43,7 +43,6 @@ public class Person implements Serializable
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -1077,7 +1076,21 @@ public class Person implements Serializable
     public boolean verifySessionPassword(String aSessionPassword)
     {
         itsLog.debug("entering verifySessionPassword");
+        if (!isUser())
+        {
+            // is not a common user, therefore does not have a session password.
+            return false;
+        }
         return lok == null ? false : lok.equals(aSessionPassword);
+    }
+
+    /**
+     * Indicates if this is a common user.
+     * @return
+     */
+    public boolean isUser()
+    {
+        return (god != null && (god == 0 || god == 1));
     }
 
     @Override

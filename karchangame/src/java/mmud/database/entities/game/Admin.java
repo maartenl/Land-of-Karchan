@@ -51,6 +51,9 @@ import javax.validation.constraints.Size;
 })
 public class Admin implements Serializable
 {
+
+    public static final String DEFAULT_OWNER = "Karn";
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

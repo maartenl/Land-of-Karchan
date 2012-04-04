@@ -16,10 +16,17 @@
  */
 
 /**
- * <p>Provides the Enterprise Java Beans</p>
- * <p><img src="../../../images/package-info.png"/></p>
+ * <p>Provides the JPA Database Entities.</p>
+ * <p>Mapping of database tables to database entities.<table>
+ * <tr><th>database table</th><th>entity</th></tr>
+ * <tr><td>mm_usertable</td><td>Person</td></tr>
+ * <tr><td>mm_items</td><td>ItemDefinition</td></tr>
+ * <tr><td>mm_itemtable</td><td>Item</td></tr>
+ * <tr><td>mm_charitemtable</td><td>CharitemTable</td></tr>
+ * </table>
+ * <p><img src="../../../../images/package-info_gameentities.png"/></p>
  *
- * @startuml
+ * @startuml package-info_gameentities.png
  * mm_rooms "1" *-- "many" mm_usertable : contains
  *
  * class mm_usertable {

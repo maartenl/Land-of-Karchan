@@ -59,7 +59,7 @@ public class Utils {
     /**
      * Returns a safe string, containing no html tags at all, in other words:
      * <ul>
-     * <li><blaat> is erplaced with empty string</li>
+     * <li><blaat> is replaced with empty string</li>
      * <li>'&' is replaced with &amp;</li>
      * <li>'<' is replaced with &lt;</li>
      * <li>'>' is replaced with &gt;</li>
