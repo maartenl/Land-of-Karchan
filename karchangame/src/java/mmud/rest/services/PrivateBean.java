@@ -30,6 +30,9 @@ import javax.ws.rs.core.Response.Status;
 import mmud.Utils;
 import mmud.database.entities.game.*;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.database.entities.web.Family;
+import mmud.database.entities.web.FamilyPK;
+import mmud.database.entities.web.FamilyValue;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import org.slf4j.Logger;
@@ -213,6 +216,22 @@ public class PrivateBean
         return Response.ok().build();
     }
 
+    private Person getPerson(String name)
+    {
+        Person toperson = getEntityManager().find(Person.class, name);
+        if (toperson == null)
+        {
+            itsLog.warn("name of non existing user {}", name);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        if (!toperson.isUser())
+        {
+            itsLog.warn("user not proper user, {}", name);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        return toperson;
+    }
+
     /**
      * Compose a new mail.
      *
@@ -237,17 +256,7 @@ public class PrivateBean
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
         Person person = authenticate(name, lok);
-        Person toperson = getEntityManager().find(Person.class, newMail.name);
-        if (toperson == null)
-        {
-            itsLog.warn("name of non existing user {} in mail ", newMail.name);
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        if (!toperson.isUser())
-        {
-            itsLog.warn("user not proper user, {} in mail ", newMail.name);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
+        Person toperson = getPerson(newMail.name);
         try
         {
             Mail mail = new Mail();
@@ -552,7 +561,44 @@ public class PrivateBean
     })
     public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
-        //(new CharacterSheets()).updateFamilyValues(name, toname, lok, description);
+        itsLog.debug("entering updateFamilyvalues");
+        if (description == null || description == 0 || toname == null || "".equals(toname.trim()))
+        {
+            itsLog.error("updateFamilyValues bad params");
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        Person person = authenticate(name, lok);
+        Person toperson = getPerson(toname);
+        try
+        {
+            FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
+            if (familyValue == null)
+            {
+                itsLog.error("updateFamilyValues family value not found");
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+            FamilyPK pk = new FamilyPK();
+            pk.setName(person.getName());
+            pk.setToname(toperson.getName());
+            Family family = getEntityManager().find(Family.class, pk);
+
+            boolean isNew = family == null;
+            if (isNew)
+            {
+                family = new Family();
+                family.setFamilyPK(pk);
+            }
+            family.setDescription(familyValue);
+            if (isNew)
+            {
+                getEntityManager().persist(family);
+            }
+        } catch (Exception e)
+        {
+            itsLog.debug("updateFamilyvalues: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting updateFamilyvalues");
         return Response.ok().build();
     }
 
@@ -574,7 +620,22 @@ public class PrivateBean
     })
     public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
     {
-        //(new CharacterSheets()).deleteFamilyValues(name, toname, lok);
+        itsLog.debug("entering deleteFamilyValues");
+        Person person = authenticate(name, lok);
+        try
+        {
+            FamilyPK pk = new FamilyPK();
+            pk.setName(person.getName());
+            pk.setToname(toname);
+            Family family = getEntityManager().find(Family.class, pk);
+            getEntityManager().remove(family);
+        }
+        catch(Exception e)
+        {
+            itsLog.debug("deleteFamilyValues: throws", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        itsLog.debug("exiting deleteFamilyValues");
         return Response.ok().build();
     }
 }
