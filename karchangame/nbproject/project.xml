@@ -6,6 +6,9 @@
             <extension file="rest-build.xml" id="rest.4">
                 <dependency dependsOn="generate-rest-config" target="-pre-pre-compile"/>
             </extension>
+            <extension file="testng-impl.xml" id="test-ng-1.0">
+                <dependency dependsOn="-reinit-tasks" target="-pre-pre-compile"/>
+            </extension>
         </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/web-project/3">
             <name>karchangame</name>

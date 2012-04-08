@@ -78,7 +78,6 @@ public class PublicBean
     public List<Fortune> fortunes()
     {
         itsLog.debug("entering fortunes");
-
         List<Fortune> res = new ArrayList<>();
         try
         {
