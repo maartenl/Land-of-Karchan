@@ -17,13 +17,19 @@
 package mmud.testing.tests;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
+import mmud.database.entities.game.Area;
+import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.Person;
+import mmud.database.entities.game.Room;
 import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.Fortune;
+import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicPerson;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -38,19 +44,21 @@ import static org.testng.Assert.*;
  *
  * @author maartenl
  */
-public class PublicBeanTest
+public class PrivateBeanTest
 {
 
     // Obtain a suitable logger.
-    private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
+    private static final Logger logger = Logger.getLogger(PrivateBeanTest.class.getName());
     @Mocked
     EntityManager entityManager;
     @Mocked
     WebApplicationException stuff;
     @Mocked
     Query query;
+    private Person hotblack;
+    private Person marvin;
 
-    public PublicBeanTest()
+    public PrivateBeanTest()
     {
     }
 
@@ -67,6 +75,28 @@ public class PublicBeanTest
     @BeforeMethod
     public void setUp()
     {
+        Area aArea = new Area();
+        aArea.setShortdescription("On board the Starship Heart of Gold");
+        Room aRoom = new Room();
+        aRoom.setTitle("The bridge");
+        aRoom.setArea(aArea);
+
+        Person person = new Person();
+        person.setName("Hotblack");
+        // JDK7: number formats, for clarification.
+        // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
+        person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
+        person.setSleep(Boolean.FALSE);
+        person.setRoom(aRoom);
+        hotblack = person;
+        person = new Person();
+        person.setName("Marvin");
+        // JDK7: number formats, for clarification.
+        // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
+        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+        person.setRoom(aRoom);
+        person.setSleep(Boolean.TRUE);
+        marvin = person;
     }
 
     @AfterMethod
@@ -80,96 +110,56 @@ public class PublicBeanTest
         assertEquals(2, 2);
     }
 
-    @Test
-    public void fortunesEmptyTest()
+    private boolean compareBase(Object actual, Object expected)
     {
-        PublicBean publicBean = new PublicBean()
+        if (actual == null && expected == null)
         {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.createNamedQuery("Person.fortunes");
-                result = query;
-            }
-        };
-        // Unit under test is exercised.
-        List<Fortune> result = publicBean.fortunes();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 0);
+            return true;
+        }
+        assertNotNull(actual, "actual should not be null");
+        assertNotNull(expected, "expected should not be null");
+        return false;
     }
 
-    @Test
-    public void fortunesTest()
+    private void compare(Fortune actual, Fortune expected)
     {
-        PublicBean publicBean = new PublicBean()
+        if (compareBase(actual, expected))
         {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-
-        final Object[] one =
-        {
-            "Hotblack", Integer.valueOf(34567)
-        };
-        final Object[] two =
-        {
-            "Marvin",
-            Integer.valueOf(345674)
-        };
-        final List<Object[]> list = new ArrayList<>();
-        list.add(one);
-        list.add(two);
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.createNamedQuery("Person.fortunes");
-                result = query;
-                query.setMaxResults(100);
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<Fortune> result = publicBean.fortunes();
-        // Verification code (JUnit/TestNG asserts), if any.
-
-        assertEquals(result.size(), 2);
+            return;
+        }
+        assertEquals(actual.gold, expected.gold, "gold");
+        assertEquals(actual.silver, expected.silver, "silver");
+        assertEquals(actual.copper, expected.copper, "copper");
+        assertEquals(actual.name, expected.name, "name");
     }
 
-    @Test
-    public void whoTest()
+    private void compare(PublicPerson actual, PublicPerson expected)
     {
-        System.out.println("whoTest");
-        PublicBean publicBean = new PublicBean()
+        if (compareBase(actual, expected))
         {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.createNamedQuery((String) any);
-                result = query;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.who();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 0);
+            return;
+        }
+        assertEquals(actual.name, expected.name, "name");
+        assertEquals(actual.title, expected.title, "title");
+        assertEquals(actual.sleep, expected.sleep, "sleep");
+        assertEquals(actual.area, expected.area, "area");
+        assertEquals(actual.min, expected.min, "min");
+        assertEquals(actual.sec, expected.sec, "sec");
     }
+
+    private void compare(News actual, News expected)
+    {
+        if (compareBase(actual, expected))
+        {
+            return;
+        }
+        assertEquals(actual.name, expected.name, "name");
+        assertEquals(actual.message, expected.message, "message");
+        if (compareBase(actual.posttime, expected.posttime))
+        {
+            return;
+        }
+        assertEquals(actual.posttime.getTime(), expected.posttime.getTime(), "posttime");
+    }
+
 }

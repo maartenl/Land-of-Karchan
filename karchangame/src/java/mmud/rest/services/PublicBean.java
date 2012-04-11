@@ -72,6 +72,8 @@ public class PublicBean
     @GET
     @Path("fortunes")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -107,6 +109,8 @@ public class PublicBean
     @GET
     @Path("who")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -124,8 +128,8 @@ public class PublicBean
                 PublicPerson publicPerson = new PublicPerson();
                 publicPerson.name = person.getName();
                 publicPerson.title = person.getTitle();
-                publicPerson.sleep = person.getSleep() == 1 ? "sleeping" : "";
-                publicPerson.area = person.getRoom().getArea().getShortdesc();
+                publicPerson.sleep = person.getSleep() ? "sleeping" : "";
+                publicPerson.area = person.getRoom().getArea().getShortdescription();
                 Long now = (new Date()).getTime();
                 Long backThen = person.getLastlogin().getTime();
                 publicPerson.min = (now - backThen) / 60000;
@@ -149,6 +153,8 @@ public class PublicBean
     @GET
     @Path("news")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -190,6 +196,8 @@ public class PublicBean
     @GET
     @Path("status")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -227,6 +235,8 @@ public class PublicBean
     @GET
     @Path("guilds")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -278,6 +288,8 @@ public class PublicBean
     @GET
     @Path("charactersheets/{name}")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -295,7 +307,7 @@ public class PublicBean
             }
             res.name = person.getName();
             res.title = person.getTitle();
-            res.sex = person.getSex();
+            res.sex = person.getSex().toString();
             res.description = person.getDescription();
             CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
             if (characterInfo != null)
@@ -323,6 +335,9 @@ public class PublicBean
                 res.familyvalues.add(pfam);
 
             }
+        } catch (WebApplicationException e)
+        {
+            throw e;
         } catch (Exception e)
         {
             itsLog.debug("charactersheet: throws ", e);
@@ -330,7 +345,8 @@ public class PublicBean
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.debug("exiting charactersheet");
+        itsLog.debug(
+                "exiting charactersheet");
         return res;
     }
 

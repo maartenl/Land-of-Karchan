@@ -68,7 +68,7 @@ public class Area implements Serializable
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "shortdesc")
-    private String shortdesc;
+    private String shortdescription;
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
@@ -93,7 +93,7 @@ public class Area implements Serializable
     {
         this.area = area;
         this.description = description;
-        this.shortdesc = shortdesc;
+        this.shortdescription = shortdesc;
         this.creation = creation;
     }
 
@@ -117,14 +117,14 @@ public class Area implements Serializable
         this.description = description;
     }
 
-    public String getShortdesc()
+    public String getShortdescription()
     {
-        return shortdesc;
+        return shortdescription;
     }
 
-    public void setShortdesc(String shortdesc)
+    public void setShortdescription(String shortdescription)
     {
-        this.shortdesc = shortdesc;
+        this.shortdescription = shortdescription;
     }
 
     public Date getCreation()

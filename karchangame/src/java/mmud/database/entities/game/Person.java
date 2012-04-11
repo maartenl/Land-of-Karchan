@@ -22,6 +22,7 @@ import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.enums.Sex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -123,7 +126,7 @@ public class Person implements Serializable
     @Column(name = "fightingwho")
     private String fightingwho;
     @Column(name = "sleep")
-    private Integer sleep;
+    private Boolean sleep;
     @Column(name = "punishment")
     private Integer punishment;
     @Column(name = "fightable")
@@ -343,14 +346,14 @@ public class Person implements Serializable
         this.race = race;
     }
 
-    public String getSex()
+    public Sex getSex()
     {
-        return sex;
+        return Sex.createFromString(sex);
     }
 
-    public void setSex(String sex)
+    public void setSex(Sex sex)
     {
-        this.sex = sex;
+        this.sex = sex.toString();
     }
 
     public String getAge()
@@ -513,12 +516,16 @@ public class Person implements Serializable
         this.fightingwho = fightingwho;
     }
 
-    public Integer getSleep()
+    public Boolean getSleep()
     {
+        if (sleep == null)
+        {
+            return false;
+        }
         return sleep;
     }
 
-    public void setSleep(Integer sleep)
+    public void setSleep(Boolean sleep)
     {
         this.sleep = sleep;
     }
@@ -1050,7 +1057,11 @@ public class Person implements Serializable
      */
     public String getDescription()
     {
-        StringBuilder builder = new StringBuilder(getAge());
+        StringBuilder builder = new StringBuilder();
+        if (getAge() != null)
+        {
+            builder.append(getAge());
+        }
         // TODO MLE : add getLength but with proper name, not an sql keyword.
         // addDescriptionPiece(builder, getLength());
         addDescriptionPiece(builder, getWidth());
@@ -1063,7 +1074,7 @@ public class Person implements Serializable
         addDescriptionPiece(builder, getLeg());
         addDescriptionPiece(builder, getFace());
         builder.append(" ").append(getSex()).append(" ").append(getRace());
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     /**
@@ -1086,6 +1097,7 @@ public class Person implements Serializable
 
     /**
      * Indicates if this is a common user.
+     *
      * @return
      */
     public boolean isUser()
