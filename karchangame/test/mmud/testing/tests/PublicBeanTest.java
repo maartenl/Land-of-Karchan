@@ -33,6 +33,7 @@ import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
+import mmud.testing.TestingConstants;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
@@ -77,34 +78,11 @@ public class PublicBeanTest
     @BeforeMethod
     public void setUp()
     {
-        Area aArea = new Area();
-        aArea.setShortdescription("On board the Starship Heart of Gold");
-        Room aRoom = new Room();
-        aRoom.setTitle("The bridge");
-        aRoom.setArea(aArea);
+        Area aArea = TestingConstants.getArea();
+        Room aRoom = TestingConstants.getRoom(aArea);
 
-        Person person = new Person();
-        person.setName("Hotblack");
-        // JDK7: number formats, for clarification.
-        // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
-        person.setSleep(Boolean.FALSE);
-        person.setTitle("Guitar keyboard player of the rock group Disaster Area");
-        person.setRoom(aRoom);
-        person.setSex(Sex.MALE);
-        person.setRace("undead");
-        hotblack = person;
-        person = new Person();
-        person.setName("Marvin");
-        // JDK7: number formats, for clarification.
-        // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
-        person.setRoom(aRoom);
-        person.setSex(Sex.MALE);
-        person.setSleep(Boolean.TRUE);
-        person.setRace("android");
-        person.setTitle("The Paranoid Android");
-        marvin = person;
+        hotblack = TestingConstants.getHotblack(aRoom);
+        marvin = TestingConstants.getMarvin(aRoom);
     }
 
     @AfterMethod
