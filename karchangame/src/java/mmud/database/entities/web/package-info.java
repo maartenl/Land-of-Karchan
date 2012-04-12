@@ -16,16 +16,48 @@
  */
 
 /**
- * <p>Provides the JPA Database Entities for Charactersheets. These
+ * <p>Provides the JPA Database Entities for information regarding website scripts.
+ * These
  * are specifically meant for the webpages, and do not in any way
- * effect gameplay.</p>
+ * effect gameplay. These tables are easily
+ * recognized because they do not start with the prefix "mm_".</p>
  * <p><img src="../../../../images/package-info_webentities.png"/></p>
+ * <TABLE>
+ *
+ * <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
+ *
+ * <TR valign=top><TD>characterinfo</TD><TD>contains story information regarding certain
+ * characters.</TD></TR>
+ *
+ * <TR valign=top><TD>family</TD><TD>shows the family relations between characters.</TD></TR>
+ *
+ * <TR valign=top><TD>familyvalues</TD><TD>provides a number of possible family relations.
+ * </TD></TR>
+ *
+ * <TR valign=top><TD></TD><TD></TD></TR>
+ * </TABLE>
  *
  * @startuml package-info_webentities.png
+ * family "description" *-- "id" familyvalues
+ * mm_usertable "name" *-- "name" characterinfo
+ * mm_usertable "name" *-- "name" family
+ * mm_usertable "name" *-- "toname" family
+ * class characterinfo {
+ *    -name
+ *    -imageurl
+ *    -homepageurl
+ *    -dateofbirth
+ *    -cityofbirth
+ *    -storyline
+ * }
  * class family {
- *    -String name
- *    -String toname
- *    -String description
+ *    -name
+ *    -toname
+ *    -description
+ * }
+ * class familyvalues {
+ *    -id
+ *    -description
  * }
  * @enduml
  */
