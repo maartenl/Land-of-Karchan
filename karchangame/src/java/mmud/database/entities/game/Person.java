@@ -22,6 +22,7 @@ import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
 
 
 {
@@ -630,14 +632,14 @@ public class Person implements Serializable
         this.birth = birth;
     }
 
-    public Integer getGod()
+    public God getGod()
     {
-        return god;
+        return God.get(god);
     }
 
-    public void setGod(Integer god)
+    public void setGod(God god)
     {
-        this.god = god;
+        this.god = god.getValue();
     }
 
     public Integer getStrength()
@@ -1102,6 +1104,10 @@ public class Person implements Serializable
      */
     public boolean isUser()
     {
+        if (god == null)
+        {
+            return true;
+        }
         return (god != null && (god == 0 || god == 1));
     }
 

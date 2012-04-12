@@ -132,6 +132,8 @@ public class PrivateBean
     @GET
     @Path("{name}/mail")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -186,6 +188,8 @@ public class PrivateBean
     @GET
     @Path("{name}/newmail")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -244,19 +248,16 @@ public class PrivateBean
     @POST
     @Path("{name}/mail")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
     public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering newMail");
-        if (name == null || newMail.name == null || !name.equals(newMail.name))
-        {
-            itsLog.warn("name of authenticated user {} not same as name {} in mail ", name, newMail.name);
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-        }
         Person person = authenticate(name, lok);
-        Person toperson = getPerson(newMail.name);
+        Person toperson = getPerson(newMail.toname);
         try
         {
             Mail mail = new Mail();
@@ -307,7 +308,8 @@ public class PrivateBean
     }
 
     /**
-     * Returns a single mail based by id.
+     * Returns a single mail based by id. Can only retrieve mail destined for
+     * the user requesting the mail.
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
@@ -319,6 +321,8 @@ public class PrivateBean
     @GET
     @Path("{name}/mail/{id}")
     @Produces(
+
+
     {
         "application/xml", "application/json"
     })
@@ -327,14 +331,22 @@ public class PrivateBean
         itsLog.debug("entering getMail");
 
         Person person = authenticate(name, lok);
-
-        Mail mail = getMail(person.getName(), id);
-
-        // turn off the "have not read" sign.
-        mail.setHaveread(Boolean.TRUE);
-        itsLog.debug("exiting getMail");
-
-        return new PrivateMail(mail);
+        try
+        {
+            Mail mail = getMail(person.getName(), id);
+            // turn off the "have not read" sign.
+            mail.setHaveread(Boolean.TRUE);
+            itsLog.debug("exiting getMail");
+            return new PrivateMail(mail);
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("getMail: throws ", e);
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
     }
 
     /**
@@ -356,11 +368,14 @@ public class PrivateBean
      * "getMail" if "has Item Definition" then ->[true] "create instance object"
      * else ->[false] "get maxid" --> "create itemDefinitionId definition" -->
      * "set itemdefinition into the mail" --> "create instance object" endif -->
-     * "create inventory object" -->(*) @enduml
+     * "create inventory object" -->(*)
+     * @enduml
      */
     @GET
     @Path("{name}/mail/{id}/createMailItem/{item}")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -458,6 +473,8 @@ public class PrivateBean
     @DELETE
     @Path("{name}/mail/{id}")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -497,6 +514,8 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -556,6 +575,8 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -615,6 +636,8 @@ public class PrivateBean
     @DELETE
     @Path("{name}/charactersheet/familyvalues/{toname}")
     @Consumes(
+
+
     {
         "application/xml", "application/json"
     })
@@ -629,8 +652,7 @@ public class PrivateBean
             pk.setToname(toname);
             Family family = getEntityManager().find(Family.class, pk);
             getEntityManager().remove(family);
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             itsLog.debug("deleteFamilyValues: throws", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);

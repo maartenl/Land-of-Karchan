@@ -14,32 +14,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.testing;
-
-import static org.testng.Assert.assertNotNull;
+package mmud.database.enums;
 
 /**
- * Some general purpose methods for easy verifying of test results.
- *
+ * Indicates whether or not a character is a normal player, a god,
+ * a bot or a mob or a shopkeeper.
  * @author maartenl
  */
-public class TestingUtils
+public enum God
 {
+    DEFAULT_USER(0), GOD(1), BOT(2), MOB(3), SHOPKEEPER(4);
+    private int value;
+
+    private God(int value)
+    {
+        this.value = value;
+    }
 
     /**
-     * @param actual
-     * @param expected
-     * @return returns true if no compare required, returns false if compare should
-     * continue.
+     * Returns the enum based on a numerical value.
+     * @param value
+     * @return God enum, null if not found.
      */
-    public static boolean compareBase(Object actual, Object expected)
+    public static God get(int value)
     {
-        if (actual == null && expected == null)
+        for (God god : values())
         {
-            return true;
+            if (value == god.getValue())
+            {
+                return god;
+            }
         }
-        assertNotNull(actual, "actual should not be null");
-        assertNotNull(expected, "expected should not be null");
-        return false;
+        return null;
     }
+
+    /**
+     * Returns the numerical value of this enum.
+     * @return
+     */
+    public int getValue()
+    {
+        return value;
+    }
+
 }

@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import mmud.database.entities.game.*;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
@@ -32,6 +33,7 @@ import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.testing.TestingConstants;
+import mmud.testing.TestingUtils;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
@@ -52,8 +54,6 @@ public class PublicBeanTest
     private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
     @Mocked
     EntityManager entityManager;
-    @Mocked
-    WebApplicationException stuff;
     @Mocked
     Query query;
     private Person hotblack;
@@ -94,25 +94,9 @@ public class PublicBeanTest
         assertEquals(2, 2);
     }
 
-    /**
-     * @param actual
-     * @param expected
-     * @return false if compare needs to continue
-     */
-    private boolean compareBase(Object actual, Object expected)
-    {
-        if (actual == null && expected == null)
-        {
-            return true;
-        }
-        assertNotNull(actual, "actual should not be null");
-        assertNotNull(expected, "expected should not be null");
-        return false;
-    }
-
     private void compare(Fortune actual, Fortune expected)
     {
-        if (compareBase(actual, expected))
+        if (TestingUtils.compareBase(actual, expected))
         {
             return;
         }
@@ -124,7 +108,7 @@ public class PublicBeanTest
 
     private void compare(PublicPerson actual, PublicPerson expected)
     {
-        if (compareBase(actual, expected))
+        if (TestingUtils.compareBase(actual, expected))
         {
             return;
         }
@@ -147,7 +131,7 @@ public class PublicBeanTest
 
     private void compare(PublicGuild actual, PublicGuild expected)
     {
-        if (compareBase(actual, expected))
+        if (TestingUtils.compareBase(actual, expected))
         {
             return;
         }
@@ -160,13 +144,13 @@ public class PublicBeanTest
 
     private void compare(News actual, News expected)
     {
-        if (compareBase(actual, expected))
+        if (TestingUtils.compareBase(actual, expected))
         {
             return;
         }
         assertEquals(actual.name, expected.name, "name");
         assertEquals(actual.message, expected.message, "message");
-        if (compareBase(actual.posttime, expected.posttime))
+        if (TestingUtils.compareBase(actual.posttime, expected.posttime))
         {
             return;
         }
@@ -598,8 +582,7 @@ public class PublicBeanTest
             fail("We expected a not found exception");
         } catch (WebApplicationException e)
         {
-            // TODO MLE: missing response in WebApplication
-            //assertEquals(e.getResponse().getStatus(), Response.Status.NOT_FOUND);
+            assertEquals(e.getResponse().getStatus(), Response.Status.NOT_FOUND.getStatusCode());
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }

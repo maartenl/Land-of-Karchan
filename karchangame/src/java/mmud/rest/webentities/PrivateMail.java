@@ -33,7 +33,7 @@ public class PrivateMail
     public PrivateMail()
     {
     }
-    public String lok;
+
     public String toname;
     public String name;
     public String subject;

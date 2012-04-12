@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_mailtable", catalog = "mmud", schema = "")
 @NamedQueries(
+
 {
     @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
     @NamedQuery(name = "Mail.findById", query = "SELECT m FROM Mail m WHERE m.id = :id"),
@@ -52,7 +53,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = 0 and m.toname = :name"),
     @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = 0 WHERE m.toname = :name"),
     @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(*) FROM Mail m WHERE newmail = 1 and deleted = 0 and toname = :name")
-    })
+})
 public class Mail implements Serializable
 {
 
@@ -163,6 +164,10 @@ public class Mail implements Serializable
 
     public Boolean getDeleted()
     {
+        if (deleted == null)
+        {
+            return false;
+        }
         return deleted;
     }
 
@@ -181,21 +186,37 @@ public class Mail implements Serializable
         this.itemId = itemId;
     }
 
+    /**
+     * Returns the receiver of the mail.
+     * @return
+     */
     public Person getToname()
     {
         return toname;
     }
 
+    /**
+     * Sets the receiver of the mail.
+     * @param toname
+     */
     public void setToname(Person toname)
     {
         this.toname = toname;
     }
 
+    /**
+     * Returns the sender of the mail.
+     * @return
+     */
     public Person getName()
     {
         return name;
     }
 
+    /**
+     * Sets the sender of the mail.
+     * @param name
+     */
     public void setName(Person name)
     {
         this.name = name;

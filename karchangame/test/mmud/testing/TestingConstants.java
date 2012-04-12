@@ -56,6 +56,7 @@ public class TestingConstants
         person.setRoom(aRoom);
         person.setSex(Sex.MALE);
         person.setRace("undead");
+        person.setLok("lok");
         return person;
     }
 
@@ -71,6 +72,7 @@ public class TestingConstants
         person.setSleep(Boolean.TRUE);
         person.setRace("android");
         person.setTitle("The Paranoid Android");
+        person.setLok("lok");
         return person;
     }
 }

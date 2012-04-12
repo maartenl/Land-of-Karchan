@@ -288,8 +288,6 @@ public class PublicBean
     @GET
     @Path("charactersheets/{name}")
     @Produces(
-
-
     {
         "application/xml", "application/json"
     })
