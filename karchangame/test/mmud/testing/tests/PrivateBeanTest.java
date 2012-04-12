@@ -31,6 +31,7 @@ import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicPerson;
+import mmud.testing.TestingConstants;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
@@ -75,28 +76,10 @@ public class PrivateBeanTest
     @BeforeMethod
     public void setUp()
     {
-        Area aArea = new Area();
-        aArea.setShortdescription("On board the Starship Heart of Gold");
-        Room aRoom = new Room();
-        aRoom.setTitle("The bridge");
-        aRoom.setArea(aArea);
-
-        Person person = new Person();
-        person.setName("Hotblack");
-        // JDK7: number formats, for clarification.
-        // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
-        person.setSleep(Boolean.FALSE);
-        person.setRoom(aRoom);
-        hotblack = person;
-        person = new Person();
-        person.setName("Marvin");
-        // JDK7: number formats, for clarification.
-        // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
-        person.setRoom(aRoom);
-        person.setSleep(Boolean.TRUE);
-        marvin = person;
+        Area aArea = TestingConstants.getArea();
+        Room aRoom = TestingConstants.getRoom(aArea);
+        hotblack = TestingConstants.getHotblack(aRoom);
+        marvin = TestingConstants.getMarvin(aRoom);
     }
 
     @AfterMethod
@@ -119,47 +102,6 @@ public class PrivateBeanTest
         assertNotNull(actual, "actual should not be null");
         assertNotNull(expected, "expected should not be null");
         return false;
-    }
-
-    private void compare(Fortune actual, Fortune expected)
-    {
-        if (compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.gold, expected.gold, "gold");
-        assertEquals(actual.silver, expected.silver, "silver");
-        assertEquals(actual.copper, expected.copper, "copper");
-        assertEquals(actual.name, expected.name, "name");
-    }
-
-    private void compare(PublicPerson actual, PublicPerson expected)
-    {
-        if (compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.title, expected.title, "title");
-        assertEquals(actual.sleep, expected.sleep, "sleep");
-        assertEquals(actual.area, expected.area, "area");
-        assertEquals(actual.min, expected.min, "min");
-        assertEquals(actual.sec, expected.sec, "sec");
-    }
-
-    private void compare(News actual, News expected)
-    {
-        if (compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.message, expected.message, "message");
-        if (compareBase(actual.posttime, expected.posttime))
-        {
-            return;
-        }
-        assertEquals(actual.posttime.getTime(), expected.posttime.getTime(), "posttime");
     }
 
 }
