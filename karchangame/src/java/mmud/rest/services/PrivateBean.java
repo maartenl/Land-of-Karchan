@@ -546,9 +546,9 @@ public class PrivateBean
             }
             characterInfo.setImageurl(cinfo.imageurl);
             characterInfo.setHomepageurl(cinfo.homepageurl);
-            characterInfo.setDateofbirth(Utils.alphanumericalandpuntuation(cinfo.dateofbirth));
-            characterInfo.setCityofbirth(Utils.alphanumericalandpuntuation(cinfo.cityofbirth));
-            characterInfo.setStoryline(Utils.security(cinfo.storyline));
+            characterInfo.setDateofbirth(cinfo.dateofbirth);
+            characterInfo.setCityofbirth(cinfo.cityofbirth);
+            characterInfo.setStoryline(cinfo.storyline);
             if (isNew)
             {
                 getEntityManager().persist(characterInfo);

@@ -17,6 +17,8 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,8 +31,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import mmud.Utils;
 import mmud.exceptions.MudException;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
 
 /**
  *
@@ -39,6 +44,9 @@ import org.apache.commons.validator.routines.UrlValidator;
 @Entity
 @Table(name = "characterinfo", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
+
 {
     @NamedQuery(name = "CharacterInfo.findAll", query = "SELECT c FROM CharacterInfo c"),
     @NamedQuery(name = "CharacterInfo.findByName", query = "SELECT c FROM CharacterInfo c WHERE c.name = :name"),
@@ -137,11 +145,6 @@ public class CharacterInfo implements Serializable
         this.homepageurl = homepageurl;
     }
 
-    /**
-     * An url of an image of a player. Only http and https are supported.
-     *
-     * @return
-     */
     public String getDateofbirth()
     {
         return dateofbirth;
@@ -149,6 +152,10 @@ public class CharacterInfo implements Serializable
 
     public void setDateofbirth(String dateofbirth)
     {
+        if (dateofbirth != null)
+        {
+            dateofbirth = Utils.alphanumericalandpuntuation(dateofbirth);
+        }
         this.dateofbirth = dateofbirth;
     }
 
@@ -159,6 +166,10 @@ public class CharacterInfo implements Serializable
 
     public void setCityofbirth(String cityofbirth)
     {
+        if (cityofbirth != null)
+        {
+            cityofbirth = Utils.alphanumericalandpuntuation(cityofbirth);
+        }
         this.cityofbirth = cityofbirth;
     }
 
@@ -167,8 +178,19 @@ public class CharacterInfo implements Serializable
         return storyline;
     }
 
-    public void setStoryline(String storyline)
+    public void setStoryline(String storyline) throws MudException
     {
+        if (storyline != null)
+        {
+            try
+            {
+                storyline = Utils.security(storyline);
+            } catch (    PolicyException | ScanException ex)
+            {
+                Logger.getLogger(CharacterInfo.class.getName()).log(Level.SEVERE, null, ex);
+                throw new MudException(ex);
+            }
+        }
         this.storyline = storyline;
     }
 

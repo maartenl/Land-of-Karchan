@@ -19,6 +19,8 @@ package mmud;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
 
 /**
  *
@@ -27,7 +29,7 @@ import org.owasp.validator.html.Policy;
 public class Utils
 {
 
-    private static final String POLICY_FILE_LOCATION = "/usr/share/glassfish3/glassfish/domains/domain1/config/antisamy-myspace-1.4.4.xml";
+    private static final String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
 
     /**
      * Returns a safe string, containing no javascript at all.
@@ -35,8 +37,7 @@ public class Utils
      * @param dirtyInput the original string.
      * @return the new string, sanse javascript.
      */
-    public static String security(String dirtyInput)
-            throws Exception
+    public static String security(String dirtyInput) throws PolicyException, ScanException
     {
         Policy policy = Policy.getInstance(POLICY_FILE_LOCATION);
 
@@ -53,7 +54,6 @@ public class Utils
      * @return the new string
      */
     public static String alphabeticalandspace(String value)
-            throws Exception
     {
         return value.replaceAll("[^A-Za-z ]", "");
     }
@@ -65,7 +65,6 @@ public class Utils
      * @return the new string
      */
     public static String alphabetical(String value)
-            throws Exception
     {
         return value.replaceAll("[^A-Za-z]", "");
     }
@@ -78,7 +77,6 @@ public class Utils
      * @return the new string
      */
     public static String alphanumericalandspace(String value)
-            throws Exception
     {
         return value.replaceAll("[^A-Za-z0-9 ]", "");
     }
@@ -91,7 +89,6 @@ public class Utils
      * @return the new string
      */
     public static String alphanumericalandpuntuation(String value)
-            throws Exception
     {
         return value.replaceAll("[^A-Za-z0-9!&()_=+;:.,?'\"\\- ]", "");
     }
@@ -103,7 +100,6 @@ public class Utils
      * @return the new string
      */
     public static String alphanumerical(String value)
-            throws Exception
     {
         return value.replaceAll("[^A-Za-z0-9]", "");
     }

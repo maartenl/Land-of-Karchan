@@ -16,6 +16,8 @@
  */
 package mmud.exceptions;
 
+import org.owasp.validator.html.PolicyException;
+
 /**
  *
  * @author maartenl
@@ -26,6 +28,11 @@ public class MudException extends Exception
     public MudException(String string)
     {
         super(string);
+    }
+
+    public MudException(Exception ex)
+    {
+        super(ex);
     }
 
 }

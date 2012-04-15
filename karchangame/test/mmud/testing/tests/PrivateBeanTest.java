@@ -32,10 +32,12 @@ import mmud.database.entities.game.ItemDefinition;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.web.CharacterInfo;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.webentities.PrivateMail;
+import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import mockit.Delegate;
@@ -1119,6 +1121,210 @@ public class PrivateBeanTest
         } catch (WebApplicationException result)
         {
             assertEquals(result.getResponse().getStatus(), Response.Status.NOT_FOUND.getStatusCode());
+
+        }
+    }
+
+    @Test
+    public void updateCharacterSheet() throws MudException
+    {
+        logger.fine("updateCharacterSheet");
+        final CharacterInfo cinfo = new CharacterInfo();
+        cinfo.setName("Marvin");
+        cinfo.setImageurl("http://www.images.com/image.jpg");
+        cinfo.setHomepageurl("http://www.homepages.com");
+        cinfo.setDateofbirth("none");
+        cinfo.setCityofbirth("none");
+        cinfo.setStoryline("none");
+
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(CharacterInfo.class, "Marvin");
+                result = cinfo;
+            }
+        };
+        // Unit under test is exercised.
+        final PrivatePerson person = new PrivatePerson();
+        person.name = "Marvin";
+        person.imageurl = "http://www.images.com/newimage.jpg";
+        person.homepageurl = "http://www.homepages.com/homepage.html";
+        person.dateofbirth = "Beginning of time";
+        person.cityofbirth = "Sirius";
+        person.storyline = "Life, don't talk to me about life.";
+        Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+
+        assertEquals(cinfo.getName(), person.name);
+        assertEquals(cinfo.getImageurl(), person.imageurl);
+        assertEquals(cinfo.getHomepageurl(), person.homepageurl);
+        assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
+        assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
+        assertEquals(cinfo.getStoryline(), person.storyline);
+
+    }
+
+    @Test
+    public void newCharacterSheet() throws MudException
+    {
+        logger.fine("newCharacterSheet");
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(CharacterInfo.class, "Marvin");
+                result = null;
+
+                entityManager.persist((CharacterInfo) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(CharacterInfo cinfo)
+                    {
+                        assertNotNull(cinfo);
+                        assertEquals(cinfo.getName(), "Marvin");
+                        assertEquals(cinfo.getImageurl(), "http://www.images.com/newimage.jpg");
+                        assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
+                        assertEquals(cinfo.getDateofbirth(), "Beginning of time");
+                        assertEquals(cinfo.getCityofbirth(), "Sirius");
+                        assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
+                    }
+                };
+            }
+        };
+        // Unit under test is exercised.
+        final PrivatePerson person = new PrivatePerson();
+        person.name = "Marvin";
+        person.imageurl = "http://www.images.com/newimage.jpg";
+        person.homepageurl = "http://www.homepages.com/homepage.html";
+        person.dateofbirth = "Beginning of time";
+        person.cityofbirth = "Sirius";
+        person.storyline = "Life, don't talk to me about life.";
+        Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+
+    }
+
+    @Test
+    public void updateCharacterSheetScriptInjection() throws MudException
+    {
+        logger.fine("updateCharacterSheetScriptInjection");
+        final CharacterInfo cinfo = new CharacterInfo();
+        cinfo.setName("Marvin");
+        cinfo.setImageurl("http://www.images.com/image.jpg");
+        cinfo.setHomepageurl("http://www.homepages.com");
+        cinfo.setDateofbirth("none");
+        cinfo.setCityofbirth("none");
+        cinfo.setStoryline("none");
+
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(CharacterInfo.class, "Marvin");
+                result = cinfo;
+            }
+        };
+        // Unit under test is exercised.
+        final PrivatePerson person = new PrivatePerson();
+        person.name = "Marvin";
+        person.imageurl = "http://www.images.com/newimage.jpg";
+        person.homepageurl = "http://www.homepages.com/homepage.html";
+        person.dateofbirth = "Beginning of time";
+        person.cityofbirth = "Sirius";
+        person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
+        Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+
+        assertEquals(cinfo.getName(), person.name);
+        assertEquals(cinfo.getImageurl(), person.imageurl);
+        assertEquals(cinfo.getHomepageurl(), person.homepageurl);
+        assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
+        assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
+        assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
+
+    }
+
+    @Test
+    public void updateCharacterSheetOfSomebodyElse() throws MudException
+    {
+        logger.fine("updateCharacterSheetOfSomebodyElse");
+        final CharacterInfo cinfo = new CharacterInfo();
+        cinfo.setName("Marvin");
+        cinfo.setImageurl("http://www.images.com/image.jpg");
+        cinfo.setHomepageurl("http://www.homepages.com");
+        cinfo.setDateofbirth("none");
+        cinfo.setCityofbirth("none");
+        cinfo.setStoryline("none");
+
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+            }
+        };
+        // Unit under test is exercised.
+        final PrivatePerson person = new PrivatePerson();
+        person.name = "Hotblack";
+        person.imageurl = "http://www.images.com/newimage.jpg";
+        person.homepageurl = "http://www.homepages.com/homepage.html";
+        person.dateofbirth = "Beginning of time";
+        person.cityofbirth = "Sirius";
+        person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
+        try
+        {
+            Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+            fail("We are supposed to get an exception here.");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
 
         }
     }
