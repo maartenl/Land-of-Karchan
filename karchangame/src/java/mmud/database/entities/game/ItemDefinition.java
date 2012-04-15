@@ -36,20 +36,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * The definition of an item. The analogy with Java would be the difference
+ * between a class and an object.
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_items", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
+
+
 {
     @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
     @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
     @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(id) FROM ItemDefinition i")
-
 })
 public class ItemDefinition implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -106,7 +111,7 @@ public class ItemDefinition implements Serializable
     @Lob
     @Size(max = 65535)
     @Column(name = "readdescr")
-    private String readdescr;
+    private String readdescription;
     @Column(name = "wearable")
     private Integer wearable;
     @Column(name = "copper")
@@ -142,9 +147,9 @@ public class ItemDefinition implements Serializable
     @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
-    @OneToMany(mappedBy = "itemid")
+        @OneToMany(mappedBy = "itemDefinition")
     private Collection<Item> itemCollection;
-    @OneToMany(mappedBy = "itemId")
+        @OneToMany(mappedBy = "itemDefinition")
     private Collection<Mail> mailCollection;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
@@ -169,6 +174,12 @@ public class ItemDefinition implements Serializable
         this.isopenable = isopenable;
     }
 
+    /**
+     * Return the id.
+     *
+     * @return integer containing the identification number of the item
+     *         definition.
+     */
     public Integer getId()
     {
         return id;
@@ -179,6 +190,11 @@ public class ItemDefinition implements Serializable
         this.id = id;
     }
 
+    /**
+     * Return the verb.
+     *
+     * @return String containing the verb of the item definition.
+     */
     public String getName()
     {
         return name;
@@ -189,6 +205,11 @@ public class ItemDefinition implements Serializable
         this.name = name;
     }
 
+    /**
+     * Return the first adjective.
+     *
+     * @return String containing the first adjective of the item definition.
+     */
     public String getAdject1()
     {
         return adject1;
@@ -199,6 +220,11 @@ public class ItemDefinition implements Serializable
         this.adject1 = adject1;
     }
 
+    /**
+     * Return the second adjective.
+     *
+     * @return String containing the second adjective of the item definition.
+     */
     public String getAdject2()
     {
         return adject2;
@@ -209,6 +235,11 @@ public class ItemDefinition implements Serializable
         this.adject2 = adject2;
     }
 
+    /**
+     * Return the third adjective.
+     *
+     * @return String containing the third adjective of the item definition.
+     */
     public String getAdject3()
     {
         return adject3;
@@ -299,34 +330,80 @@ public class ItemDefinition implements Serializable
         this.lightable = lightable;
     }
 
-    public Integer getGetable()
+    /**
+     * You can or cannot retrieve this item.
+     * @return true if you can retrieve the item, for example from the floor.
+     */
+    public Boolean getGetable()
     {
-        return getable;
+        if (getId() < 0)
+        {
+            return false;
+        }
+        return Integer.valueOf(1).equals(getable);
     }
 
-    public void setGetable(Integer getable)
+    public void setGetable(Boolean getable)
     {
-        this.getable = getable;
+        if (getId() < 0)
+        {
+            this.getable = 0;
+            return;
+        }
+        if (getable != null)
+        {
+            this.getable = getable ? 1 : 0;
+            return;
+        }
+        this.getable = null;
     }
 
-    public Integer getDropable()
+    /**
+     * You can or cannot drop this item
+     * @return  true if you can drop the item, for example on the floor.
+     */
+    public Boolean getDropable()
     {
-        return dropable;
+        if (getId() < 0)
+        {
+            return false;
+        }
+        return Integer.valueOf(1).equals(dropable);
     }
 
-    public void setDropable(Integer dropable)
+    public void setDropable(Boolean dropable)
     {
-        this.dropable = dropable;
+        if (getId() < 0)
+        {
+            this.dropable = 0;
+            return;
+        }
+        if (dropable != null)
+        {
+            this.dropable = dropable ? 1 : 0;
+            return;
+        }
+        this.dropable = null;
     }
 
-    public Integer getVisible()
+    /**
+     * Indicates if the item is visible to people.
+     * @return true if the item is visible.
+     */
+    public Boolean getVisible()
     {
-        return visible;
+        return Integer.valueOf(1).equals(visible);
     }
 
-    public void setVisible(Integer visible)
+    public void setVisible(Boolean visible)
     {
-        this.visible = visible;
+
+        if (visible != null)
+        {
+            this.visible = visible ? 1 : 0;
+            return;
+        }
+        this.visible = null;
     }
 
     public Integer getWieldable()
@@ -349,14 +426,14 @@ public class ItemDefinition implements Serializable
         this.description = description;
     }
 
-    public String getReaddescr()
+    public String getReaddescription()
     {
-        return readdescr;
+        return readdescription;
     }
 
-    public void setReaddescr(String readdescr)
+    public void setReaddescription(String readdescr)
     {
-        this.readdescr = readdescr;
+        this.readdescription = readdescr;
     }
 
     public Integer getWearable()
@@ -369,6 +446,11 @@ public class ItemDefinition implements Serializable
         this.wearable = wearable;
     }
 
+    /**
+     * Return the amount of money, in copper coins, it costs.
+     *
+     * @return integer containing number of copper coins.
+     */
     public Integer getCopper()
     {
         return copper;
@@ -538,5 +620,4 @@ public class ItemDefinition implements Serializable
     {
         return "mmud.database.entities.game.ItemDefinition[ id=" + id + " ]";
     }
-
 }

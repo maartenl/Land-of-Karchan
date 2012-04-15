@@ -17,6 +17,7 @@
 package mmud.testing;
 
 import java.util.Date;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
@@ -74,5 +75,16 @@ public class TestingConstants
         person.setTitle("The Paranoid Android");
         person.setLok("lok");
         return person;
+    }
+
+    public static Admin getAdmin()
+    {
+        Admin admin = new Admin();
+        admin.setIp("10.0.0.12");
+        admin.setEmail("maarten_l@yahoo.com");
+        admin.setName("Karn");
+        admin.setPasswd("somesecretpasswordthatnobodycanguessinanmillionyears");
+        admin.setValiduntil(new Date((new Date()).getTime()+100_000_000));
+        return admin;
     }
 }

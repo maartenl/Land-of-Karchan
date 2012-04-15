@@ -27,7 +27,7 @@ public class PrivateMail
         newmail = mail.getNewmail();
         whensent = mail.getWhensent();
         deleted = false;
-        item_id = mail.getItemId() != null ? mail.getItemId().getId() : null;
+        item_id = mail.getItemDefinition() != null ? mail.getItemDefinition().getId() : null;
     }
 
     public PrivateMail()

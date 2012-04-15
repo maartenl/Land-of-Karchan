@@ -24,11 +24,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
+import mmud.database.entities.game.CharitemTable;
+import mmud.database.entities.game.Item;
+import mmud.database.entities.game.ItemDefinition;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
+import mmud.exceptions.MudException;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.webentities.PrivateMail;
 import mmud.testing.TestingConstants;
@@ -443,7 +448,7 @@ public class PrivateBeanTest
                         assertEquals(mail.getSubject(), "Subject");
                         assertEquals(mail.getHaveread(), Boolean.FALSE);
                         assertEquals(mail.getId(), null);
-                        assertEquals(mail.getItemId(), null);
+                        assertEquals(mail.getItemDefinition(), null);
 
                         assertEquals(mail.getName(), marvin);
                         assertEquals(mail.getNewmail(), Boolean.TRUE);
@@ -679,7 +684,7 @@ public class PrivateBeanTest
         mail.setBody("First mail");
         mail.setSubject("Subject");
         mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.TRUE);
+        mail.setHaveread(Boolean.FALSE);
         // all other props are ignored by the method under test
 
         PrivateBean privateBean = new PrivateBean()
@@ -712,5 +717,293 @@ public class PrivateBeanTest
         expected.deleted = false;
         expected.haveread = true;
         compare(actual, expected);
+    }
+
+    @Test
+    public void createMailItem()
+    {
+        logger.fine("createMailItem");
+        final Admin admin = TestingConstants.getAdmin();
+        final ItemDefinition itemDef = new ItemDefinition();
+        itemDef.setId(8009);
+        itemDef.setReaddescription("this is letterhead.</p><p>letterbody</p><p>letterfoot</p>");
+        itemDef.setName("paper");
+        itemDef.setAdject1("small");
+        itemDef.setAdject2("piece");
+        itemDef.setAdject3("of");
+        itemDef.setGetable(true);
+        itemDef.setDropable(true);
+        itemDef.setVisible(true);
+
+        itemDef.setCopper(1);
+        itemDef.setOwner(admin);
+        itemDef.setNotes("Some notes");
+
+        final Mail mail = new Mail();
+        mail.setToname(marvin);
+        mail.setName(hotblack);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+                entityManager.find(ItemDefinition.class, 8009);
+                result = itemDef;
+                entityManager.createNamedQuery("ItemDefinition.maxid");
+                result = query;
+                query.getSingleResult();
+                result = Integer.valueOf(5);
+                entityManager.persist((ItemDefinition) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(ItemDefinition newItemDef)
+                    {
+                        assertNotNull(newItemDef);
+                        assertEquals(newItemDef.getId(), Integer.valueOf(6));
+                        assertEquals(newItemDef.getDescription(), itemDef.getDescription());
+                        assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
+                        assertEquals(newItemDef.getName(), itemDef.getName());
+                        assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
+                        assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
+                        assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
+                        assertEquals(newItemDef.getGetable(), itemDef.getGetable());
+                        assertEquals(newItemDef.getDropable(), itemDef.getDropable());
+                        assertEquals(newItemDef.getVisible(), itemDef.getVisible());
+
+                        assertEquals(newItemDef.getCopper(), itemDef.getCopper());
+                        assertEquals(newItemDef.getOwner(), itemDef.getOwner());
+                        assertEquals(newItemDef.getNotes(), itemDef.getNotes());
+                    }
+                };
+
+                entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+                result = TestingConstants.getAdmin();
+
+                entityManager.persist((Item) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(Item item)
+                    {
+                        assertNotNull(item);
+                        // assertEquals(item.getCreation(), new Date());
+                        assertNull(item.getId());
+                        assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
+                        assertEquals(item.getOwner(), admin);
+                    }
+                };
+
+                entityManager.persist((CharitemTable) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(CharitemTable item)
+                    {
+                        assertNotNull(item);
+                        assertEquals(item.getBelongsto(), marvin);
+                        assertNotNull(item.getItem());
+
+                        // assertEquals(item.getCreation(), new Date());
+                        assertNull(item.getItem().getId());
+                        assertEquals(item.getItem().getItemDefinition().getId(), Integer.valueOf(6));
+                        assertEquals(item.getItem().getOwner(), admin);
+
+                        assertNull(item.getWearing());
+                    }
+                };
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.createMailItem("Marvin", "lok", 1l, 1);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    public void createSecondMailItem() throws MudException
+    {
+        logger.fine("createSecondMailItem");
+        final Admin admin = TestingConstants.getAdmin();
+        final ItemDefinition itemDef = new ItemDefinition();
+        itemDef.setId(12);
+        itemDef.setReaddescription("Dear people,</p><p>Blahblah</p><p>Regards, Karn.</p>");
+        itemDef.setName("paper");
+        itemDef.setAdject1("small");
+        itemDef.setAdject2("piece");
+        itemDef.setAdject3("of");
+        itemDef.setGetable(true);
+        itemDef.setDropable(true);
+        itemDef.setVisible(true);
+
+        itemDef.setCopper(1);
+        itemDef.setOwner(admin);
+        itemDef.setNotes("Some notes");
+
+        final Mail mail = new Mail();
+        mail.setToname(marvin);
+        mail.setName(hotblack);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        mail.setItemDefinition(itemDef);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+                entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+                result = TestingConstants.getAdmin();
+                entityManager.persist((Item) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(Item item)
+                    {
+                        assertNotNull(item);
+                        // assertEquals(item.getCreation(), new Date());
+                        assertNull(item.getId());
+                        assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
+                        assertEquals(item.getOwner(), admin);
+                    }
+                };
+
+                entityManager.persist((CharitemTable) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(CharitemTable item)
+                    {
+                        assertNotNull(item);
+                        assertEquals(item.getBelongsto(), marvin);
+                        assertNotNull(item.getItem());
+
+                        // assertEquals(item.getCreation(), new Date());
+                        assertNull(item.getItem().getId());
+                        assertEquals(item.getItem().getItemDefinition().getId(), Integer.valueOf(12));
+                        assertEquals(item.getItem().getOwner(), admin);
+
+                        assertNull(item.getWearing());
+                    }
+                };
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.createMailItem("Marvin", "lok", 1l, 1);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    public void createMailItemError1() throws MudException
+    {
+        logger.fine("createMailItemError1");
+        final Mail mail = new Mail();
+        mail.setToname(marvin);
+        mail.setName(hotblack);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+            }
+        };
+        try
+        {
+            // Unit under test is exercised.
+            Response response = privateBean.createMailItem("Marvin", "lok", 1l, -1);
+            fail("Exception expected");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+
+        }
+        // Verification code (JUnit/TestNG asserts), if any.
+    }
+
+    @Test
+    public void createMailItemError2() throws MudException
+    {
+        logger.fine("createMailItemError1");
+        final Mail mail = new Mail();
+        mail.setToname(marvin);
+        mail.setName(hotblack);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+            }
+        };
+        try
+        {
+            // Unit under test is exercised.
+            Response response = privateBean.createMailItem("Marvin", "lok", 1l, 8);
+            fail("Exception expected");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+
+        }
+        // Verification code (JUnit/TestNG asserts), if any.
     }
 }

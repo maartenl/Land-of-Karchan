@@ -58,23 +58,6 @@ public class PrivateBean
     public static final int MAX_MAILS = 20;
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
-    /**
-     * Contains the item ids of the different items that represent letters/mail.
-     * The readdescription of said letters looks a little like the following:
-     * <p>"stuffletterhead letterbody letterfooter"</p> That way, the
-     * letterhead, letterbody and letterfooter are automatically replaced.
-     */
-    public static final int[] ITEMS =
-    {
-        8008,
-        8009,
-        8010,
-        8011,
-        8012,
-        8013,
-        8014,
-        8015
-    };
 
     /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
@@ -134,6 +117,8 @@ public class PrivateBean
     @Produces(
 
 
+
+
     {
         "application/xml", "application/json"
     })
@@ -188,6 +173,8 @@ public class PrivateBean
     @GET
     @Path("{name}/newmail")
     @Consumes(
+
+
 
 
     {
@@ -250,6 +237,8 @@ public class PrivateBean
     @Consumes(
 
 
+
+
     {
         "application/xml", "application/json"
     })
@@ -264,7 +253,7 @@ public class PrivateBean
             mail.setBody(newMail.body);
             mail.setDeleted(Boolean.FALSE);
             mail.setHaveread(Boolean.FALSE);
-            mail.setItemId(null);
+            mail.setItemDefinition(null);
             mail.setId(null);
             mail.setName(person);
             mail.setNewmail(Boolean.TRUE);
@@ -323,6 +312,8 @@ public class PrivateBean
     @Produces(
 
 
+
+
     {
         "application/xml", "application/json"
     })
@@ -360,21 +351,29 @@ public class PrivateBean
      * @param name the name of the user
      * @param id the id of the mail to get
      * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
+     * It may be null, if there already is attached a item definition to the
+     * mail.
      * @see PrivateResource#ITEMS
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
-     *
-     * @startuml PrivateBean_createMailItem.png (*) --> "check params" -->
-     * "getMail" if "has Item Definition" then ->[true] "create instance object"
-     * else ->[false] "get maxid" --> "create itemDefinitionId definition" -->
-     * "set itemdefinition into the mail" --> "create instance object" endif -->
-     * "create inventory object" -->(*)
+     * @startuml PrivateBean_createMailItem.png
+     * (*) --> "check params"
+     * --> "getMail"
+     * if "has Item Definition" then
+     * ->[true] "create instance object"
+     * else
+     * ->[false] "get maxid"
+     * --> "create itemDefinitionId definition"
+     * --> "set itemdefinition into the mail"
+     * --> "create instance object"
+     * endif
+     * --> "create inventory object"
+     * -->(*)
      * @enduml
      */
     @GET
     @Path("{name}/mail/{id}/createMailItem/{item}")
     @Consumes(
-
 
     {
         "application/xml", "application/json"
@@ -383,11 +382,7 @@ public class PrivateBean
     {
 
         itsLog.debug("entering createMailItem");
-        if (itemDefinitionId >= ITEMS.length && itemDefinitionId < 0)
-        {
-            itsLog.debug("createMailItem: wrong item def");
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
+
         Person person = authenticate(name, lok);
 
         try
@@ -396,12 +391,17 @@ public class PrivateBean
             Mail mail = getMail(person.getName(), id);
 
             itsLog.debug("createMailItem: retrieve template item definition");
-            ItemDefinition definition = getEntityManager().find(ItemDefinition.class, ITEMS[itemDefinitionId]);
 
             ItemDefinition newdef = null;
-            if (mail.getItemId() == null)
+            if (mail.getItemDefinition() == null)
             {
+                if (itemDefinitionId >= Mail.ITEMS.length && itemDefinitionId < 0)
+                {
+                    itsLog.debug("createMailItem: wrong item def");
+                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                }
 
+                ItemDefinition definition = getEntityManager().find(ItemDefinition.class, Mail.ITEMS[itemDefinitionId]);
 
                 int max_id = 0;
                 // retrieve max item_idItemDefinition.maxid
@@ -420,8 +420,8 @@ public class PrivateBean
                 newdef.setGetable(definition.getGetable());
                 newdef.setDropable(definition.getDropable());
                 newdef.setVisible(definition.getVisible());
-
-                newdef.setDescription(definition.getReaddescr().replace("letterhead", "<div id=\"karchan_letterhead\">" + mail.getSubject() + "</div>").replace("letterbody", "<div id=\"karchan_letterbody\">" + mail.getBody() + "</div>").replace("letterfooter", "<div id=\"karchan_letterfooter\">" + mail.getName() + "</div>"));
+                newdef.setDescription(definition.getDescription());
+                newdef.setReaddescription(definition.getReaddescription().replace("letterhead", "<div id=\"karchan_letterhead\">" + mail.getSubject() + "</div>").replace("letterbody", "<div id=\"karchan_letterbody\">" + mail.getBody() + "</div>").replace("letterfooter", "<div id=\"karchan_letterfooter\">" + mail.getName() + "</div>"));
 
                 newdef.setCopper(definition.getCopper());
                 newdef.setOwner(definition.getOwner());
@@ -430,15 +430,16 @@ public class PrivateBean
 
                 // set itemDefinitionId definition into the mail
                 itsLog.debug("createMailItem: set itemdefinition into the mail");
-                mail.setItemId(newdef);
+                mail.setItemDefinition(newdef);
             }
 
             // create itemDefinitionId instance
-            itsLog.debug("createMailItem: create instance object " + mail.getItemId() + " " + name);
+            itsLog.debug("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
 
             Item item = new Item();
             item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
-            item.setItemid(mail.getItemId());
+            item.setItemDefinition(mail.getItemDefinition());
+            item.setCreation(new Date());
             getEntityManager().persist(item);
 
             // put item instance into inventory
@@ -473,6 +474,8 @@ public class PrivateBean
     @DELETE
     @Path("{name}/mail/{id}")
     @Consumes(
+
+
 
 
     {
@@ -514,6 +517,8 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet")
     @Consumes(
+
+
 
 
     {
@@ -575,6 +580,8 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
     @Consumes(
+
+
 
 
     {

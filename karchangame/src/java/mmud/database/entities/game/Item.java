@@ -68,7 +68,7 @@ public class Item implements Serializable
     private Admin owner;
     @JoinColumn(name = "itemid", referencedColumnName = "id")
     @ManyToOne
-    private ItemDefinition itemid;
+    private ItemDefinition itemDefinition;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item")
     private CharitemTable charitemTable;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "containerid")
@@ -125,14 +125,14 @@ public class Item implements Serializable
         this.owner = owner;
     }
 
-    public ItemDefinition getItemid()
+    public ItemDefinition getItemDefinition()
     {
-        return itemid;
+        return itemDefinition;
     }
 
-    public void setItemid(ItemDefinition itemid)
+    public void setItemDefinition(ItemDefinition itemid)
     {
-        this.itemid = itemid;
+        this.itemDefinition = itemid;
     }
 
     public CharitemTable getCharitemTable()

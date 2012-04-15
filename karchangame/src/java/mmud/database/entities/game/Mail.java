@@ -43,6 +43,7 @@ import javax.validation.constraints.Size;
 @Table(name = "mm_mailtable", catalog = "mmud", schema = "")
 @NamedQueries(
 
+
 {
     @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
     @NamedQuery(name = "Mail.findById", query = "SELECT m FROM Mail m WHERE m.id = :id"),
@@ -58,6 +59,13 @@ public class Mail implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Contains the item ids of the different items that represent letters/mail.
+     * The readdescription of said letters looks a little like the following:
+     * <p>"stuffletterhead letterbody letterfooter"</p> That way, the
+     * letterhead, letterbody and letterfooter are automatically replaced.
+     */
+    public static final int[] ITEMS = {8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -90,7 +98,7 @@ public class Mail implements Serializable
     private Boolean deleted;
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     @ManyToOne
-    private ItemDefinition itemId;
+    private ItemDefinition itemDefinition;
     @JoinColumn(name = "toname", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Person toname;
@@ -176,14 +184,34 @@ public class Mail implements Serializable
         this.deleted = deleted;
     }
 
-    public ItemDefinition getItemId()
+    /**
+     * Contains a reference to the item definition, which means
+     * the definition of the item (for example a letter) that this
+     * mail can be turned into for use in the game.
+     * Generally returns null.
+     * @return  an item definition.
+     */
+    public ItemDefinition getItemDefinition()
     {
-        return itemId;
+        return itemDefinition;
     }
 
-    public void setItemId(ItemDefinition itemId)
+    /**
+     * Set an itemdefinition. Unable to be set if already set. Unable to clear.
+     * @see Mail#getItemDefinition()
+     * @param itemId the item definition. Null values are ignored.
+     */
+    public void setItemDefinition(ItemDefinition itemId)
     {
-        this.itemId = itemId;
+        if (this.itemDefinition != null)
+        {
+            return;
+        }
+        if (itemId == null)
+        {
+            return;
+        }
+        this.itemDefinition = itemId;
     }
 
     /**
