@@ -33,6 +33,9 @@ import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.database.entities.web.Family;
+import mmud.database.entities.web.FamilyPK;
+import mmud.database.entities.web.FamilyValue;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.rest.services.PrivateBean;
@@ -1327,5 +1330,101 @@ public class PrivateBeanTest
             assertEquals(result.getResponse().getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
 
         }
+    }
+
+    @Test
+    public void updateFamilyvalues() throws MudException
+    {
+        logger.fine("updateFamilyvalues");
+        final FamilyValue value = new FamilyValue();
+        value.setDescription("friend");
+        value.setId(1);
+        final FamilyValue value2 = new FamilyValue();
+        value2.setDescription("bff");
+        value2.setId(2);
+        final Family family = new Family();
+        family.setDescription(value);
+        FamilyPK pk = new FamilyPK();
+        pk.setName("Marvin");
+        pk.setToname("Hotblack");
+        family.setFamilyPK(pk);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Person.class, "Hotblack");
+                result = hotblack;
+                entityManager.find(FamilyValue.class, 2);
+                result = value2;
+                entityManager.find(Family.class, (FamilyPK) any);
+                result = family;
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 2);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+        assertEquals(family.getDescription(), value2);
+
+    }
+
+    @Test
+    public void newFamilyvalues() throws MudException
+    {
+        logger.fine("newFamilyvalues");
+        final FamilyValue value = new FamilyValue();
+        value.setDescription("friend");
+        value.setId(1);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Person.class, "Hotblack");
+                result = hotblack;
+                entityManager.find(FamilyValue.class, 1);
+                result = value;
+                entityManager.find(Family.class, (FamilyPK) any);
+                result = null;
+                entityManager.persist((Family) any);
+                result = new Delegate()
+                {
+                    // The name of this method can actually be anything.
+                    void persist(Family fam)
+                    {
+                        assertNotNull(fam);
+                        assertEquals(fam.getDescription(), value);
+                        assertEquals(fam.getFamilyPK().getName(), "Marvin");
+                        assertEquals(fam.getFamilyPK().getToname(), "Hotblack");
+                    }
+                };
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 1);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+
     }
 }
