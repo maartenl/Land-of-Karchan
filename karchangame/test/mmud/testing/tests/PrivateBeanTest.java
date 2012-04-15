@@ -1379,6 +1379,55 @@ public class PrivateBeanTest
 
     }
 
+
+    @Test
+    public void updateFamilyvaluesNotFound() throws MudException
+    {
+        logger.fine("updateFamilyvaluesNotFound");
+        final FamilyValue value = new FamilyValue();
+        value.setDescription("friend");
+        value.setId(1);
+        final FamilyValue value2 = new FamilyValue();
+        value2.setDescription("bff");
+        value2.setId(2);
+        final Family family = new Family();
+        family.setDescription(value);
+        FamilyPK pk = new FamilyPK();
+        pk.setName("Marvin");
+        pk.setToname("Hotblack");
+        family.setFamilyPK(pk);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Person.class, "Hotblack");
+                result = hotblack;
+                entityManager.find(FamilyValue.class, 12);
+                result = null;
+            }
+        };
+        try
+        {
+        // Unit under test is exercised.
+        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 12);
+ fail("We are supposed to get an exception here.");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+
+        }
+
+    }
     @Test
     public void newFamilyvalues() throws MudException
     {
@@ -1422,6 +1471,49 @@ public class PrivateBeanTest
         };
         // Unit under test is exercised.
         Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 1);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+
+    }
+
+@Test
+    public void deleteFamilyvalues() throws MudException
+    {
+        logger.fine("deleteFamilyvalues");
+        final FamilyValue value = new FamilyValue();
+        value.setDescription("friend");
+        value.setId(1);
+        final FamilyValue value2 = new FamilyValue();
+        value2.setDescription("bff");
+        value2.setId(2);
+        final Family family = new Family();
+        family.setDescription(value);
+        FamilyPK pk = new FamilyPK();
+        pk.setName("Marvin");
+        pk.setToname("Hotblack");
+        family.setFamilyPK(pk);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Family.class, (FamilyPK) any);
+                result = family;
+                entityManager.remove(family);
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.deleteFamilyvalues("Marvin", "lok", "Hotblack");
         // Verification code (JUnit/TestNG asserts), if any.
         assertNotNull(response);
         assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());

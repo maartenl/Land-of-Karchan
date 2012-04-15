@@ -622,6 +622,10 @@ public class PrivateBean
             {
                 getEntityManager().persist(family);
             }
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
         } catch (Exception e)
         {
             itsLog.debug("updateFamilyvalues: throws ", e);
