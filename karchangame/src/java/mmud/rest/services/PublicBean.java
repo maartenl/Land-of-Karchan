@@ -25,8 +25,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Person;
@@ -75,7 +75,7 @@ public class PublicBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<Fortune> fortunes()
     {
@@ -112,7 +112,7 @@ public class PublicBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<PublicPerson> who()
     {
@@ -156,7 +156,7 @@ public class PublicBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<News> news()
     {
@@ -199,7 +199,7 @@ public class PublicBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<PublicPerson> status()
     {
@@ -238,7 +238,7 @@ public class PublicBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<PublicGuild> guilds()
     {
@@ -289,7 +289,7 @@ public class PublicBean
     @Path("charactersheets/{name}")
     @Produces(
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public PublicPerson charactersheet(@PathParam("name") String name)
     {
@@ -357,7 +357,7 @@ public class PublicBean
     @Path("charactersheets")
     @Produces(
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<PublicPerson> charactersheets()
     {

@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import mmud.Utils;
@@ -120,7 +121,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset, @QueryParam("lok") String lok)
     {
@@ -178,7 +179,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response hasNewMail(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
@@ -240,7 +241,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
@@ -315,7 +316,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
@@ -353,7 +354,7 @@ public class PrivateBean
      * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
      * It may be null, if there already is attached a item definition to the
      * mail.
-     * @see PrivateResource#ITEMS
+     * @see Mail#ITEMS
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      * @startuml PrivateBean_createMailItem.png
@@ -376,7 +377,7 @@ public class PrivateBean
     @Consumes(
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
@@ -479,7 +480,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
@@ -522,7 +523,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response updateCharacterSheet(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson cinfo)
     {
@@ -585,7 +586,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
@@ -646,7 +647,7 @@ public class PrivateBean
 
 
     {
-        "application/xml", "application/json"
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
     {
