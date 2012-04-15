@@ -1006,4 +1006,120 @@ public class PrivateBeanTest
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
+
+    @Test
+    public void deleteMail() throws MudException
+    {
+        logger.fine("deleteMail");
+        final Mail mail = new Mail();
+        mail.setId(1l);
+        mail.setToname(marvin);
+        mail.setName(hotblack);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+            }
+        };
+        // Unit under test is exercised.
+        Response response = privateBean.deleteMail("Marvin", "lok", 1l);
+        // Verification code (JUnit/TestNG asserts), if any.
+        assertNotNull(response);
+        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+        assertEquals(mail.getDeleted(), Boolean.TRUE);
+    }
+
+    @Test
+    public void deleteMailNotYours() throws MudException
+    {
+        logger.fine("deleteMail");
+        final Mail mail = new Mail();
+        mail.setId(1l);
+        mail.setToname(hotblack);
+        mail.setName(marvin);
+        mail.setBody("First mail");
+        mail.setSubject("Subject");
+        mail.setDeleted(Boolean.FALSE);
+        mail.setHaveread(Boolean.FALSE);
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = mail;
+            }
+        };
+        // Unit under test is exercised.
+        try
+        {
+            Response response = privateBean.deleteMail("Marvin", "lok", 1l);
+            fail("Exception expected");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.UNAUTHORIZED.getStatusCode());
+
+        }// Verification code (JUnit/TestNG asserts), if any.
+        assertEquals(mail.getDeleted(), Boolean.FALSE);
+    }
+
+    @Test
+    public void deleteMailNotFound() throws MudException
+    {
+        logger.fine("deleteMail");
+        PrivateBean privateBean = new PrivateBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        };
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                entityManager.find(Person.class, "Marvin");
+                result = marvin;
+                entityManager.find(Mail.class, 1l);
+                result = null;
+            }
+        };
+        try
+        {
+            // Unit under test is exercised.
+            Response response = privateBean.deleteMail("Marvin", "lok", 1l);
+            // Verification code (JUnit/TestNG asserts), if any.
+            fail("Exception expected");
+        } catch (WebApplicationException result)
+        {
+            assertEquals(result.getResponse().getStatus(), Response.Status.NOT_FOUND.getStatusCode());
+
+        }
+    }
 }
