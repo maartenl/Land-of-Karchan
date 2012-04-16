@@ -46,7 +46,7 @@ import javax.validation.constraints.Size;
 {
     @NamedQuery(name = "Area.findAll", query = "SELECT a FROM Area a"),
     @NamedQuery(name = "Area.findByArea", query = "SELECT a FROM Area a WHERE a.area = :area"),
-    @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdesc = :shortdesc"),
+    @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
     @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation")
 })
 public class Area implements Serializable
