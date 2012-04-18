@@ -51,7 +51,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
     @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
     @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = 0 and m.toname = :name"),
+    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = 0 and m.toname = :name order by id desc"),
     @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = 0 WHERE m.toname = :name"),
     @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(*) FROM Mail m WHERE newmail = 1 and deleted = 0 and toname = :name")
 })

@@ -156,7 +156,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("listMail: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return res;
     }
@@ -199,7 +199,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("hasNewMail: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         if (!result)
         {
@@ -269,7 +269,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("newMail: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting newMail");
         return Response.ok().build();
@@ -337,7 +337,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("getMail: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -456,7 +456,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("createMailItem: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting createMailItem");
         return Response.ok().build();
@@ -499,7 +499,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("deleteMail: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting deleteMail");
         return Response.ok().build();
@@ -561,7 +561,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("updateCharacterSheet: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -629,7 +629,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("updateFamilyvalues: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting updateFamilyvalues");
         return Response.ok().build();
@@ -667,7 +667,7 @@ public class PrivateBean
         } catch (Exception e)
         {
             itsLog.debug("deleteFamilyValues: throws", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting deleteFamilyValues");
         return Response.ok().build();

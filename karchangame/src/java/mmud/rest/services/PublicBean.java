@@ -94,7 +94,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("throws fortunes", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.debug("exiting fortunes");
@@ -139,7 +139,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("throws who", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting who");
         return res;
@@ -181,7 +181,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("news: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.debug("exiting news");
@@ -221,7 +221,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("status: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.debug("exiting status");
@@ -268,7 +268,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("guilds: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.debug("exiting guilds");
@@ -339,7 +339,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("charactersheet: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
@@ -380,7 +380,7 @@ public class PublicBean
         } catch (Exception e)
         {
             itsLog.debug("charactersheets: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting charactersheets");
         return res;
