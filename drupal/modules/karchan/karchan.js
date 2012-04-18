@@ -118,6 +118,34 @@
       } // updateFortunes
       }); // karchan_fortunes
 
+      $('#karchan_who').each(function() {
+        if (window.console) console.log("#karchan_who");
+        $.ajax({
+          type: 'GET',
+          url: "/resources/public/who", // Which url should be handle the ajax request.
+          success: (function(data) {updateWho(data); }),
+          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+          complete: (function() { if (window.console) console.log("complete"); }),        
+          dataType: 'json', //define the type of data that is going to get back from the server
+          data: 'js=1' //Pass a key/value pair
+        }); // end of ajax
+      
+      var updateWho = function(entry) {
+	var data = entry.publicPerson;
+        if (window.console) console.log("updateWho");
+        // The data parameter is a JSON object.
+        var formatted_html = "<p>There are " + data.length + " people online.</p><ul>";
+        for(i=0; i<data.length; i++) 
+        { 
+	   var character = data[i];
+           formatted_html += "<li>" + character.name + " , " + data[i].title + ", " +
+           data[i].sleep + " " + data[i].area + " (logged on " + data[i].min + " ago)</li>"; 
+        }
+	formatted_html += "</ul>";
+        $('#karchan_who').html(formatted_html);
+      } // updateWho
+      }); // karchan_who
+
       $('#karchan_guilds').each(function() {
         if (window.console) console.log("#karchan_guilds");
         $.ajax({
