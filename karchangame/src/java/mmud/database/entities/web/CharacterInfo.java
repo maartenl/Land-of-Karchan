@@ -54,7 +54,7 @@ import org.owasp.validator.html.ScanException;
     @NamedQuery(name = "CharacterInfo.findByHomepageurl", query = "SELECT c FROM CharacterInfo c WHERE c.homepageurl = :homepageurl"),
     @NamedQuery(name = "CharacterInfo.findByDateofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.dateofbirth = :dateofbirth"),
     @NamedQuery(name = "CharacterInfo.findByCityofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.cityofbirth = :cityofbirth"),
-    @NamedQuery(name = "CharacterInfo.charactersheets", query = "SELECT c.name FROM CharacterInfo c"),
+    @NamedQuery(name = "CharacterInfo.charactersheets", query = "SELECT c.name FROM CharacterInfo c, Person p WHERE c.name = p.name and p.god <= 1"),
 })
 public class CharacterInfo implements Serializable
 {
