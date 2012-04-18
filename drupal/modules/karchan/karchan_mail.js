@@ -108,7 +108,8 @@
         }); // end of ajax
       } // deleteMail
 
-      Karchan.updateMail = function(data) {
+      Karchan.updateMail = function(entry) {
+	var data = entry.privateMail;	
         if (window.console) console.log("updateMail");
         // The data parameter is a JSON object.
         var formatted_html = "";

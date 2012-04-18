@@ -59,6 +59,7 @@
             stuff = ". You have new mail";
           }
           $('#block-block-2').html("<div class=\"content\">Welcome, " + $.cookie("karchanname") + stuff + ".</div>");
+          // $('#block-block-2').html("<div class=\"content\"><img src=\"/images/christmas/sclaus.gif\" style=\"vertical-align:middle\"/>Welcome, " + $.cookie("karchanname") + stuff + ".</div>");
         }
       });
 
@@ -103,7 +104,8 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateFortunes = function(data) {
+      var updateFortunes = function(entry) {
+	var data = entry.fortune;
         if (window.console) console.log("updateFortunes");
         // The data parameter is a JSON object.
         var formatted_html = "<table><tr><td><b>Position</b></td><td><b>Name</b></td><td><b>Money</b></td></tr>";
@@ -128,7 +130,8 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateGuilds = function(data) {
+      var updateGuilds = function(entry) {
+	var data = entry.publicGuild;
         if (window.console) console.log("updateGuilds");
         // The data parameter is a JSON object.
         var formatted_html = "<p><a href=\"#\" id=\"karchan_show_all\">Expand all</a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"#\" id=\"karchan_collapse_all\">Collapse all</a></p>";
@@ -180,7 +183,8 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateCharactersheets = function(data) {
+      var updateCharactersheets = function(entry) {
+	var data = entry.publicPerson;
         if (window.console) console.log("updateCharactersheets");
         // The data parameter is a JSON object.
         var formatted_html = "";

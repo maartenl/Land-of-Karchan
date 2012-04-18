@@ -7,3 +7,5 @@ configure = admin/config/content/karchan
 scripts[] = karchan_general.js
 scripts[] = karchan_mail.js
 scripts[] = karchan.js 
+scripts[] = jquery.cookie.js 
+
