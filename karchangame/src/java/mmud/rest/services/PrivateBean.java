@@ -24,11 +24,12 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import mmud.Utils;
 import mmud.database.entities.game.*;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
@@ -120,6 +121,10 @@ public class PrivateBean
 
 
 
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -174,6 +179,10 @@ public class PrivateBean
     @GET
     @Path("{name}/newmail")
     @Consumes(
+
+
+
+
 
 
 
@@ -236,6 +245,10 @@ public class PrivateBean
     @POST
     @Path("{name}/mail")
     @Consumes(
+
+
+
+
 
 
 
@@ -315,6 +328,10 @@ public class PrivateBean
 
 
 
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -376,90 +393,110 @@ public class PrivateBean
     @Path("{name}/mail/{id}/createMailItem/{item}")
     @Consumes(
 
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
+         return Response.noContent().build();
 
-        itsLog.debug("entering createMailItem");
-
-        Person person = authenticate(name, lok);
-
-        try
-        {
-            // get the specific mail with id {id}
-            Mail mail = getMail(person.getName(), id);
-
-            itsLog.debug("createMailItem: retrieve template item definition");
-
-            ItemDefinition newdef = null;
-            if (mail.getItemDefinition() == null)
-            {
-                if (itemDefinitionId >= Mail.ITEMS.length && itemDefinitionId < 0)
-                {
-                    itsLog.debug("createMailItem: wrong item def");
-                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
-                }
-
-                ItemDefinition definition = getEntityManager().find(ItemDefinition.class, Mail.ITEMS[itemDefinitionId]);
-
-                int max_id = 0;
-                // retrieve max item_idItemDefinition.maxid
-                itsLog.debug("createMailItem: retrieve max id");
-                Query query = getEntityManager().createNamedQuery("ItemDefinition.maxid");
-                max_id = (Integer) query.getSingleResult();
-
-                // create itemDefinitionId definition
-                itsLog.debug("createMailItem: create item definition");
-                newdef = new ItemDefinition();
-                newdef.setId(max_id + 1);
-                newdef.setName(definition.getName());
-                newdef.setAdject1(definition.getAdject1());
-                newdef.setAdject2(definition.getAdject2());
-                newdef.setAdject3(definition.getAdject3());
-                newdef.setGetable(definition.getGetable());
-                newdef.setDropable(definition.getDropable());
-                newdef.setVisible(definition.getVisible());
-                newdef.setDescription(definition.getDescription());
-                newdef.setReaddescription(definition.getReaddescription().replace("letterhead", "<div id=\"karchan_letterhead\">" + mail.getSubject() + "</div>").replace("letterbody", "<div id=\"karchan_letterbody\">" + mail.getBody() + "</div>").replace("letterfooter", "<div id=\"karchan_letterfooter\">" + mail.getName() + "</div>"));
-
-                newdef.setCopper(definition.getCopper());
-                newdef.setOwner(definition.getOwner());
-                newdef.setNotes(definition.getNotes());
-                getEntityManager().persist(newdef);
-
-                // set itemDefinitionId definition into the mail
-                itsLog.debug("createMailItem: set itemdefinition into the mail");
-                mail.setItemDefinition(newdef);
-            }
-
-            // create itemDefinitionId instance
-            itsLog.debug("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
-
-            Item item = new Item();
-            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
-            item.setItemDefinition(mail.getItemDefinition());
-            item.setCreation(new Date());
-            getEntityManager().persist(item);
-
-            // put item instance into inventory
-            itsLog.debug("createMailItem: create inventory object for " + name);
-            CharitemTable inventory = new CharitemTable();
-            inventory.setBelongsto(person);
-            inventory.setItem(item);
-            getEntityManager().persist(inventory);
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (Exception e)
-        {
-            itsLog.debug("createMailItem: throws ", e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
-        itsLog.debug("exiting createMailItem");
-        return Response.ok().build();
+//
+//        itsLog.debug("entering createMailItem");
+//        Person person = authenticate(name, lok);
+//
+//        try
+//        {
+//            // get the specific mail with id {id}
+//            Mail mail = getMail(person.getName(), id);
+//
+//            itsLog.debug("createMailItem: retrieve template item definition");
+//
+//            ItemDefinition newdef = null;
+//            if (mail.getItemDefinition() == null)
+//            {
+//                if (itemDefinitionId >= Mail.ITEMS.length && itemDefinitionId < 0)
+//                {
+//                    itsLog.debug("createMailItem: wrong item def");
+//                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
+//                }
+//
+//                ItemDefinition definition = getEntityManager().find(ItemDefinition.class, Mail.ITEMS[itemDefinitionId]);
+//
+//                int max_id = 0;
+//                // retrieve max item_idItemDefinition.maxid
+//                itsLog.debug("createMailItem: retrieve max id");
+//                Query query = getEntityManager().createNamedQuery("ItemDefinition.maxid");
+//                max_id = (Integer) query.getSingleResult();
+//
+//                // create itemDefinitionId definition
+//                itsLog.debug("createMailItem: create item definition");
+//                newdef = new ItemDefinition();
+//                newdef.setId(max_id + 1);
+//                newdef.setName(definition.getName());
+//                newdef.setAdject1(definition.getAdject1());
+//                newdef.setAdject2(definition.getAdject2());
+//                newdef.setAdject3(definition.getAdject3());
+//                newdef.setGetable(definition.getGetable());
+//                newdef.setDropable(definition.getDropable());
+//                newdef.setVisible(definition.getVisible());
+//                newdef.setDescription(definition.getDescription());
+//                newdef.setReaddescription(definition.getReaddescription().replace("letterhead", "<div id=\"karchan_letterhead\">" + mail.getSubject() + "</div>").replace("letterbody", "<div id=\"karchan_letterbody\">" + mail.getBody() + "</div>").replace("letterfooter", "<div id=\"karchan_letterfooter\">" + mail.getName().getName() + "</div>"));
+//
+//                newdef.setCopper(definition.getCopper());
+//                newdef.setOwner(definition.getOwner());
+//                newdef.setNotes(definition.getNotes());
+//                newdef.setCreation(new Date());
+//                getEntityManager().persist(newdef);
+//
+//                // set itemDefinitionId definition into the mail
+//                itsLog.debug("createMailItem: set itemdefinition into the mail");
+//                mail.setItemDefinition(newdef);
+//            }
+//
+//            // create itemDefinitionId instance
+//            itsLog.debug("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
+//
+//            Item item = new Item();
+//            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
+//            item.setItemDefinition(mail.getItemDefinition());
+//            item.setCreation(new Date());
+//            getEntityManager().persist(item);
+//
+//            if (item.getId() != null)
+//            {
+//                // put item instance into inventory
+//                itsLog.debug("createMailItem: create inventory object for " + name);
+//
+//                CharitemTable inventory = new CharitemTable();
+//                inventory.setId(item.getId());
+//                inventory.setBelongsto(person);
+//                inventory.setItem(item);
+//                getEntityManager().persist(inventory);
+//            }
+//        } catch (WebApplicationException e)
+//        {
+//            //ignore
+//            throw e;
+//        } catch (ConstraintViolationException e)
+//        {
+//            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+//            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+//            {
+//                buffer.append(violation);
+//            }
+//            throw new RuntimeException(buffer.toString(), e);
+//
+//        } catch (Exception e)
+//        {
+//            itsLog.debug("createMailItem: throws ", e);
+//            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+//        }
+//        itsLog.debug("exiting createMailItem");
+//        return Response.ok().build();
     }
 
     /**
@@ -475,6 +512,10 @@ public class PrivateBean
     @DELETE
     @Path("{name}/mail/{id}")
     @Consumes(
+
+
+
+
 
 
 
@@ -518,6 +559,10 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet")
     @Consumes(
+
+
+
+
 
 
 
@@ -585,6 +630,10 @@ public class PrivateBean
 
 
 
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -648,6 +697,10 @@ public class PrivateBean
     @DELETE
     @Path("{name}/charactersheet/familyvalues/{toname}")
     @Consumes(
+
+
+
+
 
 
     {

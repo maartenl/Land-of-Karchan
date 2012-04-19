@@ -1104,11 +1104,11 @@ public class Person implements Serializable
      */
     public boolean isUser()
     {
-        if (god == null)
+        if (getGod() == null)
         {
             return true;
         }
-        return (god != null && (god == 0 || god == 1));
+        return (getGod() == God.DEFAULT_USER || getGod() == God.GOD);
     }
 
     @Override

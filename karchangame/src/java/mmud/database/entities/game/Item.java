@@ -38,7 +38,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
- *
+ * TODO: needs a subclass especially for mail items that overrides the readdescr. It can contain a reference to the Mail entity.
  * @author maartenl
  */
 @Entity
@@ -55,7 +55,6 @@ public class Item implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

@@ -599,6 +599,7 @@ public class ItemDefinition implements Serializable
         return hash;
     }
 
+
     @Override
     public boolean equals(Object object)
     {

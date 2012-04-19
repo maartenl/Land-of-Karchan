@@ -32,7 +32,8 @@ import javax.validation.constraints.NotNull;
 /**
  *
  * @author maartenl
- */
+ * TODO : needs to be moved to mm_itemtable
+  */
 @Entity
 @Table(name = "mm_itemitemtable", catalog = "mmud", schema = "")
 @NamedQueries(

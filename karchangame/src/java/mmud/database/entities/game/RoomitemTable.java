@@ -33,7 +33,8 @@ import javax.validation.constraints.Size;
 /**
  *
  * @author maartenl
- */
+ * TODO : needs to be moved to mm_itemtable
+  */
 @Entity
 @Table(name = "mm_roomitemtable", catalog = "mmud", schema = "")
 @NamedQueries(
