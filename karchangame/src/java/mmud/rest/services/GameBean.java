@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Gamebean takes care of all the game-related functions.
+ * Takes care of all the game-related functions.
  * <img
  * src="../../../images/Gamebean.png">
  *
