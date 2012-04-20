@@ -1,4 +1,8 @@
 
+Karchan 1.2 Changelog
+---------------------
+- added cache:false to all the ajax calls
+
 Karchan 1.1 Changelog
 ---------------------
 - changes to deal with the new server side tech.

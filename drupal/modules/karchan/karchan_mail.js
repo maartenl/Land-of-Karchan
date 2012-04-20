@@ -14,6 +14,7 @@
           type: 'GET',
           // url: "/resources/private/Karn/mail", // Which url should be handle the ajax request.
           url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {Karchan.updateMail(data); }),
           error: (function(transport) { 
             if(transport.status != 401) {
@@ -47,6 +48,7 @@
           type: 'GET',
           // url: "/resources/private/Karn/mail/12354", // Which url should be handle the ajax request.
           url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.privateMail[data_pos].id, // Which url should be handle the ajax request.
+	  cache: false,
           dataType: 'json', //define the type of data that is going to get back from the server
           data: {'lok' : $.cookie("karchanpassword")} //Pass a key/value pair
         }); // end of ajax
@@ -81,6 +83,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + privateMail.id + "/createMailItem/" + $('#karchan_create_item').val(), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {
             alert("You've written " + item_name);
           }),
@@ -100,6 +103,7 @@
         $.ajax({
           type: 'DELETE',
           url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.privateMail[data_pos].id + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {
             $(object.target).parent().parent().toggle();
           }),
@@ -189,6 +193,7 @@
         $.ajax({
           type: 'POST',
           url: "/resources/private/" + $.cookie("karchanname") + "/mail?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {
             alert("Mail send."); 
           }),

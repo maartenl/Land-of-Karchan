@@ -36,6 +36,7 @@
             $.ajax({
               type: 'GET',
               url: "/resources/private/" + $.cookie("karchanname") + "/newmail?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	      cache: false,
               success: (function(data1, data2, data3) {
                 if (data3.status == 204) {
                   $.cookie('newmail', "false", { path: '/' });
@@ -71,6 +72,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/news", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateNews(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -78,7 +80,8 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateNews = function(data) {
+      var updateNews = function(entry) {
+	var data = entry.news;
         if (window.console) console.log("updateNews");
         // The data parameter is a JSON object.
         var formatted_html = "";
@@ -97,6 +100,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/fortunes", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateFortunes(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -123,6 +127,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/who", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateWho(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -151,6 +156,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/guilds", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateGuilds(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -204,6 +210,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/charactersheets", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateCharactersheets(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -262,6 +269,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/status", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateStatus(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -288,6 +296,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/charactersheets/" + urlParam("name"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {updateCharactersheet(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -352,6 +361,7 @@
         $.ajax({
           type: 'GET',
           url: "/resources/public/charactersheets/" + $.cookie("karchanname"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {getCharactersheet(data); }),
           error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
           complete: (function() { if (window.console) console.log("complete"); }),        
@@ -413,6 +423,7 @@
         $.ajax({
           type: 'DELETE',
           url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet/familyvalues/" + $(tds[2]).html() + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {
              toptr.hide();
           }),
@@ -438,6 +449,7 @@
         $.ajax({
           type: 'PUT',
           url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {
              alert("You've updated your character sheet.");    
           }),
@@ -454,6 +466,7 @@
             type: 'PUT',
             url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet/familyvalues/" + $("#edit-submitted-of").val() + "/"
               + $("#edit-submitted-add-family-relation").val() + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+	    cache: false,
             success: (function(data) {
                // alert("You've added a relation.");    
                $("#karchan_table_famvalues").html($("#karchan_table_famvalues").html() + "<tr class=\"even\"><td>" + $("#edit-submitted-add-family-relation :selected").text()
@@ -488,6 +501,7 @@
           type: 'GET',
           // url: "/resources/private/Karn/mail/", // Which url should be handle the ajax request.
           url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
+	  cache: false,
           success: (function(data) {Karchan.updateMail(data); }),
           error: (function(transport) { 
             if(transport.status != 401) {
