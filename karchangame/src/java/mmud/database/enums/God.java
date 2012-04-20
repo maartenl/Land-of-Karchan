@@ -36,8 +36,12 @@ public enum God
      * @param value
      * @return God enum, null if not found.
      */
-    public static God get(int value)
+    public static God get(Integer value)
     {
+        if (value == null)
+        {
+            return null;
+        }
         for (God god : values())
         {
             if (value == god.getValue())
