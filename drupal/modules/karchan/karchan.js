@@ -124,19 +124,24 @@
 
       $('#karchan_who').each(function() {
         if (window.console) console.log("#karchan_who");
-        $.ajax({
-          type: 'GET',
-          url: "/resources/public/who", // Which url should be handle the ajax request.
-	  cache: false,
-          success: (function(data) {updateWho(data); }),
-          error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
-          complete: (function() { if (window.console) console.log("complete"); }),        
-          dataType: 'json', //define the type of data that is going to get back from the server
-          data: 'js=1' //Pass a key/value pair
-        }); // end of ajax
-      
+        var getWho = function() {
+          if (window.console) console.log("getWho");
+          $.ajax({
+            type: 'GET',
+            url: "/resources/public/who", // Which url should be handle the ajax request.
+            cache: false,
+            success: (function(data) {updateWho(data); }),
+            error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+            complete: (function() { if (window.console) console.log("complete"); }),        
+            dataType: 'json', //define the type of data that is going to get back from the server
+            data: 'js=1' //Pass a key/value pair
+          }); // end of ajax
+        }
+        getWho();
+	var who_interval_id=self.setInterval(getWho,60000); 
+
       var updateWho = function(entry) {
-	var data = entry.publicPerson;
+  	var data = entry.publicPerson;
         if (window.console) console.log("updateWho");
         // The data parameter is a JSON object.
         var formatted_html = "<p>There are " + data.length + " people online.</p><ul>";
