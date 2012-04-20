@@ -1,8 +1,13 @@
-Karchan 1.x Changelog
----------------------
 
+Karchan 1.1 Changelog
+---------------------
+- changes to deal with the new server side tech.
+
+Karchan 1.0 Changelog
+---------------------
 - created appropriate files
 - added new server side changes in received json to the client
-  javascript files
+- javascript files
+ 
 
 $Id$

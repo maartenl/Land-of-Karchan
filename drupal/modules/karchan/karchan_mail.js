@@ -12,7 +12,7 @@
         if (window.console) console.log("getMail");
         $.ajax({
           type: 'GET',
-          // url: "/resources/private/Karn/mail/", // Which url should be handle the ajax request.
+          // url: "/resources/private/Karn/mail", // Which url should be handle the ajax request.
           url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
           success: (function(data) {Karchan.updateMail(data); }),
           error: (function(transport) { 
@@ -39,47 +39,48 @@
         var data_pos = $(object.target).parent().parent().attr("id");
         data_pos = data_pos.substring(5);
         if (window.console) console.log(data_pos);
-        var formatted_html = "<p><b>Subject</b>: " + data.mmudMail[data_pos].subject + "</p>" +
-          "<p><b>From</b>: " + data.mmudMail[data_pos].name + "</p>" +
-          "<p><b>Sent</b>: " + data.mmudMail[data_pos].whensent + "</p>" +
-          "<p><b>Body</b>:</p><div> " + data.mmudMail[data_pos].body;
+        var formatted_html = "<p><b>Subject</b>: " + data.privateMail[data_pos].subject + "</p>" +
+          "<p><b>From</b>: " + data.privateMail[data_pos].name + "</p>" +
+          "<p><b>Sent</b>: " + data.privateMail[data_pos].whensent + "</p>" +
+          "<p><b>Body</b>:</p><div> " + data.privateMail[data_pos].body;
         $.ajax({
           type: 'GET',
           // url: "/resources/private/Karn/mail/12354", // Which url should be handle the ajax request.
-          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.mmudMail[data_pos].id, // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.privateMail[data_pos].id, // Which url should be handle the ajax request.
           dataType: 'json', //define the type of data that is going to get back from the server
           data: {'lok' : $.cookie("karchanpassword")} //Pass a key/value pair
         }); // end of ajax
-        if (data.mmudMail[data_pos].item_id == 0)
-        {
-          formatted_html += "</div>" +
-          "<select name=\"karchan_create_item\" id=\"karchan_create_item\">" + 
-          "<option value=\"0\">an old faded yellow parchment</option>" + 
-          "<option value=\"1\">a crumpled piece of paper</option>" + 
-          "<option value=\"2\">an official-looking sealed legal document</option>" + 
-          "<option value=\"3\">an impressive-looking forged legal document</option>" + 
-          "<option value=\"4\">a hand-written folded ink-spattered letter</option>" + 
-          "<option value=\"5\">a short rushed squareshaped memo</option>" + 
-          "<option value=\"6\">an embossed beautifully written leaflet</option>" + 
-          "<option value=\"7\">an embossed beautifully written invitation</select>";
-        }
-        formatted_html += 
-          "<a href=\"#\" id=\"karchan_create_mudmail_object\" title=\"Create a copy of the mudmail in your inventory\">" +
-          "<span>Create</span></a>";
+	// TODO : fix this back up!
+        //if (data.privateMail[data_pos].item_id === undefined || data.privateMail[data_pos].item_id === 0)
+        //{
+        //  formatted_html += "</div>" +
+        //  "<select name=\"karchan_create_item\" id=\"karchan_create_item\">" + 
+        //  "<option value=\"0\">an old faded yellow parchment</option>" + 
+        //  "<option value=\"1\">a crumpled piece of paper</option>" + 
+        //  "<option value=\"2\">an official-looking sealed legal document</option>" + 
+        //  "<option value=\"3\">an impressive-looking forged legal document</option>" + 
+        //  "<option value=\"4\">a hand-written folded ink-spattered letter</option>" + 
+        //  "<option value=\"5\">a short rushed squareshaped memo</option>" + 
+        //  "<option value=\"6\">an embossed beautifully written leaflet</option>" + 
+        //  "<option value=\"7\">an embossed beautifully written invitation</select>";
+        //}
+        //formatted_html += 
+        //  "<a href=\"#\" id=\"karchan_create_mudmail_object\" title=\"Create a copy of the mudmail in your inventory\">" +
+        //  "<span>Create</span></a>";
         $('#karchan_singlemail').html(formatted_html); // data.products);
         $('#karchan_create_mudmail_object').click(function (object) { 
-          createMudMailObject(data.mmudMail[data_pos]);
+          createMudMailObject(data.privateMail[data_pos]);
           return false;
         });
       } // showMail
 
-      var createMudMailObject = function(mmudMail) {
+      var createMudMailObject = function(privateMail) {
         if (window.console) console.log("createMudMailObject");
         var item_id = ($('#karchan_create_item').val() === undefined ? 0 : $('#karchan_create_item').val());
         var item_name = ($('#karchan_create_item').val() === undefined ? "another copy of the mail" :  $('#karchan_create_item :selected').text());
         $.ajax({
           type: 'GET',
-          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + mmudMail.id + "/createMailItem/" + $('#karchan_create_item').val(), // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + privateMail.id + "/createMailItem/" + $('#karchan_create_item').val(), // Which url should be handle the ajax request.
           success: (function(data) {
             alert("You've written " + item_name);
           }),
@@ -94,11 +95,11 @@
         var data_pos = $(object.target).parent().parent().attr("id");
         data_pos = data_pos.substring(5);
         if (window.console) console.log(data_pos);
-        if (window.console) console.log(data.mmudMail[data_pos]);
-        if (window.console) console.log(data.mmudMail[data_pos].id);
+        if (window.console) console.log(data.privateMail[data_pos]);
+        if (window.console) console.log(data.privateMail[data_pos].id);
         $.ajax({
           type: 'DELETE',
-          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.mmudMail[data_pos].id + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail/" + data.privateMail[data_pos].id + "?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
           success: (function(data) {
             $(object.target).parent().parent().toggle();
           }),
@@ -108,21 +109,20 @@
         }); // end of ajax
       } // deleteMail
 
-      Karchan.updateMail = function(entry) {
-	var data = entry.privateMail;	
+      Karchan.updateMail = function(data) {
         if (window.console) console.log("updateMail");
         // The data parameter is a JSON object.
         var formatted_html = "";
-        formatted_html += "<p><a href=\"#\" id=\"karchan_previous_page\">Previous</a> <a href=\"#\" id=\"karchan_refresh_page\">Refresh</a> <a href=\"#\" id=\"karchan_next_page\">Next</a></p> <table class=\"sticky-enabled\">";
+        formatted_html += "<p>" + ($offset + 1) + " - " + ($offset + 20) + " <a href=\"#\" id=\"karchan_previous_page\">Previous</a> <a href=\"#\" id=\"karchan_refresh_page\">Refresh</a> <a href=\"#\" id=\"karchan_next_page\">Next</a></p> <table class=\"sticky-enabled\">";
         formatted_html += "<thead><tr></th><th>Subject</a></th><th>Author</a></th><th>Sent</th><th></th></tr></thead>";
         formatted_html += "<tbody>";
-        if (data != undefined && data.mmudMail != undefined)
+        if (data != undefined && data.privateMail != undefined)
         {
           var bold = "";
           var unbold = "";
-          for(i=0; i<data.mmudMail.length; i++) 
+          for(i=0; i<data.privateMail.length; i++) 
           { 
-            if (data.mmudMail[i].haveread == "false")
+            if (data.privateMail[i].haveread == "false")
             {
               bold = "<b>";
               unbold = "</b>";
@@ -133,8 +133,8 @@
               unbold = "";
             }
             formatted_html += "<tr id=\"data_" + i + "\" class=\""
-              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + bold + data.mmudMail[i].subject + unbold + "</td><td>" + bold + data.mmudMail[i].name + 
-              unbold + "</td><td>" + bold + data.mmudMail[i].whensent + unbold + 
+              + (i % 2 == 0 ? "even" : "odd") + "\"><td>" + bold + data.privateMail[i].subject + unbold + "</td><td>" + bold + data.privateMail[i].name + 
+              unbold + "</td><td>" + bold + data.privateMail[i].whensent + unbold + 
               "</td><td><a href=\"#\">Read</a> <a href=\"#\">Delete</a></td></tr>";
           }
         }
@@ -188,7 +188,7 @@
         );
         $.ajax({
           type: 'POST',
-          url: "/resources/private/" + $.cookie("karchanname") + "/mail", // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/mail?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
           success: (function(data) {
             alert("Mail send."); 
           }),

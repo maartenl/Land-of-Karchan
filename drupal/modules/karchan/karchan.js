@@ -139,7 +139,7 @@
         { 
 	   var character = data[i];
            formatted_html += "<li>" + character.name + " , " + data[i].title + ", " +
-           data[i].sleep + " " + data[i].area + " (logged on " + data[i].min + " ago)</li>"; 
+           data[i].sleep + " " + data[i].area + " (logged on " + data[i].min + " min ago)</li>"; 
         }
 	formatted_html += "</ul>";
         $('#karchan_who').html(formatted_html);
@@ -269,7 +269,8 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateStatus = function(data) {
+      var updateStatus = function(entry) {
+	var data = entry.publicPerson;
         if (window.console) console.log("updateStatus");
         // The data parameter is a JSON object.
         var formatted_html = "";
@@ -426,7 +427,6 @@
         // The data parameter is a JSON object.
         var jsonString = JSON.stringify(
         {
-          lok: $.cookie("karchanpassword"),
           name : $.cookie("karchanname"),
           imageurl : $("#edit-submitted-image-url").val(),
           homepageurl : $("#edit-submitted-homepage-url").val(),
@@ -437,7 +437,7 @@
         });
         $.ajax({
           type: 'PUT',
-          url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet", // Which url should be handle the ajax request.
+          url: "/resources/private/" + $.cookie("karchanname") + "/charactersheet?lok=" + $.cookie("karchanpassword"), // Which url should be handle the ajax request.
           success: (function(data) {
              alert("You've updated your character sheet.");    
           }),
