@@ -1,0 +1,45 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*~
+
+# Logs and databases #
+######################
+*.log
+*.jar
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+Makefile
+config
+DEADJOE
+
+# my personal files #
+#####################
+connect.php
+
+/karchangame/nbproject/private/
+/karchangame/build/
+/karchangame/dist/
+/webappkarchan/nbproject/private/app.gif
+/karchangame/web/cc.gif
+/karchangame/web/cg.gif
+/karchangame/web/collapse.gif
+/karchangame/web/css_master-all.css
+/karchangame/web/expand.gif
+/karchangame/web/images
+/karchangame/web/app.gif
+/karchangame/web/item.gif
+/karchangame/web/og.gif
+/karchangame/web/test-resbeans.css
+/karchangame/web/test-resbeans.html
+/karchangame/web/test-resbeans.js
