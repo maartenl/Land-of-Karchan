@@ -17,10 +17,20 @@
         </classes>
     </test>
     -->
-    
-    <test name="mmud.testing.suite suite">
+
+    <test name="private">
+        <classes>
+            <class name="mmud.testing.tests.PrivateBeanTest"/>
+        </classes>
+    </test>
+    <test name="public">
+        <classes>
+            <class name="mmud.testing.tests.PublicBeanTest"/>
+        </classes>
+    </test>
+    <test name="entities">
         <packages>
-            <package name="mmud.testing.suite"/>
+            <package name="mmud.testing.tests.database.entities"/>
         </packages>
     </test>
 

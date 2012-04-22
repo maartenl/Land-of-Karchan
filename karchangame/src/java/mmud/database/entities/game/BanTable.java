@@ -39,13 +39,7 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "BanTable.findAll", query = "SELECT b FROM BanTable b"),
-    @NamedQuery(name = "BanTable.findByAddress", query = "SELECT b FROM BanTable b WHERE b.address = :address"),
-    @NamedQuery(name = "BanTable.findByDays", query = "SELECT b FROM BanTable b WHERE b.days = :days"),
-    @NamedQuery(name = "BanTable.findByIp", query = "SELECT b FROM BanTable b WHERE b.ip = :ip"),
-    @NamedQuery(name = "BanTable.findByName", query = "SELECT b FROM BanTable b WHERE b.name = :name"),
-    @NamedQuery(name = "BanTable.findByDeputy", query = "SELECT b FROM BanTable b WHERE b.deputy = :deputy"),
-    @NamedQuery(name = "BanTable.findByDate", query = "SELECT b FROM BanTable b WHERE b.date = :date"),
-    @NamedQuery(name = "BanTable.findByReason", query = "SELECT b FROM BanTable b WHERE b.reason = :reason")
+    @NamedQuery(name = "BanTable.find", query = "SELECT b FROM BanTable b WHERE :address like b.address or :address2 like b.address")
 })
 public class BanTable implements Serializable
 {

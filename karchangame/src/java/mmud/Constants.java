@@ -23,4 +23,5 @@ package mmud;
 public class Constants
 {
 
+
 }

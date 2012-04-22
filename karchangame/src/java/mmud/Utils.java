@@ -16,6 +16,9 @@
  */
 package mmud;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import mmud.exceptions.MudException;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
@@ -29,6 +32,8 @@ import org.owasp.validator.html.ScanException;
 public class Utils
 {
 
+    // TODO : fix this to be less static, and has to make use of either
+    // web-context param or env-context param/.
     private static final String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
 
     /**
@@ -102,5 +107,25 @@ public class Utils
     public static String alphanumerical(String value)
     {
         return value.replaceAll("[^A-Za-z0-9]", "");
+    }
+
+    /**
+     * Indicates the game is offline for maintenance.
+     * @return
+     */
+    public static boolean isOffline()
+    {
+        // TODO: put some env var here.
+        return false;
+    }
+
+    public static void checkRegexp(String regexp, String value) throws MudException
+    {
+        Pattern p = Pattern.compile(regexp);
+        Matcher m = p.matcher(value);
+        if (!m.matches())
+        {
+            throw new MudException("value " + value + " should match regexp " + regexp);
+        }
     }
 }

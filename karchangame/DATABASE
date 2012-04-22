@@ -27,10 +27,19 @@ order by posttime;
 rename table mm_boardmessages to mm_boardmessages_old;
 rename table mm_boardmessages2 to mm_boardmessages;
 
-// drop table mm_boardmessages_old
-
 update mm_usertable set birth = null where birth = "0000-00-00 00:00:00";
 
 alter table mm_usertable change room room int(7) not null default 1;
 alter table mm_usertable
 add foreign key (room) references mm_rooms (id);
+
+// already done in current database
+
+----
+drop table mm_boardmessages_old;
+
+ALTER TABLE mm_usertable CHANGE state currentstate text;
+ALTER TABLE mm_usertable CHANGE creation creation_date timestamp not null
+default current_timestamp;
+ALTER TABLE mm_usertable CHANGE length height varchar(20);
+

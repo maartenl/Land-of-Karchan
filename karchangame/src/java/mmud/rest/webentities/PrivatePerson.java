@@ -32,5 +32,19 @@ public class PrivatePerson
     public String dateofbirth;
     public String cityofbirth;
     public String storyline;
-
+    public String password;
+    public String password2;
+    public String title;
+    public String realname;
+    public String email;
+    public String age;
+    public String width;
+    public String height;
+    public String complexion;
+    public String eyes;
+    public String face;
+    public String hair;
+    public String beard;
+    public String arm;
+    public String leg;
 }

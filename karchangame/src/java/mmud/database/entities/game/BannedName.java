@@ -39,11 +39,7 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "BannedName.findAll", query = "SELECT b FROM BannedName b"),
-    @NamedQuery(name = "BannedName.findByName", query = "SELECT b FROM BannedName b WHERE b.name = :name"),
-    @NamedQuery(name = "BannedName.findByDeputy", query = "SELECT b FROM BannedName b WHERE b.deputy = :deputy"),
-    @NamedQuery(name = "BannedName.findByCreation", query = "SELECT b FROM BannedName b WHERE b.creation = :creation"),
-    @NamedQuery(name = "BannedName.findByDays", query = "SELECT b FROM BannedName b WHERE b.days = :days"),
-    @NamedQuery(name = "BannedName.findByReason", query = "SELECT b FROM BannedName b WHERE b.reason = :reason")
+    @NamedQuery(name = "BannedName.find", query = "SELECT b FROM BannedName b WHERE b.name = :name"),
 })
 public class BannedName implements Serializable
 {

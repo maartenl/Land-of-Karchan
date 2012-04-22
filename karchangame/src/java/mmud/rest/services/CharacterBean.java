@@ -20,7 +20,7 @@ import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
 /**
- *
+  * TODO : add all charactersheet stuff here instead of in privateBean. use Path:{name}/charactersheet
  * @author maartenl
  */
 @Stateless

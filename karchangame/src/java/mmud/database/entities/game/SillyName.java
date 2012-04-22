@@ -36,10 +36,11 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
     @NamedQuery(name = "SillyName.findAll", query = "SELECT s FROM SillyName s"),
-    @NamedQuery(name = "SillyName.findByName", query = "SELECT s FROM SillyName s WHERE s.name = :name")
+    @NamedQuery(name = "SillyName.findByName", query = "SELECT s FROM SillyName s WHERE :name like s.name")
 })
 public class SillyName implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -96,5 +97,4 @@ public class SillyName implements Serializable
     {
         return "mmud.database.entities.game.SillyName[ name=" + name + " ]";
     }
-
 }

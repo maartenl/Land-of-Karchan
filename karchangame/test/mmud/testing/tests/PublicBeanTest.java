@@ -74,7 +74,7 @@ public class PublicBeanTest
     }
 
     @BeforeMethod
-    public void setUp()
+    public void setUp() throws MudException
     {
         Area aArea = TestingConstants.getArea();
         Room aRoom = TestingConstants.getRoom(aArea);

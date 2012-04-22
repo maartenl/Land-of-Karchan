@@ -21,9 +21,13 @@ import java.util.Collection;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Utils;
 import mmud.database.enums.God;
+import mmud.database.enums.Health;
 import mmud.database.enums.Sex;
+import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,32 +38,35 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
-
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
     @NamedQuery(name = "Person.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
     @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
-    @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
+    @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
+    @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
 })
 public class Person implements Serializable
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
     private static final long serialVersionUID = 1L;
+    private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
+    private static final String PASSWORD_REGEXP = ".{5,}";
     @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+    @Size(min = 3, max = 20)
     @Column(name = "name")
+    @Pattern(regexp = NAME_REGEXP, message = "Invalid name")
     private String name;
-    @Size(max = 200)
+    @Size(min = 5, max = 200)
     @Column(name = "address")
     private String address;
     @Size(max = 40)
+    // TODO get this fixed properly with a sha1 hash code upon insert.
     @Column(name = "password")
+    @Pattern(regexp = PASSWORD_REGEXP, message = "Invalid password")
     private String password;
     @Size(max = 254)
     @Column(name = "title")
@@ -84,10 +91,9 @@ public class Person implements Serializable
     @Size(max = 20)
     @Column(name = "age")
     private String age;
-    // TODO : length is reserved word in sql
-//    @Size(max = 20)
-//    @Column(name = "length")
-//    private String length;
+    @Size(max = 20)
+    @Column(name = "height")
+    private String height;
     @Size(max = 40)
     @Column(name = "width")
     private String width;
@@ -238,20 +244,19 @@ public class Person implements Serializable
     private Integer jumpmove;
     @Column(name = "jumpvital")
     private Integer jumpvital;
-//    @Basic(optional = false)
-//    @NotNull
-//    @Column(name = "creation")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date creation;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "creation_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creation;
     @Lob
     @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
-    // TODO : state is a reserved sql word
-//    @Lob
-//    @Size(max = 65535)
-//    @Column(name = "state")
-//    private String state;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "currentstate")
+    private String state;
     @JoinColumn(name = "guild", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private Guild guild;
@@ -275,16 +280,31 @@ public class Person implements Serializable
         this.name = name;
         this.race = race;
         this.sex = sex;
-        // this.creation = creation;
+        this.creation = creation;
     }
 
+    /**
+     * returns the name of the character.
+     *
+     * @return String containing the name
+     */
     public String getName()
     {
         return name;
     }
 
-    public void setName(String name)
+    /**
+     * Sets the name of the person. Should contain only alphabetical characters, but
+     * has to have at least size of 3.
+     * @param name the (new) name.
+     * @throws MudException if the name is not allowed.
+     */
+    public void setName(String name) throws MudException
     {
+        if (name != null)
+        {
+            Utils.checkRegexp(NAME_REGEXP, name);
+        }
         this.name = name;
     }
 
@@ -303,16 +323,38 @@ public class Person implements Serializable
         return password;
     }
 
-    public void setPassword(String password)
+    /**
+     * Sets the name of the person. Can contain any character, but
+     * has to have at least size of 5.
+     * @param password the (new) password.
+     * @throws MudException if the password is not allowed.
+     */
+    public void setPassword(String password) throws MudException
     {
+        if (password != null)
+        {
+            Utils.checkRegexp(PASSWORD_REGEXP, password);
+        }
+
         this.password = password;
     }
 
+    /**
+     * returns the title of the character.
+     *
+     * @return String containing the title
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * sets the title of the character.
+     *
+     * @param aNewTitle
+     *            String containing the title
+     */
     public void setTitle(String title)
     {
         this.title = title;
@@ -367,16 +409,16 @@ public class Person implements Serializable
     {
         this.age = age;
     }
-//
-//    public String getLength()
-//    {
-//        return length;
-//    }
-//
-//    public void setLength(String length)
-//    {
-//        this.length = length;
-//    }
+
+    public String getHeight()
+    {
+        return height;
+    }
+
+    public void setHeight(String height)
+    {
+        this.height = height;
+    }
 
     public String getWidth()
     {
@@ -488,24 +530,60 @@ public class Person implements Serializable
         this.lok = lok;
     }
 
-    public Integer getWhimpy()
+    /**
+     * get the setting for when to flee the fight.
+     *
+     * @return integer containing the setting
+     */
+    public Health getWhimpy()
     {
-        return whimpy;
+        return Health.get(whimpy);
     }
 
-    public void setWhimpy(Integer whimpy)
+    /**
+     * sets the whimpy of the character.
+     *
+     * @param aWhimpy
+     *            Health enum containing the whimpy
+     * @see #getWhimpy()
+     */
+    public void setWhimpy(Health whimpy)
     {
-        this.whimpy = whimpy;
+        if (whimpy == null)
+        {
+            this.whimpy = null;
+            return;
+        }
+        this.whimpy = whimpy.getOrdinalValue();
     }
 
-    public Integer getExperience()
+    /**
+     * Returns the level of the character.
+     *
+     * @return integer.
+     */
+    public int getLevel()
     {
-        return experience;
+        if (experience == null)
+        {
+            experience = 0;
+        }
+        return experience / 1000;
     }
 
-    public void setExperience(Integer experience)
+    /**
+     * Returns the experience of the character.
+     *
+     * @return integer between 0 and 1000. The closer to 1000 is the closer to
+     *         the next level.
+     */
+    public int getExperience()
     {
-        this.experience = experience;
+        if (experience == null)
+        {
+            experience = 0;
+        }
+        return experience % 1000;
     }
 
     public String getFightingwho()
@@ -554,12 +632,44 @@ public class Person implements Serializable
 
     public Integer getVitals()
     {
+        if (vitals == null)
+        {
+            vitals = 11999;
+        }
         return vitals;
     }
 
-    public void setVitals(Integer vitals)
+    public void increaseHealth(Integer vitals)
     {
-        this.vitals = vitals;
+        if (vitals < 0)
+        {
+            return;
+        }
+        this.vitals += vitals;
+        this.vitals = this.vitals % 12000;
+    }
+
+    public void decreaseHealth(Integer vitals)
+    {
+        if (vitals >= 12000)
+        {
+            return;
+        }
+        this.vitals -= vitals;
+        if (this.vitals < 0)
+        {
+            this.vitals = 0;
+        }
+    }
+
+    public Health getHealth()
+    {
+        return Health.get(getVitals());
+    }
+
+    public boolean isDead()
+    {
+        return getVitals() == 0;
     }
 
     public Integer getFysically()
@@ -602,16 +712,44 @@ public class Person implements Serializable
         this.eatstats = eatstats;
     }
 
-    public Integer getActive()
+    /**
+     * Can tell you if a person is playing the game or not.
+     *
+     * @return boolean, true if the person is playing, false otherwise.
+     */
+    public boolean getActive()
     {
-        return active;
+        if (active == null)
+        {
+            return false;
+        }
+        return active.equals(1);
     }
 
-    public void setActive(Integer active)
+    /**
+     * Make a person actively playing the game (or not).
+     * @param active boolean, true if he's playing, false otherwise.
+     */
+    public void setActive(Boolean active)
     {
-        this.active = active;
+        if (active == null)
+        {
+            this.active = null;
+        }
+        this.active = active ? 1 : 0;
     }
 
+    public boolean isNewUser()
+    {
+        return lastlogin == null;
+    }
+
+    /**
+     * Returns the last time the user was logged in.
+     * Can return null, which means the user has never once logged on
+     * and is new. (or not a user)
+     * @return the date of last logged on.
+     */
     public Date getLastlogin()
     {
         return lastlogin;
@@ -981,16 +1119,16 @@ public class Person implements Serializable
     {
         this.jumpvital = jumpvital;
     }
-//
-//    public Date getCreation()
-//    {
-//        return creation;
-//    }
-//
-//    public void setCreation(Date creation)
-//    {
-//        this.creation = creation;
-//    }
+
+    public Date get()
+    {
+        return creation;
+    }
+
+    public void setCreation(Date creation)
+    {
+        this.creation = creation;
+    }
 
     public String getNotes()
     {
@@ -1001,16 +1139,16 @@ public class Person implements Serializable
     {
         this.notes = notes;
     }
-//
-//    public String getState()
-//    {
-//        return state;
-//    }
-//
-//    public void setState(String state)
-//    {
-//        this.state = state;
-//    }
+
+    public String getState()
+    {
+        return state;
+    }
+
+    public void setState(String state)
+    {
+        this.state = state;
+    }
 
     public Guild getGuild()
     {
@@ -1064,8 +1202,7 @@ public class Person implements Serializable
         {
             builder.append(getAge());
         }
-        // TODO MLE : add getLength but with proper name, not an sql keyword.
-        // addDescriptionPiece(builder, getLength());
+        addDescriptionPiece(builder, getHeight());
         addDescriptionPiece(builder, getWidth());
         addDescriptionPiece(builder, getComplexion());
         addDescriptionPiece(builder, getEyes());
@@ -1140,4 +1277,5 @@ public class Person implements Serializable
     {
         return "mmud.database.entities.game.Person[ name=" + name + " ]";
     }
+
 }

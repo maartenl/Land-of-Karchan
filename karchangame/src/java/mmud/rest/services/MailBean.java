@@ -20,7 +20,7 @@ import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
 /**
- *
+ * TODO : add all mail here instead of in privateBean. use Path:{name}/mail
  * @author maartenl
  */
 @Stateless
