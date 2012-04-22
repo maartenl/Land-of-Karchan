@@ -48,10 +48,6 @@ public class TestingConstants
     }
 
     /**
-
-     | Hotblack | 82-170-94-123.ip.telfort.nl | 93ef5f419670b2d0efe0c9461b765725a74c86eb | Desiato |          |                     | human | male | young | tall   | slender   | swarthy    | black-eyed | long-faced | black-haired | none  | none | none |      2 |    1 |      |      0 |          0 |             |     0 |          0 |         0 |      0 |         0 |        0 |          0 |        0 |      0 | 2011-06-12 08:54:10 | 2010-07-06 12:05:58 |    0 | NULL  |        2 |            2 |         2 |            2 |      2 |         0 |        0 |       0 |         8 |         0 |          1000 |     118 |     500 |      118 | NULL              | NULL          | NULL                | NULL              | NULL          | NULL             | NULL        | NULL              | NULL          | NULL          | NULL          | NULL        | NULL          | NULL           | NULL           | NULL      | NULL         |        1 |        1 |         1 | NULL  | 2011-06-12 08:54:10 | NULL  | NULL  |
-     | Marvin   | 195.241.128.249             | a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff | Person  | Marvin   | maarten_l@yahoo.com | human | male | young | tall   | very thin | swarthy    | black-eyed | long-faced | black-haired |       | none | none |      2 |    1 | NULL |      0 |          0 |             |     0 |          0 |         0 |      0 |         0 |        0 |          0 |        0 |      0 | 2011-02-07 23:19:19 | 2011-02-07 23:19:19 |    0 | NULL  |        2 |            2 |         2 |            2 |      2 |         0 |        0 |       0 |         8 |         0 |          1000 |     118 |     500 |      118 | NULL              | NULL          | NULL                | NULL              | NULL          | NULL             | NULL        | NULL              | NULL          | NULL          | NULL          | NULL        | NULL          | NULL           | NULL           | NULL      | NULL         |        1 |        1 |         1 | NULL  | 2011-02-07 23:19:19 | NULL  | NULL  |
-     +----------+-----------------------------+------------------------------------------+---------+----------+---------------------+-------+------+-------+--------+-----------+------------+------------+------------+--------------+-------+------+------+--------+------+---
      * @param aRoom
      * @return
      * @throws MudException
@@ -106,7 +102,20 @@ public class TestingConstants
         person.setLok("lok");
         person.setAddress("82-170-94-123.ip.telfort.nl");
         person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
-        person.setRace("human");
+
+        person.setRace("robot");
+        person.setSex(Sex.MALE);
+        person.setAge("young");
+        person.setHeight("tall");
+        person.setWidth("slender");
+        person.setComplexion("swarthy");
+        person.setEyes("black-eyed");
+        person.setFace("long-faced");
+        person.setHair("black-haired");
+        person.setBeard("none");
+        person.setArm("none");
+        person.setLeg("none");
+        person.setState("Life, don't talk to me about life.");
         return person;
     }
 
