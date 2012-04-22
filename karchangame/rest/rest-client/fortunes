@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rest-client version="2.4"><request><http-version>1.1</http-version><http-follow-redirects>true</http-follow-redirects><URL>http://micemouse:8080/karchangame/resources/public/fortunes</URL><method>GET</method></request></rest-client>
