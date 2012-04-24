@@ -47,4 +47,6 @@ public class PrivatePerson
     public String beard;
     public String arm;
     public String leg;
+    public String race;
+    public String sex;
 }

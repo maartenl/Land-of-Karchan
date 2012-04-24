@@ -47,6 +47,12 @@ import javax.validation.constraints.Size;
 })
 public class Room implements Serializable
 {
+
+    /**
+     * The first room that new characters appear in.
+     */
+    public static final Integer STARTERS_ROOM = 1;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

@@ -122,6 +122,7 @@ public class Person implements Serializable
     private Integer copper;
     @JoinColumn(name = "room", nullable = false, referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotNull
     private Room room;
     @Size(max = 40)
     @Column(name = "lok")
@@ -324,13 +325,20 @@ public class Person implements Serializable
     }
 
     /**
-     * Sets the name of the person. Can contain any character, but
-     * has to have at least size of 5.
-     * @param password the (new) password.
+     * Sets the password of the person. Can contain any character, but
+     * has to have at least size of 5. You cannot set a password
+     * this way, you can only set it for the first time, i.e. when creating
+     * a new character.
+     * @param password the new password.
      * @throws MudException if the password is not allowed.
      */
     public void setPassword(String password) throws MudException
     {
+        if (this.password != null)
+        {
+            return;
+        }
+
         if (password != null)
         {
             Utils.checkRegexp(PASSWORD_REGEXP, password);

@@ -43,3 +43,5 @@ ALTER TABLE mm_usertable CHANGE creation creation_date timestamp not null
 default current_timestamp;
 ALTER TABLE mm_usertable CHANGE length height varchar(20);
 
+# add trigger
+/home/maartenl/Land-of-Karchan/sqlscripts/triggers/mm_usertable_insert_trigger.sql

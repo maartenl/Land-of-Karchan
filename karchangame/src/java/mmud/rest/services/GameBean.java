@@ -27,6 +27,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -39,11 +41,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Utils;
-import mmud.database.entities.game.BanTable;
-import mmud.database.entities.game.BannedName;
 import mmud.database.entities.game.Person;
-import mmud.database.entities.game.SillyName;
-import mmud.database.entities.game.UnbanTable;
+import mmud.database.entities.game.Room;
+import mmud.database.enums.Sex;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivateMail;
@@ -89,8 +89,10 @@ public class GameBean
     private static final Logger itsLog = LoggerFactory.getLogger(GameBean.class);
 
     /**
-     * This method should be called to verify that the target of a certain
-     * action is indeed a proper authenticated user.
+     * <p>This method should be called to verify that the target of a certain
+     * action is indeed a proper authenticated user.</p>
+     * <p><img
+     * src="../../../images/Gamebean_authenticate.png"></p>
      *
      * @param lok session password
      * @param name the name to identify the person
@@ -98,6 +100,13 @@ public class GameBean
      * found or is not a proper user. BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match.
+     * @startuml Gamebean_authenticate.png
+     * (*) --> "find character"
+     * --> "character found"
+     * --> "character == user"
+     * --> "session password is good"
+     * -->(*)
+     * @enduml
      */
     private Person authenticate(String name, String lok)
     {
@@ -118,26 +127,49 @@ public class GameBean
     }
 
     /**
-     * This method should be called to verify that the target of a certain
-     * action is a user with the appropriate password.
+     * <p>This method should be called to verify that the target of a certain
+     * action is a user with the appropriate password.</p>
+     * <p><img
+     * src="../../../images/Gamebean_authenticateWithPassword.png"></p>
      *
      * @param password real password
      * @param name the name to identify the person
      * @throws BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match or user not found.
+     * @startuml Gamebean_authenticateWithPassword.png
+     * (*) --> "find character"
+     * --> "character found"
+     * --> "character == user"
+     * --> "password is good"
+     * -->(*)
+     * @enduml
      */
-    private Person authenticateWithPassword(String name, String password)
+    protected Person authenticateWithPassword(String name, String password)
     {
+        Person person = getEntityManager().find(Person.class, name);
+        if (person == null)
+        {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        if (!person.isUser())
+        {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
 
         Query query = getEntityManager().createNamedQuery("Person.authorise");
         query.setParameter("name", name);
-                query.setParameter("password", password);
-        Person person = (Person) query.getSingleResult();
-        if (person == null)
+        query.setParameter("password", password);
+        List<Person> persons = query.getResultList();
+        if (persons.isEmpty())
         {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(new RuntimeException("name was " + name + " password " + password), Response.Status.UNAUTHORIZED);
         }
+        if (persons.size() > 1)
+        {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        person = persons.get(0);
         if (!person.isUser())
         {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -167,8 +199,7 @@ public class GameBean
         Query query = getEntityManager().createNamedQuery("SillyName.findByName");
         query.setParameter("name", name);
         query.setMaxResults(1);
-        SillyName sillyName = (SillyName) query.getSingleResult();
-        if (sillyName != null)
+        if (!query.getResultList().isEmpty())
         {
             // silly name found!
             return true;
@@ -178,8 +209,7 @@ public class GameBean
         query = getEntityManager().createNamedQuery("UnbanTable.findByName");
         query.setParameter("name", name);
         query.setMaxResults(1);
-        UnbanTable unbanned = (UnbanTable) query.getSingleResult();
-        if (unbanned != null)
+        if (!query.getResultList().isEmpty())
         {
             // unbanned name found!
             return false;
@@ -199,8 +229,7 @@ public class GameBean
         query.setParameter("address", address);
         query.setParameter("address2", address2);
         query.setMaxResults(1);
-        BanTable banned = (BanTable) query.getSingleResult();
-        if (banned != null)
+        if (!query.getResultList().isEmpty())
         {
             // banned address found!
             return true;
@@ -210,8 +239,7 @@ public class GameBean
         query = getEntityManager().createNamedQuery("BannedName.find");
         query.setParameter("name", name);
         query.setMaxResults(1);
-        BannedName bannedName = (BannedName) query.getSingleResult();
-        if (bannedName != null)
+        if (!query.getResultList().isEmpty())
         {
             // banned name found!
             return true;
@@ -244,6 +272,9 @@ public class GameBean
     @Path("{name}")
     @Produces(
 
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -251,29 +282,29 @@ public class GameBean
     {
         itsLog.debug("entering create");
         String address = requestContext.getRemoteAddr().toString();
-
-        if (Utils.isOffline())
-        {
-            // game offline
-            return Response.noContent().build();
-        }
-        if (pperson == null)
-        {
-            // no data provided
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
-        if (name == null || !pperson.name.equals(name))
-        {
-            // wrong data provided
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
-        if (pperson.password == null || !pperson.password.equals(pperson.password2))
-        {
-            // passwords do not match
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
         try
         {
+
+            if (Utils.isOffline())
+            {
+                // game offline
+                return Response.noContent().build();
+            }
+            if (pperson == null)
+            {
+                // no data provided
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+            if (name == null || !pperson.name.equals(name))
+            {
+                // wrong data provided
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+            if (pperson.password == null || !pperson.password.equals(pperson.password2))
+            {
+                // passwords do not match
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
             Person person = new Person();
             person.setName(name);
             person.setPassword(pperson.password);
@@ -295,6 +326,8 @@ public class GameBean
             person.setEmail(pperson.email);
             person.setAddress(address);
 
+            person.setSex(Sex.createFromString(pperson.sex));
+            person.setRace(pperson.race);
             person.setAge(pperson.age);
             person.setHeight(pperson.height);
             person.setWidth(pperson.width);
@@ -306,16 +339,36 @@ public class GameBean
             person.setArm(pperson.arm);
             person.setLeg(pperson.leg);
             person.setBirth(new Date());
+            person.setCreation(new Date());
+            person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
             getEntityManager().persist(person);
             // TODO automatically add a welcome mail.
         } catch (WebApplicationException e)
         {
             //ignore
             throw e;
+        } catch (ConstraintViolationException e)
+        {
+            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new RuntimeException(buffer.toString(), e);
+
+        } catch (javax.persistence.PersistenceException f)
+        {
+            ConstraintViolationException e = (ConstraintViolationException) f.getCause();
+            StringBuilder buffer = new StringBuilder("PersistenceException:");
+            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new RuntimeException(buffer.toString(), e);
         } catch (Exception e)
         {
             itsLog.debug("create: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -331,6 +384,9 @@ public class GameBean
     @DELETE
     @Path("{name}")
     @Produces(
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -353,7 +409,7 @@ public class GameBean
         } catch (Exception e)
         {
             itsLog.debug("delete: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -378,6 +434,9 @@ public class GameBean
 
 
 
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -394,7 +453,7 @@ public class GameBean
         } catch (Exception e)
         {
             itsLog.debug("logon: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -426,6 +485,9 @@ public class GameBean
 
 
 
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -442,7 +504,7 @@ public class GameBean
         } catch (Exception e)
         {
             itsLog.debug("play: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return null;
     }
@@ -477,6 +539,9 @@ public class GameBean
 
 
 
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -493,7 +558,7 @@ public class GameBean
         } catch (Exception e)
         {
             itsLog.debug("retrieveLog: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return null;
     }
@@ -525,6 +590,9 @@ public class GameBean
 
 
 
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -541,7 +609,7 @@ public class GameBean
         } catch (Exception e)
         {
             itsLog.debug("quit: throws ", e);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }

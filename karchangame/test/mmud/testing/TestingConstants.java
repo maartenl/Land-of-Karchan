@@ -102,8 +102,6 @@ public class TestingConstants
         person.setLok("lok");
         person.setAddress("82-170-94-123.ip.telfort.nl");
         person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
-
-        person.setRace("robot");
         person.setSex(Sex.MALE);
         person.setAge("young");
         person.setHeight("tall");
