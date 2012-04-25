@@ -117,14 +117,6 @@ public class PrivateBean
     @GET
     @Path("{name}/mail")
     @Produces(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -324,14 +316,6 @@ public class PrivateBean
     @GET
     @Path("{name}/mail/{id}")
     @Produces(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })

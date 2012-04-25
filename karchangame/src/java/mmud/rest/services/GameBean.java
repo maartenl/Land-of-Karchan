@@ -271,10 +271,6 @@ public class GameBean
     @POST
     @Path("{name}")
     @Produces(
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -384,9 +380,6 @@ public class GameBean
     @DELETE
     @Path("{name}")
     @Produces(
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -426,17 +419,6 @@ public class GameBean
     @POST
     @Path("{name}/logon")
     @Produces(
-
-
-
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -470,24 +452,6 @@ public class GameBean
     @POST
     @Path("{name}/play")
     @Produces(
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -524,24 +488,6 @@ public class GameBean
     @GET
     @Path("{name}/log")
     @Produces(
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -575,24 +521,6 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
