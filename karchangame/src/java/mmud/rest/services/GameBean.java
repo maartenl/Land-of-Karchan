@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,8 +42,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Utils;
+import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
+import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
@@ -73,6 +77,12 @@ import org.slf4j.LoggerFactory;
 public class GameBean
 {
 
+    @EJB
+    private BoardBean boardBean;
+    @EJB
+    private MailBean mailBean;
+    @EJB
+    private LogBean logBean;
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
@@ -271,6 +281,7 @@ public class GameBean
     @POST
     @Path("{name}")
     @Produces(
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -337,8 +348,11 @@ public class GameBean
             person.setBirth(new Date());
             person.setCreation(new Date());
             person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
+            person.setGod(God.DEFAULT_USER);
+
             getEntityManager().persist(person);
             // TODO automatically add a welcome mail.
+            logBean.writeLog(person, "character created.");
         } catch (WebApplicationException e)
         {
             //ignore
@@ -354,13 +368,17 @@ public class GameBean
 
         } catch (javax.persistence.PersistenceException f)
         {
-            ConstraintViolationException e = (ConstraintViolationException) f.getCause();
-            StringBuilder buffer = new StringBuilder("PersistenceException:");
-            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+            if (f.getCause().getClass().getName().equals("ConstraintViolationException"))
             {
-                buffer.append(violation);
+                ConstraintViolationException e = (ConstraintViolationException) f.getCause();
+                StringBuilder buffer = new StringBuilder("PersistenceException:");
+                for (ConstraintViolation<?> violation : e.getConstraintViolations())
+                {
+                    buffer.append(violation);
+                }
+                throw new RuntimeException(buffer.toString(), e);
             }
-            throw new RuntimeException(buffer.toString(), e);
+            throw f;
         } catch (Exception e)
         {
             itsLog.debug("create: throws ", e);
@@ -380,6 +398,12 @@ public class GameBean
     @DELETE
     @Path("{name}")
     @Produces(
+
+
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -395,6 +419,7 @@ public class GameBean
         try
         {
             getEntityManager().remove(person);
+            logBean.writeLog(person, "character deleted.");
         } catch (WebApplicationException e)
         {
             //ignore
@@ -410,24 +435,84 @@ public class GameBean
     /**
      * Logs a character in, to start playing.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
+     * @param password password for verification of the user.
      * @param name the name of the user
+     * @return the session password upon success
      * @throws BAD_REQUEST if an unexpected exception
      * crops up.
      */
     @POST
     @Path("{name}/logon")
     @Produces(
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
-    public Response logon(@PathParam("name") String name, @QueryParam("password") String password)
+    public String logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
         itsLog.debug("entering logon");
-        List<PrivateMail> res = new ArrayList<>();
+        String address = requestContext.getRemoteAddr().toString();
+
+        if ((address == null) || ("".equals(address.trim())))
+        {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        if (Utils.isOffline())
+        {
+            // game offline
+            throw new WebApplicationException(Response.Status.NO_CONTENT);
+        }
+        if (isBanned(name, address))
+        {
+            // is banned
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+        Person person = authenticateWithPassword(name, password);
         try
         {
+            person.activate(address);
+            person.generateSessionPassword();
+            // write logon message
+            Board newsBoard = boardBean.getNewsBoard();
+            StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
+            List<BoardMessage> news = boardBean.getNews();
+            for (BoardMessage newMessage : news)
+            {
+                buffer.append("<hr/>");
+                buffer.append(newMessage.getPosttime());
+                buffer.append("<p/>\r\n");
+                buffer.append(newMessage.getMessage());
+                buffer.append("<p><i>");
+                buffer.append(newMessage.getPerson().getName());
+                buffer.append("</i>");
+            }
+            person.writeMessage(buffer.toString());
+            // check mail
+            if (mailBean.hasNewMail(person))
+            {
+                person.writeMessage("<p>You have new Mudmail!</p>\r\n");
+            } else
+            {
+                person.writeMessage("<p>You have no new Mudmail...</p>\r\n");
+            }
+            // has guild
+            if (person.getGuild() != null)
+            {
+
+                // guild logonmessage
+                if (person.getGuild().getLogonmessage() != null)
+                {
+                    person.writeMessage(person.getGuild().getLogonmessage()
+                            + "<HR>");
+                }
+                // guild alarm message
+                person.writeMessage(person.getGuild().getAlarmDescription()
+                        + "<hr/>");
+            }
+            // write log "entered game."
+            logBean.writeLog(person, "entered game.");
+            // TODO : execute command "me has entered the game..." -> can be moved to the darned next ajax calls
+
         } catch (WebApplicationException e)
         {
             //ignore
@@ -437,7 +522,7 @@ public class GameBean
             itsLog.debug("logon: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        return Response.ok().build();
+        return person.getLok();
     }
 
     /**
@@ -452,6 +537,12 @@ public class GameBean
     @POST
     @Path("{name}/play")
     @Produces(
+
+
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -488,6 +579,12 @@ public class GameBean
     @GET
     @Path("{name}/log")
     @Produces(
+
+
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -521,6 +618,12 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
+
+
+
+
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })

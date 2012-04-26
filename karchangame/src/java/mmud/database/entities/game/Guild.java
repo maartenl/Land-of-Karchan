@@ -43,6 +43,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_guilds", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
 {
     @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
     @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
@@ -86,7 +88,7 @@ public class Guild implements Serializable
     @Basic(optional = false)
     @NotNull
     @Column(name = "active")
-    private short active;
+    private Boolean active;
 //    @Basic(optional = false)
 //    @Column(name =  "creation")
     @Temporal(TemporalType.TIMESTAMP)
@@ -96,11 +98,11 @@ public class Guild implements Serializable
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
-    private Collection<Person> personCollection;
+    private Collection<Person> members;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
-    @JoinColumn(name = "bossname", nullable=false, referencedColumnName = "name")
+    @JoinColumn(name = "bossname", nullable = false, referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Person bossname;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
@@ -115,7 +117,7 @@ public class Guild implements Serializable
         this.name = name;
     }
 
-    public Guild(String name, short active, Date creation)
+    public Guild(String name, Boolean active, Date creation)
     {
         this.name = name;
         this.active = active;
@@ -182,32 +184,32 @@ public class Guild implements Serializable
         this.minguildlevel = minguildlevel;
     }
 
-    public String getGuilddescription()
+    public String getDescription()
     {
         return guilddescription;
     }
 
-    public void setGuilddescription(String guilddescription)
+    public void setDescription(String guilddescription)
     {
         this.guilddescription = guilddescription;
     }
 
-    public String getGuildurl()
+    public String getHomepage()
     {
         return guildurl;
     }
 
-    public void setGuildurl(String guildurl)
+    public void setHomepage(String guildurl)
     {
         this.guildurl = guildurl;
     }
 
-    public short getActive()
+    public Boolean getActive()
     {
         return active;
     }
 
-    public void setActive(short active)
+    public void setActive(Boolean active)
     {
         this.active = active;
     }
@@ -232,14 +234,14 @@ public class Guild implements Serializable
         this.logonmessage = logonmessage;
     }
 
-    public Collection<Person> getPersonCollection()
+    public Collection<Person> getMembers()
     {
-        return personCollection;
+        return members;
     }
 
-    public void setPersonCollection(Collection<Person> personCollection)
+    public void setMembers(Collection<Person> personCollection)
     {
-        this.personCollection = personCollection;
+        this.members = personCollection;
     }
 
     public Admin getOwner()
@@ -300,5 +302,31 @@ public class Guild implements Serializable
     public String toString()
     {
         return "mmud.database.entities.game.Guild[ name=" + name + " ]";
+    }
+
+    /**
+     * Returns a description in case the guild is in danger of being purged from
+     * the database. This is necessary to make sure there is not a plethora of
+     * guilds with few members.
+     * <P>
+     * The following preconditions are in effect:
+     * <UL>
+     * <LI>the guild is active
+     * <LI>there are too few guildmembers (minguildmembers > amountofmembers)
+     * </UL>
+     * TODO : remove html tags here, let it return a  daysguilddeath or something
+     * @return String indicating if there are too few members, usually should be
+     *         the empty string if all is well.
+     */
+    public String getAlarmDescription()
+    {
+        if ((!getActive()) || (getMinguildmembers() <= getMembers().size()))
+        {
+            return "";
+        }
+        return "The minimum amount of members of this guild is "
+                + getMinguildmembers()
+                + ".<br/>The guild has too few members, and will be removed in "
+                + getDaysguilddeath() + " days.";
     }
 }

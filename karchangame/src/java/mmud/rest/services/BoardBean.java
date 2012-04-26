@@ -16,22 +16,24 @@
  */
 package mmud.rest.services;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import mmud.database.entities.game.Person;
+import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO : add all mail here instead of in privateBean. use Path:{name}/mail
+ * Takes care of the public boards and the private boards.
  * @author maartenl
  */
 @Stateless
 @LocalBean
-public class MailBean
+public class BoardBean
 {
 
     @PersistenceContext(unitName = "karchangamePU")
@@ -47,18 +49,26 @@ public class MailBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(MailBean.class);
+    private static final Logger itsLog = LoggerFactory.getLogger(BoardBean.class);
 
-    public boolean hasNewMail(Person person)
+    public Board getNewsBoard()
     {
-        Query query = getEntityManager().createNamedQuery("Mail.hasnewmail");
-        query.setParameter("name", person);
+        return getBoard("logonmessage");
+    }
 
-        Long count = (Long) query.getSingleResult();
-        if (count > 0)
-        {
-            return true;
-        }
-        return false;
+    public Board getBoard(String name)
+    {
+        Query query = getEntityManager().createNamedQuery("Board.findByName");
+        query.setParameter("name", name);
+        return (Board) query.getSingleResult();
+
+    }
+
+    public List<BoardMessage> getNews()
+    {
+        Query query = getEntityManager().createNamedQuery("BoardMessage.news");
+        query.setMaxResults(10);
+        List<BoardMessage> list = query.getResultList();
+        return list;
     }
 }

@@ -23,5 +23,5 @@ package mmud;
 public class Constants
 {
 
-
+    public static String mudfilepath = "/home/maartenl/temp";
 }

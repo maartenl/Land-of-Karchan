@@ -29,6 +29,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_boardmessages", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
 {
     @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
     @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
@@ -69,6 +71,10 @@ public class BoardMessage implements Serializable
 
     public String getMessage()
     {
+        if (getRemoved())
+        {
+            return "<FONT COLOR=red>[Message has been removed due to offensive content.]</FONT>";
+        }
         return message;
     }
 

@@ -19,6 +19,7 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -48,9 +49,12 @@ import org.slf4j.LoggerFactory;
 @Path("/public")
 public class PublicBean
 {
+    @EJB
+    private BoardBean boardBean;
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
+
 
     /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
@@ -160,9 +164,7 @@ public class PublicBean
         try
         {
             itsLog.debug("news: getting news");
-            Query query = getEntityManager().createNamedQuery("BoardMessage.news");
-            query.setMaxResults(10);
-            List<BoardMessage> list = query.getResultList();
+            List<BoardMessage> list = boardBean.getNews();
             itsLog.debug("news: found " + list.size() + " entries.");
             for (BoardMessage message : list)
             {
@@ -242,7 +244,7 @@ public class PublicBean
             for (Guild guild : list)
             {
                 PublicGuild newGuild = new PublicGuild();
-                newGuild.guildurl = guild.getGuildurl();
+                newGuild.guildurl = guild.getHomepage();
                 newGuild.title = guild.getTitle();
                 if (guild.getBossname() == null)
                 {
@@ -251,7 +253,7 @@ public class PublicBean
                 {
                     newGuild.bossname = guild.getBossname().getName();
                 }
-                newGuild.guilddescription = guild.getGuilddescription();
+                newGuild.guilddescription = guild.getDescription();
                 newGuild.creation = guild.getCreation();
                 res.add(newGuild);
             }

@@ -16,13 +16,18 @@
  */
 package mmud.database.entities.game;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Constants;
 import mmud.Utils;
 import mmud.database.enums.God;
 import mmud.database.enums.Health;
@@ -38,6 +43,14 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
+
+
+
+
+
+
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -132,6 +145,7 @@ public class Person implements Serializable
     @Column(name = "experience")
     private Integer experience;
     @Size(max = 20)
+    // TODO recursion into the same table
     @Column(name = "fightingwho")
     private String fightingwho;
     @Column(name = "sleep")
@@ -266,23 +280,51 @@ public class Person implements Serializable
     private Admin owner;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     private Collection<Charattribute> charattributeCollection;
+    @Transient
+    private File theLogfile = null;
 
     public Person()
     {
-    }
 
-    public Person(String name)
-    {
-        this.name = name;
+        this.copper = 0; // no money
+        this.whimpy = 0; // no coward, either
+        this.experience = 0; // no experience points to speak of
+        this.fightingwho = null; // not fighting anybody
+        this.sleep = false;
+        this.punishment = 0;
+        this.fightable = 0;
+        this.vitals = MAX_VITALS;
+        this.fysically = 100;
+        this.mentally = 100;
+        this.drinkstats = 0;
+        this.eatstats = 0;
+        this.active = 0;
+        this.lastlogin = null;
+        this.birth = new Date();
+        this.god = God.DEFAULT_USER.getValue();
+        this.strength = 0;
+        this.intelligence = 0;
+        this.dexterity = 0;
+        this.constitution = 0;
+        this.wisdom = 0;
+        this.practises = 0;
+        this.training = 0;
+        this.bandage = 0;
+        this.alignment = 0;
+        this.manastats = 100;
+        this.movementstats = 0;
+        this.maxmana = 11999;
+        this.maxmove = 11999;
+        this.maxvital = MAX_VITALS;
+        this.jumpmana = 1;
+        this.jumpmove = 1;
+        this.jumpvital = 1;
+        this.creation = new Date();
+        this.notes = null;
+        this.state = null;
     }
+    public static final int MAX_VITALS = 11999;
 
-    public Person(String name, String race, String sex, Date creation)
-    {
-        this.name = name;
-        this.race = race;
-        this.sex = sex;
-        this.creation = creation;
-    }
 
     /**
      * returns the name of the character.
@@ -528,6 +570,11 @@ public class Person implements Serializable
         this.room = room;
     }
 
+    /**
+     * retrieve sessionpassword
+     *
+     * @return String containing the session password
+     */
     public String getLok()
     {
         return lok;
@@ -1256,6 +1303,31 @@ public class Person implements Serializable
         return (getGod() == God.DEFAULT_USER || getGod() == God.GOD);
     }
 
+    /**
+     * generate a session password to be used by player during game session. Use
+     * {@link #getLok() } to return a String containing 25 random digits,
+     * capitals and smallcaps.
+     */
+    public void generateSessionPassword()
+    {
+        char[] myCharArray =
+        {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+            'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+        };
+        StringBuilder myString = new StringBuilder(26);
+        Random myRandom = new Random();
+        for (int i = 1; i < 26; i++)
+        {
+
+            myString.append(myCharArray[myRandom.nextInt(myCharArray.length)]);
+        }
+        lok = myString.toString();
+    }
+
     @Override
     public int hashCode()
     {
@@ -1286,4 +1358,107 @@ public class Person implements Serializable
         return "mmud.database.entities.game.Person[ name=" + name + " ]";
     }
 
+    /**
+     * activate a character
+     */
+    public void activate(String address) throws MudException
+    {
+        if (!isUser())
+        {
+            throw new MudException("user not a user");
+        }
+        this.setAddress(address);
+        this.setLastlogin(new Date());
+        this.setActive(true);
+        createLog();
+    }
+
+    /**
+     * writes a message to the log file of the character that contains all
+     * communication and messages.
+     * <P>
+     * <B>Important!</B> : Use this method only for Environmental communication,
+     * as it does not check the Ignore Flag. Use the writeMessage(Person
+     * aSource, String aMessage) for specific communication between users.
+     *
+     * @param aMessage
+     *            the message to be written to the logfile.
+     * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
+     * @see #writeMessage(Person aSource, String aMessage)
+     */
+    public void writeMessage(String aMessage) throws MudException
+    {
+        int i = 0;
+        int state = 0;
+        int foundit = -1;
+        while ((i < aMessage.length()) && (foundit == -1))
+        {
+            if (state == 0)
+            {
+                if (aMessage.charAt(i) == '<')
+                {
+                    state = 1;
+                } else if (aMessage.charAt(i) != ' ')
+                {
+                    foundit = i;
+                }
+            } else if (state == 1)
+            {
+                if (aMessage.charAt(i) == '>')
+                {
+                    state = 0;
+                }
+            }
+            i++;
+        }
+        if (foundit != -1)
+        {
+            aMessage = aMessage.substring(0, foundit)
+                    + aMessage.substring(foundit, foundit + 1).toUpperCase()
+                    + aMessage.substring(foundit + 1);
+        }
+
+
+        try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
+        {
+            myFileWriter.write(aMessage, 0, aMessage.length());
+
+        } catch (Exception e)
+        {
+            throw new MudException("error writing message", e);
+        }
+    }
+
+    /**
+     * creates a new log file and deletes the old one.
+     *
+     * @throws MudException
+     *             which indicates probably that the log file could not be
+     *             created. Possibly due to either permissions or the directory
+     *             does not exist.
+     */
+    private void createLog() throws MudException
+    {
+        if (getLogfile().exists())
+        {
+            getLogfile().delete();
+        }
+        try
+        {
+            getLogfile().createNewFile();
+        } catch (IOException e)
+        {
+            throw new MudException("Error creating logfile for " + getName()
+                    + " in " + Constants.mudfilepath, e);
+        }
+    }
+
+    private File getLogfile()
+    {
+        if (theLogfile == null)
+        {
+            theLogfile = new File(Constants.mudfilepath, getName() + ".log");
+        }
+        return theLogfile;
+    }
 }

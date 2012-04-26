@@ -506,15 +506,15 @@ public class PublicBeanTest
         guild.setTitle("Disaster Area");
         guild.setBossname(hotblack);
         guild.setCreation(firstDate);
-        guild.setGuildurl("http://www.disasterarea.com");
-        guild.setGuilddescription("This is just a description");
+        guild.setHomepage("http://www.disasterarea.com");
+        guild.setDescription("This is just a description");
         list.add(guild);
         guild = new Guild();
         guild.setTitle("Sirius Cybernetics Corporation");
         guild.setBossname(marvin);
         guild.setCreation(secondDate);
-        guild.setGuildurl("http://www.scc.com");
-        guild.setGuilddescription("This is just a description");
+        guild.setHomepage("http://www.scc.com");
+        guild.setDescription("This is just a description");
         list.add(guild);
         PublicBean publicBean = new PublicBean()
         {

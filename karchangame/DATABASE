@@ -45,3 +45,29 @@ ALTER TABLE mm_usertable CHANGE length height varchar(20);
 
 # add trigger
 /home/maartenl/Land-of-Karchan/sqlscripts/triggers/mm_usertable_insert_trigger.sql
+
+# change the log (mm_log)
+drop table mm_log2;
+
+create table mm_log2 (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  creation_date timestamp not null,
+  name varchar(20),
+  message text not null,
+  addendum text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create index natural_index on mm_log2 (creation_date, name);
+
+
+insert into mm_log2
+(creation_date, name, message, addendum)
+select *
+from mm_log
+order by creation, name, message;
+
+rename table mm_log to mm_log_old;
+rename table mm_log2 to mm_log;
+
+// drop table mm_log_old;
+

@@ -19,20 +19,38 @@ package mmud.exceptions;
 import org.owasp.validator.html.PolicyException;
 
 /**
- *
+ * The main exception of the mud.
  * @author maartenl
  */
 public class MudException extends Exception
 {
 
+    /**
+     * constructor for creating a exception with a message.
+     * @param aString the string containing the message
+     */
     public MudException(String string)
     {
         super(string);
     }
 
+    /**
+     * constructor for creating a exception with a message.
+     * @param aString the string containing the message
+     * @param aThrowable the original exception.
+     */
     public MudException(Exception ex)
     {
         super(ex);
     }
 
+    /**
+     * constructor for creating a exception with a message.
+     * @param aString the string containing the message
+     * @param ex the original exception.
+     */
+    public MudException(String aString, Exception ex)
+    {
+        super(aString, ex);
+    }
 }

@@ -19,6 +19,7 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -52,6 +53,8 @@ import org.slf4j.LoggerFactory;
 @Path("/private")
 public class PrivateBean
 {
+    @EJB
+    private MailBean mailBean;
 
     /**
      * Indicates that only 20 mails may be retrieved per time (basically a
@@ -171,14 +174,6 @@ public class PrivateBean
     @GET
     @Path("{name}/newmail")
     @Consumes(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -189,14 +184,7 @@ public class PrivateBean
         boolean result = false;
         try
         {
-            Query query = getEntityManager().createNamedQuery("Mail.hasnewmail");
-            query.setParameter("name", person);
-
-            Long count = (Long) query.getSingleResult();
-            if (count > 0)
-            {
-                result = true;
-            }
+            result = mailBean.hasNewMail(person);
         } catch (Exception e)
         {
             itsLog.debug("hasNewMail: throws ", e);

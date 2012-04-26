@@ -16,22 +16,23 @@
  */
 package mmud.rest.services;
 
+import java.util.Date;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import mmud.database.entities.game.Log;
 import mmud.database.entities.game.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO : add all mail here instead of in privateBean. use Path:{name}/mail
+ *
  * @author maartenl
  */
 @Stateless
 @LocalBean
-public class MailBean
+public class LogBean
 {
 
     @PersistenceContext(unitName = "karchangamePU")
@@ -47,18 +48,16 @@ public class MailBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(MailBean.class);
+    private static final Logger itsLog = LoggerFactory.getLogger(LogBean.class);
 
-    public boolean hasNewMail(Person person)
+    public void writeLog(Person person, String message)
     {
-        Query query = getEntityManager().createNamedQuery("Mail.hasnewmail");
-        query.setParameter("name", person);
+        itsLog.debug("writeLog");
 
-        Long count = (Long) query.getSingleResult();
-        if (count > 0)
-        {
-            return true;
-        }
-        return false;
+        Log log = new Log();
+        log.setName(person.getName());
+        log.setCreation(new Date());
+        log.setMessage(message);
+        getEntityManager().persist(log);
     }
 }
