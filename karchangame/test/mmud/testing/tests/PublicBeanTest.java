@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 import mmud.database.entities.game.*;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
+import mmud.rest.services.BoardBean;
+import mmud.rest.services.MailBean;
 import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
@@ -34,6 +36,7 @@ import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
+import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
@@ -325,6 +328,14 @@ public class PublicBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
@@ -371,6 +382,14 @@ public class PublicBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
@@ -630,7 +649,7 @@ public class PublicBeanTest
         expected.name = "Marvin";
         expected.title = "The Paranoid Android";
         expected.sex = "male";
-        expected.description = "male android";
+        expected.description = "young, tall, slender, swarthy, black-eyed, long-faced, black-haired, long-faced male android";
         expected.imageurl = "http://www.images.com/imageurl.jpg";
         expected.homepageurl = "http://www.homepage.com/";
         expected.dateofbirth = "0000";

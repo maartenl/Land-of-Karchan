@@ -38,11 +38,13 @@ import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
+import mmud.rest.services.MailBean;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
+import mockit.Deencapsulation;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -359,6 +361,14 @@ public class PrivateBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(privateBean, "mailBean", new MailBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
@@ -394,6 +404,14 @@ public class PrivateBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(privateBean, "mailBean", new MailBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
@@ -1383,7 +1401,6 @@ public class PrivateBeanTest
 
     }
 
-
     @Test
     public void updateFamilyvaluesNotFound() throws MudException
     {
@@ -1422,9 +1439,9 @@ public class PrivateBeanTest
         };
         try
         {
-        // Unit under test is exercised.
-        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 12);
- fail("We are supposed to get an exception here.");
+            // Unit under test is exercised.
+            Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 12);
+            fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
             assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
@@ -1432,6 +1449,7 @@ public class PrivateBeanTest
         }
 
     }
+
     @Test
     public void newFamilyvalues() throws MudException
     {
@@ -1481,7 +1499,7 @@ public class PrivateBeanTest
 
     }
 
-@Test
+    @Test
     public void deleteFamilyvalues() throws MudException
     {
         logger.fine("deleteFamilyvalues");

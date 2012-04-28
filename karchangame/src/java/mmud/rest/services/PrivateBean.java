@@ -182,14 +182,7 @@ public class PrivateBean
         itsLog.debug("entering hasNewMail");
         Person person = authenticate(name, lok);
         boolean result = false;
-        try
-        {
-            result = mailBean.hasNewMail(person);
-        } catch (Exception e)
-        {
-            itsLog.debug("hasNewMail: throws ", e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
+        result = mailBean.hasNewMail(person);
         if (!result)
         {
             return Response.noContent().build();
