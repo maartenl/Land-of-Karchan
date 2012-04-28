@@ -215,7 +215,7 @@ public class Mail implements Serializable
 
     /**
      * Returns the receiver of the mail.
-     * @return
+     * @return the person receiving the mail
      */
     public Person getToname()
     {
@@ -233,7 +233,7 @@ public class Mail implements Serializable
 
     /**
      * Returns the sender of the mail.
-     * @return
+     * @return the person sending the mail.
      */
     public Person getName()
     {

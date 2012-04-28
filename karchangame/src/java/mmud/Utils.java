@@ -111,7 +111,7 @@ public class Utils
 
     /**
      * Indicates the game is offline for maintenance.
-     * @return
+     * @return usually false, indicating the game is live.
      */
     public static boolean isOffline()
     {

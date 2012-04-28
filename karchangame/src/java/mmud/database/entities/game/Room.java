@@ -31,8 +31,8 @@ import javax.validation.constraints.Size;
  * it is required that the hibernate.cfg.xml file has hibernate.ejb.use_class_enhancer
  * set to true. Also means that Hibernate as JPA provider should be used
  * in full-blown JEE environment.
- * @see http://justonjava.blogspot.com/2010_09_01_archive.html
- * @see http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/configuration.html
+ * @see <a href="http://justonjava.blogspot.com/2010_09_01_archive.html}">Just on Java</a>
+ * @see <a href="http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/configuration.html">Hibernate Configuration</a>
  * @author maartenl
  */
 @Entity

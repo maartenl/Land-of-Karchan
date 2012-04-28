@@ -27,7 +27,7 @@ public class MudException extends Exception
 
     /**
      * constructor for creating a exception with a message.
-     * @param aString the string containing the message
+     * @param string the string containing the message
      */
     public MudException(String string)
     {
@@ -36,8 +36,7 @@ public class MudException extends Exception
 
     /**
      * constructor for creating a exception with a message.
-     * @param aString the string containing the message
-     * @param aThrowable the original exception.
+     * @param ex the original exception.
      */
     public MudException(Exception ex)
     {

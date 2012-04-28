@@ -522,9 +522,8 @@ public class PrivateBean
      * Adds or updates your current character info.
      *
      * @param name the name of the user
-     * @param toname the name of the user you are related to
-     * @param description the description of the family relation, for example
-     * "mother".
+     * @param lok the dession password
+     * @param cinfo the object containing the new stuff to update.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */

@@ -391,7 +391,8 @@ public class GameBean
      * Deletes a character, permanently. Use with extreme caution.
      *
      * @param name the name of the user
-     * @param person the data of the new character
+     * @param password the password of the character to be deleted
+     * @param password2 verification of the password, a second time.
      * @throws BAD_REQUEST if an unexpected exception
      * crops up.
      */

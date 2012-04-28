@@ -16,7 +16,6 @@
  */
 package mmud.testing;
 
-import com.sun.xml.internal.ws.api.ha.HaInfo;
 import java.util.Date;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;

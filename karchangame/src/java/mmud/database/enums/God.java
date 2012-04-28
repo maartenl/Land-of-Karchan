@@ -54,7 +54,7 @@ public enum God
 
     /**
      * Returns the numerical value of this enum.
-     * @return
+     * @return integer
      */
     public int getValue()
     {

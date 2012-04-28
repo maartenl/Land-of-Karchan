@@ -98,7 +98,7 @@ public enum Health
 
     /**
      * Returns the integer indicating the health.
-     * @return
+     * @return integer
      */
     public int getOrdinalValue()
     {

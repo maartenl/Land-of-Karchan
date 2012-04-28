@@ -23,16 +23,20 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
+import java.util.logging.Level;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.Utils;
+import mmud.database.entities.web.CharacterInfo;
 import mmud.database.enums.God;
 import mmud.database.enums.Health;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +47,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
 
 
 
@@ -325,7 +331,6 @@ public class Person implements Serializable
     }
     public static final int MAX_VITALS = 11999;
 
-
     /**
      * returns the name of the character.
      *
@@ -402,7 +407,7 @@ public class Person implements Serializable
     /**
      * sets the title of the character.
      *
-     * @param aNewTitle
+     * @param title
      *            String containing the title
      */
     public void setTitle(String title)
@@ -598,7 +603,7 @@ public class Person implements Serializable
     /**
      * sets the whimpy of the character.
      *
-     * @param aWhimpy
+     * @param whimpy
      *            Health enum containing the whimpy
      * @see #getWhimpy()
      */
@@ -1290,9 +1295,11 @@ public class Person implements Serializable
     }
 
     /**
-     * Indicates if this is a common user.
+     * Indicates if this is a common user. This means it indicates that it
+     * is basically someone behind a keyboard.
      *
-     * @return
+     * @return true if it is a common user (or a god/administrator),
+     * false otherwise.
      */
     public boolean isUser()
     {
@@ -1375,7 +1382,7 @@ public class Person implements Serializable
 
     /**
      * writes a message to the log file of the character that contains all
-     * communication and messages.
+     * communication and messages. The sentence will start with a capital.
      * <P>
      * <B>Important!</B> : Use this method only for Environmental communication,
      * as it does not check the Ignore Flag. Use the writeMessage(Person
@@ -1388,25 +1395,35 @@ public class Person implements Serializable
      */
     public void writeMessage(String aMessage) throws MudException
     {
+
+        if (aMessage == null){return;}
+            try
+            {
+                aMessage = Utils.security(aMessage);
+            } catch (    PolicyException | ScanException ex)
+            {
+                throw new MudException(ex);
+            }
+
         int i = 0;
-        int state = 0;
+        int _container = 0;
         int foundit = -1;
         while ((i < aMessage.length()) && (foundit == -1))
         {
-            if (state == 0)
+            if (_container == 0)
             {
                 if (aMessage.charAt(i) == '<')
                 {
-                    state = 1;
+                    _container = 1;
                 } else if (aMessage.charAt(i) != ' ')
                 {
                     foundit = i;
                 }
-            } else if (state == 1)
+            } else if (_container == 1)
             {
                 if (aMessage.charAt(i) == '>')
                 {
-                    state = 0;
+                    _container = 0;
                 }
             }
             i++;
@@ -1414,19 +1431,228 @@ public class Person implements Serializable
         if (foundit != -1)
         {
             aMessage = aMessage.substring(0, foundit)
-                    + aMessage.substring(foundit, foundit + 1).toUpperCase()
+                    + Character.toUpperCase(aMessage.charAt(foundit))
                     + aMessage.substring(foundit + 1);
         }
-
-
         try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
         {
             myFileWriter.write(aMessage, 0, aMessage.length());
 
-        } catch (Exception e)
+        } catch (IOException e)
         {
             throw new MudException("error writing message", e);
         }
+    }
+
+    /**
+     * writes a message to the log file of the character that contains all
+     * communication and messages. The message will be <I>interpreted</I> by
+     * replacing the following values by the following other values:
+     * <TABLE>
+     * <TR>
+     * <TD><B>REPLACE</B></TD>
+     * <TD><B>WITH (if target)</B></TD>
+     * <TD><B>WITH (if not target)</B></TD>
+     * </TR>
+     * <TR>
+     * <TD>%TNAME</TD>
+     * <TD>you</TD>
+     * <TD>name</TD>
+     * </TR>
+     * <TR>
+     * <TD>%TNAMESELF</TD>
+     * <TD>yourself</TD>
+     * <TD>name</TD>
+     * </TR>
+     * <TR>
+     * <TD>%THISHER</TD>
+     * <TD>your</TD>
+     * <TD>his/her</TD>
+     * </TR>
+     * <TR>
+     * <TD>%THIMHER</TD>
+     * <TD>you</TD>
+     * <TD>him/her</TD>
+     * </TR>
+     * <TR>
+     * <TD>%THESHE</TD>
+     * <TD>you</TD>
+     * <TD>he/she</TD>
+     * </TR>
+     * <TR>
+     * <TD>%TISARE</TD>
+     * <TD>are</TD>
+     * <TD>is</TD>
+     * </TR>
+     * <TR>
+     * <TD>%THASHAVE</TD>
+     * <TD>have</TD>
+     * <TD>has</TD>
+     * </TR>
+     * <TR>
+     * <TD>%TYOUPOSS</TD>
+     * <TD>your</TD>
+     * <TD>name + s</TD>
+     * </TR>
+     * <TR>
+     * <TD></TD>
+     * <TD></TD>
+     * <TD></TD>
+     * </TR>
+     * </TABLE>
+     *
+     * @param aMessage
+     *            the message to be written to the logfile.
+     * @param aSource
+     *            the source of the message, the thing originating the message.
+     * @param aTarget
+     *            the target of the message, could be null if there is not
+     *            target for this specific message.
+     * @see #writeMessage(String aMessage)
+     * @see #writeMessage(Person aSource, String aMessage)
+     */
+    public void writeMessage(Person aSource, Person aTarget, String aMessage) throws MudException
+    {
+        // TODO : ignoring people
+//		if (aSource.isIgnored(this))
+//		{
+//			return;
+//		}
+        String message = aMessage;
+        if (aTarget == this)
+        {
+            message = message.replaceAll("%TNAMESELF", "yourself");
+            message = message.replaceAll("%TNAME", "you");
+            message = message.replaceAll("%THISHER", "your");
+            message = message.replaceAll("%THIMHER", "you");
+            message = message.replaceAll("%THESHE", "you");
+            message = message.replaceAll("%TISARE", "are");
+            message = message.replaceAll("%THASHAVE", "have");
+            message = message.replaceAll("%TYOUPOSS", "your");
+        } else
+        {
+            message = message.replaceAll("%TNAMESELF", aTarget.getName());
+            message = message.replaceAll("%TNAME", aTarget.getName());
+            message = message.replaceAll("%THISHER", (aTarget.getSex().posession()));
+            message = message.replaceAll("%THIMHER", (aTarget.getSex().indirect()));
+            message = message.replaceAll("%THESHE", (aTarget.getSex().direct()));
+            message = message.replaceAll("%TISARE", "is");
+            message = message.replaceAll("%THASHAVE", "has");
+            message = message.replaceAll("%TYOUPOSS", aTarget.getName() + "s");
+        }
+        writeMessage(aSource, message);
+    }
+
+    /**
+     * writes a message to the log file of the character that contains all
+     * communication and messages. The message will be <I>interpreted</I> by
+     * replacing the following values by the following other values:
+     * <TABLE>
+     * <TR>
+     * <TD><B>REPLACE</B></TD>
+     * <TD><B>WITH (if source)</B></TD>
+     * <TD><B>WITH (if not source)</B></TD>
+     * </TR>
+     * <TR>
+     * <TD>%SNAME</TD>
+     * <TD>you</TD>
+     * <TD>name</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SNAMESELF</TD>
+     * <TD>yourself</TD>
+     * <TD>name</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SHISHER</TD>
+     * <TD>your</TD>
+     * <TD>his/her</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SHIMHER</TD>
+     * <TD>you</TD>
+     * <TD>him/her</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SHESHE</TD>
+     * <TD>you</TD>
+     * <TD>he/she</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SISARE</TD>
+     * <TD>are</TD>
+     * <TD>is</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SHASHAVE</TD>
+     * <TD>have</TD>
+     * <TD>has</TD>
+     * </TR>
+     * <TR>
+     * <TD>%SYOUPOSS</TD>
+     * <TD>your</TD>
+     * <TD>name + s</TD>
+     * </TR>
+     * <TR>
+     * <TD>%VERB1</TD>
+     * <TD></TD>
+     * <TD>es</TD>
+     * </TR>
+     * <TR>
+     * <TD>%VERB2</TD>
+     * <TD></TD>
+     * <TD>s</TD>
+     * </TR>
+     * <TR>
+     * <TD></TD>
+     * <TD></TD>
+     * <TD></TD>
+     * </TR>
+     * </TABLE>
+     *
+     * @param aMessage
+     *            the message to be written to the logfile.
+     * @param aSource
+     *            the source of the message, the thing originating the message.
+     * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
+     * @see #writeMessage(String aMessage)
+     */
+    public void writeMessage(Person aSource, String aMessage) throws MudException
+    {
+        // TODO : ignoring people
+//		if (aSource.isIgnored(this))
+//		{
+//			return;
+//		}
+        String message = aMessage;
+        if (aSource == this)
+        {
+            message = message.replaceAll("%SNAMESELF", "yourself");
+            message = message.replaceAll("%SNAME", "you");
+            message = message.replaceAll("%SHISHER", "your");
+            message = message.replaceAll("%SHIMHER", "you");
+            message = message.replaceAll("%SHESHE", "you");
+            message = message.replaceAll("%SISARE", "are");
+            message = message.replaceAll("%SHASHAVE", "have");
+            message = message.replaceAll("%SYOUPOSS", "your");
+            message = message.replaceAll("%VERB1", "");
+            message = message.replaceAll("%VERB2", "");
+        } else
+        {
+            message = message.replaceAll("%SNAMESELF", aSource.getName());
+            message = message.replaceAll("%SNAME", aSource.getName());
+            message = message.replaceAll("%SHISHER", (aSource.getSex().posession()));
+            message = message.replaceAll("%SHIMHER", (aSource.getSex().indirect()));
+            message = message.replaceAll("%SHESHE", (aSource.getSex().direct()));
+            message = message.replaceAll("%SISARE", "is");
+            message = message.replaceAll("%SHASHAVE", "has");
+            message = message.replaceAll("%SYOUPOSS", aSource.getName() + "s");
+            message = message.replaceAll("%VERB1", "es");
+            message = message.replaceAll("say%VERB2", "says");
+            message = message.replaceAll("y%VERB2", "ies");
+            message = message.replaceAll("%VERB2", "s");
+        }
+        writeMessage(message);
     }
 
     /**

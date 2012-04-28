@@ -124,7 +124,7 @@ public class CharacterInfo implements Serializable
     /**
      * An url to the homepage of a player. Only http and https are supported.
      *
-     * @return
+     * @return a properly formatted url.
      */
     public String getHomepageurl()
     {
