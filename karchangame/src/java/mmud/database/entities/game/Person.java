@@ -23,40 +23,31 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
-import java.util.logging.Level;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.Utils;
-import mmud.database.entities.web.CharacterInfo;
 import mmud.database.enums.God;
 import mmud.database.enums.Health;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * A character in the game. Might be both a bot, a shopkeeper, a user, or an administrator.
+ * Note: it contains a filter annotation which is Hibernate specific.
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
-
-
-
-
-
-
-
-
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -65,6 +56,9 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
     @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
 })
+@Filters( {
+    @Filter(name="activePersons")
+} )
 public class Person implements Serializable
 {
 
@@ -1396,14 +1390,17 @@ public class Person implements Serializable
     public void writeMessage(String aMessage) throws MudException
     {
 
-        if (aMessage == null){return;}
-            try
-            {
-                aMessage = Utils.security(aMessage);
-            } catch (    PolicyException | ScanException ex)
-            {
-                throw new MudException(ex);
-            }
+        if (aMessage == null)
+        {
+            return;
+        }
+        try
+        {
+            aMessage = Utils.security(aMessage);
+        } catch (PolicyException | ScanException ex)
+        {
+            throw new MudException(ex);
+        }
 
         int i = 0;
         int _container = 0;
@@ -1686,5 +1683,15 @@ public class Person implements Serializable
             theLogfile = new File(Constants.mudfilepath, getName() + ".log");
         }
         return theLogfile;
+    }
+
+    /**
+     * deactivate a character (usually because someone typed quit.)
+     */
+    public void deactivate()
+    {
+        setActive(false);
+        setLok(null);
+        setLastlogin(new Date());
     }
 }

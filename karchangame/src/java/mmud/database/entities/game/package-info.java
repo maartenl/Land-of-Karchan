@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
  * <p>Provides the JPA Database Entities.</p>
  * <p><img src="../../../../images/package-info_gameentities.png"/></p>
@@ -699,4 +698,8 @@
  * }
  * @enduml
  */
-  package mmud.database.entities.game;
+@FilterDef(name = "activePersons", defaultCondition="active = 1")
+package mmud.database.entities.game;
+
+import org.hibernate.annotations.FilterDef;
+

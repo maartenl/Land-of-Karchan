@@ -19,9 +19,12 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Logger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.exceptions.MudException;
+import org.hibernate.annotations.Filter;
 
 /**
  * A room. Bear in mind that this room has potential exits to the north, south,
@@ -38,6 +41,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_rooms", catalog = "mmud", schema = "")
 @NamedQueries(
+
 {
     @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r"),
     @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
@@ -52,7 +56,6 @@ public class Room implements Serializable
      * The first room that new characters appear in.
      */
     public static final Integer STARTERS_ROOM = 1;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -81,49 +84,36 @@ public class Room implements Serializable
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
-
     @OneToMany(mappedBy = "down")
     private Collection<Room> roomCollection;
-
     @JoinColumn(name = "down", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room down;
-
     @OneToMany(mappedBy = "up")
     private Collection<Room> roomCollection1;
-
     @JoinColumn(name = "up", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room up;
-
     @OneToMany(mappedBy = "west")
     private Collection<Room> roomCollection2;
-
     @JoinColumn(name = "west", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room west;
-
     @OneToMany(mappedBy = "east")
     private Collection<Room> roomCollection3;
-
     @JoinColumn(name = "east", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room east;
-
     @OneToMany(mappedBy = "south")
     private Collection<Room> roomCollection4;
-
     @JoinColumn(name = "south", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room south;
-
     @OneToMany(mappedBy = "north")
     private Collection<Room> roomCollection5;
-
     @JoinColumn(name = "north", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Room north;
-
     @JoinColumn(name = "area", referencedColumnName = "area")
     @ManyToOne(optional = false)
     private Area area;
@@ -131,6 +121,9 @@ public class Room implements Serializable
     private Collection<Roomattribute> roomattributeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Collection<RoomitemTable> roomitemTableCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    @Filter(name="activePersons")
+    private Collection<Person> persons;
 
     public Room()
     {
@@ -359,6 +352,25 @@ public class Room implements Serializable
         this.roomitemTableCollection = roomitemTableCollection;
     }
 
+    /**
+     * character communication method to everyone in the room. The message is
+     * parsed, based on who is sending the message.
+     *
+     * @param aPerson
+     *            the person who is the source of the message.
+     * @param aMessage
+     *            the message
+     *
+     * @see Person#writeMessage(mmud.database.entities.game.Person, java.lang.String)
+     */
+    public void sendMessage(Person aPerson, String aMessage) throws MudException
+    {
+        for (Person myChar : persons)
+        {
+            myChar.writeMessage(aPerson, aMessage);
+        }
+    }
+
     @Override
     public int hashCode()
     {
@@ -388,5 +400,4 @@ public class Room implements Serializable
     {
         return "mmud.database.entities.game.Room[ id=" + id + " ]";
     }
-
 }

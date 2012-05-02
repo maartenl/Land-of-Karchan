@@ -52,6 +52,7 @@ import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -469,6 +470,11 @@ public class GameBean
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
         Person person = authenticateWithPassword(name, password);
+
+        // Hibernate specific
+        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
+        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
+        session.enableFilter("activePersons");
         try
         {
             person.activate(address);
@@ -504,7 +510,7 @@ public class GameBean
                 if (person.getGuild().getLogonmessage() != null)
                 {
                     person.writeMessage(person.getGuild().getLogonmessage()
-                            + "<HR>");
+                            + "<hr/>");
                 }
                 // guild alarm message
                 person.writeMessage(person.getGuild().getAlarmDescription()
@@ -550,6 +556,11 @@ public class GameBean
     public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("command") String command)
     {
         itsLog.debug("entering play");
+        // Hibernate specific
+        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
+        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
+        session.enableFilter("activePersons");
+
         List<PrivateMail> res = new ArrayList<>();
         try
         {
@@ -619,21 +630,23 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering quit");
-        List<PrivateMail> res = new ArrayList<>();
+        // Hibernate specific
+        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
+        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
+        session.enableFilter("activePersons");
+
+        Person person = authenticate(name, lok);
         try
         {
+            person.getRoom().sendMessage(person, "%SNAME left the game.<BR>\r\n");
+            person.deactivate();
+            logBean.writeLog(person, "left the game.");
         } catch (WebApplicationException e)
         {
             //ignore
