@@ -48,11 +48,14 @@ import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
+import mmud.exceptions.MudException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import org.hibernate.Session;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,6 +286,7 @@ public class GameBean
     @Path("{name}")
     @Produces(
 
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -406,6 +410,7 @@ public class GameBean
 
 
 
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -446,6 +451,7 @@ public class GameBean
     @POST
     @Path("{name}/logon")
     @Produces(
+
 
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -545,25 +551,44 @@ public class GameBean
     @Path("{name}/play")
     @Produces(
 
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
-    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("command") String command)
+    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command)
     {
         itsLog.debug("entering play");
+
+        if (Utils.isOffline())
+        {
+            // game offline
+            throw new WebApplicationException(Response.Status.NO_CONTENT);
+        }
+
+        try
+        {
+            command = Utils.security(command);
+        } catch (PolicyException | ScanException ex)
+        {
+            throw new WebApplicationException(ex, Response.Status.BAD_REQUEST);
+        }
+
         // Hibernate specific
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
         session.enableFilter("activePersons");
 
-        List<PrivateMail> res = new ArrayList<>();
+        Person person = authenticate(name, lok);
+
+
         try
         {
+            PrivateDisplay display = new PrivateDisplay();
+            display.title = "Try me";
+            display.body = command;
+            display.image = "Someimage";
+            display.log = retrieveLog(person, Integer.SIZE);
+            return display;
+
         } catch (WebApplicationException e)
         {
             //ignore
@@ -573,7 +598,21 @@ public class GameBean
             itsLog.debug("play: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        return null;
+    }
+
+    private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
+    {
+        String log = person.getLog(offset);
+        if (Person.EMPTY_LOG.equals(log))
+        {
+            offset = 0;
+            log = person.getLog(offset);
+        }
+        PrivateLog plog = new PrivateLog();
+        plog.offset = offset;
+        plog.log = log;
+        plog.size = plog.log.length();
+        return plog;
     }
 
     /**
@@ -592,20 +631,20 @@ public class GameBean
     @Path("{name}/log")
     @Produces(
 
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public PrivateLog retrieveLog(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset)
     {
         itsLog.debug("entering retrieveLog");
-        List<PrivateMail> res = new ArrayList<>();
+        Person person = authenticate(name, lok);
+        if (offset == null)
+        {
+            offset = Integer.valueOf(0);
+        }
         try
         {
+            return retrieveLog(person, offset);
         } catch (WebApplicationException e)
         {
             //ignore
@@ -615,7 +654,6 @@ public class GameBean
             itsLog.debug("retrieveLog: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        return null;
     }
 
     /**
@@ -630,6 +668,7 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })

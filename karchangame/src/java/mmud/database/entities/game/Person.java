@@ -16,13 +16,17 @@
  */
 package mmud.database.entities.game;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
+import java.util.logging.Level;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -48,6 +52,10 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
+
+
+
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -56,9 +64,13 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
     @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
 })
-@Filters( {
-    @Filter(name="activePersons")
-} )
+@Filters(
+
+
+
+{
+    @Filter(name = "activePersons")
+})
 public class Person implements Serializable
 {
 
@@ -66,6 +78,7 @@ public class Person implements Serializable
     private static final long serialVersionUID = 1L;
     private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
     private static final String PASSWORD_REGEXP = ".{5,}";
+    public static final String EMPTY_LOG = "";
     @Id
     @Basic(optional = false)
     @NotNull
@@ -282,6 +295,8 @@ public class Person implements Serializable
     private Collection<Charattribute> charattributeCollection;
     @Transient
     private File theLogfile = null;
+    @Transient
+    private StringBuffer theLog = null;
 
     public Person()
     {
@@ -1693,5 +1708,65 @@ public class Person implements Serializable
         setActive(false);
         setLok(null);
         setLastlogin(new Date());
+    }
+
+    private void readLog() throws MudException
+    {
+        File file = getLogfile();
+
+        try (BufferedReader reader = new BufferedReader(
+                        new FileReader(file)))
+        {
+            theLog = new StringBuffer(1000);
+
+            char[] buf = new char[1024];
+            int numRead = 0;
+            while ((numRead = reader.read(buf)) != -1)
+            {
+                theLog.append(buf, 0, numRead);
+            }
+        } catch (FileNotFoundException ex)
+        {
+            try
+            {
+                throw new MudException("Logfile of " + name + " (" + file.getCanonicalPath() + ")", ex);
+            } catch (IOException ex1)
+            {
+                // surrender peacefully with your hands up!
+            }
+        } catch (IOException ex)
+        {
+            throw new MudException("Reading logfile of " + name, ex);
+        }
+    }
+
+    /**
+     * Returns the log starting from the offset, or an empty string if
+     * the offset is past the length of the log.Can also contain the empty string, if the log happens to be empty.
+     * @param offset the offset from whence to read the log. Offset starts with 0
+     * and is inclusive.
+     * @return a String, part of the Log.
+     * @throws MudException in case of accidents with reading the log, or a negative
+     * offset.
+     */
+    public String getLog(Integer offset) throws MudException
+    {
+        if (offset == null)
+        {
+            offset = 0;
+        }
+        if (theLog == null)
+        {
+            readLog();
+        }
+        if (offset >= theLog.length())
+        {
+            return EMPTY_LOG;
+        }
+        if (offset < 0)
+        {
+            throw new MudException("Attempting to get log with negative offset.");
+        }
+        return theLog.substring(offset);
     }
 }

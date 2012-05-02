@@ -32,9 +32,6 @@ import org.owasp.validator.html.ScanException;
 public class Utils
 {
 
-    // TODO : fix this to be less static, and has to make use of either
-    // web-context param or env-context param/.
-    private static final String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
 
     /**
      * Returns a safe string, containing no javascript at all.
@@ -44,7 +41,7 @@ public class Utils
      */
     public static String security(String dirtyInput) throws PolicyException, ScanException
     {
-        Policy policy = Policy.getInstance(POLICY_FILE_LOCATION);
+        Policy policy = Policy.getInstance(Constants.POLICY_FILE_LOCATION);
 
         AntiSamy as = new AntiSamy();
 

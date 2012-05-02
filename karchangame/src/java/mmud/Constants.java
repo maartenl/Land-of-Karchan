@@ -24,4 +24,9 @@ public class Constants
 {
 
     public static String mudfilepath = "/home/maartenl/temp";
+
+    // TODO : fix this to be less static, and has to make use of either
+    // web-context param or env-context param/.
+    public static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
+
 }
