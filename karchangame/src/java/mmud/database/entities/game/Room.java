@@ -42,6 +42,7 @@ import org.hibernate.annotations.Filter;
 @Table(name = "mm_rooms", catalog = "mmud", schema = "")
 @NamedQueries(
 
+
 {
     @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r"),
     @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
@@ -49,7 +50,7 @@ import org.hibernate.annotations.Filter;
     @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
     @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
 })
-public class Room implements Serializable
+public class Room implements Serializable, DisplayInterface
 {
 
     /**
@@ -122,7 +123,7 @@ public class Room implements Serializable
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Collection<RoomitemTable> roomitemTableCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    @Filter(name="activePersons")
+    @Filter(name = "activePersons")
     private Collection<Person> persons;
 
     public Room()
@@ -162,6 +163,12 @@ public class Room implements Serializable
         this.contents = contents;
     }
 
+    @Override
+    public String getBody()
+    {
+        return this.contents;
+    }
+
     public Date getCreation()
     {
         return creation;
@@ -172,6 +179,7 @@ public class Room implements Serializable
         this.creation = creation;
     }
 
+    @Override
     public String getTitle()
     {
         return title;
@@ -183,6 +191,12 @@ public class Room implements Serializable
     }
 
     public String getPicture()
+    {
+        return picture;
+    }
+
+    @Override
+    public String getImage()
     {
         return picture;
     }

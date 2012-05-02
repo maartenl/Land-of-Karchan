@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
 import javax.persistence.*;
@@ -56,6 +57,8 @@ import org.slf4j.LoggerFactory;
 
 
 
+
+
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -65,6 +68,8 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
 })
 @Filters(
+
+
 
 
 
@@ -1390,12 +1395,22 @@ public class Person implements Serializable
     }
 
     /**
+     * Clears the log.
+     */
+    public void clearLog() throws MudException
+    {
+        createLog();
+    }
+
+    /**
      * writes a message to the log file of the character that contains all
      * communication and messages. The sentence will start with a capital.
-     * <P>
-     * <B>Important!</B> : Use this method only for Environmental communication,
+     *
+     * <p><b>Important!</b> : Use this method only for Environmental communication,
      * as it does not check the Ignore Flag. Use the writeMessage(Person
-     * aSource, String aMessage) for specific communication between users.
+     * aSource, String aMessage) for specific communication between users.</p>
+     * TODO : move the logging to a protected hashtable in a singleton bean
+     * containing StringBuffers.
      *
      * @param aMessage
      *            the message to be written to the logfile.
@@ -1729,14 +1744,22 @@ public class Person implements Serializable
         {
             try
             {
-                throw new MudException("Logfile of " + name + " (" + file.getCanonicalPath() + ")", ex);
+                throw new MudException("Logfile of " + name + " (" + file.getCanonicalPath() + ") not found", ex);
             } catch (IOException ex1)
             {
+                throw new MudException("Logfile of " + name, ex);
                 // surrender peacefully with your hands up!
             }
         } catch (IOException ex)
         {
-            throw new MudException("Reading logfile of " + name, ex);
+            try
+            {
+                throw new MudException("Error reading logfile of " + name + " (" + file.getCanonicalPath() + ")", ex);
+            } catch (IOException ex1)
+            {
+                throw new MudException("Error reading logfile of " + name, ex);
+                // surrender peacefully with your hands up!
+            }
         }
     }
 
@@ -1768,5 +1791,54 @@ public class Person implements Serializable
             throw new MudException("Attempting to get log with negative offset.");
         }
         return theLog.substring(offset);
+    }
+
+    /**
+     * Runs a specific command. If this person appears to be asleep, the only
+     * possible commands are "quit" and "awaken". If the command found returns a
+     * false, i.e. nothing is executed, the method will call the standard
+     * BogusCommand.
+     *
+     * @param command
+     *            the command to be run
+     * @return DisplayInterface object containing the result of the command executed.
+     */
+    public DisplayInterface runCommand(String command)
+    {
+        return null;
+//		Command boguscommand = new BogusCommand(".+");
+//		Command command = boguscommand;
+//		if (isaSleep())
+//		{
+//			if (aCommand.trim().equalsIgnoreCase("awaken"))
+//			{
+//				command = new AwakenCommand("awaken");
+//			} else if (aCommand.trim().equalsIgnoreCase("quit"))
+//			{
+//				command = new QuitCommand("quit");
+//			} else
+//			{
+//				command = new AlreadyAsleepCommand(".+");
+//			}
+//			command.setCommand(aCommand);
+//			command.start(this);
+//			return command.getResult();
+//		}
+//
+//		Collection myCol = Constants.getCommand(aCommand);
+//		Iterator myI = myCol.iterator();
+//		while (myI.hasNext())
+//		{
+//			command = (Command) myI.next();
+//			command = command.createCommand();
+//			command.setCommand(aCommand);
+//			if (command.start(this))
+//			{
+//				return command.getResult();
+//			}
+//		}
+//		throw new MudException("We shouldn't reach this point."
+//				+ " At least the bogus command should execute successfully."
+//				+ " This is probably a big bug!.");
     }
 }

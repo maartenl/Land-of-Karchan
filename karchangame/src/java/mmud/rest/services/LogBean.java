@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
 import mmud.database.entities.game.Person;
 import org.slf4j.Logger;
@@ -50,6 +51,21 @@ public class LogBean
     }
     private static final Logger itsLog = LoggerFactory.getLogger(LogBean.class);
 
+
+	/**
+	 * write a log message to the database. This log facility is primarily used
+	 * to keep a record of what kind of important mutations are done or
+	 * attempted by both characters as well as administrators. Some examples:
+	 * <ul>
+	 * <li>an item is picked up off the floor by a character
+	 * <li>an item is eaten
+	 * <li>an administrator creates a new item/room/character
+	 * </ul>
+	 *
+	 * @param person the person to be inscribed in the log table
+	 * @param message the message to be written in the log, may not be larger than
+	 * 255 characters.
+	 */
     public void writeLog(Person person, String message)
     {
         itsLog.debug("writeLog");
@@ -59,5 +75,25 @@ public class LogBean
         log.setCreation(new Date());
         log.setMessage(message);
         getEntityManager().persist(log);
+    }
+
+
+	/**
+	 * write a command to the database. This log facility is primarily used
+	 * to keep a chatrecord.
+	 *
+	 * @param person the person to be inscribed in the log table
+	 * @param command the command that is to be executed written in the log, may not be larger than
+	 *            255 characters.
+	 */
+    public void writeCommandLog(Person person, String command)
+    {
+        itsLog.debug("writeCommandLog");
+
+        Commandlog commandlog = new Commandlog();
+        commandlog.setName(person.getName());
+        commandlog.setStamp(new Date());
+        commandlog.setCommand(command);
+        getEntityManager().persist(commandlog);
     }
 }

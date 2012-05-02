@@ -44,6 +44,9 @@ import javax.ws.rs.core.Response;
 import mmud.Utils;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Macro;
+import mmud.database.entities.game.MacroPK;
 import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
@@ -287,6 +290,8 @@ public class GameBean
     @Produces(
 
 
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -411,6 +416,8 @@ public class GameBean
 
 
 
+
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -451,6 +458,8 @@ public class GameBean
     @POST
     @Path("{name}/logon")
     @Produces(
+
+
 
 
     {
@@ -539,31 +548,36 @@ public class GameBean
     }
 
     /**
-     * Logs a character in, to start playing.
-     *
+     * Main function for executing a command in the game.
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
+     * @param command the command issued
+     * @param offset the offset used for the log
+     * @param log indicates with true or false, wether or not we are
+     * interested in the log.
      * @throws BAD_REQUEST if an unexpected exception
      * crops up.
+     * @return NO_CONTENT if the game is offline for maintenance.
+     * @throws BAD_REQUEST if an unexpected exception
+     * crops up or something could not be validated.
      */
     @POST
     @Path("{name}/play")
     @Produces(
 
+
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
-    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command)
+    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log)
     {
         itsLog.debug("entering play");
-
         if (Utils.isOffline())
         {
             // game offline
             throw new WebApplicationException(Response.Status.NO_CONTENT);
         }
-
         try
         {
             command = Utils.security(command);
@@ -571,22 +585,52 @@ public class GameBean
         {
             throw new WebApplicationException(ex, Response.Status.BAD_REQUEST);
         }
-
         // Hibernate specific
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
         session.enableFilter("activePersons");
-
         Person person = authenticate(name, lok);
-
-
         try
         {
-            PrivateDisplay display = new PrivateDisplay();
-            display.title = "Try me";
-            display.body = command;
-            display.image = "Someimage";
-            display.log = retrieveLog(person, Integer.SIZE);
+            PrivateDisplay display = null;
+            if (command.contains(" ; ") && (!command.toLowerCase().startsWith("macro ")))
+            {
+                // it's not a macro , but does contain multiple commands
+                display = runMultipleCommands(person, command);
+            } else
+            {
+                String[] parsedCommand = command.split(" ");
+                Macro macro = null;
+                if (parsedCommand.length <= 2 && (!command.toLowerCase().startsWith("macro ")))
+                {
+                    // find macro (if it exists)
+                    MacroPK pk = new MacroPK();
+                    pk.setMacroname(parsedCommand[0]);
+                    pk.setName(person.getName());
+                    macro = getEntityManager().find(Macro.class, pk);
+                }
+                if (macro == null || macro.getContents() == null || macro.getContents().trim().equals(""))
+                {
+                    // no macro found, execute single command
+                    display = gameMain(person, command);
+                } else
+                {
+                    // macro found, execute macro.
+                    command = macro.getContents();
+                    // macro
+                    if (parsedCommand.length == 2)
+                    {
+                        command = command.replaceAll("%t", parsedCommand[1]);
+                    }
+                    display = runMultipleCommands(person, command);
+                }
+            }
+
+            // setup return value
+            if (log)
+            {
+                display.log = retrieveLog(person, offset);
+            }
             return display;
 
         } catch (WebApplicationException e)
@@ -598,6 +642,42 @@ public class GameBean
             itsLog.debug("play: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
+    }
+
+    private PrivateDisplay runMultipleCommands(Person person, String command)
+            throws MudException
+    {
+        PrivateDisplay result = null;
+        // multiple commands
+        String[] splitted = command.split(" ; ");
+        for (String str : splitted)
+        {
+            result = gameMain(person, str.trim());
+        }
+        return result;
+    }
+
+    /**
+     * It parses and executes the command of the
+     * user. The main batch of the server.
+     * @param person User who wishes to execute a command.
+     * @param command String containing the command entered
+     * @return PrivateDisplay containing the response.
+     * @throws MudException when something goes wrong.
+     */
+    private PrivateDisplay gameMain(Person person, String command)
+    {
+        logBean.writeCommandLog(person, command);
+        DisplayInterface display = person.runCommand(command);
+        if (display == null)
+        {
+            display = person.getRoom();
+        }
+        PrivateDisplay result = new PrivateDisplay();
+        result.body = display.getBody();
+        result.image = display.getImage();
+        result.title = display.getTitle();
+        return result;
     }
 
     private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
@@ -630,6 +710,8 @@ public class GameBean
     @GET
     @Path("{name}/log")
     @Produces(
+
+
 
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -668,6 +750,8 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
+
+
 
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
