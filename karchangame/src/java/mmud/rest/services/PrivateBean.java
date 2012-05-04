@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import mmud.database.entities.game.*;
+import mmud.database.entities.characters.*;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;

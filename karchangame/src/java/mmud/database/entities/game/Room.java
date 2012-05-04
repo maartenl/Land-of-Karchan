@@ -19,10 +19,10 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.logging.Logger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.entities.characters.Person;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Filter;
 
@@ -375,7 +375,7 @@ public class Room implements Serializable, DisplayInterface
      * @param aMessage
      *            the message
      *
-     * @see Person#writeMessage(mmud.database.entities.game.Person, java.lang.String)
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
      */
     public void sendMessage(Person aPerson, String aMessage) throws MudException
     {

@@ -21,7 +21,7 @@ import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import mmud.database.entities.game.Person;
+import mmud.database.entities.characters.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

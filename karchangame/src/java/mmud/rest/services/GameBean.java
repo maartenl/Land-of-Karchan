@@ -47,7 +47,8 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
-import mmud.database.entities.game.Person;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
@@ -322,7 +323,7 @@ public class GameBean
                 // passwords do not match
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
-            Person person = new Person();
+            Person person = new User();
             person.setName(name);
             person.setPassword(pperson.password);
             if (isBanned(name, address))
@@ -626,7 +627,7 @@ public class GameBean
                 }
             }
 
-            // setup return value
+            // add log to the return value
             if (log)
             {
                 display.log = retrieveLog(person, offset);

@@ -28,6 +28,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import mmud.database.entities.characters.Person;
 
 /**
  * A coupling entity between an item and who has it and what they are doing with it.

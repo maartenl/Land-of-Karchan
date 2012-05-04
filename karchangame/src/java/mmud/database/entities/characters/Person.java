@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.database.entities.characters;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,6 +34,11 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.Utils;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Charattribute;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Guild;
+import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
 import mmud.database.enums.Health;
 import mmud.database.enums.Sex;
@@ -51,14 +56,13 @@ import org.slf4j.LoggerFactory;
  * @author maartenl
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+    name="god",
+    discriminatorType=DiscriminatorType.INTEGER
+)
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
-
-
-
-
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
@@ -68,15 +72,10 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
 })
 @Filters(
-
-
-
-
-
 {
     @Filter(name = "activePersons")
 })
-public class Person implements Serializable
+abstract public class Person implements Serializable
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
@@ -190,7 +189,7 @@ public class Person implements Serializable
     @Column(name = "birth")
     @Temporal(TemporalType.TIMESTAMP)
     private Date birth;
-    @Column(name = "god")
+    @Column(name = "god", insertable=false, updatable=false)
     private Integer god;
     @Column(name = "strength")
     private Integer strength;

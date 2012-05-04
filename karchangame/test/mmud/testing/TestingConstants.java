@@ -17,9 +17,10 @@
 package mmud.testing;
 
 import java.util.Date;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
-import mmud.database.entities.game.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
@@ -53,7 +54,7 @@ public class TestingConstants
      */
     public static Person getHotblack(Room aRoom) throws MudException
     {
-        Person person = new Person();
+        Person person = new User();
         person.setName("Hotblack");
         // JDK7: number formats, for clarification.
         // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
@@ -88,7 +89,7 @@ public class TestingConstants
 
     public static Person getMarvin(Room aRoom) throws MudException
     {
-        Person person = new Person();
+        Person person = new User();
         person.setName("Marvin");
         // JDK7: number formats, for clarification.
         // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
