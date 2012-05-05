@@ -29,6 +29,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.web.CharacterInfo;
@@ -85,7 +86,7 @@ public class PublicBean
         List<Fortune> res = new ArrayList<>();
         try
         {
-            Query query = getEntityManager().createNamedQuery("Person.fortunes");
+            Query query = getEntityManager().createNamedQuery("User.fortunes");
             query.setMaxResults(100);
             List<Object[]> list = query.getResultList();
 
@@ -120,10 +121,10 @@ public class PublicBean
         List<PublicPerson> res = new ArrayList<>();
         try
         {
-            Query query = getEntityManager().createNamedQuery("Person.who");
-            List<Person> list = query.getResultList();
+            Query query = getEntityManager().createNamedQuery("User.who");
+            List<User> list = query.getResultList();
 
-            for (Person person : list)
+            for (User person : list)
             {
                 PublicPerson publicPerson = new PublicPerson();
                 publicPerson.name = person.getName();
@@ -202,7 +203,7 @@ public class PublicBean
         List<PublicPerson> res = new ArrayList<>();
         try
         {
-            Query query = getEntityManager().createNamedQuery("Person.status");
+            Query query = getEntityManager().createNamedQuery("User.status");
             List<Person> list = query.getResultList();
 
             for (Person person : list)

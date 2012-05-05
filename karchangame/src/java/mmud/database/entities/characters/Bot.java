@@ -27,4 +27,19 @@ import javax.persistence.*;
 public class Bot extends Person
 {
 
+    @Override
+    public Boolean getFightable()
+    {
+        return false;
+    }
+
+    /**
+     * Bots cannot fight. Use mobs for that. Any entry is ignored.
+     * @param fightable
+     */
+    @Override
+    public void setFightable(Boolean fightable)
+    {
+        super.setFightable(false);
+    }
 }

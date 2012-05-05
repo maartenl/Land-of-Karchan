@@ -176,7 +176,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.fortunes");
+                entityManager.createNamedQuery("User.fortunes");
                 result = query;
             }
         };
@@ -215,7 +215,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.fortunes");
+                entityManager.createNamedQuery("User.fortunes");
                 result = query;
                 query.setMaxResults(100);
                 query.getResultList();
@@ -257,7 +257,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.who");
+                entityManager.createNamedQuery("User.who");
                 result = query;
             }
         };
@@ -287,7 +287,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.who");
+                entityManager.createNamedQuery("User.who");
                 result = query;
                 query.getResultList();
                 result = list;
@@ -434,7 +434,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.status");
+                entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
             }
@@ -465,7 +465,7 @@ public class PublicBeanTest
         {
 
             {
-                entityManager.createNamedQuery("Person.status");
+                entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
                 result = list;

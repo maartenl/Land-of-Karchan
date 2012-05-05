@@ -25,6 +25,7 @@ import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.CharitemTable;
@@ -138,7 +139,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
             }
         };
@@ -173,7 +174,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = null;
             }
         };
@@ -209,7 +210,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
             }
         };
@@ -241,7 +242,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.createNamedQuery("Mail.listmail");
                 result = query;
@@ -302,7 +303,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.createNamedQuery("Mail.listmail");
                 result = query;
@@ -373,7 +374,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
 
                 entityManager.createNamedQuery("Mail.hasnewmail");
@@ -416,7 +417,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
 
                 entityManager.createNamedQuery("Mail.hasnewmail");
@@ -456,9 +457,9 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
-                entityManager.find(Person.class, "Hotblack");
+                entityManager.find(User.class, "Hotblack");
                 result = hotblack;
                 entityManager.persist((Mail) any);
                 result = new Delegate()
@@ -511,9 +512,9 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
-                entityManager.find(Person.class, "Unknown");
+                entityManager.find(User.class, "Unknown");
                 result = null;
 
             }
@@ -553,9 +554,9 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
-                entityManager.find(Person.class, "Hotblack");
+                entityManager.find(User.class, "Hotblack");
                 result = hotblack;
 
             }
@@ -590,7 +591,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = null;
@@ -634,7 +635,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -678,7 +679,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -722,7 +723,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -782,7 +783,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -901,7 +902,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -972,7 +973,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -1015,7 +1016,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -1058,7 +1059,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -1096,7 +1097,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
@@ -1131,7 +1132,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = null;
@@ -1174,7 +1175,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, "Marvin");
                 result = cinfo;
@@ -1218,7 +1219,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, "Marvin");
                 result = null;
@@ -1279,7 +1280,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, "Marvin");
                 result = cinfo;
@@ -1331,7 +1332,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
             }
         };
@@ -1382,7 +1383,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Person.class, "Hotblack");
                 result = hotblack;
@@ -1429,7 +1430,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Person.class, "Hotblack");
                 result = hotblack;
@@ -1469,7 +1470,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Person.class, "Hotblack");
                 result = hotblack;
@@ -1527,7 +1528,7 @@ public class PrivateBeanTest
         {
 
             {
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Family.class, (FamilyPK) any);
                 result = family;

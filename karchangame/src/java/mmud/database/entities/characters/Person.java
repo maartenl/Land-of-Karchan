@@ -56,22 +56,19 @@ import org.slf4j.LoggerFactory;
  * @author maartenl
  */
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-    name="god",
-    discriminatorType=DiscriminatorType.INTEGER
-)
+    name = "god",
+discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
+
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name"),
-    @NamedQuery(name = "Person.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
-    @NamedQuery(name = "Person.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
-    @NamedQuery(name = "Person.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
-    @NamedQuery(name = "Person.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
+    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name")
 })
 @Filters(
+
 {
     @Filter(name = "activePersons")
 })
@@ -81,7 +78,6 @@ abstract public class Person implements Serializable
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
     private static final long serialVersionUID = 1L;
     private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
-    private static final String PASSWORD_REGEXP = ".{5,}";
     public static final String EMPTY_LOG = "";
     @Id
     @Basic(optional = false)
@@ -90,24 +86,9 @@ abstract public class Person implements Serializable
     @Column(name = "name")
     @Pattern(regexp = NAME_REGEXP, message = "Invalid name")
     private String name;
-    @Size(min = 5, max = 200)
-    @Column(name = "address")
-    private String address;
-    @Size(max = 40)
-    // TODO get this fixed properly with a sha1 hash code upon insert.
-    @Column(name = "password")
-    @Pattern(regexp = PASSWORD_REGEXP, message = "Invalid password")
-    private String password;
     @Size(max = 254)
     @Column(name = "title")
     private String title;
-    @Size(max = 80)
-    @Column(name = "realname")
-    private String realname;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 40)
-    @Column(name = "email")
-    private String email;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -154,9 +135,6 @@ abstract public class Person implements Serializable
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Room room;
-    @Size(max = 40)
-    @Column(name = "lok")
-    private String lok;
     @Column(name = "whimpy")
     private Integer whimpy;
     @Column(name = "experience")
@@ -167,8 +145,6 @@ abstract public class Person implements Serializable
     private String fightingwho;
     @Column(name = "sleep")
     private Boolean sleep;
-    @Column(name = "punishment")
-    private Integer punishment;
     @Column(name = "fightable")
     private Integer fightable;
     @Column(name = "vitals")
@@ -183,13 +159,10 @@ abstract public class Person implements Serializable
     private Integer eatstats;
     @Column(name = "active")
     private Integer active;
-    @Column(name = "lastlogin")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastlogin;
     @Column(name = "birth")
     @Temporal(TemporalType.TIMESTAMP)
     private Date birth;
-    @Column(name = "god", insertable=false, updatable=false)
+    @Column(name = "god", insertable = false, updatable = false)
     private Integer god;
     @Column(name = "strength")
     private Integer strength;
@@ -219,57 +192,6 @@ abstract public class Person implements Serializable
     private Integer maxmove;
     @Column(name = "maxvital")
     private Integer maxvital;
-    @Size(max = 40)
-    @Column(name = "cgiServerSoftware")
-    private String cgiServerSoftware;
-    @Size(max = 40)
-    @Column(name = "cgiServerName")
-    private String cgiServerName;
-    @Size(max = 40)
-    @Column(name = "cgiGatewayInterface")
-    private String cgiGatewayInterface;
-    @Size(max = 40)
-    @Column(name = "cgiServerProtocol")
-    private String cgiServerProtocol;
-    @Size(max = 40)
-    @Column(name = "cgiServerPort")
-    private String cgiServerPort;
-    @Size(max = 40)
-    @Column(name = "cgiRequestMethod")
-    private String cgiRequestMethod;
-    @Size(max = 40)
-    @Column(name = "cgiPathInfo")
-    private String cgiPathInfo;
-    @Size(max = 40)
-    @Column(name = "cgiPathTranslated")
-    private String cgiPathTranslated;
-    @Size(max = 40)
-    @Column(name = "cgiScriptName")
-    private String cgiScriptName;
-    @Size(max = 40)
-    @Column(name = "cgiRemoteHost")
-    private String cgiRemoteHost;
-    @Size(max = 40)
-    @Column(name = "cgiRemoteAddr")
-    private String cgiRemoteAddr;
-    @Size(max = 40)
-    @Column(name = "cgiAuthType")
-    private String cgiAuthType;
-    @Size(max = 40)
-    @Column(name = "cgiRemoteUser")
-    private String cgiRemoteUser;
-    @Size(max = 40)
-    @Column(name = "cgiRemoteIdent")
-    private String cgiRemoteIdent;
-    @Size(max = 40)
-    @Column(name = "cgiContentType")
-    private String cgiContentType;
-    @Size(max = 40)
-    @Column(name = "cgiAccept")
-    private String cgiAccept;
-    @Size(max = 40)
-    @Column(name = "cgiUserAgent")
-    private String cgiUserAgent;
     @Column(name = "jumpmana")
     private Integer jumpmana;
     @Column(name = "jumpmove")
@@ -310,7 +232,6 @@ abstract public class Person implements Serializable
         this.experience = 0; // no experience points to speak of
         this.fightingwho = null; // not fighting anybody
         this.sleep = false;
-        this.punishment = 0;
         this.fightable = 0;
         this.vitals = MAX_VITALS;
         this.fysically = 100;
@@ -318,7 +239,6 @@ abstract public class Person implements Serializable
         this.drinkstats = 0;
         this.eatstats = 0;
         this.active = 0;
-        this.lastlogin = null;
         this.birth = new Date();
         this.god = God.DEFAULT_USER.getValue();
         this.strength = 0;
@@ -369,44 +289,6 @@ abstract public class Person implements Serializable
         this.name = name;
     }
 
-    public String getAddress()
-    {
-        return address;
-    }
-
-    public void setAddress(String address)
-    {
-        this.address = address;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    /**
-     * Sets the password of the person. Can contain any character, but
-     * has to have at least size of 5. You cannot set a password
-     * this way, you can only set it for the first time, i.e. when creating
-     * a new character.
-     * @param password the new password.
-     * @throws MudException if the password is not allowed.
-     */
-    public void setPassword(String password) throws MudException
-    {
-        if (this.password != null)
-        {
-            return;
-        }
-
-        if (password != null)
-        {
-            Utils.checkRegexp(PASSWORD_REGEXP, password);
-        }
-
-        this.password = password;
-    }
-
     /**
      * returns the title of the character.
      *
@@ -426,26 +308,6 @@ abstract public class Person implements Serializable
     public void setTitle(String title)
     {
         this.title = title;
-    }
-
-    public String getRealname()
-    {
-        return realname;
-    }
-
-    public void setRealname(String realname)
-    {
-        this.realname = realname;
-    }
-
-    public String getEmail()
-    {
-        return email;
-    }
-
-    public void setEmail(String email)
-    {
-        this.email = email;
     }
 
     public String getRace()
@@ -589,21 +451,6 @@ abstract public class Person implements Serializable
     }
 
     /**
-     * retrieve sessionpassword
-     *
-     * @return String containing the session password
-     */
-    public String getLok()
-    {
-        return lok;
-    }
-
-    public void setLok(String lok)
-    {
-        this.lok = lok;
-    }
-
-    /**
      * get the setting for when to flee the fight.
      *
      * @return integer containing the setting
@@ -683,24 +530,27 @@ abstract public class Person implements Serializable
         this.sleep = sleep;
     }
 
-    public Integer getPunishment()
+    /**
+     * Indicates if this person can be fought with by other persons/users/players.
+     * @return true if can be fought with, false otherwise.
+     */
+    public Boolean getFightable()
     {
-        return punishment;
+        return fightable == null ? false : fightable != 0;
     }
 
-    public void setPunishment(Integer punishment)
+    /**
+     * @param fightable Indicates if this person can be fought with by other persons/users/players.
+     * @see #getFightable() 
+     */
+    public void setFightable(Boolean fightable)
     {
-        this.punishment = punishment;
-    }
-
-    public Integer getFightable()
-    {
-        return fightable;
-    }
-
-    public void setFightable(Integer fightable)
-    {
-        this.fightable = fightable;
+        if (fightable == null)
+        {
+            this.fightable = 0;
+            return;
+        }
+        this.fightable = (fightable ? 1 : 0);
     }
 
     public Integer getVitals()
@@ -810,27 +660,6 @@ abstract public class Person implements Serializable
             this.active = null;
         }
         this.active = active ? 1 : 0;
-    }
-
-    public boolean isNewUser()
-    {
-        return lastlogin == null;
-    }
-
-    /**
-     * Returns the last time the user was logged in.
-     * Can return null, which means the user has never once logged on
-     * and is new. (or not a user)
-     * @return the date of last logged on.
-     */
-    public Date getLastlogin()
-    {
-        return lastlogin;
-    }
-
-    public void setLastlogin(Date lastlogin)
-    {
-        this.lastlogin = lastlogin;
     }
 
     public Date getBirth()
@@ -993,176 +822,6 @@ abstract public class Person implements Serializable
         this.maxvital = maxvital;
     }
 
-    public String getCgiServerSoftware()
-    {
-        return cgiServerSoftware;
-    }
-
-    public void setCgiServerSoftware(String cgiServerSoftware)
-    {
-        this.cgiServerSoftware = cgiServerSoftware;
-    }
-
-    public String getCgiServerName()
-    {
-        return cgiServerName;
-    }
-
-    public void setCgiServerName(String cgiServerName)
-    {
-        this.cgiServerName = cgiServerName;
-    }
-
-    public String getCgiGatewayInterface()
-    {
-        return cgiGatewayInterface;
-    }
-
-    public void setCgiGatewayInterface(String cgiGatewayInterface)
-    {
-        this.cgiGatewayInterface = cgiGatewayInterface;
-    }
-
-    public String getCgiServerProtocol()
-    {
-        return cgiServerProtocol;
-    }
-
-    public void setCgiServerProtocol(String cgiServerProtocol)
-    {
-        this.cgiServerProtocol = cgiServerProtocol;
-    }
-
-    public String getCgiServerPort()
-    {
-        return cgiServerPort;
-    }
-
-    public void setCgiServerPort(String cgiServerPort)
-    {
-        this.cgiServerPort = cgiServerPort;
-    }
-
-    public String getCgiRequestMethod()
-    {
-        return cgiRequestMethod;
-    }
-
-    public void setCgiRequestMethod(String cgiRequestMethod)
-    {
-        this.cgiRequestMethod = cgiRequestMethod;
-    }
-
-    public String getCgiPathInfo()
-    {
-        return cgiPathInfo;
-    }
-
-    public void setCgiPathInfo(String cgiPathInfo)
-    {
-        this.cgiPathInfo = cgiPathInfo;
-    }
-
-    public String getCgiPathTranslated()
-    {
-        return cgiPathTranslated;
-    }
-
-    public void setCgiPathTranslated(String cgiPathTranslated)
-    {
-        this.cgiPathTranslated = cgiPathTranslated;
-    }
-
-    public String getCgiScriptName()
-    {
-        return cgiScriptName;
-    }
-
-    public void setCgiScriptName(String cgiScriptName)
-    {
-        this.cgiScriptName = cgiScriptName;
-    }
-
-    public String getCgiRemoteHost()
-    {
-        return cgiRemoteHost;
-    }
-
-    public void setCgiRemoteHost(String cgiRemoteHost)
-    {
-        this.cgiRemoteHost = cgiRemoteHost;
-    }
-
-    public String getCgiRemoteAddr()
-    {
-        return cgiRemoteAddr;
-    }
-
-    public void setCgiRemoteAddr(String cgiRemoteAddr)
-    {
-        this.cgiRemoteAddr = cgiRemoteAddr;
-    }
-
-    public String getCgiAuthType()
-    {
-        return cgiAuthType;
-    }
-
-    public void setCgiAuthType(String cgiAuthType)
-    {
-        this.cgiAuthType = cgiAuthType;
-    }
-
-    public String getCgiRemoteUser()
-    {
-        return cgiRemoteUser;
-    }
-
-    public void setCgiRemoteUser(String cgiRemoteUser)
-    {
-        this.cgiRemoteUser = cgiRemoteUser;
-    }
-
-    public String getCgiRemoteIdent()
-    {
-        return cgiRemoteIdent;
-    }
-
-    public void setCgiRemoteIdent(String cgiRemoteIdent)
-    {
-        this.cgiRemoteIdent = cgiRemoteIdent;
-    }
-
-    public String getCgiContentType()
-    {
-        return cgiContentType;
-    }
-
-    public void setCgiContentType(String cgiContentType)
-    {
-        this.cgiContentType = cgiContentType;
-    }
-
-    public String getCgiAccept()
-    {
-        return cgiAccept;
-    }
-
-    public void setCgiAccept(String cgiAccept)
-    {
-        this.cgiAccept = cgiAccept;
-    }
-
-    public String getCgiUserAgent()
-    {
-        return cgiUserAgent;
-    }
-
-    public void setCgiUserAgent(String cgiUserAgent)
-    {
-        this.cgiUserAgent = cgiUserAgent;
-    }
-
     public Integer getJumpmana()
     {
         return jumpmana;
@@ -1290,24 +949,6 @@ abstract public class Person implements Serializable
     }
 
     /**
-     * verify sessionpassword
-     *
-     * @param aSessionPassword the sessionpassword to be verified.
-     * @return boolean, true if the sessionpassword provided is an exact match
-     * with the original sessionpassword.
-     */
-    public boolean verifySessionPassword(String aSessionPassword)
-    {
-        itsLog.debug("entering verifySessionPassword");
-        if (!isUser())
-        {
-            // is not a common user, therefore does not have a session password.
-            return false;
-        }
-        return lok == null ? false : lok.equals(aSessionPassword);
-    }
-
-    /**
      * Indicates if this is a common user. This means it indicates that it
      * is basically someone behind a keyboard.
      *
@@ -1321,31 +962,6 @@ abstract public class Person implements Serializable
             return true;
         }
         return (getGod() == God.DEFAULT_USER || getGod() == God.GOD);
-    }
-
-    /**
-     * generate a session password to be used by player during game session. Use
-     * {@link #getLok() } to return a String containing 25 random digits,
-     * capitals and smallcaps.
-     */
-    public void generateSessionPassword()
-    {
-        char[] myCharArray =
-        {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-            'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-        };
-        StringBuilder myString = new StringBuilder(26);
-        Random myRandom = new Random();
-        for (int i = 1; i < 26; i++)
-        {
-
-            myString.append(myCharArray[myRandom.nextInt(myCharArray.length)]);
-        }
-        lok = myString.toString();
     }
 
     @Override
@@ -1376,21 +992,6 @@ abstract public class Person implements Serializable
     public String toString()
     {
         return "mmud.database.entities.game.Person[ name=" + name + " ]";
-    }
-
-    /**
-     * activate a character
-     */
-    public void activate(String address) throws MudException
-    {
-        if (!isUser())
-        {
-            throw new MudException("user not a user");
-        }
-        this.setAddress(address);
-        this.setLastlogin(new Date());
-        this.setActive(true);
-        createLog();
     }
 
     /**
@@ -1689,7 +1290,7 @@ abstract public class Person implements Serializable
      *             created. Possibly due to either permissions or the directory
      *             does not exist.
      */
-    private void createLog() throws MudException
+    protected void createLog() throws MudException
     {
         if (getLogfile().exists())
         {
@@ -1712,16 +1313,6 @@ abstract public class Person implements Serializable
             theLogfile = new File(Constants.mudfilepath, getName() + ".log");
         }
         return theLogfile;
-    }
-
-    /**
-     * deactivate a character (usually because someone typed quit.)
-     */
-    public void deactivate()
-    {
-        setActive(false);
-        setLok(null);
-        setLastlogin(new Date());
     }
 
     private void readLog() throws MudException

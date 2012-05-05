@@ -88,9 +88,9 @@ public class PrivateBean
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match.
      */
-    private Person authenticate(String name, String lok)
+    private User authenticate(String name, String lok)
     {
-        Person person = getEntityManager().find(Person.class, name);
+        User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
             throw new WebApplicationException(Status.NOT_FOUND);
@@ -199,6 +199,18 @@ public class PrivateBean
             itsLog.warn("name of non existing user {}", name);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+        return toperson;
+    }
+
+
+    private User getUser(String name)
+    {
+        User toperson = getEntityManager().find(User.class, name);
+        if (toperson == null)
+        {
+            itsLog.warn("name of non existing user {}", name);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
         if (!toperson.isUser())
         {
             itsLog.warn("user not proper user, {}", name);
@@ -233,8 +245,8 @@ public class PrivateBean
     public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering newMail");
-        Person person = authenticate(name, lok);
-        Person toperson = getPerson(newMail.toname);
+        User person = authenticate(name, lok);
+        User toperson = getUser(newMail.toname);
         try
         {
             Mail mail = new Mail();
@@ -610,7 +622,7 @@ public class PrivateBean
             itsLog.error("updateFamilyValues bad params");
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        Person person = authenticate(name, lok);
+        User person = authenticate(name, lok);
         Person toperson = getPerson(toname);
         try
         {

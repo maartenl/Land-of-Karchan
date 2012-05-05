@@ -26,4 +26,19 @@ import javax.persistence.*;
 @DiscriminatorValue("3")
 public class Mob extends Person
 {
+    @Override
+    public Boolean getFightable()
+    {
+        return true;
+    }
+
+    /**
+     * Mobs can fight. Any entry is ignored.
+     * @param fightable
+     */
+    @Override
+    public void setFightable(Boolean fightable)
+    {
+        super.setFightable(true);
+    }
 }

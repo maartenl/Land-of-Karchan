@@ -126,9 +126,9 @@ public class GameBean
      * -->(*)
      * @enduml
      */
-    private Person authenticate(String name, String lok)
+    private User authenticate(String name, String lok)
     {
-        Person person = getEntityManager().find(Person.class, name);
+        User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -139,7 +139,7 @@ public class GameBean
         }
         if (!person.verifySessionPassword(lok))
         {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(new MudException("session password " + lok + " does not match session password of " + name), Response.Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -163,9 +163,9 @@ public class GameBean
      * -->(*)
      * @enduml
      */
-    protected Person authenticateWithPassword(String name, String password)
+    protected User authenticateWithPassword(String name, String password)
     {
-        Person person = getEntityManager().find(Person.class, name);
+        User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -175,10 +175,10 @@ public class GameBean
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
-        Query query = getEntityManager().createNamedQuery("Person.authorise");
+        Query query = getEntityManager().createNamedQuery("User.authorise");
         query.setParameter("name", name);
         query.setParameter("password", password);
-        List<Person> persons = query.getResultList();
+        List<User> persons = query.getResultList();
         if (persons.isEmpty())
         {
             throw new WebApplicationException(new RuntimeException("name was " + name + " password " + password), Response.Status.UNAUTHORIZED);
@@ -323,7 +323,7 @@ public class GameBean
                 // passwords do not match
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
-            Person person = new User();
+            User person = new User();
             person.setName(name);
             person.setPassword(pperson.password);
             if (isBanned(name, address))
@@ -485,7 +485,7 @@ public class GameBean
             // is banned
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
-        Person person = authenticateWithPassword(name, password);
+        User person = authenticateWithPassword(name, password);
 
         // Hibernate specific
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
@@ -765,7 +765,7 @@ public class GameBean
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
         session.enableFilter("activePersons");
 
-        Person person = authenticate(name, lok);
+        User person = authenticate(name, lok);
         try
         {
             person.getRoom().sendMessage(person, "%SNAME left the game.<BR>\r\n");

@@ -18,7 +18,8 @@ package mmud.testing.tests.database.entities;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import mmud.database.entities.game.Person;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mockit.Delegate;
 import mockit.Mocked;
@@ -64,7 +65,7 @@ public class PersonTest
     @Test
     public void writeMessageTest() throws IOException
     {
-        Person person = new Person();
+        Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
             @Mocked
@@ -102,7 +103,7 @@ public class PersonTest
     @Test
     public void writeStrangeMessageTest() throws IOException
     {
-        Person person = new Person();
+        Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
             @Mocked
@@ -141,7 +142,7 @@ public class PersonTest
     @Test
     public void writeStrangeMessageManyTagsTest() throws IOException
     {
-        Person person = new Person();
+        Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
             @Mocked
@@ -179,7 +180,7 @@ public class PersonTest
     @Test
     public void writeStrangeOpenTagMessageTest() throws IOException
     {
-        Person person = new Person();
+        Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
             @Mocked
