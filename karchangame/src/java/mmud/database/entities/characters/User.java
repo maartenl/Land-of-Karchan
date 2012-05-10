@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 @DiscriminatorValue("0")
 @NamedQueries(
 
+
 {
     @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
     @NamedQuery(name = "User.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
@@ -119,6 +120,9 @@ public class User extends Person
     @Size(max = 40)
     @Column(name = "cgiUserAgent")
     private String cgiUserAgent;
+    @Column(name = "lastcommand")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastcommand;
 
     public User()
     {
@@ -394,6 +398,25 @@ public class User extends Person
     public void setCgiUserAgent(String cgiUserAgent)
     {
         this.cgiUserAgent = cgiUserAgent;
+    }
+
+
+    /**
+     * Returns the last time that a command was issued. Used for determining
+     * idle time.
+     * @return
+     */
+    public Date getLastcommand()
+    {
+        return lastcommand;
+    }
+
+    /**
+     * Sets the last time that a command was issued to *now*.
+     */
+    public void setNow()
+    {
+        this.lastcommand = new Date();
     }
 
     /**

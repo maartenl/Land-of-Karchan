@@ -26,16 +26,16 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Random;
-import java.util.logging.Level;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.Utils;
+import mmud.commands.CommandFactory;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Charattribute;
+import mmud.database.entities.game.Command;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
@@ -62,13 +62,11 @@ import org.slf4j.LoggerFactory;
 discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
 @NamedQueries(
-
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
     @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name")
 })
 @Filters(
-
 {
     @Filter(name = "activePersons")
 })
@@ -440,11 +438,21 @@ abstract public class Person implements Serializable
         this.copper = copper;
     }
 
+    /**
+     * returns in which Room the character is.
+     *
+     * @return Room the room that the character is currently occupying
+     */
     public Room getRoom()
     {
         return room;
     }
 
+    /**
+     * sets the room of the character.
+     *
+     * @param room the new current room of the character
+     */
     public void setRoom(Room room)
     {
         this.room = room;
@@ -541,7 +549,7 @@ abstract public class Person implements Serializable
 
     /**
      * @param fightable Indicates if this person can be fought with by other persons/users/players.
-     * @see #getFightable() 
+     * @see #getFightable()
      */
     public void setFightable(Boolean fightable)
     {
@@ -1381,54 +1389,5 @@ abstract public class Person implements Serializable
             throw new MudException("Attempting to get log with negative offset.");
         }
         return theLog.substring(offset);
-    }
-
-    /**
-     * Runs a specific command. If this person appears to be asleep, the only
-     * possible commands are "quit" and "awaken". If the command found returns a
-     * false, i.e. nothing is executed, the method will call the standard
-     * BogusCommand.
-     *
-     * @param command
-     *            the command to be run
-     * @return DisplayInterface object containing the result of the command executed.
-     */
-    public DisplayInterface runCommand(String command)
-    {
-        return null;
-//		Command boguscommand = new BogusCommand(".+");
-//		Command command = boguscommand;
-//		if (isaSleep())
-//		{
-//			if (aCommand.trim().equalsIgnoreCase("awaken"))
-//			{
-//				command = new AwakenCommand("awaken");
-//			} else if (aCommand.trim().equalsIgnoreCase("quit"))
-//			{
-//				command = new QuitCommand("quit");
-//			} else
-//			{
-//				command = new AlreadyAsleepCommand(".+");
-//			}
-//			command.setCommand(aCommand);
-//			command.start(this);
-//			return command.getResult();
-//		}
-//
-//		Collection myCol = Constants.getCommand(aCommand);
-//		Iterator myI = myCol.iterator();
-//		while (myI.hasNext())
-//		{
-//			command = (Command) myI.next();
-//			command = command.createCommand();
-//			command.setCommand(aCommand);
-//			if (command.start(this))
-//			{
-//				return command.getResult();
-//			}
-//		}
-//		throw new MudException("We shouldn't reach this point."
-//				+ " At least the bogus command should execute successfully."
-//				+ " This is probably a big bug!.");
     }
 }

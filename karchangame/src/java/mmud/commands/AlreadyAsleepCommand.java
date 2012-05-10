@@ -21,23 +21,24 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Command used if none of the other commands match.
- * Does nothing but send an "I don't understand." message
+ * Command used if the person is asleep, and the command is not
+ * possible.
+ * Does nothing but send an "Already sleep." message
  * to the user.
  * @author maartenl
  */
-public class BogusCommand extends NormalCommand
+class AlreadyAsleepCommand extends NormalCommand
 {
+    public AlreadyAsleepCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	public BogusCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public DisplayInterface run(String command, User aUser)
+            throws MudException
+    {
+        aUser.writeMessage("You cannot do that, you are asleep.<br/>\n");
+        return aUser.getRoom();
+    }
 
-	public DisplayInterface run(String command, User aUser)
-	throws MudException
-	{
-		aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
-		return aUser.getRoom();
-	}
 }

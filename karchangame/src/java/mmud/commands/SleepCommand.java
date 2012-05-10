@@ -16,28 +16,35 @@
  */
 package mmud.commands;
 
+import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Command used if none of the other commands match.
- * Does nothing but send an "I don't understand." message
- * to the user.
+ * Makes your character fall asleep: "sleep".
  * @author maartenl
  */
-public class BogusCommand extends NormalCommand
+public class SleepCommand extends NormalCommand
 {
 
-	public BogusCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public SleepCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	public DisplayInterface run(String command, User aUser)
-	throws MudException
-	{
-		aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
-		return aUser.getRoom();
-	}
+    @Override
+    public DisplayInterface run(String command, User aUser) throws MudException
+    {
+        if (aUser.getSleep())
+        {
+            aUser.writeMessage("You already are asleep.<br/>\n");
+        } else
+        {
+            aUser.setSleep(true);
+            aUser.getRoom().sendMessage(aUser, "%SNAME go%VERB1 to sleep.<br/>\n");
+        }
+        return aUser.getRoom();
+    }
+
 }

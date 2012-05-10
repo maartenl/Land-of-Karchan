@@ -125,4 +125,16 @@ public class Utils
             throw new MudException("value " + value + " should match regexp " + regexp);
         }
     }
+
+    	/**
+	 * split up the command into different words.
+	 *
+	 * @param aCommand
+	 *            String containing the command
+	 * @return String array where each String contains a word from the command.
+	 */
+	public static String[] parseCommand(String aCommand)
+	{
+		return aCommand.split("( )+", 50);
+	}
 }

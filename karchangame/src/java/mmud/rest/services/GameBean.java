@@ -18,7 +18,6 @@ package mmud.rest.services;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -42,6 +41,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Utils;
+import mmud.commands.CommandFactory;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.DisplayInterface;
@@ -55,7 +55,6 @@ import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
-import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import org.hibernate.Session;
 import org.owasp.validator.html.PolicyException;
@@ -289,10 +288,6 @@ public class GameBean
     @POST
     @Path("{name}")
     @Produces(
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -410,15 +405,6 @@ public class GameBean
     @DELETE
     @Path("{name}")
     @Produces(
-
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -459,10 +445,6 @@ public class GameBean
     @POST
     @Path("{name}/logon")
     @Produces(
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -566,8 +548,6 @@ public class GameBean
     @POST
     @Path("{name}/play")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -590,7 +570,7 @@ public class GameBean
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
         session.enableFilter("activePersons");
-        Person person = authenticate(name, lok);
+        User person = authenticate(name, lok);
         try
         {
             PrivateDisplay display = null;
@@ -645,7 +625,7 @@ public class GameBean
         }
     }
 
-    private PrivateDisplay runMultipleCommands(Person person, String command)
+    private PrivateDisplay runMultipleCommands(User person, String command)
             throws MudException
     {
         PrivateDisplay result = null;
@@ -666,10 +646,10 @@ public class GameBean
      * @return PrivateDisplay containing the response.
      * @throws MudException when something goes wrong.
      */
-    private PrivateDisplay gameMain(Person person, String command)
+    private PrivateDisplay gameMain(User person, String command) throws MudException
     {
         logBean.writeCommandLog(person, command);
-        DisplayInterface display = person.runCommand(command);
+        DisplayInterface display = CommandFactory.runCommand(person, command);
         if (display == null)
         {
             display = person.getRoom();
@@ -683,6 +663,10 @@ public class GameBean
 
     private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
     {
+        if (offset == null)
+        {
+            offset = 0;
+        }
         String log = person.getLog(offset);
         if (Person.EMPTY_LOG.equals(log))
         {
@@ -711,9 +695,6 @@ public class GameBean
     @GET
     @Path("{name}/log")
     @Produces(
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -751,9 +732,6 @@ public class GameBean
     @GET
     @Path("{name}/quit")
     @Produces(
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })

@@ -69,5 +69,7 @@ order by creation, name, message;
 rename table mm_log to mm_log_old;
 rename table mm_log2 to mm_log;
 
-// drop table mm_log_old;
+drop table mm_log_old;
 
+ALTER TABLE mm_usertable ADD lastcommand timestamp;
+update mm_usertable set lastcommand = null;

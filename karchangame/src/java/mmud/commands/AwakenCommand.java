@@ -21,23 +21,29 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Command used if none of the other commands match.
- * Does nothing but send an "I don't understand." message
- * to the user.
+ * Awaken from sleep: "awaken".
  * @author maartenl
  */
-public class BogusCommand extends NormalCommand
+class AwakenCommand extends NormalCommand
 {
 
-	public BogusCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public AwakenCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	public DisplayInterface run(String command, User aUser)
-	throws MudException
-	{
-		aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
-		return aUser.getRoom();
-	}
+    @Override
+    public DisplayInterface run(String command, User aUser) throws MudException
+    {
+        if (!aUser.getSleep())
+        {
+            aUser.writeMessage("You already are awake.<br/>\n");
+        } else
+        {
+            aUser.setSleep(false);
+            aUser.getRoom().sendMessage(aUser, "%SNAME awaken%VERB2.<br/>\n");
+        }
+        return aUser.getRoom();
+    }
+
 }

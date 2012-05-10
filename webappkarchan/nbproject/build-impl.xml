@@ -1179,12 +1179,15 @@ exists or setup the property manually. For example like this:
             </or>
         </condition>
     </target>
-    <target depends="-profile-check,init,-init-cos,compile,compile-jsps,-do-compile-single-jsp,-pre-dist,-do-tmp-dist-with-manifest,-do-tmp-dist-without-manifest,-profile-pre72" description="Profile a J2EE project in the IDE." if="profiler.configured" name="profile" unless="profiler.info.jvmargs.agent">
+    <target depends="init,-init-cos,compile,compile-jsps,-do-compile-single-jsp,-pre-dist,-do-tmp-dist-with-manifest,-do-tmp-dist-without-manifest" name="-do-profile">
         <startprofiler/>
         <nbstartserver profilemode="true"/>
         <nbdeploy clientUrlPart="${client.urlPart}" forceRedeploy="true" profilemode="true"/>
         <antcall target="debug-display-browser"/>
         <antcall target="-profile-start-loadgen"/>
+    </target>
+    <target depends="-profile-check,-profile-pre72" description="Profile a J2EE project in the IDE." if="profiler.configured" name="profile" unless="profiler.info.jvmargs.agent">
+        <antcall target="-do-profile"/>
     </target>
     <target depends="-profile-test-single-pre72" name="profile-test-single"/>
     <target depends="-profile-check" if="profiler.configured" name="profile-test" unless="profiler.info.jvmargs.agent">
