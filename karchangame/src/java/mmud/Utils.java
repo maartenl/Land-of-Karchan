@@ -16,6 +16,8 @@
  */
 package mmud;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mmud.exceptions.MudException;
@@ -31,7 +33,70 @@ import org.owasp.validator.html.ScanException;
  */
 public class Utils
 {
+    private final static  Map<String, String> theAdverbStructure = new HashMap<>();
+    private final static String[] adverb =
+    {
+        "absentmindedly", "aimlessly", "amazedly", "amusedly", "angrily",
+        "anxiously", "appreciatively", "appropriately", "archly",
+        "astonishingly", "attentively", "badly", "barely", "belatedly",
+        "bitterly", "boringly", "breathlessly", "briefly", "brightly",
+        "brotherly", "busily", "carefully", "cautiously", "charmingly",
+        "cheerfully", "childishly", "clumsily", "coaxingly", "coldly",
+        "completely", "confidently", "confusedly", "contentedly",
+        "coquetishly", "courageously", "coyly", "crazily", "cunningly",
+        "curiously", "cutely", "cynically", "dangerously", "deeply",
+        "defiantly", "dejectedly", "delightedly", "delightfully",
+        "deliriously", "demonically", "depressively", "derisively",
+        "desperately", "devilishly", "dirtily", "disappointedly",
+        "discretely", "disgustedly", "doubtfully", "dreamily", "dubiously",
+        "earnestly", "egocentrically", "egoistically", "encouragingly",
+        "endearingly", "enthusiastically", "enviously", "erotically",
+        "evilly", "exhaustedly", "exuberantly", "faintly", "fanatically",
+        "fatherly", "fiercefully", "firmly", "foolishly", "formally",
+        "frantically", "friendly", "frostily", "funnily", "furiously",
+        "generously", "gleefully", "gracefully", "graciously",
+        "gratefully", "greedily", "grimly", "happily", "harmonically",
+        "headlessly", "heartbrokenly", "heavily", "helpfully",
+        "helplessly", "honestly", "hopefully", "humbly", "hungrily",
+        "hysterically", "ignorantly", "impatiently", "inanely",
+        "indecently", "indifferently", "innocently", "inquiringly",
+        "inquisitively", "insanely", "instantly", "intensely",
+        "interestedly", "ironically", "jauntily", "jealously", "joyfully",
+        "joyously", "kindly", "knowingly", "lazily", "loudly", "lovingly",
+        "lustfully", "madly", "maniacally", "melancholically",
+        "menacingly", "mercilessly", "merrily", "mischieviously",
+        "motherly", "musically", "mysteriously", "nastily", "naughtily",
+        "nervously", "nicely", "noisily", "nonchalantly", "outrageously",
+        "overwhelmingly", "painfully", "passionately", "patiently",
+        "patronizingly", "perfectly", "personally", "physically",
+        "pitifully", "playfully", "politely", "professionally",
+        "profoundly", "profusely", "proudly", "questioningly", "quickly",
+        "quietly", "quizzically", "randomly", "rapidly", "really",
+        "rebelliously", "relieved", "reluctantly", "remorsefully",
+        "repeatedly", "resignedly", "respectfully", "romantically",
+        "rudely", "sadistically", "sadly", "sarcastically", "sardonically",
+        "satanically", "scornfully", "searchingly", "secretively",
+        "seductively", "sensually", "seriously", "sexily", "shamelessly",
+        "sheepishly", "shyly", "sickly", "significantly", "silently",
+        "sisterly", "skilfully", "sleepily", "slightly", "slowly", "slyly",
+        "smilingly", "smugly", "socially", "softly", "solemnly",
+        "strangely", "stupidly", "sweetly", "tearfully", "tenderly",
+        "terribly", "thankfully", "theoretically", "thoughtfully",
+        "tightly", "tiredly", "totally", "tragically", "truly",
+        "trustfully", "uncontrollably", "understandingly", "unexpectedly",
+        "unhappily", "unintentionally", "unknowingly", "vaguely",
+        "viciously", "vigorously", "violently", "virtually", "warmly",
+        "wearily", "wholeheartedly", "wickedly", "wildly", "wisely",
+        "wistfully"
+    };
 
+    static
+    {
+        for (int i = 0; i < adverb.length; i++)
+        {
+            theAdverbStructure.put(adverb[i], adverb[i]);
+        }
+    }
 
     /**
      * Returns a safe string, containing no javascript at all.
@@ -126,15 +191,28 @@ public class Utils
         }
     }
 
-    	/**
-	 * split up the command into different words.
-	 *
-	 * @param aCommand
-	 *            String containing the command
-	 * @return String array where each String contains a word from the command.
-	 */
-	public static String[] parseCommand(String aCommand)
-	{
-		return aCommand.split("( )+", 50);
-	}
+    /**
+     * split up the command into different words.
+     *
+     * @param aCommand
+     *            String containing the command
+     * @return String array where each String contains a word from the command.
+     */
+    public static String[] parseCommand(String aCommand)
+    {
+        return aCommand.split("( )+", 50);
+    }
+
+    /**
+     * Checks to see that an adverb is valid.
+     *
+     * @param anAdverb
+     *            String containing the adverb to check, for example
+     *            "aimlessly".
+     * @return boolean which is true if the adverb is real.
+     */
+    public static boolean existsAdverb(String anAdverb)
+    {
+        return theAdverbStructure.containsKey(anAdverb.toLowerCase());
+    }
 }

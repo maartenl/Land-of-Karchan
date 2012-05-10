@@ -19,6 +19,8 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -41,8 +43,6 @@ import org.hibernate.annotations.Filter;
 @Entity
 @Table(name = "mm_rooms", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
 {
     @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r"),
     @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
@@ -124,7 +124,7 @@ public class Room implements Serializable, DisplayInterface
     private Collection<RoomitemTable> roomitemTableCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     @Filter(name = "activePersons")
-    private Collection<Person> persons;
+    private List<Person> persons;
 
     public Room()
     {
@@ -385,6 +385,105 @@ public class Room implements Serializable, DisplayInterface
         }
     }
 
+    /**
+     * character communication method to everyone in the room. The first person
+     * is the source of the message. The second person is the target of the
+     * message. The message is parsed based on the source and target.
+     *
+     * @param aPerson
+     *            the person doing the communicatin'.
+     * @param aSecondPerson
+     *            the person communicated to.
+     * @param aMessage
+     *            the message to be sent
+     * @throws MudException
+     *             if the room is not correct
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, mmud.database.entities.characters.Person, java.lang.String)
+     */
+    public void sendMessage(Person aPerson, Person aSecondPerson,
+            String aMessage) throws MudException
+    {
+        for (Person myChar : persons)
+        {
+            myChar.writeMessage(aPerson, aSecondPerson, aMessage);
+        }
+    }
+
+    /**
+     * room communication method to everyone in the room. The message is not
+     * parsed. Bear in mind that this method should only be used for
+     * communication about environmental issues. If the communication originates
+     * from a User/Person, you should use sendMessage(aPerson, aMessage).
+     * Otherwise the Ignore functionality will be omitted.
+     *
+     * @param aMessage
+     *            the message
+     * @throws MudException
+     *             if the room is not correct
+     * @see Person#writeMessage(java.lang.String)
+     */
+    public void sendMessage(String aMessage)
+            throws MudException
+    {
+        for (Person myChar : persons)
+        {
+            myChar.writeMessage(aMessage);
+        }
+    }
+
+    /**
+     * character communication method to everyone in the room except to the two
+     * persons mentioned in the header. The message is parsed based on the
+     * source and target.
+     *
+     * @param aPerson
+     *            the person doing the communicatin'.
+     * @param aSecondPerson
+     *            the person communicated to.
+     * @param aMessage
+     *            the message to be sent
+     * @throws MudException
+     *             if the room is not correct
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, mmud.database.entities.characters.Person, java.lang.String)
+     */
+    public void sendMessageExcl(Person aPerson, Person aSecondPerson,
+            String aMessage) throws MudException
+    {
+        for (Person myChar : persons)
+        {
+            if (myChar != aPerson
+                    && myChar != aSecondPerson)
+            {
+                myChar.writeMessage(aPerson, aSecondPerson, aMessage);
+            }
+        }
+    }
+
+    /**
+     * character communication method to everyone in the room excluded the
+     * person mentioned in the parameters. The message is parsed, based on who
+     * is sending the message.
+     *
+     * @param aPerson
+     *            the person who is the source of the message.
+     * @param aMessage
+     *            the message
+     * @throws MudException
+     *             if the room is not correct
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
+     */
+    public void sendMessageExcl(Person aPerson, String aMessage)
+            throws MudException
+    {
+        for (Person myChar : persons)
+        {
+            if (myChar != aPerson)
+            {
+                myChar.writeMessage(aPerson, aMessage);
+            }
+        }
+    }
+
     @Override
     public int hashCode()
     {
@@ -413,5 +512,25 @@ public class Room implements Serializable, DisplayInterface
     public String toString()
     {
         return "mmud.database.entities.game.Room[ id=" + id + " ]";
+    }
+
+    /**
+     * retrieve the character from the list of characters currently active in
+     * the current room.
+     *
+     * @param aName
+     *            name of the character to search for.
+     * @return Character/Person in the room. Will return null pointer if character not found.
+     */
+    public Person retrievePerson(String aName)
+    {
+        for (Person person : persons)
+        {
+            if ((person.getName().equalsIgnoreCase(aName)))
+            {
+                return person;
+            }
+        }
+        return null;
     }
 }

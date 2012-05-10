@@ -1014,7 +1014,8 @@ abstract public class Person implements Serializable
      * writes a message to the log file of the character that contains all
      * communication and messages. The sentence will start with a capital.
      *
-     * <p><b>Important!</b> : Use this method only for Environmental communication,
+     * <p><b>Important!</b> : Use this method only for Environmental communication
+     * or personal communication ,
      * as it does not check the Ignore Flag. Use the writeMessage(Person
      * aSource, String aMessage) for specific communication between users.</p>
      * TODO : move the logging to a protected hashtable in a singleton bean

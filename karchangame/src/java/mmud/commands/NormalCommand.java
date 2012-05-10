@@ -93,4 +93,16 @@ public abstract class NormalCommand implements Command
 
     @Override
     public abstract DisplayInterface run(String command, User aUser) throws MudException;
+
+    /**
+     * split up the command into different words.
+     *
+     * @param aCommand
+     *            String containing the command
+     * @return String array where each String contains a word from the command.
+     */
+    protected static String[] parseCommand(String aCommand)
+    {
+        return aCommand.split("( )+", 50);
+    }
 }

@@ -17,8 +17,6 @@
 package mmud.commands;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import mmud.database.entities.characters.User;
@@ -43,9 +41,9 @@ public class CommandFactory
 
     static
     {
-//        theCommandStructure.put("bow", new BowCommand(
-//                "bow( to (\\w)+)?( (\\w)+)?"));
-//        theCommandStructure.put("me", new MeCommand("me .+"));
+        theCommandStructure.put("bow", new BowCommand(
+                "bow( to (\\w)+)?( (\\w)+)?"));
+        theCommandStructure.put("me", new MeCommand("me .+"));
 //        theCommandStructure.put("quit", new QuitCommand("quit"));
         theCommandStructure.put("sleep", new SleepCommand("sleep"));
 //        theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));

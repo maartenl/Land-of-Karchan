@@ -720,6 +720,42 @@ public class GameBean
         }
     }
 
+
+    /**
+     * Removes the log of a player, i.e. creates a new empty log.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @throws BAD_REQUEST if an unexpected exception
+     * crops up.
+     */
+    @DELETE
+    @Path("{name}/log")
+    @Produces(
+    {
+        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
+    public Response deleteLog(@PathParam("name") String name, @QueryParam("lok") String lok)
+    {
+        itsLog.debug("entering deleteLog");
+        Person person = authenticate(name, lok);
+
+        try
+        {
+            person.clearLog();
+        } catch (WebApplicationException e)
+        {
+            //ignore
+            throw e;
+        } catch (Exception e)
+        {
+            itsLog.debug("deleteLog: throws ", e);
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+        }
+                return Response.ok().build();
+    }
+
     /**
      * Stops a playing character from playing.
      *

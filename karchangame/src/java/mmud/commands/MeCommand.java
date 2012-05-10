@@ -14,20 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud;
+package mmud.commands;
 
-import java.util.TreeSet;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.MudException;
 
 /**
- *
+ * The Me Command: "me closes the fridge.".
  * @author maartenl
  */
-public class Constants
+public class MeCommand extends NormalCommand
 {
 
-    public static String mudfilepath = "/home/maartenl/temp";
-    // TODO : fix this to be less static, and has to make use of either
-    // web-context param or env-context param/.
-    public static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
+	public MeCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
+
+	@Override
+	public DisplayInterface run(String command, User aUser) throws MudException
+	{
+		aUser.getRoom().sendMessage(aUser, aUser.getName() + " " + command.substring(3)
+				+ "<br/>\n");
+		return aUser.getRoom();
+	}
 
 }
