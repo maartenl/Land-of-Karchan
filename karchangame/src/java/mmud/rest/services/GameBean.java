@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -566,6 +567,7 @@ public class GameBean
         {
             throw new WebApplicationException(ex, Response.Status.BAD_REQUEST);
         }
+        PrivateDisplay display = null;
         // Hibernate specific
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
@@ -573,7 +575,6 @@ public class GameBean
         User person = authenticate(name, lok);
         try
         {
-            PrivateDisplay display = null;
             if (command.contains(" ; ") && (!command.toLowerCase().startsWith("macro ")))
             {
                 // it's not a macro , but does contain multiple commands
@@ -606,14 +607,16 @@ public class GameBean
                     display = runMultipleCommands(person, command);
                 }
             }
-
-            // add log to the return value
-            if (log)
+        } catch (MudException e)
+        {
+            try
             {
-                display.log = retrieveLog(person, offset);
+                person.writeMessage(e.getMessage());
+            } catch (MudException ex)
+            {
+                itsLog.warn("play: throws ", ex);
             }
-            return display;
-
+            display = createPrivateDisplay(person.getRoom());
         } catch (WebApplicationException e)
         {
             //ignore
@@ -623,6 +626,18 @@ public class GameBean
             itsLog.debug("play: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
+        // add log to the return value
+        if (log)
+        {
+            try
+            {
+                display.log = retrieveLog(person, offset);
+            } catch (MudException ex)
+            {
+                itsLog.warn("play: throws ", ex);
+            }
+        }
+        return display;
     }
 
     private PrivateDisplay runMultipleCommands(User person, String command)
@@ -654,11 +669,7 @@ public class GameBean
         {
             display = person.getRoom();
         }
-        PrivateDisplay result = new PrivateDisplay();
-        result.body = display.getBody();
-        result.image = display.getImage();
-        result.title = display.getTitle();
-        return result;
+        return createPrivateDisplay(display);
     }
 
     private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
@@ -720,7 +731,6 @@ public class GameBean
         }
     }
 
-
     /**
      * Removes the log of a player, i.e. creates a new empty log.
      *
@@ -753,7 +763,7 @@ public class GameBean
             itsLog.debug("deleteLog: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-                return Response.ok().build();
+        return Response.ok().build();
     }
 
     /**
@@ -774,6 +784,7 @@ public class GameBean
     public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering quit");
+
         // Hibernate specific
         Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
         // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
@@ -795,5 +806,14 @@ public class GameBean
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
+    }
+
+    private PrivateDisplay createPrivateDisplay(DisplayInterface display)
+    {
+        PrivateDisplay result = new PrivateDisplay();
+        result.body = display.getBody();
+        result.image = display.getImage();
+        result.title = display.getTitle();
+        return result;
     }
 }

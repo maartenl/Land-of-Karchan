@@ -26,7 +26,7 @@ import mmud.exceptions.MudException;
  * Bow : "bow".
  * @author maartenl
  */
-public class BowCommand extends NormalCommand
+public class BowCommand extends TargetCommand
 {
 
     public BowCommand(String aRegExpr)
@@ -34,64 +34,47 @@ public class BowCommand extends NormalCommand
         super(aRegExpr);
     }
 
-    private void bowTo(User aUser, Person aTarget, String[] parsed) throws MudException
+    @Override
+    protected DisplayInterface actionTo(User aUser, Person aTarget, String verb, String command) throws MudException
     {
-        if (parsed.length == 4)
+        if (command != null)
         {
-            if (Utils.existsAdverb(parsed[3]))
+            if (Utils.existsAdverb(command))
             {
                 // bow to Marvin evilly
                 aUser.getRoom().sendMessage(aUser, aTarget,
                         "%SNAME bow%VERB2 to %TNAME "
-                        + parsed[3].toLowerCase()
+                        + command.toLowerCase()
                         + ".<BR>\r\n");
-                return;
+                return aUser.getRoom();
             }
             // bow to Marvin unknownadverb
             aUser.writeMessage("Unknown adverb found.<BR>\r\n");
-            return;
+            return aUser.getRoom();
         }
         // bow to Marvin
         aUser.getRoom().sendMessage(aUser, aTarget, "%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
-    }
-
-    private void bow(User aUser, String[] parsed) throws MudException
-    {
-        if (parsed.length == 2)
-        {
-            if (!Utils.existsAdverb(parsed[1]))
-            {            // bow unknownadverb
-
-                aUser.writeMessage("Unknown adverb found.<BR>\r\n");
-                return;
-            }           // bow evilly
-            aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2 "
-                    + parsed[1].toLowerCase() + ".<BR>\r\n");
-            return;
-        }
-        // bow
-        aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
-
+        return aUser.getRoom();
     }
 
     @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    protected DisplayInterface action(User aUser, String verb, String command) throws MudException
     {
-        String[] myParsed = parseCommand(command);
-        if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
+        if (command != null)
         {
-            Person toChar = aUser.getRoom().retrievePerson(myParsed[2]);
-            if (toChar == null)
+            if (!Utils.existsAdverb(command))
             {
-                // bow to unknown
-                aUser.writeMessage("Cannot find that person.<BR>\r\n");
+                // bow unknownadverb
+                aUser.writeMessage("Unknown adverb found.<BR>\r\n");
                 return aUser.getRoom();
             }
-            bowTo(aUser, toChar, myParsed);
-        } else
-        {
-            bow(aUser, myParsed);
+            // bow evilly
+            aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2 "
+                    + command.toLowerCase() + ".<BR>\r\n");
+            return aUser.getRoom();
         }
+        // bow
+        aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
         return aUser.getRoom();
     }
 }

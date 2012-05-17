@@ -14,30 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud;
+package mmud.commands.communication;
 
 /**
- *
+ * Scream to someone "scream Help!". Or just scream in general. The interesting
+ * part about this command is, because screaming is louder in general than
+ * simple talking, that the scream can be heard in neighboring rooms.
  * @author maartenl
  */
-public class Constants
+public class ScreamCommand extends ShoutCommand
 {
 
-    // TODO : create .properties file for languages, default is English. Add properties throughout the code.
+	public ScreamCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
 
-    private static String mudfilepath = "/home/maartenl/temp";
-    // TODO : fix this to be less static, and has to make use of either
-    // web-context param or env-context param/.
-    private static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
-
-    public static String getMudfilepath()
-    {
-        return mudfilepath;
-    }
-
-    public static String getPolicyFile()
-    {
-        return POLICY_FILE_LOCATION;
-    }
-
+	@Override
+	public CommType getCommType()
+	{
+		return CommType.SCREAM;
+	}
 }

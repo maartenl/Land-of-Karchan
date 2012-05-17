@@ -404,7 +404,7 @@ public class User extends Person
     /**
      * Returns the last time that a command was issued. Used for determining
      * idle time.
-     * @return
+     * @return the date of the last time a command was entered.
      */
     public Date getLastcommand()
     {

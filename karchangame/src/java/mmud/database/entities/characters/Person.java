@@ -1311,7 +1311,7 @@ abstract public class Person implements Serializable
         } catch (IOException e)
         {
             throw new MudException("Error creating logfile for " + getName()
-                    + " in " + Constants.mudfilepath, e);
+                    + " in " + Constants.getMudfilepath(), e);
         }
     }
 
@@ -1319,7 +1319,7 @@ abstract public class Person implements Serializable
     {
         if (theLogfile == null)
         {
-            theLogfile = new File(Constants.mudfilepath, getName() + ".log");
+            theLogfile = new File(Constants.getMudfilepath(), getName() + ".log");
         }
         return theLogfile;
     }

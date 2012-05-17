@@ -16,8 +16,10 @@
  */
 package mmud;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mmud.exceptions.MudException;
@@ -33,7 +35,10 @@ import org.owasp.validator.html.ScanException;
  */
 public class Utils
 {
-    private final static  Map<String, String> theAdverbStructure = new HashMap<>();
+
+    private static final Map<String, String> theAdverbStructure = new HashMap<>();
+    private static final TreeMap<String, String> theEmotionStructure = new TreeMap<>();
+    private static final TreeMap<String, String> theEmotion2Structure = new TreeMap<>();
     private final static String[] adverb =
     {
         "absentmindedly", "aimlessly", "amazedly", "amusedly", "angrily",
@@ -89,6 +94,225 @@ public class Utils
         "wearily", "wholeheartedly", "wickedly", "wildly", "wisely",
         "wistfully"
     };
+    private static final String[][] emotions =
+    {
+        {
+            "agree", "agrees"
+        },
+        {
+            "apologize", "apologizes"
+        },
+        {
+            "blink", "blinks"
+        },
+        {
+            "cheer", "cheers"
+        },
+        {
+            "chuckle", "chuckles"
+        },
+        {
+            "cough", "coughs"
+        },
+        {
+            "dance", "dances"
+        },
+        {
+            "disagree", "disagrees"
+        },
+        {
+            "flinch", "flinches"
+        },
+        {
+            "flirt", "flirts"
+        },
+        {
+            "frown", "frowns"
+        },
+        {
+            "giggle", "giggles"
+        },
+        {
+            "glare", "glares"
+        },
+        {
+            "grimace", "grimaces"
+        },
+        {
+            "grin", "grins"
+        },
+        {
+            "groan", "groans"
+        },
+        {
+            "growl", "growls"
+        },
+        {
+            "grumble", "grumbles"
+        },
+        {
+            "grunt", "grunts"
+        },
+        {
+            "hmm", "hmms"
+        },
+        {
+            "howl", "howls"
+        },
+        {
+            "hum", "hums"
+        },
+        {
+            "kneel", "kneels"
+        },
+        {
+            "kneel", "kneels"
+        },
+        {
+            "listen", "listens"
+        },
+        {
+            "melt", "melts"
+        },
+        {
+            "mumble", "mumbles"
+        },
+        {
+            "mutter", "mutters"
+        },
+        {
+            "nod", "nods"
+        },
+        {
+            "purr", "purrs"
+        },
+        {
+            "shrug", "shrugs"
+        },
+        {
+            "sigh", "sighs"
+        },
+        {
+            "smile", "smiles"
+        },
+        {
+            "smirk", "smirks"
+        },
+        {
+            "snarl", "snarls"
+        },
+        {
+            "sneeze", "sneezes"
+        },
+        {
+            "stare", "stares"
+        },
+        {
+            "think", "thinks"
+        },
+        {
+            "wave", "waves"
+        },
+        {
+            "whistle", "whistles"
+        },
+        {
+            "wink", "winks"
+        },
+        {
+            "laugh", "laughs out loud"
+        },
+        {
+            "wonder", "wonders"
+        },
+        {
+            "wince", "winces"
+        }
+    };
+    private static final String[][] emotions2 =
+    {
+        {
+            "caress", "caresses"
+        },
+        {
+            "comfort", "comforts"
+        },
+        {
+            "confuse", "confuses"
+        },
+        {
+            "congratulate", "congratulates"
+        },
+        {
+            "cuddle", "cuddles"
+        },
+        {
+            "fondle", "fondles"
+        },
+        {
+            "greet", "greets"
+        },
+        {
+            "hug", "hugs"
+        },
+        {
+            "ignore", "ignores"
+        },
+        {
+            "kick", "kicks"
+        },
+        {
+            "kiss", "kisses"
+        },
+        {
+            "knee", "knees"
+        },
+        {
+            "lick", "licks"
+        },
+        {
+            "like", "likes"
+        },
+        {
+            "love", "loves"
+        },
+        {
+            "nudge", "nudges"
+        },
+        {
+            "pat", "pats"
+        },
+        {
+            "pinch", "pinches"
+        },
+        {
+            "poke", "pokes"
+        },
+        {
+            "slap", "slaps"
+        },
+        {
+            "smooch", "smooches"
+        },
+        {
+            "sniff", "sniffes"
+        },
+        {
+            "squeeze", "squeezes"
+        },
+        {
+            "tackle", "tackles"
+        },
+        {
+            "thank", "thanks"
+        },
+        {
+            "tickle", "tickles"
+        },
+        {
+            "worship", "worships"
+        }
+    };
 
     static
     {
@@ -96,6 +320,33 @@ public class Utils
         {
             theAdverbStructure.put(adverb[i], adverb[i]);
         }
+        for (int i = 0; i < emotions.length; i++)
+        {
+            theEmotionStructure.put(emotions[i][0], emotions[i][1]);
+        }
+        for (int i = 0; i < emotions2.length; i++)
+        {
+            theEmotion2Structure.put(emotions2[i][0], emotions2[i][1]);
+        }
+    }
+
+    /**
+     * Returns an unmodifiable map with emotions, like cheer. Can have a target, but isn't
+     * necessary.
+     * @return
+     */
+    public static Map<String, String> getEmotions()
+    {
+        return Collections.unmodifiableMap(theEmotionStructure);
+    }
+
+    /**
+     * Returns an unmodifiable map with emotions, like greet. Must have a target.
+     * @return
+     */
+    public static Map<String, String> getTargetEmotions()
+    {
+        return Collections.unmodifiableMap(theEmotion2Structure);
     }
 
     /**
@@ -106,7 +357,7 @@ public class Utils
      */
     public static String security(String dirtyInput) throws PolicyException, ScanException
     {
-        Policy policy = Policy.getInstance(Constants.POLICY_FILE_LOCATION);
+        Policy policy = Policy.getInstance(Constants.getPolicyFile());
 
         AntiSamy as = new AntiSamy();
 
@@ -214,5 +465,32 @@ public class Utils
     public static boolean existsAdverb(String anAdverb)
     {
         return theAdverbStructure.containsKey(anAdverb.toLowerCase());
+    }
+
+    /**
+     * returns the appropriate emotion for a third person view.
+     *
+     * @param anEmotion
+     *            the emotion, for example "whistle".
+     * @return the third person grammar, for example "whistles".
+     * @see #returnEmotionTo
+     */
+    public static String returnEmotion(String anEmotion)
+    {
+        return theEmotionStructure.get(anEmotion);
+    }
+
+    /**
+     * returns the appropriate emotion for a third person view. The difference
+     * with returnEmotion is that this has a target.
+     *
+     * @param anEmotion
+     *            the emotion, for example "caress".
+     * @return the third person grammar, for example "caresses".
+     * @see #returnEmotion
+     */
+    public static String returnEmotionTo(String anEmotion)
+    {
+        return theEmotion2Structure.get(anEmotion);
     }
 }

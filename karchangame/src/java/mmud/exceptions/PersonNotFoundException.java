@@ -14,30 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud;
+package mmud.exceptions;
+
 
 /**
- *
+ * A person could not be found.
  * @author maartenl
  */
-public class Constants
+public class PersonNotFoundException extends MudException
 {
 
-    // TODO : create .properties file for languages, default is English. Add properties throughout the code.
-
-    private static String mudfilepath = "/home/maartenl/temp";
-    // TODO : fix this to be less static, and has to make use of either
-    // web-context param or env-context param/.
-    private static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
-
-    public static String getMudfilepath()
+    public PersonNotFoundException(String string)
     {
-        return mudfilepath;
+        super(string);
     }
 
-    public static String getPolicyFile()
+    public PersonNotFoundException(Exception ex)
     {
-        return POLICY_FILE_LOCATION;
+        super(ex);
     }
 
+    public PersonNotFoundException(String aString, Exception ex)
+    {
+        super(aString, ex);
+    }
 }

@@ -18,7 +18,14 @@ package mmud.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+import mmud.Utils;
+import mmud.commands.communication.AskCommand;
+import mmud.commands.communication.SayCommand;
+import mmud.commands.communication.ScreamCommand;
+import mmud.commands.communication.ShoutCommand;
+import mmud.commands.communication.WhisperCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -46,20 +53,20 @@ public class CommandFactory
         theCommandStructure.put("me", new MeCommand("me .+"));
 //        theCommandStructure.put("quit", new QuitCommand("quit"));
         theCommandStructure.put("sleep", new SleepCommand("sleep"));
-//        theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
+        theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
         theCommandStructure.put("awaken", new AwakenCommand("awaken"));
-//        theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
+        theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
 //        theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
-//        theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
+        theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
 //        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
 //        theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
 //        theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
-//        theCommandStructure.put("shout", new ShoutCommand(
-//                "shout (to (\\w )+)?.+"));
-//        theCommandStructure.put("scream", new ScreamCommand(
-//                "scream (to (\\w )+)?.+"));
-//        theCommandStructure.put("whisper", new WhisperCommand(
-//                "whisper (to (\\w)+ )?.+"));
+        theCommandStructure.put("shout", new ShoutCommand(
+                "shout (to (\\w )+)?.+"));
+        theCommandStructure.put("scream", new ScreamCommand(
+                "scream (to (\\w )+)?.+"));
+        theCommandStructure.put("whisper", new WhisperCommand(
+                "whisper (to (\\w)+ )?.+"));
 //        theCommandStructure.put("clear", new ClearCommand("clear"));
 //        theCommandStructure.put("time", new TimeCommand("time"));
 //        theCommandStructure.put("date", new DateCommand("date"));
@@ -174,16 +181,14 @@ public class CommandFactory
 //                "guildmasterchange (\\w)+"));
 //        theCommandStructure.put("guild", new MessageCommand("guild .+"));
 //
-//        for (int i = 0; i < emotions.length; i++)
-//        {
-//            theCommandStructure.put(emotions[i][0], new EmotionCommand(".+"));
-//            theEmotionStructure.put(emotions[i][0], emotions[i][1]);
-//        }
-//        for (int i = 0; i < emotions2.length; i++)
-//        {
-//            theCommandStructure.put(emotions2[i][0], new EmotionToCommand(".+"));
-//            theEmotion2Structure.put(emotions2[i][0], emotions2[i][1]);
-//        }
+        for (Map.Entry<String, String> entry : Utils.getEmotions().entrySet())
+        {
+            theCommandStructure.put(entry.getKey(), new EmotionCommand(".+"));
+        }
+        for (Map.Entry<String, String> entry : Utils.getTargetEmotions().entrySet())
+        {
+            theCommandStructure.put(entry.getKey(), new EmotionToCommand(".+"));
+        }
     }
 
     public static NormalCommand getBogusCommand()
@@ -197,7 +202,8 @@ public class CommandFactory
      * false, i.e. nothing is executed, the method will call the standard
      * BogusCommand.
      *
-     * @param command
+     * @param aUser the person executing the command
+     * @param aCommand
      *            the command to be run
      * @return DisplayInterface object containing the result of the command executed.
      */

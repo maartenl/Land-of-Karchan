@@ -105,4 +105,23 @@ public abstract class NormalCommand implements Command
     {
         return aCommand.split("( )+", 50);
     }
+
+    /**
+     * split up the command into different words.<p/>For example:<p/>
+     * <tt>parseCommand("bow to Marvin evilly", 4)</tt> returns array
+     * <tt>["bow","to","Marvin", "evilly"]</tt><p/>
+     * <tt>parseCommand("say to Marvin Greetings this morning.", 4)</tt>
+     * returns array <tt>["say","to","Marvin", "Greetings this morning."]</tt>
+     *
+     * @param limit the result threshold, example 3 means the array holds
+     * three, the first two words and the rest in the third array element.
+     * @param aCommand
+     *            String containing the command
+     * @return String array where each String contains a word from the command.
+     * @see String#split(java.lang.String, int)
+     */
+    protected static String[] parseCommand(String aCommand, int limit)
+    {
+        return aCommand.split("( )+", limit);
+    }
 }

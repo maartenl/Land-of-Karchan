@@ -14,30 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud;
+package mmud.commands.communication;
 
 /**
  *
+ * Say something :
+ * <UL>
+ * <LI>"say Good morning, everyone." or
+ * <LI>"say to Karn Good morning, Karn."
+ * </UL>
  * @author maartenl
  */
-public class Constants
+public class SayCommand extends CommunicationCommand
 {
 
-    // TODO : create .properties file for languages, default is English. Add properties throughout the code.
+	public SayCommand(String aRegExpr)
+	{
+		super(aRegExpr);
+	}
 
-    private static String mudfilepath = "/home/maartenl/temp";
-    // TODO : fix this to be less static, and has to make use of either
-    // web-context param or env-context param/.
-    private static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
-
-    public static String getMudfilepath()
-    {
-        return mudfilepath;
-    }
-
-    public static String getPolicyFile()
-    {
-        return POLICY_FILE_LOCATION;
-    }
-
+	@Override
+	public CommType getCommType()
+	{
+		return CommType.SAY;
+	}
 }
