@@ -48,8 +48,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Help.findByExample2b", query = "SELECT h FROM Help h WHERE h.example2b = :example2b"),
     @NamedQuery(name = "Help.findByExample2c", query = "SELECT h FROM Help h WHERE h.example2c = :example2c")
 })
-public class Help implements Serializable
+public class Help implements Serializable, DisplayInterface
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -106,6 +107,10 @@ public class Help implements Serializable
         this.contents = contents;
     }
 
+    /**
+     * The command for which help is requested and found.
+     * @return
+     */
     public String getCommand()
     {
         return command;
@@ -116,6 +121,10 @@ public class Help implements Serializable
         this.command = command;
     }
 
+    /**
+     * The explanation, description, whatever-you-may-call-it.
+     * @return
+     */
     public String getContents()
     {
         return contents;
@@ -126,6 +135,10 @@ public class Help implements Serializable
         this.contents = contents;
     }
 
+    /**
+     * The way the command syntax works.
+     * @return
+     */
     public String getSynopsis()
     {
         return synopsis;
@@ -136,6 +149,10 @@ public class Help implements Serializable
         this.synopsis = synopsis;
     }
 
+    /**
+     * Reference to other commands.
+     * @return
+     */
     public String getSeealso()
     {
         return seealso;
@@ -146,6 +163,10 @@ public class Help implements Serializable
         this.seealso = seealso;
     }
 
+    /**
+     * An example of the way the command is executed.
+     * @return
+     */
     public String getExample1()
     {
         return example1;
@@ -156,6 +177,10 @@ public class Help implements Serializable
         this.example1 = example1;
     }
 
+    /**
+     * Output of the example visible to you.
+     * @return
+     */
     public String getExample1a()
     {
         return example1a;
@@ -166,6 +191,10 @@ public class Help implements Serializable
         this.example1a = example1a;
     }
 
+    /**
+     * Output of the example visible to others.
+     * @return
+     */
     public String getExample1b()
     {
         return example1b;
@@ -176,6 +205,10 @@ public class Help implements Serializable
         this.example1b = example1b;
     }
 
+    /**
+     * An example of the way the command is executed to someone else.
+     * @return
+     */
     public String getExample2()
     {
         return example2;
@@ -186,6 +219,10 @@ public class Help implements Serializable
         this.example2 = example2;
     }
 
+    /**
+     * What the players sees.
+     * @return
+     */
     public String getExample2a()
     {
         return example2a;
@@ -196,6 +233,10 @@ public class Help implements Serializable
         this.example2a = example2a;
     }
 
+    /**
+     * What the target notices.
+     * @return
+     */
     public String getExample2b()
     {
         return example2b;
@@ -206,6 +247,10 @@ public class Help implements Serializable
         this.example2b = example2b;
     }
 
+    /**
+     * What a third party sees.
+     * @return
+     */
     public String getExample2c()
     {
         return example2c;
@@ -241,9 +286,105 @@ public class Help implements Serializable
     }
 
     @Override
+    public String getTitle()
+    {
+        return getCCommand();
+    }
+
+    @Override
+    public String getImage()
+    {
+        return null;
+    }
+
+    @Override
+    public String getBody()
+    {
+        String result = "<DL><DT><B>NAME</B>"
+                + "<DD><B>" + getCCommand() + "</B> - formatted output<P>"
+                + "<DT><B>SYNOPSIS</B>" + "<DD>" + getCSynopsis() + "<P>"
+                + "<DT><B>DESCRIPTION</B>" + "<DD>" + getCDescription() + "<P>"
+                + "<DT><B>EXAMPLES</B><DD>";
+        result += getExample1Description();
+        result += getExample2Description();
+        result += "<DT><B>SEE ALSO</B><DD>" + getSeealso() + "<P></DL>";
+        return result;
+    }
+
+    @Override
     public String toString()
     {
         return "mmud.database.entities.game.Help[ command=" + command + " ]";
     }
 
+    private String getExample2Description()
+    {
+        if ((example2 == null))
+        {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        if ((example2 != null) && !example2.trim().equals(""))
+        {
+            result.append("\"" + example2 + "\"<P>");
+        }
+        if ((example2a != null) && !example2a.trim().equals(""))
+        {
+            result.append("You: <TT>" + example2a + "</TT><BR>");
+        }
+        if ((example2b != null) && !example2b.trim().equals(""))
+        {
+            result.append("Marvin: <TT>" + example2b + "</TT><BR>");
+        }
+        if ((example2c != null) && !example2c.trim().equals(""))
+        {
+            result.append("Anybody: <TT>" + example2c + "</TT><P>");
+        }
+        return result.toString();
+    }
+
+    private String getExample1Description()
+    {
+        if (example1 == null)
+        {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        if ((example1 != null) && !example1.trim().equals(""))
+        {
+            result.append("\"" + example1 + "\"<P>");
+        }
+        if ((example1a != null) && !example1a.trim().equals(""))
+        {
+            result.append("You: <TT>" + example1a + "</TT><BR>");
+        }
+        if ((example1b != null) && !example1b.trim().equals(""))
+        {
+            result.append("Anybody: <TT>" + example1b + "</TT><P>");
+        }
+        return result.toString();
+    }
+
+    private String getCCommand()
+    {
+        return command.substring(0, 1).toUpperCase()
+                + command.substring(1);
+    }
+
+    private String getCSynopsis()
+    {
+        if (getSynopsis() == null)
+        {
+            return "";
+        }
+        return getSynopsis().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll(getCommand(),
+                "<B>" + getCommand() + "</B>");
+    }
+
+    private String getCDescription()
+    {
+        return getContents().replaceAll(getCommand(),
+                "<B>" + getCommand() + "</B>").replaceAll(getCCommand(),
+                "<B>" + getCCommand() + "</B>");
+    }
 }

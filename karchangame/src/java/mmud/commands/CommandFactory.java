@@ -22,10 +22,19 @@ import java.util.Map;
 import java.util.TreeMap;
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
+import mmud.commands.communication.CryCommand;
 import mmud.commands.communication.SayCommand;
 import mmud.commands.communication.ScreamCommand;
 import mmud.commands.communication.ShoutCommand;
+import mmud.commands.communication.SingCommand;
 import mmud.commands.communication.WhisperCommand;
+import mmud.commands.movement.DownCommand;
+import mmud.commands.movement.EastCommand;
+import mmud.commands.movement.GoCommand;
+import mmud.commands.movement.NorthCommand;
+import mmud.commands.movement.SouthCommand;
+import mmud.commands.movement.UpCommand;
+import mmud.commands.movement.WestCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -59,8 +68,8 @@ public class CommandFactory
 //        theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
         theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
 //        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
-//        theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
-//        theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
+        theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
+        theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
         theCommandStructure.put("shout", new ShoutCommand(
                 "shout (to (\\w )+)?.+"));
         theCommandStructure.put("scream", new ScreamCommand(
@@ -68,21 +77,21 @@ public class CommandFactory
         theCommandStructure.put("whisper", new WhisperCommand(
                 "whisper (to (\\w)+ )?.+"));
 //        theCommandStructure.put("clear", new ClearCommand("clear"));
-//        theCommandStructure.put("time", new TimeCommand("time"));
-//        theCommandStructure.put("date", new DateCommand("date"));
-//        theCommandStructure.put("south", new SouthCommand("south"));
-//        theCommandStructure.put("north", new NorthCommand("north"));
-//        theCommandStructure.put("east", new EastCommand("east"));
-//        theCommandStructure.put("west", new WestCommand("west"));
-//        theCommandStructure.put("s", new SouthCommand("s"));
-//        theCommandStructure.put("n", new NorthCommand("n"));
-//        theCommandStructure.put("e", new EastCommand("e"));
-//        theCommandStructure.put("w", new WestCommand("w"));
-//        theCommandStructure.put("up", new UpCommand("up"));
-//        theCommandStructure.put("down", new DownCommand("down"));
-//        theCommandStructure.put("go", new GoCommand(
-//                "go (up|down|north|south|east|west)?"));
-//        theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
+        theCommandStructure.put("time", new TimeCommand("time"));
+        theCommandStructure.put("date", new DateCommand("date"));
+        theCommandStructure.put("south", new SouthCommand("south"));
+        theCommandStructure.put("north", new NorthCommand("north"));
+        theCommandStructure.put("east", new EastCommand("east"));
+        theCommandStructure.put("west", new WestCommand("west"));
+        theCommandStructure.put("s", new SouthCommand("s"));
+        theCommandStructure.put("n", new NorthCommand("n"));
+        theCommandStructure.put("e", new EastCommand("e"));
+        theCommandStructure.put("w", new WestCommand("w"));
+        theCommandStructure.put("up", new UpCommand("up"));
+        theCommandStructure.put("down", new DownCommand("down"));
+        theCommandStructure.put("go", new GoCommand(
+                "go (up|down|north|south|east|west)?"));
+        theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
 //        theCommandStructure.put("fully", new IgnoreCommand(
 //                "fully ignore (\\w)+"));
 //        theCommandStructure.put("acknowledge", new AcknowledgeCommand(
