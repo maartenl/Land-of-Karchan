@@ -39,9 +39,13 @@ import mmud.database.entities.game.Command;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
+import mmud.database.enums.Alignment;
+import mmud.database.enums.Appetite;
 import mmud.database.enums.God;
 import mmud.database.enums.Health;
+import mmud.database.enums.Movement;
 import mmud.database.enums.Sex;
+import mmud.database.enums.Sobriety;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -134,7 +138,7 @@ abstract public class Person implements Serializable
     @NotNull
     private Room room;
     @Column(name = "whimpy")
-    private Integer whimpy;
+    private Integer wimpy;
     @Column(name = "experience")
     private Integer experience;
     @Size(max = 20)
@@ -226,7 +230,7 @@ abstract public class Person implements Serializable
     {
 
         this.copper = 0; // no money
-        this.whimpy = 0; // no coward, either
+        this.wimpy = 0; // no coward, either
         this.experience = 0; // no experience points to speak of
         this.fightingwho = null; // not fighting anybody
         this.sleep = false;
@@ -463,26 +467,26 @@ abstract public class Person implements Serializable
      *
      * @return integer containing the setting
      */
-    public Health getWhimpy()
+    public Health getWimpy()
     {
-        return Health.get(whimpy);
+        return Health.get(wimpy);
     }
 
     /**
-     * sets the whimpy of the character.
+     * sets the wimpy of the character.
      *
-     * @param whimpy
-     *            Health enum containing the whimpy
-     * @see #getWhimpy()
+     * @param wimpy
+     *            Health enum containing the wimpy
+     * @see #getWimpy()
      */
-    public void setWhimpy(Health whimpy)
+    public void setWimpy(Health wimpy)
     {
-        if (whimpy == null)
+        if (wimpy == null)
         {
-            this.whimpy = null;
+            this.wimpy = null;
             return;
         }
-        this.whimpy = whimpy.getOrdinalValue();
+        this.wimpy = wimpy.getOrdinalValue();
     }
 
     /**
@@ -1390,5 +1394,76 @@ abstract public class Person implements Serializable
             throw new MudException("Attempting to get log with negative offset.");
         }
         return theLog.substring(offset);
+    }
+
+    /**
+     * Display statistics .
+     *
+     * @return String containing all the statistics in html format.
+     */
+    public String getStatistics() throws MudException
+    {
+        // TODO : get wearables
+        // String stuff = ItemsDb.getWearablesFromChar(this);
+        // stuff.replaceAll("%SHISHER", "your");
+        StringBuilder stuff = new StringBuilder();
+        String whimpy = (getWimpy() == null ? "You are not whimpy at all.<BR>"
+                : "You will flee when you are " + getWimpy().getDescription() + ".<BR>");
+        String state = getState() == null ? "" : "Your condition is \"" + getState() + "\"<br/>";
+        stuff.append("A " + getLongDescription() + ".<BR>You seem to be "
+                + Health.getHealth(getVitals()).getDescription() + ".<BR>You are "
+                + Movement.getMovement(getMovementstats()).getDescription()
+                + ".<BR>"
+                + Sobriety.getSobriety(getDrinkstats()).getDescription()
+                + Appetite.getAppetite(getEatstats()).getDescription()
+                + "You are "
+                // ShowBurden
+                + Alignment.getAlignment(alignment).getDescription() + ".<BR>" + "You are level " + getLevel()
+                + " and " + (1000 - getExperience())
+                + " experience points away from levelling.<BR>" + whimpy);
+        stuff.append(state);
+        // Skill
+        if (getGuild() != null)
+        {
+            if (getGuild().getBossname().getName().equals(getName()))
+            {
+                stuff.append("You are the Guildmaster of <B>"
+                        + getGuild().getTitle() + "</B>.<BR>");
+            } else
+            {
+                stuff.append("You are a member of <B>" + getGuild().getTitle()
+                        + "</B>.<BR>");
+            }
+        }
+        return stuff.toString();
+    }
+
+    private StringBuilder addLongDescription(StringBuilder builder)
+    {
+        builder.append(getAge().equals("none") ? "" : getAge() + ", ");
+        builder.append(getHeight().equals("none") ? "" : getHeight() + ", ");
+        builder.append(getWidth().equals("none") ? "" : getWidth() + ", ");
+        builder.append(getComplexion().equals("none") ? "" : getComplexion() + ", ");
+        builder.append(getEyes().equals("none") ? "" : getEyes() + ", ");
+        builder.append(getFace().equals("none") ? "" : getFace() + ", ");
+        builder.append(getHair().equals("none") ? "" : getHair() + ", ");
+        builder.append(getBeard().equals("none") ? "" : getBeard() + ", ");
+        builder.append(getArm().equals("none") ? "" : getArm() + ", ");
+        builder.append(getLeg().equals("none") ? "" : getLeg() + ", ");
+        builder.append(getSex()).append(" ").append(getRace()).append(" who calls ").append(getSex().indirect());
+        builder.append("self ").append(getName()).append(" (").append(getTitle()).append(")");
+        return builder;
+    }
+
+    /**
+     * returns the description of the character. All characteristics, if
+     * possible, are taken into account.
+     *
+     * @return String containing the description
+     */
+    public String getLongDescription()
+    {
+
+        return addLongDescription(new StringBuilder()).toString();
     }
 }

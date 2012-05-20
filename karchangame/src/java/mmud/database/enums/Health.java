@@ -37,6 +37,16 @@ public enum Health
         this.ordinalValue = ordinalValue;
     }
 
+    public static Integer min()
+    {
+        return AT_DEATH.getOrdinalValue() * 1000;
+    }
+
+    public static Integer max()
+    {
+        return VERY_WELL.getOrdinalValue() * 1000  + 999;
+    }
+
     /**
      * Returns the health of the character. Must be a number between 0 and 11999, where
      * 0..999 is AT_DEATH and 11000..11999 is VERY_WELL.
@@ -51,7 +61,7 @@ public enum Health
         {
             throw new NullPointerException("Null found!");
         }
-        if (health < 0 || health > 11999)
+        if (health < min() || health > max())
         {
             throw new RuntimeException("Health " + health + " not allowed!");
         }
@@ -75,11 +85,32 @@ public enum Health
     {
         if (health == null)
         {
-            throw null;
+            return null;
         }
         for (Health healthEnum : values())
         {
             if (health == healthEnum.ordinalValue)
+            {
+                return healthEnum;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the health based on a description.
+     *
+     * @return Health enum or null if not found.
+     */
+    public static Health get(String health)
+    {
+        if (health == null)
+        {
+            return null;
+        }
+        for (Health healthEnum : values())
+        {
+            if (health.equalsIgnoreCase(healthEnum.value))
             {
                 return healthEnum;
             }

@@ -96,16 +96,16 @@ public class CommandFactory
 //                "fully ignore (\\w)+"));
 //        theCommandStructure.put("acknowledge", new AcknowledgeCommand(
 //                "acknowledge (\\w)+"));
-//        theCommandStructure.put("curtsey", new CurtseyCommand(
-//                "curtsey( to (\\w)+)?"));
-//        theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
-//        theCommandStructure.put("whimpy",
-//                new WhimpyCommand("whimpy( .+|help)?"));
+        theCommandStructure.put("curtsey", new CurtseyCommand(
+                "curtsey( to (\\w)+)?"));
+        theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
+        theCommandStructure.put("wimpy",
+                new WimpyCommand("wimpy( .+|help)?"));
 //        theCommandStructure.put("who", new WhoCommand("who"));
 //        theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
 //        theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 //        theCommandStructure.put("stop", new FightCommand("stop fighting"));
-//        theCommandStructure.put("stats", new StatsCommand("stats"));
+        theCommandStructure.put("stats", new StatsCommand("stats"));
 //        theCommandStructure.put("inventory", new InventoryCommand("inventory"));
 //        theCommandStructure.put("i", new InventoryCommand("i"));
 //        theCommandStructure.put("drink", new DrinkCommand(

@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 @Entity
 @DiscriminatorValue("0")
 @NamedQueries(
-
-
 {
     @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
     @NamedQuery(name = "User.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
@@ -400,7 +398,6 @@ public class User extends Person
         this.cgiUserAgent = cgiUserAgent;
     }
 
-
     /**
      * Returns the last time that a command was issued. Used for determining
      * idle time.
@@ -491,4 +488,5 @@ public class User extends Person
     {
         return lastlogin == null;
     }
+
 }
