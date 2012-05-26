@@ -1,9 +1,0 @@
-#!/bin/sh
-
-export MYSQL_BIN="/usr/bin/mysql"
-export MYSQL_PWD="mmud"
-export MYSQL_HOST="sherlock"
-export MYSQL_USR="mmud"
-export MYSQL_DB="mmud"
-
-export MYSQL_DUMP="/usr/bin/mysqldump"
