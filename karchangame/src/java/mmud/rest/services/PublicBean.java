@@ -132,6 +132,10 @@ public class PublicBean
                 publicPerson.sleep = person.getSleep() ? "sleeping" : "";
                 publicPerson.area = person.getRoom().getArea().getShortdescription();
                 Long now = (new Date()).getTime();
+                if (person.getLastlogin() == null)
+                {
+                    continue;
+                }
                 Long backThen = person.getLastlogin().getTime();
                 publicPerson.min = (now - backThen) / 60000;
                 publicPerson.sec = ((now - backThen) / 1000) % 60;
