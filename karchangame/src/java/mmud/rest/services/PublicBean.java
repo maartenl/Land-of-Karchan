@@ -135,6 +135,7 @@ public class PublicBean
                 publicPerson.min = (now - backThen) / 60000;
                 publicPerson.sec = ((now - backThen) / 1000) % 60;
                 res.add(publicPerson);
+                break;
             }
         } catch (Exception e)
         {
