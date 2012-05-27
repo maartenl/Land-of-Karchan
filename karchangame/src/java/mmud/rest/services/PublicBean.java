@@ -72,8 +72,6 @@ public class PublicBean
     @GET
     @Path("fortunes")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -109,8 +107,6 @@ public class PublicBean
     @GET
     @Path("who")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -131,6 +127,10 @@ public class PublicBean
                 publicPerson.sleep = person.getSleep() ? "sleeping" : "";
                 publicPerson.area = person.getRoom().getArea().getShortdescription();
                 Long now = (new Date()).getTime();
+                if (person.getLastlogin() == null)
+                {
+                    continue;
+                }
                 Long backThen = person.getLastlogin().getTime();
                 publicPerson.min = (now - backThen) / 60000;
                 publicPerson.sec = ((now - backThen) / 1000) % 60;
@@ -153,8 +153,6 @@ public class PublicBean
     @GET
     @Path("news")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -196,8 +194,6 @@ public class PublicBean
     @GET
     @Path("status")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -235,8 +231,6 @@ public class PublicBean
     @GET
     @Path("guilds")
     @Produces(
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
