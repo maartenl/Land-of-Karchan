@@ -28,6 +28,7 @@ rename table mm_boardmessages to mm_boardmessages_old;
 rename table mm_boardmessages2 to mm_boardmessages;
 
 update mm_usertable set birth = null where birth = "0000-00-00 00:00:00";
+update mm_usertable set lastlogin = null where lastlogin = "0000-00-00 00:00:00";
 
 alter table mm_usertable change room room int(7) not null default 1;
 alter table mm_usertable

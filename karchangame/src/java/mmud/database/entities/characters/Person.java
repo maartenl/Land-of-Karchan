@@ -1414,8 +1414,8 @@ abstract public class Person implements Serializable
                 + Health.getHealth(getVitals()).getDescription() + ".<BR>You are "
                 + Movement.getMovement(getMovementstats()).getDescription()
                 + ".<BR>"
-                + Sobriety.getSobriety(getDrinkstats()).getDescription()
-                + Appetite.getAppetite(getEatstats()).getDescription()
+                + Sobriety.getSobriety(getDrinkstats()).getDescription() + "<br />"
+                + Appetite.getAppetite(getEatstats()).getDescription() + "<br />"
                 + "You are "
                 // ShowBurden
                 + Alignment.getAlignment(alignment).getDescription() + ".<BR>" + "You are level " + getLevel()
