@@ -80,8 +80,7 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateNews = function(entry) {
-	var data = entry.news;
+      var updateNews = function(data) {
         if (window.console) console.log("updateNews");
         // The data parameter is a JSON object.
         var formatted_html = "";
@@ -108,8 +107,7 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateFortunes = function(entry) {
-	var data = entry.fortune;
+      var updateFortunes = function(data) {
         if (window.console) console.log("updateFortunes");
         // The data parameter is a JSON object.
         var formatted_html = "<table><tr><td><b>Position</b></td><td><b>Name</b></td><td><b>Money</b></td></tr>";
@@ -140,18 +138,17 @@
         getWho();
 	var who_interval_id=self.setInterval(getWho,60000); 
 
-      var updateWho = function(entry) {
-	if (entry == null)
+      var updateWho = function(data) {
+	if (data == null)
 	{
 		$('#karchan_who').html("<p>There are no people online. Get online, quick!</p>");
 		return;
 	}
-	if (typeof entry.publicPerson === "undefined") 
+	if (data.length == 0) 
 	{
 		$('#karchan_who').html("<p>There are no people online. Get online, quick!</p>");
 		return;
 	}
-  	var data = entry.publicPerson;
         if (window.console) console.log("updateWho");
         // The data parameter is a JSON object.
         var formatted_html = "<p>There are " + data.length + " people online.</p><ul>";
@@ -179,8 +176,7 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateGuilds = function(entry) {
-	var data = entry.publicGuild;
+      var updateGuilds = function(data) {
         if (window.console) console.log("updateGuilds");
         // The data parameter is a JSON object.
         var formatted_html = "<p><a href=\"#\" id=\"karchan_show_all\">Expand all</a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"#\" id=\"karchan_collapse_all\">Collapse all</a></p>";
@@ -233,8 +229,7 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateCharactersheets = function(entry) {
-	var data = entry.publicPerson;
+      var updateCharactersheets = function(data) {
         if (window.console) console.log("updateCharactersheets");
         // The data parameter is a JSON object.
         var formatted_html = "";
@@ -292,8 +287,7 @@
           data: 'js=1' //Pass a key/value pair
         }); // end of ajax
       
-      var updateStatus = function(entry) {
-	var data = entry.publicPerson;
+      var updateStatus = function(data) {
         if (window.console) console.log("updateStatus");
         // The data parameter is a JSON object.
         var formatted_html = "";
