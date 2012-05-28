@@ -141,6 +141,16 @@
 	var who_interval_id=self.setInterval(getWho,60000); 
 
       var updateWho = function(entry) {
+	if (entry == null)
+	{
+		$('#karchan_who').html("<p>There are no people online. Get online, quick!</p>");
+		return;
+	}
+	if (typeof entry.publicPerson === "undefined") 
+	{
+		$('#karchan_who').html("<p>There are no people online. Get online, quick!</p>");
+		return;
+	}
   	var data = entry.publicPerson;
         if (window.console) console.log("updateWho");
         // The data parameter is a JSON object.

@@ -219,6 +219,7 @@ if (substr($command, -4) == "</p>")
 
 <form method="post" action="/node/24" id="CommandForm" name="CommandForm">
 <?php
+  // <img src="/images/christmas/noel7.gif" style="vertical-align:middle">
   if (!$bigtalk)
     {?>
     <input type="text" id="command" name="command" size="60" value="">
@@ -251,6 +252,7 @@ if (substr($command, -4) == "</p>")
 			</textarea>
     <?php
     }
+    // <img src="/images/christmas/noel7.gif" style="vertical-align:middle">
     ?>
 <input type="submit" value="Submit">
 </form>

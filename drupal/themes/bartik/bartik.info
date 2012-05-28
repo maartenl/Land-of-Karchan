@@ -41,3 +41,4 @@ project = "drupal"
 datestamp = "1294208756"
 
 scripts[] = jquery.cookie.js
+
