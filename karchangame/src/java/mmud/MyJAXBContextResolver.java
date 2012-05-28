@@ -21,6 +21,11 @@ import com.sun.jersey.api.json.JSONJAXBContext;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
+import mmud.rest.webentities.Fortune;
+import mmud.rest.webentities.News;
+import mmud.rest.webentities.PrivateMail;
+import mmud.rest.webentities.PublicFamily;
+import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 
 /**
@@ -34,14 +39,14 @@ public class MyJAXBContextResolver implements ContextResolver<JAXBContext>
     private JAXBContext context;
     private Class[] types =
     {
-        PublicPerson.class
+        PublicPerson.class, Fortune.class, PrivateMail.class, News.class, PublicGuild.class, PublicFamily.class
     };
 
     public MyJAXBContextResolver() throws Exception
     {
         this.context =
                 new JSONJAXBContext(
-                JSONConfiguration.mapped().arrays("publicPerson").build(), types);
+                JSONConfiguration.natural().rootUnwrapping(true).build(), types);
     }
 
     @Override
