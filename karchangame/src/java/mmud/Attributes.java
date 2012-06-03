@@ -14,20 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
-
-import mmud.exceptions.MudException;
+package mmud;
 
 /**
- * Display interface, indicates the things that needs to be shown.
+ *
  * @author maartenl
  */
-public interface DisplayInterface
+public class Attributes
 {
-    public String getTitle() throws MudException;
 
-    public String getImage() throws MudException;
-
-    public String getBody() throws MudException;
-
+    /**
+     * Attribute indicating that someone wishes to join a certain guild.
+     */
+    public final static String GUILDWISH = "guildwish";
+    public final static String VALUETYPE_STRING = "string";
 }

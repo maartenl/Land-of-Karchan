@@ -28,6 +28,14 @@ import mmud.commands.communication.ScreamCommand;
 import mmud.commands.communication.ShoutCommand;
 import mmud.commands.communication.SingCommand;
 import mmud.commands.communication.WhisperCommand;
+import mmud.commands.guild.AcceptCommand;
+import mmud.commands.guild.ApplyCommand;
+import mmud.commands.guild.ChangeMasterCommand;
+import mmud.commands.guild.DetailsCommand;
+import mmud.commands.guild.LeaveCommand;
+import mmud.commands.guild.MessageCommand;
+import mmud.commands.guild.RejectCommand;
+import mmud.commands.guild.RemoveCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -161,16 +169,16 @@ public class CommandFactory
 //        theCommandStructure.put("roleplay", new PostRpgBoardCommand(
 //                "roleplay .+"));
 //
-//        // guild commands
-//        theCommandStructure.put("guildapply", new ApplyCommand(
-//                "guildapply( (\\w)+)?"));
-//        theCommandStructure.put("guildleave", new LeaveCommand("guildleave"));
-//        theCommandStructure.put("guilddetails", new DetailsCommand(
-//                "guilddetails"));
-//        theCommandStructure.put("guildaccept", new AcceptCommand(
-//                "guildaccept (\\w)+"));
-//        theCommandStructure.put("guildreject", new RejectCommand(
-//                "guildreject (\\w)+"));
+        // guild commands
+        theCommandStructure.put("guildapply", new ApplyCommand(
+                "guildapply( (\\w)+)?"));
+        theCommandStructure.put("guildleave", new LeaveCommand("guildleave"));
+        theCommandStructure.put("guilddetails", new DetailsCommand(
+                "guilddetails"));
+        theCommandStructure.put("guildaccept", new AcceptCommand(
+                "guildaccept (\\w)+"));
+        theCommandStructure.put("guildreject", new RejectCommand(
+                "guildreject (\\w)+"));
 //        theCommandStructure.put("guildaddrank", new AddRankCommand(
 //                "guildaddrank (\\d)+ .+"));
 //        theCommandStructure.put("guildassign", new AssignRankCommand(
@@ -184,12 +192,12 @@ public class CommandFactory
 //        theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));
 //        theCommandStructure.put("guildmessage", new SetLogonMessageCommand(
 //                "guildmessage .+"));
-//        theCommandStructure.put("guildremove", new RemoveCommand(
-//                "guildremove (\\w)+"));
-//        theCommandStructure.put("guildmasterchange", new ChangeMasterCommand(
-//                "guildmasterchange (\\w)+"));
-//        theCommandStructure.put("guild", new MessageCommand("guild .+"));
-//
+        theCommandStructure.put("guildremove", new RemoveCommand(
+                "guildremove (\\w)+"));
+        theCommandStructure.put("guildmasterchange", new ChangeMasterCommand(
+                "guildmasterchange (\\w)+"));
+        theCommandStructure.put("guild", new MessageCommand("guild .+"));
+
         for (Map.Entry<String, String> entry : Utils.getEmotions().entrySet())
         {
             theCommandStructure.put(entry.getKey(), new EmotionCommand(".+"));

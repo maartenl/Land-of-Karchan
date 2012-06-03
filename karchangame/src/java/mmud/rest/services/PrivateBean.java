@@ -25,8 +25,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -54,9 +52,9 @@ import org.slf4j.LoggerFactory;
 @Path("/private")
 public class PrivateBean
 {
+
     @EJB
     private MailBean mailBean;
-
     /**
      * Indicates that only 20 mails may be retrieved per time (basically a
      * page).
@@ -202,7 +200,6 @@ public class PrivateBean
         return toperson;
     }
 
-
     private User getUser(String name)
     {
         User toperson = getEntityManager().find(User.class, name);
@@ -231,14 +228,6 @@ public class PrivateBean
     @POST
     @Path("{name}/mail")
     @Consumes(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -370,18 +359,13 @@ public class PrivateBean
     @GET
     @Path("{name}/mail/{id}/createMailItem/{item}")
     @Consumes(
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
     public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
-         return Response.noContent().build();
-         // TODO MLE: this needs to get fixed.
+        return Response.noContent().build();
+        // TODO MLE: this needs to get fixed.
 //
 //        itsLog.debug("entering createMailItem");
 //        Person person = authenticate(name, lok);
@@ -490,14 +474,6 @@ public class PrivateBean
     @DELETE
     @Path("{name}/mail/{id}")
     @Consumes(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -536,14 +512,6 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet")
     @Consumes(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -603,14 +571,6 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
     @Consumes(
-
-
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
@@ -674,12 +634,6 @@ public class PrivateBean
     @DELETE
     @Path("{name}/charactersheet/familyvalues/{toname}")
     @Consumes(
-
-
-
-
-
-
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })

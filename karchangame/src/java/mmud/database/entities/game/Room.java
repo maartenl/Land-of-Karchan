@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -534,4 +533,5 @@ public class Room implements Serializable, DisplayInterface
         }
         return null;
     }
+
 }

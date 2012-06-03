@@ -251,12 +251,12 @@ public class PublicBean
                 PublicGuild newGuild = new PublicGuild();
                 newGuild.guildurl = guild.getHomepage();
                 newGuild.title = guild.getTitle();
-                if (guild.getBossname() == null)
+                if (guild.getBoss() == null)
                 {
                     itsLog.warn("guilds: no boss found for guild " + guild.getName());
                 } else
                 {
-                    newGuild.bossname = guild.getBossname().getName();
+                    newGuild.bossname = guild.getBoss().getName();
                 }
                 newGuild.guilddescription = guild.getDescription();
                 newGuild.creation = guild.getCreation();

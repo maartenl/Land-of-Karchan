@@ -20,6 +20,8 @@
  * <p><img src="../../images/package-info_commands.png"/></p>
  * @startuml package-info_commands.png
  * interface Command
+ * abstract class GuildCommand
+ * abstract class GuildMasterCommand
  * abstract class NormalCommand
  * abstract class TargetCommand
  * abstract class CommunicationCommand
@@ -32,7 +34,8 @@
  * TargetCommand <|-- BowCommand
  * CommunicationCommand <|-- AskCommand
  * NormalCommand <|-- MeCommand
- *
+ * NormalCommand <|-- GuildCommand
+ * GuildCommand <|-- GuildMasterCommand
  * @enduml
  */
 package mmud.commands;

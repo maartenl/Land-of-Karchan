@@ -515,7 +515,7 @@ public class PublicBeanTest
     }
 
     @Test
-    public void guildsTest()
+    public void guildsTest() throws MudException
     {
         logger.fine("guildsTest");
         Date secondDate = new Date();
@@ -523,14 +523,14 @@ public class PublicBeanTest
         final List<Guild> list = new ArrayList<>();
         Guild guild = new Guild();
         guild.setTitle("Disaster Area");
-        guild.setBossname(hotblack);
+        guild.setBoss(hotblack);
         guild.setCreation(firstDate);
         guild.setHomepage("http://www.disasterarea.com");
         guild.setDescription("This is just a description");
         list.add(guild);
         guild = new Guild();
         guild.setTitle("Sirius Cybernetics Corporation");
-        guild.setBossname(marvin);
+        guild.setBoss(marvin);
         guild.setCreation(secondDate);
         guild.setHomepage("http://www.scc.com");
         guild.setDescription("This is just a description");

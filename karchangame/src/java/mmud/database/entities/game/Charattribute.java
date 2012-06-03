@@ -44,7 +44,7 @@ import mmud.database.entities.characters.Person;
     @NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType"),
     @NamedQuery(name = "Charattribute.findByCharname", query = "SELECT c FROM Charattribute c WHERE c.charattributePK.charname = :charname")
 })
-public class Charattribute implements Serializable
+public class Charattribute implements Serializable, Attribute
 {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -92,21 +92,31 @@ public class Charattribute implements Serializable
         this.charattributePK = charattributePK;
     }
 
+    @Override
+    public String getName()
+    {
+        return charattributePK.getName();
+    }
+
+    @Override
     public String getValue()
     {
         return value;
     }
 
+    @Override
     public void setValue(String value)
     {
         this.value = value;
     }
 
+    @Override
     public String getValueType()
     {
         return valueType;
     }
 
+    @Override
     public void setValueType(String valueType)
     {
         this.valueType = valueType;

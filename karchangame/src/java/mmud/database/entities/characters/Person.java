@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.characters;
 
+import mmud.database.entities.game.AttributeWrangler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,20 +24,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Attributes;
 import mmud.Constants;
 import mmud.Utils;
-import mmud.commands.CommandFactory;
 import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.Charattribute;
-import mmud.database.entities.game.Command;
-import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.Alignment;
@@ -47,6 +46,7 @@ import mmud.database.enums.Movement;
 import mmud.database.enums.Sex;
 import mmud.database.enums.Sobriety;
 import mmud.exceptions.MudException;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 import org.owasp.validator.html.PolicyException;
@@ -68,13 +68,13 @@ discriminatorType = DiscriminatorType.INTEGER)
 @NamedQueries(
 {
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE p.name = :name")
+    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
 })
 @Filters(
 {
     @Filter(name = "activePersons")
 })
-abstract public class Person implements Serializable
+abstract public class Person implements Serializable, AttributeWrangler
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
@@ -219,8 +219,13 @@ abstract public class Person implements Serializable
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
+    // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private Collection<Charattribute> charattributeCollection;
+    @Cascade(
+    {
+        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
+    })
+    private List<Charattribute> charattributeCollection;
     @Transient
     private File theLogfile = null;
     @Transient
@@ -652,7 +657,7 @@ abstract public class Person implements Serializable
      *
      * @return boolean, true if the person is playing, false otherwise.
      */
-    public boolean getActive()
+    public boolean isActive()
     {
         if (active == null)
         {
@@ -912,16 +917,6 @@ abstract public class Person implements Serializable
     public void setOwner(Admin owner)
     {
         this.owner = owner;
-    }
-
-    public Collection<Charattribute> getCharattributeCollection()
-    {
-        return charattributeCollection;
-    }
-
-    public void setCharattributeCollection(Collection<Charattribute> charattributeCollection)
-    {
-        this.charattributeCollection = charattributeCollection;
     }
 
     private void addDescriptionPiece(StringBuilder builder, String part)
@@ -1425,7 +1420,7 @@ abstract public class Person implements Serializable
         // Skill
         if (getGuild() != null)
         {
-            if (getGuild().getBossname().getName().equals(getName()))
+            if (getGuild().getBoss().getName().equals(getName()))
             {
                 stuff.append("You are the Guildmaster of <B>"
                         + getGuild().getTitle() + "</B>.<BR>");
@@ -1465,5 +1460,74 @@ abstract public class Person implements Serializable
     {
 
         return addLongDescription(new StringBuilder()).toString();
+    }
+
+    @Override
+    public boolean removeAttribute(String name)
+    {
+        Charattribute attr = getCharattribute(name);
+        if (attr == null)
+        {
+            return false;
+        }
+        charattributeCollection.remove(attr);
+        return true;
+    }
+
+    private Charattribute getCharattribute(String name)
+    {
+        if (charattributeCollection == null)
+        {
+            itsLog.debug("getCharattribute name=" + name + " collection is null");
+            return null;
+        }
+        for (Charattribute attr : charattributeCollection)
+        {
+            itsLog.debug("getCharattribute name=" + name + " attr=" + attr);
+            if (attr.getName().equals(name))
+            {
+                return attr;
+            }
+        }
+        itsLog.debug("getCharattribute name=" + name + " not found");
+        return null;
+    }
+
+    @Override
+    public Attribute getAttribute(String name)
+    {
+        return getCharattribute(name);
+    }
+
+    @Override
+    public void setAttribute(String name, String value)
+    {
+        Charattribute attr = getCharattribute(name);
+        if (attr == null)
+        {
+            attr = new Charattribute(name, getName());
+            attr.setPerson(this);
+        }
+        attr.setValue(value);
+        attr.setValueType(Attributes.VALUETYPE_STRING);
+        charattributeCollection.add(attr);
+    }
+
+    @Override
+    public boolean verifyAttribute(String name, String value)
+    {
+        Charattribute attr = getCharattribute(name);
+        if (attr == null)
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on user " + getName() + ".");
+            return false;
+        }
+        if (attr.getValue().equals(value))
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on user " + getName() + "!");
+            return true;
+        }
+        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on user " + getName() + ".");
+        return false;
     }
 }

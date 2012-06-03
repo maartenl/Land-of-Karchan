@@ -19,6 +19,9 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,6 +39,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
+import mmud.exceptions.MudException;
+import mmud.rest.services.GuildBean;
+import mmud.rest.services.LogBean;
+import org.hibernate.annotations.Filter;
 
 /**
  *
@@ -44,8 +51,6 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_guilds", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
 {
     @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
     @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
@@ -56,9 +61,10 @@ import mmud.database.entities.characters.Person;
     @NamedQuery(name = "Guild.findByMinguildlevel", query = "SELECT g FROM Guild g WHERE g.minguildlevel = :minguildlevel"),
     @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl"),
     @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
-    @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation")
+    @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
+    @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype and c.person = p")
 })
-public class Guild implements Serializable
+public class Guild implements Serializable, DisplayInterface
 {
 
     private static final long serialVersionUID = 1L;
@@ -90,8 +96,8 @@ public class Guild implements Serializable
     @NotNull
     @Column(name = "active")
     private Boolean active;
-//    @Basic(optional = false)
-//    @Column(name =  "creation")
+    @Basic(optional = false)
+    @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
     @Lob
@@ -99,13 +105,14 @@ public class Guild implements Serializable
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
+    @Filter(name = "activePersons")
     private Collection<Person> members;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
     @JoinColumn(name = "bossname", nullable = false, referencedColumnName = "name")
     @ManyToOne(optional = false)
-    private Person bossname;
+    private Person boss;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
     private Collection<Guildrank> guildrankCollection;
 
@@ -255,14 +262,33 @@ public class Guild implements Serializable
         this.owner = owner;
     }
 
-    public Person getBossname()
+    /**
+     * Returns the guildmaster of this guild.
+     * @return a Person, the guildmaster. Should not be null, ...ever.
+     */
+    public Person getBoss()
     {
-        return bossname;
+        return boss;
     }
 
-    public void setBossname(Person bossname)
+    /**
+     * Sets the guildmaster of this guild.
+     * @param boss the new guildmaster. Should never be null.
+     * @throws MudException if new guildmaster is null, or not a member of this guild.
+     */
+    public void setBoss(Person boss) throws MudException
     {
-        this.bossname = bossname;
+        if (boss == null)
+        {
+            throw new MudException("There should always be a guildmaster of guild " + getName());
+        }
+        if (boss.getGuild() == null
+                || (!boss.getGuild().getName().equals(
+                getName())))
+        {
+            throw new MudException(boss.getName() + " cannot be a guildmaster of guild " + getName());
+        }
+        this.boss = boss;
     }
 
     public Collection<Guildrank> getGuildrankCollection()
@@ -329,5 +355,165 @@ public class Guild implements Serializable
                 + getMinguildmembers()
                 + ".<br/>The guild has too few members, and will be removed in "
                 + getDaysguilddeath() + " days.";
+    }
+
+    /**
+     * Searches and returns the person by name in this guild, or null
+     * if not found.
+     * @param name the name of the person to look for.
+     * @return a Person.
+     */
+    public Person getMember(String name)
+    {
+        for (Person person : members)
+        {
+            if (person.getName().equalsIgnoreCase(name))
+            {
+                return person;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * communication method to everyone in the guild, that is active.
+     * The message is not
+     * parsed. Bear in mind that this method should only be used for
+     * communication about environmental issues. If the communication originates
+     * from a User/Person, you should use sendMessage(aPerson, aMessage).
+     * Otherwise the Ignore functionality will be omitted.
+     *
+     * @param aMessage
+     *            the message
+     * @throws MudException
+     *             if the room is not correct
+     * @see Person#writeMessage(java.lang.String)
+     */
+    public void sendMessage(String aMessage)
+            throws MudException
+    {
+        for (Person myChar : members)
+        {
+            myChar.writeMessage(aMessage);
+        }
+    }
+
+    /**
+     * character communication method to everyone in the guild. The message is
+     * parsed, based on who is sending the message.
+     *
+     * @param aPerson
+     *            the person who is the source of the message.
+     * @param aMessage
+     *            the message
+     *
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
+     */
+    public void sendMessage(Person aPerson, String aMessage) throws MudException
+    {
+        for (Person myChar : members)
+        {
+            myChar.writeMessage(aPerson, aMessage);
+        }
+    }
+
+    @Override
+    public String getImage()
+    {
+        // TODO
+        return "";
+    }
+
+    /**
+     * Returns the rank based on the rank id. In case the rank id does not
+     * exist, an Exception will be thrown.
+     */
+    public Guildrank getRank(int id)
+    {
+        for (Guildrank rank : guildrankCollection)
+        {
+            if (rank.getGuildrankPK().getGuildlevel() == id)
+            {
+                return rank;
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * This is primarily used for displaying the current status of the guild to
+     * a member of the guild.
+     * @return a string containing the description of the guild.
+     */
+    @Override
+    public String getBody() throws MudException
+    {
+        StringBuffer result = new StringBuffer();
+        if (getLogonmessage() != null)
+        {
+            result.append("<B>Logonmessage:</B>").append(getLogonmessage()).append("<P>");
+        }
+        result.append("<B>Members</B><P><TABLE>");
+        for (Person character : members)
+        {
+            result.append("<TR><TD>");
+            if (character.isActive())
+            {
+                result.append("<B>");
+            }
+            result.append(character.getName());
+            result.append("</TD><TD>");
+            if (character.getAttribute("guildrank") != null)
+            {
+                Attribute attrib = character.getAttribute("guildrank");
+                int title = Integer.parseInt(attrib.getValue());
+                Guildrank rank = getRank(title);
+                if (rank == null)
+                {
+                    result.append(" Initiate");
+                } else
+                {
+                    result.append(" ").append(rank.getTitle());
+                }
+            } else
+            {
+                result.append(" Initiate");
+            }
+            if (character.isActive())
+            {
+                result.append("</B>");
+            }
+            result.append("</TD></TR>");
+        }
+        result.append("</TABLE><P><B>Hopefuls</B><BR>");
+        // TODO
+        GuildBean guildBean;
+        try
+        {
+            guildBean = (GuildBean) new InitialContext().lookup("java:module/GuildBean");
+
+        } catch (NamingException e)
+        {
+            throw new MudException("Unable to retrieve guild.", e);
+        }
+        for (Person hopefull : guildBean.getGuildHopefuls(this))
+        {
+            result.append(hopefull.getName());
+            result.append(" ");
+        }
+        result.append("<P><B>Guildranks</B><BR>");
+        for (Guildrank rank : guildrankCollection)
+        {
+            result.append(rank.getTitle()).append("(").append(rank.getGuildrankPK().getGuildlevel()).append(")<BR>");
+        }
+        // TODO
+        // The guild is <I>" + (isActive() ? "active" : "inactive") + "</I>.<BR>
+        return "<H1><IMG SRC=\"/images/gif/money.gif\">" + getTitle()
+                + "</H1>You" + " are a member of the <I>" + getTitle()
+                + "</I> (" + getName() + ").<BR>The current guildmaster is <I>"
+                + getBoss().getName() + "</I>.<BR>The guild has " + members.size()
+                + " members." + getAlarmDescription() + "<P>" + result + "<P>";
+
     }
 }

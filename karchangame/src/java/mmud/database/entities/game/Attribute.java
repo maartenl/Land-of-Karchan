@@ -16,18 +16,19 @@
  */
 package mmud.database.entities.game;
 
-import mmud.exceptions.MudException;
-
 /**
- * Display interface, indicates the things that needs to be shown.
+ * An attribute interface, containing name, value, value type.
  * @author maartenl
  */
-public interface DisplayInterface
+public interface Attribute
 {
-    public String getTitle() throws MudException;
+    public String getName();
 
-    public String getImage() throws MudException;
+    public String getValue();
 
-    public String getBody() throws MudException;
+    public void setValue(String value);
 
+    public String getValueType();
+
+    public void setValueType(String valueType);
 }

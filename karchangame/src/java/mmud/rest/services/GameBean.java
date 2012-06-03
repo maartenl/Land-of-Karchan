@@ -552,7 +552,7 @@ public class GameBean
     {
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
     })
-    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log)
+    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log) throws MudException
     {
         itsLog.debug("entering play");
         if (Utils.isOffline())
@@ -808,7 +808,7 @@ public class GameBean
         return Response.ok().build();
     }
 
-    private PrivateDisplay createPrivateDisplay(DisplayInterface display)
+    private PrivateDisplay createPrivateDisplay(DisplayInterface display) throws MudException
     {
         PrivateDisplay result = new PrivateDisplay();
         result.body = display.getBody();

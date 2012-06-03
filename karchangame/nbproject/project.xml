@@ -44,6 +44,9 @@
                 <library dirs="200">
                     <file>${libs.hibernate-support.classpath}</file>
                 </library>
+                <library dirs="200">
+                    <file>${libs.restlib.classpath}</file>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>

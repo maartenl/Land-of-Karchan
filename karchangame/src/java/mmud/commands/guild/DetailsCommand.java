@@ -14,21 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.services;
+package mmud.commands.guild;
 
-import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
+import java.util.logging.Logger;
+import mmud.commands.Command;
+import mmud.commands.GuildCommand;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.MudException;
 
 /**
-  * TODO : add all charactersheet stuff here instead of in privateBean. use Path:{name}/charactersheet
+ * Provides all the necessary details about the current guild that you
+ * are a member of.
+ * Command syntax something like : <TT>guilddetails</TT>
  * @author maartenl
  */
-@Stateless
-@LocalBean
-public class CharacterBean
+public class DetailsCommand extends GuildCommand
 {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    public DetailsCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
+    @Override
+    public DisplayInterface run(String command, User aUser) throws MudException
+    {
+        return aUser.getGuild();
+    }
 }

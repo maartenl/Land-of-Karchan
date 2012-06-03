@@ -14,20 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.commands.guild;
 
+import mmud.commands.GuildCommand;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Display interface, indicates the things that needs to be shown.
+ * Say something in guildchat : "guild Good morning, everyone."
  * @author maartenl
  */
-public interface DisplayInterface
+public class MessageCommand extends GuildCommand
 {
-    public String getTitle() throws MudException;
 
-    public String getImage() throws MudException;
+    public MessageCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-    public String getBody() throws MudException;
-
+    @Override
+    public DisplayInterface run(String command, User aUser) throws MudException
+    {
+        String message = command.substring("guild".length() + 1).trim();
+        aUser.getGuild().sendMessage(aUser, "<B>" + aUser.getName() + "</B>: " + message + "<BR>\r\n");
+        return aUser.getRoom();
+    }
 }
