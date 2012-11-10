@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY olr FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -36,6 +36,7 @@ import mmud.commands.guild.LeaveCommand;
 import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
+import mmud.commands.items.InventoryCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -114,8 +115,8 @@ public class CommandFactory
 //        theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 //        theCommandStructure.put("stop", new FightCommand("stop fighting"));
         theCommandStructure.put("stats", new StatsCommand("stats"));
-//        theCommandStructure.put("inventory", new InventoryCommand("inventory"));
-//        theCommandStructure.put("i", new InventoryCommand("i"));
+        theCommandStructure.put("inventory", new InventoryCommand("inventory"));
+        theCommandStructure.put("i", new InventoryCommand("i"));
 //        theCommandStructure.put("drink", new DrinkCommand(
 //                "drink( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
@@ -155,9 +156,13 @@ public class CommandFactory
 //        theCommandStructure.put("readpublic", new ReadPublicCommand(
 //                "readpublic"));
 //        theCommandStructure.put("public", new PostPublicCommand("public .+"));
-//        theCommandStructure.put("l", new LookCommand("l"));
-//        theCommandStructure.put("look", new LookCommand(
-//                "look ((at)|(in))( (\\w|-)+){1,4}"));
+        theCommandStructure.put("l", new LookCommand("l"));
+        theCommandStructure.put("look", new LookCommand(
+                "look"));
+        //theCommandStructure.put("look", new LookAtCommand(
+          //      "look at (\\w|-)+){1,4}"));
+        //theCommandStructure.put("look", new LookInCommand(
+          //      "look in (\\w|-)+){1,4}"));
 //        theCommandStructure.put("buy", new BuyCommand(
 //                "buy( (\\w|-)+){1,4} from (\\w)+"));
 //        theCommandStructure.put("sell", new SellCommand(

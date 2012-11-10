@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.database.entities.items;
 
+import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;

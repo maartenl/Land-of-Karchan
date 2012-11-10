@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ * Copyright (C) 2012 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.database.entities.items;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,18 +30,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.characters.Person;
 
 /**
- * TODO: needs a subclass especially for mail items that overrides the readdescr. It can contain a reference to the Mail entity.
+ * An item. To be more precise an instance of an item definition.
+ * An item can either reside in a room, on a person or in another item.
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_itemtable", catalog = "mmud", schema = "")
+@Table(name = "mm_itemtable")
 @NamedQueries(
 {
     @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
@@ -51,6 +53,7 @@ import javax.validation.constraints.NotNull;
 })
 public class Item implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,22 +65,23 @@ public class Item implements Serializable
     @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
-    @JoinColumn(name = "owner", referencedColumnName = "name")
+    @OneToMany(mappedBy = "container")
+    private Collection<Item> items;
+    @JoinColumn(name = "containerid", referencedColumnName = "id")
     @ManyToOne
-    private Admin owner;
+    private Item container;
+    @ManyToOne
+    @JoinColumn(name = "room", referencedColumnName = "id")
+    private Room room;
+    @ManyToOne
+    @JoinColumn(name = "belongsto", referencedColumnName = "name")
+    private Person belongsto;
+    @ManyToOne
     @JoinColumn(name = "itemid", referencedColumnName = "id")
-    @ManyToOne
     private ItemDefinition itemDefinition;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item")
-    private CharitemTable charitemTable;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "containerid")
-    private Collection<ItemitemTable> itemitemTableCollection;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item")
-    private ItemitemTable itemitemTable;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
-    private Collection<Itemattribute> itemattributeCollection;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item")
-    private RoomitemTable roomitemTable;
+    @ManyToOne
+    @JoinColumn(name = "owner", referencedColumnName = "name")
+    private Admin owner;
 
     public Item()
     {
@@ -114,6 +118,49 @@ public class Item implements Serializable
         this.creation = creation;
     }
 
+    /**
+     * Indicates the items that are contained (if possible) inside this item.
+     * Will in most cases return an empty list.
+     *
+     * @return
+     */
+    public Collection<Item> getItems()
+    {
+        return items;
+    }
+
+    public void setItems(Collection<Item> items)
+    {
+        this.items = items;
+    }
+
+    /**
+     * Retrieves the item that contains this item (if possible). Might be null.
+     *
+     * @return
+     * @see #getBelongsTo()
+     * @see #getRoom()
+     */
+    public Item getContainer()
+    {
+        return container;
+    }
+
+    public void setContainer(Item container)
+    {
+        this.container = container;
+    }
+
+    public ItemDefinition getItemDefinition()
+    {
+        return itemDefinition;
+    }
+
+    public void setItemDefinition(ItemDefinition itemDefinition)
+    {
+        this.itemDefinition = itemDefinition;
+    }
+
     public Admin getOwner()
     {
         return owner;
@@ -124,64 +171,24 @@ public class Item implements Serializable
         this.owner = owner;
     }
 
-    public ItemDefinition getItemDefinition()
+    /**
+     * Will return the room in which this item can be found. Might be null.
+     * @see #getBelongsto()
+     * @see #getContainer()
+     */
+    public Room getRoom()
     {
-        return itemDefinition;
+        return room;
     }
 
-    public void setItemDefinition(ItemDefinition itemid)
+    /**
+     * Will return the person that owns this item. Might be null.
+     * @see #getRoom()
+     * @see #getContainer()
+     */
+    public Person getBelongsTo()
     {
-        this.itemDefinition = itemid;
-    }
-
-    public CharitemTable getCharitemTable()
-    {
-        return charitemTable;
-    }
-
-    public void setCharitemTable(CharitemTable charitemTable)
-    {
-        this.charitemTable = charitemTable;
-    }
-
-    public Collection<ItemitemTable> getItemitemTableCollection()
-    {
-        return itemitemTableCollection;
-    }
-
-    public void setItemitemTableCollection(Collection<ItemitemTable> itemitemTableCollection)
-    {
-        this.itemitemTableCollection = itemitemTableCollection;
-    }
-
-    public ItemitemTable getItemitemTable()
-    {
-        return itemitemTable;
-    }
-
-    public void setItemitemTable(ItemitemTable itemitemTable)
-    {
-        this.itemitemTable = itemitemTable;
-    }
-
-    public Collection<Itemattribute> getItemattributeCollection()
-    {
-        return itemattributeCollection;
-    }
-
-    public void setItemattributeCollection(Collection<Itemattribute> itemattributeCollection)
-    {
-        this.itemattributeCollection = itemattributeCollection;
-    }
-
-    public RoomitemTable getRoomitemTable()
-    {
-        return roomitemTable;
-    }
-
-    public void setRoomitemTable(RoomitemTable roomitemTable)
-    {
-        this.roomitemTable = roomitemTable;
+        return belongsto;
     }
 
     @Override
@@ -211,7 +218,11 @@ public class Item implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.game.Item[ id=" + id + " ]";
+        return "mmud.database.entities.items.Item[ id=" + id + " ]";
     }
 
+    public String getDescription()
+    {
+        return getItemDefinition().getDescription();
+    }
 }

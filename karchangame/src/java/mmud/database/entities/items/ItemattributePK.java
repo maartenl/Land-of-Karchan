@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.database.entities.items;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -28,26 +28,36 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Embeddable
-public class ShopkeeperItemPK implements Serializable
+public class ItemattributePK implements Serializable
 {
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 32)
+    @Column(name = "name")
+    private String name;
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
     private int id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "charname")
-    private String charname;
 
-    public ShopkeeperItemPK()
+    public ItemattributePK()
     {
     }
 
-    public ShopkeeperItemPK(int id, String charname)
+    public ItemattributePK(String name, int id)
     {
+        this.name = name;
         this.id = id;
-        this.charname = charname;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public int getId()
@@ -60,22 +70,12 @@ public class ShopkeeperItemPK implements Serializable
         this.id = id;
     }
 
-    public String getCharname()
-    {
-        return charname;
-    }
-
-    public void setCharname(String charname)
-    {
-        this.charname = charname;
-    }
-
     @Override
     public int hashCode()
     {
         int hash = 0;
+        hash += (name != null ? name.hashCode() : 0);
         hash += (int) id;
-        hash += (charname != null ? charname.hashCode() : 0);
         return hash;
     }
 
@@ -83,16 +83,16 @@ public class ShopkeeperItemPK implements Serializable
     public boolean equals(Object object)
     {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ShopkeeperItemPK))
+        if (!(object instanceof ItemattributePK))
         {
             return false;
         }
-        ShopkeeperItemPK other = (ShopkeeperItemPK) object;
+        ItemattributePK other = (ItemattributePK) object;
+        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
+        {
+            return false;
+        }
         if (this.id != other.id)
-        {
-            return false;
-        }
-        if ((this.charname == null && other.charname != null) || (this.charname != null && !this.charname.equals(other.charname)))
         {
             return false;
         }
@@ -102,7 +102,7 @@ public class ShopkeeperItemPK implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.game.ShopkeeperItemPK[ id=" + id + ", charname=" + charname + " ]";
+        return "mmud.database.entities.game.ItemattributePK[ name=" + name + ", id=" + id + " ]";
     }
 
 }

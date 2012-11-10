@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.game;
 
+import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;

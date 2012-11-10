@@ -38,6 +38,7 @@ import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.Charattribute;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
 import mmud.database.enums.Alignment;
 import mmud.database.enums.Appetite;
 import mmud.database.enums.God;
@@ -55,8 +56,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A character in the game. Might be both a bot, a shopkeeper, a user, or an administrator.
- * Note: it contains a filter annotation which is Hibernate specific.
+ * A character in the game. Might be both a bot, a shopkeeper, a user, or an
+ * administrator. Note: it contains a filter annotation which is Hibernate
+ * specific.
+ *
  * @author maartenl
  */
 @Entity
@@ -220,16 +223,22 @@ abstract public class Person implements Serializable, AttributeWrangler
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
     // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsto")
+    @Cascade(
+    {
+        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
+    })
+    private List<Item> items;
+    @Transient
+    private File theLogfile = null;
+    @Transient
+    private StringBuffer theLog = null;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     @Cascade(
     {
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
     private List<Charattribute> charattributeCollection;
-    @Transient
-    private File theLogfile = null;
-    @Transient
-    private StringBuffer theLog = null;
 
     public Person()
     {
@@ -282,8 +291,9 @@ abstract public class Person implements Serializable, AttributeWrangler
     }
 
     /**
-     * Sets the name of the person. Should contain only alphabetical characters, but
-     * has to have at least size of 3.
+     * Sets the name of the person. Should contain only alphabetical characters,
+     * but has to have at least size of 3.
+     *
      * @param name the (new) name.
      * @throws MudException if the name is not allowed.
      */
@@ -309,8 +319,7 @@ abstract public class Person implements Serializable, AttributeWrangler
     /**
      * sets the title of the character.
      *
-     * @param title
-     *            String containing the title
+     * @param title String containing the title
      */
     public void setTitle(String title)
     {
@@ -437,9 +446,23 @@ abstract public class Person implements Serializable, AttributeWrangler
         this.leg = leg;
     }
 
+    /**
+     * Returns the amount of money a character has (in coppers). Basically
+     * 10 coppers is 1 silver, and 10 silvers is 1 gold.
+     * @return
+     */
     public Integer getCopper()
     {
         return copper;
+    }
+
+    /**
+     * @see #getCopper()
+     * @return
+     */
+    public Integer getMoney()
+    {
+        return getCopper();
     }
 
     public void setCopper(Integer copper)
@@ -480,8 +503,7 @@ abstract public class Person implements Serializable, AttributeWrangler
     /**
      * sets the wimpy of the character.
      *
-     * @param wimpy
-     *            Health enum containing the wimpy
+     * @param wimpy Health enum containing the wimpy
      * @see #getWimpy()
      */
     public void setWimpy(Health wimpy)
@@ -512,7 +534,7 @@ abstract public class Person implements Serializable, AttributeWrangler
      * Returns the experience of the character.
      *
      * @return integer between 0 and 1000. The closer to 1000 is the closer to
-     *         the next level.
+     * the next level.
      */
     public int getExperience()
     {
@@ -548,7 +570,9 @@ abstract public class Person implements Serializable, AttributeWrangler
     }
 
     /**
-     * Indicates if this person can be fought with by other persons/users/players.
+     * Indicates if this person can be fought with by other
+     * persons/users/players.
+     *
      * @return true if can be fought with, false otherwise.
      */
     public Boolean getFightable()
@@ -557,7 +581,8 @@ abstract public class Person implements Serializable, AttributeWrangler
     }
 
     /**
-     * @param fightable Indicates if this person can be fought with by other persons/users/players.
+     * @param fightable Indicates if this person can be fought with by other
+     * persons/users/players.
      * @see #getFightable()
      */
     public void setFightable(Boolean fightable)
@@ -668,6 +693,7 @@ abstract public class Person implements Serializable, AttributeWrangler
 
     /**
      * Make a person actively playing the game (or not).
+     *
      * @param active boolean, true if he's playing, false otherwise.
      */
     public void setActive(Boolean active)
@@ -956,11 +982,11 @@ abstract public class Person implements Serializable, AttributeWrangler
     }
 
     /**
-     * Indicates if this is a common user. This means it indicates that it
-     * is basically someone behind a keyboard.
+     * Indicates if this is a common user. This means it indicates that it is
+     * basically someone behind a keyboard.
      *
-     * @return true if it is a common user (or a god/administrator),
-     * false otherwise.
+     * @return true if it is a common user (or a god/administrator), false
+     * otherwise.
      */
     public boolean isUser()
     {
@@ -1013,15 +1039,13 @@ abstract public class Person implements Serializable, AttributeWrangler
      * writes a message to the log file of the character that contains all
      * communication and messages. The sentence will start with a capital.
      *
-     * <p><b>Important!</b> : Use this method only for Environmental communication
-     * or personal communication ,
-     * as it does not check the Ignore Flag. Use the writeMessage(Person
-     * aSource, String aMessage) for specific communication between users.</p>
-     * TODO : move the logging to a protected hashtable in a singleton bean
-     * containing StringBuffers.
+     * <p><b>Important!</b> : Use this method only for Environmental
+     * communication or personal communication , as it does not check the Ignore
+     * Flag. Use the writeMessage(Person aSource, String aMessage) for specific
+     * communication between users.</p> TODO : move the logging to a protected
+     * hashtable in a singleton bean containing StringBuffers.
      *
-     * @param aMessage
-     *            the message to be written to the logfile.
+     * @param aMessage the message to be written to the logfile.
      * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
      * @see #writeMessage(Person aSource, String aMessage)
      */
@@ -1082,67 +1106,22 @@ abstract public class Person implements Serializable, AttributeWrangler
     /**
      * writes a message to the log file of the character that contains all
      * communication and messages. The message will be <I>interpreted</I> by
-     * replacing the following values by the following other values:
-     * <TABLE>
-     * <TR>
-     * <TD><B>REPLACE</B></TD>
-     * <TD><B>WITH (if target)</B></TD>
-     * <TD><B>WITH (if not target)</B></TD>
-     * </TR>
-     * <TR>
-     * <TD>%TNAME</TD>
-     * <TD>you</TD>
-     * <TD>name</TD>
-     * </TR>
-     * <TR>
-     * <TD>%TNAMESELF</TD>
-     * <TD>yourself</TD>
-     * <TD>name</TD>
-     * </TR>
-     * <TR>
-     * <TD>%THISHER</TD>
-     * <TD>your</TD>
-     * <TD>his/her</TD>
-     * </TR>
-     * <TR>
-     * <TD>%THIMHER</TD>
-     * <TD>you</TD>
-     * <TD>him/her</TD>
-     * </TR>
-     * <TR>
-     * <TD>%THESHE</TD>
-     * <TD>you</TD>
-     * <TD>he/she</TD>
-     * </TR>
-     * <TR>
-     * <TD>%TISARE</TD>
-     * <TD>are</TD>
-     * <TD>is</TD>
-     * </TR>
-     * <TR>
-     * <TD>%THASHAVE</TD>
-     * <TD>have</TD>
-     * <TD>has</TD>
-     * </TR>
-     * <TR>
-     * <TD>%TYOUPOSS</TD>
-     * <TD>your</TD>
-     * <TD>name + s</TD>
-     * </TR>
-     * <TR>
-     * <TD></TD>
-     * <TD></TD>
-     * <TD></TD>
-     * </TR>
-     * </TABLE>
+     * replacing the following values by the following other values: <TABLE>
+     * <TR> <TD><B>REPLACE</B></TD> <TD><B>WITH (if target)</B></TD> <TD><B>WITH
+     * (if not target)</B></TD> </TR> <TR> <TD>%TNAME</TD> <TD>you</TD>
+     * <TD>name</TD> </TR> <TR> <TD>%TNAMESELF</TD> <TD>yourself</TD>
+     * <TD>name</TD> </TR> <TR> <TD>%THISHER</TD> <TD>your</TD> <TD>his/her</TD>
+     * </TR> <TR> <TD>%THIMHER</TD> <TD>you</TD> <TD>him/her</TD> </TR> <TR>
+     * <TD>%THESHE</TD> <TD>you</TD> <TD>he/she</TD> </TR> <TR> <TD>%TISARE</TD>
+     * <TD>are</TD> <TD>is</TD> </TR> <TR> <TD>%THASHAVE</TD> <TD>have</TD>
+     * <TD>has</TD> </TR> <TR> <TD>%TYOUPOSS</TD> <TD>your</TD> <TD>name +
+     * s</TD> </TR> <TR> <TD></TD> <TD></TD> <TD></TD> </TR> </TABLE>
      *
-     * @param aMessage
-     *            the message to be written to the logfile.
-     * @param aSource
-     *            the source of the message, the thing originating the message.
-     * @param aTarget
-     *            the target of the message, could be null if there is not
-     *            target for this specific message.
+     * @param aMessage the message to be written to the logfile.
+     * @param aSource the source of the message, the thing originating the
+     * message.
+     * @param aTarget the target of the message, could be null if there is not
+     * target for this specific message.
      * @see #writeMessage(String aMessage)
      * @see #writeMessage(Person aSource, String aMessage)
      */
@@ -1181,74 +1160,22 @@ abstract public class Person implements Serializable, AttributeWrangler
     /**
      * writes a message to the log file of the character that contains all
      * communication and messages. The message will be <I>interpreted</I> by
-     * replacing the following values by the following other values:
-     * <TABLE>
-     * <TR>
-     * <TD><B>REPLACE</B></TD>
-     * <TD><B>WITH (if source)</B></TD>
-     * <TD><B>WITH (if not source)</B></TD>
-     * </TR>
-     * <TR>
-     * <TD>%SNAME</TD>
-     * <TD>you</TD>
-     * <TD>name</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SNAMESELF</TD>
-     * <TD>yourself</TD>
-     * <TD>name</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SHISHER</TD>
-     * <TD>your</TD>
-     * <TD>his/her</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SHIMHER</TD>
-     * <TD>you</TD>
-     * <TD>him/her</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SHESHE</TD>
-     * <TD>you</TD>
-     * <TD>he/she</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SISARE</TD>
-     * <TD>are</TD>
-     * <TD>is</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SHASHAVE</TD>
-     * <TD>have</TD>
-     * <TD>has</TD>
-     * </TR>
-     * <TR>
-     * <TD>%SYOUPOSS</TD>
-     * <TD>your</TD>
-     * <TD>name + s</TD>
-     * </TR>
-     * <TR>
-     * <TD>%VERB1</TD>
-     * <TD></TD>
-     * <TD>es</TD>
-     * </TR>
-     * <TR>
-     * <TD>%VERB2</TD>
-     * <TD></TD>
-     * <TD>s</TD>
-     * </TR>
-     * <TR>
-     * <TD></TD>
-     * <TD></TD>
-     * <TD></TD>
-     * </TR>
-     * </TABLE>
+     * replacing the following values by the following other values: <TABLE>
+     * <TR> <TD><B>REPLACE</B></TD> <TD><B>WITH (if source)</B></TD> <TD><B>WITH
+     * (if not source)</B></TD> </TR> <TR> <TD>%SNAME</TD> <TD>you</TD>
+     * <TD>name</TD> </TR> <TR> <TD>%SNAMESELF</TD> <TD>yourself</TD>
+     * <TD>name</TD> </TR> <TR> <TD>%SHISHER</TD> <TD>your</TD> <TD>his/her</TD>
+     * </TR> <TR> <TD>%SHIMHER</TD> <TD>you</TD> <TD>him/her</TD> </TR> <TR>
+     * <TD>%SHESHE</TD> <TD>you</TD> <TD>he/she</TD> </TR> <TR> <TD>%SISARE</TD>
+     * <TD>are</TD> <TD>is</TD> </TR> <TR> <TD>%SHASHAVE</TD> <TD>have</TD>
+     * <TD>has</TD> </TR> <TR> <TD>%SYOUPOSS</TD> <TD>your</TD> <TD>name +
+     * s</TD> </TR> <TR> <TD>%VERB1</TD> <TD></TD> <TD>es</TD> </TR> <TR>
+     * <TD>%VERB2</TD> <TD></TD> <TD>s</TD> </TR> <TR> <TD></TD> <TD></TD>
+     * <TD></TD> </TR> </TABLE>
      *
-     * @param aMessage
-     *            the message to be written to the logfile.
-     * @param aSource
-     *            the source of the message, the thing originating the message.
+     * @param aMessage the message to be written to the logfile.
+     * @param aSource the source of the message, the thing originating the
+     * message.
      * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
      * @see #writeMessage(String aMessage)
      */
@@ -1293,10 +1220,9 @@ abstract public class Person implements Serializable, AttributeWrangler
     /**
      * creates a new log file and deletes the old one.
      *
-     * @throws MudException
-     *             which indicates probably that the log file could not be
-     *             created. Possibly due to either permissions or the directory
-     *             does not exist.
+     * @throws MudException which indicates probably that the log file could not
+     * be created. Possibly due to either permissions or the directory does not
+     * exist.
      */
     protected void createLog() throws MudException
     {
@@ -1362,13 +1288,15 @@ abstract public class Person implements Serializable, AttributeWrangler
     }
 
     /**
-     * Returns the log starting from the offset, or an empty string if
-     * the offset is past the length of the log.Can also contain the empty string, if the log happens to be empty.
-     * @param offset the offset from whence to read the log. Offset starts with 0
-     * and is inclusive.
+     * Returns the log starting from the offset, or an empty string if the
+     * offset is past the length of the log.Can also contain the empty string,
+     * if the log happens to be empty.
+     *
+     * @param offset the offset from whence to read the log. Offset starts with
+     * 0 and is inclusive.
      * @return a String, part of the Log.
-     * @throws MudException in case of accidents with reading the log, or a negative
-     * offset.
+     * @throws MudException in case of accidents with reading the log, or a
+     * negative offset.
      */
     public String getLog(Integer offset) throws MudException
     {
@@ -1529,5 +1457,21 @@ abstract public class Person implements Serializable, AttributeWrangler
         }
         itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on user " + getName() + ".");
         return false;
+    }
+
+    public List<Item> getItems()
+    {
+        return items;
+    }
+
+    /**
+     * Returns the amount of money that you are carrying.
+     *
+     * @return String description of the amount of money.
+     * @see Constants#getDescriptionOfMoney
+     */
+    public String getDescriptionOfMoney()
+    {
+        return Constants.getDescriptionOfMoney(getCopper());
     }
 }

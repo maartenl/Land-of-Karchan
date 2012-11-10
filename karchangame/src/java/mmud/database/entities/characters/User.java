@@ -17,17 +17,20 @@
 package mmud.database.entities.characters;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
+import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A user in the game. Might be an administrator.
+ *
  * @author maartenl
  */
 @Entity
@@ -146,10 +149,10 @@ public class User extends Person
     }
 
     /**
-     * Sets the password of the person. Can contain any character, but
-     * has to have at least size of 5. You cannot set a password
-     * this way, you can only set it for the first time, i.e. when creating
-     * a new character.
+     * Sets the password of the person. Can contain any character, but has to
+     * have at least size of 5. You cannot set a password this way, you can only
+     * set it for the first time, i.e. when creating a new character.
+     *
      * @param password the new password.
      * @throws MudException if the password is not allowed.
      */
@@ -214,9 +217,9 @@ public class User extends Person
     }
 
     /**
-     * Returns the last time the user was logged in.
-     * Can return null, which means the user has never once logged on
-     * and is new. (or not a user)
+     * Returns the last time the user was logged in. Can return null, which
+     * means the user has never once logged on and is new. (or not a user)
+     *
      * @return the date of last logged on.
      */
     public Date getLastlogin()
@@ -402,6 +405,7 @@ public class User extends Person
     /**
      * Returns the last time that a command was issued. Used for determining
      * idle time.
+     *
      * @return the date of the last time a command was entered.
      */
     public Date getLastcommand()
@@ -490,5 +494,8 @@ public class User extends Person
         return lastlogin == null;
     }
 
-
+    public DisplayInterface findItem(List<String> parsed)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

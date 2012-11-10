@@ -16,6 +16,8 @@
  */
 package mmud.database.entities.game;
 
+import mmud.database.entities.items.ItemDefinition;
+import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;

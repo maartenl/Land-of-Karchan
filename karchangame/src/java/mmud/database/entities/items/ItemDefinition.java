@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.database.entities.items;
 
+import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -34,6 +35,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.Constants;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Mail;
 
 /**
  * The definition of an item. The analogy with Java would be the difference
@@ -416,12 +420,16 @@ public class ItemDefinition implements Serializable
         this.wieldable = wieldable;
     }
 
-    public String getDescription()
+    /**
+     * A full and long description of an item.
+     * @return
+     */
+    public String getLongDescription()
     {
         return description;
     }
 
-    public void setDescription(String description)
+    public void setLongDescription(String description)
     {
         this.description = description;
     }
@@ -620,5 +628,10 @@ public class ItemDefinition implements Serializable
     public String toString()
     {
         return "mmud.database.entities.game.ItemDefinition[ id=" + id + " ]";
+    }
+
+    public String getDescription()
+    {
+        return Constants.getDescriptionOfItem(getAdject1(), getAdject2(), getAdject3(), getName(), true);
     }
 }

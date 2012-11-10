@@ -1,0 +1,48 @@
+The Test Database
+=================
+
+The test database is a copy of the production database and some things
+require our attention.
+
+First!
+======
+
+First you need to run all the database commands in the DATABASE file
+below the --------.
+
+Passwords
+=========
+
+Te passwords need to be reset of the test accounts.
+
+This can be done with the following sql statements.
+
+update mm_usertable set password = sha1('secret') where name='Karn';
+update mm_usertable set password = sha1('secret') where name='Hotblack';
+update mm_usertable set password = sha1('secret') where name='Marvin';
+update mm_usertable set password = sha1('secret') where name='Slartibartfast';
+
+update mm_usertable set lok = 'QKgKtRAdaliTHwsR2EUxxoA78' where
+name='Hotblack';
+update mm_usertable set title = 'The Paranoid Android' where
+name='Marvin';
+
+Triggers
+=========
+
+And lets not forget to add the insert trigger in there!
+(sqlscripts/triggers/mm_usertable_insert_trigger.sql
+
+Add Empty Table
+===============
+
+Also, seeing as the production database copy omits the mm_commandlog table,
+we'll need to add it afterwards.
+DROP TABLE IF EXISTS `mm_commandlog`;
+CREATE TABLE `mm_commandlog` (
+  id int(11) not null auto_increment primary key,
+  `stamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `name` varchar(20) NOT NULL default '',
+  `command` varchar(255) NOT NULL default ''
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
