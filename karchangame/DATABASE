@@ -284,3 +284,6 @@ NOT NULL  ,
 
 # enditems
 
+ALTER TABLE `mmud`.`mm_items` ADD COLUMN `image` VARCHAR(255) NULL DEFAULT
+NULL  AFTER `notes` , ADD COLUMN `title` VARCHAR(255) NULL  AFTER `image` ;
+

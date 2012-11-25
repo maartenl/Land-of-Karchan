@@ -16,7 +16,6 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

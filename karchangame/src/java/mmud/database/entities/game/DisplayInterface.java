@@ -24,7 +24,7 @@ import mmud.exceptions.MudException;
  */
 public interface DisplayInterface
 {
-    public String getTitle() throws MudException;
+    public String getMainTitle() throws MudException;
 
     public String getImage() throws MudException;
 

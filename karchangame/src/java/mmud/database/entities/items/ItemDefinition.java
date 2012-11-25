@@ -16,10 +16,10 @@
  */
 package mmud.database.entities.items;
 
-import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,10 +47,6 @@ import mmud.database.entities.game.Mail;
 @Entity
 @Table(name = "mm_items", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
-
-
 {
     @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
     @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
@@ -151,13 +147,27 @@ public class ItemDefinition implements Serializable
     @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
-        @OneToMany(mappedBy = "itemDefinition")
+    @OneToMany(mappedBy = "itemDefinition")
     private Collection<Item> itemCollection;
-        @OneToMany(mappedBy = "itemDefinition")
+    @OneToMany(mappedBy = "itemDefinition")
     private Collection<Mail> mailCollection;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
+    @Column(name = "image")
+    private String image;
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+    @Column(name = "title")
+    private String title;
 
     public ItemDefinition()
     {
@@ -195,9 +205,9 @@ public class ItemDefinition implements Serializable
     }
 
     /**
-     * Return the verb.
+     * Return the noun.
      *
-     * @return String containing the verb of the item definition.
+     * @return String containing the noun of the item definition.
      */
     public String getName()
     {
@@ -421,7 +431,7 @@ public class ItemDefinition implements Serializable
     }
 
     /**
-     * A full and long description of an item.
+     * A full and long description of an item. Usually quite a lot of text.
      * @return
      */
     public String getLongDescription()
@@ -607,7 +617,6 @@ public class ItemDefinition implements Serializable
         return hash;
     }
 
-
     @Override
     public boolean equals(Object object)
     {
@@ -630,8 +639,37 @@ public class ItemDefinition implements Serializable
         return "mmud.database.entities.game.ItemDefinition[ id=" + id + " ]";
     }
 
+    /**
+     * @see Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+     * @return
+     */
     public String getDescription()
     {
         return Constants.getDescriptionOfItem(getAdject1(), getAdject2(), getAdject3(), getName(), true);
     }
+
+    /**
+     * Determines if this item is described by the list of strings.
+     * The list of strings can be in the following format:
+     * <ul><li>hammer</li><li>strong hammer</li><li>strong iron hammer</li><li>
+     * strong heavy iron hammer</li></ul>
+     * @param parsed the list of strings.
+     * @return if this item corresponds to the description.
+     */
+    boolean isDescribedBy(List<String> parsed)
+    {
+        return Constants.compareItemDescription(parsed, getAdject1(), getAdject2(), getAdject3(), getName());
+    }
+
+    public String getImage()
+    {
+        return image;
+    }
+
+    public void setImage(String image)
+    {
+        this.image = image;
+    }
+
+
 }

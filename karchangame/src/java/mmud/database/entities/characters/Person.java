@@ -36,6 +36,7 @@ import mmud.Utils;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.Charattribute;
+import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
@@ -77,7 +78,7 @@ discriminatorType = DiscriminatorType.INTEGER)
 {
     @Filter(name = "activePersons")
 })
-abstract public class Person implements Serializable, AttributeWrangler
+abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
@@ -1254,7 +1255,7 @@ abstract public class Person implements Serializable, AttributeWrangler
         File file = getLogfile();
 
         try (BufferedReader reader = new BufferedReader(
-                        new FileReader(file)))
+                new FileReader(file)))
         {
             theLog = new StringBuffer(1000);
 
@@ -1473,5 +1474,40 @@ abstract public class Person implements Serializable, AttributeWrangler
     public String getDescriptionOfMoney()
     {
         return Constants.getDescriptionOfMoney(getCopper());
+    }
+
+    @Override
+    public String getMainTitle() throws MudException
+    {
+        return getName();
+    }
+
+    @Override
+    public String getImage() throws MudException
+    {
+        return null;
+    }
+
+    @Override
+    public String getBody() throws MudException
+    {
+        return getLongDescription();
+    }
+
+    /**
+     * Finds the item in the inventory of this character.
+     * @param parsed
+     * @return
+     */
+    public Item findItem(List<String> parsed)
+    {
+        for (Item item : getItems())
+        {
+            if (item.isDescribedBy(parsed))
+            {
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -19,6 +19,7 @@ package mmud.database.entities.items;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,8 @@ import javax.validation.constraints.NotNull;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.MudException;
 
 /**
  * An item. To be more precise an instance of an item definition.
@@ -51,7 +54,7 @@ import mmud.database.entities.characters.Person;
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
     @NamedQuery(name = "Item.findByCreation", query = "SELECT i FROM Item i WHERE i.creation = :creation")
 })
-public class Item implements Serializable
+public class Item implements Serializable, DisplayInterface
 {
 
     private static final long serialVersionUID = 1L;
@@ -224,5 +227,42 @@ public class Item implements Serializable
     public String getDescription()
     {
         return getItemDefinition().getDescription();
+    }
+
+    /**
+     * @see ItemDefinition#isDescribedBy(java.util.List)
+     * @param parsed
+     * @return
+     */
+    public boolean isDescribedBy(List<String> parsed)
+    {
+        return getItemDefinition().isDescribedBy(parsed);
+    }
+
+    public String getTitle() throws MudException
+    {
+        if (getItemDefinition().getTitle() != null)
+        {
+            return getItemDefinition().getTitle();
+        }
+        return getItemDefinition().getDescription();
+    }
+
+    @Override
+    public String getMainTitle() throws MudException
+    {
+        return getTitle();
+    }
+
+    @Override
+    public String getImage() throws MudException
+    {
+        return getItemDefinition().getImage();
+    }
+
+    @Override
+    public String getBody() throws MudException
+    {
+        return getItemDefinition().getLongDescription();
     }
 }

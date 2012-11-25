@@ -19,7 +19,6 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.Basic;
@@ -41,7 +40,6 @@ import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
-import mmud.rest.services.LogBean;
 import org.hibernate.annotations.Filter;
 
 /**
@@ -145,6 +143,12 @@ public class Guild implements Serializable, DisplayInterface
     public String getTitle()
     {
         return title;
+    }
+
+    @Override
+    public String getMainTitle()
+    {
+        return getTitle();
     }
 
     public void setTitle(String title)

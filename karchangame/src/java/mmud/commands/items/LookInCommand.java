@@ -14,39 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.commands;
+package mmud.commands.items;
 
+import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * An abstract class for the commands that may only be executed by a member of a
- * guild.
+ * Look in an item: "look in chest". There are two possibilities.
+ * <ul>
+ * <li>look in something in your inventory.
+ * <li>look in something in the room that you occupy
+ * </ul>
  * @author maartenl
  */
-public abstract class GuildCommand extends NormalCommand
+public class LookInCommand extends NormalCommand
 {
 
-    /**
-     * Checks if the user is part of a guild, before running the command.
-     * @param command
-     * @param aUser
-     * @return
-     * @throws MudException
-     */
-    @Override
-    DisplayInterface start(String command, User aUser) throws MudException
-    {
-        if (aUser.getGuild() == null)
-        {
-            return null;
-        }
-        return super.start(command, aUser);
-    }
-
-    public GuildCommand(String aRegExpr)
+    public LookInCommand(String aRegExpr)
     {
         super(aRegExpr);
+    }
+
+    @Override
+    public DisplayInterface run(String command, User aUser) throws MudException
+    {
+        // TODO implement this!!!
+        aUser.writeMessage("Not implemented yet.<br/>\n");
+        return aUser.getRoom();
     }
 }

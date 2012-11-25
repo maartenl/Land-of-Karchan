@@ -286,11 +286,10 @@ public class Help implements Serializable, DisplayInterface
     }
 
     @Override
-    public String getTitle()
+    public String getMainTitle()
     {
         return getCCommand();
     }
-
     @Override
     public String getImage()
     {
@@ -326,19 +325,19 @@ public class Help implements Serializable, DisplayInterface
         StringBuilder result = new StringBuilder();
         if ((example2 != null) && !example2.trim().equals(""))
         {
-            result.append("\"" + example2 + "\"<P>");
+            result.append("\"").append(example2).append("\"<P>");
         }
         if ((example2a != null) && !example2a.trim().equals(""))
         {
-            result.append("You: <TT>" + example2a + "</TT><BR>");
+            result.append("You: <TT>").append(example2a).append("</TT><BR>");
         }
         if ((example2b != null) && !example2b.trim().equals(""))
         {
-            result.append("Marvin: <TT>" + example2b + "</TT><BR>");
+            result.append("Marvin: <TT>").append(example2b).append("</TT><BR>");
         }
         if ((example2c != null) && !example2c.trim().equals(""))
         {
-            result.append("Anybody: <TT>" + example2c + "</TT><P>");
+            result.append("Anybody: <TT>").append(example2c).append("</TT><P>");
         }
         return result.toString();
     }
@@ -352,15 +351,15 @@ public class Help implements Serializable, DisplayInterface
         StringBuilder result = new StringBuilder();
         if ((example1 != null) && !example1.trim().equals(""))
         {
-            result.append("\"" + example1 + "\"<P>");
+            result.append("\"").append(example1).append("\"<P>");
         }
         if ((example1a != null) && !example1a.trim().equals(""))
         {
-            result.append("You: <TT>" + example1a + "</TT><BR>");
+            result.append("You: <TT>").append(example1a).append("</TT><BR>");
         }
         if ((example1b != null) && !example1b.trim().equals(""))
         {
-            result.append("Anybody: <TT>" + example1b + "</TT><P>");
+            result.append("Anybody: <TT>").append(example1b).append("</TT><P>");
         }
         return result.toString();
     }

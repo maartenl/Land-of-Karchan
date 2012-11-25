@@ -17,10 +17,8 @@
 package mmud.commands.guild;
 
 import mmud.commands.GuildMasterCommand;
-import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import mmud.commands.Command;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;

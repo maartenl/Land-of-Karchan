@@ -17,13 +17,11 @@
 package mmud.database.entities.characters;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
-import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -492,10 +490,5 @@ public class User extends Person
     public boolean isNewUser()
     {
         return lastlogin == null;
-    }
-
-    public DisplayInterface findItem(List<String> parsed)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

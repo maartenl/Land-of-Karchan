@@ -27,12 +27,12 @@ public class Display implements DisplayInterface
     private String body;
 
     @Override
-    public String getTitle()
+    public String getMainTitle()
     {
         return title;
     }
 
-    public void setTitle(String title)
+    public void setMainTitle(String title)
     {
         this.title = title;
     }

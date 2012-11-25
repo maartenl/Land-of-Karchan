@@ -16,8 +16,6 @@
  */
 package mmud.exceptions;
 
-import org.owasp.validator.html.PolicyException;
-
 /**
  * The main exception of the mud.
  * @author maartenl

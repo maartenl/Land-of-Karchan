@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
  * <p>Provides the JPA Database Entities for Characters.</p>
  * <p><img src="../../../../images/package-info_characterentities.png"/></p>
@@ -40,5 +39,3 @@
  * @enduml
  */
 package mmud.database.entities.characters;
-
-

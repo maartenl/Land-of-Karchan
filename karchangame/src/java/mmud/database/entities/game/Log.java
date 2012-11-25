@@ -78,7 +78,7 @@ public class Log implements Serializable
 
     public Log()
     {
-        setCreation(new Date());
+        this.creation = new Date();
     }
 
     public Long getId()

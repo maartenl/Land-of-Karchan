@@ -52,13 +52,13 @@ public abstract class CommunicationCommand extends TargetCommand
 //        }
         aUser.getRoom().sendMessageExcl(aUser, aTarget, "%SNAME "
                 + getCommType().getPlural() + " [to %TNAME] : "
-                + message+ "<BR>\r\n");
+                + message + "<BR>\r\n");
         aUser.writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().toString() + " [to %TNAME]</B> : "
-                + message+ "<BR>\r\n");
+                + message + "<BR>\r\n");
         aTarget.writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().getPlural() + " [to %TNAME]</B> : "
-                + message+ "<BR>\r\n");
+                + message + "<BR>\r\n");
         return aUser.getRoom();
     }
 

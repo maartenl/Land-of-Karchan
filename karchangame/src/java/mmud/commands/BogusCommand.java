@@ -29,15 +29,16 @@ import mmud.exceptions.MudException;
 public class BogusCommand extends NormalCommand
 {
 
-	public BogusCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public BogusCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	public DisplayInterface run(String command, User aUser)
-	throws MudException
-	{
-		aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
-		return aUser.getRoom();
-	}
+    @Override
+    public DisplayInterface run(String command, User aUser)
+            throws MudException
+    {
+        aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
+        return aUser.getRoom();
+    }
 }

@@ -88,6 +88,7 @@ public enum Wearing {
      *
      * @return format name.
      */
+    @Override
     public String toString() {
         return name;
     }

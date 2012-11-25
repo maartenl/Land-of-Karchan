@@ -16,7 +16,6 @@
  */
 package mmud.commands;
 
-import java.util.logging.Logger;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;

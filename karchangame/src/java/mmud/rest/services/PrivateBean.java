@@ -180,8 +180,7 @@ public class PrivateBean
     {
         itsLog.debug("entering hasNewMail");
         Person person = authenticate(name, lok);
-        boolean result = false;
-        result = mailBean.hasNewMail(person);
+        boolean result = mailBean.hasNewMail(person);
         if (!result)
         {
             return Response.noContent().build();

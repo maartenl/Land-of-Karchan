@@ -24,7 +24,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Guild;
-import mmud.database.entities.game.Mail;
 import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

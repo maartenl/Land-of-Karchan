@@ -74,8 +74,8 @@ public class InventoryCommand extends NormalCommand
                         // remove 'a '
                         desc = desc.substring(2);
                     }
-                    builder.append(
-                             amount + " " + desc);
+                    builder.append(amount).append(" ").append(
+                             desc);
                     if (!desc.endsWith("s"))
                     {
                         builder.append("s");
@@ -95,7 +95,7 @@ public class InventoryCommand extends NormalCommand
         return new DisplayInterface()
         {
             @Override
-            public String getTitle()
+            public String getMainTitle()
             {
                 return "Inventory";
             }

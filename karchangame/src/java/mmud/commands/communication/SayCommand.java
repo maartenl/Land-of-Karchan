@@ -28,14 +28,14 @@ package mmud.commands.communication;
 public class SayCommand extends CommunicationCommand
 {
 
-	public SayCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+    public SayCommand(String aRegExpr)
+    {
+        super(aRegExpr);
+    }
 
-	@Override
-	public CommType getCommType()
-	{
-		return CommType.SAY;
-	}
+    @Override
+    public CommType getCommType()
+    {
+        return CommType.SAY;
+    }
 }

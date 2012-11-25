@@ -16,6 +16,9 @@
  */
 package mmud;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author maartenl
@@ -83,13 +86,12 @@ public class Constants
                 total = ", " + total;
             }
             total = gold + " gold coin" + (gold == 1 ? "" : "s") + total;
-            foundsome = true;
         }
         return total;
     }
 
     /**
-     * get a description based on the adjectives and the verb.
+     * get a description based on the adjectives and the noun.
      *
      * @param adject1
      *            String containing the first adjective.
@@ -97,17 +99,17 @@ public class Constants
      *            String containing the second adjective.
      * @param adject3
      *            String containing the third adjective.
-     * @param verb
-     *            String containing the verb.
+     * @param noun
+     *            String containing the noun.
      * @param with_a_or_an indicates if the word should include an a or an an.
      * @return String containing the description in the format: "an/a [adject1],
-     *         [adject2], [adject3] [verb]".
+     *         [adject2], [adject3] [noun]".
      */
     public static String getDescriptionOfItem(String adject1, String adject2,
-            String adject3, String verb, boolean with_a_or_an)
+            String adject3, String noun, boolean with_a_or_an)
     {
         int i = 0;
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if ((adject1 != null) && !adject1.trim().equals(""))
         {
             i++;
@@ -131,7 +133,7 @@ public class Constants
             buf.append(adject3);
             i++;
         }
-        buf.append(" " + verb);
+        buf.append(" ").append(noun);
         String total = buf.toString();
         return (with_a_or_an ? (isVowel(total.charAt(0)) ? "an " : "a ") : "") + total;
     }
@@ -154,5 +156,38 @@ public class Constants
     public static boolean isQwerty(char aChar)
     {
         return isVowel(aChar);
+    }
+
+    public static boolean compareItemDescription(List<String> parsed, String adject1, String adject2, String adject3, String name)
+    {
+        if (parsed == null)
+        {
+            return false;
+        }
+        List<String> possibleAdjectives = Arrays.asList(adject1, adject2, adject3);
+        switch (parsed.size())
+        {
+            case 0:
+                // weird, empty list, nothing matches
+                return false;
+            case 1:
+                // name should be equals
+                return name.equalsIgnoreCase(parsed.get(0));
+            case 2:
+                // name and an adjective should be equals
+                return possibleAdjectives.contains(parsed.get(0))
+                        && name.equalsIgnoreCase(parsed.get(1));
+            case 3:
+                // name and two adjectives should be equals
+                return possibleAdjectives.contains(parsed.get(0))
+                        && possibleAdjectives.contains(parsed.get(1))
+                        && name.equalsIgnoreCase(parsed.get(2));
+            default:
+                // name and all three adjective should be equals
+                return possibleAdjectives.contains(parsed.get(0))
+                        && possibleAdjectives.contains(parsed.get(1))
+                        && possibleAdjectives.contains(parsed.get(2))
+                        && name.equalsIgnoreCase(parsed.get(3));
+        }
     }
 }

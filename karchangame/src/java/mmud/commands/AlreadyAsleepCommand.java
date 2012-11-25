@@ -29,16 +29,17 @@ import mmud.exceptions.MudException;
  */
 class AlreadyAsleepCommand extends NormalCommand
 {
+
     public AlreadyAsleepCommand(String aRegExpr)
     {
         super(aRegExpr);
     }
 
+    @Override
     public DisplayInterface run(String command, User aUser)
             throws MudException
     {
         aUser.writeMessage("You cannot do that, you are asleep.<br/>\n");
         return aUser.getRoom();
     }
-
 }

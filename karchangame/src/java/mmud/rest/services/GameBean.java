@@ -812,7 +812,7 @@ public class GameBean
         PrivateDisplay result = new PrivateDisplay();
         result.body = display.getBody();
         result.image = display.getImage();
-        result.title = display.getTitle();
+        result.title = display.getMainTitle();
         return result;
     }
 }

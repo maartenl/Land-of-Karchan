@@ -37,6 +37,8 @@ import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
 import mmud.commands.items.InventoryCommand;
+import mmud.commands.items.LookAtCommand;
+import mmud.commands.items.LookInCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -61,6 +63,14 @@ public class CommandFactory
     private static final BogusCommand BOGUS = new BogusCommand(".+");
     private static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
     private static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
+
+
+    /**
+     * Contains mappings from what command people have entered, to what command
+     * should be executed. Supports two and one string, for example
+     * "look at" or "look", in order to distinguish different commands with the same
+     * verb.
+     */
     private static final TreeMap<String, NormalCommand> theCommandStructure = new TreeMap<>();
     //private static List<UserCommandInfo> theUserCommandStructure = new ArrayList<UserCommandInfo>();
 
@@ -159,10 +169,10 @@ public class CommandFactory
         theCommandStructure.put("l", new LookCommand("l"));
         theCommandStructure.put("look", new LookCommand(
                 "look"));
-        //theCommandStructure.put("look", new LookAtCommand(
-          //      "look at (\\w|-)+){1,4}"));
-        //theCommandStructure.put("look", new LookInCommand(
-          //      "look in (\\w|-)+){1,4}"));
+        theCommandStructure.put("look at", new LookAtCommand(
+                "look at ((\\w|-)+){1,4}"));
+        theCommandStructure.put("look in", new LookInCommand(
+                "look in ((\\w|-)+){1,4}"));
 //        theCommandStructure.put("buy", new BuyCommand(
 //                "buy( (\\w|-)+){1,4} from (\\w)+"));
 //        theCommandStructure.put("sell", new SellCommand(
@@ -294,14 +304,20 @@ public class CommandFactory
 //                result.add(scriptCommand);
 //            }
 //        }
-        int i = aCommand.indexOf(' ');
-        String key = (i != -1 ? aCommand.substring(0, i) : aCommand);
-        NormalCommand myCommand = theCommandStructure.get(key);
-        if (myCommand != null)
+        String[] strings = aCommand.split(" ");
+        NormalCommand myCommand = null;
+        if (strings.length >= 2)
         {
-            result.add(myCommand);
+            myCommand = theCommandStructure.get(strings[0] + " " + strings[1]);
         }
-        myCommand = BOGUS;
+        if (myCommand == null && strings.length >= 1)
+        {
+            myCommand = theCommandStructure.get(strings[0]);
+        }
+        if (myCommand == null)
+        {
+            myCommand = BOGUS;
+        }
         result.add(myCommand);
         return result;
     }

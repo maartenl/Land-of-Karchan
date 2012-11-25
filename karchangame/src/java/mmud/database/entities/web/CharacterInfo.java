@@ -29,8 +29,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import mmud.Utils;
 import mmud.exceptions.MudException;
 import org.apache.commons.validator.routines.UrlValidator;

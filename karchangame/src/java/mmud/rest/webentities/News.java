@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class News
 {
 
+    @Override
     public String toString()
     {
         return "News{" + "name=" + name + ", posttime=" + posttime + ", message=" + message + '}';

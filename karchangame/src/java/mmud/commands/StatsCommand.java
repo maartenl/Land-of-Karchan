@@ -42,7 +42,7 @@ public class StatsCommand extends NormalCommand
         return new DisplayInterface()
         {
             @Override
-            public String getTitle()
+            public String getMainTitle()
             {
                 return "Stats";
             }
