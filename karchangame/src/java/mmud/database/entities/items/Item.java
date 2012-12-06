@@ -224,6 +224,10 @@ public class Item implements Serializable, DisplayInterface
         return "mmud.database.entities.items.Item[ id=" + id + " ]";
     }
 
+    /**
+     * Description of the item, for example "a white, cloth pants".
+     * @return a description of the item.
+     */
     public String getDescription()
     {
         return getItemDefinition().getDescription();

@@ -85,11 +85,11 @@ public class InventoryCommand extends NormalCommand
                     // a gold, hard cup
                     builder.append(desc);
                 }
-                builder.append("</li>");
+                builder.append("</li>\r\n");
             }
             builder.append("</ul><ul><li>");
             builder.append(aUser.getDescriptionOfMoney());
-            builder.append("</li></ul>");
+            builder.append("</li>\r\n</ul>");
         }
         final String body = builder.toString();
         return new DisplayInterface()

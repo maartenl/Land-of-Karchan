@@ -106,6 +106,7 @@ public enum Sex
      * returns either "He" or "She"
      *
      * @return returns either "He" or "She"
+     * @see #direct()
      */
     public String Direct()
     {

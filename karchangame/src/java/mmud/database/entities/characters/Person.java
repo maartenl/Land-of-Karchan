@@ -47,6 +47,7 @@ import mmud.database.enums.Health;
 import mmud.database.enums.Movement;
 import mmud.database.enums.Sex;
 import mmud.database.enums.Sobriety;
+import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Filter;
@@ -240,6 +241,63 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
     private List<Charattribute> charattributeCollection;
+    @JoinColumn(name = "wieldleft", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wieldleft;
+    @JoinColumn(name = "wieldright", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wieldright;
+    @JoinColumn(name = "wieldboth", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wieldboth;
+    @JoinColumn(name = "wearhead", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearhead;
+    @JoinColumn(name = "wearneck", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearneck;
+    @JoinColumn(name = "weartorso", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item weartorso;
+    @JoinColumn(name = "weararms", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item weararms;
+    @JoinColumn(name = "wearleftwrist", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearleftwrist;
+    @JoinColumn(name = "wearrightwrist", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearrightwrist;
+    @JoinColumn(name = "wearleftfinger", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearleftfinger;
+    @JoinColumn(name = "wearrightfinger", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearrightfinger;
+    @JoinColumn(name = "wearfeet", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearfeet;
+    @JoinColumn(name = "wearhands", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearhands;
+    @JoinColumn(name = "wearfloatingnearby", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearfloatingnearby;
+    @JoinColumn(name = "wearwaist", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearwaist;
+    @JoinColumn(name = "wearlegs", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearlegs;
+    @JoinColumn(name = "weareyes", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item weareyes;
+    @JoinColumn(name = "wearears", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearears;
+    @JoinColumn(name = "wearaboutbody", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item wearaboutbody;
 
     public Person()
     {
@@ -327,6 +385,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.title = title;
     }
 
+    /**
+     * returns the race of the character.
+     *
+     * @return String containing the race
+     */
     public String getRace()
     {
         return race;
@@ -337,6 +400,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.race = race;
     }
 
+    /**
+     * returns what gender the character is.
+     *
+     * @return Sex containing either male or female.
+     */
     public Sex getSex()
     {
         return Sex.createFromString(sex);
@@ -347,6 +415,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.sex = sex.toString();
     }
 
+    /**
+     * returns the age of the character.
+     *
+     * @return String containing the age
+     */
     public String getAge()
     {
         return age;
@@ -357,6 +430,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.age = age;
     }
 
+    /**
+     * returns the length of the character.
+     *
+     * @return String containing the length
+     */
     public String getHeight()
     {
         return height;
@@ -367,6 +445,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.height = height;
     }
 
+    /**
+     * returns the width of the character.
+     *
+     * @return String containing the width
+     */
     public String getWidth()
     {
         return width;
@@ -377,6 +460,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.width = width;
     }
 
+    /**
+     * returns the complexion of the character.
+     *
+     * @return String containing the complexion
+     */
     public String getComplexion()
     {
         return complexion;
@@ -387,6 +475,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.complexion = complexion;
     }
 
+    /**
+     * returns the eyes of the character.
+     *
+     * @return String containing the eyes
+     */
     public String getEyes()
     {
         return eyes;
@@ -397,6 +490,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.eyes = eyes;
     }
 
+    /**
+     * returns the face of the character.
+     *
+     * @return String containing the face
+     */
     public String getFace()
     {
         return face;
@@ -407,6 +505,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.face = face;
     }
 
+    /**
+     * returns the hair of the character.
+     *
+     * @return String containing the hair
+     */
     public String getHair()
     {
         return hair;
@@ -417,6 +520,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.hair = hair;
     }
 
+    /**
+     * returns the beard of the character.
+     *
+     * @return String containing the beard
+     */
     public String getBeard()
     {
         return beard;
@@ -427,6 +535,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.beard = beard;
     }
 
+    /**
+     * returns the arms of the character.
+     *
+     * @return String containing the arms
+     */
     public String getArm()
     {
         return arm;
@@ -437,6 +550,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.arm = arm;
     }
 
+    /**
+     * returns the legs of the character.
+     *
+     * @return String containing the legs
+     */
     public String getLeg()
     {
         return leg;
@@ -556,6 +674,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.fightingwho = fightingwho;
     }
 
+    /**
+     * returns wether or not the character is asleep.
+     *
+     * @return boolean, true if character is asleep.
+     */
     public Boolean getSleep()
     {
         if (sleep == null)
@@ -565,6 +688,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return sleep;
     }
 
+    /**
+     * sets the sleep status of the character.
+     *
+     * @param sleep
+     *            boolean containing the sleep status
+     */
     public void setSleep(Boolean sleep)
     {
         this.sleep = sleep;
@@ -916,11 +1045,25 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.notes = notes;
     }
 
+    /**
+     * returns the state of the character, for example "He seems to be on fire.".
+     * Primarily used for roleplaying.
+     *
+     * @return String containing the description of the current condition
+     * of the character.
+     */
     public String getState()
     {
         return state;
     }
 
+    /**
+     * sets the state/condition of the character.
+     *
+     * @param aNewState
+     *            String containing the description of the current condition
+     * of the character.
+     */
     public void setState(String state)
     {
         this.state = state;
@@ -1260,7 +1403,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             theLog = new StringBuffer(1000);
 
             char[] buf = new char[1024];
-            int numRead = 0;
+            int numRead;
             while ((numRead = reader.read(buf)) != -1)
             {
                 theLog.append(buf, 0, numRead);
@@ -1334,29 +1477,17 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         String whimpy = (getWimpy() == null ? "You are not whimpy at all.<BR>"
                 : "You will flee when you are " + getWimpy().getDescription() + ".<BR>");
         String state = getState() == null ? "" : "Your condition is \"" + getState() + "\"<br/>";
-        stuff.append("A " + getLongDescription() + ".<BR>You seem to be "
-                + Health.getHealth(getVitals()).getDescription() + ".<BR>You are "
-                + Movement.getMovement(getMovementstats()).getDescription()
-                + ".<BR>"
-                + Sobriety.getSobriety(getDrinkstats()).getDescription() + "<br />"
-                + Appetite.getAppetite(getEatstats()).getDescription() + "<br />"
-                + "You are "
-                // ShowBurden
-                + Alignment.getAlignment(alignment).getDescription() + ".<BR>" + "You are level " + getLevel()
-                + " and " + (1000 - getExperience())
-                + " experience points away from levelling.<BR>" + whimpy);
+        stuff.append("A ").append(getLongDescription()).append(".<BR>You seem to be ").append(Health.getHealth(getVitals()).getDescription()).append(".<BR>You are ").append(Movement.getMovement(getMovementstats()).getDescription()).append(".<BR>").append(Sobriety.getSobriety(getDrinkstats()).getDescription()).append("<br />").append(Appetite.getAppetite(getEatstats()).getDescription()).append("<br />" + "You are ").append(Alignment.getAlignment(alignment).getDescription()).append(".<BR>" + "You are level ").append(getLevel()).append(" and ").append(1000 - getExperience()).append(" experience points away from levelling.<BR>").append(whimpy);
         stuff.append(state);
         // Skill
         if (getGuild() != null)
         {
             if (getGuild().getBoss().getName().equals(getName()))
             {
-                stuff.append("You are the Guildmaster of <B>"
-                        + getGuild().getTitle() + "</B>.<BR>");
+                stuff.append("You are the Guildmaster of <B>").append(getGuild().getTitle()).append("</B>.<BR>");
             } else
             {
-                stuff.append("You are a member of <B>" + getGuild().getTitle()
-                        + "</B>.<BR>");
+                stuff.append("You are a member of <B>").append(getGuild().getTitle()).append("</B>.<BR>");
             }
         }
         return stuff.toString();
@@ -1488,10 +1619,124 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return null;
     }
 
+    private String getWearables()
+    {
+        StringBuilder builder = new StringBuilder();
+        if (getWieldleft() != null)
+        {
+            builder.append("%SHESHE %SISARE wielding ").append(getWieldleft().getDescription())
+                    .append(" in %SHISHER left hand.<br/>\r\n");
+        }
+        if (getWieldright()!= null)
+        {
+            builder.append("%SHESHE %SISARE wielding ").append(getWieldright().getDescription())
+                    .append(" in %SHISHER right hand.<br/>\r\n");
+        }
+        if (getWieldboth() != null)
+        {
+            builder.append("%SHESHE %SISARE wielding ").append(getWieldboth().getDescription())
+                    .append(" in both hands.<br/>\r\n");
+        }
+        if (getWearhead() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearhead().getDescription())
+                    .append(" on %SHISHER head.<br/>\r\n");
+        }
+        if (getWearneck() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearneck().getDescription())
+                    .append(" on %SHISHER neck.<br/>\r\n");
+        }
+        if (getWeartorso() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWeartorso().getDescription())
+                    .append(" on %SHISHER torso.<br/>\r\n");
+        }
+        if (getWeararms() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWeararms().getDescription())
+                    .append(" on %SHISHER arms.<br/>\r\n");
+        }
+        if (getWearleftwrist()!= null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearleftwrist().getDescription())
+                    .append(" on %SHISHER left wrist.<br/>\r\n");
+        }
+        if (getWearrightwrist() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearrightwrist().getDescription())
+                    .append(" on %SHISHER right wrist.<br/>\r\n");
+        }
+        if (getWearleftfinger()!= null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearleftfinger().getDescription())
+                    .append(" on %SHISHER left finger.<br/>\r\n");
+        }
+        if (getWearrightfinger() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearrightfinger().getDescription())
+                    .append(" on %SHISHER right finger.<br/>\r\n");
+        }
+        if (getWearfeet() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearfeet().getDescription())
+                    .append(" on %SHISHER feet.<br/>\r\n");
+        }
+        if (getWearhands() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearhands().getDescription())
+                    .append(" on %SHISHER hands.<br/>\r\n");
+        }
+        if (getWearfloatingnearby()!= null)
+        {
+            builder.append(getWearfloatingnearby().getDescription())
+                    .append(" is floating nearby.<br/>\r\n");
+        }
+        if (getWearwaist()!= null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearwaist().getDescription())
+                    .append(" around %SHISHER waist.<br/>\r\n");
+        }
+        if (getWearlegs() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearlegs().getDescription())
+                    .append(" on %SHISHER legs.<br/>\r\n");
+        }
+        if (getWeareyes() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWeareyes().getDescription())
+                    .append(" %SHISHER.<br/>\r\n");
+        }
+        if (getWearears() != null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearears().getDescription())
+                    .append(" in %SHISHER ears.<br/>\r\n");
+        }
+        if (getWearaboutbody()!= null)
+        {
+            builder.append("%SHESHE %SISARE wearing ").append(getWearaboutbody().getDescription())
+                    .append(" about %SHISHER body.<br/>\r\n");
+        }
+
+        return builder.toString();
+    }
+
     @Override
     public String getBody() throws MudException
     {
-        return getLongDescription();
+        StringBuilder builder = new StringBuilder(
+                getLongDescription() + "<br/>"
+                + getWearables());
+        String stuff2 = builder.toString();
+        stuff2 = stuff2.replaceAll("%SHESHE", getSex().Direct());
+        stuff2 = stuff2.replaceAll("%SHISHER", getSex()
+                .posession());
+        stuff2 = stuff2.replaceAll("%SISARE", "is");
+        if (getState() != null)
+        {
+            builder.append(getState()).append("<br/>\r\n");
+        }
+        return stuff2;
     }
 
     /**
@@ -1509,5 +1754,288 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             }
         }
         return null;
+    }
+
+    public Item getWieldleft()
+    {
+        return wieldleft;
+    }
+
+    public void setWieldleft(Item item) throws ItemException
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+        this.wieldleft = item;
+    }
+
+    public Item getWieldright()
+    {
+        return wieldright;
+    }
+
+    public void setWieldright(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+        this.wieldright = item;
+    }
+
+    public Item getWieldboth()
+    {
+        return wieldboth;
+    }
+
+    public void setWieldboth(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wieldboth = item;
+    }
+
+    public Item getWearhead()
+    {
+        return wearhead;
+    }
+
+    public void setWearhead(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearhead = item;
+    }
+
+    public Item getWearneck()
+    {
+        return wearneck;
+    }
+
+    public void setWearneck(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearneck = item;
+    }
+
+    public Item getWeartorso()
+    {
+        return weartorso;
+    }
+
+    public void setWeartorso(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.weartorso = item;
+    }
+
+    public Item getWeararms()
+    {
+        return weararms;
+    }
+
+    public void setWeararms(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.weararms = item;
+    }
+
+    public Item getWearleftwrist()
+    {
+        return wearleftwrist;
+    }
+
+    public void setWearleftwrist(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearleftwrist = item;
+    }
+
+    public Item getWearrightwrist()
+    {
+        return wearrightwrist;
+    }
+
+    public void setWearrightwrist(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearrightwrist = item;
+    }
+
+    public Item getWearleftfinger()
+    {
+        return wearleftfinger;
+    }
+
+    public void setWearleftfinger(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearleftfinger = item;
+    }
+
+    public Item getWearrightfinger()
+    {
+        return wearrightfinger;
+    }
+
+    public void setWearrightfinger(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearrightfinger = item;
+    }
+
+    public Item getWearfeet()
+    {
+        return wearfeet;
+    }
+
+    public void setWearfeet(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearfeet = item;
+    }
+
+    public Item getWearhands()
+    {
+        return wearhands;
+    }
+
+    public void setWearhands(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearhands = item;
+    }
+
+    public Item getWearfloatingnearby()
+    {
+        return wearfloatingnearby;
+    }
+
+    public void setWearfloatingnearby(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearfloatingnearby = item;
+    }
+
+    public Item getWearwaist()
+    {
+        return wearwaist;
+    }
+
+    public void setWearwaist(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearwaist = item;
+    }
+
+    public Item getWearlegs()
+    {
+        return wearlegs;
+    }
+
+    public void setWearlegs(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearlegs = item;
+    }
+
+    public Item getWeareyes()
+    {
+        return weareyes;
+    }
+
+    public void setWeareyes(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.weareyes = item;
+    }
+
+    public Item getWearears()
+    {
+        return wearears;
+    }
+
+    public void setWearears(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearears = item;
+    }
+
+    public Item getWearaboutbody()
+    {
+        return wearaboutbody;
+    }
+
+    public void setWearaboutbody(Item item)
+    {
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+
+        this.wearaboutbody = item;
     }
 }

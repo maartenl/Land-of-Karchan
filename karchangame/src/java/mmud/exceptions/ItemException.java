@@ -17,37 +17,25 @@
 package mmud.exceptions;
 
 /**
- * The main exception of the mud.
+ *
  * @author maartenl
  */
-public class MudException extends RuntimeException
+public class ItemException extends MudException
 {
 
-    /**
-     * constructor for creating a exception with a message.
-     * @param string the string containing the message
-     */
-    public MudException(String string)
+    public ItemException(String string)
     {
         super(string);
     }
 
-    /**
-     * constructor for creating a exception with a message.
-     * @param ex the original exception.
-     */
-    public MudException(Exception ex)
+    public ItemException(Exception ex)
     {
         super(ex);
     }
 
-    /**
-     * constructor for creating a exception with a message.
-     * @param aString the string containing the message
-     * @param ex the original exception.
-     */
-    public MudException(String aString, Exception ex)
+    public ItemException(String aString, Exception ex)
     {
         super(aString, ex);
     }
+
 }
