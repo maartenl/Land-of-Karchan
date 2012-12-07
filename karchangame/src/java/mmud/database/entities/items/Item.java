@@ -20,7 +20,9 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,17 +37,25 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import mmud.Attributes;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
+import mmud.database.entities.game.AttributeWrangler;
+import org.hibernate.annotations.Cascade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An item. To be more precise an instance of an item definition.
  * An item can either reside in a room, on a person or in another item.
  * @author maartenl
  */
+// TODO: create subclass named ContainerItem.
 @Entity
 @Table(name = "mm_itemtable")
 @NamedQueries(
@@ -54,9 +64,10 @@ import mmud.exceptions.MudException;
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
     @NamedQuery(name = "Item.findByCreation", query = "SELECT i FROM Item i WHERE i.creation = :creation")
 })
-public class Item implements Serializable, DisplayInterface
+public class Item implements Serializable, DisplayInterface, AttributeWrangler
 {
 
+    private static final Logger itsLog = LoggerFactory.getLogger(Item.class);
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,8 +79,13 @@ public class Item implements Serializable, DisplayInterface
     @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
-    @OneToMany(mappedBy = "container")
-    private Collection<Item> items;
+    // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "container")
+    @Cascade(
+    {
+        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
+    })
+    private Set<Item> items;
     @JoinColumn(name = "containerid", referencedColumnName = "id")
     @ManyToOne
     private Item container;
@@ -85,6 +101,12 @@ public class Item implements Serializable, DisplayInterface
     @ManyToOne
     @JoinColumn(name = "owner", referencedColumnName = "name")
     private Admin owner;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
+    @Cascade(
+    {
+        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
+    })
+    private List<Itemattribute> itemattributeCollection;
 
     public Item()
     {
@@ -127,12 +149,12 @@ public class Item implements Serializable, DisplayInterface
      *
      * @return
      */
-    public Collection<Item> getItems()
+    public Set<Item> getItems()
     {
         return items;
     }
 
-    public void setItems(Collection<Item> items)
+    public void setItems(Set<Item> items)
     {
         this.items = items;
     }
@@ -149,8 +171,17 @@ public class Item implements Serializable, DisplayInterface
         return container;
     }
 
+    public boolean isContainer()
+    {
+        return getItemDefinition().isContainer();
+    }
+
     public void setContainer(Item container)
     {
+        if (!container.isContainer())
+        {
+            throw new ItemException("Item  is not a container.");
+        }
         this.container = container;
     }
 
@@ -268,5 +299,115 @@ public class Item implements Serializable, DisplayInterface
     public String getBody() throws MudException
     {
         return getItemDefinition().getLongDescription();
+    }
+
+    @Override
+    public boolean removeAttribute(String name)
+    {
+        Itemattribute attr = getItemattribute(name);
+        if (attr == null)
+        {
+            return false;
+        }
+        itemattributeCollection.remove(attr);
+        return true;
+    }
+
+    private Itemattribute getItemattribute(String name)
+    {
+        if (itemattributeCollection == null)
+        {
+            itsLog.debug("getItemattribute name=" + name + " collection is null");
+            return null;
+        }
+        for (Itemattribute attr : itemattributeCollection)
+        {
+            itsLog.debug("getItemattribute name=" + name + " attr=" + attr);
+            if (attr.getName().equals(name))
+            {
+                return attr;
+            }
+        }
+        itsLog.debug("getItemattribute name=" + name + " not found");
+        return null;
+    }
+
+    @Override
+    public Attribute getAttribute(String name)
+    {
+        return getItemattribute(name);
+    }
+
+    @Override
+    public void setAttribute(String name, String value)
+    {
+        Itemattribute attr = getItemattribute(name);
+        if (attr == null)
+        {
+            attr = new Itemattribute(name, getId());
+            attr.setItem(this);
+        }
+        attr.setValue(value);
+        attr.setValueType(Attributes.VALUETYPE_STRING);
+        itemattributeCollection.add(attr);
+    }
+
+    @Override
+    public boolean verifyAttribute(String name, String value)
+    {
+        Itemattribute attr = getItemattribute(name);
+        if (attr == null)
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
+            return false;
+        }
+        if (attr.getValue() == value)
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
+            return true;
+        }
+        if (attr.getValue().equals(value))
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
+            return true;
+        }
+        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
+        return false;
+    }
+
+    /**
+     * Indicates if the container is open or closed.
+     * Only makes sense if this item is in fact a container.
+     * @return
+     */
+    public boolean isOpen()
+    {
+        return verifyAttribute("isopen", "true");
+    }
+
+    /**
+     * Returns true if the container has a lid, if the
+     * container can be opened.
+     *
+     * @return boolean true if the container has a lid.
+     */
+    public boolean hasLid()
+    {
+        return isOpenable();
+    }
+
+    /**
+     * Returns true if the container has a lid, if the
+     * container can be opened.
+     *
+     * @return boolean true if the container has a lid.
+     */
+    public boolean isOpenable()
+    {
+        if (getAttribute("isopenable") != null)
+        {
+            return verifyAttribute("isopenable", "true");
+        }
+        return getItemDefinition().isOpenable();
     }
 }

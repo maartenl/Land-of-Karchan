@@ -29,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.entities.game.Attribute;
 
 /**
  *
@@ -43,8 +44,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType"),
     @NamedQuery(name = "Itemattribute.findById", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.id = :id")
 })
-public class Itemattribute implements Serializable
+public class Itemattribute implements Serializable, Attribute
 {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ItemattributePK itemattributePK;
@@ -151,4 +153,9 @@ public class Itemattribute implements Serializable
         return "mmud.database.entities.game.Itemattribute[ itemattributePK=" + itemattributePK + " ]";
     }
 
+    @Override
+    public String getName()
+    {
+        return itemattributePK.getName();
+    }
 }

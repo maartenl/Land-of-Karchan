@@ -16,9 +16,14 @@
  */
 package mmud.commands.items;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import mmud.Constants;
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 
 /**
@@ -26,8 +31,15 @@ import mmud.exceptions.MudException;
  * <ul>
  * <li>look in something in your inventory.
  * <li>look in something in the room that you occupy
- * </ul>
+ * </ul>It has a lot in common with the InventoryCommand and the LookAtCommand.
+ * Some requirements, the item must be :
+ * <ul>
+ * <li>it must be unlocked and </li>
+ * <li>it must be open or</li>
+ * <li>it must be lidless</li>
+ * <li>
  * @author maartenl
+ * @see InventoryCommand
  */
 public class LookInCommand extends NormalCommand
 {
@@ -40,6 +52,65 @@ public class LookInCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+        // first is find the item
+        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+        parsed.remove(0); // remove "look"
+        parsed.remove(0); // remove "in"
+        // find the item on ourselves
+        List<Item> itemsFound = aUser.findItems(parsed);
+        if (itemsFound.isEmpty())
+        {
+            // find the item in the room
+            itemsFound = aUser.getRoom().findItems(parsed);
+        }
+        if (itemsFound.isEmpty())
+        {
+            aUser.writeMessage("No items found that match that description.<br/>\n");
+            return aUser.getRoom();
+        }
+        for (Item item : itemsFound)
+        {
+            if (item.isContainer())
+            {
+                if (!item.isOpen() && item.hasLid())
+                {
+                    aUser.getRoom().sendMessage(
+                            aUser,
+                            "%SNAME attempt%VERB2 to look in "
+                            + item.getDescription()
+                            + ", but unfortunately it seems closed.<BR>\r\n");
+                    return aUser.getRoom();
+                }
+                // found container! Using it!
+                aUser.getRoom().sendMessage(aUser, "%SNAME look%VERB2 in "
+                        + item.getDescription() + ".<br/>\r\n");
+                final Item finalitem = item;
+                return new DisplayInterface()
+                {
+                    @Override
+                    public String getMainTitle() throws MudException
+                    {
+                        return finalitem.getDescription();
+                    }
+
+                    @Override
+                    public String getImage() throws MudException
+                    {
+                        return finalitem.getImage();
+                    }
+
+                    @Override
+                    public String getBody() throws MudException
+                    {
+                        StringBuilder builder = new StringBuilder("You look in ");
+                        builder.append(finalitem.getDescription());
+                        builder.append(". It contains ");
+                        Constants.addInventory(finalitem.getItems(), builder);
+                        return builder.toString();
+                    }
+                };
+            }
+        }
         // TODO implement this!!!
         aUser.writeMessage("Not implemented yet.<br/>\n");
         return aUser.getRoom();

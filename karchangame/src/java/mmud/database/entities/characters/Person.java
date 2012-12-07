@@ -24,8 +24,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -230,7 +232,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
-    private List<Item> items;
+    private Set<Item> items;
     @Transient
     private File theLogfile = null;
     @Transient
@@ -240,7 +242,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
-    private List<Charattribute> charattributeCollection;
+    private Set<Charattribute> charattributeCollection;
     @JoinColumn(name = "wieldleft", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Item wieldleft;
@@ -1591,7 +1593,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return false;
     }
 
-    public List<Item> getItems()
+    public Set<Item> getItems()
     {
         return items;
     }
@@ -1740,20 +1742,23 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     /**
-     * Finds the item in the inventory of this character.
-     * @param parsed
-     * @return
+     * Returns items in the inventory of this character, based on description
+     * provided by the user.
+     * @param parsed the parsed description of the item as given by the user,
+     * for example {"light-green", "leather", "pants"}.
+     * @return list of found items, empty if not found.
      */
-    public Item findItem(List<String> parsed)
+    public List<Item> findItems(List<String> parsed)
     {
+        List<Item> result = new ArrayList<Item>();
         for (Item item : getItems())
         {
             if (item.isDescribedBy(parsed))
             {
-                return item;
+                result.add(item);
             }
         }
-        return null;
+        return result;
     }
 
     public Item getWieldleft()

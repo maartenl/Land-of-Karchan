@@ -23,6 +23,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -139,8 +140,9 @@ public class ItemDefinition implements Serializable
     @NotNull
     @Column(name = "isopenable")
     private int isopenable;
-    @Column(name = "keyid")
-    private Integer keyid;
+    @JoinColumn(name = "keyid", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ItemDefinition key;
     @Column(name = "containtype")
     private Integer containtype;
     @Lob
@@ -509,16 +511,38 @@ public class ItemDefinition implements Serializable
         this.damageresistance = damageresistance;
     }
 
-    public int getContainer()
+    /**
+     * Returns true if this item is a container, i.e.
+     * if the item can contain other items or not.
+     * @return boolean
+     * @see #isOpenable()
+     * @see #getKey()
+     * @see #getCapacity()
+     */
+    public boolean isContainer()
     {
-        return container;
+        return container != 0;
     }
 
-    public void setContainer(int container)
+    /**
+     * Indicates that this item should be or should not be
+     * a container. Null or false indicates no container, true indicates
+     * container.
+     * @param container Boolean
+     */
+    public void setContainer(Boolean container)
     {
-        this.container = container;
+        if (container == null)
+        {
+            container = false;
+        }
+        this.container = (container ? 1 : 0);
     }
 
+    /**
+     * When this item was originally created.
+     * @return  date
+     */
     public Date getCreation()
     {
         return creation;
@@ -529,6 +553,11 @@ public class ItemDefinition implements Serializable
         this.creation = creation;
     }
 
+    /**
+     * The capacity of this container. Indicates how much the container is
+     * allowed to carry.
+     * @return
+     */
     public Integer getCapacity()
     {
         return capacity;
@@ -539,24 +568,34 @@ public class ItemDefinition implements Serializable
         this.capacity = capacity;
     }
 
-    public int getIsopenable()
+    /**
+     * Indicates that this container can be opened and
+     * closed.
+     * @return
+     * @see #getKey()
+     */
+    public boolean isOpenable()
     {
-        return isopenable;
+        return isopenable != 0;
     }
 
-    public void setIsopenable(int isopenable)
+    public void setOpenable(Boolean isopenable)
     {
-        this.isopenable = isopenable;
+        if (isopenable == null)
+        {
+            isopenable = false;
+        }
+        this.isopenable = isopenable ? 1 : 0;
     }
 
-    public Integer getKeyid()
+    public ItemDefinition getKey()
     {
-        return keyid;
+        return key;
     }
 
-    public void setKeyid(Integer keyid)
+    public void setKey(ItemDefinition key)
     {
-        this.keyid = keyid;
+        this.key = key;
     }
 
     public Integer getContaintype()
@@ -670,6 +709,4 @@ public class ItemDefinition implements Serializable
     {
         this.image = image;
     }
-
-
 }

@@ -23,6 +23,7 @@ import mmud.commands.*;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 
 /**
@@ -45,18 +46,18 @@ public class LookAtCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        DisplayInterface resultaat = null;
+        DisplayInterface result = null;
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
         parsed.remove(0); // remove "look"
         parsed.remove(0); // remove "at"
         // find the item on ourselves
-        resultaat = aUser.findItem(parsed);
-        if (resultaat == null)
+        List<Item> itemsFound = aUser.findItems(parsed);
+        if (itemsFound.isEmpty())
         {
             // find the item in the room
-            resultaat = aUser.getRoom().findItem(parsed);
+            itemsFound = aUser.getRoom().findItems(parsed);
         }
-        if (resultaat == null)
+        if (itemsFound.isEmpty())
         {
             if (parsed.size() == 1)
             {
@@ -65,16 +66,19 @@ public class LookAtCommand extends NormalCommand
                 if (toChar != null)
                 {
                     aUser.getRoom().sendMessage(aUser, toChar, "%SNAME look%VERB2 at %TNAME.<br/>\r\n");
-                    resultaat = toChar;
+                    result = toChar;
                 }
             }
+        } else
+        {
+            result = itemsFound.get(0);
         }
-        if (resultaat == null)
+        if (result == null)
         {
             // we didn't find what we wanted to look at.
-            resultaat = aUser.getRoom();
+            result = aUser.getRoom();
             aUser.writeMessage("You don't know what to look at.<br/>\n");
         }
-        return resultaat;
+        return result;
     }
 }

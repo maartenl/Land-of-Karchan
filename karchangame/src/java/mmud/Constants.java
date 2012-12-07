@@ -17,7 +17,11 @@
 package mmud;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import mmud.database.entities.items.Item;
 
 /**
  *
@@ -58,7 +62,7 @@ public class Constants
     {
         if (aValue == 0)
         {
-            return "";
+            return "no money";
         }
         int gold = aValue / 100;
         int silver = (aValue % 100) / 10;
@@ -189,5 +193,64 @@ public class Constants
                         && possibleAdjectives.contains(parsed.get(2))
                         && name.equalsIgnoreCase(parsed.get(3));
         }
+    }
+
+    /**
+     * Adds a descriptive set of the items to the string builder.
+     * @param set a set of items to be described.
+     * @param builder the builder to append to. Should not be null.
+     */
+    public static void addInventory(Set<Item> set, StringBuilder builder)
+    {
+        if ((set == null || set.isEmpty()))
+        {
+            builder.append(" absolutely nothing.</p>");
+            return;
+        }
+
+        Map<String, Integer> inventory = new HashMap<>();
+
+        for (Item item : set)
+        {
+            String key = item.getDescription();
+            if (inventory.containsKey(key))
+            {
+                inventory.put(key, inventory.get(key) + 1);
+            } else
+            {
+                inventory.put(key, 1);
+            }
+        }
+        builder.append("<ul>");
+        for (String desc : inventory.keySet())
+        {
+            builder.append("<li>");
+            int amount = inventory.get(desc);
+            if (amount != 1)
+            {
+                // 5 gold, hard cups
+                if (desc.startsWith("an"))
+                {
+                    // remove 'an '
+                    desc = desc.substring(3);
+                } else
+                {
+                    // remove 'a '
+                    desc = desc.substring(2);
+                }
+                builder.append(amount).append(" ").append(
+                        desc);
+                if (!desc.endsWith("s"))
+                {
+                    builder.append("s");
+                }
+            } else
+            {
+                // a gold, hard cup
+                builder.append(desc);
+            }
+            builder.append("</li>\r\n");
+        }
+        builder.append("</ul>");
     }
 }

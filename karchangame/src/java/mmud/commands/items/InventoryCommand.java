@@ -16,13 +16,11 @@
  */
 package mmud.commands.items;
 
-import java.util.HashMap;
-import java.util.Map;
+import mmud.Constants;
 import mmud.exceptions.MudException;
-import mmud.database.entities.characters.User;
 import mmud.commands.NormalCommand;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.items.Item;
 
 /**
  * Show the inventory: "inventory".
@@ -35,63 +33,18 @@ public class InventoryCommand extends NormalCommand
         super(aRegExpr);
     }
 
+
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         StringBuilder builder = new StringBuilder("<p>You have");
-        if ((aUser.getItems() == null || aUser.getItems().isEmpty()) && aUser.getCopper() == 0)
-        {
-            builder.append(" absolutely nothing.</p>");
-        } else
-        {
-            Map<String, Integer> inventory = new HashMap<>();
+        Constants.addInventory(aUser.getItems(), builder);
+        builder.append("You have ");
+        builder.append(aUser.getDescriptionOfMoney());
+        builder.append(".<br/>\r\n");
 
-            for (Item item : aUser.getItems())
-            {
-                String key = item.getDescription();
-                if (inventory.containsKey(key))
-                {
-                    inventory.put(key, inventory.get(key) + 1);
-                } else
-                {
-                    inventory.put(key, 1);
-                }
-            }
-            builder.append("<ul>");
-            for (String desc : inventory.keySet())
-            {
-                builder.append("<li>");
-                int amount = inventory.get(desc);
-                if (amount != 1)
-                {
-                    // 5 gold, hard cups
-                    if (desc.startsWith("an"))
-                    {
-                        // remove 'an '
-                        desc = desc.substring(3);
-                    } else
-                    {
-                        // remove 'a '
-                        desc = desc.substring(2);
-                    }
-                    builder.append(amount).append(" ").append(
-                             desc);
-                    if (!desc.endsWith("s"))
-                    {
-                        builder.append("s");
-                    }
-                } else
-                {
-                    // a gold, hard cup
-                    builder.append(desc);
-                }
-                builder.append("</li>\r\n");
-            }
-            builder.append("</ul><ul><li>");
-            builder.append(aUser.getDescriptionOfMoney());
-            builder.append("</li>\r\n</ul>");
-        }
         final String body = builder.toString();
+
         return new DisplayInterface()
         {
             @Override

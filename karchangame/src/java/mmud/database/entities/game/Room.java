@@ -17,6 +17,7 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -532,19 +533,21 @@ public class Room implements Serializable, DisplayInterface
     }
 
     /**
-     * Returns item if found, otherwise null.
-     * @param parsed the parsed description of the item as given by the user
-     * @return an item or null if not found.
+     * Returns items if found, otherwise returns an empty list.
+     * @param parsed the parsed description of the item as given by the user,
+     * for example {"light-green", "leather", "pants"}.
+     * @return list of found items, empty if not found.
      */
-    public Item findItem(List<String> parsed)
+    public List<Item> findItems(List<String> parsed)
     {
+        List<Item> result = new ArrayList<Item>();
         for (Item item : getItems())
         {
             if (item.isDescribedBy(parsed))
             {
-                return item;
+                result.add(item);
             }
         }
-        return null;
+        return result;
     }
 }
