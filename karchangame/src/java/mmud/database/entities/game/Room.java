@@ -21,13 +21,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemWrangler;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A room. Bear in mind that this room has potential exits to the north, south,
@@ -54,9 +58,10 @@ import org.hibernate.annotations.Filter;
     @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
     @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
 })
-public class Room implements Serializable, DisplayInterface
+public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler
 {
 
+    private static final Logger itsLog = LoggerFactory.getLogger(Room.class);
     /**
      * The first room that new characters appear in.
      */
@@ -123,12 +128,12 @@ public class Room implements Serializable, DisplayInterface
     @ManyToOne(optional = false)
     private Area area;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private Collection<Roomattribute> attributes;
+    private Set<Roomattribute> attributes;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private Collection<Item> items;
+    private Set<Item> items;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     @Filter(name = "activePersons")
-    private List<Person> persons;
+    private Set<Person> persons;
 
     public Room()
     {
@@ -355,22 +360,22 @@ public class Room implements Serializable, DisplayInterface
         this.area = area;
     }
 
-    public Collection<Roomattribute> getAttributes()
+    public Set<Roomattribute> getAttributes()
     {
         return attributes;
     }
 
-    public void setAttributes(Collection<Roomattribute> attributes)
+    public void setAttributes(Set<Roomattribute> attributes)
     {
         this.attributes = attributes;
     }
 
-    public Collection<Item> getItems()
+    public Set<Item> getItems()
     {
         return items;
     }
 
-    public void setItems(Collection<Item> items)
+    public void setItems(Set<Item> items)
     {
         this.items = items;
     }
@@ -549,5 +554,73 @@ public class Room implements Serializable, DisplayInterface
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean removeAttribute(String name)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Attribute getAttribute(String name)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setAttribute(String name, String value)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean verifyAttribute(String name, String value)
+    {
+        Roomattribute attr = getRoomattribute(name);
+        if (attr == null)
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on room " + getId() + ".");
+            return false;
+        }
+        if (attr.getValue() == value)
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") same object on room " + getId() + "!");
+            return true;
+        }
+        if (attr.getValue().equals(value))
+        {
+            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on room " + getId() + "!");
+            return true;
+        }
+        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on room " + getId() + ".");
+        return false;
+    }
+
+    private Roomattribute getRoomattribute(String name)
+    {
+        if (attributes == null)
+        {
+            itsLog.debug("getRoomattribute name=" + name + " collection is null");
+            return null;
+        }
+        for (Roomattribute attr : attributes)
+        {
+            itsLog.debug("getRoomattribute name=" + name + " attr=" + attr);
+            if (attr.getName().equals(name))
+            {
+                return attr;
+            }
+        }
+        itsLog.debug("getRoomattribute name=" + name + " not found");
+        return null;
+    }
+
+    @Override
+    public boolean destroyItem(Item item)
+    {
+         return items.remove(item);
+        // note: as the collection is an orphan, the delete
+        // on the set will take place automatically.
     }
 }

@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.characters;
 
+import mmud.database.entities.items.ItemWrangler;
 import mmud.database.entities.game.AttributeWrangler;
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,7 +82,7 @@ discriminatorType = DiscriminatorType.INTEGER)
 {
     @Filter(name = "activePersons")
 })
-abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface
+abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
@@ -1629,7 +1630,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             builder.append("%SHESHE %SISARE wielding ").append(getWieldleft().getDescription())
                     .append(" in %SHISHER left hand.<br/>\r\n");
         }
-        if (getWieldright()!= null)
+        if (getWieldright() != null)
         {
             builder.append("%SHESHE %SISARE wielding ").append(getWieldright().getDescription())
                     .append(" in %SHISHER right hand.<br/>\r\n");
@@ -1659,7 +1660,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             builder.append("%SHESHE %SISARE wearing ").append(getWeararms().getDescription())
                     .append(" on %SHISHER arms.<br/>\r\n");
         }
-        if (getWearleftwrist()!= null)
+        if (getWearleftwrist() != null)
         {
             builder.append("%SHESHE %SISARE wearing ").append(getWearleftwrist().getDescription())
                     .append(" on %SHISHER left wrist.<br/>\r\n");
@@ -1669,7 +1670,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             builder.append("%SHESHE %SISARE wearing ").append(getWearrightwrist().getDescription())
                     .append(" on %SHISHER right wrist.<br/>\r\n");
         }
-        if (getWearleftfinger()!= null)
+        if (getWearleftfinger() != null)
         {
             builder.append("%SHESHE %SISARE wearing ").append(getWearleftfinger().getDescription())
                     .append(" on %SHISHER left finger.<br/>\r\n");
@@ -1689,12 +1690,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             builder.append("%SHESHE %SISARE wearing ").append(getWearhands().getDescription())
                     .append(" on %SHISHER hands.<br/>\r\n");
         }
-        if (getWearfloatingnearby()!= null)
+        if (getWearfloatingnearby() != null)
         {
             builder.append(getWearfloatingnearby().getDescription())
                     .append(" is floating nearby.<br/>\r\n");
         }
-        if (getWearwaist()!= null)
+        if (getWearwaist() != null)
         {
             builder.append("%SHESHE %SISARE wearing ").append(getWearwaist().getDescription())
                     .append(" around %SHISHER waist.<br/>\r\n");
@@ -1714,7 +1715,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             builder.append("%SHESHE %SISARE wearing ").append(getWearears().getDescription())
                     .append(" in %SHISHER ears.<br/>\r\n");
         }
-        if (getWearaboutbody()!= null)
+        if (getWearaboutbody() != null)
         {
             builder.append("%SHESHE %SISARE wearing ").append(getWearaboutbody().getDescription())
                     .append(" about %SHISHER body.<br/>\r\n");
@@ -2042,5 +2043,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         }
 
         this.wearaboutbody = item;
+    }
+
+    public boolean destroyItem(Item item)
+    {
+        return items.remove(item);
+        // note: as the collection is an orphan, the delete
+        // on the set will take place automatically.
     }
 }

@@ -17,6 +17,7 @@
 package mmud.database.entities.items;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
     @NamedQuery(name = "Item.findByCreation", query = "SELECT i FROM Item i WHERE i.creation = :creation")
 })
-public class Item implements Serializable, DisplayInterface, AttributeWrangler
+public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
 
     private static final Logger itsLog = LoggerFactory.getLogger(Item.class);
@@ -468,5 +469,56 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler
                     + " is locked.");
         }
         setAttribute("isopen", "false");
+    }
+
+    public boolean isEatable()
+    {
+        if (getAttribute("eatable") != null)
+        {
+            return verifyAttribute("eatable", "true");
+        }
+        return getItemDefinition().getEatable() != null;
+    }
+
+    public String getEatable()
+    {
+        return getItemDefinition().getEatable();
+    }
+
+    @Override
+    public List<Item> findItems(List<String> parsed)
+    {
+        List<Item> result = new ArrayList<Item>();
+        for (Item item : getItems())
+        {
+            if (item.isDescribedBy(parsed))
+            {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean destroyItem(Item item)
+    {
+        return items.remove(item);
+        // note: as the collection is an orphan, the delete
+        // on the set will take place automatically.
+    }
+
+    public boolean isDrinkable()
+    {
+     if (getAttribute("drinkable") != null)
+        {
+            return verifyAttribute("drinkable", "true");
+        }
+        return getItemDefinition().getDrinkable() != null;
+    }
+
+    public String getDrinkable()
+    {
+        return getItemDefinition().getDrinkable();
+
     }
 }

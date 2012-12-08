@@ -43,8 +43,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Roomattribute.findByValueType", query = "SELECT r FROM Roomattribute r WHERE r.valueType = :valueType"),
     @NamedQuery(name = "Roomattribute.findById", query = "SELECT r FROM Roomattribute r WHERE r.roomattributePK.id = :id")
 })
-public class Roomattribute implements Serializable
+public class Roomattribute implements Serializable, Attribute
 {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected RoomattributePK roomattributePK;
@@ -151,4 +152,9 @@ public class Roomattribute implements Serializable
         return "mmud.database.entities.game.Roomattribute[ roomattributePK=" + roomattributePK + " ]";
     }
 
+    @Override
+    public String getName()
+    {
+        return roomattributePK.getName();
+    }
 }

@@ -22,6 +22,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
+import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -491,4 +492,5 @@ public class User extends Person
     {
         return lastlogin == null;
     }
+
 }

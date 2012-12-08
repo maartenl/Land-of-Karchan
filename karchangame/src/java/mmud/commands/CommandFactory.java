@@ -37,6 +37,8 @@ import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
 import mmud.commands.items.CloseCommand;
+import mmud.commands.items.DrinkCommand;
+import mmud.commands.items.EatCommand;
 import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
@@ -65,8 +67,6 @@ public class CommandFactory
     private static final BogusCommand BOGUS = new BogusCommand(".+");
     private static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
     private static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
-
-
     /**
      * Contains mappings from what command people have entered, to what command
      * should be executed. Supports two and one string, for example
@@ -129,9 +129,9 @@ public class CommandFactory
         theCommandStructure.put("stats", new StatsCommand("stats"));
         theCommandStructure.put("inventory", new InventoryCommand("inventory"));
         theCommandStructure.put("i", new InventoryCommand("i"));
-//        theCommandStructure.put("drink", new DrinkCommand(
-//                "drink( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
+        theCommandStructure.put("drink", new DrinkCommand(
+                "drink( (\\w|-)+){1,4}"));
+        theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("destroy", new DestroyCommand("destroy( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("wear", new WearCommand(
 //                "wear( (\\w|-)+){1,4} on (\\w)+"));

@@ -17,7 +17,7 @@
 package mmud.database.entities.game;
 
 /**
- *
+ * Interface on what is allowed to be done with attributes.
  * @author maartenl
  */
 public interface AttributeWrangler
