@@ -36,9 +36,11 @@ import mmud.commands.guild.LeaveCommand;
 import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
+import mmud.commands.items.CloseCommand;
 import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
+import mmud.commands.items.OpenCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -157,9 +159,9 @@ public class CommandFactory
 //                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("give", new GiveCommand(
 //                "give( (\\w|-)+){1,4} to (\\w)+"));
-//        theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("close", new CloseCommand(
-//                "close( (\\w|-)+){1,4}"));
+        theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
+        theCommandStructure.put("close", new CloseCommand(
+                "close( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("readroleplay", new ReadRpgBoardCommand(
 //                "readroleplay"));
 //        theCommandStructure.put("read", new ReadCommand("read( (\\w|-)+){1,4}"));

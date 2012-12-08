@@ -111,8 +111,7 @@ public class LookInCommand extends NormalCommand
                 };
             }
         }
-        // TODO implement this!!!
-        aUser.writeMessage("Not implemented yet.<br/>\n");
+        aUser.writeMessage("That item cannot contain things.<br/>\n");
         return aUser.getRoom();
     }
 }

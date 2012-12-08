@@ -17,7 +17,6 @@
 package mmud.database.entities.items;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -409,5 +408,65 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler
             return verifyAttribute("isopenable", "true");
         }
         return getItemDefinition().isOpenable();
+    }
+
+    /**
+     * Returns wether or not the container is locked. If it can be locked, it
+     * needs a key.
+     *
+     * @return boolean true if the container is locked.
+     * @see #getKey()
+     */
+    public boolean isLocked()
+    {
+        return verifyAttribute("islocked", "true");
+    }
+
+    public void open()
+    {
+        if (!isContainer())
+        {
+            throw new ItemException("Item is not a container, and cannot be opened.");
+        }
+        if (!isOpenable())
+        {
+            throw new ItemException(getDescription()
+                    + "cannot be opened.");
+        }
+        if (isOpen())
+        {
+            throw new ItemException(getDescription()
+                    + " is already open.");
+        }
+        if (isLocked())
+        {
+            throw new ItemException(getDescription()
+                    + " is locked.");
+        }
+        setAttribute("isopen", "true");
+    }
+
+    public void close()
+    {
+        if (!isContainer())
+        {
+            throw new ItemException("Item is not a container, and cannot be closed.");
+        }
+        if (!isOpenable())
+        {
+            throw new ItemException(getDescription()
+                    + "cannot be closed.");
+        }
+        if (!isOpen())
+        {
+            throw new ItemException(getDescription()
+                    + " is already closed.");
+        }
+        if (isLocked())
+        {
+            throw new ItemException(getDescription()
+                    + " is locked.");
+        }
+        setAttribute("isopen", "false");
     }
 }
