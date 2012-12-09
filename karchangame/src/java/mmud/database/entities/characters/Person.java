@@ -50,6 +50,23 @@ import mmud.database.enums.Health;
 import mmud.database.enums.Movement;
 import mmud.database.enums.Sex;
 import mmud.database.enums.Sobriety;
+import mmud.database.enums.Wearing;
+import static mmud.database.enums.Wearing.ABOUT_BODY;
+import static mmud.database.enums.Wearing.FLOATING_NEARBY;
+import static mmud.database.enums.Wearing.ON_ARMS;
+import static mmud.database.enums.Wearing.ON_EARS;
+import static mmud.database.enums.Wearing.ON_EYES;
+import static mmud.database.enums.Wearing.ON_FEET;
+import static mmud.database.enums.Wearing.ON_HANDS;
+import static mmud.database.enums.Wearing.ON_HEAD;
+import static mmud.database.enums.Wearing.ON_LEFT_FINGER;
+import static mmud.database.enums.Wearing.ON_LEFT_WRIST;
+import static mmud.database.enums.Wearing.ON_LEGS;
+import static mmud.database.enums.Wearing.ON_NECK;
+import static mmud.database.enums.Wearing.ON_RIGHT_FINGER;
+import static mmud.database.enums.Wearing.ON_RIGHT_WRIST;
+import static mmud.database.enums.Wearing.ON_TORSO;
+import static mmud.database.enums.Wearing.ON_WAIST;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Cascade;
@@ -678,7 +695,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     /**
-     * returns wether or not the character is asleep.
+     * returns whether or not the character is asleep.
      *
      * @return boolean, true if character is asleep.
      */
@@ -1728,7 +1745,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     public String getBody() throws MudException
     {
         StringBuilder builder = new StringBuilder(
-                getLongDescription() + "<br/>"
+                getLongDescription() + "<br/>\r\n"
                 + getWearables());
         String stuff2 = builder.toString();
         stuff2 = stuff2.replaceAll("%SHESHE", getSex().Direct());
@@ -1769,7 +1786,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     public void setWieldleft(Item item) throws ItemException
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1783,7 +1800,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     public void setWieldright(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1797,7 +1814,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     public void setWieldboth(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1805,14 +1822,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wieldboth = item;
     }
 
-    public Item getWearhead()
+    private Item getWearhead()
     {
         return wearhead;
     }
 
-    public void setWearhead(Item item)
+    private void setWearhead(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1820,14 +1837,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearhead = item;
     }
 
-    public Item getWearneck()
+    private Item getWearneck()
     {
         return wearneck;
     }
 
-    public void setWearneck(Item item)
+    private void setWearneck(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1835,14 +1852,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearneck = item;
     }
 
-    public Item getWeartorso()
+    private Item getWeartorso()
     {
         return weartorso;
     }
 
-    public void setWeartorso(Item item)
+    private void setWeartorso(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1850,14 +1867,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.weartorso = item;
     }
 
-    public Item getWeararms()
+    private Item getWeararms()
     {
         return weararms;
     }
 
-    public void setWeararms(Item item)
+    private void setWeararms(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1865,14 +1882,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.weararms = item;
     }
 
-    public Item getWearleftwrist()
+    private Item getWearleftwrist()
     {
         return wearleftwrist;
     }
 
-    public void setWearleftwrist(Item item)
+    private void setWearleftwrist(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1880,14 +1897,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearleftwrist = item;
     }
 
-    public Item getWearrightwrist()
+    private Item getWearrightwrist()
     {
         return wearrightwrist;
     }
 
-    public void setWearrightwrist(Item item)
+    private void setWearrightwrist(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1895,14 +1912,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearrightwrist = item;
     }
 
-    public Item getWearleftfinger()
+    private Item getWearleftfinger()
     {
         return wearleftfinger;
     }
 
-    public void setWearleftfinger(Item item)
+    private void setWearleftfinger(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1910,14 +1927,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearleftfinger = item;
     }
 
-    public Item getWearrightfinger()
+    private Item getWearrightfinger()
     {
         return wearrightfinger;
     }
 
-    public void setWearrightfinger(Item item)
+    private void setWearrightfinger(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1925,14 +1942,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearrightfinger = item;
     }
 
-    public Item getWearfeet()
+    private Item getWearfeet()
     {
         return wearfeet;
     }
 
-    public void setWearfeet(Item item)
+    private void setWearfeet(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1940,14 +1957,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearfeet = item;
     }
 
-    public Item getWearhands()
+    private Item getWearhands()
     {
         return wearhands;
     }
 
-    public void setWearhands(Item item)
+    private void setWearhands(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1955,14 +1972,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearhands = item;
     }
 
-    public Item getWearfloatingnearby()
+    private Item getWearfloatingnearby()
     {
         return wearfloatingnearby;
     }
 
-    public void setWearfloatingnearby(Item item)
+    private void setWearfloatingnearby(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1970,14 +1987,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearfloatingnearby = item;
     }
 
-    public Item getWearwaist()
+    private Item getWearwaist()
     {
         return wearwaist;
     }
 
-    public void setWearwaist(Item item)
+    private void setWearwaist(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -1985,14 +2002,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearwaist = item;
     }
 
-    public Item getWearlegs()
+    private Item getWearlegs()
     {
         return wearlegs;
     }
 
-    public void setWearlegs(Item item)
+    private void setWearlegs(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -2000,14 +2017,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearlegs = item;
     }
 
-    public Item getWeareyes()
+    private Item getWeareyes()
     {
         return weareyes;
     }
 
-    public void setWeareyes(Item item)
+    private void setWeareyes(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -2015,14 +2032,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.weareyes = item;
     }
 
-    public Item getWearears()
+    private Item getWearears()
     {
         return wearears;
     }
 
-    public void setWearears(Item item)
+    private void setWearears(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -2030,14 +2047,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearears = item;
     }
 
-    public Item getWearaboutbody()
+    private Item getWearaboutbody()
     {
         return wearaboutbody;
     }
 
-    public void setWearaboutbody(Item item)
+    private void setWearaboutbody(Item item)
     {
-        if (!items.contains(item))
+        if (item != null && !items.contains(item))
         {
             throw new ItemException("You do not have that item.");
         }
@@ -2045,10 +2062,161 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wearaboutbody = item;
     }
 
+    @Override
     public boolean destroyItem(Item item)
     {
         return items.remove(item);
         // note: as the collection is an orphan, the delete
         // on the set will take place automatically.
+    }
+
+    /**
+     * Returns the item being worn at that position.
+     * @param position the position to check.
+     * @return the item worn at that position, may be null if nothing is being
+     * worn there.
+     */
+    public Item wears(Wearing position)
+    {
+        if (position == null)
+        {
+            throw new RuntimeException("You cannot wear an item on null");
+        }
+        switch (position)
+        {
+            case ABOUT_BODY:
+                return getWearaboutbody();
+            case FLOATING_NEARBY:
+                return getWearfloatingnearby();
+            case ON_ARMS:
+                return getWeararms();
+            case ON_EARS:
+                return getWearears();
+            case ON_EYES:
+                return getWeareyes();
+            case ON_FEET:
+                return getWearfeet();
+            case ON_HANDS:
+                return getWearhands();
+            case ON_HEAD:
+                return getWearhead();
+            case ON_LEFT_FINGER:
+                return getWearleftfinger();
+            case ON_LEFT_WRIST:
+                return getWearleftwrist();
+            case ON_LEGS:
+                return getWearlegs();
+            case ON_NECK:
+                return getWearneck();
+            case ON_RIGHT_FINGER:
+                return getWearrightfinger();
+            case ON_RIGHT_WRIST:
+                return getWearrightwrist();
+            case ON_TORSO:
+                return getWeartorso();
+            case ON_WAIST:
+                return getWearwaist();
+        }
+        throw new RuntimeException("You cannot wear an item on " + position);
+    }
+
+    /**
+     * Indicates if an item is being worn,
+     * @param item the item to check, if null provided it will never be worn,
+     * obviously.
+     * @return true if the item is being worn, false otherwise.
+     */
+    public boolean isWearing(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+        return item == getWearaboutbody()
+                || item == getWearfloatingnearby()
+                || item == getWeararms()
+                || item == getWearears()
+                || item == getWeareyes()
+                || item == getWearfeet()
+                || item == getWearhands()
+                || item == getWearhead()
+                || item == getWearleftfinger()
+                || item == getWearleftwrist()
+                || item == getWearlegs()
+                || item == getWearneck()
+                || item == getWearrightfinger()
+                || item == getWearrightwrist()
+                || item == getWeartorso()
+                || item == getWearwaist();
+    }
+
+    /**
+     * Makes you wear an item at a specific position
+     * @param item the item to be worn. In case this is null,
+     * it means an item that used to be worn at this position will be
+     * removed.
+     * @param position the position on which the item is to be worn
+     *
+     */
+    public void wear(Item item, Wearing position)
+    {
+        if (position == null)
+        {
+            throw new RuntimeException("You cannot wear an item on null");
+        }
+        switch (position)
+        {
+            case ABOUT_BODY:
+                setWearaboutbody(item);
+                break;
+            case FLOATING_NEARBY:
+                setWearfloatingnearby(item);
+                break;
+            case ON_ARMS:
+                setWeararms(item);
+                break;
+            case ON_EARS:
+                setWearears(item);
+                break;
+            case ON_EYES:
+                setWeareyes(item);
+                break;
+            case ON_FEET:
+                setWearfeet(item);
+                break;
+            case ON_HANDS:
+                setWearhands(item);
+                break;
+            case ON_HEAD:
+                setWearhead(item);
+                break;
+            case ON_LEFT_FINGER:
+                setWearleftfinger(item);
+                break;
+            case ON_LEFT_WRIST:
+                setWearleftwrist(item);
+                break;
+            case ON_LEGS:
+                setWearlegs(item);
+                break;
+            case ON_NECK:
+                setWearneck(item);
+                break;
+            case ON_RIGHT_FINGER:
+                setWearrightfinger(item);
+                break;
+            case ON_RIGHT_WRIST:
+                setWearrightwrist(item);
+                break;
+            case ON_TORSO:
+                setWeartorso(item);
+                break;
+            case ON_WAIST:
+                setWearwaist(item);
+                break;
+            default:
+                throw new RuntimeException("You cannot wear " + item.getDescription() + " on " + position);
+        }
+
     }
 }

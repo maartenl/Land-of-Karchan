@@ -46,6 +46,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import mmud.database.entities.game.AttributeWrangler;
+import mmud.database.enums.Wearing;
 import org.hibernate.annotations.Cascade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,7 +413,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     }
 
     /**
-     * Returns wether or not the container is locked. If it can be locked, it
+     * Returns whether or not the container is locked. If it can be locked, it
      * needs a key.
      *
      * @return boolean true if the container is locked.
@@ -520,5 +521,10 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         return getItemDefinition().getDrinkable();
 
+    }
+
+    public boolean isWearable(Wearing position)
+    {
+        return Wearing.isIn(getItemDefinition().getWearable(), position);
     }
 }

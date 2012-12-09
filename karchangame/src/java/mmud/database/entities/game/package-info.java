@@ -151,7 +151,7 @@
  * <DT>id
  * <DD>identification of the command
  * <DT>callable
- * <DD>wether or not the command is active. Either 0 (inactive) or 1 (active).
+ * <DD>whether or not the command is active. Either 0 (inactive) or 1 (active).
  * <DT>command
  * <DD>the command which triggers this. % as wildcards are permitted.
  * <DT>method_name
@@ -186,7 +186,7 @@
  * Usually, this value is for if an event should take place once a week on a
  * specific weekday.
  * <DT>callable
- * <DD>wether or not the event is active. Either 0 (inactive) or 1 (active).
+ * <DD>whether or not the event is active. Either 0 (inactive) or 1 (active).
  * <DT>method_name
  * <DD>the name of the method to be executed. Refers to mm_methods.
  * <DT>room
@@ -215,16 +215,16 @@
  * 4096=legs,8192=eyes,16384=ears,32768=body,65536=wield lefthand,
  * 131072=wield righthand,262144=wielding both hands
  * <DT>container
- * <DD>wether or not this item can server as a container for other items.
+ * <DD>whether or not this item can server as a container for other items.
  * Possible values are 0 (no container) or 1 (container). Bear in mind that the
  * following fields are only relevant if container is set to 1: <I>capacity,
  * isopenable, keyid, containtype</I>.
  * <DT>getable
- * <DD>wether or not the item can be picked up from the floor. <B>Important:</B> items with a
+ * <DD>whether or not the item can be picked up from the floor. <B>Important:</B> items with a
  * negative id number, are <I>never</I> getable and are mostly used as
  * windowdressing for rooms. In this case the field value is ignored by the mud.
  * <DT>dropable
- * <DD>wether or not the item can be dropped unto the floor. <B>Important:</B> items with a
+ * <DD>whether or not the item can be dropped unto the floor. <B>Important:</B> items with a
  * negative id number, are <I>never</I> dropable and are mostly used as
  * windowdressing for rooms. In this case the field value is ignored by the mud.
  * <DT>visible
@@ -241,7 +241,7 @@
  * <DD>the maximum weight a container can contain. Only relevant if
  * container=1.
  * <DT>isopenable
- * <DD>wether or not the container can be opened (i.e. has a lid). openable=1,
+ * <DD>whether or not the container can be opened (i.e. has a lid). openable=1,
  * not openable = 0. Only relevant if
  * container=1.
  * <DT>keyid
@@ -384,7 +384,7 @@
  * <DT>bossname
  * <DD>the original guild master of the guild.
  * <DT>active
- * <DD>wether or not the guild is active, 1=active, 0=inactive. A new guild is
+ * <DD>whether or not the guild is active, 1=active, 0=inactive. A new guild is
  * by default inactive and becomes active when it reaches the minimum required
  * amount of guildmembers. See <I>minguildmembers</I>.
  * <DT>logonmessage

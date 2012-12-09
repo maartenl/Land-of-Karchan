@@ -537,7 +537,7 @@ public class GameBean
      * @param name the name of the user
      * @param command the command issued
      * @param offset the offset used for the log
-     * @param log indicates with true or false, wether or not we are
+     * @param log indicates with true or false, whether or not we are
      * interested in the log.
      * @throws BAD_REQUEST if an unexpected exception
      * crops up.

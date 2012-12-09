@@ -143,7 +143,7 @@ public class Constants
     }
 
     /**
-     * Returns wether or not a character is a vowel.
+     * Returns whether or not a character is a vowel.
      *
      * @param aChar
      *            the character to check

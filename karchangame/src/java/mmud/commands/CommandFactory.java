@@ -37,12 +37,15 @@ import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
 import mmud.commands.items.CloseCommand;
+import mmud.commands.items.DestroyCommand;
 import mmud.commands.items.DrinkCommand;
 import mmud.commands.items.EatCommand;
 import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
+import mmud.commands.items.UnwearCommand;
+import mmud.commands.items.WearCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -132,11 +135,11 @@ public class CommandFactory
         theCommandStructure.put("drink", new DrinkCommand(
                 "drink( (\\w|-)+){1,4}"));
         theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("destroy", new DestroyCommand("destroy( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("wear", new WearCommand(
-//                "wear( (\\w|-)+){1,4} on (\\w)+"));
-//        theCommandStructure.put("remove", new UnwearCommand(
-//                "remove( (\\w|-)+){1,4} from (\\w)+"));
+        theCommandStructure.put("destroy", new DestroyCommand("destroy( (\\w|-)+){1,4}"));
+        theCommandStructure.put("wear", new WearCommand(
+                "wear( (\\w|-)+){1,4} on (\\w)+"));
+        theCommandStructure.put("remove", new UnwearCommand(
+                "remove from (\\w)+"));
 //        theCommandStructure.put("undress", new UndressCommand(
 //                "undress"));
 //        theCommandStructure.put("disarm", new DisarmCommand(

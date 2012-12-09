@@ -21,24 +21,25 @@ package mmud.database.enums;
  */
 public enum Wearing {
 
-    ON_HEAD(1, "on %SHISHER head"),
-    ON_NECK(2, "around %SHISHER neck"),
-    ON_TORSO(4, "around %SHISHER torso"),
-    ON_ARMS(8, "on %SHISHER arms"),
-    ON_LEFT_WRIST(16, "on %SHISHER left wrist"),
-    ON_RIGHT_WRIST(32, "on %SHISHER right wrist"),
-    ON_LEFT_FINGER(64, "on %SHISHER left finger"),
-    ON_RIGHT_FINGER(128, "on %SHISHER right finger"),
-    ON_FEET(256, "on %SHISHER feet"),
-    ON_HANDS(512, "on %SHISHER hands"),
-    FLOATING_NEARBY(1024, "floating nearby"),
-    ON_WAIST(2048, "on %SHISHER waist"),
-    ON_LEGS(4096, "on %SHISHER legs"),
-    ON_EYES(8192, "over %SHISHER eyes"),
-    ON_EARS(16384, "on %SHISHER ears"),
-    ABOUT_BODY(32768, "about %SHISHER body");
+    ON_HEAD(1, "on %SHISHER head", "head"),
+    ON_NECK(2, "around %SHISHER neck", "neck"),
+    ON_TORSO(4, "around %SHISHER torso","torso"),
+    ON_ARMS(8, "on %SHISHER arms","arms"),
+    ON_LEFT_WRIST(16, "on %SHISHER left wrist","leftwrist"),
+    ON_RIGHT_WRIST(32, "on %SHISHER right wrist","rightwrist"),
+    ON_LEFT_FINGER(64, "on %SHISHER left finger","leftfinger"),
+    ON_RIGHT_FINGER(128, "on %SHISHER right finger","rightfinger"),
+    ON_FEET(256, "on %SHISHER feet","feet"),
+    ON_HANDS(512, "on %SHISHER hands","hands"),
+    FLOATING_NEARBY(1024, "floating nearby","nothing"),
+    ON_WAIST(2048, "on %SHISHER waist","waist"),
+    ON_LEGS(4096, "on %SHISHER legs","legs"),
+    ON_EYES(8192, "over %SHISHER eyes","eyes"),
+    ON_EARS(16384, "on %SHISHER ears","ears"),
+    ABOUT_BODY(32768, "about %SHISHER body","body");
     private int enumVal;
     private String name;
+    private String parse;
 
     /**
      * Recreates the constants from an integer. An integer value of 0 causes a
@@ -63,6 +64,28 @@ public enum Wearing {
     }
 
     /**
+     * Recreates the constants from an integer. An integer value of 0 causes a
+     * null pointer to be returned.
+     *
+     * @param aVal the integer corresponding to the constant.
+     * @return the constant object
+     * @throws RuntimeException in case the integer provided does not correspond
+     * to any of the available objects.
+     */
+    public static Wearing parse(String aVal) {
+        if (aVal == null) {
+            return null;
+        }
+        for (Wearing position : Wearing.values()) {
+            if (position.parse.equalsIgnoreCase(aVal)) {
+                return position;
+            }
+        }
+        throw new RuntimeException("value " + aVal + " does not "
+                + "correspond to a Wearing");
+    }
+
+    /**
      * Receives an integer and checks to see that the Wearing is a
      * part of it.
      *
@@ -78,9 +101,17 @@ public enum Wearing {
         return (aVal & aPos.toInt()) == aPos.toInt();
     }
 
-    private Wearing(int aVal, String str) {
+    /**
+     * Constructor for the enum.
+     * @param aVal the integer value (database)
+     * @param str the description of use in communication
+     * @param parse for parsing commands, contains one word indicating the
+     * position on the body.
+     */
+    private Wearing(int aVal, String str, String parse) {
         name = str;
         enumVal = aVal;
+        this.parse = parse;
     }
 
     /**
