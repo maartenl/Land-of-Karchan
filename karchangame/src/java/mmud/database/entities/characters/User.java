@@ -24,6 +24,7 @@ import javax.validation.constraints.Size;
 import mmud.Utils;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wearing;
+import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

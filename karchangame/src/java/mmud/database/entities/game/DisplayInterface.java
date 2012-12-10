@@ -16,6 +16,8 @@
  */
 package mmud.database.entities.game;
 
+import mmud.database.entities.items.Item;
+import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
 
 /**

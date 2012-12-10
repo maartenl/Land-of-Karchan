@@ -20,13 +20,24 @@ package mmud.database.enums;
  *
  * @author maartenl
  */
-public enum Wielding {
+public enum Wielding
+{
 
-    WIELD_LEFT(65536, "with %SHISHER left hand"), WIELD_RIGHT(131072, "with %SHISHER right hand"), WIELD_BOTH(262144, "with both %SHISHER hands");
+    WIELD_LEFT(1, "with %SHISHER left hand"),
+    WIELD_RIGHT(2, "with %SHISHER right hand"),
+    WIELD_BOTH(4, "with both %SHISHER hands");
     private int bitmask;
     private String description;
 
-    private Wielding(int bitmask, String description) {
+    /**
+     * Constructor for the enum.
+     * @param aVal the integer value (database)
+     * @param str the description of use in communication
+     * @param parse for parsing commands, contains one word indicating the
+     * lefthand,righthand or bothhands.
+     */
+    private Wielding(int bitmask, String description)
+    {
         this.bitmask = bitmask;
         this.description = description;
     }
@@ -40,12 +51,16 @@ public enum Wielding {
      * @throws RuntimeException in case the integer provided does not correspond
      * to any of the available objects.
      */
-    public static Wielding get(int aVal) {
-        if (aVal == 0) {
+    public static Wielding get(int aVal)
+    {
+        if (aVal == 0)
+        {
             return null;
         }
-        for (Wielding position : Wielding.values()) {
-            if (position.toInt() == aVal) {
+        for (Wielding position : Wielding.values())
+        {
+            if (position.toInt() == aVal)
+            {
                 return position;
             }
         }
@@ -61,8 +76,10 @@ public enum Wielding {
      * @param aPos the Wielding for which to check.
      * @return boolean, true if the integer contains the Wielding.
      */
-    public static boolean isIn(int aVal, Wearing aPos) {
-        if (aPos == null) {
+    public static boolean isIn(int aVal, Wielding aPos)
+    {
+        if (aPos == null)
+        {
             // the empty position is always a good position.
             return true;
         }
@@ -75,7 +92,8 @@ public enum Wielding {
      * @return format name.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return description;
     }
 
@@ -84,7 +102,39 @@ public enum Wielding {
      *
      * @return identification integer.
      */
-    public int toInt() {
+    public int toInt()
+    {
         return bitmask;
+    }
+
+    /**
+     * Provides some parsing, a string is translated to the enum in question.
+     * For example "both" will return Wielding.WIELD_BOTH.
+     *
+     * @param aVal the string to be parsed
+     * @return the constant object. Will return null, if a faulty aval is provided
+     * that does not map to any of the enums.
+     */
+    public static Wielding parse(String aVal)
+    {
+        if (aVal == null)
+        {
+            return null;
+        }
+        switch (aVal.toLowerCase())
+        {
+            case "both":
+            case "hands":
+            case "bothhands":
+                return Wielding.WIELD_BOTH;
+            case "left":
+            case "lefthand":
+                return Wielding.WIELD_LEFT;
+            case "right":
+            case "righthand":
+                return Wielding.WIELD_RIGHT;
+            default:
+                return null;
+        }
     }
 }

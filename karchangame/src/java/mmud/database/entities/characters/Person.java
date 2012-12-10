@@ -67,6 +67,7 @@ import static mmud.database.enums.Wearing.ON_RIGHT_FINGER;
 import static mmud.database.enums.Wearing.ON_RIGHT_WRIST;
 import static mmud.database.enums.Wearing.ON_TORSO;
 import static mmud.database.enums.Wearing.ON_WAIST;
+import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Cascade;
@@ -1779,12 +1780,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return result;
     }
 
-    public Item getWieldleft()
+    private Item getWieldleft()
     {
         return wieldleft;
     }
 
-    public void setWieldleft(Item item) throws ItemException
+    private void setWieldleft(Item item) throws ItemException
     {
         if (item != null && !items.contains(item))
         {
@@ -1793,12 +1794,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wieldleft = item;
     }
 
-    public Item getWieldright()
+    private Item getWieldright()
     {
         return wieldright;
     }
 
-    public void setWieldright(Item item)
+    private void setWieldright(Item item)
     {
         if (item != null && !items.contains(item))
         {
@@ -1807,12 +1808,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.wieldright = item;
     }
 
-    public Item getWieldboth()
+    private Item getWieldboth()
     {
         return wieldboth;
     }
 
-    public void setWieldboth(Item item)
+    private void setWieldboth(Item item)
     {
         if (item != null && !items.contains(item))
         {
@@ -2065,6 +2066,18 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @Override
     public boolean destroyItem(Item item)
     {
+        if (item == null)
+        {
+            throw new ItemException("That is not an item.");
+        }
+        if (!items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+        if (isWearing(item))
+        {
+            throw new ItemException("That item is still being worn, and cannot be destroyed.");
+        }
         return items.remove(item);
         // note: as the collection is an orphan, the delete
         // on the set will take place automatically.
@@ -2218,5 +2231,88 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
                 throw new RuntimeException("You cannot wear " + item.getDescription() + " on " + position);
         }
 
+    }
+
+    /**
+     * Returns the item being wielded at that position.
+     * @param position the position to check.
+     * @return the item wielded at that position, may be null if nothing is being
+     * wielded there.
+     */
+    public Item wields(Wielding position)
+    {
+        if (position == null)
+        {
+            throw new RuntimeException("You cannot wield an item on null");
+        }
+        switch (position)
+        {
+            case WIELD_BOTH:
+                return getWieldboth();
+            case WIELD_RIGHT:
+                return getWieldright();
+            case WIELD_LEFT:
+                return getWieldleft();
+        }
+        throw new RuntimeException("You cannot wield an item on " + position);
+
+    }
+
+    /**
+     * Indicates if an item is being wielded,
+     * @param item the item to check, if null provided it will never be wielded,
+     * obviously.
+     * @return true if the item is being wielded, false otherwise.
+     */
+    public boolean isWielding(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+        return item == getWieldboth()
+                || item == getWieldleft()
+                || item == getWieldright();
+    }
+
+    /**
+     * Makes you wield an item at a specific position
+     * @param item the item to be wielded. In case this is null,
+     * it means an item that used to be wielded at this position will be
+     * removed.
+     * @param position the position on which the item is to be wielded, lefthand, righthand or with both hands.
+     *
+     */
+    public void wield(Item item, Wielding position)
+    {
+        if (position == null)
+        {
+            throw new RuntimeException("You cannot wield an item on null");
+        }
+        switch (position)
+        {
+            case WIELD_BOTH:
+                setWieldboth(item);
+                break;
+            case WIELD_LEFT:
+                setWieldleft(item);
+                break;
+            case WIELD_RIGHT:
+                setWieldright(item);
+                break;
+            default:
+                throw new RuntimeException("You cannot wield " + item.getDescription() + " on " + position);
+        }
+    }
+
+    /**
+     * Determines if the item is being used or not. If it is used, it is not allowed
+     * to be dropped, get, drunk, eaten, etc.
+     * @param item the item to check
+     * @return true if the item is available for use.
+     */
+    public boolean unused(Item item)
+    {
+        return !isWearing(item) && !isWielding(item);
     }
 }

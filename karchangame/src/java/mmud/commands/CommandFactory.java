@@ -45,7 +45,9 @@ import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
 import mmud.commands.items.UnwearCommand;
+import mmud.commands.items.UnwieldCommand;
 import mmud.commands.items.WearCommand;
+import mmud.commands.items.WieldCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -144,10 +146,10 @@ public class CommandFactory
 //                "undress"));
 //        theCommandStructure.put("disarm", new DisarmCommand(
 //                "disarm"));
-//        theCommandStructure.put("wield", new WieldCommand(
-//                "wield( (\\w|-)+){1,4} with (\\w)+"));
-//        theCommandStructure.put("unwield", new UnwieldCommand(
-//                "unwield( (\\w|-)+){1,4} from (\\w)+"));
+        theCommandStructure.put("wield", new WieldCommand(
+                "wield( (\\w|-)+){1,4} with (\\w)+"));
+        theCommandStructure.put("unwield", new UnwieldCommand(
+                "unwield from (\\w)+"));
 //        theCommandStructure.put("drop", new DropCommand("drop( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("get", new GetCommand("get( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("search", new SearchCommand(

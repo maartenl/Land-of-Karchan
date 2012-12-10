@@ -50,35 +50,40 @@ public class EatCommand extends NormalCommand
             aUser.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
-        final Item result = itemsFound.get(0);
-        if (!result.isEatable())
+        final Item item = itemsFound.get(0);
+        if (!item.isEatable())
         {
             aUser.writeMessage("You cannot eat that.<BR>\r\n");
             return aUser.getRoom();
         }
+        if (!aUser.unused(item))
+        {
+            aUser.writeMessage("You are using that.<BR>\r\n");
+            return aUser.getRoom();
+        }
         aUser.getRoom().sendMessage(aUser, "%SNAME eat%VERB2 "
-                + result.getDescription() + ".<br/>\r\n");
+                + item.getDescription() + ".<br/>\r\n");
         //TODO increase eat stats
-        aUser.destroyItem(result);
+        aUser.destroyItem(item);
         return new DisplayInterface()
         {
 
             @Override
             public String getMainTitle() throws MudException
             {
-               return result.getDescription();
+               return item.getDescription();
             }
 
             @Override
             public String getImage() throws MudException
             {
-                return result.getImage();
+                return item.getImage();
             }
 
             @Override
             public String getBody() throws MudException
             {
-                return result.getEatable();
+                return item.getEatable();
             }
         };
     }

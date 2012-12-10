@@ -64,13 +64,12 @@ public enum Wearing {
     }
 
     /**
-     * Recreates the constants from an integer. An integer value of 0 causes a
-     * null pointer to be returned.
+     * Provides some parsing, a string is translated to the enum in question.
+     * For example "neck" will return Wearing.NECK;
      *
-     * @param aVal the integer corresponding to the constant.
-     * @return the constant object
-     * @throws RuntimeException in case the integer provided does not correspond
-     * to any of the available objects.
+     * @param aVal the string to be parsed
+     * @return the constant object. Will return null, if a faulty aval is provided
+     * that does not map to any of the enums.
      */
     public static Wearing parse(String aVal) {
         if (aVal == null) {

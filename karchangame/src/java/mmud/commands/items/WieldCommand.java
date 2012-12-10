@@ -20,20 +20,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mmud.commands.*;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
+import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
 
 /**
- * Drink an item: "drink beer".
+ * Starts you wielding an item. Syntax: wield &lt;item&gt; with
+ * &lt;lefthand|righthand|both|hands|bothhandsd&gt;
+ * @see UnwieldCommand
  * @author maartenl
  */
-public class DrinkCommand extends NormalCommand
+public class WieldCommand extends NormalCommand
 {
 
-    public DrinkCommand(String aRegExpr)
+    public WieldCommand(String aRegExpr)
     {
         super(aRegExpr);
     }
@@ -42,49 +44,46 @@ public class DrinkCommand extends NormalCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "drink"
+        parsed.remove(0); // remove "wield"
+        // determine the appropriate body position entered by the
+        // user
+        String pos = parsed.get(parsed.size() - 1);
+        Wielding position = Wielding.parse(pos);
+        if (position == null)
+        {
+            aUser.writeMessage("Cannot wield something there.<br/>\r\n");
+            return aUser.getRoom();
+        }
+        Item item = aUser.wields(position);
+        if (item != null)
+        {
+            aUser.writeMessage("You are already wielding something there.<br/>\r\n");
+            return aUser.getRoom();
+        }
         // find the item on ourselves
+        parsed.remove(parsed.size()-1);
+        parsed.remove(parsed.size()-1);
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
             aUser.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
-        final Item result = itemsFound.get(0);
-        if (!result.isDrinkable())
+        item = itemsFound.get(0);
+        if (!item.isWieldable(position))
         {
-            aUser.writeMessage("You cannot drink that.<BR>\r\n");
+            aUser.writeMessage("You cannot wield that there.<BR>\r\n");
             return aUser.getRoom();
         }
-        if (!aUser.unused(result))
+        if (aUser.isWielding(item))
         {
-            aUser.writeMessage("You are using that.<BR>\r\n");
+            aUser.writeMessage("It is already being wielded.<BR>\r\n");
             return aUser.getRoom();
         }
-        aUser.getRoom().sendMessage(aUser, "%SNAME drink%VERB2 "
-                + result.getDescription() + ".<br/>\r\n");
-        //TODO increase drink stats
-        aUser.destroyItem(result);
-        return new DisplayInterface()
-        {
-
-            @Override
-            public String getMainTitle() throws MudException
-            {
-               return result.getDescription();
-            }
-
-            @Override
-            public String getImage() throws MudException
-            {
-                return result.getImage();
-            }
-
-            @Override
-            public String getBody() throws MudException
-            {
-                return result.getDrinkable();
-            }
-        };
+        aUser.wield(item, position);
+        aUser.getRoom().sendMessage(aUser, "%SNAME wield%VERB2 "
+                + item.getDescription() + " " + position.toString()
+                + ".<br/>\r\n");
+        return aUser.getRoom();
     }
 }

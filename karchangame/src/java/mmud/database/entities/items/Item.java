@@ -47,6 +47,7 @@ import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import mmud.database.entities.game.AttributeWrangler;
 import mmud.database.enums.Wearing;
+import mmud.database.enums.Wielding;
 import org.hibernate.annotations.Cascade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,7 +300,32 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     @Override
     public String getBody() throws MudException
     {
-        return getItemDefinition().getLongDescription();
+        StringBuilder builder = new StringBuilder(getItemDefinition().getLongDescription());
+        if (isDrinkable())
+        {
+            builder.append("You can try drinking it.<br/>\r\n");
+        }
+        if (isEatable())
+        {
+            builder.append("You can try eating it.<br/>\r\n");
+        }
+        int wieldable = getItemDefinition().getWieldable();
+        int wearable = getItemDefinition().getWearable();
+        for (Wielding wield : Wielding.values())
+        {
+            if (Wielding.isIn(wieldable, wield))
+            {
+                builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+            }
+        }
+        for (Wearing wear : Wearing.values())
+        {
+            if (Wearing.isIn(wearable, wear))
+            {
+                builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+            }
+        }
+        return builder.toString();
     }
 
     @Override
@@ -472,13 +498,19 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         setAttribute("isopen", "false");
     }
 
+    /**
+     * Returns true if the item can be eaten. This is better than just using
+     * a compare on the getEatable.
+     * @return true if eatable, false otherwise
+     * @see #getEatable
+     */
     public boolean isEatable()
     {
         if (getAttribute("eatable") != null)
         {
             return verifyAttribute("eatable", "true");
         }
-        return getItemDefinition().getEatable() != null;
+        return getItemDefinition().getEatable() != null && !getItemDefinition().getEatable().trim().equals("");
     }
 
     public String getEatable()
@@ -508,13 +540,19 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         // on the set will take place automatically.
     }
 
+    /**
+     * Returns true if the item can be drunk. This is better than just using
+     * a compare on the getDrinkable.
+     * @return true if drinkable, false otherwise
+     * @see #getDrinkable
+     */
     public boolean isDrinkable()
     {
-     if (getAttribute("drinkable") != null)
+        if (getAttribute("drinkable") != null)
         {
             return verifyAttribute("drinkable", "true");
         }
-        return getItemDefinition().getDrinkable() != null;
+        return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().equals("");
     }
 
     public String getDrinkable()
@@ -527,4 +565,10 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         return Wearing.isIn(getItemDefinition().getWearable(), position);
     }
+
+    public boolean isWieldable(Wielding position)
+    {
+        return Wielding.isIn(getItemDefinition().getWieldable(), position);
+    }
+
 }
