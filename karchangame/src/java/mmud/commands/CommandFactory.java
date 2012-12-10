@@ -38,6 +38,7 @@ import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
 import mmud.commands.items.CloseCommand;
 import mmud.commands.items.DestroyCommand;
+import mmud.commands.items.DisarmCommand;
 import mmud.commands.items.DrinkCommand;
 import mmud.commands.items.EatCommand;
 import mmud.commands.items.InventoryCommand;
@@ -145,8 +146,8 @@ public class CommandFactory
                 "remove from (\\w)+"));
         theCommandStructure.put("undress", new UndressCommand(
                 "undress"));
-//        theCommandStructure.put("disarm", new DisarmCommand(
-//                "disarm"));
+        theCommandStructure.put("disarm", new DisarmCommand(
+                "disarm"));
         theCommandStructure.put("wield", new WieldCommand(
                 "wield( (\\w|-)+){1,4} with (\\w)+"));
         theCommandStructure.put("unwield", new UnwieldCommand(
