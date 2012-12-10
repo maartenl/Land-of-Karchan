@@ -75,9 +75,9 @@ public class WearCommand extends NormalCommand
             aUser.writeMessage("You cannot wear that there.<BR>\r\n");
             return aUser.getRoom();
         }
-        if (aUser.isWearing(item))
+        if (!aUser.unused(item))
         {
-            aUser.writeMessage("It is already being worn.<BR>\r\n");
+            aUser.writeMessage("The item is already being used.<BR>\r\n");
             return aUser.getRoom();
         }
         aUser.wear(item, position);

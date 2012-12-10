@@ -61,8 +61,8 @@ public class WieldCommand extends NormalCommand
             return aUser.getRoom();
         }
         // find the item on ourselves
-        parsed.remove(parsed.size()-1);
-        parsed.remove(parsed.size()-1);
+        parsed.remove(parsed.size() - 1);
+        parsed.remove(parsed.size() - 1);
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
@@ -75,9 +75,9 @@ public class WieldCommand extends NormalCommand
             aUser.writeMessage("You cannot wield that there.<BR>\r\n");
             return aUser.getRoom();
         }
-        if (aUser.isWielding(item))
+        if (!aUser.unused(item))
         {
-            aUser.writeMessage("It is already being wielded.<BR>\r\n");
+            aUser.writeMessage("The item is already being used.<BR>\r\n");
             return aUser.getRoom();
         }
         aUser.wield(item, position);

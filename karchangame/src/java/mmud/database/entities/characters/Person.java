@@ -2287,21 +2287,33 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         if (position == null)
         {
-            throw new RuntimeException("You cannot wield an item on null");
+            throw new ItemException("You cannot wield an item on null");
         }
         switch (position)
         {
             case WIELD_BOTH:
+                if (getWieldleft() != null || getWieldright() != null )
+                {
+                    throw new ItemException("You cannot wield something in both hands, when you are already wielding something in either right or left hand.<br/>\r\n");
+                }
                 setWieldboth(item);
                 break;
             case WIELD_LEFT:
+                if (getWieldboth()!= null )
+                {
+                    throw new ItemException("You cannot wield something in your left hand, when you are already wielding something in both hands.<br/>\r\n");
+                }
                 setWieldleft(item);
                 break;
             case WIELD_RIGHT:
+                if (getWieldboth()!= null )
+                {
+                    throw new ItemException("You cannot wield something in your right hand, when you are already wielding something in both hands.<br/>\r\n");
+                }
                 setWieldright(item);
                 break;
             default:
-                throw new RuntimeException("You cannot wield " + item.getDescription() + " on " + position);
+                throw new ItemException("You cannot wield " + item.getDescription() + " on " + position);
         }
     }
 

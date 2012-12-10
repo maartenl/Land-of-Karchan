@@ -44,6 +44,7 @@ import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
+import mmud.commands.items.UndressCommand;
 import mmud.commands.items.UnwearCommand;
 import mmud.commands.items.UnwieldCommand;
 import mmud.commands.items.WearCommand;
@@ -142,8 +143,8 @@ public class CommandFactory
                 "wear( (\\w|-)+){1,4} on (\\w)+"));
         theCommandStructure.put("remove", new UnwearCommand(
                 "remove from (\\w)+"));
-//        theCommandStructure.put("undress", new UndressCommand(
-//                "undress"));
+        theCommandStructure.put("undress", new UndressCommand(
+                "undress"));
 //        theCommandStructure.put("disarm", new DisarmCommand(
 //                "disarm"));
         theCommandStructure.put("wield", new WieldCommand(
