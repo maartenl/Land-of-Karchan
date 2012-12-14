@@ -195,6 +195,28 @@ public class Constants
         }
     }
 
+    private static Map<String, Integer> inventory(Set<Item> set)
+    {
+        Map<String, Integer> inventory = new HashMap<>();
+
+        for (Item item : set)
+        {
+            if (item.getItemDefinition().getId() < 0)
+            {
+                continue;
+            }
+            String key = item.getDescription();
+            if (inventory.containsKey(key))
+            {
+                inventory.put(key, inventory.get(key) + 1);
+            } else
+            {
+                inventory.put(key, 1);
+            }
+        }
+        return inventory;
+    }
+
     /**
      * Adds a descriptive set of the items to the string builder.
      * @param set a set of items to be described.
@@ -208,19 +230,8 @@ public class Constants
             return;
         }
 
-        Map<String, Integer> inventory = new HashMap<>();
+        Map<String, Integer> inventory = inventory(set);
 
-        for (Item item : set)
-        {
-            String key = item.getDescription();
-            if (inventory.containsKey(key))
-            {
-                inventory.put(key, inventory.get(key) + 1);
-            } else
-            {
-                inventory.put(key, 1);
-            }
-        }
         builder.append("<ul>");
         for (String desc : inventory.keySet())
         {
@@ -252,5 +263,52 @@ public class Constants
             builder.append("</li>\r\n");
         }
         builder.append("</ul>");
+    }
+
+    /**
+     * Adds a descriptive set of the items to the string builder.
+     * @param set a set of items to be described.
+     * @param builder the builder to append to. Should not be null.
+     */
+    public static void addInventoryForRoom(Set<Item> set, StringBuilder builder)
+    {
+        if ((set == null || set.isEmpty()))
+        {
+            return;
+        }
+        builder.append("<p>");
+        Map<String, Integer> inventory = inventory(set);
+
+        for (String desc : inventory.keySet())
+        {
+            int amount = inventory.get(desc);
+            if (amount != 1)
+            {
+                // 5 gold, hard cups
+                if (desc.startsWith("an"))
+                {
+                    // remove 'an '
+                    desc = desc.substring(3);
+                } else
+                {
+                    // remove 'a '
+                    desc = desc.substring(2);
+                }
+                builder.append(amount).append(" ").append(
+                        desc);
+                if (!desc.endsWith("s"))
+                {
+                    builder.append("s");
+                }
+                builder.append(" are ");
+            } else
+            {
+                // a gold, hard cup
+                builder.append(desc);
+                builder.append(" is ");
+            }
+            builder.append(" here.<br/>\r\n");
+        }
+        builder.append("</p>");
     }
 }

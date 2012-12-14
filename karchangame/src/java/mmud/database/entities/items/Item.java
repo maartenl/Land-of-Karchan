@@ -58,13 +58,15 @@ import org.slf4j.LoggerFactory;
  * @author maartenl
  */
 // TODO: create subclass named ContainerItem.
+// TODO: fix named queries.
 @Entity
 @Table(name = "mm_itemtable")
 @NamedQueries(
 {
     @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
-    @NamedQuery(name = "Item.findByCreation", query = "SELECT i FROM Item i WHERE i.creation = :creation")
+    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null"),// and i.itemDefinition.dropable <> 0"),
+    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room")//  and i.itemDefinition.getable <> 0")
 })
 public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
@@ -571,4 +573,59 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         return Wielding.isIn(getItemDefinition().getWieldable(), position);
     }
 
+    /**
+     * Whether or not you are able to drop this item.
+     * @return true, in case you can, false otherwise.
+     */
+    public boolean isDroppable()
+    {
+        if (getAttribute("notdropable") != null)
+        {
+            return !verifyAttribute("notdropable", "true");
+        }
+        return getItemDefinition().getDropable();
+    }
+
+    /**
+     * Whether or not you are able to retrieve this item from the floor of the room.
+     * @return true, in case you can, false otherwise.
+     */
+    public boolean isGetable()
+    {
+        if (getAttribute("notgetable") != null)
+        {
+            return !verifyAttribute("notgetable", "true");
+        }
+        return getItemDefinition().getGetable();
+    }
+
+    public void drop(Person person, Room room)
+    {
+        if (getBelongsTo() == null || !getBelongsTo().equals(person))
+        {
+            throw new ItemException("Cannot drop the item, it's not yours.");
+        }
+        // TODO: equals directly on room doesn't seem to work right. Different objects
+        // same ids.
+        if (!person.getRoom().getId().equals(room.getId()))
+        {
+            throw new ItemException("You are not in the room.");
+        }
+        belongsto = null;
+        this.room = room;
+    }
+
+    public void get(Person person, Room room)
+    {
+        if (getRoom() == null || !getRoom().equals(room))
+        {
+            throw new ItemException("Item not in the room.");
+        }
+        if (!person.getRoom().equals(room))
+        {
+            throw new ItemException("You are not in the room.");
+        }
+        belongsto = person;
+        this.room = null;
+    }
 }

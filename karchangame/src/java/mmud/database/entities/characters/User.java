@@ -494,5 +494,4 @@ public class User extends Person
     {
         return lastlogin == null;
     }
-
 }

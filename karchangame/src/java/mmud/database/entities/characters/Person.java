@@ -1046,7 +1046,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.jumpvital = jumpvital;
     }
 
-    public Date get()
+    public Date getCreation()
     {
         return creation;
     }
@@ -2292,21 +2292,21 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         switch (position)
         {
             case WIELD_BOTH:
-                if (getWieldleft() != null || getWieldright() != null )
+                if (getWieldleft() != null || getWieldright() != null)
                 {
                     throw new ItemException("You cannot wield something in both hands, when you are already wielding something in either right or left hand.<br/>\r\n");
                 }
                 setWieldboth(item);
                 break;
             case WIELD_LEFT:
-                if (getWieldboth()!= null )
+                if (getWieldboth() != null)
                 {
                     throw new ItemException("You cannot wield something in your left hand, when you are already wielding something in both hands.<br/>\r\n");
                 }
                 setWieldleft(item);
                 break;
             case WIELD_RIGHT:
-                if (getWieldboth()!= null )
+                if (getWieldboth() != null)
                 {
                     throw new ItemException("You cannot wield something in your right hand, when you are already wielding something in both hands.<br/>\r\n");
                 }
@@ -2326,5 +2326,36 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     public boolean unused(Item item)
     {
         return !isWearing(item) && !isWielding(item);
+    }
+
+    public void drop(Item item)
+    {
+        if (item == null || !items.contains(item))
+        {
+            throw new ItemException("You do not have that item.");
+        }
+        if (!unused(item))
+        {
+            throw new ItemException("You are using this item.");
+        }
+        if (!getRoom().drop(item))
+        {
+            throw new ItemException("Unable to add item to the room.");
+        }
+        if (!items.remove(item))
+        {
+            throw new ItemException("Unable to remove item from inventory.");
+        }
+        item.drop(this, getRoom());
+    }
+
+    public void get(Item item)
+    {
+        getRoom().get(item);
+        if (!items.add(item))
+        {
+            throw new ItemException("Unable to add item to your inventory.");
+        }
+        item.get(this, getRoom());
     }
 }

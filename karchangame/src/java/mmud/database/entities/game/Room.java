@@ -20,14 +20,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
+import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Filter;
 import org.slf4j.Logger;
@@ -175,7 +179,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @Override
     public String getBody()
     {
-        return this.contents;
+        StringBuilder builder = new StringBuilder(contents);
+        // print characters in room
+        persons(builder);
+        // print items in room
+        Constants.addInventoryForRoom(items, builder);
+        return builder.toString();
     }
 
     public Date getCreation()
@@ -619,8 +628,41 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @Override
     public boolean destroyItem(Item item)
     {
-         return items.remove(item);
+        return items.remove(item);
         // note: as the collection is an orphan, the delete
         // on the set will take place automatically.
+    }
+
+    /**
+     * A person, apparently, dropped this into the room.
+     * @param item the item he dropped.
+     * @return boolean, true if it was added, false otherwise.
+     */
+    public boolean drop(Item item)
+    {
+        return items.add(item);
+    }
+
+    public void get(Item item)
+    {
+        if (item == null || !items.contains(item))
+        {
+            throw new ItemException("Item not found.");
+        }
+        if (!items.remove(item))
+        {
+            throw new ItemException("Unable to remove item from room.");
+        }
+    }
+
+    private void persons(StringBuilder builder)
+    {
+        builder.append("<p>");
+        // TODO : add link, prefer to do it in javascript though
+        for (Person person : persons)
+        {
+            builder.append("A ").append(person.getRace()).append(" called ").append(person.getName()).append(" is here.<br/>\r\n");
+        }
+        builder.append("</p>");
     }
 }
