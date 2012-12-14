@@ -27,6 +27,7 @@ import mmud.commands.communication.SayCommand;
 import mmud.commands.communication.ScreamCommand;
 import mmud.commands.communication.ShoutCommand;
 import mmud.commands.communication.SingCommand;
+import mmud.commands.communication.TellCommand;
 import mmud.commands.communication.WhisperCommand;
 import mmud.commands.guild.AcceptCommand;
 import mmud.commands.guild.ApplyCommand;
@@ -95,7 +96,7 @@ public class CommandFactory
         theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
         theCommandStructure.put("awaken", new AwakenCommand("awaken"));
         theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
-//        theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
+        theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
         theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
 //        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
         theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));

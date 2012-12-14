@@ -876,8 +876,8 @@
   <con:entry key="lok" value="${#TestSuite#lok_Slartibartfast}"/>
   <con:entry key="name" value="Slartibartfast"/>
 </con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="say hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/play" methodName="POST - play" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="say hotblack" mediaType="text/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
-  &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
+  &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>say I am back!</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>&lt;b>You say&lt;/b>\n : I am back!&lt;br /></token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
   <con:entry key="name" value="Hotblack"/>
@@ -940,6 +940,34 @@
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>cry to Marvin Hello.</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>&lt;b>You cry [to Marvin]&lt;/b>\n : Hello.&lt;br /></token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
+  <con:entry key="name" value="Hotblack"/>
+  <con:entry key="log" value="true"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="west hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/play" methodName="POST - play" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="west hotblack" mediaType="text/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept" value="application/json"/>
+  &lt;con:entry key="Content-Type" value="application/json"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>west</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>stimulation of thin air; the intense blueness</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
+  <con:entry key="name" value="Hotblack"/>
+  <con:entry key="log" value="true"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="tell marvin hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/play" methodName="POST - play" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="tell marvin hotblack" mediaType="text/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept" value="application/json"/>
+  &lt;con:entry key="Content-Type" value="application/json"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>tell to Marvin Hello.</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>You tells [to Marvin] : Hello.&lt;br /></token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
+  <con:entry key="name" value="Hotblack"/>
+  <con:entry key="log" value="true"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="tell bogus hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/play" methodName="POST - play" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="tell bogus hotblack" mediaType="text/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept" value="application/json"/>
+  &lt;con:entry key="Content-Type" value="application/json"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>tell to bogus Hello.</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>Cannot find bogus.&lt;br /></token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
+  <con:entry key="name" value="Hotblack"/>
+  <con:entry key="log" value="true"/>
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="east hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/play" methodName="POST - play" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="east hotblack" mediaType="text/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept" value="application/json"/>
+  &lt;con:entry key="Content-Type" value="application/json"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>east</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>You are in the middle of a cave.</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="lok" value="${#TestSuite#lok_Hotblack}"/>
   <con:entry key="name" value="Hotblack"/>
   <con:entry key="log" value="true"/>

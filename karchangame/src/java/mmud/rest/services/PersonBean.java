@@ -95,4 +95,26 @@ public class PersonBean
         }
         return result.get(0);
     }
+    /**
+     * Retrieves a player, playing the game. The name
+     * lookup is case-insensitive. Is often used for room-overreaching
+     * commands like the Who or Tell during play.
+     * @param name the name of the person.
+     * @return a person or null if not found.
+     */
+    public User getActiveUser(String name)
+    {
+        Query query = getEntityManager().createNamedQuery("User.findActiveByName");
+        query.setParameter("name", name);
+        List<User> result = query.getResultList();
+        if (result.isEmpty())
+        {
+            return null;
+        }
+        if (result.size() > 1)
+        {
+            throw new RuntimeException("bogus!");
+        }
+        return result.get(0);
+    }
 }

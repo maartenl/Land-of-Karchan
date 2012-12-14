@@ -24,7 +24,7 @@ import mmud.exceptions.PersonNotFoundException;
 
 /**
  * Indicates a command that needs or can have a target, like "action to Marvin"
- * but necessarily, like "bow".
+ * but necessarily, like "bow". Target needs to be in the same room.
  * @author maartenl
  */
 public abstract class TargetCommand extends NormalCommand
