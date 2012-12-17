@@ -34,6 +34,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Constants;
@@ -375,12 +376,27 @@ public class ItemDefinition implements Serializable
     }
 
     /**
+     * You cannot give this item to someone else. Also entails that you cannot
+     * drop this item.
+     * @return boolean, true if you cannot give the item to someone else.
+     */
+    public boolean isBound()
+    {
+        // TODO : do something with this... "bind on pickup"
+        return false;
+    }
+
+    /**
      * You can or cannot drop this item
      * @return  true if you can drop the item, for example on the floor.
      */
     public Boolean getDropable()
     {
         if (getId() < 0)
+        {
+            return false;
+        }
+        if (isBound())
         {
             return false;
         }

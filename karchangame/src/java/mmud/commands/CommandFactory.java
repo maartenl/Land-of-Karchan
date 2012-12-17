@@ -44,6 +44,7 @@ import mmud.commands.items.DrinkCommand;
 import mmud.commands.items.DropCommand;
 import mmud.commands.items.EatCommand;
 import mmud.commands.items.GetCommand;
+import mmud.commands.items.GiveCommand;
 import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
@@ -167,8 +168,8 @@ public class CommandFactory
 //                "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("unlock", new UnlockCommand(
 //                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("give", new GiveCommand(
-//                "give( (\\w|-)+){1,4} to (\\w)+"));
+         theCommandStructure.put("give", new GiveCommand(
+                "give( (\\w|-)+){1,4} to (\\w)+"));
         theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
         theCommandStructure.put("close", new CloseCommand(
                 "close( (\\w|-)+){1,4}"));

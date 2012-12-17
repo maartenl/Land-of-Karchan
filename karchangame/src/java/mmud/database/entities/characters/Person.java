@@ -69,6 +69,7 @@ import static mmud.database.enums.Wearing.ON_TORSO;
 import static mmud.database.enums.Wearing.ON_WAIST;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
+import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Filter;
@@ -2357,5 +2358,26 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             throw new ItemException("Unable to add item to your inventory.");
         }
         item.get(this, getRoom());
+    }
+
+    /**
+     * Transfers money from one person (this one) to another.
+     * @param newamount the amount of copper (base currency to move)
+     * @param target the target that is to receive said money
+     * @throws MoneyException if the money amount is illegal, or the
+     * person simply does not have that much money.
+     */
+    public void transferMoney(Integer newamount, Person target) throws MoneyException
+    {
+        if (newamount == null || newamount <= 0)
+        {
+            throw new MoneyException("I beg your pardon?");
+        }
+        if (getMoney() < newamount || newamount == null)
+        {
+            throw new MoneyException("You do not have that much money.");
+        }
+        setCopper(getCopper() - newamount);
+        target.setCopper(target.getCopper() + newamount);
     }
 }

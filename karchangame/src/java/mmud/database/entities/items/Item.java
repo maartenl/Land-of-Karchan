@@ -65,8 +65,9 @@ import org.slf4j.LoggerFactory;
 {
     @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
     @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
-    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null"),// and i.itemDefinition.dropable <> 0"),
-    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room")//  and i.itemDefinition.getable <> 0")
+    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
+    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
+    @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null")//  and i.itemDefinition.getable <> 0")
 })
 public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
@@ -584,6 +585,22 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
             return !verifyAttribute("notdropable", "true");
         }
         return getItemDefinition().getDropable();
+    }
+
+
+    /**
+     * Whether or not you are able to drop this item or give this item, or in
+     * some other way dispose of this item, besides selling it to a vendor or
+     * just destroying it.
+     * @return true, in case you cannot, false otherwise.
+     */
+    public boolean isBound()
+    {
+        if (getAttribute("bound") != null)
+        {
+            return verifyAttribute("bound", "true");
+        }
+        return getItemDefinition().isBound();
     }
 
     /**

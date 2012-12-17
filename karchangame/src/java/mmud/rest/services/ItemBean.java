@@ -81,4 +81,19 @@ public class ItemBean
         return query.executeUpdate() == 1;
     }
 
+    /**
+     * Gives an item from one person to another person.
+     * @param fromperson the person giving the item
+     * @param item the item to be shared
+     * @param toperson the person receiving the item
+     * @return true if successfull.
+     */
+    public boolean give(Item item, Person fromperson, Person toperson)
+    {
+        Query query = getEntityManager().createNamedQuery("Item.give");
+        query.setParameter("item", item);
+        query.setParameter("fromperson", fromperson);
+        query.setParameter("toperson", toperson);
+        return query.executeUpdate() == 1;
+    }
 }
