@@ -49,6 +49,8 @@ import mmud.commands.items.InventoryCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
+import mmud.commands.items.PutCommand;
+import mmud.commands.items.RetrieveCommand;
 import mmud.commands.items.UndressCommand;
 import mmud.commands.items.UnwearCommand;
 import mmud.commands.items.UnwieldCommand;
@@ -92,7 +94,8 @@ public class CommandFactory
         theCommandStructure.put("bow", new BowCommand(
                 "bow( to (\\w)+)?( (\\w)+)?"));
         theCommandStructure.put("me", new MeCommand("me .+"));
-//        theCommandStructure.put("quit", new QuitCommand("quit"));
+        // quit command has been replaced with a specific rest service.
+        // theCommandStructure.put("quit", new QuitCommand("quit"));
         theCommandStructure.put("sleep", new SleepCommand("sleep"));
         theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
         theCommandStructure.put("awaken", new AwakenCommand("awaken"));
@@ -108,7 +111,8 @@ public class CommandFactory
                 "scream (to (\\w )+)?.+"));
         theCommandStructure.put("whisper", new WhisperCommand(
                 "whisper (to (\\w)+ )?.+"));
-//        theCommandStructure.put("clear", new ClearCommand("clear"));
+        // clear command has been replaced with a log-deleteing rest service
+        // theCommandStructure.put("clear", new ClearCommand("clear"));
         theCommandStructure.put("time", new TimeCommand("time"));
         theCommandStructure.put("date", new DateCommand("date"));
         theCommandStructure.put("south", new SouthCommand("south"));
@@ -160,15 +164,15 @@ public class CommandFactory
         theCommandStructure.put("get", new GetCommand("get( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("search", new SearchCommand(
 //                "search( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("put", new PutCommand(
-//                "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("retrieve", new RetrieveCommand(
-//                "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
+        theCommandStructure.put("put", new PutCommand(
+                "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
+        theCommandStructure.put("retrieve", new RetrieveCommand(
+                "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("lock", new LockCommand(
 //                "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("unlock", new UnlockCommand(
 //                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-         theCommandStructure.put("give", new GiveCommand(
+        theCommandStructure.put("give", new GiveCommand(
                 "give( (\\w|-)+){1,4} to (\\w)+"));
         theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
         theCommandStructure.put("close", new CloseCommand(

@@ -23,6 +23,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.items.Item;
+import mmud.exceptions.ItemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +95,66 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("fromperson", fromperson);
         query.setParameter("toperson", toperson);
+        return query.executeUpdate() == 1;
+    }
+
+    /**
+     * Puts an item into a container.
+     * @param item the item to be put
+     * @param container the container that the item should receive
+     * @param person the person performing the action
+     * @return true if successful.
+     */
+    public boolean put(Item item, Item container, Person person)
+    {
+        if (!container.isContainer())
+        {
+            throw new ItemException("Item is not a container and cannot be used for storage.");
+        }
+        if (!person.getItems().contains(item))
+        {
+            throw new ItemException("Person does not have that item.");
+        }
+        if (item.isContainer())
+        {
+            throw new ItemException("Item is a container, and cannot be put.");
+        }
+        Query query = getEntityManager().createNamedQuery("Item.put");
+        query.setParameter("item", item);
+        query.setParameter("container", container);
+        query.setParameter("person", person);
+        return query.executeUpdate() == 1;
+    }
+
+    /**
+     * Retrieves an item from a container.
+     * @param item the item to be retrieved
+     * @param container the container that contains the item
+     * @param person the person performing the action
+     * @return true if successful.
+     */
+    public boolean retrieve(Item item, Item container, Person person)
+    {
+        if (!container.isContainer())
+        {
+            throw new ItemException("Item is not a container and cannot be used for storage.");
+        }
+        if (!container.getItems().contains(item))
+        {
+            throw new ItemException("Container does not contain that item.");
+        }
+        if (item.isContainer())
+        {
+            throw new ItemException("Item is a container, and cannot be retrieved.");
+        }
+        if (!person.getItems().contains(container) && !person.getRoom().getItems().contains(container))
+        {
+            throw new ItemException("Container not found.");
+        }
+        Query query = getEntityManager().createNamedQuery("Item.retrieve");
+        query.setParameter("item", item);
+        query.setParameter("container", container);
+        query.setParameter("person", person);
         return query.executeUpdate() == 1;
     }
 }
