@@ -462,11 +462,21 @@ public class ItemDefinition implements Serializable
         this.description = description;
     }
 
+    /**
+     * Provides the text shown when the item is read. If returns null or empty,
+     * it means the item cannot be read.
+     * @return String containing the reading.
+     */
     public String getReaddescription()
     {
         return readdescription;
     }
 
+    /**
+     * Set the text to be shown when the item is read. Set to null if the item
+     *  cannot be read.
+     * @param readdescr the text shown when reading the item. May be null.
+     */
     public void setReaddescription(String readdescr)
     {
         this.readdescription = readdescr;

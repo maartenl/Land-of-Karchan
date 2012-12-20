@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author maartenl
  */
 // TODO: create subclass named ContainerItem.
+// TODO: create subclass named ShopKeeperItem.
 // TODO: fix named queries.
 @Entity
 @Table(name = "mm_itemtable")
@@ -589,7 +590,6 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         return getItemDefinition().getDropable();
     }
 
-
     /**
      * Whether or not you are able to drop this item or give this item, or in
      * some other way dispose of this item, besides selling it to a vendor or
@@ -646,5 +646,52 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         }
         belongsto = person;
         this.room = null;
+    }
+
+    public boolean isReadable()
+    {
+        boolean foundAttribute = getAttribute("readable") != null && getAttribute("readable").getValue() != null && !getAttribute("readable").getValue().trim().equals("");
+        boolean foundReadable = (getItemDefinition().getReaddescription() != null && !getItemDefinition().getReaddescription().trim().equals(""));
+        return foundAttribute || foundReadable;
+    }
+
+    public DisplayInterface getRead()
+    {
+        if (!isReadable())
+        {
+            throw new ItemException("Item cannot be read.");
+        }
+        return new DisplayInterface()
+        {
+            @Override
+            public String getMainTitle() throws MudException
+            {
+                return getDescription();
+            }
+
+            @Override
+            public String getImage() throws MudException
+            {
+                return getItemDefinition().getImage();
+            }
+
+            @Override
+            public String getBody() throws MudException
+            {
+                String read =
+                        getAttribute("readable") == null ? null : getAttribute("readable").getValue();
+                if (read == null || read.trim().equals(""))
+                {
+                    read = getItemDefinition().getReaddescription();
+                }
+                if (read == null || read.trim().equals(""))
+                {
+                    return null;
+                }
+                // TODO: create shopkeeper lists.
+                read = read.replace("%VIEW", "Nothing.");
+                return read;
+            }
+        };
     }
 }

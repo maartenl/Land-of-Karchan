@@ -50,6 +50,7 @@ import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
 import mmud.commands.items.PutCommand;
+import mmud.commands.items.ReadCommand;
 import mmud.commands.items.RetrieveCommand;
 import mmud.commands.items.UndressCommand;
 import mmud.commands.items.UnwearCommand;
@@ -179,7 +180,7 @@ public class CommandFactory
                 "close( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("readroleplay", new ReadRpgBoardCommand(
 //                "readroleplay"));
-//        theCommandStructure.put("read", new ReadCommand("read( (\\w|-)+){1,4}"));
+        theCommandStructure.put("read", new ReadCommand("read( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("readpublic", new ReadPublicCommand(
 //                "readpublic"));
 //        theCommandStructure.put("public", new PostPublicCommand("public .+"));
