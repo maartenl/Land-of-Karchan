@@ -99,7 +99,7 @@ public class CommandFactory
         theCommandStructure.put("me", new MeCommand("me .+"));
         // quit command has been replaced with a specific rest service.
         // theCommandStructure.put("quit", new QuitCommand("quit"));
-        theCommandStruYcture.put("sleep", new SleepCommand("sleep"));
+        theCommandStructure.put("sleep", new SleepCommand("sleep"));
         theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
         theCommandStructure.put("awaken", new AwakenCommand("awaken"));
         theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
