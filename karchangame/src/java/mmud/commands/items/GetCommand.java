@@ -37,11 +37,6 @@ import mmud.rest.services.LogBean;
  * or more items in your inventory, this method will attempt to aquire 5
  * items. It is possible that not all items are available, in which case you
  * could conceivably only receive 3 items for instance.
- *
- * @throws ItemException
- *             in case the item requested could not be located or is not
- *             allowed to be dropped.
- *
  * @see DropCommand
  * @author maartenl
  */

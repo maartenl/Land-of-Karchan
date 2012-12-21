@@ -28,7 +28,7 @@ public interface ItemWrangler
 
     /**
      * Retrieves a set of items that this entity has.
-     * @return
+     * @return A set of items.
      */
     public Set<Item> getItems();
 

@@ -37,7 +37,7 @@ public abstract class GuildMasterCommand extends GuildCommand
      * Checks if the user is the guildmaster of his guild, before running its course.
      * @param command
      * @param aUser
-     * @return
+     * @return a DisplayInterface for communicating with the user.
      */
     @Override
     DisplayInterface start(String command, User aUser) throws MudException

@@ -74,7 +74,7 @@ public class TellCommand extends TargetCommand
      * @param aUser
      * @param verb
      * @param command
-     * @return
+     * @return DisplayInterface of the action.
      * @throws MudException
      */
     @Override

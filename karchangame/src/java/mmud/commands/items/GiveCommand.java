@@ -37,10 +37,6 @@ import mmud.rest.services.ItemBean;
  * to provide money to the other person, by means of "give &lt;amount&gt;
  * &lt;copper, silver, gold&gt; &lt;coin|coins&gt; to &lt;character&gt;".
  *
- * @throws ItemException
- *             in case the item requested could not be located or is not
- *             allowed to be given.
- *
  * @see GetCommand
  * @author maartenl
  */

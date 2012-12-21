@@ -38,12 +38,6 @@ import mmud.rest.services.LogBean;
  * items. It is possible that not all items are available, in which case you
  * could conceivably only receive 3 items for instance.
  *
- * @throws ItemException
- *             in case the item requested could not be located or is not
- *             allowed to be dropped or in case the user entered an
- * illegal amount of items. Illegal
- *             being defined as smaller than 1.
- *
  * @see GetCommand
  * @author maartenl
  */

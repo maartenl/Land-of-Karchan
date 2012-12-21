@@ -155,7 +155,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
      * Indicates the items that are contained (if possible) inside this item.
      * Will in most cases return an empty list.
      *
-     * @return
+     * @return set of items.
      */
     public Set<Item> getItems()
     {
@@ -170,7 +170,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Retrieves the item that contains this item (if possible). Might be null.
      *
-     * @return
+     * @return the container
      * @see #getBelongsTo()
      * @see #getRoom()
      */
@@ -215,7 +215,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Will return the room in which this item can be found. Might be null.
-     * @see #getBelongsto()
+     * @see #getBelongsTo()
      * @see #getContainer()
      */
     public Room getRoom()
@@ -275,7 +275,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * @see ItemDefinition#isDescribedBy(java.util.List)
      * @param parsed
-     * @return
+     * @return true if the item is properly described.
      */
     public boolean isDescribedBy(List<String> parsed)
     {
@@ -434,7 +434,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Indicates if the container is open or closed.
      * Only makes sense if this item is in fact a container.
-     * @return
+     * @return true if there is an attribute named "isopen".
      */
     public boolean isOpen()
     {
@@ -472,7 +472,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
      * needs a key.
      *
      * @return boolean true if the container is locked.
-     * @see #getKey()
+     * @see ItemDefinition#getKey()
      */
     public boolean isLocked()
     {

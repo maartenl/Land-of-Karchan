@@ -333,7 +333,8 @@ public class Utils
     /**
      * Returns an unmodifiable map with emotions, like cheer. Can have a target, but isn't
      * necessary.
-     * @return
+     * @return returns an unmodifiable map containing emotions. They form pairs for example
+     * ['agree','agrees'].
      */
     public static Map<String, String> getEmotions()
     {
@@ -342,7 +343,8 @@ public class Utils
 
     /**
      * Returns an unmodifiable map with emotions, like greet. Must have a target.
-     * @return
+     * @return returns an unmodifiable map containing emotions. They form pairs for example
+     * ['congratulate','congratulates'].
      */
     public static Map<String, String> getTargetEmotions()
     {

@@ -109,7 +109,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The command for which help is requested and found.
-     * @return
+     * @return String containing the command.
      */
     public String getCommand()
     {
@@ -123,7 +123,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The explanation, description, whatever-you-may-call-it.
-     * @return
+     * @return 'the help' as a String
      */
     public String getContents()
     {
@@ -137,7 +137,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The way the command syntax works.
-     * @return
+     * @return String, for example "swoon [to <person>]".
      */
     public String getSynopsis()
     {
@@ -151,7 +151,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Reference to other commands.
-     * @return
+     * @return references to other commands.
      */
     public String getSeealso()
     {
@@ -165,7 +165,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * An example of the way the command is executed.
-     * @return
+     * @return For example "unwield pick from bothhands".
      */
     public String getExample1()
     {
@@ -179,7 +179,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Output of the example visible to you.
-     * @return
+     * @return For example "You open an old, iron chest.".
      */
     public String getExample1a()
     {
@@ -193,7 +193,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Output of the example visible to others.
-     * @return
+     * @return For example "Hotblack locks an old, iron chest with an old iron key."
      */
     public String getExample1b()
     {
@@ -207,7 +207,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * An example of the way the command is executed to someone else.
-     * @return
+     * @return For example "tell to marvin Hey!".
      */
     public String getExample2()
     {
@@ -221,7 +221,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What the players sees.
-     * @return
+     * @return For example "<b>You tell Marvin</b> : Hey!".
      */
     public String getExample2a()
     {
@@ -235,7 +235,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What the target notices.
-     * @return
+     * @return For example "<b>Hotblack tells you</b> : Hey!".
      */
     public String getExample2b()
     {
@@ -249,7 +249,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What a third party sees.
-     * @return
+     * @return For example "Hotblack says [to Marvin]: Hey!".
      */
     public String getExample2c()
     {

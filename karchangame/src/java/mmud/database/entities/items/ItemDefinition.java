@@ -450,7 +450,7 @@ public class ItemDefinition implements Serializable
 
     /**
      * A full and long description of an item. Usually quite a lot of text.
-     * @return
+     * @return Long description string.
      */
     public String getLongDescription()
     {
@@ -582,7 +582,7 @@ public class ItemDefinition implements Serializable
     /**
      * The capacity of this container. Indicates how much the container is
      * allowed to carry.
-     * @return
+     * @return Integer indicating the capacity.
      */
     public Integer getCapacity()
     {
@@ -597,7 +597,7 @@ public class ItemDefinition implements Serializable
     /**
      * Indicates that this container can be opened and
      * closed.
-     * @return
+     * @return a boolean if this container can be opened.
      * @see #getKey()
      */
     public boolean isOpenable()
@@ -716,7 +716,7 @@ public class ItemDefinition implements Serializable
 
     /**
      * @see Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
-     * @return
+     * @return String containing a description of the item, made from concatenating adjectives and the name.
      */
     public String getDescription()
     {

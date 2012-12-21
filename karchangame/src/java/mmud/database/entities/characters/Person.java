@@ -590,7 +590,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Returns the amount of money a character has (in coppers). Basically
      * 10 coppers is 1 silver, and 10 silvers is 1 gold.
-     * @return
+     * @return Integer with the amount of coppers.
      */
     public Integer getCopper()
     {
@@ -599,7 +599,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * @see #getCopper()
-     * @return
+     * @return Integer with the amount of coppers
      */
     public Integer getMoney()
     {
@@ -1082,7 +1082,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * sets the state/condition of the character.
      *
-     * @param aNewState
+     * @param state
      *            String containing the description of the current condition
      * of the character.
      */

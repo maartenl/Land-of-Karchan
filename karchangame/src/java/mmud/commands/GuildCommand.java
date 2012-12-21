@@ -32,7 +32,7 @@ public abstract class GuildCommand extends NormalCommand
      * Checks if the user is part of a guild, before running the command.
      * @param command
      * @param aUser
-     * @return
+     * @return a DisplayInterface for communicating with the user.
      * @throws MudException
      */
     @Override
