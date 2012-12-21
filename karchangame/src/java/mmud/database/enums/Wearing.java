@@ -19,24 +19,25 @@ package mmud.database.enums;
 /**
  * Different position on the body that can wear clothes of some kind.
  */
-public enum Wearing {
+public enum Wearing
+{
 
     ON_HEAD(1, "on %SHISHER head", "head"),
     ON_NECK(2, "around %SHISHER neck", "neck"),
-    ON_TORSO(4, "around %SHISHER torso","torso"),
-    ON_ARMS(8, "on %SHISHER arms","arms"),
-    ON_LEFT_WRIST(16, "on %SHISHER left wrist","leftwrist"),
-    ON_RIGHT_WRIST(32, "on %SHISHER right wrist","rightwrist"),
-    ON_LEFT_FINGER(64, "on %SHISHER left finger","leftfinger"),
-    ON_RIGHT_FINGER(128, "on %SHISHER right finger","rightfinger"),
-    ON_FEET(256, "on %SHISHER feet","feet"),
-    ON_HANDS(512, "on %SHISHER hands","hands"),
-    FLOATING_NEARBY(1024, "floating nearby","nothing"),
-    ON_WAIST(2048, "on %SHISHER waist","waist"),
-    ON_LEGS(4096, "on %SHISHER legs","legs"),
-    ON_EYES(8192, "over %SHISHER eyes","eyes"),
-    ON_EARS(16384, "on %SHISHER ears","ears"),
-    ABOUT_BODY(32768, "about %SHISHER body","body");
+    ON_TORSO(4, "around %SHISHER torso", "torso"),
+    ON_ARMS(8, "on %SHISHER arms", "arms"),
+    ON_LEFT_WRIST(16, "on %SHISHER left wrist", "leftwrist"),
+    ON_RIGHT_WRIST(32, "on %SHISHER right wrist", "rightwrist"),
+    ON_LEFT_FINGER(64, "on %SHISHER left finger", "leftfinger"),
+    ON_RIGHT_FINGER(128, "on %SHISHER right finger", "rightfinger"),
+    ON_FEET(256, "on %SHISHER feet", "feet"),
+    ON_HANDS(512, "on %SHISHER hands", "hands"),
+    FLOATING_NEARBY(1024, "floating nearby", "nothing"),
+    ON_WAIST(2048, "on %SHISHER waist", "waist"),
+    ON_LEGS(4096, "on %SHISHER legs", "legs"),
+    ON_EYES(8192, "over %SHISHER eyes", "eyes"),
+    ON_EARS(16384, "on %SHISHER ears", "ears"),
+    ABOUT_BODY(32768, "about %SHISHER body", "body");
     private int enumVal;
     private String name;
     private String parse;
@@ -50,12 +51,16 @@ public enum Wearing {
      * @throws RuntimeException in case the integer provided does not correspond
      * to any of the available objects.
      */
-    public static Wearing get(int aVal) {
-        if (aVal == 0) {
+    public static Wearing get(int aVal)
+    {
+        if (aVal == 0)
+        {
             return null;
         }
-        for (Wearing position : Wearing.values()) {
-            if (position.toInt() == aVal) {
+        for (Wearing position : Wearing.values())
+        {
+            if (position.toInt() == aVal)
+            {
                 return position;
             }
         }
@@ -71,12 +76,16 @@ public enum Wearing {
      * @return the constant object. Will return null, if a faulty aval is provided
      * that does not map to any of the enums.
      */
-    public static Wearing parse(String aVal) {
-        if (aVal == null) {
+    public static Wearing parse(String aVal)
+    {
+        if (aVal == null)
+        {
             return null;
         }
-        for (Wearing position : Wearing.values()) {
-            if (position.parse.equalsIgnoreCase(aVal)) {
+        for (Wearing position : Wearing.values())
+        {
+            if (position.parse.equalsIgnoreCase(aVal))
+            {
                 return position;
             }
         }
@@ -92,8 +101,15 @@ public enum Wearing {
      * @param aPos the Wearing for which to check.
      * @return boolean, true if the integer contains the Wearing.
      */
-    public static boolean isIn(int aVal, Wearing aPos) {
-        if (aPos == null) {
+    public static boolean isIn(Integer aVal, Wearing aPos)
+    {
+        if (aVal == null)
+        {
+            // an empty value, means cannot be worn.
+            return false;
+        }
+        if (aPos == null)
+        {
             // the empty position is always a good position.
             return true;
         }
@@ -107,7 +123,8 @@ public enum Wearing {
      * @param parse for parsing commands, contains one word indicating the
      * position on the body.
      */
-    private Wearing(int aVal, String str, String parse) {
+    private Wearing(int aVal, String str, String parse)
+    {
         name = str;
         enumVal = aVal;
         this.parse = parse;
@@ -119,7 +136,8 @@ public enum Wearing {
      * @return format name.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return name;
     }
 
@@ -128,7 +146,8 @@ public enum Wearing {
      *
      * @return identification integer.
      */
-    public int toInt() {
+    public int toInt()
+    {
         return enumVal;
     }
 }

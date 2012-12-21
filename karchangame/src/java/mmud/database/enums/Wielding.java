@@ -76,8 +76,13 @@ public enum Wielding
      * @param aPos the Wielding for which to check.
      * @return boolean, true if the integer contains the Wielding.
      */
-    public static boolean isIn(int aVal, Wielding aPos)
+    public static boolean isIn(Integer aVal, Wielding aPos)
     {
+        if (aVal == null)
+        {
+            // an empty value means, cannot be wielded.
+            return false;
+        }
         if (aPos == null)
         {
             // the empty position is always a good position.

@@ -10,7 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ *g
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -315,8 +315,8 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         {
             builder.append("You can try eating it.<br/>\r\n");
         }
-        int wieldable = getItemDefinition().getWieldable();
-        int wearable = getItemDefinition().getWearable();
+        Integer wieldable = getItemDefinition().getWieldable();
+        Integer wearable = getItemDefinition().getWearable();
         for (Wielding wield : Wielding.values())
         {
             if (Wielding.isIn(wieldable, wield))
@@ -329,6 +329,29 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
             if (Wearing.isIn(wearable, wear))
             {
                 builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+            }
+        }
+        if (isContainer())
+        {
+            if (hasLid())
+            {
+                if (isOpen())
+                {
+                    builder.append("It is open.<br/>\r\n");
+                } else
+                {
+                    builder.append("It is closed.<br/>\r\n");
+                }
+            }
+            if (hasLock())
+            {
+                if (isLocked())
+                {
+                    builder.append("It is locked.<br/>\r\n");
+                } else
+                {
+                    builder.append("It is unlocked.<br/>\r\n");
+                }
             }
         }
         return builder.toString();
@@ -693,5 +716,40 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
                 return read;
             }
         };
+    }
+
+    /**
+     * Returns whether or not the container has a lock. Meaning whether or not the
+     * container can be unlocked/locked.
+     *
+     * @return boolean true if the container can be locked/unlocked.
+     */
+    public boolean hasLock()
+    {
+        return getItemDefinition().hasLock();
+    }
+
+    /**
+     * Verifies that the key provided can open this container.
+     * @param key the key to hopefully open this container.
+     * @return true, if it is possible to open this container with the key provided.
+     */
+    public boolean isKey(Item key)
+    {
+        if (key == null)
+        {
+            return false;
+        }
+        return key.getItemDefinition().equals(getItemDefinition().getKey());
+    }
+
+    public void lock()
+    {
+        setAttribute("islocked", "true");
+    }
+
+    public void unlock()
+    {
+        setAttribute("islocked", "false");
     }
 }

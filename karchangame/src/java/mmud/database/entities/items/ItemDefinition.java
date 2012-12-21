@@ -614,11 +614,21 @@ public class ItemDefinition implements Serializable
         this.isopenable = isopenable ? 1 : 0;
     }
 
+    /**
+     * Returns the item (the definition to be exact) that can lock/unlock
+     * this container. Will be null in most cases.
+     * @return the key
+     */
     public ItemDefinition getKey()
     {
         return key;
     }
 
+    /**
+     * Sets the item (the definition to be exact) that can lock/
+     * unlock this container. Can be null.
+     * @param key the item able to unlock/lock this container.
+     */
     public void setKey(ItemDefinition key)
     {
         this.key = key;
@@ -734,5 +744,10 @@ public class ItemDefinition implements Serializable
     public void setImage(String image)
     {
         this.image = image;
+    }
+
+    boolean hasLock()
+    {
+        return key != null;
     }
 }

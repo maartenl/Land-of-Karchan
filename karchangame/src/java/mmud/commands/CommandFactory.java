@@ -46,6 +46,7 @@ import mmud.commands.items.EatCommand;
 import mmud.commands.items.GetCommand;
 import mmud.commands.items.GiveCommand;
 import mmud.commands.items.InventoryCommand;
+import mmud.commands.items.LockCommand;
 import mmud.commands.items.LookAtCommand;
 import mmud.commands.items.LookInCommand;
 import mmud.commands.items.OpenCommand;
@@ -53,6 +54,7 @@ import mmud.commands.items.PutCommand;
 import mmud.commands.items.ReadCommand;
 import mmud.commands.items.RetrieveCommand;
 import mmud.commands.items.UndressCommand;
+import mmud.commands.items.UnlockCommand;
 import mmud.commands.items.UnwearCommand;
 import mmud.commands.items.UnwieldCommand;
 import mmud.commands.items.WearCommand;
@@ -169,10 +171,10 @@ public class CommandFactory
                 "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
         theCommandStructure.put("retrieve", new RetrieveCommand(
                 "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("lock", new LockCommand(
-//                "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("unlock", new UnlockCommand(
-//                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
+        theCommandStructure.put("lock", new LockCommand(
+                "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
+        theCommandStructure.put("unlock", new UnlockCommand(
+                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
         theCommandStructure.put("give", new GiveCommand(
                 "give( (\\w|-)+){1,4} to (\\w)+"));
         theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
@@ -188,9 +190,9 @@ public class CommandFactory
         theCommandStructure.put("look", new LookCommand(
                 "look"));
         theCommandStructure.put("look at", new LookAtCommand(
-                "look at ((\\w|-)+){1,4}"));
+                "look at( (\\w|-)+){1,4}"));
         theCommandStructure.put("look in", new LookInCommand(
-                "look in ((\\w|-)+){1,4}"));
+                "look in( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("buy", new BuyCommand(
 //                "buy( (\\w|-)+){1,4} from (\\w)+"));
 //        theCommandStructure.put("sell"    , new SellCommand(
