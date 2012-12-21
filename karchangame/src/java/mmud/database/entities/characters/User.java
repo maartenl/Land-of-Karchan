@@ -17,15 +17,20 @@
 package mmud.database.entities.characters;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Macro;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
+import org.hibernate.annotations.Cascade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +132,12 @@ public class User extends Person
     @Column(name = "lastcommand")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastcommand;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    @Cascade(
+    {
+        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
+    })
+    private Set<Macro> macroCollection;
 
     public User()
     {
@@ -494,5 +505,85 @@ public class User extends Person
     public boolean isNewUser()
     {
         return lastlogin == null;
+    }
+
+    public DisplayInterface writeMacros()
+    {
+        return new DisplayInterface()
+        {
+            @Override
+            public String getMainTitle() throws MudException
+            {
+                return "Macros";
+            }
+
+            @Override
+            public String getImage() throws MudException
+            {
+                // TODO : create a macro icon.
+                return null;
+            }
+
+            @Override
+            public String getBody() throws MudException
+            {
+                StringBuffer sb = new StringBuffer("<table><tr><td><b>macro</b></td><td><b>contents</b></td></tr>");
+                for (Macro m : macroCollection)
+                {
+                    sb.append("<tr><td>" + m.getMacroname() + "</td><td>" + m.getContents() + "</td></tr>");
+                }
+                sb.append("</table>");
+                return sb.toString();
+            }
+        };
+    }
+
+    /**
+     * Removes a macro from the existing macros. Returns false
+     * if the removal failed (for instance if the macro did not exist.)
+     * @param string the name of the macro to remove
+     * @return true if success, otherwise false.
+     */
+    public boolean removeMacro(String string)
+    {
+        Macro found = getMacro(string);
+        if (found == null)
+        {
+            return false;
+        }
+        return macroCollection.remove(found);
+    }
+
+    /**
+     * Adds a macro to the list of macros. Will do nothing if the macro
+     * already exists.
+     * @param macro the macro to add.
+     */
+    public void addMacro(Macro macro)
+    {
+        if (getMacro(macro.getMacroname()) != null)
+        {
+            return;
+        }
+        macroCollection.add(macro);
+    }
+
+    /**
+     * Returns the macro based on the name of the macro.
+     * @param string the name of the macro
+     * @return the macro itself.
+     */
+    public Macro getMacro(String string)
+    {
+        Macro found = null;
+        for (Macro macro : macroCollection)
+        {
+            if (macro.getMacroname().equalsIgnoreCase(string))
+            {
+                found = macro;
+                break;
+            }
+        }
+        return found;
     }
 }

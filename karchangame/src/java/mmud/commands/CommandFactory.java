@@ -73,7 +73,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * The factory that creates commands based on the string entered by the user.
  * @author maartenl
  */
 public class CommandFactory
@@ -99,13 +99,13 @@ public class CommandFactory
         theCommandStructure.put("me", new MeCommand("me .+"));
         // quit command has been replaced with a specific rest service.
         // theCommandStructure.put("quit", new QuitCommand("quit"));
-        theCommandStructure.put("sleep", new SleepCommand("sleep"));
+        theCommandStruYcture.put("sleep", new SleepCommand("sleep"));
         theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
         theCommandStructure.put("awaken", new AwakenCommand("awaken"));
         theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
         theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
         theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
-//        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
+        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
         theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
         theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
         theCommandStructure.put("shout", new ShoutCommand(

@@ -138,4 +138,9 @@ public class Macro implements Serializable
         return "mmud.database.entities.game.Macro[ macroPK=" + macroPK + " ]";
     }
 
+    public String getMacroname()
+    {
+        return getMacroPK().getMacroname();
+    }
+
 }
