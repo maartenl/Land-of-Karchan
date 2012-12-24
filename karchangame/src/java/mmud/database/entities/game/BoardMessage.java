@@ -30,8 +30,6 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_boardmessages", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
 {
     @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
     @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
@@ -42,8 +40,8 @@ public class BoardMessage implements Serializable
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
     @JoinColumn(name = "boardid", referencedColumnName = "id")
@@ -70,6 +68,13 @@ public class BoardMessage implements Serializable
     {
     }
 
+    /**
+     * Returns the contents of the message as posted. If the message has been
+     * removed, it will return the message "Message has been removed due to offensive
+     * content.".
+     * @return the contents of the message on the board.
+     * @see #getRemoved()
+     */
     public String getMessage()
     {
         if (getRemoved())
@@ -84,11 +89,20 @@ public class BoardMessage implements Serializable
         this.message = message;
     }
 
+    /**
+     * Indicates that the message has been removed. (possibly due to bad content)
+     *
+     * @return true if removed, false otherwise.
+     */
     public Boolean getRemoved()
     {
         return removed;
     }
 
+    /**
+     *
+     * @param removed true if the message needs be removed, fals otherwise.
+     */
     public void setRemoved(Boolean removed)
     {
         this.removed = removed;
@@ -138,6 +152,10 @@ public class BoardMessage implements Serializable
     public int hashCode()
     {
         int hash = 0;
+        if (id == null)
+        {
+            return -1;
+        }
         hash += id.hashCode();
         return hash;
     }

@@ -287,3 +287,17 @@ NOT NULL  ,
 ALTER TABLE `mmud`.`mm_items` ADD COLUMN `image` VARCHAR(255) NULL DEFAULT
 NULL  AFTER `notes` , ADD COLUMN `title` VARCHAR(255) NULL  AFTER `image` ;
 
+# add a room number to the boards, so a board
+# is situated in a room.
+ALTER TABLE `mmud`.`mm_boards` ADD COLUMN `room` INT(5) NOT NULL AFTER
+  `creation`;
+update mm_boards set room = 1 where id = 2;
+update mm_boards set room = 3 where id = 1;
+update mm_boards set room = 13 where id = 3;
+ALTER TABLE `mmud`.`mm_boards` 
+  ADD CONSTRAINT `fk_mm_boards_1`
+  FOREIGN KEY (`room` )
+  REFERENCES `mmud`.`mm_rooms` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_mm_boards_1_idx` (`room` ASC) ;

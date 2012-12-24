@@ -180,12 +180,10 @@ public class CommandFactory
         theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
         theCommandStructure.put("close", new CloseCommand(
                 "close( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("readroleplay", new ReadRpgBoardCommand(
-//                "readroleplay"));
         theCommandStructure.put("read", new ReadCommand("read( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("readpublic", new ReadPublicCommand(
-//                "readpublic"));
-//        theCommandStructure.put("public", new PostPublicCommand("public .+"));
+        theCommandStructure.put("readboard", new ReadBoardCommand(
+                "readboard (\\w)+"));
+        theCommandStructure.put("post", new PostBoardCommand("post (\\w)+ .+"));
         theCommandStructure.put("l", new LookCommand("l"));
         theCommandStructure.put("look", new LookCommand(
                 "look"));
@@ -201,9 +199,6 @@ public class CommandFactory
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));
 //        theCommandStructure.put("admin", new AdminCommand("admin .+"));
-//        theCommandStructure.put("roleplay", new PostRpgBoardCommand(
-//                "roleplay .+"));
-//
         // guild commands
         theCommandStructure.put("guildapply", new ApplyCommand(
                 "guildapply( (\\w)+)?"));

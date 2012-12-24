@@ -138,6 +138,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     @Filter(name = "activePersons")
     private Set<Person> persons;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    private Set<Board> boards;
 
     public Room()
     {
@@ -541,6 +543,25 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
             if ((person.getName().equalsIgnoreCase(aName)))
             {
                 return person;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * retrieve the board in the room. May be null if there is no board.
+     *
+     * @param aName name of the board to search for.
+     * @return Board in the room. Will return null pointer if
+     * board not found.
+     */
+    public Board getBoard(String aName)
+    {
+        for (Board board : boards)
+        {
+            if ((board.getName().equalsIgnoreCase(aName)))
+            {
+                return board;
             }
         }
         return null;

@@ -18,20 +18,26 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.entities.characters.User;
+import mmud.exceptions.MudException;
 
 /**
  *
@@ -46,9 +52,11 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
     @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation")
 })
-public class Board implements Serializable
+public class Board implements Serializable, DisplayInterface
 {
+
     private static final long serialVersionUID = 1L;
+    private static final long ONE_WEEK = 1000l * 60l * 60l * 24l * 7l;
     @Id
     @Basic(optional = false)
     @NotNull
@@ -73,6 +81,13 @@ public class Board implements Serializable
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Admin owner;
+    @JoinColumn(name = "room", nullable = false, referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @NotNull
+    private Room room;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.LAZY)
+    // TODO : add a where statement here to limit the amount of message to last week max.
+    private Set<BoardMessage> messages;
 
     public Board()
     {
@@ -141,6 +156,24 @@ public class Board implements Serializable
         this.owner = owner;
     }
 
+    /**
+     * The rooom in which this message board resides.
+     * @return Room, cannot be null.
+     */
+    public Room getRoom()
+    {
+        return room;
+    }
+
+    /**
+     * Sets the room in which this message board resides.
+     * @param room The room. Cannot be null.
+     */
+    public void setRoom(Room room)
+    {
+        this.room = room;
+    }
+
     @Override
     public int hashCode()
     {
@@ -171,4 +204,51 @@ public class Board implements Serializable
         return "mmud.database.entities.game.Board[ id=" + id + " ]";
     }
 
+    public boolean addMessage(User aUser, String message)
+    {
+        BoardMessage boardMessage = new BoardMessage();
+        boardMessage.setBoard(this);
+        boardMessage.setMessage(message);
+        boardMessage.setPerson(aUser);
+        boardMessage.setPosttime(new Date());
+        boardMessage.setRemoved(false);
+        return messages.add(boardMessage);
+    }
+
+    @Override
+    public String getMainTitle() throws MudException
+    {
+        return getName();
+    }
+
+    @Override
+    public String getImage() throws MudException
+    {
+        // TODO : add an image to the board, we can suffice for now with a generic
+        // image, but it would be nice to have an image per board.
+        // TODO : add an image field to the board table.
+        return null;
+    }
+
+    @Override
+    public String getBody() throws MudException
+    {
+        StringBuilder builder = new StringBuilder(getDescription());
+        Long now = (new Date()).getTime();
+        builder.append("<hr/>");
+        for (BoardMessage message : messages)
+        {
+            if (now - message.getPosttime().getTime() < ONE_WEEK)
+            {
+                builder.append(message.getPosttime());
+                builder.append("<p>");
+                builder.append(message.getMessage());
+                builder.append("</p><i>");
+                builder.append(message.getPerson().getName());
+                builder.append("</i>");
+                builder.append("<hr/>");
+            }
+        }
+        return builder.toString();
+    }
 }
