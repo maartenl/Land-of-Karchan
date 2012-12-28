@@ -662,4 +662,16 @@ public class User extends Person
         }
         return aUser.ignoredSet.remove(aUser);
     }
+
+    /**
+     * Whether or not you are ignoring a certain person.
+     * The default is that nobody is ignoring you.
+     * @param aPerson the person to check in your ignore list.
+     * @return true if the person should be ignored, false otherwise.
+     */
+    @Override
+    protected boolean isIgnoring(Person aPerson)
+    {
+        return ignoringSet.contains(aPerson);
+    }
 }

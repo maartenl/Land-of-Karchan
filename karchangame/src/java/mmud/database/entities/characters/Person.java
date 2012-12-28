@@ -1293,11 +1293,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      */
     public void writeMessage(Person aSource, Person aTarget, String aMessage) throws MudException
     {
-        // TODO : ignoring people
-//		if (aSource.isIgnored(this))
-//		{
-//			return;
-//		}
+        if (this.isIgnoring(aSource))
+        {
+            return;
+        }
         String message = aMessage;
         if (aTarget == this)
         {
@@ -1347,11 +1346,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      */
     public void writeMessage(Person aSource, String aMessage) throws MudException
     {
-        // TODO : ignoring people
-//		if (aSource.isIgnored(this))
-//		{
-//			return;
-//		}
+        if (this.isIgnoring(aSource))
+        {
+            return;
+        }
         String message = aMessage;
         if (aSource == this)
         {
@@ -2379,5 +2377,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         }
         setCopper(getCopper() - newamount);
         target.setCopper(target.getCopper() + newamount);
+    }
+
+    protected boolean isIgnoring(Person aSource)
+    {
+        return false;
     }
 }
