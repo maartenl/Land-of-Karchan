@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.characters;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -138,6 +139,47 @@ public class User extends Person
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
     private Set<Macro> macroCollection;
+    /**
+     * The list of people that you are ignoring.
+     */
+    @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY, cascade =
+    {
+        CascadeType.ALL
+    })
+    @JoinTable(name = "mm_ignore", joinColumns =
+    {
+        @JoinColumn(name = "fromperson", referencedColumnName = "name")
+    }, inverseJoinColumns =
+    {
+        @JoinColumn(name = "toperson", referencedColumnName = "name")
+    })
+    private Set<User> ignoringSet;
+    /**
+     * The list of people that is ignoring you.
+     */
+    @ManyToMany(mappedBy = "ignoringSet", targetEntity = User.class, fetch = FetchType.LAZY, cascade =
+    {
+        CascadeType.ALL
+    })
+    private Set<User> ignoredSet;
+
+    /**
+     * The list of people that you are ignoring.
+     * @return
+     */
+    public Set<User> getIgnoringSet()
+    {
+        return Collections.unmodifiableSet(ignoringSet);
+    }
+
+    /**
+     * The list of people that are ignoring you.
+     * @return
+     */
+    public Set<User> getIgnoredSet()
+    {
+        return Collections.unmodifiableSet(ignoredSet);
+    }
 
     public User()
     {
@@ -585,5 +627,39 @@ public class User extends Person
             }
         }
         return found;
+    }
+
+    /**
+     * Adds a user to be ignored to the big ignore list.
+     * @param aUser
+     */
+    public void addAnnoyingUser(User aUser)
+    {
+        if (aUser == null)
+        {
+            return;
+        }
+        ignoringSet.add(aUser);
+        aUser.ignoredSet.add(this);
+    }
+
+    /**
+     * Removes a user from the big ignore list. Assumedly, because he
+     * is no longer annoying.
+     * @param aUser
+     * @return true if the user was found, and successfully removed from the set.
+     */
+    public boolean removeAnnoyingUser(User aUser)
+    {
+        if (aUser == null)
+        {
+            return false;
+        }
+        boolean result = ignoringSet.remove(aUser);
+        if (result == false)
+        {
+            return false;
+        }
+        return aUser.ignoredSet.remove(aUser);
     }
 }

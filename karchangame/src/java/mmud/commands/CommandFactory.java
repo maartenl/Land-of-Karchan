@@ -131,10 +131,12 @@ public class CommandFactory
         theCommandStructure.put("go", new GoCommand(
                 "go (up|down|north|south|east|west)?"));
         theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
-//        theCommandStructure.put("fully", new IgnoreCommand(
-//                "fully ignore (\\w)+"));
-//        theCommandStructure.put("acknowledge", new AcknowledgeCommand(
-//                "acknowledge (\\w)+"));
+        theCommandStructure.put("show ignoring", new IgnoringCommand(
+                "show ignoring"));
+        theCommandStructure.put("fully", new IgnoreCommand(
+                "fully ignore (\\w)+"));
+        theCommandStructure.put("acknowledge", new AcknowledgeCommand(
+                "acknowledge (\\w)+"));
         theCommandStructure.put("curtsey", new CurtseyCommand(
                 "curtsey( to (\\w)+)?"));
         theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));

@@ -20,15 +20,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
 import mmud.exceptions.ItemException;
@@ -535,6 +534,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * @param aName name of the character to search for.
      * @return Character/Person in the room. Will return null pointer if
      * character not found.
+     * @see #retrieveUser(java.lang.String) 
      */
     public Person retrievePerson(String aName)
     {
@@ -544,6 +544,25 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
             {
                 return person;
             }
+        }
+        return null;
+    }
+
+    /**
+     * retrieve the player from the list of characters currently active in
+     * the current room.
+     *
+     * @param aName name of the player to search for.
+     * @return Player in the room. Will return null pointer if
+     * character not found or character is not a "real" player.
+     * @see #retrievePerson(java.lang.String)
+     */
+    public User retrieveUser(String aName)
+    {
+        Person person = retrievePerson(aName);
+        if (person instanceof User)
+        {
+            return (User) person;
         }
         return null;
     }
