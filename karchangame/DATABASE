@@ -301,3 +301,39 @@ ALTER TABLE `mmud`.`mm_boards`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_boards_1_idx` (`room` ASC) ;
+
+update mm_events
+set month = null where month = -1;
+update mm_events
+set dayofmonth = null where dayofmonth = -1;
+update mm_events
+set hour = null where hour = -1;
+update mm_events
+set minute = null where minute = -1;
+update mm_events
+set dayofweek = null where dayofweek = -1;
+
+ALTER TABLE `mmud`.`mm_events` 
+CHANGE COLUMN `month` `month` INT(11) NULL DEFAULT NULL  , 
+CHANGE COLUMN `dayofmonth` `dayofmonth` INT(11) NULL DEFAULT NULL  , 
+CHANGE COLUMN `hour` `hour` INT(11) NULL DEFAULT NULL  , 
+CHANGE COLUMN `minute` `minute` INT(11) NULL DEFAULT NULL  , 
+CHANGE COLUMN `dayofweek` `dayofweek` INT(11) NULL DEFAULT NULL  ;
+
+# deletes events whos persons/users are no longer in the database.
+delete from mm_events where name is not null and not exists (select * from
+mm_usertable where mm_usertable.name = mm_events.name);
+
+ALTER TABLE `mmud`.`mm_events` 
+  ADD CONSTRAINT `fk_mm_events_1`
+  FOREIGN KEY (`name` )
+  REFERENCES `mmud`.`mm_usertable` (`name` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION, 
+  ADD CONSTRAINT `fk_mm_events_2`
+  FOREIGN KEY (`room` )
+  REFERENCES `mmud`.`mm_rooms` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_mm_events_1_idx` (`name` ASC) 
+, ADD INDEX `fk_mm_events_2_idx` (`room` ASC) ;

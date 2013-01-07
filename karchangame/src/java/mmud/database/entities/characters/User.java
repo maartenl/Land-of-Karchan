@@ -18,7 +18,7 @@ package mmud.database.entities.characters;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import javax.persistence.*;
@@ -27,9 +27,6 @@ import javax.validation.constraints.Size;
 import mmud.Utils;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
-import mmud.database.entities.items.Item;
-import mmud.database.enums.Wearing;
-import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
 import org.hibernate.annotations.Cascade;
 import org.slf4j.Logger;
@@ -153,7 +150,7 @@ public class User extends Person
     {
         @JoinColumn(name = "toperson", referencedColumnName = "name")
     })
-    private Set<User> ignoringSet;
+    private Set<User> ignoringSet = new HashSet<>();
     /**
      * The list of people that is ignoring you.
      */
@@ -161,7 +158,7 @@ public class User extends Person
     {
         CascadeType.ALL
     })
-    private Set<User> ignoredSet;
+    private Set<User> ignoredSet = new HashSet<>();
 
     /**
      * The list of people that you are ignoring.

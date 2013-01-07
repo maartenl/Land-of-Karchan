@@ -18,10 +18,12 @@ package mmud.rest.services;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -49,6 +51,8 @@ import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Event;
+import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
@@ -815,4 +819,30 @@ public class GameBean
         result.title = display.getMainTitle();
         return result;
     }
+
+    /**
+     * Runs every minute, looks up which event to execute now.
+     */
+    @Schedule(minute = "*/1")
+    public void events()
+    {
+        Query query = getEntityManager().createNamedQuery("Event.list");
+        Calendar calendar = Calendar.getInstance();
+        query.setParameter("month", calendar.get(Calendar.MONTH));
+        query.setParameter("dayofmonth", calendar.get(Calendar.DAY_OF_MONTH));
+        query.setParameter("dayofweek", calendar.get(Calendar.DAY_OF_WEEK));
+        query.setParameter("hour", calendar.get(Calendar.HOUR_OF_DAY));
+        query.setParameter("minute", calendar.get(Calendar.MINUTE));
+        List<Event> list = query.getResultList();
+        for (Event event : list)
+        {
+            logBean.writeLog(null, "Event " + event.getEventid() + " executed.");
+            Method method = event.getMethod();
+            String source = method.getSrc();
+            
+        }
+    }
+    // TODO : scheduler that cleans up people, runs at midnight
+    // TODO : scheduler that increments item durability, runs at high noon?
+    // TODO : fighting scheduler (second = "*/2")
 }

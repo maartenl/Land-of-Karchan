@@ -21,6 +21,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,7 +34,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * An event, defined to execute at a certain time.
+ * The time can be defined in the following fields:
+ * <ul><li>month</li>
+ * <li>dayofmonth</li>
+ * <li>dayofweek</li>
+ * <li>hour</li>
+ * <li>minute</li>
+ * </ul>
  * @author maartenl
  */
 @Entity
@@ -43,14 +51,16 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
     @NamedQuery(name = "Event.findByEventid", query = "SELECT e FROM Event e WHERE e.eventid = :eventid"),
     @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
-    @NamedQuery(name = "Event.findByMonth", query = "SELECT e FROM Event e WHERE e.month = :month"),
-    @NamedQuery(name = "Event.findByDayofmonth", query = "SELECT e FROM Event e WHERE e.dayofmonth = :dayofmonth"),
-    @NamedQuery(name = "Event.findByHour", query = "SELECT e FROM Event e WHERE e.hour = :hour"),
-    @NamedQuery(name = "Event.findByMinute", query = "SELECT e FROM Event e WHERE e.minute = :minute"),
-    @NamedQuery(name = "Event.findByDayofweek", query = "SELECT e FROM Event e WHERE e.dayofweek = :dayofweek"),
+    @NamedQuery(name = "Event.list", query = "SELECT e "
+        + "FROM Event e "
+        + "WHERE callable = 1 "
+        + "AND (e.month is null OR e.month = :month) "
+        + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
+        + "AND (e.hour is null OR e.hour = :hour) "
+        + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
+        + "AND (e.minute is null OR e.minute = :minute)"),
     @NamedQuery(name = "Event.findByCallable", query = "SELECT e FROM Event e WHERE e.callable = :callable"),
     @NamedQuery(name = "Event.findByRoom", query = "SELECT e FROM Event e WHERE e.room = :room"),
-    @NamedQuery(name = "Event.findByCreation", query = "SELECT e FROM Event e WHERE e.creation = :creation")
 })
 public class Event implements Serializable
 {
@@ -98,8 +108,8 @@ public class Event implements Serializable
     @ManyToOne
     private Admin owner;
     @JoinColumn(name = "method_name", referencedColumnName = "name")
-    @ManyToOne(optional = false)
-    private Method methodName;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private Method method;
 
     public Event()
     {
@@ -142,6 +152,13 @@ public class Event implements Serializable
         this.name = name;
     }
 
+    /**
+     * Returns the month in which this event should be run. Be warned
+     * JANUARY is month 0, the first month. December is month 11, the last month.
+     * If it returns null, it means every month is matched.
+     *
+     * @return integer
+     */
     public int getMonth()
     {
         return month;
@@ -152,6 +169,12 @@ public class Event implements Serializable
         this.month = month;
     }
 
+    /**
+     * Returns the day of the month, starting with 1.
+     * If it returns null, it means every day of the month is matched.
+     *
+     * @return integer
+     */
     public int getDayofmonth()
     {
         return dayofmonth;
@@ -162,6 +185,13 @@ public class Event implements Serializable
         this.dayofmonth = dayofmonth;
     }
 
+    /**
+     * Returns the hour in which this event should be run. It's a 24 hour
+     * clock used here. First hour right after midnight is 0.
+     * If it returns null, it means every hour is matched.
+     *
+     * @return integer
+     */
     public int getHour()
     {
         return hour;
@@ -172,6 +202,13 @@ public class Event implements Serializable
         this.hour = hour;
     }
 
+    /**
+     * Returns the minute in which this event should be run. Any value between
+     * 0 and 59 would be okay.
+     * If it returns null, it means every minute is matched.
+     *
+     * @return integer
+     */
     public int getMinute()
     {
         return minute;
@@ -182,6 +219,13 @@ public class Event implements Serializable
         this.minute = minute;
     }
 
+    /**
+     * Returns the day of the week at which this event should be run. SUNDAY
+     * being 1 and SATURDAY being 7.
+     * If it returns null, it means every day of the week is matched.
+     *
+     * @return integer
+     */
     public int getDayofweek()
     {
         return dayofweek;
@@ -192,14 +236,21 @@ public class Event implements Serializable
         this.dayofweek = dayofweek;
     }
 
-    public int getCallable()
+    /**
+     * Returns the month in which this event should be run. Be warned
+     * JANUARY is month 0, the first month. December is month 11, the last month.
+     * If it returns null, it means every month is matched.
+     *
+     * @return integer
+     */
+    public boolean getCallable()
     {
-        return callable;
+        return callable == 1;
     }
 
-    public void setCallable(int callable)
+    public void setCallable(Boolean callable)
     {
-        this.callable = callable;
+        this.callable = Boolean.TRUE.equals(callable) ? 1 : 0;
     }
 
     public Integer getRoom()
@@ -232,14 +283,14 @@ public class Event implements Serializable
         this.owner = owner;
     }
 
-    public Method getMethodName()
+    public Method getMethod()
     {
-        return methodName;
+        return method;
     }
 
-    public void setMethodName(Method methodName)
+    public void setMethod(Method method)
     {
-        this.methodName = methodName;
+        this.method = method;
     }
 
     @Override

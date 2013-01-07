@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
@@ -262,7 +263,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN
     })
-    private Set<Charattribute> charattributeCollection;
+    private Set<Charattribute> attributes = new HashSet<Charattribute>();
     @JoinColumn(name = "wieldleft", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Item wieldleft;
@@ -1550,18 +1551,18 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             return false;
         }
-        charattributeCollection.remove(attr);
+        attributes.remove(attr);
         return true;
     }
 
     private Charattribute getCharattribute(String name)
     {
-        if (charattributeCollection == null)
+        if (attributes == null)
         {
             itsLog.debug("getCharattribute name=" + name + " collection is null");
             return null;
         }
-        for (Charattribute attr : charattributeCollection)
+        for (Charattribute attr : attributes)
         {
             itsLog.debug("getCharattribute name=" + name + " attr=" + attr);
             if (attr.getName().equals(name))
@@ -1590,7 +1591,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         }
         attr.setValue(value);
         attr.setValueType(Attributes.VALUETYPE_STRING);
-        charattributeCollection.add(attr);
+        attributes.add(attr);
     }
 
     @Override

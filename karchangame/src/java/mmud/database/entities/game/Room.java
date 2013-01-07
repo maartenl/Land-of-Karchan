@@ -20,11 +20,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.Attributes;
 import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -131,12 +133,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @ManyToOne(optional = false)
     private Area area;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private Set<Roomattribute> attributes;
+    private Set<Roomattribute> attributes = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Item> items;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     @Filter(name = "activePersons")
-    private Set<Person> persons;
+    private Set<Person> persons = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Board> boards;
 
@@ -534,7 +536,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * @param aName name of the character to search for.
      * @return Character/Person in the room. Will return null pointer if
      * character not found.
-     * @see #retrieveUser(java.lang.String) 
+     * @see #retrieveUser(java.lang.String)
      */
     public Person retrievePerson(String aName)
     {
@@ -605,22 +607,37 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         return result;
     }
 
+
     @Override
     public boolean removeAttribute(String name)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Roomattribute attr = getRoomattribute(name);
+        if (attr == null)
+        {
+            return false;
+        }
+        attributes.remove(attr);
+        return true;
     }
 
     @Override
     public Attribute getAttribute(String name)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRoomattribute(name);
     }
 
     @Override
     public void setAttribute(String name, String value)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Roomattribute attr = getRoomattribute(name);
+        if (attr == null)
+        {
+            attr = new Roomattribute(name, getId());
+            attr.setRoom(this);
+        }
+        attr.setValue(value);
+        attr.setValueType(Attributes.VALUETYPE_STRING);
+        attributes.add(attr);
     }
 
     @Override

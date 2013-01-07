@@ -68,7 +68,7 @@ public class Method implements Serializable
     @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "method")
     private Collection<Event> eventCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
     private Collection<Command> commandCollection;
@@ -102,6 +102,10 @@ public class Method implements Serializable
         this.name = name;
     }
 
+    /**
+     * Get the javascript source to execute.
+     * @return
+     */
     public String getSrc()
     {
         return src;

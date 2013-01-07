@@ -77,6 +77,12 @@ public class Roomattribute implements Serializable, Attribute
         this.valueType = valueType;
     }
 
+    /**
+     * Create a new room attribute, based on the name
+     * of the attribute, and the room.
+     * @param name the name of the attribute
+     * @param id the id of the room.
+     */
     public Roomattribute(String name, int id)
     {
         this.roomattributePK = new RoomattributePK(name, id);

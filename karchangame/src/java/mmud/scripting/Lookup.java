@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ *  Copyright (C) 2013 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,33 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.exceptions;
-
+package mmud.scripting;
 
 /**
- * A person could not be found.
+ *
  * @author maartenl
  */
-public class PersonNotFoundException extends MudException
+public class Lookup
 {
 
-    public PersonNotFoundException()
-    {
-        super("Person not found.");
-    }
 
-    public PersonNotFoundException(String string)
-    {
-        super(string);
-    }
-
-    public PersonNotFoundException(Exception ex)
-    {
-        super(ex);
-    }
-
-    public PersonNotFoundException(String aString, Exception ex)
-    {
-        super(aString, ex);
-    }
 }

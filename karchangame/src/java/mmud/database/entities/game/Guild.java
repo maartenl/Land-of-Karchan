@@ -286,11 +286,11 @@ public class Guild implements Serializable, DisplayInterface
         {
             throw new MudException("There should always be a guildmaster of guild " + getName());
         }
-        if (boss.getGuild() == null
-                || (!boss.getGuild().getName().equals(
+        if (boss.getGuild() != null
+                && (!boss.getGuild().getName().equals(
                 getName())))
         {
-            throw new MudException(boss.getName() + " cannot be a guildmaster of guild " + getName());
+            throw new MudException(boss.getName() + " cannot be a guildmaster of guild " + getName() + ". Already is a guildmaster of " + boss.getGuild().getName());
         }
         this.boss = boss;
     }

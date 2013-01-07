@@ -522,6 +522,7 @@ public class PublicBeanTest
         Date firstDate = new Date(secondDate.getTime() - 1_000_000);
         final List<Guild> list = new ArrayList<>();
         Guild guild = new Guild();
+        guild.setName("disasterarea");
         guild.setTitle("Disaster Area");
         guild.setBoss(hotblack);
         guild.setCreation(firstDate);
@@ -529,6 +530,7 @@ public class PublicBeanTest
         guild.setDescription("This is just a description");
         list.add(guild);
         guild = new Guild();
+        guild.setName("sirius");
         guild.setTitle("Sirius Cybernetics Corporation");
         guild.setBoss(marvin);
         guild.setCreation(secondDate);
