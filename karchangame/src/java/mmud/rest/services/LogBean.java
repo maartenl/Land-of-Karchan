@@ -16,6 +16,8 @@
  */
 package mmud.rest.services;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -51,21 +53,20 @@ public class LogBean
     }
     private static final Logger itsLog = LoggerFactory.getLogger(LogBean.class);
 
-
-	/**
-	 * write a log message to the database. This log facility is primarily used
-	 * to keep a record of what kind of important mutations are done or
-	 * attempted by both characters as well as administrators. Some examples:
-	 * <ul>
-	 * <li>an item is picked up off the floor by a character
-	 * <li>an item is eaten
-	 * <li>an administrator creates a new item/room/character
-	 * </ul>
-	 *
-	 * @param person the person to be inscribed in the log table
-	 * @param message the message to be written in the log, may not be larger than
-	 * 255 characters.
-	 */
+    /**
+     * write a log message to the database. This log facility is primarily used
+     * to keep a record of what kind of important mutations are done or
+     * attempted by both characters as well as administrators. Some examples:
+     * <ul>
+     * <li>an item is picked up off the floor by a character
+     * <li>an item is eaten
+     * <li>an administrator creates a new item/room/character
+     * </ul>
+     *
+     * @param person the person to be inscribed in the log table
+     * @param message the message to be written in the log, may not be larger than
+     * 255 characters.
+     */
     public void writeLog(Person person, String message)
     {
         itsLog.debug("writeLog");
@@ -77,15 +78,57 @@ public class LogBean
         getEntityManager().persist(log);
     }
 
+    /**
+     * write a log message of an exception to the database.
+     * @param person the person to be inscribed in the log table
+     * @param throwable the exception or error to be written to the log table.
+     */
+    public void writeLogException(Person person, Throwable throwable)
+    {
+        itsLog.debug("writeLogException");
 
-	/**
-	 * write a command to the database. This log facility is primarily used
-	 * to keep a chatrecord.
-	 *
-	 * @param person the person to be inscribed in the log table
-	 * @param command the command that is to be executed written in the log, may not be larger than
-	 *            255 characters.
-	 */
+        Log log = new Log();
+        log.setName(person.getName());
+        log.setCreation(new Date());
+        log.setMessage(throwable.toString());
+        ByteArrayOutputStream myStream = new ByteArrayOutputStream();
+        try (PrintStream myPrintStream = new PrintStream(myStream))
+        {
+            throwable.printStackTrace(myPrintStream);
+        }
+        log.setAddendum(myStream.toString());
+        getEntityManager().persist(log);
+    }
+
+    /**
+     * write a log message of an exception to the database.
+     * @param throwable the exception or error to be written to the log table.
+     */
+    public void writeLogException(Throwable throwable)
+    {
+        itsLog.debug("writeLogException");
+
+        Log log = new Log();
+        log.setName(null);
+        log.setCreation(new Date());
+        log.setMessage(throwable.toString());
+        ByteArrayOutputStream myStream = new ByteArrayOutputStream();
+        try (PrintStream myPrintStream = new PrintStream(myStream))
+        {
+            throwable.printStackTrace(myPrintStream);
+        }
+        log.setAddendum(myStream.toString());
+        getEntityManager().persist(log);
+    }
+
+    /**
+     * write a command to the database. This log facility is primarily used
+     * to keep a chatrecord.
+     *
+     * @param person the person to be inscribed in the log table
+     * @param command the command that is to be executed written in the log, may not be larger than
+     *            255 characters.
+     */
     public void writeCommandLog(Person person, String command)
     {
         itsLog.debug("writeCommandLog");

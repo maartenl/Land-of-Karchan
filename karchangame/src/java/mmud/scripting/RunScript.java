@@ -23,19 +23,61 @@ import javax.script.ScriptException;
 import mmud.scripting.entities.Room;
 
 /**
- *
+ * Can run javascript source code. The methods call specific javascript
+ * functions in the source code.
  * @author maartenl
  */
 public class RunScript
 {
 
-    private Lookup lookup;
+    private Persons persons;
+    private Rooms rooms;
 
-    public RunScript(Lookup lookup)
+    public RunScript(Persons persons, Rooms rooms)
     {
-        this.lookup = lookup;
+        if (persons == null)
+        {
+            throw new NullPointerException("persons was null.");
+        }
+        if (rooms == null)
+        {
+            throw new NullPointerException("rooms was null.");
+        }
+        this.persons = persons;
+        this.rooms = rooms;
     }
 
+    /**
+     * Runs a specific function called "function command(person, command)".
+     *
+     * Basically it calls a specific deputy defined "command".
+     * @param person the person issuing forth the command.
+     * @param command the command, a string.
+     * @param sourceCode the source code, javascript, a string.
+     * @return false if failed, true if successful
+     * @throws ScriptException if an error occurred in the javascript
+     * @throws NoSuchMethodException  if the function cannot be found,
+     */
+    public boolean run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException
+    {
+
+        Invocable inv = initialiseScriptEngine(sourceCode);
+
+        // invoke the global function named "hello"
+        Boolean result = (Boolean) inv.invokeFunction("command", new mmud.scripting.entities.Person(person), command);
+        return result == null ? false : result;
+    }
+
+    /**
+     * Runs a specific function called "function event(person)".
+     *
+     * Basically it calls a specific deputy defined "event".
+     * @param person the event needs to be executed with this person as the focus.
+     * @param sourceCode the source code, javascript, a string.
+     * @return false if failed, true if successful
+     * @throws ScriptException if an error occurred in the javascript
+     * @throws NoSuchMethodException  if the function cannot be found,
+     */
     public boolean run(mmud.database.entities.characters.Person person, String sourceCode) throws ScriptException, NoSuchMethodException
     {
 
@@ -46,6 +88,16 @@ public class RunScript
         return result == null ? false : result;
     }
 
+    /**
+     * Runs a specific function called "function event(room)".
+     *
+     * Basically it calls a specific deputy defined "event".
+     * @param room the event needs to be executed with this room as the focus.
+     * @param sourceCode the source code, javascript, a string.
+     * @return false if failed, true if successful
+     * @throws ScriptException if an error occurred in the javascript
+     * @throws NoSuchMethodException  if the function cannot be found,
+     */
     public boolean run(mmud.database.entities.game.Room room, String sourceCode) throws ScriptException, NoSuchMethodException
     {
 
@@ -56,6 +108,14 @@ public class RunScript
         return result == null ? false : result;
     }
 
+    /**
+     * Runs a specific function called "function event()". This is a generic
+     * event without a focus.
+     * @param sourceCode the source code, javascript, a string.
+     * @return false if failed, true if successful
+     * @throws ScriptException if an error occurred in the javascript
+     * @throws NoSuchMethodException  if the function cannot be found,
+     */
     public boolean run(String sourceCode) throws ScriptException, NoSuchMethodException
     {
 
@@ -72,8 +132,9 @@ public class RunScript
         ScriptEngineManager factory = new ScriptEngineManager();
         // create a JavaScript engine
         ScriptEngine engine = factory.getEngineByName("JavaScript");
-        // expose File object as variable to script
-        engine.put("lookup", lookup);
+        // expose persons and rooms object as variable to script
+        engine.put("persons", persons);
+        engine.put("rooms", rooms);
         // evaluate JavaScript code from String
         //        engine.eval("print('Hello, World')");
         engine.eval(sourceCode);

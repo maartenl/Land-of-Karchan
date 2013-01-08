@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Schedule;
@@ -28,6 +29,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -60,6 +62,10 @@ import mmud.exceptions.MudException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
+import mmud.scripting.Persons;
+import mmud.scripting.Rooms;
+import mmud.scripting.RoomsInterface;
+import mmud.scripting.RunScript;
 import org.hibernate.Session;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
@@ -85,11 +91,13 @@ import org.slf4j.LoggerFactory;
 @Stateless
 @LocalBean
 @Path("/game")
-public class GameBean
+public class GameBean implements RoomsInterface
 {
 
     @EJB
     private BoardBean boardBean;
+    @EJB
+    private PersonBean personBean;
     @EJB
     private MailBean mailBean;
     @EJB
@@ -834,15 +842,42 @@ public class GameBean
         query.setParameter("hour", calendar.get(Calendar.HOUR_OF_DAY));
         query.setParameter("minute", calendar.get(Calendar.MINUTE));
         List<Event> list = query.getResultList();
+        Persons persons = new Persons(personBean);
+        Rooms rooms = new Rooms(this) ;
+        RunScript runScript = new RunScript(persons, rooms);
         for (Event event : list)
         {
             logBean.writeLog(null, "Event " + event.getEventid() + " executed.");
             Method method = event.getMethod();
-            String source = method.getSrc();
-            
+            try
+            {
+                if (event.getRoom() != null)
+                {
+                    boolean result = runScript.run(event.getRoom(), method.getSrc());
+                } else if (event.getPerson() != null)
+                {
+                    boolean result = runScript.run(event.getPerson(), method.getSrc());
+                } else
+                {
+                    boolean result = runScript.run(method.getSrc());
+                }
+            } catch (ScriptException | NoSuchMethodException ex)
+            {
+                // Error occurred: turn this event off!
+                event.setCallable(Boolean.FALSE);
+                // log it but keep going with the next event.
+                logBean.writeLogException(ex);
+                java.util.logging.Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     // TODO : scheduler that cleans up people, runs at midnight
     // TODO : scheduler that increments item durability, runs at high noon?
     // TODO : fighting scheduler (second = "*/2")
+
+    @Override
+    public Room find(Integer id)
+    {
+        return getEntityManager().find(Room.class, id);
+    }
 }

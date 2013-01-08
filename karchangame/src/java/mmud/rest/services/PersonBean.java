@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import mmud.scripting.PersonsInterface;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -24,6 +25,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-public class PersonBean
+public class PersonBean implements PersonsInterface
 {
 
     @PersistenceContext(unitName = "karchangamePU")
@@ -75,6 +77,22 @@ public class PersonBean
     }
 
     /**
+     * Retrieves someone in the game. A bot or someone who is actually active
+     * and playing.
+     * @param name the name of the person to lookup.
+     * @return a Person or null if not found.
+     */
+    public Person find(String name)
+    {
+        // Hibernate specific
+        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
+        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
+        session.enableFilter("activePersons");
+        Person result = getEntityManager().find(Person.class, name);
+        return result ;
+    }
+
+    /**
      * Retrieves a player, may or may not be playing the game. The name
      * lookup is case-insensitive.
      * @param name the name of the person.
@@ -95,6 +113,7 @@ public class PersonBean
         }
         return result.get(0);
     }
+
     /**
      * Retrieves a player, playing the game. The name
      * lookup is case-insensitive. Is often used for room-overreaching

@@ -31,7 +31,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import mmud.database.entities.characters.Person;
 
 /**
  * An event, defined to execute at a certain time.
@@ -52,53 +52,50 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Event.findByEventid", query = "SELECT e FROM Event e WHERE e.eventid = :eventid"),
     @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
     @NamedQuery(name = "Event.list", query = "SELECT e "
-        + "FROM Event e "
-        + "WHERE callable = 1 "
-        + "AND (e.month is null OR e.month = :month) "
-        + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
-        + "AND (e.hour is null OR e.hour = :hour) "
-        + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
-        + "AND (e.minute is null OR e.minute = :minute)"),
+    + "FROM Event e "
+    + "WHERE callable = 1 "
+    + "AND (e.month is null OR e.month = :month) "
+    + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
+    + "AND (e.hour is null OR e.hour = :hour) "
+    + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
+    + "AND (e.minute is null OR e.minute = :minute)"),
     @NamedQuery(name = "Event.findByCallable", query = "SELECT e FROM Event e WHERE e.callable = :callable"),
     @NamedQuery(name = "Event.findByRoom", query = "SELECT e FROM Event e WHERE e.room = :room"),
 })
 public class Event implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "eventid")
     private Integer eventid;
-    @Size(max = 32)
-    @Column(name = "name")
-    private String name;
+    @JoinColumn(name = "name", nullable = true, referencedColumnName = "name")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    private Person person;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "month")
-    private int month;
+    private Integer month;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "dayofmonth")
-    private int dayofmonth;
+    private Integer dayofmonth;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "hour")
-    private int hour;
+    private Integer hour;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "minute")
-    private int minute;
+    private Integer minute;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "dayofweek")
-    private int dayofweek;
+    private Integer dayofweek;
     @Basic(optional = false)
     @NotNull
     @Column(name = "callable")
     private int callable;
-    @Column(name = "room")
-    private Integer room;
+    @JoinColumn(name = "room", nullable = true, referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Room room;
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
@@ -120,7 +117,7 @@ public class Event implements Serializable
         this.eventid = eventid;
     }
 
-    public Event(Integer eventid, int month, int dayofmonth, int hour, int minute, int dayofweek, int callable, Date creation)
+    public Event(Integer eventid, Integer month, Integer dayofmonth, Integer hour, Integer minute, Integer dayofweek, boolean callable, Date creation)
     {
         this.eventid = eventid;
         this.month = month;
@@ -128,7 +125,7 @@ public class Event implements Serializable
         this.hour = hour;
         this.minute = minute;
         this.dayofweek = dayofweek;
-        this.callable = callable;
+        setCallable(callable);
         this.creation = creation;
     }
 
@@ -142,14 +139,14 @@ public class Event implements Serializable
         this.eventid = eventid;
     }
 
-    public String getName()
+    public Person getPerson()
     {
-        return name;
+        return person;
     }
 
-    public void setName(String name)
+    public void setPerson(Person person)
     {
-        this.name = name;
+        this.person = person;
     }
 
     /**
@@ -159,12 +156,12 @@ public class Event implements Serializable
      *
      * @return integer
      */
-    public int getMonth()
+    public Integer getMonth()
     {
         return month;
     }
 
-    public void setMonth(int month)
+    public void setMonth(Integer month)
     {
         this.month = month;
     }
@@ -175,12 +172,12 @@ public class Event implements Serializable
      *
      * @return integer
      */
-    public int getDayofmonth()
+    public Integer getDayofmonth()
     {
         return dayofmonth;
     }
 
-    public void setDayofmonth(int dayofmonth)
+    public void setDayofmonth(Integer dayofmonth)
     {
         this.dayofmonth = dayofmonth;
     }
@@ -192,12 +189,12 @@ public class Event implements Serializable
      *
      * @return integer
      */
-    public int getHour()
+    public Integer getHour()
     {
         return hour;
     }
 
-    public void setHour(int hour)
+    public void setHour(Integer hour)
     {
         this.hour = hour;
     }
@@ -209,12 +206,12 @@ public class Event implements Serializable
      *
      * @return integer
      */
-    public int getMinute()
+    public Integer getMinute()
     {
         return minute;
     }
 
-    public void setMinute(int minute)
+    public void setMinute(Integer minute)
     {
         this.minute = minute;
     }
@@ -226,22 +223,19 @@ public class Event implements Serializable
      *
      * @return integer
      */
-    public int getDayofweek()
+    public Integer getDayofweek()
     {
         return dayofweek;
     }
 
-    public void setDayofweek(int dayofweek)
+    public void setDayofweek(Integer dayofweek)
     {
         this.dayofweek = dayofweek;
     }
 
     /**
-     * Returns the month in which this event should be run. Be warned
-     * JANUARY is month 0, the first month. December is month 11, the last month.
-     * If it returns null, it means every month is matched.
-     *
-     * @return integer
+     * Returns if this event is 'active'.
+     * @return boolean, true if active, false otherwise.
      */
     public boolean getCallable()
     {
@@ -253,12 +247,12 @@ public class Event implements Serializable
         this.callable = Boolean.TRUE.equals(callable) ? 1 : 0;
     }
 
-    public Integer getRoom()
+    public Room getRoom()
     {
         return room;
     }
 
-    public void setRoom(Integer room)
+    public void setRoom(Room room)
     {
         this.room = room;
     }
@@ -322,5 +316,4 @@ public class Event implements Serializable
     {
         return "mmud.database.entities.game.Event[ eventid=" + eventid + " ]";
     }
-
 }

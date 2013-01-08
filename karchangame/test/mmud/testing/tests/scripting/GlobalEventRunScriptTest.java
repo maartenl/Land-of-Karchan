@@ -19,7 +19,7 @@ package mmud.testing.tests.scripting;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Lookup;
+import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -38,8 +38,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEventEmptySource()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -58,8 +57,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEvent()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("println('Hello, world.');");
@@ -71,6 +69,51 @@ public class GlobalEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(GlobalEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("No error message was expected.");
+        }
+    }
+
+    @Test
+    public void runPersonEvent()
+    {
+        RunScript runScript = new RunScript(persons, rooms);
+        StringBuilder sourceCode = new StringBuilder();
+        sourceCode.append("function event() {");
+        sourceCode.append("person = persons.find('hotblack');");
+        sourceCode.append("println('Hello, ' + person.name + '.');");
+        sourceCode.append("println(person.name + ' has sex ' + person.sex + '.');");
+        sourceCode.append("println(person.name + ' has guild ' + person.guild + '.');");
+        sourceCode.append("return false;");
+        sourceCode.append("}");
+        try
+        {
+            Object result = runScript.run(sourceCode.toString());
+        } catch (ScriptException | NoSuchMethodException ex)
+        {
+            Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("No error message was expected.");
+        }
+    }
+
+    @Test
+    public void runRoomEvent()
+    {
+        RunScript runScript = new RunScript(persons, rooms);
+        StringBuilder sourceCode = new StringBuilder();
+        sourceCode.append("function event() {");
+        sourceCode.append("room = rooms.find(1);");
+        sourceCode.append("println('Currently in room  ' + room.id + '.');");
+        sourceCode.append("println('Room has description ' + room.description + '.');");
+        sourceCode.append("println('Room has title ' + room.title + '.');");
+        sourceCode.append("println('Room has image ' + room.image + '.');");
+        sourceCode.append("return false;");
+        sourceCode.append("}");
+        try
+        {
+            Object result = runScript.run(room, sourceCode.toString());
+        } catch (ScriptException | NoSuchMethodException ex)
+        {
+            Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("No error message was expected.");
         }
     }

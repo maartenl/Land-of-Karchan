@@ -16,12 +16,14 @@
  */
 package mmud.scripting;
 
+import mmud.database.entities.game.Room;
+
 /**
  *
  * @author maartenl
  */
-public class Lookup
+public interface RoomsInterface
 {
-
+    public Room find(Integer id);
 
 }

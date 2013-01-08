@@ -23,6 +23,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
+import mmud.scripting.Persons;
+import mmud.scripting.Rooms;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -114,6 +116,46 @@ public class RunScriptTest
     protected Person marvin;
     protected Person hotblack;
     protected RoomStub room;
+    protected final Persons persons = new Persons(null)
+    {
+        @Override
+        public Person find(String name)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+            switch (name.toLowerCase())
+            {
+                case "hotblack":
+                    return hotblack;
+                case "marvin":
+                    return marvin;
+            }
+            return null;
+        }
+    };
+    protected final Rooms rooms = new Rooms(null)
+    {
+        public Room find(Integer id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+            switch (id.intValue())
+            {
+
+                case 1:
+                    return room;
+                case 2:
+                    return room.getWest();
+                case 3:
+                    return room.getWest().getWest();
+            }
+            return null;
+        }
+    };
 
     @BeforeClass
     public static void setUpClass() throws Exception

@@ -19,7 +19,7 @@ package mmud.testing.tests.scripting;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Lookup;
+import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -38,8 +38,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventEmptySource()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -58,8 +57,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEvent()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("println('Currently in room  ' + room.id + '.');");
@@ -81,8 +79,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventCommunication()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
@@ -103,8 +100,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventAttributes()
     {
-        Lookup lookup = new Lookup();
-        RunScript runScript = new RunScript(lookup);
+        RunScript runScript = new RunScript(persons, rooms);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.setAttribute('scripting','true');");
