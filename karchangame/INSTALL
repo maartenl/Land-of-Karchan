@@ -1,0 +1,81 @@
+INSTALLATION
+============
+
+Installing this war requires the following components:
+- Glassfish 4
+- JDK 7
+- MariaDB
+- MariaDB JConnect jdbc driver in glassfish ($GLASSFISH/glassfish/lib)
+
+NOTE: MariaDB happens to be the database that I am using. It should run,
+out of the box, using another database. As long as there's a JDBC driver
+for it.
+
+Steps
+-----
+
+0. install MariaDB
+1. start MariaDB ("systemctl start mysqld")
+2. create a database (using, for example, mysql-workbench executing 
+    "create database mmud")
+3. create a user with appropriate rights in the new database
+4. install Glassfish 4
+5. Put in an administration password, if it asks for one.
+6. Install MariaDB Client Library for Java Applications (JDBC driver)
+    You can do this by copying the JDBC jar file into glassfish/domain1/lib
+    (requires glassfish restart)  
+7. Start Glassfish glassfish-4.0/bin/asadmin start-domain domain1
+8. Go to http://localhost:4848 en log in with user admin/password you just supplied
+
+Setting up Database Connection:
+
+9. Setup the jdbc connection pool to the database created.
+    For instance with the following settings:
+    Poolname: mmud
+    Resource type: javax.sql.DataSource (local transactions, which are fine)
+    Database Driver Vendor: org.mariadb.jdbc.Driver
+    Select Next.
+    Datasource Classname: org.mariadb.jdbc.MySQLDataSource
+
+    portNumber: 3306
+    databaseName: mmud
+    serverName: localhost
+    user: mmud
+    user: mmud
+    Try to *PING* the database from the administration console.
+10. Setup the jdbc resource, the war assumes it is called "jdbc/mmud".
+    For instance with the following settings:
+    JNDI Name: jdbc/mmud (this is the same name as in the persistence.xml)
+    Select the poolname of the pool you created in the previous step.
+11. deploy the war to glassfish
+12. Check the database, it should show some tables
+13.  The last step.
+
+Surf in your webbrowser to http://localhost.localdomain:8080/karchangame/
+
+Logging
+-------
+
+Add logging entries to 
+glassfish-4.0/glassfish/domains/domain1/config/logging.properties.
+
+If you wish to see all logging, try:
+mmud.level=FINEST
+
+For specifics, try the following as an example:
+mmud.images.ImageOperations.level=FINEST
+
+Logging sql statements in EclipseLink is possible by adding the following
+to the persistence.xml:
+<property name="eclipselink.logging.logger" value="DefaultLogger"/>
+<property name="eclipselink.logging.level" value="FINE"/>
+
+Addendum
+--------
+
+Don't forget to properly specify the data source in glassfish.
+
+The software is looking for a JDBC Resource named 
+"jdbc/mmud".
+
+
