@@ -1,6 +1,6 @@
-=== database commands to fix it for "karchangame" in ejb mode ===
+# === database commands to fix it for "karchangame" in ejb mode ===
 
-drop table mm_boardmessages2;
+drop table IF EXISTS mm_boardmessages2;
 
 create table mm_boardmessages2 (
   id bigint(20) NOT NULL AUTO_INCREMENT primary key,
@@ -37,7 +37,7 @@ add foreign key (room) references mm_rooms (id);
 // already done in current database
 
 ----
-drop table mm_boardmessages_old;
+drop table IF EXISTS mm_boardmessages_old;
 
 ALTER TABLE mm_usertable CHANGE state currentstate text;
 ALTER TABLE mm_usertable CHANGE creation creation_date timestamp not null
@@ -48,7 +48,7 @@ ALTER TABLE mm_usertable CHANGE length height varchar(20);
 /home/maartenl/Land-of-Karchan/sqlscripts/triggers/mm_usertable_insert_trigger.sql
 
 # change the log (mm_log)
-drop table mm_log2;
+drop table if exists /home/maartenl/Land-of-Karchan/sqlscripts/triggers/mm_usertable_inmm_log2;
 
 create table mm_log2 (
   id bigint(20) NOT NULL AUTO_INCREMENT primary key,
