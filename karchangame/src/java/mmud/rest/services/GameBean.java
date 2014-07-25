@@ -831,9 +831,10 @@ public class GameBean implements RoomsInterface
     /**
      * Runs every minute, looks up which event to execute now.
      */
-    @Schedule(minute = "*/1")
+    @Schedule( hour = "*", minute = "*/1")
     public void events()
     {
+        logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
         Query query = getEntityManager().createNamedQuery("Event.list");
         Calendar calendar = Calendar.getInstance();
         query.setParameter("month", calendar.get(Calendar.MONTH));
@@ -843,7 +844,7 @@ public class GameBean implements RoomsInterface
         query.setParameter("minute", calendar.get(Calendar.MINUTE));
         List<Event> list = query.getResultList();
         Persons persons = new Persons(personBean);
-        Rooms rooms = new Rooms(this) ;
+        Rooms rooms = new Rooms(this);
         RunScript runScript = new RunScript(persons, rooms);
         for (Event event : list)
         {

@@ -16,8 +16,6 @@
  */
 package mmud;
 
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.api.json.JSONJAXBContext;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
@@ -44,9 +42,9 @@ public class MyJAXBContextResolver implements ContextResolver<JAXBContext>
 
     public MyJAXBContextResolver() throws Exception
     {
-        this.context =
-                new JSONJAXBContext(
-                JSONConfiguration.natural().rootUnwrapping(true).build(), types);
+        //this.context =
+        //       new JSONJAXBContext(
+        //      JSONConfiguration.natural().rootUnwrapping(true).build(), types);
     }
 
     @Override

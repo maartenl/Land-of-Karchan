@@ -61,8 +61,7 @@ public class Log implements Serializable
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
-    @Basic(optional = false)
-    @NotNull
+    @Basic(optional = true)
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;

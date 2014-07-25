@@ -63,7 +63,7 @@ public class LogBean
      * <li>an administrator creates a new item/room/character
      * </ul>
      *
-     * @param person the person to be inscribed in the log table
+     * @param person the person to be inscribed in the log table. May be null.
      * @param message the message to be written in the log, may not be larger than
      * 255 characters.
      */
@@ -72,7 +72,7 @@ public class LogBean
         itsLog.debug("writeLog");
 
         Log log = new Log();
-        log.setName(person.getName());
+        log.setName(person == null ? null : person.getName());
         log.setCreation(new Date());
         log.setMessage(message);
         getEntityManager().persist(log);
@@ -80,7 +80,7 @@ public class LogBean
 
     /**
      * write a log message of an exception to the database.
-     * @param person the person to be inscribed in the log table
+     * @param person the person to be inscribed in the log table. May be null.
      * @param throwable the exception or error to be written to the log table.
      */
     public void writeLogException(Person person, Throwable throwable)
@@ -88,7 +88,7 @@ public class LogBean
         itsLog.debug("writeLogException");
 
         Log log = new Log();
-        log.setName(person.getName());
+        log.setName(person == null ? null : person.getName());
         log.setCreation(new Date());
         log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
@@ -125,7 +125,7 @@ public class LogBean
      * write a command to the database. This log facility is primarily used
      * to keep a chatrecord.
      *
-     * @param person the person to be inscribed in the log table
+     * @param person the person to be inscribed in the log table. May be null.
      * @param command the command that is to be executed written in the log, may not be larger than
      *            255 characters.
      */
@@ -134,7 +134,7 @@ public class LogBean
         itsLog.debug("writeCommandLog");
 
         Commandlog commandlog = new Commandlog();
-        commandlog.setName(person.getName());
+        commandlog.setName(person == null ? null : person.getName());
         commandlog.setStamp(new Date());
         commandlog.setCommand(command);
         getEntityManager().persist(commandlog);

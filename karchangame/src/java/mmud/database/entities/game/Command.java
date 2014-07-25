@@ -41,10 +41,8 @@ import javax.validation.constraints.NotNull;
 {
     @NamedQuery(name = "Command.findAll", query = "SELECT c FROM Command c"),
     @NamedQuery(name = "Command.findById", query = "SELECT c FROM Command c WHERE c.commandPK.id = :id"),
-    @NamedQuery(name = "Command.findByCallable", query = "SELECT c FROM Command c WHERE c.callable = :callable"),
-    @NamedQuery(name = "Command.findByCommand", query = "SELECT c FROM Command c WHERE c.commandPK.command = :command"),
-    @NamedQuery(name = "Command.findByRoom", query = "SELECT c FROM Command c WHERE c.room = :room"),
-    @NamedQuery(name = "Command.findByCreation", query = "SELECT c FROM Command c WHERE c.creation = :creation")
+    @NamedQuery(name = "Command.match", query = "SELECT c FROM Command c WHERE c.callable = 1"), //  and c.commandPK.command regexp :regular_expression"),
+    @NamedQuery(name = "Command.list", query = "SELECT c FROM Command c WHERE c.callable = 1")
 })
 public class Command implements Serializable
 {

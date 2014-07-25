@@ -50,7 +50,6 @@ import mmud.database.entities.characters.Person;
 {
     @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
     @NamedQuery(name = "Event.findByEventid", query = "SELECT e FROM Event e WHERE e.eventid = :eventid"),
-    @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
     @NamedQuery(name = "Event.list", query = "SELECT e "
     + "FROM Event e "
     + "WHERE callable = 1 "
@@ -58,9 +57,7 @@ import mmud.database.entities.characters.Person;
     + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
     + "AND (e.hour is null OR e.hour = :hour) "
     + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
-    + "AND (e.minute is null OR e.minute = :minute)"),
-    @NamedQuery(name = "Event.findByCallable", query = "SELECT e FROM Event e WHERE e.callable = :callable"),
-    @NamedQuery(name = "Event.findByRoom", query = "SELECT e FROM Event e WHERE e.room = :room"),
+    + "AND (e.minute is null OR e.minute = :minute)")
 })
 public class Event implements Serializable
 {
