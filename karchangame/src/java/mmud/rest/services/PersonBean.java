@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,8 +26,6 @@ import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.scripting.PersonsInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author maartenl
@@ -49,7 +48,7 @@ public class PersonBean implements PersonsInterface
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(PersonBean.class);
+    private static final Logger itsLog = Logger.getLogger(PersonBean.class.getName());
 
     /**
      * Retrieves a person from the pool of all persons. Bear in mind that

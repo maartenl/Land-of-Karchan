@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -40,8 +41,6 @@ import mmud.Utils;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A user in the game. Might be an administrator.
@@ -63,7 +62,7 @@ public class User extends Person
 {
 
     private static final String PASSWORD_REGEXP = ".{5,}";
-    private static final Logger itsLog = LoggerFactory.getLogger(User.class);
+    private static final Logger itsLog = java.util.logging.Logger.getLogger(User.class.getName());
     @Size(min = 5, max = 200)
     @Column(name = "address")
     private String address;
@@ -491,7 +490,7 @@ public class User extends Person
      */
     public boolean verifySessionPassword(String aSessionPassword)
     {
-        itsLog.debug("entering verifySessionPassword");
+        itsLog.finer("entering verifySessionPassword");
         if (!isUser())
         {
             // is not a common user, therefore does not have a session password.

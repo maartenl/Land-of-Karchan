@@ -16,25 +16,26 @@
  */
 package mmud.commands.guild;
 
-import mmud.commands.GuildMasterCommand;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Makes you, as guildmaster, remove a member of the guild forcibly. Command
  * syntax something like : <TT>guildremove &lt;person&gt;</TT>
+ *
  * @author maartenl
  */
 public class RemoveCommand extends GuildMasterCommand
 {
-    private static final Logger itsLog = LoggerFactory.getLogger(RemoveCommand.class);
+
+    private static final Logger itsLog = Logger.getLogger(RemoveCommand.class.getName());
 
     public RemoveCommand(String aRegExpr)
     {

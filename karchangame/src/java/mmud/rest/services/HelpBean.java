@@ -16,16 +16,16 @@
  */
 package mmud.rest.services;
 
-import javax.ejb.Stateless;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import mmud.database.entities.game.Help;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Takes care of the help topics.
+ *
  * @author maartenl
  */
 @Stateless
@@ -46,14 +46,14 @@ public class HelpBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(HelpBean.class);
+    private static final Logger itsLog = Logger.getLogger(HelpBean.class.getName());
 
     /**
      * returns a help message on the current command, or general help
      *
      * @param name
-     *            the command to enlist help for. If this is a null pointer,
-     *            general help will be requested.
+     * the command to enlist help for. If this is a null pointer,
+     * general help will be requested.
      * @return Help entity.
      */
     public Help getHelp(String name)

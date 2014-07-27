@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,8 +49,6 @@ import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An item. To be more precise an instance of an item definition.
@@ -75,7 +74,7 @@ import org.slf4j.LoggerFactory;
 public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
 
-    private static final Logger itsLog = LoggerFactory.getLogger(Item.class);
+    private static final Logger itsLog = Logger.getLogger(Item.class.getName());
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -368,18 +367,18 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         if (itemattributeCollection == null)
         {
-            itsLog.debug("getItemattribute name=" + name + " collection is null");
+            itsLog.finer("getItemattribute name=" + name + " collection is null");
             return null;
         }
         for (Itemattribute attr : itemattributeCollection)
         {
-            itsLog.debug("getItemattribute name=" + name + " attr=" + attr);
+            itsLog.finer("getItemattribute name=" + name + " attr=" + attr);
             if (attr.getName().equals(name))
             {
                 return attr;
             }
         }
-        itsLog.debug("getItemattribute name=" + name + " not found");
+        itsLog.finer("getItemattribute name=" + name + " not found");
         return null;
     }
 
@@ -409,20 +408,20 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         Itemattribute attr = getItemattribute(name);
         if (attr == null)
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
             return false;
         }
         if (attr.getValue() == value)
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
             return true;
         }
         if (attr.getValue().equals(value))
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
             return true;
         }
-        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
+        itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
         return false;
     }
 

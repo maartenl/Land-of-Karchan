@@ -16,20 +16,20 @@
  */
 package mmud.rest.services;
 
-import javax.ejb.Stateless;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.ItemException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Specific bean for the dropping and getting of items from containers, from
  * rooms and from persons.
+ *
  * @author maartenl
  */
 @Stateless
@@ -50,10 +50,11 @@ public class ItemBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(ItemBean.class);
+    private static final Logger itsLog = Logger.getLogger(ItemBean.class.getName());
 
     /**
      * Drops an item on the floor.
+     *
      * @param person the person
      * @param item the item to be dropped.
      * @return true if successfull.
@@ -69,6 +70,7 @@ public class ItemBean
 
     /**
      * Gets an item from off the floor/room.
+     *
      * @param person the person
      * @param item the item to be retrieved from the room.
      * @return true if successfull.
@@ -84,6 +86,7 @@ public class ItemBean
 
     /**
      * Gives an item from one person to another person.
+     *
      * @param fromperson the person giving the item
      * @param item the item to be shared
      * @param toperson the person receiving the item
@@ -100,6 +103,7 @@ public class ItemBean
 
     /**
      * Puts an item into a container.
+     *
      * @param item the item to be put
      * @param container the container that the item should receive
      * @param person the person performing the action
@@ -128,6 +132,7 @@ public class ItemBean
 
     /**
      * Retrieves an item from a container.
+     *
      * @param item the item to be retrieved
      * @param container the container that contains the item
      * @param person the person performing the action

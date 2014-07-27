@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,8 +49,6 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A room. Bear in mind that this room has potential exits to the north, south,
@@ -79,7 +78,7 @@ import org.slf4j.LoggerFactory;
 public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler
 {
 
-    private static final Logger itsLog = LoggerFactory.getLogger(Room.class);
+    private static final Logger itsLog = Logger.getLogger(Room.class.getName());
     /**
      * The first room that new characters appear in.
      */
@@ -658,20 +657,20 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         Roomattribute attr = getRoomattribute(name);
         if (attr == null)
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on room " + getId() + ".");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on room " + getId() + ".");
             return false;
         }
         if (attr.getValue() == value)
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") same object on room " + getId() + "!");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on room " + getId() + "!");
             return true;
         }
         if (attr.getValue().equals(value))
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on room " + getId() + "!");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on room " + getId() + "!");
             return true;
         }
-        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on room " + getId() + ".");
+        itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on room " + getId() + ".");
         return false;
     }
 
@@ -679,18 +678,18 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     {
         if (attributes == null)
         {
-            itsLog.debug("getRoomattribute name=" + name + " collection is null");
+            itsLog.finer("getRoomattribute name=" + name + " collection is null");
             return null;
         }
         for (Roomattribute attr : attributes)
         {
-            itsLog.debug("getRoomattribute name=" + name + " attr=" + attr);
+            itsLog.finer("getRoomattribute name=" + name + " attr=" + attr);
             if (attr.getName().equals(name))
             {
                 return attr;
             }
         }
-        itsLog.debug("getRoomattribute name=" + name + " not found");
+        itsLog.finer("getRoomattribute name=" + name + " not found");
         return null;
     }
 

@@ -19,15 +19,14 @@ package mmud.rest.services;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
-import javax.ejb.Stateless;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +50,7 @@ public class LogBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(LogBean.class);
+    private static final Logger itsLog = Logger.getLogger(LogBean.class.getName());
 
     /**
      * write a log message to the database. This log facility is primarily used
@@ -69,27 +68,26 @@ public class LogBean
      */
     public void writeLog(Person person, String message)
     {
-        itsLog.debug("writeLog");
+        itsLog.finer("writeLog");
 
         Log log = new Log();
         log.setName(person == null ? null : person.getName());
-        log.setCreation(new Date());
         log.setMessage(message);
         getEntityManager().persist(log);
     }
 
     /**
      * write a log message of an exception to the database.
+     *
      * @param person the person to be inscribed in the log table. May be null.
      * @param throwable the exception or error to be written to the log table.
      */
     public void writeLogException(Person person, Throwable throwable)
     {
-        itsLog.debug("writeLogException");
+        itsLog.finer("writeLogException");
 
         Log log = new Log();
         log.setName(person == null ? null : person.getName());
-        log.setCreation(new Date());
         log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
         try (PrintStream myPrintStream = new PrintStream(myStream))
@@ -102,15 +100,15 @@ public class LogBean
 
     /**
      * write a log message of an exception to the database.
+     *
      * @param throwable the exception or error to be written to the log table.
      */
     public void writeLogException(Throwable throwable)
     {
-        itsLog.debug("writeLogException");
+        itsLog.finer("writeLogException");
 
         Log log = new Log();
         log.setName(null);
-        log.setCreation(new Date());
         log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
         try (PrintStream myPrintStream = new PrintStream(myStream))
@@ -127,11 +125,11 @@ public class LogBean
      *
      * @param person the person to be inscribed in the log table. May be null.
      * @param command the command that is to be executed written in the log, may not be larger than
-     *            255 characters.
+     * 255 characters.
      */
     public void writeCommandLog(Person person, String command)
     {
-        itsLog.debug("writeCommandLog");
+        itsLog.finer("writeCommandLog");
 
         Commandlog commandlog = new Commandlog();
         commandlog.setName(person == null ? null : person.getName());

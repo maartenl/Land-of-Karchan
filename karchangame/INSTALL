@@ -22,7 +22,8 @@ Steps
 4. install Glassfish 4
 5. Put in an administration password, if it asks for one.
 6. Install MariaDB Client Library for Java Applications (JDBC driver)
-    You can do this by copying the JDBC jar file into glassfish/domain1/lib
+   or instead MySQL Connector/J 5.1.31 mysql-connector-java-5.1.31.tar.gz
+    You can do this by copying the JDBC jar file into glassfish4/glassfish/domains/domain1/lib
     (requires glassfish restart)  
 7. Start Glassfish glassfish-4.0/bin/asadmin start-domain domain1
 8. Go to http://localhost:4848 en log in with user admin/password you just supplied

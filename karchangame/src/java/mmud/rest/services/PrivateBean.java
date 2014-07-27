@@ -19,6 +19,8 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -47,8 +49,6 @@ import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Contains all rest calls that are available to a specific character, with
@@ -73,6 +73,11 @@ public class PrivateBean
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
+    public PrivateBean()
+    {
+        // empty constructor, I don't know why, but it's necessary.
+    }
+
     /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
      * build/web/WEB-INF/classes/META-INF/persistence.xml.
@@ -83,7 +88,7 @@ public class PrivateBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(PrivateBean.class);
+    private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
 
     /**
      * This method should be called to verify that the target of a certain
@@ -134,7 +139,7 @@ public class PrivateBean
             })
     public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering listMail");
+        itsLog.finer("entering listMail");
         getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         List<PrivateMail> res = new ArrayList<>();
@@ -165,7 +170,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("listMail: throws ", e);
+            itsLog.throwing("listMail: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return res;
@@ -189,7 +194,7 @@ public class PrivateBean
             })
     public Response hasNewMail(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering hasNewMail");
+        itsLog.finer("entering hasNewMail");
         Person person = authenticate(name, lok);
         boolean result = mailBean.hasNewMail(person);
         if (!result)
@@ -204,7 +209,7 @@ public class PrivateBean
         Person toperson = getEntityManager().find(Person.class, name);
         if (toperson == null)
         {
-            itsLog.warn("name of non existing user {}", name);
+            itsLog.log(Level.INFO, "name of non existing user {0}", name);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         return toperson;
@@ -215,12 +220,12 @@ public class PrivateBean
         User toperson = getEntityManager().find(User.class, name);
         if (toperson == null)
         {
-            itsLog.warn("name of non existing user {}", name);
+            itsLog.log(Level.INFO, "name of non existing user {0}", name);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         if (!toperson.isUser())
         {
-            itsLog.warn("user not proper user, {}", name);
+            itsLog.log(Level.INFO, "user not proper user, {0}", name);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         return toperson;
@@ -229,9 +234,11 @@ public class PrivateBean
     /**
      * Compose a new mail.
      *
+     * @param newMail the new mail object received from the client.
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
-     * @param name the name of the user
+     * @param name the name of the
+     * @return Response.ok if everything's okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
@@ -243,7 +250,7 @@ public class PrivateBean
             })
     public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering newMail");
+        itsLog.finer("entering newMail");
         User person = authenticate(name, lok);
         User toperson = getUser(newMail.toname);
         try
@@ -266,10 +273,10 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("newMail: throws ", e);
+            itsLog.throwing("newMail: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        itsLog.debug("exiting newMail");
+        itsLog.finer("exiting newMail");
         return Response.ok().build();
     }
 
@@ -279,17 +286,21 @@ public class PrivateBean
 
         if (mail == null)
         {
-            itsLog.warn("mail {} not found", id);
+            itsLog.log(Level.INFO, "mail {0} not found", id);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         if (mail.getDeleted())
         {
-            itsLog.warn("mail {} deleted", id);
+            itsLog.log(Level.INFO, "mail {0} deleted", id);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         if (!mail.getToname().getName().equals(toname))
         {
-            itsLog.warn("mail {} not for {}", id, toname);
+            itsLog.log(Level.INFO, "mail {0} not for {1}", new Object[]
+            {
+                id, toname
+            });
+
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
         return mail;
@@ -315,7 +326,7 @@ public class PrivateBean
             })
     public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
-        itsLog.debug("entering getMail");
+        itsLog.finer("entering getMail");
         getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         try
@@ -323,7 +334,7 @@ public class PrivateBean
             Mail mail = getMail(person.getName(), id);
             // turn off the "have not read" sign.
             mail.setHaveread(Boolean.TRUE);
-            itsLog.debug("exiting getMail");
+            itsLog.finer("exiting getMail");
             return new PrivateMail(mail);
         } catch (WebApplicationException e)
         {
@@ -331,7 +342,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("getMail: throws ", e);
+            itsLog.throwing("getMail: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
     }
@@ -378,7 +389,7 @@ public class PrivateBean
         return Response.noContent().build();
         // TODO MLE: this needs to get fixed.
 //
-//        itsLog.debug("entering createMailItem");
+//        itsLog.finer("entering createMailItem");
 //        Person person = authenticate(name, lok);
 //
 //        try
@@ -386,14 +397,14 @@ public class PrivateBean
 //            // get the specific mail with id {id}
 //            Mail mail = getMail(person.getName(), id);
 //
-//            itsLog.debug("createMailItem: retrieve template item definition");
+//            itsLog.finer("createMailItem: retrieve template item definition");
 //
 //            ItemDefinition newdef = null;
 //            if (mail.getItemDefinition() == null)
 //            {
 //                if (itemDefinitionId >= Mail.ITEMS.length && itemDefinitionId < 0)
 //                {
-//                    itsLog.debug("createMailItem: wrong item def");
+//                    itsLog.finer("createMailItem: wrong item def");
 //                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
 //                }
 //
@@ -401,12 +412,12 @@ public class PrivateBean
 //
 //                int max_id = 0;
 //                // retrieve max item_idItemDefinition.maxid
-//                itsLog.debug("createMailItem: retrieve max id");
+//                itsLog.finer("createMailItem: retrieve max id");
 //                Query query = getEntityManager().createNamedQuery("ItemDefinition.maxid");
 //                max_id = (Integer) query.getSingleResult();
 //
 //                // create itemDefinitionId definition
-//                itsLog.debug("createMailItem: create item definition");
+//                itsLog.finer("createMailItem: create item definition");
 //                newdef = new ItemDefinition();
 //                newdef.setId(max_id + 1);
 //                newdef.setName(definition.getName());
@@ -426,12 +437,12 @@ public class PrivateBean
 //                getEntityManager().persist(newdef);
 //
 //                // set itemDefinitionId definition into the mail
-//                itsLog.debug("createMailItem: set itemdefinition into the mail");
+//                itsLog.finer("createMailItem: set itemdefinition into the mail");
 //                mail.setItemDefinition(newdef);
 //            }
 //
 //            // create itemDefinitionId instance
-//            itsLog.debug("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
+//            itsLog.finer("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
 //
 //            Item item = new Item();
 //            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
@@ -442,7 +453,7 @@ public class PrivateBean
 //            if (item.getId() != null)
 //            {
 //                // put item instance into inventory
-//                itsLog.debug("createMailItem: create inventory object for " + name);
+//                itsLog.finer("createMailItem: create inventory object for " + name);
 //
 //                CharitemTable inventory = new CharitemTable();
 //                inventory.setId(item.getId());
@@ -465,10 +476,10 @@ public class PrivateBean
 //
 //        } catch (Exception e)
 //        {
-//            itsLog.debug("createMailItem: throws ", e);
+//            itsLog.finer("createMailItem: throws ", e);
 //            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
 //        }
-//        itsLog.debug("exiting createMailItem");
+//        itsLog.finer("exiting createMailItem");
 //        return Response.ok().build();
     }
 
@@ -490,7 +501,7 @@ public class PrivateBean
             })
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
-        itsLog.debug("entering deleteMail");
+        itsLog.finer("entering deleteMail");
         Person person = authenticate(name, lok);
         try
         {
@@ -504,10 +515,10 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("deleteMail: throws ", e);
+            itsLog.throwing("deleteMail: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        itsLog.debug("exiting deleteMail");
+        itsLog.finer("exiting deleteMail");
         return Response.ok().build();
     }
 
@@ -528,11 +539,14 @@ public class PrivateBean
             })
     public Response updateCharacterSheet(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson cinfo)
     {
-        itsLog.debug("entering updateCharacterSheet");
+        itsLog.finer("entering updateCharacterSheet");
         Person person = authenticate(name, lok);
         if (!person.getName().equals(cinfo.name))
         {
-            itsLog.debug("updateCharacterSheet: names not the same {} and {}", person.getName(), cinfo.name);
+            itsLog.log(Level.INFO, "updateCharacterSheet: names not the same {0} and {1}", new Object[]
+            {
+                person.getName(), cinfo.name
+            });
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
         try
@@ -561,7 +575,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("updateCharacterSheet: throws ", e);
+            itsLog.throwing("updateCharacterSheet: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
@@ -588,10 +602,10 @@ public class PrivateBean
             })
     public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
-        itsLog.debug("entering updateFamilyvalues");
+        itsLog.finer("entering updateFamilyvalues");
         if (description == null || description == 0 || toname == null || "".equals(toname.trim()))
         {
-            itsLog.error("updateFamilyValues bad params");
+            itsLog.log(Level.INFO, "updateFamilyValues bad params, description is ''{0}''.", description);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         getEntityManager().setProperty("activePersonFilter", 0);
@@ -602,7 +616,7 @@ public class PrivateBean
             FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
             if (familyValue == null)
             {
-                itsLog.error("updateFamilyValues family value not found");
+                itsLog.info("updateFamilyValues family value not found");
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
             FamilyPK pk = new FamilyPK();
@@ -626,7 +640,7 @@ public class PrivateBean
             //ignore
             throw e;
         }
-        itsLog.debug("exiting updateFamilyvalues");
+        itsLog.finer("exiting updateFamilyvalues");
         return Response.ok().build();
     }
 
@@ -649,7 +663,7 @@ public class PrivateBean
             })
     public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
     {
-        itsLog.debug("entering deleteFamilyValues");
+        itsLog.finer("entering deleteFamilyValues");
         getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         FamilyPK pk = new FamilyPK();
@@ -661,7 +675,7 @@ public class PrivateBean
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         getEntityManager().remove(family);
-        itsLog.debug("exiting deleteFamilyValues");
+        itsLog.finer("exiting deleteFamilyValues");
         return Response.ok().build();
     }
 }

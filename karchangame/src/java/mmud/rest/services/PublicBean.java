@@ -19,6 +19,8 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -43,8 +45,6 @@ import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -75,7 +75,7 @@ public class PublicBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(PublicBean.class);
+    private static final Logger itsLog = Logger.getLogger(PublicBean.class.getName());
 
     /**
      * Returns a Fortune 100 of players on karchan. The URL:
@@ -90,7 +90,7 @@ public class PublicBean
             })
     public List<Fortune> fortunes()
     {
-        itsLog.debug("entering fortunes");
+        itsLog.finer("entering fortunes");
         getEntityManager().setProperty("activePersonFilter", 0);
         List<Fortune> res = new ArrayList<>();
         try
@@ -105,11 +105,11 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("throws fortunes", e);
+            itsLog.throwing("throws fortunes", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
-        itsLog.debug("exiting fortunes");
+        itsLog.finer("exiting fortunes");
         return res;
     }
 
@@ -126,7 +126,7 @@ public class PublicBean
             })
     public List<PublicPerson> who()
     {
-        itsLog.debug("entering who");
+        itsLog.finer("entering who");
         List<PublicPerson> res = new ArrayList<>();
         try
         {
@@ -153,10 +153,10 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("throws who", e);
+            itsLog.throwing("throws who", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        itsLog.debug("exiting who");
+        itsLog.finer("exiting who");
         return res;
     }
 
@@ -173,14 +173,14 @@ public class PublicBean
             })
     public List<News> news()
     {
-        itsLog.debug("entering news");
+        itsLog.finer("entering news");
 
         List<News> res = new ArrayList<>();
         try
         {
-            itsLog.debug("news: getting news");
+            itsLog.finer("news: getting news");
             List<BoardMessage> list = boardBean.getNews();
-            itsLog.debug("news: found " + list.size() + " entries.");
+            itsLog.finer("news: found " + list.size() + " entries.");
             for (BoardMessage message : list)
             {
                 News news = new News();
@@ -191,11 +191,11 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("news: throws ", e);
+            itsLog.throwing("news: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
-        itsLog.debug("exiting news");
+        itsLog.finer("exiting news");
         return res;
     }
 
@@ -214,7 +214,7 @@ public class PublicBean
             })
     public List<PublicPerson> status()
     {
-        itsLog.debug("entering status");
+        itsLog.finer("entering status");
         getEntityManager().setProperty("activePersonFilter", 0);
         List<PublicPerson> res = new ArrayList<>();
         try
@@ -231,11 +231,11 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("status: throws ", e);
+            itsLog.throwing("status: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
-        itsLog.debug("exiting status");
+        itsLog.finer("exiting status");
         return res;
     }
 
@@ -253,7 +253,7 @@ public class PublicBean
             })
     public List<PublicGuild> guilds()
     {
-        itsLog.debug("entering guilds");
+        itsLog.finer("entering guilds");
         List<PublicGuild> res = new ArrayList<>();
         try
         {
@@ -268,7 +268,7 @@ public class PublicBean
                 newGuild.title = guild.getTitle();
                 if (guild.getBoss() == null)
                 {
-                    itsLog.warn("guilds: no boss found for guild " + guild.getName());
+                    itsLog.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
                 } else
                 {
                     newGuild.bossname = guild.getBoss().getName();
@@ -279,11 +279,11 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("guilds: throws ", e);
+            itsLog.throwing("guilds: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
-        itsLog.debug("exiting guilds");
+        itsLog.finer("exiting guilds");
         return res;
     }
     public static final String FAMILYVALUES_CHARACTERSHEET_SQL
@@ -308,7 +308,7 @@ public class PublicBean
             })
     public PublicPerson charactersheet(@PathParam("name") String name)
     {
-        itsLog.debug("entering charactersheet");
+        itsLog.finer("entering charactersheet");
         PublicPerson res = new PublicPerson();
         try
         {
@@ -316,7 +316,7 @@ public class PublicBean
             Person person = getEntityManager().find(Person.class, name);
             if (person == null)
             {
-                itsLog.debug("charactersheet not found");
+                itsLog.finer("charactersheet not found");
                 throw new WebApplicationException(Response.Status.NOT_FOUND);
             }
             res.name = person.getName();
@@ -342,7 +342,7 @@ public class PublicBean
             List<Family> list = query.getResultList();
             for (Family fam : list)
             {
-                itsLog.debug(fam + "");
+                itsLog.finer(fam + "");
                 PublicFamily pfam = new PublicFamily();
                 pfam.description = fam.getDescription().getDescription();
                 pfam.toname = fam.getFamilyPK().getToname();
@@ -354,12 +354,12 @@ public class PublicBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("charactersheet: throws ", e);
+            itsLog.throwing("charactersheet: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.debug(
+        itsLog.finer(
                 "exiting charactersheet");
         return res;
     }
@@ -380,7 +380,7 @@ public class PublicBean
     public List<PublicPerson> charactersheets()
     {
 
-        itsLog.debug("entering charactersheets");
+        itsLog.finer("entering charactersheets");
         getEntityManager().setProperty("activePersonFilter", 0);
 
         List<PublicPerson> res = new ArrayList<>();
@@ -398,10 +398,10 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.debug("charactersheets: throws ", e);
+            itsLog.throwing("charactersheets: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
-        itsLog.debug("exiting charactersheets");
+        itsLog.finer("exiting charactersheets");
         return res;
     }
 }

@@ -17,19 +17,19 @@
 package mmud.rest.services;
 
 import java.util.List;
-import javax.ejb.Stateless;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Takes care of the guilds.
+ *
  * @author maartenl
  */
 @Stateless
@@ -50,10 +50,11 @@ public class GuildBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(GuildBean.class);
+    private static final Logger itsLog = Logger.getLogger(GuildBean.class.getName());
 
     /**
      * Retrieves the guild by name. Returns null if not found.
+     *
      * @param name the name of the guild.
      * @return a guild or null.
      */
@@ -69,9 +70,9 @@ public class GuildBean
      *
      * @return list of guild hopefuls.
      * @param aGuild
-     *            the guild
+     * the guild
      * @throws MudException
-     *             if something goes wrong.
+     * if something goes wrong.
      */
     public List<Person> getGuildHopefuls(Guild aGuild)
     {

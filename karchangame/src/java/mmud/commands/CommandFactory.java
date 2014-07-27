@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
 import mmud.commands.communication.CryCommand;
@@ -69,17 +70,16 @@ import mmud.commands.movement.WestCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The factory that creates commands based on the string entered by the user.
+ *
  * @author maartenl
  */
 public class CommandFactory
 {
 
-    private static final Logger itsLog = LoggerFactory.getLogger(CommandFactory.class);
+    private static final Logger itsLog = Logger.getLogger(CommandFactory.class.getName());
     private static final BogusCommand BOGUS = new BogusCommand(".+");
     private static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
     private static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
@@ -253,12 +253,12 @@ public class CommandFactory
      *
      * @param aUser the person executing the command
      * @param aCommand
-     *            the command to be run
+     * the command to be run
      * @return DisplayInterface object containing the result of the command executed.
      */
     public static DisplayInterface runCommand(User aUser, String aCommand) throws MudException
     {
-        itsLog.debug(aUser.getName() + " : " + aCommand);
+        itsLog.finer(aUser.getName() + " : " + aCommand);
         if (aUser.getSleep())
         {
             NormalCommand command;
@@ -290,20 +290,20 @@ public class CommandFactory
      * entered by the user.
      *
      * @param aCommand
-     *            String containing the command entered by the user.
+     * String containing the command entered by the user.
      * @return Collection (Vector) containing the commands that fit the
-     *         description. The commands that are contained are in the following
-     *         order:
-     *         <ol>
-     *         <li>special commands retrieved from the database
-     *         <li>normal commands
-     *         <li>bogus command (the ultimate failover, "I don't understand
-     *         that.".)
-     *         </ol>
-     *         It also means that this collection will always carry at least one
-     *         command, the bogus command.
-     *         <P>
-     *         All commands are newly created.
+     * description. The commands that are contained are in the following
+     * order:
+     * <ol>
+     * <li>special commands retrieved from the database
+     * <li>normal commands
+     * <li>bogus command (the ultimate failover, "I don't understand
+     * that.".)
+     * </ol>
+     * It also means that this collection will always carry at least one
+     * command, the bogus command.
+     * <P>
+     * All commands are newly created.
      */
     private static List<NormalCommand> getCommand(String aCommand)
     {

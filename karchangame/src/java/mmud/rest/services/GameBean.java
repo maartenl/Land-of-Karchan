@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Schedule;
@@ -68,8 +69,6 @@ import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Takes care of all the game-related functions.
@@ -114,7 +113,7 @@ public class GameBean implements RoomsInterface
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(GameBean.class);
+    private static final Logger itsLog = Logger.getLogger(GameBean.class.getName());
 
     /**
      * <p>
@@ -314,7 +313,7 @@ public class GameBean implements RoomsInterface
             })
     public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
     {
-        itsLog.debug("entering create");
+        itsLog.finer("entering create");
         getEntityManager().setProperty("activePersonFilter", 0); // turns filter off
         String address = requestContext.getRemoteAddr().toString();
         try
@@ -409,7 +408,7 @@ public class GameBean implements RoomsInterface
             throw f;
         } catch (Exception e)
         {
-            itsLog.debug("create: throws ", e);
+            itsLog.throwing("create: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
@@ -433,7 +432,7 @@ public class GameBean implements RoomsInterface
             })
     public Response delete(@PathParam("name") String name, @QueryParam("password") String password, @QueryParam("password2") String password2)
     {
-        itsLog.debug("entering delete");
+        itsLog.finer("entering delete");
         if (password == null || !password.equals(password2))
         {
             // passwords do not match
@@ -450,7 +449,7 @@ public class GameBean implements RoomsInterface
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("delete: throws ", e);
+            itsLog.throwing("delete: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
@@ -474,7 +473,7 @@ public class GameBean implements RoomsInterface
             })
     public String logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
-        itsLog.debug("entering logon");
+        itsLog.finer("entering logon");
         String address = requestContext.getRemoteAddr().toString();
 
         if ((address == null) || ("".equals(address.trim())))
@@ -543,7 +542,7 @@ public class GameBean implements RoomsInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.debug("logon: throws ", e);
+            itsLog.throwing("logon: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return person.getLok();
@@ -571,7 +570,7 @@ public class GameBean implements RoomsInterface
             })
     public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log) throws MudException
     {
-        itsLog.debug("entering play");
+        itsLog.finer("entering play");
         if (Utils.isOffline())
         {
             // game offline
@@ -628,7 +627,7 @@ public class GameBean implements RoomsInterface
                 person.writeMessage(e.getMessage());
             } catch (MudException ex)
             {
-                itsLog.warn("play: throws ", ex);
+                itsLog.throwing("play: throws ", ex.getMessage(), ex);
             }
             display = createPrivateDisplay(person.getRoom());
         } catch (WebApplicationException e)
@@ -644,7 +643,7 @@ public class GameBean implements RoomsInterface
                 display.log = retrieveLog(person, offset);
             } catch (MudException ex)
             {
-                itsLog.warn("play: throws ", ex);
+                itsLog.throwing("play: throws ", ex.getMessage(), ex);
             }
         }
         return display;
@@ -722,7 +721,7 @@ public class GameBean implements RoomsInterface
             })
     public PrivateLog retrieveLog(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset)
     {
-        itsLog.debug("entering retrieveLog");
+        itsLog.finer("entering retrieveLog");
         Person person = authenticate(name, lok);
         if (offset == null)
         {
@@ -737,7 +736,7 @@ public class GameBean implements RoomsInterface
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("retrieveLog: throws ", e);
+            itsLog.throwing("retrieveLog: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
     }
@@ -759,7 +758,7 @@ public class GameBean implements RoomsInterface
             })
     public Response deleteLog(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering deleteLog");
+        itsLog.finer("entering deleteLog");
         Person person = authenticate(name, lok);
 
         try
@@ -771,7 +770,7 @@ public class GameBean implements RoomsInterface
             throw e;
         } catch (Exception e)
         {
-            itsLog.debug("deleteLog: throws ", e);
+            itsLog.throwing("deleteLog: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
@@ -795,7 +794,7 @@ public class GameBean implements RoomsInterface
             })
     public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
-        itsLog.debug("entering quit");
+        itsLog.finer("entering quit");
         getEntityManager().setProperty("activePersonFilter", 1);
 
         User person = authenticate(name, lok);
@@ -810,7 +809,7 @@ public class GameBean implements RoomsInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.debug("quit: throws ", e);
+            itsLog.throwing("quit: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();

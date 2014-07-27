@@ -16,17 +16,17 @@
  */
 package mmud.rest.services;
 
-import javax.ejb.Stateless;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO : add all mail here instead of in privateBean. use Path:{name}/mail
+ *
  * @author maartenl
  */
 @Stateless
@@ -47,7 +47,7 @@ public class MailBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(MailBean.class);
+    private static final Logger itsLog = Logger.getLogger(MailBean.class.getName());
 
     public boolean hasNewMail(Person person)
     {

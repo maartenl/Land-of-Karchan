@@ -29,10 +29,10 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.CharitemTable;
-import mmud.database.entities.items.Item;
-import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
@@ -49,12 +49,15 @@ import mockit.Deencapsulation;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.testng.annotations.AfterMethod;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -138,6 +141,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -172,6 +176,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -209,6 +214,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -240,6 +246,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -301,6 +308,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -373,6 +381,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -416,6 +425,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -455,6 +465,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -511,6 +522,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -553,6 +565,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -589,6 +602,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -634,6 +648,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -678,6 +693,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -721,6 +737,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -781,6 +798,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -901,6 +919,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -972,6 +991,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1014,6 +1034,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1058,6 +1079,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1096,6 +1118,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1130,6 +1153,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1174,6 +1198,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1217,6 +1242,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1279,6 +1305,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1331,6 +1358,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1382,6 +1410,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1429,6 +1458,7 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1468,6 +1498,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1526,6 +1557,7 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(User.class, "Marvin");

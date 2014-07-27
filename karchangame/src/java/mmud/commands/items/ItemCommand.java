@@ -16,21 +16,21 @@
  */
 package mmud.commands.items;
 
-import mmud.commands.*;
+import java.util.logging.Logger;
+import mmud.commands.Command;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An abstract class for the most normal commands.
+ *
  * @author maartenl
  */
 public abstract class ItemCommand implements Command
 {
 
-    private static final Logger itsLog = LoggerFactory.getLogger(NormalCommand.class);
+    private static final Logger itsLog = Logger.getLogger(ItemCommand.class.getName());
     /**
      * the regular expression the command structure must follow
      */
@@ -46,10 +46,10 @@ public abstract class ItemCommand implements Command
      * Constructor.
      *
      * @param aRegExpr
-     *            a regular expression to which the command should follow. For
-     *            example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
-     *            parameter that can be used when the name of the character
-     *            playing is requested.
+     * a regular expression to which the command should follow. For
+     * example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
+     * parameter that can be used when the name of the character
+     * playing is requested.
      */
     public ItemCommand(String aRegExpr)
     {
@@ -63,15 +63,15 @@ public abstract class ItemCommand implements Command
      *
      * @param command the command entered by the user
      * @param aUser
-     *            the user that executed the command
+     * the user that executed the command
      * @return DisplayInterface for providing to the user, or null if the
      * statement was not executed for some different reason.
      * @throws MudException
-     *             when anything goes wrong.
+     * when anything goes wrong.
      */
     DisplayInterface start(String command, User aUser) throws MudException
     {
-        itsLog.debug(aUser.getName() + "(" + this.getClass().getName() + ") : " + command);
+        itsLog.finer(aUser.getName() + "(" + this.getClass().getName() + ") : " + command);
         aUser.setNow();
         String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
         boolean result;
@@ -99,7 +99,7 @@ public abstract class ItemCommand implements Command
      * split up the command into different words.
      *
      * @param aCommand
-     *            String containing the command
+     * String containing the command
      * @return String array where each String contains a word from the command.
      */
     protected static String[] parseCommand(String aCommand)
@@ -108,7 +108,9 @@ public abstract class ItemCommand implements Command
     }
 
     /**
-     * split up the command into different words.<p/>For example:<p/>
+     * split up the command into different words.<p/>
+     * For example:
+     * <p/>
      * <tt>parseCommand("bow to Marvin evilly", 4)</tt> returns array
      * <tt>["bow","to","Marvin", "evilly"]</tt><p/>
      * <tt>parseCommand("say to Marvin Greetings this morning.", 4)</tt>
@@ -117,7 +119,7 @@ public abstract class ItemCommand implements Command
      * @param limit the result threshold, example 3 means the array holds
      * three, the first two words and the rest in the third array element.
      * @param aCommand
-     *            String containing the command
+     * String containing the command
      * @return String array where each String contains a word from the command.
      * @see String#split(java.lang.String, int)
      */

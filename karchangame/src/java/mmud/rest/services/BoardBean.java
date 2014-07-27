@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,8 +25,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Takes care of the public boards and the private boards.
@@ -50,7 +49,7 @@ public class BoardBean
     {
         return em;
     }
-    private static final Logger itsLog = LoggerFactory.getLogger(BoardBean.class);
+    private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
 
     public Board getNewsBoard()
     {

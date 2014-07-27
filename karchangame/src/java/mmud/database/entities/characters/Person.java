@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,8 +95,6 @@ import mmud.exceptions.MudException;
 import org.eclipse.persistence.annotations.AdditionalCriteria;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A character in the game. Might be both a bot, a shopkeeper, a user, or an
@@ -119,7 +118,7 @@ import org.slf4j.LoggerFactory;
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler
 {
 
-    private static final Logger itsLog = LoggerFactory.getLogger(Person.class);
+    private static final Logger itsLog = java.util.logging.Logger.getLogger(Person.class.getName());
     private static final long serialVersionUID = 1L;
     private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
     public static final String EMPTY_LOG = "";
@@ -1567,18 +1566,18 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         if (attributes == null)
         {
-            itsLog.debug("getCharattribute name=" + name + " collection is null");
+            itsLog.finer("getCharattribute name=" + name + " collection is null");
             return null;
         }
         for (Charattribute attr : attributes)
         {
-            itsLog.debug("getCharattribute name=" + name + " attr=" + attr);
+            itsLog.finer("getCharattribute name=" + name + " attr=" + attr);
             if (attr.getName().equals(name))
             {
                 return attr;
             }
         }
-        itsLog.debug("getCharattribute name=" + name + " not found");
+        itsLog.finer("getCharattribute name=" + name + " not found");
         return null;
     }
 
@@ -1608,15 +1607,15 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         Charattribute attr = getCharattribute(name);
         if (attr == null)
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") not found on user " + getName() + ".");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on user " + getName() + ".");
             return false;
         }
         if (attr.getValue().equals(value))
         {
-            itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") matches on user " + getName() + "!");
+            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on user " + getName() + "!");
             return true;
         }
-        itsLog.debug("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on user " + getName() + ".");
+        itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on user " + getName() + ".");
         return false;
     }
 
