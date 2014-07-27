@@ -46,23 +46,23 @@ update mm_usertable set lastcommand = null;
 #
 # this is where the items will be changed
 #
-ALTER TABLE `mmud`.`mm_itemtable` 
+ALTER TABLE mm_itemtable
   ADD COLUMN `belongsto` VARCHAR(20) NULL DEFAULT NULL  AFTER `owner` , 
   ADD COLUMN `room` INT(5) NULL DEFAULT NULL AFTER `belongsto`, 
   ADD COLUMN `containerid` INT(11) NULL DEFAULT NULL AFTER `room` , 
   ADD CONSTRAINT `fk_mm_itemtable_1`
   FOREIGN KEY (`belongsto` )
-  REFERENCES `mmud`.`mm_usertable` (`name` )
+  REFERENCES mm_usertable (`name` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `fk_mm_itemtable_2`
   FOREIGN KEY (`room` )
-  REFERENCES `mmud`.`mm_rooms` (`id` )
+  REFERENCES mm_rooms (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `fk_mm_itemtable_3`
   FOREIGN KEY (`containerid` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_itemtable_1_idx` (`belongsto` ASC) 
@@ -73,9 +73,11 @@ ALTER TABLE `mmud`.`mm_itemtable`
 update mm_itemtable, mm_charitemtable
 set mm_itemtable.belongsto = mm_charitemtable.belongsto
 where mm_charitemtable.id = mm_itemtable.id;
+
 update mm_itemtable, mm_itemitemtable
 set mm_itemtable.containerid = mm_itemitemtable.containerid
 where mm_itemitemtable.id = mm_itemtable.id;
+
 update mm_itemtable, mm_roomitemtable
 set mm_itemtable.room = mm_roomitemtable.room
 where mm_roomitemtable.id = mm_itemtable.id;
@@ -96,7 +98,7 @@ and containerid is null
 and room is null;
 
 # add fields to mm_usertable to indicate what someone is wearing where
-ALTER TABLE `mmud`.`mm_usertable` 
+ALTER TABLE mm_usertable
   ADD COLUMN `wieldleft` INT(11) NULL DEFAULT NULL  AFTER `lastcommand` , 
   ADD COLUMN `wieldright` INT(11) NULL DEFAULT NULL  AFTER `wieldleft` , 
   ADD COLUMN `wieldboth` INT(11) NULL DEFAULT NULL  AFTER `wieldright` , 
@@ -118,97 +120,97 @@ ALTER TABLE `mmud`.`mm_usertable`
   ADD COLUMN `wearaboutbody` INT(11) NULL DEFAULT NULL  AFTER `wearears` , 
   ADD CONSTRAINT `wieldleft_fk`
   FOREIGN KEY (`wieldleft` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wieldright_fk`
   FOREIGN KEY (`wieldright` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wieldboth_fk`
   FOREIGN KEY (`wieldboth` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearhead_fk`
   FOREIGN KEY (`wearhead` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearneck_fk`
   FOREIGN KEY (`wearneck` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `weartorso_fk`
   FOREIGN KEY (`weartorso` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `weararms_fk`
   FOREIGN KEY (`weararms` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearleftwrist_fk`
   FOREIGN KEY (`wearleftwrist` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearrightwrist_fk`
   FOREIGN KEY (`wearrightwrist` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearleffinger_fk`
   FOREIGN KEY (`wearleftfinger` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearrightfinger_fk`
   FOREIGN KEY (`wearrightfinger` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearfeet_fk`
   FOREIGN KEY (`wearfeet` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearhands_fk`
   FOREIGN KEY (`wearhands` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearfloatingnearby_fk`
   FOREIGN KEY (`wearfloatingnearby` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearwaist_fk`
   FOREIGN KEY (`wearwaist` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearlegs_fk`
   FOREIGN KEY (`wearlegs` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `weareyes_fk`
   FOREIGN KEY (`weareyes` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearears_fk`
   FOREIGN KEY (`wearears` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `wearaboutbody`
   FOREIGN KEY (`wearaboutbody` )
-  REFERENCES `mmud`.`mm_itemtable` (`id` )
+  REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_usertable_1_idx` (`wieldleft` ASC) 
@@ -240,31 +242,31 @@ drop table mm_roomitemtable;
 
 # don't know why, but the itemid in mm_itemtable did not have a not-null
 # constraint.
-ALTER TABLE `mmud`.`mm_itemtable` DROP FOREIGN KEY `mm_itemtable_ibfk_1` ;
-ALTER TABLE `mmud`.`mm_itemtable` CHANGE COLUMN `itemid` `itemid` INT(11)
+ALTER TABLE mm_itemtable DROP FOREIGN KEY `mm_itemtable_ibfk_1` ;
+ALTER TABLE mm_itemtable CHANGE COLUMN `itemid` `itemid` INT(11)
 NOT NULL  , 
   ADD CONSTRAINT `mm_itemtable_ibfk_1`
   FOREIGN KEY (`itemid` )
-  REFERENCES `mmud`.`mm_items` (`id` )
+  REFERENCES mm_items (`id` )
   ON DELETE RESTRICT
   ON UPDATE CASCADE;
 
 # enditems
 
-ALTER TABLE `mmud`.`mm_items` ADD COLUMN `image` VARCHAR(255) NULL DEFAULT
+ALTER TABLE mm_items ADD COLUMN `image` VARCHAR(255) NULL DEFAULT
 NULL  AFTER `notes` , ADD COLUMN `title` VARCHAR(255) NULL  AFTER `image` ;
 
 # add a room number to the boards, so a board
 # is situated in a room.
-ALTER TABLE `mmud`.`mm_boards` ADD COLUMN `room` INT(5) NOT NULL AFTER
+ALTER TABLE mm_boards ADD COLUMN `room` INT(5) NOT NULL AFTER
   `creation`;
 update mm_boards set room = 1 where id = 2;
 update mm_boards set room = 3 where id = 1;
 update mm_boards set room = 13 where id = 3;
-ALTER TABLE `mmud`.`mm_boards` 
+ALTER TABLE mm_boards
   ADD CONSTRAINT `fk_mm_boards_1`
   FOREIGN KEY (`room` )
-  REFERENCES `mmud`.`mm_rooms` (`id` )
+  REFERENCES mm_rooms (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_boards_1_idx` (`room` ASC) ;
@@ -280,7 +282,7 @@ set minute = null where minute = -1;
 update mm_events
 set dayofweek = null where dayofweek = -1;
 
-ALTER TABLE `mmud`.`mm_events` 
+ALTER TABLE mm_events
 CHANGE COLUMN `month` `month` INT(11) NULL DEFAULT NULL  , 
 CHANGE COLUMN `dayofmonth` `dayofmonth` INT(11) NULL DEFAULT NULL  , 
 CHANGE COLUMN `hour` `hour` INT(11) NULL DEFAULT NULL  , 
@@ -291,15 +293,15 @@ CHANGE COLUMN `dayofweek` `dayofweek` INT(11) NULL DEFAULT NULL  ;
 delete from mm_events where name is not null and not exists (select * from
 mm_usertable where mm_usertable.name = mm_events.name);
 
-ALTER TABLE `mmud`.`mm_events` 
+ALTER TABLE mm_events
   ADD CONSTRAINT `fk_mm_events_1`
   FOREIGN KEY (`name` )
-  REFERENCES `mmud`.`mm_usertable` (`name` )
+  REFERENCES mm_usertable (`name` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
   ADD CONSTRAINT `fk_mm_events_2`
   FOREIGN KEY (`room` )
-  REFERENCES `mmud`.`mm_rooms` (`id` )
+  REFERENCES mm_rooms (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_events_1_idx` (`name` ASC) 
@@ -320,12 +322,16 @@ CREATE TABLE `mm_commandlog` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7915438 DEFAULT CHARSET=latin1;
                    
+
+START TRANSACTION;
+ # drop trigger, if it exists
+DROP TRIGGER IF EXISTS password_trigger;
+# create the trigger
+CREATE TRIGGER password_trigger BEFORE INSERT ON mm_usertable
+FOR EACH ROW
+    SET NEW.password = sha1(NEW.password);
+# commit transaction
+COMMIT;
+
 END_OF_DATA
-
-echo "Adding trigger to the usertable..."
-
-# add trigger
-cd triggers
-./mm_usertable_insert_trigger.sql
-cd ..
 
