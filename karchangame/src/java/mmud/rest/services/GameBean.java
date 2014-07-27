@@ -46,14 +46,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Utils;
 import mmud.commands.CommandFactory;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
@@ -66,7 +66,6 @@ import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
-import org.hibernate.Session;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 import org.slf4j.Logger;
@@ -118,9 +117,11 @@ public class GameBean implements RoomsInterface
     private static final Logger itsLog = LoggerFactory.getLogger(GameBean.class);
 
     /**
-     * <p>This method should be called to verify that the target of a certain
+     * <p>
+     * This method should be called to verify that the target of a certain
      * action is indeed a proper authenticated user.</p>
-     * <p><img
+     * <p>
+     * <img
      * src="../../../images/Gamebean_authenticate.png"></p>
      *
      * @param lok session password
@@ -156,14 +157,17 @@ public class GameBean implements RoomsInterface
     }
 
     /**
-     * <p>This method should be called to verify that the target of a certain
+     * <p>
+     * This method should be called to verify that the target of a certain
      * action is a user with the appropriate password.</p>
-     * <p><img
+     * <p>
+     * <img
      * src="../../../images/Gamebean_authenticateWithPassword.png"></p>
      *
      * @param password real password
      * @param name the name to identify the person
-     * @throws BAD_REQUEST if an unexpected exception
+     * @return the authenticated User
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match or user not found.
      * @startuml Gamebean_authenticateWithPassword.png
@@ -207,8 +211,10 @@ public class GameBean implements RoomsInterface
     }
 
     /**
-     * <p>Checks to see if a person is banned from playing.</p>
-     * <p><img
+     * <p>
+     * Checks to see if a person is banned from playing.</p>
+     * <p>
+     * <img
      * src="../../../images/Gamebean_isBanned.png"></p>
      *
      * @param name the name of the person
@@ -278,13 +284,16 @@ public class GameBean implements RoomsInterface
     }
 
     /**
-     * <p>Creates a new character, suitable for playing.</p>
-     * <p><img
+     * <p>
+     * Creates a new character, suitable for playing.</p>
+     * <p>
+     * <img
      * src="../../../images/Gamebean_create.png"></p>
+     * @param requestContext for headers, like remote address.
      * @param name the name of the user
      * @param pperson the data of the new character
      * @return NO_CONTENT if the game is offline for maintenance.
-     * @throws BAD_REQUEST if an unexpected exception
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up or something could not be validated.
      * @startuml Gamebean_create.png
      * (*) --> "check for offline"
@@ -300,12 +309,13 @@ public class GameBean implements RoomsInterface
     @POST
     @Path("{name}")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
     {
         itsLog.debug("entering create");
+        getEntityManager().setProperty("activePersonFilter", 0); // turns filter off
         String address = requestContext.getRemoteAddr().toString();
         try
         {
@@ -411,15 +421,16 @@ public class GameBean implements RoomsInterface
      * @param name the name of the user
      * @param password the password of the character to be deleted
      * @param password2 verification of the password, a second time.
-     * @throws BAD_REQUEST if an unexpected exception
+     * @return Response.ok
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up.
      */
     @DELETE
     @Path("{name}")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response delete(@PathParam("name") String name, @QueryParam("password") String password, @QueryParam("password2") String password2)
     {
         itsLog.debug("entering delete");
@@ -448,18 +459,19 @@ public class GameBean implements RoomsInterface
     /**
      * Logs a character in, to start playing.
      *
+     * @param requestContext
      * @param password password for verification of the user.
      * @param name the name of the user
      * @return the session password upon success
-     * @throws BAD_REQUEST if an unexpected exception
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up.
      */
     @POST
     @Path("{name}/logon")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public String logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
         itsLog.debug("entering logon");
@@ -480,11 +492,6 @@ public class GameBean implements RoomsInterface
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
         User person = authenticateWithPassword(name, password);
-
-        // Hibernate specific
-        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
-        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
-        session.enableFilter("activePersons");
         try
         {
             person.activate(address);
@@ -534,7 +541,7 @@ public class GameBean implements RoomsInterface
         {
             //ignore
             throw e;
-        } catch (Exception e)
+        } catch (MudException e)
         {
             itsLog.debug("logon: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
@@ -544,6 +551,7 @@ public class GameBean implements RoomsInterface
 
     /**
      * Main function for executing a command in the game.
+     *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
@@ -551,18 +559,16 @@ public class GameBean implements RoomsInterface
      * @param offset the offset used for the log
      * @param log indicates with true or false, whether or not we are
      * interested in the log.
-     * @throws BAD_REQUEST if an unexpected exception
-     * crops up.
      * @return NO_CONTENT if the game is offline for maintenance.
-     * @throws BAD_REQUEST if an unexpected exception
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up or something could not be validated.
      */
     @POST
     @Path("{name}/play")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log) throws MudException
     {
         itsLog.debug("entering play");
@@ -579,10 +585,7 @@ public class GameBean implements RoomsInterface
             throw new WebApplicationException(ex, Response.Status.BAD_REQUEST);
         }
         PrivateDisplay display = null;
-        // Hibernate specific
-        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
-        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
-        session.enableFilter("activePersons");
+        getEntityManager().setProperty("activePersonFilter", 1);
         User person = authenticate(name, lok);
         try
         {
@@ -632,10 +635,6 @@ public class GameBean implements RoomsInterface
         {
             //ignore
             throw e;
-        } catch (Exception e)
-        {
-            itsLog.debug("play: throws ", e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         // add log to the return value
         if (log)
@@ -667,6 +666,7 @@ public class GameBean implements RoomsInterface
     /**
      * It parses and executes the command of the
      * user. The main batch of the server.
+     *
      * @param person User who wishes to execute a command.
      * @param command String containing the command entered
      * @return PrivateDisplay containing the response.
@@ -717,9 +717,9 @@ public class GameBean implements RoomsInterface
     @GET
     @Path("{name}/log")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public PrivateLog retrieveLog(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset)
     {
         itsLog.debug("entering retrieveLog");
@@ -754,9 +754,9 @@ public class GameBean implements RoomsInterface
     @DELETE
     @Path("{name}/log")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response deleteLog(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering deleteLog");
@@ -783,23 +783,20 @@ public class GameBean implements RoomsInterface
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
-     * @throws BAD_REQUEST if an unexpected exception
+     * @return An Ok response.
+     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up.
      */
     @GET
     @Path("{name}/quit")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering quit");
-
-        // Hibernate specific
-        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
-        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
-        session.enableFilter("activePersons");
+        getEntityManager().setProperty("activePersonFilter", 1);
 
         User person = authenticate(name, lok);
         try
@@ -811,7 +808,7 @@ public class GameBean implements RoomsInterface
         {
             //ignore
             throw e;
-        } catch (Exception e)
+        } catch (MudException e)
         {
             itsLog.debug("quit: throws ", e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
@@ -831,7 +828,7 @@ public class GameBean implements RoomsInterface
     /**
      * Runs every minute, looks up which event to execute now.
      */
-    @Schedule( hour = "*", minute = "*/1")
+    @Schedule(hour = "*", minute = "*/1")
     public void events()
     {
         logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");

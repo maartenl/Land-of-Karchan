@@ -16,7 +16,6 @@
  */
 package mmud.database.entities.game;
 
-import mmud.database.entities.items.ItemDefinition;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -36,6 +35,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.items.ItemDefinition;
 
 /**
  *
@@ -44,19 +44,17 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_mailtable", catalog = "mmud", schema = "")
 @NamedQueries(
-
-
-{
-    @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
-    @NamedQuery(name = "Mail.findById", query = "SELECT m FROM Mail m WHERE m.id = :id"),
-    @NamedQuery(name = "Mail.findBySubject", query = "SELECT m FROM Mail m WHERE m.subject = :subject"),
-    @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
-    @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
-    @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = 0 and m.toname = :name order by id desc"),
-    @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = 0 WHERE m.toname = :name"),
-    @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(*) FROM Mail m WHERE newmail = 1 and deleted = 0 and toname = :name")
-})
+        {
+            @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
+            @NamedQuery(name = "Mail.findById", query = "SELECT m FROM Mail m WHERE m.id = :id"),
+            @NamedQuery(name = "Mail.findBySubject", query = "SELECT m FROM Mail m WHERE m.subject = :subject"),
+            @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
+            @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
+            @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
+            @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = true and m.toname = :name order by m.id desc"),
+            @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = false WHERE m.toname = :name"),
+            @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(m.id) FROM Mail m WHERE m.newmail = true and m.deleted = false and m.toname = :name")
+        })
 public class Mail implements Serializable
 {
 
@@ -64,10 +62,14 @@ public class Mail implements Serializable
     /**
      * Contains the item ids of the different items that represent letters/mail.
      * The readdescription of said letters looks a little like the following:
-     * <p>"stuffletterhead letterbody letterfooter"</p> That way, the
+     * <p>
+     * "stuffletterhead letterbody letterfooter"</p> That way, the
      * letterhead, letterbody and letterfooter are automatically replaced.
      */
-    public static final int[] ITEMS = {8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015};
+    public static final int[] ITEMS =
+    {
+        8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015
+    };
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -190,7 +192,8 @@ public class Mail implements Serializable
      * the definition of the item (for example a letter) that this
      * mail can be turned into for use in the game.
      * Generally returns null.
-     * @return  an item definition.
+     *
+     * @return an item definition.
      */
     public ItemDefinition getItemDefinition()
     {
@@ -199,6 +202,7 @@ public class Mail implements Serializable
 
     /**
      * Set an itemdefinition. Unable to be set if already set. Unable to clear.
+     *
      * @see Mail#getItemDefinition()
      * @param itemId the item definition. Null values are ignored.
      */
@@ -217,6 +221,7 @@ public class Mail implements Serializable
 
     /**
      * Returns the receiver of the mail.
+     *
      * @return the person receiving the mail
      */
     public Person getToname()
@@ -226,6 +231,7 @@ public class Mail implements Serializable
 
     /**
      * Sets the receiver of the mail.
+     *
      * @param toname
      */
     public void setToname(Person toname)
@@ -235,6 +241,7 @@ public class Mail implements Serializable
 
     /**
      * Returns the sender of the mail.
+     *
      * @return the person sending the mail.
      */
     public Person getName()
@@ -244,6 +251,7 @@ public class Mail implements Serializable
 
     /**
      * Sets the sender of the mail.
+     *
      * @param name
      */
     public void setName(Person name)

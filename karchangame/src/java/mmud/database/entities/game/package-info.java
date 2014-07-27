@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * <p>Provides the JPA Database Entities.</p>
- * <p><img src="../../../../images/package-info_gameentities.png"/></p>
- * <p>Mapping of database tables to database entities.<table>
+ * <p>
+ * Provides the JPA Database Entities.</p>
+ * <p>
+ * <img src="../../../../images/package-info_gameentities.png"/></p>
+ * <p>
+ * Mapping of database tables to database entities.<table>
  * <tr><th>database table</th><th>entity</th></tr>
  * <tr><td>mm_usertable</td><td>Person</td></tr>
  * <tr><td>mm_items</td><td>ItemDefinition</td></tr>
@@ -313,7 +316,7 @@
  * <DD>notes concerning this user. Can be entered by deputies.
  * <DT>state
  * <DD>string containing the state of a user. Can be empty, but is useful for
- *     roleplaying to show what is going on with your character.
+ * roleplaying to show what is going on with your character.
  * </DL>
  * <H4><A HREF="#contents"><A NAME="mm_commandlog">mm_commandlog</A></H4>
  * <DL>
@@ -450,256 +453,252 @@
  * mm_ignore "1" *-- "2" mm_usertable : contains
  * mm_answers "many" *-- "1" mm_usertable : contains
  * class mm_usertable {
- *    -id
- *    -name
- *    -description
- *    -creation_date
- *    -parent_id
- *    -highlight
- *    -sortorder
+ * -id
+ * -name
+ * -description
+ * -creation_date
+ * -parent_id
+ * -highlight
+ * -sortorder
  * }
  * class mm_rooms {
- *    -id
- *    -name
- *    -description
- *    -gallery_id
- *    -photograph_id
- *    -sortorder
+ * -id
+ * -name
+ * -description
+ * -gallery_id
+ * -photograph_id
+ * -sortorder
  * }
  * class mm_items {
- *    -id
- *    -wieldable
- *    -wearable
- *    -container
- *    -getable
- *    -dropable
- *    -visible
- *    -owner
- *    -creation
- *    -capacity
- *    -isopenable
- *    -keyid
- *    -containtype
+ * -id
+ * -wieldable
+ * -wearable
+ * -container
+ * -getable
+ * -dropable
+ * -visible
+ * -owner
+ * -creation
+ * -capacity
+ * -isopenable
+ * -keyid
+ * -containtype
  * }
  * class mm_methods {
- *    -name
- *    -src
- *    -owner
- *    -creation
+ * -name
+ * -src
+ * -owner
+ * -creation
  * }
  * class mm_boardmessages {
- *    -boardid
- *    -name
- *    -posttime
- *    -message
- *    -removed
+ * -boardid
+ * -name
+ * -posttime
+ * -message
+ * -removed
  * }
  * class mm_guilds {
- *    -name
- *    -title
- *    -daysguilddeath
- *    -maxguilddeath
- *    -minguildmembers
- *    -minguildlevel
- *    -guilddescription
- *    -guildurl
- *    -bossname
- *    -active
- *    -creation
- *    -owner
- *    -logonmessage
+ * -name
+ * -title
+ * -daysguilddeath
+ * -maxguilddeath
+ * -minguildmembers
+ * -minguildlevel
+ * -guilddescription
+ * -guildurl
+ * -bossname
+ * -active
+ * -creation
+ * -owner
+ * -logonmessage
  * }
  * class mm_guildranks {
- *    -title
- *    -guildlevel
- *    -guildname
- *    -accept_access
- *    -reject_access
- *    -settings_access
- *    -logonmessage_access
+ * -title
+ * -guildlevel
+ * -guildname
+ * -accept_access
+ * -reject_access
+ * -settings_access
+ * -logonmessage_access
  * }
  * class mm_boards {
- *    -id
- *    -name
- *    -description
- *    -owner
- *    -creation
+ * -id
+ * -name
+ * -description
+ * -owner
+ * -creation
  * }
  * class mm_oldlog {
- *    -creation
- *    -name
- *    -message
+ * -creation
+ * -name
+ * -message
  * }
  * class mm_log {
- *    -creation
- *    -name
- *    -message
+ * -creation
+ * -name
+ * -message
  * }
  * class mm_help {
  * }
  * class mm_ignore {
- *    -fromperson
- *    -toperson
+ * -fromperson
+ * -toperson
  * }
  * class mm_answers {
- *    -name
- *    -question
- *    -answer
+ * -name
+ * -question
+ * -answer
  * }
  * class mm_errormessages {
  * }
  * class mm_bantable {
- *    -address
- *    -days
- *    -IP
- *    -name
- *    -deputy
- *    -date
- *    -reason
+ * -address
+ * -days
+ * -IP
+ * -name
+ * -deputy
+ * -date
+ * -reason
  * }
  * class mm_unbantable {
- *    -name
+ * -name
  * }
  * class mm_bannednamestable {
- *    -name
- *    -deputy
- *    -creation
- *    -days
- *    -reason
+ * -name
+ * -deputy
+ * -creation
+ * -days
+ * -reason
  * }
  * class mm_sillynamestable {
- *    -name
+ * -name
  * }
  * class mm_mailtable {
- *    -id
- *    -name
- *    -toname
- *    -subject
- *    -whensent
- *    -haveread
- *    -newmail
- *    -body
- *    -deleted
- *    -item_id
+ * -id
+ * -name
+ * -toname
+ * -subject
+ * -whensent
+ * -haveread
+ * -newmail
+ * -body
+ * -deleted
+ * -item_id
  * }
  * class mm_macro {
- *    -id
- *    -name
- *    -macroname
- *    -contents
+ * -id
+ * -name
+ * -macroname
+ * -contents
  * }
  * class mm_usertable {
- *    -name
- *    -password
- *    -god
- *    -alignment
- *    -movementstats
- *    -notes
+ * -name
+ * -password
+ * -god
+ * -alignment
+ * -movementstats
+ * -notes
  * }
  * class mm_commandlog {
- *    -id
- *    -stamp
- *    -name
- *    -command
+ * -id
+ * -stamp
+ * -name
+ * -command
  * }
  * class mm_area {
- *    -area
- *    -description
- *    -shortdesc
- *    -owner
- *    -creation
+ * -area
+ * -description
+ * -shortdesc
+ * -owner
+ * -creation
  * }
  * class mm_itemitemtable {
- *    -id
- *    -containerid
+ * -id
+ * -containerid
  * }
  * class mm_rooms {
- *    -id
- *    -west
- *    -east
- *    -north
- *    -south
- *    -up
- *    -down
- *    -contents
- *    -owner
- *    -creation
- *    -area
- *    -title
- *    -picture
+ * -id
+ * -west
+ * -east
+ * -north
+ * -south
+ * -up
+ * -down
+ * -contents
+ * -owner
+ * -creation
+ * -area
+ * -title
+ * -picture
  * }
  * class mm_roomitemtable {
- *    -id
- *    -room
- *    -search
+ * -id
+ * -room
+ * -search
  * }
  * class mm_charitemtable {
- *    -id
- *    -belongsto
- *    -wearing
+ * -id
+ * -belongsto
+ * -wearing
  * }
  * class mm_shopkeeperitems {
- *    -id
- *    -max
- *    -charname
+ * -id
+ * -max
+ * -charname
  * }
  * class mm_itemtable {
- *    -id
- *    -itemid
+ * -id
+ * -itemid
  * }
  * class mm_events {
- *    -eventid
- *    -name
- *    -month
- *    -dayofmonth
- *    -hour
- *    -minute
- *    -dayofweek
- *    -callable
- *    -method_name
- *    -room
- *    -owner
- *    -creation
+ * -eventid
+ * -name
+ * -month
+ * -dayofmonth
+ * -hour
+ * -minute
+ * -dayofweek
+ * -callable
+ * -method_name
+ * -room
+ * -owner
+ * -creation
  * }
  * class mm_itemattributes {
- *    -name
- *    -value
- *    -value_type
- *    -id
+ * -name
+ * -value
+ * -value_type
+ * -id
  * }
  * class mm_charattributes {
- *    -name
- *    -value
- *    -value_type
- *    -charname
+ * -name
+ * -value
+ * -value_type
+ * -charname
  * }
  * class mm_roomattributes {
- *    -name
- *    -value
- *    -value_type
- *    -id
+ * -name
+ * -value
+ * -value_type
+ * -id
  * }
  * class mm_commands {
- *    -id
- *    -callable
- *    -command
- *    -method_name
- *    -room
- *    -owner
- *    -creation
+ * -id
+ * -callable
+ * -command
+ * -method_name
+ * -room
+ * -owner
+ * -creation
  * }
  * class mm_admin {
- *    -name
- *    -passwd
- *    -ip
- *    -created
- *    -validuntil
- *    -email
+ * -name
+ * -passwd
+ * -ip
+ * -created
+ * -validuntil
+ * -email
  * }
  * @enduml
  */
-@FilterDef(name = "activePersons", defaultCondition="active = 1")
 package mmud.database.entities.game;
-
-import org.hibernate.annotations.FilterDef;
-

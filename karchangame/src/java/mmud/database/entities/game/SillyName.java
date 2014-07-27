@@ -34,10 +34,10 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_sillynamestable", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "SillyName.findAll", query = "SELECT s FROM SillyName s"),
-    @NamedQuery(name = "SillyName.findByName", query = "SELECT s FROM SillyName s WHERE :name like s.name")
-})
+        {
+            @NamedQuery(name = "SillyName.findAll", query = "SELECT s FROM SillyName s"),
+            @NamedQuery(name = "SillyName.findByName", query = "SELECT s FROM SillyName s WHERE concat('',:name) like s.name")
+        })
 public class SillyName implements Serializable
 {
 

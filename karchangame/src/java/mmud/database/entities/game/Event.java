@@ -42,23 +42,24 @@ import mmud.database.entities.characters.Person;
  * <li>hour</li>
  * <li>minute</li>
  * </ul>
+ *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_events", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
-    @NamedQuery(name = "Event.findByEventid", query = "SELECT e FROM Event e WHERE e.eventid = :eventid"),
-    @NamedQuery(name = "Event.list", query = "SELECT e "
-    + "FROM Event e "
-    + "WHERE callable = 1 "
-    + "AND (e.month is null OR e.month = :month) "
-    + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
-    + "AND (e.hour is null OR e.hour = :hour) "
-    + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
-    + "AND (e.minute is null OR e.minute = :minute)")
-})
+        {
+            @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
+            @NamedQuery(name = "Event.findByEventid", query = "SELECT e FROM Event e WHERE e.eventid = :eventid"),
+            @NamedQuery(name = "Event.list", query = "SELECT e "
+                    + "FROM Event e "
+                    + "WHERE e.callable = 1 "
+                    + "AND (e.month is null OR e.month = :month) "
+                    + "AND (e.dayofmonth is null OR e.dayofmonth = :dayofmonth) "
+                    + "AND (e.hour is null OR e.hour = :hour) "
+                    + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
+                    + "AND (e.minute is null OR e.minute = :minute)")
+        })
 public class Event implements Serializable
 {
 
@@ -232,6 +233,7 @@ public class Event implements Serializable
 
     /**
      * Returns if this event is 'active'.
+     *
      * @return boolean, true if active, false otherwise.
      */
     public boolean getCallable()

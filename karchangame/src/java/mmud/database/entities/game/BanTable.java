@@ -37,12 +37,13 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_bantable", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "BanTable.findAll", query = "SELECT b FROM BanTable b"),
-    @NamedQuery(name = "BanTable.find", query = "SELECT b FROM BanTable b WHERE :address like b.address or :address2 like b.address")
-})
+        {
+            @NamedQuery(name = "BanTable.findAll", query = "SELECT b FROM BanTable b"),
+            @NamedQuery(name = "BanTable.find", query = "SELECT b FROM BanTable b WHERE concat('',:address) like b.address or concat('',:address2) like b.address")
+        })
 public class BanTable implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

@@ -16,8 +16,6 @@
  */
 package mmud.database.entities.characters;
 
-import mmud.database.entities.items.ItemWrangler;
-import mmud.database.entities.game.AttributeWrangler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +28,26 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -39,11 +56,13 @@ import mmud.Constants;
 import mmud.Utils;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
+import mmud.database.entities.game.AttributeWrangler;
 import mmud.database.entities.game.Charattribute;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemWrangler;
 import mmud.database.enums.Alignment;
 import mmud.database.enums.Appetite;
 import mmud.database.enums.God;
@@ -72,9 +91,7 @@ import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.Filters;
+import org.eclipse.persistence.annotations.AdditionalCriteria;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 import org.slf4j.Logger;
@@ -90,18 +107,15 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-    name = "god",
-discriminatorType = DiscriminatorType.INTEGER)
+        name = "god",
+        discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_usertable", catalog = "mmud", schema = "")
+@AdditionalCriteria("(:activePersonFilter <> 1 or this.active = 1)")
 @NamedQueries(
-{
-    @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-    @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
-})
-@Filters(
-{
-    @Filter(name = "activePersons")
-})
+        {
+            @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
+            @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
+        })
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler
 {
 
@@ -248,22 +262,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
     // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsto")
-    @Cascade(
-    {
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
-    })
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsto", orphanRemoval = true)
     private Set<Item> items;
     @Transient
     private File theLogfile = null;
     @Transient
     private StringBuffer theLog = null;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    @Cascade(
-    {
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
-    })
-    private Set<Charattribute> attributes = new HashSet<Charattribute>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
+    private Set<Charattribute> attributes = new HashSet<>();
     @JoinColumn(name = "wieldleft", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Item wieldleft;
@@ -591,6 +597,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Returns the amount of money a character has (in coppers). Basically
      * 10 coppers is 1 silver, and 10 silvers is 1 gold.
+     *
      * @return Integer with the amount of coppers.
      */
     public Integer getCopper()
@@ -715,7 +722,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * sets the sleep status of the character.
      *
      * @param sleep
-     *            boolean containing the sleep status
+     * boolean containing the sleep status
      */
     public void setSleep(Boolean sleep)
     {
@@ -1084,7 +1091,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * sets the state/condition of the character.
      *
      * @param state
-     *            String containing the description of the current condition
+     * String containing the description of the current condition
      * of the character.
      */
     public void setState(String state)
@@ -1206,7 +1213,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * writes a message to the log file of the character that contains all
      * communication and messages. The sentence will start with a capital.
      *
-     * <p><b>Important!</b> : Use this method only for Environmental
+     * <p>
+     * <b>Important!</b> : Use this method only for Environmental
      * communication or personal communication , as it does not check the Ignore
      * Flag. Use the writeMessage(Person aSource, String aMessage) for specific
      * communication between users.</p> TODO : move the logging to a protected
@@ -1763,6 +1771,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Returns items in the inventory of this character, based on description
      * provided by the user.
+     *
      * @param parsed the parsed description of the item as given by the user,
      * for example {"light-green", "leather", "pants"}.
      * @return list of found items, empty if not found.
@@ -2085,6 +2094,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Returns the item being worn at that position.
+     *
      * @param position the position to check.
      * @return the item worn at that position, may be null if nothing is being
      * worn there.
@@ -2135,6 +2145,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Indicates if an item is being worn,
+     *
      * @param item the item to check, if null provided it will never be worn,
      * obviously.
      * @return true if the item is being worn, false otherwise.
@@ -2165,6 +2176,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Makes you wear an item at a specific position
+     *
      * @param item the item to be worn. In case this is null,
      * it means an item that used to be worn at this position will be
      * removed.
@@ -2235,6 +2247,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Returns the item being wielded at that position.
+     *
      * @param position the position to check.
      * @return the item wielded at that position, may be null if nothing is being
      * wielded there.
@@ -2260,6 +2273,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Indicates if an item is being wielded,
+     *
      * @param item the item to check, if null provided it will never be wielded,
      * obviously.
      * @return true if the item is being wielded, false otherwise.
@@ -2277,6 +2291,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Makes you wield an item at a specific position
+     *
      * @param item the item to be wielded. In case this is null,
      * it means an item that used to be wielded at this position will be
      * removed.
@@ -2320,6 +2335,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Determines if the item is being used or not. If it is used, it is not allowed
      * to be dropped, get, drunk, eaten, etc.
+     *
      * @param item the item to check
      * @return true if the item is available for use.
      */
@@ -2361,6 +2377,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     /**
      * Transfers money from one person (this one) to another.
+     *
      * @param newamount the amount of copper (base currency to move)
      * @param target the target that is to receive said money
      * @throws MoneyException if the money amount is illegal, or the

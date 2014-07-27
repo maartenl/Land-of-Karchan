@@ -16,16 +16,15 @@
  */
 package mmud.rest.services;
 
-import mmud.scripting.PersonsInterface;
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import org.hibernate.Session;
+import mmud.scripting.PersonsInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +55,7 @@ public class PersonBean implements PersonsInterface
      * Retrieves a person from the pool of all persons. Bear in mind that
      * no automatic filters need apply, nor does the person need to
      * actually be playing the game, and the name lookup is case-insensitive.
+     *
      * @param name the name of the person.
      * @return a person or null if not found.
      */
@@ -79,22 +79,22 @@ public class PersonBean implements PersonsInterface
     /**
      * Retrieves someone in the game. A bot or someone who is actually active
      * and playing.
+     *
      * @param name the name of the person to lookup.
      * @return a Person or null if not found.
      */
+    @Override
     public Person find(String name)
     {
-        // Hibernate specific
-        Session session = ((org.hibernate.ejb.EntityManagerImpl) em.getDelegate()).getSession(); // JPA 1.0
-        // Session session = getEntityManager().unwrap(Session.class); // JPA 2.0
-        session.enableFilter("activePersons");
+        getEntityManager().setProperty("activePersonFilter", 1);
         Person result = getEntityManager().find(Person.class, name);
-        return result ;
+        return result;
     }
 
     /**
      * Retrieves a player, may or may not be playing the game. The name
      * lookup is case-insensitive.
+     *
      * @param name the name of the person.
      * @return a person or null if not found.
      */
@@ -118,6 +118,7 @@ public class PersonBean implements PersonsInterface
      * Retrieves a player, playing the game. The name
      * lookup is case-insensitive. Is often used for room-overreaching
      * commands like the Who or Tell during play.
+     *
      * @param name the name of the person.
      * @return a person or null if not found.
      */

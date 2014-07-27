@@ -34,7 +34,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Constants;
@@ -44,16 +43,17 @@ import mmud.database.entities.game.Mail;
 /**
  * The definition of an item. The analogy with Java would be the difference
  * between a class and an object.
+ *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_items", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
-    @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
-    @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(id) FROM ItemDefinition i")
-})
+        {
+            @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
+            @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
+            @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(i.id) FROM ItemDefinition i")
+        })
 public class ItemDefinition implements Serializable
 {
 
@@ -195,7 +195,7 @@ public class ItemDefinition implements Serializable
      * Return the id.
      *
      * @return integer containing the identification number of the item
-     *         definition.
+     * definition.
      */
     public Integer getId()
     {
@@ -349,6 +349,7 @@ public class ItemDefinition implements Serializable
 
     /**
      * You can or cannot retrieve this item.
+     *
      * @return true if you can retrieve the item, for example from the floor.
      */
     public Boolean getGetable()
@@ -378,6 +379,7 @@ public class ItemDefinition implements Serializable
     /**
      * You cannot give this item to someone else. Also entails that you cannot
      * drop this item.
+     *
      * @return boolean, true if you cannot give the item to someone else.
      */
     public boolean isBound()
@@ -388,7 +390,8 @@ public class ItemDefinition implements Serializable
 
     /**
      * You can or cannot drop this item
-     * @return  true if you can drop the item, for example on the floor.
+     *
+     * @return true if you can drop the item, for example on the floor.
      */
     public Boolean getDropable()
     {
@@ -420,6 +423,7 @@ public class ItemDefinition implements Serializable
 
     /**
      * Indicates if the item is visible to people.
+     *
      * @return true if the item is visible.
      */
     public Boolean getVisible()
@@ -450,6 +454,7 @@ public class ItemDefinition implements Serializable
 
     /**
      * A full and long description of an item. Usually quite a lot of text.
+     *
      * @return Long description string.
      */
     public String getLongDescription()
@@ -465,6 +470,7 @@ public class ItemDefinition implements Serializable
     /**
      * Provides the text shown when the item is read. If returns null or empty,
      * it means the item cannot be read.
+     *
      * @return String containing the reading.
      */
     public String getReaddescription()
@@ -474,7 +480,8 @@ public class ItemDefinition implements Serializable
 
     /**
      * Set the text to be shown when the item is read. Set to null if the item
-     *  cannot be read.
+     * cannot be read.
+     *
      * @param readdescr the text shown when reading the item. May be null.
      */
     public void setReaddescription(String readdescr)
@@ -540,6 +547,7 @@ public class ItemDefinition implements Serializable
     /**
      * Returns true if this item is a container, i.e.
      * if the item can contain other items or not.
+     *
      * @return boolean
      * @see #isOpenable()
      * @see #getKey()
@@ -554,6 +562,7 @@ public class ItemDefinition implements Serializable
      * Indicates that this item should be or should not be
      * a container. Null or false indicates no container, true indicates
      * container.
+     *
      * @param container Boolean
      */
     public void setContainer(Boolean container)
@@ -567,7 +576,8 @@ public class ItemDefinition implements Serializable
 
     /**
      * When this item was originally created.
-     * @return  date
+     *
+     * @return date
      */
     public Date getCreation()
     {
@@ -582,6 +592,7 @@ public class ItemDefinition implements Serializable
     /**
      * The capacity of this container. Indicates how much the container is
      * allowed to carry.
+     *
      * @return Integer indicating the capacity.
      */
     public Integer getCapacity()
@@ -597,6 +608,7 @@ public class ItemDefinition implements Serializable
     /**
      * Indicates that this container can be opened and
      * closed.
+     *
      * @return a boolean if this container can be opened.
      * @see #getKey()
      */
@@ -617,6 +629,7 @@ public class ItemDefinition implements Serializable
     /**
      * Returns the item (the definition to be exact) that can lock/unlock
      * this container. Will be null in most cases.
+     *
      * @return the key
      */
     public ItemDefinition getKey()
@@ -627,6 +640,7 @@ public class ItemDefinition implements Serializable
     /**
      * Sets the item (the definition to be exact) that can lock/
      * unlock this container. Can be null.
+     *
      * @param key the item able to unlock/lock this container.
      */
     public void setKey(ItemDefinition key)
@@ -728,6 +742,7 @@ public class ItemDefinition implements Serializable
      * The list of strings can be in the following format:
      * <ul><li>hammer</li><li>strong hammer</li><li>strong iron hammer</li><li>
      * strong heavy iron hammer</li></ul>
+     *
      * @param parsed the list of strings.
      * @return if this item corresponds to the description.
      */

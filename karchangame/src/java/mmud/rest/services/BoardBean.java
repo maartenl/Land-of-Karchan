@@ -17,8 +17,8 @@
 package mmud.rest.services;
 
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Takes care of the public boards and the private boards.
+ *
  * @author maartenl
  */
 @Stateless
@@ -66,6 +67,7 @@ public class BoardBean
 
     public List<BoardMessage> getNews()
     {
+        getEntityManager().setProperty("activePersonFilter", 0); // turns filter off
         Query query = getEntityManager().createNamedQuery("BoardMessage.news");
         query.setMaxResults(10);
         List<BoardMessage> list = query.getResultList();

@@ -40,7 +40,6 @@ import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
-import org.hibernate.annotations.Filter;
 
 /**
  *
@@ -49,19 +48,19 @@ import org.hibernate.annotations.Filter;
 @Entity
 @Table(name = "mm_guilds", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
-    @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
-    @NamedQuery(name = "Guild.findByTitle", query = "SELECT g FROM Guild g WHERE g.title = :title"),
-    @NamedQuery(name = "Guild.findByDaysguilddeath", query = "SELECT g FROM Guild g WHERE g.daysguilddeath = :daysguilddeath"),
-    @NamedQuery(name = "Guild.findByMaxguilddeath", query = "SELECT g FROM Guild g WHERE g.maxguilddeath = :maxguilddeath"),
-    @NamedQuery(name = "Guild.findByMinguildmembers", query = "SELECT g FROM Guild g WHERE g.minguildmembers = :minguildmembers"),
-    @NamedQuery(name = "Guild.findByMinguildlevel", query = "SELECT g FROM Guild g WHERE g.minguildlevel = :minguildlevel"),
-    @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl"),
-    @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
-    @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
-    @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype and c.person = p")
-})
+        {
+            @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
+            @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
+            @NamedQuery(name = "Guild.findByTitle", query = "SELECT g FROM Guild g WHERE g.title = :title"),
+            @NamedQuery(name = "Guild.findByDaysguilddeath", query = "SELECT g FROM Guild g WHERE g.daysguilddeath = :daysguilddeath"),
+            @NamedQuery(name = "Guild.findByMaxguilddeath", query = "SELECT g FROM Guild g WHERE g.maxguilddeath = :maxguilddeath"),
+            @NamedQuery(name = "Guild.findByMinguildmembers", query = "SELECT g FROM Guild g WHERE g.minguildmembers = :minguildmembers"),
+            @NamedQuery(name = "Guild.findByMinguildlevel", query = "SELECT g FROM Guild g WHERE g.minguildlevel = :minguildlevel"),
+            @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl"),
+            @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
+            @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
+            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype and c.person = p")
+        })
 public class Guild implements Serializable, DisplayInterface
 {
 
@@ -103,7 +102,6 @@ public class Guild implements Serializable, DisplayInterface
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
-    @Filter(name = "activePersons")
     private Collection<Person> members;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
@@ -268,6 +266,7 @@ public class Guild implements Serializable, DisplayInterface
 
     /**
      * Returns the guildmaster of this guild.
+     *
      * @return a Person, the guildmaster. Should not be null, ...ever.
      */
     public Person getBoss()
@@ -277,6 +276,7 @@ public class Guild implements Serializable, DisplayInterface
 
     /**
      * Sets the guildmaster of this guild.
+     *
      * @param boss the new guildmaster. Should never be null.
      * @throws MudException if new guildmaster is null, or not a member of this guild.
      */
@@ -288,7 +288,7 @@ public class Guild implements Serializable, DisplayInterface
         }
         if (boss.getGuild() != null
                 && (!boss.getGuild().getName().equals(
-                getName())))
+                        getName())))
         {
             throw new MudException(boss.getName() + " cannot be a guildmaster of guild " + getName() + ". Already is a guildmaster of " + boss.getGuild().getName());
         }
@@ -345,9 +345,10 @@ public class Guild implements Serializable, DisplayInterface
      * <LI>the guild is active
      * <LI>there are too few guildmembers (minguildmembers > amountofmembers)
      * </UL>
-     * TODO : remove html tags here, let it return a  daysguilddeath or something
+     * TODO : remove html tags here, let it return a daysguilddeath or something
+     *
      * @return String indicating if there are too few members, usually should be
-     *         the empty string if all is well.
+     * the empty string if all is well.
      */
     public String getAlarmDescription()
     {
@@ -364,6 +365,7 @@ public class Guild implements Serializable, DisplayInterface
     /**
      * Searches and returns the person by name in this guild, or null
      * if not found.
+     *
      * @param name the name of the person to look for.
      * @return a Person.
      */
@@ -388,9 +390,9 @@ public class Guild implements Serializable, DisplayInterface
      * Otherwise the Ignore functionality will be omitted.
      *
      * @param aMessage
-     *            the message
+     * the message
      * @throws MudException
-     *             if the room is not correct
+     * if the room is not correct
      * @see Person#writeMessage(java.lang.String)
      */
     public void sendMessage(String aMessage)
@@ -407,9 +409,9 @@ public class Guild implements Serializable, DisplayInterface
      * parsed, based on who is sending the message.
      *
      * @param aPerson
-     *            the person who is the source of the message.
+     * the person who is the source of the message.
      * @param aMessage
-     *            the message
+     * the message
      *
      * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
      */
@@ -448,6 +450,7 @@ public class Guild implements Serializable, DisplayInterface
     /**
      * This is primarily used for displaying the current status of the guild to
      * a member of the guild.
+     *
      * @return a string containing the description of the guild.
      */
     @Override

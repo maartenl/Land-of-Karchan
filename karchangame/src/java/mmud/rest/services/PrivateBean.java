@@ -25,12 +25,22 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import mmud.database.entities.game.*;
-import mmud.database.entities.characters.*;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Mail;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
@@ -119,12 +129,13 @@ public class PrivateBean
     @GET
     @Path("{name}/mail")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering listMail");
+        getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         List<PrivateMail> res = new ArrayList<>();
         try
@@ -173,9 +184,9 @@ public class PrivateBean
     @GET
     @Path("{name}/newmail")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response hasNewMail(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering hasNewMail");
@@ -227,9 +238,9 @@ public class PrivateBean
     @POST
     @Path("{name}/mail")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.debug("entering newMail");
@@ -292,19 +303,20 @@ public class PrivateBean
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to get
+     * @return A specific mail.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
     @GET
     @Path("{name}/mail/{id}")
     @Produces(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
         itsLog.debug("entering getMail");
-
+        getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         try
         {
@@ -358,9 +370,9 @@ public class PrivateBean
     @GET
     @Path("{name}/mail/{id}/createMailItem/{item}")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
         return Response.noContent().build();
@@ -473,9 +485,9 @@ public class PrivateBean
     @DELETE
     @Path("{name}/mail/{id}")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
         itsLog.debug("entering deleteMail");
@@ -511,9 +523,9 @@ public class PrivateBean
     @PUT
     @Path("{name}/charactersheet")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response updateCharacterSheet(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson cinfo)
     {
         itsLog.debug("entering updateCharacterSheet");
@@ -564,15 +576,16 @@ public class PrivateBean
      * @param toname the name of the user you are related to
      * @param description the description of the family relation, for example
      * "mother".
+     * @return Response.ok if everything's okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
     @PUT
     @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
         itsLog.debug("entering updateFamilyvalues");
@@ -581,6 +594,7 @@ public class PrivateBean
             itsLog.error("updateFamilyValues bad params");
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
+        getEntityManager().setProperty("activePersonFilter", 0);
         User person = authenticate(name, lok);
         Person toperson = getPerson(toname);
         try
@@ -597,7 +611,7 @@ public class PrivateBean
             Family family = getEntityManager().find(Family.class, pk);
 
             boolean isNew = family == null;
-            if (isNew)
+            if (family == null)
             {
                 family = new Family();
                 family.setFamilyPK(pk);
@@ -611,10 +625,6 @@ public class PrivateBean
         {
             //ignore
             throw e;
-        } catch (Exception e)
-        {
-            itsLog.debug("updateFamilyvalues: throws ", e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.debug("exiting updateFamilyvalues");
         return Response.ok().build();
@@ -627,31 +637,30 @@ public class PrivateBean
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param toname the name of the user you are related to
+     * @return Response.ok if everything is okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
     @DELETE
     @Path("{name}/charactersheet/familyvalues/{toname}")
     @Consumes(
-    {
-        MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-    })
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
     public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
     {
         itsLog.debug("entering deleteFamilyValues");
+        getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
-        try
+        FamilyPK pk = new FamilyPK();
+        pk.setName(person.getName());
+        pk.setToname(toname);
+        Family family = getEntityManager().find(Family.class, pk);
+        if (family == null)
         {
-            FamilyPK pk = new FamilyPK();
-            pk.setName(person.getName());
-            pk.setToname(toname);
-            Family family = getEntityManager().find(Family.class, pk);
-            getEntityManager().remove(family);
-        } catch (Exception e)
-        {
-            itsLog.debug("deleteFamilyValues: throws", e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+        getEntityManager().remove(family);
         itsLog.debug("exiting deleteFamilyValues");
         return Response.ok().build();
     }

@@ -23,7 +23,21 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Attributes;
@@ -34,7 +48,6 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
-import org.hibernate.annotations.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,13 +69,13 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_rooms", catalog = "mmud", schema = "")
 @NamedQueries(
-{
-    @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r"),
-    @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
-    @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation"),
-    @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
-    @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
-})
+        {
+            @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r"),
+            @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
+            @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation"),
+            @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
+            @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
+        })
 public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler
 {
 
@@ -137,7 +150,6 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Item> items;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    @Filter(name = "activePersons")
     private Set<Person> persons = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Board> boards;
@@ -590,6 +602,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
 
     /**
      * Returns items if found, otherwise returns an empty list.
+     *
      * @param parsed the parsed description of the item as given by the user,
      * for example {"light-green", "leather", "pants"}.
      * @return list of found items, empty if not found.
@@ -606,7 +619,6 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         }
         return result;
     }
-
 
     @Override
     public boolean removeAttribute(String name)
@@ -692,6 +704,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
 
     /**
      * A person, apparently, dropped this into the room.
+     *
      * @param item the item he dropped.
      * @return boolean, true if it was added, false otherwise.
      */

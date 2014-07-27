@@ -21,14 +21,25 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.exceptions.MudException;
-import org.hibernate.annotations.Cascade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +51,14 @@ import org.slf4j.LoggerFactory;
 @Entity
 @DiscriminatorValue("0")
 @NamedQueries(
-{
-    @NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)"),
-    @NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1"),
-    @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
-    @NamedQuery(name = "User.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
-    @NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
-    @NamedQuery(name = "User.authorise", query = "select p from Person p WHERE p.name = :name and p.password = sha1(:password)")
-})
+        {
+            @NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)"),
+            @NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1"),
+            @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
+            @NamedQuery(name = "User.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
+            @NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
+            @NamedQuery(name = "User.authorise", query = "select u from User u WHERE u.name = :name and u.password = FUNCTION('sha1', :password)")
+        })
 public class User extends Person
 {
 
@@ -130,11 +141,7 @@ public class User extends Person
     @Column(name = "lastcommand")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastcommand;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    @Cascade(
-    {
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
-    })
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
     private Set<Macro> macroCollection;
     /**
      * The list of people that you are ignoring.
@@ -162,6 +169,7 @@ public class User extends Person
 
     /**
      * The list of people that you are ignoring.
+     *
      * @return
      */
     public Set<User> getIgnoringSet()
@@ -171,6 +179,7 @@ public class User extends Person
 
     /**
      * The list of people that are ignoring you.
+     *
      * @return
      */
     public Set<User> getIgnoredSet()
@@ -580,6 +589,7 @@ public class User extends Person
     /**
      * Removes a macro from the existing macros. Returns false
      * if the removal failed (for instance if the macro did not exist.)
+     *
      * @param string the name of the macro to remove
      * @return true if success, otherwise false.
      */
@@ -596,6 +606,7 @@ public class User extends Person
     /**
      * Adds a macro to the list of macros. Will do nothing if the macro
      * already exists.
+     *
      * @param macro the macro to add.
      */
     public void addMacro(Macro macro)
@@ -609,6 +620,7 @@ public class User extends Person
 
     /**
      * Returns the macro based on the name of the macro.
+     *
      * @param string the name of the macro
      * @return the macro itself.
      */
@@ -628,6 +640,7 @@ public class User extends Person
 
     /**
      * Adds a user to be ignored to the big ignore list.
+     *
      * @param aUser
      */
     public void addAnnoyingUser(User aUser)
@@ -643,6 +656,7 @@ public class User extends Person
     /**
      * Removes a user from the big ignore list. Assumedly, because he
      * is no longer annoying.
+     *
      * @param aUser
      * @return true if the user was found, and successfully removed from the set.
      */
@@ -663,6 +677,7 @@ public class User extends Person
     /**
      * Whether or not you are ignoring a certain person.
      * The default is that nobody is ignoring you.
+     *
      * @param aPerson the person to check in your ignore list.
      * @return true if the person should be ignored, false otherwise.
      */

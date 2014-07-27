@@ -39,15 +39,13 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.hibernate-persistence.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                    <file>${libs.eclipselink.classpath}</file>
                 </library>
                 <library dirs="200">
-                    <file>${libs.hibernate-support.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                    <file>${libs.eclipselinkmodelgen.classpath}</file>
                 </library>
                 <library dirs="200">
-                    <file>${libs.restlib.classpath}</file>
+                    <file>${libs.EclipseLink-GlassFish-v3.classpath}</file>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>

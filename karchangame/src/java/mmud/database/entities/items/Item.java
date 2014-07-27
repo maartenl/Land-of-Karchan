@@ -38,23 +38,23 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import mmud.Attributes;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Room;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.exceptions.ItemException;
-import mmud.exceptions.MudException;
 import mmud.database.entities.game.AttributeWrangler;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Room;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
-import org.hibernate.annotations.Cascade;
+import mmud.exceptions.ItemException;
+import mmud.exceptions.MudException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * An item. To be more precise an instance of an item definition.
  * An item can either reside in a room, on a person or in another item.
+ *
  * @author maartenl
  */
 // TODO: create subclass named ContainerItem.
@@ -63,15 +63,15 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "mm_itemtable")
 @NamedQueries(
-{
-    @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
-    @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
-    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
-    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container is :container")//  and i.itemDefinition.getable <> 0")
-})
+        {
+            @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
+            @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+            @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
+            @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
+            @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+            @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+            @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
+        })
 public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
 
@@ -88,11 +88,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
     // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "container")
-    @Cascade(
-    {
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
-    })
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
     private Set<Item> items;
     @JoinColumn(name = "containerid", referencedColumnName = "id")
     @ManyToOne
@@ -109,11 +105,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     @ManyToOne
     @JoinColumn(name = "owner", referencedColumnName = "name")
     private Admin owner;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
-    @Cascade(
-    {
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN
-    })
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
     private List<Itemattribute> itemattributeCollection;
 
     public Item()
@@ -215,6 +207,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Will return the room in which this item can be found. Might be null.
+     *
      * @see #getBelongsTo()
      * @see #getContainer()
      */
@@ -225,6 +218,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Will return the person that owns this item. Might be null.
+     *
      * @see #getRoom()
      * @see #getContainer()
      */
@@ -265,6 +259,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Description of the item, for example "a white, cloth pants".
+     *
      * @return a description of the item.
      */
     public String getDescription()
@@ -434,6 +429,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Indicates if the container is open or closed.
      * Only makes sense if this item is in fact a container.
+     *
      * @return true if there is an attribute named "isopen".
      */
     public boolean isOpen()
@@ -530,6 +526,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Returns true if the item can be eaten. This is better than just using
      * a compare on the getEatable.
+     *
      * @return true if eatable, false otherwise
      * @see #getEatable
      */
@@ -572,6 +569,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Returns true if the item can be drunk. This is better than just using
      * a compare on the getDrinkable.
+     *
      * @return true if drinkable, false otherwise
      * @see #getDrinkable
      */
@@ -602,6 +600,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Whether or not you are able to drop this item.
+     *
      * @return true, in case you can, false otherwise.
      */
     public boolean isDroppable()
@@ -617,6 +616,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
      * Whether or not you are able to drop this item or give this item, or in
      * some other way dispose of this item, besides selling it to a vendor or
      * just destroying it.
+     *
      * @return true, in case you cannot, false otherwise.
      */
     public boolean isBound()
@@ -630,6 +630,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Whether or not you are able to retrieve this item from the floor of the room.
+     *
      * @return true, in case you can, false otherwise.
      */
     public boolean isGetable()
@@ -701,8 +702,8 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
             @Override
             public String getBody() throws MudException
             {
-                String read =
-                        getAttribute("readable") == null ? null : getAttribute("readable").getValue();
+                String read
+                        = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
                 if (read == null || read.trim().equals(""))
                 {
                     read = getItemDefinition().getReaddescription();
@@ -731,6 +732,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     /**
      * Verifies that the key provided can open this container.
+     *
      * @param key the key to hopefully open this container.
      * @return true, if it is possible to open this container with the key provided.
      */
