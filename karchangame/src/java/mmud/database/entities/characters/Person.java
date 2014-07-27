@@ -108,7 +108,7 @@ import org.owasp.validator.html.ScanException;
 @DiscriminatorColumn(
         name = "god",
         discriminatorType = DiscriminatorType.INTEGER)
-@Table(name = "mm_usertable", catalog = "mmud", schema = "")
+@Table(name = "mm_usertable")
 @AdditionalCriteria("(:activePersonFilter <> 1 or this.active = 1)")
 @NamedQueries(
         {

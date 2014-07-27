@@ -36,7 +36,7 @@ import mmud.database.entities.game.Attribute;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_itemattributes", catalog = "mmud", schema = "")
+@Table(name = "mm_itemattributes")
 @NamedQueries(
 {
     @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),

@@ -46,7 +46,7 @@ import mmud.rest.services.GuildBean;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_guilds", catalog = "mmud", schema = "")
+@Table(name = "mm_guilds")
 @NamedQueries(
         {
             @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),

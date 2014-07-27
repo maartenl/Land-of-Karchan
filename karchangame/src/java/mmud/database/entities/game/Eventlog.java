@@ -38,7 +38,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_eventlog", catalog = "mmud", schema = "")
+@Table(name = "mm_eventlog")
 @NamedQueries(
 {
     @NamedQuery(name = "Eventlog.findAll", query = "SELECT e FROM Eventlog e"),

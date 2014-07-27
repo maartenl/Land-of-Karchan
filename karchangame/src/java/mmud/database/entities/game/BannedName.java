@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_bannednamestable", catalog = "mmud", schema = "")
+@Table(name = "mm_bannednamestable")
 @NamedQueries(
 {
     @NamedQuery(name = "BannedName.findAll", query = "SELECT b FROM BannedName b"),

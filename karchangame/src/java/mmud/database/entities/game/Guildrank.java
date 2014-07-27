@@ -34,7 +34,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_guildranks", catalog = "mmud", schema = "")
+@Table(name = "mm_guildranks")
 @NamedQueries(
 {
     @NamedQuery(name = "Guildrank.findAll", query = "SELECT g FROM Guildrank g"),

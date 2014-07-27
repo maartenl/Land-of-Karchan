@@ -37,7 +37,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_commandlog", catalog = "mmud", schema = "")
+@Table(name = "mm_commandlog")
 @NamedQueries(
 {
     @NamedQuery(name = "Commandlog.findAll", query = "SELECT c FROM Commandlog c"),

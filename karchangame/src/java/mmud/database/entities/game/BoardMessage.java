@@ -28,7 +28,7 @@ import mmud.database.entities.characters.Person;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_boardmessages", catalog = "mmud", schema = "")
+@Table(name = "mm_boardmessages")
 @NamedQueries(
 {
     @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),

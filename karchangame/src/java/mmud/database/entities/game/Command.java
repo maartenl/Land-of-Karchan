@@ -36,7 +36,7 @@ import javax.validation.constraints.NotNull;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_commands", catalog = "mmud", schema = "")
+@Table(name = "mm_commands")
 @NamedQueries(
 {
     @NamedQuery(name = "Command.findAll", query = "SELECT c FROM Command c"),

@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_errormessages", catalog = "mmud", schema = "")
+@Table(name = "mm_errormessages")
 @NamedQueries(
 {
     @NamedQuery(name = "ErrorMessage.findAll", query = "SELECT e FROM ErrorMessage e"),

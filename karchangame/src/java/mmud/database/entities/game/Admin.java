@@ -41,7 +41,7 @@ import mmud.database.entities.characters.Person;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_admin", catalog = "mmud", schema = "")
+@Table(name = "mm_admin")
 @NamedQueries(
 {
     @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),

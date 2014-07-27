@@ -41,7 +41,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_methods", catalog = "mmud", schema = "")
+@Table(name = "mm_methods")
 @NamedQueries(
 {
     @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m"),

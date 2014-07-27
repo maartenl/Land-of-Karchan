@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @author maartenl
  */
 @Entity
-@Table(name = "family", catalog = "mmud", schema = "")
+@Table(name = "family")
 @NamedQueries(
 {
     @NamedQuery(name = "Family.findAll", query = "SELECT f FROM Family f"),

@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "links", catalog = "mmud", schema = "")
+@Table(name = "links")
 @NamedQueries(
 {
     @NamedQuery(name = "Link.findAll", query = "SELECT l FROM Link l"),

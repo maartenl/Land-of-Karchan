@@ -36,7 +36,7 @@ import mmud.database.entities.characters.Person;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_answers", catalog = "mmud", schema = "")
+@Table(name = "mm_answers")
 @NamedQueries(
 {
     @NamedQuery(name = "Answer.findAll", query = "SELECT a FROM Answer a"),

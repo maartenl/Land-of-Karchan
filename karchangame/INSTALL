@@ -38,11 +38,13 @@ Setting up Database Connection:
     Select Next.
     Datasource Classname: org.mariadb.jdbc.MySQLDataSource
 
+    URL: jdbc:mysql://localhost:3306/mmud
+    driverClass: com.mysql.jdbc.Driver
     portNumber: 3306
     databaseName: mmud
     serverName: localhost
-    user: mmud
-    user: mmud
+    User: mmud
+    Password: itsasecret
     Try to *PING* the database from the administration console.
 10. Setup the jdbc resource, the war assumes it is called "jdbc/mmud".
     For instance with the following settings:

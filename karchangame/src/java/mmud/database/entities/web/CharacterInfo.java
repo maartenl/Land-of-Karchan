@@ -40,7 +40,7 @@ import org.owasp.validator.html.ScanException;
  * @author maartenl
  */
 @Entity
-@Table(name = "characterinfo", catalog = "mmud", schema = "")
+@Table(name = "characterinfo")
 @NamedQueries(
 
 

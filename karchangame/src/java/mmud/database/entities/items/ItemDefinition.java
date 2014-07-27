@@ -47,7 +47,7 @@ import mmud.database.entities.game.Mail;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_items", catalog = "mmud", schema = "")
+@Table(name = "mm_items")
 @NamedQueries(
         {
             @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),

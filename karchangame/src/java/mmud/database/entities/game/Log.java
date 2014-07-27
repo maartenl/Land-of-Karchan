@@ -17,6 +17,7 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -28,6 +29,8 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,7 +41,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_log", catalog = "mmud", schema = "")
+@Table(name = "mm_log")
 @NamedQueries(
         {
             @NamedQuery(name = "Log.findAll", query = "SELECT l FROM Log l"),
@@ -54,6 +57,11 @@ public class Log implements Serializable
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "creation_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creation;
     @Basic(optional = true)
     @Size(min = 1, max = 20)
     @Column(name = "name")
@@ -70,6 +78,7 @@ public class Log implements Serializable
 
     public Log()
     {
+        this.creation = new Date();
     }
 
     public Long getId()
@@ -80,6 +89,16 @@ public class Log implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public Date getCreation()
+    {
+        return creation;
+    }
+
+    public void setCreation(Date creation)
+    {
+        this.creation = creation;
     }
 
     public String getName()

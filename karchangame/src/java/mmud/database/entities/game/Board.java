@@ -44,7 +44,7 @@ import mmud.exceptions.MudException;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_boards", catalog = "mmud", schema = "")
+@Table(name = "mm_boards")
 @NamedQueries(
 {
     @NamedQuery(name = "Board.findAll", query = "SELECT b FROM Board b"),

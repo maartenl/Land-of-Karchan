@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_unbantable", catalog = "mmud", schema = "")
+@Table(name = "mm_unbantable")
 @NamedQueries(
 {
     @NamedQuery(name = "UnbanTable.findAll", query = "SELECT u FROM UnbanTable u"),

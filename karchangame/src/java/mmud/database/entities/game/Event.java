@@ -46,7 +46,7 @@ import mmud.database.entities.characters.Person;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_events", catalog = "mmud", schema = "")
+@Table(name = "mm_events")
 @NamedQueries(
         {
             @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),

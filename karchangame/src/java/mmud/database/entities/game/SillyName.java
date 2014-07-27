@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
  * @author maartenl
  */
 @Entity
-@Table(name = "mm_sillynamestable", catalog = "mmud", schema = "")
+@Table(name = "mm_sillynamestable")
 @NamedQueries(
         {
             @NamedQuery(name = "SillyName.findAll", query = "SELECT s FROM SillyName s"),
