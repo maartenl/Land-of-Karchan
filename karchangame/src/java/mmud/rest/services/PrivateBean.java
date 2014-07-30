@@ -127,9 +127,11 @@ public class PrivateBean
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param offset the offset, default is 0 if not provided.
+     * @return a List of (max 20 by default) mails.
      * @throws WebApplicationException <ul><li>UNAUTHORIZED, if the
      * authorisation failed. </li><li>BAD_REQUEST if an unexpected exception
      * crops up.</li></ul>
+     * @see #MAX_MAILS
      */
     @GET
     @Path("{name}/mail")
@@ -183,6 +185,7 @@ public class PrivateBean
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
+     * @return Response.ok if everything is okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
