@@ -31,10 +31,10 @@ public class Constants
 {
 
     // TODO : create .properties file for languages, default is English. Add properties throughout the code.
-    private static String mudfilepath = "/home/maartenl/temp";
+    private static final String mudfilepath = "/home/glassfish/temp";
     // TODO : fix this to be less static, and has to make use of either
     // web-context param or env-context param/.
-    private static String POLICY_FILE_LOCATION = "/home/maartenl/Land-of-Karchan/karchangame/antisamy-myspace-1.4.4.xml";
+    private static final String POLICY_FILE_LOCATION = "/home/glassfish/antisamy-myspace-1.4.4.xml";
 
     public static String getMudfilepath()
     {
@@ -55,8 +55,8 @@ public class Constants
      * </UL>
      *
      * @return String description of the amount of money, for example
-     *         "<I>3 gold coins, 2 silver coins</I>". Returns an empty string if
-     *         no money is present.
+     * "<I>3 gold coins, 2 silver coins</I>". Returns an empty string if
+     * no money is present.
      */
     public static String getDescriptionOfMoney(int aValue)
     {
@@ -98,16 +98,16 @@ public class Constants
      * get a description based on the adjectives and the noun.
      *
      * @param adject1
-     *            String containing the first adjective.
+     * String containing the first adjective.
      * @param adject2
-     *            String containing the second adjective.
+     * String containing the second adjective.
      * @param adject3
-     *            String containing the third adjective.
+     * String containing the third adjective.
      * @param noun
-     *            String containing the noun.
+     * String containing the noun.
      * @param with_a_or_an indicates if the word should include an a or an an.
      * @return String containing the description in the format: "an/a [adject1],
-     *         [adject2], [adject3] [noun]".
+     * [adject2], [adject3] [noun]".
      */
     public static String getDescriptionOfItem(String adject1, String adject2,
             String adject3, String noun, boolean with_a_or_an)
@@ -146,7 +146,7 @@ public class Constants
      * Returns whether or not a character is a vowel.
      *
      * @param aChar
-     *            the character to check
+     * the character to check
      * @return boolean which is true if the character is a vowel.
      */
     public static boolean isVowel(char aChar)
@@ -219,6 +219,7 @@ public class Constants
 
     /**
      * Adds a descriptive set of the items to the string builder.
+     *
      * @param set a set of items to be described.
      * @param builder the builder to append to. Should not be null.
      */
@@ -267,6 +268,7 @@ public class Constants
 
     /**
      * Adds a descriptive set of the items to the string builder.
+     *
      * @param set a set of items to be described.
      * @param builder the builder to append to. Should not be null.
      */
