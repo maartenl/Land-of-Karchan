@@ -24,6 +24,8 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
@@ -135,6 +137,17 @@ public class LogBean
         commandlog.setName(person == null ? null : person.getName());
         commandlog.setStamp(new Date());
         commandlog.setCommand(command);
-        getEntityManager().persist(commandlog);
+        try
+        {
+            getEntityManager().persist(commandlog);
+        } catch (ConstraintViolationException ex)
+        {
+            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+            for (ConstraintViolation<?> violation : ex.getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new RuntimeException(buffer.toString(), ex);
+        }
     }
 }
