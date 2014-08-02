@@ -39,15 +39,16 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_commandlog")
 @NamedQueries(
-{
-    @NamedQuery(name = "Commandlog.findAll", query = "SELECT c FROM Commandlog c"),
-    @NamedQuery(name = "Commandlog.findById", query = "SELECT c FROM Commandlog c WHERE c.id = :id"),
-    @NamedQuery(name = "Commandlog.findByStamp", query = "SELECT c FROM Commandlog c WHERE c.stamp = :stamp"),
-    @NamedQuery(name = "Commandlog.findByName", query = "SELECT c FROM Commandlog c WHERE c.name = :name"),
-    @NamedQuery(name = "Commandlog.findByCommand", query = "SELECT c FROM Commandlog c WHERE c.command = :command")
-})
+        {
+            @NamedQuery(name = "Commandlog.findAll", query = "SELECT c FROM Commandlog c"),
+            @NamedQuery(name = "Commandlog.findById", query = "SELECT c FROM Commandlog c WHERE c.id = :id"),
+            @NamedQuery(name = "Commandlog.findByStamp", query = "SELECT c FROM Commandlog c WHERE c.stamp = :stamp"),
+            @NamedQuery(name = "Commandlog.findByName", query = "SELECT c FROM Commandlog c WHERE c.name = :name"),
+            @NamedQuery(name = "Commandlog.findByCommand", query = "SELECT c FROM Commandlog c WHERE c.command = :command")
+        })
 public class Commandlog implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,7 +67,7 @@ public class Commandlog implements Serializable
     private String name;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 0, max = 255)
     @Column(name = "command")
     private String command;
 
