@@ -1,1 +1,0 @@
-{"requestUrl":"http://micemouse:8080/karchangame/resources/private/Aurican/mail?lok=dqG782uqz5HpZztQmxdn8n34o&offset=100","requestMethod":"GET","requestBody":"","headers":["Accept","application/json","Content-Type","application/json"]}
