@@ -11,7 +11,7 @@ function processCall(command, log, processor)
   var $ = Karchan.$;
   $.ajax({
     type: 'POST',
-    url: "/resources/game/" + Karchan.name + "/play?offset=" + Karchan.offset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    url: "/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processor(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -32,6 +32,7 @@ function writeStuff(image, body, title, log)
     $('#page-title').html(imageTag + title);
     $("#karchan_body").html(capital + body.substring(1));
     $("#karchan_log").html(log);
+    Karchan.logSize = log.length;
     $('#command').focus();
 }
 
@@ -42,7 +43,8 @@ function playInit($)
   var lok = $.cookie("lok");
   Karchan.name = name;
   Karchan.lok = lok;
-  Karchan.offset = 0; 
+  Karchan.logOffset = 0; 
+  Karchan.sleep = false;
   if (window.console) console.log("playInit name=" + name + " lok=" + lok);
   var command = "l";
   if (window.console) console.log("playInit command=" + command); 
@@ -73,6 +75,58 @@ function play()
   } // processPlay
 
   processCall($("#command").val(), true, processPlay); 
+}
+
+function quit()
+{
+  if (window.console) console.log("quit");
+  var $ = Karchan.$;
+  var quitSucceeded = false;
+  $.ajax({
+    type: 'GET',
+    url: "/resources/game/" + Karchan.name + "/quit?lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    cache: false,
+    success: (function(data) {quitSucceeded = true; }),
+    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    complete: (function() { if (window.console) console.log("complete"); }),
+    async:   false // requirement, we can only show the quit page, if the quit actually succeeded.
+  }); // end of ajax
+  return quitSucceeded;
+}
+
+function toggleSleep()
+{
+  var $ = Karchan.$;
+  if (window.console) console.log("toggleSleep sleep was " + Karchan.sleep);
+  if (Karchan.sleep)
+  {
+    if (window.console) console.log("wakeUp");
+    $("#sleepButtonSpanId").html("Sleep");
+    Karchan.sleep = false;
+  }
+  else
+  {
+    if (window.console) console.log("sleep");
+    $("#sleepButtonSpanId").html("Awaken");
+    Karchan.sleep = true;
+  }
+}
+
+function toggleEntry()
+{
+  if (window.console) console.log("toggleEntry");
+  return true;
+}
+
+function clearLog()
+{
+  if (window.console) console.log("clearLog");
+  var $ = Karchan.$;
+  Karchan.logOffset = Karchan.logOffset + Karchan.logSize;
+  Karchan.logSize = 0;
+  if (window.console) console.log("clearLog setting offset to " + Karchan.logOffset);
+  $("#karchan_log").html("");
+  $('#command').focus();
 }
 
 function startMeUp($)
