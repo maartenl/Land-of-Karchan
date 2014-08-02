@@ -52,8 +52,16 @@ function playInit($)
   } // processPlay
   
   processCall(command, true, processPlay);
+
+  $(window).scroll(function(){
+    $("#block-block-5").css({"margin-top": ($(window).scrollTop()) + "px", "margin-left":($(window).scrollLeft()) + "px"});
+  });
 }
 
+/**
+ * Called by the form, upon submit via javascript:
+ * onsubmit="play(); return false;"
+ */
 function play()
 {
   if (window.console) console.log("play");
