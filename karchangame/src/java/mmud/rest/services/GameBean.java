@@ -689,11 +689,6 @@ public class GameBean implements RoomsInterface
             offset = 0;
         }
         String log = person.getLog(offset);
-        if (Person.EMPTY_LOG.equals(log))
-        {
-            offset = 0;
-            log = person.getLog(offset);
-        }
         PrivateLog plog = new PrivateLog();
         plog.offset = offset;
         plog.log = log;
