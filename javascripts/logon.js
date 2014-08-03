@@ -19,7 +19,14 @@ function logon()
     url: "/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processLogon(data); }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function(jqXHR, textStatus, errorThrown) { 
+        if (window.console) console.log(jqXHR);
+        if (window.console) console.log(textStatus);
+        if (window.console) console.log(errorThrown);
+        if (jqXHR.status == 404) alert("That player was not found.")
+        else if (jqXHR.status == 401) alert("Wrong password.")
+        else alert("An error occurred. Please notify Karn or one of the deps."); 
+        }),
     complete: (function() { if (window.console) console.log("complete"); }),
     dataType: 'text', //define the type of data that is going to get back from the server
     data: 'js=1' //Pass a key/value pair
