@@ -17,9 +17,11 @@
 package mmud.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
@@ -69,7 +71,9 @@ import mmud.commands.movement.UpCommand;
 import mmud.commands.movement.WestCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
+import mmud.scripting.RunScript;
 
 /**
  * The factory that creates commands based on the string entered by the user.
@@ -90,7 +94,7 @@ public class CommandFactory
      * verb.
      */
     private static final TreeMap<String, NormalCommand> theCommandStructure = new TreeMap<>();
-    //private static List<UserCommandInfo> theUserCommandStructure = new ArrayList<UserCommandInfo>();
+    private static List<UserCommandInfo> theUserCommandStructure = new ArrayList<>();
 
     static
     {
@@ -253,12 +257,17 @@ public class CommandFactory
      *
      * @param aUser the person executing the command
      * @param aCommand
-     * the command to be run
+     * the command to be run. Must not be null.
+     * @param userCommands the commands as defined by the user, instead of the
+     * standard commands. Must never be null.
      * @return DisplayInterface object containing the result of the command executed.
      */
-    public static DisplayInterface runCommand(User aUser, String aCommand) throws MudException
+    public static DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands, RunScript runScript) throws MudException
     {
-        itsLog.finer(aUser.getName() + " : " + aCommand);
+        itsLog.log(Level.FINER, " entering {0}.gameMain {1}:{2}", new Object[]
+        {
+            CommandFactory.class.getName(), aUser.getName(), aCommand
+        });
         if (aUser.getSleep())
         {
             NormalCommand command;
@@ -272,8 +281,14 @@ public class CommandFactory
             }
             return command.start(aCommand, aUser);
         }
-
-        List<NormalCommand> myCol = getCommand(aCommand);
+        List<NormalCommand> myCol = new ArrayList<>();
+        for (UserCommand myCom : userCommands)
+        {
+            ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
+            myCol.add(scriptCommand);
+            itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
+        }
+        myCol.addAll(getCommand(aCommand));
         for (NormalCommand command : myCol)
         {
             DisplayInterface result = command.start(aCommand, aUser);
@@ -291,7 +306,7 @@ public class CommandFactory
      *
      * @param aCommand
      * String containing the command entered by the user.
-     * @return Collection (Vector) containing the commands that fit the
+     * @return List containing the commands that fit the
      * description. The commands that are contained are in the following
      * order:
      * <ol>
@@ -308,22 +323,9 @@ public class CommandFactory
     private static List<NormalCommand> getCommand(String aCommand)
     {
         List<NormalCommand> result = new ArrayList<>(5);
-        // TODO: add user commands using Rhino and scripting.
-//        Iterator myI = theUserCommandStructure.iterator();
-//        while (myI.hasNext())
-//        {
-//            UserCommandInfo myCom = (UserCommandInfo) myI.next();
-//            if (aCommand.matches(myCom.getCommand()))
-//            {
-//                ScriptCommand scriptCommand;
-//                scriptCommand = new ScriptCommand(myCom);
-//                scriptCommand.setCommand(aCommand);
-//                result.add(scriptCommand);
-//            }
-//        }
         String[] strings = aCommand.split(" ");
         NormalCommand myCommand = null;
-        if (strings.length >= 2)
+        if (myCommand == null && strings.length >= 2)
         {
             myCommand = theCommandStructure.get(strings[0] + " " + strings[1]);
         }
@@ -338,4 +340,176 @@ public class CommandFactory
         result.add(myCommand);
         return result;
     }
+
+    /**
+     * <p>
+     * Returns all matching user commands.</p>
+     * <p>
+     * There are a few requirements<ul><li>commands must match</li>
+     * <li>either the user defined command is valid for all rooms OR</li>
+     * <li>room defined in the user defined commands euqals the room the
+     * user is in</li></ul></p>
+     *
+     * @param user the user, used to get the room.
+     * @param aCommand the string containing the command issued by the user
+     * @return a list of possibly valid user defined commands.
+     */
+    public static List<UserCommandInfo> getUserCommands(User user, String aCommand)
+    {
+        List<UserCommandInfo> result = new ArrayList<>();
+        for (UserCommandInfo myCom : theUserCommandStructure)
+        {
+            if (aCommand.matches(myCom.getCommand()))
+            {
+                if (myCom.getRoom() == null || myCom.getRoom().equals(user.getRoom().getId()))
+                {
+                    result.add(myCom);
+                }
+            }
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * The definition of a user command. Bear in mind that commands that
+     * are executed often do not make very good global user commands,
+     * as the load on the database might be a little too much.
+     */
+    public static class UserCommandInfo
+    {
+
+        private final int theCommandId;
+
+        private final String theCommand;
+
+        private final String theMethodName;
+
+        private final Integer theRoom;
+
+        /**
+         * constructor for creating a user command for a specific room.
+         *
+         * @param aCommand the regular expression for determining
+         * the command is equal to the command entered.
+         * @param aMethodName the name of the method to call.
+         * @param aRoom the room in which this command is active. Can be
+         * a null pointer if the command is active in all rooms.
+         * @param aCommandId the identification number for the command
+         */
+        public UserCommandInfo(int aCommandId, String aCommand,
+                String aMethodName, Integer aRoom)
+        {
+            theCommandId = aCommandId;
+            theCommand = aCommand;
+            theMethodName = aMethodName;
+            theRoom = aRoom;
+        }
+
+        /**
+         * constructor for creating a user command for all rooms.
+         *
+         * @param aCommand the regular expression for determining
+         * the command is equal to the command entered.
+         * @param aMethodName the name of the method to call.
+         * @param aCommandId the identification number for the command
+         */
+        public UserCommandInfo(int aCommandId, String aCommand,
+                String aMethodName)
+        {
+            theCommandId = aCommandId;
+            theCommand = aCommand;
+            theMethodName = aMethodName;
+            theRoom = null;
+        }
+
+        public String getCommand()
+        {
+            return theCommand;
+        }
+
+        public int getCommandId()
+        {
+            return theCommandId;
+        }
+
+        public String getMethodName()
+        {
+            return theMethodName;
+        }
+
+        public Integer getRoom()
+        {
+            return theRoom;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (!(o instanceof UserCommandInfo))
+            {
+                return false;
+            }
+            UserCommandInfo myUC = (UserCommandInfo) o;
+            boolean p = myUC.getCommand().equals(getCommand());
+            return p;
+        }
+
+        public int getTheCommandId()
+        {
+            return theCommandId;
+        }
+
+        @Override
+        public String toString()
+        {
+            return theCommandId + ":" + getCommand() + ":" + getMethodName() + ":" + getRoom();
+        }
+
+        /**
+         * Use this method when the command that had to be run, throws
+         * an exception.
+         */
+        public void deactivateCommand()
+                throws MudException
+        {
+            theUserCommandStructure.remove(this);
+        }
+
+    }
+
+    /**
+     * Returns if the map of user commands is empty.
+     *
+     * @return
+     */
+    public static boolean noUserCommands()
+    {
+        return theUserCommandStructure.isEmpty();
+    }
+
+    /**
+     * Clears the map containing all user-defined commands.
+     *
+     */
+    public static void clearUserCommandStructure()
+    {
+        CommandFactory.theUserCommandStructure.clear();
+    }
+
+    /**
+     * Add a user command to the structure.
+     *
+     * @param aCommandId the id of the command
+     * @param aCommand the command
+     * @param aMethodName the method name
+     * @param aRoom the room, optional, may be null in which case the command is valid for all
+     * rooms.
+     */
+    public static void addUserCommand(int aCommandId, String aCommand,
+            String aMethodName, Integer aRoom)
+    {
+        UserCommandInfo info = new UserCommandInfo(aCommandId, aCommand, aMethodName, aRoom);
+        CommandFactory.theUserCommandStructure.add(info);
+    }
+
 }

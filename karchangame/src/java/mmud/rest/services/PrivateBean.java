@@ -106,15 +106,15 @@ public class PrivateBean
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
-            throw new WebApplicationException(Status.NOT_FOUND);
+            throw new WebApplicationException("User was not found (" + name + ", " + lok + ")", Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
-            throw new WebApplicationException(Status.BAD_REQUEST);
+            throw new WebApplicationException("User was not a user (" + name + ", " + lok + ")", Status.BAD_REQUEST);
         }
         if (!person.verifySessionPassword(lok))
         {
-            throw new WebApplicationException(Status.UNAUTHORIZED);
+            throw new WebApplicationException("Users session password (lok) did not match (" + name + ", " + lok + " should match " + person.getLok() + ")", Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -493,6 +493,7 @@ public class PrivateBean
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to delete
+     * @return Response.ok() if all is well.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
@@ -529,7 +530,7 @@ public class PrivateBean
      * Adds or updates your current character info.
      *
      * @param name the name of the user
-     * @param lok the dession password
+     * @param lok the session password
      * @param cinfo the object containing the new stuff to update.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.

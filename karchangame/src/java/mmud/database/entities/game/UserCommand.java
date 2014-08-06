@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ * Copyright (C) 2014 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,11 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -30,6 +33,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -38,24 +42,34 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "mm_commands")
 @NamedQueries(
+        {
+            @NamedQuery(name = "UserCommand.findAll", query = "SELECT m FROM UserCommand m"),
+            @NamedQuery(name = "UserCommand.findById", query = "SELECT m FROM UserCommand m WHERE m.id = :id"),
+            @NamedQuery(name = "UserCommand.findActive", query = "SELECT m FROM UserCommand m WHERE m.callable = 1"),
+            @NamedQuery(name = "UserCommand.findByCommand", query = "SELECT m FROM UserCommand m WHERE m.command = :command"),
+            @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room = :room"),
+            @NamedQuery(name = "UserCommand.findByCreation", query = "SELECT m FROM UserCommand m WHERE m.creation = :creation")
+        })
+public class UserCommand implements Serializable
 {
-    @NamedQuery(name = "Command.findAll", query = "SELECT c FROM Command c"),
-    @NamedQuery(name = "Command.findById", query = "SELECT c FROM Command c WHERE c.commandPK.id = :id"),
-    @NamedQuery(name = "Command.match", query = "SELECT c FROM Command c WHERE c.callable = 1"), //  and c.commandPK.command regexp :regular_expression"),
-    @NamedQuery(name = "Command.list", query = "SELECT c FROM Command c WHERE c.callable = 1")
-})
-public class Command implements Serializable
-{
+
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected CommandPK commandPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    private Integer id;
+    @Basic(optional = true)
     @Column(name = "callable")
     private Integer callable;
-    @Column(name = "room")
-    private Integer room;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "creation")
+    @Size(min = 1, max = 255)
+    private String command;
+    @JoinColumn(name = "room", nullable = true, referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Room room;
+    @Basic(optional = false)
+    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
     @JoinColumn(name = "owner", referencedColumnName = "name")
@@ -65,52 +79,63 @@ public class Command implements Serializable
     @ManyToOne(optional = false)
     private Method methodName;
 
-    public Command()
+    public UserCommand()
     {
     }
 
-    public Command(CommandPK commandPK)
+    public UserCommand(Integer id)
     {
-        this.commandPK = commandPK;
+        this.id = id;
     }
 
-    public Command(CommandPK commandPK, Date creation)
+    public UserCommand(Integer id, String command, Date creation)
     {
-        this.commandPK = commandPK;
+        this.id = id;
+        this.command = command;
         this.creation = creation;
     }
 
-    public Command(int id, String command)
+    public Integer getId()
     {
-        this.commandPK = new CommandPK(id, command);
+        return id;
     }
 
-    public CommandPK getCommandPK()
+    public void setId(Integer id)
     {
-        return commandPK;
+        this.id = id;
     }
 
-    public void setCommandPK(CommandPK commandPK)
+    public Boolean getCallable()
     {
-        this.commandPK = commandPK;
+        return callable != null && callable == 1;
     }
 
-    public Integer getCallable()
+    public void setCallable(Boolean callable)
     {
-        return callable;
+        if (callable == null || callable == false)
+        {
+            this.callable = 0;
+            return;
+        }
+        this.callable = 1;
     }
 
-    public void setCallable(Integer callable)
+    public String getCommand()
     {
-        this.callable = callable;
+        return command;
     }
 
-    public Integer getRoom()
+    public void setCommand(String command)
+    {
+        this.command = command;
+    }
+
+    public Room getRoom()
     {
         return room;
     }
 
-    public void setRoom(Integer room)
+    public void setRoom(Room room)
     {
         this.room = room;
     }
@@ -149,7 +174,7 @@ public class Command implements Serializable
     public int hashCode()
     {
         int hash = 0;
-        hash += (commandPK != null ? commandPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -157,12 +182,12 @@ public class Command implements Serializable
     public boolean equals(Object object)
     {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Command))
+        if (!(object instanceof UserCommand))
         {
             return false;
         }
-        Command other = (Command) object;
-        if ((this.commandPK == null && other.commandPK != null) || (this.commandPK != null && !this.commandPK.equals(other.commandPK)))
+        UserCommand other = (UserCommand) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
         {
             return false;
         }
@@ -172,7 +197,7 @@ public class Command implements Serializable
     @Override
     public String toString()
     {
-        return "mmud.database.entities.game.Command[ commandPK=" + commandPK + " ]";
+        return "mmud.database.entities.game.MmCommands[ id=" + id + " ]";
     }
 
 }

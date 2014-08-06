@@ -16,17 +16,16 @@
  */
 package mmud.scripting;
 
-import mmud.database.entities.characters.Person;
-
+import mmud.scripting.entities.Person;
 
 /**
  *
  * @author maartenl
  */
-public class Persons implements PersonsInterface
+public class Persons
 {
 
-    private PersonsInterface proxy;
+    private final PersonsInterface proxy;
 
     public Persons(PersonsInterface proxy)
     {
@@ -34,9 +33,8 @@ public class Persons implements PersonsInterface
 
     }
 
-    @Override
     public Person find(String name)
     {
-        return proxy.find(name);
+        return new Person(proxy.find(name));
     }
 }

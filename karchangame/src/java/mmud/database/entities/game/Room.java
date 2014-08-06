@@ -393,6 +393,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         this.attributes = attributes;
     }
 
+    @Override
     public Set<Item> getItems()
     {
         return items;
@@ -544,7 +545,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * retrieve the character from the list of characters currently active in
      * the current room.
      *
-     * @param aName name of the character to search for.
+     * @param aName name of the character to search for. Case matters not.
      * @return Character/Person in the room. Will return null pointer if
      * character not found.
      * @see #retrieveUser(java.lang.String)

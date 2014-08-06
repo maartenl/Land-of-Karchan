@@ -16,24 +16,24 @@
  */
 package mmud.scripting;
 
-import mmud.database.entities.game.Room;
-
+import mmud.scripting.entities.Room;
 
 /**
  *
  * @author maartenl
  */
-public class Rooms implements RoomsInterface
+public class Rooms
 {
-    private RoomsInterface proxy;
+
+    private final RoomsInterface proxy;
+
     public Rooms(RoomsInterface proxy)
     {
         this.proxy = proxy;
     }
 
-    @Override
     public Room find(Integer id)
     {
-        return proxy.find(id);
+        return new Room(proxy.find(id));
     }
 }

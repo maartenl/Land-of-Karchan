@@ -91,8 +91,8 @@
  * <TR valign=top><TD><A HREF="#mm_mailtable">mm_mailtable</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
  * mud mail of characters in the game</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_methods">mm_methods</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Special
- * methods that can be entered in thedatabase to provide characters with
- * special abilities or to be executedperiodically. See related tables
+ * methods that can be entered in the database to provide characters with
+ * special abilities or to be executed periodically. See related tables
  * mm_commands and mm_events.</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_roomattributes">mm_roomattributes</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Attributes
  * of a certain room.</TD></TR>
@@ -452,6 +452,8 @@
  * mm_guilds "1" *-- "many" mm_guildranks : contains
  * mm_ignore "1" *-- "2" mm_usertable : contains
  * mm_answers "many" *-- "1" mm_usertable : contains
+ * mm_commands "many" *-- "1" mm_methods : uses
+ * mm_events "many" *-- "1" mm_methods : uses
  * class mm_usertable {
  * -id
  * -name

@@ -16,8 +16,6 @@
  */
 package mmud.database.entities.game;
 
-import mmud.database.entities.items.ItemDefinition;
-import mmud.database.entities.items.Item;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +33,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
 
 /**
  *
@@ -43,17 +43,20 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_admin")
 @NamedQueries(
-{
-    @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),
-    @NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name"),
-    @NamedQuery(name = "Admin.findByPasswd", query = "SELECT a FROM Admin a WHERE a.passwd = :passwd"),
-    @NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip"),
-    @NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created"),
-    @NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil"),
-    @NamedQuery(name = "Admin.findByEmail", query = "SELECT a FROM Admin a WHERE a.email = :email")
-})
+        {
+            @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),
+            @NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name"),
+            @NamedQuery(name = "Admin.findByPasswd", query = "SELECT a FROM Admin a WHERE a.passwd = :passwd"),
+            @NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip"),
+            @NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created"),
+            @NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil"),
+            @NamedQuery(name = "Admin.findByEmail", query = "SELECT a FROM Admin a WHERE a.email = :email")
+        })
 public class Admin implements Serializable
 {
+
+    @OneToMany(mappedBy = "owner")
+    private Collection<UserCommand> mmCommandsCollection;
 
     public static final String DEFAULT_OWNER = "Karn";
 
@@ -103,7 +106,7 @@ public class Admin implements Serializable
     @OneToMany(mappedBy = "owner")
     private Collection<Area> areaCollection;
     @OneToMany(mappedBy = "owner")
-    private Collection<Command> commandCollection;
+    private Collection<UserCommand> commandCollection;
     @OneToMany(mappedBy = "owner")
     private Collection<Method> methodCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
@@ -250,12 +253,12 @@ public class Admin implements Serializable
         this.areaCollection = areaCollection;
     }
 
-    public Collection<Command> getCommandCollection()
+    public Collection<UserCommand> getCommandCollection()
     {
         return commandCollection;
     }
 
-    public void setCommandCollection(Collection<Command> commandCollection)
+    public void setCommandCollection(Collection<UserCommand> commandCollection)
     {
         this.commandCollection = commandCollection;
     }
@@ -318,6 +321,16 @@ public class Admin implements Serializable
     public String toString()
     {
         return "mmud.database.entities.game.Admin[ name=" + name + " ]";
+    }
+
+    public Collection<UserCommand> getMmCommandsCollection()
+    {
+        return mmCommandsCollection;
+    }
+
+    public void setMmCommandsCollection(Collection<UserCommand> mmCommandsCollection)
+    {
+        this.mmCommandsCollection = mmCommandsCollection;
     }
 
 }

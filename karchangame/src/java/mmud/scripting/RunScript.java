@@ -16,6 +16,7 @@
  */
 package mmud.scripting;
 
+import java.util.logging.Logger;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -25,12 +26,16 @@ import mmud.scripting.entities.Room;
 /**
  * Can run javascript source code. The methods call specific javascript
  * functions in the source code.
+ *
  * @author maartenl
  */
 public class RunScript
 {
 
+    private static final Logger itsLog = Logger.getLogger(RunScript.class.getName());
+
     private Persons persons;
+
     private Rooms rooms;
 
     public RunScript(Persons persons, Rooms rooms)
@@ -51,15 +56,17 @@ public class RunScript
      * Runs a specific function called "function command(person, command)".
      *
      * Basically it calls a specific deputy defined "command".
+     *
      * @param person the person issuing forth the command.
      * @param command the command, a string.
      * @param sourceCode the source code, javascript, a string.
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
-     * @throws NoSuchMethodException  if the function cannot be found,
+     * @throws NoSuchMethodException if the function cannot be found,
      */
     public boolean run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException
     {
+        itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ", " + command + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -72,14 +79,16 @@ public class RunScript
      * Runs a specific function called "function event(person)".
      *
      * Basically it calls a specific deputy defined "event".
+     *
      * @param person the event needs to be executed with this person as the focus.
      * @param sourceCode the source code, javascript, a string.
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
-     * @throws NoSuchMethodException  if the function cannot be found,
+     * @throws NoSuchMethodException if the function cannot be found,
      */
     public boolean run(mmud.database.entities.characters.Person person, String sourceCode) throws ScriptException, NoSuchMethodException
     {
+        itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -92,14 +101,16 @@ public class RunScript
      * Runs a specific function called "function event(room)".
      *
      * Basically it calls a specific deputy defined "event".
+     *
      * @param room the event needs to be executed with this room as the focus.
      * @param sourceCode the source code, javascript, a string.
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
-     * @throws NoSuchMethodException  if the function cannot be found,
+     * @throws NoSuchMethodException if the function cannot be found,
      */
     public boolean run(mmud.database.entities.game.Room room, String sourceCode) throws ScriptException, NoSuchMethodException
     {
+        itsLog.entering(this.getClass().getName(), "run(" + room.getId() + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -111,13 +122,15 @@ public class RunScript
     /**
      * Runs a specific function called "function event()". This is a generic
      * event without a focus.
+     *
      * @param sourceCode the source code, javascript, a string.
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
-     * @throws NoSuchMethodException  if the function cannot be found,
+     * @throws NoSuchMethodException if the function cannot be found,
      */
     public boolean run(String sourceCode) throws ScriptException, NoSuchMethodException
     {
+        itsLog.entering(this.getClass().getName(), "run()");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -128,6 +141,7 @@ public class RunScript
 
     private Invocable initialiseScriptEngine(String sourceCode) throws ScriptException
     {
+        itsLog.entering(this.getClass().getName(), "initialiseScriptEngine");
         // create a script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();
         // create a JavaScript engine

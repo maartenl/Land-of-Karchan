@@ -43,13 +43,16 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_methods")
 @NamedQueries(
-{
-    @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m"),
-    @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
-    @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation")
-})
+        {
+            @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m"),
+            @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
+            @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation")
+        })
 public class Method implements Serializable
 {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
+    private Collection<UserCommand> mmCommandsCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -71,7 +74,7 @@ public class Method implements Serializable
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "method")
     private Collection<Event> eventCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
-    private Collection<Command> commandCollection;
+    private Collection<UserCommand> commandCollection;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -104,6 +107,7 @@ public class Method implements Serializable
 
     /**
      * Get the javascript source to execute.
+     *
      * @return
      */
     public String getSrc()
@@ -136,12 +140,12 @@ public class Method implements Serializable
         this.eventCollection = eventCollection;
     }
 
-    public Collection<Command> getCommandCollection()
+    public Collection<UserCommand> getCommandCollection()
     {
         return commandCollection;
     }
 
-    public void setCommandCollection(Collection<Command> commandCollection)
+    public void setCommandCollection(Collection<UserCommand> commandCollection)
     {
         this.commandCollection = commandCollection;
     }
@@ -184,6 +188,16 @@ public class Method implements Serializable
     public String toString()
     {
         return "mmud.database.entities.game.Method[ name=" + name + " ]";
+    }
+
+    public Collection<UserCommand> getMmCommandsCollection()
+    {
+        return mmCommandsCollection;
+    }
+
+    public void setMmCommandsCollection(Collection<UserCommand> mmCommandsCollection)
+    {
+        this.mmCommandsCollection = mmCommandsCollection;
     }
 
 }

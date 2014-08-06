@@ -16,7 +16,6 @@
  */
 package mmud.scripting.entities;
 
-import mmud.database.entities.game.AttributeWrangler;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.PersonNotFoundException;
 
@@ -53,6 +52,7 @@ public class Person
     {
         return new Room(person.getRoom());
     }
+
     public String getGuild()
     {
         return person.getGuild() == null ? null : person.getGuild().getTitle();
@@ -64,16 +64,24 @@ public class Person
         person.writeMessage(string);
     }
 
-    public void sendMessage(String targetname, String message)
+    /**
+     * @param toperson the person to send the message to. (Anyone else can listen).
+     * @see mmud.database.entities.game.Room#sendMessageExcl(mmud.database.entities.characters.Person, mmud.database.entities.characters.Person, java.lang.String)
+     * @param message
+     */
+    public void sendMessage(Person toperson, String message)
     {
-        mmud.database.entities.characters.Person target = person.getRoom().retrievePerson(targetname);
-        if (target == null)
+        if (toperson == null || toperson.getRoom().getId() != this.getRoom().getId())
         {
             throw new PersonNotFoundException();
         }
-        person.getRoom().sendMessage(target, message);
+        person.getRoom().sendMessage(person, toperson.person, message);
     }
 
+    /**
+     * @see mmud.database.entities.game.Room#sendMessage(java.lang.String)
+     * @param message
+     */
     public void sendMessage(String message)
     {
         person.getRoom().sendMessage(message);

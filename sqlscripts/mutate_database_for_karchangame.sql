@@ -333,5 +333,13 @@ FOR EACH ROW
 # commit transaction
 COMMIT;
 
+
+# changed the mm_commands table, it's weird to have a composite key. Like there's ever going to be a strange ID in there...
+ALTER TABLE mm_commands DROP PRIMARY KEY;                        
+ALTER TABLE mm_commands MODIFY id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT;
+
+ALTER TABLE mm_commands ADD FOREIGN KEY
+    mm_commands_room_fk (room) REFERENCES mm_rooms (id) ON DELETE CASCADE;
+
 END_OF_DATA
 
