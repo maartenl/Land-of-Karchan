@@ -66,13 +66,47 @@ Person.prototype.sendMessage = function(person, message)
       {
         if (persons.persons[i].room.id == this.room.id)
         {
-          persons.persons[i].personal(message);
+          if (persons.persons[i] === this)
+          {
+            persons.persons[i].personal(replaceTagsMe(message, this, this));
+          }
+          else
+          {
+            persons.persons[i].personal(replaceTagsSomebodyElse(message, this, this));
+          }
         }
       }
       return;
   }
   this.personal(replaceTagsMe(message, this, person));
   person.personal(replaceTagsTarget(message, this, person));
+  for (i in persons.persons)
+  {
+    if (persons.persons[i].room.id == this.room.id && persons.persons[i] !== this && persons.persons[i] !== person)
+    {
+      persons.persons[i].personal(replaceTagsSomebodyElse(message, this, person));
+    }
+  }
+}
+
+Person.prototype.sendMessageExcl = function(person, message)
+{
+  if (message === undefined)
+  {
+      message = person;
+      person = null;
+      for (i in persons.persons)
+      {
+        if (persons.persons[i].room.id == this.room.id)
+        {
+          if (persons.persons[i] !== this)
+          {
+            persons.persons[i].personal(replaceTagsSomebodyElse(message, this, this));
+          }
+        }
+      }
+      return;
+  }
   for (i in persons.persons)
   {
     if (persons.persons[i].room.id == this.room.id && persons.persons[i] !== this && persons.persons[i] !== person)

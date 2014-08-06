@@ -84,17 +84,33 @@ public class Person
      */
     public void sendMessage(String message)
     {
-        person.getRoom().sendMessage(message);
+        person.getRoom().sendMessage(person, message);
     }
 
-    public void sendMessageExcl(String targetname, String message)
+    /**
+     * Sends a message in the room, but not to myself.
+     *
+     * @see mmud.database.entities.game.Room#sendMessageExcl(mmud.database.entities.characters.Person, java.lang.String)
+     * @param message
+     */
+    public void sendMessageExcl(String message)
     {
-        mmud.database.entities.characters.Person target = person.getRoom().retrievePerson(targetname);
-        if (target == null)
+        person.getRoom().sendMessageExcl(person, message);
+    }
+
+    /**
+     * Sends a message in the room, but not to myself and the target toperson.
+     *
+     * @param toperson the other guy
+     * @param message the message
+     */
+    public void sendMessageExcl(Person toperson, String message)
+    {
+        if (toperson == null || toperson.getRoom().getId() != this.getRoom().getId())
         {
             throw new PersonNotFoundException();
         }
-        person.getRoom().sendMessageExcl(person, target, message);
+        person.getRoom().sendMessageExcl(person, toperson.person, message);
     }
     //item addItem(integer)
     //removeItem(Item)
