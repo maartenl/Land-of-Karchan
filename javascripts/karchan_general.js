@@ -6,4 +6,4 @@
  * We can use this object to create a namespace for my karchan methods
  * functions and constants.
  */
-var Karchan = {};
+var Karchan = Karchan || {};
