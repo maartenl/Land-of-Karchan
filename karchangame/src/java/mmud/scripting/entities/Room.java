@@ -16,6 +16,8 @@
  */
 package mmud.scripting.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import mmud.exceptions.PersonNotFoundException;
 
 /**
@@ -25,7 +27,7 @@ import mmud.exceptions.PersonNotFoundException;
 public class Room
 {
 
-    private mmud.database.entities.game.Room room;
+    private final mmud.database.entities.game.Room room;
 
     public Room(mmud.database.entities.game.Room room)
     {
@@ -91,9 +93,84 @@ public class Room
         return new Room(room.getDown());
     }
 
+    public void setWest(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setWest(null);
+            return;
+        }
+        room.setWest(newroom.room);
+    }
+
+    public void setEast(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setEast(null);
+            return;
+        }
+        room.setEast(newroom.room);
+    }
+
+    public void setNorth(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setNorth(null);
+            return;
+        }
+        room.setNorth(newroom.room);
+    }
+
+    public void setSouth(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setSouth(null);
+            return;
+        }
+        room.setSouth(newroom.room);
+    }
+
+    public void setUp(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setUp(null);
+            return;
+        }
+        room.setUp(newroom.room);
+    }
+
+    public void setDown(Room newroom)
+    {
+        if (newroom == null)
+        {
+            room.setDown(null);
+            return;
+        }
+        room.setDown(newroom.room);
+    }
+
     public String getDescription()
     {
         return room.getContents();
+    }
+
+    public void setDescription(String contents)
+    {
+        room.setContents(contents);
+    }
+
+    public String getPicture()
+    {
+        return room.getPicture();
+    }
+
+    public void setPicture(String contents)
+    {
+        room.setPicture(contents);
     }
 
     public String getTitle()
@@ -150,6 +227,18 @@ public class Room
         }
         room.sendMessageExcl(target, message);
     }
-//item[] getItems(integer)
+
+    public List<Item> getItems(Integer itemdefid)
+    {
+        List<Item> result = new ArrayList<>();
+        for (mmud.database.entities.items.Item item : room.getItems())
+        {
+            if (item.getItemDefinition().getId() == itemdefid)
+            {
+                result.add(new Item(item));
+            }
+        }
+        return result;
+    }
 //Item addItem(integer)
 }

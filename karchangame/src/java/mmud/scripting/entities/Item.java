@@ -20,7 +20,7 @@ package mmud.scripting.entities;
  *
  * @author maartenl
  */
-class Item
+public class Item
 {
 
     private final mmud.database.entities.items.Item item;
@@ -49,6 +49,7 @@ class Item
     {
         return item.getDescription();
     }
+
     public String getAttribute(String name)
     {
         return item.getAttribute(name).getValue();
