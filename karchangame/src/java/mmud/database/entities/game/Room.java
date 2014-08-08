@@ -724,7 +724,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         List<Person> result = new ArrayList<>();
         for (Person person : persons)
         {
-            if (person.isUser() && !person.getName().equals(excludinguser.getName()))
+            if (!person.getName().equals(excludinguser.getName()))
             {
                 result.add(person);
             }
