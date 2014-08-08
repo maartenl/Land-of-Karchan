@@ -93,5 +93,106 @@ function command(person,totalcommand)
 }"
 where name="goose";
 
+update mm_methods
+set src="
+function command(person,totalcommand)
+{
+  // command syntax : goose someone
+  var command = totalcommand.split(\" \"); 
+  toperson = persons.find(command[1]);
+  if (toperson == null || toperson.room.id != person.room.id)
+  {
+    person.personal(\"You cannot find that person.<br/>\");
+    return;
+  }
+  if (toperson.name == person.name)
+  {
+    person.personal(\"That is sick, you pervert!  Do that someplace private!<br/>\");
+    return;
+  }
+  person.sendMessage(toperson, \"%SNAME goose%VERB2 %TYOUPOSS behind.<br/>\");
+}"
+where name="goose";
+
+update mm_methods
+set src="
+function command(person, command)
+{
+  var mydescription = \"You are now in the Inn &quot;The Twisted Dwarf&quot;. It is dark, as always \" +
+    \"in these places. The windows are of a dark blue color, which doesn't allow \" +
+    \"much light to enter the room. A lot of woodwork, wooden tables, chairs and a \" +
+    \"rather large bar on the right of you are visible. Almost against the back \" +
+    \"of the room is a comparatively big cupboard. The cupboard appears to \" +
+    \"be open. Behind the bar a norse small ugly dwarf is cleaning some glasses. \" +
+    \"On the same bar you see a sign on a piece of wood, apparently this\" +
+    \"is the menu for the day.<P> Scattered among the tables are groups of \" +
+    \"people, playing what seems to be a dwarfish version of Poker. You see a sign\" +
+    \"on the wall behind the counter.\";
+  var myitemdescription = \"<H1><IMG SRC=\\"/images/gif/herberg5.gif\\">The \" +
+    \"Cupboard</H1><HR>\" +
+    \"You look at the cupboard. It is very old and wormeaten. With one knock you\" +
+    \"could probably knock it down, but I doubt if the barman would appreciate\" +
+    \"this much. It is open. Both doors of the cupboard are ajar. In it you can\" +
+    \"see, amazingly, a staircase leading to the north and up into a hidden\" +
+    \"room.<P>\";
+  /* command syntax : open cupboard
+  */
+  if (person.room.north != null)
+  {
+      person.personal(\"The cupboard is already open.<br/>\");
+      return;
+  }
+  hiddenroom=rooms.find(20);
+  person.room.north = hiddenroom;
+  person.room.description = mydescription;
+  person.room.picture = \"/images/gif/herberg4.gif\";
+  hiddenroom.south = person.room;
+  myitem = person.room.getItems(-32);
+  if (myitem.length == 1) 
+  {
+      myitem[0].setAttribute(\"description\", myitemdescription);
+  }
+  person.sendMessage(\"%SNAME open%VERB2 the door of the cupboard.<br/>\");
+  person.personal(\"[<A HREF=backslashquote/images/mpeg/her.mpgbackslashquote>MPEG</A>]<br/>\"); 
+}"
+where name = 'open_cupboard';
+
+update mm_methods
+set src="
+function command(person, command)
+{
+  var mydescription = \"You are now in the Inn &quot;The Twisted Dwarf&quot;. It is dark, as always  \" +
+    \"in these places. The windows are of a dark blue color, which doesn't allow \" +
+    \"much light to enter the room. A lot of woodwork, wooden tables, chairs and a    \" +
+    \"rather large bar on the right of you are visible. Almost against the the back            \" +
+    \"of the room is a comparatively big cupboard.  Behind the bar a norse            \" +
+    \"small ugly dwarf is cleaning some glasses. On the same bar you            \" +
+    \"see a sign on a piece of wood, apparently this is the menu for the \" +
+    \"day.<br/> Scattered among the tables are groups of people, playing what \" +
+    \"seems to be a dwarfish version of Poker. You see a sign on the wall behind \" +
+    \"the counter.\";
+  /* command syntax : close cupboard */
+  if (person.room.north == null)
+  {
+      person.personal(\"The cupboard is already closed.<br/>\");
+      return;
+  }
+  hiddenroom=rooms.find(20);
+  person.room.description = mydescription;
+  person.room.picture = \"/images/gif/herberg1.gif\";
+  person.room.north = null;
+  hiddenroom.south = null;
+  myitem = person.room.getItems(-32);
+  if (myitem.length == 1)
+  {
+      myitem[0].removeAttribute(\"description\");
+  }
+  person.sendMessage(\"%SNAME close%VERB2 the door of the cupboard.<br/>\");
+  person.personal(\"[<A HREF=backslashquote/images/mpeg/her2.mpgbackslashquote>MPEG</A>]<br/>\");
+}"
+where name = 'close_cupboard';
+
+# update mm_methods set src = replace(src, "backslashquote", "\\""");
+
 END_OF_DATA
 
