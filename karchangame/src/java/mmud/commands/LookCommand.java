@@ -23,6 +23,7 @@ import mmud.exceptions.MudException;
 /**
  * Just a general look command, makes you refresh the room.
  * Doesn't actually do anything.
+ *
  * @author maartenl
  */
 public class LookCommand extends NormalCommand

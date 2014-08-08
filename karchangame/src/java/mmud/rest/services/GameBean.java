@@ -633,7 +633,7 @@ public class GameBean implements RoomsInterface
             {
                 itsLog.throwing("play: throws ", ex.getMessage(), ex);
             }
-            display = createPrivateDisplay(person.getRoom(), person);
+            display = createPrivateDisplayFromRoom(person);
         } catch (WebApplicationException e)
         {
             //ignore
@@ -708,11 +708,10 @@ public class GameBean implements RoomsInterface
         Rooms rooms = new Rooms(this);
         RunScript runScript = new RunScript(persons, rooms);
         DisplayInterface display = CommandFactory.runCommand(person, command, userCommands2, runScript);
-        if (display == null)
+        if (display == null || display == person.getRoom())
         {
-            display = person.getRoom();
+            return createPrivateDisplayFromRoom(person);
         }
-
         return createPrivateDisplay(display, person);
     }
 
@@ -851,6 +850,12 @@ public class GameBean implements RoomsInterface
         result.body = display.getBody();
         result.image = display.getImage();
         result.title = display.getMainTitle();
+        return result;
+    }
+
+    private PrivateDisplay createPrivateDisplayFromRoom(User player) throws MudException
+    {
+        PrivateDisplay result = createPrivateDisplay(player.getRoom(), player);
         if (player.getRoom().getWest() != null)
         {
             result.west = true;
@@ -885,7 +890,6 @@ public class GameBean implements RoomsInterface
         }
         result.persons = persons;
         result.items = Constants.addInventoryForRoom(player.getRoom().getItems());
-
         return result;
     }
 

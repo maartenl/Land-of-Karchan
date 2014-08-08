@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -70,7 +71,10 @@ public abstract class NormalCommand implements Command
      */
     DisplayInterface start(String command, User aUser) throws MudException
     {
-        itsLog.finer(aUser.getName() + "(" + this.getClass().getName() + ") : " + command);
+        itsLog.log(Level.FINER, "{0}({1}) : {2}", new Object[]
+        {
+            aUser.getName(), this.getClass().getName(), command
+        });
         aUser.setNow();
         String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
         boolean result;
