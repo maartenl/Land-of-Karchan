@@ -5,7 +5,21 @@
  * functions and constants.
  */
 var Karchan = {};
-     
+
+function isVowel(aChar)
+{
+  return aChar === 'a' || 
+         aChar === 'e' || 
+         aChar === 'u' || 
+         aChar === 'o' || 
+         aChar === 'i' || 
+         aChar === 'A' || 
+         aChar === 'E' || 
+         aChar === 'U' || 
+         aChar === 'I' || 
+         aChar === 'O';
+}
+                                                      
 function processCall(command, log, processor)
 {
   var $ = Karchan.$;
@@ -22,15 +36,84 @@ function processCall(command, log, processor)
   }); // end of ajax
 }
      
-function writeStuff(image, body, title, log)
+function writeStuff(data)
 {
+    var image = data.image;
+    var body = data.body;
+    var title = data.title;
+    var log = data.log.log;
+
     var $ = Karchan.$;
     var imageTag = (image == null || image == "") ? "" : "<img src=\"" + image + "\"/>";
-    var capitalChar = body.substring(0, 1).toLocaleLowerCase();
+    var capitalChar = body.charAt(0).toLocaleLowerCase();
     // http://www.karchan.org/images/gif/letters/w.gif
     var capital = "<img align=\"left\" src=\"/images/gif/letters/" + capitalChar + ".gif\" alt=\"" + capitalChar.toLocaleUpperCase() + "\"/>";
     $('#page-title').html(imageTag + title);
-    $("#karchan_body").html(capital + body.substring(1));
+    var body = "<p>" + capital + body.substring(1) + "</p>";
+    if (data.north !== undefined || data.west !== undefined || data.east !== undefined || data.south !== undefined || data.up !== undefined || data.down != undefined)
+    {
+      body += "<p>[";
+      if (data.west !== undefined) {body += "west ";}
+      if (data.east !== undefined) {body += "east ";}
+      if (data.north !== undefined) {body += "north ";}
+      if (data.south !== undefined) {body += "south ";}
+      if (data.up !== undefined) {body += "up ";}
+      if (data.down !== undefined) {body += "down ";}
+      body += "]</p>";
+    }
+    if (data.persons !== undefined)
+    {
+      if (data.persons.lenght !== 0) {body += "<p>";}
+      for (i in data.persons)
+      {
+        // A human called Ryan is here.
+        if (isVowel(data.persons[i].race.charAt(0))) 
+        {body += "An "} else {body += "A ";}
+        body += data.persons[i].race + " called " + data.persons[i].name + " is here.<br/>";
+      }
+      if (data.persons.lenght !== 0) {body += "</p>";}
+    }
+    if (data.items !== undefined)
+    {
+      if (data.items.lenght !== 0) {body += "<p>";}
+      for (index in data.items)
+      {
+        var item = data.items[index];
+        var i = 0;
+        var description = "";
+        //  A massive, gray, stone boulder is here.
+        if (item.adject1 !== undefined && item.adject1 != "")
+        {
+          i++;description += item.adject1;
+        }
+        if (item.adject2 !== undefined && item.adject2 != "")
+        {
+          if (i == 1) {description += ", ";}
+          i++;description += item.adject2;
+        }
+        if (item.adject3 !== undefined && item.adject3 != "")
+        {
+          if (i > 0) {description += ", ";}
+          i++;description += item.adject3;
+        }
+        description += " " + item.name;
+        if (item.amount > 1) 
+        {description +=" are";} else {description += " is";}
+        description += " here.<br/>";
+        if (item.amount > 1)
+        {
+          body += item.amount + " ";
+        } else 
+        {
+          if (isVowel(description.charAt(0)))
+          {body += "An ";} else {body += "A ";}
+        }
+        body += description;
+      }
+      if (data.items.lenght !== 0) {body += "</p>";}
+    }
+    
+    $("#karchan_body").html(body);
     $("#karchan_log").html(log);
     Karchan.logSize = log.length;
     $('#command').focus();
@@ -50,7 +133,7 @@ function playInit($)
   if (window.console) console.log("playInit command=" + command); 
   var processPlay = function(data) {
     if (window.console) console.log("processPlay");
-    writeStuff(data.image, data.body, data.title, data.log.log);
+    writeStuff(data);
   } // processPlay
   
   processCall(command, true, processPlay);
@@ -70,7 +153,7 @@ function play()
   var $ = Karchan.$;
   var processPlay = function(data) {
     if (window.console) console.log("processPlay");
-    writeStuff(data.image, data.body, data.title, data.log.log);
+    writeStuff(data);
     $('#command').val("");    
   } // processPlay
 
