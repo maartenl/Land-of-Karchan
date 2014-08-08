@@ -42,7 +42,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Attributes;
-import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
@@ -193,12 +192,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @Override
     public String getBody()
     {
-        StringBuilder builder = new StringBuilder(contents);
-        // print characters in room
-        persons(builder);
-        // print items in room
-        Constants.addInventoryForRoom(items, builder);
-        return builder.toString();
+        return contents;
     }
 
     public Date getCreation()
@@ -725,14 +719,16 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         }
     }
 
-    private void persons(StringBuilder builder)
+    public List<Person> getUsers(User excludinguser)
     {
-        builder.append("<p>");
-        // TODO : add link, prefer to do it in javascript though
+        List<Person> result = new ArrayList<>();
         for (Person person : persons)
         {
-            builder.append("A ").append(person.getRace()).append(" called ").append(person.getName()).append(" is here.<br/>\r\n");
+            if (person.isUser() && !person.getName().equals(excludinguser.getName()))
+            {
+                result.add(person);
+            }
         }
-        builder.append("</p>");
+        return result;
     }
 }

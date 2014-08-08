@@ -18,10 +18,12 @@ package mmud.database.entities.game;
 
 /**
  * TODO: feels wrong, need a better solution.
+ *
  * @author maartenl
  */
 public class Display implements DisplayInterface
 {
+
     private String title;
     private String image;
     private String body;

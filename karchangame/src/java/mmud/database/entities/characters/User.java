@@ -574,14 +574,15 @@ public class User extends Person
             @Override
             public String getBody() throws MudException
             {
-                StringBuffer sb = new StringBuffer("<table><tr><td><b>macro</b></td><td><b>contents</b></td></tr>");
+                StringBuilder sb = new StringBuilder("<table><tr><td><b>macro</b></td><td><b>contents</b></td></tr>");
                 for (Macro m : macroCollection)
                 {
-                    sb.append("<tr><td>" + m.getMacroname() + "</td><td>" + m.getContents() + "</td></tr>");
+                    sb.append("<tr><td>").append(m.getMacroname()).append("</td><td>").append(m.getContents()).append("</td></tr>");
                 }
                 sb.append("</table>");
                 return sb.toString();
             }
+
         };
     }
 

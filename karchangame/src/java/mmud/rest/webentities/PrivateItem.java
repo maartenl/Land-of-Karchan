@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.game;
+package mmud.rest.webentities;
 
-import mmud.exceptions.MudException;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Display interface, indicates the things that needs to be shown.
  *
  * @author maartenl
  */
-public interface DisplayInterface
+@XmlRootElement
+public class PrivateItem
 {
 
-    public String getMainTitle() throws MudException;
-
-    public String getImage() throws MudException;
-
-    public String getBody() throws MudException;
+    public Integer amount;
+    public String adject1;
+    public String adject2;
+    public String adject3;
+    public String name;
 
 }

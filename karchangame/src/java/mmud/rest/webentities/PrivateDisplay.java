@@ -16,6 +16,7 @@
  */
 package mmud.rest.webentities;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,8 +26,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PrivateDisplay
 {
+
     public String image;
     public String title;
     public String body;
     public PrivateLog log;
+
+    public Boolean west;
+    public Boolean east;
+    public Boolean north;
+    public Boolean south;
+    public Boolean up;
+    public Boolean down;
+
+    public List<PrivatePerson> persons;
+    public List<PrivateItem> items;
 }

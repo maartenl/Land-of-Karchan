@@ -46,6 +46,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import mmud.Constants;
 import mmud.Utils;
 import mmud.commands.CommandFactory;
 import mmud.commands.CommandFactory.UserCommandInfo;
@@ -632,7 +633,7 @@ public class GameBean implements RoomsInterface
             {
                 itsLog.throwing("play: throws ", ex.getMessage(), ex);
             }
-            display = createPrivateDisplay(person.getRoom());
+            display = createPrivateDisplay(person.getRoom(), person);
         } catch (WebApplicationException e)
         {
             //ignore
@@ -712,7 +713,7 @@ public class GameBean implements RoomsInterface
             display = person.getRoom();
         }
 
-        return createPrivateDisplay(display);
+        return createPrivateDisplay(display, person);
     }
 
     private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
@@ -844,12 +845,47 @@ public class GameBean implements RoomsInterface
         return Response.ok().build();
     }
 
-    private PrivateDisplay createPrivateDisplay(DisplayInterface display) throws MudException
+    private PrivateDisplay createPrivateDisplay(DisplayInterface display, User player) throws MudException
     {
         PrivateDisplay result = new PrivateDisplay();
         result.body = display.getBody();
         result.image = display.getImage();
         result.title = display.getMainTitle();
+        if (player.getRoom().getWest() != null)
+        {
+            result.west = true;
+        }
+        if (player.getRoom().getEast() != null)
+        {
+            result.east = true;
+        }
+        if (player.getRoom().getNorth() != null)
+        {
+            result.north = true;
+        }
+        if (player.getRoom().getSouth() != null)
+        {
+            result.south = true;
+        }
+        if (player.getRoom().getUp() != null)
+        {
+            result.up = true;
+        }
+        if (player.getRoom().getDown() != null)
+        {
+            result.down = true;
+        }
+        List<PrivatePerson> persons = new ArrayList<>();
+        for (Person person : player.getRoom().getUsers(player))
+        {
+            PrivatePerson pp = new PrivatePerson();
+            pp.race = person.getRace();
+            pp.name = person.getName();
+            persons.add(pp);
+        }
+        result.persons = persons;
+        result.items = Constants.addInventoryForRoom(player.getRoom().getItems());
+
         return result;
     }
 
@@ -908,4 +944,5 @@ public class GameBean implements RoomsInterface
     {
         return getEntityManager().find(Room.class, id);
     }
+
 }

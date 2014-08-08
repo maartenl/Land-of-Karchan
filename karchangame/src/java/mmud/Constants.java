@@ -16,12 +16,15 @@
  */
 package mmud;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mmud.database.entities.items.Item;
+import mmud.rest.webentities.PrivateItem;
 
 /**
  *
@@ -267,50 +270,39 @@ public class Constants
     }
 
     /**
-     * Adds a descriptive set of the items to the string builder.
+     * Adds a descriptive set of the items.
      *
      * @param set a set of items to be described.
-     * @param builder the builder to append to. Should not be null.
+     * @return a list of items
      */
-    public static void addInventoryForRoom(Set<Item> set, StringBuilder builder)
+    public static List<PrivateItem> addInventoryForRoom(Set<Item> set)
     {
         if ((set == null || set.isEmpty()))
         {
-            return;
+            return Collections.emptyList();
         }
-        builder.append("<p>");
-        Map<String, Integer> inventory = inventory(set);
-
-        for (String desc : inventory.keySet())
+        Map<String, PrivateItem> inventory = new HashMap<>();
+        for (Item item : set)
         {
-            int amount = inventory.get(desc);
-            if (amount != 1)
+            if (item.getItemDefinition().getId() < 0)
             {
-                // 5 gold, hard cups
-                if (desc.startsWith("an"))
-                {
-                    // remove 'an '
-                    desc = desc.substring(3);
-                } else
-                {
-                    // remove 'a '
-                    desc = desc.substring(2);
-                }
-                builder.append(amount).append(" ").append(
-                        desc);
-                if (!desc.endsWith("s"))
-                {
-                    builder.append("s");
-                }
-                builder.append(" are ");
+                continue;
+            }
+            String key = item.getDescription();
+            if (inventory.containsKey(key))
+            {
+                inventory.get(key).amount += 1;
             } else
             {
-                // a gold, hard cup
-                builder.append(desc);
-                builder.append(" is ");
+                PrivateItem privateItem = new PrivateItem();
+                privateItem.adject1 = item.getItemDefinition().getAdject1();
+                privateItem.adject2 = item.getItemDefinition().getAdject2();
+                privateItem.adject3 = item.getItemDefinition().getAdject3();
+                privateItem.name = item.getItemDefinition().getName();
+                privateItem.amount = 1;
+                inventory.put(key, privateItem);
             }
-            builder.append(" here.<br/>\r\n");
         }
-        builder.append("</p>");
+        return new ArrayList<>(inventory.values());
     }
 }

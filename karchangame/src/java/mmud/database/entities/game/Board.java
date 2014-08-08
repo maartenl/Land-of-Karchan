@@ -46,12 +46,12 @@ import mmud.exceptions.MudException;
 @Entity
 @Table(name = "mm_boards")
 @NamedQueries(
-{
-    @NamedQuery(name = "Board.findAll", query = "SELECT b FROM Board b"),
-    @NamedQuery(name = "Board.findById", query = "SELECT b FROM Board b WHERE b.id = :id"),
-    @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
-    @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation")
-})
+        {
+            @NamedQuery(name = "Board.findAll", query = "SELECT b FROM Board b"),
+            @NamedQuery(name = "Board.findById", query = "SELECT b FROM Board b WHERE b.id = :id"),
+            @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
+            @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation")
+        })
 public class Board implements Serializable, DisplayInterface
 {
 
@@ -158,6 +158,7 @@ public class Board implements Serializable, DisplayInterface
 
     /**
      * The rooom in which this message board resides.
+     *
      * @return Room, cannot be null.
      */
     public Room getRoom()
@@ -167,6 +168,7 @@ public class Board implements Serializable, DisplayInterface
 
     /**
      * Sets the room in which this message board resides.
+     *
      * @param room The room. Cannot be null.
      */
     public void setRoom(Room room)
@@ -251,4 +253,5 @@ public class Board implements Serializable, DisplayInterface
         }
         return builder.toString();
     }
+
 }
