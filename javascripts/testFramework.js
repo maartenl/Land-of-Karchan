@@ -35,12 +35,111 @@ function Person(name, posession, indirect, direct)
   this.posession = posession;
   this.indirect = indirect;
   this.direct = direct;
+  this.attributes = {};
 }
         
-function Room(id, title)
+function Room(id, title, description)
 {
   this.id = id;
   this.title = title;
+  this.description = description;
+  this.north = null;
+  this.south = null;
+  this.west = null;
+  this.east = null;
+  this.down = null;
+  this.up = null; 
+  this.items = [];
+  this.attributes = {};
+}
+
+function Item(id, itemdef)
+{
+  this.id = id;
+  this.itemdef = itemdef;
+  this.attributes = {};
+}
+
+function Itemdef(id)
+{
+  this.id = id;
+  this.attributes = {};
+}
+
+Room.prototype.setAttribute = function(name, value)
+{
+  this.attributes.name = value;
+}
+
+Person.prototype.setAttribute = function(name, value)
+{
+  this.attributes.name = value;
+}
+
+Item.prototype.setAttribute = function(name, value)
+{
+  this.attributes.name = value;
+}
+
+Itemdef.prototype.setAttribute = function(name, value)
+{
+  this.attributes.name = value;
+}
+
+Room.prototype.getAttribute = function(name)
+{
+  return this.attributes.name;
+}
+
+Person.prototype.getAttribute = function(name)
+{
+  return this.attributes.name;
+}
+
+Item.prototype.getAttribute = function(name)
+{
+  return this.attributes.name;
+}
+
+Itemdef.prototype.getAttribute = function(name)
+{
+  return this.attributes.name;
+}
+
+Room.prototype.removeAttribute = function(name)
+{
+  delete this.attributes.name;
+}
+
+Person.prototype.removeAttribute = function(name)
+{
+  delete this.attributes.name;
+}
+
+Item.prototype.removeAttribute = function(name)
+{
+  delete this.attributes.name;
+}
+
+Itemdef.prototype.removeAttribute = function(name)
+{
+  delete this.attributes.name;
+}
+
+/**
+ * Returns all the items in a room, corresponding to certain item definition.
+ */
+Room.prototype.getItems = function(itemdefid)
+{
+  var result = [];
+  for (i in this.items)
+  {
+    if (this.items[i].itemdef.id === itemdefid)
+    {
+      result.push(this.items[i]);
+    }
+  }
+  return result;
 }
 
 Person.prototype.personal = function(message)
@@ -138,9 +237,17 @@ var Hotblack = new Person("Hotblack", "his", "him", "he");
 var Slartibartfast = new Person("Slartibartfast", "her", "her", "she");
 var Karn = new Person("Karn", "his", "him", "he");
 
-var room1 = new Room( 1, "The Cave");
-var room2 = new Room( 2, "Outside The Cave");
-var room3 = new Room( 3, "On the road");
+var room1 = new Room( 1, "The Cave", "<p>You are in a dank and dark cave. There's an exit west.</p>");
+var room2 = new Room( 2, "Outside The Cave", "<p>You are standing at the entrance to a cave. There's exits west and east.</p>");
+var room3 = new Room( 3, "On the road", "<p>You are standing on a road. You can go east.</p>");
+room1.west = room2;
+room2.east = room1;
+room2.west = room3;
+room3.east = room2;
+
+var itemdef1 = new Itemdef(-32);
+var item1 = new Item(1, itemdef1);
+room1.items.push(item1);
 
 function replaceTagsSomebodyElse(message, person, toperson)
 {
