@@ -1,3 +1,9 @@
+// http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
+String.prototype.replaceAll = function (find, replace) {
+  var str = this;
+  return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+};
+    
 /**
  * The Global Karchan Object. Accessible from *anywhere in the world*.
  * Isn't it amazing? (Exaggeration!)
@@ -53,12 +59,12 @@ function writeStuff(data)
     if (data.north !== undefined || data.west !== undefined || data.east !== undefined || data.south !== undefined || data.up !== undefined || data.down != undefined)
     {
       body += "<p>[";
-      if (data.west !== undefined) {body += "west ";}
-      if (data.east !== undefined) {body += "east ";}
-      if (data.north !== undefined) {body += "north ";}
-      if (data.south !== undefined) {body += "south ";}
-      if (data.up !== undefined) {body += "up ";}
-      if (data.down !== undefined) {body += "down ";}
+      if (data.west !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goWest();'>west</a> ";}
+      if (data.east !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goEast();'>east</a> ";}
+      if (data.north !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goNorth();'>north</a> ";}
+      if (data.south !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goSouth();'>south</a> ";}
+      if (data.up !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goUp();'>up</a> ";}
+      if (data.down !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goDown();'>down</a> ";}
       body += "]</p>";
     }
     if (data.persons !== undefined)
@@ -69,7 +75,7 @@ function writeStuff(data)
         // A human called Ryan is here.
         if (isVowel(data.persons[i].race.charAt(0))) 
         {body += "An "} else {body += "A ";}
-        body += data.persons[i].race + " called " + data.persons[i].name + " is here.<br/>";
+        body += data.persons[i].race + " called <a href=\"javascript:void(0)\" onclick=\"lookat('" + data.persons[i].name + "');\">" + data.persons[i].name + "</a> is here.<br/>";
       }
       if (data.persons.lenght !== 0) {body += "</p>";}
     }
@@ -97,9 +103,6 @@ function writeStuff(data)
           i++;description += item.adject3;
         }
         description += " " + item.name;
-        if (item.amount > 1) 
-        {description +=" are";} else {description += " is";}
-        description += " here.<br/>";
         if (item.amount > 1)
         {
           body += item.amount + " ";
@@ -108,7 +111,10 @@ function writeStuff(data)
           if (isVowel(description.charAt(0)))
           {body += "An ";} else {body += "A ";}
         }
-        body += description;
+        body += "<a href=\"javascript:void(0)\" onclick=\"lookat('" + description + "');\">" + description + "</a>";
+        if (item.amount > 1) 
+        {body +=" are";} else {body += " is";}
+        body += " here.<br/>";
       }
       if (data.items.lenght !== 0) {body += "</p>";}
     }
@@ -183,15 +189,19 @@ function toggleSleep()
   if (window.console) console.log("toggleSleep sleep was " + Karchan.sleep);
   if (Karchan.sleep)
   {
+    // AWAKEN!!!
     if (window.console) console.log("wakeUp");
     $("#sleepButtonSpanId").html("Sleep");
     Karchan.sleep = false;
+    processCall("awaken", true, writeStuff);
   }
   else
   {
+    // GO TO SLEEP!!
     if (window.console) console.log("sleep");
     $("#sleepButtonSpanId").html("Awaken");
     Karchan.sleep = true;
+    processCall("sleep", true, writeStuff);
   }
 }
 
@@ -211,6 +221,14 @@ function clearLog()
   $("#karchan_log").html("");
   $('#command').focus();
 }
+
+function lookat(name) {processCall("look at " + name.replaceAll(",",""), true, writeStuff);return false;}
+function goWest() {processCall("go west", false, writeStuff);return false;}
+function goEast() {processCall("go east", false, writeStuff);return false;}
+function goNorth() {processCall("go north", false, writeStuff);return false;}
+function goSouth() {processCall("go south", false, writeStuff);return false;}
+function goUp() {processCall("go up", false, writeStuff);return false;}
+function goDown() {processCall("go down", false, writeStuff);return false;}
 
 function startMeUp($)
 {
