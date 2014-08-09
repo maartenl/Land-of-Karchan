@@ -10,7 +10,8 @@ String.prototype.replaceAll = function (find, replace) {
  * We can use this object to create a namespace for my karchan methods
  * functions and constants.
  */
-var Karchan = {};
+var Karchan = Karchan || {};
+Karchan.logSize = 0;
 
 function isVowel(aChar)
 {
@@ -47,7 +48,6 @@ function writeStuff(data)
     var image = data.image;
     var body = data.body;
     var title = data.title;
-    var log = data.log.log;
 
     var $ = Karchan.$;
     var imageTag = (image == null || image == "") ? "" : "<img src=\"" + image + "\"/>";
@@ -120,8 +120,11 @@ function writeStuff(data)
     }
     
     $("#karchan_body").html(body);
-    $("#karchan_log").html(log);
-    Karchan.logSize = log.length;
+    if (data.log !== undefined && data.log.log !== undefined)
+    {
+      $("#karchan_log").html(data.log.log);
+      Karchan.logSize = data.log.log.length;
+    }
     $('#command').focus();
 }
 
