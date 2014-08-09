@@ -47,6 +47,7 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
+import mmud.exceptions.MudException;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 
@@ -213,7 +214,7 @@ public class PrivateBean
         if (toperson == null)
         {
             itsLog.log(Level.INFO, "name of non existing user {0}", name);
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException("User was not found (" + name + ")", Response.Status.NOT_FOUND);
         }
         return toperson;
     }
@@ -224,12 +225,12 @@ public class PrivateBean
         if (toperson == null)
         {
             itsLog.log(Level.INFO, "name of non existing user {0}", name);
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException("User was not found (" + name + ")", Response.Status.NOT_FOUND);
         }
         if (!toperson.isUser())
         {
             itsLog.log(Level.INFO, "user not proper user, {0}", name);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException("User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
         }
         return toperson;
     }
@@ -290,12 +291,12 @@ public class PrivateBean
         if (mail == null)
         {
             itsLog.log(Level.INFO, "mail {0} not found", id);
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException("mail with id " + id + " was not found.", Response.Status.NOT_FOUND);
         }
         if (mail.getDeleted())
         {
             itsLog.log(Level.INFO, "mail {0} deleted", id);
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException("mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
         }
         if (!mail.getToname().getName().equals(toname))
         {
@@ -304,7 +305,7 @@ public class PrivateBean
                 id, toname
             });
 
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException("mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
         }
         return mail;
     }
@@ -363,6 +364,7 @@ public class PrivateBean
      * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
      * It may be null, if there already is attached a item definition to the
      * mail.
+     * @return Response.ok if everything is fine.
      * @see Mail#ITEMS
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
@@ -532,6 +534,7 @@ public class PrivateBean
      * @param name the name of the user
      * @param lok the session password
      * @param cinfo the object containing the new stuff to update.
+     * @return Response.ok if everything is okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
@@ -577,7 +580,7 @@ public class PrivateBean
         {
             //ignore
             throw e;
-        } catch (Exception e)
+        } catch (MudException e)
         {
             itsLog.throwing("updateCharacterSheet: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);

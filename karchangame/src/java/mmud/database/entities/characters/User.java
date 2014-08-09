@@ -54,15 +54,22 @@ import mmud.exceptions.MudException;
             @NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)"),
             @NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1"),
             @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
-            @NamedQuery(name = "User.who", query = "SELECT p FROM Person p WHERE p.god <=1 and p.active=1 "),
+            @NamedQuery(name = "User.who", query = "SELECT p FROM User p WHERE p.god <=1 and p.active=1 "),
             @NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
             @NamedQuery(name = "User.authorise", query = "select u from User u WHERE u.name = :name and u.password = FUNCTION('sha1', :password)")
         })
 public class User extends Person
 {
 
+    private static final int SECONDS_IN_A_MINUTE = 60;
+    private static final int MILLISECONDS_IN_A_SECOND = 1000;
+
     private static final String PASSWORD_REGEXP = ".{5,}";
     private static final Logger itsLog = java.util.logging.Logger.getLogger(User.class.getName());
+    /**
+     * Max idle time is currently set to 60 minutes.
+     */
+    private static final long MAX_IDLE_TIME = 60;
     @Size(min = 5, max = 200)
     @Column(name = "address")
     private String address;
@@ -686,4 +693,34 @@ public class User extends Person
     {
         return ignoringSet.contains(aPerson);
     }
+
+    /**
+     * Retrieves the idle time in minutes, i,e. between the last entered command and the
+     * current time. Returns null if the last command date/time is not
+     * available.
+     *
+     * @return Long containing minutes, or null.
+     */
+    public Long getIdleTime()
+    {
+        Date date = getLastcommand();
+        Date now = new Date();
+        if (date == null)
+        {
+            return null;
+        }
+        return (now.getTime() - date.getTime()) / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+    }
+
+    /**
+     * Check to see if the User was inactive for more than an hour.
+     *
+     * @return boolean, true if the User was inactive (i.e. has not entered a
+     * command) for more than an hour.
+     */
+    public boolean isIdleTooLong()
+    {
+        return this.getIdleTime() != null && this.getIdleTime() > MAX_IDLE_TIME;
+    }
+
 }
