@@ -297,6 +297,7 @@ public class User extends Person
     public void setLastlogin(Date lastlogin)
     {
         this.lastlogin = lastlogin;
+        this.lastcommand = lastlogin;
     }
 
     public String getCgiServerSoftware()
@@ -508,6 +509,8 @@ public class User extends Person
 
     /**
      * activate a character
+     *
+     * @param address the ip-address or hostname used by the player.
      */
     public void activate(String address) throws MudException
     {

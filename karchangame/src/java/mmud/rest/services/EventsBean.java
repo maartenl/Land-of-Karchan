@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,14 +75,14 @@ public class EventsBean
     private static final Logger itsLog = Logger.getLogger(EventsBean.class.getName());
 
     /**
-     * Runs every minute, looks up which event to execute now.
+     * Runs every minute, looks up which user-defined event to execute now.
+     * So, this takes care of the events that have been dictates by the deputies.
      */
     @Schedule(hour = "*", minute = "*/1")
     public void events()
     {
         // logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
         getEntityManager().setProperty("activePersonFilter", 1);
-        executeIdleCleanup();
         Query query = getEntityManager().createNamedQuery("Event.list");
         Calendar calendar = Calendar.getInstance();
         query.setParameter("month", calendar.get(Calendar.MONTH));
@@ -125,12 +126,13 @@ public class EventsBean
     // TODO : fighting scheduler (second = "*/2")
 
     /**
-     * Started once a minute, and computes who has been idle too long.
-     *
-     * @see
+     * Started once an hour, and computes who has been idle too long.
      */
+    @Schedule(hour = "*", minute = "1")
     private void executeIdleCleanup()
     {
+        logBean.writeLog(null, "executeIdleCleanup(): scheduled at time " + new Date() + ".");
+        getEntityManager().setProperty("activePersonFilter", 1);
         Query query = getEntityManager().createNamedQuery("User.who");
         List<User> list = query.getResultList();
         for (User user : list)

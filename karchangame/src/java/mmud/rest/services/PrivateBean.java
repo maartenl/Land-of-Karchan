@@ -508,6 +508,7 @@ public class PrivateBean
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
         itsLog.finer("entering deleteMail");
+        getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
         try
         {
