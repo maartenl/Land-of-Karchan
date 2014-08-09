@@ -118,43 +118,9 @@ public class RunScriptTest
     protected RoomStub room;
     protected final Persons persons = new Persons(null)
     {
-        @Override
-        public Person find(String name)
-        {
-            if (name == null)
-            {
-                return null;
-            }
-            switch (name.toLowerCase())
-            {
-                case "hotblack":
-                    return hotblack;
-                case "marvin":
-                    return marvin;
-            }
-            return null;
-        }
     };
     protected final Rooms rooms = new Rooms(null)
     {
-        public Room find(Integer id)
-        {
-            if (id == null)
-            {
-                return null;
-            }
-            switch (id.intValue())
-            {
-
-                case 1:
-                    return room;
-                case 2:
-                    return room.getWest();
-                case 3:
-                    return room.getWest().getWest();
-            }
-            return null;
-        }
     };
 
     @BeforeClass
