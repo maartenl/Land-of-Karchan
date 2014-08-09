@@ -51,7 +51,7 @@ import mmud.database.entities.items.ItemDefinition;
             @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
             @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
             @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-            @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = true and m.toname = :name order by m.id desc"),
+            @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = false and m.toname = :name order by m.id desc"),
             @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = false WHERE m.toname = :name"),
             @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(m.id) FROM Mail m WHERE m.newmail = true and m.deleted = false and m.toname = :name")
         })
