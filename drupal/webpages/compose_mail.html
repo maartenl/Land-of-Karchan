@@ -1,23 +1,24 @@
-<form class="webform-client-form" enctype="multipart/form-data" action="/node/45" method="post" id="webform-client-form-45" accept-charset="UTF-8"><div><div class="form-item webform-component webform-component-markup" id="webform-component-general">
- <div id="karchan_composemail">In case you wish to return to your list of received mails, click <a href="/node/44">here</a>.</div>
-
-<script type="text/javascript" src="/sites/all/libraries/tinymce/jscripts/tiny_mce/tiny_mce.js"></script><script type="text/javascript">
+<script src="/tinymce/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript" src="/javascripts/compose_mail.js"></script>
-</div>
-<div class="form-item webform-component webform-component-textfield" id="webform-component-subject">
-  <label for="edit-submitted-subject">Subject <span class="form-required" title="This field is required.">*</span></label>
- <input type="text" id="edit-submitted-subject" name="submitted[subject]" value="" size="60" maxlength="128" class="form-text required" />
-</div>
-<div class="form-item webform-component webform-component-textfield" id="webform-component-from">
-  <label for="edit-submitted-from">From <span class="form-required" title="This field is required.">*</span></label>
- <input readonly="readonly" type="text" id="edit-submitted-from" name="submitted[from]" value="" size="60" maxlength="128" class="form-text required" />
-</div>
-<div class="form-item webform-component webform-component-textfield" id="webform-component-to">
-  <label for="edit-submitted-to">To <span class="form-required" title="This field is required.">*</span></label>
- <input type="text" id="edit-submitted-to" name="submitted[to]" value="" size="60" maxlength="128" class="form-text required" />
-</div>
-<div class="form-item webform-component webform-component-textarea" id="webform-component-body">
-  <label for="edit-submitted-body">Body </label>
- <div class="form-textarea-wrapper resizable"><textarea id="edit-submitted-body" name="submitted[body]" cols="60" rows="5" class="form-textarea"></textarea></div>
-</div>
-<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Submit" class="form-submit" /></div></div></form>
+
+<form class="webform-client-form" id="webform-client-form-45" accept-charset="UTF-8" onsubmit="return sendMail();">
+  <div>
+    <div class="form-item webform-component webform-component-markup" id="webform-component-general">
+      <div id="karchan_composemail">In case you wish to return to your list of received mails, click <a href="/node/44">here</a>.</div>
+    </div>
+  <div class="form-item webform-component webform-component-textfield" id="webform-component-subject">
+    <label for="edit-submitted-subject">Subject <span class="form-required" title="This field is required.">*</span></label>
+    <input type="text" id="edit-submitted-subject" name="submitted[subject]" value="" size="60" maxlength="128" class="form-text required" />
+  </div>
+  <div class="form-item webform-component webform-component-textfield" id="webform-component-to">
+    <label for="edit-submitted-to">To <span class="form-required" title="This field is required.">*</span></label>
+    <input type="text" id="edit-submitted-to" name="submitted[to]" value="" size="60" maxlength="128" class="form-text required" />
+  </div>
+  <div class="form-item webform-component webform-component-textarea" id="webform-component-body">
+    <label for="edit-submitted-body">Body </label>
+    <div class="form-textarea-wrapper resizable">
+      <textarea id="edit-submitted-body" name="submitted[body]" cols="60" rows="5" class="form-textarea"></textarea>
+    </div>
+  </div>
+  <div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Submit" class="form-submit" /></div></div>
+</form>
