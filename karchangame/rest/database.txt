@@ -10,8 +10,8 @@ First!
 First you need to run all the database commands in the DATABASE file
 below the --------.
 
-Passwords
-=========
+Initialise test data
+====================
 
 The passwords need to be reset of the test accounts.
 
@@ -34,6 +34,26 @@ name='Marvin';
 
 // mail with id 24702 should not be deleted
 update mm_mailtable set deleted = 0 where id = 24702;
+
+Slartibartfast was created using the following settings:
+{"name":"Slartibartfast",
+  "title":"the Campaign for Real Time",
+  "sex":"male",
+  "password":"secret",
+  "password2":"secret",
+  "realname":"Unknown",
+  "email":"slartibartfast@www.karchan.org",
+  "race":"human",
+  "age":"young",
+  "height":"tall",
+  "width":"very thin",
+  "complexion":"swarthy",
+  "eyes":"black-eyed",
+  "face":"long-faced",
+  "hair":"black-haired",
+  "beard":"none",
+  "arm":"none",
+  "leg":"none"}
 
 Triggers
 =========
