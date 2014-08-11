@@ -1,7 +1,9 @@
+<script src="/tinymce/js/tinymce/tinymce.min.js"></script>
 <script src="http://www.karchan.org/javascripts/play.js" type="text/javascript"></script> 
 <div id="karchan_body">Loading content. Please hold...</div>
 <div id="karchan_log">Loading content. Please hold...</div>
 <form id="commandForm" method="post" onsubmit="play(); return false;"> 
     <input id="command" name="command" size="60" type="text" /> 
+    <textarea id="bigcommand" name="bigcommand" cols="60" rows="5" class="form-textarea" style="display:none"></textarea>
     <input type="submit" value="Submit" /> 
 </form>

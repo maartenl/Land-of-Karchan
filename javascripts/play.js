@@ -163,10 +163,20 @@ function play()
   var processPlay = function(data) {
     if (window.console) console.log("processPlay");
     writeStuff(data);
-    $('#command').val("");    
+    $('#command').val("");
+    tinyMCE.get('bigcommand').setContent("");
   } // processPlay
-
-  processCall($("#command").val(), true, processPlay); 
+  if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
+  {
+    var command = $("#command").val();
+  } else
+  {
+    var command = tinyMCE.get('bigcommand').getContent();
+    if (command.substring(0,3) === "<p>") {command = command.substring(3);}
+    while (command.substring(0,6) === "&nbsp;") {command = command.substring(6);}
+    if (command.substring(command.length - 4, command.length) === "</p>") {command = command.substring(0, command.length - 4);}
+  }
+  processCall(command, true, processPlay); 
 }
 
 function quit()
@@ -211,7 +221,45 @@ function toggleSleep()
 function toggleEntry()
 {
   if (window.console) console.log("toggleEntry");
-  return true;
+  var $ = Karchan.$;
+  if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
+  {
+    // we need Big Entry command!
+    $("#command").css("display","none");
+    if (Karchan.bigEntry === undefined)
+    {
+      $("#bigcommand").css("display","block");
+      tinyMCE.init({
+        // General options
+        mode : "textareas",
+        theme : "modern",
+        plugins : ["textcolor,table,save,insertdatetime,preview,searchreplace,contextmenu,",
+                   "paste,directionality,fullscreen,noneditable,visualchars,nonbreaking",
+                   "wordcount,advlist,autosave,code,visualblocks,hr,charmap"
+                  ],
+        toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft " +
+                  "aligncenter alignright alignjustify | bullist numlist outdent indent" +
+                  " | link image",
+        toolbar2: "print preview media | forecolor backcolor emoticons",
+        image_advtab: true
+      });
+    }
+    else
+    {
+      tinyMCE.get('bigcommand').show();
+      //$("#mceu_16").css("display","block");
+    }
+  
+    Karchan.bigEntry = true;
+  } else
+  {
+    // change back to teh usual!
+    $("#command").css("display","block");
+    tinyMCE.get('bigcommand').hide();
+    $("#bigcommand").css("display","none");
+    Karchan.bigEntry = false;
+  }
+  return false;
 }
 
 function clearLog()
