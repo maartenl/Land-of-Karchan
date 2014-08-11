@@ -350,7 +350,7 @@ public class GameBean implements RoomsInterface
             if (foundPerson != null)
             {
                 // already a person
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                throw new WebApplicationException("User already exists (" + name + ", " + address + ")", Response.Status.FOUND);
             }
             // everything's cool! Let's do this!
             person.setActive(false);
