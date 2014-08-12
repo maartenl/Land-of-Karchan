@@ -35,6 +35,7 @@ function Person(name, posession, indirect, direct)
   this.posession = posession;
   this.indirect = indirect;
   this.direct = direct;
+  this.items = [];
   this.attributes = {};
 }
         
@@ -60,70 +61,94 @@ function Item(id, itemdef)
   this.attributes = {};
 }
 
-function Itemdef(id)
+function Itemdef(id, adject1, adject2, adject3, name)
 {
   this.id = id;
+  this.name = name;
+  this.adject1 = adject1;
+  this.adject2 = adject2;
+  this.adject3 = adject3;
   this.attributes = {};
 }
 
 Room.prototype.setAttribute = function(name, value)
 {
-  this.attributes.name = value;
+  this.attributes[name] = value;
 }
 
 Person.prototype.setAttribute = function(name, value)
 {
-  this.attributes.name = value;
+  this.attributes[name] = value;
 }
 
 Item.prototype.setAttribute = function(name, value)
 {
-  this.attributes.name = value;
+  this.attributes[name] = value;
 }
 
 Itemdef.prototype.setAttribute = function(name, value)
 {
-  this.attributes.name = value;
+  this.attributes[name] = value;
 }
 
 Room.prototype.getAttribute = function(name)
 {
-  return this.attributes.name;
+  return this.attributes[name];
 }
 
 Person.prototype.getAttribute = function(name)
 {
-  return this.attributes.name;
+  return this.attributes[name];
 }
 
 Item.prototype.getAttribute = function(name)
 {
-  return this.attributes.name;
+  return this.attributes[name];
 }
 
 Itemdef.prototype.getAttribute = function(name)
 {
-  return this.attributes.name;
+  return this.attributes[name];
+}
+
+Room.prototype.isAttribute = function(name)
+{
+  return this.attributes.hasOwnProperty(name);
+}
+
+Person.prototype.isAttribute = function(name)
+{
+  return this.attributes.hasOwnProperty(name);
+}
+
+Item.prototype.isAttribute = function(name)
+{
+  return this.attributes.hasOwnProperty(name);
+}
+
+Itemdef.prototype.isAttribute = function(name)
+{
+  return this.attributes.hasOwnProperty(name);
 }
 
 Room.prototype.removeAttribute = function(name)
 {
-  delete this.attributes.name;
+  delete this.attributes[name];
 }
 
 Person.prototype.removeAttribute = function(name)
 {
-  delete this.attributes.name;
+  delete this.attributes[name];
 }
 
 Item.prototype.removeAttribute = function(name)
 {
-  delete this.attributes.name;
+  delete this.attributes[name];
 }
 
 Itemdef.prototype.removeAttribute = function(name)
 {
-  delete this.attributes.name;
+  delete this.attributes[name];
 }
 
 /**
@@ -245,9 +270,12 @@ room2.east = room1;
 room2.west = room3;
 room3.east = room2;
 
-var itemdef1 = new Itemdef(-32);
-var item1 = new Item(1, itemdef1);
-room1.items.push(item1);
+var itemdef1 = new Itemdef(-32, "ancient", "leather", "crumbling", "book");
+var itemdef2 = new Itemdef(238, "pink", "stuffed", "cuddly", "elephant");
+var book = new Item(1, itemdef1);
+var elephant = new Item(2, itemdef2);
+room1.items.push(book);
+Karn.items.push(elephant);
 
 function replaceTagsSomebodyElse(message, person, toperson)
 {

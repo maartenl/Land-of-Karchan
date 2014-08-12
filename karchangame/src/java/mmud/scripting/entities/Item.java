@@ -60,7 +60,7 @@ public class Item
         item.setAttribute(name, value);
     }
 
-    public boolean verifyAttribute(String name, String value)
+    public boolean isAttribute(String name, String value)
     {
         return item.verifyAttribute(name, value);
     }

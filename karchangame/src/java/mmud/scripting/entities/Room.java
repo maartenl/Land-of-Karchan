@@ -193,7 +193,7 @@ public class Room
         room.setAttribute(name, value);
     }
 
-    public boolean verifyAttribute(String name, String value)
+    public boolean isAttribute(String name, String value)
     {
         return room.verifyAttribute(name, value);
     }

@@ -92,8 +92,6 @@ public class ItemDefinition implements Serializable
     @Size(max = 65535)
     @Column(name = "drinkable")
     private String drinkable;
-    @Column(name = "room")
-    private Integer room;
     @Column(name = "lightable")
     private Integer lightable;
     @Column(name = "getable")
@@ -325,16 +323,6 @@ public class ItemDefinition implements Serializable
     public void setDrinkable(String drinkable)
     {
         this.drinkable = drinkable;
-    }
-
-    public Integer getRoom()
-    {
-        return room;
-    }
-
-    public void setRoom(Integer room)
-    {
-        this.room = room;
     }
 
     public Integer getLightable()

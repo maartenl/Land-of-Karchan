@@ -127,7 +127,7 @@ public class Person
         person.setAttribute(name, value);
     }
 
-    public boolean verifyAttribute(String name, String value)
+    public boolean isAttribute(String name, String value)
     {
         return person.verifyAttribute(name, value);
     }
