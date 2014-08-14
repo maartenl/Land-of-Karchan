@@ -163,8 +163,14 @@ function play()
   var processPlay = function(data) {
     if (window.console) console.log("processPlay");
     writeStuff(data);
-    $('#command').val("");
-    tinyMCE.get('bigcommand').setContent("");
+    if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
+    {
+      $('#command').val("");
+    }
+    else
+    {
+      tinyMCE.get('bigcommand').setContent("");
+    }
   } // processPlay
   if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
   {

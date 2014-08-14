@@ -18,13 +18,13 @@ function showCharactersheets( $ )
     // The data parameter is a JSON object.
     var formatted_html = "";
     var cookiesname = "";
-    if ($.cookie("karchanname") != undefined &&
-      $.cookie("karchanpassword") != undefined &&
-      $.cookie("karchanname") != "" &&
-      $.cookie("karchanpassword") != "")
+    if ($.cookie("name") != undefined &&
+      $.cookie("lok") != undefined &&
+      $.cookie("name") != "" &&
+      $.cookie("lok") != "")
     {
-      cookiesname = $.cookie("karchanname");
-      formatted_html += "<p>To change or create your charactersheet, click <a href=\"/node/49\">here</a>.</p>";
+      cookiesname = $.cookie("name");
+      formatted_html += "<p>To change or create your charactersheet, click <a href=\"/node/135\">here</a>.</p>";
     }
     formatted_html += "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
     var column_length = (data.length / 6) + 1;
@@ -46,7 +46,7 @@ function showCharactersheets( $ )
          }
          if (data[i].name == cookiesname)
          {
-           formatted_html += "<a href=\"/node/49\"><b>"+ data[i].name + "</b></a><br/>";
+           formatted_html += "<a href=\"/node/135\"><b>"+ data[i].name + "</b></a><br/>";
          }
          else
          {   

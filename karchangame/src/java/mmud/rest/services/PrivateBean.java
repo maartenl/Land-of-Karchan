@@ -568,6 +568,7 @@ public class PrivateBean
                 characterInfo.setName(person.getName());
             }
             characterInfo.setImageurl(cinfo.imageurl);
+            person.setTitle(cinfo.title);
             characterInfo.setHomepageurl(cinfo.homepageurl);
             characterInfo.setDateofbirth(cinfo.dateofbirth);
             characterInfo.setCityofbirth(cinfo.cityofbirth);
