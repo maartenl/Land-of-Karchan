@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.characters;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -726,4 +727,16 @@ public class User extends Person
         return this.getIdleTime() != null && this.getIdleTime() > MAX_IDLE_TIME;
     }
 
+    /**
+     * Returns the time that a user was inactive.
+     *
+     * @return String the number of minutes and seconds that the player has been
+     * idle in the following format: "(&lt;min&gt; min, &lt;sec&gt; sec idle)".
+     */
+    public String getIdleTimeInMinAndSeconds()
+    {
+        Calendar now = Calendar.getInstance();
+        long timeDiff = (now.getTimeInMillis() - getLastcommand().getTime()) / 1000;
+        return "(" + timeDiff / 60 + " min, " + timeDiff % 60 + " sec idle)";
+    }
 }

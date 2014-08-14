@@ -31,6 +31,7 @@ import mmud.rest.services.PersonBean;
  * Tell to someone something. The difference with normal communication commands,
  * is that this one is mandatory to a person and the person does not need to be
  * in the same room: "tell to Karn Help!".
+ *
  * @author maartenl
  */
 public class TellCommand extends TargetCommand
@@ -71,6 +72,7 @@ public class TellCommand extends TargetCommand
 
     /**
      * Does not compute, TellCommand requires a target name.
+     *
      * @param aUser
      * @param verb
      * @param command
@@ -83,6 +85,7 @@ public class TellCommand extends TargetCommand
         return null;
     }
 
+    @Override
     protected Person getTarget(String[] myParsed, User aUser) throws PersonNotFoundException
     {
         if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))

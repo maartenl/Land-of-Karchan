@@ -136,4 +136,11 @@ public class PersonBean implements PersonsInterface
         }
         return result.get(0);
     }
+
+    public List<User> getActivePlayers()
+    {
+        Query query = getEntityManager().createNamedQuery("User.who");
+        List<User> list = query.getResultList();
+        return list;
+    }
 }

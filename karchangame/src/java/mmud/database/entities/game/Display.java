@@ -28,6 +28,17 @@ public class Display implements DisplayInterface
     private String image;
     private String body;
 
+    public Display()
+    {
+    }
+
+    public Display(String title, String image, String body)
+    {
+        this.title = title;
+        this.image = image;
+        this.body = body;
+    }
+
     @Override
     public String getMainTitle()
     {

@@ -146,7 +146,7 @@ public class CommandFactory
         theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
         theCommandStructure.put("wimpy",
                 new WimpyCommand("wimpy( .+|help)?"));
-//        theCommandStructure.put("who", new WhoCommand("who"));
+        theCommandStructure.put("who", new WhoCommand("who"));
 //        theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
 //        theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 //        theCommandStructure.put("stop", new FightCommand("stop fighting"));

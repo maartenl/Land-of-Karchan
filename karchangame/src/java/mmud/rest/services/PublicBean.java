@@ -62,6 +62,9 @@ public class PublicBean
     @EJB
     private BoardBean boardBean;
 
+    @EJB
+    private PersonBean personBean;
+
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
@@ -117,6 +120,8 @@ public class PublicBean
      * Returns a List of people currently online. The URL:
      * /karchangame/resources/public/who. Can produce both application/xml and
      * application/json.
+     *
+     * @return List of PublicPersons.
      */
     @GET
     @Path("who")
@@ -127,12 +132,11 @@ public class PublicBean
     public List<PublicPerson> who()
     {
         itsLog.finer("entering who");
+        getEntityManager().setProperty("activePersonFilter", 1);
         List<PublicPerson> res = new ArrayList<>();
         try
         {
-            getEntityManager().setProperty("activePersonFilter", 0);
-            Query query = getEntityManager().createNamedQuery("User.who");
-            List<User> list = query.getResultList();
+            List<User> list = personBean.getActivePlayers();
 
             for (User person : list)
             {
