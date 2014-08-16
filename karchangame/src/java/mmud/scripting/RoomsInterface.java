@@ -24,6 +24,13 @@ import mmud.database.entities.game.Room;
  */
 public interface RoomsInterface
 {
+
+    /**
+     * Returns the room with this specific id. Returns null if no room is found.
+     *
+     * @param id the id of the room
+     * @return the room or null, if not found.
+     */
     public Room find(Integer id);
 
 }

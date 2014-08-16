@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
@@ -55,22 +56,28 @@ public class ScriptCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+        /*
+         Very hard to get right, but here's some info:
+         - throwing an exception, means something's wrong (we can safely tell the user.)
+         - returning null means, show the room
+         - returning a Display, which implements DisplayInterface, means everything's fine.
+         */
         itsLog.entering(this.getClass().getName(), "run");
         String mySource = theUserCommand.getMethodName().getSrc();
         try
         {
-            runScript.run(aUser, command, mySource);
-        } catch (ScriptException | NoSuchMethodException ex)
+            DisplayInterface result = runScript.run(aUser, command, mySource);
+            return result == null ? aUser.getRoom() : result;
+        } catch (ScriptException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException ex)
         {
             final String logMessage = "Error executing method " + theUserCommand.getId() + " because of command " + command + " by user " + aUser.getName();
             Logger.getLogger(ScriptCommand.class.getName()).log(Level.SEVERE, logMessage, ex);
             // TODO: this should be removed, but only after testing is completed.
             // because it is a pain to have to re-activate deactivated functions that bombed.
+            // (better yet, set a method to "testing")
             // theUserCommand.setCallable(false);
             throw new MudException("I'm afraid, I do not understand that.<br/>", ex);
         }
-        itsLog.exiting(this.getClass().getName(), "run");
-        return aUser.getRoom();
     }
 
 }

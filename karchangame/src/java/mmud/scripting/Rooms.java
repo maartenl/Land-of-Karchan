@@ -32,8 +32,19 @@ public class Rooms
         this.proxy = proxy;
     }
 
+    /**
+     * Returns the room with this specific id. Returns null if no room is found.
+     *
+     * @param id the id of the room
+     * @return the room or null, if not found.
+     */
     public Room find(Integer id)
     {
-        return new Room(proxy.find(id));
+        final mmud.database.entities.game.Room found = proxy.find(id);
+        if (found == null)
+        {
+            return null;
+        }
+        return new Room(found);
     }
 }

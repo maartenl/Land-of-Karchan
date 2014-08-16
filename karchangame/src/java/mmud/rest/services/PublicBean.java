@@ -290,11 +290,6 @@ public class PublicBean
         itsLog.finer("exiting guilds");
         return res;
     }
-    public static final String FAMILYVALUES_CHARACTERSHEET_SQL
-            = "select familyvalues.description, toname, characterinfo.name "
-            + "from familyvalues, family left join characterinfo on characterinfo.name=  family.toname "
-            + "where family.name = ? "
-            + "and family.description = familyvalues.id";
 
     /**
      * Returns all the info of a character. The URL:

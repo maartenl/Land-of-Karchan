@@ -33,8 +33,20 @@ public class Persons
 
     }
 
+    /**
+     * Returns the person with this specific name. Person should be playing. Returns null if no player is found.
+     * Might be a bot.
+     *
+     * @param name the name of the person
+     * @return the person or null if not found
+     */
     public Person find(String name)
     {
-        return new Person(proxy.find(name));
+        final mmud.database.entities.characters.Person found = proxy.find(name);
+        if (found == null)
+        {
+            return null;
+        }
+        return new Person(found);
     }
 }

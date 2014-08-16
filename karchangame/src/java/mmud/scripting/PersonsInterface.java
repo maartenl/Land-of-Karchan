@@ -24,6 +24,14 @@ import mmud.database.entities.characters.Person;
  */
 public interface PersonsInterface
 {
+
+    /**
+     * Returns the person with this specific name. Person should be playing.
+     * Returns null if no player is found.
+     *
+     * @param name the name of the person
+     * @return the person or null if not found
+     */
     public Person find(String name);
 
 }

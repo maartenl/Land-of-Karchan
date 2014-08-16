@@ -95,27 +95,6 @@ where name="goose";
 
 update mm_methods
 set src="
-function command(person,totalcommand)
-{
-  // command syntax : goose someone
-  var command = totalcommand.split(\" \"); 
-  toperson = persons.find(command[1]);
-  if (toperson == null || toperson.room.id != person.room.id)
-  {
-    person.personal(\"You cannot find that person.<br/>\");
-    return;
-  }
-  if (toperson.name == person.name)
-  {
-    person.personal(\"That is sick, you pervert!  Do that someplace private!<br/>\");
-    return;
-  }
-  person.sendMessage(toperson, \"%SNAME goose%VERB2 %TYOUPOSS behind.<br/>\");
-}"
-where name="goose";
-
-update mm_methods
-set src="
 function command(person, command)
 {
   var mydescription = \"You are now in the Inn &quot;The Twisted Dwarf&quot;. It is dark, as always \" +
@@ -191,6 +170,43 @@ function command(person, command)
   person.personal(\"[<A HREF=backslashquote/images/mpeg/her2.mpgbackslashquote>MPEG</A>]<br/>\");
 }"
 where name = 'close_cupboard';
+
+update mm_methods
+set src="
+function command(person, command)
+{
+  var myitems = person.room.getItems(-3);
+  print(myitems);
+  print(myitems.length);
+  if (myitems.length != 1)
+  {
+    person.personal(\"You feel very confused.<br/>\");
+    return;
+  }
+  var myitem = myitems[0];
+  if (myitem.isAttribute(\"ispulled\"))
+  {
+    person.sendMessage(\"%SNAME pull%VERB2 vehemently on a chain in the wall.<br/>\");
+    person.personal(\"But nothing happens.<br/>\");
+    return;
+  }
+  person.sendMessage(\"%SNAME pull%VERB2 at the chain in the wall. You hear the ominous sounds of wheels churning and rope snapping, yet the sound suddenly stops again.<br/>\");
+  person.sendMessage(\"%SNAME let%VERB2 go of the chain.<br/>\");
+  person.personal(\"You wonder what that was all about.</br>\");
+  myitem.setAttribute(\"ispulled\", true);
+  return {title: \"The Chain\",
+    image: \"/images/gif/chain.gif\",
+    body: \"You take the chain into both your hands \" +
+    \"and you give it a good yank! Something amazing happens. You pull the chain a \" +
+    \"few centimeters out of the wall. At the same moment behind the wall, if you \" +
+    \"listen very well, you hear the cracking of wood, the squaking of rope and \" +
+    \"other ominous sounds. My god! What have you done! What devilish boobytrap \" +
+    \"will within a few moments crush you to atoms? You stand still unable to get \" +
+    \"away from the fate that awaits you.<p>However, within a few minutes, the \" +
+    \"sounds stop and everything is back in its usual order. Nothing happened, but \" +
+    \"what was that all about?</p>\"};
+}"
+where name = 'pull_chain';
 
 # update mm_methods set src = replace(src, "backslashquote", "\\""");
 

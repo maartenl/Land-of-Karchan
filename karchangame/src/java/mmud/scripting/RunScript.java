@@ -16,12 +16,16 @@
  */
 package mmud.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.MudException;
 import mmud.scripting.entities.Room;
+import sun.org.mozilla.javascript.NativeObject;
 
 /**
  * Can run javascript source code. The methods call specific javascript
@@ -63,16 +67,41 @@ public class RunScript
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
      * @throws NoSuchMethodException if the function cannot be found,
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.reflect.InvocationTargetException
      */
-    public boolean run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException
+    public DisplayInterface run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
         itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ", " + command + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
-        // invoke the global function named "hello"
-        Boolean result = (Boolean) inv.invokeFunction("command", new mmud.scripting.entities.Person(person), command);
-        return result == null ? false : result;
+        final NativeObject result = (NativeObject) inv.invokeFunction("command", new mmud.scripting.entities.Person(person), command);
+        if (result != null)
+        {
+            return new DisplayInterface()
+            {
+                @Override
+                public String getMainTitle() throws MudException
+                {
+                    return (String) result.get("title");
+                }
+
+                @Override
+                public String getImage() throws MudException
+                {
+                    return (String) result.get("image");
+                }
+
+                @Override
+                public String getBody() throws MudException
+                {
+                    return (String) result.get("body");
+                }
+            };
+        }
+        return null;
     }
 
     /**
@@ -85,8 +114,11 @@ public class RunScript
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
      * @throws NoSuchMethodException if the function cannot be found,
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.reflect.InvocationTargetException
      */
-    public boolean run(mmud.database.entities.characters.Person person, String sourceCode) throws ScriptException, NoSuchMethodException
+    public boolean run(mmud.database.entities.characters.Person person, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
         itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ")");
 
@@ -107,8 +139,11 @@ public class RunScript
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
      * @throws NoSuchMethodException if the function cannot be found,
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.reflect.InvocationTargetException
      */
-    public boolean run(mmud.database.entities.game.Room room, String sourceCode) throws ScriptException, NoSuchMethodException
+    public boolean run(mmud.database.entities.game.Room room, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
         itsLog.entering(this.getClass().getName(), "run(" + room.getId() + ")");
 
@@ -127,8 +162,11 @@ public class RunScript
      * @return false if failed, true if successful
      * @throws ScriptException if an error occurred in the javascript
      * @throws NoSuchMethodException if the function cannot be found,
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.reflect.InvocationTargetException
      */
-    public boolean run(String sourceCode) throws ScriptException, NoSuchMethodException
+    public boolean run(String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
         itsLog.entering(this.getClass().getName(), "run()");
 
@@ -139,7 +177,7 @@ public class RunScript
         return result == null ? false : result;
     }
 
-    private Invocable initialiseScriptEngine(String sourceCode) throws ScriptException
+    private Invocable initialiseScriptEngine(String sourceCode) throws ScriptException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
         itsLog.entering(this.getClass().getName(), "initialiseScriptEngine");
         // create a script engine manager
@@ -149,7 +187,7 @@ public class RunScript
         // expose persons and rooms object as variable to script
         engine.put("persons", persons);
         engine.put("rooms", rooms);
-        // evaluate JavaScript code from String
+
         //        engine.eval("print('Hello, World')");
         engine.eval(sourceCode);
         Invocable inv = (Invocable) engine;

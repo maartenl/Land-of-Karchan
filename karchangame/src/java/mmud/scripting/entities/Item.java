@@ -16,12 +16,16 @@
  */
 package mmud.scripting.entities;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author maartenl
  */
 public class Item
 {
+
+    private static final Logger itsLog = Logger.getLogger(Item.class.getName());
 
     private final mmud.database.entities.items.Item item;
 
@@ -60,9 +64,9 @@ public class Item
         item.setAttribute(name, value);
     }
 
-    public boolean isAttribute(String name, String value)
+    public boolean isAttribute(String name)
     {
-        return item.verifyAttribute(name, value);
+        return item.getAttribute(name) != null;
     }
 
     public boolean removeAttribute(String name)

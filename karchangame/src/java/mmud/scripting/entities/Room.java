@@ -18,6 +18,7 @@ package mmud.scripting.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import mmud.exceptions.PersonNotFoundException;
 
 /**
@@ -26,6 +27,8 @@ import mmud.exceptions.PersonNotFoundException;
  */
 public class Room
 {
+
+    private static final Logger itsLog = Logger.getLogger(Room.class.getName());
 
     private final mmud.database.entities.game.Room room;
 
@@ -193,9 +196,9 @@ public class Room
         room.setAttribute(name, value);
     }
 
-    public boolean isAttribute(String name, String value)
+    public boolean isAttribute(String name)
     {
-        return room.verifyAttribute(name, value);
+        return room.getAttribute(name) != null;
     }
 
     public boolean removeAttribute(String name)
@@ -228,17 +231,22 @@ public class Room
         room.sendMessageExcl(target, message);
     }
 
-    public List<Item> getItems(Integer itemdefid)
+    public Item[] getItems(Integer itemdefid)
     {
+        itsLog.entering(this.getClass().getName(), "getItems");
         List<Item> result = new ArrayList<>();
         for (mmud.database.entities.items.Item item : room.getItems())
         {
             if (item.getItemDefinition().getId() == itemdefid)
             {
+                itsLog.info("adding " + item.toString());
                 result.add(new Item(item));
             }
         }
-        return result;
+        itsLog.info(result.toString());
+        itsLog.info(result.size() + "");
+        itsLog.exiting(this.getClass().getName(), "getItems");
+        return result.toArray(new Item[result.size()]);
     }
 //Item addItem(integer)
 }
