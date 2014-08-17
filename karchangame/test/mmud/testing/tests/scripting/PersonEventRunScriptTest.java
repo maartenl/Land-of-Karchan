@@ -16,10 +16,10 @@
  */
 package mmud.testing.tests.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -36,9 +36,9 @@ public class PersonEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runPersonEventEmptySource()
+    public void runPersonEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -55,9 +55,9 @@ public class PersonEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runPersonEvent()
+    public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("println('Hello, ' + person.name + '.');");
@@ -76,9 +76,9 @@ public class PersonEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runPersonEventCommunication()
+    public void runPersonEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.personal('My name is ' + person.name + '.');");
@@ -96,9 +96,9 @@ public class PersonEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runPersonEventAttributes()
+    public void runPersonEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.setAttribute('scripting','true');");

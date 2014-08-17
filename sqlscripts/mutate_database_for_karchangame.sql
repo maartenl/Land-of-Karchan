@@ -341,5 +341,20 @@ ALTER TABLE mm_commands MODIFY id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT;
 ALTER TABLE mm_commands ADD FOREIGN KEY
     mm_commands_room_fk (room) REFERENCES mm_rooms (id) ON DELETE CASCADE;
 
+--
+-- Table structure for table `mm_worldattributes`
+--
+
+DROP TABLE IF EXISTS `mm_worldattributes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mm_worldattributes` (
+  `name` varchar(180) NOT NULL,
+  `value` text,
+  `type` varchar(40) NOT NULL DEFAULT 'string',
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 END_OF_DATA
 

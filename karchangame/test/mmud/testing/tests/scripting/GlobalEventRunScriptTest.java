@@ -16,13 +16,14 @@
  */
 package mmud.testing.tests.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -36,9 +37,9 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runGlobalEventEmptySource()
+    public void runGlobalEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -55,9 +56,9 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runGlobalEvent()
+    public void runGlobalEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("println('Hello, world.');");
@@ -74,9 +75,9 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runPersonEvent()
+    public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("person = persons.find('hotblack');");
@@ -96,9 +97,9 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runRoomEvent()
+    public void runRoomEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("room = rooms.find(1);");

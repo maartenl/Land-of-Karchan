@@ -25,6 +25,7 @@ import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
+import mmud.scripting.World;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -120,6 +121,9 @@ public class RunScriptTest
     {
     };
     protected final Rooms rooms = new Rooms(null)
+    {
+    };
+    protected final World world = new World(null)
     {
     };
 

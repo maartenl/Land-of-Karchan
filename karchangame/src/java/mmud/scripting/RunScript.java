@@ -42,7 +42,9 @@ public class RunScript
 
     private Rooms rooms;
 
-    public RunScript(Persons persons, Rooms rooms)
+    private World world;
+
+    public RunScript(Persons persons, Rooms rooms, World world)
     {
         if (persons == null)
         {
@@ -52,8 +54,13 @@ public class RunScript
         {
             throw new NullPointerException("rooms was null.");
         }
+        if (world == null)
+        {
+            throw new NullPointerException("world was null.");
+        }
         this.persons = persons;
         this.rooms = rooms;
+        this.world = world;
     }
 
     /**
@@ -187,6 +194,7 @@ public class RunScript
         // expose persons and rooms object as variable to script
         engine.put("persons", persons);
         engine.put("rooms", rooms);
+        engine.put("world", world);
 
         //        engine.eval("print('Hello, World')");
         engine.eval(sourceCode);

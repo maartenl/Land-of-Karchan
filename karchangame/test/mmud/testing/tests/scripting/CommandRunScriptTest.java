@@ -16,13 +16,14 @@
  */
 package mmud.testing.tests.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -36,9 +37,9 @@ public class CommandRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runCommandEmptySource()
+    public void runCommandEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -55,10 +56,10 @@ public class CommandRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runCommand()
+    public void runCommand() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
         String command = "bow";
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("println('Command = ' + command + '.');");

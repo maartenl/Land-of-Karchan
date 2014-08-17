@@ -16,10 +16,10 @@
  */
 package mmud.testing.tests.scripting;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
-import mmud.scripting.Persons;
 import mmud.scripting.RunScript;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -36,9 +36,9 @@ public class RoomEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runRoomEventEmptySource()
+    public void runRoomEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -55,9 +55,9 @@ public class RoomEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runRoomEvent()
+    public void runRoomEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("println('Currently in room  ' + room.id + '.');");
@@ -77,9 +77,9 @@ public class RoomEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runRoomEventCommunication()
+    public void runRoomEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
@@ -98,9 +98,9 @@ public class RoomEventRunScriptTest extends RunScriptTest
     }
 
     @Test
-    public void runRoomEventAttributes()
+    public void runRoomEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms);
+        RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.setAttribute('scripting','true');");

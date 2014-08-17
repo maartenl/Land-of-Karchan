@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ import mmud.database.entities.game.Method;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
+import mmud.scripting.World;
 
 /**
  * Takes care of all the events.
@@ -77,9 +79,13 @@ public class EventsBean
     /**
      * Runs every minute, looks up which user-defined event to execute now.
      * So, this takes care of the events that have been dictates by the deputies.
+     *
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.reflect.InvocationTargetException
      */
     @Schedule(hour = "*", minute = "*/1")
-    public void events()
+    public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
         // logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
         getEntityManager().setProperty("activePersonFilter", 1);
@@ -93,7 +99,8 @@ public class EventsBean
         List<Event> list = query.getResultList();
         Persons persons = new Persons(personBean);
         Rooms rooms = new Rooms(gameBean);
-        RunScript runScript = new RunScript(persons, rooms);
+        World world = new World(gameBean);
+        RunScript runScript = new RunScript(persons, rooms, world);
         for (Event event : list)
         {
             logBean.writeLog(null, "Event " + event.getEventid() + " executed.");

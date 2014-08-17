@@ -56,6 +56,7 @@ import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
+import mmud.database.entities.game.Worldattribute;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
@@ -66,6 +67,8 @@ import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
+import mmud.scripting.World;
+import mmud.scripting.WorldInterface;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 
@@ -88,7 +91,7 @@ import org.owasp.validator.html.ScanException;
 @Stateless
 @LocalBean
 @Path("/game")
-public class GameBean implements RoomsInterface
+public class GameBean implements RoomsInterface, WorldInterface
 {
 
     @EJB
@@ -701,7 +704,8 @@ public class GameBean implements RoomsInterface
         }
         Persons persons = new Persons(personBean);
         Rooms rooms = new Rooms(this);
-        RunScript runScript = new RunScript(persons, rooms);
+        World world = new World(this);
+        RunScript runScript = new RunScript(persons, rooms, world);
         DisplayInterface display = CommandFactory.runCommand(person, command, userCommands2, runScript);
         if (display == null || display == person.getRoom())
         {
@@ -892,6 +896,17 @@ public class GameBean implements RoomsInterface
     public Room find(Integer id)
     {
         return getEntityManager().find(Room.class, id);
+    }
+
+    @Override
+    public String getAttribute(String name)
+    {
+        Worldattribute attribute = getEntityManager().find(Worldattribute.class, name);
+        if (attribute == null)
+        {
+            return null;
+        }
+        return attribute.getContents();
     }
 
 }
