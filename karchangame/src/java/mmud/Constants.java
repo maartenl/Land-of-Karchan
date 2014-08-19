@@ -284,7 +284,7 @@ public class Constants
         Map<String, PrivateItem> inventory = new HashMap<>();
         for (Item item : set)
         {
-            if (item.getItemDefinition().getId() < 0)
+            if (!item.isVisible())
             {
                 continue;
             }

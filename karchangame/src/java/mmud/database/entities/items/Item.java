@@ -753,4 +753,10 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         setAttribute("islocked", "false");
     }
+
+    public boolean isVisible()
+    {
+        return getItemDefinition().getId() >= 0
+                && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
+    }
 }
