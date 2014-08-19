@@ -16,7 +16,10 @@
  */
 package mmud.rest.services;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -36,6 +39,8 @@ import mmud.database.entities.game.BoardMessage;
 public class BoardBean
 {
 
+    private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
+
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
@@ -49,7 +54,6 @@ public class BoardBean
     {
         return em;
     }
-    private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
 
     public Board getNewsBoard()
     {
@@ -64,12 +68,41 @@ public class BoardBean
 
     }
 
+    /**
+     * Retrieves the most recent board messages.
+     *
+     * @return
+     */
     public List<BoardMessage> getNews()
     {
         getEntityManager().setProperty("activePersonFilter", 0); // turns filter off
         Query query = getEntityManager().createNamedQuery("BoardMessage.news");
-        query.setMaxResults(10);
+        query.setParameter("sundays", getSundays());
         List<BoardMessage> list = query.getResultList();
         return list;
+    }
+
+    /**
+     * <p>
+     * Retrieves the date of the last Sunday, compared to <i>now</i>.</p>
+     * <p>
+     * So, if today is Wednesday, 12-12-2010, 13:00:00 hours, this would return
+     * Saturday, 08-12-2010, 00:00:00 hours (midnight).</p>
+     *
+     * @return the Date of last Sunday morning.
+     */
+    private Date getSundays()
+    {
+        itsLog.entering(this.getClass().getName(), "getSundays");
+        Calendar cal = Calendar.getInstance();
+        int daysBackToSunday = cal.get(Calendar.DAY_OF_WEEK); // 1 for sunday ,7 for saturday,
+        cal.add(Calendar.DATE, -daysBackToSunday);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date sundays = cal.getTime();
+        itsLog.log(Level.INFO, "getSundays: {0}", sundays);
+        return sundays;
     }
 }

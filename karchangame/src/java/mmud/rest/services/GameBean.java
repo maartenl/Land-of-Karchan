@@ -460,12 +460,16 @@ public class GameBean implements RoomsInterface, WorldInterface
     /**
      * Logs a character in, to start playing.
      *
-     * @param requestContext
+     * @param requestContext used for retrieving the ip address/hostname of the
+     * player for determining ban-rules and the like.
      * @param password password for verification of the user.
      * @param name the name of the user
      * @return the session password upon success
-     * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-     * crops up.
+     * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected exception
+     * crops up.</li>
+     * <li>NO_CONTENT if the game is offline</li>
+     * <li>FORBIDDEN, if the player is banned.</li>
+     * </ul>
      */
     @POST
     @Path("{name}/logon")

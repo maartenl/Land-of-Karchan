@@ -18,7 +18,20 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
@@ -30,11 +43,11 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_boardmessages")
 @NamedQueries(
-{
-    @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
-    @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
-    @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.removed = false order by b.id desc")
-})
+        {
+            @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
+            @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
+            @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :sundays and b.removed = false order by b.id desc")
+        })
 public class BoardMessage implements Serializable
 {
 
@@ -72,6 +85,7 @@ public class BoardMessage implements Serializable
      * Returns the contents of the message as posted. If the message has been
      * removed, it will return the message "Message has been removed due to offensive
      * content.".
+     *
      * @return the contents of the message on the board.
      * @see #getRemoved()
      */
