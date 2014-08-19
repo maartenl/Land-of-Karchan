@@ -17,14 +17,19 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -35,13 +40,14 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_worldattributes")
 @NamedQueries(
-{
-    @NamedQuery(name = "Worldattribute.findAll", query = "SELECT w FROM Worldattribute w"),
-    @NamedQuery(name = "Worldattribute.findByName", query = "SELECT w FROM Worldattribute w WHERE w.name = :name"),
-    @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type")
-})
+        {
+            @NamedQuery(name = "Worldattribute.findAll", query = "SELECT w FROM Worldattribute w"),
+            @NamedQuery(name = "Worldattribute.findByName", query = "SELECT w FROM Worldattribute w WHERE w.name = :name"),
+            @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type")
+        })
 public class Worldattribute implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -58,6 +64,14 @@ public class Worldattribute implements Serializable
     @Size(max = 65535)
     @Column(name = "contents")
     private String contents;
+    @JoinColumn(name = "owner", referencedColumnName = "name")
+    @ManyToOne
+    private Admin owner;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "creation")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creation;
 
     public Worldattribute()
     {
@@ -102,6 +116,26 @@ public class Worldattribute implements Serializable
     public void setContents(String contents)
     {
         this.contents = contents;
+    }
+
+    public Admin getOwner()
+    {
+        return owner;
+    }
+
+    public void setOwner(Admin owner)
+    {
+        this.owner = owner;
+    }
+
+    public Date getCreation()
+    {
+        return creation;
+    }
+
+    public void setCreation(Date creation)
+    {
+        this.creation = creation;
     }
 
     @Override

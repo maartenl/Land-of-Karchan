@@ -346,15 +346,20 @@ ALTER TABLE mm_commands ADD FOREIGN KEY
 --
 
 DROP TABLE IF EXISTS `mm_worldattributes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mm_worldattributes` (
-  `name` varchar(180) NOT NULL,
-  `value` text,
-  `type` varchar(40) NOT NULL DEFAULT 'string',
+  `name` varchar(120) NOT NULL,
+  `contents` longtext,
+  `creation` datetime DEFAULT NULL,
+  `type` varchar(80) DEFAULT NULL,
+  `owner` varchar(39) DEFAULT '',
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE mm_worldattributes 
+ADD CONSTRAINT FK_mm_worldattributes_owner 
+FOREIGN KEY (owner) REFERENCES mm_admin(name);
+
+DROP TABLE IF EXISTS `mm_charitemtable`;
 
 END_OF_DATA
 
