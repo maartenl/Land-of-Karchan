@@ -17,6 +17,7 @@
 package mmud.scripting.entities;
 
 import mmud.database.enums.Wielding;
+import mmud.exceptions.MoneyException;
 import mmud.exceptions.PersonNotFoundException;
 
 /**
@@ -57,6 +58,36 @@ public class Person
     {
         return person.getGuild() == null ? null : person.getGuild().getTitle();
 
+    }
+
+    /**
+     * @see mmud.database.entities.characters.Person#getCopper()
+     * @return
+     */
+    public Integer getMoney()
+    {
+        return person.getMoney();
+    }
+
+    /**
+     * Transfers money from one person (this one) to another.
+     *
+     * @param newamount the amount of copper (base currency to move)
+     * @param target the target that is to receive said money
+     * @return boolean, false if the money amount is illegal, or the
+     * person simply does not have that much money.
+     */
+    public boolean transferMoney(Integer newamount, Person target)
+    {
+        boolean success = true;
+        try
+        {
+            person.transferMoney(newamount, target.person);
+        } catch (MoneyException e)
+        {
+            success = false;
+        }
+        return success;
     }
 
     public void personal(String string)
@@ -163,4 +194,5 @@ public class Person
         }
         return new Item(person.wields(Wielding.WIELD_BOTH));
     }
+
 }

@@ -2384,11 +2384,15 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      */
     public void transferMoney(Integer newamount, Person target) throws MoneyException
     {
+        if (target == null)
+        {
+            throw new MoneyException("You want to transfer money to whom?");
+        }
         if (newamount == null || newamount <= 0)
         {
             throw new MoneyException("I beg your pardon?");
         }
-        if (getMoney() < newamount || newamount == null)
+        if (getMoney() < newamount)
         {
             throw new MoneyException("You do not have that much money.");
         }
