@@ -97,12 +97,13 @@ public class PrivateBean
      *
      * @param lok session password
      * @param name the name to identify the person
+     * @return the User identified by the name.
      * @throws WebApplicationException NOT_FOUND, if the user is either not
      * found or is not a proper user. BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match.
      */
-    private User authenticate(String name, String lok)
+    public User authenticate(String name, String lok)
     {
         User person = getEntityManager().find(User.class, name);
         if (person == null)
@@ -116,6 +117,29 @@ public class PrivateBean
         if (!person.verifySessionPassword(lok))
         {
             throw new WebApplicationException("Users session password (lok) did not match (" + name + ", " + lok + " should match " + person.getLok() + ")", Status.UNAUTHORIZED);
+        }
+        return person;
+    }
+
+    /**
+     * Authenticates a guildmaster.
+     *
+     * @param lok session password
+     * @param name the name to identify the person
+     * @return WebApplicationException NOT_FOUND if you are not the member of a guild
+     * UNAUTHORIZED if you are not the guild master of your guild.
+     * @see #authenticate(java.lang.String, java.lang.String)
+     */
+    public User authenticateGuildMaster(String name, String lok)
+    {
+        User person = authenticate(name, lok);
+        if (person.getGuild() == null)
+        {
+            throw new WebApplicationException("Person (" + name + ", " + lok + ") is not a member of a guild", Status.NOT_FOUND);
+        }
+        if (!person.getGuild().getBoss().getName().equals(person.getName()))
+        {
+            throw new WebApplicationException("Person (" + name + ", " + lok + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
         }
         return person;
     }

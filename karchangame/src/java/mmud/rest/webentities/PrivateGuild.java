@@ -16,7 +16,6 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,12 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author maartenl
  */
 @XmlRootElement
-public class PublicGuild
+public class PrivateGuild extends PublicGuild
 {
-    public String guildurl;
-    public String title;
-    public String bossname;
-    public String guilddescription;
-    public Date creation;
-    public String image;
+
+    public String name;
+    public String logonmessage;
 }

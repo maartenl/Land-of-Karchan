@@ -84,6 +84,8 @@ public class PublicBean
      * Returns a Fortune 100 of players on karchan. The URL:
      * /karchangame/resources/public/fortunes. Can produce both application/xml
      * and application/json.
+     *
+     * @return a list of fortunes
      */
     @GET
     @Path("fortunes")
@@ -184,7 +186,7 @@ public class PublicBean
         {
             itsLog.finer("news: getting news");
             List<BoardMessage> list = boardBean.getNews();
-            itsLog.finer("news: found " + list.size() + " entries.");
+            itsLog.log(Level.FINER, "news: found {0} entries.", list.size());
             for (BoardMessage message : list)
             {
                 News news = new News();

@@ -19,6 +19,8 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.Basic;
@@ -75,11 +77,11 @@ public class Guild implements Serializable, DisplayInterface
     @Column(name = "title")
     private String title;
     @Column(name = "daysguilddeath")
-    private Integer daysguilddeath;
+    private Integer daysguilddeath = 10;
     @Column(name = "maxguilddeath")
-    private Integer maxguilddeath;
+    private Integer maxguilddeath = 10;
     @Column(name = "minguildmembers")
-    private Integer minguildmembers;
+    private Integer minguildmembers = 20;
     @Column(name = "minguildlevel")
     private Integer minguildlevel;
     @Lob
@@ -102,7 +104,7 @@ public class Guild implements Serializable, DisplayInterface
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
-    private Collection<Person> members;
+    private Set<Person> members = new HashSet<>();
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -244,12 +246,12 @@ public class Guild implements Serializable, DisplayInterface
         this.logonmessage = logonmessage;
     }
 
-    public Collection<Person> getMembers()
+    public Set<Person> getMembers()
     {
         return members;
     }
 
-    public void setMembers(Collection<Person> personCollection)
+    public void setMembers(Set<Person> personCollection)
     {
         this.members = personCollection;
     }
@@ -430,9 +432,17 @@ public class Guild implements Serializable, DisplayInterface
         return "";
     }
 
+    public void setImage(String image)
+    {
+        // TODO
+    }
+
     /**
-     * Returns the rank based on the rank id. In case the rank id does not
-     * exist, an Exception will be thrown.
+     * Returns the rank based on the rank id/guildlevel. In case the rank id does not
+     * exist, null will be returned.
+     *
+     * @param id the id of the rank/guildlevel
+     * @return the rank in the guild
      */
     public Guildrank getRank(int id)
     {
@@ -523,4 +533,5 @@ public class Guild implements Serializable, DisplayInterface
                 + " members." + getAlarmDescription() + "<P>" + result + "<P>";
 
     }
+
 }

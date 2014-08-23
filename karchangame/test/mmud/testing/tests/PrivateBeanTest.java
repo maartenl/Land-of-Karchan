@@ -28,7 +28,6 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
-import mmud.database.entities.game.CharitemTable;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
@@ -852,24 +851,6 @@ public class PrivateBeanTest
                     }
                 };
 
-                entityManager.persist((CharitemTable) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(CharitemTable item)
-                    {
-                        assertNotNull(item);
-                        assertEquals(item.getBelongsto(), marvin);
-                        assertNotNull(item.getItem());
-
-                        // assertEquals(item.getCreation(), new Date());
-                        assertNull(item.getItem().getId());
-                        assertEquals(item.getItem().getItemDefinition().getId(), Integer.valueOf(6));
-                        assertEquals(item.getItem().getOwner(), admin);
-
-                        assertNull(item.getWearing());
-                    }
-                };
             }
         };
         // Unit under test is exercised.
@@ -941,24 +922,6 @@ public class PrivateBeanTest
                     }
                 };
 
-                entityManager.persist((CharitemTable) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(CharitemTable item)
-                    {
-                        assertNotNull(item);
-                        assertEquals(item.getBelongsto(), marvin);
-                        assertNotNull(item.getItem());
-
-                        // assertEquals(item.getCreation(), new Date());
-                        assertNull(item.getItem().getId());
-                        assertEquals(item.getItem().getItemDefinition().getId(), Integer.valueOf(12));
-                        assertEquals(item.getItem().getOwner(), admin);
-
-                        assertNull(item.getWearing());
-                    }
-                };
             }
         };
         // Unit under test is exercised.
