@@ -42,18 +42,15 @@ import org.owasp.validator.html.ScanException;
 @Entity
 @Table(name = "characterinfo")
 @NamedQueries(
-
-
-
-{
-    @NamedQuery(name = "CharacterInfo.findAll", query = "SELECT c FROM CharacterInfo c"),
-    @NamedQuery(name = "CharacterInfo.findByName", query = "SELECT c FROM CharacterInfo c WHERE c.name = :name"),
-    @NamedQuery(name = "CharacterInfo.findByImageurl", query = "SELECT c FROM CharacterInfo c WHERE c.imageurl = :imageurl"),
-    @NamedQuery(name = "CharacterInfo.findByHomepageurl", query = "SELECT c FROM CharacterInfo c WHERE c.homepageurl = :homepageurl"),
-    @NamedQuery(name = "CharacterInfo.findByDateofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.dateofbirth = :dateofbirth"),
-    @NamedQuery(name = "CharacterInfo.findByCityofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.cityofbirth = :cityofbirth"),
-    @NamedQuery(name = "CharacterInfo.charactersheets", query = "SELECT c.name FROM CharacterInfo c, Person p WHERE c.name = p.name and p.god <= 1"),
-})
+        {
+            @NamedQuery(name = "CharacterInfo.findAll", query = "SELECT c FROM CharacterInfo c"),
+            @NamedQuery(name = "CharacterInfo.findByName", query = "SELECT c FROM CharacterInfo c WHERE c.name = :name"),
+            @NamedQuery(name = "CharacterInfo.findByImageurl", query = "SELECT c FROM CharacterInfo c WHERE c.imageurl = :imageurl"),
+            @NamedQuery(name = "CharacterInfo.findByHomepageurl", query = "SELECT c FROM CharacterInfo c WHERE c.homepageurl = :homepageurl"),
+            @NamedQuery(name = "CharacterInfo.findByDateofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.dateofbirth = :dateofbirth"),
+            @NamedQuery(name = "CharacterInfo.findByCityofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.cityofbirth = :cityofbirth"),
+            @NamedQuery(name = "CharacterInfo.charactersheets", query = "SELECT c.name FROM CharacterInfo c, Person p WHERE c.name = p.name and p.god <= 1"),
+        })
 public class CharacterInfo implements Serializable
 {
 
@@ -107,14 +104,23 @@ public class CharacterInfo implements Serializable
 
     public void setImageurl(String imageurl) throws MudException
     {
-        String[] schemes =
+        if (imageurl != null)
         {
-            "http", "https"
-        };
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(imageurl))
-        {
-            throw new MudException("imageurl '" + imageurl + "' invalid");
+            if (imageurl.trim().equals(""))
+            {
+                imageurl = null;
+            } else
+            {
+                String[] schemes =
+                {
+                    "http", "https"
+                };
+                UrlValidator urlValidator = new UrlValidator(schemes);
+                if (!urlValidator.isValid(imageurl))
+                {
+                    throw new MudException("imageurl '" + imageurl + "' invalid");
+                }
+            }
         }
         this.imageurl = imageurl;
     }
@@ -131,14 +137,23 @@ public class CharacterInfo implements Serializable
 
     public void setHomepageurl(String homepageurl) throws MudException
     {
-        String[] schemes =
+        if (homepageurl != null)
         {
-            "http", "https"
-        };
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(homepageurl))
-        {
-            throw new MudException("homepageurl '" + homepageurl + "' invalid");
+            if (homepageurl.trim().equals(""))
+            {
+                homepageurl = null;
+            } else
+            {
+                String[] schemes =
+                {
+                    "http", "https"
+                };
+                UrlValidator urlValidator = new UrlValidator(schemes);
+                if (!urlValidator.isValid(homepageurl))
+                {
+                    throw new MudException("homepageurl '" + homepageurl + "' invalid");
+                }
+            }
         }
         this.homepageurl = homepageurl;
     }
@@ -183,7 +198,7 @@ public class CharacterInfo implements Serializable
             try
             {
                 storyline = Utils.security(storyline);
-            } catch (    PolicyException | ScanException ex)
+            } catch (PolicyException | ScanException ex)
             {
                 Logger.getLogger(CharacterInfo.class.getName()).log(Level.SEVERE, null, ex);
                 throw new MudException(ex);
