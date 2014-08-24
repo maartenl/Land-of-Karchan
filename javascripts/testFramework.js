@@ -37,6 +37,7 @@ function Person(name, posession, indirect, direct)
   this.direct = direct;
   this.items = [];
   this.attributes = {};
+  this.copper = 0;
 }
         
 function Room(id, title, description)
@@ -165,6 +166,14 @@ Room.prototype.getItems = function(itemdefid)
     }
   }
   return result;
+}
+
+Person.prototype.transferMoney = function(newamount, target)
+{
+  if (this.copper < newamount) {return false;}
+  this.copper -= newamount;
+  target.copper += newamount;
+  return true;
 }
 
 Person.prototype.personal = function(message)

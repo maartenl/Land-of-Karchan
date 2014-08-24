@@ -147,9 +147,9 @@ function playInit($)
   
   processCall(command, true, processPlay);
 
-  $(window).scroll(function(){
-    $("#block-block-5").css({"margin-top": ($(window).scrollTop()) + "px", "margin-left":($(window).scrollLeft()) + "px"});
-  });
+  // $(window).scroll(function(){
+  //  $("#block-block-5").css({"margin-top": ($(window).scrollTop()) + "px", "margin-left":($(window).scrollLeft()) + "px"});
+  // });
 }
 
 /**
