@@ -125,6 +125,10 @@ public class Commandlog implements Serializable
 
     public void setCommand(String command)
     {
+        if (command != null && command.length() >= 254)
+        {
+            command = command.substring(0, 254);
+        }
         this.command = command;
     }
 
