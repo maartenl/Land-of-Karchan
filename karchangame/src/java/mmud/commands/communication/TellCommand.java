@@ -62,7 +62,7 @@ public class TellCommand extends TargetCommand
 //            return true;
 //        }
         aUser.writeMessage(aUser, aTarget, "%SNAME "
-                + getCommType().getPlural() + " [to %TNAME] : "
+                + getCommType() + " [to %TNAME] : "
                 + message + "<BR>\r\n");
         aTarget.writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().getPlural() + " [to %TNAME]</B> : "
