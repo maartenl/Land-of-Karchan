@@ -25,7 +25,10 @@ import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
-import mmud.database.entities.game.*;
+import mmud.database.entities.game.Area;
+import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.Guild;
+import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
 import mmud.rest.services.BoardBean;
@@ -39,12 +42,14 @@ import mmud.testing.TestingUtils;
 import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
-import org.testng.annotations.AfterMethod;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -55,8 +60,10 @@ public class PublicBeanTest
 
     // Obtain a suitable logger.
     private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
+
     @Mocked
     EntityManager entityManager;
+
     @Mocked
     Query query;
     private Person hotblack;
@@ -175,6 +182,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("User.fortunes");
                 result = query;
@@ -213,6 +221,7 @@ public class PublicBeanTest
         list.add(two);
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("User.fortunes");
@@ -256,6 +265,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("User.who");
                 result = query;
@@ -285,6 +295,7 @@ public class PublicBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("User.who");
@@ -338,6 +349,7 @@ public class PublicBeanTest
         });
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("BoardMessage.news");
@@ -393,6 +405,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("BoardMessage.news");
                 result = query;
@@ -433,6 +446,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("User.status");
                 result = query;
@@ -463,6 +477,7 @@ public class PublicBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("User.status");
@@ -500,6 +515,7 @@ public class PublicBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("Guild.findAll");
@@ -548,6 +564,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("Guild.findAll");
                 result = query;
@@ -591,6 +608,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.find(Person.class, "Marvin");
                 result = null;
@@ -631,6 +649,7 @@ public class PublicBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.find(Person.class, "Marvin");
@@ -675,6 +694,7 @@ public class PublicBeanTest
         new Expectations() // an "expectation block"
         {
 
+
             {
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");
                 result = query;
@@ -705,6 +725,7 @@ public class PublicBeanTest
         };
         new Expectations() // an "expectation block"
         {
+
 
             {
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");

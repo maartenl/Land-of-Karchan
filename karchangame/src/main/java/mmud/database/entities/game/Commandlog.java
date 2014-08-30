@@ -31,6 +31,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -46,6 +47,7 @@ import javax.validation.constraints.Size;
             @NamedQuery(name = "Commandlog.findByName", query = "SELECT c FROM Commandlog c WHERE c.name = :name"),
             @NamedQuery(name = "Commandlog.findByCommand", query = "SELECT c FROM Commandlog c WHERE c.command = :command")
         })
+@XmlRootElement
 public class Commandlog implements Serializable
 {
 
