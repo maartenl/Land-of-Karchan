@@ -170,7 +170,7 @@ public class PrivateBeanTest
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
     }
 
@@ -207,7 +207,7 @@ public class PrivateBeanTest
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
     }
 
@@ -245,7 +245,7 @@ public class PrivateBeanTest
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
     }
 
@@ -555,7 +555,7 @@ public class PrivateBeanTest
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
@@ -637,7 +637,7 @@ public class PrivateBeanTest
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
@@ -683,7 +683,7 @@ public class PrivateBeanTest
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
@@ -729,7 +729,7 @@ public class PrivateBeanTest
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
@@ -1361,7 +1361,7 @@ public class PrivateBeanTest
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
     }
 
@@ -1459,7 +1459,7 @@ public class PrivateBeanTest
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
 
     }

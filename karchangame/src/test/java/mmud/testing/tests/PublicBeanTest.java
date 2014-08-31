@@ -656,7 +656,7 @@ public class PublicBeanTest
             fail("We expected a not found exception");
         } catch (WebApplicationException e)
         {
-// Yay! We get an exception!
+            // Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
