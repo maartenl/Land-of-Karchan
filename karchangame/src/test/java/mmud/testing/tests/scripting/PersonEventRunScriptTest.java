@@ -21,8 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
 import mmud.scripting.RunScript;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -47,7 +49,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
         } catch (ScriptException ex)
         {
             Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         } catch (NoSuchMethodException ex)
         {
             assertEquals(ex.getMessage(), "no such method: event");
@@ -71,7 +73,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         }
     }
 
@@ -91,7 +93,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         }
     }
 
@@ -103,7 +105,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
         sourceCode.append("function event(person) {");
         sourceCode.append("person.setAttribute('scripting','true');");
         sourceCode.append("println('Attribute = ' + person.getAttribute('scripting'));");
-        sourceCode.append("println('Attribute is true = ' + person.verifyAttribute('scripting','true'));");
+        sourceCode.append("println('Attribute is true = ' + person.getAttribute('scripting') == true);");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try
@@ -112,7 +114,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         }
         assertTrue(hotblack.verifyAttribute("scripting", "true"), "scripting atttribute of hotblack should be true");
     }

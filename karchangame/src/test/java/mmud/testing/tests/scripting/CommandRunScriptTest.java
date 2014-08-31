@@ -64,7 +64,7 @@ public class CommandRunScriptTest extends RunScriptTest
         sourceCode.append("function command(person, command) {");
         sourceCode.append("println('Command = ' + command + '.');");
         sourceCode.append("person.sendMessage('%SNAME bows, and almost falls down.');");
-        sourceCode.append("return false;");
+        sourceCode.append("return;");
         sourceCode.append("}");
         try
         {

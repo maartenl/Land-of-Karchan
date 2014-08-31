@@ -534,21 +534,9 @@ public class PrivateBean
         itsLog.finer("entering deleteMail");
         getEntityManager().setProperty("activePersonFilter", 0);
         Person person = authenticate(name, lok);
-        try
-        {
-            // get the specific mail with id {id}
-            Mail mail = getMail(person.getName(), id);
-            mail.setDeleted(Boolean.TRUE);
-
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (Exception e)
-        {
-            itsLog.throwing("deleteMail: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
+        // get the specific mail with id {id}
+        Mail mail = getMail(person.getName(), id);
+        mail.setDeleted(Boolean.TRUE);
         itsLog.finer("exiting deleteMail");
         return Response.ok().build();
     }

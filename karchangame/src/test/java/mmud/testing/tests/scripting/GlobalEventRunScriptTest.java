@@ -79,12 +79,12 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     {
         RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event() {");
-        sourceCode.append("person = persons.find('hotblack');");
-        sourceCode.append("println('Hello, ' + person.name + '.');");
-        sourceCode.append("println(person.name + ' has sex ' + person.sex + '.');");
-        sourceCode.append("println(person.name + ' has guild ' + person.guild + '.');");
-        sourceCode.append("return false;");
+        sourceCode.append("function event() {\n");
+        sourceCode.append("var person = persons.find('hotblack');\n");
+        sourceCode.append("println('Hello, ' + person.name + '.');\n");
+        sourceCode.append("println(person.name + ' has sex ' + person.sex + '.');\n");
+        sourceCode.append("println(person.name + ' has guild ' + person.guild + '.');\n");
+        sourceCode.append("return false;\n");
         sourceCode.append("}");
         try
         {
@@ -92,7 +92,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
         RunScript runScript = new RunScript(persons, rooms, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
-        sourceCode.append("room = rooms.find(1);");
+        sourceCode.append("var room = rooms.find(1);");
         sourceCode.append("println('Currently in room  ' + room.id + '.');");
         sourceCode.append("println('Room has description ' + room.description + '.');");
         sourceCode.append("println('Room has title ' + room.title + '.');");
@@ -115,7 +115,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
+            fail("No error message was expected. But we got " + ex.getMessage());
         }
     }
 }

@@ -24,8 +24,11 @@ import mmud.database.entities.game.Room;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.scripting.Persons;
+import mmud.scripting.PersonsInterface;
 import mmud.scripting.Rooms;
+import mmud.scripting.RoomsInterface;
 import mmud.scripting.World;
+import mmud.scripting.WorldInterface;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -37,6 +40,12 @@ import org.testng.annotations.BeforeMethod;
  */
 public class RunScriptTest
 {
+
+    protected Persons persons;
+    protected Rooms rooms;
+    protected World world;
+    private RoomsInterface roomsInterface;
+    private WorldInterface worldInterface;
 
     public static class RoomStub extends Room
     {
@@ -114,18 +123,10 @@ public class RunScriptTest
             return null;
         }
     };
+    protected PersonsInterface personsInterface;
     protected Person marvin;
     protected Person hotblack;
     protected RoomStub room;
-    protected final Persons persons = new Persons(null)
-    {
-    };
-    protected final Rooms rooms = new Rooms(null)
-    {
-    };
-    protected final World world = new World(null)
-    {
-    };
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -151,7 +152,7 @@ public class RunScriptTest
         marvin.setSex(Sex.MALE);
         marvin.setRoom(room);
 
-        Room room2 = new RoomStub();
+        final Room room2 = new RoomStub();
         room2.setId(2);
         room2.setContents("the stimulation of thin air; the intense blueness of the sky; the towering "
                 + "thunderheads of summer that ramble and flash and produce sheets of rain with "
@@ -166,7 +167,7 @@ public class RunScriptTest
         room2.setTitle("Outside The Cave");
         room2.setPicture("/images/gif/cave-ent.gif");
 
-        Room room3 = new RoomStub();
+        final Room room3 = new RoomStub();
         room3.setId(3);
         room3.setContents("you are standing in the  exuberant air on a road which leads to "
                 + "the north and south. In the north, you can see a little  village; little in "
@@ -196,6 +197,60 @@ public class RunScriptTest
         room2.setEast(room);
         room2.setWest(room3);
         room3.setEast(room2);
+        personsInterface = new PersonsInterface()
+        {
+
+            @Override
+            public Person find(String name)
+            {
+                if ("Hotblack".equalsIgnoreCase(name))
+                {
+                    return hotblack;
+                }
+                if ("Marvin".equalsIgnoreCase(name))
+                {
+                    return marvin;
+                }
+                return null;
+            }
+        };
+        roomsInterface = new RoomsInterface()
+        {
+
+            @Override
+            public Room find(Integer id)
+            {
+                if (id == null)
+                {
+                    return null;
+                }
+                if (id == 1)
+                {
+                    return room;
+                }
+                if (id == 2)
+                {
+                    return room2;
+                }
+                if (id == 3)
+                {
+                    return room3;
+                }
+                return null;
+            }
+        };
+        worldInterface = new WorldInterface()
+        {
+
+            @Override
+            public String getAttribute(String name)
+            {
+                return null;
+            }
+        };
+        persons = new Persons(personsInterface);
+        rooms = new Rooms(roomsInterface);
+        world = new World(worldInterface);
     }
 
     @AfterMethod

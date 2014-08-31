@@ -24,12 +24,14 @@ import mmud.exceptions.MudException;
 import mockit.Delegate;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
-import org.testng.annotations.AfterMethod;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -37,6 +39,9 @@ import static org.testng.Assert.*;
  */
 public class PersonTest
 {
+
+    @Mocked
+    FileWriter fileWriter;
 
     public PersonTest()
     {
@@ -68,8 +73,6 @@ public class PersonTest
         Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
-            @Mocked
-            FileWriter fileWriter;
 
 
             {
@@ -106,8 +109,6 @@ public class PersonTest
         Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
-            @Mocked
-            FileWriter fileWriter;
 
 
             {
@@ -145,8 +146,6 @@ public class PersonTest
         Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
-            @Mocked
-            FileWriter fileWriter;
 
 
             {
@@ -177,14 +176,13 @@ public class PersonTest
         }
 
     }
+
     @Test
     public void writeStrangeOpenTagMessageTest() throws IOException
     {
         Person person = new User();
         new NonStrictExpectations() // an "expectation block"
         {
-            @Mocked
-            FileWriter fileWriter;
 
 
             {

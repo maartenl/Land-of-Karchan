@@ -21,8 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
 import mmud.scripting.RunScript;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -105,7 +107,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
         sourceCode.append("function event(room) {");
         sourceCode.append("room.setAttribute('scripting','true');");
         sourceCode.append("println('Attribute scripting = ' + room.getAttribute('scripting'));");
-        sourceCode.append("println('Attribute scripting is true = ' + room.verifyAttribute('scripting','true'));");
+        sourceCode.append("println('Attribute scripting is true = ' + room.getAttribute('scripting') == true);");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try

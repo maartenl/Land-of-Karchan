@@ -16,7 +16,9 @@
  */
 package mmud.testing.tests;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -32,6 +34,7 @@ import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
 import mmud.rest.services.BoardBean;
+import mmud.rest.services.PersonBean;
 import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
@@ -66,6 +69,10 @@ public class PublicBeanTest
 
     @Mocked
     Query query;
+
+    @Mocked
+    WebApplicationException webApplicationException;
+
     private Person hotblack;
     private Person marvin;
 
@@ -184,6 +191,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("User.fortunes");
                 result = query;
             }
@@ -224,6 +232,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("User.fortunes");
                 result = query;
                 query.setMaxResults(100);
@@ -262,11 +271,20 @@ public class PublicBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(publicBean, "personBean", new PersonBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
 
             {
+                entityManager.setProperty("activePersonFilter", 1);
                 entityManager.createNamedQuery("User.who");
                 result = query;
             }
@@ -293,11 +311,20 @@ public class PublicBeanTest
                 return entityManager;
             }
         };
+        Deencapsulation.setField(publicBean, "personBean", new PersonBean()
+        {
+            @Override
+            protected EntityManager getEntityManager()
+            {
+                return entityManager;
+            }
+        });
         new Expectations() // an "expectation block"
         {
 
 
             {
+                entityManager.setProperty("activePersonFilter", 1);
                 entityManager.createNamedQuery("User.who");
                 result = query;
                 query.getResultList();
@@ -328,7 +355,7 @@ public class PublicBeanTest
     }
 
     @Test
-    public void newsEmptyTest()
+    public void newsEmptyTest() throws ParseException
     {
         logger.fine("newsEmptyTest");
         PublicBean publicBean = new PublicBean()
@@ -352,9 +379,10 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("BoardMessage.news");
                 result = query;
-                query.setMaxResults(10);
+                query.setParameter("sundays", getSundays());
                 query.getResultList();
             }
         };
@@ -366,7 +394,7 @@ public class PublicBeanTest
     }
 
     @Test
-    public void newsTest()
+    public void newsTest() throws ParseException
     {
         logger.fine("newsTest");
         Date secondDate = new Date();
@@ -407,9 +435,10 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("BoardMessage.news");
                 result = query;
-                query.setMaxResults(10);
+                query.setParameter("sundays", getSundays());
                 query.getResultList();
                 result = list;
             }
@@ -448,6 +477,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
@@ -480,6 +510,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
@@ -518,6 +549,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("Guild.findAll");
                 result = query;
                 query.getResultList();
@@ -566,6 +598,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("Guild.findAll");
                 result = query;
                 query.getResultList();
@@ -610,8 +643,10 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(Person.class, "Marvin");
                 result = null;
+                new WebApplicationException(Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -621,7 +656,7 @@ public class PublicBeanTest
             fail("We expected a not found exception");
         } catch (WebApplicationException e)
         {
-            assertEquals(e.getResponse().getStatus(), Response.Status.NOT_FOUND.getStatusCode());
+// Yay! We get an exception!
         }
         // Verification code (JUnit/TestNG asserts), if any.
     }
@@ -652,6 +687,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(Person.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, marvin.getName());
@@ -696,6 +732,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");
                 result = query;
                 query.getResultList();
@@ -728,6 +765,7 @@ public class PublicBeanTest
 
 
             {
+                entityManager.setProperty("activePersonFilter", 0);
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");
                 result = query;
                 query.getResultList();
@@ -748,5 +786,18 @@ public class PublicBeanTest
         expected.name = "Hotblack";
         expected.url = "/karchangame/resources/public/charactersheets/Hotblack";
         compare(result.get(1), expected);
+    }
+
+    private Date getSundays()
+    {
+        Calendar cal = Calendar.getInstance();
+        int daysBackToSunday = cal.get(Calendar.DAY_OF_WEEK); // 1 for sunday ,7 for saturday,
+        cal.add(Calendar.DATE, -daysBackToSunday);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date sundays = cal.getTime();
+        return sundays;
     }
 }
