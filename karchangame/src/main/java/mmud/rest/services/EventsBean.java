@@ -41,9 +41,9 @@ import mmud.scripting.World;
 /**
  * Takes care of all the events.
  * <img
- * src="../../../images/Eventsbean.png">
+ * src="doc-files/Eventsbean.png">
  *
- * @startuml Eventsbean.png
+ * @startuml doc-files/Eventsbean.png
  * class EventsBean {
  * +events()
  * }

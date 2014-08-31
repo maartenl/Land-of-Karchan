@@ -379,7 +379,7 @@ public class PrivateBean
      * Creates an itemDefinitionId instance (and, if required, an
      * itemDefinitionId definition) representing an in-game version of a single
      * mail based by id. <img
-     * src="../../../images/PrivateBean_createMailItem.png">
+     * src="doc-files/PrivateBean_createMailItem.png">
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
@@ -392,7 +392,7 @@ public class PrivateBean
      * @see Mail#ITEMS
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
      * failed. BAD_REQUEST if an unexpected exception crops up.
-     * @startuml PrivateBean_createMailItem.png
+     * @startuml doc-files/PrivateBean_createMailItem.png
      * (*) --> "check params"
      * --> "getMail"
      * if "has Item Definition" then

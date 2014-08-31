@@ -75,9 +75,9 @@ import org.owasp.validator.html.ScanException;
 /**
  * Takes care of all the game-related functions.
  * <img
- * src="../../../images/Gamebean.png">
+ * src="doc-files/Gamebean.png">
  *
- * @startuml Gamebean.png
+ * @startuml doc-files/Gamebean.png
  * (*) --> "Create character"
  * --> "Login"
  * --> "Play"
@@ -123,7 +123,7 @@ public class GameBean implements RoomsInterface, WorldInterface
      * action is indeed a proper authenticated user.</p>
      * <p>
      * <img
-     * src="../../../images/Gamebean_authenticate.png"></p>
+     * src="doc-files/Gamebean_authenticate.png"></p>
      *
      * @param lok session password
      * @param name the name to identify the person
@@ -131,7 +131,7 @@ public class GameBean implements RoomsInterface, WorldInterface
      * found or is not a proper user. BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match.
-     * @startuml Gamebean_authenticate.png
+     * @startuml doc-files/Gamebean_authenticate.png
      * (*) --> "find character"
      * --> "character found"
      * --> "character == user"
@@ -163,7 +163,7 @@ public class GameBean implements RoomsInterface, WorldInterface
      * action is a user with the appropriate password.</p>
      * <p>
      * <img
-     * src="../../../images/Gamebean_authenticateWithPassword.png"></p>
+     * src="doc-files/Gamebean_authenticateWithPassword.png"></p>
      *
      * @param password real password
      * @param name the name to identify the person
@@ -171,7 +171,7 @@ public class GameBean implements RoomsInterface, WorldInterface
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match or user not found.
-     * @startuml Gamebean_authenticateWithPassword.png
+     * @startuml doc-files/Gamebean_authenticateWithPassword.png
      * (*) --> "find character"
      * --> "character found"
      * --> "character == user"
@@ -216,12 +216,12 @@ public class GameBean implements RoomsInterface, WorldInterface
      * Checks to see if a person is banned from playing.</p>
      * <p>
      * <img
-     * src="../../../images/Gamebean_isBanned.png"></p>
+     * src="doc-files/Gamebean_isBanned.png"></p>
      *
      * @param name the name of the person
      * @param address the ip address the person is playing from
      * @return true if banned, false otherwise.
-     * @startuml Gamebean_isBanned.png
+     * @startuml doc-files/Gamebean_isBanned.png
      * (*) --> "check silly names"
      * --> "check unbanned"
      * --> "check address banned"
@@ -289,14 +289,14 @@ public class GameBean implements RoomsInterface, WorldInterface
      * Creates a new character, suitable for playing.</p>
      * <p>
      * <img
-     * src="../../../images/Gamebean_create.png"></p>
+     * src="doc-files/Gamebean_create.png"></p>
      * @param requestContext for headers, like remote address.
      * @param name the name of the user
      * @param pperson the data of the new character
      * @return NO_CONTENT if the game is offline for maintenance.
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up or something could not be validated.
-     * @startuml Gamebean_create.png
+     * @startuml doc-files/Gamebean_create.png
      * (*) --> "check for offline"
      * --> "check presence of data"
      * --> "check name == pperson.name"

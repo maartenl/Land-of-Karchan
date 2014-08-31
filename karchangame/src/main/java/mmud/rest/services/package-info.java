@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * <p>Provides the Enterprise Java Beans used for the REST services.</p>
- * <p><img src="../../../images/package-info_restservices.png"/></p>
- * @startuml package-info_restservices.png
+ * <p>
+ * Provides the Enterprise Java Beans used for the REST services.</p>
+ * <p>
+ * <img src="doc-files/package-info_restservices.png"/></p>
+ * @startuml doc-files/package-info_restservices.png
  * title Sequence diagram of the current software setup
  * participant Firefox as Firefox << Internet Browser >>
  * participant Apache as Apache << Webserver >>

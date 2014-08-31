@@ -60,6 +60,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.jeluard</groupId>
+                <artifactId>plantuml-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <outputInSourceDirectory>false</outputInSourceDirectory>
+                    <outputDirectory>${basedir}/target/site/apidocs</outputDirectory>
+                    <sourceFiles>
+                        <directory>${basedir}/src/main/java/</directory>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </sourceFiles>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.plantuml</groupId>
+                        <artifactId>plantuml</artifactId>
+                        <version>8004</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>

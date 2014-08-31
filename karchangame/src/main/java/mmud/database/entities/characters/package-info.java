@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * <p>Provides the JPA Database Entities for Characters.</p>
- * <p><img src="../../../../images/package-info_characterentities.png"/></p>
+ * <p>
+ * Provides the JPA Database Entities for Characters.</p>
+ * <p>
+ * <img src="doc-files/package-info_characterentities.png"/></p>
  *
- * @startuml package-info_characterentities.png
+ * @startuml doc-files/package-info_characterentities.png
  * Person <|-- User
  * User <|-- Administrator
  * Person <|-- Bot

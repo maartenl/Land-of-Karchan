@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * <p>Provides the different commands possible for players.</p>
- * <p><img src="../../images/package-info_commands.png"/></p>
- * @startuml package-info_commands.png
+ * <p>
+ * Provides the different commands possible for players.</p>
+ * <p>
+ * <img src="doc-files/package-info_commands.png"/></p>
+ * @startuml doc-files/package-info_commands.png
  * interface Command
  * abstract class GuildCommand
  * abstract class GuildMasterCommand

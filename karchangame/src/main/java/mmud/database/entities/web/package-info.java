@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * <p>Provides the JPA Database Entities for information regarding website scripts.
+ * <p>
+ * Provides the JPA Database Entities for information regarding website scripts.
  * These
  * are specifically meant for the webpages, and do not in any way
  * effect gameplay. These tables are easily
  * recognized because they do not start with the prefix "mm_".</p>
- * <p><img src="../../../../images/package-info_webentities.png"/></p>
+ * <p>
+ * <img src="doc-files/package-info_webentities.png"/></p>
  * <TABLE>
  *
  * <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
@@ -37,27 +38,27 @@
  * <TR valign=top><TD></TD><TD></TD></TR>
  * </TABLE>
  *
- * @startuml package-info_webentities.png
+ * @startuml doc-files/package-info_webentities.png
  * family "description" *-- "id" familyvalues
  * mm_usertable "name" *-- "name" characterinfo
  * mm_usertable "name" *-- "name" family
  * mm_usertable "name" *-- "toname" family
  * class characterinfo {
- *    -name
- *    -imageurl
- *    -homepageurl
- *    -dateofbirth
- *    -cityofbirth
- *    -storyline
+ * -name
+ * -imageurl
+ * -homepageurl
+ * -dateofbirth
+ * -cityofbirth
+ * -storyline
  * }
  * class family {
- *    -name
- *    -toname
- *    -description
+ * -name
+ * -toname
+ * -description
  * }
  * class familyvalues {
- *    -id
- *    -description
+ * -id
+ * -description
  * }
  * @enduml
  */

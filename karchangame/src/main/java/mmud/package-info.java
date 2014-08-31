@@ -14,11 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * <p>General info</p>
- * <h1>Logging</h1>
- * The mud uses the SLF4J to do its logging. You can add the bridge you like to
- * make it output to the logging you need.
+ * <p>
+ * General info</p>
  */
 package mmud;

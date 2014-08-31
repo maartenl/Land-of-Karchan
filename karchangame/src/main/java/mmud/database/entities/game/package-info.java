@@ -18,7 +18,7 @@
  * <p>
  * Provides the JPA Database Entities.</p>
  * <p>
- * <img src="../../../../images/package-info_gameentities.png"/></p>
+ * <img src="doc-files/package-info_gameentities.png"/></p>
  * <p>
  * Mapping of database tables to database entities.<table>
  * <tr><th>database table</th><th>entity</th></tr>
@@ -439,7 +439,7 @@
  * <DD>0 or 1, 1 if message has been removed for offending content by a deputy
  * </DL>
  *
- * @startuml package-info_gameentities.png
+ * @startuml doc-files/package-info_gameentities.png
  * title Figure 1. Relationships between Primary Tables
  *
  * mm_area "1" *-- "many" mm_rooms : contains
