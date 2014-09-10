@@ -28,6 +28,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -550,6 +551,22 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             itsLog.throwing("logon: throws ", e.getMessage(), e);
             throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+        } catch (PersistenceException e)
+        {
+            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+            for (ConstraintViolation<?> violation : ((ConstraintViolationException) e.getCause()).getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new RuntimeException(buffer.toString(), e);
+        } catch (ConstraintViolationException e)
+        {
+            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new RuntimeException(buffer.toString(), e);
         }
         return person.getLok();
     }

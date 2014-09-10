@@ -361,5 +361,8 @@ FOREIGN KEY (owner) REFERENCES mm_admin(name);
 
 DROP TABLE IF EXISTS `mm_charitemtable`;
 
+# penelope has a space at the end. Remove it
+update mm_usertable set name='Penelope' where name='Penelope';
+
 END_OF_DATA
 

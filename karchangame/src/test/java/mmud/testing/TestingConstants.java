@@ -27,6 +27,7 @@ import mmud.exceptions.MudException;
 
 /**
  * Generates constants for use in testcases.
+ *
  * @author maartenl
  */
 public class TestingConstants
@@ -52,7 +53,7 @@ public class TestingConstants
      * @return
      * @throws MudException
      */
-    public static Person getHotblack(Room aRoom) throws MudException
+    public static User getHotblack(Room aRoom) throws MudException
     {
         User person = new User();
         person.setName("Hotblack");
