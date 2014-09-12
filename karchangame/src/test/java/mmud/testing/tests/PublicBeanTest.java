@@ -27,6 +27,7 @@ import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
@@ -73,8 +74,8 @@ public class PublicBeanTest
     @Mocked
     WebApplicationException webApplicationException;
 
-    private Person hotblack;
-    private Person marvin;
+    private User hotblack;
+    private User marvin;
 
     public PublicBeanTest()
     {
@@ -644,7 +645,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = null;
                 new WebApplicationException(Response.Status.NOT_FOUND);
             }
@@ -688,7 +689,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
-                entityManager.find(Person.class, "Marvin");
+                entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, marvin.getName());
                 result = charinfo;

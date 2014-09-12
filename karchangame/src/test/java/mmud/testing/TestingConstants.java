@@ -17,7 +17,6 @@
 package mmud.testing;
 
 import java.util.Date;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
@@ -88,7 +87,7 @@ public class TestingConstants
         return person;
     }
 
-    public static Person getMarvin(Room aRoom) throws MudException
+    public static User getMarvin(Room aRoom) throws MudException
     {
         User person = new User();
         person.setName("Marvin");

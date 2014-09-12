@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import mmud.commands.GuildMasterCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -56,7 +55,7 @@ public class RemoveCommand extends GuildMasterCommand
             throw new MudException("Unable to retrieve person.", e);
         }
         String[] myParsed = parseCommand(command);
-        Person guildmember = aUser.getGuild().getMember(myParsed[1]);
+        User guildmember = aUser.getGuild().getMember(myParsed[1]);
         if (guildmember == null)
         {
             aUser.writeMessage("Cannot find that person.<BR>\r\n");

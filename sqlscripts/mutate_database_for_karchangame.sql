@@ -364,5 +364,24 @@ DROP TABLE IF EXISTS `mm_charitemtable`;
 # penelope has a space at the end. Remove it
 update mm_usertable set name='Penelope' where name='Penelope';
 
+ALTER TABLE mm_usertable ADD COLUMN `guildlevel` INT(11) NULL DEFAULT NULL  AFTER `wearaboutbody` , 
+  ADD CONSTRAINT `fk_mm_usertable_1`
+  FOREIGN KEY (`guildlevel` , `guild` )
+  REFERENCES mm_guildranks (`guildlevel` , `guildname` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_mm_usertable_1` (`guildlevel` ASC, `guild` ASC) ;
+
+UPDATE mm_usertable INNER JOIN 
+       mm_charattributes ON mm_charattributes.charname = mm_usertable.name
+   SET mm_usertable.guildlevel = mm_charattributes.value 
+WHERE mm_charattributes.name = 'guildrank' 
+and exists (select 1 
+            from mm_guildranks 
+            where mm_guildranks.guildlevel = mm_charattributes.value 
+            and mm_guildranks.guildname = mm_usertable.guild);
+
+delete from mm_charattributes where name='guildrank';
+
 END_OF_DATA
 

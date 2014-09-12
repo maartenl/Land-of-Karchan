@@ -17,6 +17,7 @@
 package mmud.database.entities.characters;
 
 import javax.persistence.*;
+import mmud.database.entities.game.Guild;
 
 /**
  * A mob in the game.
@@ -26,6 +27,9 @@ import javax.persistence.*;
 @DiscriminatorValue("3")
 public class Mob extends Person
 {
+    @JoinColumn(name = "guild", referencedColumnName = "name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Guild guild;
     @Override
     public Boolean getFightable()
     {

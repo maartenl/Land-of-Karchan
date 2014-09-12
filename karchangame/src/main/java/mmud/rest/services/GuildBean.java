@@ -44,7 +44,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
@@ -111,7 +110,7 @@ public class GuildBean
      * @throws MudException
      * if something goes wrong.
      */
-    public List<Person> getGuildHopefuls(Guild aGuild)
+    public List<User> getGuildHopefuls(Guild aGuild)
     {
         Query query = getEntityManager().createNamedQuery("Guild.findGuildHopefuls");
         query.setParameter("guildname", aGuild.getName());
@@ -176,7 +175,7 @@ public class GuildBean
     {
         itsLog.finer("entering updateGuild");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         if (!cinfo.bossname.equals(person.getName()))
         {
@@ -214,7 +213,7 @@ public class GuildBean
     {
         itsLog.finer("entering createGuild");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = privateBean.authenticate(name, lok);
+        User person = privateBean.authenticate(name, lok);
         if (person.getGuild() != null)
         {
             throw new WebApplicationException("You are already a member of a guild and therefore cannot start a guild.", Response.Status.UNAUTHORIZED);
@@ -266,13 +265,13 @@ public class GuildBean
     {
         itsLog.finer("entering deleteGuild");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
-        for (Person guildmember : guild.getMembers())
+        for (User guildmember : guild.getMembers())
         {
             guildmember.setGuild(null);
         }
-        Set<Person> emptySet = Collections.emptySet();
+        Set<User> emptySet = Collections.emptySet();
         guild.setMembers(emptySet);
         for (Guildrank rank : guild.getGuildrankCollection())
         {
@@ -285,12 +284,12 @@ public class GuildBean
     }
 
     /**
-     * Get the members of the guild of the user.
+     * Get the hopefuls of the guild of the user.
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
-     * @return list of members
+     * @return list of hopefuls
      */
     @GET
     @Path("members")
@@ -303,12 +302,166 @@ public class GuildBean
         itsLog.finer("entering getGuildMembers");
         getEntityManager().setProperty("activePersonFilter", 0);
         Guild guild = authenticate(name, lok);
-        Collection<Person> members = guild.getMembers();
+        Collection<User> members = guild.getMembers();
         List<PrivatePerson> result = new ArrayList<>();
-        for (Person person : members)
+        for (User person : members)
         {
             PrivatePerson privatePerson = new PrivatePerson();
             privatePerson.name = person.getName();
+            if (person.getGuildrank() != null)
+            {
+                privatePerson.guildrank = person.getGuildrank().getTitle();
+            }
+            result.add(privatePerson);
+        }
+        return result;
+    }
+
+    /**
+     * Get the member of the guild of the user.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param membername the name of the guild member
+     * @param name the name of the user
+     * @return member
+     */
+    @GET
+    @Path("members/{membername}")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public PrivatePerson getGuildMember(@PathParam("name") String name,
+            @PathParam("membername") String membername,
+            @QueryParam("lok") String lok)
+    {
+        itsLog.finer("entering getGuildMember");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        Guild guild = authenticate(name, lok);
+        User member = guild.getMember(membername);
+        if (member == null)
+        {
+            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+        }
+        PrivatePerson privatePerson = new PrivatePerson();
+        privatePerson.name = member.getName();
+        if (member.getGuildrank() != null)
+        {
+            privatePerson.guildrank = member.getGuildrank().getTitle();
+        }
+        return privatePerson;
+    }
+
+    /**
+     * Removes a member from the guild.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param membername the name of the guild member to remove
+     * @param name the name of the user
+     * @return member
+     */
+    @DELETE
+    @Path("members/{membername}")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public Response deleteGuildMember(@PathParam("name") String name,
+            @PathParam("membername") String membername,
+            @QueryParam("lok") String lok)
+    {
+        itsLog.finer("entering deleteGuildMember");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        User person = authenticateGuildMaster(name, lok);
+        Guild guild = person.getGuild();
+        if (membername != null && membername.equals(person.getName()))
+        {
+            throw new WebApplicationException("Cannot remove the guildmaster of guild " + guild.getName(), Response.Status.BAD_REQUEST);
+        }
+        User member = guild.getMember(membername);
+        if (member == null)
+        {
+            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+        }
+        member.setGuildrank(null);
+        member.setGuild(null);
+        return Response.ok().build();
+    }
+
+    /**
+     * Set the rank of a member of the guild of the user.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param membername the name of the guild member, to set the guildrank for
+     * @param guildlevel the level indicating the guildrank
+     * @param name the name of the user
+     * @return list of hopefuls
+     */
+    @PUT
+    @Path("members/{membername}/{guildlevel}")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public Response setRankofMember(@PathParam("name") String name,
+            @PathParam("membername") String membername,
+            @PathParam("guildlevel") Integer guildlevel,
+            @QueryParam("lok") String lok)
+    {
+        itsLog.finer("entering setRankofMember");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        User person = authenticateGuildMaster(name, lok);
+        Guild guild = person.getGuild();
+        User member = guild.getMember(membername);
+        if (member == null)
+        {
+            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+        }
+        Guildrank rank = guild.getRank(guildlevel);
+        if (rank == null)
+        {
+            throw new WebApplicationException("Guildlevel " + guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
+        }
+        member.setGuildrank(rank);
+        return Response.ok().build();
+    }
+
+    /**
+     * Get the hopefuls of the guild of the user.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @return list of hopefuls, i.e. people who wish to join the guild
+     */
+    @GET
+    @Path("hopefuls")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name, @QueryParam("lok") String lok)
+    {
+        itsLog.finer("entering getGuildHopefuls");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        Guild guild = authenticate(name, lok);
+        Collection<User> hopefuls = getGuildHopefuls(guild);
+        List<PrivatePerson> result = new ArrayList<>();
+        for (User person : hopefuls)
+        {
+            PrivatePerson privatePerson = new PrivatePerson();
+            privatePerson.name = person.getName();
+            if (person.getGuild() != null)
+            {
+                privatePerson.guild = person.getGuild().getTitle();
+            }
+            if (person.getGuildrank() != null)
+            {
+                privatePerson.guildrank = person.getGuildrank().getTitle();
+            }
             result.add(privatePerson);
         }
         return result;
@@ -320,7 +473,7 @@ public class GuildBean
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
-     * @return list of members
+     * @return list of hopefuls
      */
     @GET
     @Path("ranks")
@@ -366,7 +519,7 @@ public class GuildBean
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param guildlevel the id of the guild rank
-     * @return list of members
+     * @return list of hopefuls
      */
     @GET
     @Path("ranks/{guildlevel}")
@@ -378,7 +531,7 @@ public class GuildBean
     {
         itsLog.finer("entering getGuildRank");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 
         if (guildlevel == null)
@@ -419,7 +572,7 @@ public class GuildBean
     {
         itsLog.finer("entering createGuildRank");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         Guildrank newRank = new Guildrank();
         newRank.setAcceptAccess(rank.accept_access);
@@ -468,7 +621,7 @@ public class GuildBean
     {
         itsLog.finer("entering updateGuildRank");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 
         if (guildlevel == null)
@@ -507,7 +660,7 @@ public class GuildBean
     {
         itsLog.finer("entering deleteGuildRank");
         getEntityManager().setProperty("activePersonFilter", 0);
-        Person person = authenticateGuildMaster(name, lok);
+        User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 
         if (guildlevel == null)
@@ -525,7 +678,7 @@ public class GuildBean
 
     private Guild authenticate(String name, String lok) throws WebApplicationException
     {
-        Person person = privateBean.authenticate(name, lok);
+        User person = privateBean.authenticate(name, lok);
         final Guild guild = person.getGuild();
         if (guild == null)
         {

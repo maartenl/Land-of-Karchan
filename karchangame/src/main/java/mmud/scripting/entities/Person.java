@@ -16,6 +16,7 @@
  */
 package mmud.scripting.entities;
 
+import mmud.database.entities.characters.User;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.PersonNotFoundException;
@@ -56,7 +57,12 @@ public class Person
 
     public String getGuild()
     {
-        return person.getGuild() == null ? null : person.getGuild().getTitle();
+        if (!(person instanceof User))
+        {
+            return null;
+        }
+        User user = (User) person;
+        return user.getGuild() == null ? null : user.getGuild().getTitle();
 
     }
 

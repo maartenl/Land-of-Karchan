@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General Public Licenseguldbean
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mmud.database.entities.characters;
@@ -29,8 +29,10 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,6 +42,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Utils;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Guild;
+import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Macro;
 import mmud.exceptions.MudException;
 
@@ -150,6 +154,7 @@ public class User extends Person
     private Date lastcommand;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
     private Set<Macro> macroCollection;
+
     /**
      * The list of people that you are ignoring.
      */
@@ -173,6 +178,21 @@ public class User extends Person
         CascadeType.ALL
     })
     private Set<User> ignoredSet = new HashSet<>();
+    @JoinColumn(name = "guild", referencedColumnName = "name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Guild guild;
+    /**
+     * The guild rank of this person. Let me remind you that the "guild" is already
+     * used twice here. This means that one of the two is going to be read-only
+     * by means of the insertable and updatable as false.
+     */
+    @JoinColumns(
+            {
+                @JoinColumn(name = "guildlevel", referencedColumnName = "guildlevel"),
+                @JoinColumn(name = "guild", referencedColumnName = "guildname", insertable = false, updatable = false)
+            })
+    @ManyToOne
+    private Guildrank guildrank;
 
     /**
      * The list of people that you are ignoring.
@@ -738,5 +758,43 @@ public class User extends Person
         Calendar now = Calendar.getInstance();
         long timeDiff = (now.getTimeInMillis() - getLastcommand().getTime()) / 1000;
         return "(" + timeDiff / 60 + " min, " + timeDiff % 60 + " sec idle)";
+    }
+
+    public Guild getGuild()
+    {
+        return guild;
+    }
+
+    public void setGuild(Guild guild)
+    {
+        this.guild = guild;
+    }
+
+    public Guildrank getGuildrank()
+    {
+        return guildrank;
+    }
+
+    public void setGuildrank(Guildrank guildrank)
+    {
+        this.guildrank = guildrank;
+    }
+
+    @Override
+    public String getStatistics() throws MudException
+    {
+        StringBuilder stuff = new StringBuilder();
+
+        if (getGuild() != null)
+        {
+            if (getGuild().getBoss().getName().equals(getName()))
+            {
+                stuff.append("You are the Guildmaster of <b>").append(getGuild().getTitle()).append("</b>.<br/>");
+            } else
+            {
+                stuff.append("You are a member of <b>").append(getGuild().getTitle()).append("</b>.<br/>");
+            }
+        }
+        return super.getStatistics() + stuff.toString();
     }
 }

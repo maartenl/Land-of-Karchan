@@ -30,24 +30,41 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * <img src="doc-files/Guildrank.png"/>
  * @author maartenl
+ *
+ *
+ * @startuml doc-files/Guildrank.png
+ *
+ * class User {
+ * -name
+ * -guild
+ * -guildlevel
+ * }
+ * class Guild {
+ * -name
+ * -
+ * }
+ * class Guildrank {
+ * -guildlevel
+ * -guildname
+ * }
+ * Guild "1" *-- "many" Guildrank : contains
+ * Guild "1" *-- "many" User : memberOf
+ * User "many" *-- "1" Guildrank : hasRank
+ * @enduml
  */
 @Entity
 @Table(name = "mm_guildranks")
 @NamedQueries(
-{
-    @NamedQuery(name = "Guildrank.findAll", query = "SELECT g FROM Guildrank g"),
-    @NamedQuery(name = "Guildrank.findByTitle", query = "SELECT g FROM Guildrank g WHERE g.title = :title"),
-    @NamedQuery(name = "Guildrank.findByGuildlevel", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildlevel = :guildlevel"),
-    @NamedQuery(name = "Guildrank.findByGuildname", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildname = :guildname"),
-    @NamedQuery(name = "Guildrank.findByAcceptAccess", query = "SELECT g FROM Guildrank g WHERE g.acceptAccess = :acceptAccess"),
-    @NamedQuery(name = "Guildrank.findByRejectAccess", query = "SELECT g FROM Guildrank g WHERE g.rejectAccess = :rejectAccess"),
-    @NamedQuery(name = "Guildrank.findBySettingsAccess", query = "SELECT g FROM Guildrank g WHERE g.settingsAccess = :settingsAccess"),
-    @NamedQuery(name = "Guildrank.findByLogonmessageAccess", query = "SELECT g FROM Guildrank g WHERE g.logonmessageAccess = :logonmessageAccess")
-})
+        {
+            @NamedQuery(name = "Guildrank.findAll", query = "SELECT g FROM Guildrank g"),
+            @NamedQuery(name = "Guildrank.findByGuildlevel", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildlevel = :guildlevel"),
+            @NamedQuery(name = "Guildrank.findByGuildname", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildname = :guildname")
+        })
 public class Guildrank implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected GuildrankPK guildrankPK;

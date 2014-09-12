@@ -34,6 +34,7 @@ import mmud.rest.services.LogBean;
  * <LI>the user must be a member of the guild
  * </UL>
  * Command syntax something like : <TT>guildmasterchange &lt;username&gt;</TT>
+ *
  * @author maartenl
  */
 public class ChangeMasterCommand extends GuildMasterCommand
@@ -68,7 +69,7 @@ public class ChangeMasterCommand extends GuildMasterCommand
         User toChar = (User) toChar2;
         if (toChar.getGuild() == null
                 || (!toChar.getGuild().getName().equals(
-                aUser.getGuild().getName())))
+                        aUser.getGuild().getName())))
         {
             throw new MudException(
                     "error occurred, the person to promote to guildmaster is either not in a guild or not in the correct guild.");
@@ -76,7 +77,7 @@ public class ChangeMasterCommand extends GuildMasterCommand
         logBean.writeLog(aUser, " stepped down as guildmaster of "
                 + aUser.getGuild().getName() + " in favor of "
                 + toChar.getName());
-        aUser.getGuild().setBoss(toChar2);
+        aUser.getGuild().setBoss(toChar);
         aUser.getGuild().sendMessage(toChar.getName()
                 + " is now the guildmaster.<BR>\r\n");
         toChar.writeMessage("You are now the guildmaster of <I>"

@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PrivatePerson
 {
+
     public String name;
     public String imageurl;
     public String homepageurl;
@@ -48,4 +49,6 @@ public class PrivatePerson
     public String leg;
     public String race;
     public String sex;
+    public String guild;
+    public String guildrank;
 }

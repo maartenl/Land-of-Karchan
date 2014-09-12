@@ -60,7 +60,6 @@ import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.AttributeWrangler;
 import mmud.database.entities.game.Charattribute;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
@@ -254,9 +253,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @Size(max = 65535)
     @Column(name = "currentstate")
     private String state;
-    @JoinColumn(name = "guild", referencedColumnName = "name")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Guild guild;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
@@ -1098,16 +1094,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.state = state;
     }
 
-    public Guild getGuild()
-    {
-        return guild;
-    }
-
-    public void setGuild(Guild guild)
-    {
-        this.guild = guild;
-    }
-
     public Admin getOwner()
     {
         return owner;
@@ -1508,16 +1494,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         stuff.append("A ").append(getLongDescription()).append(".<BR>You seem to be ").append(Health.getHealth(getVitals()).getDescription()).append(".<BR>You are ").append(Movement.getMovement(getMovementstats()).getDescription()).append(".<BR>").append(Sobriety.getSobriety(getDrinkstats()).getDescription()).append("<br />").append(Appetite.getAppetite(getEatstats()).getDescription()).append("<br />" + "You are ").append(Alignment.getAlignment(alignment).getDescription()).append(".<BR>" + "You are level ").append(getLevel()).append(" and ").append(1000 - getExperience()).append(" experience points away from levelling.<BR>").append(whimpy);
         stuff.append(state);
         // Skill
-        if (getGuild() != null)
-        {
-            if (getGuild().getBoss().getName().equals(getName()))
-            {
-                stuff.append("You are the Guildmaster of <B>").append(getGuild().getTitle()).append("</B>.<BR>");
-            } else
-            {
-                stuff.append("You are a member of <B>").append(getGuild().getTitle()).append("</B>.<BR>");
-            }
-        }
         return stuff.toString();
     }
 

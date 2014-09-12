@@ -24,12 +24,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * The composite primary key for a Guildrank.
  *
+ * @see Guildrank
  * @author maartenl
  */
 @Embeddable
 public class GuildrankPK implements Serializable
 {
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "guildlevel")

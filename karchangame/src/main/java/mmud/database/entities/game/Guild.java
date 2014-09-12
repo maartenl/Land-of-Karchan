@@ -40,6 +40,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
 
@@ -61,7 +62,7 @@ import mmud.rest.services.GuildBean;
             @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl"),
             @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
             @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
-            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype and c.person = p")
+            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, p.attributes c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
         })
 public class Guild implements Serializable, DisplayInterface
 {
@@ -104,13 +105,13 @@ public class Guild implements Serializable, DisplayInterface
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
-    private Set<Person> members = new HashSet<>();
+    private Set<User> members = new HashSet<>();
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
     @JoinColumn(name = "bossname", nullable = false, referencedColumnName = "name")
     @ManyToOne(optional = false)
-    private Person boss;
+    private User boss;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
     private Collection<Guildrank> guildrankCollection;
 
@@ -246,12 +247,12 @@ public class Guild implements Serializable, DisplayInterface
         this.logonmessage = logonmessage;
     }
 
-    public Set<Person> getMembers()
+    public Set<User> getMembers()
     {
         return members;
     }
 
-    public void setMembers(Set<Person> personCollection)
+    public void setMembers(Set<User> personCollection)
     {
         this.members = personCollection;
     }
@@ -271,7 +272,7 @@ public class Guild implements Serializable, DisplayInterface
      *
      * @return a Person, the guildmaster. Should not be null, ...ever.
      */
-    public Person getBoss()
+    public User getBoss()
     {
         return boss;
     }
@@ -282,7 +283,7 @@ public class Guild implements Serializable, DisplayInterface
      * @param boss the new guildmaster. Should never be null.
      * @throws MudException if new guildmaster is null, or not a member of this guild.
      */
-    public void setBoss(Person boss) throws MudException
+    public void setBoss(User boss) throws MudException
     {
         if (boss == null)
         {
@@ -371,9 +372,9 @@ public class Guild implements Serializable, DisplayInterface
      * @param name the name of the person to look for.
      * @return a Person.
      */
-    public Person getMember(String name)
+    public User getMember(String name)
     {
-        for (Person person : members)
+        for (User person : members)
         {
             if (person.getName().equalsIgnoreCase(name))
             {
@@ -472,7 +473,7 @@ public class Guild implements Serializable, DisplayInterface
             result.append("<B>Logonmessage:</B>").append(getLogonmessage()).append("<P>");
         }
         result.append("<B>Members</B><P><TABLE>");
-        for (Person character : members)
+        for (User character : members)
         {
             result.append("<TR><TD>");
             if (character.isActive())
@@ -481,18 +482,10 @@ public class Guild implements Serializable, DisplayInterface
             }
             result.append(character.getName());
             result.append("</TD><TD>");
-            if (character.getAttribute("guildrank") != null)
+            if (character.getGuildrank() != null)
             {
-                Attribute attrib = character.getAttribute("guildrank");
-                int title = Integer.parseInt(attrib.getValue());
-                Guildrank rank = getRank(title);
-                if (rank == null)
-                {
-                    result.append(" Initiate");
-                } else
-                {
-                    result.append(" ").append(rank.getTitle());
-                }
+                Guildrank rank = character.getGuildrank();
+                result.append(" ").append(rank.getTitle());
             } else
             {
                 result.append(" Initiate");

@@ -62,9 +62,11 @@ public class BoardBean
 
     public Board getBoard(String name)
     {
+        itsLog.log(Level.FINER, "getBoard {0}", name);
         Query query = getEntityManager().createNamedQuery("Board.findByName");
         query.setParameter("name", name);
-        return (Board) query.getSingleResult();
+        Board result = (Board) query.getSingleResult();
+        return result;
 
     }
 

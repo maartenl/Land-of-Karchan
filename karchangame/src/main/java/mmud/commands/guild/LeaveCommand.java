@@ -16,9 +16,9 @@
  */
 package mmud.commands.guild;
 
-import mmud.commands.GuildCommand;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.commands.GuildCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
@@ -31,6 +31,7 @@ import mmud.rest.services.LogBean;
  * <LI>you must already belong to a guild
  * </UL>
  * Command syntax something like : <TT>guildleave</TT>
+ *
  * @author maartenl
  */
 public class LeaveCommand extends GuildCommand
@@ -54,13 +55,11 @@ public class LeaveCommand extends GuildCommand
             throw new MudException("Unable to retrieve person.", e);
         }
         Guild guild = aUser.getGuild();
-        aUser.removeAttribute("guildrank");
-        // aUser.getGuild().decreaseAmountOfMembers();
+        aUser.setGuildrank(null);
         aUser.setGuild(null);
-        aUser.writeMessage("You leave guild <I>" + guild.getTitle() + "</I>.<BR>\r\n");
+        aUser.writeMessage("You leave guild <i>" + guild.getTitle() + "</i>.<br/>\r\n");
         logBean.writeLog(aUser, "left guild "
                 + guild.getName());
-        // guild.decreaseAmountOfMembers();
         return aUser.getRoom();
     }
 

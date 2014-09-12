@@ -314,7 +314,7 @@ public class PublicBean
         try
         {
             getEntityManager().setProperty("activePersonFilter", 0);
-            Person person = getEntityManager().find(Person.class, name);
+            User person = getEntityManager().find(User.class, name);
             if (person == null)
             {
                 itsLog.finer("charactersheet not found");
