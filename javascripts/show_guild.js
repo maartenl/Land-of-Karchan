@@ -21,6 +21,7 @@ function initGuild( $ )
   getGuild();
   getMembers();
   getRanks();
+  getHopefuls();
 } // initGuild
 
 /**
@@ -90,6 +91,46 @@ function getMembers()
     $('#members').html("<ul>" + html + "</ul>");
   };
 } // getMembers
+
+/**
+ * Retrieve the hopefuls, that wish to join the guild.
+ */
+function getHopefuls() 
+{
+  if (window.console) console.log("getHopefuls");
+  var $ = Karchan.$;
+  $.ajax({
+  type: 'GET',
+    url: "/resources/private/" + Karchan.name + "/guild/hopefuls", // Which url should be handle the ajax request.
+    cache: false,
+    success: (function(data) {showHopefuls(data); }),
+    error: (function(transport) { 
+      if(transport.status != 401) {
+       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       
+    complete: (function(transport) { 
+      if(transport.status == 401) {
+  	$('#page-title').html("You are not authorized.");
+      }
+         
+      if (window.console) console.log("complete"); 
+    }),        
+    dataType: 'json', //define the type of data that is going to get back from the server
+    data: {'lok' : Karchan.lok} //Pass a key/value pair
+  }); // end of ajax
+  
+  var showHopefuls = function(data)
+  {
+    if (window.console) console.log("showHopefuls");
+    if (window.console) console.log(data);
+    var html = "";
+    for (i in data)
+    {
+      html += "<li>" + data[i].name + "</li>";
+    }
+    $('#hopefuls').html("<ul>" + html + "</ul>");
+  };
+} // getHopefuls
 
 /**
  * Retrieve the ranks available in your guild.

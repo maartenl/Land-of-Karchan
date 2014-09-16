@@ -33,3 +33,35 @@
   </div>
   <div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Submit" class="form-submit" /></div></div>
 </form>
+<hr/>
+<h2>Members</h2>
+<div id="members"></div>
+<hr/>
+<h2>Ranks</h2>
+<div id="ranks"></div>
+<form class="webform-client-form" id="editrankform" accept-charset="UTF-8" onsubmit="return updateRank();">
+  <div class="form-item webform-component webform-component-textfield" id="webform-component-guildlevel">
+    <label for="edit-submitted-guildlevel">Ranknumber <span class="form-required" title="This field is required.">*</span></label>
+    <input type="text" id="edit-submitted-guildlevel" name="submitted[guildlevel]" value="" size="6" maxlength="6" class="form-text required"/>
+  </div>
+  <div class="form-item webform-component webform-component-textfield" id="webform-component-ranktitle">
+    <label for="edit-submitted-ranktitle">Title <span class="form-required" title="This field is required.">*</span></label>
+    <input type="text" id="edit-submitted-ranktitle" name="submitted[ranktitle]" value="" size="60" maxlength="128" class="form-text required" />
+  </div>
+  <div class="form-item webform-component webform-component-checkbox" id="webform-component-accept_access">
+  <table>
+    <tr><td><label for="edit-submitted-accept_access">Acceptance access</label></td>
+    <td><input type="checkbox" id="edit-submitted-accept_access" name="submitted[accept_access]" value="accept_access" class="form-text required" /></td></tr>
+    <tr><td><label for="edit-submitted-reject_access">Rejection access</label></td>
+    <td><input type="checkbox" id="edit-submitted-reject_access" name="submitted[reject_access]" value="reject_access" class="form-text required" /></td></tr>
+    <tr><td><label for="edit-submitted-settings_access">Settings access</label></td>
+    <td><input type="checkbox" id="edit-submitted-settings_access" name="submitted[settings_access]" value="settings_access" class="form-text required" /></td></tr>
+    <tr><td><label for="edit-submitted-logonmessage_access">Logonmessage access</label></td>
+    <td><input type="checkbox" id="edit-submitted-logonmessage_access" name="submitted[logonmessage_access]" value="logonmessage_access" class="form-text required" /></td></tr>
+    </table>
+  </div>
+  <div class="form-actions form-wrapper" id="edit-actions-editrankform"><input type="submit" id="edit-submit-editrankform" name="op" value="Submit" class="form-submit" /></div></div>
+</form>
+<hr/>
+<h2>Hopefuls</h2>
+<div id="hopefuls"></div>

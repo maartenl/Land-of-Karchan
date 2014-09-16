@@ -33,6 +33,7 @@ import mmud.rest.services.GuildBean;
  * <LI>you must not already belong to a guild
  * </UL>
  * Command syntax something like : <TT>guildapply &lt;guildname&gt;</TT>
+ *
  * @author maartenl
  */
 public class ApplyCommand extends NormalCommand
@@ -49,7 +50,7 @@ public class ApplyCommand extends NormalCommand
         String[] myParsed = parseCommand(command);
         if (myParsed.length == 1)
         {
-            aUser.removeAttribute("guildwish");
+            aUser.removeAttribute(Attributes.GUILDWISH);
             aUser.writeMessage("You have no longer applied to any guild.<BR>\r\n");
             return aUser.getRoom();
         }

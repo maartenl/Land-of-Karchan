@@ -44,6 +44,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import mmud.Attributes;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
@@ -114,7 +115,7 @@ public class GuildBean
     {
         Query query = getEntityManager().createNamedQuery("Guild.findGuildHopefuls");
         query.setParameter("guildname", aGuild.getName());
-        query.setParameter("attributename", "guildwish");
+        query.setParameter("attributename", Attributes.GUILDWISH);
         query.setParameter("valuetype", "string");
 
         return query.getResultList();
@@ -391,6 +392,52 @@ public class GuildBean
     }
 
     /**
+     * Adds a member to the guild of the user. There are some checks made:
+     * <ul><li>possible member should exist</li>
+     * <li>should be a user, not a bot</li>
+     * <li>should not be a member of a guild</li>
+     * <li>should have a guildwish corresponding to the name of the guild>/li>
+     * </ul>
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @param member the member to add, really should contain only the name,
+     * that's enough
+     * @return Response.ok if everything is okay.
+     */
+    @POST
+    @Path("members")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public Response createMember(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson member)
+    {
+        itsLog.finer("entering createMember");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        User person = authenticateGuildMaster(name, lok);
+        Guild guild = person.getGuild();
+        String membername = member.name;
+        User possibleMember = personBean.getUser(membername);
+        if (possibleMember == null)
+        {
+            throw new WebApplicationException(membername + " is not a user.", Response.Status.NOT_FOUND);
+        }
+        if (possibleMember.getGuild() != null)
+        {
+            throw new WebApplicationException(membername + " is already part of a guild.", Response.Status.NOT_FOUND);
+        }
+        if (!possibleMember.verifyAttribute(Attributes.GUILDWISH, guild.getName()))
+        {
+            throw new WebApplicationException(membername + " has no appropriate guildwish.", Response.Status.NOT_FOUND);
+        }
+        possibleMember.setGuild(guild);
+        possibleMember.removeAttribute(Attributes.GUILDWISH);
+        return Response.ok().build();
+    }
+
+    /**
      * Set the rank of a member of the guild of the user.
      *
      * @param lok the hash to use for verification of the user, is the lok
@@ -465,6 +512,38 @@ public class GuildBean
             result.add(privatePerson);
         }
         return result;
+    }
+
+    /**
+     * Remove a hopeful of the guild of the user.
+     *
+     * @param lok the hash to use for verification of the user, is the lok
+     * setting in the cookie when logged onto the game.
+     * @param name the name of the user
+     * @param hopefulname the name of the hopeful to reject
+     * @return Response.Status.ok if everything's okay.
+     */
+    @DELETE
+    @Path("hopefuls/{hopefulname}")
+    @Consumes(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public Response deleteGuildHopeful(@PathParam("name") String name,
+            @QueryParam("lok") String lok,
+            @PathParam("hopefulname") String hopefulname)
+    {
+        itsLog.finer("entering getGuildHopefuls");
+        getEntityManager().setProperty("activePersonFilter", 0);
+        User person = authenticateGuildMaster(name, lok);
+        Guild guild = person.getGuild();
+        User possibleMember = personBean.getUser(hopefulname);
+        if (possibleMember == null)
+        {
+            throw new WebApplicationException(hopefulname + " is not a user.", Response.Status.NOT_FOUND);
+        }
+        possibleMember.removeAttribute(Attributes.GUILDWISH);
+        return Response.ok().build();
     }
 
     /**

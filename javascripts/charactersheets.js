@@ -46,7 +46,7 @@ function showCharactersheets( $ )
          }
          if (data[i].name == cookiesname)
          {
-           formatted_html += "<a href=\"/node/135\"><b>"+ data[i].name + "</b></a><br/>";
+           formatted_html += "<a href=\"/node/43?name=" + data[i].name + "\"><b>"+ data[i].name + "</b></a><br/>";
          }
          else
          {   

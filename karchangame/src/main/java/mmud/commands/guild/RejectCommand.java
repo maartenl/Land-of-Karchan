@@ -16,9 +16,10 @@
  */
 package mmud.commands.guild;
 
-import mmud.commands.GuildMasterCommand;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.Attributes;
+import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -34,6 +35,7 @@ import mmud.rest.services.PersonBean;
  * <LI>the user must not already be a member of a guild
  * </UL>
  * Command syntax something like : <TT>guildreject &lt;username&gt;</TT>
+ *
  * @author maartenl
  */
 public class RejectCommand extends GuildMasterCommand
@@ -66,7 +68,7 @@ public class RejectCommand extends GuildMasterCommand
             aUser.writeMessage("Cannot find that person.<BR>\r\n");
             return aUser.getRoom();
         }
-        if (!potentialGuildmember.verifyAttribute("guildwish", aUser.getGuild().getName()))
+        if (!potentialGuildmember.verifyAttribute(Attributes.GUILDWISH, aUser.getGuild().getName()))
         {
             aUser.writeMessage(potentialGuildmember.getName()
                     + " does not wish to join your guild.<BR>\r\n");
@@ -77,7 +79,7 @@ public class RejectCommand extends GuildMasterCommand
             throw new MudException(
                     "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
         }
-        potentialGuildmember.removeAttribute("guildwish");
+        potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
         logBean.writeLog(aUser, "denied " + potentialGuildmember.getName()
                 + " membership into guild " + aUser.getGuild().getName());
         aUser.writeMessage("You have denied " + potentialGuildmember.getName()

@@ -9,6 +9,10 @@ var urlParam = function(name)
 function showCharactersheet( $ ) 
 {
   if (window.console) console.log("showCharactersheet");
+  var name = $.cookie("name");
+  var lok = $.cookie("lok"); 
+  Karchan.name = name;
+  Karchan.lok = lok;
   $.ajax({
     type: 'GET',
     url: "/resources/public/charactersheets/" + urlParam("name"), // Which url should be handle the ajax request.
@@ -30,6 +34,14 @@ function showCharactersheet( $ )
     }
     else
     {
+      if (name === data.name) 
+      {
+        formatted_html += "<p><a href=\"/node/135\">Edit your charactersheet</a></p>";
+        if (data.guild !== undefined && data.guild !== null && data.guild !== "")
+        {
+          formatted_html += "<p><a href=\"/node/136\">View your guild</a></p>";
+        }
+      }
       formatted_html += "<p><img src=\"" + data.imageurl + "\"/></p>";
       formatted_html += "<p><b>Name:</b> " + data.name + "</p>";
       formatted_html += "<p><b>Title:</b> " + data.title + "</p>";
