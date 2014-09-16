@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -68,11 +69,15 @@ public class Guild implements Serializable, DisplayInterface
 {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
+
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "name")
+    @Pattern(regexp = NAME_REGEXP, message = "Invalid guildname")
     private String name;
     @Size(max = 100)
     @Column(name = "title")
