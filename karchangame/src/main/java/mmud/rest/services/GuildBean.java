@@ -271,6 +271,7 @@ public class GuildBean
         for (User guildmember : guild.getMembers())
         {
             guildmember.setGuild(null);
+            guildmember.setGuildrank(null);
         }
         Set<User> emptySet = Collections.emptySet();
         guild.setMembers(emptySet);
@@ -298,7 +299,7 @@ public class GuildBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public List<PrivatePerson> getGuildMembers(@PathParam("name") String name, @QueryParam("lok") String lok)
+    public List<PrivatePerson> getMembers(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getGuildMembers");
         getEntityManager().setProperty("activePersonFilter", 0);
@@ -333,11 +334,11 @@ public class GuildBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public PrivatePerson getGuildMember(@PathParam("name") String name,
+    public PrivatePerson getMember(@PathParam("name") String name,
             @PathParam("membername") String membername,
             @QueryParam("lok") String lok)
     {
-        itsLog.finer("entering getGuildMember");
+        itsLog.finer("entering getMember");
         getEntityManager().setProperty("activePersonFilter", 0);
         Guild guild = authenticate(name, lok);
         User member = guild.getMember(membername);
@@ -350,6 +351,7 @@ public class GuildBean
         if (member.getGuildrank() != null)
         {
             privatePerson.guildrank = member.getGuildrank().getTitle();
+            privatePerson.guildlevel = member.getGuildrank().getGuildrankPK().getGuildlevel();
         }
         return privatePerson;
     }
@@ -369,11 +371,11 @@ public class GuildBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response deleteGuildMember(@PathParam("name") String name,
+    public Response deleteMember(@PathParam("name") String name,
             @PathParam("membername") String membername,
             @QueryParam("lok") String lok)
     {
-        itsLog.finer("entering deleteGuildMember");
+        itsLog.finer("entering deleteMember");
         getEntityManager().setProperty("activePersonFilter", 0);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
@@ -438,41 +440,46 @@ public class GuildBean
     }
 
     /**
-     * Set the rank of a member of the guild of the user.
+     * Set or deletes the rank of a member of the guild of the user.
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
-     * @param membername the name of the guild member, to set the guildrank for
-     * @param guildlevel the level indicating the guildrank
+     * @param membername the name of the guild member, to set the guild rank for
+     * @param member the member object that contains the changes
      * @param name the name of the user
-     * @return list of hopefuls
+     * @return Response.ok() if everything's okay.
      */
     @PUT
-    @Path("members/{membername}/{guildlevel}")
+    @Path("members/{membername}")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response setRankofMember(@PathParam("name") String name,
+    public Response updateMember(@PathParam("name") String name,
             @PathParam("membername") String membername,
-            @PathParam("guildlevel") Integer guildlevel,
-            @QueryParam("lok") String lok)
+            @QueryParam("lok") String lok, PrivatePerson member)
     {
-        itsLog.finer("entering setRankofMember");
+        itsLog.finer("entering updateMember");
         getEntityManager().setProperty("activePersonFilter", 0);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
-        User member = guild.getMember(membername);
-        if (member == null)
+        User user = guild.getMember(membername);
+        if (user == null)
         {
             throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
         }
-        Guildrank rank = guild.getRank(guildlevel);
+        if (member.guildlevel == null)
+        {
+            user.setGuildrank(null);
+            itsLog.finer("updateMember cleared rank");
+            return Response.ok().build();
+        }
+        Guildrank rank = guild.getRank(member.guildlevel);
         if (rank == null)
         {
-            throw new WebApplicationException("Guildlevel " + guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
+            throw new WebApplicationException("Guildlevel " + member.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
         }
-        member.setGuildrank(rank);
+        user.setGuildrank(rank);
         return Response.ok().build();
     }
 

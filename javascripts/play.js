@@ -144,12 +144,7 @@ function playInit($)
     if (window.console) console.log("processPlay");
     writeStuff(data);
   } // processPlay
-  
   processCall(command, true, processPlay);
-
-  // $(window).scroll(function(){
-  //  $("#block-block-5").css({"margin-top": ($(window).scrollTop()) + "px", "margin-left":($(window).scrollLeft()) + "px"});
-  // });
 }
 
 /**

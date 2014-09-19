@@ -63,7 +63,7 @@ function getMembers()
   type: 'GET',
     url: "/resources/private/" + Karchan.name + "/guild/members", // Which url should be handle the ajax request.
     cache: false,
-    success: (function(data) {showMembers(data); }),
+    success: (function(data) {Karchan.members = data; }),
     error: (function(transport) { 
       if(transport.status != 401) {
        alert("An error occurred. Please notify Karn or one of the deps."); }}),
@@ -78,29 +78,118 @@ function getMembers()
     dataType: 'json', //define the type of data that is going to get back from the server
     data: {'lok' : Karchan.lok} //Pass a key/value pair
   }); // end of ajax
-  
-  var showMembers = function(data)
-  {
-    if (window.console) console.log("showMembers");
-    if (window.console) console.log(data);
-    var html = "<table id=\"membertable\"><thead><tr><th>Name</th><th>Rank</th><th></th></tr></thead>";
-    for (i in data)
-    {
-      html += "<tr id=\"memb_" + i + "\"><td>" + data[i].name + "</td><td>" + 
-          (data[i].title === undefined ? "-" : data[i].title) + "</td><td><a href=\"javascript:void(0)\">Delete</a></td></tr>";
-    }
-    html += "</table>";
-    $('#members').html(html);
-    $("#members td a").click(function (object) {
-      if (window.console) console.log($(object.target).html());
-        if ($(object.target).html() == "Delete")
-        {
-          deleteMember(object, data);
-        }
-        return false;
-    });
-  };
 } // getMembers
+  
+function showMembers()
+{
+  var data = Karchan.members;
+  var $ = Karchan.$;
+  if (window.console) console.log("showMembers");
+  if (window.console) console.log(data);
+  var html = "<table id=\"membertable\"><thead><tr><th>Name</th><th>Rank</th><th></th></tr></thead>";
+  for (i in data)
+  {
+    html += "<tr id=\"memb_" + i + "\"><td>" + data[i].name + "</td><td>";
+    // select stuff
+    if (Karchan.ranks.length != 0) 
+    {
+      html += "<select>";
+      html += "<option value=\"-\" " + (data[i].title === undefined ? "selected" : "") + ">-</option>";  
+      for (j in Karchan.ranks)
+      {
+        var rank = Karchan.ranks[j];
+        html += "<option value=\"" + rank.guildlevel + "\" ";
+        html += (data[i].title !== undefined && data[i].title === rank.title ? "selected" : "");  
+        html += ">" + rank.title + "</option>";
+
+      }
+      html += "</select>";
+    }
+    else
+    {
+       html += "-";
+    }
+    html += "</td><td><a href=\"javascript:void(0)\">Delete</a></td></tr>";
+  }
+  html += "</table>";
+  $('#members').html(html);
+  $("#members td a").click(function (object) {
+      if ($(object.target).html() == "Delete")
+      {
+        deleteMember(object, data);
+      }
+      return false;
+  });
+    $("#members select").change(function () {
+      var membername = $(this).parent().parent().children().first().html();
+      var guildlevel = $(this).val(); // -, 1, 2
+      assignRankToMember(membername, guildlevel);
+      return false;
+    });
+}
+
+function assignRankToMember(membername, guildlevel)
+{
+  var $ = Karchan.$;
+  if (window.console) console.log("assignRankToMember");
+  // The data parameter is a JSON object.
+  var updatedMember = {
+    name : membername
+  };
+  if (guildlevel !== "-") {updatedMember.guildlevel = guildlevel;}
+  var jsonString = JSON.stringify(updatedMember);
+  $.ajax({
+    type: 'PUT',
+    url: "/resources/private/" + Karchan.name + "/guild/members/" + membername + "?lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    cache: false,
+    success: (function(data) {
+      // indication of success is not required.
+    }),
+    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    complete: (function() { if (window.console) console.log("complete"); }),        
+    dataType: 'json', //define the type of data that is going to get back from the server
+    contentType: 'application/json; charset=utf-8',
+    data: jsonString // Pass a key/value pair
+  }); // end of ajax
+}
+
+function deleteGuild()
+{
+  var $ = Karchan.$;
+  if (window.console) console.log("deleteGuild");
+  if (!confirm('This will delete your guild and cannot be undone. Are you sure?')) 
+  {
+    // do nothing!
+    return false;
+  }
+  if (!confirm('One more time. Are you very very sure?')) 
+  {
+    // do nothing!
+    return false;
+  }
+  var deleteGuildSucceeded = false;
+  $.ajax({
+  type: 'DELETE',
+    url: "/resources/private/" + Karchan.name + "/guild?lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    cache: false,
+    success: (function(data) {
+      window.location.href="http://www.karchan.org/node/43";
+      deleteGuildSucceeded = true;
+    }),
+    error: (function(transport) { 
+      if(transport.status != 401) {
+       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       
+    complete: (function(transport) { 
+      if(transport.status == 401) {
+  	$('#page-title').html("You are not authorized.");
+      }
+         
+      if (window.console) console.log("complete"); 
+    })
+  }); // end of ajax
+  return deleteGuildSucceeded;
+} // deleteGuild
 
 function deleteMember(object, data)
 {
@@ -215,6 +304,7 @@ function getRanks()
     if (window.console) console.log("showRanks");
     if (window.console) console.log(data);
     Karchan.ranks = data;
+    showMembers();
     var html = "";
     html = "<table id=\"ranktable\"><thead><tr><th>Ranknumber</th><th>Title</th><th></th></tr></thead>";
     for (i in data)

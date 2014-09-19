@@ -51,4 +51,5 @@ public class PrivatePerson
     public String sex;
     public String guild;
     public String guildrank;
+    public Integer guildlevel;
 }

@@ -31,4 +31,5 @@ complex webpages that I feel require a little more.
 |                     | guilds.html           | /node/10                   |
 |                     | show_guild.html       | /node/136                  |
 |                     | edit_guild.html       | /node/137                  |
+|                     | create_guild.html     | /node/138                  |
 +---------------------+-----------------------+----------------------------+

@@ -1,3 +1,9 @@
+/**
+ * Returns the parameter stored in the Url.
+ * Returns "0", if the parameter cannot be found.
+ * @param name the name of the parameter
+ * @return the value of the parameter
+ */
 var urlParam = function(name)
 {
   // lokal = param || default;
@@ -13,9 +19,13 @@ function showCharactersheet( $ )
   var lok = $.cookie("lok"); 
   Karchan.name = name;
   Karchan.lok = lok;
+  if (urlParam("name") !== 0)
+  {
+    name = urlParam("name");
+  }
   $.ajax({
     type: 'GET',
-    url: "/resources/public/charactersheets/" + urlParam("name"), // Which url should be handle the ajax request.
+    url: "/resources/public/charactersheets/" + name, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateCharactersheet(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -40,15 +50,25 @@ function showCharactersheet( $ )
         if (data.guild !== undefined && data.guild !== null && data.guild !== "")
         {
           formatted_html += "<p><a href=\"/node/136\">View your guild</a></p>";
+        } 
+        else
+        {
+          formatted_html += "<p><a href=\"/node/138\">Create your own guild</a></p>";
         }
       }
-      formatted_html += "<p><img src=\"" + data.imageurl + "\"/></p>";
+      formatted_html += "<p>";
+      if (data.imageurl !== undefined && 
+          data.imageurl !== "" &&
+          data.imageurl != "http://") { formatted_html += "<img src=\"" + data.imageurl + "\"/>";}
+      formatted_html += "</p>";
       formatted_html += "<p><b>Name:</b> " + data.name + "</p>";
       formatted_html += "<p><b>Title:</b> " + data.title + "</p>";
       formatted_html += "<p><b>Sex:</b> " + data.sex + "</p>";
       formatted_html += "<p><b>Description:</b> " + data.description + "</p>";
-      formatted_html += "<p><b>Member of:</b> " + data.guild + " </p>";
-      formatted_html += "<p><b>Homepage:</b> <a href=\"" + data.homepageurl + "\">" + data.homepageurl + "</a></p>";
+      if (data.guild !== undefined) {formatted_html += "<p><b>Member of:</b> " + data.guild + " </p>";}
+      if (data.homepageurl !== undefined &&
+          data.homepageurl !== "" &&
+          data.homepageurl !== "http://") {formatted_html += "<p><b>Homepage:</b> <a href=\"" + data.homepageurl + "\">" + data.homepageurl + "</a></p>";}
       formatted_html += "<p><b>Birth:</b> " + data.dateofbirth + ", in " + data.cityofbirth + " </p>";
       formatted_html += "<p><b>Family relations:</b></p>";
       if (data.familyvalues !== undefined)
@@ -66,7 +86,7 @@ function showCharactersheet( $ )
             }
         }
       }
-      formatted_html += "<p><b>Last logged on:</b> " + data.lastlogin + " </p>";
+      if (data.lastlogin !== undefined) {formatted_html += "<p><b>Last logged on:</b> " + data.lastlogin + " </p>";}
       formatted_html += "<p><b>Storyline:</b> " + data.storyline + " </p>";
     }
     $('#karchan_charactersheet').html(formatted_html); // data.products);
