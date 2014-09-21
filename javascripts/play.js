@@ -13,6 +13,35 @@ String.prototype.replaceAll = function (find, replace) {
 var Karchan = Karchan || {};
 Karchan.logSize = 0;
 
+function webError(jqXHR, textStatus, errorThrown) 
+{ 
+  if (window.console) 
+  {
+    console.log(jqXHR);
+    console.log(textStatus);
+    console.log(errorThrown);
+  }
+  try
+  {
+    var errorDetails = JSON.parse(jqXHR.responseText);    
+    if (window.console) console.log(errorDetails);
+  } catch(e)
+  {
+    alert("An error occurred. Please notify Karn or one of the deps.");
+    if (window.console) console.log(e);
+    return;
+  }
+  if (errorDetails.stacktrace !== undefined)
+  {
+    var buffer = "Timestamp: " + errorDetails.timestamp + "<br/>";
+    buffer += "Errormessage: " + errorDetails.errormessage + "<br/>";
+    buffer += "Stacktrace: " + errorDetails.stacktrace + "<br/>";
+    buffer += "User: " + errorDetails.user + "<br/>";
+    $("#warning").html(buffer);
+  }
+  alert(errorDetails.errormessage);
+}
+
 function isVowel(aChar)
 {
   return aChar === 'a' || 
@@ -35,7 +64,7 @@ function processCall(command, log, processor)
     url: "/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processor(data); }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: webError,
     complete: (function() { if (window.console) console.log("complete"); }),
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'text/plain; charset=utf-8',
@@ -190,7 +219,7 @@ function quit()
     url: "/resources/game/" + Karchan.name + "/quit?lok=" + Karchan.lok, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {quitSucceeded = true; }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: webError,
     complete: (function() { if (window.console) console.log("complete"); }),
     async:   false // requirement, we can only show the quit page, if the quit actually succeeded.
   }); // end of ajax

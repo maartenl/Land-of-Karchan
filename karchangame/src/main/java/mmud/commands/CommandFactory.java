@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.Utils;
@@ -94,7 +95,7 @@ public class CommandFactory
      * verb.
      */
     private static final TreeMap<String, NormalCommand> theCommandStructure = new TreeMap<>();
-    private static List<UserCommandInfo> theUserCommandStructure = new ArrayList<>();
+    private static List<UserCommandInfo> theUserCommandStructure = new CopyOnWriteArrayList<>();
 
     static
     {
@@ -356,6 +357,7 @@ public class CommandFactory
      */
     public static List<UserCommandInfo> getUserCommands(User user, String aCommand)
     {
+        itsLog.entering("CommandFactory", "getUserCommands " + user + " " + aCommand);
         List<UserCommandInfo> result = new ArrayList<>();
         for (UserCommandInfo myCom : theUserCommandStructure)
         {
