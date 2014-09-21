@@ -37,6 +37,13 @@ function webError(jqXHR, textStatus, errorThrown)
     buffer += "Errormessage: " + errorDetails.errormessage + "<br/>";
     buffer += "Stacktrace: " + errorDetails.stacktrace + "<br/>";
     buffer += "User: " + errorDetails.user + "<br/>";
+    buffer += "Browser CodeName: " + navigator.appCodeName + "<br/>";
+    buffer += "Browser Name: " + navigator.appName + "<br/>";
+    buffer += "Browser Version: " + navigator.appVersion + "<br/>";
+    buffer += "Cookies Enabled: " + navigator.cookieEnabled + "<br/>";
+    buffer += "Platform: " + navigator.platform + "<br/>";
+    buffer += "User-agent header: " + navigator.userAgent + "<br/>";
+    var $ = Karchan.$;
     $("#warning").html(buffer);
   }
   alert(errorDetails.errormessage);
