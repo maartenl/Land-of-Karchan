@@ -126,7 +126,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @NotNull
     @Size(min = 3, max = 20)
     @Column(name = "name")
-    @Pattern(regexp = NAME_REGEXP, message = "Invalid name")
+    @Pattern(regexp = NAME_REGEXP, message = "Invalid name. Only letters are allowed.and at least three letters are required.")
     private String name;
     @Size(max = 254)
     @Column(name = "title")

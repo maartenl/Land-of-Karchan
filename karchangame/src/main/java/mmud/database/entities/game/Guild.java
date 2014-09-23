@@ -77,7 +77,7 @@ public class Guild implements Serializable, DisplayInterface
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "name")
-    @Pattern(regexp = NAME_REGEXP, message = "Invalid guildname")
+    @Pattern(regexp = NAME_REGEXP, message = "Invalid guildname. Only letters are allowed, and there should be at least three.")
     private String name;
     @Size(max = 100)
     @Column(name = "title")
