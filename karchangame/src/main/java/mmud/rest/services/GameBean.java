@@ -60,8 +60,8 @@ import mmud.database.entities.game.UserCommand;
 import mmud.database.entities.game.Worldattribute;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
-import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.Lok;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
@@ -147,18 +147,18 @@ public class GameBean implements RoomsInterface, WorldInterface
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
-            ErrorDetails details = new ErrorDetails(name, name + " was not found.");
-            throw new WebApplicationException(details.getResponse(Response.Status.NOT_FOUND));
+            throw new MudWebException(name, name + " was not found.", Response.Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
-            ErrorDetails details = new ErrorDetails(name, name + " is not a user.");
-            throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, name + " is not a user.", Response.Status.BAD_REQUEST);
         }
         if (!person.verifySessionPassword(lok))
         {
-            ErrorDetails details = new ErrorDetails(name, "Wrong session password.");
-            throw new WebApplicationException(new MudException("session password " + lok + " does not match session password of " + name), details.getResponse(Response.Status.UNAUTHORIZED));
+            throw new MudWebException(name,
+                    "Wrong session password.",
+                    "session password " + lok + " does not match session password of " + name,
+                    Response.Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -190,13 +190,17 @@ public class GameBean implements RoomsInterface, WorldInterface
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
-            ErrorDetails details = new ErrorDetails(name, name + " was not found.");
-            throw new WebApplicationException("User was not found (" + name + ", " + password + ")", details.getResponse(Response.Status.NOT_FOUND));
+            throw new MudWebException(name,
+                    name + " was not found.",
+                    "User was not found (" + name + ", " + password + ")",
+                    Response.Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
-            ErrorDetails details = new ErrorDetails(name, name + " is not a user.");
-            throw new WebApplicationException("User was not a user (" + name + ", " + password + ")", details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name,
+                    name + " is not a user.",
+                    "User was not a user (" + name + ", " + password + ")",
+                    Response.Status.BAD_REQUEST);
         }
 
         Query query = getEntityManager().createNamedQuery("User.authorise");
@@ -205,19 +209,25 @@ public class GameBean implements RoomsInterface, WorldInterface
         List<User> persons = query.getResultList();
         if (persons.isEmpty())
         {
-            ErrorDetails details = new ErrorDetails(name, "Wrong password.");
-            throw new WebApplicationException("User provided wrong password (" + name + ", " + password + ")", details.getResponse(Response.Status.UNAUTHORIZED));
+            throw new MudWebException(name,
+                    "Wrong password.",
+                    "User provided wrong password (" + name + ", " + password + ")",
+                    Response.Status.UNAUTHORIZED);
         }
         if (persons.size() > 1)
         {
-            ErrorDetails details = new ErrorDetails(name, "User/password combo search returned more than one solution, impossible!");
-            throw new WebApplicationException("User/password combo search returned more than one solution, impossible! (" + name + ", " + password + ")", details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name,
+                    "User/password combo search returned more than one solution, impossible!",
+                    "User/password combo search returned more than one solution, impossible! (" + name + ", " + password + ")",
+                    Response.Status.BAD_REQUEST);
         }
         person = persons.get(0);
         if (!person.isUser())
         {
-            ErrorDetails details = new ErrorDetails(name, name + " is not a user.");
-            throw new WebApplicationException("User was not a user (" + name + ", " + password + ")", details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name,
+                    name + " is not a user.",
+                    "User was not a user (" + name + ", " + password + ")",
+                    Response.Status.BAD_REQUEST);
         }
         return person;
     }
@@ -334,27 +344,22 @@ public class GameBean implements RoomsInterface, WorldInterface
 
             if (Utils.isOffline())
             {
-                // game offline
-                ErrorDetails details = new ErrorDetails(name, "Game is offline");
-                throw new WebApplicationException("Game is offline", details.getResponse(Response.Status.NO_CONTENT));
+                throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
             }
             if (pperson == null)
             {
-                // no data provided
-                ErrorDetails details = new ErrorDetails(name, "No data received.");
-                throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+                throw new MudWebException(name, "No data received.", Response.Status.BAD_REQUEST);
             }
             if (name == null || !pperson.name.equals(name))
             {
-                // wrong data provided
-                ErrorDetails details = new ErrorDetails(name, "Wrong data received.");
-                throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+                throw new MudWebException(name, "Wrong data received.", Response.Status.BAD_REQUEST);
             }
             if (pperson.password == null || !pperson.password.equals(pperson.password2))
             {
-                // passwords do not match
-                ErrorDetails details = new ErrorDetails(name, "Passwords do not match.");
-                throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+                throw new MudWebException(name,
+                        "Passwords do not match.",
+                        "Passwords do not match. (p=" + pperson.password + ", p2=" + pperson.password2 + ")",
+                        Response.Status.BAD_REQUEST);
             }
             User person = new User();
             person.setName(name);
@@ -362,15 +367,19 @@ public class GameBean implements RoomsInterface, WorldInterface
             if (isBanned(name, address))
             {
                 // is banned
-                ErrorDetails details = new ErrorDetails(name, name + " was banned.");
-                throw new WebApplicationException("User was banned (" + name + ", " + address + ")", details.getResponse(Response.Status.FORBIDDEN));
+                throw new MudWebException(name,
+                        name + " was banned.",
+                        "User was banned (" + name + ", " + address + ")",
+                        Response.Status.FORBIDDEN);
             }
             Person foundPerson = getEntityManager().find(Person.class, name);
             if (foundPerson != null)
             {
                 // already a person
-                ErrorDetails details = new ErrorDetails(name, name + " already exists.");
-                throw new WebApplicationException("User already exists (" + name + ", " + address + ")", details.getResponse(Response.Status.FOUND));
+                throw new MudWebException(name,
+                        name + " already exists.",
+                        "User already exists (" + name + ", " + address + ")",
+                        Response.Status.FOUND);
             }
             // everything's cool! Let's do this!
             person.setActive(false);
@@ -399,7 +408,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             getEntityManager().persist(person);
             // TODO automatically add a welcome mail.
             logBean.writeLog(person, "character created.");
-        } catch (WebApplicationException e)
+        } catch (MudWebException e)
         {
             //ignore
             throw e;
@@ -410,8 +419,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 buffer.append(violation);
             }
-            ErrorDetails details = new ErrorDetails(name, buffer.toString(), e);
-            throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
 
         } catch (javax.persistence.PersistenceException f)
         {
@@ -423,15 +431,12 @@ public class GameBean implements RoomsInterface, WorldInterface
                 {
                     buffer.append(violation);
                 }
-                ErrorDetails details = new ErrorDetails(name, buffer.toString(), f);
-                throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+                throw new MudWebException(name, buffer.toString(), f, Response.Status.BAD_REQUEST);
             }
             throw f;
         } catch (MudException e)
         {
-            itsLog.throwing("create: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -457,9 +462,10 @@ public class GameBean implements RoomsInterface, WorldInterface
         itsLog.finer("entering delete");
         if (password == null || !password.equals(password2))
         {
-            // passwords do not match
-            ErrorDetails details = new ErrorDetails(name, "Passwords do not match.");
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new MudWebException(name,
+                    "Passwords do not match.",
+                    "Passwords do not match. (p=" + password + ", p2=" + password2 + ")",
+                    Response.Status.BAD_REQUEST);
         }
         Person person = authenticateWithPassword(name, password);
         try
@@ -472,9 +478,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw e;
         } catch (Exception e)
         {
-            itsLog.throwing("delete: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(e, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -506,20 +510,20 @@ public class GameBean implements RoomsInterface, WorldInterface
 
         if ((address == null) || ("".equals(address.trim())))
         {
-            ErrorDetails details = new ErrorDetails(name, "User has no address.");
-            throw new WebApplicationException("User has no address (" + name + ", " + address + ")", details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name,
+                    "User has no address.",
+                    "User has no address (" + name + ", " + address + ")",
+                    Response.Status.BAD_REQUEST);
         }
         if (Utils.isOffline())
         {
-            // game offline
-            ErrorDetails details = new ErrorDetails(name, "Game is offline");
-            throw new WebApplicationException("Game is offline", details.getResponse(Response.Status.NO_CONTENT));
+            throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
         }
         if (isBanned(name, address))
         {
-            // is banned
-            ErrorDetails details = new ErrorDetails(name, "User was banned");
-            throw new WebApplicationException("User was banned (" + name + ", " + address + ")", details.getResponse(Response.Status.FORBIDDEN));
+            throw new MudWebException(name, "User was banned",
+                    "User was banned (" + name + ", " + address + ")",
+                    Response.Status.FORBIDDEN);
         }
         User person = authenticateWithPassword(name, password);
         try
@@ -573,9 +577,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.throwing("logon: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(e, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         } catch (PersistenceException e)
         {
             StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
@@ -583,8 +585,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 buffer.append(violation);
             }
-            ErrorDetails details = new ErrorDetails(name, buffer.toString(), e);
-            throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
         } catch (ConstraintViolationException e)
         {
             StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
@@ -592,8 +593,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 buffer.append(violation);
             }
-            ErrorDetails details = new ErrorDetails(name, buffer.toString(), e);
-            throw new WebApplicationException(details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
         }
         return new Lok(person.getLok());
     }
@@ -623,17 +623,14 @@ public class GameBean implements RoomsInterface, WorldInterface
         itsLog.entering(this.getClass().getName(), "play");
         if (Utils.isOffline())
         {
-            // game offline
-            ErrorDetails details = new ErrorDetails(name, "Game is offline");
-            throw new WebApplicationException("Game is offline", details.getResponse(Response.Status.NO_CONTENT));
+            throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
         }
         try
         {
             command = Utils.security(command);
         } catch (PolicyException | ScanException ex)
         {
-            ErrorDetails details = new ErrorDetails(name, ex);
-            throw new WebApplicationException(ex, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, ex, Response.Status.BAD_REQUEST);
         }
         PrivateDisplay display = null;
         getEntityManager().setProperty("activePersonFilter", 1);
@@ -812,9 +809,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.throwing("retrieveLog: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(e, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -848,9 +843,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.throwing("deleteLog: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(e, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -888,9 +881,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw e;
         } catch (MudException e)
         {
-            itsLog.throwing("quit: throws ", e.getMessage(), e);
-            ErrorDetails details = new ErrorDetails(name, e);
-            throw new WebApplicationException(e, details.getResponse(Response.Status.BAD_REQUEST));
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }

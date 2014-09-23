@@ -48,6 +48,7 @@ import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 
@@ -108,15 +109,15 @@ public class PrivateBean
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
-            throw new WebApplicationException("User was not found (" + name + ", " + lok + ")", Status.NOT_FOUND);
+            throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ", " + lok + ")", Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
-            throw new WebApplicationException("User was not a user (" + name + ", " + lok + ")", Status.BAD_REQUEST);
+            throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ", " + lok + ")", Status.BAD_REQUEST);
         }
         if (!person.verifySessionPassword(lok))
         {
-            throw new WebApplicationException("Users session password (lok) did not match (" + name + ", " + lok + " should match " + person.getLok() + ")", Status.UNAUTHORIZED);
+            throw new MudWebException(name, "Wrong user session password.", "Users session password (lok) did not match (" + name + ", " + lok + " should match " + person.getLok() + ")", Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -135,11 +136,11 @@ public class PrivateBean
         User person = authenticate(name, lok);
         if (person.getGuild() == null)
         {
-            throw new WebApplicationException("Person (" + name + ", " + lok + ") is not a member of a guild", Status.NOT_FOUND);
+            throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ", " + lok + ") is not a member of a guild", Status.NOT_FOUND);
         }
         if (!person.getGuild().getBoss().getName().equals(person.getName()))
         {
-            throw new WebApplicationException("Person (" + name + ", " + lok + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
+            throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ", " + lok + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -197,8 +198,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.throwing("listMail: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return res;
     }
@@ -237,8 +237,7 @@ public class PrivateBean
         Person toperson = getEntityManager().find(Person.class, name);
         if (toperson == null)
         {
-            itsLog.log(Level.INFO, "name of non existing user {0}", name);
-            throw new WebApplicationException("User was not found (" + name + ")", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
         }
         return toperson;
     }
@@ -248,13 +247,12 @@ public class PrivateBean
         User toperson = getEntityManager().find(User.class, name);
         if (toperson == null)
         {
-            itsLog.log(Level.INFO, "name of non existing user {0}", name);
-            throw new WebApplicationException("User was not found (" + name + ")", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
         }
         if (!toperson.isUser())
         {
             itsLog.log(Level.INFO, "user not proper user, {0}", name);
-            throw new WebApplicationException("User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
         }
         return toperson;
     }
@@ -301,8 +299,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.throwing("newMail: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         itsLog.finer("exiting newMail");
         return Response.ok().build();
@@ -314,13 +311,11 @@ public class PrivateBean
 
         if (mail == null)
         {
-            itsLog.log(Level.INFO, "mail {0} not found", id);
-            throw new WebApplicationException("mail with id " + id + " was not found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(toname, "Mail " + id + " not found.", Response.Status.NOT_FOUND);
         }
         if (mail.getDeleted())
         {
-            itsLog.log(Level.INFO, "mail {0} deleted", id);
-            throw new WebApplicationException("mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
+            throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
         }
         if (!mail.getToname().getName().equals(toname))
         {
@@ -329,7 +324,7 @@ public class PrivateBean
                 id, toname
             });
 
-            throw new WebApplicationException("mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
+            throw new MudWebException(toname, "Mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
         }
         return mail;
     }
@@ -370,8 +365,7 @@ public class PrivateBean
             throw e;
         } catch (Exception e)
         {
-            itsLog.throwing("getMail: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
     }
 
@@ -563,11 +557,8 @@ public class PrivateBean
         Person person = authenticate(name, lok);
         if (!person.getName().equals(cinfo.name))
         {
-            itsLog.log(Level.INFO, "updateCharacterSheet: names not the same {0} and {1}", new Object[]
-            {
-                person.getName(), cinfo.name
-            });
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
+                    person.getName() + " trying to update charactersheet of " + cinfo.name, Response.Status.UNAUTHORIZED);
         }
         try
         {
@@ -596,8 +587,7 @@ public class PrivateBean
             throw e;
         } catch (MudException e)
         {
-            itsLog.throwing("updateCharacterSheet: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -624,10 +614,13 @@ public class PrivateBean
     public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
         itsLog.finer("entering updateFamilyvalues");
-        if (description == null || description == 0 || toname == null || "".equals(toname.trim()))
+        if (description == null || description == 0)
         {
-            itsLog.log(Level.INFO, "updateFamilyValues bad params, description is ''{0}''.", description);
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, "An invalid relationship was provided.", Response.Status.BAD_REQUEST);
+        }
+        if (toname == null || "".equals(toname.trim()))
+        {
+            throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
         }
         getEntityManager().setProperty("activePersonFilter", 0);
         User person = authenticate(name, lok);
@@ -637,8 +630,9 @@ public class PrivateBean
             FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
             if (familyValue == null)
             {
-                itsLog.info("updateFamilyValues family value not found");
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                throw new MudWebException(name, "Family value was not found.",
+                        "Family value " + description + " was not found.",
+                        Response.Status.BAD_REQUEST);
             }
             FamilyPK pk = new FamilyPK();
             pk.setName(person.getName());
@@ -656,7 +650,7 @@ public class PrivateBean
             {
                 getEntityManager().persist(family);
             }
-        } catch (WebApplicationException e)
+        } catch (MudWebException e)
         {
             //ignore
             throw e;
@@ -693,7 +687,7 @@ public class PrivateBean
         Family family = getEntityManager().find(Family.class, pk);
         if (family == null)
         {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
         }
         getEntityManager().remove(family);
         itsLog.finer("exiting deleteFamilyValues");

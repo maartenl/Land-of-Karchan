@@ -31,7 +31,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
@@ -40,6 +39,7 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicFamily;
@@ -110,8 +110,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("throws fortunes", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.finer("exiting fortunes");
@@ -159,8 +158,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("throws who", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.finer("exiting who");
         return res;
@@ -170,6 +168,8 @@ public class PublicBean
      * Returns a List of news, recent first. The URL:
      * /karchangame/resources/public/news. Can produce both application/xml and
      * application/json.
+     *
+     * @return a list of news items.
      */
     @GET
     @Path("news")
@@ -197,8 +197,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("news: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.finer("exiting news");
@@ -237,8 +236,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("status: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.finer("exiting status");
@@ -285,8 +283,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("guilds: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
 
         itsLog.finer("exiting guilds");
@@ -311,57 +308,46 @@ public class PublicBean
     {
         itsLog.finer("entering charactersheet");
         PublicPerson res = new PublicPerson();
-        try
-        {
-            getEntityManager().setProperty("activePersonFilter", 0);
-            User person = getEntityManager().find(User.class, name);
-            if (person == null)
-            {
-                itsLog.finer("charactersheet not found");
-                throw new WebApplicationException(Response.Status.NOT_FOUND);
-            }
-            res.name = person.getName();
-            res.title = person.getTitle();
-            res.sex = person.getSex().toString();
-            res.description = person.getDescription();
-            CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
-            if (characterInfo != null)
-            {
-                res.imageurl = characterInfo.getImageurl();
-                res.homepageurl = characterInfo.getHomepageurl();
-                res.dateofbirth = characterInfo.getDateofbirth();
-                res.cityofbirth = characterInfo.getCityofbirth();
-                res.storyline = characterInfo.getStoryline();
-            }
-            if (person.getGuild() != null)
-            {
-                res.guild = person.getGuild().getTitle();
-            }
 
-            Query query = getEntityManager().createNamedQuery("Family.findByName");
-            query.setParameter("name", person.getName());
-            List<Family> list = query.getResultList();
-            for (Family fam : list)
-            {
-                itsLog.finer(fam + "");
-                PublicFamily pfam = new PublicFamily();
-                pfam.description = fam.getDescription().getDescription();
-                pfam.toname = fam.getFamilyPK().getToname();
-                res.familyvalues.add(pfam);
+        getEntityManager().setProperty("activePersonFilter", 0);
+        User person = getEntityManager().find(User.class, name);
+        if (person == null)
+        {
+            throw new MudWebException(name, "Charactersheet not found.", Response.Status.NOT_FOUND);
+        }
+        res.name = person.getName();
+        res.title = person.getTitle();
+        res.sex = person.getSex().toString();
+        res.description = person.getDescription();
+        CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+        if (characterInfo != null)
+        {
+            res.imageurl = characterInfo.getImageurl();
+            res.homepageurl = characterInfo.getHomepageurl();
+            res.dateofbirth = characterInfo.getDateofbirth();
+            res.cityofbirth = characterInfo.getCityofbirth();
+            res.storyline = characterInfo.getStoryline();
+        }
+        if (person.getGuild() != null)
+        {
+            res.guild = person.getGuild().getTitle();
+        }
 
-            }
-        } catch (WebApplicationException e)
+        Query query = getEntityManager().createNamedQuery("Family.findByName");
+        query.setParameter("name", person.getName());
+        List<Family> list = query.getResultList();
+        for (Family fam : list)
         {
-            throw e;
-        } catch (Exception e)
-        {
-            itsLog.throwing("charactersheet: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            itsLog.finer(fam + "");
+            PublicFamily pfam = new PublicFamily();
+            pfam.description = fam.getDescription().getDescription();
+            pfam.toname = fam.getFamilyPK().getToname();
+            res.familyvalues.add(pfam);
+
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-        itsLog.finer(
-                "exiting charactersheet");
+        itsLog.finer("exiting charactersheet");
         return res;
     }
 
@@ -399,8 +385,7 @@ public class PublicBean
             }
         } catch (Exception e)
         {
-            itsLog.throwing("charactersheets: throws ", e.getMessage(), e);
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+            throw new MudWebException(e, Response.Status.BAD_REQUEST);
         }
         itsLog.finer("exiting charactersheets");
         return res;

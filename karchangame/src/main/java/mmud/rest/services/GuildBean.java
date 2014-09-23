@@ -50,6 +50,7 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PrivateRank;
@@ -183,7 +184,7 @@ public class GuildBean
             User newGuildMaster = personBean.getUser(cinfo.bossname);
             if (newGuildMaster == null)
             {
-                throw new WebApplicationException("New boss " + cinfo.bossname + " not found.", Response.Status.NOT_FOUND);
+                throw new MudWebException(name, "New boss " + cinfo.bossname + " not found.", Response.Status.NOT_FOUND);
             }
             guild.setBoss(newGuildMaster);
         }
@@ -217,7 +218,7 @@ public class GuildBean
         User person = privateBean.authenticate(name, lok);
         if (person.getGuild() != null)
         {
-            throw new WebApplicationException("You are already a member of a guild and therefore cannot start a guild.", Response.Status.UNAUTHORIZED);
+            throw new MudWebException(name, "You are already a member of a guild and therefore cannot start a guild.", Response.Status.UNAUTHORIZED);
         }
         Guild guild = new Guild();
         guild.setDescription(cinfo.guilddescription);
@@ -344,7 +345,7 @@ public class GuildBean
         User member = guild.getMember(membername);
         if (member == null)
         {
-            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
         }
         PrivatePerson privatePerson = new PrivatePerson();
         privatePerson.name = member.getName();
@@ -381,12 +382,12 @@ public class GuildBean
         Guild guild = person.getGuild();
         if (membername != null && membername.equals(person.getName()))
         {
-            throw new WebApplicationException("Cannot remove the guildmaster of guild " + guild.getName(), Response.Status.BAD_REQUEST);
+            throw new MudWebException(name, "Cannot remove the guildmaster of guild " + guild.getName(), Response.Status.BAD_REQUEST);
         }
         User member = guild.getMember(membername);
         if (member == null)
         {
-            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
         }
         member.setGuildrank(null);
         member.setGuild(null);
@@ -424,15 +425,15 @@ public class GuildBean
         User possibleMember = personBean.getUser(membername);
         if (possibleMember == null)
         {
-            throw new WebApplicationException(membername + " is not a user.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " is not a user.", Response.Status.NOT_FOUND);
         }
         if (possibleMember.getGuild() != null)
         {
-            throw new WebApplicationException(membername + " is already part of a guild.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " is already part of a guild.", Response.Status.NOT_FOUND);
         }
         if (!possibleMember.verifyAttribute(Attributes.GUILDWISH, guild.getName()))
         {
-            throw new WebApplicationException(membername + " has no appropriate guildwish.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " has no appropriate guildwish.", Response.Status.NOT_FOUND);
         }
         possibleMember.setGuild(guild);
         possibleMember.removeAttribute(Attributes.GUILDWISH);
@@ -466,7 +467,7 @@ public class GuildBean
         User user = guild.getMember(membername);
         if (user == null)
         {
-            throw new WebApplicationException(membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
         }
         if (member.guildlevel == null)
         {
@@ -477,7 +478,7 @@ public class GuildBean
         Guildrank rank = guild.getRank(member.guildlevel);
         if (rank == null)
         {
-            throw new WebApplicationException("Guildlevel " + member.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank " + member.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
         }
         user.setGuildrank(rank);
         return Response.ok().build();
@@ -547,7 +548,7 @@ public class GuildBean
         User possibleMember = personBean.getUser(hopefulname);
         if (possibleMember == null)
         {
-            throw new WebApplicationException(hopefulname + " is not a user.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, hopefulname + " is not a user.", Response.Status.NOT_FOUND);
         }
         possibleMember.removeAttribute(Attributes.GUILDWISH);
         return Response.ok().build();
@@ -622,12 +623,12 @@ public class GuildBean
 
         if (guildlevel == null)
         {
-            throw new WebApplicationException("guildlevel was null, never found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
         }
         Guildrank rank = guild.getRank(guildlevel);
         if (rank == null)
         {
-            throw new WebApplicationException("guildrank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
         }
         PrivateRank privateRank = new PrivateRank();
         privateRank.title = rank.getTitle();
@@ -681,8 +682,7 @@ public class GuildBean
             {
                 buffer.append(violation);
             }
-            itsLog.warning(buffer.toString());
-            throw ex;
+            throw new MudWebException(name, buffer.toString(), ex, Response.Status.BAD_REQUEST);
         }
         return Response.ok().build();
     }
@@ -712,12 +712,12 @@ public class GuildBean
 
         if (guildlevel == null)
         {
-            throw new WebApplicationException("guildlevel was null, never found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
         }
         Guildrank guildrank = guild.getRank(guildlevel);
         if (guildrank == null)
         {
-            throw new WebApplicationException("guildrank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
         }
         guildrank.setAcceptAccess(rank.accept_access);
         guildrank.setLogonmessageAccess(rank.logonmessage_access);
@@ -751,24 +751,27 @@ public class GuildBean
 
         if (guildlevel == null)
         {
-            throw new WebApplicationException("guildlevel was null, never found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
         }
         Guildrank guildrank = guild.getRank(guildlevel);
         if (guildrank == null)
         {
-            throw new WebApplicationException("guildrank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
         }
         getEntityManager().remove(guildrank);
         return Response.ok().build();
     }
 
-    private Guild authenticate(String name, String lok) throws WebApplicationException
+    private Guild authenticate(String name, String lok)
     {
         User person = privateBean.authenticate(name, lok);
         final Guild guild = person.getGuild();
         if (guild == null)
         {
-            throw new WebApplicationException("User is not a member of a guild (" + name + ", " + lok + ")", Response.Status.NOT_FOUND);
+            throw new MudWebException(name,
+                    "User is not a member of a guild.",
+                    "User is not a member of a guild (" + name + ", " + lok + ")",
+                    Response.Status.NOT_FOUND);
         }
         return guild;
     }

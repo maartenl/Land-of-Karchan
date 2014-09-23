@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
@@ -33,7 +31,9 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.rest.services.BoardBean;
 import mmud.rest.services.PersonBean;
 import mmud.rest.services.PublicBean;
@@ -72,7 +72,10 @@ public class PublicBeanTest
     Query query;
 
     @Mocked
-    WebApplicationException webApplicationException;
+    MudWebException webApplicationException;
+
+    @Mocked
+    ErrorDetails errorDetails;
 
     private User hotblack;
     private User marvin;
@@ -647,7 +650,6 @@ public class PublicBeanTest
                 entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(User.class, "Marvin");
                 result = null;
-                new WebApplicationException(Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -655,7 +657,7 @@ public class PublicBeanTest
         {
             PublicPerson person = publicBean.charactersheet("Marvin");
             fail("We expected a not found exception");
-        } catch (WebApplicationException e)
+        } catch (MudWebException e)
         {
             // Yay! We get an exception!
         }

@@ -24,8 +24,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Object that is sent to the client as a json string, upon throwing
- * a WebApplicationException.
+ * a MudWebException.
  *
+ * @see MudWebException
  * @author maartenl
  */
 @XmlRootElement
@@ -42,32 +43,32 @@ public class ErrorDetails
         // required for REST
     }
 
-    public ErrorDetails(String errormessage)
+    ErrorDetails(String errormessage)
     {
         this.timestamp = new Date();
         this.errormessage = errormessage;
     }
 
-    public ErrorDetails(String user, String errormessage)
+    ErrorDetails(String user, String errormessage)
     {
         this(errormessage);
         this.user = user;
     }
 
-    public ErrorDetails(Throwable t)
+    ErrorDetails(Throwable t)
     {
         this.timestamp = new Date();
         this.errormessage = t.getMessage();
         this.stacktrace = stackTraceToString(t);
     }
 
-    public ErrorDetails(String user, Throwable t)
+    ErrorDetails(String user, Throwable t)
     {
         this(t);
         this.user = user;
     }
 
-    public ErrorDetails(String user, String message, Throwable t)
+    ErrorDetails(String user, String message, Throwable t)
     {
         this(t);
         this.user = user;

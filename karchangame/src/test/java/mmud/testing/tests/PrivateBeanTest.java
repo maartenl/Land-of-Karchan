@@ -38,7 +38,9 @@ import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
 import mmud.database.enums.God;
+import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.rest.services.MailBean;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.webentities.PrivateMail;
@@ -78,7 +80,10 @@ public class PrivateBeanTest
     javax.ws.rs.core.Response response;
 
     @Mocked
-    WebApplicationException webApplicationException;
+    MudWebException webApplicationException;
+
+    @Mocked
+    ErrorDetails errorDetails;
 
     @Mocked
     ResponseBuilder responseBuilder;
@@ -160,7 +165,6 @@ public class PrivateBeanTest
                 entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
-                new WebApplicationException("User was not a user (Marvin, lok)", Response.Status.BAD_REQUEST);
             }
         };
         // Unit under test is exercised.
@@ -168,7 +172,7 @@ public class PrivateBeanTest
         {
             List<PrivateMail> result = privateBean.listMail("Marvin", null, "lok");
             fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
+        } catch (MudWebException result)
         {
             // Yay! We get an exception!
         }
@@ -197,7 +201,6 @@ public class PrivateBeanTest
                 entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(User.class, "Marvin");
                 result = null;
-                new WebApplicationException("User was not found (Marvin, woahNelly)", Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -235,7 +238,6 @@ public class PrivateBeanTest
                 entityManager.setProperty("activePersonFilter", 0);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
-                new WebApplicationException("Users session password (lok) did not match (Marvin, woahNelly should match lok)", Response.Status.UNAUTHORIZED);
             }
         };
         // Unit under test is exercised.
@@ -544,7 +546,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(User.class, "Unknown");
                 result = null;
-                new WebApplicationException("User was not found (Unknown)", Response.Status.NOT_FOUND);
 
             }
         };
@@ -587,7 +588,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(User.class, "Hotblack");
                 result = hotblack;
-                new WebApplicationException("User was not a proper user (Hotblack)", Response.Status.BAD_REQUEST);
 
             }
         };
@@ -627,7 +627,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = null;
-                new WebApplicationException("mail with id 1 was not found.", Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -673,7 +672,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
-                new WebApplicationException("mail with id 1 was deleted.", Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -719,7 +717,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
-                new WebApplicationException("mail with id 1 was deleted.", Response.Status.NOT_FOUND);
             }
         };
         // Unit under test is exercised.
@@ -1110,7 +1107,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = mail;
-                new WebApplicationException("mail with id 1 was not for Marvin.", Response.Status.UNAUTHORIZED);
             }
         };
 
@@ -1148,7 +1144,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
                 result = null;
-                new WebApplicationException("mail with id 1 was not found.", Response.Status.NOT_FOUND);
             }
         };
         try
@@ -1344,7 +1339,6 @@ public class PrivateBeanTest
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
-                new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
         };
         // Unit under test is exercised.
@@ -1449,7 +1443,6 @@ public class PrivateBeanTest
                 result = hotblack;
                 entityManager.find(FamilyValue.class, 12);
                 result = null;
-                new WebApplicationException(Response.Status.BAD_REQUEST);
             }
         };
         try
