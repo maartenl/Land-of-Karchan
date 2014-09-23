@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -1553,7 +1554,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
                 return attr;
             }
         }
-        itsLog.finer("getCharattribute name=" + name + " not found");
+        itsLog.log(Level.FINER, "getCharattribute name={0} not found", name);
         return null;
     }
 
@@ -1583,18 +1584,28 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         Charattribute attr = getCharattribute(name);
         if (attr == null)
         {
-            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on user " + getName() + ".");
+            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]
+            {
+                name, value, getName()
+            });
             return false;
         }
         if (attr.getValue().equals(value))
         {
-            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on user " + getName() + "!");
+            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]
+            {
+                name, value, getName()
+            });
             return true;
         }
-        itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on user " + getName() + ".");
+        itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]
+        {
+            name, value, attr.getName(), attr.getValue(), getName()
+        });
         return false;
     }
 
+    @Override
     public Set<Item> getItems()
     {
         return items;
@@ -2380,5 +2391,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         return false;
     }
+
+    /**
+     * Indicates whether or not this person can receive items or money from other players.
+     *
+     * @return
+     */
+    abstract public boolean canReceive();
 
 }

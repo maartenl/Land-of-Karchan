@@ -16,17 +16,23 @@
  */
 package mmud.database.entities.characters;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import mmud.database.entities.game.Guild;
 
 /**
  * A bot in the game. Might be a shopkeeper.
+ *
  * @author maartenl
  */
 @Entity
 @DiscriminatorValue("2")
 public class Bot extends Person
 {
+
     @JoinColumn(name = "guild", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private Guild guild;
@@ -39,11 +45,18 @@ public class Bot extends Person
 
     /**
      * Bots cannot fight. Use mobs for that. Any entry is ignored.
+     *
      * @param fightable
      */
     @Override
     public void setFightable(Boolean fightable)
     {
         super.setFightable(false);
+    }
+
+    @Override
+    public boolean canReceive()
+    {
+        return false;
     }
 }

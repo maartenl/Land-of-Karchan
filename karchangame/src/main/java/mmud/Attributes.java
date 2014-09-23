@@ -27,5 +27,11 @@ public class Attributes
      * Attribute indicating that someone wishes to join a certain guild.
      */
     public final static String GUILDWISH = "guildwish";
+
+    /**
+     * Attribute indicating that someone can receive money or items from you.
+     */
+    public final static String CANRECEIVE = "canreceive";
+
     public final static String VALUETYPE_STRING = "string";
 }

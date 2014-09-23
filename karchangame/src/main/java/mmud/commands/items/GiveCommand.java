@@ -21,12 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import mmud.commands.*;
+import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
-import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.rest.services.ItemBean;
@@ -71,6 +70,11 @@ public class GiveCommand extends NormalCommand
         {
             // action to unknown
             throw new PersonNotFoundException("Cannot find " + parsed.get(parsed.size() - 1) + ".<BR>\r\n");
+        }
+        if (!target.canReceive())
+        {
+            aUser.writeMessage(target.getName() + " doesn't accept your stuff.<br/>\n");
+            return aUser.getRoom();
         }
         parsed.remove(parsed.size() - 1);
         parsed.remove(parsed.size() - 1);

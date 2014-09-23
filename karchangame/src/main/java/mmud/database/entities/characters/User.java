@@ -40,6 +40,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Attributes;
 import mmud.Utils;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
@@ -796,5 +797,11 @@ public class User extends Person
             }
         }
         return super.getStatistics() + stuff.toString();
+    }
+
+    @Override
+    public boolean canReceive()
+    {
+        return !verifyAttribute(Attributes.CANRECEIVE, "false");
     }
 }
