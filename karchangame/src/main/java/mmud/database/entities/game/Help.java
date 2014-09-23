@@ -311,7 +311,7 @@ public class Help implements Serializable, DisplayInterface
     @Override
     public String getBody()
     {
-        String result = "<dl><dt><b>NAME</b></dt>"
+        String result = " <dl><dt><b>NAME</b></dt>"
                 + "<dd><b>" + getCCommand() + "</b> - formatted output</dd><p/>"
                 + "<dt><b>SYNOPSIS</b></dt>" + "<dd>" + getCSynopsis() + "</dd><p/>"
                 + "<dt><b>DESCRIPTION</b></dt>" + "<dd>" + getCDescription() + "</dd><p/>"
