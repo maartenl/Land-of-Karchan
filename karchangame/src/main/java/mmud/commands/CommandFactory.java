@@ -172,8 +172,6 @@ public class CommandFactory
                 "unwield from (\\w)+"));
         theCommandStructure.put("drop", new DropCommand("drop( (\\w|-)+){1,4}"));
         theCommandStructure.put("get", new GetCommand("get( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("search", new SearchCommand(
-//                "search( (\\w|-)+){1,4}"));
         theCommandStructure.put("put", new PutCommand(
                 "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
         theCommandStructure.put("retrieve", new RetrieveCommand(
@@ -198,6 +196,8 @@ public class CommandFactory
                 "look at( (\\w|-)+){1,4}"));
         theCommandStructure.put("look in", new LookInCommand(
                 "look in( (\\w|-)+){1,4}"));
+//        theCommandStructure.put("search", new SearchCommand(
+//                "search( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("buy", new BuyCommand(
 //                "buy( (\\w|-)+){1,4} from (\\w)+"));
 //        theCommandStructure.put("sell"    , new SellCommand(
@@ -216,19 +216,6 @@ public class CommandFactory
                 "guildaccept (\\w)+"));
         theCommandStructure.put("guildreject", new RejectCommand(
                 "guildreject (\\w)+"));
-//        theCommandStructure.put("guildaddrank", new AddRankCommand(
-//                "guildaddrank (\\d)+ .+"));
-//        theCommandStructure.put("guildassign", new AssignRankCommand(
-//                "guildassign (\\d)+ (\\w)+"));
-//        theCommandStructure.put("guilddelrank", new DelRankCommand(
-//                "guilddelrank (\\d)+"));
-//        theCommandStructure.put("guilddescription", new SetDescriptionCommand(
-//                "guilddescription .+"));
-//        theCommandStructure.put("guildtitle", new SetTitleCommand(
-//                "guildtitle .+"));
-//        theCommandStructure.put("guildurl", new SetUrlCommand("guildurl .+"));
-//        theCommandStructure.put("guildmessage", new SetLogonMessageCommand(
-//                "guildmessage .+"));
         theCommandStructure.put("guildremove", new RemoveCommand(
                 "guildremove (\\w)+"));
         theCommandStructure.put("guildmasterchange", new ChangeMasterCommand(

@@ -333,6 +333,7 @@ public class Utils
     /**
      * Returns an unmodifiable map with emotions, like cheer. Can have a target, but isn't
      * necessary.
+     *
      * @return returns an unmodifiable map containing emotions. They form pairs for example
      * ['agree','agrees'].
      */
@@ -343,6 +344,7 @@ public class Utils
 
     /**
      * Returns an unmodifiable map with emotions, like greet. Must have a target.
+     *
      * @return returns an unmodifiable map containing emotions. They form pairs for example
      * ['congratulate','congratulates'].
      */
@@ -356,6 +358,10 @@ public class Utils
      *
      * @param dirtyInput the original string.
      * @return the new string, sanse javascript.
+     * @throws org.owasp.validator.html.PolicyException if the dirty input
+     * fails the policy
+     * @throws org.owasp.validator.html.ScanException if the dirty input
+     * borked parsing.
      */
     public static String security(String dirtyInput) throws PolicyException, ScanException
     {
@@ -426,6 +432,7 @@ public class Utils
 
     /**
      * Indicates the game is offline for maintenance.
+     *
      * @return usually false, indicating the game is live.
      */
     public static boolean isOffline()
@@ -448,7 +455,7 @@ public class Utils
      * split up the command into different words.
      *
      * @param aCommand
-     *            String containing the command
+     * String containing the command
      * @return String array where each String contains a word from the command.
      */
     public static String[] parseCommand(String aCommand)
@@ -460,8 +467,8 @@ public class Utils
      * Checks to see that an adverb is valid.
      *
      * @param anAdverb
-     *            String containing the adverb to check, for example
-     *            "aimlessly".
+     * String containing the adverb to check, for example
+     * "aimlessly".
      * @return boolean which is true if the adverb is real.
      */
     public static boolean existsAdverb(String anAdverb)
@@ -473,7 +480,7 @@ public class Utils
      * returns the appropriate emotion for a third person view.
      *
      * @param anEmotion
-     *            the emotion, for example "whistle".
+     * the emotion, for example "whistle".
      * @return the third person grammar, for example "whistles".
      * @see #returnEmotionTo
      */
@@ -487,12 +494,33 @@ public class Utils
      * with returnEmotion is that this has a target.
      *
      * @param anEmotion
-     *            the emotion, for example "caress".
+     * the emotion, for example "caress".
      * @return the third person grammar, for example "caresses".
      * @see #returnEmotion
      */
     public static String returnEmotionTo(String anEmotion)
     {
         return theEmotion2Structure.get(anEmotion);
+    }
+
+    /**
+     * Changes a sentence to always start with a capital.
+     *
+     * @param string the string to change, may be empty or null.
+     * @return a new string, containing a capital for the first
+     * letter. If original is null, returns null. If original is empty string,
+     * returns empty string.
+     */
+    public static String startWithCapital(String string)
+    {
+        if (string == null)
+        {
+            return null;
+        }
+        if (string.equals(""))
+        {
+            return "";
+        }
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 }

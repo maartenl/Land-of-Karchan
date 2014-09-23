@@ -39,6 +39,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import mmud.Attributes;
+import mmud.Utils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
@@ -280,9 +281,9 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         if (getItemDefinition().getTitle() != null)
         {
-            return getItemDefinition().getTitle();
+            return Utils.startWithCapital(getItemDefinition().getTitle());
         }
-        return getItemDefinition().getDescription();
+        return Utils.startWithCapital(getItemDefinition().getDescription());
     }
 
     @Override

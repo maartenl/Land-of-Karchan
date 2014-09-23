@@ -17,10 +17,10 @@
 package mmud.commands.items;
 
 import mmud.Constants;
-import mmud.exceptions.MudException;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.exceptions.MudException;
 
 /**
  * Show the inventory: "inventory".
@@ -32,7 +32,6 @@ public class InventoryCommand extends NormalCommand
     {
         super(aRegExpr);
     }
-
 
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
