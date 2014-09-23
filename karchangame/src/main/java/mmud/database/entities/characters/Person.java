@@ -1511,7 +1511,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         builder.append(getArm().equals("none") ? "" : getArm() + ", ");
         builder.append(getLeg().equals("none") ? "" : getLeg() + ", ");
         builder.append(getSex()).append(" ").append(getRace()).append(" who calls ").append(getSex().indirect());
-        builder.append("self ").append(getName()).append(" (").append(getTitle()).append(")");
+        builder.append("self ").append(getName());
+        if (getTitle() != null && !getTitle().trim().equals(""))
+        {
+            builder.append(" (").append(getTitle()).append(")");
+        }
+        builder.append(".");
         return builder;
     }
 
