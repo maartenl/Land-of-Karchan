@@ -19,11 +19,17 @@ package mmud.database.enums;
 /**
  * Indicates whether or not a character is a normal player, a god,
  * a bot or a mob or a shopkeeper.
+ *
  * @author maartenl
  */
 public enum God
 {
-    DEFAULT_USER(0), GOD(1), BOT(2), MOB(3), SHOPKEEPER(4);
+
+    DEFAULT_USER(0),
+    /**
+     * Means this user is an administrator/deputy of the mud.
+     */
+    GOD(1), BOT(2), MOB(3), SHOPKEEPER(4);
     private int value;
 
     private God(int value)
@@ -33,6 +39,7 @@ public enum God
 
     /**
      * Returns the enum based on a numerical value.
+     *
      * @param value
      * @return God enum, null if not found.
      */
@@ -54,6 +61,7 @@ public enum God
 
     /**
      * Returns the numerical value of this enum.
+     *
      * @return integer
      */
     public int getValue()

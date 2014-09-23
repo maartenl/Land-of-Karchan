@@ -205,7 +205,7 @@ public class CommandFactory
 //        theCommandStructure.put("show", new ShowCommand(
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));
-//        theCommandStructure.put("admin", new AdminCommand("admin .+"));
+        theCommandStructure.put("admin", new AdminCommand("admin .+"));
         // guild commands
         theCommandStructure.put("guildapply", new ApplyCommand(
                 "guildapply( (\\w)+)?"));
@@ -491,7 +491,8 @@ public class CommandFactory
 
     /**
      * Clears the map containing all user-defined commands.
-     *
+     * It will be reloaded automatically from the database, upon executing the
+     * first command.
      */
     public static void clearUserCommandStructure()
     {

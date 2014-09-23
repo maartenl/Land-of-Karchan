@@ -16,10 +16,13 @@
  */
 package mmud.database.entities.characters;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  * An administrator, which is a simple user with extra rights, in the game.
+ * Also called a "deputy".
+ *
  * @author maartenl
  */
 @Entity
