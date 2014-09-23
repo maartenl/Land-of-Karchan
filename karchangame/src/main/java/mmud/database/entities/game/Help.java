@@ -35,19 +35,19 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_help")
 @NamedQueries(
-{
-    @NamedQuery(name = "Help.findAll", query = "SELECT h FROM Help h"),
-    @NamedQuery(name = "Help.findByCommand", query = "SELECT h FROM Help h WHERE h.command = :command"),
-    @NamedQuery(name = "Help.findBySynopsis", query = "SELECT h FROM Help h WHERE h.synopsis = :synopsis"),
-    @NamedQuery(name = "Help.findBySeealso", query = "SELECT h FROM Help h WHERE h.seealso = :seealso"),
-    @NamedQuery(name = "Help.findByExample1", query = "SELECT h FROM Help h WHERE h.example1 = :example1"),
-    @NamedQuery(name = "Help.findByExample1a", query = "SELECT h FROM Help h WHERE h.example1a = :example1a"),
-    @NamedQuery(name = "Help.findByExample1b", query = "SELECT h FROM Help h WHERE h.example1b = :example1b"),
-    @NamedQuery(name = "Help.findByExample2", query = "SELECT h FROM Help h WHERE h.example2 = :example2"),
-    @NamedQuery(name = "Help.findByExample2a", query = "SELECT h FROM Help h WHERE h.example2a = :example2a"),
-    @NamedQuery(name = "Help.findByExample2b", query = "SELECT h FROM Help h WHERE h.example2b = :example2b"),
-    @NamedQuery(name = "Help.findByExample2c", query = "SELECT h FROM Help h WHERE h.example2c = :example2c")
-})
+        {
+            @NamedQuery(name = "Help.findAll", query = "SELECT h FROM Help h"),
+            @NamedQuery(name = "Help.findByCommand", query = "SELECT h FROM Help h WHERE h.command = :command"),
+            @NamedQuery(name = "Help.findBySynopsis", query = "SELECT h FROM Help h WHERE h.synopsis = :synopsis"),
+            @NamedQuery(name = "Help.findBySeealso", query = "SELECT h FROM Help h WHERE h.seealso = :seealso"),
+            @NamedQuery(name = "Help.findByExample1", query = "SELECT h FROM Help h WHERE h.example1 = :example1"),
+            @NamedQuery(name = "Help.findByExample1a", query = "SELECT h FROM Help h WHERE h.example1a = :example1a"),
+            @NamedQuery(name = "Help.findByExample1b", query = "SELECT h FROM Help h WHERE h.example1b = :example1b"),
+            @NamedQuery(name = "Help.findByExample2", query = "SELECT h FROM Help h WHERE h.example2 = :example2"),
+            @NamedQuery(name = "Help.findByExample2a", query = "SELECT h FROM Help h WHERE h.example2a = :example2a"),
+            @NamedQuery(name = "Help.findByExample2b", query = "SELECT h FROM Help h WHERE h.example2b = :example2b"),
+            @NamedQuery(name = "Help.findByExample2c", query = "SELECT h FROM Help h WHERE h.example2c = :example2c")
+        })
 public class Help implements Serializable, DisplayInterface
 {
 
@@ -109,6 +109,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The command for which help is requested and found.
+     *
      * @return String containing the command.
      */
     public String getCommand()
@@ -123,6 +124,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The explanation, description, whatever-you-may-call-it.
+     *
      * @return 'the help' as a String
      */
     public String getContents()
@@ -137,6 +139,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * The way the command syntax works.
+     *
      * @return String, for example "swoon [to <person>]".
      */
     public String getSynopsis()
@@ -151,6 +154,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Reference to other commands.
+     *
      * @return references to other commands.
      */
     public String getSeealso()
@@ -165,6 +169,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * An example of the way the command is executed.
+     *
      * @return For example "unwield pick from bothhands".
      */
     public String getExample1()
@@ -179,6 +184,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Output of the example visible to you.
+     *
      * @return For example "You open an old, iron chest.".
      */
     public String getExample1a()
@@ -193,6 +199,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * Output of the example visible to others.
+     *
      * @return For example "Hotblack locks an old, iron chest with an old iron key."
      */
     public String getExample1b()
@@ -207,6 +214,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * An example of the way the command is executed to someone else.
+     *
      * @return For example "tell to marvin Hey!".
      */
     public String getExample2()
@@ -221,6 +229,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What the players sees.
+     *
      * @return For example "<b>You tell Marvin</b> : Hey!".
      */
     public String getExample2a()
@@ -235,6 +244,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What the target notices.
+     *
      * @return For example "<b>Hotblack tells you</b> : Hey!".
      */
     public String getExample2b()
@@ -249,6 +259,7 @@ public class Help implements Serializable, DisplayInterface
 
     /**
      * What a third party sees.
+     *
      * @return For example "Hotblack says [to Marvin]: Hey!".
      */
     public String getExample2c()
@@ -290,6 +301,7 @@ public class Help implements Serializable, DisplayInterface
     {
         return getCCommand();
     }
+
     @Override
     public String getImage()
     {
@@ -299,14 +311,14 @@ public class Help implements Serializable, DisplayInterface
     @Override
     public String getBody()
     {
-        String result = "<DL><DT><B>NAME</B>"
-                + "<DD><B>" + getCCommand() + "</B> - formatted output<P>"
-                + "<DT><B>SYNOPSIS</B>" + "<DD>" + getCSynopsis() + "<P>"
-                + "<DT><B>DESCRIPTION</B>" + "<DD>" + getCDescription() + "<P>"
-                + "<DT><B>EXAMPLES</B><DD>";
+        String result = "<dl><dt><b>NAME</b></dt>"
+                + "<dd><b>" + getCCommand() + "</b> - formatted output</dd><p/>"
+                + "<dt><b>SYNOPSIS</b></dt>" + "<dd>" + getCSynopsis() + "</dd><p/>"
+                + "<dt><b>DESCRIPTION</b></dt>" + "<dd>" + getCDescription() + "</dd><p/>"
+                + "<dt><b>EXAMPLES</b></dt><dd>";
         result += getExample1Description();
         result += getExample2Description();
-        result += "<DT><B>SEE ALSO</B><DD>" + getSeealso() + "<P></DL>";
+        result += "</dd><dt><b>SEE ALSO</b></dt><dd>" + getSeealso() + "<p/></dd></dl>";
         return result;
     }
 
@@ -325,19 +337,19 @@ public class Help implements Serializable, DisplayInterface
         StringBuilder result = new StringBuilder();
         if ((example2 != null) && !example2.trim().equals(""))
         {
-            result.append("\"").append(example2).append("\"<P>");
+            result.append("\"").append(example2).append("\"<p/>");
         }
         if ((example2a != null) && !example2a.trim().equals(""))
         {
-            result.append("You: <TT>").append(example2a).append("</TT><BR>");
+            result.append("You: <tt>").append(example2a).append("</tt><br/>");
         }
         if ((example2b != null) && !example2b.trim().equals(""))
         {
-            result.append("Marvin: <TT>").append(example2b).append("</TT><BR>");
+            result.append("Marvin: <tt>").append(example2b).append("</tt><br/>");
         }
         if ((example2c != null) && !example2c.trim().equals(""))
         {
-            result.append("Anybody: <TT>").append(example2c).append("</TT><P>");
+            result.append("Anybody: <tt>").append(example2c).append("</tt><p/>");
         }
         return result.toString();
     }
@@ -351,15 +363,15 @@ public class Help implements Serializable, DisplayInterface
         StringBuilder result = new StringBuilder();
         if ((example1 != null) && !example1.trim().equals(""))
         {
-            result.append("\"").append(example1).append("\"<P>");
+            result.append("\"").append(example1).append("\"<p/>");
         }
         if ((example1a != null) && !example1a.trim().equals(""))
         {
-            result.append("You: <TT>").append(example1a).append("</TT><BR>");
+            result.append("You: <tt>").append(example1a).append("</tt><br/>");
         }
         if ((example1b != null) && !example1b.trim().equals(""))
         {
-            result.append("Anybody: <TT>").append(example1b).append("</TT><P>");
+            result.append("Anybody: <tt>").append(example1b).append("</tt><p/>");
         }
         return result.toString();
     }
@@ -377,13 +389,13 @@ public class Help implements Serializable, DisplayInterface
             return "";
         }
         return getSynopsis().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll(getCommand(),
-                "<B>" + getCommand() + "</B>");
+                "<b>" + getCommand() + "</b>");
     }
 
     private String getCDescription()
     {
         return getContents().replaceAll(getCommand(),
-                "<B>" + getCommand() + "</B>").replaceAll(getCCommand(),
-                "<B>" + getCCommand() + "</B>");
+                "<b>" + getCommand() + "</b>").replaceAll(getCCommand(),
+                        "<b>" + getCCommand() + "</b>");
     }
 }
