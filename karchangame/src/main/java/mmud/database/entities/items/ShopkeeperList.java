@@ -82,7 +82,7 @@ public class ShopkeeperList extends Item
             {
                 String read = display.getBody();
                 StringBuilder builder = new StringBuilder();
-                Constants.addInventory(shopkeeper.getItems(), builder);
+                Constants.addShopkeeperList(shopkeeper.getItems(), builder);
                 read = read.replace("%VIEW", builder.toString());
                 return read;
             }

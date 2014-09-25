@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
 import mmud.rest.webentities.PrivateItem;
 
 /**
@@ -198,9 +199,15 @@ public class Constants
         }
     }
 
-    private static Map<String, Integer> inventory(Set<Item> set)
+    /**
+     * Provides a map containing description of items and their amounts.
+     *
+     * @param set
+     * @return
+     */
+    private static Map<ItemDefinition, Integer> inventory(Set<Item> set)
     {
-        Map<String, Integer> inventory = new HashMap<>();
+        Map<ItemDefinition, Integer> inventory = new HashMap<>();
 
         for (Item item : set)
         {
@@ -208,7 +215,7 @@ public class Constants
             {
                 continue;
             }
-            String key = item.getDescription();
+            ItemDefinition key = item.getItemDefinition();
             if (inventory.containsKey(key))
             {
                 inventory.put(key, inventory.get(key) + 1);
@@ -234,13 +241,14 @@ public class Constants
             return;
         }
 
-        Map<String, Integer> inventory = inventory(set);
+        Map<ItemDefinition, Integer> inventory = inventory(set);
 
         builder.append("<ul>");
-        for (String desc : inventory.keySet())
+        for (ItemDefinition definition : inventory.keySet())
         {
+            String desc = definition.getDescription();
             builder.append("<li>");
-            int amount = inventory.get(desc);
+            int amount = inventory.get(definition);
             if (amount != 1)
             {
                 // 5 gold, hard cups
@@ -264,6 +272,57 @@ public class Constants
                 // a gold, hard cup
                 builder.append(desc);
             }
+            builder.append("</li>\r\n");
+        }
+        builder.append("</ul>");
+    }
+
+    /**
+     * Adds a descriptive set of the items and their buy/sell price to the string builder.
+     *
+     * @param set a set of items to be described.
+     * @param builder the builder to append to. Should not be null.
+     */
+    public static void addShopkeeperList(Set<Item> set, StringBuilder builder)
+    {
+        if ((set == null || set.isEmpty()))
+        {
+            builder.append(" absolutely nothing.</p>");
+            return;
+        }
+
+        Map<ItemDefinition, Integer> inventory = inventory(set);
+
+        builder.append("<ul>");
+        for (ItemDefinition definition : inventory.keySet())
+        {
+            String desc = definition.getDescription();
+            builder.append("<li>");
+            int amount = inventory.get(definition);
+            if (amount != 1)
+            {
+                // 5 gold, hard cups
+                if (desc.startsWith("an"))
+                {
+                    // remove 'an '
+                    desc = desc.substring(3);
+                } else
+                {
+                    // remove 'a '
+                    desc = desc.substring(2);
+                }
+                builder.append(amount).append(" ").append(
+                        desc);
+                if (!desc.endsWith("s"))
+                {
+                    builder.append("s");
+                }
+            } else
+            {
+                // a gold, hard cup
+                builder.append(desc);
+            }
+            builder.append(", ").append(getDescriptionOfMoney(definition.getCopper()));
             builder.append("</li>\r\n");
         }
         builder.append("</ul>");
