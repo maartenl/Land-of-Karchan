@@ -383,5 +383,23 @@ and exists (select 1
 
 delete from mm_charattributes where name='guildrank';
 
-END_OF_DATA
+ALTER TABLE mm_itemtable
+ADD COLUMN `discriminator` INT(5) NOT NULL DEFAULT 0  
+AFTER `containerid`;
 
+ALTER TABLE mm_items
+ADD COLUMN `discriminator` INT(5) NOT NULL DEFAULT 0  
+AFTER `title` ;
+
+ALTER TABLE mm_itemtable ADD COLUMN `shopkeeper` VARCHAR(20) NULL  AFTER `discriminator` , 
+ADD CONSTRAINT `fk_mm_itemtable_4`
+FOREIGN KEY (`shopkeeper` )
+REFERENCES `mmud`.`mm_usertable` (`name` )
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+, ADD INDEX `fk_mm_itemtable_4` (`shopkeeper` ASC) ;
+          
+update mm_itemtable set discriminator =1 where id = 515;
+update mm_items set discriminator = 1 where id = -49;
+
+END_OF_DATA

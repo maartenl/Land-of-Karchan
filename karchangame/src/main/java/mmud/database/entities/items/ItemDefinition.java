@@ -157,6 +157,10 @@ public class ItemDefinition implements Serializable
     private Admin owner;
     @Column(name = "image")
     private String image;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "discriminator")
+    private Integer discriminator;
 
     public String getTitle()
     {

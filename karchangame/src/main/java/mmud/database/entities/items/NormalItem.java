@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ * Copyright (C) 2014 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,49 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.characters;
+package mmud.database.entities.items;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import mmud.database.entities.game.Guild;
 
 /**
- * A mob in the game.
  *
  * @author maartenl
  */
 @Entity
-@DiscriminatorValue("3")
-public class Mob extends Person
+@DiscriminatorValue("0")
+public class NormalItem extends Item
 {
 
-    @JoinColumn(name = "guild", referencedColumnName = "name")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Guild guild;
-
     @Override
-    public Boolean getFightable()
+    public ItemCategory getCategory()
     {
-        return true;
+        return ItemCategory.NORMALITEM;
     }
 
-    /**
-     * Mobs can fight. Any entry is ignored.
-     *
-     * @param fightable
-     */
-    @Override
-    public void setFightable(Boolean fightable)
-    {
-        super.setFightable(true);
-    }
-
-    @Override
-    public boolean canReceive()
-    {
-        return false;
-    }
 }

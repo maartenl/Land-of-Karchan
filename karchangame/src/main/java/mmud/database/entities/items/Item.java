@@ -25,10 +25,14 @@ import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -57,10 +61,15 @@ import mmud.exceptions.MudException;
  *
  * @author maartenl
  */
+// TODO: create subclass named NormalItem.
 // TODO: create subclass named ContainerItem.
 // TODO: create subclass named ShopKeeperItem.
 // TODO: fix named queries.
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        name = "discriminator",
+        discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_itemtable")
 @NamedQueries(
         {
@@ -72,7 +81,7 @@ import mmud.exceptions.MudException;
             @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
             @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
         })
-public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
+abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
 {
 
     private static final Logger itsLog = Logger.getLogger(Item.class.getName());
@@ -87,7 +96,10 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
-    // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "discriminator")
+    private Integer discriminator;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
     private Set<Item> items;
     @JoinColumn(name = "containerid", referencedColumnName = "id")
@@ -149,6 +161,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
      *
      * @return set of items.
      */
+    @Override
     public Set<Item> getItems()
     {
         return items;
@@ -208,6 +221,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Will return the room in which this item can be found. Might be null.
      *
+     * @return the room which contains this item.
      * @see #getBelongsTo()
      * @see #getContainer()
      */
@@ -219,6 +233,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     /**
      * Will return the person that owns this item. Might be null.
      *
+     * @return the person who owns this item.
      * @see #getRoom()
      * @see #getContainer()
      */
@@ -281,15 +296,15 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
     {
         if (getItemDefinition().getTitle() != null)
         {
-            return Utils.startWithCapital(getItemDefinition().getTitle());
+            return getItemDefinition().getTitle();
         }
-        return Utils.startWithCapital(getItemDefinition().getDescription());
+        return getItemDefinition().getDescription();
     }
 
     @Override
     public String getMainTitle() throws MudException
     {
-        return getTitle();
+        return Utils.startWithCapital(getTitle());
     }
 
     @Override
@@ -539,6 +554,13 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         return getItemDefinition().getEatable() != null && !getItemDefinition().getEatable().trim().equals("");
     }
 
+    /**
+     * Provides the description of what happens when you try to eat it.
+     * Can be null or empty, for example if the item cannot be eaten.
+     * Eating an item will always destroy that item.
+     *
+     * @return
+     */
     public String getEatable()
     {
         return getItemDefinition().getEatable();
@@ -582,6 +604,13 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().equals("");
     }
 
+    /**
+     * Provides the description of what happens when you try to drink it.
+     * Can be null or empty, for example if the item cannot be drunk.
+     * Drinking an item will always destroy that item.
+     *
+     * @return
+     */
     public String getDrinkable()
     {
         return getItemDefinition().getDrinkable();
@@ -681,6 +710,7 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
 
     public DisplayInterface getRead()
     {
+        itsLog.info("Item getRead");
         if (!isReadable())
         {
             throw new ItemException("Item cannot be read.");
@@ -712,8 +742,6 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
                 {
                     return null;
                 }
-                // TODO: create shopkeeper lists.
-                read = read.replace("%VIEW", "Nothing.");
                 return read;
             }
         };
@@ -760,4 +788,12 @@ public class Item implements Serializable, DisplayInterface, AttributeWrangler, 
         return getItemDefinition().getId() >= 0
                 && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
     }
+
+    /**
+     * Returns the category of the item.
+     *
+     * @return
+     */
+    abstract public ItemCategory getCategory();
+
 }

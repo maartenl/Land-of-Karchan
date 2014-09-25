@@ -98,7 +98,7 @@ import org.owasp.validator.html.ScanException;
 
 /**
  * A character in the game. Might be both a bot, a shopkeeper, a user, or an
- * administrator. Note: it contains a filter annotation which is Hibernate
+ * administrator. Note: it contains a filter annotation which is EclipseLink
  * specific.
  *
  * @author maartenl
