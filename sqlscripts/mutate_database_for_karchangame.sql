@@ -401,6 +401,7 @@ ON UPDATE NO ACTION
           
 update mm_itemtable set discriminator =1 where id = 515;
 update mm_items set discriminator = 1 where id = -49;
+update mm_itemtable set shopkeeper='Karcas' where id=515;
 ALTER TABLE mm_items
 ADD COLUMN `bound` TINYINT(1) NOT NULL DEFAULT 0  
 AFTER `discriminator`;
