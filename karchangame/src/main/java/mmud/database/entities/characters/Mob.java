@@ -22,6 +22,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import mmud.database.entities.game.Guild;
+import mmud.database.enums.God;
 
 /**
  * A mob in the game.
@@ -59,4 +60,11 @@ public class Mob extends Person
     {
         return false;
     }
+
+    @Override
+    public God getGod()
+    {
+        return God.MOB;
+    }
+
 }

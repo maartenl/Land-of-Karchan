@@ -141,7 +141,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @NotNull
     @Size(min = 1, max = 6)
     @Column(name = "sex")
-    private String sex;
+    private String sex = "male";
     @Size(max = 20)
     @Column(name = "age")
     private String age;
@@ -257,9 +257,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin owner;
-    // TODO orphanRemoval=true in JPA2 should work to replace this hibernate specific DELETE_ORPHAN.
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsto", orphanRemoval = true)
-    private Set<Item> items;
+    private Set<Item> items = new HashSet<>();
     @Transient
     private File theLogfile = null;
     @Transient
@@ -610,7 +609,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return getCopper();
     }
 
-    public void setCopper(Integer copper)
+    protected void setCopper(Integer copper)
     {
         this.copper = copper;
     }
@@ -1767,9 +1766,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * for example {"light-green", "leather", "pants"}.
      * @return list of found items, empty if not found.
      */
+    @Override
     public List<Item> findItems(List<String> parsed)
     {
-        List<Item> result = new ArrayList<Item>();
+        List<Item> result = new ArrayList<>();
         for (Item item : getItems())
         {
             if (item.isDescribedBy(parsed))
@@ -1819,7 +1819,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             throw new ItemException("You do not have that item.");
         }
-
         this.wieldboth = item;
     }
 
@@ -2078,6 +2077,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             throw new ItemException("That item is still being worn, and cannot be destroyed.");
         }
+        if (item.containsItems())
+        {
+            throw new ItemException("That item contains items. Empty it first.");
+        }
         return items.remove(item);
         // note: as the collection is an orphan, the delete
         // on the set will take place automatically.
@@ -2179,6 +2182,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         if (position == null)
         {
             throw new RuntimeException("You cannot wear an item on null");
+        }
+        if (!item.isWearable(position))
+        {
+            throw new ItemException("You cannot wear that item there.");
         }
         switch (position)
         {
@@ -2295,6 +2302,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             throw new ItemException("You cannot wield an item on null");
         }
+        if (!item.isWieldable(position))
+        {
+            throw new ItemException("You cannot wield that item there.");
+        }
         switch (position)
         {
             case WIELD_BOTH:
@@ -2356,6 +2367,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         item.drop(this, getRoom());
     }
 
+    /**
+     * Picked up an item from a room.
+     *
+     * @param item
+     */
     public void get(Item item)
     {
         getRoom().get(item);
@@ -2403,5 +2419,20 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return
      */
     abstract public boolean canReceive();
+
+    public void give(Item item, Person toperson)
+    {
+        if (!items.remove(item))
+        {
+            throw new ItemException("Unable to remove item from inventory.");
+        }
+        toperson.receive(item);
+        item.give(toperson);
+    }
+
+    protected void receive(Item item)
+    {
+        items.add(item);
+    }
 
 }

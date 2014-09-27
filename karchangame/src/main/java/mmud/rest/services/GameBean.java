@@ -923,7 +923,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             result.down = true;
         }
         List<PrivatePerson> persons = new ArrayList<>();
-        for (Person person : player.getRoom().getUsers(player))
+        for (Person person : player.getRoom().getPersons(player))
         {
             PrivatePerson pp = new PrivatePerson();
             pp.race = person.getRace();

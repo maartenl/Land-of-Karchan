@@ -25,10 +25,8 @@ import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
-import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
 
 /**
  * Drop an item onto the floor: "drop bucket".
@@ -81,11 +79,9 @@ public class DropCommand extends NormalCommand
         }
         boolean dropped = false;
         ItemBean itemBean;
-        LogBean logBean;
         try
         {
             itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
 
         } catch (NamingException e)
         {

@@ -41,6 +41,7 @@ import mmud.commands.guild.LeaveCommand;
 import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
+import mmud.commands.items.BuyCommand;
 import mmud.commands.items.CloseCommand;
 import mmud.commands.items.DestroyCommand;
 import mmud.commands.items.DisarmCommand;
@@ -57,6 +58,7 @@ import mmud.commands.items.OpenCommand;
 import mmud.commands.items.PutCommand;
 import mmud.commands.items.ReadCommand;
 import mmud.commands.items.RetrieveCommand;
+import mmud.commands.items.SellCommand;
 import mmud.commands.items.UndressCommand;
 import mmud.commands.items.UnlockCommand;
 import mmud.commands.items.UnwearCommand;
@@ -198,10 +200,10 @@ public class CommandFactory
                 "look in( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("search", new SearchCommand(
 //                "search( (\\w|-)+){1,4}"));
-//        theCommandStructure.put("buy", new BuyCommand(
-//                "buy( (\\w|-)+){1,4} from (\\w)+"));
-//        theCommandStructure.put("sell"    , new SellCommand(
-//                "sell( (\\w|-)+){1,4} to (\\w)+"));
+        theCommandStructure.put("buy", new BuyCommand(
+                "buy( (\\w|-)+){1,4} from (\\w)+"));
+        theCommandStructure.put("sell", new SellCommand(
+                "sell( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("show", new ShowCommand(
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));

@@ -43,6 +43,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import mmud.Attributes;
+import mmud.Constants;
 import mmud.Utils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
@@ -317,6 +318,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     public String getBody() throws MudException
     {
         StringBuilder builder = new StringBuilder(getItemDefinition().getLongDescription());
+        builder.append("With your expert eye your judge this item to be worth ").
+                append(Constants.getDescriptionOfMoney(getCopper())).
+                append(".<br/>\r\n");
         if (isDrinkable())
         {
             builder.append("You can try drinking it.<br/>\r\n");
@@ -365,6 +369,11 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
             }
         }
         return builder.toString();
+    }
+
+    public Integer getCopper()
+    {
+        return getItemDefinition().getCopper();
     }
 
     @Override
@@ -487,7 +496,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      */
     public boolean isLocked()
     {
-        return verifyAttribute("islocked", "true");
+        return verifyAttribute(Attributes.LOCKED, "true");
     }
 
     public void open()
@@ -569,7 +578,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @Override
     public List<Item> findItems(List<String> parsed)
     {
-        List<Item> result = new ArrayList<Item>();
+        List<Item> result = new ArrayList<>();
         for (Item item : getItems())
         {
             if (item.isDescribedBy(parsed))
@@ -583,9 +592,11 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @Override
     public boolean destroyItem(Item item)
     {
-        return items.remove(item);
+        // TODO: move this to a container
+        // return items.remove(item);
         // note: as the collection is an orphan, the delete
         // on the set will take place automatically.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -634,6 +645,14 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      */
     public boolean isDroppable()
     {
+        if (isBound())
+        {
+            return false;
+        }
+        if (getItemDefinition().getId() < 0)
+        {
+            return false;
+        }
         if (getAttribute("notdropable") != null)
         {
             return !verifyAttribute("notdropable", "true");
@@ -664,6 +683,14 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      */
     public boolean isGetable()
     {
+        if (isBound())
+        {
+            return false;
+        }
+        if (getItemDefinition().getId() < 0)
+        {
+            return false;
+        }
         if (getAttribute("notgetable") != null)
         {
             return !verifyAttribute("notgetable", "true");
@@ -673,6 +700,10 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
     public void drop(Person person, Room room)
     {
+        if (isBound())
+        {
+            throw new ItemException("You are not allowed to drop this item.");
+        }
         if (getBelongsTo() == null || !getBelongsTo().equals(person))
         {
             throw new ItemException("Cannot drop the item, it's not yours.");
@@ -689,6 +720,10 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
     public void get(Person person, Room room)
     {
+        if (isBound())
+        {
+            throw new ItemException("You are not allowed to drop this item.");
+        }
         if (getRoom() == null || !getRoom().equals(room))
         {
             throw new ItemException("Item not in the room.");
@@ -699,6 +734,23 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         }
         belongsto = person;
         this.room = null;
+    }
+
+    public void give(Person toperson)
+    {
+        if (isBound())
+        {
+            throw new ItemException("You are not allowed to give this item.");
+        }
+        if (room != null)
+        {
+            throw new ItemException("Cannot give an item that is in a room.");
+        }
+        if (container != null)
+        {
+            throw new ItemException("Cannot give an item that is stored in a container.");
+        }
+        belongsto = toperson;
     }
 
     public boolean isReadable()
@@ -775,12 +827,12 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
     public void lock()
     {
-        setAttribute("islocked", "true");
+        setAttribute(Attributes.LOCKED, "true");
     }
 
     public void unlock()
     {
-        setAttribute("islocked", "false");
+        setAttribute(Attributes.LOCKED, "false");
     }
 
     public boolean isVisible()
@@ -795,5 +847,75 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      * @return
      */
     abstract public ItemCategory getCategory();
+
+    /**
+     * Items are sellable by default, unless attribute "notsellable" is set.
+     *
+     * @see Attributes#NOTSELLABLE
+     * @return
+     */
+    public boolean isSellable()
+    {
+        if (isBound())
+        {
+            return false;
+        }
+        if (containsItems())
+        {
+            return false;
+        }
+        if (getCopper() == 0)
+        {
+            return false;
+        }
+        if (getItemDefinition().getId() < 0)
+        {
+            return false;
+        }
+        if (getAttribute(Attributes.NOTSELLABLE) != null)
+        {
+            return !verifyAttribute(Attributes.NOTSELLABLE, "true");
+        }
+        return true;
+        // TODO: getItemDefinition().isSellable();
+    }
+
+    /**
+     * Items are buyable by default, unless attribute "notbuyable" is set.
+     *
+     * @see Attributes#NOTBUYABLE
+     * @return
+     */
+    public boolean isBuyable()
+    {
+        if (isBound())
+        {
+            return false;
+        }
+        if (getItemDefinition().getId() < 0)
+        {
+            return false;
+        }
+        if (getCopper() == 0)
+        {
+            return false;
+        }
+        if (getAttribute(Attributes.NOTBUYABLE) != null)
+        {
+            return !verifyAttribute(Attributes.NOTBUYABLE, "true");
+        }
+        return true;
+        // TODO: getItemDefinition().isBuyable();
+    }
+
+    /**
+     * Tells you if this item contains other items, for example if it is a bag.
+     *
+     * @return
+     */
+    public boolean containsItems()
+    {
+        return items != null && !items.isEmpty();
+    }
 
 }

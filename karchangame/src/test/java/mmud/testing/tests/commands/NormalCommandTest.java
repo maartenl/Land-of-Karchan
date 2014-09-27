@@ -19,14 +19,13 @@ package mmud.testing.tests.commands;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
-import org.testng.annotations.AfterMethod;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -69,14 +68,13 @@ public class NormalCommandTest
             {
                 String[] parsed = parseCommand(command);
                 assertEquals(parsed.length, 1);
-                assertEquals(parsed[0],"ask");
+                assertEquals(parsed[0], "ask");
                 return null;
             }
         };
 
         normalCommand.run("ask", null);
     }
-
 
     @Test
     public void checkParsedCommandNoLimit2() throws MudException
@@ -88,19 +86,18 @@ public class NormalCommandTest
             {
                 String[] parsed = parseCommand(command);
                 assertEquals(parsed.length, 6);
-                assertEquals(parsed[0],"ask");
-                assertEquals(parsed[1],"to");
-                assertEquals(parsed[2],"Marvin");
-                assertEquals(parsed[3],"Yo!");
-                assertEquals(parsed[4],"What's");
-                assertEquals(parsed[5],"up?");
+                assertEquals(parsed[0], "ask");
+                assertEquals(parsed[1], "to");
+                assertEquals(parsed[2], "Marvin");
+                assertEquals(parsed[3], "Yo!");
+                assertEquals(parsed[4], "What's");
+                assertEquals(parsed[5], "up?");
                 return null;
             }
         };
 
         normalCommand.run("ask to Marvin Yo! What's up?", null);
     }
-
 
     @Test
     public void checkParsedCommandLimit() throws MudException
@@ -110,16 +107,15 @@ public class NormalCommandTest
             @Override
             public DisplayInterface run(String command, User aUser) throws MudException
             {
-                String[] parsed = parseCommand(command,4 );
+                String[] parsed = parseCommand(command, 4);
                 assertEquals(parsed.length, 1);
-                assertEquals(parsed[0],"ask");
+                assertEquals(parsed[0], "ask");
                 return null;
             }
         };
 
         normalCommand.run("ask", null);
     }
-
 
     @Test
     public void checkParsedCommandLimit2() throws MudException
@@ -131,9 +127,9 @@ public class NormalCommandTest
             {
                 String[] parsed = parseCommand(command, 4);
                 assertEquals(parsed.length, 3);
-                assertEquals(parsed[0],"ask");
-                assertEquals(parsed[1],"to");
-                assertEquals(parsed[2],"Marvin");
+                assertEquals(parsed[0], "ask");
+                assertEquals(parsed[1], "to");
+                assertEquals(parsed[2], "Marvin");
                 return null;
             }
         };
@@ -151,10 +147,10 @@ public class NormalCommandTest
             {
                 String[] parsed = parseCommand(command, 4);
                 assertEquals(parsed.length, 4);
-                assertEquals(parsed[0],"ask");
-                assertEquals(parsed[1],"to");
-                assertEquals(parsed[2],"Marvin");
-                assertEquals(parsed[3],"Yo! What's up?");
+                assertEquals(parsed[0], "ask");
+                assertEquals(parsed[1], "to");
+                assertEquals(parsed[2], "Marvin");
+                assertEquals(parsed[3], "Yo! What's up?");
                 return null;
             }
         };

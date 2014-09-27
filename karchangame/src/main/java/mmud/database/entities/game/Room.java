@@ -179,11 +179,20 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         this.id = id;
     }
 
+    /**
+     * A description of the room.
+     *
+     * @return
+     */
     public String getContents()
     {
         return contents;
     }
 
+    /**
+     * @see #getContents()
+     * @param contents
+     */
     public void setContents(String contents)
     {
         this.contents = contents;
@@ -420,6 +429,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * character communication method to everyone in the room. The first person
      * is the source of the message. The second person is the target of the
      * message. The message is parsed based on the source and target.
+     * Will also be sent to the person doing the communicatin' and
+     * the target.
      *
      * @param aPerson the person doing the communicatin'.
      * @param aSecondPerson the person communicated to.
@@ -719,16 +730,42 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         }
     }
 
-    public List<Person> getUsers(User excludinguser)
+    /**
+     * Returns all persons in the room, can be bots or shopkeepers or normal
+     * players.
+     *
+     * @param excluding this user is excluded. Can be null, in this case all
+     * persons in the room are returned.
+     * @return a list of persons in the room.
+     */
+    public List<Person> getPersons(Person excluding)
     {
         List<Person> result = new ArrayList<>();
         for (Person person : persons)
         {
-            if (!person.getName().equals(excludinguser.getName()))
+            if (excluding == null || !person.getName().equals(excluding.getName()))
             {
                 result.add(person);
             }
         }
         return result;
+    }
+
+    /**
+     * Retrieves a specific person of the room, by (case-insensitive) name.
+     *
+     * @param name the name of the person to look for.
+     * @return Person in the room, null if not found.
+     */
+    public Person getPerson(String name)
+    {
+        for (Person person : persons)
+        {
+            if (person.getName().equalsIgnoreCase(name))
+            {
+                return person;
+            }
+        }
+        return null;
     }
 }

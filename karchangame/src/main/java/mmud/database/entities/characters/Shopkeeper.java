@@ -16,15 +16,24 @@
  */
 package mmud.database.entities.characters;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import mmud.database.enums.God;
 
 /**
  * A shopkeeper in the game.
+ *
  * @author maartenl
  */
 @Entity
 @DiscriminatorValue("4")
 public class Shopkeeper extends Bot
 {
+
+    @Override
+    public God getGod()
+    {
+        return God.SHOPKEEPER;
+    }
 
 }

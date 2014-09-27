@@ -139,6 +139,10 @@ public class ItemDefinition implements Serializable
     @NotNull
     @Column(name = "isopenable")
     private int isopenable;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "bound")
+    private boolean bound = false;
     @JoinColumn(name = "keyid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ItemDefinition key;
@@ -369,15 +373,24 @@ public class ItemDefinition implements Serializable
     }
 
     /**
-     * You cannot give this item to someone else. Also entails that you cannot
-     * drop this item.
+     * You cannot transfer this item. It is "soulbound" in warcraft parlance.
      *
-     * @return boolean, true if you cannot give the item to someone else.
+     * @return boolean, true if you cannot transfer this item.
      */
     public boolean isBound()
     {
-        // TODO : do something with this... "bind on pickup"
-        return false;
+        return bound;
+    }
+
+    /**
+     * You cannot give this item to someone else. Also entails that you cannot
+     * drop this item.
+     *
+     * @param bound the new value
+     */
+    public void setBound(boolean bound)
+    {
+        this.bound = bound;
     }
 
     /**
@@ -498,6 +511,10 @@ public class ItemDefinition implements Serializable
      */
     public Integer getCopper()
     {
+        if (copper == null)
+        {
+            return 0;
+        }
         return copper;
     }
 

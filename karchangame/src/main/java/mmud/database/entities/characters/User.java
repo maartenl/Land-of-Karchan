@@ -46,6 +46,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Macro;
+import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 
 /**
@@ -803,5 +804,11 @@ public class User extends Person
     public boolean canReceive()
     {
         return !verifyAttribute(Attributes.CANRECEIVE, "false");
+    }
+
+    @Override
+    public God getGod()
+    {
+        return God.DEFAULT_USER;
     }
 }

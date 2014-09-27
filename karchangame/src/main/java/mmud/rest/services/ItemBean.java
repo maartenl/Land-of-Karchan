@@ -17,17 +17,20 @@
 package mmud.rest.services;
 
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.Shopkeeper;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.ItemException;
 
 /**
- * Specific bean for the dropping and getting of items from containers, from
+ * Specific bean for the dropping, getting, selling and buying of items from containers, from
  * rooms and from persons.
  *
  * @author maartenl
@@ -39,6 +42,9 @@ public class ItemBean
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
+
+    @EJB
+    private LogBean logBean;
 
     /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
@@ -57,7 +63,7 @@ public class ItemBean
      *
      * @param person the person
      * @param item the item to be dropped.
-     * @return true if successfull.
+     * @return true if successful.
      */
     public boolean drop(Item item, Person person)
     {
@@ -65,7 +71,12 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("person", person);
         query.setParameter("room", person.getRoom());
-        return query.executeUpdate() == 1;
+        final boolean success = query.executeUpdate() == 1;
+        if (success)
+        {
+            logBean.writeLog(person, " dropped " + item.getDescription() + " in room " + person.getRoom().getId() + ".");
+        }
+        return success;
     }
 
     /**
@@ -73,7 +84,7 @@ public class ItemBean
      *
      * @param person the person
      * @param item the item to be retrieved from the room.
-     * @return true if successfull.
+     * @return true if successful.
      */
     public boolean get(Item item, Person person)
     {
@@ -81,7 +92,12 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("person", person);
         query.setParameter("room", person.getRoom());
-        return query.executeUpdate() == 1;
+        final boolean success = query.executeUpdate() == 1;
+        if (success)
+        {
+            logBean.writeLog(person, " got " + item.getDescription() + " from room " + person.getRoom().getId() + ".");
+        }
+        return success;
     }
 
     /**
@@ -90,7 +106,7 @@ public class ItemBean
      * @param fromperson the person giving the item
      * @param item the item to be shared
      * @param toperson the person receiving the item
-     * @return true if successfull.
+     * @return true if successful.
      */
     public boolean give(Item item, Person fromperson, Person toperson)
     {
@@ -98,7 +114,12 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("fromperson", fromperson);
         query.setParameter("toperson", toperson);
-        return query.executeUpdate() == 1;
+        final boolean success = query.executeUpdate() == 1;
+        if (success)
+        {
+            logBean.writeLog(fromperson, " gave " + item.getDescription() + " to " + toperson.getName() + ".");
+        }
+        return success;
     }
 
     /**
@@ -127,7 +148,12 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("container", container);
         query.setParameter("person", person);
-        return query.executeUpdate() == 1;
+        final boolean success = query.executeUpdate() == 1;
+        if (success)
+        {
+            logBean.writeLog(person, " put " + item.getDescription() + " into " + container.getDescription() + ".");
+        }
+        return success;
     }
 
     /**
@@ -160,6 +186,99 @@ public class ItemBean
         query.setParameter("item", item);
         query.setParameter("container", container);
         query.setParameter("person", person);
-        return query.executeUpdate() == 1;
+        final boolean success = query.executeUpdate() == 1;
+        if (success)
+        {
+            logBean.writeLog(person, " retrieved " + item.getDescription() + " from " + container.getDescription() + ".");
+        }
+        return success;
+    }
+
+    /**
+     * Sells an item from a user to a shopkeeper.
+     *
+     * @param item the item to be sold
+     * @param aUser the user selling the item
+     * @param shopkeeper the shopkeeper buying the item
+     * @return true upon success, false otherwise
+     */
+    public boolean sell(Item item, User aUser, Shopkeeper shopkeeper)
+    {
+        if (shopkeeper == null)
+        {
+            return false;
+        }
+        if (aUser == null)
+        {
+            return false;
+        }
+        if (item == null)
+        {
+            return false;
+        }
+        if (!item.isSellable())
+        {
+            return false;
+        }
+        if (shopkeeper.getCopper() < item.getCopper())
+        {
+            return false;
+        }
+        if (!aUser.getItems().contains(item))
+        {
+            return false;
+        }
+        if (shopkeeper.getRoom().getId() != aUser.getRoom().getId())
+        {
+            return false;
+        }
+        aUser.give(item, shopkeeper);
+        shopkeeper.transferMoney(item.getCopper() * 80 / 100, aUser);
+        logBean.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + ".");
+        return true;
+    }
+
+    /**
+     * Buys an item from a shopkeeper.
+     *
+     * @param item the item to be bought
+     * @param aUser the user buying the item
+     * @param shopkeeper the shopkeeper selling the item
+     * @return true upon success, false otherwise
+     */
+    public boolean buy(Item item, User aUser, Shopkeeper shopkeeper)
+    {
+        if (shopkeeper == null)
+        {
+            return false;
+        }
+        if (aUser == null)
+        {
+            return false;
+        }
+        if (item == null)
+        {
+            return false;
+        }
+        if (!item.isBuyable())
+        {
+            return false;
+        }
+        if (aUser.getCopper() < item.getCopper())
+        {
+            return false;
+        }
+        if (!shopkeeper.getItems().contains(item))
+        {
+            return false;
+        }
+        if (shopkeeper.getRoom().getId() != aUser.getRoom().getId())
+        {
+            return false;
+        }
+        shopkeeper.give(item, aUser);
+        aUser.transferMoney(item.getCopper(), shopkeeper);
+        logBean.writeLog(aUser, " bought " + item.getDescription() + " from " + shopkeeper.getName() + ".");
+        return true;
     }
 }

@@ -34,4 +34,15 @@ public class Attributes
     public final static String CANRECEIVE = "canreceive";
 
     public final static String VALUETYPE_STRING = "string";
+
+    public final static String VALUETYPE_BOOLEAN = "boolean";
+
+    /**
+     * Attribute indicating that an item is locked.
+     */
+    public static final String LOCKED = "islocked";
+
+    public static final String NOTSELLABLE = "notsellable";
+
+    public static String NOTBUYABLE = "notbuyable";
 }

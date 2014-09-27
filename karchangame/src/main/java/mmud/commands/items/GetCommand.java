@@ -25,10 +25,8 @@ import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
-import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
 
 /**
  * Retrieve item from floor: "get bucket".
@@ -37,6 +35,7 @@ import mmud.rest.services.LogBean;
  * or more items in your inventory, this method will attempt to aquire 5
  * items. It is possible that not all items are available, in which case you
  * could conceivably only receive 3 items for instance.
+ *
  * @see DropCommand
  * @author maartenl
  */
@@ -81,11 +80,9 @@ public class GetCommand extends NormalCommand
         }
         boolean getted = false;
         ItemBean itemBean;
-        LogBean logBean;
         try
         {
             itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
 
         } catch (NamingException e)
         {

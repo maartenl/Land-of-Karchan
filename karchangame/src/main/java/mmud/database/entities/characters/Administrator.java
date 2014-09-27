@@ -18,6 +18,7 @@ package mmud.database.entities.characters;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import mmud.database.enums.God;
 
 /**
  * An administrator, which is a simple user with extra rights, in the game.
@@ -29,4 +30,10 @@ import javax.persistence.Entity;
 @DiscriminatorValue("1")
 public class Administrator extends User
 {
+
+    @Override
+    public God getGod()
+    {
+        return God.GOD;
+    }
 }
