@@ -17,10 +17,13 @@
 package mmud.testing;
 
 import java.util.Date;
+import mmud.database.entities.characters.Bot;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
+import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 
@@ -52,24 +55,32 @@ public class TestingConstants
      * @return
      * @throws MudException
      */
-    public static User getHotblack(Room aRoom) throws MudException
+    public static Person getHotblack(God god, Room aRoom) throws MudException
     {
-        User person = new User();
+        Person person = null;
+        if (god == God.DEFAULT_USER)
+        {
+            User person2 = new User();
+            person2.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
+            person2.setLok("lok");
+            person2.setAddress("82-170-94-123.ip.telfort.nl");
+            person2.setPassword("93ef5f419670b2d0efe0c9461b765725a74c86eb"); // sha1 of "hotblack"
+            person2.setRealname(null);
+            person2.setEmail(null);
+            person = person2;
+        }
+        if (god == God.BOT)
+        {
+            person = new Bot();
+        }
         person.setName("Hotblack");
         // JDK7: number formats, for clarification.
         // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
         person.setSleep(Boolean.FALSE);
         person.setTitle("Guitar keyboard player of the rock group Disaster Area");
         person.setRoom(aRoom);
         person.setSex(Sex.MALE);
         person.setRace("undead");
-        person.setLok("lok");
-        person.setAddress("82-170-94-123.ip.telfort.nl");
-        person.setPassword("93ef5f419670b2d0efe0c9461b765725a74c86eb"); // sha1 of "hotblack"
-
-        person.setRealname(null);
-        person.setEmail(null);
 
         person.setRace("undead");
         person.setSex(Sex.MALE);
@@ -87,21 +98,32 @@ public class TestingConstants
         return person;
     }
 
-    public static User getMarvin(Room aRoom) throws MudException
+    public static Person getMarvin(God god, Room aRoom) throws MudException
     {
-        User person = new User();
+        Person person = null;
+        if (god == God.DEFAULT_USER)
+        {
+            User person2 = new User();
+            person2.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+            person2.setLok("lok");
+            person2.setAddress("82-170-94-123.ip.telfort.nl");
+            person2.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
+            person2.setRealname(null);
+            person2.setEmail(null);
+            person = person2;
+        }
+        if (god == God.BOT)
+        {
+            person = new Bot();
+        }
         person.setName("Marvin");
         // JDK7: number formats, for clarification.
         // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
-        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
         person.setRoom(aRoom);
         person.setSex(Sex.MALE);
         person.setSleep(Boolean.TRUE);
         person.setRace("android");
         person.setTitle("The Paranoid Android");
-        person.setLok("lok");
-        person.setAddress("82-170-94-123.ip.telfort.nl");
-        person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
         person.setSex(Sex.MALE);
         person.setAge("young");
         person.setHeight("tall");

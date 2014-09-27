@@ -31,6 +31,7 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.database.enums.God;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -100,8 +101,8 @@ public class PublicBeanTest
         Area aArea = TestingConstants.getArea();
         Room aRoom = TestingConstants.getRoom(aArea);
 
-        hotblack = TestingConstants.getHotblack(aRoom);
-        marvin = TestingConstants.getMarvin(aRoom);
+        hotblack = (User) TestingConstants.getHotblack(God.DEFAULT_USER, aRoom);
+        marvin = (User) TestingConstants.getMarvin(God.DEFAULT_USER, aRoom);
     }
 
     @AfterMethod

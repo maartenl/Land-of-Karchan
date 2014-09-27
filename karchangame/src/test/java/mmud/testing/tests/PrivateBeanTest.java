@@ -113,8 +113,8 @@ public class PrivateBeanTest
     {
         Area aArea = TestingConstants.getArea();
         Room aRoom = TestingConstants.getRoom(aArea);
-        hotblack = TestingConstants.getHotblack(aRoom);
-        marvin = TestingConstants.getMarvin(aRoom);
+        hotblack = TestingConstants.getHotblack(God.DEFAULT_USER, aRoom);
+        marvin = TestingConstants.getMarvin(God.DEFAULT_USER, aRoom);
     }
 
     @AfterMethod
@@ -138,44 +138,6 @@ public class PrivateBeanTest
         assertEquals(actual.subject, expected.subject, "subject");
         assertEquals(actual.toname, expected.toname, "toname");
         assertEquals(actual.whensent, expected.whensent, "whensent");
-    }
-
-    /**
-     * See to it that a bot cannot be authenticated. WebApplicationException
-     * expected.
-     */
-    @Test
-    public void listMailAuthenticate3()
-    {
-        logger.fine("listMailAuthenticate3");
-        marvin.setGod(God.BOT);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            List<PrivateMail> result = privateBean.listMail("Marvin", null, "lok");
-            fail("We are supposed to get an exception here.");
-        } catch (MudWebException result)
-        {
-            // Yay! We get an exception!
-        }
     }
 
     /**
@@ -546,48 +508,6 @@ public class PrivateBeanTest
                 result = marvin;
                 entityManager.find(User.class, "Unknown");
                 result = null;
-
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            Response result = privateBean.newMail(privateMail, "Marvin", "lok");
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void newMailToBot()
-    {
-        logger.fine("newMailToBot");
-        PrivateMail privateMail = new PrivateMail();
-        privateMail.body = "First mail";
-        privateMail.subject = "Subject";
-        privateMail.toname = "Hotblack";
-        hotblack.setGod(God.BOT);
-        // all other props are ignored by the method under test
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(User.class, "Hotblack");
-                result = hotblack;
 
             }
         };

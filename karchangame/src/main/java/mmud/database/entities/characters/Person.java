@@ -875,11 +875,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return God.get(god);
     }
 
-    public void setGod(God god)
-    {
-        this.god = god.getValue();
-    }
-
     public Integer getStrength()
     {
         return strength;

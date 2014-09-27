@@ -58,7 +58,6 @@ import mmud.database.entities.game.MacroPK;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
 import mmud.database.entities.game.Worldattribute;
-import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -403,7 +402,6 @@ public class GameBean implements RoomsInterface, WorldInterface
             person.setBirth(new Date());
             person.setCreation(new Date());
             person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
-            person.setGod(God.DEFAULT_USER);
 
             getEntityManager().persist(person);
             // TODO automatically add a welcome mail.
