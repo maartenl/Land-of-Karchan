@@ -183,6 +183,18 @@ public class Admin implements Serializable
         this.validuntil = validuntil;
     }
 
+    /**
+     * Returns true if this account is still valid.
+     * Which means, that the expiration date has not
+     * yet passed.
+     *
+     * @return
+     */
+    public boolean isValid()
+    {
+        return validuntil.compareTo(new Date()) > 0;
+    }
+
     public String getEmail()
     {
         return email;

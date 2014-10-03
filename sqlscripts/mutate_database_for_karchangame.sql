@@ -394,7 +394,7 @@ AFTER `title` ;
 ALTER TABLE mm_itemtable ADD COLUMN `shopkeeper` VARCHAR(20) NULL  AFTER `discriminator` , 
 ADD CONSTRAINT `fk_mm_itemtable_4`
 FOREIGN KEY (`shopkeeper` )
-REFERENCES `mmud`.`mm_usertable` (`name` )
+REFERENCES `mm_usertable` (`name` )
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 , ADD INDEX `fk_mm_itemtable_4` (`shopkeeper` ASC) ;
@@ -405,5 +405,40 @@ update mm_itemtable set shopkeeper='Karcas' where id=515;
 ALTER TABLE mm_items
 ADD COLUMN `bound` TINYINT(1) NOT NULL DEFAULT 0  
 AFTER `discriminator`;
+
+CREATE  TABLE mm_groups (
+`id` INT NOT NULL ,
+`name` VARCHAR(45) NOT NULL ,
+`description` VARCHAR(255) NULL ,
+PRIMARY KEY (`id`) )
+ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE mm_admin_groups (
+  `groupid` INT(11) NOT NULL ,
+  `name` VARCHAR(39) NOT NULL ,
+  PRIMARY KEY (`groupid`, `name`) )
+ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE mm_admin_groups 
+  ADD CONSTRAINT `fk_mm_admin_groups_1`
+  FOREIGN KEY (`name` )
+  REFERENCES mm_admin (`name` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION, 
+  ADD CONSTRAINT `fk_mm_admin_groups_2`
+  FOREIGN KEY (`groupid` )
+  REFERENCES mm_groups` (`id` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_mm_admin_groups_1` (`name` ASC) 
+, ADD INDEX `fk_mm_admin_groups_2` (`groupid` ASC) ;
+
+insert into mm_groups values(1, "deputy", "The deputy administration group.");
+
+insert into mm_admin_groups select 1, name from mm_admin;
+
+ALTER TABLE mm_admin_groups RENAME TO  mm_admin_mm_groups;
+
+ALTER TABLE mm_admin CHANGE COLUMN `passwd` `passwd` VARCHAR(260) NOT NULL DEFAULT ''  ;
 
 END_OF_DATA

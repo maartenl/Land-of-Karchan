@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ * Copyright (C) 2014 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,34 @@
  */
 package mmud.rest.webentities;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
+import mmud.database.entities.game.Method;
 
 /**
  *
  * @author maartenl
  */
 @XmlRootElement
-public class Fortune
+public class DeputyScript
 {
 
+    public Date creation;
     public String name;
-    public Integer gold;
-    public Integer silver;
-    public Integer copper;
+    public String owner;
+    public String src;
 
-    public Fortune()
+    public DeputyScript()
     {
         // empty constructor for JAXB
     }
 
-    public Fortune(String name, int copper)
+    public DeputyScript(Method method)
     {
-        this.name = name;
-        gold = copper / 100;
-        silver = (copper % 100) / 10;
-        this.copper = copper % 10;
+        this.creation = method.getCreation();
+        this.name = method.getName();
+        this.owner = (method.getOwner() == null ? null : method.getOwner().getName());
+        this.src = method.getSrc();
     }
+
 }
