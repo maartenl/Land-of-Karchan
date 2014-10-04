@@ -83,7 +83,7 @@ set mm_itemtable.room = mm_roomitemtable.room
 where mm_roomitemtable.id = mm_itemtable.id;
 
 # now, one would assume that there are no items that have not been
-# allocated, but we're going to check anyways.
+# allocated, but were going to check anyways.
 select *
 from mm_itemtable
 where belongsto is null
@@ -105,19 +105,21 @@ ALTER TABLE mm_usertable
   ADD COLUMN `wearhead` INT(11) NULL DEFAULT NULL  AFTER `wieldboth` , 
   ADD COLUMN `wearneck` INT(11) NULL DEFAULT NULL  AFTER `wearhead` , 
   ADD COLUMN `weartorso` INT(11) NULL DEFAULT NULL AFTER `wearneck` , 
-  ADD COLUMN `weararms` INT(11) NULL DEFAULT NULL  AFTER`weartorso` , 
-  ADD COLUMN `wearleftwrist` INT(11) NULL DEFAULT NULL  AFTER`weararms` , 
-  ADD COLUMN `wearrightwrist` INT(11) NULL DEFAULT NULL  AFTER`wearleftwrist` , 
+  ADD COLUMN `weararms` INT(11) NULL DEFAULT NULL  AFTER `weartorso` , 
+  ADD COLUMN `wearleftwrist` INT(11) NULL DEFAULT NULL  AFTER `weararms` , 
+  ADD COLUMN `wearrightwrist` INT(11) NULL DEFAULT NULL  AFTER `wearleftwrist` , 
   ADD COLUMN `wearleftfinger` INT(11) NULL DEFAULT NULL AFTER `wearrightwrist` , 
   ADD COLUMN `wearrightfinger` INT(11) NULL DEFAULT NULL  AFTER `wearleftfinger` , 
   ADD COLUMN `wearfeet` INT(11) NULL DEFAULT NULL  AFTER `wearrightfinger` , 
   ADD COLUMN `wearhands` INT(11) NULL DEFAULT NULL  AFTER `wearfeet` , 
   ADD COLUMN `wearfloatingnearby` INT(11) NULL DEFAULT NULL  AFTER `wearhands` , 
   ADD COLUMN `wearwaist` INT(11) NULL DEFAULT NULL  AFTER `wearfloatingnearby` , 
-  ADD COLUMN `wearlegs` INT(11)NULL DEFAULT NULL  AFTER `wearwaist` , 
+  ADD COLUMN `wearlegs` INT(11) NULL DEFAULT NULL  AFTER `wearwaist` , 
   ADD COLUMN `weareyes` INT(11) NULL DEFAULT NULL  AFTER `wearlegs` , 
   ADD COLUMN `wearears` INT(11) NULL DEFAULT NULL  AFTER `weareyes` , 
-  ADD COLUMN `wearaboutbody` INT(11) NULL DEFAULT NULL  AFTER `wearears` , 
+  ADD COLUMN `wearaboutbody` INT(11) NULL DEFAULT NULL  AFTER `wearears`;
+
+ALTER TABLE mm_usertable
   ADD CONSTRAINT `wieldleft_fk`
   FOREIGN KEY (`wieldleft` )
   REFERENCES mm_itemtable (`id` )
@@ -212,8 +214,10 @@ ALTER TABLE mm_usertable
   FOREIGN KEY (`wearaboutbody` )
   REFERENCES mm_itemtable (`id` )
   ON DELETE NO ACTION
-  ON UPDATE NO ACTION
-, ADD INDEX `fk_mm_usertable_1_idx` (`wieldleft` ASC) 
+  ON UPDATE NO ACTION;
+
+ALTER TABLE mm_usertable
+ADD INDEX `fk_mm_usertable_1_idx` (`wieldleft` ASC) 
 , ADD INDEX `fk_mm_usertable_2_idx` (`wieldright` ASC) 
 , ADD INDEX `fk_mm_usertable_3_idx` (`wieldboth` ASC) 
 , ADD INDEX `fk_mm_usertable_4_idx` (`wearhead` ASC) 
@@ -240,7 +244,7 @@ drop table mm_charitemtable;
 drop table mm_itemitemtable;
 drop table mm_roomitemtable;
 
-# don't know why, but the itemid in mm_itemtable did not have a not-null
+# dont know why, but the itemid in mm_itemtable did not have a not-null
 # constraint.
 ALTER TABLE mm_itemtable DROP FOREIGN KEY `mm_itemtable_ibfk_1` ;
 ALTER TABLE mm_itemtable CHANGE COLUMN `itemid` `itemid` INT(11)
@@ -310,7 +314,7 @@ ALTER TABLE mm_events
 #
 # this table is always forgotten in backups, as it tends to fill up quickly and is just
 # logging.
-# NOTE: FOr some reason this script doesn't work, but copy-pasting it in a mysql session does. No clue why.
+# NOTE: FOr some reason this script doesnt work, but copy-pasting it in a mysql session does. No clue why.
 
 DROP TABLE IF EXISTS `mm_commandlog`;
 
@@ -320,7 +324,7 @@ CREATE TABLE `mm_commandlog` (
   `name` varchar(20) NOT NULL,
   `command` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7915438 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
                    
 
 START TRANSACTION;
@@ -410,19 +414,19 @@ CREATE TABLE `mm_groups` (
 `name` varchar(45) NOT NULL,
 `description` varchar(255) DEFAULT NULL,
 PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
       
 CREATE TABLE `mm_admin_mm_groups` (
 `groupid` varchar(45) NOT NULL,
 `name` varchar(39) NOT NULL,
 PRIMARY KEY (`groupid`,`name`),
 KEY `fk_mm_admin_mm_groups_1` (`name`),
-KEY `fk_mm_admin_mm_groups_1` (`groupid`),
+KEY `fk_mm_admin_mm_groups_2` (`groupid`),
 CONSTRAINT `fk_mm_admin_mm_groups_1` FOREIGN KEY (`name`) REFERENCES `mm_admin` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-CONSTRAINT `fk_mm_admin_mm_groups_1` FOREIGN KEY (`groupid`) REFERENCES `mm_groups` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+CONSTRAINT `fk_mm_admin_mm_groups_2` FOREIGN KEY (`groupid`) REFERENCES `mm_groups` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
                 
-insert into mm_groups values(1, "deputy", "The deputy administration group.");
+insert into mm_groups values("deputy", "The deputy administration group.");
 
 insert into mm_admin_mm_groups select 'deputy', name from mm_admin;
 
