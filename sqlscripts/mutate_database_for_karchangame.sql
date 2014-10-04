@@ -406,38 +406,25 @@ ALTER TABLE mm_items
 ADD COLUMN `bound` TINYINT(1) NOT NULL DEFAULT 0  
 AFTER `discriminator`;
 
-CREATE  TABLE mm_groups (
-`id` INT NOT NULL ,
-`name` VARCHAR(45) NOT NULL ,
-`description` VARCHAR(255) NULL ,
-PRIMARY KEY (`id`) )
-ENGINE = InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE mm_admin_groups (
-  `groupid` INT(11) NOT NULL ,
-  `name` VARCHAR(39) NOT NULL ,
-  PRIMARY KEY (`groupid`, `name`) )
-ENGINE = InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE mm_admin_groups 
-  ADD CONSTRAINT `fk_mm_admin_groups_1`
-  FOREIGN KEY (`name` )
-  REFERENCES mm_admin (`name` )
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION, 
-  ADD CONSTRAINT `fk_mm_admin_groups_2`
-  FOREIGN KEY (`groupid` )
-  REFERENCES mm_groups` (`id` )
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION
-, ADD INDEX `fk_mm_admin_groups_1` (`name` ASC) 
-, ADD INDEX `fk_mm_admin_groups_2` (`groupid` ASC) ;
-
+CREATE TABLE `mm_groups` (
+`name` varchar(45) NOT NULL,
+`description` varchar(255) DEFAULT NULL,
+PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+      
+CREATE TABLE `mm_admin_mm_groups` (
+`groupid` varchar(45) NOT NULL,
+`name` varchar(39) NOT NULL,
+PRIMARY KEY (`groupid`,`name`),
+KEY `fk_mm_admin_mm_groups_1` (`name`),
+KEY `fk_mm_admin_mm_groups_1` (`groupid`),
+CONSTRAINT `fk_mm_admin_mm_groups_1` FOREIGN KEY (`name`) REFERENCES `mm_admin` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT `fk_mm_admin_mm_groups_1` FOREIGN KEY (`groupid`) REFERENCES `mm_groups` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+                
 insert into mm_groups values(1, "deputy", "The deputy administration group.");
 
-insert into mm_admin_groups select 1, name from mm_admin;
-
-ALTER TABLE mm_admin_groups RENAME TO  mm_admin_mm_groups;
+insert into mm_admin_mm_groups select 'deputy', name from mm_admin;
 
 ALTER TABLE mm_admin CHANGE COLUMN `passwd` `passwd` VARCHAR(260) NOT NULL DEFAULT ''  ;
 
