@@ -18,13 +18,17 @@ package mmud;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
+import mmud.database.enums.Filter;
 import mmud.rest.webentities.PrivateItem;
 
 /**
@@ -363,5 +367,33 @@ public class Constants
             }
         }
         return new ArrayList<>(inventory.values());
+    }
+
+    public static void setFilters(final EntityManager entityManager, Filter activePersonFilter)
+    {
+        entityManager.setProperty("activePersonFilter", activePersonFilter == Filter.ON ? 1 : 0);
+        entityManager.setProperty("sundaydateFilter", getSundays());
+    }
+
+    /**
+     * <p>
+     * Retrieves the date of the last Sunday, compared to <i>now</i>.</p>
+     * <p>
+     * So, if today is Wednesday, 12-12-2010, 13:00:00 hours, this would return
+     * Saturday, 08-12-2010, 00:00:00 hours (midnight).</p>
+     *
+     * @return the Date of last Sunday morning.
+     */
+    public static Date getSundays()
+    {
+        Calendar cal = Calendar.getInstance();
+        int daysBackToSunday = cal.get(Calendar.DAY_OF_WEEK);
+        cal.add(Calendar.DATE, -daysBackToSunday);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date sundays = cal.getTime();
+        return sundays;
     }
 }

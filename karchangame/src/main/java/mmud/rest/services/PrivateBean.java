@@ -40,6 +40,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Mail;
@@ -47,6 +48,7 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
+import mmud.database.enums.Filter;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
@@ -168,7 +170,7 @@ public class PrivateBean
     public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering listMail");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Person person = authenticate(name, lok);
         List<PrivateMail> res = new ArrayList<>();
         try
@@ -350,7 +352,7 @@ public class PrivateBean
     public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
         itsLog.finer("entering getMail");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Person person = authenticate(name, lok);
         try
         {
@@ -526,7 +528,7 @@ public class PrivateBean
     public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
     {
         itsLog.finer("entering deleteMail");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Person person = authenticate(name, lok);
         // get the specific mail with id {id}
         Mail mail = getMail(person.getName(), id);
@@ -622,7 +624,7 @@ public class PrivateBean
         {
             throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
         }
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticate(name, lok);
         Person toperson = getPerson(toname);
         try
@@ -679,7 +681,7 @@ public class PrivateBean
     public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
     {
         itsLog.finer("entering deleteFamilyValues");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Person person = authenticate(name, lok);
         FamilyPK pk = new FamilyPK();
         pk.setName(person.getName());

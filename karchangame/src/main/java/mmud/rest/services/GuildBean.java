@@ -45,10 +45,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Attributes;
+import mmud.Constants;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
+import mmud.database.enums.Filter;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
@@ -138,7 +140,7 @@ public class GuildBean
     public PrivateGuild getGuild(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getGuild");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Guild guild = authenticate(name, lok);
         PrivateGuild privateGuild = new PrivateGuild();
         privateGuild.guildurl = guild.getHomepage();
@@ -176,7 +178,7 @@ public class GuildBean
     public Response updateGuild(@PathParam("name") String name, @QueryParam("lok") String lok, PrivateGuild cinfo)
     {
         itsLog.finer("entering updateGuild");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         if (!cinfo.bossname.equals(person.getName()))
@@ -214,7 +216,7 @@ public class GuildBean
     public Response createGuild(@PathParam("name") String name, @QueryParam("lok") String lok, PrivateGuild cinfo)
     {
         itsLog.finer("entering createGuild");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = privateBean.authenticate(name, lok);
         if (person.getGuild() != null)
         {
@@ -266,7 +268,7 @@ public class GuildBean
     public Response deleteGuild(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering deleteGuild");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         for (User guildmember : guild.getMembers())
@@ -303,7 +305,7 @@ public class GuildBean
     public List<PrivatePerson> getMembers(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getGuildMembers");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Guild guild = authenticate(name, lok);
         Collection<User> members = guild.getMembers();
         List<PrivatePerson> result = new ArrayList<>();
@@ -340,7 +342,7 @@ public class GuildBean
             @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getMember");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Guild guild = authenticate(name, lok);
         User member = guild.getMember(membername);
         if (member == null)
@@ -377,7 +379,7 @@ public class GuildBean
             @QueryParam("lok") String lok)
     {
         itsLog.finer("entering deleteMember");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         if (membername != null && membername.equals(person.getName()))
@@ -418,7 +420,7 @@ public class GuildBean
     public Response createMember(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson member)
     {
         itsLog.finer("entering createMember");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         String membername = member.name;
@@ -461,7 +463,7 @@ public class GuildBean
             @QueryParam("lok") String lok, PrivatePerson member)
     {
         itsLog.finer("entering updateMember");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         User user = guild.getMember(membername);
@@ -501,7 +503,7 @@ public class GuildBean
     public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getGuildHopefuls");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Guild guild = authenticate(name, lok);
         Collection<User> hopefuls = getGuildHopefuls(guild);
         List<PrivatePerson> result = new ArrayList<>();
@@ -542,7 +544,7 @@ public class GuildBean
             @PathParam("hopefulname") String hopefulname)
     {
         itsLog.finer("entering getGuildHopefuls");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         User possibleMember = personBean.getUser(hopefulname);
@@ -571,7 +573,7 @@ public class GuildBean
     public List<PrivateRank> getGuildRanks(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering getGuildRanks");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         Guild guild = authenticate(name, lok);
         Guildrank[] ranks = guild.getGuildrankCollection().toArray(new Guildrank[0]);
         Arrays.sort(ranks, new Comparator<Guildrank>()
@@ -617,7 +619,7 @@ public class GuildBean
     public PrivateRank getGuildRank(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("guildlevel") Integer guildlevel)
     {
         itsLog.finer("entering getGuildRank");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 
@@ -658,7 +660,7 @@ public class GuildBean
     public Response createGuildRank(@PathParam("name") String name, @QueryParam("lok") String lok, PrivateRank rank)
     {
         itsLog.finer("entering createGuildRank");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
         Guildrank newRank = new Guildrank();
@@ -706,7 +708,7 @@ public class GuildBean
     public Response updateGuildRank(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank)
     {
         itsLog.finer("entering updateGuildRank");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 
@@ -745,7 +747,7 @@ public class GuildBean
     public Response deleteGuildRank(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("guildlevel") Integer guildlevel)
     {
         itsLog.finer("entering deleteGuildRank");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = authenticateGuildMaster(name, lok);
         Guild guild = person.getGuild();
 

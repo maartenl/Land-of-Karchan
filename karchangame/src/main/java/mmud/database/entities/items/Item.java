@@ -97,6 +97,12 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @Column(name = "creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creation;
+    /**
+     * Indicates what kind of item it is. Current values are used:
+     * <ul><li>0, a normal item</li>
+     * <li>1, a shopkeeper list</li>
+     * <li>2, a writable item like a board</li></ul>
+     */
     @Basic(optional = false)
     @NotNull
     @Column(name = "discriminator")

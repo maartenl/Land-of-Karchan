@@ -161,6 +161,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = null;
             }
@@ -198,6 +199,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
             }
@@ -231,6 +233,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.createNamedQuery("Mail.listmail");
@@ -294,6 +297,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.createNamedQuery("Mail.listmail");
@@ -543,6 +547,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -588,6 +593,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -633,6 +639,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -678,6 +685,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -984,6 +992,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -1023,6 +1032,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -1060,6 +1070,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Mail.class, 1l);
@@ -1309,6 +1320,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Person.class, "Hotblack");
@@ -1356,6 +1368,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
 
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -1398,6 +1411,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Person.class, "Hotblack");
@@ -1456,6 +1470,7 @@ public class PrivateBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(Family.class, (FamilyPK) any);

@@ -14,21 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.database.entities.items;
+package mmud.database.enums;
 
 /**
  *
  * @author maartenl
  */
-public enum ItemCategory
+public enum Filter
 {
 
-    /**
-     * In the database this is the discriminator "0".
-     */
-    NORMALITEM,
-    /**
-     * In the database this is the discriminator "1".
-     */
-    SHOPKEEPERLIST
+    ON, OFF
 }

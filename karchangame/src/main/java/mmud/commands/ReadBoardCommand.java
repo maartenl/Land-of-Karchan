@@ -24,6 +24,7 @@ import mmud.exceptions.MudException;
 /**
  * Reads a general board. Command is like "readboard public" in the proper room.
  *
+ * @see PostBoardCommand
  * @author maartenl
  */
 public class ReadBoardCommand extends NormalCommand
@@ -41,7 +42,7 @@ public class ReadBoardCommand extends NormalCommand
         Board board = aUser.getRoom().getBoard(myParsed[1]);
         if (board == null)
         {
-            aUser.writeMessage("Unable to find board [" + myParsed[1] + "] in this room. Board unknown.<br/>\r\n");
+            aUser.writeMessage("Unable to find board [" + myParsed[1] + "] in this room. Board not found in this room.<br/>\r\n");
             return aUser.getRoom();
         }
         return board;

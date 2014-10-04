@@ -197,6 +197,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.fortunes");
                 result = query;
             }
@@ -238,6 +239,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.fortunes");
                 result = query;
                 query.setMaxResults(100);
@@ -290,6 +292,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.who");
                 result = query;
             }
@@ -330,6 +333,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.who");
                 result = query;
                 query.getResultList();
@@ -385,6 +389,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("BoardMessage.news");
                 result = query;
                 query.setParameter("sundays", getSundays());
@@ -441,6 +446,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("BoardMessage.news");
                 result = query;
                 query.setParameter("sundays", getSundays());
@@ -483,6 +489,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
@@ -516,6 +523,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("User.status");
                 result = query;
                 query.getResultList();
@@ -555,6 +563,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("Guild.findAll");
                 result = query;
                 query.getResultList();
@@ -604,6 +613,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("Guild.findAll");
                 result = query;
                 query.getResultList();
@@ -649,6 +659,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = null;
             }
@@ -692,6 +703,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
                 entityManager.find(CharacterInfo.class, marvin.getName());
@@ -737,6 +749,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");
                 result = query;
                 query.getResultList();
@@ -770,6 +783,7 @@ public class PublicBeanTest
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
+                entityManager.setProperty("sundaydateFilter", (Date) any);
                 entityManager.createNamedQuery("CharacterInfo.charactersheets");
                 result = query;
                 query.getResultList();

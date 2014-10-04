@@ -58,6 +58,7 @@ import mmud.database.entities.game.MacroPK;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
 import mmud.database.entities.game.Worldattribute;
+import mmud.database.enums.Filter;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -336,7 +337,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
     {
         itsLog.finer("entering create");
-        getEntityManager().setProperty("activePersonFilter", 0); // turns filter off
+        Constants.setFilters(getEntityManager(), Filter.OFF);  // turns filter off
         String address = requestContext.getRemoteAddr().toString();
         try
         {
@@ -631,7 +632,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw new MudWebException(name, ex, Response.Status.BAD_REQUEST);
         }
         PrivateDisplay display = null;
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
         User person = authenticate(name, lok);
         try
         {
@@ -865,7 +866,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
     {
         itsLog.finer("entering quit");
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
 
         User person = authenticate(name, lok);
         try

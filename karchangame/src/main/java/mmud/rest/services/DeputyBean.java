@@ -29,7 +29,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import mmud.Constants;
 import mmud.database.entities.game.Method;
+import mmud.database.enums.Filter;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.DeputyScript;
 
@@ -75,7 +77,7 @@ public class DeputyBean
     public List<DeputyScript> scripts()
     {
         itsLog.finer("entering scripts");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         List<DeputyScript> res = new ArrayList<>();
         try
         {

@@ -30,9 +30,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.script.ScriptException;
+import mmud.Constants;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
+import mmud.database.enums.Filter;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
@@ -88,7 +90,7 @@ public class EventsBean
     public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
         // logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
         Query query = getEntityManager().createNamedQuery("Event.list");
         Calendar calendar = Calendar.getInstance();
         query.setParameter("month", calendar.get(Calendar.MONTH));
@@ -139,7 +141,7 @@ public class EventsBean
     private void executeIdleCleanup()
     {
         logBean.writeLog(null, "executeIdleCleanup(): scheduled at time " + new Date() + ".");
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
         Query query = getEntityManager().createNamedQuery("User.who");
         List<User> list = query.getResultList();
         for (User user : list)

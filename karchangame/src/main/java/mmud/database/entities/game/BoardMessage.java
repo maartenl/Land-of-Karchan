@@ -35,6 +35,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
+import org.eclipse.persistence.annotations.AdditionalCriteria;
 
 /**
  *
@@ -48,6 +49,7 @@ import mmud.database.entities.characters.Person;
             @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
             @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :sundays and b.removed = false order by b.id desc")
         })
+@AdditionalCriteria("(this.posttime > :sundaydateFilter and this.removed = 0)")
 public class BoardMessage implements Serializable
 {
 

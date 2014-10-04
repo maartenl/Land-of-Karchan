@@ -23,8 +23,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.enums.Filter;
 import mmud.scripting.PersonsInterface;
 
 /**
@@ -85,7 +87,7 @@ public class PersonBean implements PersonsInterface
     @Override
     public Person find(String name)
     {
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
         Person result = getEntityManager().find(Person.class, name);
         return result;
     }

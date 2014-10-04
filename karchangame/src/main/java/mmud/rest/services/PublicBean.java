@@ -33,12 +33,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
+import mmud.database.enums.Filter;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
@@ -96,7 +98,7 @@ public class PublicBean
     public List<Fortune> fortunes()
     {
         itsLog.finer("entering fortunes");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         List<Fortune> res = new ArrayList<>();
         try
         {
@@ -133,7 +135,7 @@ public class PublicBean
     public List<PublicPerson> who()
     {
         itsLog.finer("entering who");
-        getEntityManager().setProperty("activePersonFilter", 1);
+        Constants.setFilters(getEntityManager(), Filter.ON);
         List<PublicPerson> res = new ArrayList<>();
         try
         {
@@ -220,7 +222,7 @@ public class PublicBean
     public List<PublicPerson> status()
     {
         itsLog.finer("entering status");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         List<PublicPerson> res = new ArrayList<>();
         try
         {
@@ -261,7 +263,7 @@ public class PublicBean
         List<PublicGuild> res = new ArrayList<>();
         try
         {
-            getEntityManager().setProperty("activePersonFilter", 0);
+            Constants.setFilters(getEntityManager(), Filter.OFF);
             Query query = getEntityManager().createNamedQuery("Guild.findAll");
             List<Guild> list = query.getResultList();
 
@@ -309,7 +311,7 @@ public class PublicBean
         itsLog.finer("entering charactersheet");
         PublicPerson res = new PublicPerson();
 
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
@@ -368,7 +370,7 @@ public class PublicBean
     {
 
         itsLog.finer("entering charactersheets");
-        getEntityManager().setProperty("activePersonFilter", 0);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
 
         List<PublicPerson> res = new ArrayList<>();
         try

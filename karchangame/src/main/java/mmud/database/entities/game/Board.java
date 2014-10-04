@@ -17,8 +17,10 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -86,7 +89,7 @@ public class Board implements Serializable, DisplayInterface
     @NotNull
     private Room room;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.LAZY)
-    // TODO : add a where statement here to limit the amount of message to last week max.
+    @OrderBy
     private Set<BoardMessage> messages;
 
     public Board()
@@ -157,7 +160,7 @@ public class Board implements Serializable, DisplayInterface
     }
 
     /**
-     * The rooom in which this message board resides.
+     * The room in which this message board resides.
      *
      * @return Room, cannot be null.
      */
@@ -238,18 +241,25 @@ public class Board implements Serializable, DisplayInterface
         StringBuilder builder = new StringBuilder(getDescription());
         Long now = (new Date()).getTime();
         builder.append("<hr/>");
-        for (BoardMessage message : messages)
+        final Set<BoardMessage> sortedMessages = new TreeSet<>(new Comparator<BoardMessage>()
         {
-            if (now - message.getPosttime().getTime() < ONE_WEEK)
+
+            @Override
+            public int compare(BoardMessage arg0, BoardMessage arg1)
             {
-                builder.append(message.getPosttime());
-                builder.append("<p>");
-                builder.append(message.getMessage());
-                builder.append("</p><i>");
-                builder.append(message.getPerson().getName());
-                builder.append("</i>");
-                builder.append("<hr/>");
+                return arg0.getPosttime().compareTo(arg1.getPosttime());
             }
+        });
+        sortedMessages.addAll(messages);
+        for (BoardMessage message : sortedMessages)
+        {
+            builder.append(message.getPosttime());
+            builder.append("<p>");
+            builder.append(message.getMessage());
+            builder.append("</p><i>");
+            builder.append(message.getPerson().getName());
+            builder.append("</i>");
+            builder.append("<hr/>");
         }
         return builder.toString();
     }
