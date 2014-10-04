@@ -1741,15 +1741,15 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         StringBuilder builder = new StringBuilder(
                 getLongDescription() + "<br/>\r\n"
                 + getWearables());
+        if (getState() != null)
+        {
+            builder.append(getState()).append("<br/>\r\n");
+        }
         String stuff2 = builder.toString();
         stuff2 = stuff2.replaceAll("%SHESHE", getSex().Direct());
         stuff2 = stuff2.replaceAll("%SHISHER", getSex()
                 .posession());
         stuff2 = stuff2.replaceAll("%SISARE", "is");
-        if (getState() != null)
-        {
-            builder.append(getState()).append("<br/>\r\n");
-        }
         return stuff2;
     }
 
