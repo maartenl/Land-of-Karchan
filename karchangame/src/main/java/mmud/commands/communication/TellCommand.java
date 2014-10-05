@@ -61,12 +61,12 @@ public class TellCommand extends TargetCommand
 //                    + " is ignoring you fully.<BR>\r\n");
 //            return true;
 //        }
-        aUser.writeMessage(aUser, aTarget, "%SNAME "
-                + getCommType() + " [to %TNAME] : "
-                + message + "<BR>\r\n");
-        aTarget.writeMessage(aUser, aTarget, "<B>%SNAME "
-                + getCommType().getPlural() + " [to %TNAME]</B> : "
-                + message + "<BR>\r\n");
+        aUser.writeMessage(aUser, aTarget, "<b>%SNAME "
+                + getCommType() + " [to %TNAME]</b> : "
+                + message + "<br/>\r\n");
+        aTarget.writeMessage(aUser, aTarget, "<b>%SNAME "
+                + getCommType().getPlural() + " [to %TNAME]</b> : "
+                + message + "<br/>\r\n");
         return aUser.getRoom();
     }
 
