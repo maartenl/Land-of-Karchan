@@ -18,6 +18,7 @@ package mmud.rest.services;
 
 import java.util.List;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -36,6 +37,9 @@ import mmud.scripting.PersonsInterface;
 @LocalBean
 public class PersonBean implements PersonsInterface
 {
+
+    @EJB
+    LogBean logBean;
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -145,4 +149,14 @@ public class PersonBean implements PersonsInterface
         List<User> list = query.getResultList();
         return list;
     }
+
+    public void sendWall(User administrator, String message)
+    {
+        for (User user : getActivePlayers())
+        {
+            user.writeMessage(message);
+        }
+        logBean.writeLog(administrator, "admin command 'wall' executed (" + message + ")");
+    }
+
 }

@@ -16,10 +16,13 @@
  */
 package mmud.commands;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
+import mmud.rest.services.PersonBean;
 
 /**
  * Shows the current date in the game: "date".
@@ -46,17 +49,29 @@ public class AdminCommand extends NormalCommand
         if (command.equalsIgnoreCase("admin reset commands"))
         {
             CommandFactory.clearUserCommandStructure();
-            aUser
-                    .writeMessage("User commands have been reloaded from database.<BR>\r\n");
+            aUser.writeMessage("User commands have been reloaded from database.<br/>\r\n");
         }
-
+        if (command.toLowerCase().startsWith("admin wall"))
+        {
+            PersonBean personBean;
+            try
+            {
+                personBean = (PersonBean) new InitialContext().lookup("java:module/PersonBean");
+            } catch (NamingException e)
+            {
+                throw new MudException("Unable to execute 'admin wall'.", e);
+            }
+            personBean.sendWall(aUser, command.substring(11));
+            aUser.writeMessage("Wall message sent.<br/>\r\n");
+        }
         if (command.equalsIgnoreCase("admin help"))
         {
-            aUser.writeMessage("Possible commands are:<dl>"
-                    + "<dt>admin help</dt><dd>this help text</dd>"
-                    + "<dt>admin reset commands</dt><dd>reset the cached <I>special</I> commands."
-                    + "Necessary if a command has been deleted, added or changed.</dd>"
-                    + "</dl\r\n");
+            aUser.writeMessage("Possible commands are:<ul>"
+                    + "<li>admin help - this help text</li>"
+                    + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
+                    + "<li>admin reset commands - reset the cached <i>special</i> commands."
+                    + "Necessary if a command has been deleted, added or changed.</li>"
+                    + "</ul>\r\n");
         }
         return aUser.getRoom();
     }
