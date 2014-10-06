@@ -682,6 +682,13 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             //ignore
             throw e;
+        } catch (Exception e)
+        {
+            String message = (e.getMessage() == null || e.getMessage().trim().equals(""))
+                    ? "An error occurred. Please notify Karn or one of the deps."
+                    : e.getMessage();
+            //ignore
+            throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
         }
         // add log to the return value
         if (log)
