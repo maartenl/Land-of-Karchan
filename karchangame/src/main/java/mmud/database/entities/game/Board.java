@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,8 +40,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 
 /**
  *
@@ -59,7 +62,11 @@ public class Board implements Serializable, DisplayInterface
 {
 
     private static final long serialVersionUID = 1L;
+
     private static final long ONE_WEEK = 1000l * 60l * 60l * 24l * 7l;
+
+    private static final Logger itsLog = Logger.getLogger(Board.class.getName());
+
     @Id
     @Basic(optional = false)
     @NotNull
@@ -257,7 +264,16 @@ public class Board implements Serializable, DisplayInterface
             builder.append("<p>");
             builder.append(message.getMessage());
             builder.append("</p><i>");
-            builder.append(message.getPerson().getName());
+            if (message.getPerson() == null)
+            {
+                builder.append("&lt;unknown&gt;");
+                // TODO : this is weird, but the error is gone. Don't know what happened here.
+                // can this be removed?
+                throw new MudWebException(null, "message " + message.getId() + " gave an error.", Response.Status.BAD_REQUEST);
+            } else
+            {
+                builder.append(message.getPerson().getName());
+            }
             builder.append("</i>");
             builder.append("<hr/>");
         }

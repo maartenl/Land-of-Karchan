@@ -34,7 +34,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import org.eclipse.persistence.annotations.AdditionalCriteria;
 
 /**
@@ -46,7 +46,7 @@ import org.eclipse.persistence.annotations.AdditionalCriteria;
 @NamedQueries(
         {
             @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
-            @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.person = :person"),
+            @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person"),
             @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :sundays and b.removed = false order by b.id desc")
         })
 @AdditionalCriteria("(this.posttime > :sundaydateFilter and this.removed = 0)")
@@ -64,7 +64,7 @@ public class BoardMessage implements Serializable
     private Board board;
     @JoinColumn(name = "name", referencedColumnName = "name")
     @ManyToOne(optional = false)
-    private Person person;
+    private User user;
     @Basic(optional = false)
     @NotNull
     @Column(name = "posttime")
@@ -144,14 +144,14 @@ public class BoardMessage implements Serializable
         this.id = id;
     }
 
-    public Person getPerson()
+    public User getPerson()
     {
-        return person;
+        return user;
     }
 
-    public void setPerson(Person person)
+    public void setPerson(User user)
     {
-        this.person = person;
+        this.user = user;
     }
 
     public Date getPosttime()
