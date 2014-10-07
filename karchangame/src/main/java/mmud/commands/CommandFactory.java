@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
@@ -73,10 +72,7 @@ import mmud.commands.movement.SouthCommand;
 import mmud.commands.movement.UpCommand;
 import mmud.commands.movement.WestCommand;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
-import mmud.scripting.RunScript;
 
 /**
  * The factory that creates commands based on the string entered by the user.
@@ -88,8 +84,8 @@ public class CommandFactory
 
     private static final Logger itsLog = Logger.getLogger(CommandFactory.class.getName());
     private static final BogusCommand BOGUS = new BogusCommand(".+");
-    private static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
-    private static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
+    static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
+    static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
     /**
      * Contains mappings from what command people have entered, to what command
      * should be executed. Supports two and one string, for example
@@ -240,57 +236,6 @@ public class CommandFactory
     }
 
     /**
-     * Runs a specific command. If this person appears to be asleep, the only
-     * possible commands are "quit" and "awaken". If the command found returns a
-     * false, i.e. nothing is executed, the method will call the standard
-     * BogusCommand.
-     *
-     * @param aUser the person executing the command
-     * @param aCommand
-     * the command to be run. Must not be null.
-     * @param userCommands the commands as defined by the user, instead of the
-     * standard commands. Must never be null.
-     * @return DisplayInterface object containing the result of the command executed.
-     */
-    public static DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands, RunScript runScript) throws MudException
-    {
-        itsLog.log(Level.FINER, " entering {0}.gameMain {1}:{2}", new Object[]
-        {
-            CommandFactory.class.getName(), aUser.getName(), aCommand
-        });
-        if (aUser.getSleep())
-        {
-            NormalCommand command;
-
-            if (aCommand.trim().equalsIgnoreCase("awaken"))
-            {
-                command = AWAKEN;
-            } else
-            {
-                command = ASLEEP;
-            }
-            return command.start(aCommand, aUser);
-        }
-        List<NormalCommand> myCol = new ArrayList<>();
-        for (UserCommand myCom : userCommands)
-        {
-            ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
-            myCol.add(scriptCommand);
-            itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
-        }
-        myCol.addAll(getCommand(aCommand));
-        for (NormalCommand command : myCol)
-        {
-            DisplayInterface result = command.start(aCommand, aUser);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-        return getBogusCommand().start(aCommand, aUser);
-    }
-
-    /**
      * Returns the commands to be used, based on the first word in the command
      * entered by the user.
      *
@@ -310,7 +255,7 @@ public class CommandFactory
      * <P>
      * All commands are newly created.
      */
-    private static List<NormalCommand> getCommand(String aCommand)
+    static List<NormalCommand> getCommand(String aCommand)
     {
         List<NormalCommand> result = new ArrayList<>(5);
         String[] strings = aCommand.split(" ");

@@ -48,6 +48,7 @@ import mmud.Constants;
 import mmud.Utils;
 import mmud.commands.CommandFactory;
 import mmud.commands.CommandFactory.UserCommandInfo;
+import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Board;
@@ -66,11 +67,7 @@ import mmud.rest.webentities.Lok;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.scripting.Persons;
-import mmud.scripting.Rooms;
 import mmud.scripting.RoomsInterface;
-import mmud.scripting.RunScript;
-import mmud.scripting.World;
 import mmud.scripting.WorldInterface;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
@@ -99,12 +96,19 @@ public class GameBean implements RoomsInterface, WorldInterface
 
     @EJB
     private BoardBean boardBean;
+
     @EJB
     private PersonBean personBean;
+
     @EJB
     private MailBean mailBean;
+
+    @EJB
+    private CommandRunner commandRunner;
+
     @EJB
     private LogBean logBean;
+
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
@@ -754,11 +758,7 @@ public class GameBean implements RoomsInterface, WorldInterface
                 }
             }
         }
-        Persons persons = new Persons(personBean);
-        Rooms rooms = new Rooms(this);
-        World world = new World(this);
-        RunScript runScript = new RunScript(persons, rooms, world);
-        DisplayInterface display = CommandFactory.runCommand(person, command, userCommands2, runScript);
+        DisplayInterface display = commandRunner.runCommand(person, command, userCommands2);
         if (display == null || display == person.getRoom())
         {
             return createPrivateDisplayFromRoom(person);
