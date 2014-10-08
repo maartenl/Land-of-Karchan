@@ -27,6 +27,9 @@ where name in ("Karn", "Hotblack","Marvin", "Slartibartfast");
 update mm_commands set callable= 0 where command in ('w','west','go west');
 update mm_commands set callable= 0 where command in ('n','north','go north');
 
+// make sure we do not have any interference from the deputy commands
+update mm_commands set callable = 0;
+
 update mm_usertable set lok = 'QKgKtRAdaliTHwsR2EUxxoA78' where
 name='Hotblack';
 update mm_usertable set title = 'The Paranoid Android' where
