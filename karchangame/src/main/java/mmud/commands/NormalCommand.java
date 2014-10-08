@@ -31,10 +31,13 @@ public abstract class NormalCommand implements Command
 {
 
     private static final Logger itsLog = Logger.getLogger(NormalCommand.class.getName());
+
     /**
      * the regular expression the command structure must follow
      */
     private final String theRegExpr;
+
+    private CommandRunner callback;
 
     @Override
     public String getRegExpr()
@@ -43,17 +46,19 @@ public abstract class NormalCommand implements Command
     }
 
     /**
-     * Constructor.
+     * Constructor for a static instance, i.e. this instance is immutable and
+     * static. Can be used as a constant.
      *
-     * @param aRegExpr
+     * @param regExpr
      * a regular expression to which the command should follow. For
      * example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
      * parameter that can be used when the name of the character
      * playing is requested.
      */
-    public NormalCommand(String aRegExpr)
+    public NormalCommand(String regExpr)
     {
-        theRegExpr = aRegExpr;
+        theRegExpr = regExpr;
+        callback = null;
     }
 
     /**
@@ -130,4 +135,10 @@ public abstract class NormalCommand implements Command
     {
         return aCommand.split("( )+", limit);
     }
+
+    public void setCallback(CommandRunner callback)
+    {
+        this.callback = callback;
+    }
+
 }

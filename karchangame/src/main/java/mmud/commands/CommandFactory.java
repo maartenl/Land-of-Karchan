@@ -83,156 +83,718 @@ public class CommandFactory
 {
 
     private static final Logger itsLog = Logger.getLogger(CommandFactory.class.getName());
-    private static final BogusCommand BOGUS = new BogusCommand(".+");
-    static final AwakenCommand AWAKEN = new AwakenCommand("awaken");
-    static final AlreadyAsleepCommand ASLEEP = new AlreadyAsleepCommand(".+");
+    private static final CommandCreator BOGUS = new CommandCreator()
+    {
+        @Override
+        public NormalCommand createCommand()
+        {
+            return new BogusCommand(".+");
+        }
+    };
+    static final CommandCreator AWAKEN = new CommandCreator()
+    {
+
+        @Override
+        public NormalCommand createCommand()
+        {
+            return new AwakenCommand("awaken");
+        }
+    };
+    static final CommandCreator ASLEEP = new CommandCreator()
+    {
+
+        @Override
+        public NormalCommand createCommand()
+        {
+            return new AlreadyAsleepCommand(".+");
+        }
+    };
     /**
      * Contains mappings from what command people have entered, to what command
      * should be executed. Supports two and one string, for example
      * "look at" or "look", in order to distinguish different commands with the same
      * verb.
      */
-    private static final TreeMap<String, NormalCommand> theCommandStructure = new TreeMap<>();
+    private static final TreeMap<String, CommandCreator> theCommandStructure = new TreeMap<>();
     private static List<UserCommandInfo> theUserCommandStructure = new CopyOnWriteArrayList<>();
+
+    public static interface CommandCreator
+    {
+
+        public NormalCommand createCommand();
+    }
 
     static
     {
-        theCommandStructure.put("bow", new BowCommand(
-                "bow( to (\\w)+)?( (\\w)+)?"));
-        theCommandStructure.put("me", new MeCommand("me .+"));
+        theCommandStructure.put("bow", new CommandCreator()
+        {
+
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new BowCommand("bow( to (\\w)+)?( (\\w)+)?");
+            }
+        });
+        theCommandStructure.put("me", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new MeCommand("me .+");
+            }
+        });
         // quit command has been replaced with a specific rest service.
         // theCommandStructure.put("quit", new QuitCommand("quit"));
-        theCommandStructure.put("sleep", new SleepCommand("sleep"));
-        theCommandStructure.put("condition", new ConditionCommand("condition( .+)?"));
-        theCommandStructure.put("awaken", new AwakenCommand("awaken"));
-        theCommandStructure.put("ask", new AskCommand("ask (to (\\w)+ )?.+"));
-        theCommandStructure.put("tell", new TellCommand("tell to (\\w)+ .+"));
-        theCommandStructure.put("say", new SayCommand("say (to (\\w)+ )?.+"));
-        theCommandStructure.put("macro", new MacroCommand("macro( .+)?"));
-        theCommandStructure.put("sing", new SingCommand("sing (to (\\w)+ )?.+"));
-        theCommandStructure.put("cry", new CryCommand("cry (to (\\w)+ )?.+"));
-        theCommandStructure.put("shout", new ShoutCommand(
-                "shout (to (\\w )+)?.+"));
-        theCommandStructure.put("scream", new ScreamCommand(
-                "scream (to (\\w )+)?.+"));
-        theCommandStructure.put("whisper", new WhisperCommand(
-                "whisper (to (\\w)+ )?.+"));
+        theCommandStructure.put("sleep", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SleepCommand("sleep");
+            }
+        });
+        theCommandStructure.put("condition", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ConditionCommand("condition( .+)?");
+            }
+        });
+        theCommandStructure.put("awaken", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new AwakenCommand("awaken");
+            }
+        });
+        theCommandStructure.put("ask", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new AskCommand("ask (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("tell", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new TellCommand("tell to (\\w)+ .+");
+            }
+        });
+        theCommandStructure.put("say", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SayCommand("say (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("macro", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new MacroCommand("macro( .+)?");
+            }
+        });
+        theCommandStructure.put("sing", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SingCommand("sing (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("cry", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new CryCommand("cry (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("shout", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ShoutCommand(
+                        "shout (to (\\w )+)?.+");
+            }
+        });
+        theCommandStructure.put("scream", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ScreamCommand(
+                        "scream (to (\\w )+)?.+");
+            }
+        });
+        theCommandStructure.put("whisper", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WhisperCommand(
+                        "whisper (to (\\w)+ )?.+");
+            }
+        });
         // clear command has been replaced with a log-deleteing rest service
-        // theCommandStructure.put("clear", new ClearCommand("clear"));
-        theCommandStructure.put("time", new TimeCommand("time"));
-        theCommandStructure.put("date", new DateCommand("date"));
-        theCommandStructure.put("south", new SouthCommand("south"));
-        theCommandStructure.put("north", new NorthCommand("north"));
-        theCommandStructure.put("east", new EastCommand("east"));
-        theCommandStructure.put("west", new WestCommand("west"));
-        theCommandStructure.put("s", new SouthCommand("s"));
-        theCommandStructure.put("n", new NorthCommand("n"));
-        theCommandStructure.put("e", new EastCommand("e"));
-        theCommandStructure.put("w", new WestCommand("w"));
-        theCommandStructure.put("up", new UpCommand("up"));
-        theCommandStructure.put("down", new DownCommand("down"));
-        theCommandStructure.put("go", new GoCommand(
-                "go (up|down|north|south|east|west)?"));
-        theCommandStructure.put("help", new HelpCommand("help( (\\w)+)?"));
-        theCommandStructure.put("show ignoring", new IgnoringCommand(
-                "show ignoring"));
-        theCommandStructure.put("fully", new IgnoreCommand(
-                "fully ignore (\\w)+"));
-        theCommandStructure.put("acknowledge", new AcknowledgeCommand(
-                "acknowledge (\\w)+"));
-        theCommandStructure.put("curtsey", new CurtseyCommand(
-                "curtsey( to (\\w)+)?"));
-        theCommandStructure.put("eyebrow", new EyebrowCommand("eyebrow"));
+        // theCommandStructure.put("clear", new ClearCommand("clear");            }        });
+        theCommandStructure.put("time", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new TimeCommand("time");
+            }
+        });
+        theCommandStructure.put("date", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DateCommand("date");
+            }
+        });
+        theCommandStructure.put("south", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SouthCommand("south");
+            }
+        });
+        theCommandStructure.put("north", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new NorthCommand("north");
+            }
+        });
+        theCommandStructure.put("east", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new EastCommand("east");
+            }
+        });
+        theCommandStructure.put("west", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WestCommand("west");
+            }
+        });
+        theCommandStructure.put("s", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SouthCommand("s");
+            }
+        });
+        theCommandStructure.put("n", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new NorthCommand("n");
+            }
+        });
+        theCommandStructure.put("e", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new EastCommand("e");
+            }
+        });
+        theCommandStructure.put("w", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WestCommand("w");
+            }
+        });
+        theCommandStructure.put("up", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new UpCommand("up");
+            }
+        });
+        theCommandStructure.put("down", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DownCommand("down");
+            }
+        });
+        theCommandStructure.put("go", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new GoCommand(
+                        "go (up|down|north|south|east|west)?");
+            }
+        });
+        theCommandStructure.put("help", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new HelpCommand("help( (\\w)+)?");
+            }
+        });
+        theCommandStructure.put("show ignoring", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new IgnoringCommand(
+                        "show ignoring");
+            }
+        });
+        theCommandStructure.put("fully", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new IgnoreCommand(
+                        "fully ignore (\\w)+");
+            }
+        });
+        theCommandStructure.put("acknowledge", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new AcknowledgeCommand(
+                        "acknowledge (\\w)+");
+            }
+        });
+        theCommandStructure.put("curtsey", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new CurtseyCommand(
+                        "curtsey( to (\\w)+)?");
+            }
+        });
+        theCommandStructure.put("eyebrow", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new EyebrowCommand("eyebrow");
+            }
+        });
         theCommandStructure.put("wimpy",
-                new WimpyCommand("wimpy( .+|help)?"));
-        theCommandStructure.put("who", new WhoCommand("who"));
+                new CommandCreator()
+                {
+                    @Override
+                    public NormalCommand createCommand()
+                    {
+                        return new WimpyCommand("wimpy( .+|help)?");
+                    }
+                }
+        );
+        theCommandStructure.put("who", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WhoCommand("who");
+            }
+        });
 //        theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
 //        theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 //        theCommandStructure.put("stop", new FightCommand("stop fighting"));
-        theCommandStructure.put("stats", new StatsCommand("stats"));
-        theCommandStructure.put("inventory", new InventoryCommand("inventory"));
-        theCommandStructure.put("i", new InventoryCommand("i"));
-        theCommandStructure.put("drink", new DrinkCommand(
-                "drink( (\\w|-)+){1,4}"));
-        theCommandStructure.put("eat", new EatCommand("eat( (\\w|-)+){1,4}"));
-        theCommandStructure.put("destroy", new DestroyCommand("destroy( (\\w|-)+){1,4}"));
-        theCommandStructure.put("wear", new WearCommand(
-                "wear( (\\w|-)+){1,4} on (\\w)+"));
-        theCommandStructure.put("remove", new UnwearCommand(
-                "remove from (\\w)+"));
-        theCommandStructure.put("undress", new UndressCommand(
-                "undress"));
-        theCommandStructure.put("disarm", new DisarmCommand(
-                "disarm"));
-        theCommandStructure.put("wield", new WieldCommand(
-                "wield( (\\w|-)+){1,4} with (\\w)+"));
-        theCommandStructure.put("unwield", new UnwieldCommand(
-                "unwield from (\\w)+"));
-        theCommandStructure.put("drop", new DropCommand("drop( (\\w|-)+){1,4}"));
-        theCommandStructure.put("get", new GetCommand("get( (\\w|-)+){1,4}"));
-        theCommandStructure.put("put", new PutCommand(
-                "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
-        theCommandStructure.put("retrieve", new RetrieveCommand(
-                "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
-        theCommandStructure.put("lock", new LockCommand(
-                "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-        theCommandStructure.put("unlock", new UnlockCommand(
-                "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-        theCommandStructure.put("give", new GiveCommand(
-                "give( (\\w|-)+){1,4} to (\\w)+"));
-        theCommandStructure.put("open", new OpenCommand("open( (\\w|-)+){1,4}"));
-        theCommandStructure.put("close", new CloseCommand(
-                "close( (\\w|-)+){1,4}"));
-        theCommandStructure.put("read", new ReadCommand("read( (\\w|-)+){1,4}"));
-        theCommandStructure.put("readboard", new ReadBoardCommand(
-                "readboard (\\w)+"));
-        theCommandStructure.put("post", new PostBoardCommand("post (\\w)+ .+"));
-        theCommandStructure.put("l", new LookCommand("l"));
-        theCommandStructure.put("look", new LookCommand(
-                "look"));
-        theCommandStructure.put("look at", new LookAtCommand(
-                "look at( (\\w|-)+){1,4}"));
-        theCommandStructure.put("look in", new LookInCommand(
-                "look in( (\\w|-)+){1,4}"));
+        theCommandStructure.put("stats", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new StatsCommand("stats");
+            }
+        });
+        theCommandStructure.put("inventory", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new InventoryCommand("inventory");
+            }
+        });
+        theCommandStructure.put("i", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new InventoryCommand("i");
+            }
+        });
+        theCommandStructure.put("drink", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DrinkCommand(
+                        "drink( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("eat", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new EatCommand("eat( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("destroy", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DestroyCommand("destroy( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("wear", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WearCommand(
+                        "wear( (\\w|-)+){1,4} on (\\w)+");
+            }
+        });
+        theCommandStructure.put("remove", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new UnwearCommand(
+                        "remove from (\\w)+");
+            }
+        });
+        theCommandStructure.put("undress", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new UndressCommand(
+                        "undress");
+            }
+        });
+        theCommandStructure.put("disarm", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DisarmCommand(
+                        "disarm");
+            }
+        });
+        theCommandStructure.put("wield", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WieldCommand(
+                        "wield( (\\w|-)+){1,4} with (\\w)+");
+            }
+        });
+        theCommandStructure.put("unwield", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new UnwieldCommand(
+                        "unwield from (\\w)+");
+            }
+        });
+        theCommandStructure.put("drop", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DropCommand("drop( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("get", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new GetCommand("get( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("put", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new PutCommand(
+                        "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("retrieve", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new RetrieveCommand(
+                        "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("lock", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LockCommand(
+                        "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("unlock", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new UnlockCommand(
+                        "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("give", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new GiveCommand(
+                        "give( (\\w|-)+){1,4} to (\\w)+");
+            }
+        });
+        theCommandStructure.put("open", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new OpenCommand("open( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("close", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new CloseCommand(
+                        "close( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("read", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ReadCommand("read( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("readboard", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ReadBoardCommand(
+                        "readboard (\\w)+");
+            }
+        });
+        theCommandStructure.put("post", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new PostBoardCommand("post (\\w)+ .+");
+            }
+        });
+        theCommandStructure.put("l", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LookCommand("l");
+            }
+        });
+        theCommandStructure.put("look", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LookCommand(
+                        "look");
+            }
+        });
+        theCommandStructure.put("look at", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LookAtCommand(
+                        "look at( (\\w|-)+){1,4}");
+            }
+        });
+        theCommandStructure.put("look in", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LookInCommand(
+                        "look in( (\\w|-)+){1,4}");
+            }
+        });
 //        theCommandStructure.put("search", new SearchCommand(
 //                "search( (\\w|-)+){1,4}"));
-        theCommandStructure.put("buy", new BuyCommand(
-                "buy( (\\w|-)+){1,4} from (\\w)+"));
-        theCommandStructure.put("sell", new SellCommand(
-                "sell( (\\w|-)+){1,4} to (\\w)+"));
+        theCommandStructure.put("buy", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new BuyCommand(
+                        "buy( (\\w|-)+){1,4} from (\\w)+");
+            }
+        });
+        theCommandStructure.put("sell", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new SellCommand(
+                        "sell( (\\w|-)+){1,4} to (\\w)+");
+            }
+        });
 //        theCommandStructure.put("show", new ShowCommand(
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));
-        theCommandStructure.put("admin", new AdminCommand("admin .+"));
+        theCommandStructure.put("admin", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new AdminCommand("admin .+");
+            }
+        });
         // guild commands
-        theCommandStructure.put("guildapply", new ApplyCommand(
-                "guildapply( (\\w)+)?"));
-        theCommandStructure.put("guildleave", new LeaveCommand("guildleave"));
-        theCommandStructure.put("guilddetails", new DetailsCommand(
-                "guilddetails"));
-        theCommandStructure.put("guildaccept", new AcceptCommand(
-                "guildaccept (\\w)+"));
-        theCommandStructure.put("guildreject", new RejectCommand(
-                "guildreject (\\w)+"));
-        theCommandStructure.put("guildremove", new RemoveCommand(
-                "guildremove (\\w)+"));
-        theCommandStructure.put("guildmasterchange", new ChangeMasterCommand(
-                "guildmasterchange (\\w)+"));
-        theCommandStructure.put("guild", new MessageCommand("guild .+"));
+        theCommandStructure.put("guildapply", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ApplyCommand(
+                        "guildapply( (\\w)+)?");
+            }
+        });
+        theCommandStructure.put("guildleave", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new LeaveCommand("guildleave");
+            }
+        });
+        theCommandStructure.put("guilddetails", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new DetailsCommand(
+                        "guilddetails");
+            }
+        });
+        theCommandStructure.put("guildaccept", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new AcceptCommand(
+                        "guildaccept (\\w)+");
+            }
+        });
+        theCommandStructure.put("guildreject", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new RejectCommand(
+                        "guildreject (\\w)+");
+            }
+        });
+        theCommandStructure.put("guildremove", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new RemoveCommand(
+                        "guildremove (\\w)+");
+            }
+        });
+        theCommandStructure.put("guildmasterchange", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ChangeMasterCommand(
+                        "guildmasterchange (\\w)+");
+            }
+        });
+        theCommandStructure.put("guild", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new MessageCommand("guild .+");
+            }
+        });
 
         for (Map.Entry<String, String> entry : Utils.getEmotions().entrySet())
         {
-            theCommandStructure.put(entry.getKey(), new EmotionCommand(".+"));
+            theCommandStructure.put(entry.getKey(), new CommandCreator()
+            {
+                @Override
+                public NormalCommand createCommand()
+                {
+                    return new EmotionCommand(".+");
+                }
+            });
         }
         for (Map.Entry<String, String> entry : Utils.getTargetEmotions().entrySet())
         {
-            theCommandStructure.put(entry.getKey(), new EmotionToCommand(".+"));
+            theCommandStructure.put(entry.getKey(), new CommandCreator()
+            {
+                @Override
+                public NormalCommand createCommand()
+                {
+                    return new EmotionToCommand(".+");
+                }
+            });
         }
     }
 
     public static NormalCommand getBogusCommand()
     {
-        return BOGUS;
+        return BOGUS.createCommand();
     }
 
     /**
@@ -262,15 +824,15 @@ public class CommandFactory
         NormalCommand myCommand = null;
         if (myCommand == null && strings.length >= 2)
         {
-            myCommand = theCommandStructure.get(strings[0] + " " + strings[1]);
+            myCommand = theCommandStructure.get(strings[0] + " " + strings[1]).createCommand();
         }
         if (myCommand == null && strings.length >= 1)
         {
-            myCommand = theCommandStructure.get(strings[0]);
+            myCommand = theCommandStructure.get(strings[0]).createCommand();
         }
         if (myCommand == null)
         {
-            myCommand = BOGUS;
+            myCommand = getBogusCommand();
         }
         result.add(myCommand);
         return result;
@@ -304,6 +866,7 @@ public class CommandFactory
             }
         }
         return Collections.unmodifiableList(result);
+
     }
 
     /**

@@ -90,13 +90,16 @@ public class CommandRunner
         myCol.addAll(CommandFactory.getCommand(aCommand));
         for (NormalCommand command : myCol)
         {
+            command.setCallback(this);
             DisplayInterface result = command.start(aCommand, aUser);
             if (result != null)
             {
                 return result;
             }
         }
-        return CommandFactory.getBogusCommand().start(aCommand, aUser);
+        final NormalCommand bogusCommand = CommandFactory.getBogusCommand();
+        bogusCommand.setCallback(this);
+        return bogusCommand.start(aCommand, aUser);
     }
 
     private DisplayInterface determineSleep(String aCommand, User aUser) throws MudException
@@ -104,11 +107,12 @@ public class CommandRunner
         NormalCommand command;
         if (aCommand.trim().equalsIgnoreCase("awaken"))
         {
-            command = CommandFactory.AWAKEN;
+            command = CommandFactory.AWAKEN.createCommand();
         } else
         {
-            command = CommandFactory.ASLEEP;
+            command = CommandFactory.ASLEEP.createCommand();
         }
+        command.setCallback(this);
         return command.start(aCommand, aUser);
     }
 
