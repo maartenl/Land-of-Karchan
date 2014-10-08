@@ -21,6 +21,11 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.rest.services.GuildBean;
+import mmud.rest.services.HelpBean;
+import mmud.rest.services.ItemBean;
+import mmud.rest.services.LogBean;
+import mmud.rest.services.PersonBean;
 
 /**
  * An abstract class for the most normal commands.
@@ -139,6 +144,31 @@ public abstract class NormalCommand implements Command
     public void setCallback(CommandRunner callback)
     {
         this.callback = callback;
+    }
+
+    protected PersonBean getPersonBean()
+    {
+        return callback.getPersonBean();
+    }
+
+    protected HelpBean getHelpBean()
+    {
+        return callback.getHelpBean();
+    }
+
+    protected LogBean getLogBean()
+    {
+        return callback.getLogBean();
+    }
+
+    protected GuildBean getGuildBean()
+    {
+        return callback.getGuildBean();
+    }
+
+    protected ItemBean getItemBean()
+    {
+        return callback.getItemBean();
     }
 
 }

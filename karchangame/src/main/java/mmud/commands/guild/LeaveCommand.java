@@ -45,15 +45,7 @@ public class LeaveCommand extends GuildCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogBean logBean;
-        try
-        {
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve person.", e);
-        }
+        LogBean logBean = getLogBean();
         Guild guild = aUser.getGuild();
         aUser.setGuildrank(null);
         aUser.setGuild(null);

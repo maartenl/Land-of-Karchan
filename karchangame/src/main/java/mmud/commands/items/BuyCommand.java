@@ -123,15 +123,7 @@ public class BuyCommand extends NormalCommand
             return aUser.getRoom();
         }
         boolean bought = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to buy item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             // item is not used.
@@ -174,4 +166,5 @@ public class BuyCommand extends NormalCommand
         }
         return aUser.getRoom();
     }
+
 }

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.commands.CommandRunner;
 import mmud.commands.items.BuyCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
@@ -64,7 +65,8 @@ public class BuyCommandTest
     private LogBean logBean;
 
     @Mocked
-    private InitialContext context;
+    private CommandRunner commandRunner;
+    
 
     public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value)
     {
@@ -98,6 +100,7 @@ public class BuyCommandTest
         setField(Room.class, "persons", room1, persons);
 
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         DisplayInterface display = buyCommand.run("buy brush from karcas", karn);
         assertThat(display, not(nullValue()));
@@ -117,6 +120,7 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         DisplayInterface display = buyCommand.run("buy -2 ring from karcas", karn);
         assertThat(display, not(nullValue()));
@@ -141,6 +145,7 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         DisplayInterface display = buyCommand.run("buy 3 ring from karcas", karn);
         assertThat(display, not(nullValue()));
@@ -155,6 +160,7 @@ public class BuyCommandTest
         HashSet<Item> items = new HashSet<>();
         items.add(ring);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display, not(nullValue()));
@@ -179,6 +185,7 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display, not(nullValue()));
@@ -204,14 +211,14 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -238,14 +245,14 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -274,14 +281,14 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -310,14 +317,14 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -345,14 +352,14 @@ public class BuyCommandTest
         items.add(ring);
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
+        buyCommand.setCallback(commandRunner);
         assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };

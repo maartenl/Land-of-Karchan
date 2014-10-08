@@ -16,8 +16,6 @@
  */
 package mmud.commands;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
@@ -53,14 +51,7 @@ public class AdminCommand extends NormalCommand
         }
         if (command.toLowerCase().startsWith("admin wall"))
         {
-            PersonBean personBean;
-            try
-            {
-                personBean = (PersonBean) new InitialContext().lookup("java:module/PersonBean");
-            } catch (NamingException e)
-            {
-                throw new MudException("Unable to execute 'admin wall'.", e);
-            }
+            PersonBean personBean = getPersonBean();
             personBean.sendWall(aUser, command.substring(11));
             aUser.writeMessage("Wall message sent.<br/>\r\n");
         }

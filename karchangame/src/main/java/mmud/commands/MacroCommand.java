@@ -16,14 +16,11 @@
  */
 package mmud.commands;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
 import mmud.exceptions.MudException;
-import mmud.rest.services.HelpBean;
 
 /**
  * Macros :

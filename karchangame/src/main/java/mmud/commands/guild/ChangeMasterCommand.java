@@ -48,15 +48,7 @@ public class ChangeMasterCommand extends GuildMasterCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogBean logBean;
-        try
-        {
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve log.", e);
-        }
+        LogBean logBean = getLogBean();
         String[] myParsed = parseCommand(command);
         // TODO : casting is nasty, there must be a better way!
         Person toChar2 = aUser.getRoom().retrievePerson(myParsed[1]);

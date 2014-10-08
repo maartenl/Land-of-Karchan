@@ -125,15 +125,7 @@ public class SellCommand extends NormalCommand
         }
         Shopkeeper shopkeeper = (Shopkeeper) keeper;
         boolean sold = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to sell item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             // item is not used.

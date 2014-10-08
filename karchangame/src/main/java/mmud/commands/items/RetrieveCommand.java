@@ -122,15 +122,7 @@ public class RetrieveCommand extends NormalCommand
             return aUser.getRoom();
         }
         boolean retrieve = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             if (item.isGetable())

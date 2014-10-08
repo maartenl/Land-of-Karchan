@@ -123,15 +123,7 @@ public class PutCommand extends NormalCommand
             return aUser.getRoom();
         }
         boolean put = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to put item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             if (aUser.unused(item) && !item.isBound() && !item.isContainer())

@@ -28,6 +28,10 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GameBean;
+import mmud.rest.services.GuildBean;
+import mmud.rest.services.HelpBean;
+import mmud.rest.services.ItemBean;
+import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
@@ -53,6 +57,18 @@ public class CommandRunner
     @EJB
     private GameBean gameBean;
 
+    @EJB
+    private HelpBean helpBean;
+    
+    @EJB
+    private LogBean logBean;
+    
+    @EJB
+    private GuildBean guildBean;
+    
+    @EJB
+    private ItemBean itemBean;
+
     /**
      * Runs a specific command. If this person appears to be asleep, the only
      * possible commands are "quit" and "awaken". If the command found returns a
@@ -60,11 +76,11 @@ public class CommandRunner
      * BogusCommand.
      *
      * @param aUser the person executing the command
-     * @param aCommand
-     * the command to be run. Must not be null.
+     * @param aCommand the command to be run. Must not be null.
      * @param userCommands the commands as defined by the user, instead of the
      * standard commands. Must never be null.
-     * @return DisplayInterface object containing the result of the command executed.
+     * @return DisplayInterface object containing the result of the command
+     * executed.
      */
     public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands) throws MudException
     {
@@ -114,6 +130,31 @@ public class CommandRunner
         }
         command.setCallback(this);
         return command.start(aCommand, aUser);
+    }
+
+    PersonBean getPersonBean()
+    {
+        return personBean;
+    }
+
+    HelpBean getHelpBean()
+    {
+        return helpBean;
+    }
+
+    LogBean getLogBean()
+    {
+        return logBean;
+    }
+
+    GuildBean getGuildBean()
+    {
+        return guildBean;
+    }
+
+    public ItemBean getItemBean()
+    {
+        return itemBean;
     }
 
 }

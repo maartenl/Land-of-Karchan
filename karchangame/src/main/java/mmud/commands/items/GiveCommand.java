@@ -138,15 +138,7 @@ public class GiveCommand extends NormalCommand
             return;
         }
         boolean given = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to give item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             if (aUser.unused(item) && !item.isBound())

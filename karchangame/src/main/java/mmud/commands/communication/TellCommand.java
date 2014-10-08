@@ -90,14 +90,7 @@ public class TellCommand extends TargetCommand
     {
         if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
         {
-            PersonBean personBean;
-            try
-            {
-                personBean = (PersonBean) new InitialContext().lookup("java:module/PersonBean");
-            } catch (NamingException e)
-            {
-                throw new MudException("Unable to tell people things.", e);
-            }
+            PersonBean personBean = getPersonBean();
             Person toChar = personBean.getActiveUser(myParsed[2]);
             if (toChar == null)
             {

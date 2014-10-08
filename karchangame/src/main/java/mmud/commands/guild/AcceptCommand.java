@@ -17,8 +17,6 @@
 package mmud.commands.guild;
 
 import mmud.commands.GuildMasterCommand;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.Attributes;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -49,17 +47,8 @@ public class AcceptCommand extends GuildMasterCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         // TODO : similar to rejectcommand, refactor?
-        PersonBean personBean;
-        LogBean logBean;
-        try
-        {
-            personBean = (PersonBean) new InitialContext().lookup("java:module/PersonBean");
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve person.", e);
-        }
+        PersonBean personBean = getPersonBean();
+        LogBean logBean = getLogBean();
         String[] myParsed = parseCommand(command);
         User potentialGuildmember = personBean.getUser(myParsed[1]);
         if (potentialGuildmember == null)
@@ -94,6 +83,5 @@ public class AcceptCommand extends GuildMasterCommand
         // aUser.getGuild().increaseAmountOfMembers();
         return aUser.getRoom();
     }
-
 
 }

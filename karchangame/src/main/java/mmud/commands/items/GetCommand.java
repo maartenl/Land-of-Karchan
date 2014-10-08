@@ -79,15 +79,7 @@ public class GetCommand extends NormalCommand
             return aUser.getRoom();
         }
         boolean getted = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to get item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             if (item.isGetable())

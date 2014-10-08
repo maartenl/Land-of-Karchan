@@ -45,15 +45,7 @@ public class RemoveCommand extends GuildMasterCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
 
-        LogBean logBean;
-        try
-        {
-            logBean = (LogBean) new InitialContext().lookup("java:module/LogBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve person.", e);
-        }
+        LogBean logBean = getLogBean();
         String[] myParsed = parseCommand(command);
         User guildmember = aUser.getGuild().getMember(myParsed[1]);
         if (guildmember == null)

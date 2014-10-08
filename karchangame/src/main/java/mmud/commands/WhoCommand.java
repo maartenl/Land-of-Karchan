@@ -42,14 +42,7 @@ public class WhoCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        PersonBean personBean;
-        try
-        {
-            personBean = (PersonBean) new InitialContext().lookup("java:module/PersonBean");
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to show the wholist.", e);
-        }
+        PersonBean personBean = getPersonBean();
         List<User> persons = personBean.getActivePlayers();
         StringBuilder whoList = new StringBuilder();
         if (persons == null || persons.isEmpty())

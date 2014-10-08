@@ -39,15 +39,7 @@ public class HelpCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        HelpBean helpBean;
-        try
-        {
-        helpBean = (HelpBean) new InitialContext().lookup("java:module/HelpBean");
-        }
-        catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve help.", e);
-        }
+        HelpBean helpBean = getHelpBean();
         Help help;
         String[] myParsed = parseCommand(command, 3);
         if (myParsed.length == 1)
@@ -62,4 +54,5 @@ public class HelpCommand extends NormalCommand
         }
         return help;
     }
+
 }

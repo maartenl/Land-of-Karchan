@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
@@ -66,7 +67,7 @@ public class SellCommandTest
     private LogBean logBean;
 
     @Mocked
-    private InitialContext context;
+    private CommandRunner commandRunner;
 
     public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value)
     {
@@ -194,14 +195,14 @@ public class SellCommandTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -228,14 +229,14 @@ public class SellCommandTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -264,14 +265,14 @@ public class SellCommandTest
         setField(Person.class, "items", karn, items);
         karn.wear(ring, Wearing.ON_LEFT_FINGER);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -300,14 +301,14 @@ public class SellCommandTest
         setField(Person.class, "items", karn, items);
         karn.wield(ring, Wielding.WIELD_LEFT);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -336,14 +337,14 @@ public class SellCommandTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -372,14 +373,14 @@ public class SellCommandTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };
@@ -407,14 +408,14 @@ public class SellCommandTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+        sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
         new Expectations() // an "expectation block"
         {
 
 
             {
-                new InitialContext();
-                context.lookup("java:module/ItemBean");
+                commandRunner.getItemBean();
                 result = itemBean;
             }
         };

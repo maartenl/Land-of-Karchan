@@ -54,15 +54,7 @@ public class ApplyCommand extends NormalCommand
             aUser.writeMessage("You have no longer applied to any guild.<BR>\r\n");
             return aUser.getRoom();
         }
-        GuildBean guildBean;
-        try
-        {
-            guildBean = (GuildBean) new InitialContext().lookup("java:module/GuildBean");
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to retrieve guild.", e);
-        }
-
+        GuildBean guildBean = getGuildBean();
         Guild guild = guildBean.getGuild(myParsed[1]);
         if (guild == null)
         {
@@ -81,4 +73,5 @@ public class ApplyCommand extends NormalCommand
                 + "</I>.<BR>\r\n");
         return aUser.getRoom();
     }
+
 }

@@ -78,15 +78,7 @@ public class DropCommand extends NormalCommand
             return aUser.getRoom();
         }
         boolean dropped = false;
-        ItemBean itemBean;
-        try
-        {
-            itemBean = (ItemBean) new InitialContext().lookup("java:module/ItemBean");
-
-        } catch (NamingException e)
-        {
-            throw new MudException("Unable to drop item.", e);
-        }
+        ItemBean itemBean = getItemBean();
         for (Item item : itemsFound)
         {
             if (aUser.unused(item) && item.isDroppable())
