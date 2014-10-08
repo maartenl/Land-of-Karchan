@@ -824,11 +824,13 @@ public class CommandFactory
         NormalCommand myCommand = null;
         if (myCommand == null && strings.length >= 2)
         {
-            myCommand = theCommandStructure.get(strings[0] + " " + strings[1]).createCommand();
+            final CommandCreator commandCreator = theCommandStructure.get(strings[0] + " " + strings[1]);
+            myCommand = commandCreator == null ? null : commandCreator.createCommand();
         }
         if (myCommand == null && strings.length >= 1)
         {
-            myCommand = theCommandStructure.get(strings[0]).createCommand();
+            final CommandCreator commandCreator = theCommandStructure.get(strings[0]);
+            myCommand = commandCreator == null ? null : commandCreator.createCommand();
         }
         if (myCommand == null)
         {

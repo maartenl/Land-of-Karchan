@@ -672,16 +672,6 @@ public class GameBean implements RoomsInterface, WorldInterface
                     display = runMultipleCommands(person, command);
                 }
             }
-        } catch (MudException e)
-        {
-            try
-            {
-                person.writeMessage(e.getMessage());
-            } catch (MudException ex)
-            {
-                itsLog.throwing("play: throws ", ex.getMessage(), ex);
-            }
-            display = createPrivateDisplayFromRoom(person);
         } catch (WebApplicationException e)
         {
             //ignore

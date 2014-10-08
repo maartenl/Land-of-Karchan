@@ -59,13 +59,13 @@ public class CommandRunner
 
     @EJB
     private HelpBean helpBean;
-    
+
     @EJB
     private LogBean logBean;
-    
+
     @EJB
     private GuildBean guildBean;
-    
+
     @EJB
     private ItemBean itemBean;
 
@@ -88,34 +88,47 @@ public class CommandRunner
         {
             this.getClass().getName(), aUser.getName(), aCommand
         });
-        if (aUser.getSleep())
+        try
         {
-            return determineSleep(aCommand, aUser);
-        }
-        List<NormalCommand> myCol = new ArrayList<>();
-        Persons persons = new Persons(personBean);
-        Rooms rooms = new Rooms(gameBean);
-        World world = new World(gameBean);
-        RunScript runScript = new RunScript(persons, rooms, world);
-        for (UserCommand myCom : userCommands)
-        {
-            ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
-            myCol.add(scriptCommand);
-            itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
-        }
-        myCol.addAll(CommandFactory.getCommand(aCommand));
-        for (NormalCommand command : myCol)
-        {
-            command.setCallback(this);
-            DisplayInterface result = command.start(aCommand, aUser);
-            if (result != null)
+            if (aUser.getSleep())
             {
-                return result;
+                return determineSleep(aCommand, aUser);
             }
+            List<NormalCommand> myCol = new ArrayList<>();
+            Persons persons = new Persons(personBean);
+            Rooms rooms = new Rooms(gameBean);
+            World world = new World(gameBean);
+            RunScript runScript = new RunScript(persons, rooms, world);
+            for (UserCommand myCom : userCommands)
+            {
+                ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
+                myCol.add(scriptCommand);
+                itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
+            }
+            myCol.addAll(CommandFactory.getCommand(aCommand));
+            for (NormalCommand command : myCol)
+            {
+                command.setCallback(this);
+                DisplayInterface result = command.start(aCommand, aUser);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            final NormalCommand bogusCommand = CommandFactory.getBogusCommand();
+            bogusCommand.setCallback(this);
+            return bogusCommand.start(aCommand, aUser);
+        } catch (MudException e)
+        {
+            try
+            {
+                aUser.writeMessage(e.getMessage());
+            } catch (MudException ex)
+            {
+                itsLog.throwing("play: throws ", ex.getMessage(), ex);
+            }
+            return null;
         }
-        final NormalCommand bogusCommand = CommandFactory.getBogusCommand();
-        bogusCommand.setCallback(this);
-        return bogusCommand.start(aCommand, aUser);
     }
 
     private DisplayInterface determineSleep(String aCommand, User aUser) throws MudException
