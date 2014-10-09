@@ -17,8 +17,6 @@
 package mmud.commands;
 
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Display;
@@ -51,7 +49,7 @@ public class WhoCommand extends NormalCommand
             whoList.append("There are no people online at the moment.");
             return new Display("Who", null, whoList.toString());
         }
-        whoList.append("There are ").append(persons.size()).append(" players.<br/><br/>");
+        whoList.append("There are ").append(persons.size()).append(" players.<br/><br/><hr/>");
         whoList.append("<ul>");
         int count = 0;
         for (User player : persons)
