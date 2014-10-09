@@ -100,6 +100,9 @@ public class User extends Person
     @Column(name = "lastlogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastlogin;
+    @Column(name = "timeout")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timeout;
     @Size(max = 40)
     @Column(name = "cgiServerSoftware")
     private String cgiServerSoftware;
@@ -534,6 +537,8 @@ public class User extends Person
      * activate a character
      *
      * @param address the ip-address or hostname used by the player.
+     * @see #deactivate()
+     * @see #isActive()
      */
     public void activate(String address) throws MudException
     {
@@ -574,6 +579,9 @@ public class User extends Person
 
     /**
      * deactivate a character (usually because someone typed quit.)
+     *
+     * @see #activate(java.lang.String)
+     * @see #isActive()
      */
     public void deactivate()
     {
@@ -810,5 +818,43 @@ public class User extends Person
     public God getGod()
     {
         return God.DEFAULT_USER;
+    }
+
+    /**
+     * Sets the timeout, i.e. the amount of minutes that a user is not allowed
+     * to login to the game.
+     *
+     * @param minutes the number of minutes
+     */
+    public void setTimeout(int minutes)
+    {
+        if (minutes <= 0)
+        {
+            timeout = null;
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, minutes);
+        timeout = calendar.getTime();
+    }
+
+    /**
+     * Returns the number of minutes that a user is not allowed
+     * to login to the game.
+     *
+     * @return
+     */
+    public int getTimeout()
+    {
+        if (timeout == null)
+        {
+            return 0;
+        }
+        Calendar calendar = Calendar.getInstance();
+        if (timeout.compareTo(calendar.getTime()) < 0)
+        {
+            return 0;
+        }
+        return (int) ((timeout.getTime() - calendar.getTime().getTime()) / 60000);
     }
 }

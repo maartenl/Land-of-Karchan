@@ -432,4 +432,6 @@ insert into mm_admin_mm_groups select 'deputy', name from mm_admin;
 
 ALTER TABLE mm_admin CHANGE COLUMN `passwd` `passwd` VARCHAR(260) NOT NULL DEFAULT ''  ;
 
+ALTER TABLE mm_usertable ADD COLUMN `timeout` TIMESTAMP NULL  AFTER `guildlevel` ;
+
 END_OF_DATA

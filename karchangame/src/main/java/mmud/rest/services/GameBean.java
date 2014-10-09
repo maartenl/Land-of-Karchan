@@ -157,6 +157,16 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             throw new MudWebException(name, name + " is not a user.", Response.Status.BAD_REQUEST);
         }
+        if (person.getTimeout() > 0)
+        {
+            throw new MudWebException(name, name + " has been kicked out of the game and "
+                    + "is not allowed to logon for " + person.getTimeout() + " minutes.",
+                    Response.Status.FORBIDDEN);
+        }
+        if (!person.isActive())
+        {
+            throw new MudWebException(name, name + " is not playing the game. Please log in.", Response.Status.UNAUTHORIZED);
+        }
         if (!person.verifySessionPassword(lok))
         {
             throw new MudWebException(name,
@@ -206,7 +216,12 @@ public class GameBean implements RoomsInterface, WorldInterface
                     "User was not a user (" + name + ", " + password + ")",
                     Response.Status.BAD_REQUEST);
         }
-
+        if (person.getTimeout() > 0)
+        {
+            throw new MudWebException(name, name + " has been kicked out of the game and "
+                    + "is not allowed to logon for " + person.getTimeout() + " minutes.",
+                    Response.Status.FORBIDDEN);
+        }
         Query query = getEntityManager().createNamedQuery("User.authorise");
         query.setParameter("name", name);
         query.setParameter("password", password);
