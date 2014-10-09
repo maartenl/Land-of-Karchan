@@ -2178,9 +2178,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
         if (position == null)
         {
-            throw new RuntimeException("You cannot wear an item on null");
+            throw new ItemException("You cannot wear an item on nothing.");
         }
-        if (!item.isWearable(position))
+        if (item != null && !item.isWearable(position))
         {
             throw new ItemException("You cannot wear that item there.");
         }
@@ -2235,7 +2235,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
                 setWearwaist(item);
                 break;
             default:
-                throw new RuntimeException("You cannot wear " + item.getDescription() + " on " + position);
+                throw new ItemException("You cannot wear " + (item == null ? "that" : item.getDescription()) + " on " + position + ".");
         }
 
     }
@@ -2299,7 +2299,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             throw new ItemException("You cannot wield an item on null");
         }
-        if (!item.isWieldable(position))
+        if (item != null && !item.isWieldable(position))
         {
             throw new ItemException("You cannot wield that item there.");
         }
@@ -2327,7 +2327,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
                 setWieldright(item);
                 break;
             default:
-                throw new ItemException("You cannot wield " + item.getDescription() + " on " + position);
+                throw new ItemException("You cannot wield " + (item == null ? "that" : item.getDescription()) + " on " + position);
         }
     }
 
