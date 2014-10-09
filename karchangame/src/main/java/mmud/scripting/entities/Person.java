@@ -55,6 +55,11 @@ public class Person
         return new Room(person.getRoom());
     }
 
+    public void setRoom(Room room)
+    {
+        room.useRoom(person);
+    }
+
     public String getGuild()
     {
         if (!(person instanceof User))
@@ -63,7 +68,6 @@ public class Person
         }
         User user = (User) person;
         return user.getGuild() == null ? null : user.getGuild().getTitle();
-
     }
 
     /**

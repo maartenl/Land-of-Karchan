@@ -19,6 +19,7 @@ package mmud.scripting.entities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import mmud.database.entities.characters.Person;
 import mmud.exceptions.PersonNotFoundException;
 
 /**
@@ -249,4 +250,15 @@ public class Room
         return result.toArray(new Item[result.size()]);
     }
 //Item addItem(integer)
+
+    /**
+     * For setting the room on a person (without exposing stuff).
+     *
+     * @see mmud.scripting.entities.Person#setRoom(mmud.scripting.entities.Room)
+     * @param person
+     */
+    void useRoom(Person person)
+    {
+        person.setRoom(room);
+    }
 }
