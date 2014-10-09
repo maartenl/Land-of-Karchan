@@ -244,8 +244,14 @@ public class CommandFactory
                         "whisper (to (\\w)+ )?.+");
             }
         });
-        // clear command has been replaced with a log-deleteing rest service
-        // theCommandStructure.put("clear", new ClearCommand("clear");            }        });
+        theCommandStructure.put("clear", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new ClearCommand("clear");
+            }
+        });
         theCommandStructure.put("time", new CommandCreator()
         {
             @Override

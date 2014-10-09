@@ -1182,7 +1182,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     /**
-     * Clears the log.
+     * Clears the log, i.e. deletes the file and recreates it.
+     *
+     * @see #createLog()
      */
     public void clearLog() throws MudException
     {
