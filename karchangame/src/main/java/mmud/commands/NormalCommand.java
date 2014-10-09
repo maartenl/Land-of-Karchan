@@ -88,7 +88,7 @@ public abstract class NormalCommand implements Command
         aUser.setNow();
         String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
         boolean result;
-        if (myregexpr.endsWith(".+") && command.indexOf('\n') != -1)
+        if ((myregexpr.endsWith(".+") || myregexpr.endsWith(".+)")) && command.indexOf('\n') != -1)
         {
             String stuff = command.substring(0, command.indexOf('\n'));
             result = stuff.matches(myregexpr);

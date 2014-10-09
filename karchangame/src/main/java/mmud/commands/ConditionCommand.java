@@ -22,11 +22,17 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Gets or sets the condition/state of your character.
+ * Gets or sets the condition/state of your character. For example:
+ * <ul><li>"condition"</li>
+ * <li>"condition You are glowing."</li>
+ * <li>"condition empty"</li></ul>
+ *
  * @author maartenl
  */
 public class ConditionCommand extends NormalCommand
 {
+
+    private static final Logger itsLog = Logger.getLogger(ConditionCommand.class.getName());
 
     public ConditionCommand(String aRegExpr)
     {
@@ -36,8 +42,7 @@ public class ConditionCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        Logger.getLogger("mmud").finer("");
-        String[] myParsed = parseCommand(command);
+        String[] myParsed = parseCommand(command, 4);
         if (myParsed.length == 1)
         {
             if (aUser.getState() == null)

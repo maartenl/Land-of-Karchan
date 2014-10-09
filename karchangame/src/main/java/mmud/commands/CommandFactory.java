@@ -158,7 +158,7 @@ public class CommandFactory
             @Override
             public NormalCommand createCommand()
             {
-                return new ConditionCommand("condition( .+)?");
+                return new ConditionCommand("(condition)|(condition .+)");
             }
         });
         theCommandStructure.put("awaken", new CommandCreator()
