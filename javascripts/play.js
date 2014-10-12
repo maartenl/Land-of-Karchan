@@ -65,6 +65,11 @@ function isVowel(aChar)
                                                       
 function processCall(command, log, processor)
 {
+  if (command === "clear")
+  {
+    Karchan.offset = 0;
+    log = true;
+  }
   var $ = Karchan.$;
   $.ajax({
     type: 'POST',
@@ -90,6 +95,10 @@ function writeStuff(data)
     var capitalChar = body.charAt(0).toLocaleLowerCase();
     // http://www.karchan.org/images/gif/letters/w.gif
     var capital = "<img align=\"left\" src=\"/images/gif/letters/" + capitalChar + ".gif\" alt=\"" + capitalChar.toLocaleUpperCase() + "\"/>";
+    if (capitalChar == " " || capitalChar == "<")
+    {
+      capital = capitalChar;
+    }
     $('#page-title').html(imageTag + title);
     var body = "<p>" + capital + body.substring(1) + "</p>";
     if (data.north !== undefined || data.west !== undefined || data.east !== undefined || data.south !== undefined || data.up !== undefined || data.down != undefined)
@@ -111,7 +120,7 @@ function writeStuff(data)
         // A human called Ryan is here.
         if (isVowel(data.persons[i].race.charAt(0))) 
         {body += "An "} else {body += "A ";}
-        body += data.persons[i].race + " called <a href=\"javascript:void(0)\" onclick=\"lookat('" + data.persons[i].name + "');\">" + data.persons[i].name + "</a> is here.<br/>";
+        body += data.persons[i].race + " called <a href=\"javascript:void(0)\" onclick=\"lookat(this);\">" + data.persons[i].name + "</a> is here.<br/>";
       }
       if (data.persons.lenght !== 0) {body += "</p>";}
     }
@@ -147,7 +156,7 @@ function writeStuff(data)
           if (isVowel(description.charAt(0)))
           {body += "An ";} else {body += "A ";}
         }
-        body += "<a href=\"javascript:void(0)\" onclick=\"lookat('" + description + "');\">" + description + "</a>";
+        body += "<span onclick=\"lookat(this);\">" + description + "</span>";
         if (item.amount > 1) 
         {body +=" are";} else {body += " is";}
         body += " here.<br/>";
@@ -310,7 +319,14 @@ function clearLog()
   $('#command').focus();
 }
 
-function lookat(name) {processCall("look at " + name.replaceAll(",",""), true, writeStuff);return false;}
+function lookat(name) 
+{
+  if (window.console) console.log("lookat");
+  if (window.console) console.log(name.innerHTML);
+  processCall("look at " + name.innerHTML.replaceAll(",",""), true, writeStuff);
+  return false;
+}
+
 function goWest() {processCall("go west", false, writeStuff);return false;}
 function goEast() {processCall("go east", false, writeStuff);return false;}
 function goNorth() {processCall("go north", false, writeStuff);return false;}
@@ -322,6 +338,9 @@ function startMeUp($)
 {
   if (window.console) console.log("startMeUp");
   Karchan.$ = $;
+  // very specific Drupal - Bartik - Display settings
+  $("#main").css("width","100%");
+  $("#content").css("width", (window.innerWidth-260) + "px");
   playInit( $ );
 }
 

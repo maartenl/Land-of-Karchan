@@ -1,3 +1,39 @@
+function webError(jqXHR, textStatus, errorThrown)
+{ 
+  if (window.console) 
+  {
+    console.log(jqXHR);
+    console.log(textStatus); 
+    console.log(errorThrown);
+  }
+  try
+  {
+    var errorDetails = JSON.parse(jqXHR.responseText);
+    if (window.console) console.log(errorDetails);
+  } catch(e)
+  {
+    alert("An error occurred. Please notify Karn or one of the deps.");
+    if (window.console) console.log(e);
+    return;
+  }
+  if (errorDetails.stacktrace !== undefined)
+  {
+    var buffer = "Timestamp: " + errorDetails.timestamp + "<br/>";
+    buffer += "Errormessage: " + errorDetails.errormessage + "<br/>";
+    buffer += "Stacktrace: " + errorDetails.stacktrace + "<br/>";
+    buffer += "User: " + errorDetails.user + "<br/>";
+    buffer += "Browser CodeName: " + navigator.appCodeName + "<br/>"; 
+    buffer += "Browser Name: " + navigator.appName + "<br/>";
+    buffer += "Browser Version: " + navigator.appVersion + "<br/>";
+    buffer += "Cookies Enabled: " + navigator.cookieEnabled + "<br/>";
+    buffer += "Platform: " + navigator.platform + "<br/>";
+    buffer += "User-agent header: " + navigator.userAgent + "<br/>";
+    var $ = Karchan.$;
+    $("#warning").html(buffer);
+  }
+  alert(errorDetails.errormessage);
+}
+
 /**
  * Initialise upon page load, the character sheet form with info.
  */
@@ -13,7 +49,7 @@ function loadCharactersheet( $ )
     url: "/resources/public/charactersheets/" + name, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {prefillForm(data); }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: webError,
     complete: (function() { if (window.console) console.log("complete"); }),
     dataType: 'json', //define the type of data that is going to get back from the server
     data: 'js=1' //Pass a key/value pair
@@ -85,7 +121,7 @@ function updateCharactersheet()
     success: (function(data) {
        alert("You've updated your character sheet.");
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: webError,
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',
@@ -114,7 +150,7 @@ function addFamilyValues()
          $("#karchan_table_famvalues").html($("#karchan_table_famvalues").html() + "<tr class=\"even\"><td>" + $("#edit-submitted-add-family-relation :selected").text()
          + "</td><td>of</td><td>" + $("#edit-submitted-of").val() + "</td><td></td></tr>");
       }),
-      error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+      error: webError,
       complete: (function() { if (window.console) console.log("complete"); }),        
       // dataType: 'json', //define the type of data that is going to get back from the server
       // contentType: 'application/json; charset=utf-8',
@@ -142,7 +178,7 @@ function removeFamilyRelation(object)
     success: (function(data) {
        toptr.hide();
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: webError,
     complete: (function() { if (window.console) console.log("complete"); })
   }); // end of ajax
 } // removeFamilyRelation
