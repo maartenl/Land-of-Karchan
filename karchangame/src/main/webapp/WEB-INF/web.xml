@@ -22,8 +22,4 @@
         <auth-method>BASIC</auth-method>
         <realm-name>deputyRealm</realm-name>
     </login-config>
-    <security-role>
-        <description/>
-        <role-name>deputy</role-name>
-    </security-role>
 </web-app>

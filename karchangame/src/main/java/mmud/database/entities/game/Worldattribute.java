@@ -32,6 +32,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -45,6 +46,7 @@ import javax.validation.constraints.Size;
             @NamedQuery(name = "Worldattribute.findByName", query = "SELECT w FROM Worldattribute w WHERE w.name = :name"),
             @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type")
         })
+@XmlRootElement
 public class Worldattribute implements Serializable
 {
 

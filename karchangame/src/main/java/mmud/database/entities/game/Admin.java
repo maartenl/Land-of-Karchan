@@ -32,6 +32,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
@@ -52,6 +54,7 @@ import mmud.database.entities.items.ItemDefinition;
             @NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil"),
             @NamedQuery(name = "Admin.findByEmail", query = "SELECT a FROM Admin a WHERE a.email = :email")
         })
+@XmlRootElement
 public class Admin implements Serializable
 {
 
@@ -205,6 +208,7 @@ public class Admin implements Serializable
         this.email = email;
     }
 
+    @XmlTransient
     public Collection<Room> getRoomCollection()
     {
         return roomCollection;
@@ -215,6 +219,7 @@ public class Admin implements Serializable
         this.roomCollection = roomCollection;
     }
 
+    @XmlTransient
     public Collection<Item> getItemCollection()
     {
         return itemCollection;
@@ -225,6 +230,7 @@ public class Admin implements Serializable
         this.itemCollection = itemCollection;
     }
 
+    @XmlTransient
     public Collection<Person> getPersonCollection()
     {
         return personCollection;
@@ -235,6 +241,7 @@ public class Admin implements Serializable
         this.personCollection = personCollection;
     }
 
+    @XmlTransient
     public Collection<Event> getEventCollection()
     {
         return eventCollection;
@@ -245,6 +252,7 @@ public class Admin implements Serializable
         this.eventCollection = eventCollection;
     }
 
+    @XmlTransient
     public Collection<ItemDefinition> getItemDefinitionCollection()
     {
         return itemDefinitionCollection;
@@ -255,6 +263,7 @@ public class Admin implements Serializable
         this.itemDefinitionCollection = itemDefinitionCollection;
     }
 
+    @XmlTransient
     public Collection<Area> getAreaCollection()
     {
         return areaCollection;
@@ -265,6 +274,7 @@ public class Admin implements Serializable
         this.areaCollection = areaCollection;
     }
 
+    @XmlTransient
     public Collection<UserCommand> getCommandCollection()
     {
         return commandCollection;
@@ -275,6 +285,7 @@ public class Admin implements Serializable
         this.commandCollection = commandCollection;
     }
 
+    @XmlTransient
     public Collection<Method> getMethodCollection()
     {
         return methodCollection;
@@ -285,6 +296,7 @@ public class Admin implements Serializable
         this.methodCollection = methodCollection;
     }
 
+    @XmlTransient
     public Collection<Board> getBoardCollection()
     {
         return boardCollection;
@@ -295,6 +307,7 @@ public class Admin implements Serializable
         this.boardCollection = boardCollection;
     }
 
+    @XmlTransient
     public Collection<Guild> getGuildCollection()
     {
         return guildCollection;
@@ -335,6 +348,7 @@ public class Admin implements Serializable
         return "mmud.database.entities.game.Admin[ name=" + name + " ]";
     }
 
+    @XmlTransient
     public Collection<UserCommand> getMmCommandsCollection()
     {
         return mmCommandsCollection;
