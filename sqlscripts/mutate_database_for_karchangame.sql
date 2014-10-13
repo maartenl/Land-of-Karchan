@@ -434,4 +434,8 @@ ALTER TABLE mm_admin CHANGE COLUMN `passwd` `passwd` VARCHAR(260) NOT NULL DEFAU
 
 ALTER TABLE mm_usertable ADD COLUMN `timeout` TIMESTAMP NULL  AFTER `guildlevel` ;
 
+insert into mm_groups values("god", "Godly group, for Karn only.");
+
+insert into mm_admin_mm_groups values('god', 'Karn');
+
 END_OF_DATA
