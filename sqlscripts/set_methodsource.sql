@@ -207,7 +207,9 @@ function command(person, command)
 }"
 where name = 'pull_chain';
 
-replace into mm_worldattributes values("scripts.commands.karn.pulling.on.chain","string","You take the chain into both your hands 
+replace into mm_worldattributes 
+(name, contents, creation, type, owner)
+values("scripts.commands.karn.pulling.on.chain", "You take the chain into both your hands 
 and you give it a good yank! Something amazing happens. You pull the chain a 
 few centimeters out of the wall. At the same moment behind the wall, if you 
 listen very well, you hear the cracking of wood, the squaking of rope and   
@@ -215,7 +217,7 @@ other ominous sounds. My god! What have you done! What devilish boobytrap
 will within a few moments crush you to atoms? You stand still unable to get 
 away from the fate that awaits you.<p>However, within a few minutes, the 
 sounds stop and everything is back in its usual order. Nothing happened, but 
-what was that all about?</p>");
+what was that all about?</p>", now(), "string", "Karn");
 
 # update mm_methods set src = replace(src, "backslashquote", "\\""");
 
