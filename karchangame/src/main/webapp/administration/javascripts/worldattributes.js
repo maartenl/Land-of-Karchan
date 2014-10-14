@@ -52,8 +52,15 @@ angular.module('karchan', ['restangular'])
                         $scope.errorDetails = null;
                     };
                     $scope.disown = function(index) {
-                        $scope.worldattributes[index].owner = null;
                         $scope.errorDetails = null;
+                        $scope.worldattributes[index].customDELETE("owner").then(function() {
+                            $scope.errorDetails = null;
+                        }
+                        , function(response) {
+                            $scope.errorDetails = response.data;
+                            alert(response.data.errormessage);
+                        });
+                        $scope.worldattributes[index].owner = null;
                     };
                     $scope.copy = function(index) {
                         $scope.worldattribute = Restangular.copy($scope.worldattributes[index]);

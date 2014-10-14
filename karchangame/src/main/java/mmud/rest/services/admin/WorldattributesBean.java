@@ -144,6 +144,30 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
         remove(super.find(id));
     }
 
+    @DELETE
+    @Path("{id}/owner")
+    public void disown(@PathParam("id") String id, @Context SecurityContext sc)
+    {
+        itsLog.info("disown");
+        final String name = sc.getUserPrincipal().getName();
+        Admin admin = getEntityManager().find(Admin.class, name);
+
+        Worldattribute attribute = find(id);
+
+        if (attribute == null)
+        {
+            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
+        }
+        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
+        {
+            throw new MudWebException(name,
+                    name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
+                    Response.Status.UNAUTHORIZED);
+        }
+        attribute.setOwner(null);
+        checkValidation(name, attribute);
+    }
+
     @GET
     @Path("{id}")
     @Produces(
