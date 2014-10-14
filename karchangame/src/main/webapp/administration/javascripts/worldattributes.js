@@ -77,7 +77,6 @@ angular.module('karchan', ['restangular'])
                         };
                     };
                     $scope.update = function() {
-                        $scope.errorDetails = null;
                         if ($scope.isNew)
                         {
                             restBase.post($scope.worldattribute).then(function() {
