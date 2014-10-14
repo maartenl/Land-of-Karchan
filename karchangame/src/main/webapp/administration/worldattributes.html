@@ -40,7 +40,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <td>{{worldattribute.type}}</td>
                 <td>{{worldattribute.creation}}</td>
                 <td>{{worldattribute.owner.name}}</td>
-                <td><a href="javascript:void(0)" ng-click="edit($index)">Edit</a> <a href="javascript:void(0)" ng-click="copy($index)">Copy</a> <a href="javascript:void(0)" ng-click="remove($index)">Delete</a></td>
+                <td><a href="javascript:void(0)" ng-click="edit($index)">Edit</a> 
+                    <a href="javascript:void(0)" ng-click="copy($index)">Copy</a> 
+                    <a href="javascript:void(0)" ng-click="remove($index)">Delete</a> 
+                    <a href="javascript:void(0)" ng-click="disown($index)">Disown</a></td>
             </tr>
         </table>
         <hr>
@@ -52,21 +55,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <fieldset>
             <legend>World attribute</legend>
             <p><label for="name">Name:</label>
-                <input id="name" name="name" type="text" ng-model="worldattribute.name" placeholder="Enter a name here" required ng-minlength=5 ng-maxlength=180  ng-pattern="/^[\\.0-9a-zA-Z]{5,}$/">
+                <input id="name" name="name" type="text" size="80" ng-model="worldattribute.name" placeholder="Enter a name here" required ng-minlength=5 ng-maxlength=180  ng-pattern="/^[\\.0-9a-zA-Z]{5,}$/">
             </p>
             <p><label for="type">Type:</label>
-                <input id="type" name="type" type="text" ng-model="worldattribute.type" placeholder="Enter a type here">
+                <input id="type" name="type" type="text" ng-model="worldattribute.type" placeholder="Enter a type here" ng-minlength=1 ng-maxlength=40> 
             </p>
             <p><label for="body">Source:</label>
-                <textarea id="body" name="body" cols="60" rows="5" type="text" ng-model="worldattribute.contents" placeholder="Enter your javascript body here"></textarea>
+                <textarea id="body" name="body" cols="80" rows="25" type="text" ng-model="worldattribute.contents" placeholder="Enter your javascript body here"></textarea>
             </p>
             <p>
-                <a href="" ng-click="create()">New</a>
                 <button ng-click="create()" class="button">New</button>
                 <button ng-click="update()" class="button" ng-disabled="form.$invalid">Submit</button>
             </p></fieldset>
         <fieldset>
             <legend>Validation errors</legend>
+            <div ng-show="errorDetails !== null">
+                <p>Timestamp: <span>{{ errorDetails.timestamp}}</span></p>
+                <p>Errormessage: <span>{{errorDetails.errormessage}}</span></p>
+                <p>Stacktrace: <span>{{errorDetails.stacktrace}}</span></p>
+                <p>User: <span>{{errorDetails.user}}</span></p>
+                <p>Browser CodeName: <span>{{navigator.appCodeName}}</span></p>
+                <p>Browser Name: <span>{{navigator.appName}}</span></p>
+                <p>Browser Version: <span>{{navigator.appVersion}}</span></p>
+                <p>Cookies Enabled: <span>{{navigator.cookieEnabled}}</span></p>
+                <p>Platform: <span>{{navigator.platform}}</span></p>
+                <p>User-agent header: <span>{{navigator.userAgent}}</span></p>
+            </div>
         </fieldset>
     </form>
 </div>

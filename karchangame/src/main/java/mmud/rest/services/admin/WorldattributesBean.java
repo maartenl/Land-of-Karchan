@@ -19,7 +19,6 @@ package mmud.rest.services.admin;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -81,6 +80,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
         entity.setCreation(new Date());
         entity.setOwner(admin);
         itsLog.info(entity.toString());
+        checkValidation(name, entity);
         getEntityManager().persist(entity);
     }
 
@@ -94,8 +94,9 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
     {
         itsLog.info("edit");
         final String name = sc.getUserPrincipal().getName();
+        Admin admin = getEntityManager().find(Admin.class, name);
 
-        Worldattribute attribute = getEntityManager().find(Worldattribute.class, id);
+        Worldattribute attribute = find(id);
 
         if (attribute == null)
         {
@@ -109,23 +110,36 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
         }
         attribute.setContents(entity.getContents());
         attribute.setType(entity.getType());
+        attribute.setOwner(admin);
+        checkValidation(name, attribute);
+    }
 
+    private void checkValidation(String name, Worldattribute attribute)
+    {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<Worldattribute>> constraintViolations = validator.validate(attribute);
+        StringBuffer buffer = null;
         if (!constraintViolations.isEmpty())
         {
             for (ConstraintViolation<Worldattribute> cv : constraintViolations)
             {
-                itsLog.info(cv.getRootBeanClass().getSimpleName() + "." + cv.getPropertyPath() + " " + cv.getMessage());
+                if (buffer == null)
+                {
+                    buffer = new StringBuffer();
+                }
+                buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
             }
+        }
+        if (buffer != null)
+        {
+            throw new MudWebException(name, buffer.toString(), Response.Status.BAD_REQUEST);
         }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") String id
-    )
+    public void remove(@PathParam("id") String id)
     {
         remove(super.find(id));
     }
@@ -136,8 +150,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             {
                 "application/xml", "application/json"
             })
-    public Worldattribute find(@PathParam("id") String id
-    )
+    public Worldattribute find(@PathParam("id") String id)
     {
         return super.find(id);
     }
@@ -150,9 +163,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             })
     public List<Worldattribute> findAll()
     {
-        itsLog.info("WorldattributesBean.findAll()");
         final List<Worldattribute> collection = super.findAll();
-        itsLog.log(Level.INFO, "WorldattributesBean.findAll() count={0}", collection.size());
         return collection;
     }
 
@@ -162,8 +173,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             {
                 "application/xml", "application/json"
             })
-    public List<Worldattribute> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to
-    )
+    public List<Worldattribute> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
     {
         return super.findRange(new int[]
         {

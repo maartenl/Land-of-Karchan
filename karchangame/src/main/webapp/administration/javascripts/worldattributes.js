@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 angular.module('karchan', ['restangular'])
         .config(function(RestangularProvider) {
             RestangularProvider.setBaseUrl('/karchangame/resources/administration');
@@ -26,31 +27,42 @@ angular.module('karchan', ['restangular'])
         })
         .controller('MyController',
                 function($scope, Restangular) {
+                    $scope.navigator = window.navigator;
                     var restBase = Restangular.all('worldattributes');
                     $scope.reload = function() {
                         restBase.getList()
                                 .then(function(worldattributes) {
-                                    // returns a list of users
+                                    // returns a list of worldattributes
                                     $scope.worldattributes = worldattributes;
-                                    var firstAccount = worldattributes[0];
-                                    firstAccount.contents += "wah!";
-                                    firstAccount.put();
                                     $scope.isNew = false;
                                 });
                     };
                     $scope.remove = function(index) {
-                        Restangular.one('worldattributes', $scope.worldattributes[index].name).remove();
+                        Restangular.one('worldattributes', $scope.worldattributes[index].name).remove().then(function() {
+                            $scope.errorDetails = null;
+                        }
+                        , function(response) {
+                            $scope.errorDetails = response.data;
+                            alert(response.data.errormessage);
+                        });
                     };
                     $scope.edit = function(index) {
                         $scope.worldattribute = $scope.worldattributes[index];
                         $scope.isNew = false;
+                        $scope.errorDetails = null;
+                    };
+                    $scope.disown = function(index) {
+                        $scope.worldattributes[index].owner = null;
+                        $scope.errorDetails = null;
                     };
                     $scope.copy = function(index) {
                         $scope.worldattribute = Restangular.copy($scope.worldattributes[index]);
                         $scope.isNew = true;
+                        $scope.errorDetails = null;
                     };
                     $scope.create = function() {
                         $scope.isNew = true;
+                        $scope.errorDetails = null;
                         $scope.worldattribute = {
                             name: "",
                             contents: "",
@@ -58,17 +70,26 @@ angular.module('karchan', ['restangular'])
                         };
                     };
                     $scope.update = function() {
+                        $scope.errorDetails = null;
                         if ($scope.isNew)
                         {
-                            restBase.post($scope.worldattribute);
+                            restBase.post($scope.worldattribute).then(function() {
+                                $scope.errorDetails = null;
+                            }
+                            , function(response) {
+                                $scope.errorDetails = response.data;
+                                alert(response.data.errormessage);
+                            });
                         }
                         else
                         {
-                            if (window.console) {
-                                console.log($scope.worldattribute);
+                            $scope.worldattribute.put().then(function() {
+                                $scope.errorDetails = null;
                             }
-                            $scope.worldattribute.put();
-                            // Restangular.one('worldattributes', $scope.worldattribute.name).put($scope.worldattribute);
+                            , function(response) {
+                                $scope.errorDetails = response.data;
+                                alert(response.data.errormessage);
+                            });
                         }
                         $scope.isNew = false;
                     };
