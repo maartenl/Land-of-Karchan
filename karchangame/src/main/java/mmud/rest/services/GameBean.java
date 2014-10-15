@@ -524,7 +524,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     public Lok logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
         itsLog.finer("entering logon");
-        String address = requestContext.getRemoteAddr().toString();
+        String address = requestContext.getHeader("X-Forwarded-For");
 
         if ((address == null) || ("".equals(address.trim())))
         {
