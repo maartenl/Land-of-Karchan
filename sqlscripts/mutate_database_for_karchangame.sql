@@ -438,4 +438,6 @@ insert into mm_groups values("god", "Godly group, for Karn only.");
 
 insert into mm_admin_mm_groups values('god', 'Karn');
 
+ALTER TABLE mm_usertable CHANGE COLUMN `password` `password` VARCHAR(260) NULL DEFAULT NULL ;
+
 END_OF_DATA
