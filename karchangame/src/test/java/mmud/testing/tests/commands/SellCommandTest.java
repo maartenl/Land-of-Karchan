@@ -423,7 +423,7 @@ public class SellCommandTest
         assertThat(display, not(nullValue()));
         assertThat(display.getBody(), equalTo("You are in a small room."));
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You sold a nice, golden, friendship ring to Karcas.<br />\n"));
+        assertThat(log, equalTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\n"));
     }
 
     @BeforeClass

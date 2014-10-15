@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.Constants;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
@@ -153,11 +154,12 @@ public class SellCommand extends NormalCommand
                 aUser.writeMessage("You cannot sell that item.<BR>\r\n");
                 continue;
             }
-            if (!itemBean.sell(item, aUser, shopkeeper))
+            Integer moneyPaid = itemBean.sell(item, aUser, shopkeeper);
+            if (moneyPaid == null)
             {
                 continue;
             }
-            aUser.getRoom().sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + ".<br/>\r\n");
+            aUser.getRoom().sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + " for " + Constants.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
             sold = true;
             amount--;
             if (amount == 0)

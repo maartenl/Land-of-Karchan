@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import mmud.Constants;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
@@ -145,11 +146,12 @@ public class BuyCommand extends NormalCommand
                 aUser.writeMessage("You do not have enough money.<br/>\r\n");
                 break;
             }
-            if (!itemBean.buy(item, aUser, shopkeeper))
+            final Integer moneyPaid = itemBean.buy(item, aUser, shopkeeper);
+            if (moneyPaid == null)
             {
                 continue;
             }
-            aUser.getRoom().sendMessage(aUser, "%SNAME buy%VERB2 " + item.getDescription() + " from " + shopkeeper.getName() + ".<br/>\r\n");
+            aUser.getRoom().sendMessage(aUser, "%SNAME buy%VERB2 " + item.getDescription() + " from " + shopkeeper.getName() + " for " + Constants.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
             bought = true;
             amount--;
             if (amount == 0)

@@ -20,7 +20,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
- *
+ * Class that takes care of defining the root path for the rest resources.
  * @author maartenl
  */
 @ApplicationPath("/resources")

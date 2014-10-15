@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -200,42 +201,43 @@ public class ItemBean
      * @param item the item to be sold
      * @param aUser the user selling the item
      * @param shopkeeper the shopkeeper buying the item
-     * @return true upon success, false otherwise
+     * @return the amount of money transferred, or Null if it was unsuccessful.
      */
-    public boolean sell(Item item, User aUser, Shopkeeper shopkeeper)
+    public Integer sell(Item item, User aUser, Shopkeeper shopkeeper)
     {
         if (shopkeeper == null)
         {
-            return false;
+            return null;
         }
         if (aUser == null)
         {
-            return false;
+            return null;
         }
         if (item == null)
         {
-            return false;
+            return null;
         }
         if (!item.isSellable())
         {
-            return false;
+            return null;
         }
         if (shopkeeper.getCopper() < item.getCopper())
         {
-            return false;
+            return null;
         }
         if (!aUser.getItems().contains(item))
         {
-            return false;
+            return null;
         }
-        if (shopkeeper.getRoom().getId() != aUser.getRoom().getId())
+        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId()))
         {
-            return false;
+            return null;
         }
         aUser.give(item, shopkeeper);
-        shopkeeper.transferMoney(item.getCopper() * 80 / 100, aUser);
-        logBean.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + ".");
-        return true;
+        final int amount = item.getCopper() * 80 / 100;
+        shopkeeper.transferMoney(amount, aUser);
+        logBean.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + " for " + amount + ".");
+        return amount;
     }
 
     /**
@@ -244,41 +246,42 @@ public class ItemBean
      * @param item the item to be bought
      * @param aUser the user buying the item
      * @param shopkeeper the shopkeeper selling the item
-     * @return true upon success, false otherwise
+     * @return the amount of money transferred, or Null if it was unsuccessful.
      */
-    public boolean buy(Item item, User aUser, Shopkeeper shopkeeper)
+    public Integer buy(Item item, User aUser, Shopkeeper shopkeeper)
     {
         if (shopkeeper == null)
         {
-            return false;
+            return null;
         }
         if (aUser == null)
         {
-            return false;
+            return null;
         }
         if (item == null)
         {
-            return false;
+            return null;
         }
         if (!item.isBuyable())
         {
-            return false;
+            return null;
         }
         if (aUser.getCopper() < item.getCopper())
         {
-            return false;
+            return null;
         }
         if (!shopkeeper.getItems().contains(item))
         {
-            return false;
+            return null;
         }
-        if (shopkeeper.getRoom().getId() != aUser.getRoom().getId())
+        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId()))
         {
-            return false;
+            return null;
         }
         shopkeeper.give(item, aUser);
-        aUser.transferMoney(item.getCopper(), shopkeeper);
-        logBean.writeLog(aUser, " bought " + item.getDescription() + " from " + shopkeeper.getName() + ".");
-        return true;
+        final int amount = item.getCopper();
+        aUser.transferMoney(amount, shopkeeper);
+        logBean.writeLog(aUser, " bought " + item.getDescription() + " from " + shopkeeper.getName() + " for " + amount + ".");
+        return amount;
     }
 }

@@ -367,7 +367,7 @@ public class BuyCommandTest
         assertThat(display, not(nullValue()));
         assertThat(display.getBody(), equalTo("You are in a small room."));
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You buy a nice, golden, friendship ring from Karcas.<br />\n"));
+        assertThat(log, equalTo("You buy a nice, golden, friendship ring from Karcas for 5 copper coins.<br />\n"));
     }
 
     @BeforeClass

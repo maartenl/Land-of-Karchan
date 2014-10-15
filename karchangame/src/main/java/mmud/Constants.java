@@ -62,8 +62,9 @@ public class Constants
      * <LI>1 gold = 10 silver
      * </UL>
      *
-     * @return String description of the amount of money, for example
-     * "<I>3 gold coins, 2 silver coins</I>". Returns an empty string if
+     * @return String description of the amount of money, for example 320 will
+     * be translated as 
+     * "<I>3 gold coins, 2 silver coins</I>". Returns "no money" if
      * no money is present.
      */
     public static String getDescriptionOfMoney(int aValue)
