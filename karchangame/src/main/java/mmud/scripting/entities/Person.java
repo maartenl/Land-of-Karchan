@@ -60,6 +60,13 @@ public class Person
         room.useRoom(person);
     }
 
+    /**
+     * Returns the guildname (not the full title!) of the guild.
+     * For example the guild Benefactors of Karchan will yield guildname
+     * "deputy".
+     *
+     * @return The guildname.
+     */
     public String getGuild()
     {
         if (!(person instanceof User))
@@ -67,7 +74,7 @@ public class Person
             return null;
         }
         User user = (User) person;
-        return user.getGuild() == null ? null : user.getGuild().getTitle();
+        return user.getGuild() == null ? null : user.getGuild().getName();
     }
 
     /**
