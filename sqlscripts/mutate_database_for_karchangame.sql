@@ -440,4 +440,11 @@ insert into mm_admin_mm_groups values('god', 'Karn');
 
 ALTER TABLE mm_usertable CHANGE COLUMN `password` `password` VARCHAR(260) NULL DEFAULT NULL ;
 
+update mm_events set month = null where month = 0;
+update mm_events set dayofmonth = null where dayofmonth = 0;
+update mm_events set hour = null where hour = 0;
+update mm_events set minute = null where minute = 0;
+update mm_events set dayofweek = null where dayofweek = 0;
+
+
 END_OF_DATA

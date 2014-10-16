@@ -25,3 +25,25 @@ input.ng-invalid {
 input.ng-valid {
     border: 1px solid green;
 }
+table {
+    border-collapse: collapse;
+}
+tr:nth-child(2n) {
+    background-color: #ffffff;
+}
+tr:nth-child(2n+1) {
+    background-color: #f1f1f1;
+}
+th {
+    background-color: #555555;
+    border: 1px solid #555555;
+    color: #ffffff;
+    padding: 3px;
+    text-align: left;
+    vertical-align: top;
+}
+td {
+    border: 1px solid #d4d4d4;
+    padding: 7px 5px;
+    vertical-align: top;
+}

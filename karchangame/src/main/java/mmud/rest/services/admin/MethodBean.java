@@ -18,17 +18,14 @@ package mmud.rest.services.admin;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,7 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Worldattribute;
+import mmud.database.entities.game.Method;
 import mmud.exceptions.MudWebException;
 
 /**
@@ -51,18 +48,18 @@ import mmud.exceptions.MudWebException;
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
 @Stateless
-@Path("/administration/worldattributes")
-public class WorldattributesBean extends AbstractFacade<Worldattribute>
+@Path("/administration/methods")
+public class MethodBean extends AbstractFacade<Method>
 {
 
-    private static final Logger itsLog = Logger.getLogger(WorldattributesBean.class.getName());
+    private static final Logger itsLog = Logger.getLogger(MethodBean.class.getName());
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
-    public WorldattributesBean()
+    public MethodBean()
     {
-        super(Worldattribute.class);
+        super(Method.class);
     }
 
     @POST
@@ -71,7 +68,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             {
                 "application/xml", "application/json"
             })
-    public void create(Worldattribute entity, @Context SecurityContext sc)
+    public void create(Method entity, @Context SecurityContext sc)
     {
         itsLog.info("create");
         final String name = sc.getUserPrincipal().getName();
@@ -85,18 +82,18 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
     }
 
     @PUT
-    @Path("{id}")
+    @Path("{alphabet}/{id}")
     @Consumes(
             {
                 "application/xml", "application/json"
             })
-    public void edit(@PathParam("id") String id, Worldattribute entity, @Context SecurityContext sc)
+    public void edit(@PathParam("alphabet") String alphabet, @PathParam("id") String id, Method entity, @Context SecurityContext sc)
     {
         itsLog.info("edit");
         final String name = sc.getUserPrincipal().getName();
         Admin admin = getEntityManager().find(Admin.class, name);
 
-        Worldattribute attribute = find(id);
+        Method attribute = find(id);
 
         if (attribute == null)
         {
@@ -108,28 +105,27 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
                     name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
                     Response.Status.UNAUTHORIZED);
         }
-        attribute.setContents(entity.getContents());
-        attribute.setType(entity.getType());
+        attribute.setSrc(entity.getSrc());
         attribute.setOwner(admin);
         checkValidation(name, attribute);
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") String id)
+    @Path("{alphabet}/{id}")
+    public void remove(@PathParam("alphabet") String alphabet, @PathParam("id") String id)
     {
-        remove(super.find(id));
+        super.remove(super.find(id));
     }
 
     @DELETE
-    @Path("{id}/owner")
-    public void disown(@PathParam("id") String id, @Context SecurityContext sc)
+    @Path("{alphabet}/{id}/owner")
+    public void disown(@PathParam("alphabet") String alphabet, @PathParam("id") String id, @Context SecurityContext sc)
     {
         itsLog.info("disown");
         final String name = sc.getUserPrincipal().getName();
         Admin admin = getEntityManager().find(Admin.class, name);
 
-        Worldattribute attribute = find(id);
+        Method attribute = find(id);
 
         if (attribute == null)
         {
@@ -146,12 +142,12 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
     }
 
     @GET
-    @Path("{id}")
+    @Path("{alphabet}/{id}")
     @Produces(
             {
                 "application/xml", "application/json"
             })
-    public Worldattribute find(@PathParam("id") String id)
+    public Method find(@PathParam("alphabet") String alphabet, @PathParam("id") String id)
     {
         return super.find(id);
     }
@@ -162,24 +158,24 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             {
                 "application/xml", "application/json"
             })
-    public List<Worldattribute> findAll()
+    public List<Method> findAll()
     {
-        final List<Worldattribute> collection = super.findAll();
-        return collection;
+        return super.findAll();
     }
 
     @GET
-    @Path("{from}/{to}")
+    @Path("{alphabet}")
     @Produces(
             {
                 "application/xml", "application/json"
             })
-    public List<Worldattribute> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
+    public List<Method> findLike(@PathParam("alphabet") String alphabet)
     {
-        return super.findRange(new int[]
-        {
-            from, to
-        });
+        itsLog.log(Level.FINER, "findRange {0}", alphabet);
+        Query query = getEntityManager().createNamedQuery("Method.findRange");
+        query.setParameter("alphabet", alphabet + "%");
+        List<Method> result = query.getResultList();
+        return result;
     }
 
     @GET

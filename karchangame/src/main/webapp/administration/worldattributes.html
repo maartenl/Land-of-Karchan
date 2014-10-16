@@ -29,23 +29,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <h1>Admin - World Attributes</h1>
     <div ng-controller="MyController">
         <a href="javascript:void(0)" ng-click="reload()">Refresh</a> 
-        <table><tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Creation</th>		
-                <th>Owner</th>
-                <th></th>
-            </tr>
-            <tr ng-repeat="worldattribute in worldattributes" ng-class="{even: !$even, odd: !$odd}">
-                <td>{{worldattribute.name}}</td>
-                <td>{{worldattribute.type}}</td>
-                <td>{{worldattribute.creation}}</td>
-                <td>{{worldattribute.owner.name}}</td>
-                <td><a href="javascript:void(0)" ng-click="edit($index)">Edit</a> 
-                    <a href="javascript:void(0)" ng-click="copy($index)">Copy</a> 
-                    <a href="javascript:void(0)" ng-click="remove($index)">Delete</a> 
-                    <a href="javascript:void(0)" ng-click="disown($index)">Disown</a></td>
-            </tr>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Creation</th>		
+                    <th>Owner</th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="worldattribute in worldattributes" ng-class="{even: !$even, odd: !$odd}">
+                    <td>{{worldattribute.name}}</td>
+                    <td>{{worldattribute.type}}</td>
+                    <td>{{worldattribute.creation}}</td>
+                    <td>{{worldattribute.owner.name}}</td>
+                    <td><a href="javascript:void(0)" ng-click="edit($index)">Edit</a> 
+                        <a href="javascript:void(0)" ng-click="copy($index)">Copy</a> 
+                        <a href="javascript:void(0)" ng-click="remove($index)">Delete</a> 
+                        <a href="javascript:void(0)" ng-click="disown($index)">Disown</a></td>
+                </tr>
+            </tbody>
         </table>
         <hr>
         <p>Name: {{worldattribute.name}}</p>
@@ -62,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <input id="type" name="type" type="text" ng-model="worldattribute.type" placeholder="Enter a type here" ng-minlength=1 ng-maxlength=40> 
             </p>
             <p><label for="body">Source:</label>
-                <textarea id="body" name="body" cols="80" rows="25" type="text" ng-model="worldattribute.contents" placeholder="Enter your javascript body here"></textarea>
+                <textarea id="body" name="body" cols="80" rows="25" type="text" ng-model="worldattribute.contents" placeholder="Enter your textbody here"></textarea>
             </p>
             <p>
                 <button ng-click="create()" class="button">New</button>

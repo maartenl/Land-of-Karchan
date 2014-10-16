@@ -28,6 +28,7 @@ angular.module('karchan', ['restangular'])
         .controller('MyController',
                 function($scope, Restangular) {
                     $scope.navigator = window.navigator;
+                    $scope.errorDetails = null;
                     var restBase = Restangular.all('worldattributes');
                     $scope.reload = function() {
                         restBase.getList()

@@ -20,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -89,6 +88,7 @@ public class EventsBean
     @Schedule(hour = "*", minute = "*/1")
     public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
+        // itsLog.log(Level.INFO, "Events scheduled at time {0}.", new Date());
         // logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
         Constants.setFilters(getEntityManager(), Filter.ON);
         Query query = getEntityManager().createNamedQuery("Event.list");
@@ -105,6 +105,7 @@ public class EventsBean
         RunScript runScript = new RunScript(persons, rooms, world);
         for (Event event : list)
         {
+            // itsLog.log(Level.INFO, "Event {0} executed.", event.getEventid());
             logBean.writeLog(null, "Event " + event.getEventid() + " executed.");
             Method method = event.getMethod();
             try
@@ -122,11 +123,11 @@ public class EventsBean
             } catch (ScriptException | NoSuchMethodException ex)
             {
                 // Error occurred: turn this event off!
+                // TODO: that's for debugging,...
                 event.setCallable(Boolean.FALSE);
                 // log it but keep going with the next event.
                 logBean.writeLogException(ex);
-                java.util.logging.Logger.getLogger(EventsBean.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                itsLog.throwing(EventsBean.class.getName(), "events()", ex);
             }
         }
     }

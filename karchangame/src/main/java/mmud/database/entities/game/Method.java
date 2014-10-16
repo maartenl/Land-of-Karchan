@@ -35,6 +35,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -46,8 +48,10 @@ import javax.validation.constraints.Size;
         {
             @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m"),
             @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
-            @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation")
+            @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation"),
+            @NamedQuery(name = "Method.findRange", query = "SELECT m from Method m WHERE m.name like :alphabet")
         })
+@XmlRootElement
 public class Method implements Serializable
 {
 
@@ -130,6 +134,7 @@ public class Method implements Serializable
         this.creation = creation;
     }
 
+    @XmlTransient
     public Collection<Event> getEventCollection()
     {
         return eventCollection;
@@ -140,6 +145,7 @@ public class Method implements Serializable
         this.eventCollection = eventCollection;
     }
 
+    @XmlTransient
     public Collection<UserCommand> getCommandCollection()
     {
         return commandCollection;
@@ -190,6 +196,7 @@ public class Method implements Serializable
         return "mmud.database.entities.game.Method[ name=" + name + " ]";
     }
 
+    @XmlTransient
     public Collection<UserCommand> getMmCommandsCollection()
     {
         return mmCommandsCollection;

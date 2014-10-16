@@ -113,6 +113,20 @@ public class GameBean implements RoomsInterface, WorldInterface
     private EntityManager em;
 
     /**
+     * The ip address of the karchan server (vps386.directvps.nl).
+     * This address means that the call
+     * to the game came from the server itself, and therefore we require
+     * access to the {@link #X_FORWARDED_FOR} header.
+     */
+    public static final String VPS386 = "194.145.201.161";
+
+    /**
+     * If the call was forwarded from an Internet
+     * proxy, then the original ip is stored in this http header.
+     */
+    public static final String X_FORWARDED_FOR = "X-Forwarded-For";
+
+    /**
      * Returns the entity manager of Hibernate/JPA. This is defined in
      * build/web/WEB-INF/classes/META-INF/persistence.xml.
      *
@@ -524,8 +538,18 @@ public class GameBean implements RoomsInterface, WorldInterface
     public Lok logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
         itsLog.finer("entering logon");
-        String address = requestContext.getHeader("X-Forwarded-For");
-
+        String address = requestContext.getHeader(X_FORWARDED_FOR);
+        if ((address == null) || ("".equals(address.trim())))
+        {
+            address = requestContext.getRemoteAddr().toString();
+            if (VPS386.equals(address))
+            {
+                throw new MudWebException(name,
+                        "User has server address.",
+                        "User has server address (" + name + ", " + address + ")",
+                        Response.Status.BAD_REQUEST);
+            }
+        }
         if ((address == null) || ("".equals(address.trim())))
         {
             throw new MudWebException(name,

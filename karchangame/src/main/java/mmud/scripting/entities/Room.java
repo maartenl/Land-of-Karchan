@@ -235,6 +235,7 @@ public class Room
     public Item[] getItems(Integer itemdefid)
     {
         itsLog.entering(this.getClass().getName(), "getItems");
+        itsLog.info("getItems itemdefid=" + itemdefid);
         List<Item> result = new ArrayList<>();
         for (mmud.database.entities.items.Item item : room.getItems())
         {

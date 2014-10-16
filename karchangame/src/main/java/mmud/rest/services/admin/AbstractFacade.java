@@ -17,8 +17,15 @@
 package mmud.rest.services.admin;
 
 import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import mmud.exceptions.MudWebException;
 
 /**
  *
@@ -72,6 +79,29 @@ public abstract class AbstractFacade<T>
         cq.select(getEntityManager().getCriteriaBuilder().count(rt));
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
+    }
+
+    protected void checkValidation(String name, T attribute)
+    {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<T>> constraintViolations = validator.validate(attribute);
+        StringBuffer buffer = null;
+        if (!constraintViolations.isEmpty())
+        {
+            for (ConstraintViolation<T> cv : constraintViolations)
+            {
+                if (buffer == null)
+                {
+                    buffer = new StringBuffer();
+                }
+                buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
+            }
+        }
+        if (buffer != null)
+        {
+            throw new MudWebException(name, buffer.toString(), Response.Status.BAD_REQUEST);
+        }
     }
 
 }
