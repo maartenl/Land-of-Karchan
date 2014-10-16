@@ -18,6 +18,7 @@ package mmud.scripting.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.PersonNotFoundException;
@@ -235,18 +236,15 @@ public class Room
     public Item[] getItems(Integer itemdefid)
     {
         itsLog.entering(this.getClass().getName(), "getItems");
-        itsLog.info("getItems itemdefid=" + itemdefid);
         List<Item> result = new ArrayList<>();
-        for (mmud.database.entities.items.Item item : room.getItems())
+        final Set<mmud.database.entities.items.Item> items = room.getItems();
+        for (mmud.database.entities.items.Item item : items)
         {
-            if (item.getItemDefinition().getId() == itemdefid)
+            if (item.getItemDefinition().getId().equals(itemdefid))
             {
-                itsLog.info("adding " + item.toString());
                 result.add(new Item(item));
             }
         }
-        itsLog.info(result.toString());
-        itsLog.info(result.size() + "");
         itsLog.exiting(this.getClass().getName(), "getItems");
         return result.toArray(new Item[result.size()]);
     }
