@@ -2263,7 +2263,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
                 return getWieldleft();
         }
         throw new RuntimeException("You cannot wield an item on " + position);
-
     }
 
     /**

@@ -20,10 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
+import javax.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 import mmud.scripting.RunScript;
 
 /**
@@ -76,7 +78,7 @@ public class ScriptCommand extends NormalCommand
             // because it is a pain to have to re-activate deactivated functions that bombed.
             // (better yet, set a method to "testing")
             // theUserCommand.setCallable(false);
-            throw new MudException("I'm afraid, I do not understand that.<br/>", ex);
+            throw new MudWebException(aUser.getName(), command, ex, Response.Status.BAD_REQUEST);
         }
     }
 

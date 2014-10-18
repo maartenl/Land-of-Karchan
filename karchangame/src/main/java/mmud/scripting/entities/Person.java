@@ -17,6 +17,7 @@
 package mmud.scripting.entities;
 
 import mmud.database.entities.characters.User;
+import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.PersonNotFoundException;
@@ -163,7 +164,51 @@ public class Person
     //item addItem(integer)
     //removeItem(Item)
 
-    //item wornItem(integer)
+    /**
+     *
+     * <p>
+     * Returns the item that is being worn at that position. Returns null if nothing
+     * is being worn at that position.</p>
+     * <p>
+     * For example: </p>
+     * <p>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * wears("ON_HEAD") can return item "crown". The ON_HEAD is straight from
+     * {@link Wearing#ON_HEAD}.</p>
+     *
+     * @param position a String
+     * @return an Item or null if nothing is worn.
+     * @see Wearing
+     */
+    public Item wears(String position)
+    {
+        Wearing wearing = Wearing.valueOf(position);
+        final mmud.database.entities.items.Item wears = person.wears(wearing);
+        return wears == null ? null : new Item(wears);
+    }
+
+    /**
+     * <p>
+     * Returns the item that is being wielded at that position. Returns null if
+     * nothing is being wielded at that position.</p>
+     * <p>
+     * For example: </p>
+     * <p>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     * wields("WIELD_LEFT") can return item "strong, iron pick". The WIELD_LEFT is straight from
+     * {@link Wielding#WIELD_LEFT}.</p>
+     *
+     * @param position a String
+     * @return an Item or null if nothing is being wielded.
+     * @see Wielding
+     */
+    public Item wields(String position)
+    {
+        Wielding wielding = Wielding.valueOf(position);
+        final mmud.database.entities.items.Item wield = person.wields(wielding);
+        return wield == null ? null : new Item(wield);
+    }
+
     //item[] getItem(integer)
     public String getAttribute(String name)
     {
