@@ -83,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <fieldset>
             <legend>Script</legend>
             <p><label for="name">Name:</label>
-                <input id="name" name="name" type="text" size="80" ng-model="method.name" placeholder="Enter a name here" required ng-minlength=5 ng-maxlength=180  ng-pattern="/^[\\.0-9a-zA-Z]{5,}$/">
+                <input id="name" name="name" type="text" size="80" ng-model="method.name" placeholder="Enter a name here" required ng-minlength=5 ng-maxlength=180  ng-pattern="/^[\\._0-9a-zA-Z]{5,}$/">
             </p>           
             <p><label for="src">Source:</label>
                 <textarea id="src" name="src" cols="80" rows="25" type="text" ng-model="method.src" placeholder="Enter your javascript body here"></textarea>
