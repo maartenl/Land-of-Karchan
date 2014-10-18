@@ -324,31 +324,34 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     public String getBody() throws MudException
     {
         StringBuilder builder = new StringBuilder(getItemDefinition().getLongDescription());
-        builder.append("With your expert eye your judge this item to be worth ").
-                append(Constants.getDescriptionOfMoney(getCopper())).
-                append(".<br/>\r\n");
-        if (isDrinkable())
+        if (getItemDefinition().getId() > 0)
         {
-            builder.append("You can try drinking it.<br/>\r\n");
-        }
-        if (isEatable())
-        {
-            builder.append("You can try eating it.<br/>\r\n");
-        }
-        Integer wieldable = getItemDefinition().getWieldable();
-        Integer wearable = getItemDefinition().getWearable();
-        for (Wielding wield : Wielding.values())
-        {
-            if (Wielding.isIn(wieldable, wield))
+            builder.append("With your expert eye your judge this item to be worth ").
+                    append(Constants.getDescriptionOfMoney(getCopper())).
+                    append(".<br/>\r\n");
+            if (isDrinkable())
             {
-                builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+                builder.append("You can try drinking it.<br/>\r\n");
             }
-        }
-        for (Wearing wear : Wearing.values())
-        {
-            if (Wearing.isIn(wearable, wear))
+            if (isEatable())
             {
-                builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+                builder.append("You can try eating it.<br/>\r\n");
+            }
+            Integer wieldable = getItemDefinition().getWieldable();
+            Integer wearable = getItemDefinition().getWearable();
+            for (Wielding wield : Wielding.values())
+            {
+                if (Wielding.isIn(wieldable, wield))
+                {
+                    builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+                }
+            }
+            for (Wearing wear : Wearing.values())
+            {
+                if (Wearing.isIn(wearable, wear))
+                {
+                    builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+                }
             }
         }
         if (isContainer())
