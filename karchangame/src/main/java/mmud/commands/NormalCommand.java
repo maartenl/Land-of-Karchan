@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.rest.services.EventsBean;
 import mmud.rest.services.GuildBean;
 import mmud.rest.services.HelpBean;
 import mmud.rest.services.ItemBean;
@@ -149,6 +150,11 @@ public abstract class NormalCommand implements Command
     protected PersonBean getPersonBean()
     {
         return callback.getPersonBean();
+    }
+
+    protected EventsBean getEventsBean()
+    {
+        return callback.getEventsBean();
     }
 
     protected HelpBean getHelpBean()

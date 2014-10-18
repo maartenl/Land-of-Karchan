@@ -16,11 +16,13 @@
  */
 package mmud.commands;
 
+import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.rest.services.EventsBean;
 import mmud.rest.services.PersonBean;
 
 /**
@@ -45,6 +47,7 @@ public class AdminCommand extends NormalCommand
             return aUser.getRoom();
 
         }
+        Administrator administrator = (Administrator) aUser;
         if (command.equalsIgnoreCase("admin reset commands"))
         {
             CommandFactory.clearUserCommandStructure();
@@ -53,8 +56,14 @@ public class AdminCommand extends NormalCommand
         if (command.toLowerCase().startsWith("admin wall"))
         {
             PersonBean personBean = getPersonBean();
-            personBean.sendWall(aUser, command.substring(11));
+            personBean.sendWall(administrator, command.substring(11));
             aUser.writeMessage("Wall message sent.<br/>\r\n");
+        }
+        if (command.toLowerCase().startsWith("admin runevent"))
+        {
+            EventsBean eventsBean = getEventsBean();
+            eventsBean.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
+            aUser.writeMessage("Event run attempted.<br/>\r\n");
         }
         if (command.toLowerCase().startsWith("admin kick"))
         {
@@ -91,6 +100,7 @@ public class AdminCommand extends NormalCommand
                     + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
                     + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are provided,"
                     + "said user will not be able to logon for that many minutes.</li>"
+                    + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
                     + "<li>admin reset commands - reset the cached <i>special</i> commands."
                     + "Necessary if a command has been deleted, added or changed.</li>"
                     + "</ul>\r\n");

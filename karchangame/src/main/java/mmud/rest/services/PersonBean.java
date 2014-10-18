@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.Constants;
+import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.enums.Filter;
@@ -150,7 +151,7 @@ public class PersonBean implements PersonsInterface
         return list;
     }
 
-    public void sendWall(User administrator, String message)
+    public void sendWall(Administrator administrator, String message)
     {
         for (User user : getActivePlayers())
         {

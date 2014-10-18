@@ -320,10 +320,20 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         return getItemDefinition().getImage();
     }
 
+    public String getLongDescription()
+    {
+        Attribute description = getAttribute(Attributes.DESCRIPTION);
+        if (description == null || description.getValue() == null || description.getValue().trim().equals(""))
+        {
+            return getItemDefinition().getLongDescription();
+        }
+        return description.getValue();
+    }
+
     @Override
     public String getBody() throws MudException
     {
-        StringBuilder builder = new StringBuilder(getItemDefinition().getLongDescription());
+        StringBuilder builder = new StringBuilder(getLongDescription());
         if (getItemDefinition().getId() > 0)
         {
             builder.append("With your expert eye your judge this item to be worth ").
@@ -425,6 +435,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @Override
     public void setAttribute(String name, String value)
     {
+        itsLog.finer("setAttribute name=" + name + " value=" + value);
         Itemattribute attr = getItemattribute(name);
         if (attr == null)
         {

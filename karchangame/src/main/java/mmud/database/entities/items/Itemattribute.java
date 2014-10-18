@@ -38,12 +38,12 @@ import mmud.database.entities.game.Attribute;
 @Entity
 @Table(name = "mm_itemattributes")
 @NamedQueries(
-{
-    @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),
-    @NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.name = :name"),
-    @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType"),
-    @NamedQuery(name = "Itemattribute.findById", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.id = :id")
-})
+        {
+            @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),
+            @NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.name = :name"),
+            @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType"),
+            @NamedQuery(name = "Itemattribute.findById", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.id = :id")
+        })
 public class Itemattribute implements Serializable, Attribute
 {
 
@@ -150,7 +150,7 @@ public class Itemattribute implements Serializable, Attribute
     @Override
     public String toString()
     {
-        return "mmud.database.entities.game.Itemattribute[ itemattributePK=" + itemattributePK + " ]";
+        return "mmud.database.entities.game.Itemattribute[ itemattributePK=" + itemattributePK + " value=" + value + " ]";
     }
 
     @Override

@@ -45,4 +45,11 @@ public class Attributes
     public static final String NOTSELLABLE = "notsellable";
 
     public static String NOTBUYABLE = "notbuyable";
+
+    /**
+     * Attribute indicating a description that takes precedence
+     * over an existing description. For example, the long description
+     * used in items.
+     */
+    public static String DESCRIPTION = "description";
 }

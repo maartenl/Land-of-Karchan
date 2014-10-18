@@ -29,11 +29,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.script.ScriptException;
+import javax.ws.rs.core.Response;
 import mmud.Constants;
+import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
 import mmud.database.enums.Filter;
+import mmud.exceptions.MudWebException;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
@@ -76,6 +79,57 @@ public class EventsBean
         return em;
     }
     private static final Logger itsLog = Logger.getLogger(EventsBean.class.getName());
+
+    /**
+     * Runs a single event, right now. Used by administrators for testing.
+     *
+     * @param aUser the administrator running the event
+     * @param eventid an event id, a number.
+     */
+    public void runSingleEvent(Administrator aUser, Integer eventid)
+    {
+        itsLog.entering(this.getClass().getName(), "runSingleEvent");
+        Constants.setFilters(getEntityManager(), Filter.ON);
+        if (eventid == null)
+        {
+            throw new MudWebException(null, "Event id was empty.", Response.Status.BAD_REQUEST);
+        }
+        Event event = getEntityManager().find(Event.class, eventid);
+        if (event == null)
+        {
+            throw new MudWebException(null, "Event was not found.", Response.Status.NOT_FOUND);
+        }
+        Persons persons = new Persons(personBean);
+        Rooms rooms = new Rooms(gameBean);
+        World world = new World(gameBean);
+        RunScript runScript = new RunScript(persons, rooms, world);
+        Method method = event.getMethod();
+        try
+        {
+            if (event.getRoom() != null)
+            {
+                itsLog.info("runSingleEvent with room " + event.getRoom());
+                boolean result = runScript.run(event.getRoom(), method.getSrc());
+            } else if (event.getPerson() != null)
+            {
+                itsLog.info("runSingleEvent with person " + event.getPerson());
+                boolean result = runScript.run(event.getPerson(), method.getSrc());
+            } else
+            {
+                itsLog.info("runSingleEvent global");
+                boolean result = runScript.run(method.getSrc());
+            }
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ScriptException | NoSuchMethodException ex)
+        {
+            // Error occurred: turn this event off!
+            // TODO: that's for debugging,...
+            // event.setCallable(Boolean.FALSE);
+            // log it but keep going with the next event.
+            logBean.writeLogException(ex);
+            itsLog.throwing(EventsBean.class.getName(), "events()", ex);
+            throw new MudWebException(aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
+        }
+    }
 
     /**
      * Runs every minute, looks up which user-defined event to execute now.
@@ -124,7 +178,7 @@ public class EventsBean
             {
                 // Error occurred: turn this event off!
                 // TODO: that's for debugging,...
-                event.setCallable(Boolean.FALSE);
+                // event.setCallable(Boolean.FALSE);
                 // log it but keep going with the next event.
                 logBean.writeLogException(ex);
                 itsLog.throwing(EventsBean.class.getName(), "events()", ex);
@@ -157,4 +211,5 @@ public class EventsBean
             }
         }
     }
+
 }

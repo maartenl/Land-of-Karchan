@@ -27,6 +27,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
+import mmud.rest.services.EventsBean;
 import mmud.rest.services.GameBean;
 import mmud.rest.services.GuildBean;
 import mmud.rest.services.HelpBean;
@@ -68,6 +69,9 @@ public class CommandRunner
 
     @EJB
     private ItemBean itemBean;
+
+    @EJB
+    private EventsBean eventsBean;
 
     /**
      * Runs a specific command. If this person appears to be asleep, the only
@@ -168,6 +172,11 @@ public class CommandRunner
     public ItemBean getItemBean()
     {
         return itemBean;
+    }
+
+    EventsBean getEventsBean()
+    {
+        return eventsBean;
     }
 
 }
