@@ -713,10 +713,23 @@ public class GameBean implements RoomsInterface, WorldInterface
             }
         } catch (WebApplicationException e)
         {
+            itsLog.log(Level.INFO, "caught and rethrowing WebApplicationException {0}  {1}", new Object[]
+            {
+                e.getClass().getName(), e.getMessage()
+            });
             //ignore
             throw e;
-        } catch (Exception e)
+        } catch (Throwable e)
         {
+            Throwable f = e;
+            while (f.getCause() != null)
+            {
+                if (f.getCause() instanceof WebApplicationException)
+                {
+                    throw (WebApplicationException) f.getCause();
+                }
+                f = f.getCause();
+            }
             String message = (e.getMessage() == null || e.getMessage().trim().equals(""))
                     ? "An error occurred. Please notify Karn or one of the deps."
                     : e.getMessage();
