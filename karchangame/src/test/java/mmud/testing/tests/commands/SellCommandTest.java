@@ -18,11 +18,7 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
@@ -38,6 +34,7 @@ import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,7 +51,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class SellCommandTest
+public class SellCommandTest extends MudTest
 {
 
     private User karn;
@@ -68,20 +65,6 @@ public class SellCommandTest
 
     @Mocked
     private CommandRunner commandRunner;
-
-    public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value)
-    {
-        try
-        {
-            Field field = targetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(object, value);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex)
-        {
-            Logger.getLogger(SellCommandTest.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
-    }
 
     public SellCommandTest()
     {
@@ -258,8 +241,7 @@ public class SellCommandTest
         persons.add(karcas);
         setField(Room.class, "persons", room1, persons);
         setField(Person.class, "copper", karcas, 1111);
-        ring.getItemDefinition().setWearable(Wearing.ON_LEFT_FINGER.toInt());
-
+        setField(ItemDefinition.class, "wearable", ring.getItemDefinition(), Wearing.ON_LEFT_FINGER.toInt());
         HashSet<Item> items = new HashSet<>();
         items.add(ring);
         setField(Person.class, "items", karn, items);
@@ -296,7 +278,7 @@ public class SellCommandTest
         setField(Person.class, "copper", karcas, 1111);
 
         HashSet<Item> items = new HashSet<>();
-        ring.getItemDefinition().setWieldable(Wielding.WIELD_LEFT.toInt());
+        setField(ItemDefinition.class, "wieldable", ring.getItemDefinition(), Wielding.WIELD_LEFT.toInt());
         items.add(ring);
         setField(Person.class, "items", karn, items);
         karn.wield(ring, Wielding.WIELD_LEFT);

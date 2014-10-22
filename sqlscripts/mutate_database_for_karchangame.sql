@@ -446,5 +446,9 @@ update mm_events set hour = null where hour = 0;
 update mm_events set minute = null where minute = 0;
 update mm_events set dayofweek = null where dayofweek = 0;
 
+update mm_items set wieldable = 0;
+update mm_items set wieldable = 1 where wearable & 65536 = 65536;
+update mm_items set wieldable = wieldable + 2 where wearable & 131072 = 131072;
+update mm_items set wieldable = wieldable + 4 where wearable & 262144 = 262144;
 
 END_OF_DATA

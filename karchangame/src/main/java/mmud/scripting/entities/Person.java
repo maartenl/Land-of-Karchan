@@ -230,31 +230,4 @@ public class Person
         return person.removeAttribute(name);
     }
 
-    public Item getWieldingLeft()
-    {
-        if (person.wields(Wielding.WIELD_LEFT) == null)
-        {
-            return null;
-        }
-        return new Item(person.wields(Wielding.WIELD_LEFT));
-    }
-
-    public Item getWieldingRight()
-    {
-        if (person.wields(Wielding.WIELD_RIGHT) == null)
-        {
-            return null;
-        }
-        return new Item(person.wields(Wielding.WIELD_RIGHT));
-    }
-
-    public Item getWieldingBoth()
-    {
-        if (person.wields(Wielding.WIELD_BOTH) == null)
-        {
-            return null;
-        }
-        return new Item(person.wields(Wielding.WIELD_BOTH));
-    }
-
 }

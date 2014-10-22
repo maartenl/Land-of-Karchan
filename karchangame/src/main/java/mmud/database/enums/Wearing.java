@@ -16,6 +16,10 @@
  */
 package mmud.database.enums;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Different position on the body that can wear clothes of some kind.
  */
@@ -38,6 +42,7 @@ public enum Wearing
     ON_EYES(8192, "over %SHISHER eyes", "eyes"),
     ON_EARS(16384, "on %SHISHER ears", "ears"),
     ABOUT_BODY(32768, "about %SHISHER body", "body");
+
     private int enumVal;
     private String name;
     private String parse;
@@ -118,6 +123,7 @@ public enum Wearing
 
     /**
      * Constructor for the enum.
+     *
      * @param aVal the integer value (database)
      * @param str the description of use in communication
      * @param parse for parsing commands, contains one word indicating the
@@ -149,5 +155,29 @@ public enum Wearing
     public int toInt()
     {
         return enumVal;
+    }
+
+    /**
+     * Receives an integer and returns a list of Wieldings to correspond.
+     *
+     * @param aVal the integer corresponding to a number of Wieldings
+     * @return a List of Wieldings.
+     */
+    public static Set<Wearing> returnWearings(Integer aVal)
+    {
+        if (aVal == null)
+        {
+            // an empty value means, cannot be worn.
+            return Collections.emptySet();
+        }
+        Set<Wearing> result = new HashSet<>();
+        for (Wearing position : Wearing.values())
+        {
+            if (isIn(aVal, position))
+            {
+                result.add(position);
+            }
+        }
+        return result;
     }
 }

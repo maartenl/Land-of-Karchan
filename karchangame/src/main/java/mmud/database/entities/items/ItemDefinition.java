@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +40,8 @@ import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Mail;
+import mmud.database.enums.Wearing;
+import mmud.database.enums.Wielding;
 
 /**
  * The definition of an item. The analogy with Java would be the difference
@@ -447,16 +450,6 @@ public class ItemDefinition implements Serializable
         this.visible = null;
     }
 
-    public Integer getWieldable()
-    {
-        return wieldable;
-    }
-
-    public void setWieldable(Integer wieldable)
-    {
-        this.wieldable = wieldable;
-    }
-
     /**
      * A full and long description of an item. Usually quite a lot of text.
      *
@@ -492,16 +485,6 @@ public class ItemDefinition implements Serializable
     public void setReaddescription(String readdescr)
     {
         this.readdescription = readdescr;
-    }
-
-    public Integer getWearable()
-    {
-        return wearable;
-    }
-
-    public void setWearable(Integer wearable)
-    {
-        this.wearable = wearable;
     }
 
     /**
@@ -773,5 +756,26 @@ public class ItemDefinition implements Serializable
     boolean hasLock()
     {
         return key != null;
+    }
+
+    public Set<Wielding> getWieldable()
+    {
+        return Wielding.returnWieldings(wieldable);
+    }
+
+    public Set<Wearing> getWearable()
+    {
+        return Wearing.returnWearings(wearable);
+
+    }
+
+    boolean isWearable(Wearing position)
+    {
+        return Wearing.isIn(wearable, position);
+    }
+
+    boolean isWieldable(Wielding position)
+    {
+        return Wielding.isIn(wieldable, position);
     }
 }

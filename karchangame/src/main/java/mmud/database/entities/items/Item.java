@@ -347,21 +347,15 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
             {
                 builder.append("You can try eating it.<br/>\r\n");
             }
-            Integer wieldable = getItemDefinition().getWieldable();
-            Integer wearable = getItemDefinition().getWearable();
-            for (Wielding wield : Wielding.values())
+            Set<Wielding> wieldable = getItemDefinition().getWieldable();
+            Set<Wearing> wearable = getItemDefinition().getWearable();
+            for (Wielding wield : wieldable)
             {
-                if (Wielding.isIn(wieldable, wield))
-                {
-                    builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
-                }
+                builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
             }
-            for (Wearing wear : Wearing.values())
+            for (Wearing wear : wearable)
             {
-                if (Wearing.isIn(wearable, wear))
-                {
-                    builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
-                }
+                builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
             }
         }
         if (isContainer())
@@ -650,12 +644,12 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
     public boolean isWearable(Wearing position)
     {
-        return Wearing.isIn(getItemDefinition().getWearable(), position);
+        return getItemDefinition().isWearable(position);
     }
 
     public boolean isWieldable(Wielding position)
     {
-        return Wielding.isIn(getItemDefinition().getWieldable(), position);
+        return getItemDefinition().isWieldable(position);
     }
 
     /**

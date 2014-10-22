@@ -18,11 +18,7 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.BuyCommand;
@@ -36,6 +32,7 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,7 +49,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class BuyCommandTest
+public class BuyCommandTest extends MudTest
 {
 
     private User karn;
@@ -66,21 +63,6 @@ public class BuyCommandTest
 
     @Mocked
     private CommandRunner commandRunner;
-    
-
-    public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value)
-    {
-        try
-        {
-            Field field = targetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(object, value);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex)
-        {
-            Logger.getLogger(BuyCommandTest.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
-    }
 
     public BuyCommandTest()
     {

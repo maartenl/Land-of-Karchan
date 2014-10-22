@@ -16,6 +16,10 @@
  */
 package mmud.database.enums;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author maartenl
@@ -26,11 +30,12 @@ public enum Wielding
     WIELD_LEFT(1, "with %SHISHER left hand"),
     WIELD_RIGHT(2, "with %SHISHER right hand"),
     WIELD_BOTH(4, "with both %SHISHER hands");
-    private int bitmask;
-    private String description;
+    private final int bitmask;
+    private final String description;
 
     /**
      * Constructor for the enum.
+     *
      * @param aVal the integer value (database)
      * @param str the description of use in communication
      * @param parse for parsing commands, contains one word indicating the
@@ -66,6 +71,30 @@ public enum Wielding
         }
         throw new RuntimeException("value " + aVal + " does not "
                 + "correspond to a Wielding");
+    }
+
+    /**
+     * Receives an integer and returns a list of Wieldings to correspond.
+     *
+     * @param aVal the integer corresponding to a number of Wieldings
+     * @return a List of Wieldings.
+     */
+    public static Set<Wielding> returnWieldings(Integer aVal)
+    {
+        if (aVal == null)
+        {
+            // an empty value means, cannot be wielded.
+            return Collections.emptySet();
+        }
+        Set<Wielding> result = new HashSet<>();
+        for (Wielding position : Wielding.values())
+        {
+            if (isIn(aVal, position))
+            {
+                result.add(position);
+            }
+        }
+        return result;
     }
 
     /**
