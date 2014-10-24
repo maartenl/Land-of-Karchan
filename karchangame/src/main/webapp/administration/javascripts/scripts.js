@@ -30,16 +30,33 @@ angular.module('karchan', ['restangular'])
                     $scope.navigator = window.navigator;
                     $scope.errorDetails = null;
                     var restBase = Restangular.all('methods');
+                    $scope.setFilter = function() {
+                        if ($scope.filter === null)
+                        {
+                            $scope.displayMethods = $scope.methods;
+                        } else
+                        {
+                            $scope.displayMethods = $scope.methods.filter(function(element) {
+                                return element.owner != null && element.owner.name === $scope.filter;
+                            }
+                            )
+                        }
+                    }
+                    $scope.removeFilter = function() {
+                        $scope.filter = null;
+                        $scope.setFilter();
+                    }
                     $scope.reload = function(alphabet) {
                         restBase.all(alphabet).getList()
                                 .then(function(methods) {
                                     // returns a list of methods
                                     $scope.methods = methods;
+                                    $scope.setFilter();
                                     $scope.isNew = false;
                                 });
                     };
                     $scope.remove = function(index) {
-                        Restangular.one('methods', $scope.methods[index].name).remove().then(function() {
+                        Restangular.one('methods/A', $scope.displayMethods[index].name).remove().then(function() {
                             $scope.errorDetails = null;
                         }
                         , function(response) {
@@ -48,23 +65,23 @@ angular.module('karchan', ['restangular'])
                         });
                     };
                     $scope.edit = function(index) {
-                        $scope.method = $scope.methods[index];
+                        $scope.method = $scope.displayMethods[index];
                         $scope.isNew = false;
                         $scope.errorDetails = null;
                     };
                     $scope.disown = function(index) {
                         $scope.errorDetails = null;
-                        $scope.methods[index].customDELETE("owner").then(function() {
+                        $scope.displayMethods[index].customDELETE("owner").then(function() {
                             $scope.errorDetails = null;
                         }
                         , function(response) {
                             $scope.errorDetails = response.data;
                             alert(response.data.errormessage);
                         });
-                        $scope.methods[index].owner = null;
+                        $scope.displayMethods[index].owner = null;
                     };
                     $scope.copy = function(index) {
-                        $scope.method = Restangular.copy($scope.methods[index]);
+                        $scope.method = Restangular.copy($scope.displayMethods[index]);
                         $scope.isNew = true;
                         $scope.errorDetails = null;
                     };
@@ -100,5 +117,6 @@ angular.module('karchan', ['restangular'])
                         }
                         $scope.isNew = false;
                     };
+                    $scope.removeFilter();
                 });
 

@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="css/admin.css" /> 
 </head>
 <body>
-    <h1>Admin - Scripts</h1>
+    <h1>Scripts</h1>
     <div ng-controller="MyController">
         <p>
             <a href="javascript:void(0)" ng-click="reload('A')">A</a>
@@ -56,6 +56,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <a href="javascript:void(0)" ng-click="reload('Y')">Y</a>
             <a href="javascript:void(0)" ng-click="reload('Z')">Z</a>
         </p>
+        <p><label for="filter">Filter on owner:</label>
+            <input id="filter" name="filter" type="text" size="80" ng-model="filter" placeholder="Enter a name here"/> <a href="javascript:void(0)"  ng-click="setFilter()">Filter</a> <a href="javascript:void(0)" ng-click="removeFilter()">Unfilter</a>
+        </p> 
         <table>
             <tbody>
                 <tr>
@@ -64,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <th>Owner</th>
                     <th></th>
                 </tr>
-                <tr ng-repeat="method in methods" ng-class="{even: !$even, odd: !$odd}">
+                <tr ng-repeat="method in displayMethods" ng-class="{even: !$even, odd: !$odd}">
                     <td>{{method.name}}</td>
                     <td>{{method.creation}}</td>
                     <td>{{method.owner.name}}</td>
@@ -83,7 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <fieldset>
             <legend>Script</legend>
             <p><label for="name">Name:</label>
-                <input id="name" name="name" type="text" size="80" ng-model="method.name" placeholder="Enter a name here" required ng-minlength=5 ng-maxlength=180  ng-pattern="/^[\\._0-9a-zA-Z]{5,}$/">
+                <input id="name" name="name" type="text" size="80" ng-model="method.name" placeholder="Enter a name here" required ng-minlength=3 ng-maxlength=180  ng-pattern="/^[\\._0-9a-zA-Z]{5,}$/">
             </p>           
             <p><label for="src">Source:</label>
                 <textarea id="src" name="src" cols="80" rows="25" type="text" ng-model="method.src" placeholder="Enter your javascript body here"></textarea>
@@ -109,6 +112,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </fieldset>
     </form>
 </div>
-<p><a href="index.html">Back</a></p>
 </body>
 </html>
