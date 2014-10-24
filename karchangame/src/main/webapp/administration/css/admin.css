@@ -47,3 +47,26 @@ td {
     padding: 7px 5px;
     vertical-align: top;
 }
+div#menu {
+    float: left;
+    clear: left;    
+    width: 14%;
+}
+div#iframecontents {
+    float: right;
+    clear: right;
+    overflow: scroll;
+    width: 85%;
+    height: 90%;
+}
+div#iframecontents > iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+div#root {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}

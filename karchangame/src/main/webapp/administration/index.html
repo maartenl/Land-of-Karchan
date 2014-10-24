@@ -20,10 +20,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Karchan Administration Pages</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">      
+        <link rel="stylesheet" href="css/admin.css" /> 
     </head>
     <body>
         <h1>Karchan Administration Pages</h1>
-        <a href="worldattributes.html"><h2>World attributes</h2></a>
-        <a href="scripts.html"><h2>Scripts</h2></a>
+        <hr/>
+        <div id="root">
+            <div id="menu">
+                <p><a href="worldattributes.html" target="mainiframe">World attributes</a></p>
+                <p><a href="scripts.html" target="mainiframe">Scripts</a></p>
+            </div>
+            <div id="iframecontents">
+                <iframe id="mainiframe" name="mainiframe">
+                <p>Your browser does not support iframes.</p>
+                </iframe>
+            </div>
+        </div>
     </body>
 </html>
