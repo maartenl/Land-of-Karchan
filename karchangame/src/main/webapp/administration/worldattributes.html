@@ -28,6 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <body>
     <h1>World Attributes</h1>
     <div ng-controller="MyController">
+        <p><label for="filter">Filter on owner:</label>
+            <input id="filter" name="filter" type="text" size="30" ng-model="filter" placeholder="Enter a name here"/> <a href="javascript:void(0)"  ng-click="setFilter()">Filter</a> <a href="javascript:void(0)" ng-click="removeFilter()">Unfilter</a>
+        </p> 
         <a href="javascript:void(0)" ng-click="reload()">Refresh</a> 
         <table>
             <tbody>
@@ -38,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <th>Owner</th>
                     <th></th>
                 </tr>
-                <tr ng-repeat="worldattribute in worldattributes" ng-class="{even: !$even, odd: !$odd}">
+                <tr ng-repeat="worldattribute in displayWorldattributes" ng-class="{even: !$even, odd: !$odd}">
                     <td>{{worldattribute.name}}</td>
                     <td>{{worldattribute.type}}</td>
                     <td>{{worldattribute.creation}}</td>

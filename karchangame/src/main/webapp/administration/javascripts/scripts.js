@@ -56,6 +56,7 @@ angular.module('karchan', ['restangular'])
                                 });
                     };
                     $scope.remove = function(index) {
+                        // ugly, I'm afraid, to just use A.
                         Restangular.one('methods/A', $scope.displayMethods[index].name).remove().then(function() {
                             $scope.errorDetails = null;
                         }

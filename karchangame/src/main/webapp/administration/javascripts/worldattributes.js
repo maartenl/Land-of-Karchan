@@ -30,16 +30,33 @@ angular.module('karchan', ['restangular'])
                     $scope.navigator = window.navigator;
                     $scope.errorDetails = null;
                     var restBase = Restangular.all('worldattributes');
+                    $scope.setFilter = function() {
+                        if ($scope.filter === null)
+                        {
+                            $scope.displayWorldattributes = $scope.worldattributes;
+                        } else
+                        {
+                            $scope.displayWorldattributes = $scope.worldattributes.filter(function(element) {
+                                return element.owner != null && element.owner.name === $scope.filter;
+                            }
+                            )
+                        }
+                    }
+                    $scope.removeFilter = function() {
+                        $scope.filter = null;
+                        $scope.setFilter();
+                    }
                     $scope.reload = function() {
                         restBase.getList()
                                 .then(function(worldattributes) {
                                     // returns a list of worldattributes
                                     $scope.worldattributes = worldattributes;
+                                    $scope.setFilter();
                                     $scope.isNew = false;
                                 });
                     };
                     $scope.remove = function(index) {
-                        Restangular.one('worldattributes', $scope.worldattributes[index].name).remove().then(function() {
+                        Restangular.one('worldattributes', $scope.displayWorldattributes[index].name).remove().then(function() {
                             $scope.errorDetails = null;
                         }
                         , function(response) {
@@ -48,23 +65,23 @@ angular.module('karchan', ['restangular'])
                         });
                     };
                     $scope.edit = function(index) {
-                        $scope.worldattribute = $scope.worldattributes[index];
+                        $scope.worldattribute = $scope.displayWorldattributes[index];
                         $scope.isNew = false;
                         $scope.errorDetails = null;
                     };
                     $scope.disown = function(index) {
                         $scope.errorDetails = null;
-                        $scope.worldattributes[index].customDELETE("owner").then(function() {
+                        $scope.displayWorldattributes[index].customDELETE("owner").then(function() {
                             $scope.errorDetails = null;
                         }
                         , function(response) {
                             $scope.errorDetails = response.data;
                             alert(response.data.errormessage);
                         });
-                        $scope.worldattributes[index].owner = null;
+                        $scope.displayWorldattributes[index].owner = null;
                     };
                     $scope.copy = function(index) {
-                        $scope.worldattribute = Restangular.copy($scope.worldattributes[index]);
+                        $scope.worldattribute = Restangular.copy($scope.displayWorldattributes[index]);
                         $scope.isNew = true;
                         $scope.errorDetails = null;
                     };
@@ -100,6 +117,7 @@ angular.module('karchan', ['restangular'])
                         }
                         $scope.isNew = false;
                     };
+                    $scope.removeFilter();
                     $scope.reload();
                 });
 
