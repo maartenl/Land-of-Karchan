@@ -18,7 +18,7 @@ The passwords need to be reset of the test accounts.
 This can be done with the following sql statements.
 
 update mm_usertable set password = sha1('secret') where name='Karn';
-update mm_usertable set password = sha1('secret') where name='Hotblack';
+update mm_usertable set title = 'Guitar keyboard player of the rock group Disaster Area', password = sha1('secret') where name='Hotblack';
 update mm_usertable set password = sha1('secret') where name='Marvin';
 update mm_usertable set password = sha1('secret') where name='Slartibartfast';
 update mm_usertable 
