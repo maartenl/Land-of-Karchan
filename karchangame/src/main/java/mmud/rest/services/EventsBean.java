@@ -108,15 +108,12 @@ public class EventsBean
         {
             if (event.getRoom() != null)
             {
-                itsLog.info("runSingleEvent with room " + event.getRoom());
                 boolean result = runScript.run(event.getRoom(), method.getSrc());
             } else if (event.getPerson() != null)
             {
-                itsLog.info("runSingleEvent with person " + event.getPerson());
                 boolean result = runScript.run(event.getPerson(), method.getSrc());
             } else
             {
-                itsLog.info("runSingleEvent global");
                 boolean result = runScript.run(method.getSrc());
             }
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ScriptException | NoSuchMethodException ex)

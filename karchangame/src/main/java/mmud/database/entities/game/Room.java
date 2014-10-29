@@ -143,7 +143,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @JoinColumn(name = "area", referencedColumnName = "area")
     @ManyToOne(optional = false)
     private Area area;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room", orphanRemoval = true)
     private Set<Roomattribute> attributes = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Item> items;
@@ -633,8 +633,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         {
             return false;
         }
-        attributes.remove(attr);
-        return true;
+        boolean result = attributes.remove(attr);
+        return result;
     }
 
     @Override
