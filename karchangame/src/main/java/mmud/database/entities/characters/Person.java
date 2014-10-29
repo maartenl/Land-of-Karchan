@@ -1536,8 +1536,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         {
             return false;
         }
-        attributes.remove(attr);
-        return true;
+        return attributes.remove(attr);
     }
 
     private Charattribute getCharattribute(String name)
