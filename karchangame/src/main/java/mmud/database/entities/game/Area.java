@@ -35,6 +35,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import mmud.database.entities.Ownage;
 
 /**
@@ -50,6 +52,7 @@ import mmud.database.entities.Ownage;
             @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
             @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation")
         })
+@XmlRootElement
 public class Area implements Serializable, Ownage
 {
 
@@ -139,6 +142,7 @@ public class Area implements Serializable, Ownage
         this.creation = creation;
     }
 
+    @XmlTransient
     public Collection<Room> getRoomCollection()
     {
         return roomCollection;
