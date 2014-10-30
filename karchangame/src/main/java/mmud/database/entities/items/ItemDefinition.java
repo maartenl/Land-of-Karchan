@@ -38,6 +38,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Constants;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Mail;
 import mmud.database.enums.Wearing;
@@ -57,7 +58,7 @@ import mmud.database.enums.Wielding;
             @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
             @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(i.id) FROM ItemDefinition i")
         })
-public class ItemDefinition implements Serializable
+public class ItemDefinition implements Serializable, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -680,11 +681,13 @@ public class ItemDefinition implements Serializable
         this.mailCollection = mailCollection;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

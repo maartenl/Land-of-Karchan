@@ -31,6 +31,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 
 /**
@@ -60,7 +61,7 @@ import mmud.database.entities.characters.Person;
                     + "AND (e.dayofweek is null OR e.dayofweek = :dayofweek) "
                     + "AND (e.minute is null OR e.minute = :minute)")
         })
-public class Event implements Serializable
+public class Event implements Serializable, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -266,11 +267,13 @@ public class Event implements Serializable
         this.creation = creation;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

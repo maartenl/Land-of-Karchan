@@ -41,6 +41,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.core.Response;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -58,7 +59,7 @@ import mmud.exceptions.MudWebException;
             @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
             @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation")
         })
-public class Board implements Serializable, DisplayInterface
+public class Board implements Serializable, DisplayInterface, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -156,11 +157,13 @@ public class Board implements Serializable, DisplayInterface
         this.creation = creation;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

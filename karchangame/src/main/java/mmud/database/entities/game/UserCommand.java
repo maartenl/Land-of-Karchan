@@ -34,6 +34,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.entities.Ownage;
 
 /**
  *
@@ -50,7 +51,7 @@ import javax.validation.constraints.Size;
             @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room = :room"),
             @NamedQuery(name = "UserCommand.findByCreation", query = "SELECT m FROM UserCommand m WHERE m.creation = :creation")
         })
-public class UserCommand implements Serializable
+public class UserCommand implements Serializable, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -150,11 +151,13 @@ public class UserCommand implements Serializable
         this.creation = creation;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import mmud.database.entities.Ownage;
 
 /**
  *
@@ -52,7 +53,7 @@ import javax.xml.bind.annotation.XmlTransient;
             @NamedQuery(name = "Method.findRange", query = "SELECT m from Method m WHERE m.name like :alphabet")
         })
 @XmlRootElement
-public class Method implements Serializable
+public class Method implements Serializable, Ownage
 {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
@@ -156,11 +157,13 @@ public class Method implements Serializable
         this.commandCollection = commandCollection;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

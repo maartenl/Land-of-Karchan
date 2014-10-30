@@ -42,6 +42,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.Attributes;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
@@ -74,7 +75,7 @@ import mmud.exceptions.MudException;
             @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
             @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
         })
-public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler
+public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler, Ownage
 {
 
     private static final Logger itsLog = Logger.getLogger(Room.class.getName());
@@ -246,11 +247,13 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         this.picture = picture;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

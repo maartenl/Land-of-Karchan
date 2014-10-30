@@ -33,6 +33,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import mmud.database.entities.Ownage;
 
 /**
  *
@@ -47,7 +48,7 @@ import javax.xml.bind.annotation.XmlRootElement;
             @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type")
         })
 @XmlRootElement
-public class Worldattribute implements Serializable
+public class Worldattribute implements Serializable, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -120,11 +121,13 @@ public class Worldattribute implements Serializable
         this.contents = contents;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

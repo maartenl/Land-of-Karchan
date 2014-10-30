@@ -45,6 +45,7 @@ import javax.validation.constraints.NotNull;
 import mmud.Attributes;
 import mmud.Constants;
 import mmud.Utils;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
@@ -82,7 +83,7 @@ import mmud.exceptions.MudException;
             @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
             @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
         })
-abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler
+abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler, Ownage
 {
 
     private static final Logger itsLog = Logger.getLogger(Item.class.getName());
@@ -215,11 +216,13 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         this.itemDefinition = itemDefinition;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

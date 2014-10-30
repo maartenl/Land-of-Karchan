@@ -56,6 +56,7 @@ import javax.validation.constraints.Size;
 import mmud.Attributes;
 import mmud.Constants;
 import mmud.Utils;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Attribute;
 import mmud.database.entities.game.AttributeWrangler;
@@ -115,7 +116,7 @@ import org.owasp.validator.html.ScanException;
             @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
             @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
         })
-abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler
+abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 
     private static final Logger itsLog = java.util.logging.Logger.getLogger(Person.class.getName());
@@ -1089,11 +1090,13 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         this.state = state;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

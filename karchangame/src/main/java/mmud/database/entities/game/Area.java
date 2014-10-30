@@ -35,6 +35,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.database.entities.Ownage;
 
 /**
  *
@@ -43,14 +44,15 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_area")
 @NamedQueries(
+        {
+            @NamedQuery(name = "Area.findAll", query = "SELECT a FROM Area a"),
+            @NamedQuery(name = "Area.findByArea", query = "SELECT a FROM Area a WHERE a.area = :area"),
+            @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
+            @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation")
+        })
+public class Area implements Serializable, Ownage
 {
-    @NamedQuery(name = "Area.findAll", query = "SELECT a FROM Area a"),
-    @NamedQuery(name = "Area.findByArea", query = "SELECT a FROM Area a WHERE a.area = :area"),
-    @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
-    @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation")
-})
-public class Area implements Serializable
-{
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -147,11 +149,13 @@ public class Area implements Serializable
         this.roomCollection = roomCollection;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;

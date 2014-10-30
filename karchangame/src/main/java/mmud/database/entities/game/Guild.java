@@ -40,6 +40,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
@@ -65,7 +66,7 @@ import mmud.rest.services.GuildBean;
             @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
             @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, p.attributes c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
         })
-public class Guild implements Serializable, DisplayInterface
+public class Guild implements Serializable, DisplayInterface, Ownage
 {
 
     private static final long serialVersionUID = 1L;
@@ -262,11 +263,13 @@ public class Guild implements Serializable, DisplayInterface
         this.members = personCollection;
     }
 
+    @Override
     public Admin getOwner()
     {
         return owner;
     }
 
+    @Override
     public void setOwner(Admin owner)
     {
         this.owner = owner;
