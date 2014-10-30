@@ -18,17 +18,12 @@ package mmud.rest.services.admin;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -94,7 +89,6 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
     {
         itsLog.info("edit");
         final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
 
         Worldattribute attribute = find(id);
 
@@ -102,12 +96,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
         {
             throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
         }
-        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
-        {
-            throw new MudWebException(name,
-                    name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
-                    Response.Status.UNAUTHORIZED);
-        }
+        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
         attribute.setContents(entity.getContents());
         attribute.setType(entity.getType());
         attribute.setOwner(admin);
@@ -116,33 +105,19 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") String id)
+    public void remove(@PathParam("id") String id, @Context SecurityContext sc)
     {
-        remove(super.find(id));
+        final String name = sc.getUserPrincipal().getName();
+        final Worldattribute attribute = find(id);
+        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
+        remove(attribute);
     }
 
     @DELETE
     @Path("{id}/owner")
     public void disown(@PathParam("id") String id, @Context SecurityContext sc)
     {
-        itsLog.info("disown");
-        final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
-
-        Worldattribute attribute = find(id);
-
-        if (attribute == null)
-        {
-            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
-        }
-        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
-        {
-            throw new MudWebException(name,
-                    name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
-                    Response.Status.UNAUTHORIZED);
-        }
-        attribute.setOwner(null);
-        checkValidation(name, attribute);
+        (new OwnerHelper(getEntityManager())).disown(id, sc, Worldattribute.class);
     }
 
     @GET

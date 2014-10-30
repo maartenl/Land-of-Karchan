@@ -91,7 +91,6 @@ public class MethodBean extends AbstractFacade<Method>
     {
         itsLog.info("edit");
         final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
 
         Method attribute = find(id);
 
@@ -99,12 +98,7 @@ public class MethodBean extends AbstractFacade<Method>
         {
             throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
         }
-        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
-        {
-            throw new MudWebException(name,
-                    name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
-                    Response.Status.UNAUTHORIZED);
-        }
+        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
         attribute.setSrc(entity.getSrc());
         attribute.setOwner(admin);
         checkValidation(name, attribute);
@@ -112,33 +106,19 @@ public class MethodBean extends AbstractFacade<Method>
 
     @DELETE
     @Path("{alphabet}/{id}")
-    public void remove(@PathParam("alphabet") String alphabet, @PathParam("id") String id)
+    public void remove(@PathParam("alphabet") String alphabet, @PathParam("id") String id, @Context SecurityContext sc)
     {
-        super.remove(super.find(id));
+        final String name = sc.getUserPrincipal().getName();
+        final Method attribute = find(id);
+        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
+        super.remove(attribute);
     }
 
     @DELETE
     @Path("{alphabet}/{id}/owner")
     public void disown(@PathParam("alphabet") String alphabet, @PathParam("id") String id, @Context SecurityContext sc)
     {
-        itsLog.info("disown");
-        final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
-
-        Method attribute = find(id);
-
-        if (attribute == null)
-        {
-            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
-        }
-        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
-        {
-            throw new MudWebException(name,
-                    name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.",
-                    Response.Status.UNAUTHORIZED);
-        }
-        attribute.setOwner(null);
-        checkValidation(name, attribute);
+        (new OwnerHelper(getEntityManager())).disown(id, sc, Method.class);
     }
 
     @GET
