@@ -56,7 +56,6 @@ angular.module('karchan', ['restangular'])
                                 });
                     };
                     $scope.remove = function(index) {
-                        if (window.console) {console.log($scope.displayAreas[index]);}
                         Restangular.one('areas', $scope.displayAreas[index].area).remove().then(function() {
                             $scope.errorDetails = null;
                         }
