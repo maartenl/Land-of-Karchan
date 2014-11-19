@@ -73,6 +73,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
 
     private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
 
+    private static final String GUILDCOLOUR_REGEXP = "[#a-zA-Z0-9]{3,}";
     @Id
     @Basic(optional = false)
     @NotNull
@@ -98,6 +99,13 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     @Size(max = 255)
     @Column(name = "guildurl")
     private String guildurl;
+    @Size(max = 255)
+    @Column(name = "imageurl")
+    private String imageurl;
+    @Size(max = 100)
+    @Column(name = "colour")
+    @Pattern(regexp = GUILDCOLOUR_REGEXP, message = "Invalid guildcolour. Only (at least three) letters are allowed or a hex code.")
+    private String colour;
     @Basic(optional = false)
     @NotNull
     @Column(name = "active")
@@ -289,7 +297,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
      * Sets the guildmaster of this guild.
      *
      * @param boss the new guildmaster. Should never be null.
-     * @throws MudException if new guildmaster is null, or not a member of this guild.
+     * @throws MudException if new guildmaster is null, or not a member of this
+     * guild.
      */
     public void setBoss(User boss) throws MudException
     {
@@ -314,6 +323,30 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     public void setGuildrankCollection(Collection<Guildrank> guildrankCollection)
     {
         this.guildrankCollection = guildrankCollection;
+    }
+
+    /**
+     * Indicates the colour of the guild chat. The default is green.
+     * @return String indicating either a hexadecimal value (for example #FFFFFF) or
+     * the name of a colour (for example Blue).
+     */
+    public String getColour()
+    {
+        if (colour == null || colour.trim().equals(""))
+        {
+            return DEFAULT_GUILDMESSAGE_COLOUR;
+        }
+        return colour;
+    }
+    public static final String DEFAULT_GUILDMESSAGE_COLOUR = "Green";
+
+    /**
+     * @see #getColour() 
+     * @param colour 
+     */
+    public void setColour(String colour)
+    {
+        this.colour = colour;
     }
 
     @Override
@@ -374,8 +407,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     }
 
     /**
-     * Searches and returns the person by name in this guild, or null
-     * if not found.
+     * Searches and returns the person by name in this guild, or null if not
+     * found.
      *
      * @param name the name of the person to look for.
      * @return a Person.
@@ -393,17 +426,14 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     }
 
     /**
-     * communication method to everyone in the guild, that is active.
-     * The message is not
-     * parsed. Bear in mind that this method should only be used for
-     * communication about environmental issues. If the communication originates
-     * from a User/Person, you should use sendMessage(aPerson, aMessage).
-     * Otherwise the Ignore functionality will be omitted.
+     * communication method to everyone in the guild, that is active. The
+     * message is not parsed. Bear in mind that this method should only be used
+     * for communication about environmental issues. If the communication
+     * originates from a User/Person, you should use sendMessage(aPerson,
+     * aMessage). Otherwise the Ignore functionality will be omitted.
      *
-     * @param aMessage
-     * the message
-     * @throws MudException
-     * if the room is not correct
+     * @param aMessage the message
+     * @throws MudException if the room is not correct
      * @see Person#writeMessage(java.lang.String)
      */
     public void sendMessage(String aMessage)
@@ -418,37 +448,42 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     /**
      * character communication method to everyone in the guild. The message is
      * parsed, based on who is sending the message.
+     * <p>Example output: &lt;span style="color:red;"&gt;[guild] Karn: Hello, everyone!&lt;/br&gt;&lt;/span&gt;</p>
      *
-     * @param aPerson
-     * the person who is the source of the message.
-     * @param aMessage
-     * the message
+     * @param aPerson the person who is the source of the message.
+     * @param aMessage the message
      *
-     * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
+     * @see Person#writeMessage(mmud.database.entities.characters.Person,
+     * java.lang.String)
      */
     public void sendMessage(Person aPerson, String aMessage) throws MudException
     {
+        String message = "<span style=\"color:" + getColour() + ";\">[guild]<b>" + aPerson.getName() + "</b>: " + aMessage + "</span></br>\\r\\n";
         for (Person myChar : members)
         {
-            myChar.writeMessage(aPerson, aMessage);
+            myChar.writeMessage(aPerson, message);
         }
     }
 
     @Override
     public String getImage()
     {
-        // TODO
-        return "";
-    }
-
-    public void setImage(String image)
-    {
-        // TODO
+        return imageurl;
     }
 
     /**
-     * Returns the rank based on the rank id/guildlevel. In case the rank id does not
-     * exist, null will be returned.
+     * Sets an url pointing to an image.
+     * @see #getImage() 
+     * @param image 
+     */
+    public void setImage(String image)
+    {
+        imageurl = image;
+    }
+
+    /**
+     * Returns the rank based on the rank id/guildlevel. In case the rank id
+     * does not exist, null will be returned.
      *
      * @param id the id of the rank/guildlevel
      * @return the rank in the guild

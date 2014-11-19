@@ -37,7 +37,7 @@ public class MessageCommand extends GuildCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         String message = command.substring("guild".length() + 1).trim();
-        aUser.getGuild().sendMessage(aUser, "<B>" + aUser.getName() + "</B>: " + message + "<BR>\r\n");
+        aUser.getGuild().sendMessage(aUser, message);
         return aUser.getRoom();
     }
 }

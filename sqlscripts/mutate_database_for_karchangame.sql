@@ -451,4 +451,7 @@ update mm_items set wieldable = 1 where wearable & 65536 = 65536;
 update mm_items set wieldable = wieldable + 2 where wearable & 131072 = 131072;
 update mm_items set wieldable = wieldable + 4 where wearable & 262144 = 262144;
 
+ALTER TABLE mm_guilds ADD colour varchar(100) null default null;
+ALTER TABLE mm_guilds ADD imageurl varchar(255) null default null;
+
 END_OF_DATA

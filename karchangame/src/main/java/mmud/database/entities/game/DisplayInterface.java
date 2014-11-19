@@ -28,6 +28,11 @@ public interface DisplayInterface
 
     public String getMainTitle() throws MudException;
 
+    /**
+     * Returns an url pointing to an image.
+     * @return
+     * @throws MudException 
+     */
     public String getImage() throws MudException;
 
     public String getBody() throws MudException;

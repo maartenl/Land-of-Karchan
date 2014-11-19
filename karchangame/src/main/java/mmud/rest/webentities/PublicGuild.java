@@ -20,7 +20,8 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Information on a certain guild that is available to the big unwashed public.
+ * Used for JSON in REST services.
  * @author maartenl
  */
 @XmlRootElement

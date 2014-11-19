@@ -147,6 +147,7 @@ public class GuildBean
         privateGuild.title = guild.getTitle();
         privateGuild.image = guild.getImage();
         privateGuild.name = guild.getName();
+        privateGuild.colour = guild.getColour();
         privateGuild.logonmessage = guild.getLogonmessage();
         if (guild.getBoss() == null)
         {
@@ -194,6 +195,7 @@ public class GuildBean
         guild.setHomepage(cinfo.guildurl);
         guild.setImage(cinfo.image);
         guild.setLogonmessage(cinfo.logonmessage);
+        guild.setColour(cinfo.colour);
         guild.setTitle(cinfo.title);
         return Response.ok().build();
     }
@@ -231,6 +233,7 @@ public class GuildBean
         guild.setBoss(person);
         guild.setName(cinfo.name);
         guild.setActive(Boolean.TRUE);
+        guild.setColour(cinfo.colour);
         guild.setDaysguilddeath(10);
         guild.setMaxguilddeath(10);
         guild.setMinguildmembers(20);

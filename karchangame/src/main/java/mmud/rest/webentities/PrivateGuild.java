@@ -17,9 +17,12 @@
 package mmud.rest.webentities;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import mmud.database.entities.game.Guild;
 
 /**
- *
+ * Information on a certain guild that is available to the members and guildmaster of a guild.
+ * Is a subset of {@link PublicGuild}.
+ * Used for JSON in REST services.
  * @author maartenl
  */
 @XmlRootElement
@@ -28,4 +31,9 @@ public class PrivateGuild extends PublicGuild
 
     public String name;
     public String logonmessage;
+    
+    /**
+     * @see Guild#getColour() 
+     */
+    public String colour;
 }
