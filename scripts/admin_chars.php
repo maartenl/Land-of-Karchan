@@ -114,8 +114,8 @@ if (isset($_REQUEST{"race"}))
 		quote_smart($_REQUEST{"sex"}).
 		"\", age=\"".
 		quote_smart($_REQUEST{"age"}).
-		"\", length=\"".
-		quote_smart($_REQUEST{"length"}).
+		"\", height=\"".
+		quote_smart($_REQUEST{"height"}).
 		"\", width=\"".
 		quote_smart($_REQUEST{"width"}).
 		"\", complexion=\"".
@@ -171,7 +171,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>race:</b> %s<BR>", $myrow["race"]);
 	printf("<b>sex:</b> %s<BR>", $myrow["sex"]);
 	printf("<b>age:</b> %s<BR>", $myrow["age"]);
-	printf("<b>length:</b> %s<BR>", $myrow["length"]);
+	printf("<b>height:</b> %s<BR>", $myrow["height"]);
 	printf("<b>width:</b> %s<BR>", $myrow["width"]);
 	printf("<b>complexion:</b> %s<BR>", $myrow["complexion"]);
 	printf("<b>eyes:</b> %s<BR>", $myrow["eyes"]);
@@ -215,7 +215,7 @@ while ($myrow = mysql_fetch_array($result))
 <OPTION VALUE="female" <?php if ($myrow["sex"] == "female") {printf("selected");} ?>>female
 </SELECT></TD></TR>   
 <TR><TD>age</TD><TD><INPUT TYPE="text" NAME="age" VALUE="<?php echo $myrow["age"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
-<TR><TD>length</TD><TD><INPUT TYPE="text" NAME="length" VALUE="<?php echo $myrow["length"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
+<TR><TD>height</TD><TD><INPUT TYPE="text" NAME="height" VALUE="<?php echo $myrow["height"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>width</TD><TD><INPUT TYPE="text" NAME="width" VALUE="<?php echo $myrow["width"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>complexion</TD><TD><INPUT TYPE="text" NAME="complexion" VALUE="<?php echo $myrow["complexion"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
 <TR><TD>eyes</TD><TD><INPUT TYPE="text" NAME="eyes" VALUE="<?php echo $myrow["eyes"] ?>" SIZE="40" MAXLENGTH="40"></TD></TR>
