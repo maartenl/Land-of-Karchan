@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin.php 1151 2008-01-08 07:30:24Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

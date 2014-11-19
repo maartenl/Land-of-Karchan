@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: editcharactersheet.php 992 2005-10-23 08:03:45Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

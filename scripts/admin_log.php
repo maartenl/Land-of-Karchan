@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin_log.php 1190 2009-09-25 16:54:08Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -53,7 +53,7 @@ if (isset($_REQUEST{"specifics"}))
 <TR><TH>creation</TH><TH>name</TH><TH>message</TH></TR>
 <?php
 	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message, addendum
-		from mm_log where creation = \"".
+		from mm_log where 1=0 and creation = \"".
 		$_REQUEST{"specifics"}.
 		"\"";
         $result = mysql_query($query
@@ -66,7 +66,7 @@ if (isset($_REQUEST{"specifics"}))
                     $myrow["thetime"], $myrow["name"], $myrow["message"], $myrow["addendum"]);
         }
 	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message, addendum
-		from mm_oldlog where creation = \"".
+		from mm_oldlog where 1=0 and creation = \"".
 		$_REQUEST{"specifics"}.
 		"\"";
         $result = mysql_query($query
@@ -88,7 +88,7 @@ else
 if (isset($_REQUEST{"day"}))
 {
 	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message
-		from mm_oldlog where date(creation) = date(\"".
+		from mm_oldlog where 1=0 and date(creation) = date(\"".
 		$_REQUEST{"day"}."-".
 		$_REQUEST{"month"}."-".
 		$_REQUEST{"year"}.
@@ -96,7 +96,7 @@ if (isset($_REQUEST{"day"}))
 } else
 {
 	$query = "select date_format(creation, \"%Y-%m-%d %T\") as thetime, name, message
-		from mm_log order by creation";
+		from mm_log where 1 = 0 order by creation";
 }
         $result = mysql_query($query
             	, $dbhandle)

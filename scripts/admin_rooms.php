@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin_rooms.php 1197 2009-10-20 17:12:32Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -370,11 +370,10 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 printf("</P>");
-$result = mysql_query("select mm_roomitemtable.id, mm_items.id, ".
-	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_roomitemtable".
-	" where mm_itemtable.id = mm_roomitemtable.id and ".
-	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_roomitemtable.room = ".quote_smart($_REQUEST{"room"})
+$result = mysql_query("select mm_itemtable.id, mm_items.id, ".
+	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable ".
+	" where mm_items.id = mm_itemtable.itemid and ".
+	" mm_itemtable.room = ".quote_smart($_REQUEST{"room"})
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
 while ($myrow = mysql_fetch_array($result)) 

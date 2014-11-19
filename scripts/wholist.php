@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: wholist.php 1199 2009-10-21 04:44:18Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -101,7 +101,7 @@ function img_inact(imgName) {
 <P><BR><BR>
 <A HREF="/karchan/index.html" onMouseOver="img_act('back')" onMouseOut="img_inact('back')">
 <IMG ALT="Backitup!" SRC="/images/gif/webpic/buttono.gif" BORDER="0" name="back"><br></A> </TD>
-<DIV ALIGN=right>Last Updated $Date$
+<DIV ALIGN=right>Last Updated $Date: 2009-10-21 06:44:18 +0200 (Wed, 21 Oct 2009) $
 </DIV>
 </BODY>
 </HTML>

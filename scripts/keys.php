@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: keys.php 1202 2009-10-21 05:37:54Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -57,10 +57,4 @@ $server_host="localhost";
  * the port on which the mmud daemon is listening
  */
 $server_port=3340;
-
-/**
- * the path in which all the log files are dumped
- */
-$mudfilepath="/tmp";
-
 ?>

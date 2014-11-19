@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin_items.php 1085 2006-02-23 07:59:13Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -115,7 +115,7 @@ if (isset($_REQUEST{"removeitemfromroom"}))
 	{
 		error_message("You are not the owner of this item instance.");
 	}
-	$query = "delete from mm_roomitemtable where id = ".
+	$query = "delete from mm_itemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromroom"});
 	mysql_query($query, $dbhandle)
 	or error_message("Query (".$query.") failed : " . mysql_error());
@@ -137,7 +137,7 @@ if (isset($_REQUEST{"removeitemfromchar"}))
 	{
 		error_message("You are not the owner of this item instance.");
 	}
-	$query = "delete from mm_charitemtable where id = ".
+	$query = "delete from mm_itemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromchar"});
 	mysql_query($query, $dbhandle)
 	or error_message("Query (".$query.") failed : " . mysql_error());
@@ -159,7 +159,7 @@ if (isset($_REQUEST{"removeitemfromitem"}))
 	{
 		error_message("You are not the owner of this item instance.");
 	}
-	$query = "delete from mm_itemitemtable where id = ".
+	$query = "delete from mm_itemtable where id = ".
 	quote_smart($_REQUEST{"removeitemfromitem"});
 	mysql_query($query, $dbhandle)
 	or error_message("Query (".$query.") failed : " . mysql_error());
@@ -214,7 +214,7 @@ if (isset($_REQUEST{"additemtoroom"}))
 		error_message("Room does not exist.");
 	}
 	
-	$query = "insert into mm_roomitemtable (id, room) values(".
+	$query = "insert into mm_itemtable (id, room) values(".
 	quote_smart($_REQUEST{"additemtoroom"}).
 	", ".
 	quote_smart($_REQUEST{"additemtoroom_roomid"}).
@@ -246,7 +246,7 @@ if (isset($_REQUEST{"additemtochar"}))
 		error_message("Character does not exist.");
 	}
 
-	$query = "insert into mm_charitemtable (id, belongsto) values(".
+	$query = "insert into mm_itemtable (id, belongsto) values(".
 	quote_smart($_REQUEST{"additemtochar"}).
 	", \"".
 	quote_smart($_REQUEST{"additemtochar_charname"}).
@@ -287,7 +287,7 @@ if (isset($_REQUEST{"additemtocontainer"}))
 		error_message("Container does not exist or is not a container.");
 	}
 
-	$query = "insert into mm_itemitemtable (id, containerid) values(".
+	$query = "insert into mm_itemtable (id, containerid) values(".
 	quote_smart($_REQUEST{"additemtocontainer"}).
 	", ".
 	quote_smart($_REQUEST{"additemtocontainer_containerid"}).
@@ -298,8 +298,8 @@ if (isset($_REQUEST{"additemtocontainer"}))
 }
 
 $result = mysql_query("select containerid ".
-	" from mm_itemitemtable".
-	" where mm_itemitemtable.id =
+	" from mm_itemtable".
+	" where mm_itemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
@@ -316,8 +316,8 @@ while ($myrow = mysql_fetch_array($result))
 	$claimed = true;
 }
 $result = mysql_query("select room ".
-	" from mm_roomitemtable".
-	" where mm_roomitemtable.id =
+	" from mm_itemtable".
+	" where mm_itemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
@@ -333,9 +333,9 @@ while ($myrow = mysql_fetch_array($result))
 <?php
 	$claimed = true;
 }
-$result = mysql_query("select belongsto, wearing ".
-	" from mm_charitemtable".
-	" where mm_charitemtable.id =
+$result = mysql_query("select belongsto ".
+	" from mm_itemtable".
+	" where mm_itemtable.id =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
@@ -353,11 +353,10 @@ while ($myrow = mysql_fetch_array($result))
 	$claimed = true;
 }
 
-$result = mysql_query("select mm_itemitemtable.id, mm_items.id, ".
-	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_itemitemtable".
-	" where mm_itemtable.id = mm_itemitemtable.id and ".
-	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_itemitemtable.containerid =
+$result = mysql_query("select mm_itemtable.id, mm_items.id, ".
+	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable".
+	" where mm_items.id = mm_itemtable.itemid and ".
+	" mm_itemtable.containerid =
 	".quote_smart($_REQUEST{"item"})
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());

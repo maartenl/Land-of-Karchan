@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: mudlogonframe.php 1211 2009-10-26 22:12:22Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 

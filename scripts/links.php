@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: links.php 992 2005-10-23 08:03:45Z maartenl $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -130,7 +130,7 @@ HREF="http://www.sourceforge.net/projects/mmud">http://sourceforge.net/projects/
 <DT>Sourceforge
 <DD>A free Software Project Development Webpage
 </DL>
-<DIV ALIGN=right>Last Updated $Date$
+<DIV ALIGN=right>Last Updated $Date: 2005-10-23 10:03:45 +0200 (Sun, 23 Oct 2005) $
 </DIV>
 
 <?php

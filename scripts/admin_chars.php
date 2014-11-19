@@ -1,6 +1,6 @@
 <?
 /*-------------------------------------------------------------------------
-svninfo: $Id$
+svninfo: $Id: admin_chars.php 1325 2011-07-03 12:17:44Z root $
 Maarten's Mud, WWW-based MUD using MYSQL
 Copyright (C) 1998  Maarten van Leunen
 
@@ -155,8 +155,8 @@ if (isset($_REQUEST{"race"}))
 	writeLogLong($dbhandle, "Changed character ".$_REQUEST{"char"}.".", $query);
 }
 
-$result = mysql_query("select *, date_format(creation, \"%Y-%m-%d %T\") as
-	creation2 from mm_usertable where name =
+$result = mysql_query("select *, date_format(creation_date, \"%Y-%m-%d %T\") as
+	creation_date2 from mm_usertable where name =
 	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
@@ -196,7 +196,7 @@ while ($myrow = mysql_fetch_array($result))
 	printf("<b>active:</b> %s<BR>", $myrow["active"]);
 	printf("<b>lastlogin:</b> %s<BR>", $myrow["lastlogin"]);
 	printf("<b>birth:</b> %s<BR>", $myrow["birth"]);
-	printf("<b>Creation:</b> %s<BR>", $myrow["creation2"]);
+	printf("<b>Creation:</b> %s<BR>", $myrow["creation_date2"]);
 	printf("<b>Owner:</b> %s<BR>", $myrow["owner"]);
 	printf("<b>room:</b> <A HREF=\"/scripts/admin_rooms.php?room=%s\">%s</A><BR>", $myrow["room"], $myrow["room"]);
 	$owner = false;
@@ -344,11 +344,11 @@ while ($myrow = mysql_fetch_array($result))
 }
 
 printf("<P>");
-$result = mysql_query("select mm_charitemtable.id, mm_items.id, ".
-	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name from mm_items, mm_itemtable, mm_charitemtable".
-	" where mm_itemtable.id = mm_charitemtable.id and ".
-	" mm_items.id = mm_itemtable.itemid and ".
-	" mm_charitemtable.belongsto =
+$result = mysql_query("select mm_itemtable.id, mm_items.id, ".
+	" mm_items.adject1, mm_items.adject2, mm_items.adject3, mm_items.name ".
+	" from mm_items, mm_itemtable".
+	" where mm_items.id = mm_itemtable.itemid and ".
+	" mm_itemtable.belongsto =
 	\"".quote_smart($_REQUEST{"char"})."\""
 	, $dbhandle)
 	or error_message("Query failed : " . mysql_error());
