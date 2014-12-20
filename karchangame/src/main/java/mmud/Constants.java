@@ -63,7 +63,7 @@ public class Constants
      * </UL>
      *
      * @return String description of the amount of money, for example 320 will
-     * be translated as 
+     * be translated as
      * "<I>3 gold coins, 2 silver coins</I>". Returns "no money" if
      * no money is present.
      */
@@ -370,6 +370,13 @@ public class Constants
         return new ArrayList<>(inventory.values());
     }
 
+    /**
+     * Turns the filters on or off.
+     *
+     * @param entityManager The entity manager to set the filters.
+     * @param activePersonFilter the active person filter. Means, if it is on, any search
+     * for persons will only find active persons.
+     */
     public static void setFilters(final EntityManager entityManager, Filter activePersonFilter)
     {
         entityManager.setProperty("activePersonFilter", activePersonFilter == Filter.ON ? 1 : 0);

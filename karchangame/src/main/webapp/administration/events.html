@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2014 maartenl
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html ng-app="karchan">
+    <title>Admin - Events</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-rc.4/angular.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/restangular/1.3.1/restangular.min.js"></script>
+    <script src="javascripts/events.js"></script>         
+    <link rel="stylesheet" href="css/admin.css" /> 
+</head>
+<body>
+    <h1>Events</h1>
+    <div ng-controller="MyController">
+        <p><label for="filter">Filter on owner:</label>
+            <input id="filter" name="filter" type="text" size="30" ng-model="filter" placeholder="Enter a name here"/> <a href="javascript:void(0)"  ng-click="setFilter()">Filter</a> <a href="javascript:void(0)" ng-click="removeFilter()">Unfilter</a>
+        </p> 
+        <a href="javascript:void(0)" ng-click="reload()">Refresh</a> 
+        <table>
+            <tbody>
+                <tr>
+                    <th>Event</th>
+                    <th>Month</th>		
+                    <th>Day of Month</th>		
+                    <th>Day of Week</th>		
+                    <th>Hour</th>		
+                    <th>Minute</th>		
+                    <th>Callable</th>		
+                    <th>Person</th>		
+                    <th>Room</th>		
+                    <th>Method</th>		
+                    <th>Creation</th>		
+                    <th>Owner</th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="event in displayEvents" ng-class="{even: !$even, odd: !$odd}">
+                    <td>{{event.eventid}}</td>
+                    <td>{{event.month}}</td>
+                    <td>{{event.dayofmonth}}</td>
+                    <td>{{event.dayofweek}}</td>
+                    <td>{{event.hour}}</td>
+                    <td>{{event.minute}}</td>
+                    <td>{{event.callable}}</td>
+                    <td>{{event.person}}</td>
+                    <td>{{event.room}}</td>
+                    <td>{{event.method}}</td>
+                    <td>{{event.creation}}</td>
+                    <td>{{event.owner.name}}</td>
+                    <td><a href="javascript:void(0)" ng-click="edit($index)">Edit</a> 
+                        <a href="javascript:void(0)" ng-click="copy($index)">Copy</a> 
+                        <a href="javascript:void(0)" ng-click="remove($index)">Delete</a> 
+                        <a href="javascript:void(0)" ng-click="disown($index)">Disown</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+        <p>Event: {{event.eventid}}</p>
+        <p>{{event.month}}</p>
+        <p>{{event.dayofmonth}}</p>
+        <p>{{event.dayofweek}}</p>
+        <p>{{event.hour}}</p>
+        <p>{{event.minute}}</p>
+        <p>{{event.callable}}</p>
+        <p>{{event.person}}</p>
+        <p>{{event.room}}</p>
+        <p>{{event.method}}</p>
+        <p>{{event.creation}}</p>
+        <p>{{event.owner.name}}</p>
+        <hr/>
+        <form name="form" novalidate>
+            <fieldset>
+                <legend>Event</legend>
+                <p><label for="eventid">Event id:</label>
+                    <input id="eventid" name="eventid" type="text" ng-model="event.eventid" placeholder="Enter a eventid here" ng-minlength=1 ng-maxlength=2> 
+                </p>
+                <p><label for="month">Month:</label>
+                    <input id="month" name="month" type="text" ng-model="event.month" placeholder="Enter a month here" ng-minlength=1 ng-maxlength=2> 
+                </p>            
+                <p><label for="dayofmonth">Day of month:</label>
+                    <input id="dayofmonth" name="dayofmonth" type="text" ng-model="event.dayofmonth" placeholder="Enter a dayofmonth here" ng-minlength=1 ng-maxlength=2> 
+                </p>            
+                <p><label for="dayofweek">Day of week:</label>
+                    <input id="dayofweek" name="dayofweek" type="text" ng-model="event.dayofweek" placeholder="Enter a dayofweek here" ng-minlength=1 ng-maxlength=2> 
+                </p>            
+                <p><label for="hour">Hour:</label>
+                    <input id="hour" name="hour" type="text" ng-model="event.hour" placeholder="Enter a hour here" ng-minlength=1 ng-maxlength=2> 
+                </p>            
+                <p><label for="minute">Minute:</label>
+                    <input id="minute" name="minute" type="text" ng-model="event.minute" placeholder="Enter a minute here" ng-minlength=1 ng-maxlength=2> 
+                </p>            
+                <p><label for="person">Person:</label>
+                    <input id="person" name="person" type="text" ng-model="event.person" placeholder="Enter a person here" ng-minlength=1 ng-maxlength=40> 
+                </p>            
+                <p><label for="room">Room:</label>
+                    <input id="room" name="room" type="text" ng-model="event.room" placeholder="Enter a room here" ng-minlength=1 ng-maxlength=3> 
+                </p>            
+                <p><label for="method">Method:</label>
+                    <input id="method" name="method" type="text" ng-model="event.method" placeholder="Enter a month here" ng-minlength=1 ng-maxlength=42> 
+                </p>            
+                <p><label for="callable">Callable:</label>
+                    <input id="callable" name="callable" type="text" ng-model="event.callable" placeholder="Enter a callable here" ng-minlength=1 ng-maxlength=5> 
+                </p>            
+                <p>
+                    <button ng-click="create()" class="button">New</button>
+                    <button ng-click="update()" class="button" ng-disabled="form.$invalid">Submit</button>
+                </p></fieldset>
+            <fieldset>
+                <legend>Validation errors</legend>
+                <div ng-show="errorDetails !== null">
+                    <p>Timestamp: <span>{{ errorDetails.timestamp}}</span></p>
+                    <p>Errormessage: <span>{{errorDetails.errormessage}}</span></p>
+                    <p>Stacktrace: <span>{{errorDetails.stacktrace}}</span></p>
+                    <p>User: <span>{{errorDetails.user}}</span></p>
+                    <p>Browser CodeName: <span>{{navigator.appCodeName}}</span></p>
+                    <p>Browser Name: <span>{{navigator.appName}}</span></p>
+                    <p>Browser Version: <span>{{navigator.appVersion}}</span></p>
+                    <p>Cookies Enabled: <span>{{navigator.cookieEnabled}}</span></p>
+                    <p>Platform: <span>{{navigator.platform}}</span></p>
+                    <p>User-agent header: <span>{{navigator.userAgent}}</span></p>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>
