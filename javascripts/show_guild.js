@@ -187,6 +187,10 @@ function updateGuild(data)
   {
     $('#editter').html("<p>You are the Guildmaster. If you wish to make changes to your guild, click <a href=\"/node/137\">here</a>.</p>");
   }
+  if (data.image !== undefined)
+  {
+    $('#guildimage').html("<img src=\"" + data.image + "\"/>");
+  }
   $( "dd" ).each(function( index ) {
     var message = fillArray[index];
     if (index < 3) {message = "<strong>" + message + "</strong>";}

@@ -490,6 +490,8 @@ function prefillGuildForm(data)
   $("#edit-submitted-guildmaster").val(data.bossname);
   $("#edit-submitted-description").val(data.guilddescription);
   $("#edit-submitted-logonmessage").val(data.logonmessage);
+  $("#edit-submitted-image").val(data.image);
+  $("#edit-submitted-colour").val(data.colour);
   tinyMCE.init({
     // General options
     mode : "textareas",
@@ -562,7 +564,8 @@ function updateGuild()
     title : $("#edit-submitted-title").val(),
     bossname : $("#edit-submitted-guildmaster").val(),
     guilddescription : tinyMCE.get('edit-submitted-description').getContent(),
-    image: "",
+    image: $("#edit-submitted-image").val(),
+    colour: $("#edit-submitted-colour").val(),
     logonmessage : tinyMCE.get('edit-submitted-logonmessage').getContent()
   });
   $.ajax({
