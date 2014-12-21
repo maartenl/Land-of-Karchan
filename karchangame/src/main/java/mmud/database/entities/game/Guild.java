@@ -460,7 +460,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
      */
     public void sendMessage(Person aPerson, String aMessage) throws MudException
     {
-        String message = "<span style=\"color:" + getColour() + ";\">[guild]<b>" + aPerson.getName() + "</b>: " + aMessage + "</span></br>\r\n";
+        String message = "<span style=\"color:" + getColour() + ";\">[guild]<b>" + aPerson.getName() + "</b>: " + aMessage + "</span><br/>\r\n";
         for (Person myChar : members)
         {
             myChar.writeMessage(aPerson, message);
