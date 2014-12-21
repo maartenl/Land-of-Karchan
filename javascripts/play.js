@@ -316,6 +316,7 @@ function clearLog()
   Karchan.logSize = 0;
   if (window.console) console.log("clearLog setting offset to " + Karchan.logOffset);
   $("#karchan_log").html("");
+  $("#warning").html("");
   $('#command').focus();
 }
 
