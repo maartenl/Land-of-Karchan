@@ -25,7 +25,6 @@ import javax.script.ScriptException;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.scripting.entities.Room;
-import sun.org.mozilla.javascript.NativeObject;
 
 /**
  * Can run javascript source code. The methods call specific javascript
@@ -82,9 +81,9 @@ public class RunScript
     {
         itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ", " + command + ")");
 
-        Invocable inv = initialiseScriptEngine(sourceCode);
+        final Invocable inv = initialiseScriptEngine(sourceCode);
 
-        final NativeObject result = (NativeObject) inv.invokeFunction("command", new mmud.scripting.entities.Person(person), command);
+        final Object result = inv.invokeFunction("command", new mmud.scripting.entities.Person(person), command);
         if (result != null)
         {
             return new DisplayInterface()
@@ -92,19 +91,37 @@ public class RunScript
                 @Override
                 public String getMainTitle() throws MudException
                 {
-                    return (String) result.get("title");
+                    try
+                    {
+                        return (String) inv.invokeMethod(result, "getTitle");
+                    } catch (ScriptException | NoSuchMethodException ex)
+                    {
+                        throw new MudException(ex);
+                    }
                 }
 
                 @Override
                 public String getImage() throws MudException
                 {
-                    return (String) result.get("image");
+                    try
+                    {
+                        return (String) inv.invokeMethod(result, "getImage");
+                    } catch (ScriptException | NoSuchMethodException ex)
+                    {
+                        throw new MudException(ex);
+                    }
                 }
 
                 @Override
                 public String getBody() throws MudException
                 {
-                    return (String) result.get("body");
+                    try
+                    {
+                        return (String) inv.invokeMethod(result, "getBody");
+                    } catch (ScriptException | NoSuchMethodException ex)
+                    {
+                        throw new MudException(ex);
+                    }
                 }
             };
         }
