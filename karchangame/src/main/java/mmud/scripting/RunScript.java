@@ -17,9 +17,11 @@
 package mmud.scripting;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import mmud.database.entities.game.DisplayInterface;
@@ -207,7 +209,18 @@ public class RunScript
         // create a script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();
         // create a JavaScript engine
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        ScriptEngine engine = factory.getEngineByExtension("js");
+        if (engine == null)
+        {
+            itsLog.warning("Javascript engine missing!");
+            List<ScriptEngineFactory> engineFactories = factory.getEngineFactories();
+            itsLog.warning("Available scripting engines:");
+            for (ScriptEngineFactory engines : engineFactories)
+            {
+                itsLog.warning(engines.getEngineName());
+            }
+            throw new MudException("Javascript engine missing!");
+        }
         // expose persons and rooms object as variable to script
         engine.put("persons", persons);
         engine.put("rooms", rooms);
