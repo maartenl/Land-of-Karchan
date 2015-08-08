@@ -19,10 +19,10 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -279,13 +279,13 @@ public class GuildBean
             guildmember.setGuild(null);
             guildmember.setGuildrank(null);
         }
-        Set<User> emptySet = Collections.emptySet();
+        SortedSet<User> emptySet = new TreeSet<>();
         guild.setMembers(emptySet);
         for (Guildrank rank : guild.getGuildrankCollection())
         {
             getEntityManager().remove(rank);
         }
-        Set<Guildrank> emptyRanks = Collections.emptySet();
+        SortedSet<Guildrank> emptyRanks = new TreeSet<>();
         guild.setGuildrankCollection(emptyRanks);
         getEntityManager().remove(guild);
         return Response.ok().build();

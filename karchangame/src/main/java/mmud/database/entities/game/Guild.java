@@ -19,8 +19,8 @@ package mmud.database.entities.game;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.Basic;
@@ -34,6 +34,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -119,7 +120,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     @Column(name = "logonmessage")
     private String logonmessage;
     @OneToMany(mappedBy = "guild")
-    private Set<User> members = new HashSet<>();
+    @OrderBy("name")
+    private Set<User> members;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -127,7 +129,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     @ManyToOne(optional = false)
     private User boss;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
-    private Collection<Guildrank> guildrankCollection;
+    @OrderBy("guildrankPK.guildlevel")
+    private Set<Guildrank> guildrankCollection;
 
     public Guild()
     {
@@ -266,7 +269,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
         return members;
     }
 
-    public void setMembers(Set<User> personCollection)
+    public void setMembers(SortedSet<User> personCollection)
     {
         this.members = personCollection;
     }
@@ -320,7 +323,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
         return guildrankCollection;
     }
 
-    public void setGuildrankCollection(Collection<Guildrank> guildrankCollection)
+    public void setGuildrankCollection(SortedSet<Guildrank> guildrankCollection)
     {
         this.guildrankCollection = guildrankCollection;
     }
