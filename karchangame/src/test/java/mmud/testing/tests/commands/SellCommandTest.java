@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import javax.naming.NamingException;
+import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
 import mmud.database.entities.characters.Person;
@@ -443,7 +444,7 @@ public class SellCommandTest extends MudTest
         karn.setName("Karn");
         karn.setRoom(room1);
 
-        File file = new File("/home/glassfish/temp/Karn.log");
+        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
         PrintWriter writer = new PrintWriter(file);
         writer.close();
     }
