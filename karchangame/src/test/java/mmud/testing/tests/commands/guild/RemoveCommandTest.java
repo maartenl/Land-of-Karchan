@@ -65,15 +65,106 @@ public class RemoveCommandTest extends MudTest
     private Guild deputy;
     private Guildrank boss;
     private Guildrank minion;
+    private User hotblack;
 
     public RemoveCommandTest()
     {
     }
 
+    /**
+     * Hotblack wasn't in the guild.
+     */
+    @Test
+    public void removeHotblackFromGuild()
+    {
+        RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
+        removeCommand.setCallback(commandRunner);
+        assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+        new Expectations() // an "expectation block"
+        {
+
+
+            {
+                commandRunner.getLogBean();
+                result = logBean;
+            }
+        };
+        DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
+        assertThat(display, not(nullValue()));
+        assertThat(display.getBody(), equalTo("You are in a small room."));
+        String karnLog = karn.getLog(0);
+        assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
+        String hotblackLog = hotblack.getLog(0);
+        assertThat(hotblackLog, equalTo(""));
+        // the important bit
+        assertThat(karn.getGuild(), equalTo(deputy));
+        assertThat(karn.getGuildrank(), equalTo(boss));
+        assertThat(hotblack.getGuild(), nullValue());
+        assertThat(hotblack.getGuildrank(), nullValue());
+    }
+
+    /**
+     * Karcas doesn't exist.
+     */
+    @Test
+    public void removeKarcasFromGuild()
+    {
+        RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
+        removeCommand.setCallback(commandRunner);
+        assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+        new Expectations() // an "expectation block"
+        {
+
+
+            {
+                commandRunner.getLogBean();
+                result = logBean;
+            }
+        };
+        DisplayInterface display = removeCommand.run("guildremove karcas", karn);
+        assertThat(display, not(nullValue()));
+        assertThat(display.getBody(), equalTo("You are in a small room."));
+        String karnLog = karn.getLog(0);
+        assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
+        // the important bit
+        assertThat(karn.getGuild(), equalTo(deputy));
+        assertThat(karn.getGuildrank(), equalTo(boss));
+    }
+
+    /**
+     * Cannot remove leader of the guild.
+     */
+    @Test
+    public void removeKarnFromGuild()
+    {
+        RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
+        removeCommand.setCallback(commandRunner);
+        assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+        new Expectations() // an "expectation block"
+        {
+
+
+            {
+                commandRunner.getLogBean();
+                result = logBean;
+            }
+        };
+        DisplayInterface display = removeCommand.run("guildremove karn", karn);
+        assertThat(display, not(nullValue()));
+        assertThat(display.getBody(), equalTo("You are in a small room."));
+        String karnLog = karn.getLog(0);
+        assertThat(karnLog, equalTo("A guildmaster cannot remove him/herself from the guild.<br />\n"));
+        // the important bit
+        assertThat(karn.getGuild(), equalTo(deputy));
+        assertThat(karn.getGuildrank(), equalTo(boss));
+    }
+
+    /**
+     * Remove Marvin, who was a member of the guild, from the guild.
+     */
     @Test
     public void removeMarvinFromGuild()
     {
-
         RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
         removeCommand.setCallback(commandRunner);
         assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
@@ -98,7 +189,6 @@ public class RemoveCommandTest extends MudTest
         assertThat(karn.getGuildrank(), equalTo(boss));
         assertThat(marvin.getGuild(), nullValue());
         assertThat(marvin.getGuildrank(), nullValue());
-
     }
 
     @BeforeClass
@@ -125,6 +215,10 @@ public class RemoveCommandTest extends MudTest
         marvin = new User();
         marvin.setName("Marvin");
         marvin.setRoom(room1);
+
+        hotblack = new User();
+        hotblack.setName("Marvin");
+        hotblack.setRoom(room1);
 
         deputy = new Guild();
         deputy.setName("deputy");
@@ -198,6 +292,7 @@ public class RemoveCommandTest extends MudTest
         HashSet<Person> persons = new HashSet<>();
         persons.add(karn);
         persons.add(marvin);
+        persons.add(hotblack);
         setField(Room.class, "persons", room1, persons);
 
     }
