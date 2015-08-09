@@ -775,8 +775,19 @@ public class User extends Person
         return guild;
     }
 
+    /**
+     * Sets the guild a person (user) belongs to. Also can be used to remove
+     * someone from the guild by providing a "null". When the latter case, also
+     * the guildrank is automatically cleared.
+     *
+     * @param guild the new guild, or null if the person is removed from the guild.
+     */
     public void setGuild(Guild guild)
     {
+        if (guild == null)
+        {
+            this.guildrank = null;
+        }
         this.guild = guild;
     }
 
@@ -787,6 +798,10 @@ public class User extends Person
 
     public void setGuildrank(Guildrank guildrank)
     {
+        if (this.guild == null)
+        {
+            throw new MudException("Unable to set guildrank for " + this.getName() + ". User is not part of a guild yet.");
+        }
         this.guildrank = guildrank;
     }
 

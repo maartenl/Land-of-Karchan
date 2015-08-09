@@ -159,7 +159,7 @@ public class CommandRunner
         return helpBean;
     }
 
-    LogBean getLogBean()
+    public LogBean getLogBean()
     {
         return logBean;
     }

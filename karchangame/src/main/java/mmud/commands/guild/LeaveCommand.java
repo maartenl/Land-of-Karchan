@@ -16,8 +16,6 @@
  */
 package mmud.commands.guild;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.commands.GuildCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -47,7 +45,6 @@ public class LeaveCommand extends GuildCommand
     {
         LogBean logBean = getLogBean();
         Guild guild = aUser.getGuild();
-        aUser.setGuildrank(null);
         aUser.setGuild(null);
         aUser.writeMessage("You leave guild <i>" + guild.getTitle() + "</i>.<br/>\r\n");
         logBean.writeLog(aUser, "left guild "

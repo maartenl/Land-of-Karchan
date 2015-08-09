@@ -277,7 +277,6 @@ public class GuildBean
         for (User guildmember : guild.getMembers())
         {
             guildmember.setGuild(null);
-            guildmember.setGuildrank(null);
         }
         SortedSet<User> emptySet = new TreeSet<>();
         guild.setMembers(emptySet);
@@ -394,7 +393,6 @@ public class GuildBean
         {
             throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
         }
-        member.setGuildrank(null);
         member.setGuild(null);
         return Response.ok().build();
     }
