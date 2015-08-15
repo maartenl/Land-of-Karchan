@@ -17,6 +17,7 @@
 package mmud.scripting.entities;
 
 import java.util.logging.Logger;
+import mmud.database.entities.items.ItemDefinition;
 
 /**
  *
@@ -74,4 +75,29 @@ public class Item
         return item.removeAttribute(name);
     }
 
+    ItemDefinition retrieveItemdef()
+    {
+        return item.getItemDefinition();
+    }
+
+    mmud.database.entities.items.Item getItem()
+    {
+        return item;
+    }
+
+    /**
+     * Adds an item to this bag (if it is a bag).
+     *
+     * @param item the item to add
+     * @return the item if it was successful otherwise null.
+     */
+    public Item addItem(Item item)
+    {
+        mmud.database.entities.items.Item result = getItem().addItem(item.getItem());
+        if (result == null)
+        {
+            return null;
+        }
+        return new Item(result);
+    }
 }

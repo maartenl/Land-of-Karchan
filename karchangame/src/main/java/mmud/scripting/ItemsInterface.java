@@ -16,46 +16,23 @@
  */
 package mmud.scripting;
 
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 
 /**
  *
  * @author m.vanleunen
  */
-public interface ItemsInterface {
+public interface ItemsInterface
+{
 
     /**
-     * Creates a new item in the inventory of a person.
+     * Creates a new item.
      *
      * Returns null if no item was successfully created.
      *
-     * @param person the person
      * @param itemdefnr the id of the item definition
      * @return the new item or null if not created
      */
-    public Item addItem(long itemdefnr, Person person);
+    public Item createItem(int itemdefnr);
 
-    /**
-     * Creates a new item in the room.
-     *
-     * Returns null if no item was successfully created.
-     *
-     * @param room the room
-     * @param itemdefnr the id of the item definition
-     * @return the new item or null if not created
-     */
-    public Item addItem(long itemdefnr, Room room);
-
-    /**
-     * Creates a new item in the bag.
-     *
-     * Returns null if no item was successfully created.
-     *
-     * @param item container/bag
-     * @param itemdefnr the id of the item definition
-     * @return the new item or null if not created
-     */
-    public Item addItem(long itemdefnr, Item item);
 }

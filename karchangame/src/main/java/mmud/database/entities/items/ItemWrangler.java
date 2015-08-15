@@ -21,6 +21,7 @@ import java.util.Set;
 
 /**
  * Interface on what is allowed to be done with items.
+ *
  * @author maartenl
  */
 public interface ItemWrangler
@@ -28,6 +29,7 @@ public interface ItemWrangler
 
     /**
      * Retrieves a set of items that this entity has.
+     *
      * @return A set of items.
      */
     public Set<Item> getItems();
@@ -35,6 +37,7 @@ public interface ItemWrangler
     /**
      * Returns items this entity has, based on description
      * provided.
+     *
      * @param parsed the parsed description of the item,
      * for example {"light-green", "leather", "pants"}.
      * @return list of found items, empty if not found.
@@ -43,9 +46,21 @@ public interface ItemWrangler
 
     /**
      * Physically destroys an item instance.
+     *
      * @param item the item to be destroyed
      * @return returns true, if the item was found and destroyed. False if
      * the item was not found.
      */
     public boolean destroyItem(Item item);
+
+    /**
+     * Adds an {@link Item} to this ItemWrangler.
+     * It is assumed that this item has not yet been assigned
+     * to another ItemWrangler.
+     *
+     * @param item the new item. May not be null.
+     * @return the new item, null if unable to add.
+     */
+    public Item addItem(Item item);
+
 }

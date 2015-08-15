@@ -17,7 +17,6 @@
 package mmud.scripting.entities;
 
 import mmud.database.entities.characters.User;
-import mmud.database.entities.items.ItemDefinition;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MoneyException;
@@ -25,6 +24,7 @@ import mmud.exceptions.PersonNotFoundException;
 
 /**
  * Scripting entity called Person.
+ *
  * @see Person
  * @author maartenl
  */
@@ -38,7 +38,8 @@ public class Person
 
     /**
      * Constructor
-     * @param person the original object to redirect calls to. 
+     *
+     * @param person the original object to redirect calls to.
      */
     public Person(mmud.database.entities.characters.Person person)
     {
@@ -216,7 +217,6 @@ public class Person
     }
 
     //item[] getItem(integer)
-    
     public String getAttribute(String name)
     {
         return person.getAttribute(name).getValue();
@@ -235,6 +235,16 @@ public class Person
     public boolean removeAttribute(String name)
     {
         return person.removeAttribute(name);
+    }
+
+    public Item addItem(Item item)
+    {
+        mmud.database.entities.items.Item result = person.addItem(item.getItem());
+        if (result == null)
+        {
+            return null;
+        }
+        return new Item(result);
     }
 
 }

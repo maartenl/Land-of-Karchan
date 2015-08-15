@@ -260,4 +260,14 @@ public class Room
     {
         person.setRoom(room);
     }
+
+    public Item addItem(Item item)
+    {
+        mmud.database.entities.items.Item result = room.addItem(item.getItem());
+        if (result == null)
+        {
+            return null;
+        }
+        return new Item(result);
+    }
 }

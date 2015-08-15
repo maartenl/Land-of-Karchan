@@ -19,6 +19,7 @@ package mmud.database.entities.items;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -109,7 +110,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @Column(name = "discriminator")
     private Integer discriminator;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
-    private Set<Item> items;
+    private Set<Item> items = new HashSet<>();
     @JoinColumn(name = "containerid", referencedColumnName = "id")
     @ManyToOne
     private Item container;
@@ -141,10 +142,10 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      *
      * @param id the item definition used as a template of this (new) item.id of the item, usually already assigned by the ORM.
      */
-    public Item(ItemDefinition id) {
+    public Item(ItemDefinition id)
+    {
         this.itemDefinition = id;
     }
-
 
     public Integer getId()
     {
@@ -739,12 +740,15 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     }
 
     /**
-     * Specialty method for the creation of new items in a room. Only used by 
+     * Specialty method for the creation of new items in a room. Only used by
      * {@link Room#createItem(mmud.database.entities.items.ItemDefinition) }
+     *
      * @param room the room to drop the new item into.
      */
-    public void drop(Room room) {
-        if (isBound()) {
+    public void drop(Room room)
+    {
+        if (isBound())
+        {
             throw new ItemException("You are not allowed to drop this item.");
         }
         // TODO: equals directly on room doesn't seem to work right. Different objects
@@ -954,23 +958,36 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     }
 
     /**
-     * Creates a {@link NormalItem} and adds it to the bag (container).
+     * Adds an {@link Item} to the bag (container).
      *
-     * @param itemDefinition the template to use for this newly created item.
-     * May not be null.
-     * @return the new item, null if unable to create.
+     * @param item the new item. May not be null.
+     * @return the new item, null if unable to add.
      */
-    public Item createItem(ItemDefinition itemDefinition) {
-        NormalItem item = itemDefinition.createItem();
-        if (!items.add(item)) {
-            return null;
+    @Override
+    public Item addItem(Item item)
+    {
+        if (item.getBelongsTo() != null || item.getRoom() != null || item.getContainer() != null)
+        {
+            throw new MudException("Item already assigned.");
         }
         if (!this.isContainer())
         {
             throw new MudException("You cannot drop a new item in another item, if the other item is not a container.");
         }
+        if (!items.add(item))
+        {
+            return null;
+        }
         item.setContainer(this);
         return item;
     }
 
+    public void assignTo(Room room)
+    {
+        if (getBelongsTo() != null || getRoom() != null || getContainer() != null)
+        {
+            throw new MudException("Item already assigned.");
+        }
+        this.room = room;
+    }
 }

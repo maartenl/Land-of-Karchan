@@ -46,9 +46,7 @@ import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
-import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.ItemWrangler;
-import mmud.database.entities.items.NormalItem;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 
@@ -149,7 +147,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room", orphanRemoval = true)
     private Set<Roomattribute> attributes = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private Set<Item> items;
+     private Set<Item> items = new HashSet<>();;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Person> persons = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
@@ -775,18 +773,23 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     }
 
     /**
-     * Creates a {@link NormalItem} and adds it to the inventory of this person.
+     * Adds an {@link Item} to the room.
      *
-     * @param itemDefinition the template to use for this newly created item.
-     * May not be null.
-     * @return the new item, null if unable to create.
+     * @param item the new item. May not be null.
+     * @return the new item, null if unable to add.
      */
-    public Item createItem(ItemDefinition itemDefinition) {
-        NormalItem item = itemDefinition.createItem();
-        if (!items.add(item)) {
+    @Override
+    public Item addItem(Item item)
+    {
+        if (item.getBelongsTo() != null || item.getRoom() != null || item.getContainer() != null)
+        {
+            throw new MudException("Item already assigned.");
+        }
+        if (!items.add(item))
+        {
             return null;
         }
-        item.drop(null, this);
+        item.assignTo(this);
         return item;
     }
 }

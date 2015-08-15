@@ -23,6 +23,7 @@ import mmud.database.entities.items.Item;
 /**
  * Can create and remove items. For retrieval of items, let me refer you
  * back to the containers, {@link Person}, {@link Item} and {@link Room}.
+ *
  * @author maartenl
  */
 public class Items
@@ -36,51 +37,19 @@ public class Items
     }
 
     /**
-     * Creates an item based on an item definition number. 
-     * The item is added to a persons inventory.
+     * Creates an item based on an item definition number.
      *
-     * @param itemdefnr the itemdefinition number
-     * @param person the person who will receive the new item in his/her
-     * inventory.
+     * @param itemdefnr the item definition number
      * @return the new item or null if unable to comply.
      */
-    public mmud.scripting.entities.Item addItem(Long itemdefnr, Person person)
+    public mmud.scripting.entities.Item createItem(int itemdefnr)
     {
-        final Item created = proxy.addItem(itemdefnr, person);
+        final Item created = proxy.createItem(itemdefnr);
         if (created == null)
         {
             return null;
         }
         return new mmud.scripting.entities.Item(created);
     }
-    /**
-     * Creates an item based on an item definition number. The item is added to
-     * a room.
-     *
-     * @param itemdefnr the itemdefinition number
-     * @param room the room which will contain the new item
-     * @return the new item or null if unable to comply.
-     */
-    public mmud.scripting.entities.Item addItem(Long itemdefnr, Room room) {
-        final Item created = proxy.addItem(itemdefnr, room);
-        if (created == null) {
-            return null;
-        }
-        return new mmud.scripting.entities.Item(created);
-    }
-    /**
-     * Creates an item based on an item definition number. The item is added to
-     * a container, which is basically another item.
-     *
-     * @param itemdefnr the itemdefinition number
-     * @param item the bag or container about to contain the new item.
-     * @return the new item or null if unable to comply.
-     */
-    public mmud.scripting.entities.Item addItem(Long itemdefnr, Item item) {
-        final Item created = proxy.addItem(itemdefnr, item);
-        if (created == null) {
-            return null;
-        }
-        return new mmud.scripting.entities.Item(created);
-    }
+
 }

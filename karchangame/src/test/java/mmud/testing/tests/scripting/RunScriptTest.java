@@ -22,6 +22,8 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
+import mmud.database.entities.items.NormalItem;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.scripting.Items;
@@ -55,7 +57,7 @@ public class RunScriptTest
     public static class RoomStub extends Room
     {
 
-        private Set<Person> persons = new HashSet<>();
+        private final Set<Person> persons = new HashSet<>();
 
         public void addPerson(Person person)
         {
@@ -196,6 +198,7 @@ public class RunScriptTest
                 + "push the button...</p>");
         room.setTitle("The Cave");
         room.setPicture("/images/gif/cave.gif");
+        room.setItems(new HashSet<Item>());
         room.addPerson(hotblack);
         room.addPerson(marvin);
         room.setWest(room2);
@@ -244,21 +247,20 @@ public class RunScriptTest
                 return null;
             }
         };
-        itemsInterface = new ItemsInterface(){
+        itemsInterface = new ItemsInterface()
+        {
 
             @Override
-            public Item addItem(long itemdefnr, Person person) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Item addItem(long itemdefnr, Room room) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Item addItem(long itemdefnr, Item item) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public Item createItem(int itemdefnr)
+            {
+                ItemDefinition itemDefinition = new ItemDefinition();
+                itemDefinition.setId(itemdefnr);
+                if (itemdefnr == 1)
+                {
+                    itemDefinition.setContainer(true);
+                }
+                Item item = new NormalItem(itemDefinition);
+                return item;
             }
         };
         worldInterface = new WorldInterface()

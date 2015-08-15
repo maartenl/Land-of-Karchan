@@ -27,7 +27,6 @@ import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
@@ -42,7 +41,8 @@ import mmud.scripting.ItemsInterface;
  */
 @Stateless
 @LocalBean
-public class ItemBean implements ItemsInterface {
+public class ItemBean implements ItemsInterface
+{
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -56,7 +56,8 @@ public class ItemBean implements ItemsInterface {
      *
      * @return EntityManager
      */
-    protected EntityManager getEntityManager() {
+    protected EntityManager getEntityManager()
+    {
         return em;
     }
     private static final Logger itsLog = Logger.getLogger(ItemBean.class.getName());
@@ -68,13 +69,15 @@ public class ItemBean implements ItemsInterface {
      * @param item the item to be dropped.
      * @return true if successful.
      */
-    public boolean drop(Item item, Person person) {
+    public boolean drop(Item item, Person person)
+    {
         Query query = getEntityManager().createNamedQuery("Item.drop");
         query.setParameter("item", item);
         query.setParameter("person", person);
         query.setParameter("room", person.getRoom());
         final boolean success = query.executeUpdate() == 1;
-        if (success) {
+        if (success)
+        {
             logBean.writeLog(person, " dropped " + item.getDescription() + " in room " + person.getRoom().getId() + ".");
         }
         return success;
@@ -87,13 +90,15 @@ public class ItemBean implements ItemsInterface {
      * @param item the item to be retrieved from the room.
      * @return true if successful.
      */
-    public boolean get(Item item, Person person) {
+    public boolean get(Item item, Person person)
+    {
         Query query = getEntityManager().createNamedQuery("Item.get");
         query.setParameter("item", item);
         query.setParameter("person", person);
         query.setParameter("room", person.getRoom());
         final boolean success = query.executeUpdate() == 1;
-        if (success) {
+        if (success)
+        {
             logBean.writeLog(person, " got " + item.getDescription() + " from room " + person.getRoom().getId() + ".");
         }
         return success;
@@ -107,13 +112,15 @@ public class ItemBean implements ItemsInterface {
      * @param toperson the person receiving the item
      * @return true if successful.
      */
-    public boolean give(Item item, Person fromperson, Person toperson) {
+    public boolean give(Item item, Person fromperson, Person toperson)
+    {
         Query query = getEntityManager().createNamedQuery("Item.give");
         query.setParameter("item", item);
         query.setParameter("fromperson", fromperson);
         query.setParameter("toperson", toperson);
         final boolean success = query.executeUpdate() == 1;
-        if (success) {
+        if (success)
+        {
             logBean.writeLog(fromperson, " gave " + item.getDescription() + " to " + toperson.getName() + ".");
         }
         return success;
@@ -127,14 +134,18 @@ public class ItemBean implements ItemsInterface {
      * @param person the person performing the action
      * @return true if successful.
      */
-    public boolean put(Item item, Item container, Person person) {
-        if (!container.isContainer()) {
+    public boolean put(Item item, Item container, Person person)
+    {
+        if (!container.isContainer())
+        {
             throw new ItemException("Item is not a container and cannot be used for storage.");
         }
-        if (!person.getItems().contains(item)) {
+        if (!person.getItems().contains(item))
+        {
             throw new ItemException("Person does not have that item.");
         }
-        if (item.isContainer()) {
+        if (item.isContainer())
+        {
             throw new ItemException("Item is a container, and cannot be put.");
         }
         Query query = getEntityManager().createNamedQuery("Item.put");
@@ -142,7 +153,8 @@ public class ItemBean implements ItemsInterface {
         query.setParameter("container", container);
         query.setParameter("person", person);
         final boolean success = query.executeUpdate() == 1;
-        if (success) {
+        if (success)
+        {
             logBean.writeLog(person, " put " + item.getDescription() + " into " + container.getDescription() + ".");
         }
         return success;
@@ -156,17 +168,22 @@ public class ItemBean implements ItemsInterface {
      * @param person the person performing the action
      * @return true if successful.
      */
-    public boolean retrieve(Item item, Item container, Person person) {
-        if (!container.isContainer()) {
+    public boolean retrieve(Item item, Item container, Person person)
+    {
+        if (!container.isContainer())
+        {
             throw new ItemException("Item is not a container and cannot be used for storage.");
         }
-        if (!container.getItems().contains(item)) {
+        if (!container.getItems().contains(item))
+        {
             throw new ItemException("Container does not contain that item.");
         }
-        if (item.isContainer()) {
+        if (item.isContainer())
+        {
             throw new ItemException("Item is a container, and cannot be retrieved.");
         }
-        if (!person.getItems().contains(container) && !person.getRoom().getItems().contains(container)) {
+        if (!person.getItems().contains(container) && !person.getRoom().getItems().contains(container))
+        {
             throw new ItemException("Container not found.");
         }
         Query query = getEntityManager().createNamedQuery("Item.retrieve");
@@ -174,7 +191,8 @@ public class ItemBean implements ItemsInterface {
         query.setParameter("container", container);
         query.setParameter("person", person);
         final boolean success = query.executeUpdate() == 1;
-        if (success) {
+        if (success)
+        {
             logBean.writeLog(person, " retrieved " + item.getDescription() + " from " + container.getDescription() + ".");
         }
         return success;
@@ -188,26 +206,34 @@ public class ItemBean implements ItemsInterface {
      * @param shopkeeper the shopkeeper buying the item
      * @return the amount of money transferred, or Null if it was unsuccessful.
      */
-    public Integer sell(Item item, User aUser, Shopkeeper shopkeeper) {
-        if (shopkeeper == null) {
+    public Integer sell(Item item, User aUser, Shopkeeper shopkeeper)
+    {
+        if (shopkeeper == null)
+        {
             return null;
         }
-        if (aUser == null) {
+        if (aUser == null)
+        {
             return null;
         }
-        if (item == null) {
+        if (item == null)
+        {
             return null;
         }
-        if (!item.isSellable()) {
+        if (!item.isSellable())
+        {
             return null;
         }
-        if (shopkeeper.getCopper() < item.getCopper()) {
+        if (shopkeeper.getCopper() < item.getCopper())
+        {
             return null;
         }
-        if (!aUser.getItems().contains(item)) {
+        if (!aUser.getItems().contains(item))
+        {
             return null;
         }
-        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId())) {
+        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId()))
+        {
             return null;
         }
         aUser.give(item, shopkeeper);
@@ -225,26 +251,34 @@ public class ItemBean implements ItemsInterface {
      * @param shopkeeper the shopkeeper selling the item
      * @return the amount of money transferred, or Null if it was unsuccessful.
      */
-    public Integer buy(Item item, User aUser, Shopkeeper shopkeeper) {
-        if (shopkeeper == null) {
+    public Integer buy(Item item, User aUser, Shopkeeper shopkeeper)
+    {
+        if (shopkeeper == null)
+        {
             return null;
         }
-        if (aUser == null) {
+        if (aUser == null)
+        {
             return null;
         }
-        if (item == null) {
+        if (item == null)
+        {
             return null;
         }
-        if (!item.isBuyable()) {
+        if (!item.isBuyable())
+        {
             return null;
         }
-        if (aUser.getCopper() < item.getCopper()) {
+        if (aUser.getCopper() < item.getCopper())
+        {
             return null;
         }
-        if (!shopkeeper.getItems().contains(item)) {
+        if (!shopkeeper.getItems().contains(item))
+        {
             return null;
         }
-        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId())) {
+        if (!Objects.equals(shopkeeper.getRoom().getId(), aUser.getRoom().getId()))
+        {
             return null;
         }
         shopkeeper.give(item, aUser);
@@ -255,44 +289,15 @@ public class ItemBean implements ItemsInterface {
     }
 
     @Override
-    public Item addItem(long itemdefnr, Person person) {
+    public Item createItem(int itemdefnr)
+    {
         ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);
-        if (itemDefinition == null) {
-            logBean.writeLog(person, "Unable to create item because item definition was empty.");
+        if (itemDefinition == null)
+        {
+            logBean.writeLog("Unable to create item because item definition was empty.");
             return null;
         }
-        Item item = person.createItem(itemDefinition);
-        if (item != null) {
-            getEntityManager().persist(item);
-        }
-        return item;
-    }
-
-    @Override
-    public Item addItem(long itemdefnr, Room room) {
-        ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);
-        if (itemDefinition == null) {
-            logBean.writeLog("Unable to create item from room " + room.getId() + " because item definition was empty.");
-            return null;
-        }
-        Item item = room.createItem(itemDefinition);
-        if (item != null) {
-            getEntityManager().persist(item);
-        }
-        return item;
-    }
-
-    @Override
-    public Item addItem(long itemdefnr, Item container) {
-        ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);
-        if (itemDefinition == null) {
-            logBean.writeLog("Unable to create item in item " + container.getId() + " because item definition was empty.");
-            return null;
-        }
-        Item item = container.createItem(itemDefinition);
-        if (item != null) {
-            getEntityManager().persist(item);
-        }
+        Item item = new NormalItem(itemDefinition);
         return item;
     }
 }
