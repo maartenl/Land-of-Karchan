@@ -128,20 +128,23 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
     private List<Itemattribute> itemattributeCollection;
 
+    /**
+     * Constructor. Creates a completely empty item.
+     * Usually required by ORM.
+     */
     public Item()
     {
     }
 
-    public Item(Integer id)
-    {
-        this.id = id;
+    /**
+     * Constructor.
+     *
+     * @param id the item definition used as a template of this (new) item.id of the item, usually already assigned by the ORM.
+     */
+    public Item(ItemDefinition id) {
+        this.itemDefinition = id;
     }
 
-    public Item(Integer id, Date creation)
-    {
-        this.id = id;
-        this.creation = creation;
-    }
 
     public Integer getId()
     {
@@ -735,6 +738,21 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         this.room = room;
     }
 
+    /**
+     * Specialty method for the creation of new items in a room. Only used by 
+     * {@link Room#createItem(mmud.database.entities.items.ItemDefinition) }
+     * @param room the room to drop the new item into.
+     */
+    public void drop(Room room) {
+        if (isBound()) {
+            throw new ItemException("You are not allowed to drop this item.");
+        }
+        // TODO: equals directly on room doesn't seem to work right. Different objects
+        // same ids.
+        belongsto = null;
+        this.room = room;
+    }
+
     public void get(Person person, Room room)
     {
         if (isBound())
@@ -933,6 +951,26 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     public boolean containsItems()
     {
         return items != null && !items.isEmpty();
+    }
+
+    /**
+     * Creates a {@link NormalItem} and adds it to the bag (container).
+     *
+     * @param itemDefinition the template to use for this newly created item.
+     * May not be null.
+     * @return the new item, null if unable to create.
+     */
+    public Item createItem(ItemDefinition itemDefinition) {
+        NormalItem item = itemDefinition.createItem();
+        if (!items.add(item)) {
+            return null;
+        }
+        if (!this.isContainer())
+        {
+            throw new MudException("You cannot drop a new item in another item, if the other item is not a container.");
+        }
+        item.setContainer(this);
+        return item;
     }
 
 }

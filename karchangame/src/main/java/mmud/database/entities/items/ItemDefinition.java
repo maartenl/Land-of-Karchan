@@ -46,7 +46,8 @@ import mmud.database.enums.Wielding;
 
 /**
  * The definition of an item. The analogy with Java would be the difference
- * between a class and an object.
+ * between a class and an object. This is also a factory that creates items
+ * based on its itemdefinition, see {@link #createItem() }.
  *
  * @author maartenl
  */
@@ -780,5 +781,14 @@ public class ItemDefinition implements Serializable, Ownage
     boolean isWieldable(Wielding position)
     {
         return Wielding.isIn(wieldable, position);
+    }
+
+    /**
+     * Creates an item with this itemdefinition.
+     * @return 
+     */
+    public NormalItem createItem() {
+        NormalItem item = new NormalItem(this);       
+        return item;
     }
 }

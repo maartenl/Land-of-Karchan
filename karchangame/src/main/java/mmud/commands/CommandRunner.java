@@ -34,6 +34,7 @@ import mmud.rest.services.HelpBean;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
+import mmud.scripting.Items;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
@@ -101,8 +102,9 @@ public class CommandRunner
             List<NormalCommand> myCol = new ArrayList<>();
             Persons persons = new Persons(personBean);
             Rooms rooms = new Rooms(gameBean);
+            Items items = new Items(itemBean);
             World world = new World(gameBean);
-            RunScript runScript = new RunScript(persons, rooms, world);
+            RunScript runScript = new RunScript(persons, rooms, items, world);
             for (UserCommand myCom : userCommands)
             {
                 ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);

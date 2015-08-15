@@ -36,8 +36,7 @@ import mmud.database.entities.game.Log;
  */
 @Stateless
 @LocalBean
-public class LogBean
-{
+public class LogBean {
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -48,11 +47,20 @@ public class LogBean
      *
      * @return EntityManager
      */
-    protected EntityManager getEntityManager()
-    {
+    protected EntityManager getEntityManager() {
         return em;
     }
     private static final Logger itsLog = Logger.getLogger(LogBean.class.getName());
+
+    /**
+     * write a log message to the database. A simple general message.Ã¸
+     *
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters.
+     */
+    public void writeLog(String message) {
+        writeLog(null, message);
+    }
 
     /**
      * write a log message to the database. This log facility is primarily used
@@ -65,11 +73,10 @@ public class LogBean
      * </ul>
      *
      * @param person the person to be inscribed in the log table. May be null.
-     * @param message the message to be written in the log, may not be larger than
-     * 255 characters.
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters.
      */
-    public void writeLog(Person person, String message)
-    {
+    public void writeLog(Person person, String message) {
         itsLog.finer("writeLog");
 
         Log log = new Log();
@@ -84,16 +91,14 @@ public class LogBean
      * @param person the person to be inscribed in the log table. May be null.
      * @param throwable the exception or error to be written to the log table.
      */
-    public void writeLogException(Person person, Throwable throwable)
-    {
+    public void writeLogException(Person person, Throwable throwable) {
         itsLog.finer("writeLogException");
 
         Log log = new Log();
         log.setName(person == null ? null : person.getName());
         log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-        try (PrintStream myPrintStream = new PrintStream(myStream))
-        {
+        try (PrintStream myPrintStream = new PrintStream(myStream)) {
             throwable.printStackTrace(myPrintStream);
         }
         log.setAddendum(myStream.toString());
@@ -105,16 +110,14 @@ public class LogBean
      *
      * @param throwable the exception or error to be written to the log table.
      */
-    public void writeLogException(Throwable throwable)
-    {
+    public void writeLogException(Throwable throwable) {
         itsLog.finer("writeLogException");
 
         Log log = new Log();
         log.setName(null);
         log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-        try (PrintStream myPrintStream = new PrintStream(myStream))
-        {
+        try (PrintStream myPrintStream = new PrintStream(myStream)) {
             throwable.printStackTrace(myPrintStream);
         }
         log.setAddendum(myStream.toString());
@@ -122,29 +125,25 @@ public class LogBean
     }
 
     /**
-     * write a command to the database. This log facility is primarily used
-     * to keep a chatrecord.
+     * write a command to the database. This log facility is primarily used to
+     * keep a chatrecord.
      *
      * @param person the person to be inscribed in the log table. May be null.
-     * @param command the command that is to be executed written in the log, may not be larger than
-     * 255 characters.
+     * @param command the command that is to be executed written in the log, may
+     * not be larger than 255 characters.
      */
-    public void writeCommandLog(Person person, String command)
-    {
+    public void writeCommandLog(Person person, String command) {
         itsLog.finer("writeCommandLog");
 
         Commandlog commandlog = new Commandlog();
         commandlog.setName(person == null ? null : person.getName());
         commandlog.setStamp(new Date());
         commandlog.setCommand(command);
-        try
-        {
+        try {
             getEntityManager().persist(commandlog);
-        } catch (ConstraintViolationException ex)
-        {
+        } catch (ConstraintViolationException ex) {
             StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-            for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-            {
+            for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
                 buffer.append(violation);
             }
             throw new RuntimeException(buffer.toString(), ex);

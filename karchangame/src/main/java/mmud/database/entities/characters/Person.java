@@ -64,7 +64,9 @@ import mmud.database.entities.game.Charattribute;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.ItemWrangler;
+import mmud.database.entities.items.NormalItem;
 import mmud.database.enums.Alignment;
 import mmud.database.enums.Appetite;
 import mmud.database.enums.God;
@@ -116,8 +118,7 @@ import org.owasp.validator.html.ScanException;
             @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
             @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
         })
-abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
-{
+abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage {
 
     private static final Logger itsLog = java.util.logging.Logger.getLogger(Person.class.getName());
     private static final long serialVersionUID = 1L;
@@ -324,8 +325,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     @ManyToOne(fetch = FetchType.LAZY)
     private Item wearaboutbody;
 
-    public Person()
-    {
+    public Person() {
 
         this.copper = 0; // no money
         this.wimpy = 0; // no coward, either
@@ -369,8 +369,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -381,10 +380,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @param name the (new) name.
      * @throws MudException if the name is not allowed.
      */
-    public void setName(String name) throws MudException
-    {
-        if (name != null)
-        {
+    public void setName(String name) throws MudException {
+        if (name != null) {
             Utils.checkRegexp(NAME_REGEXP, name);
         }
         this.name = name;
@@ -395,8 +392,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the title
      */
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
@@ -405,8 +401,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @param title String containing the title
      */
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -415,13 +410,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the race
      */
-    public String getRace()
-    {
+    public String getRace() {
         return race;
     }
 
-    public void setRace(String race)
-    {
+    public void setRace(String race) {
         this.race = race;
     }
 
@@ -430,13 +423,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return Sex containing either male or female.
      */
-    public Sex getSex()
-    {
+    public Sex getSex() {
         return Sex.createFromString(sex);
     }
 
-    public void setSex(Sex sex)
-    {
+    public void setSex(Sex sex) {
         this.sex = sex.toString();
     }
 
@@ -445,13 +436,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the age
      */
-    public String getAge()
-    {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(String age)
-    {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -460,13 +449,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the length
      */
-    public String getHeight()
-    {
+    public String getHeight() {
         return height;
     }
 
-    public void setHeight(String height)
-    {
+    public void setHeight(String height) {
         this.height = height;
     }
 
@@ -475,13 +462,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the width
      */
-    public String getWidth()
-    {
+    public String getWidth() {
         return width;
     }
 
-    public void setWidth(String width)
-    {
+    public void setWidth(String width) {
         this.width = width;
     }
 
@@ -490,13 +475,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the complexion
      */
-    public String getComplexion()
-    {
+    public String getComplexion() {
         return complexion;
     }
 
-    public void setComplexion(String complexion)
-    {
+    public void setComplexion(String complexion) {
         this.complexion = complexion;
     }
 
@@ -505,13 +488,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the eyes
      */
-    public String getEyes()
-    {
+    public String getEyes() {
         return eyes;
     }
 
-    public void setEyes(String eyes)
-    {
+    public void setEyes(String eyes) {
         this.eyes = eyes;
     }
 
@@ -520,13 +501,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the face
      */
-    public String getFace()
-    {
+    public String getFace() {
         return face;
     }
 
-    public void setFace(String face)
-    {
+    public void setFace(String face) {
         this.face = face;
     }
 
@@ -535,13 +514,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the hair
      */
-    public String getHair()
-    {
+    public String getHair() {
         return hair;
     }
 
-    public void setHair(String hair)
-    {
+    public void setHair(String hair) {
         this.hair = hair;
     }
 
@@ -550,13 +527,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the beard
      */
-    public String getBeard()
-    {
+    public String getBeard() {
         return beard;
     }
 
-    public void setBeard(String beard)
-    {
+    public void setBeard(String beard) {
         this.beard = beard;
     }
 
@@ -565,13 +540,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the arms
      */
-    public String getArm()
-    {
+    public String getArm() {
         return arm;
     }
 
-    public void setArm(String arm)
-    {
+    public void setArm(String arm) {
         this.arm = arm;
     }
 
@@ -580,24 +553,21 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the legs
      */
-    public String getLeg()
-    {
+    public String getLeg() {
         return leg;
     }
 
-    public void setLeg(String leg)
-    {
+    public void setLeg(String leg) {
         this.leg = leg;
     }
 
     /**
-     * Returns the amount of money a character has (in coppers). Basically
-     * 10 coppers is 1 silver, and 10 silvers is 1 gold.
+     * Returns the amount of money a character has (in coppers). Basically 10
+     * coppers is 1 silver, and 10 silvers is 1 gold.
      *
      * @return Integer with the amount of coppers.
      */
-    public Integer getCopper()
-    {
+    public Integer getCopper() {
         return copper;
     }
 
@@ -605,13 +575,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @see #getCopper()
      * @return Integer with the amount of coppers
      */
-    public Integer getMoney()
-    {
+    public Integer getMoney() {
         return getCopper();
     }
 
-    protected void setCopper(Integer copper)
-    {
+    protected void setCopper(Integer copper) {
         this.copper = copper;
     }
 
@@ -620,8 +588,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return Room the room that the character is currently occupying
      */
-    public Room getRoom()
-    {
+    public Room getRoom() {
         return room;
     }
 
@@ -630,8 +597,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @param room the new current room of the character
      */
-    public void setRoom(Room room)
-    {
+    public void setRoom(Room room) {
         this.room = room;
     }
 
@@ -640,8 +606,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return integer containing the setting
      */
-    public Health getWimpy()
-    {
+    public Health getWimpy() {
         return Health.get(wimpy);
     }
 
@@ -651,10 +616,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @param wimpy Health enum containing the wimpy
      * @see #getWimpy()
      */
-    public void setWimpy(Health wimpy)
-    {
-        if (wimpy == null)
-        {
+    public void setWimpy(Health wimpy) {
+        if (wimpy == null) {
             this.wimpy = null;
             return;
         }
@@ -666,10 +629,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return integer.
      */
-    public int getLevel()
-    {
-        if (experience == null)
-        {
+    public int getLevel() {
+        if (experience == null) {
             experience = 0;
         }
         return experience / 1000;
@@ -681,22 +642,18 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return integer between 0 and 1000. The closer to 1000 is the closer to
      * the next level.
      */
-    public int getExperience()
-    {
-        if (experience == null)
-        {
+    public int getExperience() {
+        if (experience == null) {
             experience = 0;
         }
         return experience % 1000;
     }
 
-    public String getFightingwho()
-    {
+    public String getFightingwho() {
         return fightingwho;
     }
 
-    public void setFightingwho(String fightingwho)
-    {
+    public void setFightingwho(String fightingwho) {
         this.fightingwho = fightingwho;
     }
 
@@ -705,10 +662,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return boolean, true if character is asleep.
      */
-    public Boolean getSleep()
-    {
-        if (sleep == null)
-        {
+    public Boolean getSleep() {
+        if (sleep == null) {
             return false;
         }
         return sleep;
@@ -717,11 +672,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * sets the sleep status of the character.
      *
-     * @param sleep
-     * boolean containing the sleep status
+     * @param sleep boolean containing the sleep status
      */
-    public void setSleep(Boolean sleep)
-    {
+    public void setSleep(Boolean sleep) {
         this.sleep = sleep;
     }
 
@@ -731,8 +684,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return true if can be fought with, false otherwise.
      */
-    public Boolean getFightable()
-    {
+    public Boolean getFightable() {
         return fightable == null ? false : fightable != 0;
     }
 
@@ -741,95 +693,76 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * persons/users/players.
      * @see #getFightable()
      */
-    public void setFightable(Boolean fightable)
-    {
-        if (fightable == null)
-        {
+    public void setFightable(Boolean fightable) {
+        if (fightable == null) {
             this.fightable = 0;
             return;
         }
         this.fightable = (fightable ? 1 : 0);
     }
 
-    public Integer getVitals()
-    {
-        if (vitals == null)
-        {
+    public Integer getVitals() {
+        if (vitals == null) {
             vitals = 11999;
         }
         return vitals;
     }
 
-    public void increaseHealth(Integer vitals)
-    {
-        if (vitals < 0)
-        {
+    public void increaseHealth(Integer vitals) {
+        if (vitals < 0) {
             return;
         }
         this.vitals += vitals;
         this.vitals = this.vitals % 12000;
     }
 
-    public void decreaseHealth(Integer vitals)
-    {
-        if (vitals >= 12000)
-        {
+    public void decreaseHealth(Integer vitals) {
+        if (vitals >= 12000) {
             return;
         }
         this.vitals -= vitals;
-        if (this.vitals < 0)
-        {
+        if (this.vitals < 0) {
             this.vitals = 0;
         }
     }
 
-    public Health getHealth()
-    {
+    public Health getHealth() {
         return Health.get(getVitals());
     }
 
-    public boolean isDead()
-    {
+    public boolean isDead() {
         return getVitals() == 0;
     }
 
-    public Integer getFysically()
-    {
+    public Integer getFysically() {
         return fysically;
     }
 
-    public void setFysically(Integer fysically)
-    {
+    public void setFysically(Integer fysically) {
         this.fysically = fysically;
     }
 
-    public Integer getMentally()
-    {
+    public Integer getMentally() {
         return mentally;
     }
 
-    public void setMentally(Integer mentally)
-    {
+    public void setMentally(Integer mentally) {
         this.mentally = mentally;
     }
 
-    public Integer getDrinkstats()
-    {
+    public Integer getDrinkstats() {
         return drinkstats;
     }
 
-    public void setDrinkstats(Integer drinkstats)
-    {
+    public void setDrinkstats(Integer drinkstats) {
         this.drinkstats = drinkstats;
     }
 
-    public Integer getEatstats()
-    {
+    public Integer getEatstats() {
         return eatstats;
     }
 
-    public void setEatstats(Integer eatstats)
-    {
+    public void setEatstats(Integer eatstats) {
         this.eatstats = eatstats;
     }
 
@@ -838,10 +771,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return boolean, true if the person is playing, false otherwise.
      */
-    public boolean isActive()
-    {
-        if (active == null)
-        {
+    public boolean isActive() {
+        if (active == null) {
             return false;
         }
         return active.equals(1);
@@ -852,260 +783,210 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @param active boolean, true if he's playing, false otherwise.
      */
-    public void setActive(Boolean active)
-    {
-        if (active == null)
-        {
+    public void setActive(Boolean active) {
+        if (active == null) {
             this.active = null;
         }
         this.active = active ? 1 : 0;
     }
 
-    public Date getBirth()
-    {
+    public Date getBirth() {
         return birth;
     }
 
-    public void setBirth(Date birth)
-    {
+    public void setBirth(Date birth) {
         this.birth = birth;
     }
 
-    public God getGod()
-    {
+    public God getGod() {
         return God.get(god);
     }
 
-    public Integer getStrength()
-    {
+    public Integer getStrength() {
         return strength;
     }
 
-    public void setStrength(Integer strength)
-    {
+    public void setStrength(Integer strength) {
         this.strength = strength;
     }
 
-    public Integer getIntelligence()
-    {
+    public Integer getIntelligence() {
         return intelligence;
     }
 
-    public void setIntelligence(Integer intelligence)
-    {
+    public void setIntelligence(Integer intelligence) {
         this.intelligence = intelligence;
     }
 
-    public Integer getDexterity()
-    {
+    public Integer getDexterity() {
         return dexterity;
     }
 
-    public void setDexterity(Integer dexterity)
-    {
+    public void setDexterity(Integer dexterity) {
         this.dexterity = dexterity;
     }
 
-    public Integer getConstitution()
-    {
+    public Integer getConstitution() {
         return constitution;
     }
 
-    public void setConstitution(Integer constitution)
-    {
+    public void setConstitution(Integer constitution) {
         this.constitution = constitution;
     }
 
-    public Integer getWisdom()
-    {
+    public Integer getWisdom() {
         return wisdom;
     }
 
-    public void setWisdom(Integer wisdom)
-    {
+    public void setWisdom(Integer wisdom) {
         this.wisdom = wisdom;
     }
 
-    public Integer getPractises()
-    {
+    public Integer getPractises() {
         return practises;
     }
 
-    public void setPractises(Integer practises)
-    {
+    public void setPractises(Integer practises) {
         this.practises = practises;
     }
 
-    public Integer getTraining()
-    {
+    public Integer getTraining() {
         return training;
     }
 
-    public void setTraining(Integer training)
-    {
+    public void setTraining(Integer training) {
         this.training = training;
     }
 
-    public Integer getBandage()
-    {
+    public Integer getBandage() {
         return bandage;
     }
 
-    public void setBandage(Integer bandage)
-    {
+    public void setBandage(Integer bandage) {
         this.bandage = bandage;
     }
 
-    public Integer getAlignment()
-    {
+    public Integer getAlignment() {
         return alignment;
     }
 
-    public void setAlignment(Integer alignment)
-    {
+    public void setAlignment(Integer alignment) {
         this.alignment = alignment;
     }
 
-    public Integer getManastats()
-    {
+    public Integer getManastats() {
         return manastats;
     }
 
-    public void setManastats(Integer manastats)
-    {
+    public void setManastats(Integer manastats) {
         this.manastats = manastats;
     }
 
-    public Integer getMovementstats()
-    {
+    public Integer getMovementstats() {
         return movementstats;
     }
 
-    public void setMovementstats(Integer movementstats)
-    {
+    public void setMovementstats(Integer movementstats) {
         this.movementstats = movementstats;
     }
 
-    public Integer getMaxmana()
-    {
+    public Integer getMaxmana() {
         return maxmana;
     }
 
-    public void setMaxmana(Integer maxmana)
-    {
+    public void setMaxmana(Integer maxmana) {
         this.maxmana = maxmana;
     }
 
-    public Integer getMaxmove()
-    {
+    public Integer getMaxmove() {
         return maxmove;
     }
 
-    public void setMaxmove(Integer maxmove)
-    {
+    public void setMaxmove(Integer maxmove) {
         this.maxmove = maxmove;
     }
 
-    public Integer getMaxvital()
-    {
+    public Integer getMaxvital() {
         return maxvital;
     }
 
-    public void setMaxvital(Integer maxvital)
-    {
+    public void setMaxvital(Integer maxvital) {
         this.maxvital = maxvital;
     }
 
-    public Integer getJumpmana()
-    {
+    public Integer getJumpmana() {
         return jumpmana;
     }
 
-    public void setJumpmana(Integer jumpmana)
-    {
+    public void setJumpmana(Integer jumpmana) {
         this.jumpmana = jumpmana;
     }
 
-    public Integer getJumpmove()
-    {
+    public Integer getJumpmove() {
         return jumpmove;
     }
 
-    public void setJumpmove(Integer jumpmove)
-    {
+    public void setJumpmove(Integer jumpmove) {
         this.jumpmove = jumpmove;
     }
 
-    public Integer getJumpvital()
-    {
+    public Integer getJumpvital() {
         return jumpvital;
     }
 
-    public void setJumpvital(Integer jumpvital)
-    {
+    public void setJumpvital(Integer jumpvital) {
         this.jumpvital = jumpvital;
     }
 
-    public Date getCreation()
-    {
+    public Date getCreation() {
         return creation;
     }
 
-    public void setCreation(Date creation)
-    {
+    public void setCreation(Date creation) {
         this.creation = creation;
     }
 
-    public String getNotes()
-    {
+    public String getNotes() {
         return notes;
     }
 
-    public void setNotes(String notes)
-    {
+    public void setNotes(String notes) {
         this.notes = notes;
     }
 
     /**
-     * returns the state of the character, for example "He seems to be on fire.".
-     * Primarily used for roleplaying.
+     * returns the state of the character, for example "He seems to be on
+     * fire.". Primarily used for roleplaying.
      *
-     * @return String containing the description of the current condition
-     * of the character.
+     * @return String containing the description of the current condition of the
+     * character.
      */
-    public String getState()
-    {
+    public String getState() {
         return state;
     }
 
     /**
      * sets the state/condition of the character.
      *
-     * @param state
-     * String containing the description of the current condition
+     * @param state String containing the description of the current condition
      * of the character.
      */
-    public void setState(String state)
-    {
+    public void setState(String state) {
         this.state = state;
     }
 
     @Override
-    public Admin getOwner()
-    {
+    public Admin getOwner() {
         return owner;
     }
 
     @Override
-    public void setOwner(Admin owner)
-    {
+    public void setOwner(Admin owner) {
         this.owner = owner;
     }
 
-    private void addDescriptionPiece(StringBuilder builder, String part)
-    {
-        if (part != null && !"none".equalsIgnoreCase(part))
-        {
+    private void addDescriptionPiece(StringBuilder builder, String part) {
+        if (part != null && !"none".equalsIgnoreCase(part)) {
             builder.append(", ").append(part);
         }
     }
@@ -1117,11 +998,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         StringBuilder builder = new StringBuilder();
-        if (getAge() != null)
-        {
+        if (getAge() != null) {
             builder.append(getAge());
         }
         addDescriptionPiece(builder, getHeight());
@@ -1145,42 +1024,35 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return true if it is a common user (or a god/administrator), false
      * otherwise.
      */
-    public boolean isUser()
-    {
-        if (getGod() == null)
-        {
+    public boolean isUser() {
+        if (getGod() == null) {
             return true;
         }
         return (getGod() == God.DEFAULT_USER || getGod() == God.GOD);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 0;
         hash += (name != null ? name.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object)
-    {
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Person))
-        {
+        if (!(object instanceof Person)) {
             return false;
         }
         Person other = (Person) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-        {
+        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "mmud.database.entities.game.Person[ name=" + name + " ]";
     }
 
@@ -1189,8 +1061,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @see #createLog()
      */
-    public void clearLog() throws MudException
-    {
+    public void clearLog() throws MudException {
         createLog();
     }
 
@@ -1199,66 +1070,53 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * communication and messages. The sentence will start with a capital.
      *
      * <p>
-     * <b>Important!</b> : Use this method only for Environmental
-     * communication or personal communication , as it does not check the Ignore
-     * Flag. Use the writeMessage(Person aSource, String aMessage) for specific
-     * communication between users.</p> TODO : move the logging to a protected
-     * hashtable in a singleton bean containing StringBuffers.
+     * <b>Important!</b> : Use this method only for Environmental communication
+     * or personal communication , as it does not check the Ignore Flag. Use the
+     * writeMessage(Person aSource, String aMessage) for specific communication
+     * between users.</p> TODO : move the logging to a protected hashtable in a
+     * singleton bean containing StringBuffers.
      *
      * @param aMessage the message to be written to the logfile.
      * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
      * @see #writeMessage(Person aSource, String aMessage)
      */
-    public void writeMessage(String aMessage) throws MudException
-    {
+    public void writeMessage(String aMessage) throws MudException {
 
-        if (aMessage == null)
-        {
+        if (aMessage == null) {
             return;
         }
-        try
-        {
+        try {
             aMessage = Utils.security(aMessage);
-        } catch (PolicyException | ScanException ex)
-        {
+        } catch (PolicyException | ScanException ex) {
             throw new MudException(ex);
         }
 
         int i = 0;
         int _container = 0;
         int foundit = -1;
-        while ((i < aMessage.length()) && (foundit == -1))
-        {
-            if (_container == 0)
-            {
-                if (aMessage.charAt(i) == '<')
-                {
+        while ((i < aMessage.length()) && (foundit == -1)) {
+            if (_container == 0) {
+                if (aMessage.charAt(i) == '<') {
                     _container = 1;
-                } else if (aMessage.charAt(i) != ' ')
-                {
+                } else if (aMessage.charAt(i) != ' ') {
                     foundit = i;
                 }
-            } else if (_container == 1)
-            {
-                if (aMessage.charAt(i) == '>')
-                {
+            } else if (_container == 1) {
+                if (aMessage.charAt(i) == '>') {
                     _container = 0;
                 }
             }
             i++;
         }
-        if (foundit != -1)
-        {
+        if (foundit != -1) {
             aMessage = aMessage.substring(0, foundit)
                     + Character.toUpperCase(aMessage.charAt(foundit))
                     + aMessage.substring(foundit + 1);
         }
-        try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
-        {
+        try (FileWriter myFileWriter = new FileWriter(getLogfile(), true)) {
             myFileWriter.write(aMessage, 0, aMessage.length());
 
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new MudException("error writing message", e);
         }
     }
@@ -1285,15 +1143,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @see #writeMessage(String aMessage)
      * @see #writeMessage(Person aSource, String aMessage)
      */
-    public void writeMessage(Person aSource, Person aTarget, String aMessage) throws MudException
-    {
-        if (this.isIgnoring(aSource))
-        {
+    public void writeMessage(Person aSource, Person aTarget, String aMessage) throws MudException {
+        if (this.isIgnoring(aSource)) {
             return;
         }
         String message = aMessage;
-        if (aTarget == this)
-        {
+        if (aTarget == this) {
             message = message.replaceAll("%TNAMESELF", "yourself");
             message = message.replaceAll("%TNAME", "you");
             message = message.replaceAll("%THISHER", "your");
@@ -1302,8 +1157,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             message = message.replaceAll("%TISARE", "are");
             message = message.replaceAll("%THASHAVE", "have");
             message = message.replaceAll("%TYOUPOSS", "your");
-        } else
-        {
+        } else {
             message = message.replaceAll("%TNAMESELF", aTarget.getName());
             message = message.replaceAll("%TNAME", aTarget.getName());
             message = message.replaceAll("%THISHER", (aTarget.getSex().posession()));
@@ -1338,15 +1192,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
      * @see #writeMessage(String aMessage)
      */
-    public void writeMessage(Person aSource, String aMessage) throws MudException
-    {
-        if (this.isIgnoring(aSource))
-        {
+    public void writeMessage(Person aSource, String aMessage) throws MudException {
+        if (this.isIgnoring(aSource)) {
             return;
         }
         String message = aMessage;
-        if (aSource == this)
-        {
+        if (aSource == this) {
             message = message.replaceAll("%SNAMESELF", "yourself");
             message = message.replaceAll("%SNAME", "you");
             message = message.replaceAll("%SHISHER", "your");
@@ -1357,8 +1208,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
             message = message.replaceAll("%SYOUPOSS", "your");
             message = message.replaceAll("%VERB1", "");
             message = message.replaceAll("%VERB2", "");
-        } else
-        {
+        } else {
             message = message.replaceAll("%SNAMESELF", aSource.getName());
             message = message.replaceAll("%SNAME", aSource.getName());
             message = message.replaceAll("%SHISHER", (aSource.getSex().posession()));
@@ -1382,63 +1232,48 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * be created. Possibly due to either permissions or the directory does not
      * exist.
      */
-    protected void createLog() throws MudException
-    {
-        if (getLogfile().exists())
-        {
+    protected void createLog() throws MudException {
+        if (getLogfile().exists()) {
             getLogfile().delete();
         }
-        try
-        {
+        try {
             getLogfile().createNewFile();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new MudException("Error creating logfile for " + getName()
                     + " in " + Constants.getMudfilepath(), e);
         }
     }
 
-    private File getLogfile()
-    {
-        if (theLogfile == null)
-        {
+    private File getLogfile() {
+        if (theLogfile == null) {
             theLogfile = new File(Constants.getMudfilepath(), getName() + ".log");
         }
         return theLogfile;
     }
 
-    private void readLog() throws MudException
-    {
+    private void readLog() throws MudException {
         File file = getLogfile();
 
         try (BufferedReader reader = new BufferedReader(
-                new FileReader(file)))
-        {
+                new FileReader(file))) {
             theLog = new StringBuffer(1000);
 
             char[] buf = new char[1024];
             int numRead;
-            while ((numRead = reader.read(buf)) != -1)
-            {
+            while ((numRead = reader.read(buf)) != -1) {
                 theLog.append(buf, 0, numRead);
             }
-        } catch (FileNotFoundException ex)
-        {
-            try
-            {
+        } catch (FileNotFoundException ex) {
+            try {
                 throw new MudException("Logfile of " + name + " (" + file.getCanonicalPath() + ") not found", ex);
-            } catch (IOException ex1)
-            {
+            } catch (IOException ex1) {
                 throw new MudException("Logfile of " + name, ex);
                 // surrender peacefully with your hands up!
             }
-        } catch (IOException ex)
-        {
-            try
-            {
+        } catch (IOException ex) {
+            try {
                 throw new MudException("Error reading logfile of " + name + " (" + file.getCanonicalPath() + ")", ex);
-            } catch (IOException ex1)
-            {
+            } catch (IOException ex1) {
                 throw new MudException("Error reading logfile of " + name, ex);
                 // surrender peacefully with your hands up!
             }
@@ -1456,22 +1291,17 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @throws MudException in case of accidents with reading the log, or a
      * negative offset.
      */
-    public String getLog(Integer offset) throws MudException
-    {
-        if (offset == null)
-        {
+    public String getLog(Integer offset) throws MudException {
+        if (offset == null) {
             offset = 0;
         }
-        if (theLog == null)
-        {
+        if (theLog == null) {
             readLog();
         }
-        if (offset >= theLog.length())
-        {
+        if (offset >= theLog.length()) {
             return EMPTY_LOG;
         }
-        if (offset < 0)
-        {
+        if (offset < 0) {
             throw new MudException("Attempting to get log with negative offset.");
         }
         return theLog.substring(offset);
@@ -1482,8 +1312,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing all the statistics in html format.
      */
-    public String getStatistics() throws MudException
-    {
+    public String getStatistics() throws MudException {
         // TODO : get wearables
         // String stuff = ItemsDb.getWearablesFromChar(this);
         // stuff.replaceAll("%SHISHER", "your");
@@ -1497,8 +1326,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return stuff.toString();
     }
 
-    private StringBuilder addLongDescription(StringBuilder builder)
-    {
+    private StringBuilder addLongDescription(StringBuilder builder) {
         builder.append(getAge().equals("none") ? "" : getAge() + ", ");
         builder.append(getHeight().equals("none") ? "" : getHeight() + ", ");
         builder.append(getWidth().equals("none") ? "" : getWidth() + ", ");
@@ -1511,8 +1339,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         builder.append(getLeg().equals("none") ? "" : getLeg() + ", ");
         builder.append(getSex()).append(" ").append(getRace()).append(" who calls ").append(getSex().indirect());
         builder.append("self ").append(getName());
-        if (getTitle() != null && !getTitle().trim().equals(""))
-        {
+        if (getTitle() != null && !getTitle().trim().equals("")) {
             builder.append(" (").append(getTitle()).append(")");
         }
         builder.append(".");
@@ -1525,35 +1352,28 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @return String containing the description
      */
-    public String getLongDescription()
-    {
+    public String getLongDescription() {
 
         return addLongDescription(new StringBuilder()).toString();
     }
 
     @Override
-    public boolean removeAttribute(String name)
-    {
+    public boolean removeAttribute(String name) {
         Charattribute attr = getCharattribute(name);
-        if (attr == null)
-        {
+        if (attr == null) {
             return false;
         }
         return attributes.remove(attr);
     }
 
-    private Charattribute getCharattribute(String name)
-    {
-        if (attributes == null)
-        {
+    private Charattribute getCharattribute(String name) {
+        if (attributes == null) {
             itsLog.finer("getCharattribute name=" + name + " collection is null");
             return null;
         }
-        for (Charattribute attr : attributes)
-        {
+        for (Charattribute attr : attributes) {
             itsLog.finer("getCharattribute name=" + name + " attr=" + attr);
-            if (attr.getName().equals(name))
-            {
+            if (attr.getName().equals(name)) {
                 return attr;
             }
         }
@@ -1562,17 +1382,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     @Override
-    public Attribute getAttribute(String name)
-    {
+    public Attribute getAttribute(String name) {
         return getCharattribute(name);
     }
 
     @Override
-    public void setAttribute(String name, String value)
-    {
+    public void setAttribute(String name, String value) {
         Charattribute attr = getCharattribute(name);
-        if (attr == null)
-        {
+        if (attr == null) {
             attr = new Charattribute(name, getName());
             attr.setPerson(this);
         }
@@ -1582,35 +1399,28 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     @Override
-    public boolean verifyAttribute(String name, String value)
-    {
+    public boolean verifyAttribute(String name, String value) {
         Charattribute attr = getCharattribute(name);
-        if (attr == null)
-        {
-            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]
-            {
+        if (attr == null) {
+            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]{
                 name, value, getName()
             });
             return false;
         }
-        if (attr.getValue().equals(value))
-        {
-            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]
-            {
+        if (attr.getValue().equals(value)) {
+            itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]{
                 name, value, getName()
             });
             return true;
         }
-        itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]
-        {
+        itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]{
             name, value, attr.getName(), attr.getValue(), getName()
         });
         return false;
     }
 
     @Override
-    public Set<Item> getItems()
-    {
+    public Set<Item> getItems() {
         return items;
     }
 
@@ -1620,118 +1430,95 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return String description of the amount of money.
      * @see Constants#getDescriptionOfMoney
      */
-    public String getDescriptionOfMoney()
-    {
+    public String getDescriptionOfMoney() {
         return Constants.getDescriptionOfMoney(getCopper());
     }
 
     @Override
-    public String getMainTitle() throws MudException
-    {
+    public String getMainTitle() throws MudException {
         return getName();
     }
 
     @Override
-    public String getImage() throws MudException
-    {
+    public String getImage() throws MudException {
         return null;
     }
 
-    private String getWearables()
-    {
+    private String getWearables() {
         StringBuilder builder = new StringBuilder();
-        if (getWieldleft() != null)
-        {
+        if (getWieldleft() != null) {
             builder.append("%SHESHE %SISARE wielding ").append(getWieldleft().getDescription())
                     .append(" in %SHISHER left hand.<br/>\r\n");
         }
-        if (getWieldright() != null)
-        {
+        if (getWieldright() != null) {
             builder.append("%SHESHE %SISARE wielding ").append(getWieldright().getDescription())
                     .append(" in %SHISHER right hand.<br/>\r\n");
         }
-        if (getWieldboth() != null)
-        {
+        if (getWieldboth() != null) {
             builder.append("%SHESHE %SISARE wielding ").append(getWieldboth().getDescription())
                     .append(" in both hands.<br/>\r\n");
         }
-        if (getWearhead() != null)
-        {
+        if (getWearhead() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearhead().getDescription())
                     .append(" on %SHISHER head.<br/>\r\n");
         }
-        if (getWearneck() != null)
-        {
+        if (getWearneck() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearneck().getDescription())
                     .append(" on %SHISHER neck.<br/>\r\n");
         }
-        if (getWeartorso() != null)
-        {
+        if (getWeartorso() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWeartorso().getDescription())
                     .append(" on %SHISHER torso.<br/>\r\n");
         }
-        if (getWeararms() != null)
-        {
+        if (getWeararms() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWeararms().getDescription())
                     .append(" on %SHISHER arms.<br/>\r\n");
         }
-        if (getWearleftwrist() != null)
-        {
+        if (getWearleftwrist() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearleftwrist().getDescription())
                     .append(" on %SHISHER left wrist.<br/>\r\n");
         }
-        if (getWearrightwrist() != null)
-        {
+        if (getWearrightwrist() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearrightwrist().getDescription())
                     .append(" on %SHISHER right wrist.<br/>\r\n");
         }
-        if (getWearleftfinger() != null)
-        {
+        if (getWearleftfinger() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearleftfinger().getDescription())
                     .append(" on %SHISHER left finger.<br/>\r\n");
         }
-        if (getWearrightfinger() != null)
-        {
+        if (getWearrightfinger() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearrightfinger().getDescription())
                     .append(" on %SHISHER right finger.<br/>\r\n");
         }
-        if (getWearfeet() != null)
-        {
+        if (getWearfeet() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearfeet().getDescription())
                     .append(" on %SHISHER feet.<br/>\r\n");
         }
-        if (getWearhands() != null)
-        {
+        if (getWearhands() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearhands().getDescription())
                     .append(" on %SHISHER hands.<br/>\r\n");
         }
-        if (getWearfloatingnearby() != null)
-        {
+        if (getWearfloatingnearby() != null) {
             builder.append(getWearfloatingnearby().getDescription())
                     .append(" is floating nearby.<br/>\r\n");
         }
-        if (getWearwaist() != null)
-        {
+        if (getWearwaist() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearwaist().getDescription())
                     .append(" around %SHISHER waist.<br/>\r\n");
         }
-        if (getWearlegs() != null)
-        {
+        if (getWearlegs() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearlegs().getDescription())
                     .append(" on %SHISHER legs.<br/>\r\n");
         }
-        if (getWeareyes() != null)
-        {
+        if (getWeareyes() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWeareyes().getDescription())
                     .append(" %SHISHER.<br/>\r\n");
         }
-        if (getWearears() != null)
-        {
+        if (getWearears() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearears().getDescription())
                     .append(" in %SHISHER ears.<br/>\r\n");
         }
-        if (getWearaboutbody() != null)
-        {
+        if (getWearaboutbody() != null) {
             builder.append("%SHESHE %SISARE wearing ").append(getWearaboutbody().getDescription())
                     .append(" about %SHISHER body.<br/>\r\n");
         }
@@ -1740,13 +1527,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     @Override
-    public String getBody() throws MudException
-    {
+    public String getBody() throws MudException {
         StringBuilder builder = new StringBuilder(
                 getLongDescription() + "<br/>\r\n"
                 + getWearables());
-        if (getState() != null)
-        {
+        if (getState() != null) {
             builder.append(getState()).append("<br/>\r\n");
         }
         String stuff2 = builder.toString();
@@ -1766,295 +1551,235 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return list of found items, empty if not found.
      */
     @Override
-    public List<Item> findItems(List<String> parsed)
-    {
+    public List<Item> findItems(List<String> parsed) {
         List<Item> result = new ArrayList<>();
-        for (Item item : getItems())
-        {
-            if (item.isDescribedBy(parsed))
-            {
+        for (Item item : getItems()) {
+            if (item.isDescribedBy(parsed)) {
                 result.add(item);
             }
         }
         return result;
     }
 
-    private Item getWieldleft()
-    {
+    private Item getWieldleft() {
         return wieldleft;
     }
 
-    private void setWieldleft(Item item) throws ItemException
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWieldleft(Item item) throws ItemException {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
         this.wieldleft = item;
     }
 
-    private Item getWieldright()
-    {
+    private Item getWieldright() {
         return wieldright;
     }
 
-    private void setWieldright(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWieldright(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
         this.wieldright = item;
     }
 
-    private Item getWieldboth()
-    {
+    private Item getWieldboth() {
         return wieldboth;
     }
 
-    private void setWieldboth(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWieldboth(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
         this.wieldboth = item;
     }
 
-    private Item getWearhead()
-    {
+    private Item getWearhead() {
         return wearhead;
     }
 
-    private void setWearhead(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearhead(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearhead = item;
     }
 
-    private Item getWearneck()
-    {
+    private Item getWearneck() {
         return wearneck;
     }
 
-    private void setWearneck(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearneck(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearneck = item;
     }
 
-    private Item getWeartorso()
-    {
+    private Item getWeartorso() {
         return weartorso;
     }
 
-    private void setWeartorso(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWeartorso(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.weartorso = item;
     }
 
-    private Item getWeararms()
-    {
+    private Item getWeararms() {
         return weararms;
     }
 
-    private void setWeararms(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWeararms(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.weararms = item;
     }
 
-    private Item getWearleftwrist()
-    {
+    private Item getWearleftwrist() {
         return wearleftwrist;
     }
 
-    private void setWearleftwrist(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearleftwrist(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearleftwrist = item;
     }
 
-    private Item getWearrightwrist()
-    {
+    private Item getWearrightwrist() {
         return wearrightwrist;
     }
 
-    private void setWearrightwrist(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearrightwrist(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearrightwrist = item;
     }
 
-    private Item getWearleftfinger()
-    {
+    private Item getWearleftfinger() {
         return wearleftfinger;
     }
 
-    private void setWearleftfinger(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearleftfinger(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearleftfinger = item;
     }
 
-    private Item getWearrightfinger()
-    {
+    private Item getWearrightfinger() {
         return wearrightfinger;
     }
 
-    private void setWearrightfinger(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearrightfinger(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearrightfinger = item;
     }
 
-    private Item getWearfeet()
-    {
+    private Item getWearfeet() {
         return wearfeet;
     }
 
-    private void setWearfeet(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearfeet(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearfeet = item;
     }
 
-    private Item getWearhands()
-    {
+    private Item getWearhands() {
         return wearhands;
     }
 
-    private void setWearhands(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearhands(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearhands = item;
     }
 
-    private Item getWearfloatingnearby()
-    {
+    private Item getWearfloatingnearby() {
         return wearfloatingnearby;
     }
 
-    private void setWearfloatingnearby(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearfloatingnearby(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearfloatingnearby = item;
     }
 
-    private Item getWearwaist()
-    {
+    private Item getWearwaist() {
         return wearwaist;
     }
 
-    private void setWearwaist(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearwaist(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearwaist = item;
     }
 
-    private Item getWearlegs()
-    {
+    private Item getWearlegs() {
         return wearlegs;
     }
 
-    private void setWearlegs(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearlegs(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearlegs = item;
     }
 
-    private Item getWeareyes()
-    {
+    private Item getWeareyes() {
         return weareyes;
     }
 
-    private void setWeareyes(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWeareyes(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.weareyes = item;
     }
 
-    private Item getWearears()
-    {
+    private Item getWearears() {
         return wearears;
     }
 
-    private void setWearears(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearears(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
         this.wearears = item;
     }
 
-    private Item getWearaboutbody()
-    {
+    private Item getWearaboutbody() {
         return wearaboutbody;
     }
 
-    private void setWearaboutbody(Item item)
-    {
-        if (item != null && !items.contains(item))
-        {
+    private void setWearaboutbody(Item item) {
+        if (item != null && !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
 
@@ -2062,22 +1787,17 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     @Override
-    public boolean destroyItem(Item item)
-    {
-        if (item == null)
-        {
+    public boolean destroyItem(Item item) {
+        if (item == null) {
             throw new ItemException("That is not an item.");
         }
-        if (!items.contains(item))
-        {
+        if (!items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
-        if (isWearing(item))
-        {
+        if (isWearing(item)) {
             throw new ItemException("That item is still being worn, and cannot be destroyed.");
         }
-        if (item.containsItems())
-        {
+        if (item.containsItems()) {
             throw new ItemException("That item contains items. Empty it first.");
         }
         return items.remove(item);
@@ -2092,14 +1812,11 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * @return the item worn at that position, may be null if nothing is being
      * worn there.
      */
-    public Item wears(Wearing position)
-    {
-        if (position == null)
-        {
+    public Item wears(Wearing position) {
+        if (position == null) {
             throw new RuntimeException("You cannot wear an item on null");
         }
-        switch (position)
-        {
+        switch (position) {
             case ABOUT_BODY:
                 return getWearaboutbody();
             case FLOATING_NEARBY:
@@ -2143,10 +1860,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * obviously.
      * @return true if the item is being worn, false otherwise.
      */
-    public boolean isWearing(Item item)
-    {
-        if (item == null)
-        {
+    public boolean isWearing(Item item) {
+        if (item == null) {
             return false;
         }
         return item == getWearaboutbody()
@@ -2170,24 +1885,19 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Makes you wear an item at a specific position
      *
-     * @param item the item to be worn. In case this is null,
-     * it means an item that used to be worn at this position will be
-     * removed.
+     * @param item the item to be worn. In case this is null, it means an item
+     * that used to be worn at this position will be removed.
      * @param position the position on which the item is to be worn
      *
      */
-    public void wear(Item item, Wearing position)
-    {
-        if (position == null)
-        {
+    public void wear(Item item, Wearing position) {
+        if (position == null) {
             throw new ItemException("You cannot wear an item on nothing.");
         }
-        if (item != null && !item.isWearable(position))
-        {
+        if (item != null && !item.isWearable(position)) {
             throw new ItemException("You cannot wear that item there.");
         }
-        switch (position)
-        {
+        switch (position) {
             case ABOUT_BODY:
                 setWearaboutbody(item);
                 break;
@@ -2246,17 +1956,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * Returns the item being wielded at that position.
      *
      * @param position the position to check.
-     * @return the item wielded at that position, may be null if nothing is being
-     * wielded there.
+     * @return the item wielded at that position, may be null if nothing is
+     * being wielded there.
      */
-    public Item wields(Wielding position)
-    {
-        if (position == null)
-        {
+    public Item wields(Wielding position) {
+        if (position == null) {
             throw new RuntimeException("You cannot wield an item on null");
         }
-        switch (position)
-        {
+        switch (position) {
             case WIELD_BOTH:
                 return getWieldboth();
             case WIELD_RIGHT:
@@ -2274,10 +1981,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      * obviously.
      * @return true if the item is being wielded, false otherwise.
      */
-    public boolean isWielding(Item item)
-    {
-        if (item == null)
-        {
+    public boolean isWielding(Item item) {
+        if (item == null) {
             return false;
         }
         return item == getWieldboth()
@@ -2288,41 +1993,34 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     /**
      * Makes you wield an item at a specific position
      *
-     * @param item the item to be wielded. In case this is null,
-     * it means an item that used to be wielded at this position will be
-     * removed.
-     * @param position the position on which the item is to be wielded, lefthand, righthand or with both hands.
+     * @param item the item to be wielded. In case this is null, it means an
+     * item that used to be wielded at this position will be removed.
+     * @param position the position on which the item is to be wielded,
+     * lefthand, righthand or with both hands.
      *
      */
-    public void wield(Item item, Wielding position)
-    {
-        if (position == null)
-        {
+    public void wield(Item item, Wielding position) {
+        if (position == null) {
             throw new ItemException("You cannot wield an item on null");
         }
-        if (item != null && !item.isWieldable(position))
-        {
+        if (item != null && !item.isWieldable(position)) {
             throw new ItemException("You cannot wield that item there.");
         }
-        switch (position)
-        {
+        switch (position) {
             case WIELD_BOTH:
-                if (getWieldleft() != null || getWieldright() != null)
-                {
+                if (getWieldleft() != null || getWieldright() != null) {
                     throw new ItemException("You cannot wield something in both hands, when you are already wielding something in either right or left hand.<br/>\r\n");
                 }
                 setWieldboth(item);
                 break;
             case WIELD_LEFT:
-                if (getWieldboth() != null)
-                {
+                if (getWieldboth() != null) {
                     throw new ItemException("You cannot wield something in your left hand, when you are already wielding something in both hands.<br/>\r\n");
                 }
                 setWieldleft(item);
                 break;
             case WIELD_RIGHT:
-                if (getWieldboth() != null)
-                {
+                if (getWieldboth() != null) {
                     throw new ItemException("You cannot wield something in your right hand, when you are already wielding something in both hands.<br/>\r\n");
                 }
                 setWieldright(item);
@@ -2333,33 +2031,27 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
 
     /**
-     * Determines if the item is being used or not. If it is used, it is not allowed
-     * to be dropped, get, drunk, eaten, etc.
+     * Determines if the item is being used or not. If it is used, it is not
+     * allowed to be dropped, get, drunk, eaten, etc.
      *
      * @param item the item to check
      * @return true if the item is available for use.
      */
-    public boolean unused(Item item)
-    {
+    public boolean unused(Item item) {
         return !isWearing(item) && !isWielding(item);
     }
 
-    public void drop(Item item)
-    {
-        if (item == null || !items.contains(item))
-        {
+    public void drop(Item item) {
+        if (item == null || !items.contains(item)) {
             throw new ItemException("You do not have that item.");
         }
-        if (!unused(item))
-        {
+        if (!unused(item)) {
             throw new ItemException("You are using this item.");
         }
-        if (!getRoom().drop(item))
-        {
+        if (!getRoom().drop(item)) {
             throw new ItemException("Unable to add item to the room.");
         }
-        if (!items.remove(item))
-        {
+        if (!items.remove(item)) {
             throw new ItemException("Unable to remove item from inventory.");
         }
         item.drop(this, getRoom());
@@ -2370,11 +2062,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @param item
      */
-    public void get(Item item)
-    {
+    public void get(Item item) {
         getRoom().get(item);
-        if (!items.add(item))
-        {
+        if (!items.add(item)) {
             throw new ItemException("Unable to add item to your inventory.");
         }
         item.get(this, getRoom());
@@ -2385,52 +2075,61 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      *
      * @param newamount the amount of copper (base currency to move)
      * @param target the target that is to receive said money
-     * @throws MoneyException if the money amount is illegal, or the
-     * person simply does not have that much money.
+     * @throws MoneyException if the money amount is illegal, or the person
+     * simply does not have that much money.
      */
-    public void transferMoney(Integer newamount, Person target) throws MoneyException
-    {
-        if (target == null)
-        {
+    public void transferMoney(Integer newamount, Person target) throws MoneyException {
+        if (target == null) {
             throw new MoneyException("You want to transfer money to whom?");
         }
-        if (newamount == null || newamount <= 0)
-        {
+        if (newamount == null || newamount <= 0) {
             throw new MoneyException("I beg your pardon?");
         }
-        if (getMoney() < newamount)
-        {
+        if (getMoney() < newamount) {
             throw new MoneyException("You do not have that much money.");
         }
         setCopper(getCopper() - newamount);
         target.setCopper(target.getCopper() + newamount);
     }
 
-    protected boolean isIgnoring(Person aSource)
-    {
+    protected boolean isIgnoring(Person aSource) {
         return false;
     }
 
     /**
-     * Indicates whether or not this person can receive items or money from other players.
+     * Indicates whether or not this person can receive items or money from
+     * other players.
      *
      * @return
      */
     abstract public boolean canReceive();
 
-    public void give(Item item, Person toperson)
-    {
-        if (!items.remove(item))
-        {
+    public void give(Item item, Person toperson) {
+        if (!items.remove(item)) {
             throw new ItemException("Unable to remove item from inventory.");
         }
         toperson.receive(item);
         item.give(toperson);
     }
 
-    protected void receive(Item item)
-    {
+    protected void receive(Item item) {
         items.add(item);
+    }
+
+    /**
+     * Creates a {@link NormalItem} and adds it to the inventory of this person.
+     *
+     * @param itemDefinition the template to use for this newly created item.
+     * May not be null.
+     * @return the new item, null if unable to create.
+     */
+    public Item createItem(ItemDefinition itemDefinition) {
+        NormalItem item = itemDefinition.createItem();
+        if (!items.add(item)) {
+            return null;
+        }
+        item.give(this);
+        return item;
     }
 
 }

@@ -40,7 +40,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -59,12 +59,9 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
-        sourceCode.append("println('Hello, ' + person.name + '.');");
-        sourceCode.append("println(person.name + ' has sex ' + person.sex + '.');");
-        sourceCode.append("println(person.name + ' has guild ' + person.guild + '.');");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try
@@ -80,7 +77,7 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.personal('My name is ' + person.name + '.');");
@@ -100,12 +97,10 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.setAttribute('scripting','true');");
-        sourceCode.append("println('Attribute = ' + person.getAttribute('scripting'));");
-        sourceCode.append("println('Attribute is true = ' + person.getAttribute('scripting') == true);");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try

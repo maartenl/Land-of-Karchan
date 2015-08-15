@@ -39,7 +39,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -58,10 +58,9 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
-        sourceCode.append("println('Hello, world.');");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try
@@ -77,13 +76,10 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {\n");
         sourceCode.append("var person = persons.find('hotblack');\n");
-        sourceCode.append("println('Hello, ' + person.name + '.');\n");
-        sourceCode.append("println(person.name + ' has sex ' + person.sex + '.');\n");
-        sourceCode.append("println(person.name + ' has guild ' + person.guild + '.');\n");
         sourceCode.append("return false;\n");
         sourceCode.append("}");
         try
@@ -99,14 +95,10 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("var room = rooms.find(1);");
-        sourceCode.append("println('Currently in room  ' + room.id + '.');");
-        sourceCode.append("println('Room has description ' + room.description + '.');");
-        sourceCode.append("println('Room has title ' + room.title + '.');");
-        sourceCode.append("println('Room has image ' + room.image + '.');");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try

@@ -21,8 +21,11 @@ import java.util.Set;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
+import mmud.scripting.Items;
+import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
 import mmud.scripting.PersonsInterface;
 import mmud.scripting.Rooms;
@@ -43,8 +46,10 @@ public class RunScriptTest
 
     protected Persons persons;
     protected Rooms rooms;
+    protected Items items;
     protected World world;
     private RoomsInterface roomsInterface;
+    private ItemsInterface itemsInterface;
     private WorldInterface worldInterface;
 
     public static class RoomStub extends Room
@@ -239,6 +244,23 @@ public class RunScriptTest
                 return null;
             }
         };
+        itemsInterface = new ItemsInterface(){
+
+            @Override
+            public Item addItem(long itemdefnr, Person person) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Item addItem(long itemdefnr, Room room) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Item addItem(long itemdefnr, Item item) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
         worldInterface = new WorldInterface()
         {
 
@@ -250,6 +272,7 @@ public class RunScriptTest
         };
         persons = new Persons(personsInterface);
         rooms = new Rooms(roomsInterface);
+        items = new Items(itemsInterface);
         world = new World(worldInterface);
     }
 

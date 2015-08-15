@@ -16,10 +16,11 @@
  */
 package mmud.scripting;
 
+import mmud.scripting.entities.Item;
 import mmud.scripting.entities.Person;
 
 /**
- *
+ * Proxy to find any person who is currently playing the game.
  * @author maartenl
  */
 public class Persons
@@ -49,4 +50,5 @@ public class Persons
         }
         return new Person(found);
     }
+
 }

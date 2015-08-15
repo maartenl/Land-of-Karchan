@@ -40,7 +40,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         try
         {
@@ -59,13 +59,9 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
-        sourceCode.append("println('Currently in room  ' + room.id + '.');");
-        sourceCode.append("println('Room has description ' + room.description + '.');");
-        sourceCode.append("println('Room has title ' + room.title + '.');");
-        sourceCode.append("println('Room has image ' + room.image + '.');");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try
@@ -81,7 +77,7 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
@@ -102,12 +98,10 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.setAttribute('scripting','true');");
-        sourceCode.append("println('Attribute scripting = ' + room.getAttribute('scripting'));");
-        sourceCode.append("println('Attribute scripting is true = ' + room.getAttribute('scripting') == true);");
         sourceCode.append("return false;");
         sourceCode.append("}");
         try

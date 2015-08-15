@@ -25,12 +25,25 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("0")
-public class NormalItem extends Item
-{
+public class NormalItem extends Item {
+
+    /**
+     * Default constructor. Used by the ORM itself, not by us.
+     */
+    public NormalItem() {
+    }
+
+    /**
+     * Constructor of a normal item with an item definition.
+     *
+     * @param itemDefinition the definition/template of the item.
+     */
+    public NormalItem(ItemDefinition itemDefinition) {
+        super(itemDefinition);
+    }
 
     @Override
-    public ItemCategory getCategory()
-    {
+    public ItemCategory getCategory() {
         return ItemCategory.NORMALITEM;
     }
 

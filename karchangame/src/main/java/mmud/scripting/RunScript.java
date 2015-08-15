@@ -43,9 +43,11 @@ public class RunScript
 
     private Rooms rooms;
 
+    private Items items;
+
     private World world;
 
-    public RunScript(Persons persons, Rooms rooms, World world)
+    public RunScript(Persons persons, Rooms rooms, Items items, World world)
     {
         if (persons == null)
         {
@@ -62,6 +64,7 @@ public class RunScript
         this.persons = persons;
         this.rooms = rooms;
         this.world = world;
+        this.items = items;
     }
 
     /**
@@ -224,6 +227,7 @@ public class RunScript
         // expose persons and rooms object as variable to script
         engine.put("persons", persons);
         engine.put("rooms", rooms);
+        engine.put("items", items);
         engine.put("world", world);
 
         //        engine.eval("print('Hello, World')");

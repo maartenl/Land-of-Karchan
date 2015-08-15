@@ -37,6 +37,7 @@ import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
 import mmud.database.enums.Filter;
 import mmud.exceptions.MudWebException;
+import mmud.scripting.Items;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
@@ -63,6 +64,8 @@ public class EventsBean
     private PersonBean personBean;
     @EJB
     private GameBean gameBean;
+    @EJB
+    private ItemBean itemBean;
     @EJB
     private LogBean logBean;
     @PersistenceContext(unitName = "karchangamePU")
@@ -101,8 +104,9 @@ public class EventsBean
         }
         Persons persons = new Persons(personBean);
         Rooms rooms = new Rooms(gameBean);
+        Items items = new Items(itemBean);
         World world = new World(gameBean);
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         Method method = event.getMethod();
         try
         {
@@ -152,8 +156,9 @@ public class EventsBean
         List<Event> list = query.getResultList();
         Persons persons = new Persons(personBean);
         Rooms rooms = new Rooms(gameBean);
+        Items items = new Items(itemBean);
         World world = new World(gameBean);
-        RunScript runScript = new RunScript(persons, rooms, world);
+        RunScript runScript = new RunScript(persons, rooms, items, world);
         for (Event event : list)
         {
             // itsLog.log(Level.INFO, "Event {0} executed.", event.getEventid());

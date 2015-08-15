@@ -46,7 +46,9 @@ import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.ItemWrangler;
+import mmud.database.entities.items.NormalItem;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 
@@ -770,5 +772,21 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
             }
         }
         return null;
+    }
+
+    /**
+     * Creates a {@link NormalItem} and adds it to the inventory of this person.
+     *
+     * @param itemDefinition the template to use for this newly created item.
+     * May not be null.
+     * @return the new item, null if unable to create.
+     */
+    public Item createItem(ItemDefinition itemDefinition) {
+        NormalItem item = itemDefinition.createItem();
+        if (!items.add(item)) {
+            return null;
+        }
+        item.drop(null, this);
+        return item;
     }
 }

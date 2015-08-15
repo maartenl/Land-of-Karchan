@@ -17,7 +17,7 @@
 package mmud.scripting;
 
 /**
- *
+ * Intended to retrieve worldwide settings.
  * @author maartenl
  */
 public class World
