@@ -53,6 +53,12 @@ public class GuildrankPK implements Serializable
         this.guildname = guildname;
     }
 
+    /**
+     * Returns the rank number in the guild. Guideline here could
+     * be that the lower the number, the higher the rank. Rank 0 is the most important rank, and is usually the guild
+     * master. 
+     * @return the rank
+     */
     public int getGuildlevel()
     {
         return guildlevel;

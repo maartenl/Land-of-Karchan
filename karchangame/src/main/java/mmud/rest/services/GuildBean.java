@@ -19,6 +19,7 @@ package mmud.rest.services;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
@@ -291,12 +292,12 @@ public class GuildBean
     }
 
     /**
-     * Get the hopefuls of the guild of the user.
+     * Get all members of the guild of the user.
      *
      * @param lok the hash to use for verification of the user, is the lok
      * setting in the cookie when logged onto the game.
      * @param name the name of the user
-     * @return list of hopefuls
+     * @return list of guildmembers
      */
     @GET
     @Path("members")
@@ -321,6 +322,15 @@ public class GuildBean
             }
             result.add(privatePerson);
         }
+        Collections.sort(result, new Comparator<PrivatePerson>()
+        {
+
+            @Override
+            public int compare(PrivatePerson o1, PrivatePerson o2)
+            {
+                return o1.name.compareTo(o2.name);
+            }
+        });
         return result;
     }
 
@@ -522,6 +532,15 @@ public class GuildBean
             }
             result.add(privatePerson);
         }
+        Collections.sort(result, new Comparator<PrivatePerson>()
+        {
+
+            @Override
+            public int compare(PrivatePerson o1, PrivatePerson o2)
+            {
+                return o1.name.compareTo(o2.name);
+            }
+        });
         return result;
     }
 
@@ -599,6 +618,15 @@ public class GuildBean
             privateRank.logonmessage_access = rank.getLogonmessageAccess();
             result.add(privateRank);
         }
+        Collections.sort(result, new Comparator<PrivateRank>()
+        {
+
+            @Override
+            public int compare(PrivateRank o1, PrivateRank o2)
+            {
+                return o1.guildlevel.compareTo(o2.guildlevel);
+            }
+        });
         return result;
     }
 

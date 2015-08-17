@@ -17,13 +17,11 @@
 package mmud.testing;
 
 import java.util.Date;
-import mmud.database.entities.characters.Bot;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
+import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
-import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 
@@ -34,6 +32,8 @@ import mmud.exceptions.MudException;
  */
 public class TestingConstants
 {
+
+    public static final String NO_SUCH_METHOD = "no such method: ";
 
     public static Area getArea()
     {
@@ -55,24 +55,17 @@ public class TestingConstants
      * @return
      * @throws MudException
      */
-    public static Person getHotblack(God god, Room aRoom) throws MudException
+    public static User getHotblack(Room aRoom) throws MudException
     {
-        Person person = null;
-        if (god == God.DEFAULT_USER)
-        {
-            User person2 = new User();
-            person2.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
-            person2.setLok("lok");
-            person2.setAddress("82-170-94-123.ip.telfort.nl");
-            person2.setPassword("93ef5f419670b2d0efe0c9461b765725a74c86eb"); // sha1 of "hotblack"
-            person2.setRealname(null);
-            person2.setEmail(null);
-            person = person2;
-        }
-        if (god == God.BOT)
-        {
-            person = new Bot();
-        }
+        User person = new User();
+
+        person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
+        person.setLok("lok");
+        person.setAddress("82-170-94-123.ip.telfort.nl");
+        person.setPassword("93ef5f419670b2d0efe0c9461b765725a74c86eb"); // sha1 of "hotblack"
+        person.setRealname(null);
+        person.setEmail(null);
+
         person.setName("Hotblack");
         // JDK7: number formats, for clarification.
         // 1_000_000 ms = 1_000 sec = 16 min, 40 sec
@@ -98,24 +91,17 @@ public class TestingConstants
         return person;
     }
 
-    public static Person getMarvin(God god, Room aRoom) throws MudException
+    public static User getMarvin(Room aRoom) throws MudException
     {
-        Person person = null;
-        if (god == God.DEFAULT_USER)
-        {
-            User person2 = new User();
-            person2.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
-            person2.setLok("lok");
-            person2.setAddress("82-170-94-123.ip.telfort.nl");
-            person2.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
-            person2.setRealname(null);
-            person2.setEmail(null);
-            person = person2;
-        }
-        if (god == God.BOT)
-        {
-            person = new Bot();
-        }
+        User person = new User();
+
+        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+        person.setLok("lok");
+        person.setAddress("82-170-94-123.ip.telfort.nl");
+        person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
+        person.setRealname(null);
+        person.setEmail(null);
+
         person.setName("Marvin");
         // JDK7: number formats, for clarification.
         // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
@@ -148,5 +134,13 @@ public class TestingConstants
         admin.setPasswd("somesecretpasswordthatnobodycanguessinanmillionyears");
         admin.setValiduntil(new Date((new Date()).getTime() + 100_000_000));
         return admin;
+    }
+
+    public static Guild getGuild()
+    {
+        Guild guild = new Guild();
+        guild.setDescription("Disaster Area");
+        guild.setHomepage("http://www.disasterarea.com");
+        return guild;
     }
 }

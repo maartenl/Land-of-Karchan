@@ -113,8 +113,8 @@ public class PrivateBeanTest
     {
         Area aArea = TestingConstants.getArea();
         Room aRoom = TestingConstants.getRoom(aArea);
-        hotblack = TestingConstants.getHotblack(God.DEFAULT_USER, aRoom);
-        marvin = TestingConstants.getMarvin(God.DEFAULT_USER, aRoom);
+        hotblack = TestingConstants.getHotblack(aRoom);
+        marvin = TestingConstants.getMarvin(aRoom);
     }
 
     @AfterMethod

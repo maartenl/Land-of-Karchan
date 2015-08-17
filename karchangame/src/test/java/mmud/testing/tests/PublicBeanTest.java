@@ -101,8 +101,8 @@ public class PublicBeanTest
         Area aArea = TestingConstants.getArea();
         Room aRoom = TestingConstants.getRoom(aArea);
 
-        hotblack = (User) TestingConstants.getHotblack(God.DEFAULT_USER, aRoom);
-        marvin = (User) TestingConstants.getMarvin(God.DEFAULT_USER, aRoom);
+        hotblack = (User) TestingConstants.getHotblack(aRoom);
+        marvin = (User) TestingConstants.getMarvin(aRoom);
     }
 
     @AfterMethod
