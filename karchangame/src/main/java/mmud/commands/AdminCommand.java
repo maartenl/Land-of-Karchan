@@ -65,6 +65,19 @@ public class AdminCommand extends NormalCommand
             eventsBean.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
             aUser.writeMessage("Event run attempted.<br/>\r\n");
         }
+        if (command.toLowerCase().startsWith("admin visible"))
+        {
+            if (command.equalsIgnoreCase("admin visible off"))
+            {
+                aUser.setVisible(false);
+                aUser.writeMessage("Setting visibility to false.<br/>\r\n");
+            }
+            if (command.equalsIgnoreCase("admin visible on"))
+            {
+                aUser.setVisible(true);
+                aUser.writeMessage("Setting visibility to true.<br/>\r\n");
+            }
+        }
         if (command.toLowerCase().startsWith("admin kick"))
         {
             PersonBean personBean = getPersonBean();
@@ -100,6 +113,7 @@ public class AdminCommand extends NormalCommand
                     + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
                     + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are provided,"
                     + "said user will not be able to logon for that many minutes.</li>"
+                    + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
                     + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
                     + "<li>admin reset commands - reset the cached <i>special</i> commands."
                     + "Necessary if a command has been deleted, added or changed.</li>"

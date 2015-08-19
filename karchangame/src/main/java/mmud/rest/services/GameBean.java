@@ -973,10 +973,13 @@ public class GameBean implements RoomsInterface, WorldInterface
         List<PrivatePerson> persons = new ArrayList<>();
         for (Person person : player.getRoom().getPersons(player))
         {
-            PrivatePerson pp = new PrivatePerson();
-            pp.race = person.getRace();
-            pp.name = person.getName();
-            persons.add(pp);
+            if (person.getVisible())
+            {
+                PrivatePerson pp = new PrivatePerson();
+                pp.race = person.getRace();
+                pp.name = person.getName();
+                persons.add(pp);
+            }
         }
         result.persons = persons;
         result.items = Constants.addInventoryForRoom(player.getRoom().getItems());

@@ -143,6 +143,10 @@ public class PublicBean
 
             for (User person : list)
             {
+                if (!person.getVisible())
+                {
+                    continue;
+                }
                 PublicPerson publicPerson = new PublicPerson();
                 publicPerson.name = person.getName();
                 publicPerson.title = person.getTitle();

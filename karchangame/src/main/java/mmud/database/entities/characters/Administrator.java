@@ -16,8 +16,10 @@
  */
 package mmud.database.entities.characters;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import mmud.commands.AdminCommand;
 import mmud.database.enums.God;
 
 /**
@@ -31,9 +33,41 @@ import mmud.database.enums.God;
 public class Administrator extends User
 {
 
+    @Column(name = "visible")
+    private Boolean visible;
+
     @Override
     public God getGod()
     {
         return God.GOD;
+    }
+
+    /**
+     * An administrator, contrary to a user, can indicate if he/she should
+     * be visible or invisible.
+     *
+     * @return
+     */
+    @Override
+    public boolean getVisible()
+    {
+        if (visible == null)
+        {
+            visible = true;
+            return true;
+        }
+        return visible;
+    }
+
+    /**
+     * Sets an administrator visible or invisible.
+     *
+     * @see AdminCommand
+     * @param visible
+     */
+    @Override
+    public void setVisible(boolean visible)
+    {
+        this.visible = visible;
     }
 }

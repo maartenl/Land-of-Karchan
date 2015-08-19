@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
@@ -41,9 +42,16 @@ public class WhoCommand extends NormalCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         PersonBean personBean = getPersonBean();
-        List<User> persons = personBean.getActivePlayers();
+        List<User> persons = new ArrayList<>();
+        for (User user : personBean.getActivePlayers())
+        {
+            if (user.getVisible())
+            {
+                persons.add(user);
+            }
+        }
         StringBuilder whoList = new StringBuilder();
-        if (persons == null || persons.isEmpty())
+        if (persons.isEmpty())
         {
             // this is weird, you yourself are online, obviously!
             whoList.append("There are no people online at the moment.");

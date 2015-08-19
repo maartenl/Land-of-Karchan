@@ -2454,4 +2454,23 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
         return item;
     }
 
+    /**
+     * A user is always visible, will return always true.
+     *
+     * @return true
+     */
+    public boolean getVisible()
+    {
+        return true;
+    }
+
+    /**
+     * Empty implementation. A user is always visible.
+     *
+     * @param visible
+     */
+    public void setVisible(boolean visible)
+    {
+        // purposefully empty,
+    }
 }

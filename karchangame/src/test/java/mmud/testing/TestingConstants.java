@@ -17,6 +17,7 @@
 package mmud.testing;
 
 import java.util.Date;
+import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
@@ -142,5 +143,38 @@ public class TestingConstants
         guild.setDescription("Disaster Area");
         guild.setHomepage("http://www.disasterarea.com");
         return guild;
+    }
+
+    public static Administrator getKarn()
+    {
+        Administrator person = new Administrator();
+
+        person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+        person.setLok("lok");
+        person.setAddress("82-170-94-123.ip.telfort.nl");
+        person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
+        person.setRealname(null);
+        person.setEmail(null);
+
+        person.setName("Karn");
+        // JDK7: number formats, for clarification.
+        // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
+        person.setSex(Sex.MALE);
+        person.setSleep(Boolean.TRUE);
+        person.setRace("human");
+        person.setTitle("Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        person.setSex(Sex.MALE);
+        person.setAge("young");
+        person.setHeight("tall");
+        person.setWidth("slender");
+        person.setComplexion("swarthy");
+        person.setEyes("black-eyed");
+        person.setFace("long-faced");
+        person.setHair("black-haired");
+        person.setBeard("none");
+        person.setArm("none");
+        person.setLeg("none");
+        person.setState("Amazing!");
+        return person;
     }
 }
