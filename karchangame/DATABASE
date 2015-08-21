@@ -339,5 +339,5 @@ ALTER TABLE `mmud`.`mm_events`
 , ADD INDEX `fk_mm_events_2_idx` (`room` ASC) ;
 
 ALTER TABLE mm_usertable ADD visible int(1) DEFAULT 1;
-
+ALTER TABLE mm_usertable ADD rrribbits int(10) DEFAULT 0, ADD heehaws int(10) DEFAULT 0;
 

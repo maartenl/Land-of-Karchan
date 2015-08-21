@@ -63,7 +63,16 @@ public class WhoCommand extends NormalCommand
         for (User player : persons)
         {
             Area myArea = player.getRoom().getArea();
-            whoList.append("<li>").append(player.getName()).append(", ").append(player.getTitle()).append(!myArea.getArea().equals("Main")
+            String name = player.getName();
+            if (player.getFrogging() > 0)
+            {
+                name = "a frog called " + name;
+            }
+            if (player.getJackassing() > 0)
+            {
+                name = "a jackass called " + name;
+            }
+            whoList.append("<li>").append(name).append(", ").append(player.getTitle()).append(!myArea.getArea().equals("Main")
                     ? " in " + myArea.getShortdescription() : "").append(player.getSleep() ? ", sleeping " : " ").append(player.getIdleTimeInMinAndSeconds()).append("</li>\r\n");
         }
         whoList.append("</ul>");

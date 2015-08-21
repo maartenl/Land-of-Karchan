@@ -148,7 +148,16 @@ public class PublicBean
                     continue;
                 }
                 PublicPerson publicPerson = new PublicPerson();
-                publicPerson.name = person.getName();
+                String name = person.getName();
+                if (person.getFrogging() > 0)
+                {
+                    name = "a frog called " + name;
+                }
+                if (person.getJackassing() > 0)
+                {
+                    name = "a jackass called " + name;
+                }
+                publicPerson.name = name;
                 publicPerson.title = person.getTitle();
                 publicPerson.sleep = person.getSleep() ? "sleeping" : "";
                 publicPerson.area = person.getRoom().getArea().getShortdescription();
@@ -344,12 +353,11 @@ public class PublicBean
         List<Family> list = query.getResultList();
         for (Family fam : list)
         {
-            itsLog.finer(fam + "");
+            itsLog.log(Level.FINER, "{0}", fam);
             PublicFamily pfam = new PublicFamily();
             pfam.description = fam.getDescription().getDescription();
             pfam.toname = fam.getFamilyPK().getToname();
             res.familyvalues.add(pfam);
-
         }
 
         // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);

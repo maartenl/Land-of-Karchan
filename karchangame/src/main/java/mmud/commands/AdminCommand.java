@@ -71,12 +71,72 @@ public class AdminCommand extends NormalCommand
             {
                 aUser.setVisible(false);
                 aUser.writeMessage("Setting visibility to false.<br/>\r\n");
+                getLogBean().writeLog(aUser, " turned invisible.");
             }
             if (command.equalsIgnoreCase("admin visible on"))
             {
                 aUser.setVisible(true);
                 aUser.writeMessage("Setting visibility to true.<br/>\r\n");
+                getLogBean().writeLog(aUser, " turned visible.");
             }
+        }
+        if (command.toLowerCase().startsWith("admin frog"))
+        {
+            PersonBean personBean = getPersonBean();
+            String[] commands = command.split(" ");
+            if (commands.length < 3)
+            {
+                throw new MudException("Expected admin frog command in the shape of 'admin frog personname amount'.");
+            }
+            Integer amount = 0;
+            User person = personBean.getActiveUser(commands[2]);
+            if (person == null)
+            {
+                throw new PersonNotFoundException(commands[2] + " not found.");
+            }
+            if (commands.length == 4)
+            {
+                try
+                {
+                    amount = Integer.valueOf(commands[3]);
+                    person.setFrogging(amount);
+                } catch (NumberFormatException f)
+                {
+                    throw new MudException("Number for amount could not be parsed.");
+                }
+            }
+            aUser.writeMessage("Changed " + person.getName() + " into frog (" + amount + ").<br/>\r\n");
+            person.getRoom().sendMessage(person, "%SNAME %SISARE suddenly changed into a frog!<br/>\r\n");
+            getLogBean().writeLog(person, " was changed into a frog by " + aUser.getName() + " for " + amount + ".");
+        }
+        if (command.toLowerCase().startsWith("admin jackass"))
+        {
+            PersonBean personBean = getPersonBean();
+            String[] commands = command.split(" ");
+            if (commands.length < 3)
+            {
+                throw new MudException("Expected admin jackass command in the shape of 'admin jackass personname amount'.");
+            }
+            Integer amount = 0;
+            User person = personBean.getActiveUser(commands[2]);
+            if (person == null)
+            {
+                throw new PersonNotFoundException(commands[2] + " not found.");
+            }
+            if (commands.length == 4)
+            {
+                try
+                {
+                    amount = Integer.valueOf(commands[3]);
+                    person.setJackassing(amount);
+                } catch (NumberFormatException f)
+                {
+                    throw new MudException("Number for amount could not be parsed.");
+                }
+            }
+            aUser.writeMessage("Changed " + person.getName() + " into jackass (" + amount + ").<br/>\r\n");
+            person.getRoom().sendMessage(person, "%SNAME %SISARE suddenly changed into a jackass!<br/>\r\n");
+            getLogBean().writeLog(person, " was changed into a jackass by " + aUser.getName() + " for " + amount + ".");
         }
         if (command.toLowerCase().startsWith("admin kick"))
         {
@@ -112,6 +172,8 @@ public class AdminCommand extends NormalCommand
                     + "<li>admin help - this help text</li>"
                     + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
                     + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are provided,"
+                    + "<li>admin frog &lt;playername&gt; [&lt;amount&gt;] - turns the user into a frog, automatically turns back after [amount] ribbits."
+                    + "<li>admin jackass &lt;playername&gt; [&lt;amount&gt;] - turns the user into a jackass, automatically turns back after [amount] heehaws."
                     + "said user will not be able to logon for that many minutes.</li>"
                     + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
                     + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"

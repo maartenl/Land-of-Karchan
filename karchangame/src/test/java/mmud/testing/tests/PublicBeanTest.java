@@ -31,7 +31,6 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
-import mmud.database.enums.God;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -98,11 +97,12 @@ public class PublicBeanTest
     @BeforeMethod
     public void setUp() throws MudException
     {
-        Area aArea = TestingConstants.getArea();
+        Area aArea = TestingConstants.getSpecialArea();
         Room aRoom = TestingConstants.getRoom(aArea);
 
         hotblack = (User) TestingConstants.getHotblack(aRoom);
         marvin = (User) TestingConstants.getMarvin(aRoom);
+        marvin.setSleep(true);
     }
 
     @AfterMethod

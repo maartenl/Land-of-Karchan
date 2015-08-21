@@ -99,6 +99,14 @@ public class CommandRunner
             {
                 return determineSleep(aCommand, aUser);
             }
+            if (aUser.getFrogging() > 0)
+            {
+                return determineFrogging(aCommand, aUser);
+            }
+            if (aUser.getJackassing() > 0)
+            {
+                return determineJackassing(aCommand, aUser);
+            }
             List<NormalCommand> myCol = new ArrayList<>();
             Persons persons = new Persons(personBean);
             Rooms rooms = new Rooms(gameBean);
@@ -145,13 +153,35 @@ public class CommandRunner
             command = CommandFactory.AWAKEN.createCommand();
         } else
         {
-            command = CommandFactory.ASLEEP.createCommand();
+            command = CommandFactory.ALREADY_ASLEEP.createCommand();
         }
         command.setCallback(this);
         return command.start(aCommand, aUser);
     }
 
-    PersonBean getPersonBean()
+    private DisplayInterface determineFrogging(String aCommand, User aUser) throws MudException
+    {
+        NormalCommand command = CommandFactory.getBogusCommand();
+        if (aCommand.trim().equalsIgnoreCase("ribbit"))
+        {
+            command = CommandFactory.RIBBIT.createCommand();
+        }
+        command.setCallback(this);
+        return command.start(aCommand, aUser);
+    }
+
+    private DisplayInterface determineJackassing(String aCommand, User aUser) throws MudException
+    {
+        NormalCommand command = CommandFactory.getBogusCommand();
+        if (aCommand.trim().equalsIgnoreCase("heehaw"))
+        {
+            command = CommandFactory.HEEHAW.createCommand();
+        }
+        command.setCallback(this);
+        return command.start(aCommand, aUser);
+    }
+
+    public PersonBean getPersonBean()
     {
         return personBean;
     }

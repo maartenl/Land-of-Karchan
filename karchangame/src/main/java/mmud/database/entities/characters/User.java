@@ -157,6 +157,11 @@ public class User extends Person
     @Column(name = "lastcommand")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastcommand;
+    @Column(name = "rrribbits")
+    private Integer rrribbits;
+    @Column(name = "heehaws")
+    private Integer heehaws;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
     private Set<Macro> macroCollection;
 
@@ -872,4 +877,73 @@ public class User extends Person
         }
         return (int) ((timeout.getTime() - calendar.getTime().getTime()) / 60000);
     }
+
+    public int getFrogging()
+    {
+        if (rrribbits == null)
+        {
+            rrribbits = 0;
+        }
+        return rrribbits;
+    }
+
+    public int getJackassing()
+    {
+        if (heehaws == null)
+        {
+            heehaws = 0;
+        }
+        return heehaws;
+    }
+
+    public void setFrogging(int i)
+    {
+        if (i < 0)
+        {
+            throw new MudException("Frogging should not be less than 0, but was " + i + ".");
+        }
+        rrribbits = i;
+    }
+
+    public void lessFrogging()
+    {
+        rrribbits--;
+        if (rrribbits < 0)
+        {
+            rrribbits = 0;
+        }
+    }
+
+    public void setJackassing(int i)
+    {
+        if (i < 0)
+        {
+            throw new MudException("Jackassing should not be less than 0, but was " + i + ".");
+        }
+        heehaws = i;
+    }
+
+    public void lessJackassing()
+    {
+        heehaws--;
+        if (heehaws < 0)
+        {
+            heehaws = 0;
+        }
+    }
+
+    @Override
+    public String getRace()
+    {
+        if (getFrogging() > 0)
+        {
+            return "frog";
+        }
+        if (getJackassing() > 0)
+        {
+            return "jackass";
+        }
+        return super.getRace();
+    }
+
 }

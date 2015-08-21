@@ -147,7 +147,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room", orphanRemoval = true)
     private Set<Roomattribute> attributes = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-     private Set<Item> items = new HashSet<>();;
+    private Set<Item> items = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private Set<Person> persons = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
@@ -417,8 +417,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * @param aPerson the person who is the source of the message.
      * @param aMessage the message
      *
-     * @see Person#writeMessage(mmud.database.entities.characters.Person,
-     * java.lang.String)
+     * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
      */
     public void sendMessage(Person aPerson, String aMessage) throws MudException
     {
@@ -455,7 +454,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
      * room communication method to everyone in the room. The message is not
      * parsed. Bear in mind that this method should only be used for
      * communication about environmental issues. If the communication originates
-     * from a User/Person, you should use sendMessage(aPerson, aMessage).
+     * from a User/Person, you should use {@link #sendMessage(mmud.database.entities.characters.Person, java.lang.String) }.
      * Otherwise the Ignore functionality will be omitted.
      *
      * @param aMessage the message

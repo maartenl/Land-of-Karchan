@@ -91,6 +91,7 @@ public class CommandFactory
             return new BogusCommand(".+");
         }
     };
+
     static final CommandCreator AWAKEN = new CommandCreator()
     {
 
@@ -100,7 +101,8 @@ public class CommandFactory
             return new AwakenCommand("awaken");
         }
     };
-    static final CommandCreator ASLEEP = new CommandCreator()
+
+    static final CommandCreator ALREADY_ASLEEP = new CommandCreator()
     {
 
         @Override
@@ -109,6 +111,27 @@ public class CommandFactory
             return new AlreadyAsleepCommand(".+");
         }
     };
+
+    static final CommandCreator RIBBIT = new CommandCreator()
+    {
+
+        @Override
+        public NormalCommand createCommand()
+        {
+            return new RibbitCommand("ribbit");
+        }
+    };
+
+    static final CommandCreator HEEHAW = new CommandCreator()
+    {
+
+        @Override
+        public NormalCommand createCommand()
+        {
+            return new HeehawCommand("heehaw");
+        }
+    };
+
     /**
      * Contains mappings from what command people have entered, to what command
      * should be executed. Supports two and one string, for example

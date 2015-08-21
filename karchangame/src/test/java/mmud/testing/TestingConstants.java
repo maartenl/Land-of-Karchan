@@ -38,9 +38,18 @@ public class TestingConstants
 
     public static Area getArea()
     {
-        Area aArea = new Area();
-        aArea.setShortdescription("On board the Starship Heart of Gold");
-        return aArea;
+        Area area = new Area();
+        area.setArea("Main");
+        area.setShortdescription("Land of Karchan");
+        return area;
+    }
+
+    public static Area getSpecialArea()
+    {
+        Area area = new Area();
+        area.setArea("Starship");
+        area.setShortdescription("On board the Starship Heart of Gold");
+        return area;
     }
 
     public static Room getRoom(Area aArea)
@@ -108,7 +117,7 @@ public class TestingConstants
         // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
         person.setRoom(aRoom);
         person.setSex(Sex.MALE);
-        person.setSleep(Boolean.TRUE);
+        person.setSleep(Boolean.FALSE);
         person.setRace("android");
         person.setTitle("The Paranoid Android");
         person.setSex(Sex.MALE);
@@ -160,7 +169,7 @@ public class TestingConstants
         // JDK7: number formats, for clarification.
         // 2_000_000 ms = 2_000 sec = 33 min, 20 sec
         person.setSex(Sex.MALE);
-        person.setSleep(Boolean.TRUE);
+        person.setSleep(Boolean.FALSE);
         person.setRace("human");
         person.setTitle("Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
         person.setSex(Sex.MALE);
