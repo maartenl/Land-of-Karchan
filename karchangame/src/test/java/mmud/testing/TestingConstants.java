@@ -57,6 +57,7 @@ public class TestingConstants
         Room aRoom = new Room();
         aRoom.setTitle("The bridge");
         aRoom.setArea(aArea);
+        aRoom.setContents("You are standing on a small bridge.");
         return aRoom;
     }
 
@@ -98,6 +99,7 @@ public class TestingConstants
         person.setArm("none");
         person.setLeg("none");
         person.setState("Rocking out!");
+        person.clearLog();
         return person;
     }
 
@@ -132,6 +134,7 @@ public class TestingConstants
         person.setArm("none");
         person.setLeg("none");
         person.setState("Life, don't talk to me about life.");
+        person.clearLog();
         return person;
     }
 
@@ -184,6 +187,7 @@ public class TestingConstants
         person.setArm("none");
         person.setLeg("none");
         person.setState("Amazing!");
+        person.clearLog();
         return person;
     }
 }

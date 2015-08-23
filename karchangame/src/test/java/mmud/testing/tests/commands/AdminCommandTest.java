@@ -29,9 +29,9 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
-import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
+import mmud.testing.tests.LogBeanImpl;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -355,23 +355,4 @@ public class AdminCommandTest extends MudTest
     {
     }
 
-    private class LogBeanImpl extends LogBean
-    {
-
-        public LogBeanImpl()
-        {
-        }
-        private final StringBuffer buffer = new StringBuffer();
-
-        @Override
-        public void writeLog(Person person, String message)
-        {
-            buffer.append(person.getName()).append(":").append(message).append("\n");
-        }
-
-        public String getLog()
-        {
-            return buffer.toString();
-        }
-    }
 }
