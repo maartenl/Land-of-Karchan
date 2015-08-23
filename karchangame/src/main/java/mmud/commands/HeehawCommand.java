@@ -16,7 +16,8 @@
  */
 package mmud.commands;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -42,7 +43,9 @@ public class HeehawCommand extends NormalCommand
         {
             return null;
         }
-        if ((new Date()).getTime() - aUser.getLastcommand().getTime() < 10000)
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.roll(Calendar.SECOND, -10);
+        if (calendar.getTime().before(aUser.getLastcommand()))
         {
             aUser.writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
             return aUser.getRoom();
@@ -55,7 +58,7 @@ public class HeehawCommand extends NormalCommand
             aUser.getRoom().sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
         } else
         {
-            aUser.writeMessage("You feel the need to say 'Heehaw' just " + aUser.getFrogging() + " times.<br/>\r\n");
+            aUser.writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");
         }
         return aUser.getRoom();
     }

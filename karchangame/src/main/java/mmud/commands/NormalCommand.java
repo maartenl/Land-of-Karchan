@@ -86,7 +86,6 @@ public abstract class NormalCommand implements Command
         {
             aUser.getName(), this.getClass().getName(), command
         });
-        aUser.setNow();
         String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
         boolean result;
         if ((myregexpr.endsWith(".+") || myregexpr.endsWith(".+)")) && command.indexOf('\n') != -1)
@@ -103,7 +102,9 @@ public abstract class NormalCommand implements Command
             return null;
         }
         /** continue with the actual command */
-        return run(command, aUser);
+        DisplayInterface displayInterface = run(command, aUser);
+        aUser.setNow();
+        return displayInterface;
     }
 
     @Override

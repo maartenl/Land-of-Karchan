@@ -16,7 +16,8 @@
  */
 package mmud.commands;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -42,7 +43,9 @@ public class RibbitCommand extends NormalCommand
         {
             return null;
         }
-        if ((new Date()).getTime() - aUser.getLastcommand().getTime() < 10000)
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.roll(Calendar.SECOND, -10);
+        if (calendar.getTime().before(aUser.getLastcommand()))
         {
             aUser.writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
             return aUser.getRoom();

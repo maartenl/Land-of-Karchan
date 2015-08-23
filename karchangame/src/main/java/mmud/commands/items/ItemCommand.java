@@ -16,6 +16,7 @@
  */
 package mmud.commands.items;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.commands.Command;
 import mmud.database.entities.characters.User;
@@ -71,8 +72,10 @@ public abstract class ItemCommand implements Command
      */
     DisplayInterface start(String command, User aUser) throws MudException
     {
-        itsLog.finer(aUser.getName() + "(" + this.getClass().getName() + ") : " + command);
-        aUser.setNow();
+        itsLog.log(Level.FINER, "{0}({1}) : {2}", new Object[]
+        {
+            aUser.getName(), this.getClass().getName(), command
+        });
         String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
         boolean result;
         if (myregexpr.endsWith(".+") && command.indexOf('\n') != -1)
@@ -89,7 +92,9 @@ public abstract class ItemCommand implements Command
             return null;
         }
         /** continue with the actual command */
-        return run(command, aUser);
+        DisplayInterface displayInterface = run(command, aUser);
+        aUser.setNow();
+        return displayInterface;
     }
 
     @Override
