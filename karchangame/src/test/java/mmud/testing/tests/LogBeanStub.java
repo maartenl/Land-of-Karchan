@@ -23,10 +23,10 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class LogBeanImpl extends LogBean
+public class LogBeanStub extends LogBean
 {
 
-    public LogBeanImpl()
+    public LogBeanStub()
     {
     }
     private final StringBuffer buffer = new StringBuffer();

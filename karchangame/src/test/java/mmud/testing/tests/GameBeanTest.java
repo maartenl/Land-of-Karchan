@@ -65,7 +65,7 @@ public class GameBeanTest extends MudTest
     @Mocked
     private EntityManager entityManager;
 
-    private LogBeanImpl logBean;
+    private LogBeanStub logBean;
 
     @Mocked(
             {
@@ -101,7 +101,7 @@ public class GameBeanTest extends MudTest
     @BeforeMethod
     public void setUp() throws MudException
     {
-        logBean = new LogBeanImpl();
+        logBean = new LogBeanStub();
 
         Area aArea = TestingConstants.getArea();
         room = TestingConstants.getRoom(aArea);

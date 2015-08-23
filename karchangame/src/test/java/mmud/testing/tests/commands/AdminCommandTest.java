@@ -31,7 +31,7 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
-import mmud.testing.tests.LogBeanImpl;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -56,7 +56,7 @@ public class AdminCommandTest extends MudTest
     private Administrator karn;
     private User marvin;
 
-    private LogBeanImpl logBean;
+    private LogBeanStub logBean;
 
     @Mocked
     private CommandRunner commandRunner;
@@ -70,7 +70,7 @@ public class AdminCommandTest extends MudTest
     @BeforeMethod
     public void setup()
     {
-        logBean = new LogBeanImpl();
+        logBean = new LogBeanStub();
     }
 
     @Test
