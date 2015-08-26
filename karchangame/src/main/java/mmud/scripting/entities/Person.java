@@ -21,6 +21,7 @@ import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.scripting.Items;
 
 /**
  * Scripting entity called Person.
@@ -237,6 +238,15 @@ public class Person
         return person.removeAttribute(name);
     }
 
+    /**
+     * Adds a <i>new</i> item to the inventory of this person. With <i>new</i> it is
+     * understood that the item was created with a call to
+     * {@link Items#createItem(int) }, and is not yet allocated
+     * to a room, person or container.
+     *
+     * @param item the new item to add.
+     * @return the exact same item, or null if unable to comply.
+     */
     public Item addItem(Item item)
     {
         mmud.database.entities.items.Item result = person.addItem(item.getItem());

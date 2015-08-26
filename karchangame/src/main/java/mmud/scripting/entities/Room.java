@@ -261,6 +261,15 @@ public class Room
         person.setRoom(room);
     }
 
+    /**
+     * Adds a <i>new</i> item to this room. With <i>new</i> it is
+     * understood that the item was created with a call to
+     * {@link Items#createItem(int) }, and is not yet allocated
+     * to a room, person or container.
+     *
+     * @param item the new item to add.
+     * @return the exact same item, or null if unable to comply.
+     */
     public Item addItem(Item item)
     {
         mmud.database.entities.items.Item result = room.addItem(item.getItem());

@@ -86,10 +86,13 @@ public class Item
     }
 
     /**
-     * Adds an item to this bag (if it is a bag).
+     * Adds a <i>new</i> item to this bag. With <i>new</i> it is
+     * understood that the item was created with a call to
+     * {@link Items#createItem(int) }, and is not yet allocated
+     * to a room, person or container.
      *
-     * @param item the item to add
-     * @return the item if it was successful otherwise null.
+     * @param item the new item to add.
+     * @return the exact same item, or null if unable to comply.
      */
     public Item addItem(Item item)
     {
