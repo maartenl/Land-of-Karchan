@@ -140,11 +140,13 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     /**
      * Constructor.
      *
-     * @param id the item definition used as a template of this (new) item.id of the item, usually already assigned by the ORM.
+     * @param id the item definition used as a template of this (new) item.
      */
     public Item(ItemDefinition id)
     {
         this.itemDefinition = id;
+        this.creation = new Date();
+        this.discriminator = 0;
     }
 
     public Integer getId()
