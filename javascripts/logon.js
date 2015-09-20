@@ -36,7 +36,6 @@ function webError(jqXHR, textStatus, errorThrown)
     buffer += "Cookies Enabled: " + navigator.cookieEnabled + "<br/>";
     buffer += "Platform: " + navigator.platform + "<br/>";
     buffer += "User-agent header: " + navigator.userAgent + "<br/>";
-    var $ = Karchan.$;
     $("#warning").html(buffer);
   }
   alert(errorDetails.errormessage);
@@ -45,14 +44,13 @@ function webError(jqXHR, textStatus, errorThrown)
 function logon() 
 {
   if (window.console) console.log("logon");
-  var $ = Karchan.$;
   var name = $("#name").val();
   var password = $("#password").val();
   if (window.console) console.log("logon name=" + name + " password=" + password);
 
   $.ajax({
     type: 'POST',
-    url: "/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processLogon(data); }),
     error: webError,
@@ -64,15 +62,10 @@ function logon()
   var processLogon = function(lok) {
     if (window.console) console.log("processLogon");
     if (window.console) console.log(lok);
-    $.cookie('lok', lok.lok, {path: '/' }); 
-    $.cookie('name', name, {path: '/' }); 
-    window.location.href="http://www.karchan.org/node/132";
+    Cookies.set('lok', lok.lok, {path: '/' }); 
+    Cookies.set('name', name, {path: '/' }); 
+    window.location.href="/web/guest/play";
   } // processLogon
-}
-
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  Karchan.$ = $;
+  return false;
 }
 

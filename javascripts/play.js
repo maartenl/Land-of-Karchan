@@ -43,7 +43,6 @@ function webError(jqXHR, textStatus, errorThrown)
     buffer += "Cookies Enabled: " + navigator.cookieEnabled + "<br/>";
     buffer += "Platform: " + navigator.platform + "<br/>";
     buffer += "User-agent header: " + navigator.userAgent + "<br/>";
-    var $ = Karchan.$;
     $("#warning").html(buffer);
   }
   alert(errorDetails.errormessage);
@@ -70,10 +69,9 @@ function processCall(command, log, processor)
     Karchan.offset = 0;
     log = true;
   }
-  var $ = Karchan.$;
   $.ajax({
     type: 'POST',
-    url: "/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processor(data); }),
     error: webError,
@@ -90,7 +88,6 @@ function writeStuff(data)
     var body = data.body;
     var title = data.title;
 
-    var $ = Karchan.$;
     var imageTag = (image == null || image == "") ? "" : "<img src=\"" + image + "\"/>";
     var capitalChar = body.charAt(0).toLocaleLowerCase();
     // http://www.karchan.org/images/gif/letters/w.gif
@@ -173,11 +170,11 @@ function writeStuff(data)
     $('#command').focus();
 }
 
-function playInit($) 
+function playInit() 
 {
   if (window.console) console.log("playInit");
-  var name = $.cookie("name");
-  var lok = $.cookie("lok");
+  var name = Cookies.get("name");
+  var lok = Cookies.get("lok");
   Karchan.name = name;
   Karchan.lok = lok;
   Karchan.logOffset = 0; 
@@ -199,7 +196,6 @@ function playInit($)
 function play()
 {
   if (window.console) console.log("play");
-  var $ = Karchan.$;
   var processPlay = function(data) {
     if (window.console) console.log("processPlay");
     writeStuff(data);
@@ -228,11 +224,10 @@ function play()
 function quit()
 {
   if (window.console) console.log("quit");
-  var $ = Karchan.$;
   var quitSucceeded = false;
   $.ajax({
     type: 'GET',
-    url: "/resources/game/" + Karchan.name + "/quit?lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + Karchan.name + "/quit?lok=" + Karchan.lok, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {quitSucceeded = true; }),
     error: webError,
@@ -244,7 +239,6 @@ function quit()
 
 function toggleSleep()
 {
-  var $ = Karchan.$;
   if (window.console) console.log("toggleSleep sleep was " + Karchan.sleep);
   if (Karchan.sleep)
   {
@@ -267,7 +261,6 @@ function toggleSleep()
 function toggleEntry()
 {
   if (window.console) console.log("toggleEntry");
-  var $ = Karchan.$;
   if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
   {
     // we need Big Entry command!
@@ -311,7 +304,6 @@ function toggleEntry()
 function clearLog()
 {
   if (window.console) console.log("clearLog");
-  var $ = Karchan.$;
   Karchan.logOffset = Karchan.logOffset + Karchan.logSize;
   Karchan.logSize = 0;
   if (window.console) console.log("clearLog setting offset to " + Karchan.logOffset);
@@ -335,13 +327,13 @@ function goSouth() {processCall("go south", false, writeStuff);return false;}
 function goUp() {processCall("go up", false, writeStuff);return false;}
 function goDown() {processCall("go down", false, writeStuff);return false;}
 
-function startMeUp($)
+function startMeUp()
 {
   if (window.console) console.log("startMeUp");
-  Karchan.$ = $;
   // very specific Drupal - Bartik - Display settings
-  $("#main").css("width","100%");
-  $("#content").css("width", (window.innerWidth-260) + "px");
-  playInit( $ );
+  // $("#main").css("width","100%");
+  // $("#content").css("width", (window.innerWidth-260) + "px");
+  playInit();
 }
 
+$( document ).ready(startMeUp);

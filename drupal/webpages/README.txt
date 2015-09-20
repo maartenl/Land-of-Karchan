@@ -12,24 +12,25 @@ However, this comes with it's own set of problems:
 So, in the interest of keeping a log *outside* of Drupal, here's the more
 complex webpages that I feel require a little more.
 
-+---------------------+---------------------------+----------------------------+
-| Name of Play        | Filename                  | Node in drupal             |
-+---------------------+---------------------------+----------------------------+
-| New Play            | play.html                 | /node/132                  |
-|                     | charactersheet.html       | /node/135                  |
++---------------------+---------------------------+--------------------------------------+
+| Name of Play        | Filename                  | Drupal    | Liferay                  |
++---------------------+---------------------------+-----------+--------------------------+
+| New Play            | play.html                 | /node/132 | /web/guest/play          |/karchangame/resources/game/[name]/play
+                                                                                          /karchangame/resources/game/[name]/quit
+|                     | charactersheet.html       | /node/135 |                          |
 |                     | charactersheets.html      |
-|                     | compose_mail.html         | /node/133                  |
+|                     | compose_mail.html         | /node/133 |                          |
 |                     | edit_charactersheet.html  |
 |                     | fortunes.html             |
-|                     | karchan_buttons.html      |
-|                     | logon.html                | /node/131                  |
+|                     | karchan_buttons.html      |           | /web/guest/play          |
+|                     | logon.html                | /node/131 | /weg/guest/logon         |/karchangame/resources/game/[name]/logon|
 |                     | mail.html                 |
-|                     | newchar.html              | /node/134                  |
-+---------------------+---------------------------+----------------------------+
-|Guilds                                                                        |
-+---------------------+---------------------------+----------------------------+
-|                     | guilds.html               | /node/10                   |
-|                     | show_guild.html           | /node/136                  |
-|                     | edit_guild.html           | /node/137                  |
-|                     | create_guild.html         | /node/138                  |
-+---------------------+---------------------------+----------------------------+
+|                     | newchar.html              | /node/134 | /web/guest/new-character |
++---------------------+---------------------------+-----------+--------------------------+
+|Guilds                                                                                  |
++---------------------+---------------------------+-----------+--------------------------+
+|                     | guilds.html               | /node/10  |                 |
+|                     | show_guild.html           | /node/136 |                 |
+|                     | edit_guild.html           | /node/137 |                 |
+|                     | create_guild.html         | /node/138 |                 |
++---------------------+---------------------------+-----------+--------------------------+
