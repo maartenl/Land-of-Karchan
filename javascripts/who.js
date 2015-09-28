@@ -1,11 +1,11 @@
-function showWho( $ ) 
+function showWho() 
 {
   if (window.console) console.log("showWho");
   var getWho = function() {
     if (window.console) console.log("getWho");
     $.ajax({
       type: 'GET',
-      url: "/resources/public/who", // Which url should be handle the ajax request.
+      url: "/karchangame/resources/public/who", // Which url should be handle the ajax request.
       cache: false,
       success: (function(data) {updateWho(data); }),
       error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -42,10 +42,4 @@ function showWho( $ )
   } // updateWho
 }
 
-
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showWho($);
-}
-
+$( document ).ready(showWho);

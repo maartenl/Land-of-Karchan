@@ -1,9 +1,9 @@
-function showGuilds( $ ) 
+function showGuilds() 
 {
   if (window.console) console.log("showGuilds");
   $.ajax({
     type: 'GET',
-    url: "/resources/public/guilds", // Which url should be handle the ajax request.
+    url: "/karchangame/resources/public/guilds", // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateGuilds(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -22,7 +22,7 @@ function showGuilds( $ )
          {
            continue;
          }
-         formatted_html += "<h1><img src=\"/favicon.ico\" id=\"karchan_guildtitle_" + i + "\"/>";
+         formatted_html += "<h1><img src=\"/karchan-theme/images/favicon.ico\" id=\"karchan_guildtitle_" + i + "\"/>";
          if (data[i].guildurl != undefined && data[i].guildurl != "")
          {
            formatted_html += "<a href=\"" + data[i].guildurl + "\">";
@@ -49,12 +49,8 @@ function showGuilds( $ )
         $("#karchan_guild_" + object.currentTarget.id.substring(19)).toggle("slow");
       });
     }
+    $("div.karchan_guild").hide();
   } // updateGuilds
 }
 
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showGuilds($);
-}
-
+$( document ).ready(showGuilds);

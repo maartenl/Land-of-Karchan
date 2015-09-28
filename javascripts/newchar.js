@@ -1,6 +1,5 @@
 function createNewchar() 
 {
-  var $ = Karchan.$;
   if (window.console) console.log("createNewchar");
   var characterObject = {
        "name": $('#edit-submitted-fictional-name').val(),
@@ -26,12 +25,28 @@ function createNewchar()
   var jsonString = JSON.stringify(characterObject);
   $.ajax({
     type: 'POST',
-    url: "/resources/game/" + characterObject.name, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + characterObject.name, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {
       alert("Your character has been created."); 
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function(jqXHR, textStatus, errorThrown) 
+            {
+              if (window.console) {console.log(jqXHR);console.log(textStatus);console.log(errorThrown);}
+              if (jqXHR.status === 200)
+              {
+                alert("Character " + characterObject.name + " has been created.");
+                return;
+              }
+              if (jqXHR.responseJSON === undefined)
+              {
+                alert("An error occurred. Please notify Karn or one of the deps."); 
+              }
+              else
+              {
+                alert(jqXHR.responseJSON.errormessage);
+              }
+            }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',
@@ -39,10 +54,4 @@ function createNewchar()
   }); // end of ajax
   return false;
 } // createNewchar
-
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  Karchan.$ = $;
-}
 

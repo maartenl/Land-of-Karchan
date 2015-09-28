@@ -1,11 +1,11 @@
 
-function showFortunes( $ ) 
+function showFortunes() 
 {
   // Code to run when the document is ready.
   if (window.console) console.log("showFortunes");
   $.ajax({
       type: 'GET',
-      url: "/resources/public/fortunes", // Which url should be handle the ajax request.
+      url: "/karchangame/resources/public/fortunes", // Which url should be handle the ajax request.
       cache: false,
       success: (function(data) {updateFortunes(data); }),
       error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -28,9 +28,4 @@ function showFortunes( $ )
   } // updateFortunes
 }
 
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showFortunes($);
-}
-
+$( document ).ready(showFortunes);

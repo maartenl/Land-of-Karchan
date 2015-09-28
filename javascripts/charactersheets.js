@@ -1,9 +1,9 @@
-function showCharactersheets( $ ) 
+function showCharactersheets() 
 {
   if (window.console) console.log("showCharactersheets");  
   $.ajax({
     type: 'GET',
-    url: "/resources/public/charactersheets", // Which url should be handle the ajax request.
+    url: "/karchangame/resources/public/charactersheets", // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateCharactersheets(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -18,12 +18,12 @@ function showCharactersheets( $ )
     // The data parameter is a JSON object.
     var formatted_html = "";
     var cookiesname = "";
-    if ($.cookie("name") != undefined &&
-      $.cookie("lok") != undefined &&
-      $.cookie("name") != "" &&
-      $.cookie("lok") != "")
+    if (Cookies.get("name") != undefined &&
+      Cookies.get("lok") != undefined &&
+      Cookies.get("name") != "" &&
+      Cookies.get("lok") != "")
     {
-      cookiesname = $.cookie("name");
+      cookiesname = Cookies.get("name");
       formatted_html += "<p>To change or create your charactersheet, click <a href=\"/node/135\">here</a>.</p>";
     }
     formatted_html += "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
@@ -59,9 +59,5 @@ function showCharactersheets( $ )
 }
 
 
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showCharactersheets($);
-}
+$( document ).ready(showCharactersheets);
 
