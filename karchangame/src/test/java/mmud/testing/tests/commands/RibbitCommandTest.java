@@ -65,6 +65,10 @@ public class RibbitCommandTest extends MudTest
     {
     }
 
+    /**
+     * Runs the ribbit command, but one is not a frog, so no ribbitting is
+     * required or even possible.
+     */
     @Test
     public void runRibbitWithoutBeingFrogged()
     {
@@ -77,12 +81,15 @@ public class RibbitCommandTest extends MudTest
         assertThat(log, equalTo(""));
     }
 
+    /**
+     * Runs the Ribbit command, bringing the punishment down from 5 to 4.
+     */
     @Test
     public void runRibbit()
     {
         marvin.setFrogging(5);
         Calendar calendar = GregorianCalendar.getInstance();
-        calendar.roll(Calendar.SECOND, -17);
+        calendar.add(Calendar.SECOND, -17);
         setField(User.class, "lastcommand", marvin, calendar.getTime());
         RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
         ribbitCommand.setCallback(commandRunner);
@@ -94,6 +101,10 @@ public class RibbitCommandTest extends MudTest
         assertThat(logBean.getLog(), equalTo(""));
     }
 
+    /**
+     * Warning that you are issuing the ribbit command too fast. No points are
+     * deducted, and you must wait for more time to pass. (at least 10 seconds)
+     */
     @Test
     public void runRibbitFast()
     {

@@ -24,9 +24,11 @@ import mmud.exceptions.MudException;
 
 /**
  * The Ribbit Command: "Rrribbit". Makes you go "Rrribbit". It's a punishment
- * method.
+ * method. It is not allowed to execute this command faster than once every 10
+ * seconds.
  *
  * @author maartenl
+ * @see HeehawCommand
  */
 public class RibbitCommand extends NormalCommand
 {
@@ -44,7 +46,7 @@ public class RibbitCommand extends NormalCommand
             return null;
         }
         Calendar calendar = GregorianCalendar.getInstance();
-        calendar.roll(Calendar.SECOND, -10);
+        calendar.add(Calendar.SECOND, -10);
         if (calendar.getTime().before(aUser.getLastcommand()))
         {
             aUser.writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");

@@ -65,9 +65,14 @@ public class HeehawCommandTest extends MudTest
     {
     }
 
+    /**
+     * Runs the heehaw command, but one is not a jackass, so no heehawing is
+     * required or even possible.
+     */
     @Test
     public void runHeehawWithoutBeingFrogged()
     {
+        assertThat(marvin.getJackassing(), equalTo(0));
         HeehawCommand heehawCommand = new HeehawCommand("heehaw");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr(), equalTo("heehaw"));
@@ -77,12 +82,15 @@ public class HeehawCommandTest extends MudTest
         assertThat(log, equalTo(""));
     }
 
+    /**
+     * Runs the heehaw command, bringing the punishment down from 5 to 4.
+     */
     @Test
     public void runHeehaw()
     {
         marvin.setJackassing(5);
         Calendar calendar = GregorianCalendar.getInstance();
-        calendar.roll(Calendar.SECOND, -17);
+        calendar.add(Calendar.SECOND, -17);
         setField(User.class, "lastcommand", marvin, calendar.getTime());
         HeehawCommand heehawCommand = new HeehawCommand("heehaw");
         heehawCommand.setCallback(commandRunner);
@@ -91,9 +99,14 @@ public class HeehawCommandTest extends MudTest
         assertThat(display, not(nullValue()));
         String log = marvin.getLog(0);
         assertThat(log, equalTo("A jackass called Marvin says &quot;Heeehaw!&quot;.<br />\nYou feel the need to say 'Heehaw' just 4 times.<br />\n"));
+        assertThat(marvin.getJackassing(), equalTo(4));
         assertThat(logBean.getLog(), equalTo(""));
     }
 
+    /**
+     * Warning that you are issuing the heehaw command too fast.
+     * No points are deducted, and you must wait for more time to pass. (at least 10 seconds)
+     */
     @Test
     public void runHeehawFast()
     {
@@ -106,6 +119,7 @@ public class HeehawCommandTest extends MudTest
         assertThat(display, not(nullValue()));
         String log = marvin.getLog(0);
         assertThat(log, equalTo("You cannot say 'Heehaw' that fast! You will get tongue tied!<br />\n"));
+        assertThat(marvin.getJackassing(), equalTo(5));
         assertThat(logBean.getLog(), equalTo(""));
     }
 
