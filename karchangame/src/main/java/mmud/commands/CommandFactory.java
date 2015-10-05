@@ -134,9 +134,8 @@ public class CommandFactory
 
     /**
      * Contains mappings from what command people have entered, to what command
-     * should be executed. Supports two and one string, for example
-     * "look at" or "look", in order to distinguish different commands with the same
-     * verb.
+     * should be executed. Supports two and one string, for example "look at" or
+     * "look", in order to distinguish different commands with the same verb.
      */
     private static final TreeMap<String, CommandCreator> theCommandStructure = new TreeMap<>();
     private static List<UserCommandInfo> theUserCommandStructure = new CopyOnWriteArrayList<>();
@@ -198,6 +197,14 @@ public class CommandFactory
             public NormalCommand createCommand()
             {
                 return new AskCommand("ask (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("title", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new TitleCommand("(title|title ?.+)");
             }
         });
         theCommandStructure.put("tell", new CommandCreator()
@@ -830,16 +837,13 @@ public class CommandFactory
      * Returns the commands to be used, based on the first word in the command
      * entered by the user.
      *
-     * @param aCommand
-     * String containing the command entered by the user.
-     * @return List containing the commands that fit the
-     * description. The commands that are contained are in the following
-     * order:
+     * @param aCommand String containing the command entered by the user.
+     * @return List containing the commands that fit the description. The
+     * commands that are contained are in the following order:
      * <ol>
      * <li>special commands retrieved from the database
      * <li>normal commands
-     * <li>bogus command (the ultimate failover, "I don't understand
-     * that.".)
+     * <li>bogus command (the ultimate failover, "I don't understand that.".)
      * </ol>
      * It also means that this collection will always carry at least one
      * command, the bogus command.
@@ -875,8 +879,8 @@ public class CommandFactory
      * <p>
      * There are a few requirements<ul><li>commands must match</li>
      * <li>either the user defined command is valid for all rooms OR</li>
-     * <li>room defined in the user defined commands euqals the room the
-     * user is in</li></ul></p>
+     * <li>room defined in the user defined commands euqals the room the user is
+     * in</li></ul></p>
      *
      * @param user the user, used to get the room.
      * @param aCommand the string containing the command issued by the user
@@ -901,9 +905,9 @@ public class CommandFactory
     }
 
     /**
-     * The definition of a user command. Bear in mind that commands that
-     * are executed often do not make very good global user commands,
-     * as the load on the database might be a little too much.
+     * The definition of a user command. Bear in mind that commands that are
+     * executed often do not make very good global user commands, as the load on
+     * the database might be a little too much.
      */
     public static class UserCommandInfo
     {
@@ -919,11 +923,11 @@ public class CommandFactory
         /**
          * constructor for creating a user command for a specific room.
          *
-         * @param aCommand the regular expression for determining
-         * the command is equal to the command entered.
+         * @param aCommand the regular expression for determining the command is
+         * equal to the command entered.
          * @param aMethodName the name of the method to call.
-         * @param aRoom the room in which this command is active. Can be
-         * a null pointer if the command is active in all rooms.
+         * @param aRoom the room in which this command is active. Can be a null
+         * pointer if the command is active in all rooms.
          * @param aCommandId the identification number for the command
          */
         public UserCommandInfo(int aCommandId, String aCommand,
@@ -938,8 +942,8 @@ public class CommandFactory
         /**
          * constructor for creating a user command for all rooms.
          *
-         * @param aCommand the regular expression for determining
-         * the command is equal to the command entered.
+         * @param aCommand the regular expression for determining the command is
+         * equal to the command entered.
          * @param aMethodName the name of the method to call.
          * @param aCommandId the identification number for the command
          */
@@ -996,8 +1000,8 @@ public class CommandFactory
         }
 
         /**
-         * Use this method when the command that had to be run, throws
-         * an exception.
+         * Use this method when the command that had to be run, throws an
+         * exception.
          */
         public void deactivateCommand()
                 throws MudException
@@ -1018,9 +1022,8 @@ public class CommandFactory
     }
 
     /**
-     * Clears the map containing all user-defined commands.
-     * It will be reloaded automatically from the database, upon executing the
-     * first command.
+     * Clears the map containing all user-defined commands. It will be reloaded
+     * automatically from the database, upon executing the first command.
      */
     public static void clearUserCommandStructure()
     {
@@ -1033,8 +1036,8 @@ public class CommandFactory
      * @param aCommandId the id of the command
      * @param aCommand the command
      * @param aMethodName the method name
-     * @param aRoom the room, optional, may be null in which case the command is valid for all
-     * rooms.
+     * @param aRoom the room, optional, may be null in which case the command is
+     * valid for all rooms.
      */
     public static void addUserCommand(int aCommandId, String aCommand,
             String aMethodName, Integer aRoom)

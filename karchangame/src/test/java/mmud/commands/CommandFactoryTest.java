@@ -14,20 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.testing.tests.commands;
+package mmud.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import mmud.Constants;
-import mmud.commands.CommandRunner;
-import mmud.commands.RibbitCommand;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
@@ -36,19 +32,18 @@ import mmud.testing.tests.MudTest;
 import mockit.Mocked;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.hamcrest.Matchers.hasSize;
 
 /**
  *
  * @author maartenl
  */
-public class RibbitCommandTest extends MudTest
+public class CommandFactoryTest extends MudTest
 {
 
     private Administrator karn;
@@ -61,63 +56,46 @@ public class RibbitCommandTest extends MudTest
 
     private PersonBean personBean;
 
-    public RibbitCommandTest()
+    public CommandFactoryTest()
     {
     }
 
-    /**
-     * Runs the ribbit command, but one is not a frog, so no ribbitting is
-     * required or even possible.
-     */
-    @Test
-    public void runRibbitWithoutBeingFrogged()
+    @BeforeMethod
+    public void setup()
     {
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, nullValue());
-        String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        logBean = new LogBeanStub();
     }
 
-    /**
-     * Runs the Ribbit command, bringing the punishment down from 5 to 4.
-     */
     @Test
-    public void runRibbit()
+    public void checkForBogusCommand()
     {
-        marvin.setFrogging(5);
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.SECOND, -17);
-        setField(User.class, "lastcommand", marvin, calendar.getTime());
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, not(nullValue()));
-        String log = marvin.getLog(0);
-        assertThat(log, equalTo("A frog called Marvin says &quot;Rrribbit!&quot;.<br />\nYou feel the need to say 'Ribbit' just 4 times.<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        List<NormalCommand> commands = CommandFactory.getCommand("woahnelly");
+        assertThat(commands, hasSize(1));
+        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("BogusCommand"));
+
+    }
+    
+    @Test
+    public void checkForTitleCommandSimple()
+    {
+        List<NormalCommand> commands = CommandFactory.getCommand("title");
+        assertThat(commands, hasSize(1));
+        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));       
     }
 
-    /**
-     * Warning that you are issuing the ribbit command too fast. No points are
-     * deducted, and you must wait for more time to pass. (at least 10 seconds)
-     */
     @Test
-    public void runRibbitFast()
+    public void checkForTitleCommandRemove()
     {
-        marvin.setFrogging(5);
-        marvin.setNow();
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, not(nullValue()));
-        String log = marvin.getLog(0);
-        assertThat(log, equalTo("You cannot say 'Ribbit' that fast! You will get tongue tied!<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        List<NormalCommand> commands = CommandFactory.getCommand("title remove");
+        assertThat(commands, hasSize(1));
+        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));
+    }
+    @Test
+    public void checkForTitleCommandSetter()
+    {
+        List<NormalCommand> commands = CommandFactory.getCommand("title Ruler of the Land");
+        assertThat(commands, hasSize(1));
+        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));
     }
 
     @BeforeClass
@@ -133,8 +111,6 @@ public class RibbitCommandTest extends MudTest
     @BeforeMethod
     public void setUpMethod() throws Exception
     {
-        logBean = new LogBeanStub();
-
         personBean = new PersonBean()
         {
             @Override

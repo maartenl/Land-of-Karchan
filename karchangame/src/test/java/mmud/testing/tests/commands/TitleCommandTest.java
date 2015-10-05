@@ -23,7 +23,8 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
-import mmud.commands.RibbitCommand;
+import mmud.commands.HeehawCommand;
+import mmud.commands.TitleCommand;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -48,7 +49,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class RibbitCommandTest extends MudTest
+public class TitleCommandTest extends MudTest
 {
 
     private Administrator karn;
@@ -61,63 +62,50 @@ public class RibbitCommandTest extends MudTest
 
     private PersonBean personBean;
 
-    public RibbitCommandTest()
+    public TitleCommandTest()
     {
     }
 
-    /**
-     * Runs the ribbit command, but one is not a frog, so no ribbitting is
-     * required or even possible.
-     */
     @Test
-    public void runRibbitWithoutBeingFrogged()
+    public void setTitle()
     {
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, nullValue());
-        String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
-    }
-
-    /**
-     * Runs the Ribbit command, bringing the punishment down from 5 to 4.
-     */
-    @Test
-    public void runRibbit()
-    {
-        marvin.setFrogging(5);
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.SECOND, -17);
-        setField(User.class, "lastcommand", marvin, calendar.getTime());
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
+        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
+        titleCommand.setCallback(commandRunner);
+        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        DisplayInterface display = titleCommand.run("title Ruler of the Land", marvin);
         assertThat(display, not(nullValue()));
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("A frog called Marvin says &quot;Rrribbit!&quot;.<br />\nYou feel the need to say 'Ribbit' just 4 times.<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log, equalTo("Changed your title to : 'Ruler of the Land'.<br />\n"));
+        assertThat(marvin.getTitle(), equalTo("Ruler of the Land"));
     }
 
-    /**
-     * Warning that you are issuing the ribbit command too fast. No points are
-     * deducted, and you must wait for more time to pass. (at least 10 seconds)
-     */
     @Test
-    public void runRibbitFast()
+    public void removeTitle()
     {
-        marvin.setFrogging(5);
-        marvin.setNow();
-        RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
-        ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
-        DisplayInterface display = ribbitCommand.run("ribbit", marvin);
+        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
+        titleCommand.setCallback(commandRunner);
+        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        DisplayInterface display = titleCommand.run("title remove", marvin);
         assertThat(display, not(nullValue()));
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("You cannot say 'Ribbit' that fast! You will get tongue tied!<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log, equalTo("You have removed your current title.<br />\n"));
+        assertThat(marvin.getTitle(), nullValue());
+    }
+
+    @Test
+    public void getTitle()
+    {
+        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
+        titleCommand.setCallback(commandRunner);
+        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        DisplayInterface display = titleCommand.run("title", marvin);
+        assertThat(display, not(nullValue()));
+        String log = marvin.getLog(0);
+        assertThat(log, equalTo("Your current title is 'The Paranoid Android'.<br />\n"));
+        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
     }
 
     @BeforeClass

@@ -23,10 +23,12 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * The Ribbit Command: "Rrribbit". Makes you go "Rrribbit". It's a punishment
- * method.
+ * The Heehaw Command: "heehaw". Makes you go "Heeehaw!". It's a punishment
+ * method. It is not allowed to execute this command faster than once every 10
+ * seconds.
  *
  * @author maartenl
+ * @see RibbitCommand
  */
 public class HeehawCommand extends NormalCommand
 {
@@ -44,7 +46,7 @@ public class HeehawCommand extends NormalCommand
             return null;
         }
         Calendar calendar = GregorianCalendar.getInstance();
-        calendar.roll(Calendar.SECOND, -10);
+        calendar.add(Calendar.SECOND, -10);
         if (calendar.getTime().before(aUser.getLastcommand()))
         {
             aUser.writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");

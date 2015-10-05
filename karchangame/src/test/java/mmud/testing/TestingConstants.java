@@ -34,7 +34,7 @@ import mmud.exceptions.MudException;
 public class TestingConstants
 {
 
-    public static final String NO_SUCH_METHOD = "no such method: ";
+    public static final String NO_SUCH_METHOD = "No such function ";
 
     public static Area getArea()
     {
