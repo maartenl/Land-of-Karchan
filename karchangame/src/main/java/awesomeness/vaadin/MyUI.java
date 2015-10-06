@@ -5,11 +5,8 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import javax.servlet.annotation.WebServlet;
@@ -25,59 +22,25 @@ public class MyUI extends UI
     @Override
     protected void init(VaadinRequest vaadinRequest)
     {
-        Panel menuPanel = new Panel("Menu");
-        Panel contentPanel = new Panel("Content");
+        Panel mainPanel = new Panel("Administration pages");
+        setContent(mainPanel);
 
-        HorizontalSplitPanel splitPanel = new HorizontalSplitPanel(menuPanel, contentPanel);
-        setContent(splitPanel);
+        // Create the accordion
+        Accordion accordion = new Accordion();
+        mainPanel.setContent(accordion);
 
-        final FormLayout menuLayout = new FormLayout();
-        menuPanel.setContent(menuLayout);
+        // Create the first tab, specify caption when adding
+        Layout worldattributes = new WorldAttributes(); // Wrap in a layout
+        accordion.addTab(worldattributes, "World attributes");
 
-        Button worldattributes = new Button("World attributes");
-        worldattributes.addClickListener(new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(ClickEvent event)
-            {
-                menuLayout.addComponent(new Label("Thank you for clicking"));
-            }
-        });
-        menuLayout.addComponent(worldattributes);
+        Layout scripts = new Scripts();
+        accordion.addTab(scripts, "Scripts");
 
-        Button scripts = new Button("Scripts");
-        scripts.addClickListener(new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(ClickEvent event)
-            {
-                menuLayout.addComponent(new Label("Thank you for clicking"));
-            }
-        });
-        menuLayout.addComponent(scripts);
+        Layout areas = new Areas();
+        accordion.addTab(areas, "Areas");
 
-        Button areas = new Button("Areas");
-        areas.addClickListener(new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(ClickEvent event)
-            {
-                menuLayout.addComponent(new Label("Thank you for clicking"));
-            }
-        });
-        menuLayout.addComponent(areas);
-
-        Button events = new Button("Events");
-        events.addClickListener(new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(ClickEvent event)
-            {
-                menuLayout.addComponent(new Label("Thank you for clicking"));
-            }
-        });
-        menuLayout.addComponent(events);
-
+        Layout events = new Events();
+        accordion.addTab(events, "Events");
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
