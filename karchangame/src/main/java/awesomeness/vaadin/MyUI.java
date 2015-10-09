@@ -43,7 +43,10 @@ public class MyUI extends UI
         accordion.addTab(events, "Events");
     }
 
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
+    @WebServlet(urlPatterns =
+    {
+        "/administration/*", "/VAADIN/*"
+    }, name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet
     {
