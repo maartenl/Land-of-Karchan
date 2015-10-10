@@ -18,6 +18,7 @@ package awesomeness.vaadin;
 
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -28,7 +29,7 @@ public class Areas extends FormLayout
 
     private final Label title = new Label("Areas");
 
-    public Areas()
+    Areas(EntityManager em)
     {
         addComponent(title);
     }

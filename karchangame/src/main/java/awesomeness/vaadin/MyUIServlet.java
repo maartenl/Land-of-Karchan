@@ -18,6 +18,8 @@ package awesomeness.vaadin;
 
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.annotation.WebServlet;
 
 /**
@@ -32,4 +34,17 @@ import javax.servlet.annotation.WebServlet;
 public class MyUIServlet extends VaadinServlet
 {
 
+    @PersistenceContext(unitName = "karchangamePU")
+    private EntityManager em;
+
+    /**
+     * Returns the entity manager of JPA. This is defined in
+     * build/web/WEB-INF/classes/META-INF/persistence.xml.
+     *
+     * @return EntityManager
+     */
+    EntityManager getEntityManager()
+    {
+        return em;
+    }
 }
