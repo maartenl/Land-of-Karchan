@@ -53,16 +53,9 @@ import mmud.exceptions.MudException;
 /**
  * A room. Bear in mind that this room has potential exits to the north, south,
  * east, west, up and down, which are also rooms. The structure forms a kind of
- * graph. In order for Hibernate/JPA not to load the entire structure eagerly
- * due to ManyToOne annotations, it is required that the hibernate.cfg.xml file
- * has hibernate.ejb.use_class_enhancer set to true. Also means that Hibernate
- * as JPA provider should be used in full-blown JEE environment.
+ * graph.
  *
- * @see <a href="http://justonjava.blogspot.com/2010_09_01_archive.html}">Just
- * on Java</a>
- * @see <a
- * href="http://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/configuration.html">Hibernate
- * Configuration</a>
+ * @see <a href="http://www.eclipse.org/eclipselink/documentation/2.5/concepts/app_dev007.htm">About weaving</a>
  * @author maartenl
  */
 @Entity

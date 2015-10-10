@@ -83,7 +83,7 @@ public class PrivateBean
     }
 
     /**
-     * Returns the entity manager of Hibernate/JPA. This is defined in
+     * Returns the entity manager of JPA. This is defined in
      * build/web/WEB-INF/classes/META-INF/persistence.xml.
      *
      * @return EntityManager
