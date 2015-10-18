@@ -7,6 +7,7 @@ import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -20,6 +21,7 @@ public class MyUI extends UI
     protected void init(VaadinRequest vaadinRequest)
     {
         MyUIServlet servlet = ((MyUIServlet) MyUIServlet.getCurrent());
+        EntityManager em = servlet.getEntityManager();
 
         Panel mainPanel = new Panel("Administration pages");
         setContent(mainPanel);
