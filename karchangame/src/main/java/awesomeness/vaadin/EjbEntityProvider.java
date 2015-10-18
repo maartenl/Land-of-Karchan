@@ -16,44 +16,42 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinServlet;
-import javax.ejb.EJB;
+import com.vaadin.addon.jpacontainer.provider.MutableLocalEntityProvider;
+import javax.annotation.PostConstruct;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.annotation.WebServlet;
 
 /**
  *
  * @author maartenl
  */
-@WebServlet(urlPatterns =
-{
-    "/administration/*", "/VAADIN/*"
-}, name = "MyUIServlet", asyncSupported = true)
-@VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-public class MyUIServlet extends VaadinServlet
+@TransactionManagement
+public abstract class EjbEntityProvider<T> extends MutableLocalEntityProvider<T>
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
+    @PersistenceContext
     private EntityManager em;
 
-    @EJB
-    private WorldattributesProvider worldattributesProvider;
-
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
-     */
-    EntityManager getEntityManager()
+    protected EjbEntityProvider(Class entityClass)
     {
-        return em;
+        super(entityClass);
     }
 
-    WorldattributesProvider getWorldattributesProvider()
+    @PostConstruct
+    public void init()
     {
-        return worldattributesProvider;
+        setTransactionsHandledByProvider(false);
+        setEntityManager(em);
     }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    protected void runInTransaction(Runnable operation)
+    {
+        super.runInTransaction(operation);
+    }
+
 }

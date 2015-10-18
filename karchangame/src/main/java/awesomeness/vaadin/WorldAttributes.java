@@ -16,21 +16,61 @@
  */
 package awesomeness.vaadin;
 
+import com.vaadin.addon.jpacontainer.EntityProvider;
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import javax.persistence.EntityManager;
+import com.vaadin.ui.Table;
+import mmud.database.entities.game.Worldattribute;
 
 /**
  *
  * @author maartenl
  */
-public class WorldAttributes extends FormLayout
+class WorldAttributes extends FormLayout implements
+        Property.ValueChangeListener, Button.ClickListener
 {
 
-    private final Label title = new Label("World attributes");
+    private final Table worldattribTable;
+    private final FieldGroup form;
 
-    WorldAttributes(EntityManager em)
+    WorldAttributes(EntityProvider entityProvider)
     {
-        addComponent(title);
+
+        // And there we have it
+        JPAContainer<Worldattribute> attributes
+                = new JPAContainer<>(Worldattribute.class);
+        attributes.setEntityProvider(entityProvider);
+
+        worldattribTable = new Table("Worldattributes", attributes);
+        worldattribTable.setVisibleColumns("name", "type", "owner", "creation");
+        worldattribTable.setSizeFull();
+        worldattribTable.setSelectable(true);
+        worldattribTable.addValueChangeListener(this);
+        worldattribTable.setImmediate(true);
+        addComponent(worldattribTable);
+
+        form = new FieldGroup();
+    }
+
+    @Override
+    public void valueChange(Property.ValueChangeEvent event)
+    {
+        Object itemId = event.getProperty().getValue();
+        Item item = worldattribTable.getItem(itemId);
+        boolean entitySelected = item != null;
+        if (entitySelected)
+        {
+            System.out.println(item);
+        }
+    }
+
+    @Override
+    public void buttonClick(Button.ClickEvent event)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
