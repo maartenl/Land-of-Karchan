@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.annotation.WebServlet;
+import mmud.rest.services.admin.IdentificationBean;
 
 /**
  *
@@ -40,6 +41,18 @@ public class MyUIServlet extends VaadinServlet
 
     @EJB
     private WorldattributesProvider worldattributesProvider;
+
+    @EJB
+    private IdentificationBean identificationBean;
+
+    public String getCurrentUser()
+    {
+        return identificationBean.getCurrentUser();
+    }
+
+    public MyUIServlet()
+    {
+    }
 
     /**
      * Returns the entity manager of JPA. This is defined in

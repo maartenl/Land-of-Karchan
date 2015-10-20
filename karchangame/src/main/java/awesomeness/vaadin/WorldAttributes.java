@@ -21,6 +21,7 @@ import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
@@ -49,10 +50,11 @@ class WorldAttributes extends VerticalLayout implements
     private final Label owner;
     private final Button commit;
     private FieldGroup binder;
+    private final String currentUser;
 
-    WorldAttributes(EntityProvider entityProvider)
+    WorldAttributes(final EntityProvider entityProvider, final String currentUser)
     {
-
+        this.currentUser = currentUser;
         // And there we have it
         JPAContainer<Worldattribute> attributes
                 = new JPAContainer<>(Worldattribute.class);
@@ -79,6 +81,8 @@ class WorldAttributes extends VerticalLayout implements
         layout.addComponent(name);
 
         contents = new TextArea("Value");
+        contents.setRows(15);
+        contents.setWidth(80, Sizeable.Unit.EM);
         layout.addComponent(contents);
 
         typename = new TextField("Type");
@@ -132,14 +136,22 @@ class WorldAttributes extends VerticalLayout implements
             binder.bind(contents, "contents");
             binder.bind(typename, "type");
             Property itemProperty = item.getItemProperty("owner");
+            boolean enabled = false;
             if (itemProperty == null || itemProperty.getValue() == null)
             {
                 owner.setValue("");
+                enabled = true;
             } else
             {
                 Admin admin = (Admin) itemProperty.getValue();
                 owner.setValue(admin.getName());
+                if (admin.getName().equals(currentUser))
+                {
+                    enabled = true;
+                }
             }
+            binder.setEnabled(enabled);
+            commit.setEnabled(enabled);
         }
     }
 

@@ -14,25 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package awesomeness.vaadin;
+package mmud.rest.services.admin;
 
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import mmud.database.entities.game.Worldattribute;
 
 /**
  *
  * @author maartenl
  */
-@DeclareRoles("deputy")
-@RolesAllowed("deputy")
 @Stateless
-public class WorldattributesProvider extends EjbEntityProvider<Worldattribute>
+public class IdentificationBean
 {
 
-    public WorldattributesProvider()
+    @Resource
+    private SessionContext context;
+
+    public String getCurrentUser()
     {
-        super(Worldattribute.class);
+        String currentUser = context.getCallerPrincipal().getName();
+        return currentUser;
     }
 }

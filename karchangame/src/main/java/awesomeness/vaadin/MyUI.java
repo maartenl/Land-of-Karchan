@@ -31,7 +31,7 @@ public class MyUI extends UI
         mainPanel.setContent(accordion);
 
         // Create the first tab, specify caption when adding
-        Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider()); // Wrap in a layout
+        Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser()); // Wrap in a layout
         accordion.addTab(worldattributes, "World attributes");
 
         Layout scripts = new Scripts(em);
