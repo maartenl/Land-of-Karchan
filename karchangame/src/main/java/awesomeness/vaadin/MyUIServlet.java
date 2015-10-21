@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.annotation.WebServlet;
+import mmud.database.entities.game.Admin;
 import mmud.rest.services.admin.IdentificationBean;
 
 /**
@@ -43,11 +44,14 @@ public class MyUIServlet extends VaadinServlet
     private WorldattributesProvider worldattributesProvider;
 
     @EJB
+    private ScriptsProvider scriptsProvider;
+
+    @EJB
     private IdentificationBean identificationBean;
 
-    public String getCurrentUser()
+    public Admin getCurrentUser()
     {
-        return identificationBean.getCurrentUser();
+        return identificationBean.getCurrentAdmin();
     }
 
     public MyUIServlet()
@@ -68,5 +72,10 @@ public class MyUIServlet extends VaadinServlet
     WorldattributesProvider getWorldattributesProvider()
     {
         return worldattributesProvider;
+    }
+
+    public ScriptsProvider getScriptsProvider()
+    {
+        return scriptsProvider;
     }
 }

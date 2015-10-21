@@ -19,6 +19,10 @@ package mmud.rest.services.admin;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import mmud.database.entities.game.Admin;
+import mmud.exceptions.MudException;
 
 /**
  *
@@ -28,12 +32,36 @@ import javax.ejb.Stateless;
 public class IdentificationBean
 {
 
+    @PersistenceContext(unitName = "karchangamePU")
+    private EntityManager em;
+
     @Resource
     private SessionContext context;
 
+    /**
+     *
+     * @return the current user, for example "Karn".
+     */
     public String getCurrentUser()
     {
         String currentUser = context.getCallerPrincipal().getName();
         return currentUser;
+    }
+
+    /**
+     * TODO: check validUntil.
+     *
+     * @return the admin identified by the current user, or null if no
+     * proper admin can be found.
+     */
+    public Admin getCurrentAdmin()
+    {
+        String currentUser = context.getCallerPrincipal().getName();
+        Admin admin = em.find(Admin.class, currentUser);
+        if (admin == null)
+        {
+            throw new MudException("admin " + currentUser + " not found.");
+        }
+        return admin;
     }
 }

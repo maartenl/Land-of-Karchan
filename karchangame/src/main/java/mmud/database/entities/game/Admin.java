@@ -48,6 +48,7 @@ import mmud.database.entities.items.ItemDefinition;
         {
             @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),
             @NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name"),
+            @NamedQuery(name = "Admin.findValidByName", query = "SELECT a FROM Admin a WHERE a.name = :name AND a.validuntil > current_date"),
             @NamedQuery(name = "Admin.findByPasswd", query = "SELECT a FROM Admin a WHERE a.passwd = :passwd"),
             @NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip"),
             @NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created"),

@@ -16,17 +16,23 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.ui.FormLayout;
-import mmud.database.entities.game.Admin;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import mmud.database.entities.game.Method;
 
 /**
  *
  * @author maartenl
  */
-public class Scripts extends FormLayout
+@DeclareRoles("deputy")
+@RolesAllowed("deputy")
+@Stateless
+public class ScriptsProvider extends EjbEntityProvider<Method>
 {
 
-    Scripts(ScriptsProvider scriptsProvider, Admin currentUser)
+    public ScriptsProvider()
     {
+        super(Method.class);
     }
 }

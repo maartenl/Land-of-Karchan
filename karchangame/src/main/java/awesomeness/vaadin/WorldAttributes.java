@@ -24,12 +24,14 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
@@ -40,8 +42,10 @@ import mmud.database.entities.game.Worldattribute;
  * @author maartenl
  */
 class WorldAttributes extends VerticalLayout implements
-        Property.ValueChangeListener, Button.ClickListener
+        Property.ValueChangeListener
 {
+
+    private Logger logger = Logger.getLogger(WorldAttributes.class.getName());
 
     private final Table worldattribTable;
     private final TextField name;
@@ -50,13 +54,17 @@ class WorldAttributes extends VerticalLayout implements
     private final Label owner;
     private final Button commit;
     private FieldGroup binder;
-    private final String currentUser;
+    private final Admin currentUser;
+    private final Button discard;
+    private final Button disown;
+    private final FormLayout layout;
+    private Item item;
 
-    WorldAttributes(final EntityProvider entityProvider, final String currentUser)
+    WorldAttributes(final EntityProvider entityProvider, final Admin currentUser)
     {
         this.currentUser = currentUser;
         // And there we have it
-        JPAContainer<Worldattribute> attributes
+        final JPAContainer<Worldattribute> attributes
                 = new JPAContainer<>(Worldattribute.class);
         attributes.setEntityProvider(entityProvider);
 
@@ -74,10 +82,11 @@ class WorldAttributes extends VerticalLayout implements
         Panel formPanel = new Panel();
         addComponent(formPanel);
 
-        FormLayout layout = new FormLayout();
+        layout = new FormLayout();
         formPanel.setContent(layout);
 
         name = new TextField("Name");
+        name.setWidth(80, Unit.EM);
         layout.addComponent(name);
 
         contents = new TextArea("Value");
@@ -91,38 +100,88 @@ class WorldAttributes extends VerticalLayout implements
         owner = new Label();
         owner.setCaption("Owner");
         layout.addComponent(owner);
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        layout.addComponent(buttonsLayout);
         commit = new Button("Save", new Button.ClickListener()
         {
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
+                logger.log(Level.FINEST, "commit clicked.");
+                item.getItemProperty("owner").setValue(currentUser);
                 try
                 {
                     binder.commit();
                 } catch (FieldGroup.CommitException ex)
                 {
-                    Logger.getLogger(WorldAttributes.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
             }
         });
-        layout.addComponent(commit);
+        buttonsLayout.addComponent(commit);
 
-        Button discard = new Button("Cancel", new Button.ClickListener()
+        discard = new Button("Cancel", new Button.ClickListener()
         {
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
+                logger.log(Level.FINEST, "discard clicked.");
                 binder.discard();
             }
         });
-        layout.addComponent(discard);
+        buttonsLayout.addComponent(discard);
+
+        Button create = new Button("Create", new Button.ClickListener()
+        {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event)
+            {
+                Worldattribute newInstance = new Worldattribute();
+                newInstance.setOwner(currentUser);
+                newInstance.setCreation(new Date());
+                Object itemId = attributes.addEntity(newInstance);
+                worldattribTable.setValue(itemId);
+            }
+        });
+        buttonsLayout.addComponent(create);
+
+        Button delete = new Button("Delete", new Button.ClickListener()
+        {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event)
+            {
+                attributes.removeItem(worldattribTable.getValue());
+            }
+        });
+        buttonsLayout.addComponent(delete);
+
+        disown = new Button("Disown", new Button.ClickListener()
+        {
+            @Override
+            public void buttonClick(Button.ClickEvent event)
+            {
+                logger.log(Level.FINEST, "disown clicked.");
+                item.getItemProperty("owner").setValue(null);
+//                try
+//                {
+//                    binder.commit();
+//                } catch (FieldGroup.CommitException ex)
+//                {
+//                    logger.log(Level.SEVERE, null, ex);
+//                }
+            }
+        });
+        buttonsLayout.addComponent(disown);
     }
 
     @Override
     public void valueChange(Property.ValueChangeEvent event)
     {
         Object itemId = event.getProperty().getValue();
-        Item item = worldattribTable.getItem(itemId);
+        item = worldattribTable.getItem(itemId);
         boolean entitySelected = item != null;
         if (entitySelected)
         {
@@ -145,20 +204,13 @@ class WorldAttributes extends VerticalLayout implements
             {
                 Admin admin = (Admin) itemProperty.getValue();
                 owner.setValue(admin.getName());
-                if (admin.getName().equals(currentUser))
+                if (admin.getName().equals(currentUser.getName()))
                 {
                     enabled = true;
                 }
             }
-            binder.setEnabled(enabled);
-            commit.setEnabled(enabled);
+            layout.setEnabled(enabled);
         }
     }
 
-    @Override
-    public void buttonClick(Button.ClickEvent event
-    )
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

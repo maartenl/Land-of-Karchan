@@ -34,7 +34,7 @@ public class MyUI extends UI
         Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser()); // Wrap in a layout
         accordion.addTab(worldattributes, "World attributes");
 
-        Layout scripts = new Scripts(em);
+        Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser());
         accordion.addTab(scripts, "Scripts");
 
         Layout areas = new Areas(em);
