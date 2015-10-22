@@ -21,6 +21,7 @@ import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
@@ -59,6 +60,8 @@ class WorldAttributes extends VerticalLayout implements
     private final Button disown;
     private final FormLayout layout;
     private Item item;
+    private boolean busyCreatingNewItem = false;
+    private Worldattribute newInstance;
 
     WorldAttributes(final EntityProvider entityProvider, final Admin currentUser)
     {
@@ -113,10 +116,17 @@ class WorldAttributes extends VerticalLayout implements
                 try
                 {
                     binder.commit();
+                    if (busyCreatingNewItem == true)
+                    {
+
+                        Object itemId = attributes.addEntity(newInstance);
+                        worldattribTable.setValue(itemId);
+                    }
                 } catch (FieldGroup.CommitException ex)
                 {
                     logger.log(Level.SEVERE, null, ex);
                 }
+                busyCreatingNewItem = false;
             }
         });
         buttonsLayout.addComponent(commit);
@@ -138,11 +148,22 @@ class WorldAttributes extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                Worldattribute newInstance = new Worldattribute();
+                busyCreatingNewItem = true;
+                newInstance = new Worldattribute();
                 newInstance.setOwner(currentUser);
                 newInstance.setCreation(new Date());
-                Object itemId = attributes.addEntity(newInstance);
-                worldattribTable.setValue(itemId);
+                item = new BeanItem(newInstance);
+                binder = new FieldGroup(item);
+                binder.setBuffered(true);
+                binder.setEnabled(true);
+                binder.setReadOnly(false);
+                name.setReadOnly(true);
+                name.setEnabled(false);
+                binder.bind(name, "name");
+                binder.bind(contents, "contents");
+                binder.bind(typename, "type");
+                // Object itemId = attributes.addEntity(newInstance);
+                // worldattribTable.setValue(itemId);
             }
         });
         buttonsLayout.addComponent(create);
@@ -185,6 +206,7 @@ class WorldAttributes extends VerticalLayout implements
         boolean entitySelected = item != null;
         if (entitySelected)
         {
+            busyCreatingNewItem = false;
             binder = new FieldGroup(item);
             binder.setBuffered(true);
             binder.setEnabled(true);
