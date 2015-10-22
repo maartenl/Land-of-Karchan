@@ -46,7 +46,7 @@ class WorldAttributes extends VerticalLayout implements
         Property.ValueChangeListener
 {
 
-    private Logger logger = Logger.getLogger(WorldAttributes.class.getName());
+    private static final Logger logger = Logger.getLogger(WorldAttributes.class.getName());
 
     private final Table worldattribTable;
     private final TextField name;
