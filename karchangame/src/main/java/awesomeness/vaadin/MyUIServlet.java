@@ -16,6 +16,7 @@
  */
 package awesomeness.vaadin;
 
+import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
 import javax.ejb.EJB;
@@ -47,6 +48,9 @@ public class MyUIServlet extends VaadinServlet
     private ScriptsProvider scriptsProvider;
 
     @EJB
+    private AreasProvider areasProvider;
+
+    @EJB
     private IdentificationBean identificationBean;
 
     public Admin getCurrentUser()
@@ -69,13 +73,18 @@ public class MyUIServlet extends VaadinServlet
         return em;
     }
 
-    WorldattributesProvider getWorldattributesProvider()
+    EntityProvider getWorldattributesProvider()
     {
         return worldattributesProvider;
     }
 
-    public ScriptsProvider getScriptsProvider()
+    EntityProvider getScriptsProvider()
     {
         return scriptsProvider;
+    }
+
+    EntityProvider getAreasProvider()
+    {
+        return areasProvider;
     }
 }

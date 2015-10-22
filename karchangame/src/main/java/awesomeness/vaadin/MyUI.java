@@ -37,7 +37,7 @@ public class MyUI extends UI
         Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser());
         accordion.addTab(scripts, "Scripts");
 
-        Layout areas = new Areas(em);
+        Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser()); // Wrap in a layout
         accordion.addTab(areas, "Areas");
 
         Layout events = new Events(em);
