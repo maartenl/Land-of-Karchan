@@ -3,9 +3,9 @@ package awesomeness.vaadin;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import javax.persistence.EntityManager;
 
@@ -26,22 +26,22 @@ public class MyUI extends UI
         Panel mainPanel = new Panel("Administration pages");
         setContent(mainPanel);
 
-        // Create the accordion
-        Accordion accordion = new Accordion();
-        mainPanel.setContent(accordion);
+        // Create the tabsheet
+        TabSheet tabsheet = new TabSheet();
+        mainPanel.setContent(tabsheet);
 
         // Create the first tab, specify caption when adding
         Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser()); // Wrap in a layout
-        accordion.addTab(worldattributes, "World attributes");
+        tabsheet.addTab(worldattributes, "World attributes");
 
         Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser());
-        accordion.addTab(scripts, "Scripts");
+        tabsheet.addTab(scripts, "Scripts");
 
         Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser()); // Wrap in a layout
-        accordion.addTab(areas, "Areas");
+        tabsheet.addTab(areas, "Areas");
 
         Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser()); // Wrap in a layout
-        accordion.addTab(events, "Events");
+        tabsheet.addTab(events, "Events");
     }
 
 }
