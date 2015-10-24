@@ -23,6 +23,12 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceProperty;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import mmud.Constants;
+import mmud.database.enums.Filter;
+import mmud.exceptions.MudException;
 
 /**
  *
@@ -32,7 +38,11 @@ import javax.persistence.PersistenceContext;
 public abstract class EjbEntityProvider<T> extends MutableLocalEntityProvider<T>
 {
 
-    @PersistenceContext
+    @PersistenceContext(properties =
+    {
+        @PersistenceProperty(name = "activePersonFilter", value = "0"),
+        @PersistenceProperty(name = "sundaydateFilter", value = "")
+    })
     private EntityManager em;
 
     protected EjbEntityProvider(Class entityClass)
@@ -51,7 +61,20 @@ public abstract class EjbEntityProvider<T> extends MutableLocalEntityProvider<T>
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     protected void runInTransaction(Runnable operation)
     {
-        super.runInTransaction(operation);
+        try
+        {
+            Constants.setFilters(em, Filter.OFF);
+            super.runInTransaction(operation);
+        } catch (ConstraintViolationException e)
+        {
+            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
+            for (ConstraintViolation<?> violation : e.getConstraintViolations())
+            {
+                buffer.append(violation);
+            }
+            throw new MudException(buffer.toString(), e);
+
+        }
     }
 
 }
