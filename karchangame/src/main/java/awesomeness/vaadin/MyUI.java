@@ -40,7 +40,7 @@ public class MyUI extends UI
         Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser()); // Wrap in a layout
         accordion.addTab(areas, "Areas");
 
-        Layout events = new Events(em);
+        Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser()); // Wrap in a layout
         accordion.addTab(events, "Events");
     }
 
