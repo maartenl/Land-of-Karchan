@@ -24,6 +24,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -33,9 +34,12 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.Query;
 import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
 
 /**
@@ -63,7 +67,7 @@ public class Rooms extends VerticalLayout implements
     private final TextField picture;
     private final TextField title;
     private final TextArea contents;
-    private final TextField area;
+    private final ComboBox area;
 
     Rooms(final EntityProvider entityProvider, final Admin currentUser)
     {
@@ -96,12 +100,22 @@ public class Rooms extends VerticalLayout implements
         layout.addComponent(id);
 
         picture = new TextField("Picture");
+        picture.setWidth(100, Sizeable.Unit.EM);
         layout.addComponent(picture);
 
         title = new TextField("Title");
+        title.setWidth(100, Sizeable.Unit.EM);
         layout.addComponent(title);
 
-        area = new TextField("Area");
+        // Create a selection component
+        area = new ComboBox("Area");
+        // Add items with given item IDs
+        Query areas = entityProvider.getEntityManager().createNamedQuery("Area.findAll");
+        List<Area> foundareas = areas.getResultList();
+        for (Area found : foundareas)
+        {
+            area.addItem(found.getArea());
+        }
         layout.addComponent(area);
 
         contents = new TextArea("Description");
@@ -122,6 +136,11 @@ public class Rooms extends VerticalLayout implements
             {
                 logger.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
+                String areaname = (String) area.getValue();
+                Query areaQuery = entityProvider.getEntityManager().createNamedQuery("Area.findByArea");
+                areaQuery.setParameter("area", areaname);
+                Area foundArea = (Area) areaQuery.getSingleResult();
+                item.getItemProperty("area").setValue(foundArea);
                 try
                 {
                     binder.commit();
@@ -224,6 +243,11 @@ public class Rooms extends VerticalLayout implements
             binder.bind(title, "title");
             binder.bind(picture, "picture");
             //binder.bind(area, "area");
+            Property areaProperty = item.getItemProperty("area");
+            if (areaProperty != null && areaProperty.getValue() != null)
+            {
+                area.setValue(((Area) areaProperty.getValue()).getArea());
+            }
             binder.bind(contents, "contents");
             Property itemProperty = item.getItemProperty("owner");
             boolean enabled = false;
