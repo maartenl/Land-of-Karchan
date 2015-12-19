@@ -45,7 +45,7 @@ public class Events extends VerticalLayout implements
 
     private static final Logger logger = Logger.getLogger(Events.class.getName());
 
-    private final Table worldattribTable;
+    private final Table eventsTable;
     private final TextField month;
     private final TextField dayofmonth;
     private final Label owner;
@@ -74,14 +74,14 @@ public class Events extends VerticalLayout implements
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
 
-        worldattribTable = new Table("Events", attributes);
-        worldattribTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "method", "owner", "creation");
-//        worldattribTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "callable", "method", "owner", "creation");
-        worldattribTable.setSizeFull();
-        worldattribTable.setSelectable(true);
-        worldattribTable.addValueChangeListener(this);
-        worldattribTable.setImmediate(true);
-        tablePanel.setContent(worldattribTable);
+        eventsTable = new Table("Events", attributes);
+        eventsTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "method", "owner", "creation");
+//        eventsTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "callable", "method", "owner", "creation");
+        eventsTable.setSizeFull();
+        eventsTable.setSelectable(true);
+        eventsTable.addValueChangeListener(this);
+        eventsTable.setImmediate(true);
+        tablePanel.setContent(eventsTable);
 
         Panel formPanel = new Panel();
         addComponent(formPanel);
@@ -127,7 +127,7 @@ public class Events extends VerticalLayout implements
                     {
 
                         Object itemId = attributes.addEntity(newInstance);
-                        worldattribTable.setValue(itemId);
+                        eventsTable.setValue(itemId);
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -173,7 +173,7 @@ public class Events extends VerticalLayout implements
                 binder.bind(minute, "minute");
                 binder.bind(dayofweek, "dayofweek");
                 // Object itemId = attributes.addEntity(newInstance);
-                // worldattribTable.setValue(itemId);
+                // eventsTable.setValue(itemId);
             }
         });
         buttonsLayout.addComponent(create);
@@ -184,7 +184,7 @@ public class Events extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                attributes.removeItem(worldattribTable.getValue());
+                attributes.removeItem(eventsTable.getValue());
             }
         });
         buttonsLayout.addComponent(delete);
@@ -212,7 +212,7 @@ public class Events extends VerticalLayout implements
     public void valueChange(Property.ValueChangeEvent event)
     {
         Object itemId = event.getProperty().getValue();
-        item = worldattribTable.getItem(itemId);
+        item = eventsTable.getItem(itemId);
         boolean entitySelected = item != null;
         if (entitySelected)
         {
