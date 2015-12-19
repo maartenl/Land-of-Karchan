@@ -23,6 +23,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
@@ -55,7 +56,7 @@ public class Rooms extends VerticalLayout implements
 
     private static final Logger logger = Logger.getLogger(Rooms.class.getName());
 
-    private CheckBox filterOnOwner;
+    private final CheckBox filterOnOwner;
 
     private final Table roomsTable;
     private final Label owner;
@@ -73,6 +74,13 @@ public class Rooms extends VerticalLayout implements
     private final TextField title;
     private final TextArea contents;
     private final ComboBox area;
+
+    private final TextField north;
+    private final TextField south;
+    private final TextField east;
+    private final TextField west;
+    private final TextField up;
+    private final TextField down;
 
     Rooms(final EntityProvider entityProvider, final Admin currentUser)
     {
@@ -148,6 +156,30 @@ public class Rooms extends VerticalLayout implements
         contents.setWidth(80, Sizeable.Unit.EM);
         layout.addComponent(contents);
 
+        north = new TextField("North", new IntegerProperty());
+        north.setConverter(new StringToIntegerConverter());
+        layout.addComponent(north);
+
+        south = new TextField("South", new IntegerProperty());
+        south.setConverter(new StringToIntegerConverter());
+        layout.addComponent(south);
+
+        east = new TextField("East", new IntegerProperty());
+        east.setConverter(new StringToIntegerConverter());
+        layout.addComponent(east);
+
+        west = new TextField("West", new IntegerProperty());
+        west.setConverter(new StringToIntegerConverter());
+        layout.addComponent(west);
+
+        up = new TextField("Up", new IntegerProperty());
+        up.setConverter(new StringToIntegerConverter());
+        layout.addComponent(up);
+
+        down = new TextField("Down", new IntegerProperty());
+        down.setConverter(new StringToIntegerConverter());
+        layout.addComponent(down);
+
         owner = new Label();
         owner.setCaption("Owner");
         layout.addComponent(owner);
@@ -166,6 +198,14 @@ public class Rooms extends VerticalLayout implements
                 areaQuery.setParameter("area", areaname);
                 Area foundArea = (Area) areaQuery.getSingleResult();
                 item.getItemProperty("area").setValue(foundArea);
+
+                setRoom("north", north, item);
+                setRoom("south", south, item);
+                setRoom("west", west, item);
+                setRoom("east", east, item);
+                setRoom("up", up, item);
+                setRoom("down", down, item);
+
                 try
                 {
                     binder.commit();
@@ -180,6 +220,20 @@ public class Rooms extends VerticalLayout implements
                     logger.log(Level.SEVERE, null, ex);
                 }
                 busyCreatingNewItem = false;
+            }
+
+            private void setRoom(String direction, TextField roomTextfield, Item item) throws Property.ReadOnlyException
+            {
+                Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
+                if (northId != null)
+                {
+                    Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                    roomQuery.setParameter("id", northId);
+                    item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
+                } else
+                {
+                    item.getItemProperty(direction).setValue(null);
+                }
             }
         });
         buttonsLayout.addComponent(commit);
@@ -268,10 +322,67 @@ public class Rooms extends VerticalLayout implements
             binder.bind(title, "title");
             binder.bind(picture, "picture");
             //binder.bind(area, "area");
+            Property northProperty = item.getItemProperty("north");
+            if (northProperty != null && northProperty.getValue() != null)
+            {
+                Room room = (Room) northProperty.getValue();
+                north.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                north.setPropertyDataSource(new IntegerProperty());
+            }
+            Property southProperty = item.getItemProperty("south");
+            if (southProperty != null && southProperty.getValue() != null)
+            {
+                Room room = (Room) southProperty.getValue();
+                south.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                south.setPropertyDataSource(new IntegerProperty());
+            }
+            Property westProperty = item.getItemProperty("west");
+            if (westProperty != null && westProperty.getValue() != null)
+            {
+                Room room = (Room) westProperty.getValue();
+                west.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                west.setPropertyDataSource(new IntegerProperty());
+            }
+            Property eastProperty = item.getItemProperty("east");
+            if (eastProperty != null && eastProperty.getValue() != null)
+            {
+                Room room = (Room) eastProperty.getValue();
+                east.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                east.setPropertyDataSource(new IntegerProperty());
+            }
+            Property upProperty = item.getItemProperty("up");
+            if (upProperty != null && upProperty.getValue() != null)
+            {
+                Room room = (Room) upProperty.getValue();
+                up.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                up.setPropertyDataSource(new IntegerProperty());
+            }
+            Property downProperty = item.getItemProperty("down");
+            if (downProperty != null && downProperty.getValue() != null)
+            {
+                Room room = (Room) downProperty.getValue();
+                down.setPropertyDataSource(new IntegerProperty(room.getId()));
+            } else
+            {
+                down.setPropertyDataSource(new IntegerProperty());
+            }
             Property areaProperty = item.getItemProperty("area");
             if (areaProperty != null && areaProperty.getValue() != null)
             {
                 area.setValue(((Area) areaProperty.getValue()).getArea());
+            } else
+            {
+                area.setValue(null);
             }
             binder.bind(contents, "contents");
             Property itemProperty = item.getItemProperty("owner");
@@ -290,6 +401,54 @@ public class Rooms extends VerticalLayout implements
                 }
             }
             layout.setEnabled(enabled);
+        }
+    }
+
+    private static class IntegerProperty implements Property<Integer>
+    {
+
+        private Integer value;
+        private boolean readOnly;
+
+        public IntegerProperty()
+        {
+            super();
+        }
+
+        public IntegerProperty(Integer integer)
+        {
+            this();
+            value = integer;
+        }
+
+        @Override
+        public Integer getValue()
+        {
+            return value;
+        }
+
+        @Override
+        public void setValue(Integer newValue) throws ReadOnlyException
+        {
+            this.value = newValue;
+        }
+
+        @Override
+        public Class<? extends Integer> getType()
+        {
+            return Integer.class;
+        }
+
+        @Override
+        public boolean isReadOnly()
+        {
+            return readOnly;
+        }
+
+        @Override
+        public void setReadOnly(boolean newStatus)
+        {
+            this.readOnly = newStatus;
         }
     }
 
