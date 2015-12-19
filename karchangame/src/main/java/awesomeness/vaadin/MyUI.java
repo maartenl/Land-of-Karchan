@@ -42,6 +42,9 @@ public class MyUI extends UI
 
         Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser()); // Wrap in a layout
         tabsheet.addTab(events, "Events");
+
+        Layout rooms = new Rooms(servlet.getRoomsProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        tabsheet.addTab(rooms, "Rooms");
     }
 
 }
