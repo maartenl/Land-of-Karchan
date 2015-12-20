@@ -45,6 +45,9 @@ public class MyUI extends UI
 
         Layout rooms = new Rooms(servlet.getRoomsProvider(), servlet.getCurrentUser()); // Wrap in a layout
         tabsheet.addTab(rooms, "Rooms");
+
+        Layout commands = new Commands(servlet.getCommandsProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        tabsheet.addTab(commands, "Commands");
     }
 
 }

@@ -57,6 +57,9 @@ public class MyUIServlet extends VaadinServlet
     private RoomsProvider roomsProvider;
 
     @EJB
+    private CommandsProvider commandsProvider;
+
+    @EJB
     private IdentificationBean identificationBean;
 
     public Admin getCurrentUser()
@@ -103,4 +106,10 @@ public class MyUIServlet extends VaadinServlet
     {
         return roomsProvider;
     }
+
+    public CommandsProvider getCommandsProvider()
+    {
+        return commandsProvider;
+    }
+
 }
