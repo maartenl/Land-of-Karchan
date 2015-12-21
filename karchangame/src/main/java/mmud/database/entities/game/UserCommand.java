@@ -61,7 +61,7 @@ public class UserCommand implements Serializable, Ownage
     private Integer id;
     @Basic(optional = true)
     @Column(name = "callable")
-    private Integer callable;
+    private Boolean callable;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -108,17 +108,17 @@ public class UserCommand implements Serializable, Ownage
 
     public Boolean getCallable()
     {
-        return callable != null && callable == 1;
+        return callable != null && callable;
     }
 
     public void setCallable(Boolean callable)
     {
         if (callable == null || callable == false)
         {
-            this.callable = 0;
+            this.callable = false;
             return;
         }
-        this.callable = 1;
+        this.callable = true;
     }
 
     public String getCommand()

@@ -104,7 +104,7 @@ public class Commands extends VerticalLayout implements
         addComponent(tablePanel);
 
         commandsTable = new Table("Commands", attributes);
-        commandsTable.setVisibleColumns("id", "command", "methodName", "room", "owner", "creation");
+        commandsTable.setVisibleColumns("id", "command", "methodName", "callable", "room", "owner", "creation");
         commandsTable.setSizeFull();
         commandsTable.setSelectable(true);
         commandsTable.addValueChangeListener(this);
@@ -134,6 +134,7 @@ public class Commands extends VerticalLayout implements
         layout.addComponent(methodName);
 
         callable = new CheckBox("Callable");
+        callable.setDescription("checked if the method can be called, unchecked if the method has been deactivated.");
         layout.addComponent(callable);
 
         owner = new Label();
@@ -154,7 +155,6 @@ public class Commands extends VerticalLayout implements
                 methodQuery.setParameter("name", method);
                 Method foundMethod = (Method) methodQuery.getSingleResult();
                 item.getItemProperty("methodName").setValue(foundMethod);
-
                 setRoom("room", room, item);
 
                 try
@@ -175,6 +175,10 @@ public class Commands extends VerticalLayout implements
 
             private void setRoom(String direction, TextField roomTextfield, Item item) throws Property.ReadOnlyException
             {
+                if (roomTextfield.getPropertyDataSource() == null)
+                {
+                    item.getItemProperty(direction).setValue(null);
+                }
                 Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
                 if (northId != null)
                 {
