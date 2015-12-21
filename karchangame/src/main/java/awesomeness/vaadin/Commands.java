@@ -16,6 +16,7 @@
  */
 package awesomeness.vaadin;
 
+import awesomeness.vaadin.utils.IntegerProperty;
 import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container.Filter;
@@ -310,51 +311,4 @@ public class Commands extends VerticalLayout implements
         }
     }
 
-    private static class IntegerProperty implements Property<Integer>
-    {
-
-        private Integer value;
-        private boolean readOnly;
-
-        public IntegerProperty()
-        {
-            super();
-        }
-
-        public IntegerProperty(Integer integer)
-        {
-            this();
-            value = integer;
-        }
-
-        @Override
-        public Integer getValue()
-        {
-            return value;
-        }
-
-        @Override
-        public void setValue(Integer newValue) throws ReadOnlyException
-        {
-            this.value = newValue;
-        }
-
-        @Override
-        public Class<? extends Integer> getType()
-        {
-            return Integer.class;
-        }
-
-        @Override
-        public boolean isReadOnly()
-        {
-            return readOnly;
-        }
-
-        @Override
-        public void setReadOnly(boolean newStatus)
-        {
-            this.readOnly = newStatus;
-        }
-    }
 }
