@@ -18,12 +18,15 @@ package awesomeness.vaadin;
 
 import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -48,6 +51,8 @@ class WorldAttributes extends VerticalLayout implements
 
     private static final Logger logger = Logger.getLogger(WorldAttributes.class.getName());
 
+    private final CheckBox filterOnOwner;
+
     private final Table worldattribTable;
     private final TextField name;
     private final TextArea contents;
@@ -69,7 +74,27 @@ class WorldAttributes extends VerticalLayout implements
         // And there we have it
         final JPAContainer<Worldattribute> attributes
                 = new JPAContainer<>(Worldattribute.class);
+        final Container.Filter filter = new Compare.Equal("owner",
+                currentUser);
         attributes.setEntityProvider(entityProvider);
+
+        filterOnOwner = new CheckBox("Filter on owner");
+        filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
+        {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (event.getProperty().getValue().equals(Boolean.TRUE))
+                {
+                    attributes.addContainerFilter(filter);
+                } else
+                {
+                    attributes.removeContainerFilter(filter);
+                }
+            }
+        });
+        addComponent(filterOnOwner);
 
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
