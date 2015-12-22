@@ -124,13 +124,12 @@
           compilation classpath by vaadin-maven-plugin so normally there is no need for an
           explicit dependency.
         -->
-        <!--
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiler</artifactId>
             <scope>provided</scope>
+            <version>7.5.2</version>
         </dependency>
-        -->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
