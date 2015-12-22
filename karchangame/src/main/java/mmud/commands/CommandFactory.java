@@ -36,6 +36,7 @@ import mmud.commands.guild.AcceptCommand;
 import mmud.commands.guild.ApplyCommand;
 import mmud.commands.guild.ChangeMasterCommand;
 import mmud.commands.guild.DetailsCommand;
+import mmud.commands.guild.GuildMessageCommand;
 import mmud.commands.guild.LeaveCommand;
 import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RejectCommand;
@@ -740,6 +741,15 @@ public class CommandFactory
             {
                 return new ApplyCommand(
                         "guildapply( (\\w)+)?");
+            }
+        });
+        theCommandStructure.put("guildmessage", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new GuildMessageCommand(
+                        "guildmessage .+");
             }
         });
         theCommandStructure.put("guildleave", new CommandCreator()
