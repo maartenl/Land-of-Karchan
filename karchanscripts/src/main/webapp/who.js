@@ -46,11 +46,11 @@ function showWho()
                 "</style>";
         if (data.length === 1)
         {
-            formatted_html = "<p>There is one person online.</p><ul>";
+            formatted_html += "<p>There is one person online.</p><ul>";
         }
         else
         {
-            formatted_html = "<p>There are " + data.length + " people online.</p><ul class=\"wholist\">";
+            formatted_html += "<p>There are " + data.length + " people online.</p><ul class=\"wholist\">";
         }
         for (i = 0; i < data.length; i++)
         {
