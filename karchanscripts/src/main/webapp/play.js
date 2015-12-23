@@ -88,15 +88,15 @@ function writeStuff(data)
     var body = data.body;
     var title = data.title;
 
-    var imageTag = (image == null || image == "") ? "" : "<img src=\"" + image + "\"/>";
+    var imageTag = (image === null || image === "") ? "" : "<img style=\"vertical-align: text-bottom;\" src=\"" + image + "\"/>";
     var capitalChar = body.charAt(0).toLocaleLowerCase();
     // http://www.karchan.org/images/gif/letters/w.gif
     var capital = "<img align=\"left\" src=\"/images/gif/letters/" + capitalChar + ".gif\" alt=\"" + capitalChar.toLocaleUpperCase() + "\"/>";
-    if (capitalChar == " " || capitalChar == "<")
+    if (capitalChar === " " || capitalChar === "<")
     {
       capital = capitalChar;
     }
-    $('#page-title').html(imageTag + title);
+    $('#page-title').html("<h1>" + imageTag + title + "</h1>");
     var body = "<p>" + capital + body.substring(1) + "</p>";
     if (data.north !== undefined || data.west !== undefined || data.east !== undefined || data.south !== undefined || data.up !== undefined || data.down != undefined)
     {
