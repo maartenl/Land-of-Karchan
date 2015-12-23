@@ -41,7 +41,7 @@ function showWho()
                 "padding:12px;\n" +
                 "}\n" +
                 "ul.wholist li img {\n" +
-                "vertical - align: text - bottom;\n" +
+                "vertical-align: text-bottom;\n" +
                 "}\n" +
                 "</style>";
         if (data.length === 1)
