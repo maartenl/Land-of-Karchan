@@ -45,7 +45,7 @@ public class GuildMessageCommand extends GuildMasterCommand
         aUser.getGuild().setLogonmessage(message);
 
         aUser.writeMessage("You have changed your guild logonmessage to <i>" + message + "</i>.<br/>\r\n");
-        logBean.writeLog(aUser, " changed guildmessage of  " + aUser.getGuild().getName() + " to " + message);
+        logBean.writeLog(aUser, " changed guildmessage of  " + aUser.getGuild().getName() + ".", message);
         return aUser.getRoom();
     }
 
