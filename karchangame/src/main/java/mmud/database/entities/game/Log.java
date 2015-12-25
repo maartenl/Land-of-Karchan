@@ -68,7 +68,7 @@ public class Log implements Serializable
     private String name;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 65535)
+    @Size(min = 1, max = 255)
     @Column(name = "message")
     private String message;
     @Lob

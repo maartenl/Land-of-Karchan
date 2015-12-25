@@ -36,7 +36,8 @@ import mmud.database.entities.game.Log;
  */
 @Stateless
 @LocalBean
-public class LogBean {
+public class LogBean
+{
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -47,19 +48,79 @@ public class LogBean {
      *
      * @return EntityManager
      */
-    protected EntityManager getEntityManager() {
+    protected EntityManager getEntityManager()
+    {
         return em;
     }
+
     private static final Logger itsLog = Logger.getLogger(LogBean.class.getName());
+
+    /**
+     * <p>
+     * Create and persist a new log entity.</p>
+     * <p>
+     * In case the message is too long, the message will be truncated to 255 characters in length.</p>
+     * <p>
+     * Also in this case a log message
+     * is created+persisted containing the error that the message was too long and the message
+     * is appended in the addendum.</p>
+     * <p>
+     * </p>
+     * @param person the person, may be null.
+     * @param message the message, may not be null.
+     * @param addendum the addendum that does not fit in the message, may be null.
+     * @return the new log
+     */
+    private Log createLog(Person person, String message, String addendum)
+    {
+        if (message.length() > 255)
+        {
+            createLog(person, "The log message was too long!", message);
+        }
+        Log log = new Log();
+        log.setName(person == null ? null : person.getName());
+        log.setMessage(message.length() < 255 ? message : message.substring(0, 255));
+        log.setAddendum(addendum);
+        getEntityManager().persist(log);
+        return log;
+    }
+
+    /**
+     * @see #createLog(mmud.database.entities.characters.Person, java.lang.String)
+     * @param person the person, may be null.
+     * @param message the message, may not be null.
+     * @return the new log
+     */
+    private Log createLog(Person person, String message)
+    {
+        Log log = createLog(person, message, null);
+        return log;
+    }
 
     /**
      * write a log message to the database. A simple general message.Ã¸
      *
      * @param message the message to be written in the log, may not be larger
-     * than 255 characters.
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
+     * @param addendum the rest of the message, can be large. Used for storing
+     * specifics regarding the logmessage.
      */
-    public void writeLog(String message) {
-        writeLog(null, message);
+    public void writeLog(String message, String addendum)
+    {
+        writeLog(null, message, addendum);
+    }
+
+    /**
+     * write a log message to the database. A simple general message.Ã¸
+     *
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
+     */
+    public void writeLog(String message)
+    {
+        writeLog(null, message, null);
     }
 
     /**
@@ -74,15 +135,36 @@ public class LogBean {
      *
      * @param person the person to be inscribed in the log table. May be null.
      * @param message the message to be written in the log, may not be larger
-     * than 255 characters.
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
      */
-    public void writeLog(Person person, String message) {
+    public void writeLog(Person person, String message)
+    {
         itsLog.finer("writeLog");
+        createLog(person, message);
+    }
 
-        Log log = new Log();
-        log.setName(person == null ? null : person.getName());
-        log.setMessage(message);
-        getEntityManager().persist(log);
+    /**
+     * write a log message to the database. This log facility is primarily used
+     * to keep a record of what kind of important mutations are done or
+     * attempted by both characters as well as administrators. Some examples:
+     * <ul>
+     * <li>an item is picked up off the floor by a character
+     * <li>an item is eaten
+     * <li>an administrator creates a new item/room/character
+     * </ul>
+     *
+     * @param person the person to be inscribed in the log table. May be null.
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
+     * @param addendum the rest of the message, can be large. Used for storing
+     * specifics regarding the logmessage.
+     */
+    public void writeLog(Person person, String message, String addendum)
+    {
+        itsLog.finer("writeLog");
+        createLog(person, message, addendum);
     }
 
     /**
@@ -91,18 +173,16 @@ public class LogBean {
      * @param person the person to be inscribed in the log table. May be null.
      * @param throwable the exception or error to be written to the log table.
      */
-    public void writeLogException(Person person, Throwable throwable) {
+    public void writeLogException(Person person, Throwable throwable)
+    {
         itsLog.finer("writeLogException");
 
-        Log log = new Log();
-        log.setName(person == null ? null : person.getName());
-        log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-        try (PrintStream myPrintStream = new PrintStream(myStream)) {
+        try (PrintStream myPrintStream = new PrintStream(myStream))
+        {
             throwable.printStackTrace(myPrintStream);
         }
-        log.setAddendum(myStream.toString());
-        getEntityManager().persist(log);
+        createLog(person, throwable.toString(), myStream.toString());
     }
 
     /**
@@ -110,18 +190,15 @@ public class LogBean {
      *
      * @param throwable the exception or error to be written to the log table.
      */
-    public void writeLogException(Throwable throwable) {
+    public void writeLogException(Throwable throwable)
+    {
         itsLog.finer("writeLogException");
-
-        Log log = new Log();
-        log.setName(null);
-        log.setMessage(throwable.toString());
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-        try (PrintStream myPrintStream = new PrintStream(myStream)) {
+        try (PrintStream myPrintStream = new PrintStream(myStream))
+        {
             throwable.printStackTrace(myPrintStream);
         }
-        log.setAddendum(myStream.toString());
-        getEntityManager().persist(log);
+        createLog(null, throwable.toString(), myStream.toString());
     }
 
     /**
@@ -132,18 +209,22 @@ public class LogBean {
      * @param command the command that is to be executed written in the log, may
      * not be larger than 255 characters.
      */
-    public void writeCommandLog(Person person, String command) {
+    public void writeCommandLog(Person person, String command)
+    {
         itsLog.finer("writeCommandLog");
 
         Commandlog commandlog = new Commandlog();
         commandlog.setName(person == null ? null : person.getName());
         commandlog.setStamp(new Date());
         commandlog.setCommand(command);
-        try {
+        try
+        {
             getEntityManager().persist(commandlog);
-        } catch (ConstraintViolationException ex) {
+        } catch (ConstraintViolationException ex)
+        {
             StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-            for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            for (ConstraintViolation<?> violation : ex.getConstraintViolations())
+            {
                 buffer.append(violation);
             }
             throw new RuntimeException(buffer.toString(), ex);

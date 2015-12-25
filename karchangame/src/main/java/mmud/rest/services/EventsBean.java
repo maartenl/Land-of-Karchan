@@ -162,7 +162,7 @@ public class EventsBean
         for (Event event : list)
         {
             // itsLog.log(Level.INFO, "Event {0} executed.", event.getEventid());
-            logBean.writeLog(null, "Event " + event.getEventid() + " executed.");
+            logBean.writeLog("Event " + event.getEventid() + " executed.");
             Method method = event.getMethod();
             try
             {
@@ -197,7 +197,7 @@ public class EventsBean
     @Schedule(hour = "*", minute = "1")
     private void executeIdleCleanup()
     {
-        logBean.writeLog(null, "executeIdleCleanup(): scheduled at time " + new Date() + ".");
+        logBean.writeLog("executeIdleCleanup(): scheduled at time " + new Date() + ".");
         Constants.setFilters(getEntityManager(), Filter.ON);
         Query query = getEntityManager().createNamedQuery("User.who");
         List<User> list = query.getResultList();
@@ -207,7 +207,7 @@ public class EventsBean
             {
                 final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + user.getIdleTime() + " minutes. Deactivated.";
                 itsLog.info(message);
-                logBean.writeLog(null, message);
+                logBean.writeLog(message);
                 user.getRoom().sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");
                 user.deactivate();
             }

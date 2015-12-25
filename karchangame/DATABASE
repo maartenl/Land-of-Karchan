@@ -341,3 +341,5 @@ ALTER TABLE `mmud`.`mm_events`
 ALTER TABLE mm_usertable ADD visible int(1) DEFAULT 1;
 ALTER TABLE mm_usertable ADD rrribbits int(10) DEFAULT 0, ADD heehaws int(10) DEFAULT 0;
 
+ALTER TABLE mm_log 
+CHANGE COLUMN `message` `message` varchar(255) not NULL;
