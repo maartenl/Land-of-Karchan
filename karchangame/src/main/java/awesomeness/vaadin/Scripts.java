@@ -24,6 +24,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.data.util.filter.Like;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -77,6 +78,36 @@ public class Scripts extends VerticalLayout implements
                 currentUser);
         attributes.setEntityProvider(entityProvider);
 
+        Panel searchPanel = new Panel();
+        addComponent(searchPanel);
+
+        HorizontalLayout searchLayout = new HorizontalLayout();
+        searchPanel.setContent(searchLayout);
+
+        TextField filterOnMethodName = new TextField("Filter on methodname");
+        filterOnMethodName.setDescription("Allows wildcards.");
+        filterOnMethodName.addValueChangeListener(new Property.ValueChangeListener()
+        {
+            private Container.Filter filter;
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (filter != null)
+                {
+                    attributes.removeContainerFilter(filter);
+                    filter = null;
+                }
+                String wildcards = (String) event.getProperty().getValue();
+                if (wildcards != null && !wildcards.trim().equals(""))
+                {
+                    filter = new Like("name", wildcards);
+                    attributes.addContainerFilter(filter);
+                }
+            }
+        });
+        searchLayout.addComponent(filterOnMethodName);
+
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
         {
@@ -93,7 +124,8 @@ public class Scripts extends VerticalLayout implements
                 }
             }
         });
-        addComponent(filterOnOwner);
+        searchLayout.addComponent(filterOnOwner);
+
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
 
