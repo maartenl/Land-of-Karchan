@@ -88,7 +88,7 @@ function writeStuff(data)
     var body = data.body;
     var title = data.title;
 
-    var imageTag = (image === null || image === "") ? "" : "<img style=\"vertical-align: text-bottom;\" src=\"" + image + "\"/>";
+    var imageTag = (typeof data.image === "undefined" || image === null || image === "") ? "" : "<img style=\"vertical-align: text-bottom;\" src=\"" + image + "\"/>";
     var capitalChar = body.charAt(0).toLocaleLowerCase();
     // http://www.karchan.org/images/gif/letters/w.gif
     var capital = "<img align=\"left\" src=\"/images/gif/letters/" + capitalChar + ".gif\" alt=\"" + capitalChar.toLocaleUpperCase() + "\"/>";
