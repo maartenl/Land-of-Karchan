@@ -31,10 +31,5 @@ update mm_boards set owner=null where owner="$1";
 update mm_usertable set owner=null where owner="$1";
 update mm_area set owner=null where owner="$1";
 
-#
-# remove the administrator from the administrator table
-#
-delete from mm_admin where name="$1";
-
 END_OF_DATA
 
