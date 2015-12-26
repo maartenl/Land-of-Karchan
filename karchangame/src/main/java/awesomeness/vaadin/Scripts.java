@@ -85,7 +85,7 @@ public class Scripts extends VerticalLayout implements
         searchPanel.setContent(searchLayout);
 
         TextField filterOnMethodName = new TextField("Filter on methodname");
-        filterOnMethodName.setDescription("Allows wildcards.");
+        filterOnMethodName.setDescription("Allows wildcards like %.");
         filterOnMethodName.addValueChangeListener(new Property.ValueChangeListener()
         {
             private Container.Filter filter;
