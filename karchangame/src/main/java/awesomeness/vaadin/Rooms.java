@@ -134,11 +134,11 @@ public class Rooms extends VerticalLayout implements
         layout.addComponent(id);
 
         picture = new TextField("Picture");
-        picture.setWidth(100, Sizeable.Unit.EM);
+        picture.setWidth(50, Sizeable.Unit.EM);
         layout.addComponent(picture);
 
         title = new TextField("Title");
-        title.setWidth(100, Sizeable.Unit.EM);
+        title.setWidth(50, Sizeable.Unit.EM);
         layout.addComponent(title);
 
         // Create a selection component

@@ -124,14 +124,14 @@ public class Commands extends VerticalLayout implements
         layout.addComponent(id);
 
         command = new TextField("Command");
-        command.setWidth(100, Sizeable.Unit.EM);
+        command.setWidth(50, Sizeable.Unit.EM);
         layout.addComponent(command);
 
         room = new TextField("Room");
         layout.addComponent(room);
 
         methodName = new TextField("methodName");
-        methodName.setWidth(100, Sizeable.Unit.EM);
+        methodName.setWidth(50, Sizeable.Unit.EM);
         layout.addComponent(methodName);
 
         callable = new CheckBox("Callable");
@@ -180,11 +180,11 @@ public class Commands extends VerticalLayout implements
                 {
                     item.getItemProperty(direction).setValue(null);
                 }
-                Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
-                if (northId != null)
+                Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
+                if (roomId != null)
                 {
                     Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
-                    roomQuery.setParameter("id", northId);
+                    roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else
                 {

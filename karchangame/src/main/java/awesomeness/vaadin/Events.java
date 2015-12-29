@@ -16,6 +16,7 @@
  */
 package awesomeness.vaadin;
 
+import awesomeness.vaadin.utils.IntegerProperty;
 import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
@@ -24,6 +25,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
@@ -36,7 +38,11 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.Query;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Method;
+import mmud.database.entities.game.Room;
 
 /**
  *
@@ -67,6 +73,10 @@ public class Events extends VerticalLayout implements
     private final TextField minute;
     private final TextField dayofweek;
     private final TextField eventid;
+
+    private final TextField person;
+    private final TextField room;
+    private final TextField method;
 
     Events(final EntityProvider entityProvider, final Admin currentUser)
     {
@@ -131,6 +141,16 @@ public class Events extends VerticalLayout implements
         dayofweek = new TextField("Day of week");
         layout.addComponent(dayofweek);
 
+        person = new TextField("Person");
+        layout.addComponent(person);
+
+        room = new TextField("Room");
+        layout.addComponent(room);
+
+        method = new TextField("Methodname");
+        method.setWidth(50, Sizeable.Unit.EM);
+        layout.addComponent(method);
+
         owner = new Label();
         owner.setCaption("Owner");
         layout.addComponent(owner);
@@ -144,6 +164,13 @@ public class Events extends VerticalLayout implements
             {
                 logger.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
+                String methodName = (String) method.getValue();
+                Query methodQuery = entityProvider.getEntityManager().createNamedQuery("Method.findByName");
+                methodQuery.setParameter("name", methodName);
+                Method foundMethod = (Method) methodQuery.getSingleResult();
+                item.getItemProperty("method").setValue(foundMethod);
+                setPerson("person", person, item);
+                setRoom("room", room, item);
                 try
                 {
                     binder.commit();
@@ -159,6 +186,43 @@ public class Events extends VerticalLayout implements
                 }
                 busyCreatingNewItem = false;
             }
+
+            private void setRoom(String direction, TextField roomTextfield, Item item) throws Property.ReadOnlyException
+            {
+                if (roomTextfield.getPropertyDataSource() == null)
+                {
+                    item.getItemProperty(direction).setValue(null);
+                }
+                Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
+                if (northId != null)
+                {
+                    Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                    roomQuery.setParameter("id", northId);
+                    item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
+                } else
+                {
+                    item.getItemProperty(direction).setValue(null);
+                }
+            }
+
+            private void setPerson(String person, TextField personTextfield, Item item)
+            {
+                if (personTextfield.getValue() == null)
+                {
+                    item.getItemProperty(person).setValue(null);
+                }
+                String personName = (String) personTextfield.getValue();
+                if (personName != null && !personName.trim().equals(""))
+                {
+                    Query personQuery = entityProvider.getEntityManager().createNamedQuery("Person.findByName");
+                    personQuery.setParameter("name", personName);
+                    item.getItemProperty(person).setValue((Person) personQuery.getSingleResult());
+                } else
+                {
+                    item.getItemProperty(person).setValue(null);
+                }
+            }
+
         });
         buttonsLayout.addComponent(commit);
 
@@ -253,6 +317,32 @@ public class Events extends VerticalLayout implements
             binder.bind(hour, "hour");
             binder.bind(minute, "minute");
             binder.bind(dayofweek, "dayofweek");
+            Property personProperty = item.getItemProperty("person");
+            if (personProperty != null && personProperty.getValue() != null)
+            {
+                Person personName = (Person) personProperty.getValue();
+                person.setValue(personName.getName());
+            } else
+            {
+                person.setValue(null);
+            }
+            Property roomProperty = item.getItemProperty("room");
+            if (roomProperty != null && roomProperty.getValue() != null)
+            {
+                Room roomroom = (Room) roomProperty.getValue();
+                room.setPropertyDataSource(new IntegerProperty(roomroom.getId()));
+            } else
+            {
+                room.setPropertyDataSource(new IntegerProperty());
+            }
+            Property methodProperty = item.getItemProperty("method");
+            if (methodProperty != null && methodProperty.getValue() != null)
+            {
+                method.setValue(((Method) methodProperty.getValue()).getName());
+            } else
+            {
+                method.setValue(null);
+            }
             Property itemProperty = item.getItemProperty("owner");
             boolean enabled = false;
             if (itemProperty == null || itemProperty.getValue() == null)
