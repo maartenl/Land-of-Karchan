@@ -225,11 +225,11 @@ public class Rooms extends VerticalLayout implements
 
             private void setRoom(String direction, TextField roomTextfield, Item item) throws Property.ReadOnlyException
             {
-                Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
-                if (northId != null)
+                Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
+                if (roomId != null)
                 {
                     Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
-                    roomQuery.setParameter("id", northId);
+                    roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else
                 {

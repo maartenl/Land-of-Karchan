@@ -24,6 +24,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
@@ -88,6 +89,134 @@ public class Events extends VerticalLayout implements
                 currentUser);
         attributes.setEntityProvider(entityProvider);
 
+        Panel searchPanel = new Panel();
+        addComponent(searchPanel);
+
+        HorizontalLayout searchLayout = new HorizontalLayout();
+        searchPanel.setContent(searchLayout);
+
+        final TextField filterOnId = new TextField("Id", new IntegerProperty());
+        filterOnId.setConverter(new StringToIntegerConverter());
+        filterOnId.setDescription("Does not allows wildcards.");
+        filterOnId.addValueChangeListener(new Property.ValueChangeListener()
+        {
+            private Container.Filter filter;
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (filter != null)
+                {
+                    attributes.removeContainerFilter(filter);
+                    filter = null;
+                }
+                // Integer eventId = (Integer) event.getProperty().getValue();
+                Integer eventId = (Integer) filterOnId.getPropertyDataSource().getValue();
+                if (eventId == null)
+                {
+                    return;
+                }
+                filter = new Compare.Equal("eventid", eventId);
+                attributes.addContainerFilter(filter);
+            }
+        });
+        searchLayout.addComponent(filterOnId);
+
+        TextField filterOnMethodName = new TextField("Filter on methodname");
+        filterOnMethodName.setDescription("Does not allows wildcards.");
+        filterOnMethodName.addValueChangeListener(new Property.ValueChangeListener()
+        {
+            private Container.Filter filter;
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (filter != null)
+                {
+                    attributes.removeContainerFilter(filter);
+                    filter = null;
+                }
+                String methodName = (String) event.getProperty().getValue();
+                if (methodName == null || methodName.trim().equals(""))
+                {
+                    return;
+                }
+                Query methodQuery = entityProvider.getEntityManager().createNamedQuery("Method.findByName");
+                methodQuery.setParameter("name", methodName);
+                Method foundMethod = (Method) methodQuery.getSingleResult();
+                if (foundMethod != null)
+                {
+                    filter = new Compare.Equal("method", foundMethod);
+                    attributes.addContainerFilter(filter);
+                }
+            }
+        });
+        searchLayout.addComponent(filterOnMethodName);
+
+        TextField filterOnPerson = new TextField("Filter on person");
+        filterOnPerson.setDescription("Does not allows wildcards.");
+        filterOnPerson.addValueChangeListener(new Property.ValueChangeListener()
+        {
+            private Container.Filter filter;
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (filter != null)
+                {
+                    attributes.removeContainerFilter(filter);
+                    filter = null;
+                }
+                String personName = (String) event.getProperty().getValue();
+                if (personName == null || personName.trim().equals(""))
+                {
+                    return;
+                }
+                Query personQuery = entityProvider.getEntityManager().createNamedQuery("Person.findByName");
+                personQuery.setParameter("name", personName);
+                Person foundPerson = (Person) personQuery.getSingleResult();
+                if (foundPerson != null)
+                {
+                    filter = new Compare.Equal("person", foundPerson);
+                    attributes.addContainerFilter(filter);
+                }
+            }
+        });
+        searchLayout.addComponent(filterOnPerson);
+
+        final TextField filterOnRoom = new TextField("Filter on room", new IntegerProperty());
+        filterOnRoom.setConverter(new StringToIntegerConverter());
+        filterOnRoom.setDescription("Does not allows wildcards.");
+        filterOnRoom.addValueChangeListener(new Property.ValueChangeListener()
+        {
+            private Container.Filter filter;
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                if (filter != null)
+                {
+                    attributes.removeContainerFilter(filter);
+                    filter = null;
+                }
+                // Integer eventId = (Integer) event.getProperty().getValue();
+                Integer roomId = (Integer) filterOnRoom.getPropertyDataSource().getValue();
+                if (roomId == null)
+                {
+                    return;
+                }
+                Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                roomQuery.setParameter("id", roomId);
+                Room foundRoom = (Room) roomQuery.getSingleResult();
+                if (foundRoom != null)
+                {
+                    filter = new Compare.Equal("room", foundRoom);
+                    attributes.addContainerFilter(filter);
+                }
+            }
+        });
+        searchLayout.addComponent(filterOnRoom);
+
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
         {
@@ -104,7 +233,8 @@ public class Events extends VerticalLayout implements
                 }
             }
         });
-        addComponent(filterOnOwner);
+        searchLayout.addComponent(filterOnOwner);
+
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
 
@@ -144,7 +274,8 @@ public class Events extends VerticalLayout implements
         person = new TextField("Person");
         layout.addComponent(person);
 
-        room = new TextField("Room");
+        room = new TextField("Room", new IntegerProperty());
+        room.setConverter(new StringToIntegerConverter());
         layout.addComponent(room);
 
         method = new TextField("Methodname");
@@ -193,11 +324,11 @@ public class Events extends VerticalLayout implements
                 {
                     item.getItemProperty(direction).setValue(null);
                 }
-                Integer northId = (Integer) roomTextfield.getPropertyDataSource().getValue();
-                if (northId != null)
+                Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
+                if (roomId != null)
                 {
                     Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
-                    roomQuery.setParameter("id", northId);
+                    roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else
                 {
