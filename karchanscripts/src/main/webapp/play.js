@@ -96,7 +96,7 @@ function writeStuff(data)
     {
       capital = capitalChar;
     }
-    $('#page-title').html("<h1>" + imageTag + title + "</h1>");
+    $('#page-title').html("<h1 style=\"font-family: 'GabrielleRegular';\">" + imageTag + title + "</h1>");
     var body = "<p>" + capital + body.substring(1) + "</p>";
     if (data.north !== undefined || data.west !== undefined || data.east !== undefined || data.south !== undefined || data.up !== undefined || data.down != undefined)
     {
