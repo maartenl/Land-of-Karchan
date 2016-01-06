@@ -55,7 +55,7 @@ public class Scripts extends VerticalLayout implements
 
     private final CheckBox filterOnOwner;
 
-    private final Table worldattribTable;
+    private final Table scriptsTable;
     private final TextField name;
     private final TextArea contents;
     private final Label owner;
@@ -132,13 +132,13 @@ public class Scripts extends VerticalLayout implements
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
 
-        worldattribTable = new Table("Methods", attributes);
-        worldattribTable.setVisibleColumns("name", "owner", "creation");
-        worldattribTable.setSizeFull();
-        worldattribTable.setSelectable(true);
-        worldattribTable.addValueChangeListener(this);
-        worldattribTable.setImmediate(true);
-        tablePanel.setContent(worldattribTable);
+        scriptsTable = new Table("Methods", attributes);
+        scriptsTable.setVisibleColumns("name", "owner", "creation");
+        scriptsTable.setSizeFull();
+        scriptsTable.setSelectable(true);
+        scriptsTable.addValueChangeListener(this);
+        scriptsTable.setImmediate(true);
+        tablePanel.setContent(scriptsTable);
 
         Panel formPanel = new Panel();
         addComponent(formPanel);
@@ -175,11 +175,11 @@ public class Scripts extends VerticalLayout implements
                     {
 
                         Object itemId = attributes.addEntity(newInstance);
-                        worldattribTable.setValue(itemId);
+                        scriptsTable.setValue(itemId);
                         logBean.writeDeputyLog(currentUser, "New script '" + itemId + "' created.");
                     } else
                     {
-                        logBean.writeDeputyLog(currentUser, "Script '" + worldattribTable.getValue() + "' updated.");
+                        logBean.writeDeputyLog(currentUser, "Script '" + scriptsTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -221,7 +221,7 @@ public class Scripts extends VerticalLayout implements
                 binder.bind(name, "name");
                 binder.bind(contents, "src");
                 // Object itemId = attributes.addEntity(newInstance);
-                // worldattribTable.setValue(itemId);
+                // scriptsTable.setValue(itemId);
             }
         });
         buttonsLayout.addComponent(create);
@@ -232,8 +232,8 @@ public class Scripts extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                attributes.removeItem(worldattribTable.getValue());
-                logBean.writeDeputyLog(currentUser, "Script '" + worldattribTable.getValue() + "' deleted.");
+                attributes.removeItem(scriptsTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Script '" + scriptsTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);
@@ -261,7 +261,7 @@ public class Scripts extends VerticalLayout implements
     public void valueChange(Property.ValueChangeEvent event)
     {
         Object itemId = event.getProperty().getValue();
-        item = worldattribTable.getItem(itemId);
+        item = scriptsTable.getItem(itemId);
         boolean entitySelected = item != null;
         if (entitySelected)
         {

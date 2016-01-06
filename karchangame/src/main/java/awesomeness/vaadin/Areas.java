@@ -54,7 +54,7 @@ public class Areas extends VerticalLayout implements
 
     private final CheckBox filterOnOwner;
 
-    private final Table worldattribTable;
+    private final Table areasTable;
     private final TextField name;
     private final TextField shortdescription;
     private final TextArea contents;
@@ -102,13 +102,13 @@ public class Areas extends VerticalLayout implements
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
 
-        worldattribTable = new Table("Areas", attributes);
-        worldattribTable.setVisibleColumns("area", "shortdescription", "owner", "creation");
-        worldattribTable.setSizeFull();
-        worldattribTable.setSelectable(true);
-        worldattribTable.addValueChangeListener(this);
-        worldattribTable.setImmediate(true);
-        tablePanel.setContent(worldattribTable);
+        areasTable = new Table("Areas", attributes);
+        areasTable.setVisibleColumns("area", "shortdescription", "owner", "creation");
+        areasTable.setSizeFull();
+        areasTable.setSelectable(true);
+        areasTable.addValueChangeListener(this);
+        areasTable.setImmediate(true);
+        tablePanel.setContent(areasTable);
 
         Panel formPanel = new Panel();
         addComponent(formPanel);
@@ -149,11 +149,11 @@ public class Areas extends VerticalLayout implements
                     {
 
                         Object itemId = attributes.addEntity(newInstance);
-                        worldattribTable.setValue(itemId);
+                        areasTable.setValue(itemId);
                         logBean.writeDeputyLog(currentUser, "New area '" + itemId + "' created.");
                     } else
                     {
-                        logBean.writeDeputyLog(currentUser, "Area '" + worldattribTable.getValue() + "' updated.");
+                        logBean.writeDeputyLog(currentUser, "Area '" + areasTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -196,7 +196,7 @@ public class Areas extends VerticalLayout implements
                 binder.bind(contents, "description");
                 binder.bind(shortdescription, "shortdescription");
                 // Object itemId = attributes.addEntity(newInstance);
-                // worldattribTable.setValue(itemId);
+                // areasTable.setValue(itemId);
             }
         });
         buttonsLayout.addComponent(create);
@@ -207,8 +207,8 @@ public class Areas extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                attributes.removeItem(worldattribTable.getValue());
-                logBean.writeDeputyLog(currentUser, "Area '" + worldattribTable.getValue() + "' deleted.");
+                attributes.removeItem(areasTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Area '" + areasTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);
@@ -236,7 +236,7 @@ public class Areas extends VerticalLayout implements
     public void valueChange(Property.ValueChangeEvent event)
     {
         Object itemId = event.getProperty().getValue();
-        item = worldattribTable.getItem(itemId);
+        item = areasTable.getItem(itemId);
         boolean entitySelected = item != null;
         if (entitySelected)
         {
