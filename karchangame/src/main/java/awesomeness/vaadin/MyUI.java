@@ -31,22 +31,22 @@ public class MyUI extends UI
         mainPanel.setContent(tabsheet);
 
         // Create the first tab, specify caption when adding
-        Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser(), servlet.getLogBean()); // Wrap in a layout
         tabsheet.addTab(worldattributes, "World attributes");
 
-        Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser());
+        Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
         tabsheet.addTab(scripts, "Scripts");
 
-        Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser(), servlet.getLogBean()); // Wrap in a layout
         tabsheet.addTab(areas, "Areas");
 
-        Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser(), servlet.getLogBean()); // Wrap in a layout
         tabsheet.addTab(events, "Events");
 
-        Layout rooms = new Rooms(servlet.getRoomsProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        Layout rooms = new Rooms(servlet.getRoomsProvider(), servlet.getCurrentUser(), servlet.getLogBean()); // Wrap in a layout
         tabsheet.addTab(rooms, "Rooms");
 
-        Layout commands = new Commands(servlet.getCommandsProvider(), servlet.getCurrentUser()); // Wrap in a layout
+        Layout commands = new Commands(servlet.getCommandsProvider(), servlet.getCurrentUser(), servlet.getLogBean()); // Wrap in a layout
         tabsheet.addTab(commands, "Commands");
     }
 

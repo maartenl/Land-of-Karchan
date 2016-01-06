@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
+import mmud.rest.services.LogBean;
 
 /**
  *
@@ -67,10 +68,12 @@ public class Scripts extends VerticalLayout implements
     private Item item;
     private boolean busyCreatingNewItem = false;
     private Method newInstance;
+    private final LogBean logBean;
 
-    Scripts(final EntityProvider entityProvider, final Admin currentUser)
+    Scripts(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
+        this.logBean = logBean;
         // And there we have it
         final JPAContainer<Method> attributes
                 = new JPAContainer<>(Method.class);
@@ -173,6 +176,10 @@ public class Scripts extends VerticalLayout implements
 
                         Object itemId = attributes.addEntity(newInstance);
                         worldattribTable.setValue(itemId);
+                        logBean.writeDeputyLog(currentUser, "New script '" + itemId + "' created.");
+                    } else
+                    {
+                        logBean.writeDeputyLog(currentUser, "Script '" + worldattribTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -226,6 +233,7 @@ public class Scripts extends VerticalLayout implements
             public void buttonClick(Button.ClickEvent event)
             {
                 attributes.removeItem(worldattribTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Script '" + worldattribTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);

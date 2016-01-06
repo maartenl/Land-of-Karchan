@@ -43,6 +43,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
+import mmud.rest.services.LogBean;
 
 /**
  *
@@ -72,10 +73,12 @@ public class Commands extends VerticalLayout implements
     private final TextField room;
     private final TextField methodName;
     private final CheckBox callable;
+    private final LogBean logBean;
 
-    Commands(final EntityProvider entityProvider, final Admin currentUser)
+    Commands(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
+        this.logBean = logBean;
         // And there we have it
         final JPAContainer<UserCommand> attributes
                 = new JPAContainer<>(UserCommand.class);
@@ -163,9 +166,12 @@ public class Commands extends VerticalLayout implements
                     binder.commit();
                     if (busyCreatingNewItem == true)
                     {
-
                         Object itemId = attributes.addEntity(newInstance);
                         commandsTable.setValue(itemId);
+                        logBean.writeDeputyLog(currentUser, "New command '" + itemId + "' created.");
+                    } else
+                    {
+                        logBean.writeDeputyLog(currentUser, "Command '" + commandsTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -236,6 +242,7 @@ public class Commands extends VerticalLayout implements
             public void buttonClick(Button.ClickEvent event)
             {
                 attributes.removeItem(commandsTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Command '" + commandsTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);

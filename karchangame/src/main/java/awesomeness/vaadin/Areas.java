@@ -40,6 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
+import mmud.rest.services.LogBean;
 
 /**
  *
@@ -67,10 +68,12 @@ public class Areas extends VerticalLayout implements
     private Item item;
     private boolean busyCreatingNewItem = false;
     private Area newInstance;
+    private final LogBean logBean;
 
-    Areas(final EntityProvider entityProvider, final Admin currentUser)
+    Areas(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
+        this.logBean = logBean;
         // And there we have it
         final JPAContainer<Area> attributes
                 = new JPAContainer<>(Area.class);
@@ -147,6 +150,10 @@ public class Areas extends VerticalLayout implements
 
                         Object itemId = attributes.addEntity(newInstance);
                         worldattribTable.setValue(itemId);
+                        logBean.writeDeputyLog(currentUser, "New area '" + itemId + "' created.");
+                    } else
+                    {
+                        logBean.writeDeputyLog(currentUser, "Area '" + worldattribTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -201,6 +208,7 @@ public class Areas extends VerticalLayout implements
             public void buttonClick(Button.ClickEvent event)
             {
                 attributes.removeItem(worldattribTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Area '" + worldattribTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);

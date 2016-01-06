@@ -42,10 +42,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
+import mmud.rest.services.LogBean;
 
 /**
  *
@@ -82,10 +84,12 @@ public class Rooms extends VerticalLayout implements
     private final TextField west;
     private final TextField up;
     private final TextField down;
+    private final LogBean logBean;
 
-    Rooms(final EntityProvider entityProvider, final Admin currentUser)
+    Rooms(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
+        this.logBean = logBean;
         // And there we have it
         final JPAContainer<Room> attributes
                 = new JPAContainer<>(Room.class);
@@ -197,8 +201,14 @@ public class Rooms extends VerticalLayout implements
                 String areaname = (String) area.getValue();
                 Query areaQuery = entityProvider.getEntityManager().createNamedQuery("Area.findByArea");
                 areaQuery.setParameter("area", areaname);
-                Area foundArea = (Area) areaQuery.getSingleResult();
-                item.getItemProperty("area").setValue(foundArea);
+                try
+                {
+                    Area foundArea = (Area) areaQuery.getSingleResult();
+                    item.getItemProperty("area").setValue(foundArea);
+                } catch (NoResultException e)
+                {
+                    // so we have no area, no problem.
+                }
 
                 setRoom("north", north, item);
                 setRoom("south", south, item);
@@ -215,6 +225,10 @@ public class Rooms extends VerticalLayout implements
 
                         Object itemId = attributes.addEntity(newInstance);
                         roomsTable.setValue(itemId);
+                        logBean.writeDeputyLog(currentUser, "New room '" + itemId + "' created.");
+                    } else
+                    {
+                        logBean.writeDeputyLog(currentUser, "Room '" + roomsTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -283,6 +297,7 @@ public class Rooms extends VerticalLayout implements
             public void buttonClick(Button.ClickEvent event)
             {
                 attributes.removeItem(roomsTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Room '" + roomsTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);

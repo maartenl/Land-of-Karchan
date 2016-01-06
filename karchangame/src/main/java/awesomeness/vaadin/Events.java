@@ -44,6 +44,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
+import mmud.rest.services.LogBean;
 
 /**
  *
@@ -78,10 +79,12 @@ public class Events extends VerticalLayout implements
     private final TextField person;
     private final TextField room;
     private final TextField method;
+    private final LogBean logBean;
 
-    Events(final EntityProvider entityProvider, final Admin currentUser)
+    Events(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
+        this.logBean = logBean;
         // And there we have it
         final JPAContainer<mmud.database.entities.game.Event> attributes
                 = new JPAContainer<>(mmud.database.entities.game.Event.class);
@@ -310,6 +313,10 @@ public class Events extends VerticalLayout implements
 
                         Object itemId = attributes.addEntity(newInstance);
                         eventsTable.setValue(itemId);
+                        logBean.writeDeputyLog(currentUser, "New event '" + itemId + "' created.");
+                    } else
+                    {
+                        logBean.writeDeputyLog(currentUser, "Event '" + eventsTable.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -404,6 +411,7 @@ public class Events extends VerticalLayout implements
             public void buttonClick(Button.ClickEvent event)
             {
                 attributes.removeItem(eventsTable.getValue());
+                logBean.writeDeputyLog(currentUser, "Event '" + eventsTable.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);

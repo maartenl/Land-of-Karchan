@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.annotation.WebServlet;
 import mmud.database.entities.game.Admin;
+import mmud.rest.services.LogBean;
 import mmud.rest.services.admin.IdentificationBean;
 
 /**
@@ -61,6 +62,9 @@ public class MyUIServlet extends VaadinServlet
 
     @EJB
     private IdentificationBean identificationBean;
+
+    @EJB
+    private LogBean logBean;
 
     public Admin getCurrentUser()
     {
@@ -110,6 +114,11 @@ public class MyUIServlet extends VaadinServlet
     public CommandsProvider getCommandsProvider()
     {
         return commandsProvider;
+    }
+
+    public LogBean getLogBean()
+    {
+        return logBean;
     }
 
 }

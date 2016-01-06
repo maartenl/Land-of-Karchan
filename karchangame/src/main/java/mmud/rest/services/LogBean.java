@@ -27,6 +27,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
 
@@ -71,18 +72,30 @@ public class LogBean
      * @param addendum the addendum that does not fit in the message, may be null.
      * @return the new log
      */
-    private Log createLog(Person person, String message, String addendum)
+    private Log createLogWithString(String person, String message, String addendum)
     {
         if (message.length() > 255)
         {
-            createLog(person, "The log message was too long!", message);
+            createLogWithString(person, "The log message was too long!", message);
         }
         Log log = new Log();
-        log.setName(person == null ? null : person.getName());
+        log.setName(person);
         log.setMessage(message.length() < 255 ? message : message.substring(0, 255));
         log.setAddendum(addendum);
         getEntityManager().persist(log);
         return log;
+    }
+
+    /**
+     * @see #createLogWithString(java.lang.String, java.lang.String, java.lang.String)
+     * @param person
+     * @param message
+     * @param addendum
+     * @return
+     */
+    private Log createLogWithPerson(Person person, String message, String addendum)
+    {
+        return createLogWithString(person == null ? null : person.getName(), message, addendum);
     }
 
     /**
@@ -93,8 +106,36 @@ public class LogBean
      */
     private Log createLog(Person person, String message)
     {
-        Log log = createLog(person, message, null);
+        Log log = createLogWithPerson(person, message, null);
         return log;
+    }
+
+    /**
+     * write a deputy log message to the database.
+     *
+     * @param admin the deputy which has caused this log message.
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
+     * @param addendum the rest of the message, can be large. Used for storing
+     * specifics regarding the logmessage.
+     */
+    public void writeDeputyLog(Admin admin, String message, String addendum)
+    {
+        createLogWithString(admin.getName(), message, addendum);
+    }
+
+    /**
+     * write a log message to the database. A simple general message.Ã¸
+     *
+     * @param admin the deputy which has caused this log message.
+     * @param message the message to be written in the log, may not be larger
+     * than 255 characters or it will be truncated, and a second message will
+     * be logged mentioning this.
+     */
+    public void writeDeputyLog(Admin admin, String message)
+    {
+        createLogWithString(admin.getName(), message, null);
     }
 
     /**
@@ -164,7 +205,7 @@ public class LogBean
     public void writeLog(Person person, String message, String addendum)
     {
         itsLog.finer("writeLog");
-        createLog(person, message, addendum);
+        createLogWithPerson(person, message, addendum);
     }
 
     /**
@@ -182,7 +223,7 @@ public class LogBean
         {
             throwable.printStackTrace(myPrintStream);
         }
-        createLog(person, throwable.toString(), myStream.toString());
+        createLogWithPerson(person, throwable.toString(), myStream.toString());
     }
 
     /**
@@ -198,7 +239,7 @@ public class LogBean
         {
             throwable.printStackTrace(myPrintStream);
         }
-        createLog(null, throwable.toString(), myStream.toString());
+        createLogWithString(null, throwable.toString(), myStream.toString());
     }
 
     /**
