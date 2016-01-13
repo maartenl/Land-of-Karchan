@@ -220,14 +220,14 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             throw new MudWebException(name,
                     name + " was not found.",
-                    "User was not found (" + name + ", " + password + ")",
+                    "User was not found (" + name + ")",
                     Response.Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
             throw new MudWebException(name,
                     name + " is not a user.",
-                    "User was not a user (" + name + ", " + password + ")",
+                    "User was not a user (" + name + ")",
                     Response.Status.BAD_REQUEST);
         }
         if (person.getTimeout() > 0)
@@ -244,14 +244,14 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             throw new MudWebException(name,
                     "Wrong password.",
-                    "User provided wrong password (" + name + ", " + password + ")",
+                    "User provided wrong password (" + name + ")",
                     Response.Status.UNAUTHORIZED);
         }
         if (persons.size() > 1)
         {
             throw new MudWebException(name,
                     "User/password combo search returned more than one solution, impossible!",
-                    "User/password combo search returned more than one solution, impossible! (" + name + ", " + password + ")",
+                    "User/password combo search returned more than one solution, impossible! (" + name + ")",
                     Response.Status.BAD_REQUEST);
         }
         person = persons.get(0);
@@ -259,7 +259,7 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             throw new MudWebException(name,
                     name + " is not a user.",
-                    "User was not a user (" + name + ", " + password + ")",
+                    "User was not a user (" + name + ")",
                     Response.Status.BAD_REQUEST);
         }
         return person;
@@ -391,7 +391,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 throw new MudWebException(name,
                         "Passwords do not match.",
-                        "Passwords do not match. (p=" + pperson.password + ", p2=" + pperson.password2 + ")",
+                        "Passwords do not match.",
                         Response.Status.BAD_REQUEST);
             }
             User person = new User();
@@ -496,7 +496,7 @@ public class GameBean implements RoomsInterface, WorldInterface
         {
             throw new MudWebException(name,
                     "Passwords do not match.",
-                    "Passwords do not match. (p=" + password + ", p2=" + password2 + ")",
+                    "Passwords do not match.",
                     Response.Status.BAD_REQUEST);
         }
         Person person = authenticateWithPassword(name, password);
