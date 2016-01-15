@@ -61,6 +61,12 @@ public class MyUIServlet extends VaadinServlet
     private CommandsProvider commandsProvider;
 
     @EJB
+    private LogsProvider logsProvider;
+
+    @EJB
+    private CommandlogsProvider commandLogsProvider;
+
+    @EJB
     private IdentificationBean identificationBean;
 
     @EJB
@@ -119,6 +125,16 @@ public class MyUIServlet extends VaadinServlet
     public LogBean getLogBean()
     {
         return logBean;
+    }
+
+    public CommandlogsProvider getCommandlogsProvider()
+    {
+        return commandLogsProvider;
+    }
+
+    public LogsProvider getLogsProvider()
+    {
+        return logsProvider;
     }
 
 }

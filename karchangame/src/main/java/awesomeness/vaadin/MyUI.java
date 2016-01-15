@@ -87,6 +87,13 @@ public class MyUI extends UI
         Layout commands = new Commands(servlet.getCommandsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
         commandsPanel.setContent(commands);
         layout.addComponent(commandsPanel);
+
+        final Panel logsPanel = new Panel("Logs");
+        logsPanel.setVisible(false);
+        Layout logs = new Logs(servlet.getLogsProvider(), servlet.getCommandlogsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        logsPanel.setContent(logs);
+        layout.addComponent(logsPanel);
+
         final MenuBar.Command command;
         command = new MenuBar.Command()
         {
@@ -100,6 +107,7 @@ public class MyUI extends UI
                 eventsPanel.setVisible(false);
                 roomsPanel.setVisible(false);
                 commandsPanel.setVisible(false);
+                logsPanel.setVisible(false);
 
                 switch (selectedItem.getText())
                 {
@@ -121,6 +129,9 @@ public class MyUI extends UI
                     case "Commands":
                         commandsPanel.setVisible(true);
                         break;
+                    case "Logs":
+                        logsPanel.setVisible(true);
+                        break;
                 }
             }
         };
@@ -128,6 +139,8 @@ public class MyUI extends UI
         barmenu.addItem("Rooms", null, command);
 
         barmenu.addItem("Areas", null, command);
+
+        barmenu.addItem("Logs", null, command);
 
         // toplevel
         MenuItem scripting = barmenu.addItem("Scripting", null, null);
