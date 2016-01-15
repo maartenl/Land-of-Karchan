@@ -75,6 +75,9 @@ public class Log implements Serializable
     @Size(max = 65535)
     @Column(name = "addendum")
     private String addendum;
+    @Basic(optional = false)
+    @Column(name = "deputy")
+    private boolean deputy;
 
     public Log()
     {
@@ -162,5 +165,25 @@ public class Log implements Serializable
     public String toString()
     {
         return "Log{" + "id=" + id + '}';
+    }
+
+    /**
+     * Indicates that this log message was transmitted by the actions of a
+     * deputy. The {@link #getName() } can show you which deputy it was.
+     *
+     * @return true if it is a deputy log message.
+     */
+    public boolean getDeputy()
+    {
+        return deputy;
+    }
+
+    /**
+     * @see #getDeputy()
+     * @param deputy
+     */
+    public void setDeputy(boolean deputy)
+    {
+        this.deputy = deputy;
     }
 }

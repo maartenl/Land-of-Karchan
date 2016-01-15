@@ -343,3 +343,21 @@ ALTER TABLE mm_usertable ADD rrribbits int(10) DEFAULT 0, ADD heehaws int(10) DE
 
 ALTER TABLE mm_log 
 CHANGE COLUMN `message` `message` varchar(255) not NULL;
+
+create table mm_systemlog (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  millis bigint(20) not null,
+  sequence bigint(20) not null,
+  logger varchar(255),
+  level varchar(25),
+  class varchar(255),
+  method varchar(255),
+  thread int(10),
+  message text not null,
+  INDEX(millis)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `mmud`.`mm_log` ADD COLUMN `deputy` INT(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE mmud.mm_log add index(deputy);
+

@@ -122,7 +122,8 @@ public class LogBean
      */
     public void writeDeputyLog(Admin admin, String message, String addendum)
     {
-        createLogWithString(admin.getName(), message, addendum);
+        Log log = createLogWithString(admin.getName(), message, addendum);
+        log.setDeputy(true);
     }
 
     /**
@@ -135,7 +136,8 @@ public class LogBean
      */
     public void writeDeputyLog(Admin admin, String message)
     {
-        createLogWithString(admin.getName(), message, null);
+        Log log = createLogWithString(admin.getName(), message, null);
+        log.setDeputy(true);
     }
 
     /**
