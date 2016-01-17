@@ -91,7 +91,7 @@ public class Logs extends VerticalLayout
         HorizontalLayout logsearchLayout = new HorizontalLayout();
         logsearchPanel.setContent(logsearchLayout);
 
-        filterOnOwner = new CheckBox("Filter on owner");
+        filterOnOwner = new CheckBox("Show only dep messages");
         filterOnOwner.setValue(true);
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
         {
