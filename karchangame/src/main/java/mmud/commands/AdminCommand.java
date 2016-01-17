@@ -56,7 +56,9 @@ public class AdminCommand extends NormalCommand
         if (command.toLowerCase().startsWith("admin wall"))
         {
             PersonBean personBean = getPersonBean();
-            personBean.sendWall(administrator, command.substring(11));
+            final String message = command.substring(11);
+            personBean.sendWall(administrator, message);
+            getLogBean().writeLog(administrator, "admin command 'wall' executed.", message);
             aUser.writeMessage("Wall message sent.<br/>\r\n");
         }
         if (command.toLowerCase().startsWith("admin runevent"))
@@ -157,14 +159,19 @@ public class AdminCommand extends NormalCommand
                 try
                 {
                     minutes = Integer.valueOf(commands[3]);
+                    if (minutes <= 0)
+                    {
+                        throw new NumberFormatException("Expected number bigger than zero.");
+                    }
                     person.setTimeout(minutes);
                 } catch (NumberFormatException f)
                 {
-                    throw new MudException("Number for minutes could not be parsed.");
+                    throw new MudException("Number for minutes could not be parsed.", f);
                 }
             }
             person.deactivate();
-            getLogBean().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + ".");
+            personBean.sendWall(administrator, administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
+            getLogBean().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
         }
         if (command.equalsIgnoreCase("admin help"))
         {

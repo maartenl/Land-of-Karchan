@@ -18,7 +18,9 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import mmud.Constants;
 import mmud.commands.AdminCommand;
 import mmud.commands.CommandRunner;
@@ -95,7 +97,6 @@ public class AdminCommandTest extends MudTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 commandRunner.getLogBean();
                 result = logBean;
@@ -118,7 +119,6 @@ public class AdminCommandTest extends MudTest
         assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
         new Expectations() // an "expectation block"
         {
-
 
             {
                 commandRunner.getLogBean();
@@ -143,7 +143,6 @@ public class AdminCommandTest extends MudTest
         assertThat(marvin.getJackassing(), equalTo(0));
         new Expectations() // an "expectation block"
         {
-
 
             {
                 commandRunner.getPersonBean();
@@ -172,7 +171,6 @@ public class AdminCommandTest extends MudTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 commandRunner.getPersonBean();
                 result = personBean;
@@ -200,7 +198,6 @@ public class AdminCommandTest extends MudTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 commandRunner.getPersonBean();
                 result = personBean;
@@ -226,7 +223,6 @@ public class AdminCommandTest extends MudTest
         assertThat(marvin.getJackassing(), equalTo(0));
         new Expectations() // an "expectation block"
         {
-
 
             {
                 commandRunner.getPersonBean();
@@ -256,7 +252,6 @@ public class AdminCommandTest extends MudTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 commandRunner.getPersonBean();
                 result = personBean;
@@ -283,7 +278,6 @@ public class AdminCommandTest extends MudTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 commandRunner.getPersonBean();
                 result = personBean;
@@ -298,6 +292,148 @@ public class AdminCommandTest extends MudTest
         {
             assertThat(exception.getMessage(), equalTo("Number for amount could not be parsed."));
         }
+
+    }
+
+    @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "Expected admin kick command in the shape of 'admin kick personname minutes'.")
+    public void testKickWrongNrOfArguments()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick", karn);
+
+    }
+
+    @Test
+    public void testKick()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+
+                commandRunner.getLogBean();
+                result = logBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick marvin", karn);
+
+        // check for deactivation
+        assertThat(marvin.isActive(), equalTo(false));
+        assertThat(marvin.getLok(), equalTo(null));
+        assertThat(marvin.getTimeout(), equalTo(0));
+
+        assertThat(display, not(nullValue()));
+        String log = karn.getLog(0);
+        assertThat(log, equalTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n"));
+        log = marvin.getLog(0);
+        assertThat(log, equalTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n"));
+        assertThat(logBean.getLog(), equalTo("Marvin: has been kicked out of the game by Karn for 0 minutes.\n"));
+    }
+
+    @Test
+    public void testKickWithMinutes()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+
+                commandRunner.getLogBean();
+                result = logBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick marvin 60", karn);
+
+        // check for deactivation
+        assertThat(marvin.isActive(), equalTo(false));
+        assertThat(marvin.getLok(), equalTo(null));
+        assertThat(marvin.getTimeout(), equalTo(59));
+
+        assertThat(display, not(nullValue()));
+        String log = karn.getLog(0);
+        assertThat(log, equalTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n"));
+        log = marvin.getLog(0);
+        assertThat(log, equalTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n"));
+        assertThat(logBean.getLog(), equalTo("Marvin: has been kicked out of the game by Karn for 60 minutes.\n"));
+    }
+
+    @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "Number for minutes could not be parsed.")
+    public void testKickWithNegativeMinutes()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick marvin -5", karn);
+
+    }
+
+    @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "Number for minutes could not be parsed.")
+    public void testKickWithBogusMinutes()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick marvin boogey", karn);
+
+    }
+
+    @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "janedoe not found.")
+    public void testKickWithUnknownPerson()
+    {
+
+        AdminCommand adminCommand = new AdminCommand("admin .+");
+        adminCommand.setCallback(commandRunner);
+        assertThat(adminCommand.getRegExpr(), equalTo("admin .+"));
+        new Expectations() // an "expectation block"
+        {
+
+            {
+                commandRunner.getPersonBean();
+                result = personBean;
+            }
+        };
+        DisplayInterface display = adminCommand.run("admin kick janedoe 60", karn);
 
     }
 
@@ -329,6 +465,13 @@ public class AdminCommandTest extends MudTest
                 }
                 return null;
             }
+
+            @Override
+            public List<User> getActivePlayers()
+            {
+                return Arrays.asList(marvin, karn);
+            }
+
         };
         setField(PersonBean.class, "logBean", personBean, logBean);
 

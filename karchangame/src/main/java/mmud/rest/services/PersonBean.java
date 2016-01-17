@@ -151,13 +151,19 @@ public class PersonBean implements PersonsInterface
         return list;
     }
 
+    /**
+     * Sends a message from an administrator to all players currently playing the game,
+     * irrespective of room they are in.
+     *
+     * @param administrator the administrator sending the message.
+     * @param message the message in question.
+     */
     public void sendWall(Administrator administrator, String message)
     {
         for (User user : getActivePlayers())
         {
             user.writeMessage(message);
         }
-        logBean.writeLog(administrator, "admin command 'wall' executed (" + message + ")");
     }
 
 }
