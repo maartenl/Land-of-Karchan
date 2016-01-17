@@ -90,7 +90,7 @@ public class MyUI extends UI
 
         final Panel logsPanel = new Panel("Logs");
         logsPanel.setVisible(false);
-        Layout logs = new Logs(servlet.getLogsProvider(), servlet.getCommandlogsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout logs = new Logs(servlet.getLogsProvider(), servlet.getCommandlogsProvider(), servlet.getSystemlogsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
         logsPanel.setContent(logs);
         layout.addComponent(logsPanel);
 
