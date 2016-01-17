@@ -31,6 +31,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -58,14 +59,14 @@ public class Logs extends VerticalLayout
     private final Table chatlogsTable;
     private final Table systemlogsTable;
 
-    private LocalDate initialLogDate;
+    private Date initialLogDate;
 
     private final Admin currentUser;
     private final LogBean logBean;
 
     Logs(final EntityProvider logEntityProvider, final EntityProvider commandlogEntityProvider, final EntityProvider systemlogEntityProvider, final Admin currentUser, final LogBean logBean)
     {
-        initialLogDate = LocalDate.now().plusYears(10); // make sure the tables are empty
+        initialLogDate = Date.from(LocalDate.now().plusYears(10).atStartOfDay().toInstant(ZoneOffset.UTC));
 
         this.currentUser = currentUser;
         this.logBean = logBean;
@@ -84,7 +85,7 @@ public class Logs extends VerticalLayout
                 = new JPAContainer<>(Systemlog.class);
         systemlogattributes.setEntityProvider(systemlogEntityProvider);
 
-        Panel logsearchPanel = new Panel();
+        Panel logsearchPanel = new Panel("Game Logs");
         addComponent(logsearchPanel);
 
         HorizontalLayout logsearchLayout = new HorizontalLayout();
@@ -178,13 +179,14 @@ public class Logs extends VerticalLayout
             }
         });
 
-        Panel chatlogsearchPanel = new Panel();
+        Panel chatlogsearchPanel = new Panel("Chat logs");
         addComponent(chatlogsearchPanel);
 
         HorizontalLayout chatlogsearchLayout = new HorizontalLayout();
         chatlogsearchPanel.setContent(chatlogsearchLayout);
 
         // Create a DateField with the default style
+        final TextField reason = new TextField("Reason");
         DateField chatlogdateField = new DateField();
         chatlogsearchLayout.addComponent(chatlogdateField);
         chatlogdateField.addValueChangeListener(new Property.ValueChangeListener()
@@ -201,12 +203,21 @@ public class Logs extends VerticalLayout
             public void valueChange(Property.ValueChangeEvent event)
             {
                 Date thedate = (Date) event.getProperty().getValue();
-                logBean.writeDeputyLog(currentUser, "Consulted chat log of " + thedate + ".");
+                if (reason.getValue() == null || reason.getValue().trim().equals(""))
+                {
+                    thedate = initialLogDate;
+                    logBean.writeDeputyLog(currentUser, "Tried consulting chat log of " + thedate + ", without reason given.");
+                } else
+                {
+                    logBean.writeDeputyLog(currentUser, "Consulted chat log of " + thedate + ".", "Reason given was : " + reason.getValue());
+                }
                 chatlogattributes.removeContainerFilter(logFilter);
                 logFilter = createFilter("stamp", thedate);
                 chatlogattributes.addContainerFilter(logFilter);
             }
         });
+        reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
+        chatlogsearchLayout.addComponent(reason);
 
         Panel chatlogtablePanel = new Panel();
         addComponent(chatlogtablePanel);
@@ -221,7 +232,7 @@ public class Logs extends VerticalLayout
         chatlogsTable.setSortEnabled(false);
         chatlogtablePanel.setContent(chatlogsTable);
 
-        Panel syslogsearchPanel = new Panel();
+        Panel syslogsearchPanel = new Panel("System logs");
         addComponent(syslogsearchPanel);
 
         HorizontalLayout syslogsearchLayout = new HorizontalLayout();
