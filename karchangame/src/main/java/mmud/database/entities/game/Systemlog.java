@@ -17,6 +17,7 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +28,7 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -37,11 +39,12 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "mm_systemlog")
 @NamedQueries(
-{
-    @NamedQuery(name = "Systemlog.findAll", query = "SELECT s FROM Systemlog s")
-})
+        {
+            @NamedQuery(name = "Systemlog.findAll", query = "SELECT s FROM Systemlog s")
+        })
 public class Systemlog implements Serializable
 {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +79,8 @@ public class Systemlog implements Serializable
     @Size(min = 1, max = 65535)
     @Column(name = "message")
     private String message;
+    @Transient
+    private Date creationdate;
 
     public Systemlog()
     {
@@ -112,6 +117,7 @@ public class Systemlog implements Serializable
     public void setMillis(long millis)
     {
         this.millis = millis;
+        this.creationdate = new Date(millis);
     }
 
     public long getSequence()
@@ -182,6 +188,18 @@ public class Systemlog implements Serializable
     public void setMessage(String message)
     {
         this.message = message;
+    }
+
+    public Date getCreationdate()
+    {
+        creationdate = new Date(millis);
+        return creationdate;
+    }
+
+    public void setCreationdate(Date creationdate)
+    {
+        millis = creationdate.getTime();
+        this.creationdate = creationdate;
     }
 
     @Override

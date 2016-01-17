@@ -19,14 +19,18 @@ package awesomeness.vaadin;
 import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.filter.And;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -145,6 +149,35 @@ public class Logs extends VerticalLayout
         logsTable.setSortEnabled(false);
         logtablePanel.setContent(logsTable);
 
+        Panel addendumPanel = new Panel();
+        addComponent(addendumPanel);
+
+        FormLayout addendumLayout = new FormLayout();
+        addendumPanel.setContent(addendumLayout);
+
+        final TextArea contents = new TextArea("Addendum");
+        contents.setRows(15);
+        contents.setWidth(80, Sizeable.Unit.PERCENTAGE);
+        addendumLayout.addComponent(contents);
+        logsTable.addValueChangeListener(new Property.ValueChangeListener()
+        {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event)
+            {
+                Object itemId = event.getProperty().getValue();
+                Item item = logsTable.getItem(itemId);
+                boolean entitySelected = item != null;
+                if (entitySelected && item.getItemProperty("addendum") != null)
+                {
+                    contents.setValue(item.getItemProperty("addendum").toString());
+                } else
+                {
+                    contents.setValue(null);
+                }
+            }
+        });
+
         Panel chatlogsearchPanel = new Panel();
         addComponent(chatlogsearchPanel);
 
@@ -222,7 +255,7 @@ public class Logs extends VerticalLayout
         addComponent(systemlogtablePanel);
 
         systemlogsTable = new Table("System Logs", systemlogattributes);
-        systemlogsTable.setVisibleColumns("id", "message", "millis", "sequence", "logger", "level", "class1", "method", "thread");
+        systemlogsTable.setVisibleColumns("id", "message", "millis", "creationdate", "sequence", "logger", "level", "class1", "method", "thread");
         systemlogsTable.setSizeFull();
         systemlogsTable.setSelectable(true);
         systemlogsTable.setImmediate(true);
@@ -253,12 +286,13 @@ public class Logs extends VerticalLayout
                 fromDate), new Compare.LessOrEqual(dateFieldName, toDate));
     }
 
-    private Container.Filter createFilter(LocalDate logDate)
+    private Container.Filter createFilter(Date logDate)
     {
-        long fromDate = Date.from(logDate.atStartOfDay().toInstant(ZoneOffset.UTC)).getTime();
-        long toDate = Date.from(logDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)).getTime();
+        long fromDate = logDate.getTime();
+        long toDate = fromDate + (1000 * 60 * 60 * 24);
 
         return new And(new Compare.GreaterOrEqual("millis",
                 fromDate), new Compare.LessOrEqual("millis", toDate));
     }
+
 }
