@@ -39,7 +39,7 @@ import mmud.rest.services.admin.IdentificationBean;
 public class MyUIServlet extends VaadinServlet
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
+    @PersistenceContext(name = "persistence/em", unitName = "karchangamePU")
     private EntityManager em;
 
     @EJB

@@ -361,7 +361,5 @@ ALTER TABLE `mmud`.`mm_log` ADD COLUMN `deputy` INT(1) NOT NULL DEFAULT 0;
 
 ALTER TABLE mmud.mm_log add index(deputy);
 
-ALTER TABLE mmud.mm_systemlog add index(millis);
-
 ALTER TABLE mmud.mm_commandlog add index(stamp);
 
