@@ -53,7 +53,7 @@ public class Logs extends VerticalLayout
 
     private static final Logger logger = Logger.getLogger(Logs.class.getName());
 
-    private final CheckBox filterOnOwner;
+    private final CheckBox filterOnDeputyMessages;
 
     private final Table logsTable;
     private final Table chatlogsTable;
@@ -91,9 +91,9 @@ public class Logs extends VerticalLayout
         HorizontalLayout logsearchLayout = new HorizontalLayout();
         logsearchPanel.setContent(logsearchLayout);
 
-        filterOnOwner = new CheckBox("Show only dep messages");
-        filterOnOwner.setValue(true);
-        filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
+        filterOnDeputyMessages = new CheckBox("Show only dep messages");
+        filterOnDeputyMessages.setValue(true);
+        filterOnDeputyMessages.addValueChangeListener(new Property.ValueChangeListener()
         {
             {
                 logattributes.addContainerFilter(filter);
@@ -111,7 +111,7 @@ public class Logs extends VerticalLayout
                 }
             }
         });
-        logsearchLayout.addComponent(filterOnOwner);
+        logsearchLayout.addComponent(filterOnDeputyMessages);
 
         // Create a DateField with the default style
         DateField logdateField = new DateField();
