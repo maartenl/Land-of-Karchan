@@ -17,6 +17,7 @@
 package awesomeness.vaadin;
 
 import awesomeness.vaadin.utils.BanTableEditor;
+import awesomeness.vaadin.utils.BannedNameEditor;
 import com.vaadin.ui.VerticalLayout;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
@@ -49,6 +50,8 @@ public class Banishment extends VerticalLayout
     {
         BanTableEditor banTable = new BanTableEditor(this, currentUser, logBean);
         banTable.buildView();
+        BannedNameEditor bannedNameTable = new BannedNameEditor(this, currentUser, logBean);
+        bannedNameTable.buildView();
     }
 
 }

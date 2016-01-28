@@ -35,26 +35,26 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.BanTable;
+import mmud.database.entities.game.BannedName;
 import mmud.rest.services.LogBean;
 
 /**
  *
  * @author maartenl
  */
-public class BanTableEditor
+public class BannedNameEditor
 {
 
-    private static final Logger logger = Logger.getLogger(BanTableEditor.class.getName());
+    private static final Logger logger = Logger.getLogger(BannedNameEditor.class.getName());
 
     private Table table;
     private boolean busyCreatingNewItem;
-    private BanTable newInstance;
+    private BannedName newInstance;
     private final Layout mainLayout;
     private final Admin currentUser;
     private final LogBean logBean;
 
-    public BanTableEditor(Layout layout, Admin currentUser, LogBean logBean)
+    public BannedNameEditor(Layout layout, Admin currentUser, LogBean logBean)
     {
         this.mainLayout = layout;
         this.currentUser = currentUser;
@@ -63,7 +63,7 @@ public class BanTableEditor
 
     public void buildView()
     {
-        final JPAContainer<BanTable> container = JPAContainerFactory.makeJndi(BanTable.class);
+        final JPAContainer<BannedName> container = JPAContainerFactory.makeJndi(BannedName.class);
 
         table = new Table(null, container);
         table.setSizeFull();
@@ -72,7 +72,6 @@ public class BanTableEditor
         table.setHeight(215, Sizeable.Unit.PIXELS);
         mainLayout.addComponent(table);
 
-        // BeanItem<BanTable> item = new BeanItem<>());
         final FieldGroup group = new FieldGroup(table.getItem(container.firstItemId()));
 
         Panel formPanel = new Panel();
@@ -80,27 +79,21 @@ public class BanTableEditor
         FormLayout layout = new FormLayout();
         formPanel.setContent(layout);
 
-        Field<?> address = group.buildAndBind("Address", "address");
+        Field<?> name = group.buildAndBind("Name", "name");
         Field<?> days = group.buildAndBind("days", "days");
-        Field<?> ip = group.buildAndBind("ip", "ip");
-        Field<?> name = group.buildAndBind("name", "name");
         final Field<?> deputy = group.buildAndBind("deputy", "deputy");
-        final Field<?> date = group.buildAndBind("date", "date");
+        final Field<?> date = group.buildAndBind("creation", "creation");
         date.setEnabled(false);
         deputy.setEnabled(false);
         Field<?> reason = group.buildAndBind("reason", "reason");
         reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
-        address.addValidator(new BeanValidator(BanTable.class, "address"));
-        days.addValidator(new BeanValidator(BanTable.class, "days"));
-        ip.addValidator(new BeanValidator(BanTable.class, "ip"));
-        name.addValidator(new BeanValidator(BanTable.class, "name"));
-        deputy.addValidator(new BeanValidator(BanTable.class, "deputy"));
-        date.addValidator(new BeanValidator(BanTable.class, "date"));
-        reason.addValidator(new BeanValidator(BanTable.class, "reason"));
-        layout.addComponent(address);
-        layout.addComponent(days);
-        layout.addComponent(ip);
+        name.addValidator(new BeanValidator(BannedName.class, "name"));
+        days.addValidator(new BeanValidator(BannedName.class, "days"));
+        deputy.addValidator(new BeanValidator(BannedName.class, "deputy"));
+        date.addValidator(new BeanValidator(BannedName.class, "creation"));
+        reason.addValidator(new BeanValidator(BannedName.class, "reason"));
         layout.addComponent(name);
+        layout.addComponent(days);
         layout.addComponent(deputy);
         layout.addComponent(date);
         layout.addComponent(reason);
@@ -137,10 +130,10 @@ public class BanTableEditor
                     {
                         Object itemId = container.addEntity(newInstance);
                         table.setValue(itemId);
-                        logBean.writeDeputyLog(currentUser, "New ban '" + itemId + "' created.");
+                        logBean.writeDeputyLog(currentUser, "New banned name '" + itemId + "' created.");
                     } else
                     {
-                        logBean.writeDeputyLog(currentUser, "Ban '" + table.getValue() + "' updated.");
+                        logBean.writeDeputyLog(currentUser, "Banned name '" + table.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -170,9 +163,9 @@ public class BanTableEditor
             public void buttonClick(Button.ClickEvent event)
             {
                 busyCreatingNewItem = true;
-                newInstance = new BanTable();
+                newInstance = new BannedName();
                 newInstance.setDeputy(currentUser.getName());
-                newInstance.setDate(new Date());
+                newInstance.setCreation(new Date());
                 BeanItem beanItem = new BeanItem(newInstance);
                 group.setItemDataSource((beanItem));
                 date.setEnabled(false);
@@ -188,7 +181,7 @@ public class BanTableEditor
             public void buttonClick(Button.ClickEvent event)
             {
                 container.removeItem(table.getValue());
-                logBean.writeDeputyLog(currentUser, "Ban '" + table.getValue() + "' deleted.");
+                logBean.writeDeputyLog(currentUser, "Banned name '" + table.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);
