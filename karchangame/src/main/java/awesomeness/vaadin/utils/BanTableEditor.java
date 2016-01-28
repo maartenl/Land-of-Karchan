@@ -42,7 +42,7 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class BanTableEditor
+public class BanTableEditor extends Editor
 {
 
     private static final Logger logger = Logger.getLogger(BanTableEditor.class.getName());

@@ -31,30 +31,29 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.BannedName;
+import mmud.database.entities.game.SillyName;
 import mmud.rest.services.LogBean;
 
 /**
  *
  * @author maartenl
  */
-public class BannedNameEditor extends Editor
+public class SillyNameEditor extends Editor
 {
 
-    private static final Logger logger = Logger.getLogger(BannedNameEditor.class.getName());
+    private static final Logger logger = Logger.getLogger(SillyNameEditor.class.getName());
 
     private Table table;
     private boolean busyCreatingNewItem;
-    private BannedName newInstance;
+    private SillyName newInstance;
     private final Layout mainLayout;
     private final Admin currentUser;
     private final LogBean logBean;
 
-    public BannedNameEditor(Layout layout, Admin currentUser, LogBean logBean)
+    public SillyNameEditor(Layout layout, Admin currentUser, LogBean logBean)
     {
         this.mainLayout = layout;
         this.currentUser = currentUser;
@@ -63,7 +62,7 @@ public class BannedNameEditor extends Editor
 
     public void buildView()
     {
-        final JPAContainer<BannedName> container = JPAContainerFactory.makeJndi(BannedName.class);
+        final JPAContainer<SillyName> container = JPAContainerFactory.makeJndi(SillyName.class);
 
         table = new Table(null, container);
         table.setSizeFull();
@@ -80,23 +79,8 @@ public class BannedNameEditor extends Editor
         formPanel.setContent(layout);
 
         Field<?> name = group.buildAndBind("Name", "name");
-        Field<?> days = group.buildAndBind("days", "days");
-        final Field<?> deputy = group.buildAndBind("deputy", "deputy");
-        final Field<?> date = group.buildAndBind("creation", "creation");
-        date.setEnabled(false);
-        deputy.setEnabled(false);
-        Field<?> reason = group.buildAndBind("reason", "reason");
-        reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
-        name.addValidator(new BeanValidator(BannedName.class, "name"));
-        days.addValidator(new BeanValidator(BannedName.class, "days"));
-        deputy.addValidator(new BeanValidator(BannedName.class, "deputy"));
-        date.addValidator(new BeanValidator(BannedName.class, "creation"));
-        reason.addValidator(new BeanValidator(BannedName.class, "reason"));
+        name.addValidator(new BeanValidator(SillyName.class, "name"));
         layout.addComponent(name);
-        layout.addComponent(days);
-        layout.addComponent(deputy);
-        layout.addComponent(date);
-        layout.addComponent(reason);
 
         table.addValueChangeListener(new Property.ValueChangeListener()
         {
@@ -110,8 +94,6 @@ public class BannedNameEditor extends Editor
                 if (entitySelected)
                 {
                     group.setItemDataSource((item));
-                    date.setEnabled(false);
-                    deputy.setEnabled(false);
                 }
             }
         });
@@ -130,10 +112,10 @@ public class BannedNameEditor extends Editor
                     {
                         Object itemId = container.addEntity(newInstance);
                         table.setValue(itemId);
-                        logBean.writeDeputyLog(currentUser, "New banned name '" + itemId + "' created.");
+                        logBean.writeDeputyLog(currentUser, "New silly  name '" + itemId + "' created.");
                     } else
                     {
-                        logBean.writeDeputyLog(currentUser, "Banned name '" + table.getValue() + "' updated.");
+                        logBean.writeDeputyLog(currentUser, "Silly name '" + table.getValue() + "' updated.");
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
@@ -163,13 +145,9 @@ public class BannedNameEditor extends Editor
             public void buttonClick(Button.ClickEvent event)
             {
                 busyCreatingNewItem = true;
-                newInstance = new BannedName();
-                newInstance.setDeputy(currentUser.getName());
-                newInstance.setCreation(new Date());
+                newInstance = new SillyName();
                 BeanItem beanItem = new BeanItem(newInstance);
                 group.setItemDataSource((beanItem));
-                date.setEnabled(false);
-                deputy.setEnabled(false);
             }
         });
         buttonsLayout.addComponent(create);
@@ -181,7 +159,7 @@ public class BannedNameEditor extends Editor
             public void buttonClick(Button.ClickEvent event)
             {
                 container.removeItem(table.getValue());
-                logBean.writeDeputyLog(currentUser, "Banned name '" + table.getValue() + "' deleted.");
+                logBean.writeDeputyLog(currentUser, "Silly name '" + table.getValue() + "' deleted.");
             }
         });
         buttonsLayout.addComponent(delete);
