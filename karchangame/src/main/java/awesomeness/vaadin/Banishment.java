@@ -48,9 +48,7 @@ public class Banishment extends VerticalLayout
     protected void buildView()
     {
         BanTableEditor banTable = new BanTableEditor(this, currentUser, logBean);
+        banTable.buildView();
     }
-//
-//    banishment.setVisibleFormProperties (
-//"address", "days", "ip", "name", "reason");
 
 }

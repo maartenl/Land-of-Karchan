@@ -98,7 +98,6 @@ public class MyUI extends UI
         banishmentPanel.setVisible(false);
         Banishment banishment = new Banishment(servlet.getCurrentUser(), servlet.getLogBean());
         banishment.init();
-        banishment.setVisibleTableProperties("address", "days", "ip", "name", "deputy", "date", "reason");
         banishmentPanel.setContent(banishment);
         layout.addComponent(banishmentPanel);
 
