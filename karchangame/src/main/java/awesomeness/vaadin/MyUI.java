@@ -19,13 +19,17 @@ package awesomeness.vaadin;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.text.SimpleDateFormat;
 import javax.persistence.EntityManager;
+import mmud.database.entities.game.Admin;
 
 /**
  *
@@ -40,6 +44,7 @@ public class MyUI extends UI
     {
         MyUIServlet servlet = ((MyUIServlet) MyUIServlet.getCurrent());
         EntityManager em = servlet.getEntityManager();
+        Admin admin = servlet.getCurrentUser();
 
         Panel mainPanel = new Panel("Administration pages");
         setContent(mainPanel);
@@ -52,51 +57,67 @@ public class MyUI extends UI
         MenuBar barmenu = new MenuBar();
         layout.addComponent(barmenu);
 
+        final Panel currentUserPanel = new Panel();
+        Layout currentUserLayout = new HorizontalLayout();
+        currentUserPanel.setContent(currentUserLayout);
+        SimpleDateFormat simpleDateFormat
+                = new SimpleDateFormat("EEEE, dd MMMM yyyy");// yyyy/MM/dd
+        String dateString
+                = simpleDateFormat.format(admin.getValiduntil().getTime());
+        Label nameLabel = new Label("Name: " + admin.getName());
+        Label emailLabel = new Label("Email: " + admin.getEmail());
+        Label validUntilLabel = new Label("Valid until: " + dateString);
+        currentUserLayout.setWidth(100, Unit.PERCENTAGE);
+        currentUserLayout.addComponent(nameLabel);
+        currentUserLayout.addComponent(emailLabel);
+        currentUserLayout.addComponent(validUntilLabel);
+        layout.addComponent(currentUserPanel);
+
         final Panel worldAttributesPanel = new Panel("Worldattributes");
         worldAttributesPanel.setVisible(false);
-        Layout worldattributes = new WorldAttributes(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout worldattributes = new WorldAttributes(admin, servlet.getLogBean());
         worldAttributesPanel.setContent(worldattributes);
         layout.addComponent(worldAttributesPanel);
 
         final Panel scriptsPanel = new Panel("Scripts");
         scriptsPanel.setVisible(false);
-        Layout scripts = new Scripts(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout scripts = new Scripts(admin, servlet.getLogBean());
         scriptsPanel.setContent(scripts);
         layout.addComponent(scriptsPanel);
 
         final Panel areasPanel = new Panel("Areas");
         areasPanel.setVisible(false);
-        Layout areas = new Areas(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout areas = new Areas(admin, servlet.getLogBean());
         areasPanel.setContent(areas);
         layout.addComponent(areasPanel);
 
         final Panel eventsPanel = new Panel("Events");
         eventsPanel.setVisible(false);
-        Layout events = new Events(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout events = new Events(admin, servlet.getLogBean());
         eventsPanel.setContent(events);
         layout.addComponent(eventsPanel);
 
         final Panel roomsPanel = new Panel("Rooms");
         roomsPanel.setVisible(false);
-        Layout rooms = new Rooms(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout rooms = new Rooms(admin, servlet.getLogBean());
         roomsPanel.setContent(rooms);
         layout.addComponent(roomsPanel);
 
         final Panel commandsPanel = new Panel("Commands");
         commandsPanel.setVisible(false);
-        Layout commands = new Commands(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout commands = new Commands(admin, servlet.getLogBean());
         commandsPanel.setContent(commands);
         layout.addComponent(commandsPanel);
 
         final Panel logsPanel = new Panel("Logs");
         logsPanel.setVisible(false);
-        Layout logs = new Logs(servlet.getCurrentUser(), servlet.getLogBean());
+        Layout logs = new Logs(admin, servlet.getLogBean());
         logsPanel.setContent(logs);
         layout.addComponent(logsPanel);
 
         final Panel banishmentPanel = new Panel("Banishment");
         banishmentPanel.setVisible(false);
-        Banishment banishment = new Banishment(servlet.getCurrentUser(), servlet.getLogBean());
+        Banishment banishment = new Banishment(admin, servlet.getLogBean());
         banishment.init();
         banishmentPanel.setContent(banishment);
         layout.addComponent(banishmentPanel);
