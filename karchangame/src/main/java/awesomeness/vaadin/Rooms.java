@@ -17,7 +17,7 @@
 package awesomeness.vaadin;
 
 import awesomeness.vaadin.utils.IntegerProperty;
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
@@ -86,16 +86,14 @@ public class Rooms extends VerticalLayout implements
     private final TextField down;
     private final LogBean logBean;
 
-    Rooms(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Rooms(final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
         this.logBean = logBean;
-        // And there we have it
-        final JPAContainer<Room> attributes
-                = new JPAContainer<>(Room.class);
+        final JPAContainer<mmud.database.entities.game.Room> attributes = Utilities.getJPAContainer(mmud.database.entities.game.Room.class);
+
         final Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
@@ -148,7 +146,7 @@ public class Rooms extends VerticalLayout implements
         // Create a selection component
         area = new ComboBox("Area");
         // Add items with given item IDs
-        Query areas = entityProvider.getEntityManager().createNamedQuery("Area.findAll");
+        Query areas = attributes.getEntityProvider().getEntityManager().createNamedQuery("Area.findAll");
         List<Area> foundareas = areas.getResultList();
         for (Area found : foundareas)
         {
@@ -199,7 +197,7 @@ public class Rooms extends VerticalLayout implements
                 logger.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
                 String areaname = (String) area.getValue();
-                Query areaQuery = entityProvider.getEntityManager().createNamedQuery("Area.findByArea");
+                Query areaQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Area.findByArea");
                 areaQuery.setParameter("area", areaname);
                 try
                 {
@@ -242,7 +240,7 @@ public class Rooms extends VerticalLayout implements
                 Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
                 if (roomId != null)
                 {
-                    Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                    Query roomQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Room.findById");
                     roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else

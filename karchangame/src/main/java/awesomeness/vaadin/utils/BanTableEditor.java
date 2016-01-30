@@ -63,7 +63,7 @@ public class BanTableEditor extends Editor
 
     public void buildView()
     {
-        final JPAContainer<BanTable> container = JPAContainerFactory.makeJndi(BanTable.class);
+        final JPAContainer<BanTable> container = Utilities.getJPAContainer(BanTable.class);
 
         table = new Table(null, container);
         table.setSizeFull();

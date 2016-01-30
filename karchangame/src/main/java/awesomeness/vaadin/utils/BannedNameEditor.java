@@ -63,7 +63,7 @@ public class BannedNameEditor extends Editor
 
     public void buildView()
     {
-        final JPAContainer<BannedName> container = JPAContainerFactory.makeJndi(BannedName.class);
+        final JPAContainer<BannedName> container = Utilities.getJPAContainer(BannedName.class);
 
         table = new Table(null, container);
         table.setSizeFull();

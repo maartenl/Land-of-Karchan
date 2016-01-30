@@ -54,43 +54,43 @@ public class MyUI extends UI
 
         final Panel worldAttributesPanel = new Panel("Worldattributes");
         worldAttributesPanel.setVisible(false);
-        Layout worldattributes = new WorldAttributes(servlet.getWorldattributesProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout worldattributes = new WorldAttributes(servlet.getCurrentUser(), servlet.getLogBean());
         worldAttributesPanel.setContent(worldattributes);
         layout.addComponent(worldAttributesPanel);
 
         final Panel scriptsPanel = new Panel("Scripts");
         scriptsPanel.setVisible(false);
-        Layout scripts = new Scripts(servlet.getScriptsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout scripts = new Scripts(servlet.getCurrentUser(), servlet.getLogBean());
         scriptsPanel.setContent(scripts);
         layout.addComponent(scriptsPanel);
 
         final Panel areasPanel = new Panel("Areas");
         areasPanel.setVisible(false);
-        Layout areas = new Areas(servlet.getAreasProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout areas = new Areas(servlet.getCurrentUser(), servlet.getLogBean());
         areasPanel.setContent(areas);
         layout.addComponent(areasPanel);
 
         final Panel eventsPanel = new Panel("Events");
         eventsPanel.setVisible(false);
-        Layout events = new Events(servlet.getEventsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout events = new Events(servlet.getCurrentUser(), servlet.getLogBean());
         eventsPanel.setContent(events);
         layout.addComponent(eventsPanel);
 
         final Panel roomsPanel = new Panel("Rooms");
         roomsPanel.setVisible(false);
-        Layout rooms = new Rooms(servlet.getRoomsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout rooms = new Rooms(servlet.getCurrentUser(), servlet.getLogBean());
         roomsPanel.setContent(rooms);
         layout.addComponent(roomsPanel);
 
         final Panel commandsPanel = new Panel("Commands");
         commandsPanel.setVisible(false);
-        Layout commands = new Commands(servlet.getCommandsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout commands = new Commands(servlet.getCurrentUser(), servlet.getLogBean());
         commandsPanel.setContent(commands);
         layout.addComponent(commandsPanel);
 
         final Panel logsPanel = new Panel("Logs");
         logsPanel.setVisible(false);
-        Layout logs = new Logs(servlet.getLogsProvider(), servlet.getCommandlogsProvider(), servlet.getSystemlogsProvider(), servlet.getCurrentUser(), servlet.getLogBean());
+        Layout logs = new Logs(servlet.getCurrentUser(), servlet.getLogBean());
         logsPanel.setContent(logs);
         layout.addComponent(logsPanel);
 

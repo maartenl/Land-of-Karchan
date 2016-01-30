@@ -16,7 +16,6 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.addon.jpacontainer.EntityProvider;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
 import javax.ejb.EJB;
@@ -41,33 +40,6 @@ public class MyUIServlet extends VaadinServlet
 
     @PersistenceContext(name = "persistence/em", unitName = "karchangamePU")
     private EntityManager em;
-
-    @EJB
-    private WorldattributesProvider worldattributesProvider;
-
-    @EJB
-    private ScriptsProvider scriptsProvider;
-
-    @EJB
-    private AreasProvider areasProvider;
-
-    @EJB
-    private EventsProvider eventsProvider;
-
-    @EJB
-    private RoomsProvider roomsProvider;
-
-    @EJB
-    private CommandsProvider commandsProvider;
-
-    @EJB
-    private LogsProvider logsProvider;
-
-    @EJB
-    private CommandlogsProvider commandLogsProvider;
-
-    @EJB
-    private SystemlogsProvider systemlogsProvider;
 
     @EJB
     private IdentificationBean identificationBean;
@@ -95,54 +67,9 @@ public class MyUIServlet extends VaadinServlet
         return em;
     }
 
-    EntityProvider getWorldattributesProvider()
-    {
-        return worldattributesProvider;
-    }
-
-    EntityProvider getScriptsProvider()
-    {
-        return scriptsProvider;
-    }
-
-    EntityProvider getAreasProvider()
-    {
-        return areasProvider;
-    }
-
-    EntityProvider getEventsProvider()
-    {
-        return eventsProvider;
-    }
-
-    EntityProvider getRoomsProvider()
-    {
-        return roomsProvider;
-    }
-
-    public CommandsProvider getCommandsProvider()
-    {
-        return commandsProvider;
-    }
-
     public LogBean getLogBean()
     {
         return logBean;
-    }
-
-    public CommandlogsProvider getCommandlogsProvider()
-    {
-        return commandLogsProvider;
-    }
-
-    public LogsProvider getLogsProvider()
-    {
-        return logsProvider;
-    }
-
-    public SystemlogsProvider getSystemlogsProvider()
-    {
-        return systemlogsProvider;
     }
 
 }

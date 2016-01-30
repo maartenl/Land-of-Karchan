@@ -16,7 +16,7 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -70,16 +70,14 @@ public class Scripts extends VerticalLayout implements
     private Method newInstance;
     private final LogBean logBean;
 
-    Scripts(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Scripts(final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
         this.logBean = logBean;
-        // And there we have it
-        final JPAContainer<Method> attributes
-                = new JPAContainer<>(Method.class);
+        final JPAContainer<Method> attributes = Utilities.getJPAContainer(Method.class);
+
         final Container.Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         Panel searchPanel = new Panel();
         addComponent(searchPanel);

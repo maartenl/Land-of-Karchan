@@ -62,7 +62,7 @@ public class UnbanEditor extends Editor
 
     public void buildView()
     {
-        final JPAContainer<UnbanTable> container = JPAContainerFactory.makeJndi(UnbanTable.class);
+        final JPAContainer<UnbanTable> container = Utilities.getJPAContainer(UnbanTable.class);
 
         table = new Table(null, container);
         table.setSizeFull();

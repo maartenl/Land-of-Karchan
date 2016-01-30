@@ -17,7 +17,7 @@
 package awesomeness.vaadin;
 
 import awesomeness.vaadin.utils.IntegerProperty;
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -81,16 +81,15 @@ public class Events extends VerticalLayout implements
     private final TextField method;
     private final LogBean logBean;
 
-    Events(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Events(final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
         this.logBean = logBean;
         // And there we have it
-        final JPAContainer<mmud.database.entities.game.Event> attributes
-                = new JPAContainer<>(mmud.database.entities.game.Event.class);
+        final JPAContainer<mmud.database.entities.game.Event> attributes = Utilities.getJPAContainer(mmud.database.entities.game.Event.class);
+
         final Container.Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         Panel searchPanel = new Panel();
         addComponent(searchPanel);
@@ -144,7 +143,7 @@ public class Events extends VerticalLayout implements
                 {
                     return;
                 }
-                Query methodQuery = entityProvider.getEntityManager().createNamedQuery("Method.findByName");
+                Query methodQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Method.findByName");
                 methodQuery.setParameter("name", methodName);
                 Method foundMethod = (Method) methodQuery.getSingleResult();
                 if (foundMethod != null)
@@ -175,7 +174,7 @@ public class Events extends VerticalLayout implements
                 {
                     return;
                 }
-                Query personQuery = entityProvider.getEntityManager().createNamedQuery("Person.findByName");
+                Query personQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Person.findByName");
                 personQuery.setParameter("name", personName);
                 Person foundPerson = (Person) personQuery.getSingleResult();
                 if (foundPerson != null)
@@ -208,7 +207,7 @@ public class Events extends VerticalLayout implements
                 {
                     return;
                 }
-                Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                Query roomQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Room.findById");
                 roomQuery.setParameter("id", roomId);
                 Room foundRoom = (Room) roomQuery.getSingleResult();
                 if (foundRoom != null)
@@ -299,7 +298,7 @@ public class Events extends VerticalLayout implements
                 logger.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
                 String methodName = (String) method.getValue();
-                Query methodQuery = entityProvider.getEntityManager().createNamedQuery("Method.findByName");
+                Query methodQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Method.findByName");
                 methodQuery.setParameter("name", methodName);
                 Method foundMethod = (Method) methodQuery.getSingleResult();
                 item.getItemProperty("method").setValue(foundMethod);
@@ -334,7 +333,7 @@ public class Events extends VerticalLayout implements
                 Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
                 if (roomId != null)
                 {
-                    Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                    Query roomQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Room.findById");
                     roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else
@@ -352,7 +351,7 @@ public class Events extends VerticalLayout implements
                 String personName = (String) personTextfield.getValue();
                 if (personName != null && !personName.trim().equals(""))
                 {
-                    Query personQuery = entityProvider.getEntityManager().createNamedQuery("Person.findByName");
+                    Query personQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Person.findByName");
                     personQuery.setParameter("name", personName);
                     item.getItemProperty(person).setValue((Person) personQuery.getSingleResult());
                 } else

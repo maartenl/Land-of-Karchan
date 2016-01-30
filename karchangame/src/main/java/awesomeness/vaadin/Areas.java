@@ -16,7 +16,7 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -70,16 +70,15 @@ public class Areas extends VerticalLayout implements
     private Area newInstance;
     private final LogBean logBean;
 
-    Areas(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Areas(final Admin currentUser, final LogBean logBean)
     {
+        final JPAContainer<Area> attributes = Utilities.getJPAContainer(Area.class);
+
         this.currentUser = currentUser;
         this.logBean = logBean;
-        // And there we have it
-        final JPAContainer<Area> attributes
-                = new JPAContainer<>(Area.class);
+
         final Container.Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()

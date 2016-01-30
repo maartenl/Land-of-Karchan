@@ -16,7 +16,7 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -64,26 +64,18 @@ public class Logs extends VerticalLayout
     private final Admin currentUser;
     private final LogBean logBean;
 
-    Logs(final EntityProvider logEntityProvider, final EntityProvider commandlogEntityProvider, final EntityProvider systemlogEntityProvider, final Admin currentUser, final LogBean logBean)
+    Logs(final Admin currentUser, final LogBean logBean)
     {
         initialLogDate = Date.from(LocalDate.now().plusYears(10).atStartOfDay().toInstant(ZoneOffset.UTC));
 
         this.currentUser = currentUser;
         this.logBean = logBean;
-        // And there we have it
 
-        final JPAContainer<Log> logattributes
-                = new JPAContainer<>(Log.class);
+        final JPAContainer<Log> logattributes = Utilities.getJPAContainer(Log.class);
         final Container.Filter filter = new Compare.Equal("deputy",
                 true);
-        logattributes.setEntityProvider(logEntityProvider);
-        final JPAContainer<Commandlog> chatlogattributes
-                = new JPAContainer<>(Commandlog.class);
-        chatlogattributes.setEntityProvider(commandlogEntityProvider);
-
-        final JPAContainer<Systemlog> systemlogattributes
-                = new JPAContainer<>(Systemlog.class);
-        systemlogattributes.setEntityProvider(systemlogEntityProvider);
+        final JPAContainer<Commandlog> chatlogattributes = Utilities.getJPAContainer(Commandlog.class);
+        final JPAContainer<Systemlog> systemlogattributes = Utilities.getJPAContainer(Systemlog.class);
 
         Panel logsearchPanel = new Panel("Game Logs");
         addComponent(logsearchPanel);

@@ -136,6 +136,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
         return em;
     }
+
     private static final Logger itsLog = Logger.getLogger(GameBean.class.getName());
 
     /**

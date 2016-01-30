@@ -17,7 +17,7 @@
 package awesomeness.vaadin;
 
 import awesomeness.vaadin.utils.IntegerProperty;
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
@@ -75,16 +75,14 @@ public class Commands extends VerticalLayout implements
     private final CheckBox callable;
     private final LogBean logBean;
 
-    Commands(final EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Commands(final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
         this.logBean = logBean;
-        // And there we have it
-        final JPAContainer<UserCommand> attributes
-                = new JPAContainer<>(UserCommand.class);
+        final JPAContainer<mmud.database.entities.game.UserCommand> attributes = Utilities.getJPAContainer(mmud.database.entities.game.UserCommand.class);
+
         final Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
@@ -155,7 +153,7 @@ public class Commands extends VerticalLayout implements
                 logger.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
                 String method = (String) methodName.getValue();
-                Query methodQuery = entityProvider.getEntityManager().createNamedQuery("Method.findByName");
+                Query methodQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Method.findByName");
                 methodQuery.setParameter("name", method);
                 Method foundMethod = (Method) methodQuery.getSingleResult();
                 item.getItemProperty("methodName").setValue(foundMethod);
@@ -189,7 +187,7 @@ public class Commands extends VerticalLayout implements
                 Integer roomId = (Integer) roomTextfield.getPropertyDataSource().getValue();
                 if (roomId != null)
                 {
-                    Query roomQuery = entityProvider.getEntityManager().createNamedQuery("Room.findById");
+                    Query roomQuery = attributes.getEntityProvider().getEntityManager().createNamedQuery("Room.findById");
                     roomQuery.setParameter("id", roomId);
                     item.getItemProperty(direction).setValue((Room) roomQuery.getSingleResult());
                 } else

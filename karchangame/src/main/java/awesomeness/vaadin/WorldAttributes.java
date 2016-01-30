@@ -16,7 +16,7 @@
  */
 package awesomeness.vaadin;
 
-import com.vaadin.addon.jpacontainer.EntityProvider;
+import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -70,16 +70,15 @@ class WorldAttributes extends VerticalLayout implements
     private Worldattribute newInstance;
     private final LogBean logBean;
 
-    WorldAttributes(EntityProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    WorldAttributes(final Admin currentUser, final LogBean logBean)
     {
         this.currentUser = currentUser;
         this.logBean = logBean;
         // And there we have it
-        final JPAContainer<Worldattribute> attributes
-                = new JPAContainer<>(Worldattribute.class);
+        final JPAContainer<Worldattribute> attributes = Utilities.getJPAContainer(Worldattribute.class);
+
         final Container.Filter filter = new Compare.Equal("owner",
                 currentUser);
-        attributes.setEntityProvider(entityProvider);
 
         filterOnOwner = new CheckBox("Filter on owner");
         filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()

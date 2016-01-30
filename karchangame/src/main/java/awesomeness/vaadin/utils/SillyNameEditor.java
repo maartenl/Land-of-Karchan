@@ -62,7 +62,7 @@ public class SillyNameEditor extends Editor
 
     public void buildView()
     {
-        final JPAContainer<SillyName> container = JPAContainerFactory.makeJndi(SillyName.class);
+        final JPAContainer<SillyName> container = Utilities.getJPAContainer(SillyName.class);
 
         table = new Table(null, container);
         table.setSizeFull();
