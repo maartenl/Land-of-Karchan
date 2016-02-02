@@ -41,7 +41,7 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class UnbanEditor extends Editor
+public class UnbanEditor extends SimpleEditor
 {
 
     private static final Logger logger = Logger.getLogger(UnbanEditor.class.getName());

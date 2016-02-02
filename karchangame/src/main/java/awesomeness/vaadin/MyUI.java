@@ -122,6 +122,12 @@ public class MyUI extends UI
         banishmentPanel.setContent(banishment);
         layout.addComponent(banishmentPanel);
 
+        final Panel itemDefinitionsPanel = new Panel("Item definitions");
+        itemDefinitionsPanel.setVisible(false);
+        ItemDefinitions itemdefinitions = new ItemDefinitions(admin, servlet.getLogBean());
+        itemDefinitionsPanel.setContent(itemdefinitions);
+        layout.addComponent(itemDefinitionsPanel);
+
         final MenuBar.Command command;
         command = new MenuBar.Command()
         {
@@ -137,6 +143,7 @@ public class MyUI extends UI
                 commandsPanel.setVisible(false);
                 logsPanel.setVisible(false);
                 banishmentPanel.setVisible(false);
+                itemDefinitionsPanel.setVisible(false);
 
                 switch (selectedItem.getText())
                 {
@@ -164,6 +171,9 @@ public class MyUI extends UI
                     case "Banishment":
                         banishmentPanel.setVisible(true);
                         break;
+                    case "Item definitions":
+                        itemDefinitionsPanel.setVisible(true);
+                        break;
                 }
             }
         };
@@ -172,6 +182,9 @@ public class MyUI extends UI
         players.addItem("Banishment", null, command);
 
         barmenu.addItem("Rooms", null, command);
+
+        MenuItem items = barmenu.addItem("Items", null, null);
+        items.addItem("Item definitions", null, command);
 
         barmenu.addItem("Areas", null, command);
 

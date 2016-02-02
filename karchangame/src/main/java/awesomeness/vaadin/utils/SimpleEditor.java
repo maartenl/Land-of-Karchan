@@ -16,26 +16,11 @@
  */
 package awesomeness.vaadin.utils;
 
-import com.vaadin.ui.VerticalLayout;
-import mmud.database.entities.game.Admin;
-import mmud.rest.services.LogBean;
-
 /**
  *
  * @author maartenl
  */
-public class Editor extends VerticalLayout
+public class SimpleEditor
 {
-
-    private final Admin currentUser;
-
-    private final LogBean logBean;
-
-    public Editor(Admin currentUser, LogBean logBean)
-    {
-        this.currentUser = currentUser;
-        this.logBean = logBean;
-
-    }
 
 }

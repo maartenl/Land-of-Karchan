@@ -42,7 +42,7 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class BannedNameEditor extends Editor
+public class BannedNameEditor extends SimpleEditor
 {
 
     private static final Logger logger = Logger.getLogger(BannedNameEditor.class.getName());

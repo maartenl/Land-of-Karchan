@@ -41,7 +41,7 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class SillyNameEditor extends Editor
+public class SillyNameEditor extends SimpleEditor
 {
 
     private static final Logger logger = Logger.getLogger(SillyNameEditor.class.getName());
