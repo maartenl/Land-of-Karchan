@@ -295,7 +295,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      */
     public String getDescription()
     {
-        return getItemDefinition().getDescription();
+        return getItemDefinition().getShortDescription();
     }
 
     /**
@@ -314,7 +314,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         {
             return getItemDefinition().getTitle();
         }
-        return getItemDefinition().getDescription();
+        return getItemDefinition().getShortDescription();
     }
 
     @Override
@@ -334,7 +334,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         Attribute description = getAttribute(Attributes.DESCRIPTION);
         if (description == null || description.getValue() == null || description.getValue().trim().equals(""))
         {
-            return getItemDefinition().getLongDescription();
+            return getItemDefinition().getDescription();
         }
         return description.getValue();
     }

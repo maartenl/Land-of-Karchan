@@ -16,7 +16,8 @@
  */
 package awesomeness.vaadin;
 
-import awesomeness.vaadin.utils.Editor;
+import awesomeness.vaadin.editor.Buttons;
+import awesomeness.vaadin.editor.Editor;
 import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
@@ -26,7 +27,6 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
@@ -34,8 +34,12 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mmud.Constants;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.rest.services.LogBean;
@@ -113,150 +117,155 @@ public class ItemDefinitions extends Editor
         final FormLayout layout = new FormLayout();
         formPanel.setContent(layout);
 
-        final Field<?> id = group.buildAndBind("Id", "id");
-        Field<?> name = group.buildAndBind("name", "name");
+        final TextField id = new TextField("id"); // group.buildAndBind("id", "id");
+        final Field<?> name = group.buildAndBind("name", "name");
         Field<?> adject1 = group.buildAndBind("adject1", "adject1");
         Field<?> adject2 = group.buildAndBind("adject2", "adject2");
         Field<?> adject3 = group.buildAndBind("adject3", "adject3");
-        id.setEnabled(false);
+        TextArea description = group.buildAndBind("description", "description", TextArea.class);
+        id.addValidator(new BeanValidator(ItemDefinition.class, "id"));
         name.addValidator(new BeanValidator(ItemDefinition.class, "name"));
         adject1.addValidator(new BeanValidator(ItemDefinition.class, "adject1"));
         adject2.addValidator(new BeanValidator(ItemDefinition.class, "adject2"));
         adject3.addValidator(new BeanValidator(ItemDefinition.class, "adject3"));
+        description.addValidator(new BeanValidator(ItemDefinition.class, "description"));
+        description.setWidth(80, Unit.PERCENTAGE);
         layout.addComponent(id);
         layout.addComponent(name);
         layout.addComponent(adject1);
         layout.addComponent(adject2);
         layout.addComponent(adject3);
+        layout.addComponent(description);
 
         final Label owner = new Label();
         owner.setCaption("Owner");
         layout.addComponent(owner);
 
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        addComponent(buttonsLayout);
-        final Button commit = new Button("Save", new Button.ClickListener()
+        final Buttons buttons = new Buttons(currentUser, logBean, "Item definition")
         {
+
             @Override
-            public void buttonClick(Button.ClickEvent event)
+            protected Object save()
             {
+                item.getItemProperty("owner").setValue(currentUser);
                 try
                 {
-                    item.getItemProperty("owner").setValue(currentUser);
                     group.commit();
-                    if (busyCreatingNewItem == true)
-                    {
-                        Object itemId = container.addEntity(newInstance);
-                        table.setValue(itemId);
-                        logBean.writeDeputyLog(currentUser, "New item definition '" + itemId + "' created.");
-                    } else
-                    {
-                        logBean.writeDeputyLog(currentUser, "Item definition '" + table.getValue() + "' updated.");
-                    }
+                } catch (FieldGroup.CommitException ex)
+                {
+                    Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return table.getValue();
+            }
+
+            @Override
+            protected Object create()
+            {
+                Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, newInstance.getId() + "");
+                newInstance.setOwner(currentUser);
+                //item.getItemProperty("owner").setValue(currentUser);
+//                try
+//                {
+//                    group.commit();
+//                } catch (FieldGroup.CommitException ex)
+//                {
+//                    Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+
+                String string = Constants.checkValidation(newInstance);
+                if (string != null)
+                {
+                    Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, string);
+                }
+                newInstance.setId(Integer.valueOf(id.getValue()));
+                Object itemId = container.addEntity(newInstance);
+                table.setValue(itemId);
+                return itemId;
+            }
+
+            @Override
+            protected void instantiate()
+            {
+                busyCreatingNewItem = true;
+                newInstance = new ItemDefinition();
+                id.setValue("");
+                newInstance.setCreation(new Date());
+                newInstance.setDiscriminator(0);
+                newInstance.setOwner(currentUser);
+                newInstance.setDescription("Mandatory description goes here.");
+                BeanItem beanItem = new BeanItem(newInstance);
+                group.setItemDataSource((beanItem));
+                layout.setEnabled(true);
+                //deputy.setEnabled(false);
+            }
+
+            @Override
+            protected void discard()
+            {
+                group.discard();
+            }
+
+            @Override
+            protected Object delete()
+            {
+                final Object value = table.getValue();
+                container.removeItem(value);
+                return value;
+            }
+
+            @Override
+            protected String disown()
+            {
+                item.getItemProperty("owner").setValue(null);
+                try
+                {
+                    group.commit();
                 } catch (FieldGroup.CommitException ex)
                 {
                     logger.log(Level.SEVERE, null, ex);
                 }
-                busyCreatingNewItem = false;
+                return item.toString();
             }
+        };
+        addComponent(buttons);
 
-        });
-        buttonsLayout.addComponent(commit);
-
-        Button discard = new Button("Cancel", new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                logger.log(Level.FINEST, "discard clicked.");
-                group.discard();
-            }
-        });
-        buttonsLayout.addComponent(discard);
-
-        Button create = new Button("Create", new Button.ClickListener()
-        {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                busyCreatingNewItem = true;
-                newInstance = new ItemDefinition();
-                newInstance.setOwner(currentUser);
-                BeanItem beanItem = new BeanItem(newInstance);
-                group.setItemDataSource((beanItem));
-                id.setEnabled(false);
-                //deputy.setEnabled(false);
-            }
-        });
-        buttonsLayout.addComponent(create);
-
-        final Button delete = new Button("Delete", new Button.ClickListener()
-        {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                container.removeItem(table.getValue());
-                logBean.writeDeputyLog(currentUser, "Item definition '" + table.getValue() + "' deleted.");
-            }
-        });
-        buttonsLayout.addComponent(delete);
-
-        final Button disown = new Button("Disown", new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                logger.log(Level.FINEST, "disown clicked.");
-                item.getItemProperty("owner").setValue(null);
-//                try
-//                {
-//                    binder.commit();
-//                } catch (FieldGroup.CommitException ex)
-//                {
-//                    logger.log(Level.SEVERE, null, ex);
-//                }
-            }
-        });
-        buttonsLayout.addComponent(disown);
-        table.addValueChangeListener(new Property.ValueChangeListener()
-        {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                Object itemId = event.getProperty().getValue();
-                item = table.getItem(itemId);
-                boolean entitySelected = item != null;
-                if (entitySelected)
+        table.addValueChangeListener(
+                new Property.ValueChangeListener()
                 {
-                    group.setItemDataSource((item));
-                    id.setEnabled(false);
-                    //deputy.setEnabled(false);
 
-                    Property itemProperty = item.getItemProperty("owner");
-                    boolean enabled = false;
-                    if (itemProperty == null || itemProperty.getValue() == null)
+                    @Override
+                    public void valueChange(Property.ValueChangeEvent event
+                    )
                     {
-                        owner.setValue("");
-                        enabled = true;
-                    } else
-                    {
-                        Admin admin = (Admin) itemProperty.getValue();
-                        owner.setValue(admin.getName());
-                        if (admin.getName().equals(currentUser.getName()))
+                        Object itemId = event.getProperty().getValue();
+                        item = table.getItem(itemId);
+                        boolean entitySelected = item != null;
+                        if (entitySelected)
                         {
-                            enabled = true;
+                            group.setItemDataSource((item));
+                            //deputy.setEnabled(false);
+                            id.setValue(item.getItemProperty("id").getValue().toString());
+                            Property itemProperty = item.getItemProperty("owner");
+                            boolean enabled = false;
+                            if (itemProperty == null || itemProperty.getValue() == null)
+                            {
+                                owner.setValue("");
+                                enabled = true;
+                            } else
+                            {
+                                Admin admin = (Admin) itemProperty.getValue();
+                                owner.setValue(admin.getName());
+                                if (admin.getName().equals(currentUser.getName()))
+                                {
+                                    enabled = true;
+                                }
+                            }
+                            buttons.setButtonsEnabled(enabled);
+                            layout.setEnabled(enabled);
                         }
                     }
-                    disown.setEnabled(enabled);
-                    delete.setEnabled(enabled);
-                    commit.setEnabled(enabled);
-                    layout.setEnabled(enabled);
                 }
-            }
-        });
+        );
 
     }
 

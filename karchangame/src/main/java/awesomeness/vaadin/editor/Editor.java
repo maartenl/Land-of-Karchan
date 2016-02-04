@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package awesomeness.vaadin.utils;
+package awesomeness.vaadin.editor;
 
 import com.vaadin.ui.VerticalLayout;
 import mmud.database.entities.game.Admin;

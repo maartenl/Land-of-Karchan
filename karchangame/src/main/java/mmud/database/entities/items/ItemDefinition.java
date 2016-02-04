@@ -457,12 +457,12 @@ public class ItemDefinition implements Serializable, Ownage
      *
      * @return Long description string.
      */
-    public String getLongDescription()
+    public String getDescription()
     {
         return description;
     }
 
-    public void setLongDescription(String description)
+    public void setDescription(String description)
     {
         this.description = description;
     }
@@ -726,9 +726,9 @@ public class ItemDefinition implements Serializable, Ownage
 
     /**
      * @see Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
-     * @return String containing a description of the item, made from concatenating adjectives and the name.
+     * @return String containing a longdescription of the item, made from concatenating adjectives and the name.
      */
-    public String getDescription()
+    public String getShortDescription()
     {
         return Constants.getDescriptionOfItem(getAdject1(), getAdject2(), getAdject3(), getName(), true);
     }
@@ -740,7 +740,7 @@ public class ItemDefinition implements Serializable, Ownage
      * strong heavy iron hammer</li></ul>
      *
      * @param parsed the list of strings.
-     * @return if this item corresponds to the description.
+     * @return if this item corresponds to the longdescription.
      */
     boolean isDescribedBy(List<String> parsed)
     {
@@ -785,10 +785,33 @@ public class ItemDefinition implements Serializable, Ownage
 
     /**
      * Creates an item with this itemdefinition.
-     * @return 
+     *
+     * @return
      */
-    public NormalItem createItem() {
-        NormalItem item = new NormalItem(this);       
+    public NormalItem createItem()
+    {
+        NormalItem item = new NormalItem(this);
         return item;
     }
+
+    /**
+     * @see #getDiscriminator()
+     * @param discriminator
+     */
+    public void setDiscriminator(Integer discriminator)
+    {
+        this.discriminator = discriminator;
+    }
+
+    /**
+     * Indicates the type of item. Two values are currently available
+     * 0, which is normal, and 1 which is a shop.
+     *
+     * @return
+     */
+    public Integer getDiscriminator()
+    {
+        return discriminator;
+    }
+
 }

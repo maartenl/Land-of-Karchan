@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.enums.Filter;
@@ -251,7 +255,7 @@ public class Constants
         builder.append("<ul>");
         for (ItemDefinition definition : inventory.keySet())
         {
-            String desc = definition.getDescription();
+            String desc = definition.getShortDescription();
             builder.append("<li>");
             int amount = inventory.get(definition);
             if (amount != 1)
@@ -301,7 +305,7 @@ public class Constants
         builder.append("<ul>");
         for (ItemDefinition definition : inventory.keySet())
         {
-            String desc = definition.getDescription();
+            String desc = definition.getShortDescription();
             builder.append("<li>");
             int amount = inventory.get(definition);
             if (amount != 1)
@@ -403,5 +407,32 @@ public class Constants
         cal.set(Calendar.MILLISECOND, 0);
         Date sundays = cal.getTime();
         return sundays;
+    }
+
+    /**
+     * Returns null if all is well, otherwise a description of the problems with the bean.
+     *
+     * @param <T>
+     * @param entity
+     * @return
+     */
+    public static <T> String checkValidation(T entity)
+    {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+        StringBuffer buffer = null;
+        if (!constraintViolations.isEmpty())
+        {
+            for (ConstraintViolation<T> cv : constraintViolations)
+            {
+                if (buffer == null)
+                {
+                    buffer = new StringBuffer();
+                }
+                buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
+            }
+        }
+        return buffer == null ? null : buffer.toString();
     }
 }

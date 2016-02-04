@@ -765,7 +765,7 @@ public class PrivateBeanTest
                     {
                         assertNotNull(newItemDef);
                         assertEquals(newItemDef.getId(), Integer.valueOf(6));
-                        assertEquals(newItemDef.getDescription(), itemDef.getDescription());
+                        assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
                         assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
                         assertEquals(newItemDef.getName(), itemDef.getName());
                         assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
