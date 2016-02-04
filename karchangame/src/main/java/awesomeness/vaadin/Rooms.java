@@ -118,7 +118,7 @@ public class Rooms extends VerticalLayout implements
 
         roomsTable = new Table("Rooms", attributes);
         roomsTable.setVisibleColumns("id", "title", "area", "owner", "creation");
-        roomsTable.setSizeFull();
+        Utilities.setTableSize(roomsTable);
         roomsTable.setSelectable(true);
         roomsTable.addValueChangeListener(this);
         roomsTable.setImmediate(true);

@@ -107,7 +107,7 @@ public class Commands extends VerticalLayout implements
 
         commandsTable = new Table("Commands", attributes);
         commandsTable.setVisibleColumns("id", "command", "methodName", "callable", "room", "owner", "creation");
-        commandsTable.setSizeFull();
+        Utilities.setTableSize(commandsTable);
         commandsTable.setSelectable(true);
         commandsTable.addValueChangeListener(this);
         commandsTable.setImmediate(true);

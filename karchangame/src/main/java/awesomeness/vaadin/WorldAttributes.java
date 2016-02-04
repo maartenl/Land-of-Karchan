@@ -103,7 +103,7 @@ class WorldAttributes extends VerticalLayout implements
 
         worldattribTable = new Table("Worldattributes", attributes);
         worldattribTable.setVisibleColumns("name", "type", "owner", "creation");
-        worldattribTable.setSizeFull();
+        Utilities.setTableSize(worldattribTable);
         worldattribTable.setSelectable(true);
         worldattribTable.addValueChangeListener(this);
         worldattribTable.setImmediate(true);

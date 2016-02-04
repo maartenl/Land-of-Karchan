@@ -134,7 +134,7 @@ public class Logs extends VerticalLayout
 
         logsTable = new Table("Game Logs", logattributes);
         logsTable.setVisibleColumns("id", "name", "message", "deputy", "creation");
-        logsTable.setSizeFull();
+        Utilities.setTableSize(logsTable);
         logsTable.setSelectable(true);
         logsTable.setImmediate(true);
         logsTable.setSortAscending(false);
@@ -216,7 +216,7 @@ public class Logs extends VerticalLayout
 
         chatlogsTable = new Table("Chat Logs", chatlogattributes);
         chatlogsTable.setVisibleColumns("id", "name", "command", "stamp");
-        chatlogsTable.setSizeFull();
+        Utilities.setTableSize(chatlogsTable);
         chatlogsTable.setSelectable(true);
         chatlogsTable.setImmediate(true);
         chatlogsTable.setSortAscending(false);
@@ -259,7 +259,7 @@ public class Logs extends VerticalLayout
 
         systemlogsTable = new Table("System Logs", systemlogattributes);
         systemlogsTable.setVisibleColumns("id", "message", "millis", "creationdate", "sequence", "logger", "level", "class1", "method", "thread");
-        systemlogsTable.setSizeFull();
+        Utilities.setTableSize(systemlogsTable);
         systemlogsTable.setSelectable(true);
         systemlogsTable.setImmediate(true);
         systemlogsTable.setSortAscending(false);

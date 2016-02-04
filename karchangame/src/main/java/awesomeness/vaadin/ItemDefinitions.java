@@ -101,7 +101,7 @@ public class ItemDefinitions extends Editor
 
         table = new Table("Item definitions", container);
         table.setVisibleColumns("id", "name", "adject1", "adject2", "adject3", "image", "discriminator", "owner");
-        table.setSizeFull();
+        Utilities.setTableSize(table);
         table.setSelectable(true);
         table.setImmediate(true);
         table.setSortAscending(false);

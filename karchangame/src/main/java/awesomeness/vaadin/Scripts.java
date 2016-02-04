@@ -132,7 +132,7 @@ public class Scripts extends VerticalLayout implements
 
         scriptsTable = new Table("Methods", attributes);
         scriptsTable.setVisibleColumns("name", "owner", "creation");
-        scriptsTable.setSizeFull();
+        Utilities.setTableSize(scriptsTable);
         scriptsTable.setSelectable(true);
         scriptsTable.addValueChangeListener(this);
         scriptsTable.setImmediate(true);

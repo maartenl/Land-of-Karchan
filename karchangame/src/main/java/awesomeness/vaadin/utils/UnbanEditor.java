@@ -17,7 +17,6 @@
 package awesomeness.vaadin.utils;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -65,7 +64,7 @@ public class UnbanEditor extends SimpleEditor
         final JPAContainer<UnbanTable> container = Utilities.getJPAContainer(UnbanTable.class);
 
         table = new Table(null, container);
-        table.setSizeFull();
+        Utilities.setTableSize(table);
         table.setSelectable(true);
         table.setImmediate(true);
         table.setHeight(215, Sizeable.Unit.PIXELS);

@@ -18,6 +18,8 @@ package awesomeness.vaadin.utils;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.server.Sizeable;
+import com.vaadin.ui.Table;
 import javax.persistence.EntityManager;
 import mmud.Constants;
 import mmud.database.enums.Filter;
@@ -47,4 +49,11 @@ public class Utilities
         Constants.setFilters(entityManager, Filter.OFF);
         return container;
     }
+
+    public static void setTableSize(Table table)
+    {
+        table.setWidth(95, Sizeable.Unit.PERCENTAGE);
+        table.setHeight(100, Sizeable.Unit.PERCENTAGE);
+    }
+
 }

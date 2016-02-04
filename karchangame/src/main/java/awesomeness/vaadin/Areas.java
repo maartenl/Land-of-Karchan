@@ -103,7 +103,7 @@ public class Areas extends VerticalLayout implements
 
         areasTable = new Table("Areas", attributes);
         areasTable.setVisibleColumns("area", "shortdescription", "owner", "creation");
-        areasTable.setSizeFull();
+        Utilities.setTableSize(areasTable);
         areasTable.setSelectable(true);
         areasTable.addValueChangeListener(this);
         areasTable.setImmediate(true);

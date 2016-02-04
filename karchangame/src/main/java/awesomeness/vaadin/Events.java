@@ -243,7 +243,7 @@ public class Events extends VerticalLayout implements
         eventsTable = new Table("Events", attributes);
         eventsTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "method", "owner", "creation");
 //        eventsTable.setVisibleColumns("eventid", "person", "room", "month", "dayofmonth", "hour", "minute", "dayofweek", "callable", "method", "owner", "creation");
-        eventsTable.setSizeFull();
+        Utilities.setTableSize(eventsTable);
         eventsTable.setSelectable(true);
         eventsTable.addValueChangeListener(this);
         eventsTable.setImmediate(true);
