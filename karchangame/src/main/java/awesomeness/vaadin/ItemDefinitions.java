@@ -118,24 +118,80 @@ public class ItemDefinitions extends Editor
         formPanel.setContent(layout);
 
         final TextField id = new TextField("id"); // group.buildAndBind("id", "id");
+        Field<?> image = group.buildAndBind("image", "image");
+        final Field<?> title = group.buildAndBind("title", "title");
         final Field<?> name = group.buildAndBind("name", "name");
         Field<?> adject1 = group.buildAndBind("adject1", "adject1");
         Field<?> adject2 = group.buildAndBind("adject2", "adject2");
         Field<?> adject3 = group.buildAndBind("adject3", "adject3");
         TextArea description = group.buildAndBind("description", "description", TextArea.class);
+        TextArea eatable = group.buildAndBind("eatable", "eatable", TextArea.class);
+        TextArea drinkable = group.buildAndBind("drinkable", "drinkable", TextArea.class);
+        TextArea readdescription = group.buildAndBind("readdescription", "readdescription", TextArea.class);
+        TextArea notes = group.buildAndBind("notes", "notes", TextArea.class);
+
+        // math
+        Field<?> manaincrease = group.buildAndBind("manaincrease", "manaincrease");
+        Field<?> hitincrease = group.buildAndBind("hitincrease", "hitincrease");
+        Field<?> vitalincrease = group.buildAndBind("vitalincrease", "vitalincrease");
+        Field<?> movementincrease = group.buildAndBind("movementincrease", "movementincrease");
+        Field<?> copper = group.buildAndBind("copper", "copper");
+        Field<?> weight = group.buildAndBind("weight", "weight");
+        Field<?> pasdefense = group.buildAndBind("pasdefense", "pasdefense");
+        Field<?> damageresistance = group.buildAndBind("damageresistance", "damageresistance");
+        Field<?> capacity = group.buildAndBind("capacity", "capacity");
+
         id.addValidator(new BeanValidator(ItemDefinition.class, "id"));
+        title.addValidator(new BeanValidator(ItemDefinition.class, "title"));
         name.addValidator(new BeanValidator(ItemDefinition.class, "name"));
+        image.addValidator(new BeanValidator(ItemDefinition.class, "image"));
         adject1.addValidator(new BeanValidator(ItemDefinition.class, "adject1"));
         adject2.addValidator(new BeanValidator(ItemDefinition.class, "adject2"));
         adject3.addValidator(new BeanValidator(ItemDefinition.class, "adject3"));
         description.addValidator(new BeanValidator(ItemDefinition.class, "description"));
         description.setWidth(80, Unit.PERCENTAGE);
+        eatable.addValidator(new BeanValidator(ItemDefinition.class, "eatable"));
+        eatable.setWidth(80, Unit.PERCENTAGE);
+        drinkable.addValidator(new BeanValidator(ItemDefinition.class, "drinkable"));
+        drinkable.setWidth(80, Unit.PERCENTAGE);
+        readdescription.addValidator(new BeanValidator(ItemDefinition.class, "readdescription"));
+        readdescription.setWidth(80, Unit.PERCENTAGE);
+        notes.addValidator(new BeanValidator(ItemDefinition.class, "notes"));
+        notes.setWidth(80, Unit.PERCENTAGE);
+
+        manaincrease.addValidator(new BeanValidator(ItemDefinition.class, "manaincrease"));
+        hitincrease.addValidator(new BeanValidator(ItemDefinition.class, "hitincrease"));
+        vitalincrease.addValidator(new BeanValidator(ItemDefinition.class, "vitalincrease"));
+        movementincrease.addValidator(new BeanValidator(ItemDefinition.class, "movementincrease"));
+        copper.addValidator(new BeanValidator(ItemDefinition.class, "copper"));
+        weight.addValidator(new BeanValidator(ItemDefinition.class, "weight"));
+        pasdefense.addValidator(new BeanValidator(ItemDefinition.class, "pasdefense"));
+        damageresistance.addValidator(new BeanValidator(ItemDefinition.class, "damageresistance"));
+        capacity.addValidator(new BeanValidator(ItemDefinition.class, "capacity"));
+
         layout.addComponent(id);
+        layout.addComponent(image);
+        layout.addComponent(title);
         layout.addComponent(name);
         layout.addComponent(adject1);
         layout.addComponent(adject2);
         layout.addComponent(adject3);
         layout.addComponent(description);
+        layout.addComponent(eatable);
+        layout.addComponent(drinkable);
+        layout.addComponent(readdescription);
+
+        layout.addComponent(manaincrease);
+        layout.addComponent(hitincrease);
+        layout.addComponent(vitalincrease);
+        layout.addComponent(movementincrease);
+        layout.addComponent(copper);
+        layout.addComponent(weight);
+        layout.addComponent(pasdefense);
+        layout.addComponent(damageresistance);
+        layout.addComponent(capacity);
+
+        layout.addComponent(notes);
 
         final Label owner = new Label();
         owner.setCaption("Owner");

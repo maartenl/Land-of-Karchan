@@ -98,7 +98,7 @@ public class ItemDefinition implements Serializable, Ownage
     @Column(name = "drinkable")
     private String drinkable;
     @Column(name = "lightable")
-    private Integer lightable;
+    private Boolean lightable;
     @Column(name = "getable")
     private Integer getable;
     @Column(name = "dropable")
@@ -170,6 +170,8 @@ public class ItemDefinition implements Serializable, Ownage
     @NotNull
     @Column(name = "discriminator")
     private Integer discriminator;
+    @Column(name = "title")
+    private String title;
 
     public String getTitle()
     {
@@ -180,8 +182,6 @@ public class ItemDefinition implements Serializable, Ownage
     {
         this.title = title;
     }
-    @Column(name = "title")
-    private String title;
 
     public ItemDefinition()
     {
@@ -338,12 +338,12 @@ public class ItemDefinition implements Serializable, Ownage
         this.drinkable = drinkable;
     }
 
-    public Integer getLightable()
+    public boolean getLightable()
     {
-        return lightable;
+        return lightable == null ? false : lightable;
     }
 
-    public void setLightable(Integer lightable)
+    public void setLightable(boolean lightable)
     {
         this.lightable = lightable;
     }
