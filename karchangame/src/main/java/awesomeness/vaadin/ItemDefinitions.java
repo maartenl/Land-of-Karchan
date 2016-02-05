@@ -140,6 +140,7 @@ public class ItemDefinitions extends Editor
         Field<?> pasdefense = group.buildAndBind("pasdefense", "pasdefense");
         Field<?> damageresistance = group.buildAndBind("damageresistance", "damageresistance");
         Field<?> capacity = group.buildAndBind("capacity", "capacity");
+        Field<?> lightable = group.buildAndBind("lightable", "lightable");
 
         id.addValidator(new BeanValidator(ItemDefinition.class, "id"));
         title.addValidator(new BeanValidator(ItemDefinition.class, "title"));
@@ -168,6 +169,7 @@ public class ItemDefinitions extends Editor
         pasdefense.addValidator(new BeanValidator(ItemDefinition.class, "pasdefense"));
         damageresistance.addValidator(new BeanValidator(ItemDefinition.class, "damageresistance"));
         capacity.addValidator(new BeanValidator(ItemDefinition.class, "capacity"));
+        lightable.addValidator(new BeanValidator(ItemDefinition.class, "lightable"));
 
         layout.addComponent(id);
         layout.addComponent(image);
@@ -190,6 +192,7 @@ public class ItemDefinitions extends Editor
         layout.addComponent(pasdefense);
         layout.addComponent(damageresistance);
         layout.addComponent(capacity);
+        layout.addComponent(lightable);
 
         layout.addComponent(notes);
 
