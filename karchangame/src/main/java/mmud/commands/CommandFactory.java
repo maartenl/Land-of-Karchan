@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
 import mmud.commands.communication.CryCommand;
+import mmud.commands.communication.OocCommand;
 import mmud.commands.communication.SayCommand;
 import mmud.commands.communication.ScreamCommand;
 import mmud.commands.communication.ShoutCommand;
@@ -198,6 +199,14 @@ public class CommandFactory
             public NormalCommand createCommand()
             {
                 return new AskCommand("ask (to (\\w)+ )?.+");
+            }
+        });
+        theCommandStructure.put("ooc", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new OocCommand("ooc .+");
             }
         });
         theCommandStructure.put("title", new CommandCreator()

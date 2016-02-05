@@ -161,6 +161,8 @@ public class User extends Person
     private Integer rrribbits;
     @Column(name = "heehaws")
     private Integer heehaws;
+    @Column(name = "ooc")
+    private Boolean ooc;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
     private Set<Macro> macroCollection;
@@ -944,6 +946,16 @@ public class User extends Person
             return "jackass";
         }
         return super.getRace();
+    }
+
+    public boolean getOoc()
+    {
+        return ooc == null ? false : ooc;
+    }
+
+    public void setOoc(boolean b)
+    {
+        this.ooc = b;
     }
 
 }

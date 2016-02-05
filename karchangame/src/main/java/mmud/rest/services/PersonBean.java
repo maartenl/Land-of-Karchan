@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -25,7 +26,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.Constants;
-import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.enums.Filter;
@@ -155,15 +155,21 @@ public class PersonBean implements PersonsInterface
      * Sends a message from an administrator to all players currently playing the game,
      * irrespective of room they are in.
      *
-     * @param administrator the administrator sending the message.
      * @param message the message in question.
      */
-    public void sendWall(Administrator administrator, String message)
+    public void sendWall(String message)
+    {
+        sendWall(message, null);
+    }
+
+    public void sendWall(String message, Predicate<User> predicate)
     {
         for (User user : getActivePlayers())
         {
-            user.writeMessage(message);
+            if (predicate == null || predicate.test(user))
+            {
+                user.writeMessage(message);
+            }
         }
     }
-
 }

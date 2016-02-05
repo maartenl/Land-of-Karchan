@@ -57,7 +57,7 @@ public class AdminCommand extends NormalCommand
         {
             PersonBean personBean = getPersonBean();
             final String message = command.substring(11);
-            personBean.sendWall(administrator, message);
+            personBean.sendWall(message);
             getLogBean().writeLog(administrator, "admin command 'wall' executed.", message);
             aUser.writeMessage("Wall message sent.<br/>\r\n");
         }
@@ -170,7 +170,7 @@ public class AdminCommand extends NormalCommand
                 }
             }
             person.deactivate();
-            personBean.sendWall(administrator, administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
+            personBean.sendWall(administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
             getLogBean().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
         }
         if (command.equalsIgnoreCase("admin help"))
