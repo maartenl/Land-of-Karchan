@@ -115,6 +115,13 @@ public class MyUI extends UI
         logsPanel.setContent(logs);
         layout.addComponent(logsPanel);
 
+        final Panel helpPanel = new Panel("Help");
+        helpPanel.setVisible(false);
+        Explanations explanations = new Explanations(admin, servlet.getLogBean());
+        explanations.init();
+        helpPanel.setContent(explanations);
+        layout.addComponent(helpPanel);
+
         final Panel banishmentPanel = new Panel("Banishment");
         banishmentPanel.setVisible(false);
         Banishment banishment = new Banishment(admin, servlet.getLogBean());
@@ -144,6 +151,7 @@ public class MyUI extends UI
                 logsPanel.setVisible(false);
                 banishmentPanel.setVisible(false);
                 itemDefinitionsPanel.setVisible(false);
+                helpPanel.setVisible(false);
 
                 switch (selectedItem.getText())
                 {
@@ -174,6 +182,9 @@ public class MyUI extends UI
                     case "Item definitions":
                         itemDefinitionsPanel.setVisible(true);
                         break;
+                    case "Help":
+                        helpPanel.setVisible(true);
+                        break;
                 }
             }
         };
@@ -197,6 +208,8 @@ public class MyUI extends UI
         scripting.addItem("Commands", null, command);
         scripting.addItem("Events", null, command);
         scripting.addItem("Scripts", null, command);
+
+        barmenu.addItem("Help", null, command);
     }
 
 }

@@ -27,6 +27,16 @@ import java.util.logging.Logger;
 public class MudTest
 {
 
+    /**
+     * Sets the field 'fieldname' in object 'object' to the value 'value'. Where 'object' is an object
+     * of class 'targetClass'.
+     *
+     * @param <T>
+     * @param targetClass
+     * @param fieldName
+     * @param object
+     * @param value
+     */
     public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value)
     {
         try

@@ -186,7 +186,7 @@ public class CommandRunner
         return personBean;
     }
 
-    HelpBean getHelpBean()
+    public HelpBean getHelpBean()
     {
         return helpBean;
     }
