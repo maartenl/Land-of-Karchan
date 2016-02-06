@@ -363,3 +363,5 @@ ALTER TABLE mmud.mm_log add index(deputy);
 
 ALTER TABLE mmud.mm_commandlog add index(stamp);
 
+ALTER TABLE `mmud`.`mm_usertable` ADD COLUMN `ooc` INT(1) DEFAULT 0;
+
