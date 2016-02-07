@@ -104,18 +104,15 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
-            <version>7.5.5</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-push</artifactId>
-            <version>7.5.5</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client</artifactId>
             <scope>provided</scope>
-            <version>7.5.5</version>
         </dependency>
         <!--
           Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
@@ -128,12 +125,10 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiler</artifactId>
             <scope>provided</scope>
-            <version>7.5.5</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
-            <version>7.5.5</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin.addon</groupId>
