@@ -145,6 +145,7 @@ public abstract class Buttons extends HorizontalLayout
             public void buttonClick(Button.ClickEvent event)
             {
                 busyCreatingNewItem = true;
+                discard();
                 instantiate();
                 setButtonsEnabled(true);
             }

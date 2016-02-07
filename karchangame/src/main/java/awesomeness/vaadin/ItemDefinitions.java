@@ -18,19 +18,16 @@ package awesomeness.vaadin;
 
 import awesomeness.vaadin.editor.Buttons;
 import awesomeness.vaadin.editor.Editor;
+import awesomeness.vaadin.editor.SearchPanel;
 import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
@@ -53,11 +50,7 @@ public class ItemDefinitions extends Editor
 
     private static final Logger logger = Logger.getLogger(ItemDefinitions.class.getName());
 
-    private final CheckBox filterOnDeputy;
-
     private ItemDefinition newInstance;
-
-    private boolean busyCreatingNewItem;
 
     private final Table table;
 
@@ -68,33 +61,7 @@ public class ItemDefinitions extends Editor
         super(currentUser, logBean);
         final JPAContainer<ItemDefinition> container = Utilities.getJPAContainer(ItemDefinition.class);
 
-        // final JPAContainer<Person> container = Utilities.getJPAContainerSpecial(Person.class);
-        final Container.Filter filter = new Compare.Equal("owner",
-                currentUser);
-
-        Panel searchPanel = new Panel("Search panel");
-        addComponent(searchPanel);
-        HorizontalLayout searchLayout = new HorizontalLayout();
-        searchPanel.setContent(searchLayout);
-
-        filterOnDeputy = new CheckBox("Filter on owner");
-        filterOnDeputy.setValue(false);
-        filterOnDeputy.addValueChangeListener(new Property.ValueChangeListener()
-        {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                if (event.getProperty().getValue().equals(Boolean.TRUE))
-                {
-                    container.addContainerFilter(filter);
-                } else
-                {
-                    container.removeContainerFilter(filter);
-                }
-            }
-        });
-        searchLayout.addComponent(filterOnDeputy);
+        addComponent(new SearchPanel(container, currentUser));
 
         Panel tablePanel = new Panel();
         addComponent(tablePanel);
@@ -220,7 +187,6 @@ public class ItemDefinitions extends Editor
             @Override
             protected Object create()
             {
-                Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, newInstance.getId() + "");
                 newInstance.setOwner(currentUser);
                 //item.getItemProperty("owner").setValue(currentUser);
 //                try
@@ -245,7 +211,6 @@ public class ItemDefinitions extends Editor
             @Override
             protected void instantiate()
             {
-                busyCreatingNewItem = true;
                 newInstance = new ItemDefinition();
                 id.setValue("");
                 newInstance.setCreation(new Date());
