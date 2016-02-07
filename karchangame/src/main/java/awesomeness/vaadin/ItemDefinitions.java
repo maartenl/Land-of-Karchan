@@ -85,13 +85,16 @@ public class ItemDefinitions extends Editor
         formPanel.setContent(layout);
 
         final TextField id = new TextField("id"); // group.buildAndBind("id", "id");
+        id.setRequired(true);
         Field<?> image = group.buildAndBind("image", "image");
         final Field<?> title = group.buildAndBind("title", "title");
         final Field<?> name = group.buildAndBind("name", "name");
+        name.setRequired(true);
         Field<?> adject1 = group.buildAndBind("adject1", "adject1");
         Field<?> adject2 = group.buildAndBind("adject2", "adject2");
         Field<?> adject3 = group.buildAndBind("adject3", "adject3");
         TextArea description = group.buildAndBind("description", "description", TextArea.class);
+        description.setRequired(true);
         TextArea eatable = group.buildAndBind("eatable", "eatable", TextArea.class);
         TextArea drinkable = group.buildAndBind("drinkable", "drinkable", TextArea.class);
         TextArea readdescription = group.buildAndBind("readdescription", "readdescription", TextArea.class);
@@ -188,15 +191,6 @@ public class ItemDefinitions extends Editor
             protected Object create()
             {
                 newInstance.setOwner(currentUser);
-                //item.getItemProperty("owner").setValue(currentUser);
-//                try
-//                {
-//                    group.commit();
-//                } catch (FieldGroup.CommitException ex)
-//                {
-//                    Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-
                 String string = Constants.checkValidation(newInstance);
                 if (string != null)
                 {
