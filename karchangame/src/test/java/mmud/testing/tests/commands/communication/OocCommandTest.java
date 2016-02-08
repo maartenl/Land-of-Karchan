@@ -62,8 +62,6 @@ public class OocCommandTest extends MudTest
 
     private PersonBean personBean;
 
-    private String wallMessage;
-
     public OocCommandTest()
     {
     }
@@ -127,6 +125,7 @@ public class OocCommandTest extends MudTest
     public void runMessageTurnedOn()
     {
         marvin.setOoc(true);
+        karn.setOoc(true);
         assertThat(marvin.getOoc(), equalTo(true));
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
@@ -142,6 +141,8 @@ public class OocCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display, not(nullValue()));
         String log = marvin.getLog(0);
+        assertThat(log, equalTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n"));
+        log = karn.getLog(0);
         assertThat(log, equalTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n"));
         assertThat(marvin.getOoc(), equalTo(true));
     }
@@ -160,7 +161,6 @@ public class OocCommandTest extends MudTest
     public void setUpMethod() throws Exception
     {
         logBean = new LogBeanStub();
-        wallMessage = null;
         personBean = new PersonBean()
         {
             @Override
