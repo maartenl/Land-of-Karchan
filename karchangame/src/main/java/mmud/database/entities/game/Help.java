@@ -16,6 +16,8 @@
  */
 package mmud.database.entities.game;
 
+import com.google.gwt.thirdparty.guava.common.escape.Escaper;
+import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -27,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mmud.HtmlEscaped;
 
 /**
  *
@@ -140,7 +143,7 @@ public class Help implements Serializable, DisplayInterface
     /**
      * The way the command syntax works.
      *
-     * @return String, for example "swoon [to <person>]".
+     * @return String, for example "swoon [to &lt;person&gt;]".
      */
     public String getSynopsis()
     {
@@ -382,14 +385,17 @@ public class Help implements Serializable, DisplayInterface
                 + command.substring(1);
     }
 
+    @HtmlEscaped
     private String getCSynopsis()
     {
         if (getSynopsis() == null)
         {
             return "";
         }
-        return getSynopsis().replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll(getCommand(),
-                "<b>" + getCommand() + "</b>");
+        Escaper htmlEscaper = HtmlEscapers.htmlEscaper();
+        String command = htmlEscaper.escape(getCommand());
+        String synopsis = htmlEscaper.escape(getSynopsis());
+        return synopsis.replaceAll(command, "<b>" + command + "</b>");
     }
 
     private String getCDescription()
