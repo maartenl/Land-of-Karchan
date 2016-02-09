@@ -159,7 +159,7 @@ public class PersonBean implements PersonsInterface
      */
     public void sendWall(String message)
     {
-        sendWall(message, null);
+        getActivePlayers().stream().forEach(p -> p.writeMessage(message));
     }
 
     public void sendWall(String message, Predicate<User> predicate)
