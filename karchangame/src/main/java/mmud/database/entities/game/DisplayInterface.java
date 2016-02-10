@@ -26,15 +26,29 @@ import mmud.exceptions.MudException;
 public interface DisplayInterface
 {
 
+    /**
+     * The title as visible on the screen.
+     *
+     * @return
+     * @throws MudException
+     */
     public String getMainTitle() throws MudException;
 
     /**
      * Returns an url pointing to an image.
+     *
      * @return
-     * @throws MudException 
+     * @throws MudException
      */
     public String getImage() throws MudException;
 
+    /**
+     * The body to be displayed on the screen. In general the first letter
+     * of the body is converted to an image on the client side.
+     *
+     * @return
+     * @throws MudException
+     */
     public String getBody() throws MudException;
 
 }

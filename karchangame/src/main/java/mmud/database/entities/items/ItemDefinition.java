@@ -36,6 +36,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Constants;
 import mmud.database.entities.Ownage;
@@ -69,17 +70,21 @@ public class ItemDefinition implements Serializable, Ownage
     // TODO : fix this, make it automatically get an id.
     @Column(name = "id")
     private Integer id;
-    @Size(max = 100)
+    @Size(min = 1, max = 100)
     @Column(name = "name")
+    @Pattern(regexp = Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, message = Constants.ONLY_LETTERS_ONE_OR_MORE_MESSAGE)
     private String name;
     @Size(max = 30)
     @Column(name = "adject1")
+    @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject1;
     @Size(max = 30)
     @Column(name = "adject2")
+    @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject2;
     @Size(max = 30)
     @Column(name = "adject3")
+    @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject3;
     @Column(name = "manaincrease")
     private Integer manaincrease;
@@ -725,7 +730,8 @@ public class ItemDefinition implements Serializable, Ownage
     }
 
     /**
-     * @see Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+     * See for more information {@link Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)}.
+     *
      * @return String containing a longdescription of the item, made from concatenating adjectives and the name.
      */
     public String getShortDescription()

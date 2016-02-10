@@ -16,6 +16,8 @@
  */
 package mmud;
 
+import com.google.gwt.thirdparty.guava.common.escape.Escaper;
+import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,6 +43,15 @@ import mmud.rest.webentities.PrivateItem;
  */
 public class Constants
 {
+
+    public static final String NAME_REGEXP = "[a-zA-Z]{3,}";
+    public static final String NAME_MESSAGE = "Invalid name. Only letters are allowed and at least three letters are required.";
+
+    public static final String ONLY_LETTERS_ONE_OR_MORE_REGEXP = "[a-zA-Z-]{1,}";
+    public static final String ONLY_LETTERS_ONE_OR_MORE_MESSAGE = "Only letters and dash (-) are allowed and at least one letter is required.";
+
+    public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-]*";
+    public static final String ONLY_LETTERS_MESSAGE = "Only letters and dash (-) are allowed.";
 
     // TODO : create .properties file for languages, default is English. Add properties throughout the code.
     private static final String mudfilepath = "/home/glassfish/temp";
@@ -152,7 +163,8 @@ public class Constants
         }
         buf.append(" ").append(noun);
         String total = buf.toString();
-        return (with_a_or_an ? (isVowel(total.charAt(0)) ? "an " : "a ") : "") + total;
+        final String result = (with_a_or_an ? (isVowel(total.charAt(0)) ? "an " : "a ") : "") + total;
+        return result;
     }
 
     /**
@@ -242,8 +254,10 @@ public class Constants
      * @param set a set of items to be described.
      * @param builder the builder to append to. Should not be null.
      */
+    @HtmlEscaped
     public static void addInventory(Set<Item> set, StringBuilder builder)
     {
+        Escaper htmlEscaper = HtmlEscapers.htmlEscaper();
         if ((set == null || set.isEmpty()))
         {
             builder.append(" absolutely nothing.</p>");
@@ -271,7 +285,7 @@ public class Constants
                     desc = desc.substring(2);
                 }
                 builder.append(amount).append(" ").append(
-                        desc);
+                        htmlEscaper.escape(desc));
                 if (!desc.endsWith("s"))
                 {
                     builder.append("s");
@@ -279,7 +293,7 @@ public class Constants
             } else
             {
                 // a gold, hard cup
-                builder.append(desc);
+                builder.append(htmlEscaper.escape(desc));
             }
             builder.append("</li>\r\n");
         }

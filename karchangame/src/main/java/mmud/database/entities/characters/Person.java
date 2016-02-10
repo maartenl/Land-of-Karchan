@@ -121,14 +121,13 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
     private static final Logger itsLog = java.util.logging.Logger.getLogger(Person.class.getName());
     private static final long serialVersionUID = 1L;
-    private static final String NAME_REGEXP = "[a-zA-Z]{3,}";
     public static final String EMPTY_LOG = "";
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 3, max = 20)
     @Column(name = "name")
-    @Pattern(regexp = NAME_REGEXP, message = "Invalid name. Only letters are allowed.and at least three letters are required.")
+    @Pattern(regexp = Constants.NAME_REGEXP, message = Constants.NAME_MESSAGE)
     private String name;
     @Size(max = 254)
     @Column(name = "title")
@@ -383,10 +382,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
      */
     public void setName(String name) throws MudException
     {
-        if (name != null)
-        {
-            Utils.checkRegexp(NAME_REGEXP, name);
-        }
         this.name = name;
     }
 

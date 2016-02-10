@@ -16,6 +16,8 @@
  */
 package mmud.database.entities.items;
 
+import com.google.gwt.thirdparty.guava.common.escape.Escaper;
+import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +47,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import mmud.Attributes;
 import mmud.Constants;
+import mmud.HtmlEscaped;
 import mmud.Utils;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
@@ -293,9 +296,11 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
      *
      * @return a description of the item.
      */
+    @HtmlEscaped
     public String getDescription()
     {
-        return getItemDefinition().getShortDescription();
+        Escaper htmlEscaper = HtmlEscapers.htmlEscaper();
+        return htmlEscaper.escape(getItemDefinition().getShortDescription());
     }
 
     /**
