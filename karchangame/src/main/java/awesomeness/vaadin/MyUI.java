@@ -135,6 +135,12 @@ public class MyUI extends UI
         itemDefinitionsPanel.setContent(itemdefinitions);
         layout.addComponent(itemDefinitionsPanel);
 
+        final Panel charactersPanel = new Panel("Characters");
+        charactersPanel.setVisible(false);
+        Characters characters = new Characters(servlet.getPersonProvider(), admin, servlet.getLogBean());
+        charactersPanel.setContent(characters);
+        layout.addComponent(charactersPanel);
+
         final MenuBar.Command command;
         command = new MenuBar.Command()
         {
@@ -152,6 +158,7 @@ public class MyUI extends UI
                 banishmentPanel.setVisible(false);
                 itemDefinitionsPanel.setVisible(false);
                 helpPanel.setVisible(false);
+                charactersPanel.setVisible(false);
 
                 switch (selectedItem.getText())
                 {
@@ -185,11 +192,15 @@ public class MyUI extends UI
                     case "Help":
                         helpPanel.setVisible(true);
                         break;
+                    case "Characters":
+                        charactersPanel.setVisible(true);
+                        break;
                 }
             }
         };
 
         MenuItem players = barmenu.addItem("Players", null, null);
+        players.addItem("Characters", null, command);
         players.addItem("Banishment", null, command);
 
         barmenu.addItem("Rooms", null, command);

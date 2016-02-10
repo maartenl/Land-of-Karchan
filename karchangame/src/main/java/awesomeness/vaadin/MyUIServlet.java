@@ -45,6 +45,9 @@ public class MyUIServlet extends VaadinServlet
     private IdentificationBean identificationBean;
 
     @EJB
+    private PersonProvider personProvider;
+
+    @EJB
     private LogBean logBean;
 
     public Admin getCurrentUser()
@@ -72,4 +75,8 @@ public class MyUIServlet extends VaadinServlet
         return logBean;
     }
 
+    public PersonProvider getPersonProvider()
+    {
+        return personProvider;
+    }
 }
