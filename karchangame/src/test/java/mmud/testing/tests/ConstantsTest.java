@@ -55,19 +55,19 @@ public class ConstantsTest
                 Constants.ONLY_LETTERS_REGEXP, "Many", true
             },
             {
-                Constants.ONLY_LETTERS_REGEXP, "many fowled", false
+                Constants.ONLY_LETTERS_REGEXP, "many fowled", false // no spaces allowed
             },
             {
                 Constants.ONLY_LETTERS_REGEXP, "many-fowled", true
             },
             {
-                Constants.ONLY_LETTERS_REGEXP, "<b>many</b>", false
+                Constants.ONLY_LETTERS_REGEXP, "<b>many</b>", false // no html allowed
             },
             {
                 Constants.ONLY_LETTERS_REGEXP, "", true
             },
             {
-                Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, "", false
+                Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, "", false // at least one char required.
             },
         };
     }
