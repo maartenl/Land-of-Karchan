@@ -141,6 +141,12 @@ public class MyUI extends UI
         charactersPanel.setContent(characters);
         layout.addComponent(charactersPanel);
 
+        final Panel guildsPanel = new Panel("Guilds");
+        guildsPanel.setVisible(false);
+        Guilds guilds = new Guilds(admin, servlet.getLogBean());
+        guildsPanel.setContent(guilds);
+        layout.addComponent(guildsPanel);
+
         final MenuBar.Command command;
         command = new MenuBar.Command()
         {
@@ -159,6 +165,7 @@ public class MyUI extends UI
                 itemDefinitionsPanel.setVisible(false);
                 helpPanel.setVisible(false);
                 charactersPanel.setVisible(false);
+                guildsPanel.setVisible(false);
 
                 switch (selectedItem.getText())
                 {
@@ -195,12 +202,16 @@ public class MyUI extends UI
                     case "Characters":
                         charactersPanel.setVisible(true);
                         break;
+                    case "Guilds":
+                        guildsPanel.setVisible(true);
+                        break;
                 }
             }
         };
 
         MenuItem players = barmenu.addItem("Players", null, null);
         players.addItem("Characters", null, command);
+        players.addItem("Guilds", null, command);
         players.addItem("Banishment", null, command);
 
         barmenu.addItem("Rooms", null, command);
