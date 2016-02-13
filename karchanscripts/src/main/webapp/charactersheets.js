@@ -24,7 +24,6 @@ function showCharactersheets()
       Cookies.get("lok") != "")
     {
       cookiesname = Cookies.get("name");
-      formatted_html += "<p>To change or create your charactersheet, click <a href=\"/node/135\">here</a>.</p>";
     }
     formatted_html += "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
     var column_length = (data.length / 6) + 1;
@@ -38,26 +37,25 @@ function showCharactersheets()
            formatted_html += "</td><td>";
            column_pos = 0;
          }
-         if (data[i].name.toUpperCase().charAt(0) != first_letter)
+         if (data[i].name.toUpperCase().charAt(0) !== first_letter)
          {
            first_letter = data[i].name.toUpperCase().charAt(0);
            formatted_html += "<br/><p><img src=\"/images/gif/letters/" +
            first_letter.toLowerCase() + ".gif\"></p>";
          }
-         if (data[i].name == cookiesname)
+         if (data[i].name === cookiesname)
          {
-           formatted_html += "<a href=\"/node/43?name=" + data[i].name + "\"><b>"+ data[i].name + "</b></a><br/>";
+           formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\"><b>"+ data[i].name + "</b></a><br/>";
          }
          else
          {   
-           formatted_html += "<a href=\"/node/43?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
+           formatted_html += "<a href=\"/nweb/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
          }
     }
     formatted_html += "</td></tr></table>";
     $('#karchan_charactersheets').html(formatted_html); // data.products);
   } // updateCharactersheets
 }
-
 
 $( document ).ready(showCharactersheets);
 
