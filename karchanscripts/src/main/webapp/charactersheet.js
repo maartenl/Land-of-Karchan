@@ -52,7 +52,7 @@ function showCharactersheet( $ )
     }
     else
     {
-      formatted_html += "<p>";
+      formatted_html += "<p><a href=\"/web/guest/people\">Back to the List of People</a></p><p>";
       if (data.imageurl !== undefined && 
           data.imageurl !== "" &&
           data.imageurl !== "http://") { formatted_html += "<img src=\"" + data.imageurl + "\"/>";}
