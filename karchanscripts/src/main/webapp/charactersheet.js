@@ -1,4 +1,12 @@
 /**
+ * The Global Karchan Object. Accessible from *anywhere in the world*.
+ * Isn't it amazing? (Exaggeration!)
+ * We can use this object to create a namespace for my karchan methods
+ * functions and constants.
+ */
+var Karchan = Karchan || {};
+
+/**
  * Returns the parameter stored in the Url.
  * Returns "0", if the parameter cannot be found.
  * @param name the name of the parameter
@@ -15,8 +23,8 @@ var urlParam = function(name)
 function showCharactersheet( $ ) 
 {
   if (window.console) console.log("showCharactersheet");
-  var name = $.cookie("name");
-  var lok = $.cookie("lok"); 
+  var name = Cookies.get("name");
+  var lok = Cookies.get("lok");
   Karchan.name = name;
   Karchan.lok = lok;
   if (urlParam("name") !== 0)
@@ -25,7 +33,7 @@ function showCharactersheet( $ )
   }
   $.ajax({
     type: 'GET',
-    url: "/resources/public/charactersheets/" + name, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/public/charactersheets/" + name, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateCharactersheet(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -38,28 +46,16 @@ function showCharactersheet( $ )
     if (window.console) console.log("updateCharactersheet");
     // The data parameter is a JSON object.
     var formatted_html = "";
-    if (data == undefined || data.name == undefined)
+    if (data === undefined || data.name === undefined)
     {
       formatted_html += "Character not found.";
     }
     else
     {
-      if (name === data.name) 
-      {
-        formatted_html += "<p><a href=\"/node/135\">Edit your charactersheet</a></p>";
-        if (data.guild !== undefined && data.guild !== null && data.guild !== "")
-        {
-          formatted_html += "<p><a href=\"/node/136\">View your guild</a></p>";
-        } 
-        else
-        {
-          formatted_html += "<p><a href=\"/node/138\">Create your own guild</a></p>";
-        }
-      }
       formatted_html += "<p>";
       if (data.imageurl !== undefined && 
           data.imageurl !== "" &&
-          data.imageurl != "http://") { formatted_html += "<img src=\"" + data.imageurl + "\"/>";}
+          data.imageurl !== "http://") { formatted_html += "<img src=\"" + data.imageurl + "\"/>";}
       formatted_html += "</p>";
       formatted_html += "<p><b>Name:</b> " + data.name + "</p>";
       formatted_html += "<p><b>Title:</b> " + data.title + "</p>";
@@ -94,9 +90,4 @@ function showCharactersheet( $ )
   } // updateCharactersheet
 }
 
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showCharactersheet($);
-}
-
+$(document).ready(showCharactersheet);
