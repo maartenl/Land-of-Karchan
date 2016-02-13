@@ -1,4 +1,4 @@
-function showWho()
+function showWho(formatting)
 {
     if (window.console)
         console.log("showWho");
@@ -46,7 +46,7 @@ function showWho()
                 "</style>";
         if (data.length === 1)
         {
-            formatted_html += "<p>There is one person online.</p><ul>";
+            formatted_html += "<p>There is one person online.</p><ul class=\"wholist\">";
         }
         else
         {
@@ -55,12 +55,18 @@ function showWho()
         for (i = 0; i < data.length; i++)
         {
             var character = data[i];
-            formatted_html += "<li>" + character.name + " , " + data[i].title + ", " +
-                    data[i].sleep + " " + data[i].area + " (logged on " + data[i].min + " min ago)</li>";
+            if (formatting === "short")
+            {
+                formatted_html += "<li>" + character.name + "</li>";
+            } else
+            {
+                formatted_html += "<li>" + character.name + " , " + data[i].title + ", " +
+                        data[i].sleep + " " + data[i].area + " (logged on " + data[i].min + " min ago)</li>";
+            }
         }
         formatted_html += "</ul>";
         $('#karchan_who').html(formatted_html);
     } // updateWho
 }
 
-$(document).ready(showWho);
+// $(document).ready(showWho);
