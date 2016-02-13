@@ -36,9 +36,15 @@ function showWho(formatting)
         if (window.console)
             console.log("updateWho");
         // The data parameter is a JSON object.
+        var padding = "12px";
+        if (formatting === "short")
+        {
+            padding = "0px";
+        }
         var formatted_html = "<style>\n" +
                 "ul.wholist li {\n" +
-                "padding:12px;\n" +
+                "padding:" + padding +
+                ";\n" +
                 "}\n" +
                 "ul.wholist li img {\n" +
                 "vertical-align: text-bottom;\n" +
