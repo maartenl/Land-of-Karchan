@@ -49,7 +49,7 @@ function showCharactersheets()
          }
          else
          {   
-           formatted_html += "<a href=\"/nweb/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
+           formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
          }
     }
     formatted_html += "</td></tr></table>";
