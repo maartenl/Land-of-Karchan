@@ -34,7 +34,7 @@ import mmud.database.entities.game.Admin;
 /**
  *
  */
-@Theme("mytheme")
+@Theme("reindeer")
 @Widgetset("awesomeness.vaadin.MyAppWidgetset")
 public class MyUI extends UI
 {
