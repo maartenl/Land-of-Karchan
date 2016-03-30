@@ -21,6 +21,8 @@ import com.vaadin.server.VaadinServlet;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import mmud.database.entities.game.Admin;
 import mmud.rest.services.LogBean;
@@ -34,6 +36,11 @@ import mmud.rest.services.admin.IdentificationBean;
 {
     "/administration/*", "/VAADIN/*"
 }, name = "MyUIServlet", asyncSupported = true)
+@ServletSecurity(
+        @HttpConstraint(rolesAllowed =
+        {
+            "deputy"
+}))
 @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
 public class MyUIServlet extends VaadinServlet
 {

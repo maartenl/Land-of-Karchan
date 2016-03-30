@@ -336,7 +336,6 @@ public class AdminCommandTest extends MudTest
 
         // check for deactivation
         assertThat(marvin.isActive(), equalTo(false));
-        assertThat(marvin.getLok(), equalTo(null));
         assertThat(marvin.getTimeout(), equalTo(0));
 
         assertThat(display, not(nullValue()));
@@ -369,7 +368,6 @@ public class AdminCommandTest extends MudTest
 
         // check for deactivation
         assertThat(marvin.isActive(), equalTo(false));
-        assertThat(marvin.getLok(), equalTo(null));
         assertThat(marvin.getTimeout(), equalTo(59));
 
         assertThat(display, not(nullValue()));

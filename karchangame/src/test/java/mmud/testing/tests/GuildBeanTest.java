@@ -89,7 +89,7 @@ public class GuildBeanTest
     private final PrivateBean privateBean = new PrivateBean()
     {
         @Override
-        public User authenticate(String name, String lok)
+        public User authenticate(String name)
         {
             if (name.equals("Hotblack"))
             {
@@ -170,7 +170,7 @@ public class GuildBeanTest
         // Unit under test is exercised.
         try
         {
-            List<PrivatePerson> result = guildBean.getMembers("Marvin", "woahNelly");
+            List<PrivatePerson> result = guildBean.getMembers("Marvin");
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
@@ -211,7 +211,7 @@ public class GuildBeanTest
         field.setAccessible(true);
         field.set(guildBean, privateBean);
         // Unit under test is exercised.
-        List<PrivatePerson> result = guildBean.getMembers("Marvin", "woahNelly");
+        List<PrivatePerson> result = guildBean.getMembers("Marvin");
         assertThat(result, hasSize(2));
         assertThat(result.get(0).name, equalTo("Hotblack"));
         assertThat(result.get(1).name, equalTo("Marvin"));
@@ -245,7 +245,7 @@ public class GuildBeanTest
         field.setAccessible(true);
         field.set(guildBean, privateBean);
         // Unit under test is exercised.
-        List<PrivatePerson> result = guildBean.getMembers("Marvin", "lok");
+        List<PrivatePerson> result = guildBean.getMembers("Marvin");
         // Verification code (JUnit/TestNG asserts), if any.
         assertThat(result, hasSize(0));
     }
@@ -254,7 +254,6 @@ public class GuildBeanTest
     {
         new Expectations() // an "expectation block"
         {
-
 
             {
                 Response.ok();
@@ -268,7 +267,6 @@ public class GuildBeanTest
     {
         new Expectations() // an "expectation block"
         {
-
 
             {
                 Response.noContent();

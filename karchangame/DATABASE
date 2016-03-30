@@ -365,3 +365,20 @@ ALTER TABLE mmud.mm_commandlog add index(stamp);
 
 ALTER TABLE `mmud`.`mm_usertable` ADD COLUMN `ooc` INT(1) DEFAULT 0;
 
+
+create view mmv_users as
+    select name, password from mm_usertable
+    where god = 0 or god = 1
+;
+
+create view mmv_groups as
+    select name as name, "deputy" as groupid from mm_admin
+    where validuntil > now()
+    UNION
+    select name as name, "player" as groupid from mm_usertable
+    where god = 0 or god = 1
+    UNION
+    select "Karn" as name, "god" as groupid
+    UNION
+    select bossname as name, "guildmaster" as groupid from mm_guilds
+;

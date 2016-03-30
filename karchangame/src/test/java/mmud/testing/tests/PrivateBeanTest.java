@@ -37,7 +37,6 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
-import mmud.database.enums.God;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
@@ -154,10 +153,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -169,45 +173,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            List<PrivateMail> result = privateBean.listMail("Marvin", null, "woahNelly");
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-    }
-
-    /**
-     * Person found but lok session password does not match.
-     * WebapplicationException expected.
-     */
-    @Test
-    public void listMailAuthenticate1()
-    {
-        logger.fine("listMailAuthenticate1");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            List<PrivateMail> result = privateBean.listMail("Marvin", null, "woahNelly");
+            List<PrivateMail> result = privateBean.listMail("Marvin", null);
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
@@ -226,10 +192,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -249,7 +220,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        List<PrivateMail> result = privateBean.listMail("Marvin", null, "lok");
+        List<PrivateMail> result = privateBean.listMail("Marvin", null);
         // Verification code (JUnit/TestNG asserts), if any.
         assertEquals(result.size(), 0);
     }
@@ -290,10 +261,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -315,7 +291,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        List<PrivateMail> result = privateBean.listMail("Marvin", null, "lok");
+        List<PrivateMail> result = privateBean.listMail("Marvin", null);
         // Verification code (JUnit/TestNG asserts), if any.
         assertEquals(result.size(), 2);
         PrivateMail expected = new PrivateMail();
@@ -356,6 +332,13 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         Deencapsulation.setField(privateBean, "mailBean", new MailBean()
         {
@@ -367,7 +350,6 @@ public class PrivateBeanTest
         });
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -383,7 +365,7 @@ public class PrivateBeanTest
         };
         responseOkExpectations();
         // Unit under test is exercised.
-        privateBean.hasNewMail("Marvin", "lok");
+        privateBean.hasNewMail("Marvin");
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -411,7 +393,6 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -425,7 +406,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        privateBean.hasNewMail("Marvin", "lok");
+        privateBean.hasNewMail("Marvin");
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -446,10 +427,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -482,7 +468,7 @@ public class PrivateBeanTest
         };
         responseOkExpectations();
 // Unit under test is exercised.
-        Response result = privateBean.newMail(privateMail, "Marvin", "lok");
+        Response result = privateBean.newMail(privateMail, "Marvin");
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -502,10 +488,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -518,7 +509,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            Response result = privateBean.newMail(privateMail, "Marvin", "lok");
+            Response result = privateBean.newMail(privateMail, "Marvin");
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -540,10 +531,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -557,7 +554,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            PrivateMail actual = privateBean.getMail("Marvin", "lok", 1l);
+            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -586,10 +583,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -603,7 +606,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            PrivateMail actual = privateBean.getMail("Marvin", "lok", 1l);
+            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -632,10 +635,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -649,7 +658,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            PrivateMail actual = privateBean.getMail("Marvin", "lok", 1l);
+            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -678,10 +687,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -693,7 +708,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        PrivateMail actual = privateBean.getMail("Marvin", "lok", 1l);
+        PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
         // Verification code (JUnit/TestNG asserts), if any.
         assertNotNull(actual);
         PrivateMail expected = new PrivateMail();
@@ -744,7 +759,6 @@ public class PrivateBeanTest
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -801,7 +815,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        Response response = privateBean.createMailItem("Marvin", "lok", 1l, 1);
+        Response response = privateBean.createMailItem("Marvin", 1l, 1);
         // Verification code (JUnit/TestNG asserts), if any.
         assertNotNull(response);
         assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
@@ -847,7 +861,6 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -872,7 +885,7 @@ public class PrivateBeanTest
             }
         };
         // Unit under test is exercised.
-        Response response = privateBean.createMailItem("Marvin", "lok", 1l, 1);
+        Response response = privateBean.createMailItem("Marvin", 1l, 1);
         // Verification code (JUnit/TestNG asserts), if any.
         assertNotNull(response);
         assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
@@ -901,7 +914,6 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -912,7 +924,7 @@ public class PrivateBeanTest
         try
         {
             // Unit under test is exercised.
-            Response response = privateBean.createMailItem("Marvin", "lok", 1l, -1);
+            Response response = privateBean.createMailItem("Marvin", 1l, -1);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -945,7 +957,6 @@ public class PrivateBeanTest
         new Expectations() // an "expectation block"
         {
 
-
             {
                 entityManager.find(User.class, "Marvin");
                 result = marvin;
@@ -956,7 +967,7 @@ public class PrivateBeanTest
         try
         {
             // Unit under test is exercised.
-            Response response = privateBean.createMailItem("Marvin", "lok", 1l, 8);
+            Response response = privateBean.createMailItem("Marvin", 1l, 8);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -985,10 +996,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1001,7 +1018,7 @@ public class PrivateBeanTest
         };
         responseOkExpectations();
         // Unit under test is exercised.
-        Response response = privateBean.deleteMail("Marvin", "lok", 1l);
+        Response response = privateBean.deleteMail("Marvin", 1l);
         // Verification code (JUnit/TestNG asserts), if any.
         assertEquals(mail.getDeleted(), Boolean.TRUE);
     }
@@ -1025,10 +1042,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1043,7 +1066,7 @@ public class PrivateBeanTest
         // Unit under test is exercised.
         try
         {
-            privateBean.deleteMail("Marvin", "lok", 1l);
+            privateBean.deleteMail("Marvin", 1l);
             fail("Exception expected");
         } catch (WebApplicationException result)
         {
@@ -1063,10 +1086,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1080,7 +1109,7 @@ public class PrivateBeanTest
         try
         {
             // Unit under test is exercised.
-            Response response = privateBean.deleteMail("Marvin", "lok", 1l);
+            Response response = privateBean.deleteMail("Marvin", 1l);
             // Verification code (JUnit/TestNG asserts), if any.
             fail("Exception expected");
         } catch (WebApplicationException result)
@@ -1108,10 +1137,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1129,7 +1163,7 @@ public class PrivateBeanTest
         person.dateofbirth = "Beginning of time";
         person.cityofbirth = "Sirius";
         person.storyline = "Life, don't talk to me about life.";
-        Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+        Response response = privateBean.updateCharacterSheet("Marvin", person);
         // Verification code (JUnit/TestNG asserts), if any.
         assertEquals(cinfo.getName(), person.name);
         assertEquals(cinfo.getImageurl(), person.imageurl);
@@ -1151,10 +1185,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1188,7 +1227,7 @@ public class PrivateBeanTest
         person.dateofbirth = "Beginning of time";
         person.cityofbirth = "Sirius";
         person.storyline = "Life, don't talk to me about life.";
-        privateBean.updateCharacterSheet("Marvin", "lok", person);
+        privateBean.updateCharacterSheet("Marvin", person);
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -1211,10 +1250,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1231,7 +1275,7 @@ public class PrivateBeanTest
         person.dateofbirth = "Beginning of time";
         person.cityofbirth = "Sirius";
         person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-        Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+        Response response = privateBean.updateCharacterSheet("Marvin", person);
         // Verification code (JUnit/TestNG asserts), if any.
 
         assertEquals(cinfo.getName(), person.name);
@@ -1262,10 +1306,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.find(User.class, "Marvin");
@@ -1282,7 +1331,7 @@ public class PrivateBeanTest
         person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
         try
         {
-            Response response = privateBean.updateCharacterSheet("Marvin", "lok", person);
+            Response response = privateBean.updateCharacterSheet("Marvin", person);
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
@@ -1313,10 +1362,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1332,7 +1386,7 @@ public class PrivateBeanTest
             }
         };
         responseOkExpectations();        // Unit under test is exercised.
-        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 2);
+        Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
         // Verification code (JUnit/TestNG asserts), if any.
         assertEquals(family.getDescription(), value2);
 
@@ -1361,10 +1415,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1381,7 +1440,7 @@ public class PrivateBeanTest
         try
         {
             // Unit under test is exercised.
-            Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 12);
+            Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
             fail("We are supposed to get an exception here.");
         } catch (WebApplicationException result)
         {
@@ -1404,10 +1463,15 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1436,7 +1500,7 @@ public class PrivateBeanTest
         };
         responseOkExpectations();
         // Unit under test is exercised.
-        Response response = privateBean.updateFamilyvalues("Marvin", "lok", "Hotblack", 1);
+        Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 1);
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -1463,10 +1527,16 @@ public class PrivateBeanTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 0);
@@ -1480,7 +1550,7 @@ public class PrivateBeanTest
         };
         responseOkExpectations();
         // Unit under test is exercised.
-        privateBean.deleteFamilyvalues("Marvin", "lok", "Hotblack");
+        privateBean.deleteFamilyvalues("Marvin", "Hotblack");
         // Verification code (JUnit/TestNG asserts), if any.
     }
 
@@ -1488,7 +1558,6 @@ public class PrivateBeanTest
     {
         new Expectations() // an "expectation block"
         {
-
 
             {
                 Response.ok();
@@ -1502,7 +1571,6 @@ public class PrivateBeanTest
     {
         new Expectations() // an "expectation block"
         {
-
 
             {
                 Response.noContent();

@@ -23,19 +23,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -63,7 +70,6 @@ import mmud.database.enums.Filter;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
-import mmud.rest.webentities.Lok;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
@@ -88,6 +94,8 @@ import org.owasp.validator.html.ScanException;
  * @enduml
  * @author maartenl
  */
+@DeclareRoles("player")
+@RolesAllowed("player")
 @Stateless
 @LocalBean
 @Path("/game")
@@ -111,6 +119,9 @@ public class GameBean implements RoomsInterface, WorldInterface
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
+
+    @Resource
+    private SessionContext context;
 
     /**
      * The ip address of the karchan server (vps386.directvps.nl).
@@ -147,7 +158,6 @@ public class GameBean implements RoomsInterface, WorldInterface
      * <img
      * src="doc-files/Gamebean_authenticate.png"></p>
      *
-     * @param lok session password
      * @param name the name to identify the person
      * @throws WebApplicationException NOT_FOUND, if the user is either not
      * found or is not a proper user. BAD_REQUEST if an unexpected exception
@@ -161,33 +171,16 @@ public class GameBean implements RoomsInterface, WorldInterface
      * -->(*)
      * @enduml
      */
-    private User authenticate(String name, String lok)
+    private User authenticate(String name)
     {
-        User person = getEntityManager().find(User.class, name);
-        if (person == null)
+        if (!getPlayerName().equals(name))
         {
-            throw new MudWebException(name, name + " was not found.", Response.Status.NOT_FOUND);
+            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
         }
-        if (!person.isUser())
-        {
-            throw new MudWebException(name, name + " is not a user.", Response.Status.BAD_REQUEST);
-        }
-        if (person.getTimeout() > 0)
-        {
-            throw new MudWebException(name, name + " has been kicked out of the game and "
-                    + "is not allowed to logon for " + person.getTimeout() + " minutes.",
-                    Response.Status.FORBIDDEN);
-        }
+        User person = getPlayer(name);
         if (!person.isActive())
         {
             throw new MudWebException(name, name + " is not playing the game. Please log in.", Response.Status.UNAUTHORIZED);
-        }
-        if (!person.verifySessionPassword(lok))
-        {
-            throw new MudWebException(name,
-                    "Wrong session password.",
-                    "session password " + lok + " does not match session password of " + name,
-                    Response.Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -200,7 +193,6 @@ public class GameBean implements RoomsInterface, WorldInterface
      * <img
      * src="doc-files/Gamebean_authenticateWithPassword.png"></p>
      *
-     * @param password real password
      * @param name the name to identify the person
      * @return the authenticated User
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
@@ -214,8 +206,12 @@ public class GameBean implements RoomsInterface, WorldInterface
      * -->(*)
      * @enduml
      */
-    protected User authenticateWithPassword(String name, String password)
+    protected User getPlayer(String name)
     {
+        if (Utils.isOffline())
+        {
+            throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
+        }
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
@@ -236,32 +232,6 @@ public class GameBean implements RoomsInterface, WorldInterface
             throw new MudWebException(name, name + " has been kicked out of the game and "
                     + "is not allowed to logon for " + person.getTimeout() + " minutes.",
                     Response.Status.FORBIDDEN);
-        }
-        Query query = getEntityManager().createNamedQuery("User.authorise");
-        query.setParameter("name", name);
-        query.setParameter("password", password);
-        List<User> persons = query.getResultList();
-        if (persons.isEmpty())
-        {
-            throw new MudWebException(name,
-                    "Wrong password.",
-                    "User provided wrong password (" + name + ")",
-                    Response.Status.UNAUTHORIZED);
-        }
-        if (persons.size() > 1)
-        {
-            throw new MudWebException(name,
-                    "User/password combo search returned more than one solution, impossible!",
-                    "User/password combo search returned more than one solution, impossible! (" + name + ")",
-                    Response.Status.BAD_REQUEST);
-        }
-        person = persons.get(0);
-        if (!person.isUser())
-        {
-            throw new MudWebException(name,
-                    name + " is not a user.",
-                    "User was not a user (" + name + ")",
-                    Response.Status.BAD_REQUEST);
         }
         return person;
     }
@@ -362,6 +332,7 @@ public class GameBean implements RoomsInterface, WorldInterface
      * -->(*)
      * @enduml
      */
+    @PermitAll
     @POST
     @Path("{name}")
     @Produces(
@@ -372,7 +343,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
         itsLog.finer("entering create");
         Constants.setFilters(getEntityManager(), Filter.OFF);  // turns filter off
-        String address = requestContext.getRemoteAddr().toString();
+        String address = requestContext.getRemoteAddr();
         try
         {
 
@@ -478,8 +449,6 @@ public class GameBean implements RoomsInterface, WorldInterface
      * Deletes a character, permanently. Use with extreme caution.
      *
      * @param name the name of the user
-     * @param password the password of the character to be deleted
-     * @param password2 verification of the password, a second time.
      * @return Response.ok
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
      * crops up.
@@ -490,17 +459,10 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response delete(@PathParam("name") String name, @QueryParam("password") String password, @QueryParam("password2") String password2)
+    public Response delete(@PathParam("name") String name)
     {
         itsLog.finer("entering delete");
-        if (password == null || !password.equals(password2))
-        {
-            throw new MudWebException(name,
-                    "Passwords do not match.",
-                    "Passwords do not match.",
-                    Response.Status.BAD_REQUEST);
-        }
-        Person person = authenticateWithPassword(name, password);
+        Person person = authenticate(name);
         try
         {
             getEntityManager().remove(person);
@@ -517,32 +479,25 @@ public class GameBean implements RoomsInterface, WorldInterface
     }
 
     /**
-     * Logs a character in, to start playing.
+     * Logs a player into the server. Once logged in, he/she can start playing
+     * the game. Url is for example http://localhost:8080/karchangame/resources/game/Karn/logon?password=itsasecret..
      *
-     * @param requestContext used for retrieving the ip address/hostname of the
-     * player for determining ban-rules and the like.
+     * @param requestContext the context of the request, useful for example querying
+     * for the IP address.
      * @param password password for verification of the user.
      * @param name the name of the user
-     * @return the session password upon success
-     * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected exception
-     * crops up.</li>
-     * <li>NO_CONTENT if the game is offline</li>
-     * <li>FORBIDDEN, if the player is banned.</li>
-     * </ul>
      */
-    @POST
+    @PermitAll
+    @PUT
     @Path("{name}/logon")
-    @Produces(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Lok logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
+    public void logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
     {
         itsLog.finer("entering logon");
+
         String address = requestContext.getHeader(X_FORWARDED_FOR);
         if ((address == null) || ("".equals(address.trim())))
         {
-            address = requestContext.getRemoteAddr().toString();
+            address = requestContext.getRemoteAddr();
             if (VPS386.equals(address))
             {
                 throw new MudWebException(name,
@@ -568,11 +523,91 @@ public class GameBean implements RoomsInterface, WorldInterface
                     "User was banned (" + name + ", " + address + ")",
                     Response.Status.FORBIDDEN);
         }
-        User person = authenticateWithPassword(name, password);
+        User person = getPlayer(name);
+        person.setAddress(address);
+
+        // nasty work-around for Catalina AuthenticatorBase to be able to
+        // change/create the session cookie
+        requestContext.getSession();
         try
         {
-            person.activate(address);
-            person.generateSessionPassword();
+            requestContext.login(name, password);
+        } catch (ServletException ex)
+        {
+            if (ex.getCause() != null)
+            {
+                Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex.getCause());
+            }
+            if (ex.getMessage().equals("Login failed"))
+            {
+                throw new WebApplicationException(ex, Response.Status.UNAUTHORIZED);
+            }
+            if (ex.getMessage().equals("This is request has already been authenticated"))
+            {
+                return;
+            }
+            Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
+            throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Logs a player off.
+     *
+     * @param requestContext the context of the request, useful for example querying
+     * for the IP address.
+     */
+    @PUT
+    @Path("{name}/logoff")
+    public void logoff(@Context HttpServletRequest requestContext)
+    {
+        itsLog.finer("entering logoff");
+        // nasty work-around for Catalina AuthenticatorBase to be able to
+        // change/create the session cookie
+        requestContext.getSession();
+        try
+        {
+            requestContext.logout();
+        } catch (ServletException ex)
+        {
+            if (ex.getCause() != null)
+            {
+                Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex.getCause());
+            }
+            if (ex.getMessage().equals("Logout failed"))
+            {
+                throw new WebApplicationException(ex, Response.Status.UNAUTHORIZED);
+            }
+            Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
+            throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Starts playing the game.
+     *
+     * @param requestContext used for retrieving the ip address/hostname of the
+     * player for determining ban-rules and the like.
+     * @param name the name of the character/player
+     * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected exception
+     * crops up.</li>
+     * <li>NO_CONTENT if the game is offline</li>
+     * <li>FORBIDDEN, if the player is banned.</li>
+     * </ul>
+     */
+    @POST
+    @Path("{name}/enter")
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
+    {
+        itsLog.finer("entering enterGame");
+        User person = authenticate(name);
+        try
+        {
+            person.activate();
             // write logon message
             Board newsBoard = boardBean.getNewsBoard();
             StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
@@ -638,15 +673,28 @@ public class GameBean implements RoomsInterface, WorldInterface
             }
             throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
         }
-        return new Lok(person.getLok());
+    }
+
+    /**
+     * Provides the player who is logged in during this session.
+     *
+     * @return name of the player
+     * @throws IllegalStateException
+     */
+    protected String getPlayerName() throws IllegalStateException
+    {
+        final String name = context.getCallerPrincipal().getName();
+        if (name.equals("ANONYMOUS"))
+        {
+            throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
+        }
+        return name;
     }
 
     /**
      * Main function for executing a command in the game.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
-     * @param name the name of the user
+     * @param name the name of the player. Should match the authorized user.
      * @param command the command issued
      * @param offset the offset used for the log
      * @param log indicates with true or false, whether or not we are
@@ -661,13 +709,9 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public PrivateDisplay play(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset, String command, @QueryParam("log") boolean log) throws MudException
+    public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
     {
-        itsLog.entering(this.getClass().getName(), "play");
-        if (Utils.isOffline())
-        {
-            throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
-        }
+        itsLog.entering(this.getClass().getName(), "playGame");
         try
         {
             command = Utils.security(command);
@@ -677,7 +721,7 @@ public class GameBean implements RoomsInterface, WorldInterface
         }
         PrivateDisplay display = null;
         Constants.setFilters(getEntityManager(), Filter.ON);
-        User person = authenticate(name, lok);
+        User person = authenticate(name);
         try
         {
             if (command.contains(" ; ") && (!command.toLowerCase().startsWith("macro ")))
@@ -826,8 +870,6 @@ public class GameBean implements RoomsInterface, WorldInterface
     /**
      * Retrieves the log of a player.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param offset the offset from whence to read the log
      * @return returns the log
@@ -841,13 +883,13 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public PrivateLog retrieveLog(@PathParam("name") String name, @QueryParam("lok") String lok, @QueryParam("offset") Integer offset)
+    public PrivateLog getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
     {
         itsLog.finer("entering retrieveLog");
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         if (offset == null)
         {
-            offset = Integer.valueOf(0);
+            offset = 0;
         }
         try
         {
@@ -865,8 +907,6 @@ public class GameBean implements RoomsInterface, WorldInterface
     /**
      * Removes the log of a player, i.e. creates a new empty log.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @return Response.ok if everything's okay
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
@@ -878,10 +918,10 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response deleteLog(@PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response deleteLog(@PathParam("name") String name)
     {
         itsLog.finer("entering deleteLog");
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
 
         try
         {
@@ -900,8 +940,6 @@ public class GameBean implements RoomsInterface, WorldInterface
     /**
      * Stops a playing character from playing.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @return An Ok response.
      * @throws WebApplicationException BAD_REQUEST if an unexpected exception
@@ -913,12 +951,12 @@ public class GameBean implements RoomsInterface, WorldInterface
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response quit(@PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response quitGame(@PathParam("name") String name)
     {
         itsLog.finer("entering quit");
         Constants.setFilters(getEntityManager(), Filter.ON);
 
-        User person = authenticate(name, lok);
+        User person = authenticate(name);
         try
         {
             person.getRoom().sendMessage(person, "%SNAME left the game.<BR>\r\n");

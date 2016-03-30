@@ -42,7 +42,7 @@ import mmud.database.entities.game.Admin;
 @DeclareRoles(
         {
             "deputy", "god"
-        }) //
+        })
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/adminaccounts")

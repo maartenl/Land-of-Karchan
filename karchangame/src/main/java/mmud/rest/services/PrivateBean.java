@@ -21,8 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,6 +65,8 @@ import mmud.rest.webentities.PrivatePerson;
  *
  * @author maartenl
  */
+@DeclareRoles("player")
+@RolesAllowed("player")
 @Stateless
 @LocalBean
 @Path("/private")
@@ -69,11 +75,16 @@ public class PrivateBean
 
     @EJB
     private MailBean mailBean;
+
+    @Resource
+    private SessionContext context;
+
     /**
      * Indicates that only 20 mails may be retrieved per time (basically a
      * page).
      */
     public static final int MAX_MAILS = 20;
+
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
@@ -92,13 +103,13 @@ public class PrivateBean
     {
         return em;
     }
+
     private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
 
     /**
      * This method should be called to verify that the target of a certain
      * action is indeed a proper authenticated user.
      *
-     * @param lok session password
      * @param name the name to identify the person
      * @return the User identified by the name.
      * @throws WebApplicationException NOT_FOUND, if the user is either not
@@ -106,20 +117,20 @@ public class PrivateBean
      * crops up or provided info is really not proper. UNAUTHORIZED if session
      * passwords do not match.
      */
-    public User authenticate(String name, String lok)
+    public User authenticate(String name)
     {
+        if (!getPlayerName().equals(name))
+        {
+            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
+        }
         User person = getEntityManager().find(User.class, name);
         if (person == null)
         {
-            throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ", " + lok + ")", Status.NOT_FOUND);
+            throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Status.NOT_FOUND);
         }
         if (!person.isUser())
         {
-            throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ", " + lok + ")", Status.BAD_REQUEST);
-        }
-        if (!person.verifySessionPassword(lok))
-        {
-            throw new MudWebException(name, "Wrong user session password.", "Users session password (lok) did not match (" + name + ", " + lok + " should match " + person.getLok() + ")", Status.UNAUTHORIZED);
+            throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Status.BAD_REQUEST);
         }
         return person;
     }
@@ -127,22 +138,25 @@ public class PrivateBean
     /**
      * Authenticates a guildmaster.
      *
-     * @param lok session password
      * @param name the name to identify the person
      * @return WebApplicationException NOT_FOUND if you are not the member of a guild
      * UNAUTHORIZED if you are not the guild master of your guild.
      * @see #authenticate(java.lang.String, java.lang.String)
      */
-    public User authenticateGuildMaster(String name, String lok)
+    public User authenticateGuildMaster(String name)
     {
-        User person = authenticate(name, lok);
+        if (!getPlayerName().equals(name))
+        {
+            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
+        }
+        User person = authenticate(name);
         if (person.getGuild() == null)
         {
-            throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ", " + lok + ") is not a member of a guild", Status.NOT_FOUND);
+            throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Status.NOT_FOUND);
         }
         if (!person.getGuild().getBoss().getName().equals(person.getName()))
         {
-            throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ", " + lok + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
+            throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
         }
         return person;
     }
@@ -151,8 +165,6 @@ public class PrivateBean
      * Returns a List of your mail, with a maximum of 20 mails and an offset for
      * paging.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param offset the offset, default is 0 if not provided.
      * @return a List of (max 20 by default) mails.
@@ -167,11 +179,11 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset, @QueryParam("lok") String lok)
+    public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
     {
         itsLog.finer("entering listMail");
         Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name, lok);
+        User person = authenticate(name);
         List<PrivateMail> res = new ArrayList<>();
         try
         {
@@ -209,8 +221,6 @@ public class PrivateBean
      * Returns a boolean, indicating if you have new mail. (i.e. mail since you
      * last checked)
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @return Response.ok if everything is okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
@@ -222,10 +232,10 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response hasNewMail(@PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response hasNewMail(@PathParam("name") String name)
     {
         itsLog.finer("entering hasNewMail");
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         boolean result = mailBean.hasNewMail(person);
         if (!result)
         {
@@ -263,8 +273,6 @@ public class PrivateBean
      * Compose a new mail.
      *
      * @param newMail the new mail object received from the client.
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the
      * @return Response.ok if everything's okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
@@ -276,10 +284,10 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response newMail(PrivateMail newMail, @PathParam("name") String name, @QueryParam("lok") String lok)
+    public Response newMail(PrivateMail newMail, @PathParam("name") String name)
     {
         itsLog.finer("entering newMail");
-        User person = authenticate(name, lok);
+        User person = authenticate(name);
         User toperson = getUser(newMail.toname);
         try
         {
@@ -335,8 +343,6 @@ public class PrivateBean
      * Returns a single mail based by id. Can only retrieve mail destined for
      * the user requesting the mail.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to get
      * @return A specific mail.
@@ -349,11 +355,11 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public PrivateMail getMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
+    public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
     {
         itsLog.finer("entering getMail");
         Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         try
         {
             Mail mail = getMail(person.getName(), id);
@@ -377,8 +383,6 @@ public class PrivateBean
      * mail based by id. <img
      * src="doc-files/PrivateBean_createMailItem.png">
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to get
      * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
@@ -409,7 +413,7 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response createMailItem(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
+    public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
     {
         return Response.noContent().build();
         // TODO MLE: this needs to get fixed.
@@ -511,8 +515,6 @@ public class PrivateBean
     /**
      * Deletes a single mail based by id.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param id the id of the mail to delete
      * @return Response.ok() if all is well.
@@ -525,11 +527,11 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response deleteMail(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("id") long id)
+    public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
     {
         itsLog.finer("entering deleteMail");
         Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         // get the specific mail with id {id}
         Mail mail = getMail(person.getName(), id);
         mail.setDeleted(Boolean.TRUE);
@@ -541,7 +543,6 @@ public class PrivateBean
      * Adds or updates your current character info.
      *
      * @param name the name of the user
-     * @param lok the session password
      * @param cinfo the object containing the new stuff to update.
      * @return Response.ok if everything is okay.
      * @throws WebApplicationException UNAUTHORIZED, if the authorisation
@@ -553,10 +554,10 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response updateCharacterSheet(@PathParam("name") String name, @QueryParam("lok") String lok, PrivatePerson cinfo)
+    public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
     {
         itsLog.finer("entering updateCharacterSheet");
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         if (!person.getName().equals(cinfo.name))
         {
             throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
@@ -597,8 +598,6 @@ public class PrivateBean
     /**
      * Add or updates some family values from your family tree.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param toname the name of the user you are related to
      * @param description the description of the family relation, for example
@@ -613,7 +612,7 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response updateFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname, @PathParam("description") Integer description)
+    public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
     {
         itsLog.finer("entering updateFamilyvalues");
         if (description == null || description == 0)
@@ -625,7 +624,7 @@ public class PrivateBean
             throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
         }
         Constants.setFilters(getEntityManager(), Filter.OFF);
-        User person = authenticate(name, lok);
+        User person = authenticate(name);
         Person toperson = getPerson(toname);
         try
         {
@@ -664,8 +663,6 @@ public class PrivateBean
     /**
      * Deletes some family values from your family tree.
      *
-     * @param lok the hash to use for verification of the user, is the lok
-     * setting in the cookie when logged onto the game.
      * @param name the name of the user
      * @param toname the name of the user you are related to
      * @return Response.ok if everything is okay.
@@ -678,11 +675,11 @@ public class PrivateBean
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
             })
-    public Response deleteFamilyvalues(@PathParam("name") String name, @QueryParam("lok") String lok, @PathParam("toname") String toname)
+    public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
     {
         itsLog.finer("entering deleteFamilyValues");
         Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name, lok);
+        Person person = authenticate(name);
         FamilyPK pk = new FamilyPK();
         pk.setName(person.getName());
         pk.setToname(toname);
@@ -694,5 +691,21 @@ public class PrivateBean
         getEntityManager().remove(family);
         itsLog.finer("exiting deleteFamilyValues");
         return Response.ok().build();
+    }
+
+    /**
+     * Provides the player who is logged in during this session.
+     *
+     * @return name of the player
+     * @throws IllegalStateException
+     */
+    protected String getPlayerName() throws IllegalStateException
+    {
+        final String name = context.getCallerPrincipal().getName();
+        if (name.equals("ANONYMOUS"))
+        {
+            throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
+        }
+        return name;
     }
 }

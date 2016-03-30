@@ -21,8 +21,10 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.core.Response;
 import mmud.database.entities.game.Admin;
 import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
 
 /**
  *
@@ -39,12 +41,17 @@ public class IdentificationBean
     private SessionContext context;
 
     /**
+     * Provides the player who is logged in during this session.
      *
      * @return the current user, for example "Karn".
      */
     public String getCurrentUser()
     {
         String currentUser = context.getCallerPrincipal().getName();
+        if (currentUser.equals("ANONYMOUS"))
+        {
+            throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
+        }
         return currentUser;
     }
 

@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
@@ -33,7 +32,6 @@ import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
-import mmud.exceptions.MudWebException;
 import mmud.rest.services.GameBean;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.testing.TestingConstants;
@@ -45,7 +43,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -132,83 +129,6 @@ public class GameBeanTest extends MudTest
     }
 
     /**
-     * Person not found, cannot authenticate. MudWebException expected.
-     */
-    @Test
-    public void authenticate2()
-    {
-        logger.fine("authenticate2");
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = null;
-            }
-        };
-        try
-        {
-            // Unit under test is exercised.
-            PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
-        } catch (MudWebException exception)
-        {
-            // Yay! We get an exception!
-            assertThat(exception.getMessage(), equalTo("Marvin was not found."));
-        }
-    }
-
-    /**
-     * Person found but lok session password does not match.
-     * MudWebException expected.
-     */
-    @Test
-    public void authenticate1()
-    {
-        logger.fine("authenticate1");
-        marvin.setActive(true);
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException exception)
-        {
-            // Yay! We get an exception!
-            assertThat(exception.getMessage(), equalTo("session password woahNelly does not match session password of Marvin"));
-        }
-    }
-
-    /**
      * Look around.
      */
     @Test
@@ -216,7 +136,6 @@ public class GameBeanTest extends MudTest
     {
         logger.fine("authenticate1");
         marvin.setActive(true);
-        marvin.setLok("woahNelly");
         GameBean gameBean = new GameBean()
         {
             @Override
@@ -224,12 +143,18 @@ public class GameBeanTest extends MudTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
+
         };
         setField(GameBean.class, "logBean", gameBean, logBean);
         setField(GameBean.class, "commandRunner", gameBean, commandRunner);
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
@@ -246,7 +171,7 @@ public class GameBeanTest extends MudTest
             }
         };
         // Unit under test is exercised.
-        PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
+        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
         assertThat(result.body, equalTo("You are standing on a small bridge."));
         assertThat(result.image, nullValue());
         assertThat(result.title, equalTo("The bridge"));
@@ -273,7 +198,6 @@ public class GameBeanTest extends MudTest
     {
         logger.fine("authenticate1");
         marvin.setActive(true);
-        marvin.setLok("woahNelly");
         hotblack.setFrogging(5);
         GameBean gameBean = new GameBean()
         {
@@ -282,12 +206,17 @@ public class GameBeanTest extends MudTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         setField(GameBean.class, "logBean", gameBean, logBean);
         setField(GameBean.class, "commandRunner", gameBean, commandRunner);
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
@@ -304,7 +233,7 @@ public class GameBeanTest extends MudTest
             }
         };
         // Unit under test is exercised.
-        PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
+        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
         assertThat(result.body, equalTo("You are standing on a small bridge."));
         assertThat(result.image, nullValue());
         assertThat(result.title, equalTo("The bridge"));
@@ -333,7 +262,6 @@ public class GameBeanTest extends MudTest
     {
         logger.fine("authenticate1");
         marvin.setActive(true);
-        marvin.setLok("woahNelly");
         hotblack.setJackassing(5);
         GameBean gameBean = new GameBean()
         {
@@ -342,12 +270,17 @@ public class GameBeanTest extends MudTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         setField(GameBean.class, "logBean", gameBean, logBean);
         setField(GameBean.class, "commandRunner", gameBean, commandRunner);
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
@@ -364,7 +297,7 @@ public class GameBeanTest extends MudTest
             }
         };
         // Unit under test is exercised.
-        PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
+        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
         assertThat(result.body, equalTo("You are standing on a small bridge."));
         assertThat(result.image, nullValue());
         assertThat(result.title, equalTo("The bridge"));
@@ -394,7 +327,6 @@ public class GameBeanTest extends MudTest
         logger.fine("authenticate1");
         marvin.setActive(true);
         karn.setVisible(false);
-        marvin.setLok("woahNelly");
         GameBean gameBean = new GameBean()
         {
             @Override
@@ -402,12 +334,17 @@ public class GameBeanTest extends MudTest
             {
                 return entityManager;
             }
+
+            @Override
+            protected String getPlayerName() throws IllegalStateException
+            {
+                return "Marvin";
+            }
         };
         setField(GameBean.class, "logBean", gameBean, logBean);
         setField(GameBean.class, "commandRunner", gameBean, commandRunner);
         new Expectations() // an "expectation block"
         {
-
 
             {
                 entityManager.setProperty("activePersonFilter", 1);
@@ -424,7 +361,7 @@ public class GameBeanTest extends MudTest
             }
         };
         // Unit under test is exercised.
-        PrivateDisplay result = gameBean.play("Marvin", "woahNelly", 0, "l", true);
+        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
         assertThat(result.body, equalTo("You are standing on a small bridge."));
         assertThat(result.image, nullValue());
         assertThat(result.title, equalTo("The bridge"));

@@ -20,7 +20,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.persistence.CascadeType;
@@ -92,9 +91,6 @@ public class User extends Person
     @Size(max = 40)
     @Column(name = "email")
     private String email;
-    @Size(max = 40)
-    @Column(name = "lok")
-    private String lok;
     @Column(name = "punishment")
     private Integer punishment;
     @Column(name = "lastlogin")
@@ -238,6 +234,12 @@ public class User extends Person
         return address;
     }
 
+    /**
+     * Sets the ip address or hostname of the person playing the game.
+     * Usually done when logging in.
+     *
+     * @param address the ip address or hostname.
+     */
     public void setAddress(String address)
     {
         this.address = address;
@@ -289,21 +291,6 @@ public class User extends Person
     public void setEmail(String email)
     {
         this.email = email;
-    }
-
-    /**
-     * retrieve sessionpassword
-     *
-     * @return String containing the session password
-     */
-    public String getLok()
-    {
-        return lok;
-    }
-
-    public void setLok(String lok)
-    {
-        this.lok = lok;
     }
 
     public Integer getPunishment()
@@ -523,65 +510,20 @@ public class User extends Person
     }
 
     /**
-     * verify sessionpassword
-     *
-     * @param aSessionPassword the sessionpassword to be verified.
-     * @return boolean, true if the sessionpassword provided is an exact match
-     * with the original sessionpassword.
-     */
-    public boolean verifySessionPassword(String aSessionPassword)
-    {
-        itsLog.finer("entering verifySessionPassword");
-        if (!isUser())
-        {
-            // is not a common user, therefore does not have a session password.
-            return false;
-        }
-        return lok == null ? false : lok.equals(aSessionPassword);
-    }
-
-    /**
      * activate a character
      *
-     * @param address the ip-address or hostname used by the player.
      * @see #deactivate()
      * @see #isActive()
      */
-    public void activate(String address) throws MudException
+    public void activate() throws MudException
     {
         if (!isUser())
         {
             throw new MudException("user not a user");
         }
-        this.setAddress(address);
         this.setLastlogin(new Date());
         this.setActive(true);
         createLog();
-    }
-
-    /**
-     * generate a session password to be used by player during game session. Use
-     * {@link #getLok() } to return a String containing 25 random digits,
-     * capitals and smallcaps.
-     */
-    public void generateSessionPassword()
-    {
-        char[] myCharArray =
-        {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-            'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-        };
-        StringBuilder myString = new StringBuilder(26);
-        Random myRandom = new Random();
-        for (int i = 1; i < 26; i++)
-        {
-
-            myString.append(myCharArray[myRandom.nextInt(myCharArray.length)]);
-        }
-        lok = myString.toString();
     }
 
     /**
@@ -593,7 +535,6 @@ public class User extends Person
     public void deactivate()
     {
         setActive(false);
-        setLok(null);
         setLastlogin(new Date());
     }
 

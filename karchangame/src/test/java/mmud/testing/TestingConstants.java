@@ -71,7 +71,6 @@ public class TestingConstants
         User person = new User();
 
         person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
-        person.setLok("lok");
         person.setAddress("82-170-94-123.ip.telfort.nl");
         person.setPassword("93ef5f419670b2d0efe0c9461b765725a74c86eb"); // sha1 of "hotblack"
         person.setRealname(null);
@@ -108,7 +107,6 @@ public class TestingConstants
         User person = new User();
 
         person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
-        person.setLok("lok");
         person.setAddress("82-170-94-123.ip.telfort.nl");
         person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
         person.setRealname(null);
@@ -162,7 +160,6 @@ public class TestingConstants
         Administrator person = new Administrator();
 
         person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
-        person.setLok("lok");
         person.setAddress("82-170-94-123.ip.telfort.nl");
         person.setPassword("a4cac82164ef67d9d07d379b5d5d8c4abe1e02ff"); // sha1 of "marvin"
         person.setRealname(null);
