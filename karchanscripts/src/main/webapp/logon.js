@@ -53,7 +53,7 @@ function logon()
         console.log("logon name=" + name + " password=" + password);
 
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: "/karchangame/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
         cache: false,
         success: (function (data) {
