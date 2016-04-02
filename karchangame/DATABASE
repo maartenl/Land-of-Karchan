@@ -385,3 +385,4 @@ create view mmv_groups as
 
 ALTER TABLE `mmud`.`mm_usertable` ADD COLUMN `newpassword` VARCHAR(128);
 
+drop trigger password_trigger;
