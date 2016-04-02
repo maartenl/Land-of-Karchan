@@ -190,7 +190,7 @@ function playInit()
   Karchan.name = name;
   Karchan.logOffset = 0; 
   Karchan.sleep = false;
-  if (window.console) console.log("playInit name=" + namek);
+  if (window.console) console.log("playInit name=" + name);
   var command = "l";
   if (window.console) console.log("playInit command=" + command); 
   var processPlay = function(data) {
