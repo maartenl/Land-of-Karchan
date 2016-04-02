@@ -66,12 +66,14 @@ function clearName()
     } else {
         Cookies.set('karchanname', null, {path: '/'});
     }
+    Karchan.name = null;
 }
 
 function playGame()
 {
     if (window.console)
         console.log("playGame");
+    var name = Karchan.name;
     $.ajax({
         type: 'POST',
         url: "/karchangame/resources/game/" + name + "/enter", // Which url should be handle the ajax request.
@@ -101,7 +103,6 @@ function logoff()
     if (window.console)
         console.log("logoff");
     var name = Karchan.name;
-
     $.ajax({
         type: 'PUT',
         url: "/karchangame/resources/game/" + name + "/logoff", // Which url should be handle the ajax request.
