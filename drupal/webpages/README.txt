@@ -1,5 +1,7 @@
 The great thing about Drupal is that webpages can be dynamically changed.
 
+What is basically required for these pages is JQuery and Cookies.
+
 However, this comes with it's own set of problems:
 - the webpages are stored in a database, and cannot be easily changed
 - the HTML of the webpages can be changed by Drupal or one of its editors
