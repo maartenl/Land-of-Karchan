@@ -17,14 +17,6 @@ function showCharactersheets()
     if (window.console) console.log("updateCharactersheets");
     // The data parameter is a JSON object.
     var formatted_html = "";
-    var cookiesname = "";
-    if (Cookies.get("name") != undefined &&
-      Cookies.get("lok") != undefined &&
-      Cookies.get("name") != "" &&
-      Cookies.get("lok") != "")
-    {
-      cookiesname = Cookies.get("name");
-    }
     formatted_html += "<table><tr><td><img src=\"/images/gif/letters/a.gif\"><br/><br/>";
     var column_length = (data.length / 6) + 1;
     var column_pos = 0;
@@ -43,14 +35,7 @@ function showCharactersheets()
            formatted_html += "<br/><p><img src=\"/images/gif/letters/" +
            first_letter.toLowerCase() + ".gif\"></p>";
          }
-         if (data[i].name === cookiesname)
-         {
-           formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\"><b>"+ data[i].name + "</b></a><br/>";
-         }
-         else
-         {   
-           formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
-         }
+         formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
     }
     formatted_html += "</td></tr></table>";
     $('#karchan_charactersheets').html(formatted_html); // data.products);

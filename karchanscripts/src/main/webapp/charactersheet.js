@@ -23,10 +23,6 @@ var urlParam = function(name)
 function showCharactersheet( $ ) 
 {
   if (window.console) console.log("showCharactersheet");
-  var name = Cookies.get("name");
-  var lok = Cookies.get("lok");
-  Karchan.name = name;
-  Karchan.lok = lok;
   if (urlParam("name") !== 0)
   {
     name = urlParam("name");
