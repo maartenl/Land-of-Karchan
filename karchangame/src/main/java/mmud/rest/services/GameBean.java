@@ -185,6 +185,16 @@ public class GameBean implements RoomsInterface, WorldInterface
         return person;
     }
 
+    private User authenticateToEnterGame(String name)
+    {
+        if (!getPlayerName().equals(name))
+        {
+            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
+        }
+        User person = getPlayer(name);
+        return person;
+    }
+
     /**
      * <p>
      * This method should be called to verify that the target of a certain
@@ -607,7 +617,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
     {
         itsLog.finer("entering enterGame");
-        User person = authenticate(name);
+        User person = authenticateToEnterGame(name);
         try
         {
             person.activate();
