@@ -293,7 +293,7 @@ public class User extends Person
             Utils.checkRegexp(PASSWORD_REGEXP, password);
         }
 
-        this.password = password;
+        this.password = new HexEncoder(128).encrypt(password, Hash.SHA_1);
     }
 
     /**
