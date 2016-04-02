@@ -46,6 +46,8 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Macro;
 import mmud.database.enums.God;
+import mmud.encryption.Hash;
+import mmud.encryption.HexEncoder;
 import mmud.exceptions.MudException;
 
 /**
@@ -84,6 +86,9 @@ public class User extends Person
     @Column(name = "password")
     @Pattern(regexp = PASSWORD_REGEXP, message = "Invalid password")
     private String password;
+    @Size(max = 128)
+    @Column(name = "newpassword")
+    private String newpassword;
     @Size(max = 80)
     @Column(name = "realname")
     private String realname;
@@ -245,9 +250,25 @@ public class User extends Person
         this.address = address;
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
+    @Deprecated
     public String getPassword()
     {
         return password;
+    }
+
+    /**
+     * Returns the SHA-512 hash of the password in the form of a 128 length
+     * String containing the HEX encoding of this hash.
+     *
+     * @return 128 character hex-encoded SHA-512 hash of the password.
+     */
+    public String getNewpassword()
+    {
+        return newpassword;
     }
 
     /**
@@ -257,7 +278,9 @@ public class User extends Person
      *
      * @param password the new password.
      * @throws MudException if the password is not allowed.
+     * @deprecated
      */
+    @Deprecated
     public void setPassword(String password) throws MudException
     {
         if (this.password != null)
@@ -271,6 +294,29 @@ public class User extends Person
         }
 
         this.password = password;
+    }
+
+    /**
+     * Sets the password of the person. Can contain any character, but has to
+     * have at least size of 5. You cannot set a password this way, you can only
+     * set it for the first time, i.e. when creating a new character.
+     *
+     * @param newpassword the new password.
+     * @throws MudException if the password is not allowed.
+     */
+    public void setNewpassword(String newpassword) throws MudException
+    {
+        if (this.newpassword != null)
+        {
+            return;
+        }
+
+        if (newpassword != null)
+        {
+            Utils.checkRegexp(PASSWORD_REGEXP, newpassword);
+        }
+
+        this.newpassword = new HexEncoder(128).encrypt(newpassword, Hash.SHA_512);
     }
 
     public String getRealname()

@@ -382,3 +382,6 @@ create view mmv_groups as
     UNION
     select bossname as name, "guildmaster" as groupid from mm_guilds
 ;
+
+ALTER TABLE `mmud`.`mm_usertable` ADD COLUMN `newpassword` VARCHAR(128);
+

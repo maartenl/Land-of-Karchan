@@ -369,6 +369,7 @@ public class GameBean implements RoomsInterface, WorldInterface
             User person = new User();
             person.setName(name);
             person.setPassword(pperson.password);
+            person.setNewpassword(pperson.password);
             if (isBanned(name, address))
             {
                 // is banned
@@ -524,7 +525,6 @@ public class GameBean implements RoomsInterface, WorldInterface
                     Response.Status.FORBIDDEN);
         }
         User person = getPlayer(name);
-        person.setAddress(address);
 
         // nasty work-around for Catalina AuthenticatorBase to be able to
         // change/create the session cookie
@@ -549,6 +549,9 @@ public class GameBean implements RoomsInterface, WorldInterface
             Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
             throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
         }
+        person.setAddress(address);
+        person.setNewpassword(password);
+
     }
 
     /**
