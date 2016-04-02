@@ -36,7 +36,886 @@
   <con:entry key="JAXB Customization File(s)" value=""/>
   <con:entry key="Tool Args" value=""/>
   <con:entry key="Automatic Package Names" value="false"/>
-</xml-fragment>]]></con:setting></con:settings><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint><con:endpoint>http://localhost:8080/YourPersonalPhotographOrganiser/resources/photographs/1338/metadata</con:endpoint></con:endpoints><con:resource name="/public" path="public"><con:settings/><con:parameters/><con:resource name="status" path="status"><con:settings/><con:parameters/><con:method name="GET - status" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="who" path="who"><con:settings/><con:parameters/><con:method name="GET - who" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="fortunes" path="fortunes"><con:settings/><con:parameters/><con:method name="GET - fortunes" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>fortune</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>fortune</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="guilds" path="guilds"><con:settings/><con:parameters/><con:method name="GET - guilds" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicGuild</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicGuild</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="charactersheets/{name}" path="charactersheets/{name}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - charactersheet" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="charactersheets" path="charactersheets"><con:settings/><con:parameters/><con:method name="GET - charactersheets" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="news" path="news"><con:settings/><con:parameters/><con:method name="GET - news" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>news</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>news</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource></con:resource><con:resource name="/private" path="private"><con:settings/><con:parameters/><con:resource name="{name}/mail" path="{name}/mail"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - listMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>offset</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST - newMail" method="POST"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="REQUEST" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet/familyvalues/{toname}" path="{name}/charactersheet/familyvalues/{toname}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>toname</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="DELETE - deleteFamilyvalues" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/mail/{id}" path="{name}/mail/{id}"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:long</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - getMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="DELETE - deleteMail" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/mail/{id}/createMailItem/{item}" path="{name}/mail/{id}/createMailItem/{item}"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:long</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>item</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - createMailItem" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet" path="{name}/charactersheet"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="PUT - updateCharacterSheet" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="REQUEST" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet/familyvalues/{toname}/{description}" path="{name}/charactersheet/familyvalues/{toname}/{description}"><con:settings/><con:parameters><con:parameter><con:name>description</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>toname</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="PUT - updateFamilyvalues" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/newmail" path="{name}/newmail"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - hasNewMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/guild" path="{name}/guild"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter><con:parameter><con:name>lok</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:resource name="{name}/guild/members" path="/members"><con:settings/><con:parameters/><con:resource name="{name}/guild/members/{guildmember}" path="/{membername}"><con:settings/><con:parameters><con:parameter><con:name>membername</con:name><con:value>membername</con:value><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default>membername</con:default><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - getGuildMember" method="GET"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="DELETE - deleteGuildMember" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>membername</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="PUT - updateMember" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>membername</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:method name="GET - getGuildMembers" method="GET"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/guild/ranks" path="/ranks"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:resource name="{guildlevel}" path="{guildlevel}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>guildlevel</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter></con:parameters><con:method name="GET - getGuildRank" method="GET"><con:settings/><con:parameters/><con:request name="Request 1" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</xml-fragment>]]></con:setting></con:settings><con:definitionCache type="TEXT" rootPart="http://localhost:8080/karchangame/resources/application.wadl"><con:part><con:url>http://localhost:8080/karchangame/resources/application.wadl</con:url><con:content><![CDATA[<application xmlns="http://wadl.dev.java.net/2009/02">
+  <doc jersey:generatedBy="Jersey: 2.22.1 2015-10-07 10:54:41" xmlns:jersey="http://jersey.java.net/"/>
+  <doc jersey:hint="This is simplified WADL with user and core resources only. To get full WADL with extended resources use the query parameter detail. Link: http://localhost:8080/karchangame/resources/application.wadl?detail=true" xmlns:jersey="http://jersey.java.net/"/>
+  <grammars>
+    <include href="application.wadl/xsd0.xsd">
+      <doc title="Generated" xml:lang="en"/>
+    </include>
+  </grammars>
+  <resources base="http://localhost:8080/karchangame/resources/">
+    <resource path="/administration/areas">
+      <method id="findAll" name="GET">
+        <response>
+          <ns2:representation element="area" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="area" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="create" name="POST">
+        <request>
+          <ns2:representation element="area" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="area" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+      </method>
+      <resource path="{id}">
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="edit" name="PUT">
+          <request>
+            <ns2:representation element="area" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="area" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+        </method>
+        <method id="remove" name="DELETE"/>
+        <method id="find" name="GET">
+          <response>
+            <ns2:representation element="area" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="area" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{from}/{to}">
+        <param name="from" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="to" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="findRange" name="GET">
+          <response>
+            <ns2:representation element="area" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="area" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="count">
+        <method id="countREST" name="GET">
+          <response>
+            <representation mediaType="text/plain"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/administration/worldattributes">
+      <method id="findAll" name="GET">
+        <response>
+          <ns2:representation element="worldattribute" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="worldattribute" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="create" name="POST">
+        <request>
+          <ns2:representation element="worldattribute" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="worldattribute" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+      </method>
+      <resource path="{id}">
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="edit" name="PUT">
+          <request>
+            <ns2:representation element="worldattribute" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="worldattribute" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+        </method>
+        <method id="remove" name="DELETE"/>
+        <method id="find" name="GET">
+          <response>
+            <ns2:representation element="worldattribute" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="worldattribute" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{id}/owner">
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="disown" name="DELETE"/>
+      </resource>
+      <resource path="{from}/{to}">
+        <param name="from" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="to" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="findRange" name="GET">
+          <response>
+            <ns2:representation element="worldattribute" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="worldattribute" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="count">
+        <method id="countREST" name="GET">
+          <response>
+            <representation mediaType="text/plain"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/administration/events">
+      <method id="findAllAdminEvents" name="GET">
+        <response>
+          <ns2:representation element="adminEvent" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="adminEvent" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="create" name="POST">
+        <request>
+          <ns2:representation element="adminEvent" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="adminEvent" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+      </method>
+      <resource path="{id}">
+        <param name="id" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="edit" name="PUT">
+          <request>
+            <ns2:representation element="adminEvent" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="adminEvent" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+        </method>
+        <method id="remove" name="DELETE"/>
+        <method id="find" name="GET">
+          <response>
+            <ns2:representation element="adminEvent" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="adminEvent" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{id}/owner">
+        <param name="id" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="disown" name="DELETE"/>
+      </resource>
+      <resource path="{from}/{to}">
+        <param name="from" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="to" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="findRange" name="GET">
+          <response>
+            <ns2:representation element="adminEvent" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="adminEvent" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="count">
+        <method id="countREST" name="GET">
+          <response>
+            <representation mediaType="text/plain"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/private/{name}/guild">
+      <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <method id="getGuildInfo" name="GET">
+        <request>
+          <representation mediaType="application/xml"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response>
+          <ns2:representation element="privateGuild" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="updateGuild" name="PUT">
+        <request>
+          <ns2:representation element="privateGuild" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="privateGuild" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+        <response>
+          <representation mediaType="*/*"/>
+        </response>
+      </method>
+      <method id="createGuild" name="POST">
+        <request>
+          <ns2:representation element="privateGuild" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="privateGuild" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+        <response>
+          <representation mediaType="*/*"/>
+        </response>
+      </method>
+      <method id="deleteGuild" name="DELETE">
+        <request>
+          <representation mediaType="application/xml"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response>
+          <representation mediaType="*/*"/>
+        </response>
+      </method>
+      <resource path="hopefuls">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="getGuildHopefuls" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <ns2:representation element="privatePerson" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="members/{membername}">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="membername" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="deleteMember" name="DELETE">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+        <method id="updateMember" name="PUT">
+          <request>
+            <ns2:representation element="privatePerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privatePerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+        <method id="getMember" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <ns2:representation element="privatePerson" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="members">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="createMember" name="POST">
+          <request>
+            <ns2:representation element="privatePerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privatePerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+        <method id="getMembers" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <ns2:representation element="privatePerson" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="hopefuls/{hopefulname}">
+        <param name="hopefulname" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="deleteGuildHopeful" name="DELETE">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="ranks">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="getGuildRanks" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <ns2:representation element="privateRank" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+        <method id="createGuildRank" name="POST">
+          <request>
+            <ns2:representation element="privateRank" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateRank" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="ranks/{guildlevel}">
+        <param name="guildlevel" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="getGuildRank" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <ns2:representation element="privateRank" mediaType="*/*" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+        <method id="updateGuildRank" name="PUT">
+          <request>
+            <ns2:representation element="privateRank" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateRank" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+        <method id="deleteGuildRank" name="DELETE">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/game">
+      <resource path="{name}/logon">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="logon" name="PUT">
+          <request>
+            <param name="password" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+          </request>
+        </method>
+      </resource>
+      <resource path="{name}/enter">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="enterGame" name="POST"/>
+      </resource>
+      <resource path="{name}/play">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="playGame" name="POST">
+          <request>
+            <param name="offset" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+            <param name="log" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+          </request>
+          <response>
+            <ns2:representation element="privateDisplay" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateDisplay" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/log">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="deleteLog" name="DELETE">
+          <response>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </response>
+        </method>
+        <method id="getLog" name="GET">
+          <request>
+            <param name="offset" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+          </request>
+          <response>
+            <ns2:representation element="privateLog" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateLog" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/quit">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="quitGame" name="GET">
+          <response>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="delete" name="DELETE">
+          <response>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </response>
+        </method>
+        <method id="create" name="POST">
+          <response>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/administration/adminaccounts">
+      <method id="findAll" name="GET">
+        <response>
+          <ns2:representation element="admin" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="admin" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="create" name="POST">
+        <request>
+          <ns2:representation element="admin" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="admin" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+      </method>
+      <resource path="{id}">
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="edit" name="PUT">
+          <request>
+            <ns2:representation element="admin" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="admin" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+        </method>
+        <method id="remove" name="DELETE"/>
+        <method id="find" name="GET">
+          <response>
+            <ns2:representation element="admin" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="admin" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{from}/{to}">
+        <param name="from" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="to" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="findRange" name="GET">
+          <response>
+            <ns2:representation element="admin" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="admin" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="count">
+        <method id="countREST" name="GET">
+          <response>
+            <representation mediaType="text/plain"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/public">
+      <resource path="fortunes">
+        <method id="fortunes" name="GET">
+          <response>
+            <ns2:representation element="fortune" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="fortune" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="who">
+        <method id="who" name="GET">
+          <response>
+            <ns2:representation element="publicPerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="publicPerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="news">
+        <method id="news" name="GET">
+          <response>
+            <ns2:representation element="news" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="news" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="guilds">
+        <method id="guilds" name="GET">
+          <response>
+            <ns2:representation element="publicGuild" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="publicGuild" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="charactersheets/{name}">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="charactersheet" name="GET">
+          <response>
+            <ns2:representation element="publicPerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="publicPerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="charactersheets">
+        <method id="charactersheets" name="GET">
+          <response>
+            <ns2:representation element="publicPerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="publicPerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="status">
+        <method id="status" name="GET">
+          <response>
+            <ns2:representation element="publicPerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="publicPerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/private">
+      <resource path="{name}/newmail">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="hasNewMail" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/mail">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="listMail" name="GET">
+          <request>
+            <param name="offset" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+          </request>
+          <response>
+            <ns2:representation element="privateMail" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateMail" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+        <method id="newMail" name="POST">
+          <request>
+            <ns2:representation element="privateMail" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateMail" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/mail/{id}">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="id" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="getMailInfo" name="GET">
+          <response>
+            <ns2:representation element="privateMail" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privateMail" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+        <method id="deleteMail" name="DELETE">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/mail/{id}/createMailItem/{item}">
+        <param name="item" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="id" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="createMailItem" name="GET">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/charactersheet">
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="updateCharacterSheet" name="PUT">
+          <request>
+            <ns2:representation element="privatePerson" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="privatePerson" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/charactersheet/familyvalues/{toname}/{description}">
+        <param name="toname" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="description" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="updateFamilyvalues" name="PUT">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{name}/charactersheet/familyvalues/{toname}">
+        <param name="toname" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="name" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="deleteFamilyvalues" name="DELETE">
+          <request>
+            <representation mediaType="application/xml"/>
+            <representation mediaType="application/json"/>
+          </request>
+          <response>
+            <representation mediaType="*/*"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+    <resource path="/administration/methods">
+      <method id="findAll" name="GET">
+        <response>
+          <ns2:representation element="method" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="method" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </response>
+      </method>
+      <method id="create" name="POST">
+        <request>
+          <ns2:representation element="method" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          <ns2:representation element="method" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+        </request>
+      </method>
+      <resource path="{alphabet}/{id}">
+        <param name="alphabet" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="edit" name="PUT">
+          <request>
+            <ns2:representation element="method" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="method" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </request>
+        </method>
+        <method id="remove" name="DELETE"/>
+        <method id="find" name="GET">
+          <response>
+            <ns2:representation element="method" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="method" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{alphabet}/{id}/owner">
+        <param name="alphabet" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <param name="id" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="disown" name="DELETE"/>
+      </resource>
+      <resource path="count">
+        <method id="countREST" name="GET">
+          <response>
+            <representation mediaType="text/plain"/>
+          </response>
+        </method>
+      </resource>
+      <resource path="{alphabet}">
+        <param name="alphabet" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+        <method id="findLike" name="GET">
+          <response>
+            <ns2:representation element="method" mediaType="application/xml" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+            <ns2:representation element="method" mediaType="application/json" xmlns:ns2="http://wadl.dev.java.net/2009/02" xmlns="" xmlns:ns="http://wadl.dev.java.net/2009/02"/>
+          </response>
+        </method>
+      </resource>
+    </resource>
+  </resources>
+</application>]]></con:content><con:type>http://wadl.dev.java.net/2009/02</con:type></con:part><con:part><con:url>http://localhost:8080/karchangame/resources/application.wadl/xsd0.xsd</con:url><con:content><![CDATA[<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="admin" type="admin"/>
+  <xs:element name="adminEvent" type="adminEvent"/>
+  <xs:element name="area" type="area"/>
+  <xs:element name="fortune" type="fortune"/>
+  <xs:element name="method" type="method"/>
+  <xs:element name="news" type="news"/>
+  <xs:element name="privateDisplay" type="privateDisplay"/>
+  <xs:element name="privateGuild" type="privateGuild"/>
+  <xs:element name="privateItem" type="privateItem"/>
+  <xs:element name="privateLog" type="privateLog"/>
+  <xs:element name="privateMail" type="privateMail"/>
+  <xs:element name="privatePerson" type="privatePerson"/>
+  <xs:element name="privateRank" type="privateRank"/>
+  <xs:element name="publicGuild" type="publicGuild"/>
+  <xs:element name="publicPerson" type="publicPerson"/>
+  <xs:element name="worldattribute" type="worldattribute"/>
+  <xs:complexType name="news">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="posttime" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privatePerson">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="imageurl" type="xs:string" minOccurs="0"/>
+      <xs:element name="homepageurl" type="xs:string" minOccurs="0"/>
+      <xs:element name="dateofbirth" type="xs:string" minOccurs="0"/>
+      <xs:element name="cityofbirth" type="xs:string" minOccurs="0"/>
+      <xs:element name="storyline" type="xs:string" minOccurs="0"/>
+      <xs:element name="password" type="xs:string" minOccurs="0"/>
+      <xs:element name="password2" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="realname" type="xs:string" minOccurs="0"/>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="age" type="xs:string" minOccurs="0"/>
+      <xs:element name="width" type="xs:string" minOccurs="0"/>
+      <xs:element name="height" type="xs:string" minOccurs="0"/>
+      <xs:element name="complexion" type="xs:string" minOccurs="0"/>
+      <xs:element name="eyes" type="xs:string" minOccurs="0"/>
+      <xs:element name="face" type="xs:string" minOccurs="0"/>
+      <xs:element name="hair" type="xs:string" minOccurs="0"/>
+      <xs:element name="beard" type="xs:string" minOccurs="0"/>
+      <xs:element name="arm" type="xs:string" minOccurs="0"/>
+      <xs:element name="leg" type="xs:string" minOccurs="0"/>
+      <xs:element name="race" type="xs:string" minOccurs="0"/>
+      <xs:element name="sex" type="xs:string" minOccurs="0"/>
+      <xs:element name="guild" type="xs:string" minOccurs="0"/>
+      <xs:element name="guildrank" type="xs:string" minOccurs="0"/>
+      <xs:element name="guildlevel" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="method">
+    <xs:sequence>
+      <xs:element name="creation" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="owner" type="admin" minOccurs="0"/>
+      <xs:element name="src" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="admin">
+    <xs:sequence>
+      <xs:element name="created" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="ip" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="passwd" type="xs:string" minOccurs="0"/>
+      <xs:element name="validuntil" type="xs:dateTime" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateGuild">
+    <xs:complexContent>
+      <xs:extension base="publicGuild">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="logonmessage" type="xs:string" minOccurs="0"/>
+          <xs:element name="colour" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="publicGuild">
+    <xs:sequence>
+      <xs:element name="guildurl" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="bossname" type="xs:string" minOccurs="0"/>
+      <xs:element name="guilddescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="creation" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="image" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="worldattribute">
+    <xs:sequence>
+      <xs:element name="contents" type="xs:string" minOccurs="0"/>
+      <xs:element name="creation" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="owner" type="admin" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="area">
+    <xs:sequence>
+      <xs:element name="area" type="xs:string" minOccurs="0"/>
+      <xs:element name="creation" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="owner" type="admin" minOccurs="0"/>
+      <xs:element name="shortdescription" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateDisplay">
+    <xs:sequence>
+      <xs:element name="image" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="body" type="xs:string" minOccurs="0"/>
+      <xs:element name="log" type="privateLog" minOccurs="0"/>
+      <xs:element name="west" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="east" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="north" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="south" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="up" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="down" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="persons" type="privatePerson" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="items" type="privateItem" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateLog">
+    <xs:sequence>
+      <xs:element name="offset" type="xs:int"/>
+      <xs:element name="size" type="xs:int"/>
+      <xs:element name="log" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateItem">
+    <xs:sequence>
+      <xs:element name="amount" type="xs:int" minOccurs="0"/>
+      <xs:element name="adject1" type="xs:string" minOccurs="0"/>
+      <xs:element name="adject2" type="xs:string" minOccurs="0"/>
+      <xs:element name="adject3" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fortune">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="gold" type="xs:int" minOccurs="0"/>
+      <xs:element name="silver" type="xs:int" minOccurs="0"/>
+      <xs:element name="copper" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateRank">
+    <xs:sequence>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="guildlevel" type="xs:int" minOccurs="0"/>
+      <xs:element name="accept_access" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="reject_access" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="settings_access" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="logonmessage_access" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="publicPerson">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="url" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="sleep" type="xs:string" minOccurs="0"/>
+      <xs:element name="area" type="xs:string" minOccurs="0"/>
+      <xs:element name="sex" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="imageurl" type="xs:string" minOccurs="0"/>
+      <xs:element name="guild" type="xs:string" minOccurs="0"/>
+      <xs:element name="homepageurl" type="xs:string" minOccurs="0"/>
+      <xs:element name="dateofbirth" type="xs:string" minOccurs="0"/>
+      <xs:element name="cityofbirth" type="xs:string" minOccurs="0"/>
+      <xs:element name="lastlogin" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="storyline" type="xs:string" minOccurs="0"/>
+      <xs:element name="min" type="xs:long" minOccurs="0"/>
+      <xs:element name="sec" type="xs:long" minOccurs="0"/>
+      <xs:element name="familyvalues" type="publicFamily" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="publicFamily">
+    <xs:sequence>
+      <xs:element name="toname" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="privateMail">
+    <xs:sequence>
+      <xs:element name="toname" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="subject" type="xs:string" minOccurs="0"/>
+      <xs:element name="body" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="haveread" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="newmail" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="whensent" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="deleted" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="item_id" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="adminEvent">
+    <xs:sequence>
+      <xs:element name="eventid" type="xs:int" minOccurs="0"/>
+      <xs:element name="person" type="xs:string" minOccurs="0"/>
+      <xs:element name="month" type="xs:int" minOccurs="0"/>
+      <xs:element name="dayofmonth" type="xs:int" minOccurs="0"/>
+      <xs:element name="hour" type="xs:int" minOccurs="0"/>
+      <xs:element name="minute" type="xs:int" minOccurs="0"/>
+      <xs:element name="dayofweek" type="xs:int" minOccurs="0"/>
+      <xs:element name="callable" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="room" type="xs:int" minOccurs="0"/>
+      <xs:element name="creation" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="owner" type="admin" minOccurs="0"/>
+      <xs:element name="method" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>]]></con:content><con:type>http://www.w3.org/2001/XMLSchema</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint><con:endpoint>http://localhost:8080/YourPersonalPhotographOrganiser/resources/photographs/1338/metadata</con:endpoint></con:endpoints><con:resource name="/public" path="public"><con:settings/><con:parameters/><con:resource name="status" path="status"><con:settings/><con:parameters/><con:method name="GET - status" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="who" path="who"><con:settings/><con:parameters/><con:method name="GET - who" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="fortunes" path="fortunes"><con:settings/><con:parameters/><con:method name="GET - fortunes" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>fortune</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>fortune</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="guilds" path="guilds"><con:settings/><con:parameters/><con:method name="GET - guilds" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicGuild</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicGuild</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="charactersheets/{name}" path="charactersheets/{name}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - charactersheet" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="charactersheets" path="charactersheets"><con:settings/><con:parameters/><con:method name="GET - charactersheets" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>publicPerson</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="news" path="news"><con:settings/><con:parameters/><con:method name="GET - news" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>news</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>news</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource></con:resource><con:resource name="/private" path="private"><con:settings/><con:parameters/><con:resource name="{name}/mail" path="{name}/mail"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - listMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>offset</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST - newMail" method="POST"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="REQUEST" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet/familyvalues/{toname}" path="{name}/charactersheet/familyvalues/{toname}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>toname</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="DELETE - deleteFamilyvalues" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/mail/{id}" path="{name}/mail/{id}"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:long</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - getMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateMail</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="DELETE - deleteMail" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/mail/{id}/createMailItem/{item}" path="{name}/mail/{id}/createMailItem/{item}"><con:settings/><con:parameters><con:parameter><con:name>id</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:long</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>item</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - createMailItem" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet" path="{name}/charactersheet"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="PUT - updateCharacterSheet" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="REQUEST" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/charactersheet/familyvalues/{toname}/{description}" path="{name}/charactersheet/familyvalues/{toname}/{description}"><con:settings/><con:parameters><con:parameter><con:name>description</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>toname</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="PUT - updateFamilyvalues" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/newmail" path="{name}/newmail"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - hasNewMail" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/guild" path="{name}/guild"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter><con:parameter><con:name>lok</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:resource name="{name}/guild/members" path="/members"><con:settings/><con:parameters/><con:resource name="{name}/guild/members/{guildmember}" path="/{membername}"><con:settings/><con:parameters><con:parameter><con:name>membername</con:name><con:value>membername</con:value><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default>membername</con:default><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - getGuildMember" method="GET"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="DELETE - deleteGuildMember" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>membername</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="PUT - updateMember" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>membername</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:method name="GET - getGuildMembers" method="GET"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/guild/ranks" path="/ranks"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:resource name="{guildlevel}" path="{guildlevel}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>guildlevel</con:name><con:value/><con:style>TEMPLATE</con:style><con:default/></con:parameter></con:parameters><con:method name="GET - getGuildRank" method="GET"><con:settings/><con:parameters/><con:request name="Request 1" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value=""/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -72,7 +951,7 @@
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="DELETE - deleteGuild" method="DELETE"><con:settings/><con:parameters/><con:request name="Request 1" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:resource><con:resource name="/game" path="game"><con:settings/><con:parameters/><con:resource name="{name}" path="{name}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="DELETE - delete" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>password</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>password2</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST - create" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/play" path="{name}/play"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="POST - play" method="POST"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>offset</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>log</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateDisplay</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateDisplay</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/logon" path="{name}/logon"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="POST - logon" method="POST"><con:settings/><con:parameters><con:parameter><con:name>password</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/log" path="{name}/log"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - retrieveLog" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>offset</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateLog</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateLog</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="DELETE - deleteLog" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/quit" path="{name}/quit"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - quit" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource></con:resource></con:interface><con:testSuite name="Public"><con:description>TestSuite generated for REST Service [karchangame]</con:description><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/public TestCase" searchProperties="true" id="d4695a1c-5595-4a75-9ee3-cd12d4970b9b"><con:description>TestCase generated for REST Resource [/public] located at [/public]</con:description><con:settings/><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="status TestCase" searchProperties="true" id="15f332ef-a44a-483c-9836-154f65465384"><con:description>TestCase generated for REST Resource [status] located at [/public/status]</con:description><con:settings/><con:testStep type="restrequest" name="get status"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/public/status" methodName="GET - status" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get status" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:resource><con:resource name="/game" path="game"><con:settings/><con:parameters/><con:resource name="{name}" path="{name}"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="DELETE - delete" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>password</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>password2</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="POST - create" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST" id=""><con:mediaType>*/*</con:mediaType><con:params/><con:element>privatePerson</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/play" path="{name}/play"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="POST - play" method="POST"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>offset</con:name><con:value/><con:style>QUERY</con:style><con:default/></con:parameter><con:parameter><con:name>log</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateDisplay</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateDisplay</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/logon" path="{name}/logon"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="PUT - logon" method="PUT"><con:settings/><con:parameters><con:parameter><con:name>password</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/log" path="{name}/log"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - retrieveLog" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter><con:parameter><con:name>offset</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:int</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element>privateLog</con:element><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element>privateLog</con:element><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method><con:method name="DELETE - deleteLog" method="DELETE"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default/><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:request name="Request 1" mediaType="application/xml"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/quit" path="{name}/quit"><con:settings/><con:parameters><con:parameter><con:name>name</con:name><con:value xsi:nil="true"/><con:style>TEMPLATE</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:method name="GET - quit" method="GET"><con:settings/><con:parameters><con:parameter><con:name>lok</con:name><con:value xsi:nil="true"/><con:style>QUERY</con:style><con:type xmlns:xs="http://www.w3.org/2001/XMLSchema">xs:string</con:type><con:default xsi:nil="true"/></con:parameter></con:parameters><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/json</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="Request 1"><con:settings/><con:endpoint>http://localhost:8080</con:endpoint><con:parameters/></con:request></con:method></con:resource><con:resource name="{name}/logoff" path=""><con:settings/><con:parameters/><con:method name="PUT - logoff" method="PUT"><con:settings/><con:parameters/><con:request name="Request 1" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:resource></con:interface><con:testSuite name="Public"><con:description>TestSuite generated for REST Service [karchangame]</con:description><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/public TestCase" searchProperties="true" id="d4695a1c-5595-4a75-9ee3-cd12d4970b9b"><con:description>TestCase generated for REST Resource [/public] located at [/public]</con:description><con:settings/><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="status TestCase" searchProperties="true" id="15f332ef-a44a-483c-9836-154f65465384"><con:description>TestCase generated for REST Resource [status] located at [/public/status]</con:description><con:settings/><con:testStep type="restrequest" name="get status"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/public/status" methodName="GET - status" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get status" mediaType="application/xml" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Invalid HTTP Status Codes" name="Invalid HTTP Status Codes"><con:configuration><codes>400</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>{"name":"Karn","title":"Ruler of Karchan, Keeper of the Key to the Room of Lost Souls","familyvalues":[]}</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="who TestCase" searchProperties="true" id="dcef9f0b-edad-469d-927f-900d908b0b1b"><con:description>TestCase generated for REST Resource [who] located at [/public/who]</con:description><con:settings/><con:testStep type="restrequest" name="get who"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/public/who" methodName="GET - who" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get who" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -96,23 +975,29 @@
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Invalid HTTP Status Codes" name="Invalid HTTP Status Codes"><con:configuration><codes>400</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Copy of status TestCase" searchProperties="true"><con:description>TestCase generated for REST Resource [status] located at [/public/status]</con:description><con:settings/><con:testStep type="httprequest" name="HTTP Test Request"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="HTTP Test Request" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080/YourPersonalPhotographOrganiser/resources/photographs/139/metadata</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:testSuite name="Private"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/private TestCase" searchProperties="true" id="efc84bdf-6f1c-4841-8b85-c3a028ec832f"><con:description>TestCase generated for REST Resource [/private] located at [/private]</con:description><con:settings/><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080/YourPersonalPhotographOrganiser/resources/photographs/139/metadata</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:testSuite name="Private"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/private TestCase" searchProperties="true" id="efc84bdf-6f1c-4841-8b85-c3a028ec832f"><con:description>TestCase generated for REST Resource [/private] located at [/private]</con:description><con:settings/><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Karn"/>
   <con:entry key="password" value="secret"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Property Transfer"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" disabled="false" entitize="false" ignoreEmpty="false" transferChildNodes="false" transferToAll="true" useXQuery="false"><con:name>lok_karn</con:name><con:sourceType>ResponseAsXml</con:sourceType><con:sourceStep>logon karn</con:sourceStep><con:sourcePath>//*:lok</con:sourcePath><con:targetType>lok_karn</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:targetPath xsi:nil="true"/></con:transfers></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name}/logon TestCase" searchProperties="true" id="87c4c744-a88a-48a9-a153-630304963fd2"><con:description>TestCase generated for REST Resource [{name}/logon] located at [/game/{name}/logon]</con:description><con:settings/><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Property Transfer"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" disabled="false" entitize="false" ignoreEmpty="false" transferChildNodes="false" transferToAll="true" useXQuery="false"><con:name>lok_karn</con:name><con:sourceType>ResponseAsXml</con:sourceType><con:sourceStep>logon karn</con:sourceStep><con:sourcePath>//*:lok</con:sourcePath><con:targetType>lok_karn</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:targetPath xsi:nil="true"/></con:transfers></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="true" maxResults="0" name="{name}/logon TestCase" searchProperties="true" id="87c4c744-a88a-48a9-a153-630304963fd2" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword=""><con:description>TestCase generated for REST Resource [{name}/logon] located at [/game/{name}/logon]</con:description><con:settings/><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>204</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Karn"/>
   <con:entry key="password" value="secret"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="Property Transfer"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="true" useXQuery="false" entitize="false" transferChildNodes="false"><con:name>lok_karn</con:name><con:sourceType>ResponseAsXml</con:sourceType><con:sourceStep>logon karn</con:sourceStep><con:sourcePath>//*:lok</con:sourcePath><con:targetType>lok_karn</con:targetType><con:targetStep>#TestSuite#</con:targetStep></con:transfers></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name}/mail TestCase" searchProperties="true" id="59b18b3d-7c86-43e6-8255-96b5935e162f"><con:description>TestCase generated for REST Resource [{name}/mail] located at [/private/{name}/mail]</con:description><con:settings/><con:testStep type="restrequest" name="get mail"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/private/{name}/mail" methodName="GET - listMail" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get mail" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="getSessionId"><con:settings/><con:config><script>def header = testRunner.testCase.getTestStepByName("logon karn").httpRequest.response.responseHeaders["Set-Cookie"]
+header=header.toString()
+start=header.indexOf("JSESSIONID=")
+end=header.indexOf("; Path=")
+testCaseProperty= header.substring(start,end)
+testRunner.testCase.testSuite.setPropertyValue( "JSESSIONID", testCaseProperty )
+testRunner.testCase.testSuite.project.setPropertyValue( "JSESSIONID", testCaseProperty )</script></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="true" maxResults="0" name="{name}/mail TestCase" searchProperties="true" id="59b18b3d-7c86-43e6-8255-96b5935e162f" timeout="0" wsrmEnabled="false" wsrmVersion="1.0" wsrmAckTo="" amfAuthorisation="false" amfEndpoint="" amfLogin="" amfPassword=""><con:description>TestCase generated for REST Resource [{name}/mail] located at [/private/{name}/mail]</con:description><con:settings/><con:testStep type="restrequest" name="get mail"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/private/{name}/mail" methodName="GET - listMail" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get mail" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Cookie" value="${#TestSuite#JSESSIONID}"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Invalid HTTP Status Codes" name="Invalid HTTP Status Codes"><con:configuration><codes>400, 401</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
-  <con:entry key="lok" value="${#TestSuite#lok_Karn}"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Invalid HTTP Status Codes" name="Invalid HTTP Status Codes"><con:configuration><codes>400, 401, 500</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Karn"/>
   <con:entry key="offset" value="0"/>
 </con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="get mail with offset"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/private/{name}/mail" methodName="GET - listMail" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get mail with offset" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -120,7 +1005,6 @@
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Invalid HTTP Status Codes" name="Invalid HTTP Status Codes"><con:configuration><codes>400, 401
 </codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
-  <con:entry key="lok" value="${#TestSuite#lok_Karn}"/>
   <con:entry key="name" value="Karn"/>
   <con:entry key="offset" value="7"/>
 </con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="post new mail"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/private/{name}/mail" methodName="POST - newMail" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="post new mail" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -344,7 +1228,7 @@
   <con:entry key="lok" value="${#TestSuite#lok_Karn}"/>
   <con:entry key="name" value="Karn"/>
   <con:entry key="guildlevel" value="1"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties><con:property><con:name>lok_karn</con:name><con:value>uVsvW6VTxC6lnYwyjNCFCIvCV</con:value></con:property></con:properties></con:testSuite><con:testSuite name="Game"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/game TestCase" searchProperties="true" id="19e884cd-8c50-4b14-bf05-656518beca27"><con:description>TestCase generated for REST Resource [/game] located at [/game]</con:description><con:settings/><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name} create TestCase" searchProperties="true" id="2a9a2fc4-3251-46b5-9775-836486d2f0a9"><con:description>TestCase generated for REST Resource [{name}] located at [/game/{name}]</con:description><con:settings/><con:testStep type="restrequest" name="create hotblack (passwords not match)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}" methodName="POST - create" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="create hotblack (passwords not match)" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name}/logoff TestCase" searchProperties="true"><con:description>TestCase generated for REST Resource [{name}/logon] located at [/game/{name}/logon]</con:description><con:settings/><con:testStep type="restrequest" name="logoff"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game" methodName="PUT - logoff" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logoff" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Cookie" value="${#TestSuite#JSESSIONID}" xmlns="http://eviware.com/soapui/config"/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties><con:property><con:name>lok_karn</con:name><con:value>uVsvW6VTxC6lnYwyjNCFCIvCV</con:value></con:property><con:property><con:name>JSESSIONID</con:name><con:value>JSESSIONID=37cbdd414d29eb1d6fe99c11750a</con:value></con:property></con:properties></con:testSuite><con:testSuite name="Game"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="/game TestCase" searchProperties="true" id="19e884cd-8c50-4b14-bf05-656518beca27"><con:description>TestCase generated for REST Resource [/game] located at [/game]</con:description><con:settings/><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name} create TestCase" searchProperties="true" id="2a9a2fc4-3251-46b5-9775-836486d2f0a9"><con:description>TestCase generated for REST Resource [{name}] located at [/game/{name}]</con:description><con:settings/><con:testStep type="restrequest" name="create hotblack (passwords not match)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}" methodName="POST - create" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="create hotblack (passwords not match)" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
@@ -454,25 +1338,25 @@
    "beard" : "long-bearded",
    "arm" : "none",
    "leg" : "none"
-}</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="name" value="Slartibartfast" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name}/logon TestCase" searchProperties="true" id="908579fb-c83e-47d9-bdc8-95161ad4cd63"><con:description>TestCase generated for REST Resource [{name}/logon] located at [/game/{name}/logon]</con:description><con:settings/><con:testStep type="restrequest" name="logon ford (no usr)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon ford (no usr)" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+}</con:request><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="name" value="Slartibartfast" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="{name}/logon TestCase" searchProperties="true" id="908579fb-c83e-47d9-bdc8-95161ad4cd63"><con:description>TestCase generated for REST Resource [{name}/logon] located at [/game/{name}/logon]</con:description><con:settings/><con:testStep type="restrequest" name="logon ford (no usr)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon ford (no usr)" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>404</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>Ford was not found.</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains"><con:configuration/></con:assertion><con:assertion type="Simple Contains" name="Contains Ford"><con:configuration><token>"user":"Ford"</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Ford"/>
   <con:entry key="password" value="holysmokes"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon hotblack (wrong pwd)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon hotblack (wrong pwd)" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon hotblack (wrong pwd)"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon hotblack (wrong pwd)" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>401</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Hotblack"/>
   <con:entry key="password" value="holysmokes"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon hotblack" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon hotblack" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Hotblack"/>
   <con:entry key="password" value="secret"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -481,7 +1365,7 @@
 </con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="get who Hotblack"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/public/who" methodName="GET - who" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get who Hotblack" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>Hotblack</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains title"><con:configuration><token>Guitar keyboard player of the rock group Disaster Area</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon marvin"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon marvin" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>Hotblack</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains title"><con:configuration><token>Guitar keyboard player of the rock group Disaster Area</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon marvin"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon marvin" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -490,7 +1374,7 @@
 </con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="get who Marvin"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/public/who" methodName="GET - who" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="get who Marvin" mediaType="application/xml"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
-&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains hotblack"><con:configuration><token>Hotblack</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains title hotblack"><con:configuration><token>Guitar keyboard player of the rock group Disaster Area</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains marvin"><con:configuration><token>Marvin</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains marvins title"><con:configuration><token>The Paranoid Android</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon slartibartfast"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon slartibartfast" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains hotblack"><con:configuration><token>Hotblack</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains title hotblack"><con:configuration><token>Guitar keyboard player of the rock group Disaster Area</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains marvin"><con:configuration><token>Marvin</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains marvins title"><con:configuration><token>The Paranoid Android</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon slartibartfast"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon slartibartfast" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Content-Type" value="application/json"/>
   &lt;con:entry key="Accept" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -2110,7 +2994,7 @@
   <con:entry key="lok" value="${#TestSuite#lok_Karn}"/>
   <con:entry key="name" value="Karn"/>
   <con:entry key="log" value="true"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -2130,13 +3014,13 @@
   <con:entry key="lok" value="${#TestSuite#lok_Karn}"/>
   <con:entry key="name" value="Karn"/>
   <con:entry key="log" value="true"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn - 5mintimeout"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn - 5mintimeout" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="logon karn - 5mintimeout"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn - 5mintimeout" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>403</codes></con:configuration></con:assertion><con:assertion type="Simple Contains" name="Contains"><con:configuration><token>Karn has been kicked out of the game and is not allowed to logon for</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="name" value="Karn"/>
   <con:entry key="password" value="secret"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="delay" name="Delay"><con:settings/><con:config><delay>360000</delay></con:config></con:testStep><con:testStep type="restrequest" name="logon karn - success"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="POST - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn - success" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="delay" name="Delay"><con:settings/><con:config><delay>360000</delay></con:config></con:testStep><con:testStep type="restrequest" name="logon karn - success"><con:settings/><con:config service="karchangame" resourcePath="/karchangame/resources/game/{name}/logon" methodName="PUT - logon" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="logon karn - success" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/json"/>
   &lt;con:entry key="Content-Type" value="application/json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
@@ -2287,4 +3171,4 @@
   <con:entry key="password2" value="secret"/>
   <con:entry key="name" value="Slartibartfast"/>
   <con:entry key="password" value="secret"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties><con:property><con:name>lok_Marvin</con:name><con:value>hhLEPKeTtGFbck5D9tLwg9X2e</con:value></con:property><con:property><con:name>lok_Hotblack</con:name><con:value>3HJTntXnPgATFDkQnaZAvVzX2</con:value></con:property><con:property><con:name>lok_Slartibartfast</con:name><con:value>Lzu1Eg8RjX3MIZVz8ngXTJQq1</con:value></con:property><con:property><con:name>lok_Karn</con:name><con:value>gPkTTWtvKn828MKZ4InNcUM4z</con:value></con:property></con:properties></con:testSuite><con:properties><con:property><con:name>lok_Karn</con:name><con:value>lok_Karn</con:value></con:property></con:properties><con:wssContainer/><con:sensitiveInformation/></con:soapui-project>
+</con:parameters></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties><con:property><con:name>lok_Marvin</con:name><con:value>hhLEPKeTtGFbck5D9tLwg9X2e</con:value></con:property><con:property><con:name>lok_Hotblack</con:name><con:value>3HJTntXnPgATFDkQnaZAvVzX2</con:value></con:property><con:property><con:name>lok_Slartibartfast</con:name><con:value>Lzu1Eg8RjX3MIZVz8ngXTJQq1</con:value></con:property><con:property><con:name>lok_Karn</con:name><con:value>gPkTTWtvKn828MKZ4InNcUM4z</con:value></con:property></con:properties></con:testSuite><con:properties><con:property><con:name>lok_Karn</con:name><con:value>lok_Karn</con:value></con:property><con:property><con:name>JSESSIONID</con:name><con:value>JSESSIONID=37cbdd414d29eb1d6fe99c11750a</con:value></con:property></con:properties><con:wssContainer/><con:sensitiveInformation/></con:soapui-project>
