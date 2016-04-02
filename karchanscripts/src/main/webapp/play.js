@@ -61,7 +61,20 @@ function isVowel(aChar)
          aChar === 'I' || 
          aChar === 'O';
 }
-                                                      
+                    
+function retrieveName()
+{
+    if (window.console)
+        console.log("retrieveName");
+    if (typeof (Storage) !== "undefined") {
+        // Store
+        return localStorage.getItem("karchanname");
+    } else {
+        return Cookies.get('karchanname');
+    }
+    alert("Unable to find you. Are you sure you are logged in?");
+}
+
 function processCall(command, log, processor)
 {
   if (command === "clear")
@@ -71,7 +84,7 @@ function processCall(command, log, processor)
   }
   $.ajax({
     type: 'POST',
-    url: "/karchangame/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log + "&lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + Karchan.name + "/play?offset=" + Karchan.logOffset + "&log=" + log, // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {processor(data); }),
     error: webError,
@@ -109,7 +122,7 @@ function writeStuff(data)
       if (data.down !== undefined) {body += "<a href=\"javascript:void(0)\" onclick='goDown();'>down</a> ";}
       body += "]</p>";
     }
-    if (data.persons !== undefined)
+    if (data.persons !== undefined) 
     {
       if (data.persons.lenght !== 0) {body += "<p>";}
       for (i in data.persons)
@@ -173,13 +186,11 @@ function writeStuff(data)
 function playInit() 
 {
   if (window.console) console.log("playInit");
-  var name = Cookies.get("name");
-  var lok = Cookies.get("lok");
+  var name = retrieveName();
   Karchan.name = name;
-  Karchan.lok = lok;
   Karchan.logOffset = 0; 
   Karchan.sleep = false;
-  if (window.console) console.log("playInit name=" + name + " lok=" + lok);
+  if (window.console) console.log("playInit name=" + namek);
   var command = "l";
   if (window.console) console.log("playInit command=" + command); 
   var processPlay = function(data) {
@@ -227,7 +238,7 @@ function quit()
   var quitSucceeded = false;
   $.ajax({
     type: 'GET',
-    url: "/karchangame/resources/game/" + Karchan.name + "/quit?lok=" + Karchan.lok, // Which url should be handle the ajax request.
+    url: "/karchangame/resources/game/" + Karchan.name + "/quit", // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {quitSucceeded = true; }),
     error: webError,
