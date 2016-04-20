@@ -23,6 +23,7 @@ import mmud.exceptions.MudException;
 /**
  * The interface used for all commands to be executed. Commands are executed by
  * characters. Bear in mind that commands are static classes devoid of state.
+ *
  * @author maartenl
  */
 public interface Command
@@ -36,13 +37,14 @@ public interface Command
      * <LI>doing the action
      * <LI>composing a return message for the user.
      * </UL>
+     *
      * @param command the String containing the full command.
      * @param aUser
-     *            the user that is executing the command
+     * the user that is executing the command
      * @return DisplayInterface to display to the user, if it returns null,
      * it means the command was unsuccessfull.
      * @throws MudException
-     *             if something goes wrong.
+     * if something goes wrong.
      */
     public DisplayInterface run(String command, User aUser) throws MudException;
 
@@ -50,6 +52,7 @@ public interface Command
      * returns the regular expression the command structure must follow.
      *
      * @return String containing the regular expression.
+     * @see java.util.regex.Pattern
      */
     public String getRegExpr();
 

@@ -60,6 +60,7 @@ public abstract class NormalCommand implements Command
      * example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
      * parameter that can be used when the name of the character
      * playing is requested.
+     * @see java.util.regex.Pattern
      */
     public NormalCommand(String regExpr)
     {

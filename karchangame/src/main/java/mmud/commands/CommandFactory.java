@@ -451,13 +451,13 @@ public class CommandFactory
         });
         theCommandStructure.put("wimpy",
                 new CommandCreator()
-                {
-                    @Override
-                    public NormalCommand createCommand()
-                    {
-                        return new WimpyCommand("wimpy( .+|help)?");
-                    }
-                }
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new WimpyCommand("wimpy( .+|help)?");
+            }
+        }
         );
         theCommandStructure.put("who", new CommandCreator()
         {
@@ -740,6 +740,14 @@ public class CommandFactory
             public NormalCommand createCommand()
             {
                 return new AdminCommand("admin .+");
+            }
+        });
+        theCommandStructure.put("owner", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new OwnerCommand("owner( (\\w)+)?");
             }
         });
         // guild commands
