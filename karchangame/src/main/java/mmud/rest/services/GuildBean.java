@@ -69,7 +69,7 @@ import mmud.rest.webentities.PrivateRank;
  */
 @DeclareRoles(
         {
-            "player", "guildmaster"
+            "player", "guildmaster", "guildmember"
         })
 @RolesAllowed("player")
 @Stateless
@@ -138,6 +138,7 @@ public class GuildBean
      * @return the guild
      */
     @GET
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -215,6 +216,7 @@ public class GuildBean
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
     @POST
+    @RolesAllowed("player")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -267,6 +269,7 @@ public class GuildBean
      * failed. BAD_REQUEST if an unexpected exception crops up.
      */
     @DELETE
+    @RolesAllowed("guildmaster")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -301,6 +304,7 @@ public class GuildBean
      */
     @GET
     @Path("members")
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -343,6 +347,7 @@ public class GuildBean
      */
     @GET
     @Path("members/{membername}")
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -377,6 +382,7 @@ public class GuildBean
      */
     @DELETE
     @Path("members/{membername}")
+    @RolesAllowed("guildmaster")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -416,6 +422,7 @@ public class GuildBean
      */
     @POST
     @Path("members")
+    @RolesAllowed("guildmaster")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -455,6 +462,7 @@ public class GuildBean
      */
     @PUT
     @Path("members/{membername}")
+    @RolesAllowed("guildmaster")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -494,6 +502,7 @@ public class GuildBean
      */
     @GET
     @Path("hopefuls")
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -540,6 +549,7 @@ public class GuildBean
      */
     @DELETE
     @Path("hopefuls/{hopefulname}")
+    @RolesAllowed("guildmaster")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -568,6 +578,7 @@ public class GuildBean
      */
     @GET
     @Path("ranks")
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -621,6 +632,7 @@ public class GuildBean
      */
     @GET
     @Path("ranks/{guildlevel}")
+    @RolesAllowed("guildmember")
     @Consumes(
             {
                 MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -659,6 +671,7 @@ public class GuildBean
      * @return Response.ok if everything is okay.
      */
     @POST
+    @RolesAllowed("guildmaster")
     @Path("ranks")
     @Consumes(
             {
@@ -705,6 +718,7 @@ public class GuildBean
      * @return Response.ok if everything is okay.
      */
     @PUT
+    @RolesAllowed("guildmaster")
     @Path("ranks/{guildlevel}")
     @Consumes(
             {
@@ -742,6 +756,7 @@ public class GuildBean
      * @return Response.ok if everything is okay.
      */
     @DELETE
+    @RolesAllowed("guildmaster")
     @Path("ranks/{guildlevel}")
     @Consumes(
             {
