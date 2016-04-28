@@ -750,6 +750,14 @@ public class CommandFactory
                 return new OwnerCommand("owner( (\\w)+)?");
             }
         });
+        theCommandStructure.put("deputies", new CommandCreator()
+        {
+            @Override
+            public NormalCommand createCommand()
+            {
+                return new OwnerCommand("deputies");
+            }
+        });
         // guild commands
         theCommandStructure.put("guildapply", new CommandCreator()
         {
