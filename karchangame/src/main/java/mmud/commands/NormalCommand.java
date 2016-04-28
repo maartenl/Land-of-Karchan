@@ -27,6 +27,7 @@ import mmud.rest.services.HelpBean;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
+import mmud.rest.services.admin.AdminBean;
 
 /**
  * An abstract class for the most normal commands.
@@ -157,6 +158,11 @@ public abstract class NormalCommand implements Command
     protected EventsBean getEventsBean()
     {
         return callback.getEventsBean();
+    }
+
+    protected AdminBean getAdminBean()
+    {
+        return callback.getAdminBean();
     }
 
     protected HelpBean getHelpBean()

@@ -17,36 +17,31 @@
 package mmud.rest.services.admin;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
+import javax.persistence.Query;
+import mmud.Constants;
 import mmud.database.entities.game.Admin;
+import mmud.database.enums.Filter;
 
 /**
+ * Currently the only thing it is used for is for a player to reset the owner
+ * of his character.
  *
  * @author maartenl
  */
 @DeclareRoles(
         {
-            "deputy", "god"
+            "deputy", "god", "player"
         })
 @RolesAllowed("deputy")
 @Stateless
-@Path("/administration/adminaccounts")
-public class AdminBean extends AbstractFacade<Admin>
+public class AdminBean
 {
 
     private static final Logger itsLog = Logger.getLogger(AdminBean.class.getName());
@@ -54,91 +49,33 @@ public class AdminBean extends AbstractFacade<Admin>
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
 
-    public AdminBean()
+    /**
+     * Returns a list of currently valid administrators.
+     *
+     * @return list of administrators
+     */
+    @RolesAllowed("player")
+    public List<Admin> getAdministrators()
     {
-        super(Admin.class);
+        Constants.setFilters(getEntityManager(), Filter.OFF);
+        Query query = getEntityManager().createNamedQuery("Admin.findValid");
+        List<Admin> list = query.getResultList();
+        return list;
     }
 
-    @POST
-    @Override
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    @RolesAllowed("god")
-    public void create(Admin entity, @Context SecurityContext sc)
+    /**
+     * Returns the found valid administrator with that name.
+     *
+     * @param name the name of the administrator to look for, case insensitive.
+     * @return An optional which is either empty (not found) or contains
+     * the administrator.
+     */
+    @RolesAllowed("player")
+    public Optional<Admin> getAdministrator(String name)
     {
-        itsLog.info("create");
-        final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
-        getEntityManager().persist(entity);
+        return getAdministrators().stream().filter(x -> x.getName().equalsIgnoreCase(name)).findFirst();
     }
 
-    @PUT
-    @Path("{id}")
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    @RolesAllowed("god")
-    public void edit(@PathParam("id") String id, Admin entity)
-    {
-        getEntityManager().merge(entity);
-    }
-
-    @DELETE
-    @Path("{id}")
-    @RolesAllowed("god")
-    public void remove(@PathParam("id") String id)
-    {
-        remove(super.find(id));
-    }
-
-    @GET
-    @Path("{id}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public Admin find(@PathParam("id") String id)
-    {
-        return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Admin> findAll()
-    {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Admin> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
-    {
-        return super.findRange(new int[]
-        {
-            from, to
-        });
-    }
-
-    @GET
-    @Path("count")
-    @Produces("text/plain")
-    public String countREST()
-    {
-        return String.valueOf(super.count());
-    }
-
-    @Override
     protected EntityManager getEntityManager()
     {
         return em;

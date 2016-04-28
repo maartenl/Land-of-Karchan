@@ -16,12 +16,14 @@
  */
 package mmud.commands;
 
+import java.util.Optional;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
 /**
- * Owner : "owner", "owner remove".
+ * Owner : "owner", "owner remove" and "owner Karn".
  *
  * @author maartenl
  */
@@ -52,11 +54,23 @@ public class OwnerCommand extends NormalCommand
         }
         if (command.equalsIgnoreCase("owner remove"))
         {
+            getLogBean().writeLog(aUser, "has removed owner " + (aUser.getOwner() == null ? "null" : aUser.getOwner().getName()));
             aUser.setOwner(null);
             aUser.writeMessage("Owner removed.<br/>");
             return aUser.getRoom();
         }
-        return null;
+        String adminName = command.substring("owner ".length());
+        Optional<Admin> administrator = getAdminBean().getAdministrator(adminName);
+        if (administrator.isPresent())
+        {
+            Admin admin = administrator.get();
+            aUser.setOwner(admin);
+            aUser.writeMessage("You are now owned by " + admin.getName() + ".<br/>");
+            getLogBean().writeLog(aUser, "has set owner to " + aUser.getOwner().getName());
+            return aUser.getRoom();
+        }
+        aUser.writeMessage("Owner " + adminName + " is unknown.<br/>");
+        return aUser.getRoom();
     }
 
 }

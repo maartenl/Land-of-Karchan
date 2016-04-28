@@ -34,6 +34,7 @@ import mmud.rest.services.HelpBean;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
+import mmud.rest.services.admin.AdminBean;
 import mmud.scripting.Items;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
@@ -73,6 +74,9 @@ public class CommandRunner
 
     @EJB
     private EventsBean eventsBean;
+
+    @EJB
+    private AdminBean adminBean;
 
     /**
      * Runs a specific command. If this person appears to be asleep, the only
@@ -209,6 +213,11 @@ public class CommandRunner
     EventsBean getEventsBean()
     {
         return eventsBean;
+    }
+
+    AdminBean getAdminBean()
+    {
+        return adminBean;
     }
 
 }

@@ -18,6 +18,8 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.OwnerCommand;
@@ -29,6 +31,8 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.rest.services.admin.AdminBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,11 +58,13 @@ public class OwnerCommandTest extends MudTest
     private ItemDefinition itemDef;
     private ItemBean itemBean;
 
-    @Mocked
-    private LogBean logBean;
+    private LogBeanStub logBean;
 
     @Mocked
     private CommandRunner commandRunner;
+    private AdminBean adminBean;
+    private Admin karnAdmin;
+    private Admin mideviaAdmin;
 
     public OwnerCommandTest()
     {
@@ -99,7 +105,15 @@ public class OwnerCommandTest extends MudTest
         Admin owner = new Admin();
         owner.setName("Midevia");
         karn.setOwner(owner);
-        OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?");
+        OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
+        {
+
+            @Override
+            protected LogBean getLogBean()
+            {
+                return logBean;
+            }
+        };
         ownerCommand.setCallback(commandRunner);
         assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
         DisplayInterface display = ownerCommand.run("owner remove", karn);
@@ -107,6 +121,70 @@ public class OwnerCommandTest extends MudTest
         assertThat(display.getBody(), equalTo("You are in a small room."));
         String log = karn.getLog(0);
         assertThat(log, equalTo("Owner removed.<br />"));
+        assertThat(logBean.getLog(), equalTo("Karn:has removed owner Midevia\n"));
+    }
+
+    @Test
+    public void setKarnOwner()
+    {
+        Admin owner = new Admin();
+        owner.setName("Karn");
+        karn.setOwner(null);
+        OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
+        {
+            @Override
+            protected AdminBean getAdminBean()
+            {
+                return adminBean;
+            }
+
+            @Override
+            protected LogBean getLogBean()
+            {
+                return logBean;
+            }
+        };
+        ownerCommand.setCallback(commandRunner);
+        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        DisplayInterface display = ownerCommand.run("owner Karn", karn);
+        assertThat(display, not(nullValue()));
+        assertThat(display.getBody(), equalTo("You are in a small room."));
+        String log = karn.getLog(0);
+        assertThat(log, equalTo("You are now owned by Karn.<br />"));
+        assertThat(karn.getOwner(), equalTo(karnAdmin));
+        assertThat(logBean.getLog(), equalTo("Karn:has set owner to Karn\n"));
+    }
+
+    @Test
+    public void setKarnOwnerErasePreviousOwner()
+    {
+        Admin owner = new Admin();
+        owner.setName("Karn");
+        karn.setOwner(mideviaAdmin);
+        OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
+        {
+            @Override
+            protected AdminBean getAdminBean()
+            {
+                return adminBean;
+            }
+
+            @Override
+            protected LogBean getLogBean()
+            {
+                return logBean;
+            }
+
+        };
+        ownerCommand.setCallback(commandRunner);
+        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        DisplayInterface display = ownerCommand.run("owner Karn", karn);
+        assertThat(display, not(nullValue()));
+        assertThat(display.getBody(), equalTo("You are in a small room."));
+        String log = karn.getLog(0);
+        assertThat(log, equalTo("You are now owned by Karn.<br />"));
+        assertThat(karn.getOwner(), equalTo(karnAdmin));
+        assertThat(logBean.getLog(), equalTo("Karn:has set owner to Karn\n"));
     }
 
     @BeforeClass
@@ -122,13 +200,32 @@ public class OwnerCommandTest extends MudTest
     @BeforeMethod
     public void setUpMethod() throws Exception
     {
+        logBean = new LogBeanStub();
+
         room1 = new Room();
         room1.setId(1);
         room1.setContents("You are in a small room.");
 
+        karnAdmin = new Admin();
+        karnAdmin.setName("Karn");
+
+        mideviaAdmin = new Admin();
+        mideviaAdmin.setName("Midevia");
+
         karn = new User();
         karn.setName("Karn");
         karn.setRoom(room1);
+
+        adminBean = new AdminBean()
+        {
+            @Override
+            public List<Admin> getAdministrators()
+            {
+                return Arrays.asList(karnAdmin, mideviaAdmin);
+            }
+
+        };
+//        setField(PersonBean.class, "logBean", personBean, logBean);
 
         File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
         PrintWriter writer = new PrintWriter(file);
