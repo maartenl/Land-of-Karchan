@@ -32,6 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.UI;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public class Characters extends Editor
 
     private Item item;
 
-    Characters(PersonProvider entityProvider, final Admin currentUser, final LogBean logBean)
+    Characters(PersonProvider entityProvider, final Admin currentUser, final LogBean logBean, UI mainWindow)
     {
         super(currentUser, logBean);
         final JPAContainer<Person> container = new JPAContainer<>(Person.class);
@@ -148,7 +149,7 @@ public class Characters extends Editor
         owner.setCaption("Owner");
         layout.addComponent(owner);
 
-        final Buttons buttons = new Buttons(currentUser, logBean, "Character")
+        final Buttons buttons = new Buttons(currentUser, logBean, "Character", currentUser.getName().equalsIgnoreCase("Karn"), mainWindow)
         {
 
             @Override
@@ -224,40 +225,40 @@ public class Characters extends Editor
 
         table.addValueChangeListener(
                 new Property.ValueChangeListener()
-                {
+        {
 
-                    @Override
-                    public void valueChange(Property.ValueChangeEvent event
-                    )
+            @Override
+            public void valueChange(Property.ValueChangeEvent event
+            )
+            {
+                Object itemId = event.getProperty().getValue();
+                item = table.getItem(itemId);
+                boolean entitySelected = item != null;
+                if (entitySelected)
+                {
+                    group.setItemDataSource((item));
+                    //deputy.setEnabled(false);
+                    // id.setValue(item.getItemProperty("id").getValue().toString());
+                    Property itemProperty = item.getItemProperty("owner");
+                    boolean enabled = false;
+                    if (itemProperty == null || itemProperty.getValue() == null)
                     {
-                        Object itemId = event.getProperty().getValue();
-                        item = table.getItem(itemId);
-                        boolean entitySelected = item != null;
-                        if (entitySelected)
+                        owner.setValue("");
+                        enabled = true;
+                    } else
+                    {
+                        Admin admin = (Admin) itemProperty.getValue();
+                        owner.setValue(admin.getName());
+                        if (admin.getName().equals(currentUser.getName()))
                         {
-                            group.setItemDataSource((item));
-                            //deputy.setEnabled(false);
-                            // id.setValue(item.getItemProperty("id").getValue().toString());
-                            Property itemProperty = item.getItemProperty("owner");
-                            boolean enabled = false;
-                            if (itemProperty == null || itemProperty.getValue() == null)
-                            {
-                                owner.setValue("");
-                                enabled = true;
-                            } else
-                            {
-                                Admin admin = (Admin) itemProperty.getValue();
-                                owner.setValue(admin.getName());
-                                if (admin.getName().equals(currentUser.getName()))
-                                {
-                                    enabled = true;
-                                }
-                            }
-                            buttons.setButtonsEnabled(enabled);
-                            layout.setEnabled(enabled);
+                            enabled = true;
                         }
                     }
+                    buttons.setButtonsEnabled(enabled);
+                    layout.setEnabled(enabled);
                 }
+            }
+        }
         );
 
     }

@@ -131,19 +131,19 @@ public class MyUI extends UI
 
         final Panel itemDefinitionsPanel = new Panel("Item definitions");
         itemDefinitionsPanel.setVisible(false);
-        ItemDefinitions itemdefinitions = new ItemDefinitions(admin, servlet.getLogBean());
+        ItemDefinitions itemdefinitions = new ItemDefinitions(admin, servlet.getLogBean(), this);
         itemDefinitionsPanel.setContent(itemdefinitions);
         layout.addComponent(itemDefinitionsPanel);
 
         final Panel charactersPanel = new Panel("Characters");
         charactersPanel.setVisible(false);
-        Characters characters = new Characters(servlet.getPersonProvider(), admin, servlet.getLogBean());
+        Characters characters = new Characters(servlet.getPersonProvider(), admin, servlet.getLogBean(), this);
         charactersPanel.setContent(characters);
         layout.addComponent(charactersPanel);
 
         final Panel guildsPanel = new Panel("Guilds");
         guildsPanel.setVisible(false);
-        Guilds guilds = new Guilds(admin, servlet.getLogBean());
+        Guilds guilds = new Guilds(admin, servlet.getLogBean(), this);
         guildsPanel.setContent(guilds);
         layout.addComponent(guildsPanel);
 

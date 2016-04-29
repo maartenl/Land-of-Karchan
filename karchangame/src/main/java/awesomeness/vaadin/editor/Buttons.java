@@ -18,10 +18,12 @@ package awesomeness.vaadin.editor;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.UI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
 import mmud.rest.services.LogBean;
+import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  *
@@ -45,6 +47,8 @@ public abstract class Buttons extends HorizontalLayout
     private final Button delete;
 
     private final Button disown;
+
+    private boolean deleteEnabled = true;
 
     /**
      * Persist changes to an existing record to the database.
@@ -93,7 +97,7 @@ public abstract class Buttons extends HorizontalLayout
     {
         commit.setEnabled(enable);
         discard.setEnabled(enable);
-        delete.setEnabled(enable);
+        delete.setEnabled(deleteEnabled == true && enable);
         disown.setEnabled(enable);
     }
 
@@ -102,9 +106,11 @@ public abstract class Buttons extends HorizontalLayout
      * @param currentUser current administrator
      * @param logBean the logger
      * @param itemname the name of the items to be edited, for example "Item definition". Used for logging.
+     * @param permitDeletes indicates that deleteing of information is permitted.
      */
-    public Buttons(final Admin currentUser, final LogBean logBean, final String itemname)
+    public Buttons(final Admin currentUser, final LogBean logBean, final String itemname, boolean permitDeletes, UI mainWindow)
     {
+        this.deleteEnabled = permitDeletes;
         HorizontalLayout buttonsLayout = this;
         this.logBean = logBean;
         final String itemnamelowercase = itemname.toLowerCase();
@@ -158,9 +164,22 @@ public abstract class Buttons extends HorizontalLayout
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
+                ConfirmDialog.show(mainWindow, "Please Confirm:", "Are you really sure?",
+                        "Yes", "No", new ConfirmDialog.Listener()
+                {
+
+                    public void onClose(ConfirmDialog dialog)
+                    {
+                        if (dialog.isConfirmed())
+                        {
+                            // Confirmed to continue
+                            logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
+                        }
+                    }
+                });
             }
         });
+        delete.setEnabled(deleteEnabled);
         buttonsLayout.addComponent(delete);
 
         disown = new Button("Disown", new Button.ClickListener()
