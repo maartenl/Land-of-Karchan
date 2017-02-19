@@ -24,16 +24,18 @@ import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
 
 /**
- * Makes you, as guildmaster, create or change a rank of the guild.
- * Command syntax something like : <TT>guildaddrank &lt;position&gt; &lt;ranktitle&gt;</TT>
+ * Makes you, as guildmaster, delete a rank of the guild.
+ * Bear in mind this will not work if there are still people who have that
+ * specific rank.
+ * Command syntax something like : <TT>guilddelrank &lt;position&gt;</TT>
  * Where position between 0 and 100, where 0 is Initiate and 100 is ultimate bossman.
  *
  * @author maartenl
  */
-public class RankChangeCommand extends GuildMasterCommand
+public class RankDeleteCommand extends GuildMasterCommand
 {
 
-  public RankChangeCommand(String aRegExpr)
+  public RankDeleteCommand(String aRegExpr)
   {
     super(aRegExpr);
   }
@@ -42,7 +44,7 @@ public class RankChangeCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     LogBean logBean = getLogBean();
-    String[] myParsed = parseCommand(command, 3);
+    String[] myParsed = parseCommand(command);
     String rankString = myParsed[1];
     int rankIndex = 0;
     try
@@ -56,17 +58,14 @@ public class RankChangeCommand extends GuildMasterCommand
     Guildrank rank = aUser.getGuild().getRank(rankIndex);
     if (rank == null)
     {
-      aUser.writeMessage("New rank created.<BR>\r\n");
-      rank = new Guildrank(rankIndex, aUser.getGuild().getName());
-      rank.setGuild(aUser.getGuild());
-      aUser.getGuild().addGuildrank(rank);
-    } else
-    {
-      aUser.writeMessage("Existing rank updated.<BR>\r\n");
+      aUser.writeMessage("Rank not found.<BR>\r\n");
+      return aUser.getRoom();
     }
-    rank.setTitle(myParsed[2]);
-    logBean.writeLog(aUser, " rank created/updated " + rankIndex + ":" + myParsed[2]
-            + " for guild " + aUser.getGuild().getName());
+    // TODO: verify that nobody is using the rank.
+    aUser.getGuild().deleteGuildrank(rank);
+    aUser.writeMessage("Rank removed.<BR>\r\n");
+    logBean.writeLog(aUser, " rank removed " + rankIndex
+            + " from guild " + aUser.getGuild().getName());
     return aUser.getRoom();
   }
 

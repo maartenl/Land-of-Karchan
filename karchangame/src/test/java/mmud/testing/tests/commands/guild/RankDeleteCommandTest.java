@@ -24,7 +24,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
-import mmud.commands.guild.RankChangeCommand;
+import mmud.commands.guild.RankDeleteCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class RankChangeCommandTest extends MudTest
+public class RankDeleteCommandTest extends MudTest
 {
 
   private User karn;
@@ -68,19 +68,19 @@ public class RankChangeCommandTest extends MudTest
   private Guildrank minion;
   private User hotblack;
 
-  public RankChangeCommandTest()
+  public RankDeleteCommandTest()
   {
   }
 
   /**
-   * Add a rank to the guild.
+   * Remove a rank from the guild.
    */
   @Test
-  public void addRankToGuild()
+  public void removeRankFromGuild()
   {
-    RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
+    RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr(), equalTo("guilddelrank (\\d){1,3} (\\w)+"));
     new Expectations() // an "expectation block"
     {
 
@@ -89,30 +89,27 @@ public class RankChangeCommandTest extends MudTest
         result = logBean;
       }
     };
-    DisplayInterface display = rankCommand.run("guildrank 1 Senior Deputy", karn);
+    DisplayInterface display = rankCommand.run("guilddelrank 100", karn);
     assertThat(display, not(nullValue()));
     assertThat(display.getBody(), equalTo("You are in a small room."));
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("New rank created.<br />\n"));
+    assertThat(karnLog, equalTo("Rank removed.<br />\n"));
     // the important bit
     assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(3));
-    Guildrank rank = karn.getGuild().getRank(1);
-    assertThat(rank.getTitle(), equalTo("Senior Deputy"));
-    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
-    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(1));
-    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
+    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(1));
+    Guildrank rank = karn.getGuild().getRank(100);
+    assertThat(rank, nullValue());
   }
 
   /**
-   * Add a rank to the guild.
+   * Remove a non-existing rank from the guild.
    */
   @Test
-  public void changeRankOfGuild()
+  public void removeNonExistingRankFromGuild()
   {
-    RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
+    RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr(), equalTo("guilddelrank (\\d){1,3} (\\w)+"));
     new Expectations() // an "expectation block"
     {
 
@@ -121,21 +118,16 @@ public class RankChangeCommandTest extends MudTest
         result = logBean;
       }
     };
-    assertThat(karn.getGuild().getRank(0).getTitle(), equalTo("Minion"));
-
-    DisplayInterface display = rankCommand.run("guildrank 0 Deputy", karn);
+    DisplayInterface display = rankCommand.run("guilddelrank 50", karn);
     assertThat(display, not(nullValue()));
     assertThat(display.getBody(), equalTo("You are in a small room."));
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Existing rank updated.<br />\n"));
+    assertThat(karnLog, equalTo("Rank not found.<br />\n"));
     // the important bit
     assertThat(karn.getGuild(), equalTo(deputy));
     assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(2));
-    Guildrank rank = karn.getGuild().getRank(0);
-    assertThat(rank.getTitle(), equalTo("Deputy"));
-    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
-    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(0));
-    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
+    Guildrank rank = karn.getGuild().getRank(50);
+    assertThat(rank, nullValue());
   }
 
   @BeforeClass

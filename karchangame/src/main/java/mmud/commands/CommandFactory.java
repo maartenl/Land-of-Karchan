@@ -41,6 +41,7 @@ import mmud.commands.guild.GuildMessageCommand;
 import mmud.commands.guild.LeaveCommand;
 import mmud.commands.guild.MessageCommand;
 import mmud.commands.guild.RankChangeCommand;
+import mmud.commands.guild.RankDeleteCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
 import mmud.commands.items.BuyCommand;
@@ -236,6 +237,8 @@ public class CommandFactory
             "guildrank (\\d){1,3} (\\w)+"));
     theCommandStructure.put("guildaddrank", (CommandCreator) () -> new RankChangeCommand(
             "guildaddrank (\\d){1,3} (\\w)+"));
+    theCommandStructure.put("guilddelrank", (CommandCreator) () -> new RankDeleteCommand(
+            "guilddelrank (\\d){1,3}"));
     theCommandStructure.put("guildremove", (CommandCreator) () -> new RemoveCommand(
             "guildremove (\\w)+"));
     theCommandStructure.put("guildmasterchange", (CommandCreator) () -> new ChangeMasterCommand(

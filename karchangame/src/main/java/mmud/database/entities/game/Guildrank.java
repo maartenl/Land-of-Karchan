@@ -58,163 +58,165 @@ import javax.validation.constraints.Size;
 @Table(name = "mm_guildranks")
 @NamedQueries(
         {
-            @NamedQuery(name = "Guildrank.findAll", query = "SELECT g FROM Guildrank g"),
-            @NamedQuery(name = "Guildrank.findByGuildlevel", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildlevel = :guildlevel"),
+          @NamedQuery(name = "Guildrank.findAll", query = "SELECT g FROM Guildrank g")
+          ,
+            @NamedQuery(name = "Guildrank.findByGuildlevel", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildlevel = :guildlevel")
+          ,
             @NamedQuery(name = "Guildrank.findByGuildname", query = "SELECT g FROM Guildrank g WHERE g.guildrankPK.guildname = :guildname")
         })
 public class Guildrank implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected GuildrankPK guildrankPK;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "title")
-    private String title;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "accept_access")
-    private boolean acceptAccess;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "reject_access")
-    private boolean rejectAccess;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "settings_access")
-    private boolean settingsAccess;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "logonmessage_access")
-    private boolean logonmessageAccess;
-    @JoinColumn(name = "guildname", referencedColumnName = "name", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Guild guild;
+  private static final long serialVersionUID = 1L;
+  @EmbeddedId
+  protected GuildrankPK guildrankPK;
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "title")
+  private String title;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "accept_access")
+  private boolean acceptAccess;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "reject_access")
+  private boolean rejectAccess;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "settings_access")
+  private boolean settingsAccess;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "logonmessage_access")
+  private boolean logonmessageAccess;
+  @JoinColumn(name = "guildname", referencedColumnName = "name", insertable = false, updatable = false)
+  @ManyToOne(optional = false)
+  private Guild guild;
 
-    public Guildrank()
-    {
-    }
+  public Guildrank()
+  {
+  }
 
-    public Guildrank(GuildrankPK guildrankPK)
-    {
-        this.guildrankPK = guildrankPK;
-    }
+  public Guildrank(GuildrankPK guildrankPK)
+  {
+    this.guildrankPK = guildrankPK;
+  }
 
-    public Guildrank(GuildrankPK guildrankPK, String title, boolean acceptAccess, boolean rejectAccess, boolean settingsAccess, boolean logonmessageAccess)
-    {
-        this.guildrankPK = guildrankPK;
-        this.title = title;
-        this.acceptAccess = acceptAccess;
-        this.rejectAccess = rejectAccess;
-        this.settingsAccess = settingsAccess;
-        this.logonmessageAccess = logonmessageAccess;
-    }
+  public Guildrank(GuildrankPK guildrankPK, String title, boolean acceptAccess, boolean rejectAccess, boolean settingsAccess, boolean logonmessageAccess)
+  {
+    this.guildrankPK = guildrankPK;
+    this.title = title;
+    this.acceptAccess = acceptAccess;
+    this.rejectAccess = rejectAccess;
+    this.settingsAccess = settingsAccess;
+    this.logonmessageAccess = logonmessageAccess;
+  }
 
-    public Guildrank(int guildlevel, String guildname)
-    {
-        this.guildrankPK = new GuildrankPK(guildlevel, guildname);
-    }
+  public Guildrank(int guildlevel, String guildname)
+  {
+    this.guildrankPK = new GuildrankPK(guildlevel, guildname);
+  }
 
-    public GuildrankPK getGuildrankPK()
-    {
-        return guildrankPK;
-    }
+  public GuildrankPK getGuildrankPK()
+  {
+    return guildrankPK;
+  }
 
-    public void setGuildrankPK(GuildrankPK guildrankPK)
-    {
-        this.guildrankPK = guildrankPK;
-    }
+  public void setGuildrankPK(GuildrankPK guildrankPK)
+  {
+    this.guildrankPK = guildrankPK;
+  }
 
-    public String getTitle()
-    {
-        return title;
-    }
+  public String getTitle()
+  {
+    return title;
+  }
 
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
+  public void setTitle(String title)
+  {
+    this.title = title;
+  }
 
-    public boolean getAcceptAccess()
-    {
-        return acceptAccess;
-    }
+  public boolean getAcceptAccess()
+  {
+    return acceptAccess;
+  }
 
-    public void setAcceptAccess(boolean acceptAccess)
-    {
-        this.acceptAccess = acceptAccess;
-    }
+  public void setAcceptAccess(boolean acceptAccess)
+  {
+    this.acceptAccess = acceptAccess;
+  }
 
-    public boolean getRejectAccess()
-    {
-        return rejectAccess;
-    }
+  public boolean getRejectAccess()
+  {
+    return rejectAccess;
+  }
 
-    public void setRejectAccess(boolean rejectAccess)
-    {
-        this.rejectAccess = rejectAccess;
-    }
+  public void setRejectAccess(boolean rejectAccess)
+  {
+    this.rejectAccess = rejectAccess;
+  }
 
-    public boolean getSettingsAccess()
-    {
-        return settingsAccess;
-    }
+  public boolean getSettingsAccess()
+  {
+    return settingsAccess;
+  }
 
-    public void setSettingsAccess(boolean settingsAccess)
-    {
-        this.settingsAccess = settingsAccess;
-    }
+  public void setSettingsAccess(boolean settingsAccess)
+  {
+    this.settingsAccess = settingsAccess;
+  }
 
-    public boolean getLogonmessageAccess()
-    {
-        return logonmessageAccess;
-    }
+  public boolean getLogonmessageAccess()
+  {
+    return logonmessageAccess;
+  }
 
-    public void setLogonmessageAccess(boolean logonmessageAccess)
-    {
-        this.logonmessageAccess = logonmessageAccess;
-    }
+  public void setLogonmessageAccess(boolean logonmessageAccess)
+  {
+    this.logonmessageAccess = logonmessageAccess;
+  }
 
-    public Guild getGuild()
-    {
-        return guild;
-    }
+  public Guild getGuild()
+  {
+    return guild;
+  }
 
-    public void setGuild(Guild guild)
-    {
-        this.guild = guild;
-    }
+  public void setGuild(Guild guild)
+  {
+    this.guild = guild;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (guildrankPK != null ? guildrankPK.hashCode() : 0);
-        return hash;
-    }
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (guildrankPK != null ? guildrankPK.hashCode() : 0);
+    return hash;
+  }
 
-    @Override
-    public boolean equals(Object object)
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Guildrank))
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Guildrank))
-        {
-            return false;
-        }
-        Guildrank other = (Guildrank) object;
-        if ((this.guildrankPK == null && other.guildrankPK != null) || (this.guildrankPK != null && !this.guildrankPK.equals(other.guildrankPK)))
-        {
-            return false;
-        }
-        return true;
+      return false;
     }
+    Guildrank other = (Guildrank) object;
+    if ((this.guildrankPK == null && other.guildrankPK != null) || (this.guildrankPK != null && !this.guildrankPK.equals(other.guildrankPK)))
+    {
+      return false;
+    }
+    return true;
+  }
 
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.Guildrank[ guildrankPK=" + guildrankPK + " ]";
-    }
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.Guildrank[ guildrankPK=" + guildrankPK + " ]";
+  }
 
 }

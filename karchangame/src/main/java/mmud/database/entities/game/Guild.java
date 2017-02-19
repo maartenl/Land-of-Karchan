@@ -592,9 +592,26 @@ public class Guild implements Serializable, DisplayInterface, Ownage
 
   }
 
+  /**
+   * Adds a guildrank.
+   *
+   * @param rank the rank to add
+   * @return true if this set did not already contain the specified element
+   */
   public boolean addGuildrank(Guildrank rank)
   {
     return guildrankCollection.add(rank);
+  }
+
+  /**
+   * Deletes a guildrank.
+   *
+   * @param rank the rank to delete
+   * @return true if this set contained the specified element
+   */
+  public boolean deleteGuildrank(Guildrank rank)
+  {
+    return guildrankCollection.remove(rank);
   }
 
 }
