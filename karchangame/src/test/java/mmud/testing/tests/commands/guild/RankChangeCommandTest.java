@@ -24,18 +24,20 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
-import mmud.commands.guild.RemoveCommand;
+import mmud.commands.guild.RankChangeCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
+import mmud.database.entities.game.GuildrankPK;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -49,7 +51,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class RemoveCommandTest extends MudTest
+public class RankChangeCommandTest extends MudTest
 {
 
   private User karn;
@@ -62,21 +64,23 @@ public class RemoveCommandTest extends MudTest
   @Mocked
   private CommandRunner commandRunner;
   private Guild deputy;
+  private Guildrank boss;
+  private Guildrank minion;
   private User hotblack;
 
-  public RemoveCommandTest()
+  public RankChangeCommandTest()
   {
   }
 
   /**
-   * Hotblack wasn't in the guild.
+   * Add a rank to the guild.
    */
   @Test
-  public void removeHotblackFromGuild()
+  public void addRankToGuild()
   {
-    RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
-    removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+    RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
+    rankCommand.setCallback(commandRunner);
+    assertThat(rankCommand.getRegExpr(), equalTo("guildrank (\\d){1,3} (\\w)+"));
     new Expectations() // an "expectation block"
     {
 
@@ -85,99 +89,19 @@ public class RemoveCommandTest extends MudTest
         result = logBean;
       }
     };
-    DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
+    DisplayInterface display = rankCommand.run("guildrank 1 Senior Deputy", karn);
     assertThat(display, not(nullValue()));
     assertThat(display.getBody(), equalTo("You are in a small room."));
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
-    String hotblackLog = hotblack.getLog(0);
-    assertThat(hotblackLog, equalTo(""));
+    assertThat(karnLog, equalTo("New rank created.<br />\n"));
     // the important bit
     assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(hotblack.getGuild(), nullValue());
-    assertThat(hotblack.getGuildrank(), nullValue());
-  }
-
-  /**
-   * Karcas doesn't exist.
-   */
-  @Test
-  public void removeKarcasFromGuild()
-  {
-    RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
-    removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
-    DisplayInterface display = removeCommand.run("guildremove karcas", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
-    String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
-    // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-  }
-
-  /**
-   * Cannot remove leader of the guild.
-   */
-  @Test
-  public void removeKarnFromGuild()
-  {
-    RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
-    removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
-    DisplayInterface display = removeCommand.run("guildremove karn", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
-    String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("A guildmaster cannot remove him/herself from the guild.<br />\n"));
-    // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-  }
-
-  /**
-   * Remove Marvin, who was a member of the guild, from the guild.
-   */
-  @Test
-  public void removeMarvinFromGuild()
-  {
-    RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
-    removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
-    DisplayInterface display = removeCommand.run("guildremove marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
-    String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("You have removed Marvin from your guild.<br />\n<b>Marvin</b>\n has been removed from the guild.<br />\n"));
-    String marvinLog = marvin.getLog(0);
-    assertThat(marvinLog, equalTo("<b>Marvin</b>\n has been removed from the guild.<br />\n"));
-    // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(marvin.getGuild(), nullValue());
-    assertThat(marvin.getGuildrank(), nullValue());
+    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(3));
+    Guildrank rank = karn.getGuild().getRank(1);
+    assertThat(rank.getTitle(), equalTo("Senior Deputy"));
+    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
+    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(1));
+    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
   }
 
   @BeforeClass
@@ -232,6 +156,25 @@ public class RemoveCommandTest extends MudTest
       }
     });
 
+    boss = new Guildrank();
+    boss.setGuild(deputy);
+    boss.setTitle("Boss");
+    final GuildrankPK bossRankPK = new GuildrankPK();
+    bossRankPK.setGuildlevel(100);
+    bossRankPK.setGuildname("deputy");
+    boss.setGuildrankPK(bossRankPK);
+    guildranks.add(boss);
+
+    minion = new Guildrank();
+    minion.setGuild(deputy);
+    minion.setTitle("Minion");
+    final GuildrankPK minionRankPK = new GuildrankPK();
+    minionRankPK.setGuildlevel(0);
+    minionRankPK.setGuildname("deputy");
+    minion.setGuildrankPK(minionRankPK);
+    guildranks.add(minion);
+    deputy.setGuildrankCollection(guildranks);
+
     final SortedSet<User> members = new TreeSet<>(new Comparator<User>()
     {
 
@@ -247,8 +190,10 @@ public class RemoveCommandTest extends MudTest
     deputy.setMembers(members);
 
     karn.setGuild(deputy);
+    karn.setGuildrank(boss);
 
     marvin.setGuild(deputy);
+    marvin.setGuildrank(minion);
 
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
