@@ -36,6 +36,7 @@ import mmud.commands.communication.WhisperCommand;
 import mmud.commands.guild.AcceptCommand;
 import mmud.commands.guild.ApplyCommand;
 import mmud.commands.guild.ChangeMasterCommand;
+import mmud.commands.guild.CreateGuildCommand;
 import mmud.commands.guild.DetailsCommand;
 import mmud.commands.guild.GuildMessageCommand;
 import mmud.commands.guild.LeaveCommand;
@@ -239,6 +240,8 @@ public class CommandFactory
             "guildaddrank (\\d){1,3} (\\w)+"));
     theCommandStructure.put("guilddelrank", (CommandCreator) () -> new RankDeleteCommand(
             "guilddelrank (\\d){1,3}"));
+    theCommandStructure.put("createguild", (CommandCreator) () -> new CreateGuildCommand(
+            "createguild (\\w)+ .+"));
     theCommandStructure.put("guildremove", (CommandCreator) () -> new RemoveCommand(
             "guildremove (\\w)+"));
     theCommandStructure.put("guildmasterchange", (CommandCreator) () -> new ChangeMasterCommand(
