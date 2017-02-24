@@ -5,12 +5,17 @@
  */
 package org.karchan.tests;
 
+import static io.restassured.RestAssured.*;
+import org.hamcrest.MatcherAssert;
+import static org.hamcrest.Matchers.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
+ * Tests the public rest services of Karchan.
  *
  * @author maartenl
  */
@@ -21,11 +26,22 @@ public class PublicRestTest
   {
   }
 
-  // TODO add test methods here.
-  // The methods must be annotated with annotation @Test. For example:
-  //
-  // @Test
-  // public void hello() {}
+  @Test
+  public void verifyStatus()
+  {
+    given().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("http://localhost:8080/karchangame/resources/public/status").
+            then().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
+
+    String result
+            = given().contentType("application/json").header("Accept", "application/json").
+                    when().
+                    get("http://localhost:8080/karchangame/resources/public/status").
+                    prettyPrint();
+
+    MatcherAssert.assertThat(result, equalTo("Hello"));
+  }
 
   @BeforeClass
   public static void setUpClass() throws Exception
