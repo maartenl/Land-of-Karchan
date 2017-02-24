@@ -62,6 +62,18 @@ public class PublicRestTest
             then().statusCode(200).and().contentType("application/json").and().body("$", hasSize(0));
   }
 
+  /**
+   * Verifies the fortunes.
+   */
+  @Test
+  public void verifyFortunes()
+  {
+    given().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/fortunes").
+            then().statusCode(200).and().contentType("application/json").and().body("name", hasItems("Shara", "Rev"));
+  }
+
   @BeforeClass
   public static void setUpClass() throws Exception
   {
