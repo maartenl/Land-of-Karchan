@@ -71,7 +71,23 @@ public class PublicRestTest
     given().contentType("application/json").header("Accept", "application/json").
             when().
             get("/fortunes").
-            then().statusCode(200).and().contentType("application/json").and().body("name", hasItems("Shara", "Rev"));
+            then().statusCode(200).
+            and().contentType("application/json").
+            and().body("name", hasItems("Shara", "Rev"));
+  }
+
+  /**
+   * Verifies the guilds.
+   */
+  @Test
+  public void verifyGuilds()
+  {
+    given().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/guilds").
+            then().statusCode(200).
+            and().contentType("application/json").
+            and().body("title", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan"));
   }
 
   @BeforeClass
