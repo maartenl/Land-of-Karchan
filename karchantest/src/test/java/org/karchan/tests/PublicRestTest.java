@@ -5,6 +5,7 @@
  */
 package org.karchan.tests;
 
+import io.restassured.RestAssured;
 import static io.restassured.RestAssured.*;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.Matchers.*;
@@ -26,26 +27,45 @@ public class PublicRestTest
   {
   }
 
+  private void prettyPrint(String url)
+  {
+    String result
+            = given().contentType("application/json").header("Accept", "application/json").
+                    when().
+                    get(url).
+                    prettyPrint();
+    System.out.println(result);
+    MatcherAssert.assertThat(result, equalTo("Hello"));
+  }
+
+  /**
+   * Verifies the list of the active deputies.
+   */
   @Test
   public void verifyStatus()
   {
     given().contentType("application/json").header("Accept", "application/json").
             when().
-            get("http://localhost:8080/karchangame/resources/public/status").
-            then().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
+            get("/status").
+            then().statusCode(200).and().contentType("application/json").and().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
+  }
 
-    String result
-            = given().contentType("application/json").header("Accept", "application/json").
-                    when().
-                    get("http://localhost:8080/karchangame/resources/public/status").
-                    prettyPrint();
-
-    MatcherAssert.assertThat(result, equalTo("Hello"));
+  /**
+   * Verifies the wholist.
+   */
+  @Test
+  public void verifyWhoList()
+  {
+    given().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/who").
+            then().statusCode(200).and().contentType("application/json").and().body("$", hasSize(0));
   }
 
   @BeforeClass
   public static void setUpClass() throws Exception
   {
+    RestAssured.basePath = "/karchangame/resources/public";
   }
 
   @AfterClass
