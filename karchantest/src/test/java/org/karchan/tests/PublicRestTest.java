@@ -11,7 +11,6 @@ import io.restassured.response.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.Matchers.*;
 import org.testng.annotations.AfterClass;
@@ -95,15 +94,9 @@ public class PublicRestTest
             and().body("title", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan"));
   }
 
-  private static class CharacterSheets
-  {
-
-    private List<Charactersheet> sheet;
-
-  }
-
   /**
-   * Verifies the charactersheets.
+   * Verifies the character sheets. To be more specific, verifies that at least one character
+   * called Karn appears in the list.
    */
   @Test
   public void verifyCharactersheets()
@@ -114,7 +107,6 @@ public class PublicRestTest
             get("/charactersheets").
             then().statusCode(200).
             and().contentType("application/json").
-            //and().body("name", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan")).
             extract().response();
     ArrayList path = response.path("$");
     boolean found = false;
@@ -129,6 +121,34 @@ public class PublicRestTest
       }
     }
     MatcherAssert.assertThat(found, equalTo(true));
+  }
+
+  /**
+   * Verifies the character sheet of Karn.
+   */
+  @Test
+  public void verifyCharactersheetOfKarn()
+  {
+    // prettyPrint("/charactersheets");
+    Response response = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/charactersheets/Karn").
+            then().statusCode(200).
+            and().contentType("application/json").
+            //and().body("name", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan")).
+            extract().response();
+    HashMap map = response.path("$");
+    MatcherAssert.assertThat(map.get("guild"), equalTo("Benefactors of Karchan"));
+    MatcherAssert.assertThat(map.get("dateofbirth"), equalTo("The Beginning of Everything"));
+    MatcherAssert.assertThat(map.get("homepageurl"), equalTo("http://www.karchan.org"));
+    MatcherAssert.assertThat(map.get("cityofbirth"), equalTo("Unknown"));
+    MatcherAssert.assertThat(map.get("sex"), equalTo("male"));
+    MatcherAssert.assertThat(map.get("imageurl"), equalTo("http://www.karchan.org/images/jpeg/Karchan1.jpg"));
+    MatcherAssert.assertThat(map.get("storyline"), equalTo("<p>This is my storyline.</p>"));
+    MatcherAssert.assertThat(map.get("name"), equalTo("Karn"));
+    MatcherAssert.assertThat(map.get("description"), equalTo("very old, , skinny, dark-skinned, yellow-eyed, white-haired, with a pony tail male human"));
+    ArrayList familyvalues = (ArrayList) map.get("familyvalues");
+    MatcherAssert.assertThat(map.get("title"), equalTo("Ruler of Karchan, Keeper of the Key to the Room of Lost Souls"));
   }
 
   @BeforeClass
