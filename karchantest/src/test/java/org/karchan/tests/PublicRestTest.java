@@ -42,17 +42,6 @@ public class PublicRestTest
   {
   }
 
-  private void prettyPrint(String url)
-  {
-    String result
-            = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
-                    when().
-                    get(url).
-                    prettyPrint();
-    System.out.println(result);
-    MatcherAssert.assertThat(result, equalTo("Hello"));
-  }
-
   /**
    * Verifies the list of the active deputies.
    */
