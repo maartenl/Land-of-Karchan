@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 maartenl
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.karchan.tests;
 
@@ -46,31 +57,35 @@ public class PublicRestTest
    * Verifies the list of the active deputies.
    */
   @Test
-  public void verifyStatus()
+  public void testStatus()
   {
     given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/status").
-            then().statusCode(200).and().contentType("application/json").and().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
+            then().statusCode(200).
+            and().contentType("application/json").
+            and().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
   }
 
   /**
    * Verifies the wholist.
    */
   @Test
-  public void verifyWhoList()
+  public void testWhoList()
   {
     given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/who").
-            then().statusCode(200).and().contentType("application/json").and().body("$", hasSize(0));
+            then().statusCode(200).
+            and().contentType("application/json").
+            and().body("$", hasSize(0));
   }
 
   /**
    * Verifies the fortunes.
    */
   @Test
-  public void verifyFortunes()
+  public void testFortunes()
   {
     given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
@@ -84,7 +99,7 @@ public class PublicRestTest
    * Verifies the guilds.
    */
   @Test
-  public void verifyGuilds()
+  public void testGuilds()
   {
     given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
@@ -98,7 +113,7 @@ public class PublicRestTest
    * Verifies the news. The news is empty.
    */
   @Test
-  public void verifyNews()
+  public void testNews()
   {
     given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
@@ -113,7 +128,7 @@ public class PublicRestTest
    * called Karn appears in the list.
    */
   @Test
-  public void verifyCharactersheets()
+  public void testCharactersheets()
   {
     // prettyPrint("/charactersheets");
     Response response = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
@@ -141,15 +156,17 @@ public class PublicRestTest
    * Verifies the character sheet of Karn.
    */
   @Test
-  public void verifyCharactersheetOfKarn()
+  public void testCharactersheetOfKarn()
   {
     // prettyPrint("/charactersheets");
-    Response response = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
+    Response response = given().log().ifValidationFails().
+            contentType("application/json").
+            header("Accept", "application/json").
+            pathParam("player", "Karn").
             when().
-            get("/charactersheets/Karn").
+            get("/charactersheets/{player}").
             then().statusCode(200).
             and().contentType("application/json").
-            //and().body("name", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan")).
             extract().response();
     HashMap map = response.path("$");
     MatcherAssert.assertThat(map.get("guild"), equalTo("Benefactors of Karchan"));
