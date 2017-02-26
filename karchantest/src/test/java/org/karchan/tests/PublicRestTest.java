@@ -95,6 +95,20 @@ public class PublicRestTest
   }
 
   /**
+   * Verifies the news. The news is empty.
+   */
+  @Test
+  public void verifyNews()
+  {
+    given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/news").
+            then().statusCode(200).
+            and().contentType("application/json").
+            and().body("$", hasSize(0));
+  }
+
+  /**
    * Verifies the character sheets. To be more specific, verifies that at least one character
    * called Karn appears in the list.
    */
