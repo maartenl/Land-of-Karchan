@@ -41,13 +41,12 @@ public class GameRestTest
   {
   }
 
-  @Test
-  public void testGameLogon()
+  private String enterGame(final String password, final String player)
   {
-    // logon
+    // enterGame
     Response response = given().log().ifValidationFails().
-            param("password", "secret").
-            pathParam("player", "Hotblack").
+            param("password", password).
+            pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
             when().
@@ -56,27 +55,47 @@ public class GameRestTest
             and().extract().response();
     String jsession = response.cookie("JSESSIONID");
     MatcherAssert.assertThat(jsession, not(nullValue()));
-
     // enter game
     given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
-            pathParam("player", "Hotblack").
+            pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
             when().
             post("/{player}/enter").
             then().statusCode(204); // no content
-    MatcherAssert.assertThat(jsession, not(nullValue()));
+    return jsession;
+  }
+
+  private void quit(String jsession, String player)
+  {
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            pathParam("player", player).
+            contentType("application/json").
+            header("Accept", "application/json").
+            when().
+            get("/{player}/quit").
+            then().statusCode(200);
+  }
+
+  @Test
+  public void testGameLogon()
+  {
+    final String hotblack = "Hotblack";
+    final String password = "secret";
+    String jsession = enterGame(password, hotblack);
+    final String command = "bow";
 
     // bow
     Response gameResponse = given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
             queryParam("log", "true").
-            pathParam("player", "Hotblack").
+            pathParam("player", hotblack).
             // queryParam("offset", "").
             contentType("application/json").
             header("Accept", "application/json").
-            body("bow").
+            body(command).
             when().
             post("/{player}/play").
             then().statusCode(200).
@@ -86,7 +105,7 @@ public class GameRestTest
             and().extract().response();
     System.out.println(gameResponse.prettyPrint());
 
-    quit(jsession, "Hotblack");
+    quit(jsession, hotblack);
   }
 
   @BeforeClass
@@ -110,15 +129,4 @@ public class GameRestTest
   {
   }
 
-  private void quit(String jsession, String player)
-  {
-    given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
-            pathParam("player", player).
-            contentType("application/json").
-            header("Accept", "application/json").
-            when().
-            get("/{player}/quit").
-            then().statusCode(200);
-  }
 }
