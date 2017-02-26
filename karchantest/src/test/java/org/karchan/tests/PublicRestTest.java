@@ -7,6 +7,11 @@ package org.karchan.tests;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.*;
+import io.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.Matchers.*;
 import org.testng.annotations.AfterClass;
@@ -30,7 +35,7 @@ public class PublicRestTest
   private void prettyPrint(String url)
   {
     String result
-            = given().contentType("application/json").header("Accept", "application/json").
+            = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
                     when().
                     get(url).
                     prettyPrint();
@@ -44,7 +49,7 @@ public class PublicRestTest
   @Test
   public void verifyStatus()
   {
-    given().contentType("application/json").header("Accept", "application/json").
+    given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/status").
             then().statusCode(200).and().contentType("application/json").and().body("name", hasItems("Aurican", "Blackfyre", "Eilan", "Ephinie", "Karn", "Midevia", "Mya", "Victoria"));
@@ -56,7 +61,7 @@ public class PublicRestTest
   @Test
   public void verifyWhoList()
   {
-    given().contentType("application/json").header("Accept", "application/json").
+    given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/who").
             then().statusCode(200).and().contentType("application/json").and().body("$", hasSize(0));
@@ -68,7 +73,7 @@ public class PublicRestTest
   @Test
   public void verifyFortunes()
   {
-    given().contentType("application/json").header("Accept", "application/json").
+    given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/fortunes").
             then().statusCode(200).
@@ -82,12 +87,48 @@ public class PublicRestTest
   @Test
   public void verifyGuilds()
   {
-    given().contentType("application/json").header("Accept", "application/json").
+    given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
             when().
             get("/guilds").
             then().statusCode(200).
             and().contentType("application/json").
             and().body("title", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan"));
+  }
+
+  private static class CharacterSheets
+  {
+
+    private List<Charactersheet> sheet;
+
+  }
+
+  /**
+   * Verifies the charactersheets.
+   */
+  @Test
+  public void verifyCharactersheets()
+  {
+    // prettyPrint("/charactersheets");
+    Response response = given().log().ifValidationFails().contentType("application/json").header("Accept", "application/json").
+            when().
+            get("/charactersheets").
+            then().statusCode(200).
+            and().contentType("application/json").
+            //and().body("name", hasItems("Assembly of Judges", "Avis Sorei", "Benefactors of Karchan")).
+            extract().response();
+    ArrayList path = response.path("$");
+    boolean found = false;
+    for (Object stuff : path)
+    {
+      HashMap thingy = (HashMap) stuff;
+      if (thingy.get("name").equals("Karn"))
+      {
+        MatcherAssert.assertThat(thingy.get("url"), equalTo("/karchangame/resources/public/charactersheets/Karn"));
+        MatcherAssert.assertThat(thingy.get("familyvalues"), equalTo(Collections.emptyList()));
+        found = true;
+      }
+    }
+    MatcherAssert.assertThat(found, equalTo(true));
   }
 
   @BeforeClass
