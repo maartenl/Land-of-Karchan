@@ -1,9 +1,9 @@
-function showStatus( $ ) 
+function showStatus()
 {
   if (window.console) console.log("showStatus");
   $.ajax({
     type: 'GET',
-    url: "/resources/public/status", // Which url should be handle the ajax request.
+    url: "/karchangame/resources/public/status", // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateStatus(data); }),
     error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
@@ -17,18 +17,10 @@ function showStatus( $ )
     // The data parameter is a JSON object.
     var formatted_html = "";
     for(i=0; i<data.length; i++)
-    { 
+    {
          formatted_html += "<p>* " + data[i].name + ", " + data[i].title + "</p>";
     }
     formatted_html += "";
     $('#karchan_status').html(formatted_html); // data.products);
   } // updateStatus
 }
-
-
-function startMeUp($)
-{
-  if (window.console) console.log("startMeUp");
-  showStatus($);
-}
-
