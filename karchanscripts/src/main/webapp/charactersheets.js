@@ -6,7 +6,7 @@ function showCharactersheets()
     url: "/karchangame/resources/public/charactersheets", // Which url should be handle the ajax request.
     cache: false,
     success: (function(data) {updateCharactersheets(data); }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),
     dataType: 'json', //define the type of data that is going to get back from the server
     data: 'js=1' //Pass a key/value pair

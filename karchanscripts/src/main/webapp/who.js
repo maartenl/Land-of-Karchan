@@ -13,7 +13,7 @@ function showWho(formatting)
                 updateWho(data);
             }),
             error: (function () {
-                alert("An error occurred. Please notify Karn or one of the deps.");
+                alert(Karchan.getGenericError());
             }),
             complete: (function () {
                 if (window.console)

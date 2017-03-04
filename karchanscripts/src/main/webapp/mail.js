@@ -1,12 +1,4 @@
 /**
- * The Global Karchan Object. Accessible from *anywhere in the world*.
- * Isn't it amazing? (Exaggeration!)
- * We can use this object to create a namespace for my karchan methods
- * functions and constants.
- */
-var Karchan = Karchan || {};
-
-/**
  * Function that initialised everything. Called upon page load.
  */          
 function initMail( $ )
@@ -36,7 +28,7 @@ function getMail()
     success: (function(data) {updateMail(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -107,7 +99,7 @@ function readMail(object, data)
 //   success: (function(data) {
 //     alert("You've written " + item_name);
 //   }),
-//   error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+//   error: (function() { alert(Karchan.getGenericError()); }),
 //   complete: (function() { if (window.console) console.log("complete"); }),        
 //   data: 'lok=' + $.cookie("karchanpassword") //Pass a key/value pair
 // }); // end of ajax
@@ -130,7 +122,7 @@ function deleteMail(object, data)
       getMail();
       // $(object.target).parent().parent().toggle();
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); })
   }); // end of ajax
 }  // deleteMail

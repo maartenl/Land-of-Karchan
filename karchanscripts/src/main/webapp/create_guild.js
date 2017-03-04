@@ -1,12 +1,4 @@
 /**
- * The Global Karchan Object. Accessible from *anywhere in the world*.
- * Isn't it amazing? (Exaggeration!)
- * We can use this object to create a namespace for my karchan methods
- * functions and constants.
- */
-var Karchan = Karchan || {};
-
-/**
  * Function that initialised everything. Called upon page load.
  */          
 function initGuild( $ )
@@ -59,7 +51,7 @@ function updateGuild()
     success: (function(data) {
        window.location.href="http://www.karchan.org/node/136";
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',

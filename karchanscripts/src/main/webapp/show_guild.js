@@ -1,12 +1,4 @@
 /**
- * The Global Karchan Object. Accessible from *anywhere in the world*.
- * Isn't it amazing? (Exaggeration!)
- * We can use this object to create a namespace for my karchan methods
- * functions and constants.
- */
-var Karchan = Karchan || {};
-
-/**
  * Function that initialised everything. Called upon page load.
  */          
 function initGuild( $ )
@@ -38,7 +30,7 @@ function getGuild()
     success: (function(data) {updateGuild(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -66,7 +58,7 @@ function getMembers()
     success: (function(data) {showMembers(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -106,7 +98,7 @@ function getHopefuls()
     success: (function(data) {showHopefuls(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -146,7 +138,7 @@ function getRanks()
     success: (function(data) {showRanks(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {

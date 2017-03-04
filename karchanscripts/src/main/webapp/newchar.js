@@ -40,7 +40,7 @@ function createNewchar()
               }
               if (jqXHR.responseJSON === undefined)
               {
-                alert("An error occurred. Please notify Karn or one of the deps."); 
+                alert(Karchan.getGenericError()); 
               }
               else
               {

@@ -1,12 +1,4 @@
 /**
- * The Global Karchan Object. Accessible from *anywhere in the world*.
- * Isn't it amazing? (Exaggeration!)
- * We can use this object to create a namespace for my karchan methods
- * functions and constants.
- */
-var Karchan = Karchan || {};
-
-/**
  * Function that initialised everything. Called upon page load.
  */          
 function initGuild( $ )
@@ -38,7 +30,7 @@ function getGuild()
     success: (function(data) {prefillGuildForm(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -66,7 +58,7 @@ function getMembers()
     success: (function(data) {Karchan.members = data; }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -145,7 +137,7 @@ function assignRankToMember(membername, guildlevel)
     success: (function(data) {
       // indication of success is not required.
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',
@@ -178,7 +170,7 @@ function deleteGuild()
     }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -207,7 +199,7 @@ function deleteMember(object, data)
     success: (function(data) {getMembers(); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -235,7 +227,7 @@ function deleteHopeful(object, data)
     success: (function(data) {getHopefuls(); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -264,7 +256,7 @@ function createMember(object, data)
     success: (function(data) {
        getMembers();getHopefuls();
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',
@@ -286,7 +278,7 @@ function getRanks()
     success: (function(data) {showRanks(data); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -342,7 +334,7 @@ function getHopefuls()
     success: (function(data) {showHopefuls(data); }),
     error: (function(transport) {  
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) {
       if(transport.status == 401) {
@@ -466,7 +458,7 @@ function deleteRank(object, data)
     success: (function(data) {getRanks(); }),
     error: (function(transport) { 
       if(transport.status != 401) {
-       alert("An error occurred. Please notify Karn or one of the deps."); }}),
+       alert(Karchan.getGenericError()); }}),
        
     complete: (function(transport) { 
       if(transport.status == 401) {
@@ -541,7 +533,7 @@ function updateRank()
     success: (function(data) {
        getRanks();
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',
@@ -575,7 +567,7 @@ function updateGuild()
     success: (function(data) {
        alert("You've updated your guild.");
     }),
-    error: (function() { alert("An error occurred. Please notify Karn or one of the deps."); }),
+    error: (function() { alert(Karchan.getGenericError()); }),
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'json', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',

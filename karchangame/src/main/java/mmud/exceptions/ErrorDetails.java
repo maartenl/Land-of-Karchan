@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
+import mmud.Constants;
 
 /**
  * Object that is sent to the client as a json string, upon throwing
@@ -33,58 +34,59 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ErrorDetails
 {
 
-    public Date timestamp;
-    public String errormessage;
-    public String stacktrace;
-    public String user;
+  public Date timestamp;
+  public String errormessage;
+  public String stacktrace;
+  public String user;
 
-    public ErrorDetails()
-    {
-        // required for REST
-    }
+  public ErrorDetails()
+  {
+    // required for REST
+  }
 
-    ErrorDetails(String errormessage)
-    {
-        this.timestamp = new Date();
-        this.errormessage = errormessage;
-    }
+  ErrorDetails(String errormessage)
+  {
+    this.timestamp = new Date();
+    this.errormessage = errormessage;
+  }
 
-    ErrorDetails(String user, String errormessage)
-    {
-        this(errormessage);
-        this.user = user;
-    }
+  ErrorDetails(String user, String errormessage)
+  {
+    this(errormessage);
+    this.user = user;
+  }
 
-    ErrorDetails(Throwable t)
-    {
-        this.timestamp = new Date();
-        this.errormessage = t.getMessage();
-        this.stacktrace = stackTraceToString(t);
-    }
+  ErrorDetails(Throwable t)
+  {
+    this.timestamp = new Date();
+    this.errormessage = t.getMessage();
+    this.stacktrace = stackTraceToString(t);
+  }
 
-    ErrorDetails(String user, Throwable t)
-    {
-        this(t);
-        this.user = user;
-    }
+  ErrorDetails(String user, Throwable t)
+  {
+    this(t);
+    this.user = user;
+  }
 
-    ErrorDetails(String user, String message, Throwable t)
-    {
-        this(t);
-        this.user = user;
-        this.errormessage = message;
-    }
+  ErrorDetails(String user, String message, Throwable t)
+  {
+    this(t);
+    this.user = user;
+    this.errormessage = message;
+  }
 
-    private String stackTraceToString(Throwable e)
-    {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        return sw.toString();
-    }
+  private String stackTraceToString(Throwable e)
+  {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    return sw.toString();
+  }
 
-    public Response getResponse(Response.Status status)
-    {
-        return Response.status(status).entity(this).build();
-    }
+  public Response getResponse(Response.Status status)
+  {
+    this.errormessage += "Report the problem to us at " + Constants.DEPUTIES_EMAILADDRESS + ".";
+    return Response.status(status).entity(this).build();
+  }
 }

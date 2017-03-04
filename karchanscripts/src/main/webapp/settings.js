@@ -1,11 +1,3 @@
-/**
- * The Global Karchan Object. Accessible from *anywhere in the world*.
- * Isn't it amazing? (Exaggeration!)
- * We can use this object to create a namespace for my karchan methods
- * functions and constants.
- */
-var Karchan = Karchan || {};
-
 function webError(jqXHR, textStatus, errorThrown)
 {
     if (window.console)
@@ -21,7 +13,7 @@ function webError(jqXHR, textStatus, errorThrown)
             console.log(errorDetails);
     } catch (e)
     {
-        alert("An error occurred. Please notify Karn or one of the deps.");
+        alert(Karchan.getGenericError());
         if (window.console)
             console.log(e);
         return;

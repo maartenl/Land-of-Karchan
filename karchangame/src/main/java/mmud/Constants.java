@@ -56,6 +56,8 @@ public class Constants
 
   private static final String BASEPATH = "/home/glassfish";
 
+  public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
+
   private static final String PLAYERLOG_PATH = BASEPATH + File.separator + "temp";
   // TODO : fix this to be less static, and has to make use of either
   // web-context param or env-context param/.
@@ -72,7 +74,7 @@ public class Constants
   }
 
   /**
-   * Returns the amount of money in gold coins, silver coins and theCopper
+   * Returns the amount of money in gold coins, silver coins and copper
    * coins.
    * <UL>
    * <LI>1 silver = 10 copper

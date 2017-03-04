@@ -12,7 +12,7 @@ function webError(jqXHR, textStatus, errorThrown)
     if (window.console) console.log(errorDetails);
   } catch(e)
   {
-    alert("An error occurred. Please notify Karn or one of the deps.");
+    alert(Karchan.getGenericError());
     if (window.console) console.log(e);
     return;
   }
