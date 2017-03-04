@@ -80,7 +80,7 @@ public class GameRestTest
   }
 
   @Test
-  public void testGameLogon()
+  public void testBowCommand()
   {
     final String hotblack = "Hotblack";
     final String password = "secret";
@@ -92,7 +92,7 @@ public class GameRestTest
             cookie("JSESSIONID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
-            // queryParam("offset", "").
+            queryParam("offset", "").
             contentType("application/json").
             header("Accept", "application/json").
             body(command).
@@ -102,6 +102,51 @@ public class GameRestTest
             and().body("title", equalTo("The Cave")).
             and().body("image", equalTo("/images/gif/cave.gif")).
             and().body("log.log", endsWith("You have no new Mudmail...</p>\nYou bow.<br />\n")).
+            and().extract().response();
+    System.out.println(gameResponse.prettyPrint());
+
+    quit(jsession, hotblack);
+  }
+
+  /**
+   * Creation of a guild, creating and assigning guildranks and destruction of a guild.
+   * Along with all the other stuff to do.
+   */
+  @Test
+  public void testGuildCommands()
+  {
+    final String hotblack = "Hotblack";
+    final String marvin = "Marvin";
+
+    final String password = "secret";
+    String jsession = enterGame(password, hotblack);
+
+    String command = "createguild disaster Disaster Area";
+//    given().log().ifValidationFails().
+//            cookie("JSESSIONID", jsession).
+//            queryParam("log", "true").
+//            pathParam("player", hotblack).
+//            queryParam("offset", "").
+//            contentType("application/json").
+//            header("Accept", "application/json").
+//            body(command).
+//            when().
+//            post("/{player}/play").
+//            then().statusCode(200).
+//            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+    command = "deleteguild";
+    Response gameResponse = given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200).
+            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
     System.out.println(gameResponse.prettyPrint());
 
