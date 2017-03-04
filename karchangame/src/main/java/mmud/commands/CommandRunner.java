@@ -52,172 +52,172 @@ import mmud.scripting.World;
 public class CommandRunner
 {
 
-    private static final Logger itsLog = Logger.getLogger(CommandRunner.class.getName());
+  private static final Logger itsLog = Logger.getLogger(CommandRunner.class.getName());
 
-    @EJB
-    private PersonBean personBean;
+  @EJB
+  private PersonBean personBean;
 
-    @EJB
-    private GameBean gameBean;
+  @EJB
+  private GameBean gameBean;
 
-    @EJB
-    private HelpBean helpBean;
+  @EJB
+  private HelpBean helpBean;
 
-    @EJB
-    private LogBean logBean;
+  @EJB
+  private LogBean logBean;
 
-    @EJB
-    private GuildBean guildBean;
+  @EJB
+  private GuildBean guildBean;
 
-    @EJB
-    private ItemBean itemBean;
+  @EJB
+  private ItemBean itemBean;
 
-    @EJB
-    private EventsBean eventsBean;
+  @EJB
+  private EventsBean eventsBean;
 
-    @EJB
-    private AdminBean adminBean;
+  @EJB
+  private AdminBean adminBean;
 
-    /**
-     * Runs a specific command. If this person appears to be asleep, the only
-     * possible commands are "quit" and "awaken". If the command found returns a
-     * false, i.e. nothing is executed, the method will call the standard
-     * BogusCommand.
-     *
-     * @param aUser the person executing the command
-     * @param aCommand the command to be run. Must not be null.
-     * @param userCommands the commands as defined by the user, instead of the
-     * standard commands. Must never be null.
-     * @return DisplayInterface object containing the result of the command
-     * executed.
-     */
-    public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands) throws MudException
+  /**
+   * Runs a specific command. If this person appears to be asleep, the only
+   * possible commands are "quit" and "awaken". If the command found returns a
+   * false, i.e. nothing is executed, the method will call the standard
+   * BogusCommand.
+   *
+   * @param aUser the person executing the command
+   * @param aCommand the command to be run. Must not be null.
+   * @param userCommands the commands as defined by the user, instead of the
+   * standard commands. Must never be null.
+   * @return DisplayInterface object containing the result of the command
+   * executed.
+   */
+  public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands) throws MudException
+  {
+    itsLog.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
     {
-        itsLog.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
-        {
-            this.getClass().getName(), aUser.getName(), aCommand
-        });
-        try
-        {
-            if (aUser.getSleep())
-            {
-                return determineSleep(aCommand, aUser);
-            }
-            if (aUser.getFrogging() > 0)
-            {
-                return determineFrogging(aCommand, aUser);
-            }
-            if (aUser.getJackassing() > 0)
-            {
-                return determineJackassing(aCommand, aUser);
-            }
-            List<NormalCommand> myCol = new ArrayList<>();
-            Persons persons = new Persons(personBean);
-            Rooms rooms = new Rooms(gameBean);
-            Items items = new Items(itemBean);
-            World world = new World(gameBean);
-            RunScript runScript = new RunScript(persons, rooms, items, world);
-            for (UserCommand myCom : userCommands)
-            {
-                ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
-                myCol.add(scriptCommand);
-                itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
-            }
-            myCol.addAll(CommandFactory.getCommand(aCommand));
-            for (NormalCommand command : myCol)
-            {
-                command.setCallback(this);
-                DisplayInterface result = command.start(aCommand, aUser);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-            final NormalCommand bogusCommand = CommandFactory.getBogusCommand();
-            bogusCommand.setCallback(this);
-            return bogusCommand.start(aCommand, aUser);
-        } catch (MudException e)
-        {
-            try
-            {
-                aUser.writeMessage(e.getMessage());
-            } catch (MudException ex)
-            {
-                itsLog.throwing("play: throws ", ex.getMessage(), ex);
-            }
-            return null;
-        }
-    }
-
-    private DisplayInterface determineSleep(String aCommand, User aUser) throws MudException
+      this.getClass().getName(), aUser.getName(), aCommand
+    });
+    try
     {
-        NormalCommand command;
-        if (aCommand.trim().equalsIgnoreCase("awaken"))
-        {
-            command = CommandFactory.AWAKEN.createCommand();
-        } else
-        {
-            command = CommandFactory.ALREADY_ASLEEP.createCommand();
-        }
+      if (aUser.getSleep())
+      {
+        return determineSleep(aCommand, aUser);
+      }
+      if (aUser.getFrogging() > 0)
+      {
+        return determineFrogging(aCommand, aUser);
+      }
+      if (aUser.getJackassing() > 0)
+      {
+        return determineJackassing(aCommand, aUser);
+      }
+      List<NormalCommand> myCol = new ArrayList<>();
+      Persons persons = new Persons(personBean);
+      Rooms rooms = new Rooms(gameBean);
+      Items items = new Items(itemBean);
+      World world = new World(gameBean);
+      RunScript runScript = new RunScript(persons, rooms, items, world);
+      for (UserCommand myCom : userCommands)
+      {
+        ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
+        myCol.add(scriptCommand);
+        itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
+      }
+      myCol.addAll(CommandFactory.getCommand(aCommand));
+      for (NormalCommand command : myCol)
+      {
         command.setCallback(this);
-        return command.start(aCommand, aUser);
-    }
-
-    private DisplayInterface determineFrogging(String aCommand, User aUser) throws MudException
-    {
-        NormalCommand command = CommandFactory.getBogusCommand();
-        if (aCommand.trim().equalsIgnoreCase("ribbit"))
+        DisplayInterface result = command.start(aCommand, aUser);
+        if (result != null)
         {
-            command = CommandFactory.RIBBIT.createCommand();
+          return result;
         }
-        command.setCallback(this);
-        return command.start(aCommand, aUser);
-    }
-
-    private DisplayInterface determineJackassing(String aCommand, User aUser) throws MudException
+      }
+      final NormalCommand bogusCommand = CommandFactory.getBogusCommand();
+      bogusCommand.setCallback(this);
+      return bogusCommand.start(aCommand, aUser);
+    } catch (MudException e)
     {
-        NormalCommand command = CommandFactory.getBogusCommand();
-        if (aCommand.trim().equalsIgnoreCase("heehaw"))
-        {
-            command = CommandFactory.HEEHAW.createCommand();
-        }
-        command.setCallback(this);
-        return command.start(aCommand, aUser);
+      try
+      {
+        aUser.writeMessage(e.getMessage());
+      } catch (MudException ex)
+      {
+        itsLog.throwing("play: throws ", ex.getMessage(), ex);
+      }
+      return null;
     }
+  }
 
-    public PersonBean getPersonBean()
+  private DisplayInterface determineSleep(String aCommand, User aUser) throws MudException
+  {
+    NormalCommand command;
+    if (aCommand.trim().equalsIgnoreCase("awaken"))
     {
-        return personBean;
+      command = CommandFactory.AWAKEN.createCommand();
+    } else
+    {
+      command = CommandFactory.ALREADY_ASLEEP.createCommand();
     }
+    command.setCallback(this);
+    return command.start(aCommand, aUser);
+  }
 
-    public HelpBean getHelpBean()
+  private DisplayInterface determineFrogging(String aCommand, User aUser) throws MudException
+  {
+    NormalCommand command = CommandFactory.getBogusCommand();
+    if (aCommand.trim().equalsIgnoreCase("ribbit"))
     {
-        return helpBean;
+      command = CommandFactory.RIBBIT.createCommand();
     }
+    command.setCallback(this);
+    return command.start(aCommand, aUser);
+  }
 
-    public LogBean getLogBean()
+  private DisplayInterface determineJackassing(String aCommand, User aUser) throws MudException
+  {
+    NormalCommand command = CommandFactory.getBogusCommand();
+    if (aCommand.trim().equalsIgnoreCase("heehaw"))
     {
-        return logBean;
+      command = CommandFactory.HEEHAW.createCommand();
     }
+    command.setCallback(this);
+    return command.start(aCommand, aUser);
+  }
 
-    GuildBean getGuildBean()
-    {
-        return guildBean;
-    }
+  public PersonBean getPersonBean()
+  {
+    return personBean;
+  }
 
-    public ItemBean getItemBean()
-    {
-        return itemBean;
-    }
+  public HelpBean getHelpBean()
+  {
+    return helpBean;
+  }
 
-    EventsBean getEventsBean()
-    {
-        return eventsBean;
-    }
+  public LogBean getLogBean()
+  {
+    return logBean;
+  }
 
-    AdminBean getAdminBean()
-    {
-        return adminBean;
-    }
+  public GuildBean getGuildBean()
+  {
+    return guildBean;
+  }
+
+  public ItemBean getItemBean()
+  {
+    return itemBean;
+  }
+
+  EventsBean getEventsBean()
+  {
+    return eventsBean;
+  }
+
+  AdminBean getAdminBean()
+  {
+    return adminBean;
+  }
 
 }

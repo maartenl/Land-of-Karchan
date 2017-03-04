@@ -16,7 +16,6 @@
  */
 package mmud.commands.guild;
 
-import java.util.Date;
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -25,18 +24,17 @@ import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
 
 /**
- * Creates a guild.
- * Command syntax something like : <TT>createguild &lt;name&gt; &lt;title&gt;</TT>
+ * Deletes a guild.
+ * Command syntax something like : <TT>deleteguild</TT>
  * Requirements:
- * <ul><li>you are not in a guild right now</li>
- * <li>you are also not already the guildboss of a guild.</li></ul>
+ * <ul><li>you are the guildmaster of this guild</li></ul>
  *
  * @author maartenl
  */
-public class CreateGuildCommand extends GuildMasterCommand
+public class DeleteGuildCommand extends GuildMasterCommand
 {
 
-  public CreateGuildCommand(String aRegExpr)
+  public DeleteGuildCommand(String aRegExpr)
   {
     super(aRegExpr);
   }
@@ -44,22 +42,18 @@ public class CreateGuildCommand extends GuildMasterCommand
   @Override
   public DisplayInterface run(String command, User aUser) throws MudException
   {
-    if (aUser.getGuild() != null)
+    Guild guild = aUser.getGuild();
+    if (guild == null)
     {
-      aUser.writeMessage("You are a member of a guild, and can therefore not start a new guild.<br/>\n");
+      aUser.writeMessage("You are not a member of a guild.<br/>\n");
       return aUser.getRoom();
     }
     LogBean logBean = getLogBean();
-    String[] myParsed = parseCommand(command, 3);
-    Guild guild = new Guild();
-    guild.setBoss(aUser);
-    guild.setActive(Boolean.TRUE);
-    guild.setCreation(new Date());
-    guild.setName(myParsed[1]);
-    guild.setTitle(myParsed[2]);
-    aUser.setGuild(guild);
-    aUser.writeMessage("Guild " + myParsed[1] + " created.<br/ >\r\n");
-    logBean.writeLog(aUser, " guild " + myParsed[1] + " created/updated");
+    String guildName = guild.getName();
+    getGuildBean().deleteGuild(aUser.getName());
+    aUser.setGuild(null);
+    aUser.writeMessage("Guild " + guildName + " deleted.<br/ >\r\n");
+    logBean.writeLog(aUser, " guild " + guildName + " deleted");
     return aUser.getRoom();
   }
 
