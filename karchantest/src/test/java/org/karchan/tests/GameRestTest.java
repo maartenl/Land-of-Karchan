@@ -20,15 +20,9 @@ import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
 import org.hamcrest.MatcherAssert;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  *
@@ -41,7 +35,7 @@ public class GameRestTest
   {
   }
 
-  private String enterGame(final String password, final String player)
+  protected String enterGame(final String password, final String player)
   {
     // enterGame
     Response response = given().log().ifValidationFails().
@@ -67,7 +61,7 @@ public class GameRestTest
     return jsession;
   }
 
-  private void quit(String jsession, String player)
+  protected void quit(String jsession, String player)
   {
     given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
@@ -79,99 +73,9 @@ public class GameRestTest
             then().statusCode(200);
   }
 
-  @Test
-  public void testBowCommand()
-  {
-    final String hotblack = "Hotblack";
-    final String password = "secret";
-    String jsession = enterGame(password, hotblack);
-    final String command = "bow";
-
-    // bow
-    Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
-            queryParam("log", "true").
-            pathParam("player", hotblack).
-            queryParam("offset", "").
-            contentType("application/json").
-            header("Accept", "application/json").
-            body(command).
-            when().
-            post("/{player}/play").
-            then().statusCode(200).
-            and().body("title", equalTo("The Cave")).
-            and().body("image", equalTo("/images/gif/cave.gif")).
-            and().body("log.log", endsWith("You have no new Mudmail...</p>\nYou bow.<br />\n")).
-            and().extract().response();
-    System.out.println(gameResponse.prettyPrint());
-
-    quit(jsession, hotblack);
-  }
-
-  /**
-   * Creation of a guild, creating and assigning guildranks and destruction of a guild.
-   * Along with all the other stuff to do.
-   */
-  @Test
-  public void testGuildCommands()
-  {
-    final String hotblack = "Hotblack";
-    final String marvin = "Marvin";
-
-    final String password = "secret";
-    String jsession = enterGame(password, hotblack);
-
-    String command = "createguild disaster Disaster Area";
-//    given().log().ifValidationFails().
-//            cookie("JSESSIONID", jsession).
-//            queryParam("log", "true").
-//            pathParam("player", hotblack).
-//            queryParam("offset", "").
-//            contentType("application/json").
-//            header("Accept", "application/json").
-//            body(command).
-//            when().
-//            post("/{player}/play").
-//            then().statusCode(200).
-//            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
-    command = "deleteguild";
-    Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
-            queryParam("log", "true").
-            pathParam("player", hotblack).
-            queryParam("offset", "").
-            contentType("application/json").
-            header("Accept", "application/json").
-            body(command).
-            when().
-            post("/{player}/play").
-            then().statusCode(200).
-            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
-            and().extract().response();
-    System.out.println(gameResponse.prettyPrint());
-
-    quit(jsession, hotblack);
-  }
-
   @BeforeClass
   public static void setUpClass() throws Exception
   {
     RestAssured.basePath = "/karchangame/resources/game";
   }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
-  }
-
-  @BeforeMethod
-  public void setUpMethod() throws Exception
-  {
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
-  }
-
 }
