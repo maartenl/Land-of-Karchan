@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.karchan.tests.emotes;
+package mmud.rest.tests.emotes;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
-import org.karchan.tests.GameRestTest;
+import mmud.rest.tests.GameRestTest;
 import org.testng.annotations.Test;
 
 /**

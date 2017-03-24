@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.karchan.tests.guilds;
+package mmud.rest.tests.guilds;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
 import static org.hamcrest.Matchers.endsWith;
-import org.karchan.tests.GameRestTest;
+import mmud.rest.tests.GameRestTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
