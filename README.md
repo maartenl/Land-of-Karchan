@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
 
+It contains the frontend of the Land of Karchan website that is used for the Player to configure his settings and characteristics of his avatar.
+
+The frontend is consequently copied to a war file and deployed to glassfish.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
