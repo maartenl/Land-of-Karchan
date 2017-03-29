@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
+import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PlayerSettingsComponent
   ],
   imports: [
     BrowserModule,
