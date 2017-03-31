@@ -6,17 +6,38 @@
   Title: {{player.title}}
 </p>
 <p>
-  Homepage url: {{player.homepageUrl}}
+  Gender: {{player.sex}}
 </p>
 <p>
-  Image url: {{player.imageUrl}}
+  Description: {{player.description}}
 </p>
 <p>
-  Date of Birth: {{player.date_of_birth}}
+  Guild: {{player.guild}}
 </p>
 <p>
-  City of Birth: {{player.city_of_birth}}
+  Homepage url: 
+    <a href="{{player.homepageurl}}">
+      {{player.homepageurl}}
+    </a>
 </p>
 <p>
-  Storyline: ...
+  Image url: 
+    <img src="{{player.imageurl}}" alt="{{player.imageurl}}"/>
 </p>
+<p>
+  Date of Birth: {{player.dateofbirth}}
+</p>
+<p>
+  City of Birth: {{player.cityofbirth}}
+</p>
+<p>
+  Storyline: {{player.storyline}}
+</p>
+<p>
+  Family relations:
+  <ul>
+    <li *ngFor="let relation of
+    player.familyvalues">{{relation.description}} of {{relation.toname}}
+    </li>
+  </ul>
+<pre>{{data | json}}</pre>

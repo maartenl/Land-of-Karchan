@@ -1,10 +1,18 @@
+import { Family } from "./family.model";
+
 export class Player {
   name: string;
   title: string;
-  homepageUrl : string;
-  imageUrl: string;
-  date_of_birth: string;
-  city_of_birth: string;
+  sex: string;
+  description: string;
+  imageurl: string;
+  guild: string;
+  homepageurl : string;
+  dateofbirth: string;
+  cityofbirth: string;
+  storyline: string;
+  
+  familyvalues: Family[];
 
   constructor() {
   }

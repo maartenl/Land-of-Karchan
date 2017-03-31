@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Http, Response } from '@angular/http';
+
 import { Player } from './player.model';
 
 @Component({
@@ -7,16 +9,19 @@ import { Player } from './player.model';
   styleUrls: ['./player-settings.component.css']
 })
 export class PlayerSettingsComponent implements OnInit {
+  // static readonly url: string = 'http://www.karchan.org/karchangame/resources/public/charactersheets/Karn';
+  static readonly url: string = '/assets/charactersheet.json';
+
   player: Player;
-  
-  constructor() {
+  data: Object;
+
+  constructor(private http: Http) {
     this.player = new Player();
-    this.player.name = 'Karn';
-    this.player.title = 'Ruler of Karchan, Keeper of the Key to the Room of Lost Souls';
-    this.player.homepageUrl = 'http://www.karchan.org';
-    this.player.imageUrl = 'http://www.karchan.org/favico.ico';
-    this.player.date_of_birth = 'Sometime';
-    this.player.city_of_birth = 'The Dark';
+    http.request(PlayerSettingsComponent.url)
+      .subscribe((res: Response) => {
+        this.data = res.json();
+        this.player = res.json();
+      });
   }
 
   ngOnInit() {
