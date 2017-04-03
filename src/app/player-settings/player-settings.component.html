@@ -1,44 +1,102 @@
-<h1>Settings</h1>
-<p>
-  Name: {{player.name}}
-</p>
-<p>
-  Title: {{player.title}}
-</p>
-<p>
-  Gender: {{player.sex}}
-</p>
-<p>
-  Description: {{player.description}}
-</p>
-<p>
-  Guild: {{player.guild}}
-</p>
-<p>
-  Homepage url: 
-    <a href="{{player.homepageurl}}">
-      {{player.homepageurl}}
-    </a>
-</p>
-<p>
-  Image url: 
-    <img src="{{player.imageurl}}" alt="{{player.imageurl}}"/>
-</p>
-<p>
-  Date of Birth: {{player.dateofbirth}}
-</p>
-<p>
-  City of Birth: {{player.cityofbirth}}
-</p>
-<p>
-  Storyline:
-</p>
-<div id="storyline" [innerHTML]="player.storyline"></div>
-<p>
-  Family relations:
-  <ul>
-    <li *ngFor="let relation of
-    player.familyvalues">{{relation.description}} of {{relation.toname}}
-    </li>
-  </ul>
-<pre>{{data | json}}</pre>
+<div class="container"> 
+  <div class="row row-content">
+    <div class="col-xs-12">
+      <h3>Settings</h3> 
+    </div>
+  </div>  
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Name:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.name}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Title:     
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.title}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Gender:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.sex}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Description:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.description}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Guild:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.guild}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Homepage url:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      <a href="{{player.homepageurl}}">
+        {{player.homepageurl}}
+      </a>
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      Image url: 
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <img src="{{player.imageurl}}" alt="{{player.imageurl}}"/>
+    </div> 
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      Date of Birth:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.dateofbirth}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">
+      City of Birth:
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      {{player.cityofbirth}}
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      Storyline:
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12" id="storyline" [innerHTML]="player.storyline">
+    </div>
+  </div>  
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      Family relations:
+      <ul>
+        <li *ngFor="let relation of player.familyvalues">
+          {{relation.description}} of {{relation.toname}}
+        </li>
+      </ul>
+    </div>
+  </div>    
+</div>
