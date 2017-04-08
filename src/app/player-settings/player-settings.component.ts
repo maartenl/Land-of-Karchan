@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { environment } from 'app/../environments/environment';
 
 import { Player } from './player.model';
 
@@ -9,15 +10,14 @@ import { Player } from './player.model';
   styleUrls: ['./player-settings.component.css']
 })
 export class PlayerSettingsComponent implements OnInit {
-  // static readonly url: string = 'http://www.karchan.org/karchangame/resources/public/charactersheets/Karn';
-  static readonly url: string = '/assets/charactersheet.json';
-
+  url: string;
   player: Player;
   data: Object;
 
   constructor(private http: Http) {
     this.player = new Player();
-    http.request(PlayerSettingsComponent.url)
+    this.url = environment.CHARACTERSHEET_URL;
+    http.request(this.url)
       .subscribe((res: Response) => {
         this.data = res.json();
         this.player = res.json();

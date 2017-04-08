@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from 'app/../environments/environment';
 
 export enum Tab {
   Settings, Mail, Guild
@@ -11,9 +12,15 @@ export enum Tab {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  currentTab : Tab = Tab.Settings;
+  currentTab: Tab = Tab.Settings;
+  production: boolean;
 
   Tab: Tab;
+
+  constructor() {
+    this.production = environment.production;
+    if (window.console) {console.log("Production: " + this.production);}
+  }
 
   setSettingsTabActive() {
     this.currentTab = Tab.Settings;

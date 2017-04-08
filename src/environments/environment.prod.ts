@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  CHARACTERSHEET_URL: '/karchangame/resources/public/charactersheets/Karn'
 };
+

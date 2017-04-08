@@ -16,7 +16,8 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
     FormsModule,
     HttpModule
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
