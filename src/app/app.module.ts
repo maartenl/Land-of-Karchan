@@ -6,6 +6,8 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 
+import { PlayerService } from './player.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,6 +19,7 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
     HttpModule
   ],
   providers: [
+    PlayerService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { environment } from 'app/../environments/environment';
 
 import { Player } from './player.model';
+import { PlayerService} from 'app/player.service';
 
 @Component({
   selector: 'app-player-settings',
@@ -10,18 +9,23 @@ import { Player } from './player.model';
   styleUrls: ['./player-settings.component.css']
 })
 export class PlayerSettingsComponent implements OnInit {
-  url: string;
   player: Player;
-  data: Object;
 
-  constructor(private http: Http) {
-    this.player = new Player();
-    this.url = environment.CHARACTERSHEET_URL;
-    http.request(this.url)
-      .subscribe((res: Response) => {
-        this.data = res.json();
-        this.player = res.json();
-      });
+  constructor(private playerService: PlayerService) {
+    this.player = new Player(); // dummy player
+    playerService.getPlayer()
+      .subscribe(
+        (result: any) => { // on success
+          console.log("success!", result);
+          this.player = result.json();
+        },
+        (err: any) => { // error
+          console.log("error", err);
+        },
+        () => { // on completion
+          console.log("ready!");
+        }
+      );
   }
 
   ngOnInit() {
