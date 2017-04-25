@@ -13,7 +13,10 @@ export class PlayerSettingsComponent implements OnInit {
 
   constructor(private playerService: PlayerService) {
     this.player = new Player(); // dummy player
-    playerService.getPlayer()
+  }
+
+  ngOnInit() {
+    this.playerService.getPlayer()
       .subscribe(
         (result: any) => { // on success
           console.log("success!", result);
@@ -26,9 +29,6 @@ export class PlayerSettingsComponent implements OnInit {
           console.log("ready!");
         }
       );
-  }
-
-  ngOnInit() {
   }
 
 }
