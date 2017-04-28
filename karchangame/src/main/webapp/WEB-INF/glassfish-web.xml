@@ -18,6 +18,10 @@
     <role-name>guildmaster</role-name>
     <group-name>guildmaster</group-name>
   </security-role-mapping>
+  <security-role-mapping>
+    <role-name>guildmember</role-name>
+    <group-name>guildmember</group-name>
+  </security-role-mapping>
   <class-loader delegate="true"/>
   <jsp-config>
     <property name="keepgenerated" value="true">
