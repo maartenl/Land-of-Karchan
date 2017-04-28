@@ -20,7 +20,7 @@ export class PlayerSettingsComponent implements OnInit {
       .subscribe(
         (result: any) => { // on success
           console.log("success!", result);
-          this.player = result.json();
+          this.player = result;
         },
         (err: any) => { // error
           console.log("error", err);
