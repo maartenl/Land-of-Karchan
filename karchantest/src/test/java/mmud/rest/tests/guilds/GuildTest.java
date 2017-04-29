@@ -18,8 +18,8 @@ package mmud.rest.tests.guilds;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
-import static org.hamcrest.Matchers.endsWith;
 import mmud.rest.tests.GameRestTest;
+import static org.hamcrest.Matchers.endsWith;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -31,6 +31,48 @@ import org.testng.annotations.Test;
  */
 public class GuildTest extends GameRestTest
 {
+
+  // @Test
+  public void testCreateAndDestroyGuilds()
+  {
+    final String hotblack = "Hotblack";
+    final String marvin = "Marvin";
+
+    final String password = "secret";
+    String jsession = enterGame(password, hotblack);
+
+    String command = "createguild disaster Disaster Area";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200).
+            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
+    command = "deleteguild";
+    Response gameResponse = given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200).
+            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
+            and().extract().response();
+    System.out.println(gameResponse.prettyPrint());
+
+    quit(jsession, hotblack);
+  }
 
   /**
    * Creation of a guild, creating and assigning guildranks and destruction of a guild.
@@ -46,18 +88,78 @@ public class GuildTest extends GameRestTest
     String jsession = enterGame(password, hotblack);
 
     String command = "createguild disaster Disaster Area";
-//    given().log().ifValidationFails().
-//            cookie("JSESSIONID", jsession).
-//            queryParam("log", "true").
-//            pathParam("player", hotblack).
-//            queryParam("offset", "").
-//            contentType("application/json").
-//            header("Accept", "application/json").
-//            body(command).
-//            when().
-//            post("/{player}/play").
-//            then().statusCode(200).
-//            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200);
+    // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
+    // make rank
+    command = "guildaddrank 1 Minion";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200);
+    // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
+    // assign rank
+    command = "guildassignrank 1 Marvin";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200);
+    // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
+    // unassign rank
+    command = "guildassignrank none Marvin";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200);
+    // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
+    command = "guilddelrank 1";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", hotblack).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/{player}/play").
+            then().statusCode(200);
+    // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
+
     command = "deleteguild";
     Response gameResponse = given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
@@ -70,7 +172,7 @@ public class GuildTest extends GameRestTest
             when().
             post("/{player}/play").
             then().statusCode(200).
-            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
+            //            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
     System.out.println(gameResponse.prettyPrint());
 

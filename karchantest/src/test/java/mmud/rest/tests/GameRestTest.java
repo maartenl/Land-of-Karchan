@@ -18,17 +18,13 @@ package mmud.rest.tests;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
-import io.restassured.response.Response;
-import org.hamcrest.MatcherAssert;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import org.testng.annotations.BeforeClass;
 
 /**
  *
  * @author maartenl
  */
-public class GameRestTest
+public abstract class GameRestTest extends RestTest
 {
 
   public GameRestTest()
@@ -37,18 +33,7 @@ public class GameRestTest
 
   protected String enterGame(final String password, final String player)
   {
-    // enterGame
-    Response response = given().log().ifValidationFails().
-            param("password", password).
-            pathParam("player", player).
-            contentType("application/json").
-            header("Accept", "application/json").
-            when().
-            put("/{player}/logon").
-            then().statusCode(204). // no content
-            and().extract().response();
-    String jsession = response.cookie("JSESSIONID");
-    MatcherAssert.assertThat(jsession, not(nullValue()));
+    String jsession = login(player, password);
     // enter game
     given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
@@ -71,6 +56,7 @@ public class GameRestTest
             when().
             get("/{player}/quit").
             then().statusCode(200);
+    logoff(jsession, player);
   }
 
   @BeforeClass
