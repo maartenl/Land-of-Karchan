@@ -23,29 +23,37 @@ import mmud.exceptions.MudException;
 /**
  * An abstract class for the commands that may only be executed
  * by the owner of a guild, the <I>guildmaster</I>.
+ *
  * @author maartenl
  */
 public abstract class GuildMasterCommand extends GuildCommand
 {
 
-    public GuildMasterCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public GuildMasterCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    /**
-     * Checks if the user is the guildmaster of his guild, before running its course.
-     * @param command
-     * @param aUser
-     * @return a DisplayInterface for communicating with the user.
-     */
-    @Override
-    DisplayInterface start(String command, User aUser) throws MudException
+  /**
+   * Checks if the user is the guildmaster of his guild, before running its course.
+   *
+   * @param command
+   * @param aUser
+   * @return a DisplayInterface for communicating with the user.
+   */
+  @Override
+  DisplayInterface start(String command, User aUser) throws MudException
+  {
+    if (aUser.getGuild() == null)
     {
-        if (!aUser.getName().equals(aUser.getGuild().getBoss().getName()))
-        {
-            return null;
-        }
-        return super.start(command, aUser);
+      // user is not a member of a guild
+      return null;
     }
+    if (!aUser.getName().equals(aUser.getGuild().getBoss().getName()))
+    {
+      // user is not the boss of a guild
+      return null;
+    }
+    return super.start(command, aUser);
+  }
 }
