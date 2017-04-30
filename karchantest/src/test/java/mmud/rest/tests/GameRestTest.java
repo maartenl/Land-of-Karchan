@@ -16,9 +16,7 @@
  */
 package mmud.rest.tests;
 
-import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
-import org.testng.annotations.BeforeClass;
 
 /**
  *
@@ -41,7 +39,7 @@ public abstract class GameRestTest extends RestTest
             contentType("application/json").
             header("Accept", "application/json").
             when().
-            post("/{player}/enter").
+            post("/game/{player}/enter").
             then().statusCode(204); // no content
     return jsession;
   }
@@ -54,14 +52,9 @@ public abstract class GameRestTest extends RestTest
             contentType("application/json").
             header("Accept", "application/json").
             when().
-            get("/{player}/quit").
+            get("/game/{player}/quit").
             then().statusCode(200);
     logoff(jsession, player);
   }
 
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-    RestAssured.basePath = "/karchangame/resources/game";
-  }
 }

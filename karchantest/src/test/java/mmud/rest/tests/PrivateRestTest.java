@@ -16,7 +16,6 @@
  */
 package mmud.rest.tests;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -74,15 +73,15 @@ public class PrivateRestTest extends RestTest
     logoff(jsession, karn);
   }
 
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-    RestAssured.basePath = "/karchangame/resources/private";
-  }
-
   @AfterClass
   public static void tearDownClass() throws Exception
   {
+  }
+
+  @BeforeClass
+  public static void setUpClass() throws Exception
+  {
+    init();
   }
 
   @BeforeMethod

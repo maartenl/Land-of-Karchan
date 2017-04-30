@@ -26,29 +26,29 @@ import io.restassured.response.Response;
 public class Helper
 {
 
-  public static Response getGuild(String jsession, final String karn)
+  public static Response getGuild(String jsession, final String player)
   {
     Response gameResponse
             = given().log().ifValidationFails().
                     cookie("JSESSIONID", jsession).
-                    pathParam("player", karn).
+                    pathParam("player", player).
                     contentType("application/json").header("Accept", "application/json").
                     when().
-                    get("/{player}/guild").
+                    get("/private/{player}/guild").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;
   }
 
-  static Response getGuildranks(String jsession, String karn)
+  public static Response getGuildranks(String jsession, String player)
   {
     Response gameResponse
             = given().log().ifValidationFails().
                     cookie("JSESSIONID", jsession).
-                    pathParam("player", karn).
+                    pathParam("player", player).
                     contentType("application/json").header("Accept", "application/json").
                     when().
-                    get("/{player}/guild/ranks").
+                    get("/private/{player}/guild/ranks").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;

@@ -30,18 +30,9 @@ import static org.hamcrest.Matchers.nullValue;
 class RestTest
 {
 
-  private String oldBasePath;
-
-  public void change(String newPath)
+  public static void init()
   {
-    oldBasePath = RestAssured.basePath;
-    RestAssured.basePath = newPath;
-  }
-
-  public void reset()
-  {
-    RestAssured.basePath = oldBasePath;
-    oldBasePath = null;
+    RestAssured.basePath = "/karchangame/resources";
   }
 
   /**
@@ -53,19 +44,17 @@ class RestTest
    */
   public String login(final String player, final String password)
   {
-    change("/karchangame/resources/game");
     Response response = given().log().ifValidationFails().
             param("password", password).
             pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
             when().
-            put("/{player}/logon").
+            put("/game/{player}/logon").
             then().statusCode(204). // no content
             and().extract().response();
     String jsession = response.cookie("JSESSIONID");
     MatcherAssert.assertThat(jsession, not(nullValue()));
-    reset();
     return jsession;
   }
 
@@ -77,17 +66,15 @@ class RestTest
    */
   public void logoff(String jsession, final String player)
   {
-    change("/karchangame/resources/game");
     Response response = given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
             pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
             when().
-            put("/{player}/logoff").
+            put("/game/{player}/logoff").
             then().statusCode(204). // no content
             and().extract().response();
-    reset();
   }
 
 }

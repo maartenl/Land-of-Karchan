@@ -23,6 +23,7 @@ import mmud.rest.tests.Helper;
 import static org.hamcrest.Matchers.endsWith;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -32,6 +33,27 @@ import org.testng.annotations.Test;
  */
 public class GuildTest extends GameRestTest
 {
+
+  @BeforeClass
+  public static void setUpClass() throws Exception
+  {
+    init();
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception
+  {
+  }
+
+  @BeforeMethod
+  public void setUpMethod() throws Exception
+  {
+  }
+
+  @AfterMethod
+  public void tearDownMethod() throws Exception
+  {
+  }
 
   // @Test
   public void testCreateAndDestroyGuilds()
@@ -52,7 +74,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200).
             and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
 
@@ -66,7 +88,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200).
             and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
@@ -98,7 +120,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
 
@@ -113,7 +135,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
 
@@ -128,7 +150,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
 
@@ -143,11 +165,13 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
     Response guild = Helper.getGuild(jsession, hotblack);
     System.out.println(guild.prettyPrint());
+    Response guildranks = Helper.getGuildranks(jsession, hotblack);
+    System.out.println(guildranks.prettyPrint());
     command = "guilddelrank 1";
     given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
@@ -158,7 +182,7 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
 
@@ -172,28 +196,13 @@ public class GuildTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200).
             //            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
     System.out.println(gameResponse.prettyPrint());
 
     quit(jsession, hotblack);
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
-  }
-
-  @BeforeMethod
-  public void setUpMethod() throws Exception
-  {
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 
 }

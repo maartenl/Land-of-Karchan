@@ -18,9 +18,10 @@ package mmud.rest.tests.emotes;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
+import mmud.rest.tests.GameRestTest;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
-import mmud.rest.tests.GameRestTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -29,6 +30,12 @@ import org.testng.annotations.Test;
  */
 public class BowTest extends GameRestTest
 {
+
+  @BeforeClass
+  public static void setUpClass() throws Exception
+  {
+    init();
+  }
 
   @Test
   public void testBowCommand()
@@ -48,11 +55,11 @@ public class BowTest extends GameRestTest
             header("Accept", "application/json").
             body(command).
             when().
-            post("/{player}/play").
+            post("/game/{player}/play").
             then().statusCode(200).
             and().body("title", equalTo("The Cave")).
             and().body("image", equalTo("/images/gif/cave.gif")).
-            and().body("log.log", endsWith("You have no new Mudmail...</p>\nYou bow.<br />\n")).
+            and().body("log.log", endsWith("You bow.<br />\n")).
             and().extract().response();
     System.out.println(gameResponse.prettyPrint());
 
