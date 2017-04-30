@@ -33,7 +33,7 @@ import mmud.rest.services.LogBean;
  *
  * @author maartenl
  */
-public class CreateGuildCommand extends GuildMasterCommand
+public class CreateGuildCommand extends NormalCommand
 {
 
   public CreateGuildCommand(String aRegExpr)

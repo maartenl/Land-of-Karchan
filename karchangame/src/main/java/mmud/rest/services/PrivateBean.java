@@ -73,350 +73,350 @@ import mmud.rest.webentities.PrivatePerson;
 public class PrivateBean
 {
 
-    @EJB
-    private MailBean mailBean;
+  @EJB
+  private MailBean mailBean;
 
-    @Resource
-    private SessionContext context;
+  @Resource
+  private SessionContext context;
 
-    /**
-     * Indicates that only 20 mails may be retrieved per time (basically a
-     * page).
-     */
-    public static final int MAX_MAILS = 20;
+  /**
+   * Indicates that only 20 mails may be retrieved per time (basically a
+   * page).
+   */
+  public static final int MAX_MAILS = 20;
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    public PrivateBean()
+  public PrivateBean()
+  {
+    // empty constructor, I don't know why, but it's necessary.
+  }
+
+  /**
+   * Returns the entity manager of JPA. This is defined in
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
+   */
+  protected EntityManager getEntityManager()
+  {
+    return em;
+  }
+
+  private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
+
+  /**
+   * This method should be called to verify that the target of a certain
+   * action is indeed a proper authenticated user.
+   *
+   * @param name the name to identify the person
+   * @return the User identified by the name.
+   * @throws WebApplicationException NOT_FOUND, if the user is either not
+   * found or is not a proper user. BAD_REQUEST if an unexpected exception
+   * crops up or provided info is really not proper. UNAUTHORIZED if session
+   * passwords do not match.
+   */
+  public User authenticate(String name)
+  {
+    if (!getPlayerName().equals(name))
     {
-        // empty constructor, I don't know why, but it's necessary.
+      throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
     }
-
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
-     */
-    protected EntityManager getEntityManager()
+    User person = getEntityManager().find(User.class, name);
+    if (person == null)
     {
-        return em;
+      throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Status.NOT_FOUND);
     }
-
-    private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
-
-    /**
-     * This method should be called to verify that the target of a certain
-     * action is indeed a proper authenticated user.
-     *
-     * @param name the name to identify the person
-     * @return the User identified by the name.
-     * @throws WebApplicationException NOT_FOUND, if the user is either not
-     * found or is not a proper user. BAD_REQUEST if an unexpected exception
-     * crops up or provided info is really not proper. UNAUTHORIZED if session
-     * passwords do not match.
-     */
-    public User authenticate(String name)
+    if (!person.isUser())
     {
-        if (!getPlayerName().equals(name))
-        {
-            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
-        }
-        User person = getEntityManager().find(User.class, name);
-        if (person == null)
-        {
-            throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Status.NOT_FOUND);
-        }
-        if (!person.isUser())
-        {
-            throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Status.BAD_REQUEST);
-        }
-        return person;
+      throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Status.BAD_REQUEST);
     }
+    return person;
+  }
 
-    /**
-     * Authenticates a guildmaster.
-     *
-     * @param name the name to identify the person
-     * @return WebApplicationException NOT_FOUND if you are not the member of a guild
-     * UNAUTHORIZED if you are not the guild master of your guild.
-     * @see #authenticate(java.lang.String, java.lang.String)
-     */
-    public User authenticateGuildMaster(String name)
+  /**
+   * Authenticates a guildmaster.
+   *
+   * @param name the name to identify the person
+   * @return WebApplicationException NOT_FOUND if you are not the member of a guild
+   * UNAUTHORIZED if you are not the guild master of your guild.
+   * @see #authenticate(java.lang.String, java.lang.String)
+   */
+  public User authenticateGuildMaster(String name)
+  {
+    if (!getPlayerName().equals(name))
     {
-        if (!getPlayerName().equals(name))
-        {
-            throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
-        }
-        User person = authenticate(name);
-        if (person.getGuild() == null)
-        {
-            throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Status.NOT_FOUND);
-        }
-        if (!person.getGuild().getBoss().getName().equals(person.getName()))
-        {
-            throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
-        }
-        return person;
+      throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
     }
-
-    /**
-     * Returns a List of your mail, with a maximum of 20 mails and an offset for
-     * paging.
-     *
-     * @param name the name of the user
-     * @param offset the offset, default is 0 if not provided.
-     * @return a List of (max 20 by default) mails.
-     * @throws WebApplicationException <ul><li>UNAUTHORIZED, if the
-     * authorisation failed. </li><li>BAD_REQUEST if an unexpected exception
-     * crops up.</li></ul>
-     * @see #MAX_MAILS
-     */
-    @GET
-    @Path("{name}/mail")
-    @Produces(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+    User person = authenticate(name);
+    if (person.getGuild() == null)
     {
-        itsLog.finer("entering listMail");
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        User person = authenticate(name);
-        List<PrivateMail> res = new ArrayList<>();
-        try
-        {
-            Query query = getEntityManager().createNamedQuery("Mail.listmail");
-            query.setParameter("name", person);
-            query.setMaxResults(MAX_MAILS);
-            if (offset != null)
-            {
-                query.setFirstResult(offset);
-            }
-
-            List<Mail> list = query.getResultList();
-            for (Mail mail : list)
-            {
-                PrivateMail pmail = new PrivateMail(mail);
-                res.add(pmail);
-            }
-
-            // turn off the "newmail" sign.
-            query = getEntityManager().createNamedQuery("Mail.nonewmail");
-            query.setParameter("name", person);
-            query.executeUpdate();
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (Exception e)
-        {
-            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-        }
-        return res;
+      throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Status.NOT_FOUND);
     }
-
-    /**
-     * Returns a boolean, indicating if you have new mail. (i.e. mail since you
-     * last checked)
-     *
-     * @param name the name of the user
-     * @return Response.ok if everything is okay.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @GET
-    @Path("{name}/newmail")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response hasNewMail(@PathParam("name") String name)
+    if (!person.getGuild().getBoss().getName().equals(person.getName()))
     {
-        itsLog.finer("entering hasNewMail");
-        Person person = authenticate(name);
-        boolean result = mailBean.hasNewMail(person);
-        if (!result)
-        {
-            return Response.noContent().build();
-        }
-        return Response.ok().build();
+      throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
     }
+    return person;
+  }
 
-    private Person getPerson(String name)
+  /**
+   * Returns a List of your mail, with a maximum of 20 mails and an offset for
+   * paging.
+   *
+   * @param name the name of the user
+   * @param offset the offset, default is 0 if not provided.
+   * @return a List of (max 20 by default) mails.
+   * @throws WebApplicationException <ul><li>UNAUTHORIZED, if the
+   * authorisation failed. </li><li>BAD_REQUEST if an unexpected exception
+   * crops up.</li></ul>
+   * @see #MAX_MAILS
+   */
+  @GET
+  @Path("{name}/mail")
+  @Produces(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+  {
+    itsLog.finer("entering listMail");
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    User person = authenticate(name);
+    List<PrivateMail> res = new ArrayList<>();
+    try
     {
-        Person toperson = getEntityManager().find(Person.class, name);
-        if (toperson == null)
-        {
-            throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
-        }
-        return toperson;
+      Query query = getEntityManager().createNamedQuery("Mail.listmail");
+      query.setParameter("name", person);
+      query.setMaxResults(MAX_MAILS);
+      if (offset != null)
+      {
+        query.setFirstResult(offset);
+      }
+
+      List<Mail> list = query.getResultList();
+      for (Mail mail : list)
+      {
+        PrivateMail pmail = new PrivateMail(mail);
+        res.add(pmail);
+      }
+
+      // turn off the "newmail" sign.
+      query = getEntityManager().createNamedQuery("Mail.nonewmail");
+      query.setParameter("name", person);
+      query.executeUpdate();
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
+    return res;
+  }
 
-    private User getUser(String name)
+  /**
+   * Returns a boolean, indicating if you have new mail. (i.e. mail since you
+   * last checked)
+   *
+   * @param name the name of the user
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @GET
+  @Path("{name}/newmail")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response hasNewMail(@PathParam("name") String name)
+  {
+    itsLog.finer("entering hasNewMail");
+    Person person = authenticate(name);
+    boolean result = mailBean.hasNewMail(person);
+    if (!result)
     {
-        User toperson = getEntityManager().find(User.class, name);
-        if (toperson == null)
-        {
-            throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
-        }
-        if (!toperson.isUser())
-        {
-            itsLog.log(Level.INFO, "user not proper user, {0}", name);
-            throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
-        }
-        return toperson;
+      return Response.noContent().build();
     }
+    return Response.ok().build();
+  }
 
-    /**
-     * Compose a new mail.
-     *
-     * @param newMail the new mail object received from the client.
-     * @param name the name of the
-     * @return Response.ok if everything's okay.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @POST
-    @Path("{name}/mail")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response newMail(PrivateMail newMail, @PathParam("name") String name)
+  private Person getPerson(String name)
+  {
+    Person toperson = getEntityManager().find(Person.class, name);
+    if (toperson == null)
     {
-        itsLog.finer("entering newMail");
-        User person = authenticate(name);
-        User toperson = getUser(newMail.toname);
-        try
-        {
-            Mail mail = new Mail();
-            mail.setBody(newMail.body);
-            mail.setDeleted(Boolean.FALSE);
-            mail.setHaveread(Boolean.FALSE);
-            mail.setItemDefinition(null);
-            mail.setId(null);
-            mail.setName(person);
-            mail.setNewmail(Boolean.TRUE);
-            mail.setSubject(newMail.subject);
-            mail.setToname(toperson);
-            mail.setWhensent(new Date());
-            getEntityManager().persist(mail);
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (Exception e)
-        {
-            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-        }
-        itsLog.finer("exiting newMail");
-        return Response.ok().build();
+      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
     }
+    return toperson;
+  }
 
-    private Mail getMail(String toname, Long id)
+  private User getUser(String name)
+  {
+    User toperson = getEntityManager().find(User.class, name);
+    if (toperson == null)
     {
-        Mail mail = getEntityManager().find(Mail.class, id);
-
-        if (mail == null)
-        {
-            throw new MudWebException(toname, "Mail " + id + " not found.", Response.Status.NOT_FOUND);
-        }
-        if (mail.getDeleted())
-        {
-            throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
-        }
-        if (!mail.getToname().getName().equals(toname))
-        {
-            itsLog.log(Level.INFO, "mail {0} not for {1}", new Object[]
-            {
-                id, toname
-            });
-
-            throw new MudWebException(toname, "Mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
-        }
-        return mail;
+      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
     }
-
-    /**
-     * Returns a single mail based by id. Can only retrieve mail destined for
-     * the user requesting the mail.
-     *
-     * @param name the name of the user
-     * @param id the id of the mail to get
-     * @return A specific mail.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @GET
-    @Path("{name}/mail/{id}")
-    @Produces(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
+    if (!toperson.isUser())
     {
-        itsLog.finer("entering getMail");
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name);
-        try
-        {
-            Mail mail = getMail(person.getName(), id);
-            // turn off the "have not read" sign.
-            mail.setHaveread(Boolean.TRUE);
-            itsLog.finer("exiting getMail");
-            return new PrivateMail(mail);
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (Exception e)
-        {
-            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-        }
+      itsLog.log(Level.INFO, "user not proper user, {0}", name);
+      throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
     }
+    return toperson;
+  }
 
-    /**
-     * Creates an itemDefinitionId instance (and, if required, an
-     * itemDefinitionId definition) representing an in-game version of a single
-     * mail based by id. <img
-     * src="doc-files/PrivateBean_createMailItem.png">
-     *
-     * @param name the name of the user
-     * @param id the id of the mail to get
-     * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
-     * It may be null, if there already is attached a item definition to the
-     * mail.
-     * @return Response.ok if everything is fine.
-     * @see Mail#ITEMS
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     * @startuml doc-files/PrivateBean_createMailItem.png
-     * (*) --> "check params"
-     * --> "getMail"
-     * if "has Item Definition" then
-     * ->[true] "create instance object"
-     * else
-     * ->[false] "get maxid"
-     * --> "create itemDefinitionId definition"
-     * --> "set itemdefinition into the mail"
-     * --> "create instance object"
-     * endif
-     * --> "create inventory object"
-     * -->(*)
-     * @enduml
-     */
-    @GET
-    @Path("{name}/mail/{id}/createMailItem/{item}")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
+  /**
+   * Compose a new mail.
+   *
+   * @param newMail the new mail object received from the client.
+   * @param name the name of the
+   * @return Response.ok if everything's okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @POST
+  @Path("{name}/mail")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response newMail(PrivateMail newMail, @PathParam("name") String name)
+  {
+    itsLog.finer("entering newMail");
+    User person = authenticate(name);
+    User toperson = getUser(newMail.toname);
+    try
     {
-        return Response.noContent().build();
-        // TODO MLE: this needs to get fixed.
+      Mail mail = new Mail();
+      mail.setBody(newMail.body);
+      mail.setDeleted(Boolean.FALSE);
+      mail.setHaveread(Boolean.FALSE);
+      mail.setItemDefinition(null);
+      mail.setId(null);
+      mail.setName(person);
+      mail.setNewmail(Boolean.TRUE);
+      mail.setSubject(newMail.subject);
+      mail.setToname(toperson);
+      mail.setWhensent(new Date());
+      getEntityManager().persist(mail);
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+    itsLog.finer("exiting newMail");
+    return Response.ok().build();
+  }
+
+  private Mail getMail(String toname, Long id)
+  {
+    Mail mail = getEntityManager().find(Mail.class, id);
+
+    if (mail == null)
+    {
+      throw new MudWebException(toname, "Mail " + id + " not found.", Response.Status.NOT_FOUND);
+    }
+    if (mail.getDeleted())
+    {
+      throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
+    }
+    if (!mail.getToname().getName().equals(toname))
+    {
+      itsLog.log(Level.INFO, "mail {0} not for {1}", new Object[]
+      {
+        id, toname
+      });
+
+      throw new MudWebException(toname, "Mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
+    }
+    return mail;
+  }
+
+  /**
+   * Returns a single mail based by id. Can only retrieve mail destined for
+   * the user requesting the mail.
+   *
+   * @param name the name of the user
+   * @param id the id of the mail to get
+   * @return A specific mail.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @GET
+  @Path("{name}/mail/{id}")
+  @Produces(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
+  {
+    itsLog.finer("entering getMail");
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    Person person = authenticate(name);
+    try
+    {
+      Mail mail = getMail(person.getName(), id);
+      // turn off the "have not read" sign.
+      mail.setHaveread(Boolean.TRUE);
+      itsLog.finer("exiting getMail");
+      return new PrivateMail(mail);
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Creates an itemDefinitionId instance (and, if required, an
+   * itemDefinitionId definition) representing an in-game version of a single
+   * mail based by id. <img
+   * src="doc-files/PrivateBean_createMailItem.png">
+   *
+   * @param name the name of the user
+   * @param id the id of the mail to get
+   * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
+   * It may be null, if there already is attached a item definition to the
+   * mail.
+   * @return Response.ok if everything is fine.
+   * @see Mail#ITEMS
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   * @startuml doc-files/PrivateBean_createMailItem.png
+   * (*) --> "check params"
+   * --> "getMail"
+   * if "has Item Definition" then
+   * ->[true] "create instance object"
+   * else
+   * ->[false] "get maxid"
+   * --> "create itemDefinitionId definition"
+   * --> "set itemdefinition into the mail"
+   * --> "create instance object"
+   * endif
+   * --> "create inventory object"
+   * -->(*)
+   * @enduml
+   */
+  @GET
+  @Path("{name}/mail/{id}/createMailItem/{item}")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
+  {
+    return Response.noContent().build();
+    // TODO MLE: this needs to get fixed.
 //
 //        itsLog.finer("entering createMailItem");
 //        Person person = authenticate(name, lok);
@@ -510,202 +510,202 @@ public class PrivateBean
 //        }
 //        itsLog.finer("exiting createMailItem");
 //        return Response.ok().build();
-    }
+  }
 
-    /**
-     * Deletes a single mail based by id.
-     *
-     * @param name the name of the user
-     * @param id the id of the mail to delete
-     * @return Response.ok() if all is well.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @DELETE
-    @Path("{name}/mail/{id}")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
+  /**
+   * Deletes a single mail based by id.
+   *
+   * @param name the name of the user
+   * @param id the id of the mail to delete
+   * @return Response.ok() if all is well.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @DELETE
+  @Path("{name}/mail/{id}")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
+  {
+    itsLog.finer("entering deleteMail");
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    Person person = authenticate(name);
+    // get the specific mail with id {id}
+    Mail mail = getMail(person.getName(), id);
+    mail.setDeleted(Boolean.TRUE);
+    itsLog.finer("exiting deleteMail");
+    return Response.ok().build();
+  }
+
+  /**
+   * Adds or updates your current character info.
+   *
+   * @param name the name of the user
+   * @param cinfo the object containing the new stuff to update.
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @PUT
+  @Path("{name}/charactersheet")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
+  {
+    itsLog.finer("entering updateCharacterSheet");
+    Person person = authenticate(name);
+    if (!person.getName().equals(cinfo.name))
     {
-        itsLog.finer("entering deleteMail");
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name);
-        // get the specific mail with id {id}
-        Mail mail = getMail(person.getName(), id);
-        mail.setDeleted(Boolean.TRUE);
-        itsLog.finer("exiting deleteMail");
-        return Response.ok().build();
+      throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
+              person.getName() + " trying to update charactersheet of " + cinfo.name, Response.Status.UNAUTHORIZED);
     }
-
-    /**
-     * Adds or updates your current character info.
-     *
-     * @param name the name of the user
-     * @param cinfo the object containing the new stuff to update.
-     * @return Response.ok if everything is okay.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @PUT
-    @Path("{name}/charactersheet")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
+    try
     {
-        itsLog.finer("entering updateCharacterSheet");
-        Person person = authenticate(name);
-        if (!person.getName().equals(cinfo.name))
-        {
-            throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
-                    person.getName() + " trying to update charactersheet of " + cinfo.name, Response.Status.UNAUTHORIZED);
-        }
-        try
-        {
-            CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
-            boolean isNew = false;
-            if (characterInfo == null)
-            {
-                isNew = true;
-                characterInfo = new CharacterInfo();
-                characterInfo.setName(person.getName());
-            }
-            characterInfo.setImageurl(cinfo.imageurl);
-            person.setTitle(cinfo.title);
-            characterInfo.setHomepageurl(cinfo.homepageurl);
-            characterInfo.setDateofbirth(cinfo.dateofbirth);
-            characterInfo.setCityofbirth(cinfo.cityofbirth);
-            characterInfo.setStoryline(cinfo.storyline);
-            if (isNew)
-            {
-                getEntityManager().persist(characterInfo);
-            }
+      CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+      boolean isNew = false;
+      if (characterInfo == null)
+      {
+        isNew = true;
+        characterInfo = new CharacterInfo();
+        characterInfo.setName(person.getName());
+      }
+      characterInfo.setImageurl(cinfo.imageurl);
+      person.setTitle(cinfo.title);
+      characterInfo.setHomepageurl(cinfo.homepageurl);
+      characterInfo.setDateofbirth(cinfo.dateofbirth);
+      characterInfo.setCityofbirth(cinfo.cityofbirth);
+      characterInfo.setStoryline(cinfo.storyline);
+      if (isNew)
+      {
+        getEntityManager().persist(characterInfo);
+      }
 
-        } catch (WebApplicationException e)
-        {
-            //ignore
-            throw e;
-        } catch (MudException e)
-        {
-            throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-        }
-        return Response.ok().build();
-    }
-
-    /**
-     * Add or updates some family values from your family tree.
-     *
-     * @param name the name of the user
-     * @param toname the name of the user you are related to
-     * @param description the description of the family relation, for example
-     * "mother".
-     * @return Response.ok if everything's okay.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @PUT
-    @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
+    } catch (WebApplicationException e)
     {
-        itsLog.finer("entering updateFamilyvalues");
-        if (description == null || description == 0)
-        {
-            throw new MudWebException(name, "An invalid relationship was provided.", Response.Status.BAD_REQUEST);
-        }
-        if (toname == null || "".equals(toname.trim()))
-        {
-            throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
-        }
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        User person = authenticate(name);
-        Person toperson = getPerson(toname);
-        try
-        {
-            FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
-            if (familyValue == null)
-            {
-                throw new MudWebException(name, "Family value was not found.",
-                        "Family value " + description + " was not found.",
-                        Response.Status.BAD_REQUEST);
-            }
-            FamilyPK pk = new FamilyPK();
-            pk.setName(person.getName());
-            pk.setToname(toperson.getName());
-            Family family = getEntityManager().find(Family.class, pk);
-
-            boolean isNew = family == null;
-            if (family == null)
-            {
-                family = new Family();
-                family.setFamilyPK(pk);
-            }
-            family.setDescription(familyValue);
-            if (isNew)
-            {
-                getEntityManager().persist(family);
-            }
-        } catch (MudWebException e)
-        {
-            //ignore
-            throw e;
-        }
-        itsLog.finer("exiting updateFamilyvalues");
-        return Response.ok().build();
-    }
-
-    /**
-     * Deletes some family values from your family tree.
-     *
-     * @param name the name of the user
-     * @param toname the name of the user you are related to
-     * @return Response.ok if everything is okay.
-     * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-     * failed. BAD_REQUEST if an unexpected exception crops up.
-     */
-    @DELETE
-    @Path("{name}/charactersheet/familyvalues/{toname}")
-    @Consumes(
-            {
-                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-            })
-    public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
+      //ignore
+      throw e;
+    } catch (MudException e)
     {
-        itsLog.finer("entering deleteFamilyValues");
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        Person person = authenticate(name);
-        FamilyPK pk = new FamilyPK();
-        pk.setName(person.getName());
-        pk.setToname(toname);
-        Family family = getEntityManager().find(Family.class, pk);
-        if (family == null)
-        {
-            throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
-        }
-        getEntityManager().remove(family);
-        itsLog.finer("exiting deleteFamilyValues");
-        return Response.ok().build();
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
+    return Response.ok().build();
+  }
 
-    /**
-     * Provides the player who is logged in during this session.
-     *
-     * @return name of the player
-     * @throws IllegalStateException
-     */
-    protected String getPlayerName() throws IllegalStateException
+  /**
+   * Add or updates some family values from your family tree.
+   *
+   * @param name the name of the user
+   * @param toname the name of the user you are related to
+   * @param description the description of the family relation, for example
+   * "mother".
+   * @return Response.ok if everything's okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @PUT
+  @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
+  {
+    itsLog.finer("entering updateFamilyvalues");
+    if (description == null || description == 0)
     {
-        final String name = context.getCallerPrincipal().getName();
-        if (name.equals("ANONYMOUS"))
-        {
-            throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
-        }
-        return name;
+      throw new MudWebException(name, "An invalid relationship was provided.", Response.Status.BAD_REQUEST);
     }
+    if (toname == null || "".equals(toname.trim()))
+    {
+      throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
+    }
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    User person = authenticate(name);
+    Person toperson = getPerson(toname);
+    try
+    {
+      FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
+      if (familyValue == null)
+      {
+        throw new MudWebException(name, "Family value was not found.",
+                "Family value " + description + " was not found.",
+                Response.Status.BAD_REQUEST);
+      }
+      FamilyPK pk = new FamilyPK();
+      pk.setName(person.getName());
+      pk.setToname(toperson.getName());
+      Family family = getEntityManager().find(Family.class, pk);
+
+      boolean isNew = family == null;
+      if (family == null)
+      {
+        family = new Family();
+        family.setFamilyPK(pk);
+      }
+      family.setDescription(familyValue);
+      if (isNew)
+      {
+        getEntityManager().persist(family);
+      }
+    } catch (MudWebException e)
+    {
+      //ignore
+      throw e;
+    }
+    itsLog.finer("exiting updateFamilyvalues");
+    return Response.ok().build();
+  }
+
+  /**
+   * Deletes some family values from your family tree.
+   *
+   * @param name the name of the user
+   * @param toname the name of the user you are related to
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @DELETE
+  @Path("{name}/charactersheet/familyvalues/{toname}")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
+  {
+    itsLog.finer("entering deleteFamilyValues");
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    Person person = authenticate(name);
+    FamilyPK pk = new FamilyPK();
+    pk.setName(person.getName());
+    pk.setToname(toname);
+    Family family = getEntityManager().find(Family.class, pk);
+    if (family == null)
+    {
+      throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
+    }
+    getEntityManager().remove(family);
+    itsLog.finer("exiting deleteFamilyValues");
+    return Response.ok().build();
+  }
+
+  /**
+   * Provides the player who is logged in during this session.
+   *
+   * @return name of the player
+   * @throws IllegalStateException
+   */
+  protected String getPlayerName() throws IllegalStateException
+  {
+    final String name = context.getCallerPrincipal().getName();
+    if (name.equals("ANONYMOUS"))
+    {
+      throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
+    }
+    return name;
+  }
 }
