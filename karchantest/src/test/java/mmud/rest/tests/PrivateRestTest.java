@@ -17,7 +17,6 @@
 package mmud.rest.tests;
 
 import io.restassured.RestAssured;
-import static io.restassured.RestAssured.*;
 import io.restassured.response.Response;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -50,7 +49,7 @@ public class PrivateRestTest extends RestTest
 
     String jsession = login(karn, password);
     Response gameResponse
-            = getGuild(jsession, karn);
+            = Helper.getGuild(jsession, karn);
     System.out.println(gameResponse.prettyPrint());
     assertThat(gameResponse.path("title"), equalTo("Benefactors of Karchan"));
     assertThat(gameResponse.path("name"), equalTo("deputy"));
@@ -59,18 +58,20 @@ public class PrivateRestTest extends RestTest
     logoff(jsession, karn);
   }
 
-  public Response getGuild(String jsession, final String karn)
+  /**
+   * Verifies the guild of Karn.
+   */
+  @Test
+  public void testGuildranks()
   {
+    final String karn = "Karn";
+    final String password = "secret";
+
+    String jsession = login(karn, password);
     Response gameResponse
-            = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
-                    pathParam("player", karn).
-                    contentType("application/json").header("Accept", "application/json").
-                    when().
-                    get("/{player}/guild").
-                    then().statusCode(200).
-                    and().extract().response();
-    return gameResponse;
+            = Helper.getGuildranks(jsession, karn);
+    assertThat(gameResponse.prettyPrint(), equalTo("[\n    \n]"));
+    logoff(jsession, karn);
   }
 
   @BeforeClass

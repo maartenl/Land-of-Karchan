@@ -19,6 +19,7 @@ package mmud.rest.tests.guilds;
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
 import mmud.rest.tests.GameRestTest;
+import mmud.rest.tests.Helper;
 import static org.hamcrest.Matchers.endsWith;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -145,7 +146,8 @@ public class GuildTest extends GameRestTest
             post("/{player}/play").
             then().statusCode(200);
     // and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n"));
-
+    Response guild = Helper.getGuild(jsession, hotblack);
+    System.out.println(guild.prettyPrint());
     command = "guilddelrank 1";
     given().log().ifValidationFails().
             cookie("JSESSIONID", jsession).
