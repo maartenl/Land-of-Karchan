@@ -7,11 +7,13 @@ import { AppComponent } from './app.component';
 import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 
 import { PlayerService } from './player.service';
+import { ErrorsComponent } from './errors/errors.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlayerSettingsComponent
+    PlayerSettingsComponent,
+    ErrorsComponent
   ],
   imports: [
     BrowserModule,
