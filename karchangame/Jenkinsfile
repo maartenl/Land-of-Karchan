@@ -1,0 +1,50 @@
+#!groovy
+    pipeline {
+        agent any
+        tools { 
+            maven 'Maven 3.3.9' 
+            jdk 'jdk8' 
+        }
+        stages {
+            stage('checkout') {
+                steps {
+                    // jenkins-${JOB_NAME}-${BUILD_NUMBER}
+                    // for example jenkins-karchan-123sh '''
+                    echo "Build " + env.BUILD_TAG
+                    echo "Workspace " + env.WORKSPACE
+                    sh '''
+                        echo "PATH = ${PATH}"
+                        echo "M2_HOME = ${M2_HOME}"
+                    '''
+            }
+            stage('build') {
+                steps {
+                    sh 'echo "starting build "'
+                    dir('karchangame') {
+                        sh 'mvn compile' 
+                    }
+                }
+            }
+            stage('test') {
+                steps {
+                    sh 'echo "starting test "'
+                    dir('karchangame') {
+                        sh 'mvn test' 
+                    }
+                }
+                post {
+                    success {
+                        junit 'karchangame/target/surefire-reports/**/*.xml' 
+                    }
+                }
+            } 
+            stage('deploy') {
+                steps {
+                    sh 'echo "starting deploy "'
+                    dir('karchangame') {
+                        sh 'mvn verify' 
+                    }
+                }
+            }
+        }
+    }
