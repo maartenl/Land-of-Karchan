@@ -14,11 +14,12 @@ fi
                   
 . ./mysql_constants
 
-${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} -p -s ${MYSQL_DB} <<END_OF_DATA
 #
 # remove the administrator from the administrator table
 #
-delete from mm_admin where name="$1";
+delete from mm_admin_mm_groups where name = "$1";
+delete from mm_admin where name = "$1";
 
 END_OF_DATA
 

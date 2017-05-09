@@ -1,7 +1,7 @@
 #!/bin/sh
 . ./mysql_constants
 
-${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} -p -s ${MYSQL_DB} <<END_OF_DATA
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} -p -s ${MYSQL_DB} -t <<END_OF_DATA
 #
 # Show the admins
 #
