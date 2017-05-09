@@ -12,15 +12,11 @@ pipeline {
                 // for example jenkins-karchan-123sh '''
                 echo "Build " + env.BUILD_TAG
                 echo "Workspace " + env.WORKSPACE
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
+                sh 'cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war /home/glassfish/karchangame.war.backup'
             }
         }
         stage('build') {
             steps {
-                sh 'echo "starting build "'
                 dir('karchangame') {
                     sh 'mvn compile' 
                 }
@@ -28,7 +24,6 @@ pipeline {
         }
         stage('test') {
             steps {
-                sh 'echo "starting test "'
                 dir('karchangame') {
                     sh 'mvn test' 
                 }
@@ -41,11 +36,16 @@ pipeline {
         } 
         stage('deploy') {
             steps {
-                sh 'echo "starting deploy "'
                 dir('karchangame') {
                     sh 'mvn verify' 
                 }
             }
+        }
+    }
+    post {
+        success { 
+            echo 'Deploying to glassfish...'
+            sh 'cp karchangame/target/karchangame-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war'
         }
     }
 }
