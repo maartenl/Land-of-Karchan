@@ -8,6 +8,8 @@ ${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL
 #
 
 # set password to "secret".
+update mm_usertable set password='e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4'
+where name in ('Karn','Marvin','Hotblack','Slartibartfast');
 
 # make sure there is no guild "test" or something.
 delete from mm_guildranks where guildname='disaster';
