@@ -33,30 +33,29 @@ import javax.persistence.PersistenceProperty;
 public abstract class EjbEntityProvider<T> extends MutableLocalEntityProvider<T>
 {
 
-    @PersistenceContext(properties =
-    {
-        @PersistenceProperty(name = "activePersonFilter", value = "0"),
-        @PersistenceProperty(name = "sundaydateFilter", value = "")
-    })
-    private EntityManager em;
+  @PersistenceContext(properties =
+  {
+    @PersistenceProperty(name = "activePersonFilter", value = "0")
+  })
+  private EntityManager em;
 
-    protected EjbEntityProvider(Class entityClass)
-    {
-        super(entityClass);
-    }
+  protected EjbEntityProvider(Class entityClass)
+  {
+    super(entityClass);
+  }
 
-    @PostConstruct
-    public void init()
-    {
-        setTransactionsHandledByProvider(false);
-        setEntityManager(em);
-    }
+  @PostConstruct
+  public void init()
+  {
+    setTransactionsHandledByProvider(false);
+    setEntityManager(em);
+  }
 
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void runInTransaction(Runnable operation)
-    {
-        super.runInTransaction(operation);
-    }
+  @Override
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
+  protected void runInTransaction(Runnable operation)
+  {
+    super.runInTransaction(operation);
+  }
 
 }

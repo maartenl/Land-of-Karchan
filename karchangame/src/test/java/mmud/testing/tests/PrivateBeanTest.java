@@ -67,1516 +67,1502 @@ import org.testng.annotations.Test;
 public class PrivateBeanTest
 {
 
-    // Obtain a suitable logger.
-    private static final Logger logger = Logger.getLogger(PrivateBeanTest.class.getName());
-    @Mocked
-    EntityManager entityManager;
+  // Obtain a suitable logger.
+  private static final Logger logger = Logger.getLogger(PrivateBeanTest.class.getName());
+  @Mocked
+  EntityManager entityManager;
 
-    @Mocked(
-            {
-                "ok", "status"
-            })
-    javax.ws.rs.core.Response response;
+  @Mocked(
+          {
+            "ok", "status"
+          })
+  javax.ws.rs.core.Response response;
 
-    @Mocked
-    MudWebException webApplicationException;
+  @Mocked
+  MudWebException webApplicationException;
 
-    @Mocked
-    ErrorDetails errorDetails;
+  @Mocked
+  ErrorDetails errorDetails;
 
-    @Mocked
-    ResponseBuilder responseBuilder;
+  @Mocked
+  ResponseBuilder responseBuilder;
 
-    @Mocked
-    Query query;
+  @Mocked
+  Query query;
 
-    private Person hotblack;
-    private Person marvin;
+  private Person hotblack;
+  private Person marvin;
 
-    public PrivateBeanTest()
+  public PrivateBeanTest()
+  {
+  }
+
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
+
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
+
+  @BeforeMethod
+  public void setUp() throws MudException
+  {
+    Area aArea = TestingConstants.getArea();
+    Room aRoom = TestingConstants.getRoom(aArea);
+    hotblack = TestingConstants.getHotblack(aRoom);
+    marvin = TestingConstants.getMarvin(aRoom);
+  }
+
+  @AfterMethod
+  public void tearDown()
+  {
+  }
+
+  private void compare(PrivateMail actual, PrivateMail expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
     {
+      return;
     }
+    assertEquals(actual.body, expected.body, "body:");
+    assertEquals(actual.deleted, expected.deleted, "deleted");
+    assertEquals(actual.haveread, expected.haveread, "haveread");
+    assertEquals(actual.id, expected.id, "id");
+    assertEquals(actual.item_id, expected.item_id, "item_id");
+    assertEquals(actual.name, expected.name, "name");
+    assertEquals(actual.newmail, expected.newmail, "newmail");
+    assertEquals(actual.subject, expected.subject, "subject");
+    assertEquals(actual.toname, expected.toname, "toname");
+    assertEquals(actual.whensent, expected.whensent, "whensent");
+  }
 
-    @BeforeClass
-    public void setUpClass()
+  /**
+   * Person not found, cannot authenticate. WebApplicationException expected.
+   */
+  @Test
+  public void listMailAuthenticate2()
+  {
+    logger.fine("listMailAuthenticate2");
+    PrivateBean privateBean = new PrivateBean()
     {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = null;
+      }
+    };
+    // Unit under test is exercised.
+    try
+    {
+      List<PrivateMail> result = privateBean.listMail("Marvin", null);
+      fail("We are supposed to get an exception here.");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+  }
 
-    @AfterClass
-    public void tearDownClass()
+  @Test
+  public void listMailEmpty()
+  {
+    logger.fine("listMailEmpty");
+    PrivateBean privateBean = new PrivateBean()
     {
-    }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-    @BeforeMethod
-    public void setUp() throws MudException
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        Area aArea = TestingConstants.getArea();
-        Room aRoom = TestingConstants.getRoom(aArea);
-        hotblack = TestingConstants.getHotblack(aRoom);
-        marvin = TestingConstants.getMarvin(aRoom);
-    }
 
-    @AfterMethod
-    public void tearDown()
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.createNamedQuery("Mail.listmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.setMaxResults(20);
+        query.getResultList();
+
+        entityManager.createNamedQuery("Mail.nonewmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.executeUpdate();
+      }
+    };
+    // Unit under test is exercised.
+    List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(result.size(), 0);
+  }
+
+  @Test
+  public void listMail()
+  {
+    logger.fine("listMail");
+    Date secondDate = new Date();
+    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    final List<Mail> list = new ArrayList<>();
+    Mail mail = new Mail();
+    mail.setId(1l);
+    mail.setSubject("Subject");
+    mail.setBody("First mail");
+    mail.setToname(hotblack);
+    mail.setName(marvin);
+    mail.setDeleted(false);
+    mail.setHaveread(false);
+    mail.setNewmail(true);
+    mail.setWhensent(firstDate);
+    list.add(mail);
+    mail = new Mail();
+    mail.setId(2l);
+    mail.setSubject("Subject2");
+    mail.setBody("Second mail");
+    mail.setToname(hotblack);
+    mail.setName(marvin);
+    mail.setDeleted(false);
+    mail.setHaveread(true);
+    mail.setNewmail(false);
+    mail.setWhensent(secondDate);
+    list.add(mail);
+    PrivateBean privateBean = new PrivateBean()
     {
-    }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-    private void compare(PrivateMail actual, PrivateMail expected)
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.body, expected.body, "body:");
-        assertEquals(actual.deleted, expected.deleted, "deleted");
-        assertEquals(actual.haveread, expected.haveread, "haveread");
-        assertEquals(actual.id, expected.id, "id");
-        assertEquals(actual.item_id, expected.item_id, "item_id");
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.newmail, expected.newmail, "newmail");
-        assertEquals(actual.subject, expected.subject, "subject");
-        assertEquals(actual.toname, expected.toname, "toname");
-        assertEquals(actual.whensent, expected.whensent, "whensent");
-    }
 
-    /**
-     * Person not found, cannot authenticate. WebApplicationException expected.
-     */
-    @Test
-    public void listMailAuthenticate2()
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.createNamedQuery("Mail.listmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.setMaxResults(20);
+        query.getResultList();
+        result = list;
+
+        entityManager.createNamedQuery("Mail.nonewmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.executeUpdate();
+        result = 1;
+      }
+    };
+    // Unit under test is exercised.
+    List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(result.size(), 2);
+    PrivateMail expected = new PrivateMail();
+    expected.body = "First mail";
+    expected.subject = "Subject";
+    expected.haveread = false;
+    expected.id = 1l;
+    expected.item_id = null;
+    expected.name = "Marvin";
+    expected.newmail = true;
+    expected.toname = "Hotblack";
+    expected.whensent = firstDate;
+    expected.deleted = false;
+    compare(result.get(0), expected);
+    expected = new PrivateMail();
+    expected.body = "Second mail";
+    expected.subject = "Subject2";
+    expected.haveread = true;
+    expected.id = 2l;
+    expected.item_id = null;
+    expected.name = "Marvin";
+    expected.newmail = false;
+    expected.toname = "Hotblack";
+    expected.whensent = secondDate;
+    expected.deleted = false;
+    compare(result.get(1), expected);
+
+  }
+
+  @Test
+  public void hasNewMail()
+  {
+    logger.fine("hasNewMail");
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("listMailAuthenticate2");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = null;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            List<PrivateMail> result = privateBean.listMail("Marvin", null);
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-    }
-
-    @Test
-    public void listMailEmpty()
+    };
+    Deencapsulation.setField(privateBean, "mailBean", new MailBean()
     {
-        logger.fine("listMailEmpty");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.createNamedQuery("Mail.listmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.setMaxResults(20);
-                query.getResultList();
-
-                entityManager.createNamedQuery("Mail.nonewmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.executeUpdate();
-            }
-        };
-        // Unit under test is exercised.
-        List<PrivateMail> result = privateBean.listMail("Marvin", null);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void listMail()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("listMail");
-        Date secondDate = new Date();
-        Date firstDate = new Date(secondDate.getTime() - 1_000_000);
-        final List<Mail> list = new ArrayList<>();
-        Mail mail = new Mail();
-        mail.setId(1l);
-        mail.setSubject("Subject");
-        mail.setBody("First mail");
-        mail.setToname(hotblack);
-        mail.setName(marvin);
-        mail.setDeleted(false);
-        mail.setHaveread(false);
-        mail.setNewmail(true);
-        mail.setWhensent(firstDate);
-        list.add(mail);
-        mail = new Mail();
-        mail.setId(2l);
-        mail.setSubject("Subject2");
-        mail.setBody("Second mail");
-        mail.setToname(hotblack);
-        mail.setName(marvin);
-        mail.setDeleted(false);
-        mail.setHaveread(true);
-        mail.setNewmail(false);
-        mail.setWhensent(secondDate);
-        list.add(mail);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.createNamedQuery("Mail.listmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.setMaxResults(20);
-                query.getResultList();
-                result = list;
+        entityManager.createNamedQuery("Mail.hasnewmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.getSingleResult();
+        result = 1l;
 
-                entityManager.createNamedQuery("Mail.nonewmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.executeUpdate();
-                result = 1;
-            }
-        };
-        // Unit under test is exercised.
-        List<PrivateMail> result = privateBean.listMail("Marvin", null);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 2);
-        PrivateMail expected = new PrivateMail();
-        expected.body = "First mail";
-        expected.subject = "Subject";
-        expected.haveread = false;
-        expected.id = 1l;
-        expected.item_id = null;
-        expected.name = "Marvin";
-        expected.newmail = true;
-        expected.toname = "Hotblack";
-        expected.whensent = firstDate;
-        expected.deleted = false;
-        compare(result.get(0), expected);
-        expected = new PrivateMail();
-        expected.body = "Second mail";
-        expected.subject = "Subject2";
-        expected.haveread = true;
-        expected.id = 2l;
-        expected.item_id = null;
-        expected.name = "Marvin";
-        expected.newmail = false;
-        expected.toname = "Hotblack";
-        expected.whensent = secondDate;
-        expected.deleted = false;
-        compare(result.get(1), expected);
+      }
+    };
+    responseOkExpectations();
+    // Unit under test is exercised.
+    privateBean.hasNewMail("Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    }
-
-    @Test
-    public void hasNewMail()
+  //TODO : fix this
+  // @Test
+  public void hasNoNewMail()
+  {
+    logger.fine("hasNoNewMail");
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("hasNewMail");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        Deencapsulation.setField(privateBean, "mailBean", new MailBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-
-                entityManager.createNamedQuery("Mail.hasnewmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.getSingleResult();
-                result = 1l;
-
-            }
-        };
-        responseOkExpectations();
-        // Unit under test is exercised.
-        privateBean.hasNewMail("Marvin");
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    //TODO : fix this
-    // @Test
-    public void hasNoNewMail()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Deencapsulation.setField(privateBean, "mailBean", new MailBean()
     {
-        logger.fine("hasNoNewMail");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Deencapsulation.setField(privateBean, "mailBean", new MailBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-
-                entityManager.createNamedQuery("Mail.hasnewmail");
-                result = query;
-                query.setParameter("name", marvin);
-                query.getSingleResult();
-                result = 0l;
-
-            }
-        };
-        // Unit under test is exercised.
-        privateBean.hasNewMail("Marvin");
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void newMail()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("newMail");
-        PrivateMail privateMail = new PrivateMail();
-        privateMail.body = "First mail";
-        privateMail.subject = "Subject";
-        privateMail.toname = "Hotblack";
-        // all other props are ignored by the method under test
 
-        PrivateBean privateBean = new PrivateBean()
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+
+        entityManager.createNamedQuery("Mail.hasnewmail");
+        result = query;
+        query.setParameter("name", marvin);
+        query.getSingleResult();
+        result = 0l;
+
+      }
+    };
+    // Unit under test is exercised.
+    privateBean.hasNewMail("Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
+
+  @Test
+  public void newMail()
+  {
+    logger.fine("newMail");
+    PrivateMail privateMail = new PrivateMail();
+    privateMail.body = "First mail";
+    privateMail.subject = "Subject";
+    privateMail.toname = "Hotblack";
+    // all other props are ignored by the method under test
+
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(User.class, "Hotblack");
+        result = hotblack;
+        entityManager.persist((Mail) any);
+        result = new Delegate()
         {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+          // The name of this method can actually be anything.
+          void persist(Mail mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getBody(), "First mail");
+            assertEquals(mail.getSubject(), "Subject");
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+            assertEquals(mail.getItemDefinition(), null);
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
+            assertEquals(mail.getName(), marvin);
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname(), hotblack);
+            // unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
         };
-        new Expectations() // an "expectation block"
-        {
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(User.class, "Hotblack");
-                result = hotblack;
-                entityManager.persist((Mail) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(Mail mail)
-                    {
-                        assertNotNull(mail);
-                        assertEquals(mail.getBody(), "First mail");
-                        assertEquals(mail.getSubject(), "Subject");
-                        assertEquals(mail.getHaveread(), Boolean.FALSE);
-                        assertEquals(mail.getId(), null);
-                        assertEquals(mail.getItemDefinition(), null);
-
-                        assertEquals(mail.getName(), marvin);
-                        assertEquals(mail.getNewmail(), Boolean.TRUE);
-                        assertEquals(mail.getToname(), hotblack);
-                        // unable to assertEquals getWhensent. As it is using the current date/time.
-                        assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-                    }
-                };
-
-            }
-        };
-        responseOkExpectations();
+      }
+    };
+    responseOkExpectations();
 // Unit under test is exercised.
-        Response result = privateBean.newMail(privateMail, "Marvin");
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
+    Response result = privateBean.newMail(privateMail, "Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    @Test
-    public void newMailToUnknownUser()
+  @Test
+  public void newMailToUnknownUser()
+  {
+    logger.fine("newMailToUnknownUser");
+    PrivateMail privateMail = new PrivateMail();
+    privateMail.body = "First mail";
+    privateMail.subject = "Subject";
+    privateMail.toname = "Unknown";
+    // all other props are ignored by the method under test
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("newMailToUnknownUser");
-        PrivateMail privateMail = new PrivateMail();
-        privateMail.body = "First mail";
-        privateMail.subject = "Subject";
-        privateMail.toname = "Unknown";
-        // all other props are ignored by the method under test
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(User.class, "Unknown");
-                result = null;
-
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            Response result = privateBean.newMail(privateMail, "Marvin");
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void getMailDoesnotExist()
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        logger.fine("getMailDoesnotExist");
-        // all other props are ignored by the method under test
 
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(User.class, "Unknown");
+        result = null;
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = null;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void getMailSomeoneElse()
+      }
+    };
+    // Unit under test is exercised.
+    try
     {
-        logger.fine("getMailSomeoneElse");
-        final Mail mail = new Mail();
-        mail.setToname(hotblack);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.TRUE);
-        mail.setHaveread(Boolean.TRUE);
-        // all other props are ignored by the method under test
-
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void getMailDeleted()
+      Response result = privateBean.newMail(privateMail, "Marvin");
+      fail("Exception expected");
+    } catch (WebApplicationException result)
     {
-        logger.fine("getMailDeleted");
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.TRUE);
-        mail.setHaveread(Boolean.TRUE);
-        // all other props are ignored by the method under test
-
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
+      // Yay! We get an exception!
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    @Test
-    public void getMail()
+  @Test
+  public void getMailDoesnotExist()
+  {
+    logger.fine("getMailDoesnotExist");
+    // all other props are ignored by the method under test
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("getMail");
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        // all other props are ignored by the method under test
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
+    };
+    new Expectations() // an "expectation block"
+    {
 
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        // Unit under test is exercised.
-        PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(actual);
-        PrivateMail expected = new PrivateMail();
-        expected.body = "First mail";
-        expected.subject = "Subject";
-        expected.toname = "Marvin";
-        expected.name = "Hotblack";
-        expected.deleted = false;
-        expected.haveread = true;
-        compare(actual, expected);
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = null;
+      }
+    };
+    // Unit under test is exercised.
+    try
+    {
+      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    // TODO : Fix this!
-    //@Test
-    public void createMailItem()
+  @Test
+  public void getMailSomeoneElse()
+  {
+    logger.fine("getMailSomeoneElse");
+    final Mail mail = new Mail();
+    mail.setToname(hotblack);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.TRUE);
+    mail.setHaveread(Boolean.TRUE);
+    // all other props are ignored by the method under test
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("createMailItem");
-        final Admin admin = TestingConstants.getAdmin();
-        final ItemDefinition itemDef = new ItemDefinition();
-        itemDef.setId(8009);
-        itemDef.setReaddescription("this is letterhead.</p><p>letterbody</p><p>letterfoot</p>");
-        itemDef.setName("paper");
-        itemDef.setAdject1("small");
-        itemDef.setAdject2("piece");
-        itemDef.setAdject3("of");
-        itemDef.setGetable(true);
-        itemDef.setDropable(true);
-        itemDef.setVisible(true);
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-        itemDef.setCopper(1);
-        itemDef.setOwner(admin);
-        itemDef.setNotes("Some notes");
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+    };
+    new Expectations() // an "expectation block"
+    {
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-                entityManager.find(ItemDefinition.class, 8009);
-                result = itemDef;
-                entityManager.createNamedQuery("ItemDefinition.maxid");
-                result = query;
-                query.getSingleResult();
-                result = Integer.valueOf(5);
-                entityManager.persist((ItemDefinition) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(ItemDefinition newItemDef)
-                    {
-                        assertNotNull(newItemDef);
-                        assertEquals(newItemDef.getId(), Integer.valueOf(6));
-                        assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
-                        assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
-                        assertEquals(newItemDef.getName(), itemDef.getName());
-                        assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
-                        assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
-                        assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
-                        assertEquals(newItemDef.getGetable(), itemDef.getGetable());
-                        assertEquals(newItemDef.getDropable(), itemDef.getDropable());
-                        assertEquals(newItemDef.getVisible(), itemDef.getVisible());
-
-                        assertEquals(newItemDef.getCopper(), itemDef.getCopper());
-                        assertEquals(newItemDef.getOwner(), itemDef.getOwner());
-                        assertEquals(newItemDef.getNotes(), itemDef.getNotes());
-                    }
-                };
-
-                entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-                result = TestingConstants.getAdmin();
-
-                entityManager.persist((Item) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(Item item)
-                    {
-                        assertNotNull(item);
-                        // assertEquals(item.getCreation(), new Date());
-                        assertNull(item.getId());
-                        assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
-                        assertEquals(item.getOwner(), admin);
-                    }
-                };
-
-            }
-        };
-        // Unit under test is exercised.
-        Response response = privateBean.createMailItem("Marvin", 1l, 1);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(response);
-        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    // Unit under test is exercised.
+    try
+    {
+      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    // TODO : Fix this!
-    //@Test
-    public void createSecondMailItem() throws MudException
+  @Test
+  public void getMailDeleted()
+  {
+    logger.fine("getMailDeleted");
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.TRUE);
+    mail.setHaveread(Boolean.TRUE);
+    // all other props are ignored by the method under test
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("createSecondMailItem");
-        final Admin admin = TestingConstants.getAdmin();
-        final ItemDefinition itemDef = new ItemDefinition();
-        itemDef.setId(12);
-        itemDef.setReaddescription("Dear people,</p><p>Blahblah</p><p>Regards, Karn.</p>");
-        itemDef.setName("paper");
-        itemDef.setAdject1("small");
-        itemDef.setAdject2("piece");
-        itemDef.setAdject3("of");
-        itemDef.setGetable(true);
-        itemDef.setDropable(true);
-        itemDef.setVisible(true);
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-        itemDef.setCopper(1);
-        itemDef.setOwner(admin);
-        itemDef.setNotes("Some notes");
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        mail.setItemDefinition(itemDef);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+    };
+    new Expectations() // an "expectation block"
+    {
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-                entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-                result = TestingConstants.getAdmin();
-                entityManager.persist((Item) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(Item item)
-                    {
-                        assertNotNull(item);
-                        // assertEquals(item.getCreation(), new Date());
-                        assertNull(item.getId());
-                        assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
-                        assertEquals(item.getOwner(), admin);
-                    }
-                };
-
-            }
-        };
-        // Unit under test is exercised.
-        Response response = privateBean.createMailItem("Marvin", 1l, 1);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(response);
-        assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    // Unit under test is exercised.
+    try
+    {
+      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    // TODO : Fix this!
-    //@Test
-    public void createMailItemError1() throws MudException
+  @Test
+  public void getMail()
+  {
+    logger.fine("getMail");
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    // all other props are ignored by the method under test
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("createMailItemError1");
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        try
-        {
-            // Unit under test is exercised.
-            Response response = privateBean.createMailItem("Marvin", 1l, -1);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    // Unit under test is exercised.
+    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(actual);
+    PrivateMail expected = new PrivateMail();
+    expected.body = "First mail";
+    expected.subject = "Subject";
+    expected.toname = "Marvin";
+    expected.name = "Hotblack";
+    expected.deleted = false;
+    expected.haveread = true;
+    compare(actual, expected);
+  }
+
+  // TODO : Fix this!
+  //@Test
+  public void createMailItem()
+  {
+    logger.fine("createMailItem");
+    final Admin admin = TestingConstants.getAdmin();
+    final ItemDefinition itemDef = new ItemDefinition();
+    itemDef.setId(8009);
+    itemDef.setReaddescription("this is letterhead.</p><p>letterbody</p><p>letterfoot</p>");
+    itemDef.setName("paper");
+    itemDef.setAdject1("small");
+    itemDef.setAdject2("piece");
+    itemDef.setAdject3("of");
+    itemDef.setGetable(true);
+    itemDef.setDropable(true);
+    itemDef.setVisible(true);
+
+    itemDef.setCopper(1);
+    itemDef.setOwner(admin);
+    itemDef.setNotes("Some notes");
+
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+        entityManager.find(ItemDefinition.class, 8009);
+        result = itemDef;
+        entityManager.createNamedQuery("ItemDefinition.maxid");
+        result = query;
+        query.getSingleResult();
+        result = Integer.valueOf(5);
+        entityManager.persist((ItemDefinition) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(ItemDefinition newItemDef)
+          {
+            assertNotNull(newItemDef);
+            assertEquals(newItemDef.getId(), Integer.valueOf(6));
+            assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
+            assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
+            assertEquals(newItemDef.getName(), itemDef.getName());
+            assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
+            assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
+            assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
+            assertEquals(newItemDef.getGetable(), itemDef.getGetable());
+            assertEquals(newItemDef.getDropable(), itemDef.getDropable());
+            assertEquals(newItemDef.getVisible(), itemDef.getVisible());
+
+            assertEquals(newItemDef.getCopper(), itemDef.getCopper());
+            assertEquals(newItemDef.getOwner(), itemDef.getOwner());
+            assertEquals(newItemDef.getNotes(), itemDef.getNotes());
+          }
+        };
+
+        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+        result = TestingConstants.getAdmin();
+
+        entityManager.persist((Item) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Item item)
+          {
+            assertNotNull(item);
+            // assertEquals(item.getCreation(), new Date());
+            assertNull(item.getId());
+            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
+            assertEquals(item.getOwner(), admin);
+          }
+        };
+
+      }
+    };
+    // Unit under test is exercised.
+    Response response = privateBean.createMailItem("Marvin", 1l, 1);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(response);
+    assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+  }
+
+  // TODO : Fix this!
+  //@Test
+  public void createSecondMailItem() throws MudException
+  {
+    logger.fine("createSecondMailItem");
+    final Admin admin = TestingConstants.getAdmin();
+    final ItemDefinition itemDef = new ItemDefinition();
+    itemDef.setId(12);
+    itemDef.setReaddescription("Dear people,</p><p>Blahblah</p><p>Regards, Karn.</p>");
+    itemDef.setName("paper");
+    itemDef.setAdject1("small");
+    itemDef.setAdject2("piece");
+    itemDef.setAdject3("of");
+    itemDef.setGetable(true);
+    itemDef.setDropable(true);
+    itemDef.setVisible(true);
+
+    itemDef.setCopper(1);
+    itemDef.setOwner(admin);
+    itemDef.setNotes("Some notes");
+
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    mail.setItemDefinition(itemDef);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+        result = TestingConstants.getAdmin();
+        entityManager.persist((Item) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Item item)
+          {
+            assertNotNull(item);
+            // assertEquals(item.getCreation(), new Date());
+            assertNull(item.getId());
+            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
+            assertEquals(item.getOwner(), admin);
+          }
+        };
+
+      }
+    };
+    // Unit under test is exercised.
+    Response response = privateBean.createMailItem("Marvin", 1l, 1);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(response);
+    assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+  }
+
+  // TODO : Fix this!
+  //@Test
+  public void createMailItemError1() throws MudException
+  {
+    logger.fine("createMailItemError1");
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    try
+    {
+      // Unit under test is exercised.
+      Response response = privateBean.createMailItem("Marvin", 1l, -1);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    // TODO : Fix this!
-    //@Test
-    public void createMailItemError2() throws MudException
+  // TODO : Fix this!
+  //@Test
+  public void createMailItemError2() throws MudException
+  {
+    logger.fine("createMailItemError1");
+    final Mail mail = new Mail();
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("createMailItemError1");
-        final Mail mail = new Mail();
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        try
-        {
-            // Unit under test is exercised.
-            Response response = privateBean.createMailItem("Marvin", 1l, 8);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    try
+    {
+      // Unit under test is exercised.
+      Response response = privateBean.createMailItem("Marvin", 1l, 8);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
 
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-    @Test
-    public void deleteMail() throws MudException
+  @Test
+  public void deleteMail() throws MudException
+  {
+    logger.fine("deleteMail");
+    final Mail mail = new Mail();
+    mail.setId(1l);
+    mail.setToname(marvin);
+    mail.setName(hotblack);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("deleteMail");
-        final Mail mail = new Mail();
-        mail.setId(1l);
-        mail.setToname(marvin);
-        mail.setName(hotblack);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
 
-        };
-        new Expectations() // an "expectation block"
-        {
+    };
+    new Expectations() // an "expectation block"
+    {
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-        responseOkExpectations();
-        // Unit under test is exercised.
-        Response response = privateBean.deleteMail("Marvin", 1l);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(mail.getDeleted(), Boolean.TRUE);
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+    responseOkExpectations();
+    // Unit under test is exercised.
+    Response response = privateBean.deleteMail("Marvin", 1l);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(mail.getDeleted(), Boolean.TRUE);
+  }
+
+  @Test
+  public void deleteMailNotYours() throws MudException
+  {
+    logger.fine("deleteMail");
+    final Mail mail = new Mail();
+    mail.setId(1l);
+    mail.setToname(hotblack);
+    mail.setName(marvin);
+    mail.setBody("First mail");
+    mail.setSubject("Subject");
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = mail;
+      }
+    };
+
+    // Unit under test is exercised.
+    try
+    {
+      privateBean.deleteMail("Marvin", 1l);
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
+    }// Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(mail.getDeleted(), Boolean.FALSE);
+  }
+
+  @Test
+  public void deleteMailNotFound() throws MudException
+  {
+    logger.fine("deleteMail");
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Mail.class, 1l);
+        result = null;
+      }
+    };
+    try
+    {
+      // Unit under test is exercised.
+      Response response = privateBean.deleteMail("Marvin", 1l);
+      // Verification code (JUnit/TestNG asserts), if any.
+      fail("Exception expected");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+  }
 
-    @Test
-    public void deleteMailNotYours() throws MudException
+  @Test
+  public void updateCharacterSheet() throws MudException
+  {
+    logger.fine("updateCharacterSheet");
+    final CharacterInfo cinfo = new CharacterInfo();
+    cinfo.setName("Marvin");
+    cinfo.setImageurl("http://www.images.com/image.jpg");
+    cinfo.setHomepageurl("http://www.homepages.com");
+    cinfo.setDateofbirth("none");
+    cinfo.setCityofbirth("none");
+    cinfo.setStoryline("none");
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("deleteMail");
-        final Mail mail = new Mail();
-        mail.setId(1l);
-        mail.setToname(hotblack);
-        mail.setName(marvin);
-        mail.setBody("First mail");
-        mail.setSubject("Subject");
-        mail.setDeleted(Boolean.FALSE);
-        mail.setHaveread(Boolean.FALSE);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = mail;
-            }
-        };
-
-        // Unit under test is exercised.
-        try
-        {
-            privateBean.deleteMail("Marvin", 1l);
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }// Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(mail.getDeleted(), Boolean.FALSE);
-    }
-
-    @Test
-    public void deleteMailNotFound() throws MudException
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        logger.fine("deleteMail");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Mail.class, 1l);
-                result = null;
-            }
-        };
-        try
-        {
-            // Unit under test is exercised.
-            Response response = privateBean.deleteMail("Marvin", 1l);
-            // Verification code (JUnit/TestNG asserts), if any.
-            fail("Exception expected");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-    }
-
-    @Test
-    public void updateCharacterSheet() throws MudException
-    {
-        logger.fine("updateCharacterSheet");
-        final CharacterInfo cinfo = new CharacterInfo();
-        cinfo.setName("Marvin");
-        cinfo.setImageurl("http://www.images.com/image.jpg");
-        cinfo.setHomepageurl("http://www.homepages.com");
-        cinfo.setDateofbirth("none");
-        cinfo.setCityofbirth("none");
-        cinfo.setStoryline("none");
-
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(CharacterInfo.class, "Marvin");
-                result = cinfo;
-            }
-        };
-        responseOkExpectations();
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(CharacterInfo.class, "Marvin");
+        result = cinfo;
+      }
+    };
+    responseOkExpectations();
 // Unit under test is exercised.
-        final PrivatePerson person = new PrivatePerson();
-        person.name = "Marvin";
-        person.imageurl = "http://www.images.com/newimage.jpg";
-        person.homepageurl = "http://www.homepages.com/homepage.html";
-        person.dateofbirth = "Beginning of time";
-        person.cityofbirth = "Sirius";
-        person.storyline = "Life, don't talk to me about life.";
-        Response response = privateBean.updateCharacterSheet("Marvin", person);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(cinfo.getName(), person.name);
-        assertEquals(cinfo.getImageurl(), person.imageurl);
-        assertEquals(cinfo.getHomepageurl(), person.homepageurl);
-        assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
-        assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
-        assertEquals(cinfo.getStoryline(), person.storyline);
+    final PrivatePerson person = new PrivatePerson();
+    person.name = "Marvin";
+    person.imageurl = "http://www.images.com/newimage.jpg";
+    person.homepageurl = "http://www.homepages.com/homepage.html";
+    person.dateofbirth = "Beginning of time";
+    person.cityofbirth = "Sirius";
+    person.storyline = "Life, don't talk to me about life.";
+    Response response = privateBean.updateCharacterSheet("Marvin", person);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(cinfo.getName(), person.name);
+    assertEquals(cinfo.getImageurl(), person.imageurl);
+    assertEquals(cinfo.getHomepageurl(), person.homepageurl);
+    assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
+    assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
+    assertEquals(cinfo.getStoryline(), person.storyline);
 
-    }
+  }
 
-    @Test
-    public void newCharacterSheet() throws MudException
+  @Test
+  public void newCharacterSheet() throws MudException
+  {
+    logger.fine("newCharacterSheet");
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("newCharacterSheet");
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(CharacterInfo.class, "Marvin");
-                result = null;
-
-                entityManager.persist((CharacterInfo) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(CharacterInfo cinfo)
-                    {
-                        assertNotNull(cinfo);
-                        assertEquals(cinfo.getName(), "Marvin");
-                        assertEquals(cinfo.getImageurl(), "http://www.images.com/newimage.jpg");
-                        assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
-                        assertEquals(cinfo.getDateofbirth(), "Beginning of time");
-                        assertEquals(cinfo.getCityofbirth(), "Sirius");
-                        assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
-                    }
-                };
-            }
-        };
-        responseOkExpectations();
-        // Unit under test is exercised.
-        final PrivatePerson person = new PrivatePerson();
-        person.name = "Marvin";
-        person.imageurl = "http://www.images.com/newimage.jpg";
-        person.homepageurl = "http://www.homepages.com/homepage.html";
-        person.dateofbirth = "Beginning of time";
-        person.cityofbirth = "Sirius";
-        person.storyline = "Life, don't talk to me about life.";
-        privateBean.updateCharacterSheet("Marvin", person);
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void updateCharacterSheetScriptInjection() throws MudException
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        logger.fine("updateCharacterSheetScriptInjection");
-        final CharacterInfo cinfo = new CharacterInfo();
-        cinfo.setName("Marvin");
-        cinfo.setImageurl("http://www.images.com/image.jpg");
-        cinfo.setHomepageurl("http://www.homepages.com");
-        cinfo.setDateofbirth("none");
-        cinfo.setCityofbirth("none");
-        cinfo.setStoryline("none");
 
-        PrivateBean privateBean = new PrivateBean()
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(CharacterInfo.class, "Marvin");
+        result = null;
+
+        entityManager.persist((CharacterInfo) any);
+        result = new Delegate()
         {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
+          // The name of this method can actually be anything.
+          void persist(CharacterInfo cinfo)
+          {
+            assertNotNull(cinfo);
+            assertEquals(cinfo.getName(), "Marvin");
+            assertEquals(cinfo.getImageurl(), "http://www.images.com/newimage.jpg");
+            assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
+            assertEquals(cinfo.getDateofbirth(), "Beginning of time");
+            assertEquals(cinfo.getCityofbirth(), "Sirius");
+            assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
+          }
         };
-        new Expectations() // an "expectation block"
-        {
+      }
+    };
+    responseOkExpectations();
+    // Unit under test is exercised.
+    final PrivatePerson person = new PrivatePerson();
+    person.name = "Marvin";
+    person.imageurl = "http://www.images.com/newimage.jpg";
+    person.homepageurl = "http://www.homepages.com/homepage.html";
+    person.dateofbirth = "Beginning of time";
+    person.cityofbirth = "Sirius";
+    person.storyline = "Life, don't talk to me about life.";
+    privateBean.updateCharacterSheet("Marvin", person);
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
 
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(CharacterInfo.class, "Marvin");
-                result = cinfo;
-            }
-        };
-        responseOkExpectations();        // Unit under test is exercised.
-        final PrivatePerson person = new PrivatePerson();
-        person.name = "Marvin";
-        person.imageurl = "http://www.images.com/newimage.jpg";
-        person.homepageurl = "http://www.homepages.com/homepage.html";
-        person.dateofbirth = "Beginning of time";
-        person.cityofbirth = "Sirius";
-        person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-        Response response = privateBean.updateCharacterSheet("Marvin", person);
-        // Verification code (JUnit/TestNG asserts), if any.
+  @Test
+  public void updateCharacterSheetScriptInjection() throws MudException
+  {
+    logger.fine("updateCharacterSheetScriptInjection");
+    final CharacterInfo cinfo = new CharacterInfo();
+    cinfo.setName("Marvin");
+    cinfo.setImageurl("http://www.images.com/image.jpg");
+    cinfo.setHomepageurl("http://www.homepages.com");
+    cinfo.setDateofbirth("none");
+    cinfo.setCityofbirth("none");
+    cinfo.setStoryline("none");
 
-        assertEquals(cinfo.getName(), person.name);
-        assertEquals(cinfo.getImageurl(), person.imageurl);
-        assertEquals(cinfo.getHomepageurl(), person.homepageurl);
-        assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
-        assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
-        assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
-
-    }
-
-    @Test
-    public void updateCharacterSheetOfSomebodyElse() throws MudException
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("updateCharacterSheetOfSomebodyElse");
-        final CharacterInfo cinfo = new CharacterInfo();
-        cinfo.setName("Marvin");
-        cinfo.setImageurl("http://www.images.com/image.jpg");
-        cinfo.setHomepageurl("http://www.homepages.com");
-        cinfo.setDateofbirth("none");
-        cinfo.setCityofbirth("none");
-        cinfo.setStoryline("none");
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-            }
-        };
-        // Unit under test is exercised.
-        final PrivatePerson person = new PrivatePerson();
-        person.name = "Hotblack";
-        person.imageurl = "http://www.images.com/newimage.jpg";
-        person.homepageurl = "http://www.homepages.com/homepage.html";
-        person.dateofbirth = "Beginning of time";
-        person.cityofbirth = "Sirius";
-        person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-        try
-        {
-            Response response = privateBean.updateCharacterSheet("Marvin", person);
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-    }
-
-    @Test
-    public void updateFamilyvalues() throws MudException
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        logger.fine("updateFamilyvalues");
-        final FamilyValue value = new FamilyValue();
-        value.setDescription("friend");
-        value.setId(1);
-        final FamilyValue value2 = new FamilyValue();
-        value2.setDescription("bff");
-        value2.setId(2);
-        final Family family = new Family();
-        family.setDescription(value);
-        FamilyPK pk = new FamilyPK();
-        pk.setName("Marvin");
-        pk.setToname("Hotblack");
-        family.setFamilyPK(pk);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(CharacterInfo.class, "Marvin");
+        result = cinfo;
+      }
+    };
+    responseOkExpectations();        // Unit under test is exercised.
+    final PrivatePerson person = new PrivatePerson();
+    person.name = "Marvin";
+    person.imageurl = "http://www.images.com/newimage.jpg";
+    person.homepageurl = "http://www.homepages.com/homepage.html";
+    person.dateofbirth = "Beginning of time";
+    person.cityofbirth = "Sirius";
+    person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
+    Response response = privateBean.updateCharacterSheet("Marvin", person);
+    // Verification code (JUnit/TestNG asserts), if any.
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Person.class, "Hotblack");
-                result = hotblack;
-                entityManager.find(FamilyValue.class, 2);
-                result = value2;
-                entityManager.find(Family.class, (FamilyPK) any);
-                result = family;
-            }
-        };
-        responseOkExpectations();        // Unit under test is exercised.
-        Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(family.getDescription(), value2);
+    assertEquals(cinfo.getName(), person.name);
+    assertEquals(cinfo.getImageurl(), person.imageurl);
+    assertEquals(cinfo.getHomepageurl(), person.homepageurl);
+    assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
+    assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
+    assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
 
-    }
+  }
 
-    @Test
-    public void updateFamilyvaluesNotFound() throws MudException
+  @Test
+  public void updateCharacterSheetOfSomebodyElse() throws MudException
+  {
+    logger.fine("updateCharacterSheetOfSomebodyElse");
+    final CharacterInfo cinfo = new CharacterInfo();
+    cinfo.setName("Marvin");
+    cinfo.setImageurl("http://www.images.com/image.jpg");
+    cinfo.setHomepageurl("http://www.homepages.com");
+    cinfo.setDateofbirth("none");
+    cinfo.setCityofbirth("none");
+    cinfo.setStoryline("none");
+
+    PrivateBean privateBean = new PrivateBean()
     {
-        logger.fine("updateFamilyvaluesNotFound");
-        final FamilyValue value = new FamilyValue();
-        value.setDescription("friend");
-        value.setId(1);
-        final FamilyValue value2 = new FamilyValue();
-        value2.setDescription("bff");
-        value2.setId(2);
-        final Family family = new Family();
-        family.setDescription(value);
-        FamilyPK pk = new FamilyPK();
-        pk.setName("Marvin");
-        pk.setToname("Hotblack");
-        family.setFamilyPK(pk);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Person.class, "Hotblack");
-                result = hotblack;
-                entityManager.find(FamilyValue.class, 12);
-                result = null;
-            }
-        };
-        try
-        {
-            // Unit under test is exercised.
-            Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-
-    }
-
-    @Test
-    public void newFamilyvalues() throws MudException
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        logger.fine("newFamilyvalues");
-        final FamilyValue value = new FamilyValue();
-        value.setDescription("friend");
-        value.setId(1);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Person.class, "Hotblack");
-                result = hotblack;
-                entityManager.find(FamilyValue.class, 1);
-                result = value;
-                entityManager.find(Family.class, (FamilyPK) any);
-                result = null;
-                entityManager.persist((Family) any);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    void persist(Family fam)
-                    {
-                        assertNotNull(fam);
-                        assertEquals(fam.getDescription(), value);
-                        assertEquals(fam.getFamilyPK().getName(), "Marvin");
-                        assertEquals(fam.getFamilyPK().getToname(), "Hotblack");
-                    }
-                };
-            }
-        };
-        responseOkExpectations();
-        // Unit under test is exercised.
-        Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 1);
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void deleteFamilyvalues() throws MudException
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+      }
+    };
+    // Unit under test is exercised.
+    final PrivatePerson person = new PrivatePerson();
+    person.name = "Hotblack";
+    person.imageurl = "http://www.images.com/newimage.jpg";
+    person.homepageurl = "http://www.homepages.com/homepage.html";
+    person.dateofbirth = "Beginning of time";
+    person.cityofbirth = "Sirius";
+    person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
+    try
     {
-        logger.fine("deleteFamilyvalues");
-        final FamilyValue value = new FamilyValue();
-        value.setDescription("friend");
-        value.setId(1);
-        final FamilyValue value2 = new FamilyValue();
-        value2.setDescription("bff");
-        value2.setId(2);
-        final Family family = new Family();
-        family.setDescription(value);
-        FamilyPK pk = new FamilyPK();
-        pk.setName("Marvin");
-        pk.setToname("Hotblack");
-        family.setFamilyPK(pk);
-        PrivateBean privateBean = new PrivateBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Family.class, (FamilyPK) any);
-                result = family;
-                entityManager.remove(family);
-            }
-        };
-        responseOkExpectations();
-        // Unit under test is exercised.
-        privateBean.deleteFamilyvalues("Marvin", "Hotblack");
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    private void responseOkExpectations()
+      Response response = privateBean.updateCharacterSheet("Marvin", person);
+      fail("We are supposed to get an exception here.");
+    } catch (WebApplicationException result)
     {
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                Response.ok();
-                result = responseBuilder;
-                responseBuilder.build();
-            }
-        };
+      // Yay! We get an exception!
     }
+  }
 
-    private void responseNoContentExpectations()
+  @Test
+  public void updateFamilyvalues() throws MudException
+  {
+    logger.fine("updateFamilyvalues");
+    final FamilyValue value = new FamilyValue();
+    value.setDescription("friend");
+    value.setId(1);
+    final FamilyValue value2 = new FamilyValue();
+    value2.setDescription("bff");
+    value2.setId(2);
+    final Family family = new Family();
+    family.setDescription(value);
+    FamilyPK pk = new FamilyPK();
+    pk.setName("Marvin");
+    pk.setToname("Hotblack");
+    family.setFamilyPK(pk);
+    PrivateBean privateBean = new PrivateBean()
     {
-        new Expectations() // an "expectation block"
-        {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            {
-                Response.noContent();
-                result = responseBuilder;
-                responseBuilder.build();
-            }
-        };
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Person.class, "Hotblack");
+        result = hotblack;
+        entityManager.find(FamilyValue.class, 2);
+        result = value2;
+        entityManager.find(Family.class, (FamilyPK) any);
+        result = family;
+      }
+    };
+    responseOkExpectations();        // Unit under test is exercised.
+    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(family.getDescription(), value2);
+
+  }
+
+  @Test
+  public void updateFamilyvaluesNotFound() throws MudException
+  {
+    logger.fine("updateFamilyvaluesNotFound");
+    final FamilyValue value = new FamilyValue();
+    value.setDescription("friend");
+    value.setId(1);
+    final FamilyValue value2 = new FamilyValue();
+    value2.setDescription("bff");
+    value2.setId(2);
+    final Family family = new Family();
+    family.setDescription(value);
+    FamilyPK pk = new FamilyPK();
+    pk.setName("Marvin");
+    pk.setToname("Hotblack");
+    family.setFamilyPK(pk);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Person.class, "Hotblack");
+        result = hotblack;
+        entityManager.find(FamilyValue.class, 12);
+        result = null;
+      }
+    };
+    try
+    {
+      // Unit under test is exercised.
+      Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
+      fail("We are supposed to get an exception here.");
+    } catch (WebApplicationException result)
+    {
+      // Yay! We get an exception!
     }
+
+  }
+
+  @Test
+  public void newFamilyvalues() throws MudException
+  {
+    logger.fine("newFamilyvalues");
+    final FamilyValue value = new FamilyValue();
+    value.setDescription("friend");
+    value.setId(1);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Person.class, "Hotblack");
+        result = hotblack;
+        entityManager.find(FamilyValue.class, 1);
+        result = value;
+        entityManager.find(Family.class, (FamilyPK) any);
+        result = null;
+        entityManager.persist((Family) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Family fam)
+          {
+            assertNotNull(fam);
+            assertEquals(fam.getDescription(), value);
+            assertEquals(fam.getFamilyPK().getName(), "Marvin");
+            assertEquals(fam.getFamilyPK().getToname(), "Hotblack");
+          }
+        };
+      }
+    };
+    responseOkExpectations();
+    // Unit under test is exercised.
+    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 1);
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
+
+  @Test
+  public void deleteFamilyvalues() throws MudException
+  {
+    logger.fine("deleteFamilyvalues");
+    final FamilyValue value = new FamilyValue();
+    value.setDescription("friend");
+    value.setId(1);
+    final FamilyValue value2 = new FamilyValue();
+    value2.setDescription("bff");
+    value2.setId(2);
+    final Family family = new Family();
+    family.setDescription(value);
+    FamilyPK pk = new FamilyPK();
+    pk.setName("Marvin");
+    pk.setToname("Hotblack");
+    family.setFamilyPK(pk);
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Family.class, (FamilyPK) any);
+        result = family;
+        entityManager.remove(family);
+      }
+    };
+    responseOkExpectations();
+    // Unit under test is exercised.
+    privateBean.deleteFamilyvalues("Marvin", "Hotblack");
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
+
+  private void responseOkExpectations()
+  {
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        Response.ok();
+        result = responseBuilder;
+        responseBuilder.build();
+      }
+    };
+  }
+
+  private void responseNoContentExpectations()
+  {
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        Response.noContent();
+        result = responseBuilder;
+        responseBuilder.build();
+      }
+    };
+  }
 }

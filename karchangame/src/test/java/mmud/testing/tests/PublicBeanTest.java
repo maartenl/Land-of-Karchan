@@ -18,7 +18,6 @@ package mmud.testing.tests;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -62,760 +61,718 @@ import org.testng.annotations.Test;
 public class PublicBeanTest
 {
 
-    // Obtain a suitable logger.
-    private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
+  // Obtain a suitable logger.
+  private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
 
-    @Mocked
-    EntityManager entityManager;
+  @Mocked
+  EntityManager entityManager;
 
-    @Mocked
-    Query query;
+  @Mocked
+  Query query;
 
-    @Mocked
-    MudWebException webApplicationException;
+  @Mocked
+  MudWebException webApplicationException;
 
-    @Mocked
-    ErrorDetails errorDetails;
+  @Mocked
+  ErrorDetails errorDetails;
 
-    private User hotblack;
-    private User marvin;
+  private User hotblack;
+  private User marvin;
 
-    public PublicBeanTest()
+  public PublicBeanTest()
+  {
+  }
+
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
+
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
+
+  @BeforeMethod
+  public void setUp() throws MudException
+  {
+    Area aArea = TestingConstants.getSpecialArea();
+    Room aRoom = TestingConstants.getRoom(aArea);
+
+    hotblack = (User) TestingConstants.getHotblack(aRoom);
+    marvin = (User) TestingConstants.getMarvin(aRoom);
+    marvin.setSleep(true);
+  }
+
+  @AfterMethod
+  public void tearDown()
+  {
+  }
+
+  @Test
+  public void hello()
+  {
+    assertEquals(2, 2);
+  }
+
+  private void compare(Fortune actual, Fortune expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
     {
+      return;
     }
+    assertEquals(actual.gold, expected.gold, "gold");
+    assertEquals(actual.silver, expected.silver, "silver");
+    assertEquals(actual.copper, expected.copper, "copper");
+    assertEquals(actual.name, expected.name, "name");
+  }
 
-    @BeforeClass
-    public void setUpClass()
+  private void compare(PublicPerson actual, PublicPerson expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
     {
+      return;
     }
+    assertEquals(actual.name, expected.name, "name");
+    assertEquals(actual.title, expected.title, "title");
+    assertEquals(actual.sleep, expected.sleep, "sleep");
+    assertEquals(actual.area, expected.area, "area");
+    assertEquals(actual.min, expected.min, "min");
+    assertEquals(actual.sec, expected.sec, "sec");
 
-    @AfterClass
-    public void tearDownClass()
+    assertEquals(actual.sex, expected.sex);
+    assertEquals(actual.imageurl, expected.imageurl);
+    assertEquals(actual.homepageurl, expected.homepageurl);
+    assertEquals(actual.dateofbirth, expected.dateofbirth);
+    assertEquals(actual.cityofbirth, expected.cityofbirth);
+    assertEquals(actual.storyline, expected.storyline);
+    assertEquals(actual.url, expected.url, "sec");
+    assertEquals(actual.description, expected.description, "#" + actual.description + "##" + expected.description + "#");
+  }
+
+  private void compare(PublicGuild actual, PublicGuild expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
     {
+      return;
     }
+    assertEquals(actual.title, expected.title, "title");
+    assertEquals(actual.guildurl, expected.guildurl, "guildurl");
+    assertEquals(actual.guilddescription, expected.guilddescription, "guilddescription");
+    assertEquals(actual.creation, expected.creation, "creation");
+    assertEquals(actual.bossname, expected.bossname, "bossname");
+  }
 
-    @BeforeMethod
-    public void setUp() throws MudException
+  private void compare(News actual, News expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
     {
-        Area aArea = TestingConstants.getSpecialArea();
-        Room aRoom = TestingConstants.getRoom(aArea);
-
-        hotblack = (User) TestingConstants.getHotblack(aRoom);
-        marvin = (User) TestingConstants.getMarvin(aRoom);
-        marvin.setSleep(true);
+      return;
     }
-
-    @AfterMethod
-    public void tearDown()
+    assertEquals(actual.name, expected.name, "name");
+    assertEquals(actual.message, expected.message, "message");
+    if (TestingUtils.compareBase(actual.posttime, expected.posttime))
     {
+      return;
     }
+    assertEquals(actual.posttime.getTime(), expected.posttime.getTime(), "posttime");
+  }
 
-    @Test
-    public void hello()
+  @Test
+  public void fortunesEmptyTest()
+  {
+    logger.fine("fortunesEmptyTest");
+    PublicBean publicBean = new PublicBean()
     {
-        assertEquals(2, 2);
-    }
-
-    private void compare(Fortune actual, Fortune expected)
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.gold, expected.gold, "gold");
-        assertEquals(actual.silver, expected.silver, "silver");
-        assertEquals(actual.copper, expected.copper, "copper");
-        assertEquals(actual.name, expected.name, "name");
-    }
 
-    private void compare(PublicPerson actual, PublicPerson expected)
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("User.fortunes");
+        result = query;
+      }
+    };
+    // Unit under test is exercised.
+    List<Fortune> result = publicBean.fortunes();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(result.size(), 0);
+  }
+
+  @Test
+  public void fortunesTest()
+  {
+    logger.fine("fortunesTest");
+    PublicBean publicBean = new PublicBean()
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.title, expected.title, "title");
-        assertEquals(actual.sleep, expected.sleep, "sleep");
-        assertEquals(actual.area, expected.area, "area");
-        assertEquals(actual.min, expected.min, "min");
-        assertEquals(actual.sec, expected.sec, "sec");
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
 
-        assertEquals(actual.sex, expected.sex);
-        assertEquals(actual.imageurl, expected.imageurl);
-        assertEquals(actual.homepageurl, expected.homepageurl);
-        assertEquals(actual.dateofbirth, expected.dateofbirth);
-        assertEquals(actual.cityofbirth, expected.cityofbirth);
-        assertEquals(actual.storyline, expected.storyline);
-        assertEquals(actual.url, expected.url, "sec");
-        assertEquals(actual.description, expected.description, "#" + actual.description + "##" + expected.description + "#");
-    }
-
-    private void compare(PublicGuild actual, PublicGuild expected)
+    final Object[] one =
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.title, expected.title, "title");
-        assertEquals(actual.guildurl, expected.guildurl, "guildurl");
-        assertEquals(actual.guilddescription, expected.guilddescription, "guilddescription");
-        assertEquals(actual.creation, expected.creation, "creation");
-        assertEquals(actual.bossname, expected.bossname, "bossname");
-    }
-
-    private void compare(News actual, News expected)
+      "Hotblack", Integer.valueOf(34567)
+    };
+    final Object[] two =
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.message, expected.message, "message");
-        if (TestingUtils.compareBase(actual.posttime, expected.posttime))
-        {
-            return;
-        }
-        assertEquals(actual.posttime.getTime(), expected.posttime.getTime(), "posttime");
-    }
-
-    @Test
-    public void fortunesEmptyTest()
+      "Marvin",
+      Integer.valueOf(345674)
+    };
+    final List<Object[]> list = new ArrayList<>();
+    list.add(one);
+    list.add(two);
+    new Expectations() // an "expectation block"
     {
-        logger.fine("fortunesEmptyTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
 
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("User.fortunes");
+        result = query;
+        query.setMaxResults(100);
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<Fortune> result = publicBean.fortunes();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(result.size(), 2);
+    Fortune expected = new Fortune();
+    expected.name = "Hotblack";
+    expected.gold = 345;
+    expected.silver = 6;
+    expected.copper = 7;
+    compare(result.get(0), expected);
+    expected = new Fortune();
+    expected.name = "Marvin";
+    expected.gold = 3456;
+    expected.silver = 7;
+    expected.copper = 4;
+    compare(result.get(1), expected);
+  }
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.fortunes");
-                result = query;
-            }
-        };
-        // Unit under test is exercised.
-        List<Fortune> result = publicBean.fortunes();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 0);
-    }
+  @Test
+  public void whoEmptyTest()
+  {
+    logger.fine("whoEmptyTest");
 
-    @Test
-    public void fortunesTest()
+    PublicBean publicBean = new PublicBean()
     {
-        logger.fine("fortunesTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-
-        final Object[] one =
-        {
-            "Hotblack", Integer.valueOf(34567)
-        };
-        final Object[] two =
-        {
-            "Marvin",
-            Integer.valueOf(345674)
-        };
-        final List<Object[]> list = new ArrayList<>();
-        list.add(one);
-        list.add(two);
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.fortunes");
-                result = query;
-                query.setMaxResults(100);
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<Fortune> result = publicBean.fortunes();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 2);
-        Fortune expected = new Fortune();
-        expected.name = "Hotblack";
-        expected.gold = 345;
-        expected.silver = 6;
-        expected.copper = 7;
-        compare(result.get(0), expected);
-        expected = new Fortune();
-        expected.name = "Marvin";
-        expected.gold = 3456;
-        expected.silver = 7;
-        expected.copper = 4;
-        compare(result.get(1), expected);
-    }
-
-    @Test
-    public void whoEmptyTest()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Deencapsulation.setField(publicBean, "personBean", new PersonBean()
     {
-        logger.fine("whoEmptyTest");
-
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Deencapsulation.setField(publicBean, "personBean", new PersonBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.who");
-                result = query;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.who();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void whoTest()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("whoTest");
 
-        final List<Person> list = new ArrayList<>();
-        list.add(hotblack);
-        list.add(marvin);
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Deencapsulation.setField(publicBean, "personBean", new PersonBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.createNamedQuery("User.who");
+        result = query;
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.who();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertEquals(result.size(), 0);
+  }
 
+  @Test
+  public void whoTest()
+  {
+    logger.fine("whoTest");
 
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.who");
-                result = query;
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.who();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 2);
-        PublicPerson expected = new PublicPerson();
-        expected.name = "Hotblack";
-        expected.sleep = "";
-        expected.area = "On board the Starship Heart of Gold";
-        expected.min = 16l;
-        expected.sec = 40l;
-        expected.title = "Guitar keyboard player of the rock group Disaster Area";
-        compare(result.get(0), expected);
-        expected = new PublicPerson();
-        expected.name = "Marvin";
-        expected.sleep = "sleeping";
-        expected.area = "On board the Starship Heart of Gold";
-        expected.min = 33l;
-        expected.sec = 20l;
-        expected.title = "The Paranoid Android";
-        compare(result.get(1), expected);
-    }
-
-    @Test
-    public void newsEmptyTest() throws ParseException
+    final List<Person> list = new ArrayList<>();
+    list.add(hotblack);
+    list.add(marvin);
+    PublicBean publicBean = new PublicBean()
     {
-        logger.fine("newsEmptyTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("BoardMessage.news");
-                result = query;
-                query.setParameter("sundays", getSundays());
-                query.getResultList();
-            }
-        };
-        // Unit under test is exercised.
-        List<News> result = publicBean.news();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void newsTest() throws ParseException
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Deencapsulation.setField(publicBean, "personBean", new PersonBean()
     {
-        logger.fine("newsTest");
-        Date secondDate = new Date();
-        Date firstDate = new Date(secondDate.getTime() - 1_000_000);
-        final List<BoardMessage> list = new ArrayList<>();
-        BoardMessage message = new BoardMessage();
-        message.setId(1);
-        message.setPerson(hotblack);
-        message.setMessage("First post!");
-        message.setPosttime(firstDate);
-        message.setRemoved(Boolean.FALSE);
-        list.add(message);
-        message = new BoardMessage();
-        message.setId(2);
-        message.setPerson(marvin);
-        message.setMessage("Damn!");
-        message.setPosttime(secondDate);
-        message.setRemoved(Boolean.FALSE);
-        list.add(message);
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        });
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("BoardMessage.news");
-                result = query;
-                query.setParameter("sundays", getSundays());
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<News> result = publicBean.news();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 2);
-        News expected = new News();
-        expected.name = "Hotblack";
-        expected.message = "First post!";
-        expected.posttime = firstDate;
-        compare(result.get(0), expected);
-        expected = new News();
-        expected.name = "Marvin";
-        expected.message = "Damn!";
-        expected.posttime = secondDate;
-        compare(result.get(1), expected);
-    }
-
-    @Test
-    public void statusEmptyTest()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("statusEmptyTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
 
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.createNamedQuery("User.who");
+        result = query;
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.who();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 2);
+    PublicPerson expected = new PublicPerson();
+    expected.name = "Hotblack";
+    expected.sleep = "";
+    expected.area = "On board the Starship Heart of Gold";
+    expected.min = 16l;
+    expected.sec = 40l;
+    expected.title = "Guitar keyboard player of the rock group Disaster Area";
+    compare(result.get(0), expected);
+    expected = new PublicPerson();
+    expected.name = "Marvin";
+    expected.sleep = "sleeping";
+    expected.area = "On board the Starship Heart of Gold";
+    expected.min = 33l;
+    expected.sec = 20l;
+    expected.title = "The Paranoid Android";
+    compare(result.get(1), expected);
+  }
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.status");
-                result = query;
-                query.getResultList();
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.status();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void statusTest()
+  @Test
+  public void newsEmptyTest() throws ParseException
+  {
+    logger.fine("newsEmptyTest");
+    PublicBean publicBean = new PublicBean()
     {
-        logger.fine("statusTest");
-        final List<Person> list = new ArrayList<>();
-        list.add(hotblack);
-        list.add(marvin);
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("User.status");
-                result = query;
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.status();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 2);
-        PublicPerson expected = new PublicPerson();
-        expected.name = "Hotblack";
-        expected.title = "Guitar keyboard player of the rock group Disaster Area";
-        compare(result.get(0), expected);
-        expected = new PublicPerson();
-        expected.name = "Marvin";
-        expected.title = "The Paranoid Android";
-        compare(result.get(1), expected);
-    }
-
-    @Test
-    public void guildsEmptyTest()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
     {
-        logger.fine("guildsEmptyTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("Guild.findAll");
-                result = query;
-                query.getResultList();
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicGuild> result = publicBean.guilds();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void guildsTest() throws MudException
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("guildsTest");
-        Date secondDate = new Date();
-        Date firstDate = new Date(secondDate.getTime() - 1_000_000);
-        final List<Guild> list = new ArrayList<>();
-        Guild guild = new Guild();
-        guild.setName("disasterarea");
-        guild.setTitle("Disaster Area");
-        guild.setBoss(hotblack);
-        guild.setCreation(firstDate);
-        guild.setHomepage("http://www.disasterarea.com");
-        guild.setDescription("This is just a description");
-        list.add(guild);
-        guild = new Guild();
-        guild.setName("sirius");
-        guild.setTitle("Sirius Cybernetics Corporation");
-        guild.setBoss(marvin);
-        guild.setCreation(secondDate);
-        guild.setHomepage("http://www.scc.com");
-        guild.setDescription("This is just a description");
-        list.add(guild);
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
 
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("BoardMessage.news");
+        result = query;
+        query.getResultList();
+      }
+    };
+    // Unit under test is exercised.
+    List<News> result = publicBean.news();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 0);
+  }
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("Guild.findAll");
-                result = query;
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicGuild> result = publicBean.guilds();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 2);
-        PublicGuild expected = new PublicGuild();
-        expected.title = "Disaster Area";
-        expected.guildurl = "http://www.disasterarea.com";
-        expected.guilddescription = "This is just a description";
-        expected.creation = firstDate;
-        expected.bossname = "Hotblack";
-        compare(result.get(0), expected);
-        expected = new PublicGuild();
-        expected.title = "Sirius Cybernetics Corporation";
-        expected.guildurl = "http://www.scc.com";
-        expected.guilddescription = "This is just a description";
-        expected.creation = secondDate;
-        expected.bossname = "Marvin";
-        compare(result.get(1), expected);
-    }
-
-    @Test
-    public void charactersheetNotFoundTest()
+  @Test
+  public void newsTest() throws ParseException
+  {
+    logger.fine("newsTest");
+    Date secondDate = new Date();
+    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    final List<BoardMessage> list = new ArrayList<>();
+    BoardMessage message = new BoardMessage();
+    message.setId(1);
+    message.setPerson(hotblack);
+    message.setMessage("First post!");
+    message.setPosttime(firstDate);
+    message.setRemoved(Boolean.FALSE);
+    list.add(message);
+    message = new BoardMessage();
+    message.setId(2);
+    message.setPerson(marvin);
+    message.setMessage("Damn!");
+    message.setPosttime(secondDate);
+    message.setRemoved(Boolean.FALSE);
+    list.add(message);
+    PublicBean publicBean = new PublicBean()
     {
-        logger.fine("charactersheetNotFoundTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = null;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            PublicPerson person = publicBean.charactersheet("Marvin");
-            fail("We expected a not found exception");
-        } catch (MudWebException e)
-        {
-            // Yay! We get an exception!
-        }
-        // Verification code (JUnit/TestNG asserts), if any.
-    }
-
-    @Test
-    public void charactersheetTest() throws MudException
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
     {
-        logger.fine("charactersheetTest");
-        Date secondDate = new Date();
-        Date firstDate = new Date(secondDate.getTime() - 1_000_000);
-        final CharacterInfo charinfo = new CharacterInfo();
-        charinfo.setImageurl("http://www.images.com/imageurl.jpg");
-        charinfo.setHomepageurl("http://www.homepage.com/");
-        charinfo.setDateofbirth("0000");
-        charinfo.setCityofbirth("Sirius");
-        charinfo.setStoryline("An android");
-        charinfo.setName("Marvin");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(CharacterInfo.class, marvin.getName());
-                result = charinfo;
-                entityManager.createNamedQuery("Family.findByName");
-                result = query;
-                query.setParameter("name", marvin.getName());
-                query.getResultList();
-            }
-        };
-        // Unit under test is exercised.
-        PublicPerson person = publicBean.charactersheet("Marvin");
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(person, "person expected");
-        PublicPerson expected = new PublicPerson();
-        expected.name = "Marvin";
-        expected.title = "The Paranoid Android";
-        expected.sex = "male";
-        expected.description = "young, tall, slender, swarthy, black-eyed, long-faced, black-haired, long-faced male android";
-        expected.imageurl = "http://www.images.com/imageurl.jpg";
-        expected.homepageurl = "http://www.homepage.com/";
-        expected.dateofbirth = "0000";
-        expected.cityofbirth = "Sirius";
-        expected.storyline = "An android";
-        compare(person, expected);
-    }
-
-    @Test
-    public void charactersheetsEmptyTest()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    });
+    new Expectations() // an "expectation block"
     {
-        logger.fine("charactersheetsEmptyTest");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
 
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("BoardMessage.news");
+        result = query;
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<News> result = publicBean.news();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 2);
+    News expected = new News();
+    expected.name = "Hotblack";
+    expected.message = "First post!";
+    expected.posttime = firstDate;
+    compare(result.get(0), expected);
+    expected = new News();
+    expected.name = "Marvin";
+    expected.message = "Damn!";
+    expected.posttime = secondDate;
+    compare(result.get(1), expected);
+  }
 
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("CharacterInfo.charactersheets");
-                result = query;
-                query.getResultList();
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.charactersheets();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 0);
-    }
-
-    @Test
-    public void charactersheetsTest()
+  @Test
+  public void statusEmptyTest()
+  {
+    logger.fine("statusEmptyTest");
+    PublicBean publicBean = new PublicBean()
     {
-        logger.fine("charactersheetsTest");
-        final List<String> list = new ArrayList<>();
-        list.add("Marvin");
-        list.add("Hotblack");
-        PublicBean publicBean = new PublicBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                entityManager.setProperty("activePersonFilter", 0);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.createNamedQuery("CharacterInfo.charactersheets");
-                result = query;
-                query.getResultList();
-                result = list;
-            }
-        };
-        // Unit under test is exercised.
-        List<PublicPerson> result = publicBean.charactersheets();
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertNotNull(result, "list expected");
-        assertEquals(result.size(), 2);
-
-        PublicPerson expected = new PublicPerson();
-        expected.name = "Marvin";
-        expected.url = "/karchangame/resources/public/charactersheets/Marvin";
-        compare(result.get(0), expected);
-        expected = new PublicPerson();
-        expected.name = "Hotblack";
-        expected.url = "/karchangame/resources/public/charactersheets/Hotblack";
-        compare(result.get(1), expected);
-    }
-
-    private Date getSundays()
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
     {
-        Calendar cal = Calendar.getInstance();
-        int daysBackToSunday = cal.get(Calendar.DAY_OF_WEEK); // 1 for sunday ,7 for saturday,
-        cal.add(Calendar.DATE, -daysBackToSunday);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date sundays = cal.getTime();
-        return sundays;
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("User.status");
+        result = query;
+        query.getResultList();
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.status();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 0);
+  }
+
+  @Test
+  public void statusTest()
+  {
+    logger.fine("statusTest");
+    final List<Person> list = new ArrayList<>();
+    list.add(hotblack);
+    list.add(marvin);
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("User.status");
+        result = query;
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.status();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 2);
+    PublicPerson expected = new PublicPerson();
+    expected.name = "Hotblack";
+    expected.title = "Guitar keyboard player of the rock group Disaster Area";
+    compare(result.get(0), expected);
+    expected = new PublicPerson();
+    expected.name = "Marvin";
+    expected.title = "The Paranoid Android";
+    compare(result.get(1), expected);
+  }
+
+  @Test
+  public void guildsEmptyTest()
+  {
+    logger.fine("guildsEmptyTest");
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("Guild.findAll");
+        result = query;
+        query.getResultList();
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicGuild> result = publicBean.guilds();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 0);
+  }
+
+  @Test
+  public void guildsTest() throws MudException
+  {
+    logger.fine("guildsTest");
+    Date secondDate = new Date();
+    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    final List<Guild> list = new ArrayList<>();
+    Guild guild = new Guild();
+    guild.setName("disasterarea");
+    guild.setTitle("Disaster Area");
+    guild.setBoss(hotblack);
+    guild.setCreation(firstDate);
+    guild.setHomepage("http://www.disasterarea.com");
+    guild.setDescription("This is just a description");
+    list.add(guild);
+    guild = new Guild();
+    guild.setName("sirius");
+    guild.setTitle("Sirius Cybernetics Corporation");
+    guild.setBoss(marvin);
+    guild.setCreation(secondDate);
+    guild.setHomepage("http://www.scc.com");
+    guild.setDescription("This is just a description");
+    list.add(guild);
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("Guild.findAll");
+        result = query;
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicGuild> result = publicBean.guilds();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 2);
+    PublicGuild expected = new PublicGuild();
+    expected.title = "Disaster Area";
+    expected.guildurl = "http://www.disasterarea.com";
+    expected.guilddescription = "This is just a description";
+    expected.creation = firstDate;
+    expected.bossname = "Hotblack";
+    compare(result.get(0), expected);
+    expected = new PublicGuild();
+    expected.title = "Sirius Cybernetics Corporation";
+    expected.guildurl = "http://www.scc.com";
+    expected.guilddescription = "This is just a description";
+    expected.creation = secondDate;
+    expected.bossname = "Marvin";
+    compare(result.get(1), expected);
+  }
+
+  @Test
+  public void charactersheetNotFoundTest()
+  {
+    logger.fine("charactersheetNotFoundTest");
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = null;
+      }
+    };
+    // Unit under test is exercised.
+    try
+    {
+      PublicPerson person = publicBean.charactersheet("Marvin");
+      fail("We expected a not found exception");
+    } catch (MudWebException e)
+    {
+      // Yay! We get an exception!
     }
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
+
+  @Test
+  public void charactersheetTest() throws MudException
+  {
+    logger.fine("charactersheetTest");
+    Date secondDate = new Date();
+    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    final CharacterInfo charinfo = new CharacterInfo();
+    charinfo.setImageurl("http://www.images.com/imageurl.jpg");
+    charinfo.setHomepageurl("http://www.homepage.com/");
+    charinfo.setDateofbirth("0000");
+    charinfo.setCityofbirth("Sirius");
+    charinfo.setStoryline("An android");
+    charinfo.setName("Marvin");
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(CharacterInfo.class, marvin.getName());
+        result = charinfo;
+        entityManager.createNamedQuery("Family.findByName");
+        result = query;
+        query.setParameter("name", marvin.getName());
+        query.getResultList();
+      }
+    };
+    // Unit under test is exercised.
+    PublicPerson person = publicBean.charactersheet("Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(person, "person expected");
+    PublicPerson expected = new PublicPerson();
+    expected.name = "Marvin";
+    expected.title = "The Paranoid Android";
+    expected.sex = "male";
+    expected.description = "young, tall, slender, swarthy, black-eyed, long-faced, black-haired, long-faced male android";
+    expected.imageurl = "http://www.images.com/imageurl.jpg";
+    expected.homepageurl = "http://www.homepage.com/";
+    expected.dateofbirth = "0000";
+    expected.cityofbirth = "Sirius";
+    expected.storyline = "An android";
+    compare(person, expected);
+  }
+
+  @Test
+  public void charactersheetsEmptyTest()
+  {
+    logger.fine("charactersheetsEmptyTest");
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("CharacterInfo.charactersheets");
+        result = query;
+        query.getResultList();
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.charactersheets();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 0);
+  }
+
+  @Test
+  public void charactersheetsTest()
+  {
+    logger.fine("charactersheetsTest");
+    final List<String> list = new ArrayList<>();
+    list.add("Marvin");
+    list.add("Hotblack");
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.setProperty("activePersonFilter", 0);
+        entityManager.createNamedQuery("CharacterInfo.charactersheets");
+        result = query;
+        query.getResultList();
+        result = list;
+      }
+    };
+    // Unit under test is exercised.
+    List<PublicPerson> result = publicBean.charactersheets();
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertNotNull(result, "list expected");
+    assertEquals(result.size(), 2);
+
+    PublicPerson expected = new PublicPerson();
+    expected.name = "Marvin";
+    expected.url = "/karchangame/resources/public/charactersheets/Marvin";
+    compare(result.get(0), expected);
+    expected = new PublicPerson();
+    expected.name = "Hotblack";
+    expected.url = "/karchangame/resources/public/charactersheets/Hotblack";
+    compare(result.get(1), expected);
+  }
+
 }

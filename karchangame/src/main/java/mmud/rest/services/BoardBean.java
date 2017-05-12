@@ -39,48 +39,47 @@ import mmud.database.enums.Filter;
 public class BoardBean
 {
 
-    private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
+  private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
-     */
-    protected EntityManager getEntityManager()
-    {
-        return em;
-    }
+  /**
+   * Returns the entity manager of JPA. This is defined in
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
+   */
+  protected EntityManager getEntityManager()
+  {
+    return em;
+  }
 
-    public Board getNewsBoard()
-    {
-        return getBoard("logonmessage");
-    }
+  public Board getNewsBoard()
+  {
+    return getBoard("logonmessage");
+  }
 
-    public Board getBoard(String name)
-    {
-        itsLog.log(Level.FINER, "getBoard {0}", name);
-        Query query = getEntityManager().createNamedQuery("Board.findByName");
-        query.setParameter("name", name);
-        Board result = (Board) query.getSingleResult();
-        return result;
+  public Board getBoard(String name)
+  {
+    itsLog.log(Level.FINER, "getBoard {0}", name);
+    Query query = getEntityManager().createNamedQuery("Board.findByName");
+    query.setParameter("name", name);
+    Board result = (Board) query.getSingleResult();
+    return result;
 
-    }
+  }
 
-    /**
-     * Retrieves the most recent board messages.
-     *
-     * @return
-     */
-    public List<BoardMessage> getNews()
-    {
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        Query query = getEntityManager().createNamedQuery("BoardMessage.news");
-        query.setParameter("sundays", Constants.getSundays());
-        List<BoardMessage> list = query.getResultList();
-        return list;
-    }
+  /**
+   * Retrieves the most recent board messages.
+   *
+   * @return
+   */
+  public List<BoardMessage> getNews()
+  {
+    Constants.setFilters(getEntityManager(), Filter.OFF);
+    Query query = getEntityManager().createNamedQuery("BoardMessage.news");
+    List<BoardMessage> list = query.getResultList();
+    return list;
+  }
 }

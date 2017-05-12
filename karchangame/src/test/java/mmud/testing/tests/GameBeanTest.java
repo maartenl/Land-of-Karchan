@@ -17,7 +17,6 @@
 package mmud.testing.tests;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -56,328 +55,324 @@ import org.testng.annotations.Test;
 public class GameBeanTest extends MudTest
 {
 
-    // Obtain a suitable logger.
-    private static final Logger logger = Logger.getLogger(GameBeanTest.class.getName());
+  // Obtain a suitable logger.
+  private static final Logger logger = Logger.getLogger(GameBeanTest.class.getName());
 
-    @Mocked
-    private EntityManager entityManager;
+  @Mocked
+  private EntityManager entityManager;
 
-    private LogBeanStub logBean;
+  private LogBeanStub logBean;
 
-    @Mocked(
-            {
-                "ok", "status"
-            })
-    private javax.ws.rs.core.Response response;
+  @Mocked(
+          {
+            "ok", "status"
+          })
+  private javax.ws.rs.core.Response response;
 
-    @Mocked
-    private Query query;
+  @Mocked
+  private Query query;
 
-    @Mocked
-    private CommandRunner commandRunner;
+  @Mocked
+  private CommandRunner commandRunner;
 
-    private User hotblack;
-    private Administrator karn;
-    private User marvin;
-    private Room room;
+  private User hotblack;
+  private Administrator karn;
+  private User marvin;
+  private Room room;
 
-    public GameBeanTest()
+  public GameBeanTest()
+  {
+  }
+
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
+
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
+
+  @BeforeMethod
+  public void setUp() throws MudException
+  {
+    logBean = new LogBeanStub();
+
+    Area aArea = TestingConstants.getArea();
+    room = TestingConstants.getRoom(aArea);
+    hotblack = TestingConstants.getHotblack(room);
+    karn = TestingConstants.getKarn();
+    karn.setRoom(room);
+    marvin = TestingConstants.getMarvin(room);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(hotblack);
+    persons.add(marvin);
+    persons.add(karn);
+    setField(Room.class, "persons", room, persons);
+    new MockUp<ErrorDetails>()
     {
-    }
+      @Mock
+      public Response getResponse(Response.Status status)
+      {
+        return response;
+      }
 
-    @BeforeClass
-    public void setUpClass()
+    };
+
+  }
+
+  @AfterMethod
+  public void tearDown()
+  {
+  }
+
+  /**
+   * Look around.
+   */
+  @Test
+  public void lookAround()
+  {
+    logger.fine("authenticate1");
+    marvin.setActive(true);
+    GameBean gameBean = new GameBean()
     {
-    }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-    @AfterClass
-    public void tearDownClass()
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+    };
+    setField(GameBean.class, "logBean", gameBean, logBean);
+    setField(GameBean.class, "commandRunner", gameBean, commandRunner);
+    new Expectations() // an "expectation block"
     {
-    }
 
-    @BeforeMethod
-    public void setUp() throws MudException
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Macro.class, (Object) any);
+        result = null;
+        entityManager.createNamedQuery("UserCommand.findActive");
+        result = query;
+        query.getResultList();
+        result = Collections.emptyList();
+
+      }
+    };
+    // Unit under test is exercised.
+    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    assertThat(result.body, equalTo("You are standing on a small bridge."));
+    assertThat(result.image, nullValue());
+    assertThat(result.title, equalTo("The bridge"));
+    assertThat(result.down, nullValue());
+    assertThat(result.up, nullValue());
+    assertThat(result.east, nullValue());
+    assertThat(result.west, nullValue());
+    assertThat(result.north, nullValue());
+    assertThat(result.south, nullValue());
+    assertThat(result.items, hasSize(0));
+    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
+    assertThat(result.persons.get(1).name, equalTo("Karn"));
+    assertThat(result.log.log, equalTo(""));
+    assertThat(result.log.offset, equalTo(0));
+    assertThat(result.log.size, equalTo(0));
+  }
+
+  /**
+   * Look around.
+   */
+  @Test
+  public void lookAroundWithFrog()
+  {
+    logger.fine("authenticate1");
+    marvin.setActive(true);
+    hotblack.setFrogging(5);
+    GameBean gameBean = new GameBean()
     {
-        logBean = new LogBeanStub();
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-        Area aArea = TestingConstants.getArea();
-        room = TestingConstants.getRoom(aArea);
-        hotblack = TestingConstants.getHotblack(room);
-        karn = TestingConstants.getKarn();
-        karn.setRoom(room);
-        marvin = TestingConstants.getMarvin(room);
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(hotblack);
-        persons.add(marvin);
-        persons.add(karn);
-        setField(Room.class, "persons", room, persons);
-        new MockUp<ErrorDetails>()
-        {
-            @Mock
-            public Response getResponse(Response.Status status)
-            {
-                return response;
-            }
-
-        };
-
-    }
-
-    @AfterMethod
-    public void tearDown()
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    setField(GameBean.class, "logBean", gameBean, logBean);
+    setField(GameBean.class, "commandRunner", gameBean, commandRunner);
+    new Expectations() // an "expectation block"
     {
-    }
 
-    /**
-     * Look around.
-     */
-    @Test
-    public void lookAround()
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Macro.class, (Object) any);
+        result = null;
+        entityManager.createNamedQuery("UserCommand.findActive");
+        result = query;
+        query.getResultList();
+        result = Collections.emptyList();
+
+      }
+    };
+    // Unit under test is exercised.
+    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    assertThat(result.body, equalTo("You are standing on a small bridge."));
+    assertThat(result.image, nullValue());
+    assertThat(result.title, equalTo("The bridge"));
+    assertThat(result.down, nullValue());
+    assertThat(result.up, nullValue());
+    assertThat(result.east, nullValue());
+    assertThat(result.west, nullValue());
+    assertThat(result.north, nullValue());
+    assertThat(result.south, nullValue());
+    assertThat(result.items, hasSize(0));
+    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
+    assertThat(result.persons.get(0).race, equalTo("frog"));
+    assertThat(result.persons.get(1).name, equalTo("Karn"));
+    assertThat(result.persons.get(1).race, equalTo("human"));
+    assertThat(result.log.log, equalTo(""));
+    assertThat(result.log.offset, equalTo(0));
+    assertThat(result.log.size, equalTo(0));
+  }
+
+  /**
+   * Look around.
+   */
+  @Test
+  public void lookAroundWithJackass()
+  {
+    logger.fine("authenticate1");
+    marvin.setActive(true);
+    hotblack.setJackassing(5);
+    GameBean gameBean = new GameBean()
     {
-        logger.fine("authenticate1");
-        marvin.setActive(true);
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-
-        };
-        setField(GameBean.class, "logBean", gameBean, logBean);
-        setField(GameBean.class, "commandRunner", gameBean, commandRunner);
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Macro.class, (Object) any);
-                result = null;
-                entityManager.createNamedQuery("UserCommand.findActive");
-                result = query;
-                query.getResultList();
-                result = Collections.emptyList();
-
-            }
-        };
-        // Unit under test is exercised.
-        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-        assertThat(result.body, equalTo("You are standing on a small bridge."));
-        assertThat(result.image, nullValue());
-        assertThat(result.title, equalTo("The bridge"));
-        assertThat(result.down, nullValue());
-        assertThat(result.up, nullValue());
-        assertThat(result.east, nullValue());
-        assertThat(result.west, nullValue());
-        assertThat(result.north, nullValue());
-        assertThat(result.south, nullValue());
-        assertThat(result.items, hasSize(0));
-        assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-        assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-        assertThat(result.persons.get(1).name, equalTo("Karn"));
-        assertThat(result.log.log, equalTo(""));
-        assertThat(result.log.offset, equalTo(0));
-        assertThat(result.log.size, equalTo(0));
-    }
-
-    /**
-     * Look around.
-     */
-    @Test
-    public void lookAroundWithFrog()
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    setField(GameBean.class, "logBean", gameBean, logBean);
+    setField(GameBean.class, "commandRunner", gameBean, commandRunner);
+    new Expectations() // an "expectation block"
     {
-        logger.fine("authenticate1");
-        marvin.setActive(true);
-        hotblack.setFrogging(5);
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        setField(GameBean.class, "logBean", gameBean, logBean);
-        setField(GameBean.class, "commandRunner", gameBean, commandRunner);
-        new Expectations() // an "expectation block"
-        {
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Macro.class, (Object) any);
+        result = null;
+        entityManager.createNamedQuery("UserCommand.findActive");
+        result = query;
+        query.getResultList();
+        result = Collections.emptyList();
 
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Macro.class, (Object) any);
-                result = null;
-                entityManager.createNamedQuery("UserCommand.findActive");
-                result = query;
-                query.getResultList();
-                result = Collections.emptyList();
+      }
+    };
+    // Unit under test is exercised.
+    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    assertThat(result.body, equalTo("You are standing on a small bridge."));
+    assertThat(result.image, nullValue());
+    assertThat(result.title, equalTo("The bridge"));
+    assertThat(result.down, nullValue());
+    assertThat(result.up, nullValue());
+    assertThat(result.east, nullValue());
+    assertThat(result.west, nullValue());
+    assertThat(result.north, nullValue());
+    assertThat(result.south, nullValue());
+    assertThat(result.items, hasSize(0));
+    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
+    assertThat(result.persons.get(0).race, equalTo("jackass"));
+    assertThat(result.persons.get(1).name, equalTo("Karn"));
+    assertThat(result.persons.get(1).race, equalTo("human"));
+    assertThat(result.log.log, equalTo(""));
+    assertThat(result.log.offset, equalTo(0));
+    assertThat(result.log.size, equalTo(0));
+  }
 
-            }
-        };
-        // Unit under test is exercised.
-        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-        assertThat(result.body, equalTo("You are standing on a small bridge."));
-        assertThat(result.image, nullValue());
-        assertThat(result.title, equalTo("The bridge"));
-        assertThat(result.down, nullValue());
-        assertThat(result.up, nullValue());
-        assertThat(result.east, nullValue());
-        assertThat(result.west, nullValue());
-        assertThat(result.north, nullValue());
-        assertThat(result.south, nullValue());
-        assertThat(result.items, hasSize(0));
-        assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-        assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-        assertThat(result.persons.get(0).race, equalTo("frog"));
-        assertThat(result.persons.get(1).name, equalTo("Karn"));
-        assertThat(result.persons.get(1).race, equalTo("human"));
-        assertThat(result.log.log, equalTo(""));
-        assertThat(result.log.offset, equalTo(0));
-        assertThat(result.log.size, equalTo(0));
-    }
-
-    /**
-     * Look around.
-     */
-    @Test
-    public void lookAroundWithJackass()
+  /**
+   * Look around.
+   */
+  @Test
+  public void lookAroundWithInvisible()
+  {
+    logger.fine("authenticate1");
+    marvin.setActive(true);
+    karn.setVisible(false);
+    GameBean gameBean = new GameBean()
     {
-        logger.fine("authenticate1");
-        marvin.setActive(true);
-        hotblack.setJackassing(5);
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        setField(GameBean.class, "logBean", gameBean, logBean);
-        setField(GameBean.class, "commandRunner", gameBean, commandRunner);
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Macro.class, (Object) any);
-                result = null;
-                entityManager.createNamedQuery("UserCommand.findActive");
-                result = query;
-                query.getResultList();
-                result = Collections.emptyList();
-
-            }
-        };
-        // Unit under test is exercised.
-        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-        assertThat(result.body, equalTo("You are standing on a small bridge."));
-        assertThat(result.image, nullValue());
-        assertThat(result.title, equalTo("The bridge"));
-        assertThat(result.down, nullValue());
-        assertThat(result.up, nullValue());
-        assertThat(result.east, nullValue());
-        assertThat(result.west, nullValue());
-        assertThat(result.north, nullValue());
-        assertThat(result.south, nullValue());
-        assertThat(result.items, hasSize(0));
-        assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-        assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-        assertThat(result.persons.get(0).race, equalTo("jackass"));
-        assertThat(result.persons.get(1).name, equalTo("Karn"));
-        assertThat(result.persons.get(1).race, equalTo("human"));
-        assertThat(result.log.log, equalTo(""));
-        assertThat(result.log.offset, equalTo(0));
-        assertThat(result.log.size, equalTo(0));
-    }
-
-    /**
-     * Look around.
-     */
-    @Test
-    public void lookAroundWithInvisible()
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+    };
+    setField(GameBean.class, "logBean", gameBean, logBean);
+    setField(GameBean.class, "commandRunner", gameBean, commandRunner);
+    new Expectations() // an "expectation block"
     {
-        logger.fine("authenticate1");
-        marvin.setActive(true);
-        karn.setVisible(false);
-        GameBean gameBean = new GameBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
 
-            @Override
-            protected String getPlayerName() throws IllegalStateException
-            {
-                return "Marvin";
-            }
-        };
-        setField(GameBean.class, "logBean", gameBean, logBean);
-        setField(GameBean.class, "commandRunner", gameBean, commandRunner);
-        new Expectations() // an "expectation block"
-        {
+      {
+        entityManager.setProperty("activePersonFilter", 1);
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.find(Macro.class, (Object) any);
+        result = null;
+        entityManager.createNamedQuery("UserCommand.findActive");
+        result = query;
+        query.getResultList();
+        result = Collections.emptyList();
 
-            {
-                entityManager.setProperty("activePersonFilter", 1);
-                entityManager.setProperty("sundaydateFilter", (Date) any);
-                entityManager.find(User.class, "Marvin");
-                result = marvin;
-                entityManager.find(Macro.class, (Object) any);
-                result = null;
-                entityManager.createNamedQuery("UserCommand.findActive");
-                result = query;
-                query.getResultList();
-                result = Collections.emptyList();
-
-            }
-        };
-        // Unit under test is exercised.
-        PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-        assertThat(result.body, equalTo("You are standing on a small bridge."));
-        assertThat(result.image, nullValue());
-        assertThat(result.title, equalTo("The bridge"));
-        assertThat(result.down, nullValue());
-        assertThat(result.up, nullValue());
-        assertThat(result.east, nullValue());
-        assertThat(result.west, nullValue());
-        assertThat(result.north, nullValue());
-        assertThat(result.south, nullValue());
-        assertThat(result.items, hasSize(0));
-        assertThat(result.persons, hasSize(1)); // marvin doesn't show up, because he's the one playing
-        assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-        // karn doesn't show up! Which is awesome!
-        assertThat(result.log.log, equalTo(""));
-        assertThat(result.log.offset, equalTo(0));
-        assertThat(result.log.size, equalTo(0));
-    }
+      }
+    };
+    // Unit under test is exercised.
+    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    assertThat(result.body, equalTo("You are standing on a small bridge."));
+    assertThat(result.image, nullValue());
+    assertThat(result.title, equalTo("The bridge"));
+    assertThat(result.down, nullValue());
+    assertThat(result.up, nullValue());
+    assertThat(result.east, nullValue());
+    assertThat(result.west, nullValue());
+    assertThat(result.north, nullValue());
+    assertThat(result.south, nullValue());
+    assertThat(result.items, hasSize(0));
+    assertThat(result.persons, hasSize(1)); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
+    // karn doesn't show up! Which is awesome!
+    assertThat(result.log.log, equalTo(""));
+    assertThat(result.log.offset, equalTo(0));
+    assertThat(result.log.size, equalTo(0));
+  }
 
 }
