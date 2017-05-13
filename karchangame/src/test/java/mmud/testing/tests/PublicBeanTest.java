@@ -194,7 +194,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("User.fortunes");
         result = query;
       }
@@ -234,7 +233,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("User.fortunes");
         result = query;
         query.setMaxResults(100);
@@ -285,7 +283,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.createNamedQuery("User.who");
         result = query;
       }
@@ -324,7 +321,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.createNamedQuery("User.who");
         result = query;
         query.getResultList();
@@ -378,7 +374,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("BoardMessage.news");
         result = query;
         query.getResultList();
@@ -432,7 +427,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("BoardMessage.news");
         result = query;
         query.getResultList();
@@ -472,7 +466,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("User.status");
         result = query;
         query.getResultList();
@@ -504,7 +497,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("User.status");
         result = query;
         query.getResultList();
@@ -542,7 +534,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("Guild.findAll");
         result = query;
         query.getResultList();
@@ -590,7 +581,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("Guild.findAll");
         result = query;
         query.getResultList();
@@ -634,7 +624,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.find(User.class, "Marvin");
         result = null;
       }
@@ -676,7 +665,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.find(User.class, "Marvin");
         result = marvin;
         entityManager.find(CharacterInfo.class, marvin.getName());
@@ -720,7 +708,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("CharacterInfo.charactersheets");
         result = query;
         query.getResultList();
@@ -752,7 +739,6 @@ public class PublicBeanTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 0);
         entityManager.createNamedQuery("CharacterInfo.charactersheets");
         result = query;
         query.getResultList();

@@ -24,10 +24,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import mmud.Constants;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
-import mmud.database.enums.Filter;
 
 /**
  * Takes care of the public boards and the private boards.
@@ -77,7 +75,6 @@ public class BoardBean
    */
   public List<BoardMessage> getNews()
   {
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     Query query = getEntityManager().createNamedQuery("BoardMessage.news");
     List<BoardMessage> list = query.getResultList();
     return list;

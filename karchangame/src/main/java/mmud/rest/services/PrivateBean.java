@@ -44,7 +44,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import mmud.Constants;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Mail;
@@ -52,7 +51,6 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
-import mmud.database.enums.Filter;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
@@ -182,7 +180,6 @@ public class PrivateBean
   public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
     itsLog.finer("entering listMail");
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     User person = authenticate(name);
     List<PrivateMail> res = new ArrayList<>();
     try
@@ -358,7 +355,6 @@ public class PrivateBean
   public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
   {
     itsLog.finer("entering getMail");
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     Person person = authenticate(name);
     try
     {
@@ -530,7 +526,6 @@ public class PrivateBean
   public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
   {
     itsLog.finer("entering deleteMail");
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     Person person = authenticate(name);
     // get the specific mail with id {id}
     Mail mail = getMail(person.getName(), id);
@@ -623,7 +618,6 @@ public class PrivateBean
     {
       throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
     }
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     User person = authenticate(name);
     Person toperson = getPerson(toname);
     try
@@ -678,7 +672,6 @@ public class PrivateBean
   public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
   {
     itsLog.finer("entering deleteFamilyValues");
-    Constants.setFilters(getEntityManager(), Filter.OFF);
     Person person = authenticate(name);
     FamilyPK pk = new FamilyPK();
     pk.setName(person.getName());

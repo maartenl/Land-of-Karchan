@@ -26,14 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
-import mmud.database.enums.Filter;
 import mmud.rest.webentities.PrivateItem;
 
 /**
@@ -389,18 +387,6 @@ public class Constants
       }
     }
     return new ArrayList<>(inventory.values());
-  }
-
-  /**
-   * Turns the filters on or off.
-   *
-   * @param entityManager The entity manager to set the filters.
-   * @param activePersonFilter the active person filter. Means, if it is on, any search
-   * for persons will only find active persons.
-   */
-  public static void setFilters(final EntityManager entityManager, Filter activePersonFilter)
-  {
-    entityManager.setProperty("activePersonFilter", activePersonFilter == Filter.ON ? 1 : 0);
   }
 
   /**

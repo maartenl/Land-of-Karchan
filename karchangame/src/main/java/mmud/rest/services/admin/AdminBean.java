@@ -25,9 +25,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import mmud.Constants;
 import mmud.database.entities.game.Admin;
-import mmud.database.enums.Filter;
 
 /**
  * Currently the only thing it is used for is for a player to reset the owner
@@ -37,48 +35,47 @@ import mmud.database.enums.Filter;
  */
 @DeclareRoles(
         {
-            "deputy", "god", "player"
+          "deputy", "god", "player"
         })
 @RolesAllowed("deputy")
 @Stateless
 public class AdminBean
 {
 
-    private static final Logger itsLog = Logger.getLogger(AdminBean.class.getName());
+  private static final Logger itsLog = Logger.getLogger(AdminBean.class.getName());
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    /**
-     * Returns a list of currently valid administrators.
-     *
-     * @return list of administrators
-     */
-    @RolesAllowed("player")
-    public List<Admin> getAdministrators()
-    {
-        Constants.setFilters(getEntityManager(), Filter.OFF);
-        Query query = getEntityManager().createNamedQuery("Admin.findValid");
-        List<Admin> list = query.getResultList();
-        return list;
-    }
+  /**
+   * Returns a list of currently valid administrators.
+   *
+   * @return list of administrators
+   */
+  @RolesAllowed("player")
+  public List<Admin> getAdministrators()
+  {
+    Query query = getEntityManager().createNamedQuery("Admin.findValid");
+    List<Admin> list = query.getResultList();
+    return list;
+  }
 
-    /**
-     * Returns the found valid administrator with that name.
-     *
-     * @param name the name of the administrator to look for, case insensitive.
-     * @return An optional which is either empty (not found) or contains
-     * the administrator.
-     */
-    @RolesAllowed("player")
-    public Optional<Admin> getAdministrator(String name)
-    {
-        return getAdministrators().stream().filter(x -> x.getName().equalsIgnoreCase(name)).findFirst();
-    }
+  /**
+   * Returns the found valid administrator with that name.
+   *
+   * @param name the name of the administrator to look for, case insensitive.
+   * @return An optional which is either empty (not found) or contains
+   * the administrator.
+   */
+  @RolesAllowed("player")
+  public Optional<Admin> getAdministrator(String name)
+  {
+    return getAdministrators().stream().filter(x -> x.getName().equalsIgnoreCase(name)).findFirst();
+  }
 
-    protected EntityManager getEntityManager()
-    {
-        return em;
-    }
+  protected EntityManager getEntityManager()
+  {
+    return em;
+  }
 
 }

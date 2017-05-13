@@ -23,7 +23,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceProperty;
 
 /**
  *
@@ -33,10 +32,7 @@ import javax.persistence.PersistenceProperty;
 public abstract class EjbEntityProvider<T> extends MutableLocalEntityProvider<T>
 {
 
-  @PersistenceContext(properties =
-  {
-    @PersistenceProperty(name = "activePersonFilter", value = "0")
-  })
+  @PersistenceContext
   private EntityManager em;
 
   protected EjbEntityProvider(Class entityClass)

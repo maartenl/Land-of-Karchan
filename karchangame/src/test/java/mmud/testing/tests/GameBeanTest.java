@@ -156,7 +156,6 @@ public class GameBeanTest extends MudTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.find(User.class, "Marvin");
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
@@ -217,7 +216,6 @@ public class GameBeanTest extends MudTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.find(User.class, "Marvin");
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
@@ -280,7 +278,6 @@ public class GameBeanTest extends MudTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.find(User.class, "Marvin");
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
@@ -343,7 +340,6 @@ public class GameBeanTest extends MudTest
     {
 
       {
-        entityManager.setProperty("activePersonFilter", 1);
         entityManager.find(User.class, "Marvin");
         result = marvin;
         entityManager.find(Macro.class, (Object) any);

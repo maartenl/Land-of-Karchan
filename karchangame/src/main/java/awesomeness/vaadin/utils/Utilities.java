@@ -21,8 +21,6 @@ import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Table;
 import javax.persistence.EntityManager;
-import mmud.Constants;
-import mmud.database.enums.Filter;
 
 /**
  *
@@ -31,29 +29,28 @@ import mmud.database.enums.Filter;
 public class Utilities
 {
 
-    private Utilities()
-    {
-    }
+  private Utilities()
+  {
+  }
 
-    /**
-     * Creates a {@link JPAContainer} via JNDI.
-     *
-     * @param <T> the entity to retrieve the JPAContainer for.
-     * @param clazz the Class of the entity.
-     * @return a JPAContainer if all is well.
-     */
-    public static <T> JPAContainer<T> getJPAContainer(Class<T> clazz)
-    {
-        final JPAContainer<T> container = JPAContainerFactory.makeJndi(clazz);
-        EntityManager entityManager = container.getEntityProvider().getEntityManager();
-        Constants.setFilters(entityManager, Filter.OFF);
-        return container;
-    }
+  /**
+   * Creates a {@link JPAContainer} via JNDI.
+   *
+   * @param <T> the entity to retrieve the JPAContainer for.
+   * @param clazz the Class of the entity.
+   * @return a JPAContainer if all is well.
+   */
+  public static <T> JPAContainer<T> getJPAContainer(Class<T> clazz)
+  {
+    final JPAContainer<T> container = JPAContainerFactory.makeJndi(clazz);
+    EntityManager entityManager = container.getEntityProvider().getEntityManager();
+    return container;
+  }
 
-    public static void setTableSize(Table table)
-    {
-        table.setWidth(95, Sizeable.Unit.PERCENTAGE);
-        table.setHeight(100, Sizeable.Unit.PERCENTAGE);
-    }
+  public static void setTableSize(Table table)
+  {
+    table.setWidth(95, Sizeable.Unit.PERCENTAGE);
+    table.setHeight(100, Sizeable.Unit.PERCENTAGE);
+  }
 
 }
