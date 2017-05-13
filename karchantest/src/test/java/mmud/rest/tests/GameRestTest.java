@@ -44,6 +44,22 @@ public abstract class GameRestTest extends RestTest
     return jsession;
   }
 
+  protected void clear(final String jsession, final String player)
+  {
+    final String command = "clear";
+    given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", player).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/game/{player}/play").
+            then().statusCode(200);
+  }
+
   protected void quit(String jsession, String player)
   {
     given().log().ifValidationFails().
