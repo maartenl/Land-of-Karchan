@@ -46,6 +46,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
+import org.eclipse.persistence.annotations.Customizer;
 
 /**
  *
@@ -77,6 +78,7 @@ import mmud.rest.services.GuildBean;
           ,
             @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, p.attributes c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
         })
+@Customizer(PersonsFilterForGuild.class)
 public class Guild implements Serializable, DisplayInterface, Ownage
 {
 
@@ -129,6 +131,9 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   @Size(max = 65535)
   @Column(name = "logonmessage")
   private String logonmessage;
+  @OneToMany(mappedBy = "guild")
+  @OrderBy("name")
+  private Set<User> activeMembers;
   @OneToMany(mappedBy = "guild")
   @OrderBy("name")
   private Set<User> members;
@@ -285,9 +290,19 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     return members;
   }
 
+  public Set<User> getActiveMembers()
+  {
+    return activeMembers;
+  }
+
   public void setMembers(SortedSet<User> personCollection)
   {
     this.members = personCollection;
+  }
+
+  public void setActiveMembers(SortedSet<User> personCollection)
+  {
+    this.activeMembers = personCollection;
   }
 
   @Override
@@ -446,6 +461,25 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   }
 
   /**
+   * Searches and returns the person by name in this guild, or null if not
+   * found. Only searches for members that are currently playing.
+   *
+   * @param name the name of the person to look for.
+   * @return a Person.
+   */
+  public User getActiveMember(String name)
+  {
+    for (User person : activeMembers)
+    {
+      if (person.getName().equalsIgnoreCase(name))
+      {
+        return person;
+      }
+    }
+    return null;
+  }
+
+  /**
    * communication method to everyone in the guild, that is active. The
    * message is not parsed. Bear in mind that this method should only be used
    * for communication about environmental issues. If the communication
@@ -459,7 +493,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   public void sendMessage(String aMessage)
           throws MudException
   {
-    for (Person myChar : members)
+    for (Person myChar : activeMembers)
     {
       myChar.writeMessage(aMessage);
     }
@@ -480,7 +514,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   public void sendMessage(Person aPerson, String aMessage) throws MudException
   {
     String message = "<span style=\"color:" + getColour() + ";\">[guild]<b>" + aPerson.getName() + "</b>: " + aMessage + "</span><br/>\r\n";
-    for (Person myChar : members)
+    for (Person myChar : activeMembers)
     {
       myChar.writeMessage(aPerson, message);
     }

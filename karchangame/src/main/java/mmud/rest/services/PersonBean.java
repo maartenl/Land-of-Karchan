@@ -142,6 +142,10 @@ public class PersonBean implements PersonsInterface
     {
       throw new RuntimeException("bogus!");
     }
+    if (!result.get(0).isActive())
+    {
+      return null;
+    }
     return result.get(0);
   }
 

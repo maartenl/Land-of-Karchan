@@ -245,6 +245,19 @@ public class RemoveCommandTest extends MudTest
     members.add(karn);
     members.add(marvin);
     deputy.setMembers(members);
+    final SortedSet<User> activeMembers = new TreeSet<>(new Comparator<User>()
+    {
+
+      @Override
+      public int compare(User arg0, User arg1)
+      {
+        return arg0.getName().compareTo(arg1.getName());
+      }
+
+    });
+    activeMembers.add(karn);
+    activeMembers.add(marvin);
+    deputy.setActiveMembers(activeMembers);
 
     karn.setGuild(deputy);
 
