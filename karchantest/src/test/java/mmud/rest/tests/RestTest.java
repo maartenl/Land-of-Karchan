@@ -30,6 +30,8 @@ import static org.hamcrest.Matchers.nullValue;
 class RestTest
 {
 
+  private static boolean DEBUGGING = false;
+
   public static void init()
   {
     RestAssured.basePath = "/karchangame/resources";
@@ -75,6 +77,14 @@ class RestTest
             put("/game/{player}/logoff").
             then().statusCode(204). // no content
             and().extract().response();
+  }
+
+  protected void print(Response gameResponse)
+  {
+    if (DEBUGGING)
+    {
+      System.out.println(gameResponse.prettyPrint());
+    }
   }
 
 }

@@ -65,6 +65,8 @@ public class TellTest extends GameRestTest
     String log = gameResponse.body().jsonPath().get("log.log").toString();
     assertThat(log, equalTo("You cleared your mind.<br />\n<b>You tell [to Karn]</b>\n : Hello!<br />\n"));
 
+    print(gameResponse);
+
     quit(jsessionHotblack, hotblack);
     quit(jsessionKarn, karn);
   }
@@ -154,4 +156,5 @@ public class TellTest extends GameRestTest
 
     quit(jsessionHotblack, hotblack);
   }
+
 }

@@ -93,6 +93,7 @@ public class GuildMemberTest extends GameRestTest
     assertThat(body, containsString("Crissy"));
     assertThat(body, containsString("Hopefuls"));
     assertThat(body, containsString("Guildranks"));
+    print(gameResponse);
 
     quit(jsession, karn);
   }
@@ -123,7 +124,6 @@ public class GuildMemberTest extends GameRestTest
             and().extract().response();
     String body = gameResponse.body().jsonPath().get("log.log").toString();
     assertThat(body, endsWith("<span style=\"color: Red;\">[guild]<b>Karn</b>: Good morning, everyone.</span>\n<br />\n"));
-    System.out.println(gameResponse.prettyPrint());
 
     quit(jsession, karn);
   }

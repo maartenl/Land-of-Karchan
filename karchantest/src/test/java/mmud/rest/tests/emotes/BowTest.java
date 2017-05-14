@@ -61,7 +61,7 @@ public class BowTest extends GameRestTest
             and().body("image", equalTo("/images/gif/cave.gif")).
             and().body("log.log", endsWith("You bow.<br />\n")).
             and().extract().response();
-    System.out.println(gameResponse.prettyPrint());
+    print(gameResponse);
 
     quit(jsession, hotblack);
   }

@@ -49,7 +49,7 @@ public class PrivateRestTest extends RestTest
     String jsession = login(karn, password);
     Response gameResponse
             = Helper.getGuild(jsession, karn);
-    System.out.println(gameResponse.prettyPrint());
+    print(gameResponse);
     assertThat(gameResponse.path("title"), equalTo("Benefactors of Karchan"));
     assertThat(gameResponse.path("name"), equalTo("deputy"));
     assertThat(gameResponse.path("bossname"), equalTo("Karn"));

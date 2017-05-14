@@ -92,7 +92,7 @@ public class GuildMasterTest extends GameRestTest
             then().statusCode(200).
             and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
-    System.out.println(gameResponse.prettyPrint());
+    print(gameResponse);
 
     quit(jsession, hotblack);
   }
@@ -200,7 +200,7 @@ public class GuildMasterTest extends GameRestTest
             then().statusCode(200).
             //            and().body("log.log", endsWith("You have no new Mudmail...</p>\nGuild disaster created.<br />\n")).
             and().extract().response();
-    System.out.println(gameResponse.prettyPrint());
+    print(gameResponse);
 
     quit(jsession, hotblack);
   }
