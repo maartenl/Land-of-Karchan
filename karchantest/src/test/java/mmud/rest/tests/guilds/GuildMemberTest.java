@@ -21,6 +21,7 @@ import io.restassured.response.Response;
 import mmud.rest.tests.GameRestTest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -57,8 +58,7 @@ public class GuildMemberTest extends GameRestTest
   }
 
   /**
-   * Creation of a guild, creating and assigning guildranks and destruction of a guild.
-   * Along with all the other stuff to do.
+   * Show all the details of your current guild.
    */
   @Test
   public void testGuilddetailsCommand()
@@ -93,6 +93,37 @@ public class GuildMemberTest extends GameRestTest
     assertThat(body, containsString("Crissy"));
     assertThat(body, containsString("Hopefuls"));
     assertThat(body, containsString("Guildranks"));
+
+    quit(jsession, karn);
+  }
+
+  /**
+   * Send a message to all the active people in your guild.
+   */
+  @Test
+  public void testGuildmessageCommand()
+  {
+    final String karn = "Karn";
+    final String password = "secret";
+    String jsession = enterGame(password, karn);
+    clear(jsession, karn);
+
+    String command = "guild Good morning, everyone.";
+    Response gameResponse = given().log().ifValidationFails().
+            cookie("JSESSIONID", jsession).
+            queryParam("log", "true").
+            pathParam("player", karn).
+            queryParam("offset", "").
+            contentType("application/json").
+            header("Accept", "application/json").
+            body(command).
+            when().
+            post("/game/{player}/play").
+            then().statusCode(200).
+            and().extract().response();
+    String body = gameResponse.body().jsonPath().get("log.log").toString();
+    assertThat(body, endsWith("<span style=\"color: Red;\">[guild]<b>Karn</b>: Good morning, everyone.</span>\n<br />\n"));
+    System.out.println(gameResponse.prettyPrint());
 
     quit(jsession, karn);
   }
