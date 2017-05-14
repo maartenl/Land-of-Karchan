@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class GuildTest extends GameRestTest
+public class GuildMasterTest extends GameRestTest
 {
 
   @BeforeClass
