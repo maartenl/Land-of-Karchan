@@ -2,13 +2,13 @@
 
 . ./mysql_constants
 
-${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} --password=${MYSQL_PWD} -s ${MYSQL_DB} <<END_OF_DATA
+${MYSQL_BIN} -h ${MYSQL_HOST} -u ${MYSQL_USR} -p -s ${MYSQL_DB} <<END_OF_DATA
 #
 # This is the script that prepares the database to run a number of tests.
 #
 
 # set password to "secret".
-update mm_usertable set password='e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4'
+update mm_usertable set password='e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4', room = 1
 where name in ('Karn','Marvin','Hotblack','Slartibartfast');
 
 # make sure there is no guild "test" or something.
