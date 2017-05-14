@@ -12,6 +12,7 @@ pipeline {
                 // for example jenkins-karchan-123sh '''
                 echo "Build " + env.BUILD_TAG
                 echo "Workspace " + env.WORKSPACE
+                sh 'echo "<p>Suddenly Karn walks by carrying a toolbox and hammer and muttering to himself.</p>" | tee -a /home/glassfish/temp/*'
                 sh 'cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war /home/glassfish/karchangame.war.backup'
             }
         }
@@ -46,6 +47,9 @@ pipeline {
         success { 
             echo 'Deploying to glassfish...'
             sh 'cp karchangame/target/karchangame-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war'
+        }
+        failure {
+            sh 'echo "<p>You suddenly hear the sound of someone hitting his own thumb, and cursing.</p>" | tee -a /home/glassfish/temp/*'
         }
     }
 }
