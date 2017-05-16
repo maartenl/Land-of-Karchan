@@ -51,251 +51,251 @@ import mmud.rest.services.LogBean;
 public class Logs extends VerticalLayout
 {
 
-    private static final Logger logger = Logger.getLogger(Logs.class.getName());
+  private static final Logger logger = Logger.getLogger(Logs.class.getName());
 
-    private final CheckBox filterOnDeputyMessages;
+  private final CheckBox filterOnDeputyMessages;
 
-    private final Table logsTable;
-    private final Table chatlogsTable;
-    private final Table systemlogsTable;
+  private final Table logsTable;
+  private final Table chatlogsTable;
+  private final Table systemlogsTable;
 
-    private Date initialLogDate;
+  private Date initialLogDate;
 
-    private final Admin currentUser;
-    private final LogBean logBean;
+  private final Admin currentUser;
+  private final LogBean logBean;
 
-    Logs(final Admin currentUser, final LogBean logBean)
+  Logs(final Admin currentUser, final LogBean logBean)
+  {
+    initialLogDate = Date.from(LocalDate.now().plusYears(10).atStartOfDay().toInstant(ZoneOffset.UTC));
+
+    this.currentUser = currentUser;
+    this.logBean = logBean;
+
+    final JPAContainer<Log> logattributes = Utilities.getJPAContainer(Log.class);
+    final Container.Filter filter = new Compare.Equal("deputy",
+            true);
+    final JPAContainer<Commandlog> chatlogattributes = Utilities.getJPAContainer(Commandlog.class);
+    final JPAContainer<Systemlog> systemlogattributes = Utilities.getJPAContainer(Systemlog.class);
+
+    Panel logsearchPanel = new Panel("Search panel");
+    addComponent(logsearchPanel);
+
+    HorizontalLayout logsearchLayout = new HorizontalLayout();
+    logsearchPanel.setContent(logsearchLayout);
+
+    filterOnDeputyMessages = new CheckBox("Show only dep messages");
+    filterOnDeputyMessages.setValue(true);
+    filterOnDeputyMessages.addValueChangeListener(new Property.ValueChangeListener()
     {
-        initialLogDate = Date.from(LocalDate.now().plusYears(10).atStartOfDay().toInstant(ZoneOffset.UTC));
+      {
+        logattributes.addContainerFilter(filter);
+      }
 
-        this.currentUser = currentUser;
-        this.logBean = logBean;
-
-        final JPAContainer<Log> logattributes = Utilities.getJPAContainer(Log.class);
-        final Container.Filter filter = new Compare.Equal("deputy",
-                true);
-        final JPAContainer<Commandlog> chatlogattributes = Utilities.getJPAContainer(Commandlog.class);
-        final JPAContainer<Systemlog> systemlogattributes = Utilities.getJPAContainer(Systemlog.class);
-
-        Panel logsearchPanel = new Panel("Game Logs");
-        addComponent(logsearchPanel);
-
-        HorizontalLayout logsearchLayout = new HorizontalLayout();
-        logsearchPanel.setContent(logsearchLayout);
-
-        filterOnDeputyMessages = new CheckBox("Show only dep messages");
-        filterOnDeputyMessages.setValue(true);
-        filterOnDeputyMessages.addValueChangeListener(new Property.ValueChangeListener()
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        if (event.getProperty().getValue().equals(Boolean.TRUE))
         {
-            {
-                logattributes.addContainerFilter(filter);
-            }
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                if (event.getProperty().getValue().equals(Boolean.TRUE))
-                {
-                    logattributes.addContainerFilter(filter);
-                } else
-                {
-                    logattributes.removeContainerFilter(filter);
-                }
-            }
-        });
-        logsearchLayout.addComponent(filterOnDeputyMessages);
-
-        // Create a DateField with the default style
-        DateField logdateField = new DateField();
-        logsearchLayout.addComponent(logdateField);
-        logdateField.addValueChangeListener(new Property.ValueChangeListener()
+          logattributes.addContainerFilter(filter);
+        } else
         {
+          logattributes.removeContainerFilter(filter);
+        }
+      }
+    });
+    logsearchLayout.addComponent(filterOnDeputyMessages);
 
-            private Container.Filter logFilter = createFilter("creation", initialLogDate);
-
-
-            {
-                logattributes.addContainerFilter(logFilter);
-            }
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                Date thedate = (Date) event.getProperty().getValue();
-                logBean.writeDeputyLog(currentUser, "Consulted game log of " + thedate + ".");
-                logattributes.removeContainerFilter(logFilter);
-                logFilter = createFilter("creation", thedate);
-                logattributes.addContainerFilter(logFilter);
-            }
-        });
-
-        Panel logtablePanel = new Panel();
-        addComponent(logtablePanel);
-
-        logsTable = new Table("Game Logs", logattributes);
-        logsTable.setVisibleColumns("id", "name", "message", "deputy", "creation");
-        Utilities.setTableSize(logsTable);
-        logsTable.setSelectable(true);
-        logsTable.setImmediate(true);
-        logsTable.setSortAscending(false);
-        logsTable.setSortContainerPropertyId("creation");
-        logsTable.setSortEnabled(false);
-        logtablePanel.setContent(logsTable);
-
-        Panel addendumPanel = new Panel();
-        addComponent(addendumPanel);
-
-        FormLayout addendumLayout = new FormLayout();
-        addendumPanel.setContent(addendumLayout);
-
-        final TextArea contents = new TextArea("Addendum");
-        contents.setRows(15);
-        contents.setWidth(80, Sizeable.Unit.PERCENTAGE);
-        addendumLayout.addComponent(contents);
-        logsTable.addValueChangeListener(new Property.ValueChangeListener()
-        {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                Object itemId = event.getProperty().getValue();
-                Item item = logsTable.getItem(itemId);
-                boolean entitySelected = item != null;
-                if (entitySelected && item.getItemProperty("addendum") != null)
-                {
-                    contents.setValue(item.getItemProperty("addendum").toString());
-                } else
-                {
-                    contents.setValue(null);
-                }
-            }
-        });
-
-        Panel chatlogsearchPanel = new Panel("Chat logs");
-        addComponent(chatlogsearchPanel);
-
-        HorizontalLayout chatlogsearchLayout = new HorizontalLayout();
-        chatlogsearchPanel.setContent(chatlogsearchLayout);
-
-        // Create a DateField with the default style
-        final TextField reason = new TextField("Reason");
-        DateField chatlogdateField = new DateField();
-        chatlogsearchLayout.addComponent(chatlogdateField);
-        chatlogdateField.addValueChangeListener(new Property.ValueChangeListener()
-        {
-
-            private Container.Filter logFilter = createFilter("stamp", initialLogDate);
-
-
-            {
-                chatlogattributes.addContainerFilter(logFilter);
-            }
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                Date thedate = (Date) event.getProperty().getValue();
-                if (reason.getValue() == null || reason.getValue().trim().equals(""))
-                {
-                    thedate = initialLogDate;
-                    logBean.writeDeputyLog(currentUser, "Tried consulting chat log of " + thedate + ", without reason given.");
-                } else
-                {
-                    logBean.writeDeputyLog(currentUser, "Consulted chat log of " + thedate + ".", "Reason given was : " + reason.getValue());
-                }
-                chatlogattributes.removeContainerFilter(logFilter);
-                logFilter = createFilter("stamp", thedate);
-                chatlogattributes.addContainerFilter(logFilter);
-            }
-        });
-        reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
-        chatlogsearchLayout.addComponent(reason);
-
-        Panel chatlogtablePanel = new Panel();
-        addComponent(chatlogtablePanel);
-
-        chatlogsTable = new Table("Chat Logs", chatlogattributes);
-        chatlogsTable.setVisibleColumns("id", "name", "command", "stamp");
-        Utilities.setTableSize(chatlogsTable);
-        chatlogsTable.setSelectable(true);
-        chatlogsTable.setImmediate(true);
-        chatlogsTable.setSortAscending(false);
-        chatlogsTable.setSortContainerPropertyId("stamp");
-        chatlogsTable.setSortEnabled(false);
-        chatlogtablePanel.setContent(chatlogsTable);
-
-        Panel syslogsearchPanel = new Panel("System logs");
-        addComponent(syslogsearchPanel);
-
-        HorizontalLayout syslogsearchLayout = new HorizontalLayout();
-        syslogsearchPanel.setContent(syslogsearchLayout);
-
-        // Create a DateField with the default style
-        DateField syslogdateField = new DateField();
-        syslogsearchLayout.addComponent(syslogdateField);
-        syslogdateField.addValueChangeListener(new Property.ValueChangeListener()
-        {
-
-            private Container.Filter logFilter = createFilter("millis", initialLogDate);
-
-
-            {
-                systemlogattributes.addContainerFilter(logFilter);
-            }
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                Date thedate = (Date) event.getProperty().getValue();
-                logBean.writeDeputyLog(currentUser, "Consulted system log of " + thedate + ".");
-                systemlogattributes.removeContainerFilter(logFilter);
-                logFilter = createFilter("millis", thedate);
-                systemlogattributes.addContainerFilter(logFilter);
-            }
-        });
-
-        Panel systemlogtablePanel = new Panel();
-        addComponent(systemlogtablePanel);
-
-        systemlogsTable = new Table("System Logs", systemlogattributes);
-        systemlogsTable.setVisibleColumns("id", "message", "millis", "creationdate", "sequence", "logger", "level", "class1", "method", "thread");
-        Utilities.setTableSize(systemlogsTable);
-        systemlogsTable.setSelectable(true);
-        systemlogsTable.setImmediate(true);
-        systemlogsTable.setSortAscending(false);
-        systemlogsTable.setSortContainerPropertyId("millis");
-        systemlogsTable.setSortEnabled(false);
-        systemlogtablePanel.setContent(systemlogsTable);
-
-    }
-
-    private Container.Filter createFilter(String dateFieldName, Date logDate2)
+    // Create a DateField with the default style
+    DateField logdateField = new DateField();
+    logsearchLayout.addComponent(logdateField);
+    logdateField.addValueChangeListener(new Property.ValueChangeListener()
     {
-        LocalDate logDate = logDate2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        Date fromDate = Date.from(logDate.atStartOfDay().toInstant(ZoneOffset.UTC));
-        Date toDate = Date.from(logDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
+      private Container.Filter logFilter = createFilter("creation", initialLogDate);
 
-        return new And(new Compare.GreaterOrEqual(dateFieldName,
-                fromDate), new Compare.LessOrEqual(dateFieldName, toDate));
-    }
 
-    private Container.Filter createFilter(String dateFieldName, LocalDate logDate)
+      {
+        logattributes.addContainerFilter(logFilter);
+      }
+
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        Date thedate = (Date) event.getProperty().getValue();
+        logBean.writeDeputyLog(currentUser, "Consulted game log of " + thedate + ".");
+        logattributes.removeContainerFilter(logFilter);
+        logFilter = createFilter("creation", thedate);
+        logattributes.addContainerFilter(logFilter);
+      }
+    });
+
+    Panel logtablePanel = new Panel();
+    addComponent(logtablePanel);
+
+    logsTable = new Table("Game Logs", logattributes);
+    logsTable.setVisibleColumns("id", "name", "message", "deputy", "creation");
+    Utilities.setTableSize(logsTable);
+    logsTable.setSelectable(true);
+    logsTable.setImmediate(true);
+    logsTable.setSortAscending(false);
+    logsTable.setSortContainerPropertyId("creation");
+    logsTable.setSortEnabled(false);
+    logtablePanel.setContent(logsTable);
+
+    Panel addendumPanel = new Panel();
+    addComponent(addendumPanel);
+
+    FormLayout addendumLayout = new FormLayout();
+    addendumPanel.setContent(addendumLayout);
+
+    final TextArea contents = new TextArea("Addendum");
+    contents.setRows(15);
+    contents.setWidth(80, Sizeable.Unit.PERCENTAGE);
+    addendumLayout.addComponent(contents);
+    logsTable.addValueChangeListener(new Property.ValueChangeListener()
     {
-        Date fromDate = Date.from(logDate.atStartOfDay().toInstant(ZoneOffset.UTC));
-        Date toDate = Date.from(logDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
 
-        return new And(new Compare.GreaterOrEqual(dateFieldName,
-                fromDate), new Compare.LessOrEqual(dateFieldName, toDate));
-    }
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        Object itemId = event.getProperty().getValue();
+        Item item = logsTable.getItem(itemId);
+        boolean entitySelected = item != null;
+        if (entitySelected && item.getItemProperty("addendum") != null)
+        {
+          contents.setValue(item.getItemProperty("addendum").toString());
+        } else
+        {
+          contents.setValue(null);
+        }
+      }
+    });
 
-    private Container.Filter createFilter(Date logDate)
+    Panel chatlogsearchPanel = new Panel("Chat logs");
+    addComponent(chatlogsearchPanel);
+
+    HorizontalLayout chatlogsearchLayout = new HorizontalLayout();
+    chatlogsearchPanel.setContent(chatlogsearchLayout);
+
+    // Create a DateField with the default style
+    final TextField reason = new TextField("Reason");
+    DateField chatlogdateField = new DateField();
+    chatlogsearchLayout.addComponent(chatlogdateField);
+    chatlogdateField.addValueChangeListener(new Property.ValueChangeListener()
     {
-        long fromDate = logDate.getTime();
-        long toDate = fromDate + (1000 * 60 * 60 * 24);
 
-        return new And(new Compare.GreaterOrEqual("millis",
-                fromDate), new Compare.LessOrEqual("millis", toDate));
-    }
+      private Container.Filter logFilter = createFilter("stamp", initialLogDate);
+
+
+      {
+        chatlogattributes.addContainerFilter(logFilter);
+      }
+
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        Date thedate = (Date) event.getProperty().getValue();
+        if (reason.getValue() == null || reason.getValue().trim().equals(""))
+        {
+          thedate = initialLogDate;
+          logBean.writeDeputyLog(currentUser, "Tried consulting chat log of " + thedate + ", without reason given.");
+        } else
+        {
+          logBean.writeDeputyLog(currentUser, "Consulted chat log of " + thedate + ".", "Reason given was : " + reason.getValue());
+        }
+        chatlogattributes.removeContainerFilter(logFilter);
+        logFilter = createFilter("stamp", thedate);
+        chatlogattributes.addContainerFilter(logFilter);
+      }
+    });
+    reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
+    chatlogsearchLayout.addComponent(reason);
+
+    Panel chatlogtablePanel = new Panel();
+    addComponent(chatlogtablePanel);
+
+    chatlogsTable = new Table("Chat Logs", chatlogattributes);
+    chatlogsTable.setVisibleColumns("id", "name", "command", "stamp");
+    Utilities.setTableSize(chatlogsTable);
+    chatlogsTable.setSelectable(true);
+    chatlogsTable.setImmediate(true);
+    chatlogsTable.setSortAscending(false);
+    chatlogsTable.setSortContainerPropertyId("stamp");
+    chatlogsTable.setSortEnabled(false);
+    chatlogtablePanel.setContent(chatlogsTable);
+
+    Panel syslogsearchPanel = new Panel("System logs");
+    addComponent(syslogsearchPanel);
+
+    HorizontalLayout syslogsearchLayout = new HorizontalLayout();
+    syslogsearchPanel.setContent(syslogsearchLayout);
+
+    // Create a DateField with the default style
+    DateField syslogdateField = new DateField();
+    syslogsearchLayout.addComponent(syslogdateField);
+    syslogdateField.addValueChangeListener(new Property.ValueChangeListener()
+    {
+
+      private Container.Filter logFilter = createFilter("millis", initialLogDate);
+
+
+      {
+        systemlogattributes.addContainerFilter(logFilter);
+      }
+
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        Date thedate = (Date) event.getProperty().getValue();
+        logBean.writeDeputyLog(currentUser, "Consulted system log of " + thedate + ".");
+        systemlogattributes.removeContainerFilter(logFilter);
+        logFilter = createFilter("millis", thedate);
+        systemlogattributes.addContainerFilter(logFilter);
+      }
+    });
+
+    Panel systemlogtablePanel = new Panel();
+    addComponent(systemlogtablePanel);
+
+    systemlogsTable = new Table("System Logs", systemlogattributes);
+    systemlogsTable.setVisibleColumns("id", "message", "millis", "creationdate", "sequence", "logger", "level", "class1", "method", "thread");
+    Utilities.setTableSize(systemlogsTable);
+    systemlogsTable.setSelectable(true);
+    systemlogsTable.setImmediate(true);
+    systemlogsTable.setSortAscending(false);
+    systemlogsTable.setSortContainerPropertyId("millis");
+    systemlogsTable.setSortEnabled(false);
+    systemlogtablePanel.setContent(systemlogsTable);
+
+  }
+
+  private Container.Filter createFilter(String dateFieldName, Date logDate2)
+  {
+    LocalDate logDate = logDate2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+    Date fromDate = Date.from(logDate.atStartOfDay().toInstant(ZoneOffset.UTC));
+    Date toDate = Date.from(logDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
+
+    return new And(new Compare.GreaterOrEqual(dateFieldName,
+            fromDate), new Compare.LessOrEqual(dateFieldName, toDate));
+  }
+
+  private Container.Filter createFilter(String dateFieldName, LocalDate logDate)
+  {
+    Date fromDate = Date.from(logDate.atStartOfDay().toInstant(ZoneOffset.UTC));
+    Date toDate = Date.from(logDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC));
+
+    return new And(new Compare.GreaterOrEqual(dateFieldName,
+            fromDate), new Compare.LessOrEqual(dateFieldName, toDate));
+  }
+
+  private Container.Filter createFilter(Date logDate)
+  {
+    long fromDate = logDate.getTime();
+    long toDate = fromDate + (1000 * 60 * 60 * 24);
+
+    return new And(new Compare.GreaterOrEqual("millis",
+            fromDate), new Compare.LessOrEqual("millis", toDate));
+  }
 
 }
