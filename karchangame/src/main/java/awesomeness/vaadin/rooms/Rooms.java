@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package awesomeness.vaadin;
+package awesomeness.vaadin.rooms;
 
+import awesomeness.vaadin.editor.SearchPanel;
 import awesomeness.vaadin.utils.IntegerProperty;
 import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -29,7 +31,6 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -60,10 +61,6 @@ public class Rooms extends VerticalLayout implements
 
   private static final Logger logger = Logger.getLogger(Rooms.class.getName());
 
-  private final CheckBox filterOnOwner;
-  private final TextField filterOnRoomNr;
-  private Filter filterByRoomnr;
-
   private final Table roomsTable;
   private final Label owner;
   private final Button commit;
@@ -89,68 +86,15 @@ public class Rooms extends VerticalLayout implements
   private final TextField down;
   private final LogBean logBean;
 
-  Rooms(final Admin currentUser, final LogBean logBean)
+  public Rooms(final Admin currentUser, final LogBean logBean)
   {
     this.currentUser = currentUser;
     this.logBean = logBean;
     final JPAContainer<mmud.database.entities.game.Room> attributes = Utilities.getJPAContainer(mmud.database.entities.game.Room.class);
 
-    final Panel searchPanel = new Panel("Search panel");
+    final SearchPanel searchPanel = new RoomSearchPanel(attributes, currentUser);
+    searchPanel.init();
     addComponent(searchPanel);
-    HorizontalLayout searchLayout = new HorizontalLayout();
-    searchPanel.setContent(searchLayout);
-
-    final Filter filter = new Compare.Equal("owner",
-            currentUser);
-
-    filterOnOwner = new CheckBox("Filter on owner");
-    filterOnOwner.addValueChangeListener(new Property.ValueChangeListener()
-    {
-
-      @Override
-      public void valueChange(Property.ValueChangeEvent event)
-      {
-        if (event.getProperty().getValue().equals(Boolean.TRUE))
-        {
-          attributes.addContainerFilter(filter);
-        } else
-        {
-          attributes.removeContainerFilter(filter);
-        }
-      }
-    });
-    searchLayout.addComponent(filterOnOwner);
-    filterOnRoomNr = new TextField();
-    filterOnRoomNr.addBlurListener(new FieldEvents.BlurListener()
-    {
-      @Override
-      public void blur(FieldEvents.BlurEvent event)
-      {
-        String value = filterOnRoomNr.getValue();
-        Long roomNumber = null;
-        if (value != null && !value.trim().equals(""))
-        {
-          try
-          {
-            roomNumber = Long.decode(value);
-          } catch (NumberFormatException e)
-          {
-            // do nothing here, roomnumber stays at null
-          }
-        }
-        //if (filterByRoomNr != null)
-        //{
-        attributes.removeContainerFilter(filterByRoomnr);
-        //}
-        if (roomNumber != null)
-        {
-          filterByRoomnr = new Compare.Equal("id",
-                  roomNumber);
-          attributes.addContainerFilter(filterByRoomnr);
-        }
-      }
-    });
-    searchLayout.addComponent(filterOnRoomNr);
 
     Panel tablePanel = new Panel();
     addComponent(tablePanel);
@@ -456,5 +400,6 @@ public class Rooms extends VerticalLayout implements
       layout.setEnabled(enabled);
     }
   }
+
 
 }
