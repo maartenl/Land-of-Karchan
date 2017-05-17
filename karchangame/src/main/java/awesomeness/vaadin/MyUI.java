@@ -16,6 +16,7 @@
  */
 package awesomeness.vaadin;
 
+import awesomeness.vaadin.characters.Characters;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;

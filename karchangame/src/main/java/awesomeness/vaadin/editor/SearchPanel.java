@@ -25,41 +25,68 @@ import com.vaadin.ui.Panel;
 import mmud.database.entities.game.Admin;
 
 /**
+ * A standard search panel. Contains only the "filter on owner" bit.
  *
  * @author maartenl
  */
-public class SearchPanel extends Panel
+public abstract class SearchPanel extends Panel
 {
 
-    private final CheckBox filterOnDeputy;
+  private CheckBox filterOnDeputy;
+  private final Admin currentUser;
+  private final Container.Filterable container;
+  private HorizontalLayout searchLayout;
 
-    public SearchPanel(Container.Filterable container, Admin currentUser)
+  protected Container.Filterable getContainer()
+  {
+    return container;
+  }
+
+  protected HorizontalLayout getSearchLayout()
+  {
+    return searchLayout;
+  }
+
+  /**
+   *
+   * @param container The table that can be filtered, based on search settings.
+   * @param currentUser the current user (duh)
+   */
+  public SearchPanel(Container.Filterable container, Admin currentUser)
+  {
+    super("Search panel");
+    this.currentUser = currentUser;
+    this.container = container;
+  }
+
+  public void init()
+  {
+    searchLayout = new HorizontalLayout();
+    setContent(searchLayout);
+
+    filterOnDeputy = new CheckBox("Filter on owner");
+    filterOnDeputy.setValue(false);
+    filterOnDeputy.addValueChangeListener(new Property.ValueChangeListener()
     {
-        super("Search panel");
-        HorizontalLayout searchLayout = new HorizontalLayout();
-        setContent(searchLayout);
+      final Container.Filter filter = new Compare.Equal("owner",
+              currentUser);
 
-        filterOnDeputy = new CheckBox("Filter on owner");
-        filterOnDeputy.setValue(false);
-        filterOnDeputy.addValueChangeListener(new Property.ValueChangeListener()
+      @Override
+      public void valueChange(Property.ValueChangeEvent event)
+      {
+        if (event.getProperty().getValue().equals(Boolean.TRUE))
         {
-            final Container.Filter filter = new Compare.Equal("owner",
-                    currentUser);
+          container.addContainerFilter(filter);
+        } else
+        {
+          container.removeContainerFilter(filter);
+        }
+      }
+    });
+    searchLayout.addComponent(filterOnDeputy);
+    addSpecifics();
+  }
 
-            @Override
-            public void valueChange(Property.ValueChangeEvent event)
-            {
-                if (event.getProperty().getValue().equals(Boolean.TRUE))
-                {
-                    container.addContainerFilter(filter);
-                } else
-                {
-                    container.removeContainerFilter(filter);
-                }
-            }
-        });
-        searchLayout.addComponent(filterOnDeputy);
-
-    }
+  protected abstract void addSpecifics();
 
 }
