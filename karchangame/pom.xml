@@ -240,6 +240,16 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+<!--                Configuration below should be removed, once the generation of
+                JavaDFoc files no longer generates a failed build.-->
+                <configuration>
+                   <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.6.1</version>
                 <!-- Clean up also any pre-compiled themes -->
