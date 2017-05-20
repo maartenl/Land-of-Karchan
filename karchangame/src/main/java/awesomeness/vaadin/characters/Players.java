@@ -58,7 +58,7 @@ public class Players extends Editor
     super(currentUser, logBean);
     final JPAContainer<mmud.database.entities.characters.User> container = Utilities.getJPAContainer(mmud.database.entities.characters.User.class);
 
-    final SearchPanel searchPanel = new CharSearchPanel(container, currentUser);
+    final SearchPanel searchPanel = new PlayerSearchPanel(container, currentUser);
     searchPanel.init();
     addComponent(searchPanel);
 
@@ -66,7 +66,8 @@ public class Players extends Editor
     addComponent(tablePanel);
 
     table = new Table("Players", container);
-    table.setVisibleColumns("name", "title", "owner");
+    table.setVisibleColumns("name", "title", "address", "owner");
+    table.setColumnWidth("title", 200);
     Utilities.setTableSize(table);
     table.setSelectable(true);
     table.setImmediate(true);

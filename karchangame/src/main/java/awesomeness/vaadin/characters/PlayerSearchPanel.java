@@ -16,9 +16,8 @@
  */
 package awesomeness.vaadin.characters;
 
-import awesomeness.vaadin.editor.SearchPanel;
 import com.vaadin.data.Container;
-import com.vaadin.data.util.filter.Compare;
+import com.vaadin.data.util.filter.Like;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.ui.TextField;
 import mmud.database.entities.game.Admin;
@@ -27,10 +26,10 @@ import mmud.database.entities.game.Admin;
  *
  * @author maartenl
  */
-class CharSearchPanel extends SearchPanel
+public class PlayerSearchPanel extends CharSearchPanel
 {
 
-  public CharSearchPanel(Container.Filterable container, Admin currentUser)
+  public PlayerSearchPanel(Container.Filterable container, Admin currentUser)
   {
     super(container, currentUser);
   }
@@ -38,25 +37,25 @@ class CharSearchPanel extends SearchPanel
   @Override
   protected void addSpecifics()
   {
-    TextField filterOnName = new TextField();
-    filterOnName.setDescription("Name");
-    filterOnName.addBlurListener(new FieldEvents.BlurListener()
+    super.addSpecifics();
+    TextField filterOnAddress = new TextField();
+    filterOnAddress.setDescription("Address");
+    filterOnAddress.addBlurListener(new FieldEvents.BlurListener()
     {
-      private Container.Filter filterByName;
+      private Container.Filter filterByAddress;
 
       @Override
       public void blur(FieldEvents.BlurEvent event)
       {
-        String value = filterOnName.getValue();
-        getContainer().removeContainerFilter(filterByName);
+        String value = filterOnAddress.getValue();
+        getContainer().removeContainerFilter(filterByAddress);
         if (value != null && !value.trim().equals(""))
         {
-          filterByName = new Compare.Equal("name", value);
-          getContainer().addContainerFilter(filterByName);
+          filterByAddress = new Like("address", value);
+          getContainer().addContainerFilter(filterByAddress);
         }
       }
     });
-    getSearchLayout().addComponent(filterOnName);
+    getSearchLayout().addComponent(filterOnAddress);
   }
-
 }
