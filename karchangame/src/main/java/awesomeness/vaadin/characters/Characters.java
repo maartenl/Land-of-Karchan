@@ -26,6 +26,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
@@ -92,7 +93,7 @@ public class Characters extends Editor
     Field<?> image = group.buildAndBind("image", "image");
     final Field<?> title = group.buildAndBind("title", "title");
     final Field<?> race = group.buildAndBind("race", "race");
-    // final Field<?> sex = group.buildAndBind("sex", "sex", ComboBox.class);
+    final ComboBox sex = group.buildAndBind("sex", "sex", ComboBox.class);
     final Field<?> age = group.buildAndBind("age", "age");
     final Field<?> height = group.buildAndBind("height", "height");
     final Field<?> width = group.buildAndBind("width", "width");
@@ -131,7 +132,7 @@ public class Characters extends Editor
     layout.addComponent(image);
     layout.addComponent(title);
     layout.addComponent(race);
-    // layout.addComponent(sex);
+    layout.addComponent(sex);
     layout.addComponent(age);
     layout.addComponent(height);
     layout.addComponent(width);

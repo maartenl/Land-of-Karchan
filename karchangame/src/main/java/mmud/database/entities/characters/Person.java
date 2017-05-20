@@ -36,6 +36,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -93,13 +94,15 @@ import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
+import org.eclipse.persistence.annotations.ConversionValue;
+import org.eclipse.persistence.annotations.Convert;
+import org.eclipse.persistence.annotations.ObjectTypeConverter;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 
 /**
  * A character in the game. Might be both a bot, a shopkeeper, a user, or an
- * administrator. Note: it contains a filter annotation which is EclipseLink
- * specific.
+ * administrator.
  *
  * @author maartenl
  */
@@ -108,6 +111,17 @@ import org.owasp.validator.html.ScanException;
 @DiscriminatorColumn(
         name = "god",
         discriminatorType = DiscriminatorType.INTEGER)
+@ObjectTypeConverter(
+        name = "genderConverter",
+        dataType = java.lang.String.class,
+        objectType = Sex.class,
+        conversionValues =
+        {
+          @ConversionValue(dataValue = "female", objectValue = "FEMALE")
+          ,
+             @ConversionValue(dataValue = "male", objectValue = "MALE")
+        }
+)
 @Table(name = "mm_usertable")
 @NamedQueries(
         {
@@ -136,11 +150,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Size(min = 1, max = 50)
   @Column(name = "race")
   private String race;
+
+  @Convert("genderConverter")
   @Basic(optional = false)
+  @Enumerated
   @NotNull
   @Size(min = 1, max = 6)
   @Column(name = "sex")
-  private String sex = "male";
+  private Sex sex = Sex.MALE;
   @Size(max = 20)
   @Column(name = "age")
   private String age;
@@ -426,12 +443,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    */
   public Sex getSex()
   {
-    return Sex.createFromString(sex);
+    return sex;
   }
 
   public void setSex(Sex sex)
   {
-    this.sex = sex.toString();
+    this.sex = sex;
   }
 
   /**
