@@ -37,7 +37,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import mmud.Attributes;
 import mmud.Utils;
@@ -68,8 +67,6 @@ import mmud.exceptions.MudException;
             @NamedQuery(name = "User.who", query = "SELECT p FROM User p WHERE p.god <=1 and p.active=1 ")
           ,
             @NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
-          ,
-            @NamedQuery(name = "User.authorise", query = "select u from User u WHERE u.name = :name and u.password = FUNCTION('sha1', :password)")
         })
 public class User extends Person
 {
@@ -86,11 +83,6 @@ public class User extends Person
   @Size(min = 5, max = 200)
   @Column(name = "address")
   private String address;
-  @Size(max = 40)
-  // TODO get this fixed properly with a sha1 hash code upon insert.
-  @Column(name = "password")
-  @Pattern(regexp = PASSWORD_REGEXP, message = "Invalid password")
-  private String password;
   @Size(max = 128)
   @Column(name = "newpassword")
   private String newpassword;
@@ -260,49 +252,18 @@ public class User extends Person
   }
 
   /**
-   * @deprecated
-   * @return
-   */
-  @Deprecated
-  public String getPassword()
-  {
-    return password;
-  }
-
-  /**
+   * <p>
    * Returns the SHA-512 hash of the password in the form of a 128 length
-   * String containing the HEX encoding of this hash.
+   * String containing the HEX encoding of this hash.</p>
+   * <p>
+   * There used to be "password" method too, but it was deprecated and has
+   * since been removed.</p>
    *
    * @return 128 character hex-encoded SHA-512 hash of the password.
    */
   public String getNewpassword()
   {
     return newpassword;
-  }
-
-  /**
-   * Sets the password of the person. Can contain any character, but has to
-   * have at least size of 5. You cannot set a password this way, you can only
-   * set it for the first time, i.e. when creating a new character.
-   *
-   * @param password the new password.
-   * @throws MudException if the password is not allowed.
-   * @deprecated
-   */
-  @Deprecated
-  public void setPassword(String password) throws MudException
-  {
-    if (this.password != null)
-    {
-      return;
-    }
-
-    if (password != null)
-    {
-      Utils.checkRegexp(PASSWORD_REGEXP, password);
-    }
-
-    this.password = new HexEncoder(40).encrypt(password, Hash.SHA_1);
   }
 
   /**

@@ -376,7 +376,6 @@ public class GameBean implements RoomsInterface, WorldInterface
       }
       User person = new User();
       person.setName(name);
-      person.setPassword(pperson.password);
       person.setNewpassword(pperson.password);
       if (isBanned(name, address))
       {
