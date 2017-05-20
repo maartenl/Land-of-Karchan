@@ -143,7 +143,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   @JoinColumn(name = "bossname", nullable = false, referencedColumnName = "name")
   @ManyToOne(optional = false)
   private User boss;
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild", orphanRemoval = true)
   @OrderBy("guildrankPK.guildlevel")
   private Set<Guildrank> guildrankCollection;
 
@@ -645,7 +645,12 @@ public class Guild implements Serializable, DisplayInterface, Ownage
    */
   public boolean deleteGuildrank(Guildrank rank)
   {
-    return guildrankCollection.remove(rank);
+    boolean remove = guildrankCollection.remove(rank);
+    if (remove)
+    {
+      rank.setGuild(null);
+    }
+    return remove;
   }
 
 }
