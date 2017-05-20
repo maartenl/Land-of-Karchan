@@ -32,167 +32,174 @@ import org.vaadin.dialogs.ConfirmDialog;
 public abstract class Buttons extends HorizontalLayout
 {
 
-    private static final Logger logger = Logger.getLogger(Buttons.class.getName());
+  private static final Logger logger = Logger.getLogger(Buttons.class.getName());
 
-    private boolean busyCreatingNewItem;
+  private boolean busyCreatingNewItem;
 
-    private final LogBean logBean;
+  private final LogBean logBean;
 
-    private final Button commit;
+  private final Button commit;
 
-    private final Button discard;
+  private final Button discard;
 
-    private final Button create;
+  private final Button delete;
 
-    private final Button delete;
+  private final Button disown;
 
-    private final Button disown;
+  private boolean deleteEnabled = true;
 
-    private boolean deleteEnabled = true;
+  protected boolean enableCreate()
+  {
+    return true;
+  }
 
-    /**
-     * Persist changes to an existing record to the database.
-     *
-     * @return
-     */
-    protected abstract Object save();
+  /**
+   * Persist changes to an existing record to the database.
+   *
+   * @return
+   */
+  protected abstract Object save();
 
-    /**
-     * Persists a new record to the database.
-     *
-     * @return
-     */
-    protected abstract Object create();
+  /**
+   * Persists a new record to the database.
+   *
+   * @return
+   */
+  protected abstract Object create();
 
-    /**
-     * Creates a new record (without writing it to the database yet).
-     */
-    protected abstract void instantiate();
+  /**
+   * Creates a new record (without writing it to the database yet).
+   */
+  protected abstract void instantiate();
 
-    /**
-     * Discards any changes.
-     */
-    protected abstract void discard();
+  /**
+   * Discards any changes.
+   */
+  protected abstract void discard();
 
-    /**
-     * Deletes a record from the database.
-     *
-     * @return
-     */
-    protected abstract Object delete();
+  /**
+   * Deletes a record from the database.
+   *
+   * @return
+   */
+  protected abstract Object delete();
 
-    /**
-     * Remove ownership of a record.
-     *
-     * @return
-     */
-    protected abstract String disown();
+  /**
+   * Remove ownership of a record.
+   *
+   * @return
+   */
+  protected abstract String disown();
 
-    /**
-     * Does nothing with the create button.
-     *
-     * @param enable
-     */
-    public void setButtonsEnabled(boolean enable)
+  /**
+   * Does nothing with the create button.
+   *
+   * @param enable
+   */
+  public void setButtonsEnabled(boolean enable)
+  {
+    commit.setEnabled(enable);
+    discard.setEnabled(enable);
+    delete.setEnabled(deleteEnabled == true && enable);
+    disown.setEnabled(enable);
+  }
+
+  /**
+   *
+   * @param currentUser current administrator
+   * @param logBean the logger
+   * @param itemname the name of the items to be edited, for example "Item definition". Used for logging.
+   * @param permitDeletes indicates that deleteing of information is permitted.
+   */
+  public Buttons(final Admin currentUser, final LogBean logBean, final String itemname, boolean permitDeletes, UI mainWindow)
+  {
+    this.deleteEnabled = permitDeletes;
+    HorizontalLayout buttonsLayout = this;
+    this.logBean = logBean;
+    final String itemnamelowercase = itemname.toLowerCase();
+
+    commit = new Button("Save", new Button.ClickListener()
     {
-        commit.setEnabled(enable);
-        discard.setEnabled(enable);
-        delete.setEnabled(deleteEnabled == true && enable);
-        disown.setEnabled(enable);
+      @Override
+      public void buttonClick(Button.ClickEvent event)
+      {
+        if (busyCreatingNewItem == true)
+        {
+          logBean.writeDeputyLog(currentUser, "New " + itemnamelowercase + " '" + create() + "' created.");
+        } else
+        {
+          logBean.writeDeputyLog(currentUser, itemname + " '" + save() + "' updated.");
+        }
+        busyCreatingNewItem = false;
+      }
+
+    });
+    buttonsLayout.addComponent(commit);
+
+    discard = new Button("Cancel", new Button.ClickListener()
+    {
+      @Override
+      public void buttonClick(Button.ClickEvent event)
+      {
+        logger.log(Level.FINEST, "discard clicked.");
+        discard();
+      }
+    });
+    buttonsLayout.addComponent(discard);
+
+    if (enableCreate())
+    {
+      Button create;
+      create = new Button("Create", new Button.ClickListener()
+      {
+
+        @Override
+        public void buttonClick(Button.ClickEvent event)
+        {
+          busyCreatingNewItem = true;
+          discard();
+          instantiate();
+          setButtonsEnabled(true);
+        }
+      });
+      buttonsLayout.addComponent(create);
     }
 
-    /**
-     *
-     * @param currentUser current administrator
-     * @param logBean the logger
-     * @param itemname the name of the items to be edited, for example "Item definition". Used for logging.
-     * @param permitDeletes indicates that deleteing of information is permitted.
-     */
-    public Buttons(final Admin currentUser, final LogBean logBean, final String itemname, boolean permitDeletes, UI mainWindow)
+    delete = new Button("Delete", new Button.ClickListener()
     {
-        this.deleteEnabled = permitDeletes;
-        HorizontalLayout buttonsLayout = this;
-        this.logBean = logBean;
-        final String itemnamelowercase = itemname.toLowerCase();
 
-        commit = new Button("Save", new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                if (busyCreatingNewItem == true)
-                {
-                    logBean.writeDeputyLog(currentUser, "New " + itemnamelowercase + " '" + create() + "' created.");
-                } else
-                {
-                    logBean.writeDeputyLog(currentUser, itemname + " '" + save() + "' updated.");
-                }
-                busyCreatingNewItem = false;
-            }
-
-        });
-        buttonsLayout.addComponent(commit);
-
-        discard = new Button("Cancel", new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                logger.log(Level.FINEST, "discard clicked.");
-                discard();
-            }
-        });
-        buttonsLayout.addComponent(discard);
-
-        create = new Button("Create", new Button.ClickListener()
+      @Override
+      public void buttonClick(Button.ClickEvent event)
+      {
+        ConfirmDialog.show(mainWindow, "Please Confirm:", "Are you really sure?",
+                "Yes", "No", new ConfirmDialog.Listener()
         {
 
-            @Override
-            public void buttonClick(Button.ClickEvent event)
+          public void onClose(ConfirmDialog dialog)
+          {
+            if (dialog.isConfirmed())
             {
-                busyCreatingNewItem = true;
-                discard();
-                instantiate();
-                setButtonsEnabled(true);
+              // Confirmed to continue
+              logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
             }
+          }
         });
-        buttonsLayout.addComponent(create);
+      }
+    });
+    delete.setEnabled(deleteEnabled);
+    buttonsLayout.addComponent(delete);
 
-        delete = new Button("Delete", new Button.ClickListener()
-        {
+    disown = new Button("Disown", new Button.ClickListener()
+    {
+      @Override
+      public void buttonClick(Button.ClickEvent event)
+      {
+        logger.log(Level.FINEST, "disown clicked.");
+        logBean.writeDeputyLog(currentUser, itemname + " '" + disown() + "' deleted.");
+      }
+    });
+    buttonsLayout.addComponent(disown);
 
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                ConfirmDialog.show(mainWindow, "Please Confirm:", "Are you really sure?",
-                        "Yes", "No", new ConfirmDialog.Listener()
-                {
-
-                    public void onClose(ConfirmDialog dialog)
-                    {
-                        if (dialog.isConfirmed())
-                        {
-                            // Confirmed to continue
-                            logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
-                        }
-                    }
-                });
-            }
-        });
-        delete.setEnabled(deleteEnabled);
-        buttonsLayout.addComponent(delete);
-
-        disown = new Button("Disown", new Button.ClickListener()
-        {
-            @Override
-            public void buttonClick(Button.ClickEvent event)
-            {
-                logger.log(Level.FINEST, "disown clicked.");
-                logBean.writeDeputyLog(currentUser, itemname + " '" + disown() + "' deleted.");
-            }
-        });
-        buttonsLayout.addComponent(disown);
-
-    }
+  }
 
 }

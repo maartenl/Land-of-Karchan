@@ -315,16 +315,12 @@ public class User extends Person
    */
   public void setNewpassword(String newpassword) throws MudException
   {
-    if (this.newpassword != null)
+    if (newpassword == null)
     {
+      // cannot remove a password from a user!
       return;
     }
-
-    if (newpassword != null)
-    {
-      Utils.checkRegexp(PASSWORD_REGEXP, newpassword);
-    }
-
+    Utils.checkRegexp(PASSWORD_REGEXP, newpassword);
     this.newpassword = new HexEncoder(128).encrypt(newpassword, Hash.SHA_512);
   }
 

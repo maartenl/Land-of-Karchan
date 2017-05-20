@@ -16,8 +16,9 @@
  */
 package awesomeness.vaadin;
 
-import awesomeness.vaadin.rooms.Rooms;
 import awesomeness.vaadin.characters.Characters;
+import awesomeness.vaadin.characters.Players;
+import awesomeness.vaadin.rooms.Rooms;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
@@ -41,199 +42,216 @@ import mmud.database.entities.game.Admin;
 public class MyUI extends UI
 {
 
-    @Override
-    protected void init(VaadinRequest vaadinRequest)
+  @Override
+  protected void init(VaadinRequest vaadinRequest)
+  {
+    MyUIServlet servlet = ((MyUIServlet) MyUIServlet.getCurrent());
+    EntityManager em = servlet.getEntityManager();
+    Admin admin = servlet.getCurrentUser();
+
+    Panel mainPanel = new Panel("Administration pages");
+    setContent(mainPanel);
+
+    VerticalLayout layout = new VerticalLayout();
+
+    mainPanel.setContent(layout);
+
+    // Create the tabsheet
+    MenuBar barmenu = new MenuBar();
+    layout.addComponent(barmenu);
+
+    Panel currentUserPanel = getCurrentUserPanel(admin);
+    layout.addComponent(currentUserPanel);
+
+    final Panel worldAttributesPanel = new Panel("Worldattributes");
+    worldAttributesPanel.setVisible(false);
+    Layout worldattributes = new WorldAttributes(admin, servlet.getLogBean());
+    worldAttributesPanel.setContent(worldattributes);
+    layout.addComponent(worldAttributesPanel);
+
+    final Panel scriptsPanel = new Panel("Scripts");
+    scriptsPanel.setVisible(false);
+    Layout scripts = new Scripts(admin, servlet.getLogBean());
+    scriptsPanel.setContent(scripts);
+    layout.addComponent(scriptsPanel);
+
+    final Panel areasPanel = new Panel("Areas");
+    areasPanel.setVisible(false);
+    Layout areas = new Areas(admin, servlet.getLogBean());
+    areasPanel.setContent(areas);
+    layout.addComponent(areasPanel);
+
+    final Panel eventsPanel = new Panel("Events");
+    eventsPanel.setVisible(false);
+    Layout events = new Events(admin, servlet.getLogBean());
+    eventsPanel.setContent(events);
+    layout.addComponent(eventsPanel);
+
+    final Panel roomsPanel = new Panel("Rooms");
+    roomsPanel.setVisible(false);
+    Layout rooms = new Rooms(admin, servlet.getLogBean());
+    roomsPanel.setContent(rooms);
+    layout.addComponent(roomsPanel);
+
+    final Panel commandsPanel = new Panel("Commands");
+    commandsPanel.setVisible(false);
+    Layout commands = new Commands(admin, servlet.getLogBean());
+    commandsPanel.setContent(commands);
+    layout.addComponent(commandsPanel);
+
+    final Panel logsPanel = new Panel("Logs");
+    logsPanel.setVisible(false);
+    Layout logs = new Logs(admin, servlet.getLogBean());
+    logsPanel.setContent(logs);
+    layout.addComponent(logsPanel);
+
+    final Panel helpPanel = new Panel("Help");
+    helpPanel.setVisible(false);
+    Explanations explanations = new Explanations(admin, servlet.getLogBean());
+    explanations.init();
+    helpPanel.setContent(explanations);
+    layout.addComponent(helpPanel);
+
+    final Panel banishmentPanel = new Panel("Banishment");
+    banishmentPanel.setVisible(false);
+    Banishment banishment = new Banishment(admin, servlet.getLogBean());
+    banishment.init();
+    banishmentPanel.setContent(banishment);
+    layout.addComponent(banishmentPanel);
+
+    final Panel itemDefinitionsPanel = new Panel("Item definitions");
+    itemDefinitionsPanel.setVisible(false);
+    ItemDefinitions itemdefinitions = new ItemDefinitions(admin, servlet.getLogBean(), this);
+    itemDefinitionsPanel.setContent(itemdefinitions);
+    layout.addComponent(itemDefinitionsPanel);
+
+    final Panel charactersPanel = new Panel("Characters");
+    charactersPanel.setVisible(false);
+    Characters characters = new Characters(servlet.getPersonProvider(), admin, servlet.getLogBean(), this);
+    charactersPanel.setContent(characters);
+    layout.addComponent(charactersPanel);
+
+    final Panel playersPanel = new Panel("Players");
+    playersPanel.setVisible(false);
+    Players playersEditor = new Players(admin, servlet.getLogBean(), this);
+    playersPanel.setContent(playersEditor);
+    layout.addComponent(playersPanel);
+
+    final Panel guildsPanel = new Panel("Guilds");
+    guildsPanel.setVisible(false);
+    Guilds guilds = new Guilds(admin, servlet.getLogBean(), this);
+    guildsPanel.setContent(guilds);
+    layout.addComponent(guildsPanel);
+
+    final MenuBar.Command command;
+    command = new MenuBar.Command()
     {
-        MyUIServlet servlet = ((MyUIServlet) MyUIServlet.getCurrent());
-        EntityManager em = servlet.getEntityManager();
-        Admin admin = servlet.getCurrentUser();
 
-        Panel mainPanel = new Panel("Administration pages");
-        setContent(mainPanel);
-
-        VerticalLayout layout = new VerticalLayout();
-
-        mainPanel.setContent(layout);
-
-        // Create the tabsheet
-        MenuBar barmenu = new MenuBar();
-        layout.addComponent(barmenu);
-
-        final Panel currentUserPanel = new Panel();
-        Layout currentUserLayout = new HorizontalLayout();
-        currentUserPanel.setContent(currentUserLayout);
-        SimpleDateFormat simpleDateFormat
-                = new SimpleDateFormat("EEEE, dd MMMM yyyy");// yyyy/MM/dd
-        String dateString
-                = simpleDateFormat.format(admin.getValiduntil().getTime());
-        Label nameLabel = new Label("Name: " + admin.getName());
-        Label emailLabel = new Label("Email: " + admin.getEmail());
-        Label validUntilLabel = new Label("Valid until: " + dateString);
-        currentUserLayout.setWidth(100, Unit.PERCENTAGE);
-        currentUserLayout.addComponent(nameLabel);
-        currentUserLayout.addComponent(emailLabel);
-        currentUserLayout.addComponent(validUntilLabel);
-        layout.addComponent(currentUserPanel);
-
-        final Panel worldAttributesPanel = new Panel("Worldattributes");
+      @Override
+      public void menuSelected(MenuItem selectedItem)
+      {
         worldAttributesPanel.setVisible(false);
-        Layout worldattributes = new WorldAttributes(admin, servlet.getLogBean());
-        worldAttributesPanel.setContent(worldattributes);
-        layout.addComponent(worldAttributesPanel);
-
-        final Panel scriptsPanel = new Panel("Scripts");
         scriptsPanel.setVisible(false);
-        Layout scripts = new Scripts(admin, servlet.getLogBean());
-        scriptsPanel.setContent(scripts);
-        layout.addComponent(scriptsPanel);
-
-        final Panel areasPanel = new Panel("Areas");
         areasPanel.setVisible(false);
-        Layout areas = new Areas(admin, servlet.getLogBean());
-        areasPanel.setContent(areas);
-        layout.addComponent(areasPanel);
-
-        final Panel eventsPanel = new Panel("Events");
         eventsPanel.setVisible(false);
-        Layout events = new Events(admin, servlet.getLogBean());
-        eventsPanel.setContent(events);
-        layout.addComponent(eventsPanel);
-
-        final Panel roomsPanel = new Panel("Rooms");
         roomsPanel.setVisible(false);
-        Layout rooms = new Rooms(admin, servlet.getLogBean());
-        roomsPanel.setContent(rooms);
-        layout.addComponent(roomsPanel);
-
-        final Panel commandsPanel = new Panel("Commands");
         commandsPanel.setVisible(false);
-        Layout commands = new Commands(admin, servlet.getLogBean());
-        commandsPanel.setContent(commands);
-        layout.addComponent(commandsPanel);
-
-        final Panel logsPanel = new Panel("Logs");
         logsPanel.setVisible(false);
-        Layout logs = new Logs(admin, servlet.getLogBean());
-        logsPanel.setContent(logs);
-        layout.addComponent(logsPanel);
-
-        final Panel helpPanel = new Panel("Help");
-        helpPanel.setVisible(false);
-        Explanations explanations = new Explanations(admin, servlet.getLogBean());
-        explanations.init();
-        helpPanel.setContent(explanations);
-        layout.addComponent(helpPanel);
-
-        final Panel banishmentPanel = new Panel("Banishment");
         banishmentPanel.setVisible(false);
-        Banishment banishment = new Banishment(admin, servlet.getLogBean());
-        banishment.init();
-        banishmentPanel.setContent(banishment);
-        layout.addComponent(banishmentPanel);
-
-        final Panel itemDefinitionsPanel = new Panel("Item definitions");
         itemDefinitionsPanel.setVisible(false);
-        ItemDefinitions itemdefinitions = new ItemDefinitions(admin, servlet.getLogBean(), this);
-        itemDefinitionsPanel.setContent(itemdefinitions);
-        layout.addComponent(itemDefinitionsPanel);
-
-        final Panel charactersPanel = new Panel("Characters");
+        helpPanel.setVisible(false);
         charactersPanel.setVisible(false);
-        Characters characters = new Characters(servlet.getPersonProvider(), admin, servlet.getLogBean(), this);
-        charactersPanel.setContent(characters);
-        layout.addComponent(charactersPanel);
-
-        final Panel guildsPanel = new Panel("Guilds");
+        playersPanel.setVisible(false);
         guildsPanel.setVisible(false);
-        Guilds guilds = new Guilds(admin, servlet.getLogBean(), this);
-        guildsPanel.setContent(guilds);
-        layout.addComponent(guildsPanel);
 
-        final MenuBar.Command command;
-        command = new MenuBar.Command()
+        switch (selectedItem.getText())
         {
+          case "Worldattributes":
+            worldAttributesPanel.setVisible(true);
+            break;
+          case "Scripts":
+            scriptsPanel.setVisible(true);
+            break;
+          case "Areas":
+            areasPanel.setVisible(true);
+            break;
+          case "Events":
+            eventsPanel.setVisible(true);
+            break;
+          case "Rooms":
+            roomsPanel.setVisible(true);
+            break;
+          case "Commands":
+            commandsPanel.setVisible(true);
+            break;
+          case "Logs":
+            logsPanel.setVisible(true);
+            break;
+          case "Banishment":
+            banishmentPanel.setVisible(true);
+            break;
+          case "Item definitions":
+            itemDefinitionsPanel.setVisible(true);
+            break;
+          case "Help":
+            helpPanel.setVisible(true);
+            break;
+          case "Characters":
+            charactersPanel.setVisible(true);
+            break;
+          case "Players":
+            playersPanel.setVisible(true);
+            break;
+          case "Guilds":
+            guildsPanel.setVisible(true);
+            break;
+        }
+      }
+    };
 
-            @Override
-            public void menuSelected(MenuItem selectedItem)
-            {
-                worldAttributesPanel.setVisible(false);
-                scriptsPanel.setVisible(false);
-                areasPanel.setVisible(false);
-                eventsPanel.setVisible(false);
-                roomsPanel.setVisible(false);
-                commandsPanel.setVisible(false);
-                logsPanel.setVisible(false);
-                banishmentPanel.setVisible(false);
-                itemDefinitionsPanel.setVisible(false);
-                helpPanel.setVisible(false);
-                charactersPanel.setVisible(false);
-                guildsPanel.setVisible(false);
+    MenuItem players = barmenu.addItem("Players", null, null);
+    players.addItem("Characters", null, command);
+    players.addItem("Players", null, command);
+    players.addItem("Guilds", null, command);
+    players.addItem("Banishment", null, command);
 
-                switch (selectedItem.getText())
-                {
-                    case "Worldattributes":
-                        worldAttributesPanel.setVisible(true);
-                        break;
-                    case "Scripts":
-                        scriptsPanel.setVisible(true);
-                        break;
-                    case "Areas":
-                        areasPanel.setVisible(true);
-                        break;
-                    case "Events":
-                        eventsPanel.setVisible(true);
-                        break;
-                    case "Rooms":
-                        roomsPanel.setVisible(true);
-                        break;
-                    case "Commands":
-                        commandsPanel.setVisible(true);
-                        break;
-                    case "Logs":
-                        logsPanel.setVisible(true);
-                        break;
-                    case "Banishment":
-                        banishmentPanel.setVisible(true);
-                        break;
-                    case "Item definitions":
-                        itemDefinitionsPanel.setVisible(true);
-                        break;
-                    case "Help":
-                        helpPanel.setVisible(true);
-                        break;
-                    case "Characters":
-                        charactersPanel.setVisible(true);
-                        break;
-                    case "Guilds":
-                        guildsPanel.setVisible(true);
-                        break;
-                }
-            }
-        };
+    barmenu.addItem("Rooms", null, command);
 
-        MenuItem players = barmenu.addItem("Players", null, null);
-        players.addItem("Characters", null, command);
-        players.addItem("Guilds", null, command);
-        players.addItem("Banishment", null, command);
+    MenuItem items = barmenu.addItem("Items", null, null);
+    items.addItem("Item definitions", null, command);
 
-        barmenu.addItem("Rooms", null, command);
+    barmenu.addItem("Areas", null, command);
 
-        MenuItem items = barmenu.addItem("Items", null, null);
-        items.addItem("Item definitions", null, command);
+    barmenu.addItem("Logs", null, command);
 
-        barmenu.addItem("Areas", null, command);
+    // toplevel
+    MenuItem scripting = barmenu.addItem("Scripting", null, null);
 
-        barmenu.addItem("Logs", null, command);
+    scripting.addItem("Worldattributes", null, command);
+    scripting.addItem("Commands", null, command);
+    scripting.addItem("Events", null, command);
+    scripting.addItem("Scripts", null, command);
 
-        // toplevel
-        MenuItem scripting = barmenu.addItem("Scripting", null, null);
+    barmenu.addItem("Help", null, command);
+  }
 
-        scripting.addItem("Worldattributes", null, command);
-        scripting.addItem("Commands", null, command);
-        scripting.addItem("Events", null, command);
-        scripting.addItem("Scripts", null, command);
-
-        barmenu.addItem("Help", null, command);
-    }
+  public Panel getCurrentUserPanel(Admin admin)
+  {
+    final Panel currentUserPanel = new Panel();
+    Layout currentUserLayout = new HorizontalLayout();
+    currentUserPanel.setContent(currentUserLayout);
+    SimpleDateFormat simpleDateFormat
+            = new SimpleDateFormat("EEEE, dd MMMM yyyy");// yyyy/MM/dd
+    String dateString
+            = simpleDateFormat.format(admin.getValiduntil().getTime());
+    Label nameLabel = new Label("Name: " + admin.getName());
+    Label emailLabel = new Label("Email: " + admin.getEmail());
+    Label validUntilLabel = new Label("Valid until: " + dateString);
+    currentUserLayout.setWidth(100, Unit.PERCENTAGE);
+    currentUserLayout.addComponent(nameLabel);
+    currentUserLayout.addComponent(emailLabel);
+    currentUserLayout.addComponent(validUntilLabel);
+    return currentUserPanel;
+  }
 
 }
