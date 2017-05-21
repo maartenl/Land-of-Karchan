@@ -155,7 +155,6 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Basic(optional = false)
   @Enumerated
   @NotNull
-  @Size(min = 1, max = 6)
   @Column(name = "sex")
   private Sex sex = Sex.MALE;
   @Size(max = 20)
