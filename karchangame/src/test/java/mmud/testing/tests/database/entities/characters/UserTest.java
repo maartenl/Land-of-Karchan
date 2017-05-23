@@ -62,17 +62,17 @@ public class UserTest
   public void testSetNewPassword()
   {
     User person = new User();
-    person.setNewpassword("itsasecret");
-    assertThat(person.getNewpassword(), equalTo("d020e4cc6510709814379ba05d72c5a02659c9b2f64c13bab9459f767e1302ca021093a763cea539da0d4b5f0816a82ce017665b7ce6238d086311fc2f1974b2"));
+    person.setNewpassword("secret");
+    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
   }
 
   @Test
   public void testSetNewPasswordTwice()
   {
     User person = new User();
-    person.setNewpassword("itsasecret");
-    person.setNewpassword("itsadifferentsecret");
-    assertThat(person.getNewpassword(), equalTo("07e8193aec7c8c6f20e6482a103b7a66f932feb2845c03ba313e40bc10423cfb50c86ab8b05205fcbb077c454750131b6d8285fce59de468eb9779057bb4b45d"));
+    person.setNewpassword("secret");
+    person.setNewpassword("differentsecret");
+    assertThat(person.getNewpassword(), equalTo("dc6dac17e09f0cc84bfc54b09edcb2329bb7ea43927eb96fe2c279730537d56e91267bae81cbe28ae5df0ec589dd2d5fcfdbd0db4ff4248a27ec294f2074f063"));
   }
 
   /**
@@ -82,9 +82,9 @@ public class UserTest
   public void testSetNewPasswordEmpty()
   {
     User person = new User();
-    person.setNewpassword("itsasecret");
+    person.setNewpassword("secret");
     person.setNewpassword(null);
-    assertThat(person.getNewpassword(), equalTo("d020e4cc6510709814379ba05d72c5a02659c9b2f64c13bab9459f767e1302ca021093a763cea539da0d4b5f0816a82ce017665b7ce6238d086311fc2f1974b2"));
+    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
   }
 
   @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "value itsa should match regexp .{5,}")
@@ -92,5 +92,20 @@ public class UserTest
   {
     User person = new User();
     person.setNewpassword("itsa");
+  }
+
+  /**
+   * If you try to set a 128 character value in the new password, the method
+   * will interpret this as a hash, and not re-hash it.
+   * This to prevent a setter from being called many times (because of, for example,
+   * value change listeners or ORMs).
+   */
+  // @Test
+  public void testSetNewPassword128characters()
+  {
+    User person = new User();
+    person.setNewpassword("woahnelly");
+    person.setNewpassword("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2");
+    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
   }
 }

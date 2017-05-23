@@ -268,8 +268,8 @@ public class User extends Person
 
   /**
    * Sets the password of the person. Can contain any character, but has to
-   * have at least size of 5. You cannot set a password this way, you can only
-   * set it for the first time, i.e. when creating a new character.
+   * have at least size of 5. It is not a good idea to enter a 128 length
+   * password here, as this method will assume it is already encrypted.
    *
    * @param newpassword the new password.
    * @throws MudException if the password is not allowed.
@@ -279,6 +279,11 @@ public class User extends Person
     if (newpassword == null)
     {
       // cannot remove a password from a user!
+      return;
+    }
+    if (newpassword.length() == 128)
+    {
+      this.newpassword = newpassword;
       return;
     }
     Utils.checkRegexp(PASSWORD_REGEXP, newpassword);

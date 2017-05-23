@@ -22,6 +22,7 @@ import awesomeness.vaadin.rooms.Rooms;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
@@ -39,8 +40,10 @@ import mmud.database.entities.game.Admin;
  */
 @Theme("reindeer")
 @Widgetset("awesomeness.vaadin.MyAppWidgetset")
-public class MyUI extends UI
+public class MyUI extends UI implements UserInterface
 {
+
+  private Label errorMessageLabel;
 
   @Override
   protected void init(VaadinRequest vaadinRequest)
@@ -143,6 +146,9 @@ public class MyUI extends UI
     guildsPanel.setContent(guilds);
     layout.addComponent(guildsPanel);
 
+    Panel errorMessagesPanel = getErrorMessagesPanel();
+    layout.addComponent(errorMessagesPanel);
+
     final MenuBar.Command command;
     command = new MenuBar.Command()
     {
@@ -235,7 +241,7 @@ public class MyUI extends UI
     barmenu.addItem("Help", null, command);
   }
 
-  public Panel getCurrentUserPanel(Admin admin)
+  private Panel getCurrentUserPanel(Admin admin)
   {
     final Panel currentUserPanel = new Panel();
     Layout currentUserLayout = new HorizontalLayout();
@@ -252,6 +258,47 @@ public class MyUI extends UI
     currentUserLayout.addComponent(emailLabel);
     currentUserLayout.addComponent(validUntilLabel);
     return currentUserPanel;
+  }
+
+  @Override
+  public void setErrorMessage(String errorMessage)
+  {
+    errorMessageLabel.setCaption(errorMessageLabel.getCaption() + errorMessage);
+  }
+
+  private Panel getErrorMessagesPanel()
+  {
+    final Panel errorMessagesPanel = new Panel("Errors");
+    Layout currentUserLayout = new HorizontalLayout();
+    errorMessagesPanel.setContent(currentUserLayout);
+    errorMessageLabel = new Label();
+    errorMessageLabel.setCaption("");
+    errorMessageLabel.setCaptionAsHtml(true);
+    Button clearButton = new Button("Clear");
+    clearButton.addClickListener((Button.ClickEvent event) ->
+    {
+      errorMessageLabel.setCaption("");
+    });
+    currentUserLayout.setWidth(100, Unit.PERCENTAGE);
+    currentUserLayout.addComponent(errorMessageLabel);
+    currentUserLayout.addComponent(clearButton);
+    return errorMessagesPanel;
+  }
+
+  @Override
+  public void setErrorMessage(Throwable errorMessage)
+  {
+    StringBuilder message = new StringBuilder();
+    Throwable exception = errorMessage;
+    while (exception != null)
+    {
+      if (exception.getMessage() != null)
+      {
+        message.append(exception.getMessage()).append("<br />");
+      }
+      exception = exception.getCause();
+    }
+    setErrorMessage(message.toString());
   }
 
 }

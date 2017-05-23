@@ -16,6 +16,7 @@
  */
 package awesomeness.vaadin.characters;
 
+import awesomeness.vaadin.MyUI;
 import awesomeness.vaadin.editor.Buttons;
 import awesomeness.vaadin.editor.Editor;
 import awesomeness.vaadin.editor.SearchPanel;
@@ -25,12 +26,11 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.BeanValidator;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.TextField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
@@ -53,7 +53,7 @@ public class Players extends Editor
 
   private Item item;
 
-  public Players(final Admin currentUser, final LogBean logBean, UI mainWindow)
+  public Players(final Admin currentUser, final LogBean logBean, MyUI mainWindow)
   {
     super(currentUser, logBean);
     final JPAContainer<mmud.database.entities.characters.User> container = Utilities.getJPAContainer(mmud.database.entities.characters.User.class);
@@ -84,9 +84,9 @@ public class Players extends Editor
     final FormLayout layout = new FormLayout();
     formPanel.setContent(layout);
 
-    Field<?> newpassword = group.buildAndBind("Password", "newpassword");
-
+    TextField newpassword = group.buildAndBind("Password", "newpassword", TextField.class);
     // math
+
     newpassword.addValidator(new BeanValidator(User.class, "newpassword"));
 
     final Label name = new Label();
@@ -125,6 +125,7 @@ public class Players extends Editor
           group.commit();
         } catch (FieldGroup.CommitException ex)
         {
+          mainWindow.setErrorMessage(ex);
           Logger.getLogger(Characters.class.getName()).log(Level.SEVERE, null, ex);
         }
         return table.getValue();
