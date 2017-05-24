@@ -47,6 +47,7 @@ pipeline {
         success { 
             echo 'Deploying to glassfish...'
             sh 'cp karchangame/target/karchangame-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war'
+            sh 'rm /home/glassfish/temp/*'
         }
         failure {
             sh 'echo "<p>You suddenly hear the sound of someone hitting his own thumb, and cursing.</p>" | tee -a /home/glassfish/temp/*'
