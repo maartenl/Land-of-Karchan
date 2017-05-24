@@ -23,7 +23,7 @@ export class PlayerSettingsComponent implements OnInit {
           this.player = result;
         },
         (err: any) => { // error
-          console.log("error", err);
+          // console.log("error", err);
         },
         () => { // on completion
           console.log("ready!");

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ErrorsService} from 'app/errors.service';
 import { Error } from './error.model';
 
 @Component({
@@ -11,9 +12,15 @@ export class ErrorsComponent implements OnInit {
 
   errors: Error[] = [];
   
-  constructor() { }
+  constructor(private errorsService: ErrorsService) { }
 
   ngOnInit() {
+    console.log("ErrorsCompoent -> ngOnInit");
+    let me = this;
+    let func = function(error: Error) {
+      me.addError(error);
+    };
+    this.errorsService.setListener(func);
   }
 
   public ifError(): boolean {
@@ -27,5 +34,12 @@ export class ErrorsComponent implements OnInit {
       return;
     }
     this.errors.splice(index, 1);
+  }
+
+  public addError(error: Error): void {
+    console.log("ErrorsComponent.addError ", error);
+    console.log(this.errors);
+    this.errors.push(error);
+    console.log(this.errors);
   }
 }

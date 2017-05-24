@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 
 import { PlayerService } from './player.service';
+import { ErrorsService } from './errors.service';
 import { ErrorsComponent } from './errors/errors.component';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ErrorsComponent } from './errors/errors.component';
     HttpModule
   ],
   providers: [
-    PlayerService
+    PlayerService,
+    ErrorsService
   ],
   bootstrap: [AppComponent]
 })
