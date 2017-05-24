@@ -16,7 +16,7 @@
  */
 package awesomeness.vaadin.characters;
 
-import awesomeness.vaadin.MyUI;
+import awesomeness.vaadin.UserInterface;
 import awesomeness.vaadin.editor.Buttons;
 import awesomeness.vaadin.editor.Editor;
 import awesomeness.vaadin.editor.SearchPanel;
@@ -53,7 +53,7 @@ public class Players extends Editor
 
   private Item item;
 
-  public Players(final Admin currentUser, final LogBean logBean, MyUI mainWindow)
+  public Players(final Admin currentUser, final LogBean logBean, UserInterface userInterface)
   {
     super(currentUser, logBean);
     final JPAContainer<mmud.database.entities.characters.User> container = Utilities.getJPAContainer(mmud.database.entities.characters.User.class);
@@ -107,7 +107,7 @@ public class Players extends Editor
     owner.setCaption("Owner");
     layout.addComponent(owner);
 
-    final Buttons buttons = new Buttons(currentUser, logBean, "Player", currentUser.getName().equalsIgnoreCase("Karn"), mainWindow)
+    final Buttons buttons = new Buttons(currentUser, logBean, "Player", currentUser.getName().equalsIgnoreCase("Karn"), userInterface)
     {
 
       @Override
@@ -125,7 +125,7 @@ public class Players extends Editor
           group.commit();
         } catch (FieldGroup.CommitException ex)
         {
-          mainWindow.setErrorMessage(ex);
+          userInterface.setErrorMessage(ex);
           Logger.getLogger(Characters.class.getName()).log(Level.SEVERE, null, ex);
         }
         return table.getValue();

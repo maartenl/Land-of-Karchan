@@ -16,14 +16,13 @@
  */
 package awesomeness.vaadin.editor;
 
+import awesomeness.vaadin.UserInterface;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.UI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
 import mmud.rest.services.LogBean;
-import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  *
@@ -111,7 +110,7 @@ public abstract class Buttons extends HorizontalLayout
    * @param itemname the name of the items to be edited, for example "Item definition". Used for logging.
    * @param permitDeletes indicates that deleteing of information is permitted.
    */
-  public Buttons(final Admin currentUser, final LogBean logBean, final String itemname, boolean permitDeletes, UI mainWindow)
+  public Buttons(final Admin currentUser, final LogBean logBean, final String itemname, boolean permitDeletes, UserInterface userInterface)
   {
     this.deleteEnabled = permitDeletes;
     HorizontalLayout buttonsLayout = this;
@@ -171,18 +170,10 @@ public abstract class Buttons extends HorizontalLayout
       @Override
       public void buttonClick(Button.ClickEvent event)
       {
-        ConfirmDialog.show(mainWindow, "Please Confirm:", "Are you really sure?",
-                "Yes", "No", new ConfirmDialog.Listener()
+        userInterface.confirm("Please Confirm:", "Are you really sure?",
+                "Yes", "No", () ->
         {
-
-          public void onClose(ConfirmDialog dialog)
-          {
-            if (dialog.isConfirmed())
-            {
-              // Confirmed to continue
-              logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
-            }
-          }
+          logBean.writeDeputyLog(currentUser, itemname + " '" + delete() + "' deleted.");
         });
       }
     });

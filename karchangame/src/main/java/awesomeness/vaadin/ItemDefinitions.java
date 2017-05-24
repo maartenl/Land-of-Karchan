@@ -33,7 +33,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +56,7 @@ public class ItemDefinitions extends Editor
 
   private Item item;
 
-  ItemDefinitions(final Admin currentUser, final LogBean logBean, UI mainWindow)
+  ItemDefinitions(final Admin currentUser, final LogBean logBean, UserInterface userInterface)
   {
     super(currentUser, logBean);
     final JPAContainer<ItemDefinition> container = Utilities.getJPAContainer(ItemDefinition.class);
@@ -179,7 +178,7 @@ public class ItemDefinitions extends Editor
     owner.setCaption("Owner");
     layout.addComponent(owner);
 
-    final Buttons buttons = new Buttons(currentUser, logBean, "Item definition", true, mainWindow)
+    final Buttons buttons = new Buttons(currentUser, logBean, "Item definition", true, userInterface)
     {
 
       @Override

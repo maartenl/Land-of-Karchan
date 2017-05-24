@@ -32,7 +32,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.UI;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +55,7 @@ public class Guilds extends Editor
 
   private Item item;
 
-  Guilds(final Admin currentUser, final LogBean logBean, UI mainWindow)
+  Guilds(final Admin currentUser, final LogBean logBean, UserInterface userInterface)
   {
     super(currentUser, logBean);
     final JPAContainer<Guild> container = Utilities.getJPAContainer(Guild.class);
@@ -137,7 +136,7 @@ public class Guilds extends Editor
     owner.setCaption("Owner");
     layout.addComponent(owner);
 
-    final Buttons buttons = new Buttons(currentUser, logBean, "Guild", true, mainWindow)
+    final Buttons buttons = new Buttons(currentUser, logBean, "Guild", true, userInterface)
     {
 
       @Override

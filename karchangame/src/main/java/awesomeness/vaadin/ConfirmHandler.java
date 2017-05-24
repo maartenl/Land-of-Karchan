@@ -20,13 +20,9 @@ package awesomeness.vaadin;
  *
  * @author maartenl
  */
-public interface UserInterface
+public interface ConfirmHandler
 {
 
-  public void setErrorMessage(String errorMessage);
-
-  public void setErrorMessage(Throwable errorMessage);
-
-  public void confirm(String windowCaption, String message, String okCaption, String cancelCaption, final ConfirmHandler handler);
+  public void confirm();
 
 }

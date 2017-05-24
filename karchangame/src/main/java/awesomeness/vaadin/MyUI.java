@@ -34,9 +34,11 @@ import com.vaadin.ui.VerticalLayout;
 import java.text.SimpleDateFormat;
 import javax.persistence.EntityManager;
 import mmud.database.entities.game.Admin;
+import org.vaadin.dialogs.ConfirmDialog;
 
 /**
- *
+ * The main entry point from which the User Interface for the admin pages
+ * is build.
  */
 @Theme("reindeer")
 @Widgetset("awesomeness.vaadin.MyAppWidgetset")
@@ -301,4 +303,17 @@ public class MyUI extends UI implements UserInterface
     setErrorMessage(message.toString());
   }
 
+  @Override
+  public void confirm(String windowCaption, String message, String okCaption, String cancelCaption, final ConfirmHandler handler)
+  {
+    ConfirmDialog.show(this,
+            windowCaption, message,
+            okCaption, cancelCaption, (ConfirmDialog dialog) ->
+    {
+      if (dialog.isConfirmed())
+      {
+        handler.confirm();
+      }
+    });
+  }
 }
