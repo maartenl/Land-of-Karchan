@@ -16,11 +16,7 @@ export class ErrorsComponent implements OnInit {
 
   ngOnInit() {
     console.log("ErrorsCompoent -> ngOnInit");
-    let me = this;
-    let func = function(error: Error) {
-      me.addError(error);
-    };
-    this.errorsService.setListener(func);
+    this.errorsService.setListener((error: Error) => this.addError(error));
   }
 
   public ifError(): boolean {
