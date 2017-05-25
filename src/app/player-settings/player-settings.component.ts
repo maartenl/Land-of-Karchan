@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Player } from './player.model';
+import { Family } from './family.model';
 import { PlayerService} from 'app/player.service';
 
 @Component({
@@ -44,6 +45,15 @@ export class PlayerSettingsComponent implements OnInit {
   
   cancel() {
     this.editMode = false;
+  }
+  
+  delete(family: Family) {
+    console.log(family);
+    let index = this.player.familyvalues.indexOf(family, 0);
+    if (index > -1) {
+      this.player.familyvalues.splice(index, 1);
+    }
+    // TODO: go to http service with this.
   }
 
 }

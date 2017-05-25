@@ -1,6 +1,11 @@
 <div class="container"> 
   <div class="row row-content">
     <div class="col-xs-12 col-sm-2">
+      <h3>Character</h3>
+    </div>
+  </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-2">      
       Name:
     </div>
     <div class="col-xs-12 col-sm-10">
@@ -98,8 +103,11 @@
       <hr/>
       <h3>Family relations</h3>
       <ul class="list-group">
-        <li class="list-group-item" *ngFor="let relation of player.familyvalues">
-          {{relation.description}} of {{relation.toname}}
+        <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues">
+          {{relation.description}} of {{relation.toname}}   
+          <button type="button" class="close" aria-label="Close" (click)="delete(relation)">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </li>
       </ul>
     </div>
