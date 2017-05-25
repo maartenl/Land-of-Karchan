@@ -10,9 +10,12 @@ import { PlayerService} from 'app/player.service';
 })
 export class PlayerSettingsComponent implements OnInit {
   player: Player;
+  
+  editMode: boolean;
 
   constructor(private playerService: PlayerService) {
     this.player = new Player(); // dummy player
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -29,6 +32,18 @@ export class PlayerSettingsComponent implements OnInit {
           console.log("ready!");
         }
       );
+  }
+  
+  edit() {
+    this.editMode = true;
+  }
+  
+  save() {
+    this.editMode = false;
+  }
+  
+  cancel() {
+    this.editMode = false;
   }
 
 }
