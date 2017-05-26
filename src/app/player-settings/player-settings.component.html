@@ -1,5 +1,51 @@
 <div class="container"> 
   <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <form action="/html/tags/html_form_tag_action.cfm">
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" name="name"
+          value="{{player.name}}" readonly>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" name="title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="description">Description</label>
+          <input type="text" class="form-control" id="description" name="description"
+          value="{{player.description}}" readonly>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="guild">Guild</label>
+          <input type="text" class="form-control" id="guild" name="guild"
+          value="{{player.guild}}" readonly>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="homepage">Homepage - <a
+          href="{{player.homepageurl}}" target="_blank">{{player.homepageurl}}</a></label>
+          <input type="text" class="form-control" id="homepage" name="homepage">
+        </fieldset>
+        <fieldset class="form-group">
+          <p><img class="img-fluid" src="{{player.imageurl}}" alt="Card image
+          cap"></p>
+          <label for="image_url">Image</label>
+          <input type="text" class="form-control" id="image_url" name="image_url">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="date_of_birth">Date of Birth</label>
+          <input type="text" class="form-control" id="date_of_birth" name="date_of_birth">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="city_of_birth">City of Birth</label>
+          <input type="text" class="form-control" id="city_of_birth" name="city_of_birth">
+        </fieldset>
+        <fieldset class="form-group">
+           <label for="storyline">Storyline</label>
+          <textarea class="form-control" id="storyline" rows="3"></textarea>
+        </fieldset>
+       </form>
+    </div>  
     <div class="col-xs-12 col-sm-2">
       <h3>Character</h3>
     </div>
