@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#">Settings</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#">Mail</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#">Guild</a>
+  </li>
+</ul>
+<app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
+<div class="container" *ngIf="isMailTabActive()"> 
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12 alert alert-info" role="alert">Mail not implemented yet.</div>
+  </div>    
+</div>
+<div class="container" *ngIf="isGuildTabActive()"> 
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12 alert alert-info" role="alert">Guild not implemented yet.</div>
+  </div>    
+</div>
+<div class="container"> 
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <app-errors></app-errors>
+    </div>
+  </div>
+</div>
+
