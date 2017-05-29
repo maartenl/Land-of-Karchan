@@ -18,3 +18,4 @@ List
 * karchan - old html files
 * scripts - php scripts
 * sqlscripts - database scripts
+* karchanangular - angular app for a user to change the settings
