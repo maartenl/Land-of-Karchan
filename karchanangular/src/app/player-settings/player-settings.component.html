@@ -1,29 +1,25 @@
-<div class="container"> 
+<div class="container">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-2">
       <h3>{{player.name}}</h3>
     </div>
     <div class="col-xs-12 col-sm-12">
-      <form [formGroup]="playerForm" novalidate>
+      <form [formGroup]="playerForm" (ngSubmit)="save()" novalidate>
         <fieldset class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" name="name"
-          value="{{player.name}}" readonly>
+          <input type="text" class="form-control" id="name" name="name" value="{{player.name}}" readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="title">Title</label>
-          <input type="text" class="form-control" id="title" name="title"
-          formControlName="title">
+          <input type="text" class="form-control" id="title" name="title" formControlName="title">
         </fieldset>
         <fieldset class="form-group">
           <label for="description">Description</label>
-          <input type="text" class="form-control" id="description" name="description"
-          value="{{player.description}}" readonly>
+          <input type="text" class="form-control" id="description" name="description" value="{{player.description}}" readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="guild">Guild</label>
-          <input type="text" class="form-control" id="guild" name="guild"
-          value="{{player.guild}}" readonly>
+          <input type="text" class="form-control" id="guild" name="guild" value="{{player.guild}}" readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="homepage">Homepage - <a
@@ -44,18 +40,22 @@
           <input type="text" class="form-control" id="city_of_birth" name="city_of_birth" formControlName="cityofbirth">
         </fieldset>
         <div class="card" style="width: 40rem;">
-          <div class="card-block" [innerHTML]="playerForm.get('storyline').value"> 
+          <div class="card-block" [innerHTML]="playerForm.get('storyline').value">
           </div>
         </div>
         <fieldset class="form-group">
           <label for="storyline">Storyline</label>
           <textarea class="form-control" id="storyline" rows="3" formControlName="storyline"></textarea>
         </fieldset>
-       </form>
-    </div>  
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="playerForm.pristine" class="btn btn-primary">Save</button>
+          <button type="reset" [disabled]="playerForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
   <div class="row row-content">
-    <div class="col-xs-12 col-sm-2">      
+    <div class="col-xs-12 col-sm-2">
       form value:
     </div>
     <div class="col-xs-12 col-sm-10">
@@ -64,32 +64,41 @@
   </div>
   <div class="row row-content">
     <div class="col-xs-12 col-sm-2">
-      form status:     
+      form status:
     </div>
     <div class="col-xs-12 col-sm-10">
       {{playerForm.status | json}}
     </div>
   </div>
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12 text-right">
-      <button type="button" class="btn btn-primary" (click)="save()">Save</button>
-      <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
-    </div>
-  </div>
-</div>  
-<div class="container"> 
+</div>
+<div class="container">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
       <hr/>
       <h3>Family relations</h3>
       <ul class="list-group">
-        <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues">
-          {{relation.description}} of {{relation.toname}}   
+        <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues" (click)="setFamilyForm(relation)">
+          {{relation.description}} of {{relation.toname}}
           <button type="button" class="close" aria-label="Close" (click)="delete(relation)">
             <span aria-hidden="true">&times;</span>
           </button>
         </li>
       </ul>
     </div>
-  </div>    
+    <div class="col-xs-12 col-sm-12">
+      <form [formGroup]="familyForm" (ngSubmit)="saveFamily()" novalidate>
+        <fieldset class="form-group">
+          <label for="toname">Name</label>
+          <input type="text" class="form-control" id="toname" name="toname" formControlName="toname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="description">Relation description</label>
+          <input type="text" class="form-control" id="description" name="description" formControlName="description">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="familyForm.pristine" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

@@ -5,6 +5,8 @@
 
 export const environment = {
   production: false,
-  CHARACTERSHEET_URL: 'assets/charactersheet.json'
+  CHARACTERSHEET_URL: 'assets/charactersheet.json',
+  UPDATE_CHARACTERSHEET_URL: '/karchangame/resources/private/Karn/charactersheet',
+  FAMILY_URL: '/karchangame/resources/private/Karn/charactersheet/familyvalues/'
 };
 
