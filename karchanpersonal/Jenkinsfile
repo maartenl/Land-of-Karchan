@@ -1,0 +1,53 @@
+#!groovy
+pipeline {
+    agent any
+    tools { 
+        maven 'Maven 3.3.9' 
+        jdk 'jdk8' 
+        nodejs 'Node 6.x'
+    }
+    stages {
+        stage('init') {
+            steps {
+                // jenkins-${JOB_NAME}-${BUILD_NUMBER}
+                // for example jenkins-karchan-123sh '''
+                echo "Build " + env.BUILD_TAG
+                echo "Workspace " + env.WORKSPACE
+                sh 'echo cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchanpersonal-1.0-SNAPSHOT.war /home/glassfish/karchanpersonal.-1.0-SNAPSHOT.war'
+            }
+        }
+        stage('build-angular') {
+            steps {
+                dir('karchanangular') {
+                    sh 'npm install' 
+                    sh 'ng build --target=production --base-href "/karchanpersonal/"' 
+                }
+            }
+        }
+        stage('deploy-angular') {
+            steps {
+                dir('karchanpersonal') {
+                    echo "Clean up the stuff"
+                    sh 'cd src/main/webapp ; rm -rf assets *~ *.js *.css index.html favicon.ico index.html'
+                }
+                dir('karchanangular') {
+                    echo "Deploy the stuff"
+                    sh 'cp -r dist/* ../karchanpersonal/src/main/webapp' 
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                dir('karchanpersonal') {
+                    sh 'mvn verify' 
+                }
+            }
+        }
+    }
+    post {
+        success { 
+            echo 'Deploying to glassfish...'
+            sh 'cp karchanpersonal/target/karchanpersonal-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/'
+        }
+    }
+}
