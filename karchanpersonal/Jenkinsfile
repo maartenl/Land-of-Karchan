@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('karchanangular') {
                     sh 'npm install' 
-                    sh 'ng build --target=production --base-href "/karchanpersonal/"' 
+                    sh 'ng build --target=production --progress=false --base-href "/karchanpersonal/"' 
                 }
             }
         }
