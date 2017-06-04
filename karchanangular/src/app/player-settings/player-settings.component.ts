@@ -30,7 +30,6 @@ export class PlayerSettingsComponent implements OnInit {
     this.playerService.getPlayer()
       .subscribe(
       (result: any) => { // on success
-        console.log("success!", result);
         this.player = result;
         this.resetForm(result);
       },
@@ -38,7 +37,6 @@ export class PlayerSettingsComponent implements OnInit {
         // console.log("error", err);
       },
       () => { // on completion
-        console.log("ready!");
       }
       );
   }

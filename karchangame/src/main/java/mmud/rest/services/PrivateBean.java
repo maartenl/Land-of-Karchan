@@ -127,9 +127,13 @@ public class PrivateBean
    */
   public User authenticate(String name)
   {
+    if (name == null || name.equals("null"))
+    {
+      throw new MudWebException(name, "You are not logged in.", Response.Status.UNAUTHORIZED);
+    }
     if (!getPlayerName().equals(name))
     {
-      throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
+      throw new MudWebException(name, "You are not logged in as " + name + ".", Response.Status.UNAUTHORIZED);
     }
     User person = getEntityManager().find(User.class, name);
     if (person == null)

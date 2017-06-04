@@ -24,27 +24,22 @@ export class PlayerService {
   }
 
   /**
-   * Retrieves the name of the player either from a cookie
-   * or from the internal storage.
+   * Retrieves the name of the player from the local storage.
    */
   public getName(): string {
     if (this.name != null) {
-      console.log("cachednbame ", this.name);
       return this.name;
     }
     if (typeof (Storage) !== "undefined") {
       // Store
       this.name = localStorage.getItem("karchanname");
-      console.log("localstorage ", this.name);
-      return this.name;
+      if (this.name !== null) {
+        return this.name;
+      }
     }
-    //  else {
-    //     return Cookies.get('karchanname');
-    // }
     let error: Error = new Error();
     error.type = "404";
-    error.message = "Player not found.";
-    error.detailedmessage = "I looked in my cookies and my internal storage, but could not find the name of the player. Are you sure you are logged in?";
+    error.message = "Character not found. Are you sure you are logged in?";
     this.errorsService.addError(error);
   }
 
