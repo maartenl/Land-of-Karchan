@@ -15,7 +15,6 @@ export class ErrorsComponent implements OnInit {
   constructor(private errorsService: ErrorsService) { }
 
   ngOnInit() {
-    console.log("ErrorsCompoent -> ngOnInit");
     this.errorsService.setListener((error: Error) => this.addError(error));
   }
 
@@ -33,9 +32,6 @@ export class ErrorsComponent implements OnInit {
   }
 
   public addError(error: Error): void {
-    console.log("ErrorsComponent.addError ", error);
-    console.log(this.errors);
     this.errors.push(error);
-    console.log(this.errors);
   }
 }

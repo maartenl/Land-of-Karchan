@@ -18,12 +18,12 @@ package mmud.testing.tests.database.entities;
 
 import mmud.database.entities.web.CharacterInfo;
 import mmud.exceptions.MudException;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -32,103 +32,103 @@ import static org.testng.Assert.*;
 public class CharacterInfoTest
 {
 
-    public CharacterInfoTest()
-    {
-    }
+  public CharacterInfoTest()
+  {
+  }
 
-    @BeforeClass
-    public void setUpClass()
-    {
-    }
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
 
-    @AfterClass
-    public void tearDownClass()
-    {
-    }
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
 
-    @BeforeMethod
-    public void setUp()
-    {
-    }
+  @BeforeMethod
+  public void setUp()
+  {
+  }
 
-    @AfterMethod
-    public void tearDown()
-    {
-    }
+  @AfterMethod
+  public void tearDown()
+  {
+  }
 
-    @Test
-    public void checkUrlValidationTest() throws MudException
-    {
-        final CharacterInfo charinfo = new CharacterInfo();
-        charinfo.setImageurl("http://www.images.com/imageurl.jpg");
-        charinfo.setHomepageurl("http://www.homepage.com/");
-        charinfo.setDateofbirth("0000");
-        charinfo.setCityofbirth("Sirius");
-        charinfo.setStoryline("An android");
-        charinfo.setName("Marvin");
-    }
+  @Test
+  public void checkUrlValidationTest() throws MudException
+  {
+    final CharacterInfo charinfo = new CharacterInfo();
+    charinfo.setImageurl("http://www.images.com/imageurl.jpg");
+    charinfo.setHomepageurl("http://www.homepage.com/");
+    charinfo.setDateofbirth("0000");
+    charinfo.setCityofbirth("Sirius");
+    charinfo.setStoryline("An android");
+    charinfo.setName("Marvin");
+  }
 
-    @Test
-    public void checkImageurlValidationTest() throws MudException
+  @Test
+  public void checkImageurlValidationTest() throws MudException
+  {
+    final CharacterInfo charinfo = new CharacterInfo();
+    try
     {
-        final CharacterInfo charinfo = new CharacterInfo();
-        try
-        {
-            charinfo.setImageurl("imageurl.jpg");
-            fail("MudException expected");
-        } catch (MudException e)
-        {
-            assertEquals(e.getMessage(), "imageurl 'imageurl.jpg' invalid");
-        }
-        charinfo.setHomepageurl("http://www.homepage.com/");
-        charinfo.setDateofbirth("0000");
-        charinfo.setCityofbirth("Sirius");
-        charinfo.setStoryline("An android");
-        charinfo.setName("Marvin");
+      charinfo.setImageurl("imageurl.jpg");
+      fail("MudException expected");
+    } catch (MudException e)
+    {
+      assertEquals(e.getMessage(), "imageurl 'imageurl.jpg' invalid");
     }
+    charinfo.setHomepageurl("http://www.homepage.com/");
+    charinfo.setDateofbirth("0000");
+    charinfo.setCityofbirth("Sirius");
+    charinfo.setStoryline("An android");
+    charinfo.setName("Marvin");
+  }
 
-    @Test
-    public void checkHomepageurlValidationTest() throws MudException
+  @Test
+  public void checkHomepageurlValidationTest() throws MudException
+  {
+    final CharacterInfo charinfo = new CharacterInfo();
+    charinfo.setImageurl("http://www.images.com/imageurl.jpg");
+    try
     {
-        final CharacterInfo charinfo = new CharacterInfo();
-        charinfo.setImageurl("http://www.images.com/imageurl.jpg");
-        try
-        {
-            charinfo.setHomepageurl("cowabunga");
-            fail("MudException expected");
-        } catch (MudException e)
-        {
-            assertEquals(e.getMessage(), "homepageurl 'cowabunga' invalid");
-        }
-        charinfo.setDateofbirth("0000");
-        charinfo.setCityofbirth("Sirius");
-        charinfo.setStoryline("An android");
-        charinfo.setName("Marvin");
+      charinfo.setHomepageurl("cowabunga");
+      fail("MudException expected");
+    } catch (MudException e)
+    {
+      assertEquals(e.getMessage(), "Homepage url 'cowabunga' invalid.");
     }
+    charinfo.setDateofbirth("0000");
+    charinfo.setCityofbirth("Sirius");
+    charinfo.setStoryline("An android");
+    charinfo.setName("Marvin");
+  }
 
-    @Test
-    public void checkImageurlAndHomepageurlValidationTest() throws MudException
+  @Test
+  public void checkImageurlAndHomepageurlValidationTest() throws MudException
+  {
+    final CharacterInfo charinfo = new CharacterInfo();
+    try
     {
-        final CharacterInfo charinfo = new CharacterInfo();
-        try
-        {
-            charinfo.setImageurl("imageurl.jpg");
-            fail("MudException expected");
-        } catch (MudException e)
-        {
-            assertEquals(e.getMessage(), "imageurl 'imageurl.jpg' invalid");
-        }
-        try
-        {
-            charinfo.setHomepageurl("homepage");
-            fail("MudException expected");
-        } catch (MudException e)
-        {
-            assertEquals(e.getMessage(), "homepageurl 'homepage' invalid");
-        }
-        charinfo.setDateofbirth("0000");
-        charinfo.setCityofbirth("Sirius");
-        charinfo.setStoryline("An android");
-        charinfo.setName("Marvin");
+      charinfo.setImageurl("imageurl.jpg");
+      fail("MudException expected");
+    } catch (MudException e)
+    {
+      assertEquals(e.getMessage(), "imageurl 'imageurl.jpg' invalid");
     }
+    try
+    {
+      charinfo.setHomepageurl("homepage");
+      fail("MudException expected");
+    } catch (MudException e)
+    {
+      assertEquals(e.getMessage(), "Homepage url 'homepage' invalid.");
+    }
+    charinfo.setDateofbirth("0000");
+    charinfo.setCityofbirth("Sirius");
+    charinfo.setStoryline("An android");
+    charinfo.setName("Marvin");
+  }
 }

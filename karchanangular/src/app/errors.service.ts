@@ -10,13 +10,10 @@ export class ErrorsService {
   constructor() { }
 
   public setListener(listener: (error: Error) => void): void {
-    console.log("ErrorrsService -> setListener");
     this.listener = listener;
   }
 
   public addError(error: Error) : void {
-    console.log("ErrorsService -> addError", error, this.listener);
-    console.log(this);
     this.listener(error);
   }
 

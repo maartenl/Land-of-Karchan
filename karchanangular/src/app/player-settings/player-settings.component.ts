@@ -78,7 +78,7 @@ export class PlayerSettingsComponent implements OnInit {
 
   save() {
     let newPlayer = this.prepareSavePlayer();
-    // this.playerService.updatePlayer(newPlayer).subscribe();
+    this.playerService.updatePlayer(newPlayer).subscribe();
   }
 
   prepareSavePlayer(): Player {
@@ -109,10 +109,14 @@ export class PlayerSettingsComponent implements OnInit {
     let family: Family = this.getFamily(toname);
     if (family === null) {
       family = new Family();
+      family.toname = toname;
+      family.description = description;
       this.add(family);
+      return;
     }
     family.toname = toname;
     family.description = description;
+    this.update(family);
   }
 
   cancel() {
@@ -128,17 +132,26 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   delete(family: Family) {
-    let index = this.player.familyvalues.indexOf(family, 0);
-    if (index > -1) {
-      this.player.familyvalues.splice(index, 1);
-    }
-    // TODO: go to http service with this.
+    this.playerService.deleteFamily(this.player, family).subscribe(
+      (result: any) => { // on success
+        let index = this.player.familyvalues.indexOf(family, 0);
+        if (index > -1) {
+          this.player.familyvalues.splice(index, 1);
+        }
+      }
+    );
   }
 
   add(family: Family) {
-    let length = this.player.familyvalues.push(family);
-    // TODO: go to http service with this.    
+    this.playerService.updateFamily(this.player, family).subscribe(
+      (result: any) => { // on success
+        let length = this.player.familyvalues.push(family);
+      }
+    );
   }
 
+  update(family: Family) {
+    this.playerService.updateFamily(this.player, family).subscribe();
+  }
 
 }

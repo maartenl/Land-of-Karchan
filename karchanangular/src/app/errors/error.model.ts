@@ -3,6 +3,7 @@ export class Error {
   type: string;
   message: string;
   detailedmessage: string;
+  showDetail: boolean = false;
 
   constructor() {
   }
@@ -11,4 +12,11 @@ export class Error {
     return this.detailedmessage != null;
   }
 
+  public showDetailedMessage(): boolean {
+    return this.hasDetailedMessage() && this.showDetail;
+  }
+
+  public toggleDetails() {
+    this.showDetail = !this.showDetail;
+  }
 }

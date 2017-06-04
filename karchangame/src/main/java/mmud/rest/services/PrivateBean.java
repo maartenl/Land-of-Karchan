@@ -55,6 +55,7 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
+import mmud.rest.webentities.PublicPerson;
 
 /**
  * Contains all rest calls that are available to a specific character, with
@@ -73,6 +74,15 @@ public class PrivateBean
 
   @EJB
   private MailBean mailBean;
+
+  /**
+   * We are using the public bean here now to retrieve the charactersheet
+   * of a person, but as soon as there are more settings that are not
+   * supposed to be part of the public rest api, this needs to be
+   * implemented without referring to the publicbean.
+   */
+  @EJB
+  private PublicBean publicBean;
 
   @Resource
   private SessionContext context;
@@ -588,6 +598,26 @@ public class PrivateBean
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();
+  }
+
+  /**
+   * Gets your current character info.
+   *
+   * @param name the name of the user
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   * failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @GET
+  @Path("{name}/charactersheet")
+  @Produces(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public PublicPerson getCharacterSheet(@PathParam("name") String name)
+  {
+    User person = authenticate(name);
+    return publicBean.charactersheet(name);
   }
 
   /**

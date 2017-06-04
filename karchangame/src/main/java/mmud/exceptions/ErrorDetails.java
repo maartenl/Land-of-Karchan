@@ -86,7 +86,7 @@ public class ErrorDetails
 
   public Response getResponse(Response.Status status)
   {
-    this.errormessage += "Report the problem to us at " + Constants.DEPUTIES_EMAILADDRESS + ".";
+    this.errormessage += " Report the problem to us at " + Constants.DEPUTIES_EMAILADDRESS + ".";
     return Response.status(status).entity(this).build();
   }
 }

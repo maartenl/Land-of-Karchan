@@ -2,7 +2,7 @@
   <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="removeError(error)">
     <span aria-hidden="true">&times;</span>
   </button>
-  <strong>{{ error.type }}</strong> {{ error.message }}
-  <p *ngIf="error.hasDetailedMessage()">{{ error.detailedmessage }}</p>
+  <strong (click)="error.toggleDetails()">{{ error.type }}</strong> {{ error.message }}
+  <p *ngIf="error.showDetailedMessage()">{{ error.detailedmessage }}</p>
 </div>
 

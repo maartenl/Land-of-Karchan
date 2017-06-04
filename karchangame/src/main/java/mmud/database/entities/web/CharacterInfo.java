@@ -43,197 +43,203 @@ import org.owasp.validator.html.ScanException;
 @Table(name = "characterinfo")
 @NamedQueries(
         {
-            @NamedQuery(name = "CharacterInfo.findAll", query = "SELECT c FROM CharacterInfo c"),
-            @NamedQuery(name = "CharacterInfo.findByName", query = "SELECT c FROM CharacterInfo c WHERE c.name = :name"),
-            @NamedQuery(name = "CharacterInfo.findByImageurl", query = "SELECT c FROM CharacterInfo c WHERE c.imageurl = :imageurl"),
-            @NamedQuery(name = "CharacterInfo.findByHomepageurl", query = "SELECT c FROM CharacterInfo c WHERE c.homepageurl = :homepageurl"),
-            @NamedQuery(name = "CharacterInfo.findByDateofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.dateofbirth = :dateofbirth"),
-            @NamedQuery(name = "CharacterInfo.findByCityofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.cityofbirth = :cityofbirth"),
+          @NamedQuery(name = "CharacterInfo.findAll", query = "SELECT c FROM CharacterInfo c")
+          ,
+            @NamedQuery(name = "CharacterInfo.findByName", query = "SELECT c FROM CharacterInfo c WHERE c.name = :name")
+          ,
+            @NamedQuery(name = "CharacterInfo.findByImageurl", query = "SELECT c FROM CharacterInfo c WHERE c.imageurl = :imageurl")
+          ,
+            @NamedQuery(name = "CharacterInfo.findByHomepageurl", query = "SELECT c FROM CharacterInfo c WHERE c.homepageurl = :homepageurl")
+          ,
+            @NamedQuery(name = "CharacterInfo.findByDateofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.dateofbirth = :dateofbirth")
+          ,
+            @NamedQuery(name = "CharacterInfo.findByCityofbirth", query = "SELECT c FROM CharacterInfo c WHERE c.cityofbirth = :cityofbirth")
+          ,
             @NamedQuery(name = "CharacterInfo.charactersheets", query = "SELECT c.name FROM CharacterInfo c, Person p WHERE c.name = p.name and p.god <= 1"),
         })
 public class CharacterInfo implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "name")
-    private String name;
-    @Size(max = 255)
-    @Column(name = "imageurl")
-    private String imageurl;
-    @Size(max = 255)
-    @Column(name = "homepageurl")
-    private String homepageurl;
-    @Size(max = 255)
-    @Column(name = "dateofbirth")
-    private String dateofbirth;
-    @Size(max = 255)
-    @Column(name = "cityofbirth")
-    private String cityofbirth;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "storyline")
-    private String storyline;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "name")
+  private String name;
+  @Size(max = 255)
+  @Column(name = "imageurl")
+  private String imageurl;
+  @Size(max = 255)
+  @Column(name = "homepageurl")
+  private String homepageurl;
+  @Size(max = 255)
+  @Column(name = "dateofbirth")
+  private String dateofbirth;
+  @Size(max = 255)
+  @Column(name = "cityofbirth")
+  private String cityofbirth;
+  @Lob
+  @Size(max = 65535)
+  @Column(name = "storyline")
+  private String storyline;
 
-    public CharacterInfo()
-    {
-    }
+  public CharacterInfo()
+  {
+  }
 
-    public CharacterInfo(String name)
-    {
-        this.name = name;
-    }
+  public CharacterInfo(String name)
+  {
+    this.name = name;
+  }
 
-    public String getName()
-    {
-        return name;
-    }
+  public String getName()
+  {
+    return name;
+  }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+  public void setName(String name)
+  {
+    this.name = name;
+  }
 
-    public String getImageurl()
-    {
-        return imageurl;
-    }
+  public String getImageurl()
+  {
+    return imageurl;
+  }
 
-    public void setImageurl(String imageurl) throws MudException
+  public void setImageurl(String imageurl) throws MudException
+  {
+    if (imageurl != null)
     {
-        if (imageurl != null)
+      if (imageurl.trim().equals(""))
+      {
+        imageurl = null;
+      } else
+      {
+        String[] schemes =
         {
-            if (imageurl.trim().equals(""))
-            {
-                imageurl = null;
-            } else
-            {
-                String[] schemes =
-                {
-                    "http", "https"
-                };
-                UrlValidator urlValidator = new UrlValidator(schemes);
-                if (!urlValidator.isValid(imageurl))
-                {
-                    throw new MudException("imageurl '" + imageurl + "' invalid");
-                }
-            }
-        }
-        this.imageurl = imageurl;
-    }
-
-    /**
-     * An url to the homepage of a player. Only http and https are supported.
-     *
-     * @return a properly formatted url.
-     */
-    public String getHomepageurl()
-    {
-        return homepageurl;
-    }
-
-    public void setHomepageurl(String homepageurl) throws MudException
-    {
-        if (homepageurl != null)
+          "http", "https"
+        };
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(imageurl))
         {
-            if (homepageurl.trim().equals(""))
-            {
-                homepageurl = null;
-            } else
-            {
-                String[] schemes =
-                {
-                    "http", "https"
-                };
-                UrlValidator urlValidator = new UrlValidator(schemes);
-                if (!urlValidator.isValid(homepageurl))
-                {
-                    throw new MudException("homepageurl '" + homepageurl + "' invalid");
-                }
-            }
+          throw new MudException("imageurl '" + imageurl + "' invalid");
         }
-        this.homepageurl = homepageurl;
+      }
     }
+    this.imageurl = imageurl;
+  }
 
-    public String getDateofbirth()
-    {
-        return dateofbirth;
-    }
+  /**
+   * An url to the homepage of a player. Only http and https are supported.
+   *
+   * @return a properly formatted url.
+   */
+  public String getHomepageurl()
+  {
+    return homepageurl;
+  }
 
-    public void setDateofbirth(String dateofbirth)
+  public void setHomepageurl(String homepageurl) throws MudException
+  {
+    if (homepageurl != null)
     {
-        if (dateofbirth != null)
+      if (homepageurl.trim().equals(""))
+      {
+        homepageurl = null;
+      } else
+      {
+        String[] schemes =
         {
-            dateofbirth = Utils.alphanumericalandpuntuation(dateofbirth);
-        }
-        this.dateofbirth = dateofbirth;
-    }
-
-    public String getCityofbirth()
-    {
-        return cityofbirth;
-    }
-
-    public void setCityofbirth(String cityofbirth)
-    {
-        if (cityofbirth != null)
+          "http", "https"
+        };
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        if (!urlValidator.isValid(homepageurl))
         {
-            cityofbirth = Utils.alphanumericalandpuntuation(cityofbirth);
+          throw new MudException("Homepage url '" + homepageurl + "' invalid.");
         }
-        this.cityofbirth = cityofbirth;
+      }
     }
+    this.homepageurl = homepageurl;
+  }
 
-    public String getStoryline()
-    {
-        return storyline;
-    }
+  public String getDateofbirth()
+  {
+    return dateofbirth;
+  }
 
-    public void setStoryline(String storyline) throws MudException
+  public void setDateofbirth(String dateofbirth)
+  {
+    if (dateofbirth != null)
     {
-        if (storyline != null)
-        {
-            try
-            {
-                storyline = Utils.security(storyline);
-            } catch (PolicyException | ScanException ex)
-            {
-                Logger.getLogger(CharacterInfo.class.getName()).log(Level.SEVERE, null, ex);
-                throw new MudException(ex);
-            }
-        }
-        this.storyline = storyline;
+      dateofbirth = Utils.alphanumericalandpuntuation(dateofbirth);
     }
+    this.dateofbirth = dateofbirth;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (name != null ? name.hashCode() : 0);
-        return hash;
-    }
+  public String getCityofbirth()
+  {
+    return cityofbirth;
+  }
 
-    @Override
-    public boolean equals(Object object)
+  public void setCityofbirth(String cityofbirth)
+  {
+    if (cityofbirth != null)
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CharacterInfo))
-        {
-            return false;
-        }
-        CharacterInfo other = (CharacterInfo) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-        {
-            return false;
-        }
-        return true;
+      cityofbirth = Utils.alphanumericalandpuntuation(cityofbirth);
     }
+    this.cityofbirth = cityofbirth;
+  }
 
-    @Override
-    public String toString()
+  public String getStoryline()
+  {
+    return storyline;
+  }
+
+  public void setStoryline(String storyline) throws MudException
+  {
+    if (storyline != null)
     {
-        return "mmud.database.entities.web.CharacterInfo[ name=" + name + " ]";
+      try
+      {
+        storyline = Utils.security(storyline);
+      } catch (PolicyException | ScanException ex)
+      {
+        Logger.getLogger(CharacterInfo.class.getName()).log(Level.SEVERE, null, ex);
+        throw new MudException(ex);
+      }
     }
+    this.storyline = storyline;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (name != null ? name.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof CharacterInfo))
+    {
+      return false;
+    }
+    CharacterInfo other = (CharacterInfo) object;
+    if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
+    {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.web.CharacterInfo[ name=" + name + " ]";
+  }
 }
