@@ -18,6 +18,9 @@ export class GameComponent implements OnInit {
     this.playerService.enterGame()
       .subscribe(
       (result: any) => { // on success
+        if (window.location != window.parent.location) {
+              window.parent.location.href = "/web/guest/play";
+        }
         window.location.href = "/web/guest/play";
       },
       (err: any) => { // error
@@ -34,6 +37,9 @@ export class GameComponent implements OnInit {
       .subscribe(
       (result: any) => { // on success
         game.playerService.clearName();
+        if (window.location != window.parent.location) {
+              window.parent.location.href = "/web/guest/goodbye";
+        }
         window.location.href = "/web/guest/goodbye";
       },
       (err: any) => { // error
