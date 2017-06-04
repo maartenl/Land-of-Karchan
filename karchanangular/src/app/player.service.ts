@@ -66,7 +66,7 @@ export class PlayerService {
   public clearName(): void {
     if (typeof (Storage) !== "undefined") {
       // Store
-      localStorage.setItem("karchanname", null);
+      localStorage.removeItem("karchanname");
     }
     this.name = null;
   }
