@@ -15,7 +15,7 @@ export class GameComponent implements OnInit {
   }
 
   public playGame(): void {
-    this.playerService.getPlayer()
+    this.playerService.enterGame()
       .subscribe(
       (result: any) => { // on success
         window.location.href = "/web/guest/play";
@@ -30,7 +30,7 @@ export class GameComponent implements OnInit {
 
   public logoff(): void {
     let game = this;
-    this.playerService.getPlayer()
+    this.playerService.logoff()
       .subscribe(
       (result: any) => { // on success
         game.playerService.clearName();
