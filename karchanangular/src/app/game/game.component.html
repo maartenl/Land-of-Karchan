@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <div *ngIf="isLoggedIn()" class="alert alert-success" role="alert">
+        You are logged on as {{ getPlayer() }}.
+      </div>
+      <div *ngIf="!isLoggedIn()" class="alert alert-danger" role="alert">
+        You are not logged in! Please click <a href="/">here</a> to log in.
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <button *ngIf="isLoggedIn()" class="btn btn-primary btn-block" (click)="playGame()" type="button">Play the Game</button>
+      <button *ngIf="isLoggedIn()" class="btn btn-outline-primary btn-block" (click)="logoff()" type="button">Log Out</button>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,8 @@
 <ul class="nav nav-tabs">
   <li class="nav-item">
+    <a class="nav-link" [ngClass]="{active: isGameTabActive()}" (click)="setGameTabActive()" href="#">Game</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#">Settings</a>
   </li>
   <li class="nav-item">
@@ -9,6 +12,7 @@
     <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#">Guild</a>
   </li>
 </ul>
+<app-game *ngIf="isGameTabActive()"></app-game>
 <app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
 <div class="container" *ngIf="isMailTabActive()"> 
   <div class="row row-content">

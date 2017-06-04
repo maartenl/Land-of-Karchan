@@ -130,7 +130,7 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   delete(family: Family) {
-    this.playerService.deleteFamily(this.player, family).subscribe(
+    this.playerService.deleteFamily(family).subscribe(
       (result: any) => { // on success
         let index = this.player.familyvalues.indexOf(family, 0);
         if (index > -1) {
@@ -141,7 +141,7 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   add(family: Family) {
-    this.playerService.updateFamily(this.player, family).subscribe(
+    this.playerService.updateFamily(family).subscribe(
       (result: any) => { // on success
         let length = this.player.familyvalues.push(family);
       }
@@ -149,7 +149,7 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   update(family: Family) {
-    this.playerService.updateFamily(this.player, family).subscribe();
+    this.playerService.updateFamily(family).subscribe();
   }
 
 }

@@ -12,12 +12,14 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
 import { PlayerService } from './player.service';
 import { ErrorsService } from './errors.service';
 import { ErrorsComponent } from './errors/errors.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayerSettingsComponent,
-    ErrorsComponent
+    ErrorsComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,

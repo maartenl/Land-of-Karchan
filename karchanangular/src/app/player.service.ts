@@ -18,9 +18,12 @@ export class PlayerService {
 
   familyUrl: string;
 
+  gameUrl: string;
+
   constructor(private http: Http, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
+    this.gameUrl = environment.GAME_URL;
   }
 
   /**
@@ -43,12 +46,41 @@ export class PlayerService {
     this.errorsService.addError(error);
   }
 
+  public isLoggedIn(): boolean {
+    if (this.name != null) {
+      return true;
+    }
+    if (typeof (Storage) !== "undefined") {
+      // Store
+      this.name = localStorage.getItem("karchanname");
+      if (this.name !== null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Clears the name of the player from the local storage.
+   */
+  public clearName(): void {
+    if (typeof (Storage) !== "undefined") {
+      // Store
+      localStorage.setItem("karchanname", null);
+    }
+    this.name = null;
+  }
+
   private getCharactersheetUrl(): string {
     return this.charactersheetUrl.replace("[player]", this.getName());
   }
 
   private getFamilyUrl(toname: string): string {
     return this.familyUrl.replace("[player]", this.getName()) + toname;
+  }
+
+  private getGameUrl(): string {
+    return this.gameUrl.replace("[player]", this.getName());
   }
 
   public getPlayer(): Observable<any> {
@@ -72,18 +104,40 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
-  public deleteFamily(player: Player, family: Family): Observable<any> {
+  public deleteFamily(family: Family): Observable<any> {
     return this.http.delete(this.getFamilyUrl(family.toname))
       .catch((n) => this.handleError(n));
   }
 
-  public updateFamily(player: Player, family: Family): Observable<any> {
+  public updateFamily(family: Family): Observable<any> {
     let headers = new Headers({
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     });
     let options = new RequestOptions({ headers: headers });
     let url: string = this.getFamilyUrl(family.toname) + "/" + family.getDescriptionAsInteger();
+    return this.http.put(url, null, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  public enterGame(): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    let url: string = this.getGameUrl() + "enter";
+    return this.http.post(url, null, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  public logoff(): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    let url: string = this.getGameUrl() + "logoff";
     return this.http.put(url, null, options)
       .catch((n) => this.handleError(n));
   }
