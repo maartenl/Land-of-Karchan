@@ -97,3 +97,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /karchanpersonal/target/
+/karchandocs/target/
