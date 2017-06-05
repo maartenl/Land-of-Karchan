@@ -12,7 +12,7 @@ pipeline {
                 // for example jenkins-karchan-123sh '''
                 echo "Build " + env.BUILD_TAG
                 echo "Workspace " + env.WORKSPACE
-                sh 'echo cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchanscripts-1.0-SNAPSHOT.war /home/glassfish/karchanscripts-1.0-SNAPSHOT.war'
+                sh 'echo cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchanscripts-1.0-SNAPSHOT.war /home/glassfish/backup/karchanscripts-1.0-SNAPSHOT.war'
             }
         }
         stage('deploy') {

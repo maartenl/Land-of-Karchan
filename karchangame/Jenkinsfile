@@ -13,7 +13,7 @@ pipeline {
                 echo "Build " + env.BUILD_TAG
                 echo "Workspace " + env.WORKSPACE
                 sh 'echo "<p>Suddenly Karn walks by carrying a toolbox and hammer and muttering to himself.</p>" | tee -a /home/glassfish/temp/*'
-                sh 'cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war /home/glassfish/karchangame.war.backup'
+                sh 'cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war /home/glassfish/backup/karchangame.war.backup'
             }
         }
         stage('build') {
