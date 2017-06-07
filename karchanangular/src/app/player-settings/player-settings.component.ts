@@ -152,4 +152,8 @@ export class PlayerSettingsComponent implements OnInit {
     this.playerService.updateFamily(family).subscribe();
   }
 
+  public getAllPossibleFamilyValues(): string[] {
+    return Family.FAMILYVALUES;
+  } 
+
 }

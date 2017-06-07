@@ -77,7 +77,9 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="description">Relation description</label>
-          <input type="text" class="form-control" id="description" name="description" formControlName="description">
+          <select class="form-control" id="description" name="description" formControlName="description">
+            <option *ngFor="let description of getAllPossibleFamilyValues()">{{ description }}</option>
+          </select>
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
           <button type="submit" [disabled]="familyForm.pristine" class="btn btn-primary">Save</button>
