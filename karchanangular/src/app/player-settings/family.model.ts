@@ -24,9 +24,12 @@ export class Family {
   ];
 
   constructor() {
+    this.toname = void 0;
+    this.description = void 0;
+
   }
 
-  public getDescriptionAsInteger(): string {    
+  public getDescriptionAsInteger(): string {
     for (let v in Family.FAMILYVALUES) {
       if (this.description === Family.FAMILYVALUES[v]) {
         return v;

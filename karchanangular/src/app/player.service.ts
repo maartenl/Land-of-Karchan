@@ -5,10 +5,58 @@ import 'rxjs/add/operator/map';
 
 import { environment } from 'app/../environments/environment';
 
+import { deserialize, serialize, JsonProperty } from 'json-typescript-mapper';
+
 import { ErrorsService } from './errors.service';
 import { Player } from './player-settings/player.model';
 import { Family } from './player-settings/family.model';
 import { Error } from './errors/error.model';
+
+class Student {
+  @JsonProperty('name')
+  fullName: string;
+
+  constructor() {
+    this.fullName = undefined;
+  }
+}
+
+class Address {
+  @JsonProperty('first-line')
+  firstLine: string;
+  @JsonProperty('second-line')
+  secondLine: string;
+  @JsonProperty({ clazz: Student })
+  student: Student;
+  city: string;
+
+  constructor() {
+    this.firstLine = undefined;
+    this.secondLine = undefined;
+    this.city = undefined;
+    this.student = undefined
+  }
+}
+
+class Person {
+  @JsonProperty('Name')
+  name: string;
+  @JsonProperty('xing')
+  surname: string;
+  age: number;
+  @JsonProperty({ clazz: Address, name: 'AddressArr' })
+  addressArr: Address[];
+  @JsonProperty({ clazz: Address, name: 'Address' })
+  address: Address;
+
+  constructor() {
+    this.name = void 0;
+    this.surname = void 0;
+    this.age = void 0;
+    this.addressArr = void 0;
+    this.address = void 0;
+  }
+}
 
 @Injectable()
 export class PlayerService {
@@ -144,7 +192,8 @@ export class PlayerService {
 
   private extractData(res: Response) {
     let body = res.json();
-    return body || {};
+    const player = deserialize(Player, body);
+    return player || new Player();
   }
 
   private handleError(response: Response | any): Observable<{}> {
