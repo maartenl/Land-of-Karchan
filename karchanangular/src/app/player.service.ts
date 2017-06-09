@@ -9,60 +9,17 @@ import { deserialize, serialize, JsonProperty } from 'json-typescript-mapper';
 
 import { ErrorsService } from './errors.service';
 import { Player } from './player-settings/player.model';
+import { Mail, MailList } from './mail/mail.model';
 import { Family } from './player-settings/family.model';
 import { Error } from './errors/error.model';
-
-class Student {
-  @JsonProperty('name')
-  fullName: string;
-
-  constructor() {
-    this.fullName = undefined;
-  }
-}
-
-class Address {
-  @JsonProperty('first-line')
-  firstLine: string;
-  @JsonProperty('second-line')
-  secondLine: string;
-  @JsonProperty({ clazz: Student })
-  student: Student;
-  city: string;
-
-  constructor() {
-    this.firstLine = undefined;
-    this.secondLine = undefined;
-    this.city = undefined;
-    this.student = undefined
-  }
-}
-
-class Person {
-  @JsonProperty('Name')
-  name: string;
-  @JsonProperty('xing')
-  surname: string;
-  age: number;
-  @JsonProperty({ clazz: Address, name: 'AddressArr' })
-  addressArr: Address[];
-  @JsonProperty({ clazz: Address, name: 'Address' })
-  address: Address;
-
-  constructor() {
-    this.name = void 0;
-    this.surname = void 0;
-    this.age = void 0;
-    this.addressArr = void 0;
-    this.address = void 0;
-  }
-}
 
 @Injectable()
 export class PlayerService {
   name: string;
 
   charactersheetUrl: string;
+
+  mailUrl: string;
 
   familyUrl: string;
 
@@ -72,6 +29,7 @@ export class PlayerService {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
     this.gameUrl = environment.GAME_URL;
+    this.mailUrl = environment.MAIL_URL;
   }
 
   /**
@@ -123,6 +81,10 @@ export class PlayerService {
     return this.charactersheetUrl.replace("[player]", this.getName());
   }
 
+  private getMailUrl(): string {
+    return this.mailUrl.replace("[player]", this.getName());
+  }
+
   private getFamilyUrl(toname: string): string {
     return this.familyUrl.replace("[player]", this.getName()) + toname;
   }
@@ -139,6 +101,17 @@ export class PlayerService {
     let options = new RequestOptions({ headers: headers });
     return this.http.get(this.getCharactersheetUrl(), options)
       .map(this.extractData)
+      .catch((n) => this.handleError(n));
+  }
+
+  public getMail(offset: number): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(this.getMailUrl() + "?offset="+ offset, options)
+      .map(this.extractMail)
       .catch((n) => this.handleError(n));
   }
 
@@ -190,10 +163,16 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
-  private extractData(res: Response) {
+  private extractData(res: Response): Player {
     let body = res.json();
     const player = deserialize(Player, body);
     return player || new Player();
+  }
+
+  private extractMail(res: Response): MailList {
+    let body = res.json();
+    const mails = deserialize(MailList, {mails:body});
+    return mails;
   }
 
   private handleError(response: Response | any): Observable<{}> {

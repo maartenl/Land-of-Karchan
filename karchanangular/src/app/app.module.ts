@@ -13,13 +13,15 @@ import { PlayerService } from './player.service';
 import { ErrorsService } from './errors.service';
 import { ErrorsComponent } from './errors/errors.component';
 import { GameComponent } from './game/game.component';
+import { MailComponent } from './mail/mail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayerSettingsComponent,
     ErrorsComponent,
-    GameComponent
+    GameComponent,
+    MailComponent
   ],
   imports: [
     BrowserModule,

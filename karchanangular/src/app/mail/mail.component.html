@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <table class="table table-sm table-striped table-bordered">
+        <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>From</th>
+            <th>Subject</th>
+            <th>When</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr (click)="setMail(mail)" *ngFor="let mail of mails.mails">
+            <th scope="row"></th>
+            <td>{{ mail.name }}</td>
+            <td>{{ mail.subject }}</td>
+            <td>{{ mail.getWhen() }}</td>
+          </tr>
+        </tbody>
+      </table>
+      {{ mail.body }}
+    </div>
+  </div>
+</div>

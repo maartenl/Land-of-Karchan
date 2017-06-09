@@ -15,9 +15,7 @@
 <app-game *ngIf="isGameTabActive()"></app-game>
 <app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
 <div class="container" *ngIf="isMailTabActive()"> 
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12 alert alert-info" role="alert">Mail not implemented yet.</div>
-  </div>    
+  <app-mail></app-mail>
 </div>
 <div class="container" *ngIf="isGuildTabActive()"> 
   <div class="row row-content">
