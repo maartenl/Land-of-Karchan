@@ -115,6 +115,16 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
+  public sendMail(mail: Mail): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(this.getMailUrl(), mail, options)
+      .catch((n) => this.handleError(n));
+  }
+
   public updatePlayer(player: Player): Observable<any> {
     let headers = new Headers({
       'Content-Type': 'application/json',

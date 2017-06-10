@@ -5,21 +5,61 @@
         <thead class="thead-inverse">
           <tr>
             <th>#</th>
+            <th><input type="checkbox" class="form-check-input"></th>
             <th>From</th>
             <th>Subject</th>
             <th>When</th>
           </tr>
         </thead>
         <tbody>
-          <tr (click)="setMail(mail)" *ngFor="let mail of mails.mails">
+          <tr *ngFor="let mail of mails.mails">
             <th scope="row"></th>
-            <td>{{ mail.name }}</td>
-            <td>{{ mail.subject }}</td>
-            <td>{{ mail.getWhen() }}</td>
+            <td><input type="checkbox" class="form-check-input"></td>
+            <td (click)="setMail(mail)">{{ mail.name }}</td>
+            <td (click)="setMail(mail)">{{ mail.subject }}</td>
+            <td (click)="setMail(mail)">{{ mail.getWhen() }}</td>
           </tr>
         </tbody>
       </table>
-      {{ mail.body }}
+      <div class="card" *ngIf="mail.toname !== undefined">
+        <div class="card-block">
+          <h4 class="card-title">{{ mail.subject }}</h4>
+          <p class="card-text"><strong>From:</strong> {{ mail.name }}</p>
+          <p class="card-text"><strong>To:</strong> {{ mail.toname }}</p>
+        </div>
+        <div class="card-block" [innerHTML]="mail.body">
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <h3>Compose Mail</h3>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <form [formGroup]="mailForm" (ngSubmit)="send()" novalidate>
+        <fieldset class="form-group">
+          <label for="toname">To</label>
+          <input type="text" class="form-control" id="toname" name="toname" formControlName="toname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" class="form-control" id="subject" name="subject" formControlName="subject">
+        </fieldset>
+        <div class="card" style="width: 40rem;">
+          <div class="card-header">
+            Body
+          </div>
+          <div class="card-block" [innerHTML]="mailForm.get('body').value">
+          </div>
+        </div>
+        <fieldset class="form-group">
+          <label for="body">Body</label>
+          <textarea class="form-control" id="body" rows="13" formControlName="body"></textarea>
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="mailForm.pristine" class="btn btn-primary">Send</button>
+          <button type="reset" [disabled]="mailForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
