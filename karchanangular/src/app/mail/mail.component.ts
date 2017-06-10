@@ -24,9 +24,10 @@ export class MailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.playerService.getMail(0).subscribe(
+    // retrieve the next page of mails starting from the last mail in the array
+    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
       (result: any) => { // on success
-        this.mails = result;
+        this.mails.addAll(result);
       },
       (err: any) => { // error
         // console.log("error", err);
@@ -36,12 +37,12 @@ export class MailComponent implements OnInit {
     );
   }
 
- createForm() {
+  createForm() {
     this.mailForm = this.formBuilder.group({
       toname: '',
       subject: '',
       body: ''
-    }); 
+    });
   }
 
   resetForm() {
@@ -58,7 +59,16 @@ export class MailComponent implements OnInit {
 
   public send(): void {
     let newMail = this.prepareSaveMail();
-    this.playerService.sendMail(newMail).subscribe();
+    this.playerService.sendMail(newMail).subscribe(
+      (result: any) => { // on success
+        this.resetForm();      
+      },
+      (err: any) => { // error
+        // console.log("error", err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
   prepareSaveMail(): Mail {
@@ -74,6 +84,27 @@ export class MailComponent implements OnInit {
 
   public cancel(): void {
     this.resetForm();
+  }
+
+  public next(): void {
+    if (this.mails.page != this.mails.getNumberOfPages() - 1) {
+      this.mails.next();
+      return;
+    }
+    // retrieve the next page of mails starting from the last mail in the array
+    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
+      (result: any) => { // on success
+        if (result.getNumberOfMails() != 0) {
+          this.mails.addAll(result);
+          this.mails.next();
+        }
+      },
+      (err: any) => { // error
+        // console.log("error", err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
 }
