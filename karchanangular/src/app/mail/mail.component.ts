@@ -58,28 +58,39 @@ export class MailComponent implements OnInit {
   }
 
   public send(): void {
-    let newMail = this.prepareSaveMail();
-    this.playerService.sendMail(newMail).subscribe(
-      (result: any) => { // on success
-        this.resetForm();      
-      },
-      (err: any) => { // error
-        // console.log("error", err);
-      },
-      () => { // on completion
-      }
-    );
+    let newMails: Mail[] = this.prepareSaveMail();
+    for (let newMail of newMails) {
+      this.playerService.sendMail(newMail).subscribe(
+        (result: any) => { // on success
+          this.resetForm();
+        },
+        (err: any) => { // error
+          // console.log("error", err);
+        },
+        () => { // on completion
+        }
+      );
+    }
   }
 
-  prepareSaveMail(): Mail {
+  prepareSaveMail(): Mail[] {
+    let result: Mail[] = [];
     const formModel = this.mailForm.value;
+    let namesFromForm: string = formModel.toname as string;
+    if (namesFromForm === null || namesFromForm.trim() === "") {
+      return result;
+    }
+    let names = (namesFromForm).split(",");
 
-    // return new `Mail` object
-    const mail: Mail = new Mail();
-    mail.subject = formModel.subject as string;
-    mail.toname = formModel.toname as string;
-    mail.body = formModel.body as string;
-    return mail;
+    for (let name of names) {
+      // return new `Mail` object
+      const mail: Mail = new Mail();
+      mail.subject = formModel.subject as string;
+      mail.toname = name.trim();
+      mail.body = formModel.body as string;
+      result.push(mail);
+    }
+    return result;
   }
 
   public cancel(): void {
