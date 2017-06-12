@@ -11,7 +11,18 @@ export class GameComponent implements OnInit {
 
   constructor(private playerService: PlayerService) { }
 
+  hasNewMail: boolean;
+
+  error: boolean = false;
+
   ngOnInit() {
+    this.playerService.hasNewMail()
+      .subscribe( (result: boolean) => { // on success
+        this.hasNewMail = result; 
+       },
+       (err: any) => { // error
+         this.error = true;
+       }); 
   }
 
   public playGame(): void {
@@ -52,6 +63,9 @@ export class GameComponent implements OnInit {
   }
 
   public isLoggedIn(): boolean {
+    if (this.error) {
+      return false;
+    }
     return this.playerService.isLoggedIn();
   }
 

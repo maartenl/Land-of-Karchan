@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   CHARACTERSHEET_URL: 'assets/charactersheet.json',
   MAIL_URL: 'assets/mail.json',
+  HASNEWMAIL_URL: 'assets/hasnewmail.json',
   FAMILY_URL: '/karchangame/resources/private/Karn/charactersheet/familyvalues/',
   GAME_URL: '/karchangame/resources/game/[player]/'
 };

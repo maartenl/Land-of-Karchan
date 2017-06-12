@@ -7,6 +7,9 @@
       <div *ngIf="!isLoggedIn()" class="alert alert-danger" role="alert">
         You are not logged in! Please click <a target="_parent" href="/">here</a> to log in.
       </div>
+      <div *ngIf="hasNewMail" class="alert alert-success" role="alert">
+        You have new mudmail.
+      </div>
     </div>
     <div class="col-xs-12 col-sm-12">
       <button *ngIf="isLoggedIn()" class="btn btn-primary btn-block" (click)="playGame()" type="button">Play the Game</button>
