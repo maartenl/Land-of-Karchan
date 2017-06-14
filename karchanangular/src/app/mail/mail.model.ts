@@ -83,6 +83,13 @@ export class MailList {
     return this.mails.length;
   }
 
+  public delete(mail: Mail) {
+    let index: number = this.mails.indexOf(mail);
+    if (index !== -1) {
+      this.mails.splice(index, 1);
+    }
+  }
+
   /**
    * Basically, divides the number of mails by 20. So:
    * <ul><li>if you have no mails, you have 1 page.</li>

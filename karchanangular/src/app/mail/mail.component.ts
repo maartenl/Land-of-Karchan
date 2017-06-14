@@ -57,7 +57,7 @@ export class MailComponent implements OnInit {
     this.mailForm.reset({
       toname: mail.name,
       subject: "Re: " + mail.subject,
-      body: "\n\n<p>On " + mail.getFullWhen() +" " + mail.name + " wrote:</p><hr/>\n"+ mail.body + "\n<hr/>"
+      body: "\n\n<p>On " + mail.getFullWhen() + " " + mail.name + " wrote:</p><hr/>\n" + mail.body + "\n<hr/>"
     });
   }
 
@@ -79,6 +79,19 @@ export class MailComponent implements OnInit {
         }
       );
     }
+  }
+
+  public deleteMail(mail: Mail): void {
+    this.playerService.deleteMail(mail).subscribe(
+      (result: any) => { // on success
+        this.mails.delete(mail);
+      },
+      (err: any) => { // error
+        // console.log("error", err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
   prepareSaveMail(): Mail[] {
