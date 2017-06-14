@@ -48,6 +48,12 @@ export class Mail {
     return Mail.MONTHS[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
   }
 
+  public getFullWhen(): string {
+    let date: Date = new Date(this.whensent);
+    return date.toDateString() + " " + date.toTimeString();
+  }
+
+
 }
 
 export class MailList {

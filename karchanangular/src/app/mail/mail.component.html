@@ -9,6 +9,7 @@
             <th>From</th>
             <th>Subject</th>
             <th>When</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -18,6 +19,7 @@
             <td (click)="setMail(mail)">{{ mail.name }}</td>
             <td (click)="setMail(mail)">{{ mail.subject }}</td>
             <td (click)="setMail(mail)">{{ mail.getWhen() }}</td>
+            <td (click)="replyMail(mail)"><i class="material-icons align-middle">reply</i> </td>
           </tr>
         </tbody>
       </table>

@@ -53,6 +53,14 @@ export class MailComponent implements OnInit {
     });
   }
 
+  replyMail(mail: Mail) {
+    this.mailForm.reset({
+      toname: mail.name,
+      subject: "Re: " + mail.subject,
+      body: "\n\n<p>On " + mail.getFullWhen() +" " + mail.name + " wrote:</p><hr/>\n"+ mail.body + "\n<hr/>"
+    });
+  }
+
   public setMail(mail: Mail): void {
     this.mail = mail;
   }
