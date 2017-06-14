@@ -20,7 +20,8 @@
       "prefix": "app",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.css",
-        "styles.css"
+        "styles.css",
+        "../node_modules/material-design-icons/iconfont/material-icons.css"
       ],
       "scripts": [  
         "../node_modules/jquery/dist/jquery.js",

@@ -1,15 +1,16 @@
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isGameTabActive()}" (click)="setGameTabActive()" href="#">Game</a>
+    <a class="nav-link" [ngClass]="{active: isGameTabActive()}" (click)="setGameTabActive()"
+    href="#"><img src="assets/logo.png" height="24" class="align-middle"> Game</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#">Settings</a>
+    <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#"><i class="material-icons align-middle">settings</i> Settings</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#">Mail</a>
+    <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#"><i class="material-icons align-middle">mail</i> Mail</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#">Guild</a>
+    <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#"><i class="material-icons align-middle">group</i> Guild</a>
   </li>
 </ul>
 <app-game *ngIf="isGameTabActive()"></app-game>

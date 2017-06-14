@@ -67,7 +67,7 @@
         <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues" (click)="setFamilyForm(relation)">
           {{relation.description}} of {{relation.toname}}
           <button type="button" class="close" aria-label="Close" (click)="delete(relation)">
-            <span aria-hidden="true">&times;</span>
+            <i class="material-icons" aria-hidden="true">clear</i>
           </button>
         </li>
       </ul>
