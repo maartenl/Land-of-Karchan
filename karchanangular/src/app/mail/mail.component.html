@@ -37,6 +37,7 @@
           <h4 class="card-title">{{ mail.subject }}</h4>
           <p class="card-text"><strong>From:</strong> {{ mail.name }}</p>
           <p class="card-text"><strong>To:</strong> {{ mail.toname }}</p>
+          <p class="card-text"><strong>On:</strong> {{ mail.whensent | date:'medium' }}</p>
         </div>
         <div class="card-block" [innerHTML]="mail.body">
         </div>
