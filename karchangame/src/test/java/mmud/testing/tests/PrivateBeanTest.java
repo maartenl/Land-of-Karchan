@@ -17,6 +17,7 @@
 package mmud.testing.tests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,6 +43,7 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.MailBean;
 import mmud.rest.services.PrivateBean;
+import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
@@ -452,6 +454,130 @@ public class PrivateBeanTest
             assertEquals(mail.getName(), marvin);
             assertEquals(mail.getNewmail(), Boolean.TRUE);
             assertEquals(mail.getToname(), hotblack);
+            // unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
+        };
+
+      }
+    };
+    responseOkExpectations();
+// Unit under test is exercised.
+    Response result = privateBean.newMail(privateMail, "Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+  }
+
+  @Test
+  public void newMailToDeputies()
+  {
+    logger.fine("newMail");
+    PrivateMail privateMail = new PrivateMail();
+    privateMail.body = "First mail";
+    privateMail.subject = "Subject";
+    privateMail.toname = "deputies";
+
+    PublicBean publicBean = new PublicBean()
+    {
+      @Override
+      public List<User> getDeputies()
+      {
+        User karn = new User();
+        karn.setName("Karn");
+        User ephinie = new User();
+        ephinie.setName("Ephinie");
+        User mya = new User();
+        mya.setName("Mya");
+        return Arrays.asList(karn, ephinie, mya);
+      }
+    };
+
+    // all other props are ignored by the method under test
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      public PublicBean getPublicBean()
+      {
+        return publicBean;
+      }
+
+    };
+    new Expectations() // an "expectation block"
+    {
+
+      {
+        entityManager.find(User.class, "Marvin");
+        result = marvin;
+        entityManager.persist((Mail) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Mail mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getBody(), "First mail");
+            assertEquals(mail.getSubject(), "[To deputies] Subject");
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+            assertEquals(mail.getItemDefinition(), null);
+
+            assertEquals(mail.getName(), marvin);
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Karn");
+            // unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
+        };
+        entityManager.persist((Mail) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Mail mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getBody(), "First mail");
+            assertEquals(mail.getSubject(), "[To deputies] Subject");
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+            assertEquals(mail.getItemDefinition(), null);
+
+            assertEquals(mail.getName(), marvin);
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Ephinie");
+            // unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
+        };
+        entityManager.persist((Mail) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(Mail mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getBody(), "First mail");
+            assertEquals(mail.getSubject(), "[To deputies] Subject");
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+            assertEquals(mail.getItemDefinition(), null);
+
+            assertEquals(mail.getName(), marvin);
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Mya");
             // unable to assertEquals getWhensent. As it is using the current date/time.
             assertEquals(mail.getDeleted(), Boolean.FALSE);
 

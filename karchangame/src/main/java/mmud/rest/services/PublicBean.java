@@ -234,8 +234,7 @@ public class PublicBean
     List<PublicPerson> res = new ArrayList<>();
     try
     {
-      Query query = getEntityManager().createNamedQuery("User.status");
-      List<Person> list = query.getResultList();
+      List<User> list = getDeputies();
 
       for (Person person : list)
       {
@@ -251,6 +250,13 @@ public class PublicBean
 
     itsLog.finer("exiting status");
     return res;
+  }
+
+  public List<User> getDeputies()
+  {
+    Query query = getEntityManager().createNamedQuery("User.status");
+    List<User> list = query.getResultList();
+    return list;
   }
 
   /**

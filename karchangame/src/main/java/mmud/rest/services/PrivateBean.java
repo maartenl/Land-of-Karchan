@@ -75,12 +75,6 @@ public class PrivateBean
   @EJB
   private MailBean mailBean;
 
-  /**
-   * We are using the public bean here now to retrieve the charactersheet
-   * of a person, but as soon as there are more settings that are not
-   * supposed to be part of the public rest api, this needs to be
-   * implemented without referring to the publicbean.
-   */
   @EJB
   private PublicBean publicBean;
 
@@ -110,6 +104,11 @@ public class PrivateBean
   protected EntityManager getEntityManager()
   {
     return em;
+  }
+
+  public PublicBean getPublicBean()
+  {
+    return publicBean;
   }
 
   private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
@@ -281,10 +280,11 @@ public class PrivateBean
   }
 
   /**
-   * Compose a new mail.
+   * Send a new mail.
    *
-   * @param newMail the new mail object received from the client.
-   * @param name the name of the
+   * @param newMail the new mail object received from the client. Sending to
+   * user "deputies" allows for a mail to be sent to all current active deputies.
+   * @param name the name of the person logged in/sending mail
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    * failed. BAD_REQUEST if an unexpected exception crops up.
@@ -299,21 +299,29 @@ public class PrivateBean
   {
     itsLog.finer("entering newMail");
     User person = authenticate(name);
+    if (newMail.toname != null && "deputies".equalsIgnoreCase(newMail.toname))
+    {
+      newMail.subject = "[To deputies] " + newMail.subject;
+      getPublicBean().getDeputies().forEach((toperson) ->
+      {
+        try
+        {
+          createNewMail(newMail.subject, newMail.body, person, toperson);
+        } catch (WebApplicationException e)
+        {
+          //ignore
+          throw e;
+        } catch (Exception e)
+        {
+          throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+        }
+      });
+      return Response.ok().build();
+    }
     User toperson = getUser(newMail.toname);
     try
     {
-      Mail mail = new Mail();
-      mail.setBody(newMail.body);
-      mail.setDeleted(Boolean.FALSE);
-      mail.setHaveread(Boolean.FALSE);
-      mail.setItemDefinition(null);
-      mail.setId(null);
-      mail.setName(person);
-      mail.setNewmail(Boolean.TRUE);
-      mail.setSubject(newMail.subject);
-      mail.setToname(toperson);
-      mail.setWhensent(new Date());
-      getEntityManager().persist(mail);
+      createNewMail(newMail.subject, newMail.body, person, toperson);
     } catch (WebApplicationException e)
     {
       //ignore
@@ -324,6 +332,22 @@ public class PrivateBean
     }
     itsLog.finer("exiting newMail");
     return Response.ok().build();
+  }
+
+  private void createNewMail(String subject, String body, User person, User toperson)
+  {
+    Mail mail = new Mail();
+    mail.setBody(body);
+    mail.setDeleted(Boolean.FALSE);
+    mail.setHaveread(Boolean.FALSE);
+    mail.setItemDefinition(null);
+    mail.setId(null);
+    mail.setName(person);
+    mail.setNewmail(Boolean.TRUE);
+    mail.setSubject(subject);
+    mail.setToname(toperson);
+    mail.setWhensent(new Date());
+    getEntityManager().persist(mail);
   }
 
   private Mail getMail(String toname, Long id)
@@ -621,7 +645,7 @@ public class PrivateBean
   public PublicPerson getCharacterSheet(@PathParam("name") String name)
   {
     User person = authenticate(name);
-    return publicBean.charactersheet(name);
+    return getPublicBean().charactersheet(name);
   }
 
   /**
