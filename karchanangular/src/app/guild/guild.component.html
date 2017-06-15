@@ -1,8 +1,36 @@
 <div class="container">
   <div class="row row-content">
+    <div *ngIf="!hasGuild" class="alert alert-danger" role="alert">
+      You are not a member of a guild.
+    </div>
+  </div>
+  <div class="row row-content" *ngIf="hasGuild">
     <div class="col-xs-12 col-sm-12">
       <h3>{{guild.title}}</h3>
     </div>
+  </div>
+  <div class="row row-content" *ngIf="!isGuildMaster()">
+    <div class="col-xs-12 col-sm-12">
+      <dl>
+        <dt>Current boss</dt>
+        <dd>{{guild.bossname}}</dd>
+        <dt>Homepage</dt>
+        <dd><a href="{{guild.guildurl}}" target="_blank">{{guild.guildurl}}</a></dd>
+        <dt>Logonmessage</dt>
+        <dd>{{guild.logonmessage}}</dd>
+        <dt>Created</dt>
+        <dd>{{guild.creation | date:'medium'}}</dd>
+      </dl>
+      <div class="card" style="width: 40rem;">
+        <div class="card-header">
+          Description
+        </div>
+        <div class="card-block" [innerHTML]="guild.guilddescription">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row row-content" *ngIf="isGuildMaster()">
     <div class="col-xs-12 col-sm-12">
       <form novalidate>
         <fieldset class="form-group">

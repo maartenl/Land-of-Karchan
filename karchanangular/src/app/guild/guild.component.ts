@@ -13,6 +13,8 @@ export class GuildComponent implements OnInit {
 
   guild: Guild;
 
+  hasGuild: boolean = false;
+
   constructor(private playerService: PlayerService,
     private formBuilder: FormBuilder) {
     this.guild = new Guild()
@@ -23,6 +25,7 @@ export class GuildComponent implements OnInit {
     this.playerService.getGuild().subscribe(
       (result: Guild) => { // on success
         this.guild = result;
+        this.hasGuild = true;
       },
       (err: any) => { // error
         // console.log("error", err);
@@ -30,6 +33,13 @@ export class GuildComponent implements OnInit {
       () => { // on completion
       }
     );
+  }
+
+  public isGuildMaster(): boolean {
+    if (!this.hasGuild) {
+      return false;
+    }
+    return this.playerService.getName() === this.guild.bossname;
   }
 
 }
