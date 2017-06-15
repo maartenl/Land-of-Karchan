@@ -10,6 +10,7 @@ import { deserialize, serialize, JsonProperty } from 'json-typescript-mapper';
 import { ErrorsService } from './errors.service';
 import { Player } from './player-settings/player.model';
 import { Mail, MailList } from './mail/mail.model';
+import { Guild } from './guild/guild.model';
 import { Family } from './player-settings/family.model';
 import { Error } from './errors/error.model';
 
@@ -25,6 +26,8 @@ export class PlayerService {
 
   familyUrl: string;
 
+  guildUrl: string;
+
   gameUrl: string;
 
   constructor(private http: Http, private errorsService: ErrorsService) {
@@ -33,6 +36,7 @@ export class PlayerService {
     this.gameUrl = environment.GAME_URL;
     this.mailUrl = environment.MAIL_URL;
     this.hasNewMailUrl = environment.HASNEWMAIL_URL;
+    this.guildUrl = environment.GUILD_URL;
   }
 
   /**
@@ -96,6 +100,10 @@ export class PlayerService {
     return this.familyUrl.replace("[player]", this.getName()) + toname;
   }
 
+  private getGuildUrl(): string {
+    return this.guildUrl.replace("[player]", this.getName());
+  }
+
   private getGameUrl(): string {
     return this.gameUrl.replace("[player]", this.getName());
   }
@@ -149,6 +157,17 @@ export class PlayerService {
     });
     let options = new RequestOptions({ headers: headers });
     return this.http.delete(this.getMailUrl() + "/" + mail.id, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  public getGuild(): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(this.getGuildUrl(), options)
+      .map(this.extractGuild)
       .catch((n) => this.handleError(n));
   }
 
@@ -210,6 +229,12 @@ export class PlayerService {
     let body = res.json();
     const mails = deserialize(MailList, {mails:body});
     return mails;
+  }
+
+  private extractGuild(res: Response): Guild {
+    let body = res.json();
+    const guild = deserialize(Guild, body);
+    return guild;
   }
 
   private handleError(response: Response | any): Observable<{}> {
