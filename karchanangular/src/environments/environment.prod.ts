@@ -5,6 +5,9 @@ export const environment = {
   HASNEWMAIL_URL: '/karchangame/resources/private/[player]/newmail',
   FAMILY_URL: '/karchangame/resources/private/[player]/charactersheet/familyvalues/',
   GUILD_URL: '/karchangame/resources/private/[player]/guild',
+  GUILDHOPEFULS_URL: '/karchangame/resources/private/[player]/guild/hopefuls',
+  GUILDRANKS_URL: '/karchangame/resources/private/[player]/guild/ranks',
+  GUILDMEMBERS_URL: '/karchangame/resources/private/[player]/guild/members',
   GAME_URL: '/karchangame/resources/game/[player]/'
 };
 

@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Citizen",
+        "guildlevel": 0,
+        "accept_access": false,
+        "reject_access": false,
+        "settings_access": false,
+        "logonmessage_access": false
+    },
+    {
+        "title": "Apprentice",
+        "guildlevel": 18,
+        "accept_access": false,
+        "reject_access": false,
+        "settings_access": false,
+        "logonmessage_access": false
+    },
+    {
+        "title": "Journeyman",
+        "guildlevel": 19,
+        "accept_access": false,
+        "reject_access": false,
+        "settings_access": false,
+        "logonmessage_access": false
+    },
+    {
+        "title": "Tradesmen",
+        "guildlevel": 20,
+        "accept_access": false,
+        "reject_access": false,
+        "settings_access": false,
+        "logonmessage_access": false
+    }
+]

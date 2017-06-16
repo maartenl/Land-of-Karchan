@@ -76,3 +76,42 @@
     </div>
   </div>
 </div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Members</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
+          {{member.name}}, {{member.guildrank}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Ranks</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
+          {{rank.guildlevel}} - {{rank.title}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Hopefuls</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
+          {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

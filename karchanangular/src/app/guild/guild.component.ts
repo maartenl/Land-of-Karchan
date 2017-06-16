@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-import { Guild } from './guild.model';
+import { Guild, GuildHopefuls, GuildRanks, GuildMembers } from './guild.model';
 import { PlayerService } from 'app/player.service';
 
 @Component({
@@ -12,6 +12,9 @@ import { PlayerService } from 'app/player.service';
 export class GuildComponent implements OnInit {
 
   guild: Guild;
+  guildMembers: GuildMembers;
+  guildRanks: GuildRanks;
+  guildHopefuls: GuildHopefuls;
 
   hasGuild: boolean = false;
 
@@ -26,6 +29,9 @@ export class GuildComponent implements OnInit {
       (result: Guild) => { // on success
         this.guild = result;
         this.hasGuild = true;
+        this.playerService.getGuildhopefuls().subscribe((result: GuildHopefuls) => {this.guildHopefuls = result;});
+        this.playerService.getGuildmembers().subscribe((result: GuildMembers) => {this.guildMembers = result;});
+        this.playerService.getGuildranks().subscribe((result: GuildRanks) => {this.guildRanks = result;});
       },
       (err: any) => { // error
         // console.log("error", err);

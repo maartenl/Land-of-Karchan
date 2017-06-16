@@ -10,6 +10,9 @@ export const environment = {
   HASNEWMAIL_URL: 'assets/hasnewmail.json',
   FAMILY_URL: '/karchangame/resources/private/Karn/charactersheet/familyvalues/',
   GUILD_URL: '/assets/guild.json',
+  GUILDHOPEFULS_URL: '/assets/guildhopefuls.json',
+  GUILDRANKS_URL: '/assets//guildranks.json',
+  GUILDMEMBERS_URL: '/assets//guildmembers.json',
   GAME_URL: '/karchangame/resources/game/[player]/'
 };
 

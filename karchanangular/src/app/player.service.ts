@@ -10,7 +10,7 @@ import { deserialize, serialize, JsonProperty } from 'json-typescript-mapper';
 import { ErrorsService } from './errors.service';
 import { Player } from './player-settings/player.model';
 import { Mail, MailList } from './mail/mail.model';
-import { Guild } from './guild/guild.model';
+import { Guild, GuildHopeful, GuildMember, GuildRank, GuildHopefuls, GuildMembers, GuildRanks } from './guild/guild.model';
 import { Family } from './player-settings/family.model';
 import { Error } from './errors/error.model';
 
@@ -28,6 +28,12 @@ export class PlayerService {
 
   guildUrl: string;
 
+  guildhopefulsUrl: string;
+
+  guildmembersUrl: string;
+
+  guildranksUrl: string;
+
   gameUrl: string;
 
   constructor(private http: Http, private errorsService: ErrorsService) {
@@ -37,6 +43,9 @@ export class PlayerService {
     this.mailUrl = environment.MAIL_URL;
     this.hasNewMailUrl = environment.HASNEWMAIL_URL;
     this.guildUrl = environment.GUILD_URL;
+    this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
+    this.guildmembersUrl = environment.GUILDMEMBERS_URL;
+    this.guildranksUrl = environment.GUILDRANKS_URL;
   }
 
   /**
@@ -104,9 +113,23 @@ export class PlayerService {
     return this.guildUrl.replace("[player]", this.getName());
   }
 
+  private getGuildmembersUrl(): string {
+    return this.guildmembersUrl.replace("[player]", this.getName());
+  }
+
+  private getGuildranksUrl(): string {
+    return this.guildranksUrl.replace("[player]", this.getName());
+  }
+
+  private getGuildhopefulsUrl(): string {
+    return this.guildhopefulsUrl.replace("[player]", this.getName());
+  }
+
   private getGameUrl(): string {
     return this.gameUrl.replace("[player]", this.getName());
   }
+
+  // charactersheet calls
 
   public getPlayer(): Observable<any> {
     let headers = new Headers({
@@ -118,6 +141,18 @@ export class PlayerService {
       .map(this.extractData)
       .catch((n) => this.handleError(n));
   }
+
+  public updatePlayer(player: Player): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.put(this.getCharactersheetUrl(), player, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  // mail calls
 
   public getMail(offset: number): Observable<any> {
     let headers = new Headers({
@@ -160,6 +195,8 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
+  // guild calls
+
   public getGuild(): Observable<any> {
     let headers = new Headers({
       'Content-Type': 'application/json',
@@ -171,15 +208,40 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
-  public updatePlayer(player: Player): Observable<any> {
+  public getGuildmembers(): Observable<any> {
     let headers = new Headers({
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     });
     let options = new RequestOptions({ headers: headers });
-    return this.http.put(this.getCharactersheetUrl(), player, options)
+    return this.http.get(this.getGuildmembersUrl(), options)
+      .map(this.extractGuildmembers)
       .catch((n) => this.handleError(n));
   }
+
+  public getGuildranks(): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(this.getGuildranksUrl(), options)
+      .map(this.extractGuildranks)
+      .catch((n) => this.handleError(n));
+  }
+
+  public getGuildhopefuls(): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(this.getGuildhopefulsUrl(), options)
+      .map(this.extractGuildhopefuls)
+      .catch((n) => this.handleError(n));
+  }
+
+  // family calls
 
   public deleteFamily(family: Family): Observable<any> {
     return this.http.delete(this.getFamilyUrl(family.toname))
@@ -196,6 +258,8 @@ export class PlayerService {
     return this.http.put(url, null, options)
       .catch((n) => this.handleError(n));
   }
+
+  // game calls
 
   public enterGame(): Observable<any> {
     let headers = new Headers({
@@ -235,6 +299,24 @@ export class PlayerService {
     let body = res.json();
     const guild = deserialize(Guild, body);
     return guild;
+  }
+
+  private extractGuildmembers(res: Response): GuildMembers {
+    let body = res.json();
+    const members = deserialize(GuildMembers, {members:body});
+    return members;
+  }
+
+  private extractGuildranks(res: Response): GuildRanks {
+    let body = res.json();
+    const ranks = deserialize(GuildRanks, {ranks:body});
+    return ranks;
+  }
+
+  private extractGuildhopefuls(res: Response): GuildHopefuls {
+    let body = res.json();
+    const hopefuls = deserialize(GuildHopefuls, {hopefuls:body});
+    return hopefuls;
   }
 
   private handleError(response: Response | any): Observable<{}> {
