@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <dl>
+        <dt>Current boss</dt>
+        <dd>{{guild.bossname}}</dd>
+        <dt>Homepage</dt>
+        <dd><a href="{{guild.guildurl}}" target="_blank">{{guild.guildurl}}</a></dd>
+        <dt>Logonmessage</dt>
+        <dd>{{guild.logonmessage}}</dd>
+        <dt>Created</dt>
+        <dd>{{guild.creation | date:'medium'}}</dd>
+      </dl>
+      <div class="card" style="width: 40rem;">
+        <div class="card-header">
+          Description
+        </div>
+        <div class="card-block" [innerHTML]="guild.guilddescription">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Members</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
+          {{member.name}}, {{member.guildrank}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Ranks</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
+          {{rank.guildlevel}} - {{rank.title}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <h3>Hopefuls</h3>
+      <ul class="list-group">
+        <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
+          {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -15,6 +15,8 @@ import { ErrorsComponent } from './errors/errors.component';
 import { GameComponent } from './game/game.component';
 import { MailComponent } from './mail/mail.component';
 import { GuildComponent } from './guild/guild.component';
+import { GuildMasterComponent } from './guild/guild-master/guild-master.component';
+import { GuildMemberComponent } from './guild/guild-member/guild-member.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { GuildComponent } from './guild/guild.component';
     ErrorsComponent,
     GameComponent,
     MailComponent,
-    GuildComponent
+    GuildComponent,
+    GuildMasterComponent,
+    GuildMemberComponent
   ],
   imports: [
     BrowserModule,
