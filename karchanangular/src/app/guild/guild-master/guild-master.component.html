@@ -56,7 +56,8 @@
       </form>
     </div>
   </div>
-</div><div class="container">
+</div>
+<div class="container">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
       <hr/>
@@ -64,7 +65,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingOne">
             <h5 class="mb-0">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers" (click)="checkMembers()">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers"
+                (click)="checkMembers()">
           Members
         </a>
             </h5>
@@ -75,6 +77,9 @@
               <ul class="list-group" *ngIf="guildMembers !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
                   {{member.name}}, {{member.guildrank}}
+                  <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
+                    <i class="material-icons" aria-hidden="true">clear</i>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -83,7 +88,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingTwo">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks"
+                (click)="checkRanks()">
           Ranks
         </a>
             </h5>
@@ -93,6 +99,9 @@
               <ul class="list-group" *ngIf="guildRanks !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
                   {{rank.guildlevel}} - {{rank.title}}
+                  <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
+                    <i class="material-icons" aria-hidden="true">clear</i>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -101,7 +110,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingThree">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls"
+                (click)="checkHopefuls()">
           Hopefuls
         </a>
             </h5>
@@ -111,6 +121,9 @@
               <ul class="list-group" *ngIf="guildHopefuls !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
                   {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+                  <button type="button" class="close" aria-label="Close" (click)="deleteHopeful(hopeful)">
+                    <i class="material-icons" aria-hidden="true">clear</i>
+                  </button>
                 </li>
               </ul>
             </div>

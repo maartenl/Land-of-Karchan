@@ -47,6 +47,13 @@ export class GuildHopefuls {
   constructor() {
     this.hopefuls = void 0;
   }
+
+  public delete(hopeful: GuildHopeful) {
+    let index: number = this.hopefuls.indexOf(hopeful);
+    if (index !== -1) {
+      this.hopefuls.splice(index, 1);
+    }
+  }
 }
 
 export class GuildMembers {
@@ -56,6 +63,12 @@ export class GuildMembers {
   constructor() {
     this.members = void 0;
   }
+  public delete(member: GuildMember) {
+    let index: number = this.members.indexOf(member);
+    if (index !== -1) {
+      this.members.splice(index, 1);
+    }
+  }
 }
 
 export class GuildRanks {
@@ -64,6 +77,11 @@ export class GuildRanks {
 
   constructor() {
     this.ranks = void 0;
+  } public delete(rank: GuildRank) {
+    let index: number = this.ranks.indexOf(rank);
+    if (index !== -1) {
+      this.ranks.splice(index, 1);
+    }
   }
 }
 

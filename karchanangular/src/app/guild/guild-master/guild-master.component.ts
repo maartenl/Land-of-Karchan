@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-import { Guild, GuildHopefuls, GuildRanks, GuildMembers } from '../guild.model';
+import { Guild, GuildHopefuls, GuildHopeful, GuildRanks, GuildRank, GuildMembers, GuildMember } from '../guild.model';
 import { PlayerService } from 'app/player.service';
 
 @Component({
@@ -98,6 +98,18 @@ export class GuildMasterComponent implements OnInit {
 
   cancel() {
     this.resetForm(this.guild);
+  }
+
+  deleteRank(rank: GuildRank) {
+    this.playerService.deleteRank(rank).subscribe((result: any) => { this.guildRanks.delete(rank); });
+  }
+
+  deleteMember(member: GuildMember) {
+    this.playerService.deleteMember(member).subscribe((result: any) => { this.guildMembers.delete(member); });
+  }
+
+  deleteHopeful(hopeful: GuildHopeful) {
+    this.playerService.deleteHopeful(hopeful).subscribe((result: any) => { this.guildHopefuls.delete(hopeful); });
   }
 
 }

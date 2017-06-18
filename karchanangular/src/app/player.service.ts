@@ -160,7 +160,7 @@ export class PlayerService {
       'Accept': 'application/json'
     });
     let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getMailUrl() + "?offset="+ offset, options)
+    return this.http.get(this.getMailUrl() + "?offset=" + offset, options)
       .map(this.extractMail)
       .catch((n) => this.handleError(n));
   }
@@ -251,6 +251,35 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
+  public deleteMember(member: GuildMember): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete(this.getGuildmembersUrl() + "/" + member.name, options)
+      .catch((n) => this.handleError(n));
+  }
+  
+  public deleteRank(rank: GuildRank): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete(this.getGuildranksUrl() + "/" + rank.guildlevel, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  public deleteHopeful(hopeful: GuildHopeful): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.delete(this.getGuildhopefulsUrl() + "/" + hopeful.name, options)
+      .catch((n) => this.handleError(n));
+  }
   // family calls
 
   public deleteFamily(family: Family): Observable<any> {
@@ -301,7 +330,7 @@ export class PlayerService {
 
   private extractMail(res: Response): MailList {
     let body = res.json();
-    const mails = deserialize(MailList, {mails:body});
+    const mails = deserialize(MailList, { mails: body });
     return mails;
   }
 
@@ -313,19 +342,19 @@ export class PlayerService {
 
   private extractGuildmembers(res: Response): GuildMembers {
     let body = res.json();
-    const members = deserialize(GuildMembers, {members:body});
+    const members = deserialize(GuildMembers, { members: body });
     return members;
   }
 
   private extractGuildranks(res: Response): GuildRanks {
     let body = res.json();
-    const ranks = deserialize(GuildRanks, {ranks:body});
+    const ranks = deserialize(GuildRanks, { ranks: body });
     return ranks;
   }
 
   private extractGuildhopefuls(res: Response): GuildHopefuls {
     let body = res.json();
-    const hopefuls = deserialize(GuildHopefuls, {hopefuls:body});
+    const hopefuls = deserialize(GuildHopefuls, { hopefuls: body });
     return hopefuls;
   }
 
