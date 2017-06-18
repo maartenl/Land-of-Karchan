@@ -86,8 +86,18 @@ export class GuildMasterComponent implements OnInit {
     return saveGuild;
   }
 
-cancel() {
+  resetForm(guild: Guild) {
+    this.guildForm.reset({
+      title: guild.title,
+      guildurl: guild.guildurl,
+      logonmessage: guild.logonmessage,
+      guilddescription: guild.guilddescription,
+      colour: guild.colour
+    });
+  }
 
-}
+  cancel() {
+    this.resetForm(this.guild);
+  }
 
 }
