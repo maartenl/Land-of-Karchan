@@ -18,9 +18,24 @@ export class GuildMasterComponent implements OnInit {
   constructor(private playerService: PlayerService) { }
 
   ngOnInit() {
-    this.playerService.getGuildhopefuls().subscribe((result: GuildHopefuls) => { this.guildHopefuls = result; });
-    this.playerService.getGuildmembers().subscribe((result: GuildMembers) => { this.guildMembers = result; });
-    this.playerService.getGuildranks().subscribe((result: GuildRanks) => { this.guildRanks = result; });
+  }
+
+  public checkMembers() {
+    if (this.guildMembers === undefined) {
+      this.playerService.getGuildmembers().subscribe((result: GuildMembers) => { this.guildMembers = result; });
+    }
+  }
+
+  public checkRanks() {
+    if (this.guildRanks === undefined) {
+      this.playerService.getGuildranks().subscribe((result: GuildRanks) => { this.guildRanks = result; });
+    }
+  }
+
+  public checkHopefuls() {
+    if (this.guildHopefuls === undefined) {
+      this.playerService.getGuildhopefuls().subscribe((result: GuildHopefuls) => { this.guildHopefuls = result; });
+    }
   }
 
 }

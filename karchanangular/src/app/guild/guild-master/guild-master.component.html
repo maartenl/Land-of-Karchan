@@ -44,43 +44,67 @@
       </form>
     </div>
   </div>
-</div>
-<div class="container">
+</div><div class="container">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
       <hr/>
-      <h3>Members</h3>
-      <ul class="list-group">
-        <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
-          {{member.name}}, {{member.guildrank}}
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-<div class="container">
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12">
-      <hr/>
-      <h3>Ranks</h3>
-      <ul class="list-group">
-        <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
-          {{rank.guildlevel}} - {{rank.title}}
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-<div class="container">
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12">
-      <hr/>
-      <h3>Hopefuls</h3>
-      <ul class="list-group">
-        <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
-          {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
-        </li>
-      </ul>
+      <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+          <div class="card-header" role="tab" id="headingOne">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers" (click)="checkMembers()">
+          Members
+        </a>
+            </h5>
+          </div>
+
+          <div id="collapseMembers" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-block">
+              <ul class="list-group" *ngIf="guildMembers !== undefined">
+                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
+                  {{member.name}}, {{member.guildrank}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingTwo">
+            <h5 class="mb-0">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
+          Ranks
+        </a>
+            </h5>
+          </div>
+          <div id="collapseRanks" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="card-block">
+              <ul class="list-group" *ngIf="guildRanks !== undefined">
+                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
+                  {{rank.guildlevel}} - {{rank.title}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingThree">
+            <h5 class="mb-0">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
+          Hopefuls
+        </a>
+            </h5>
+          </div>
+          <div id="collapseHopefuls" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="card-block">
+              <ul class="list-group" *ngIf="guildHopefuls !== undefined">
+                <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
+                  {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
