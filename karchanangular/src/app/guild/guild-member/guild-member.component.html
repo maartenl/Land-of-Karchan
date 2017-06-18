@@ -6,18 +6,24 @@
         <dd>{{guild.bossname}}</dd>
         <dt>Homepage</dt>
         <dd><a href="{{guild.guildurl}}" target="_blank">{{guild.guildurl}}</a></dd>
-        <dt>Logonmessage</dt>
-        <dd>{{guild.logonmessage}}</dd>
         <dt>Created</dt>
         <dd>{{guild.creation | date:'medium'}}</dd>
       </dl>
-      <div class="card" style="width: 40rem;">
-        <div class="card-header">
-          Description
+        <div class="card" style="width: 100%;">
+          <div class="card-header">
+            Logonmessage
+          </div>
+          <div class="card-block" [innerHTML]="guild.logonmessage">
+          </div>
         </div>
-        <div class="card-block" [innerHTML]="guild.guilddescription">
+        <hr/>
+        <div class="card" style="width: 100%;">
+          <div class="card-header">
+            Description
+          </div>
+          <div class="card-block" [innerHTML]="guild.guilddescription">
+          </div>
         </div>
-      </div>
     </div>
   </div>
 </div>
@@ -29,7 +35,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingOne">
             <h5 class="mb-0">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers" (click)="checkMembers()">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers"
+                (click)="checkMembers()">
           Members
         </a>
             </h5>
@@ -48,7 +55,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingTwo">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks"
+                (click)="checkRanks()">
           Ranks
         </a>
             </h5>
@@ -66,7 +74,8 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingThree">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls"
+                (click)="checkHopefuls()">
           Hopefuls
         </a>
             </h5>

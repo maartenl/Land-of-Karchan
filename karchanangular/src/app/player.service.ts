@@ -241,6 +241,16 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
+  public updateGuild(guild: Guild): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.put(this.getGuildUrl(), guild, options)
+      .catch((n) => this.handleError(n));
+  }
+
   // family calls
 
   public deleteFamily(family: Family): Observable<any> {

@@ -1,6 +1,6 @@
 {
   "name": "deputy",
-  "logonmessage": "Welcome to the guild.",
+  "logonmessage": "<p>Welcome to the guild.</p><p>News of today is that the guild is open to everybody</p>",
   "colour": "green",
   "guildurl": "http://www.karchan.org",
   "title": "Benefactors of Karchan",
