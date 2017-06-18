@@ -184,7 +184,7 @@ public class GuildBean
     itsLog.finer("entering updateGuild");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
-    if (!cinfo.bossname.equals(person.getName()))
+    if (cinfo.bossname == null || !cinfo.bossname.equals(person.getName()))
     {
       User newGuildMaster = personBean.getUser(cinfo.bossname);
       if (newGuildMaster == null)
