@@ -94,6 +94,10 @@ export class MailComponent implements OnInit {
     );
   }
 
+  public deleteSelectedMails(): void {
+    this.mails.getSelectedMails().forEach((mail) => this.deleteMail(mail));
+  }
+
   prepareSaveMail(): Mail[] {
     let result: Mail[] = [];
     const formModel = this.mailForm.value;

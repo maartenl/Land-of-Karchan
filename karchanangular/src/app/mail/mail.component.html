@@ -5,7 +5,14 @@
         <thead class="thead-inverse">
           <tr>
             <th>#</th>
-            <th><input type="checkbox" class="form-check-input"></th>
+            <th>
+              <a href="#" (click)="mails.toggleAll()">
+                <i class="material-icons align-middle">{{ mails.isAllSelected() ? "check_box": "check_box_outline_blank"}}</i>
+              </a>               
+              <a href="#" (click)="deleteSelectedMails()">
+                <i class="material-icons align-middle">delete</i>
+              </a>               
+            </th>
             <th>From</th>
             <th>Subject</th>
             <th>When</th>
@@ -15,13 +22,17 @@
         <tbody>
           <tr *ngFor="let mail of mails.getMails()">
             <th scope="row"></th>
-            <td><input type="checkbox" class="form-check-input"></td>
+            <td>
+              <a href="#" (click)="mail.selected = !mail.selected">
+                <i class="material-icons align-middle">{{ mail.selected ? "check_box": "check_box_outline_blank"}}</i>
+              </a>
+            </td>
             <td (click)="setMail(mail)">{{ mail.name }}</td>
             <td (click)="setMail(mail)">{{ mail.subject }}</td>
             <td (click)="setMail(mail)">{{ mail.getWhen() }}</td>
             <td>
               <a href="#" (click)="replyMail(mail)"><i class="material-icons align-middle">reply</i></a>
-              <a href="#" (click)="deleteMail(mail)"><i class="material-icons align-middle">clear</i></a>
+              <a href="#" (click)="deleteMail(mail)"><i class="material-icons align-middle">delete</i></a>
             </td>
           </tr>
         </tbody>
