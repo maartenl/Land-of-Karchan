@@ -60,9 +60,12 @@ export class GuildMembers {
   @JsonProperty({ clazz: GuildMember, name: 'members' })
   members: GuildMember[];
 
+  currentMember: GuildMember;
+
   constructor() {
     this.members = void 0;
   }
+
   public delete(member: GuildMember) {
     let index: number = this.members.indexOf(member);
     if (index !== -1) {
@@ -77,12 +80,15 @@ export class GuildRanks {
 
   constructor() {
     this.ranks = void 0;
-  } public delete(rank: GuildRank) {
+  } 
+  
+  public delete(rank: GuildRank) {
     let index: number = this.ranks.indexOf(rank);
     if (index !== -1) {
       this.ranks.splice(index, 1);
     }
   }
+
 }
 
 export class Guild {

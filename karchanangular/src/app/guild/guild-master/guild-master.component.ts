@@ -17,6 +17,7 @@ export class GuildMasterComponent implements OnInit {
   guildHopefuls: GuildHopefuls;
 
   guildForm: FormGroup;
+  memberForm: FormGroup;
 
   constructor(private playerService: PlayerService,
     private formBuilder: FormBuilder) {
@@ -33,6 +34,10 @@ export class GuildMasterComponent implements OnInit {
       logonmessage: this.guild.logonmessage,
       guilddescription: this.guild.guilddescription,
       colour: this.guild.colour
+    });
+    this.memberForm = this.formBuilder.group({
+      name: '',
+      rank: null
     });
   }
 
@@ -96,6 +101,13 @@ export class GuildMasterComponent implements OnInit {
     });
   }
 
+  resetMemberForm(member: GuildMember) {
+    this.memberForm.reset({
+      name: member.name,
+      rank: member.guildrank
+    });
+  }
+
   cancel() {
     this.resetForm(this.guild);
   }
@@ -110,6 +122,15 @@ export class GuildMasterComponent implements OnInit {
 
   deleteHopeful(hopeful: GuildHopeful) {
     this.playerService.deleteHopeful(hopeful).subscribe((result: any) => { this.guildHopefuls.delete(hopeful); });
+  }
+
+  public selectMember(member: GuildMember): void {
+    this.guildMembers.currentMember = member;
+    this.resetMemberForm(member);
+  }
+
+  public saveMember(): void {
+    console.log("saveMember ", this.guildMembers.currentMember);
   }
 
 }

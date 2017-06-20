@@ -67,21 +67,37 @@
             <h5 class="mb-0">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers"
                 (click)="checkMembers()">
-          Members
-        </a>
+               Members
+              </a>
             </h5>
           </div>
 
           <div id="collapseMembers" class="collapse" role="tabpanel" aria-labelledby="headingOne">
-            <div class="card-block">
-              <ul class="list-group" *ngIf="guildMembers !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
+            <div class="card-block" *ngIf="guildMembers !== undefined">
+              <ul class="list-group">
+                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
                   {{member.name}}, {{member.guildrank}}
                   <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
                     <i class="material-icons" aria-hidden="true">clear</i>
                   </button>
                 </li>
               </ul>
+              <div class="col-xs-12 col-sm-12">
+                <form [formGroup]="memberForm" (ngSubmit)="saveMember()" novalidate>
+                  <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <label for="rank">Rank</label>
+                    <input type="text" class="form-control" id="rank" name="rank" formControlName="rank">
+                  </fieldset>
+                  <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="memberForm.pristine" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+
             </div>
           </div>
         </div>
@@ -90,8 +106,8 @@
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks"
                 (click)="checkRanks()">
-          Ranks
-        </a>
+               Ranks
+             </a>
             </h5>
           </div>
           <div id="collapseRanks" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
@@ -112,8 +128,8 @@
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls"
                 (click)="checkHopefuls()">
-          Hopefuls
-        </a>
+               Hopefuls
+              </a>
             </h5>
           </div>
           <div id="collapseHopefuls" class="collapse" role="tabpanel" aria-labelledby="headingThree">
