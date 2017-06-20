@@ -111,15 +111,30 @@
             </h5>
           </div>
           <div id="collapseRanks" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="card-block">
-              <ul class="list-group" *ngIf="guildRanks !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
+            <div class="card-block" *ngIf="guildRanks !== undefined">
+              <ul class="list-group">
+                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks" (click)="selectRank(rank)">
                   {{rank.guildlevel}} - {{rank.title}}
                   <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
                     <i class="material-icons" aria-hidden="true">clear</i>
                   </button>
                 </li>
               </ul>
+              <div class="col-xs-12 col-sm-12">
+                <form [formGroup]="rankForm" (ngSubmit)="saveRank()" novalidate>
+                  <fieldset class="form-group">
+                    <label for="guildlevel">Level</label>
+                    <input type="text" class="form-control" id="guildlevel" name="guildlevel" formControlName="guildlevel">
+                  </fieldset>
+                  <fieldset class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                  </fieldset>
+                  <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="rankForm.pristine" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

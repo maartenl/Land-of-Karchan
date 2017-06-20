@@ -78,6 +78,8 @@ export class GuildRanks {
   @JsonProperty({ clazz: GuildRank, name: 'ranks' })
   ranks: GuildRank[];
 
+  currentRank: GuildRank;
+
   constructor() {
     this.ranks = void 0;
   } 

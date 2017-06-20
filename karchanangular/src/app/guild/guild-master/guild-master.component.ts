@@ -18,6 +18,7 @@ export class GuildMasterComponent implements OnInit {
 
   guildForm: FormGroup;
   memberForm: FormGroup;
+  rankForm: FormGroup;
 
   constructor(private playerService: PlayerService,
     private formBuilder: FormBuilder) {
@@ -38,6 +39,10 @@ export class GuildMasterComponent implements OnInit {
     this.memberForm = this.formBuilder.group({
       name: '',
       rank: null
+    });
+    this.rankForm = this.formBuilder.group({
+      guildlevel: null,
+      title: ''
     });
   }
 
@@ -108,6 +113,13 @@ export class GuildMasterComponent implements OnInit {
     });
   }
 
+  resetRankForm(rank: GuildRank) {
+    this.rankForm.reset({
+      guildlevel: rank.guildlevel,
+      title: rank.title
+    });
+  }
+
   cancel() {
     this.resetForm(this.guild);
   }
@@ -133,4 +145,12 @@ export class GuildMasterComponent implements OnInit {
     console.log("saveMember ", this.guildMembers.currentMember);
   }
 
+  public selectRank(rank: GuildRank): void {
+    this.guildRanks.currentRank = rank;
+    this.resetRankForm(rank);
+  }
+
+  public saveRank(): void {
+    console.log("saveRank ", this.guildRanks.currentRank);
+  }
 }
