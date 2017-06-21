@@ -86,10 +86,14 @@ export class GuildRanks {
   }
 
   public delete(rank: GuildRank) {
-    let index: number = this.ranks.indexOf(rank);
+    const index: number = this.ranks.indexOf(rank);
     if (index !== -1) {
       this.ranks.splice(index, 1);
     }
+  }
+
+  public findByGuildlevel(guildlevel: number): GuildRank {
+    return this.ranks.find((rank) => rank.guildlevel === guildlevel);
   }
 
 }

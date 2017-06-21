@@ -47,6 +47,7 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public checkMembers() {
+    this.checkRanks();
     if (this.guildMembers === undefined) {
       this.playerService.getGuildmembers().subscribe((result: GuildMembers) => { this.guildMembers = result; });
     }
@@ -66,7 +67,7 @@ export class GuildMasterComponent implements OnInit {
 
   public getStyle() {
     const formModel = this.guildForm.value;
-    let styles = {
+    const styles = {
       // CSS property names
       'color': formModel.colour as string
     };
@@ -74,7 +75,7 @@ export class GuildMasterComponent implements OnInit {
   }
 
   save() {
-    let newGuild: Guild = this.prepareSaveGuild();
+    const newGuild: Guild = this.prepareSaveGuild();
     this.playerService.updateGuild(newGuild).subscribe();
   }
 
@@ -109,7 +110,7 @@ export class GuildMasterComponent implements OnInit {
   resetMemberForm(member: GuildMember) {
     this.memberForm.reset({
       name: member.name,
-      rank: member.guildrank
+      rank: member.guildrank == null ? -1 : member.guildrank.guildlevel
     });
   }
 
@@ -142,7 +143,27 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public saveMember(): void {
-    console.log("saveMember ", this.guildMembers.currentMember);
+    console.log('saveMember ', this.guildMembers.currentMember);
+    const newMember: GuildMember = this.prepareSaveMember();
+    this.playerService.updateGuildmember(newMember).subscribe();
+  }
+
+  prepareSaveMember(): GuildMember {
+    const formModel = this.memberForm.value;
+
+    const guildlevel = formModel.rank as number;
+    let guildrank: GuildRank = null;
+    if (guildlevel !== -1) {
+      guildrank = this.guildRanks.findByGuildlevel(guildlevel);
+    }
+
+    // return new `GuildMember` object containing a combination of original value(s)
+    // and deep copies of changed form model values
+    const saveMember: GuildMember = {
+      name: this.guildMembers.currentMember.name,
+      guildrank: guildrank
+    };
+    return saveMember;
   }
 
   public selectRank(rank: GuildRank): void {
@@ -151,6 +172,6 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public saveRank(): void {
-    console.log("saveRank ", this.guildRanks.currentRank);
+    console.log('saveRank ', this.guildRanks.currentRank);
   }
 }

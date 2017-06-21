@@ -86,11 +86,14 @@
                 <form [formGroup]="memberForm" (ngSubmit)="saveMember()" novalidate>
                   <fieldset class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name" readonly>
                   </fieldset>
                   <fieldset class="form-group">
                     <label for="rank">Rank</label>
-                    <input type="text" class="form-control" id="rank" name="rank" formControlName="rank">
+                    <select class="form-control" id="rank" name="rank" formControlName="rank">
+                      <option [ngValue]="-1">no rank</option>
+                      <option [ngValue]="rank.guildlevel" *ngFor="let rank of guildRanks.ranks">{{ rank.title }}</option>
+                    </select>
                   </fieldset>
                   <div class="col-xs-12 col-sm-12 text-right">
                     <button type="submit" [disabled]="memberForm.pristine" class="btn btn-primary">Save</button>
