@@ -1,21 +1,49 @@
 [
-    {
-        "name": "Alastrina",
-        "guildrank": "Apprentice"
-    },
-    {
-        "name": "Amour",
-        "guildrank": "Citizen"
-    },
-    {
-        "name": "Aym",
-        "guildrank": "Citizen"
-    },      
-    {
-        "name": "Kylou",
-        "guildrank": "Journeyman"
-    },
-    {
-        "name": "Karn"
+  {
+    "name": "Alastrina",
+    "guildrank": {
+      "title": "Apprentice",
+      "guildlevel": 18,
+      "accept_access": false,
+      "reject_access": false,
+      "settings_access": false,
+      "logonmessage_access": false
     }
+  },
+  {
+    "name": "Amour",
+    "guildrank": {
+      "title": "Citizen",
+      "guildlevel": 0,
+      "accept_access": false,
+      "reject_access": false,
+      "settings_access": false,
+      "logonmessage_access": false
+    }
+  },
+  {
+    "name": "Aym",
+    "guildrank": {
+      "title": "Citizen",
+      "guildlevel": 0,
+      "accept_access": false,
+      "reject_access": false,
+      "settings_access": false,
+      "logonmessage_access": false
+    }
+  },
+  {
+    "name": "Kylou",
+    "guildrank": {
+      "title": "Journeyman",
+      "guildlevel": 19,
+      "accept_access": false,
+      "reject_access": false,
+      "settings_access": false,
+      "logonmessage_access": false
+    }
+  },
+  {
+    "name": "Karn"
+  }
 ]

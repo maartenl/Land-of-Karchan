@@ -294,7 +294,7 @@ public class GuildBean
    * Get all members of the guild of the user.
    *
    * @param name the name of the user
-   * @return list of guildmembers
+   * @return list of guild members
    */
   @GET
   @Path("members")
@@ -315,19 +315,11 @@ public class GuildBean
       privatePerson.name = person.getName();
       if (person.getGuildrank() != null)
       {
-        privatePerson.guildrank = person.getGuildrank().getTitle();
+        privatePerson.guildrank = PrivateRank.createRank(person.getGuildrank());
       }
       result.add(privatePerson);
     }
-    Collections.sort(result, new Comparator<PrivatePerson>()
-    {
-
-      @Override
-      public int compare(PrivatePerson o1, PrivatePerson o2)
-      {
-        return o1.name.compareTo(o2.name);
-      }
-    });
+    Collections.sort(result, (PrivatePerson o1, PrivatePerson o2) -> o1.name.compareTo(o2.name));
     return result;
   }
 
@@ -359,8 +351,7 @@ public class GuildBean
     privatePerson.name = member.getName();
     if (member.getGuildrank() != null)
     {
-      privatePerson.guildrank = member.getGuildrank().getTitle();
-      privatePerson.guildlevel = member.getGuildrank().getGuildrankPK().getGuildlevel();
+      privatePerson.guildrank = PrivateRank.createRank(member.getGuildrank());
     }
     return privatePerson;
   }
@@ -468,16 +459,16 @@ public class GuildBean
     {
       throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
     }
-    if (member.guildlevel == null)
+    if (member.guildrank == null)
     {
       user.setGuildrank(null);
       itsLog.finer("updateMember cleared rank");
       return Response.ok().build();
     }
-    Guildrank rank = guild.getRank(member.guildlevel);
+    Guildrank rank = guild.getRank(member.guildrank.guildlevel);
     if (rank == null)
     {
-      throw new MudWebException(name, "Rank " + member.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
+      throw new MudWebException(name, "Rank " + member.guildrank.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
     }
     user.setGuildrank(rank);
     return Response.ok().build();
@@ -512,7 +503,7 @@ public class GuildBean
       }
       if (person.getGuildrank() != null)
       {
-        privatePerson.guildrank = person.getGuildrank().getTitle();
+        privatePerson.guildrank = PrivateRank.createRank(person.getGuildrank());
       }
       result.add(privatePerson);
     }
@@ -588,14 +579,7 @@ public class GuildBean
     List<PrivateRank> result = new ArrayList<>();
     for (Guildrank rank : ranks)
     {
-      PrivateRank privateRank = new PrivateRank();
-      privateRank.title = rank.getTitle();
-      privateRank.guildlevel = rank.getGuildrankPK().getGuildlevel();
-      privateRank.accept_access = rank.getAcceptAccess();
-      privateRank.reject_access = rank.getRejectAccess();
-      privateRank.settings_access = rank.getSettingsAccess();
-      privateRank.logonmessage_access = rank.getLogonmessageAccess();
-      result.add(privateRank);
+      result.add(PrivateRank.createRank(rank));
     }
     Collections.sort(result, new Comparator<PrivateRank>()
     {
@@ -638,14 +622,7 @@ public class GuildBean
     {
       throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
     }
-    PrivateRank privateRank = new PrivateRank();
-    privateRank.title = rank.getTitle();
-    privateRank.guildlevel = rank.getGuildrankPK().getGuildlevel();
-    privateRank.accept_access = rank.getAcceptAccess();
-    privateRank.reject_access = rank.getRejectAccess();
-    privateRank.settings_access = rank.getSettingsAccess();
-    privateRank.logonmessage_access = rank.getLogonmessageAccess();
-    return privateRank;
+    return PrivateRank.createRank(rank);
   }
 
   /**

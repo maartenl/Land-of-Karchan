@@ -76,7 +76,7 @@
             <div class="card-block" *ngIf="guildMembers !== undefined">
               <ul class="list-group">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
-                  {{member.name}}, {{member.guildrank}}
+                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank.title }}
                   <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
                     <i class="material-icons" aria-hidden="true">clear</i>
                   </button>

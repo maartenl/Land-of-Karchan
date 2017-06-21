@@ -17,6 +17,7 @@
 package mmud.rest.webentities;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import mmud.database.entities.game.Guildrank;
 
 /**
  *
@@ -26,10 +27,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class PrivateRank
 {
 
-    public String title;
-    public Integer guildlevel;
-    public Boolean accept_access;
-    public Boolean reject_access;
-    public Boolean settings_access;
-    public Boolean logonmessage_access;
+  public String title;
+  public Integer guildlevel;
+  public Boolean accept_access;
+  public Boolean reject_access;
+  public Boolean settings_access;
+  public Boolean logonmessage_access;
+
+  public PrivateRank()
+  {
+    // Jersey wants it!
+  }
+
+  public PrivateRank(Guildrank rank)
+  {
+    this();
+    this.title = rank.getTitle();
+    this.guildlevel = rank.getGuildrankPK().getGuildlevel();
+    this.accept_access = rank.getAcceptAccess();
+    this.reject_access = rank.getRejectAccess();
+    this.settings_access = rank.getSettingsAccess();
+    this.logonmessage_access = rank.getLogonmessageAccess();
+  }
+
+  public static PrivateRank createRank(Guildrank rank)
+  {
+    if (rank == null)
+    {
+      return null;
+    }
+    return new PrivateRank(rank);
+  }
 }

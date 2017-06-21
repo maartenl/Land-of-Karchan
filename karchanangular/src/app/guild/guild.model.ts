@@ -1,15 +1,5 @@
 import { JsonProperty } from 'json-typescript-mapper';
 
-export class GuildMember {
-  name: string;
-  guildrank: string;
-
-  constructor() {
-    this.name = void 0;
-    this.guildrank = void 0;
-  }
-}
-
 export class GuildRank {
   title: string;
   guildlevel: number;
@@ -25,6 +15,17 @@ export class GuildRank {
     this.reject_access = void 0;
     this.settings_access = void 0;
     this.logonmessage_access = void 0;
+  }
+}
+
+export class GuildMember {
+  name: string;
+  @JsonProperty({ clazz: GuildRank, name: 'guildrank' })
+  guildrank: GuildRank;
+
+  constructor() {
+    this.name = void 0;
+    this.guildrank = void 0;
   }
 }
 
@@ -82,8 +83,8 @@ export class GuildRanks {
 
   constructor() {
     this.ranks = void 0;
-  } 
-  
+  }
+
   public delete(rank: GuildRank) {
     let index: number = this.ranks.indexOf(rank);
     if (index !== -1) {

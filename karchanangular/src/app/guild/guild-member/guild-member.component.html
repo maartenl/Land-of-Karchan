@@ -46,7 +46,7 @@
             <div class="card-block">
               <ul class="list-group" *ngIf="guildMembers !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
-                  {{member.name}}, {{member.guildrank}}
+                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank.title }}
                 </li>
               </ul>
             </div>
