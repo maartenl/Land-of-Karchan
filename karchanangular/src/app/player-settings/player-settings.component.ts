@@ -76,6 +76,7 @@ export class PlayerSettingsComponent implements OnInit {
 
   save() {
     let newPlayer = this.prepareSavePlayer();
+    // TODO: add in the subscribe that the player is updated
     this.playerService.updatePlayer(newPlayer).subscribe();
   }
 
@@ -154,6 +155,6 @@ export class PlayerSettingsComponent implements OnInit {
 
   public getAllPossibleFamilyValues(): string[] {
     return Family.FAMILYVALUES;
-  } 
+  }
 
 }

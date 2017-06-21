@@ -68,7 +68,7 @@ export class GuildMembers {
   }
 
   public delete(member: GuildMember) {
-    let index: number = this.members.indexOf(member);
+    const index: number = this.members.indexOf(member);
     if (index !== -1) {
       this.members.splice(index, 1);
     }
@@ -93,7 +93,8 @@ export class GuildRanks {
   }
 
   public findByGuildlevel(guildlevel: number): GuildRank {
-    return this.ranks.find((rank) => rank.guildlevel === guildlevel);
+    // cannot use triple equals here, guildlevel might be a string.
+    return this.ranks.find((rank) => rank.guildlevel == guildlevel);
   }
 
 }

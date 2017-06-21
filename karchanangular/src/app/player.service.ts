@@ -261,6 +261,26 @@ export class PlayerService {
       .catch((n) => this.handleError(n));
   }
 
+  public updateGuildrank(rank: GuildRank): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.put(this.getGuildranksUrl() + '/' + rank.guildlevel, rank, options)
+      .catch((n) => this.handleError(n));
+  }
+
+  public createGuildrank(rank: GuildRank): Observable<any> {
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(this.getGuildranksUrl(), rank, options)
+      .catch((n) => this.handleError(n));
+  }
+
   public deleteMember(member: GuildMember): Observable<any> {
     let headers = new Headers({
       'Content-Type': 'application/json',

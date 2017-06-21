@@ -76,6 +76,7 @@ export class GuildMasterComponent implements OnInit {
 
   save() {
     const newGuild: Guild = this.prepareSaveGuild();
+    // TODO: add in the subscribe that the guild is updated.
     this.playerService.updateGuild(newGuild).subscribe();
   }
 
@@ -143,15 +144,17 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public saveMember(): void {
-    console.log('saveMember ', this.guildMembers.currentMember);
+    const currentMember: GuildMember = this.guildMembers.currentMember;
     const newMember: GuildMember = this.prepareSaveMember();
-    this.playerService.updateGuildmember(newMember).subscribe();
+    this.playerService.updateGuildmember(newMember).subscribe(
+      (result: any) => { currentMember.guildrank = newMember.guildrank; }
+    );
   }
 
-  prepareSaveMember(): GuildMember {
+  private prepareSaveMember(): GuildMember {
     const formModel = this.memberForm.value;
 
-    const guildlevel = formModel.rank as number;
+    const guildlevel: number = formModel.rank as number;
     let guildrank: GuildRank = null;
     if (guildlevel !== -1) {
       guildrank = this.guildRanks.findByGuildlevel(guildlevel);
@@ -172,6 +175,40 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public saveRank(): void {
-    console.log('saveRank ', this.guildRanks.currentRank);
+    const formModel = this.rankForm.value;
+
+    const guildlevel: number = formModel.guildlevel as number;
+
+    const oldRank: GuildRank = this.guildRanks.findByGuildlevel(guildlevel);
+    const newRank: GuildRank = this.prepareSaveRank(oldRank);
+    if (oldRank === undefined) {
+      // new rank!
+      this.playerService.createGuildrank(newRank).subscribe(
+        (result: any) => { this.guildRanks.ranks.push(newRank); }
+      );
+    }
+    else {
+      // old rank changed!
+      this.playerService.updateGuildrank(newRank).subscribe(
+        (result: any) => { oldRank.title = newRank.title; }
+      );
+    }
   }
+
+  private prepareSaveRank(oldRank: GuildRank): GuildRank {
+    const formModel = this.rankForm.value;
+
+    // return new `GuildRank` object containing a combination of original value(s)
+    // and deep copies of changed form model values
+    const saveRank: GuildRank = {
+      guildlevel: formModel.guildlevel as number,
+      title: formModel.title as string,
+      accept_access: oldRank !== undefined ? oldRank.accept_access : false,
+      logonmessage_access: oldRank !== undefined ? oldRank.logonmessage_access : false,
+      reject_access: oldRank !== undefined ? oldRank.reject_access : false,
+      settings_access: oldRank !== undefined ? oldRank.settings_access : false,
+    };
+    return saveRank;
+  }
+
 }
