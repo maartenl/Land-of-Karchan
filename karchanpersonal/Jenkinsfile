@@ -21,6 +21,7 @@ pipeline {
                 dir('karchanangular') {
                     sh 'npm install' 
                     sh 'ng build --target=production --progress=false --base-href "/karchanpersonal/"' 
+                    sh 'npm run docs' 
                 }
             }
         }
@@ -28,11 +29,12 @@ pipeline {
             steps {
                 dir('karchanpersonal') {
                     echo "Clean up the stuff"
-                    sh 'cd src/main/webapp ; rm -rf assets *~ *.js *.css index.html favicon.ico index.html'
+                    sh 'cd src/main/webapp ; rm -rf assets *~ *.js *.css index.html favicon.ico index.html doc'
                 }
                 dir('karchanangular') {
                     echo "Deploy the stuff"
                     sh 'cp -r dist/* ../karchanpersonal/src/main/webapp' 
+                    sh 'cp -r doc ../karchanpersonal/src/main/webapp' 
                 }
             }
         }
