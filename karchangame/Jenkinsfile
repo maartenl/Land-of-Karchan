@@ -42,11 +42,24 @@ pipeline {
                 }
             }
         }
+        stage('docs') {
+            steps {
+                echo "Started generating javadoc"
+                dir('karchangame') {
+                    sh 'mvn javadoc:javadoc com.github.jeluard:plantuml-maven-plugin:generate'
+                    sh 'cp -r target/site/apidocs/* ../../karchandocs/src/main/webapp/'
+                }
+                dir('karchandocs') {
+                    sh 'mvn verify'
+                }
+            }
+        }
     }
     post {
         success { 
             echo 'Deploying to glassfish...'
             sh 'cp karchangame/target/karchangame-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchangame.war'
+            sh 'cp karchandocs/target/karchandocs-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy'
             sh 'rm /home/glassfish/temp/*'
         }
         failure {
