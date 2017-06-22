@@ -78,7 +78,7 @@
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
                   {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank.title }}
                   <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
-                    <i class="material-icons" aria-hidden="true">clear</i>
+                    <i class="material-icons" aria-hidden="true">delete</i>
                   </button>
                 </li>
               </ul>
@@ -119,7 +119,7 @@
                 <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks" (click)="selectRank(rank)">
                   {{rank.guildlevel}} - {{rank.title}}
                   <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
-                    <i class="material-icons" aria-hidden="true">clear</i>
+                    <i class="material-icons" aria-hidden="true">delete</i>
                   </button>
                 </li>
               </ul>
@@ -156,7 +156,7 @@
                 <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
                   {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
                   <button type="button" class="close" aria-label="Close" (click)="deleteHopeful(hopeful)">
-                    <i class="material-icons" aria-hidden="true">clear</i>
+                    <i class="material-icons" aria-hidden="true">delete</i>
                   </button>
                 </li>
               </ul>
