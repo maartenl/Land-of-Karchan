@@ -10,6 +10,7 @@ export class Mail {
   newmail: boolean;
   whensent: string;
   deleted: boolean;
+  selected: boolean = false;
 
   public static readonly MONTHS = [
     "Jan",
@@ -60,6 +61,7 @@ export class MailList {
   @JsonProperty({ clazz: Mail, name: 'mails' })
   mails: Mail[];
   page: number;
+  allSelected: boolean = false;
 
   constructor() {
     this.mails = void 0;
@@ -141,6 +143,21 @@ export class MailList {
       this.mails = [];
     }
     this.mails = this.mails.concat(newMails.mails);
+  }
+
+  public toggleAll(): void {
+    for (let mail of this.getMails()) {
+      mail.selected = !this.allSelected;
+    }
+    this.allSelected = !this.allSelected;
+  }
+
+  public isAllSelected(): boolean {
+    return this.allSelected;
+  }
+
+  public getSelectedMails(): Mail[] {
+    return this.mails.filter((mail) => mail.selected);
   }
 }
 
