@@ -1,0 +1,47 @@
+#!groovy
+pipeline {
+    agent any
+    tools { 
+        maven 'Maven 3.3.9' 
+        jdk 'jdk8' 
+    }
+    stages {
+        stage('checkout') {
+            steps {
+                // jenkins-${JOB_NAME}-${BUILD_NUMBER}
+                // for example jenkins-karchan-123sh '''
+                echo "Build " + env.BUILD_TAG
+                echo "Workspace " + env.WORKSPACE
+                sh 'cp /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy/karchanimages-1.0-SNAPSHOT.war /home/glassfish/backup'
+            }
+        }
+        stage('copy') {
+            steps {
+                echo "starting copying images "
+                dir('karchanimages') {
+                    sh 'cp -r /home/glassfish/media/karchanimages/* src/main/webapp/' 
+                }
+            }
+        }
+        stage('build') {
+            steps {
+                dir('karchanimages') {
+                    sh 'mvn compile' 
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                dir('karchanimages') {
+                    sh 'mvn verify' 
+                }
+            }
+        }
+    }
+    post {
+        success { 
+            echo 'Deploying to glassfish...'
+            sh 'cp karchanimages/target/karchanimages-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy'
+        }
+    }
+}
