@@ -42,6 +42,7 @@ pipeline {
         success { 
             echo 'Deploying to glassfish...'
             sh 'cp karchanimages/target/karchanimages-1.0-SNAPSHOT.war /home/glassfish/glassfish4/glassfish/domains/domain1/autodeploy'
+            emailext body: '', subject: ''
         }
     }
 }
