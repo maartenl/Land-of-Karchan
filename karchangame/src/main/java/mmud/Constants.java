@@ -18,21 +18,16 @@ package mmud;
 
 import com.google.gwt.thirdparty.guava.common.escape.Escaper;
 import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemDefinition;
+import mmud.rest.webentities.PrivateItem;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import mmud.database.entities.items.Item;
-import mmud.database.entities.items.ItemDefinition;
-import mmud.rest.webentities.PrivateItem;
+import java.io.File;
+import java.util.*;
 
 /**
  *
@@ -55,15 +50,25 @@ public class Constants
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
   private static final String PLAYERLOG_PATH = BASEPATH + File.separator + "temp";
-  // TODO : fix this to be less static, and has to make use of either
-  // web-context param or env-context param/.
-  private static final String POLICY_FILE_LOCATION = BASEPATH + File.separator + "antisamy-myspace-1.4.4.xml";
+
+  private static final String POLICY_FILE_LOCATION = "antisamy-myspace.xml";
 
   public static String getMudfilepath()
   {
     return PLAYERLOG_PATH;
   }
 
+  /**
+   * <p>Returns the policy file for antisamy. Currently set to antisamy-myspace.xml.</p>
+   * <p>Possible values:<ul>
+   * <li>antisamy-anythinggoes.xml</li>
+   * <li>antisamy-ebay.xml</li>
+   * <li>antisamy-myspace.xml</li>
+   * <li>antisamy-slashdot.xml</li>
+   * <li>antisamy-tinymce.xml</li></ul>
+   * </p>
+   * @return a string indicating the used policy file for antisamy.
+   */
   public static String getPolicyFile()
   {
     return POLICY_FILE_LOCATION;
