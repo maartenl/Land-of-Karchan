@@ -16,10 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.DeputiesCommand;
@@ -34,18 +30,16 @@ import mmud.rest.services.admin.AdminBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -84,22 +78,12 @@ public class DeputiesCommandTest extends MudTest
             }
         };
         deputiesCommand.setCallback(commandRunner);
-        assertThat(deputiesCommand.getRegExpr(), equalTo("deputies"));
+        assertThat(deputiesCommand.getRegExpr()).isEqualTo("deputies");
         DisplayInterface display = deputiesCommand.run("deputies", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Current deputies are Karn, Midevia.<br />"));
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
+        assertThat(log).isEqualTo("Current deputies are Karn, Midevia.<br />");
     }
 
     @BeforeMethod

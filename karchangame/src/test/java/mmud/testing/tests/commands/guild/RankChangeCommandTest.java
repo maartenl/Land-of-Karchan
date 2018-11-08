@@ -16,36 +16,27 @@
  */
 package mmud.testing.tests.commands.guild;
 
+import mmud.Constants;
+import mmud.commands.CommandRunner;
+import mmud.commands.guild.RankChangeCommand;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.*;
+import mmud.rest.services.LogBean;
+import mmud.testing.tests.MudTest;
+import mockit.Expectations;
+import mockit.Mocked;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import mmud.Constants;
-import mmud.commands.CommandRunner;
-import mmud.commands.guild.RankChangeCommand;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Guild;
-import mmud.database.entities.game.Guildrank;
-import mmud.database.entities.game.GuildrankPK;
-import mmud.database.entities.game.Room;
-import mmud.rest.services.LogBean;
-import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -80,7 +71,7 @@ public class RankChangeCommandTest extends MudTest
   {
     RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -90,18 +81,18 @@ public class RankChangeCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildrank 1 Senior Deputy", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("New rank created.<br />\n"));
+    assertThat(karnLog).isEqualTo("New rank created.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(3));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(3);
     Guildrank rank = karn.getGuild().getRank(1);
-    assertThat(rank.getTitle(), equalTo("Senior Deputy"));
-    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
-    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(1));
-    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
+    assertThat(rank.getTitle()).isEqualTo("Senior Deputy");
+    assertThat(rank.getGuild()).isEqualTo(karn.getGuild());
+    assertThat(rank.getGuildrankPK().getGuildlevel()).isEqualTo(1);
+    assertThat(rank.getGuildrankPK().getGuildname()).isEqualTo(karn.getGuild().getName());
   }
 
   /**
@@ -112,7 +103,7 @@ public class RankChangeCommandTest extends MudTest
   {
     RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -121,31 +112,21 @@ public class RankChangeCommandTest extends MudTest
         result = logBean;
       }
     };
-    assertThat(karn.getGuild().getRank(0).getTitle(), equalTo("Minion"));
+    assertThat(karn.getGuild().getRank(0).getTitle()).isEqualTo("Minion");
 
     DisplayInterface display = rankCommand.run("guildrank 0 Deputy", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Existing rank updated.<br />\n"));
+    assertThat(karnLog).isEqualTo("Existing rank updated.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(2));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(2);
     Guildrank rank = karn.getGuild().getRank(0);
-    assertThat(rank.getTitle(), equalTo("Deputy"));
-    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
-    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(0));
-    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(rank.getTitle()).isEqualTo("Deputy");
+    assertThat(rank.getGuild()).isEqualTo(karn.getGuild());
+    assertThat(rank.getGuildrankPK().getGuildlevel()).isEqualTo(0);
+    assertThat(rank.getGuildrankPK().getGuildname()).isEqualTo(karn.getGuild().getName());
   }
 
   @BeforeMethod
@@ -242,10 +223,5 @@ public class RankChangeCommandTest extends MudTest
     persons.add(hotblack);
     setField(Room.class, "persons", room1, persons);
 
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 }

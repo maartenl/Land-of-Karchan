@@ -16,9 +16,6 @@
  */
 package mmud.testing.tests.commands.guild;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.CreateGuildCommand;
@@ -31,15 +28,14 @@ import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -69,7 +65,7 @@ public class CreateGuildCommandTest extends MudTest
   {
     CreateGuildCommand rankCommand = new CreateGuildCommand("createguild (\\w)+ .+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("createguild (\\w)+ .+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("createguild (\\w)+ .+");
     new Expectations() // an "expectation block"
     {
 
@@ -79,15 +75,15 @@ public class CreateGuildCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Guild deputies created.<br />\n"));
+    assertThat(karnLog).isEqualTo("Guild deputies created.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), not(nullValue()));
+    assertThat(karn.getGuild()).isNotNull();
     Guild guild = karn.getGuild();
-    assertThat(guild.getTitle(), equalTo("The Royal Club Of Deputies"));
-    assertThat(guild.getName(), equalTo("deputies"));
+    assertThat(guild.getTitle()).isEqualTo("The Royal Club Of Deputies");
+    assertThat(guild.getName()).isEqualTo("deputies");
   }
 
   /**
@@ -101,28 +97,18 @@ public class CreateGuildCommandTest extends MudTest
     karn.getGuild().setTitle("oldtitle");
     CreateGuildCommand rankCommand = new CreateGuildCommand("createguild (\\w)+ .+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("createguild (\\w)+ .+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("createguild (\\w)+ .+");
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
 
-    assertThat(karnLog, equalTo("You are a member of a guild, and can therefore not start a new guild.<br />\n"));
+    assertThat(karnLog).isEqualTo("You are a member of a guild, and can therefore not start a new guild.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), not(nullValue()));
+    assertThat(karn.getGuild()).isNotNull();
     Guild guild = karn.getGuild();
-    assertThat(guild.getTitle(), equalTo("oldtitle"));
-    assertThat(guild.getName(), equalTo("oldguild"));
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(guild.getTitle()).isEqualTo("oldtitle");
+    assertThat(guild.getName()).isEqualTo("oldguild");
   }
 
   @BeforeMethod
@@ -144,10 +130,5 @@ public class CreateGuildCommandTest extends MudTest
     persons.add(karn);
     setField(Room.class, "persons", room1, persons);
 
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 }

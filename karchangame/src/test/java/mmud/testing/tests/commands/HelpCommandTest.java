@@ -16,9 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.HelpCommand;
@@ -34,15 +31,13 @@ import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -73,7 +68,7 @@ public class HelpCommandTest extends MudTest
     {
         HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
         helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr(), equalTo("help( (\\w)+)?"));
+        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
         new Expectations() // an "expectation block"
         {
 
@@ -83,12 +78,12 @@ public class HelpCommandTest extends MudTest
             }
         };
         DisplayInterface display = helpCommand.run("help drop", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getMainTitle(), equalTo("Drop"));
-        assertThat(display.getBody(), equalTo(" <dl><dt><b>NAME</b></dt><dd><b>Drop</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd><b>drop</b> &lt;item&gt;</dd><p/><dt><b>DESCRIPTION</b></dt><dd><b>Drop</b> makes your character <b>drop</b> an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. </dd><p/><dt><b>EXAMPLES</b></dt><dd>\"drop leather jerkin\"<p/>You: <tt>You drop a black, leather jerkin.</tt><br/>Anybody: <tt>Hotblack drops a black, leather jerkin.</tt><p/></dd><dt><b>SEE ALSO</b></dt><dd>get, remove, wield, unwield<p/></dd></dl>"));
+        assertThat(display).isNotNull();
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getMainTitle()).isEqualTo("Drop");
+        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Drop</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd><b>drop</b> &lt;item&gt;</dd><p/><dt><b>DESCRIPTION</b></dt><dd><b>Drop</b> makes your character <b>drop</b> an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. </dd><p/><dt><b>EXAMPLES</b></dt><dd>\"drop leather jerkin\"<p/>You: <tt>You drop a black, leather jerkin.</tt><br/>Anybody: <tt>Hotblack drops a black, leather jerkin.</tt><p/></dd><dt><b>SEE ALSO</b></dt><dd>get, remove, wield, unwield<p/></dd></dl>");
         String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        assertThat(log).isEqualTo("");
     }
 
     /**
@@ -99,7 +94,7 @@ public class HelpCommandTest extends MudTest
     {
         HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
         helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr(), equalTo("help( (\\w)+)?"));
+        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
         new Expectations() // an "expectation block"
         {
 
@@ -109,12 +104,12 @@ public class HelpCommandTest extends MudTest
             }
         };
         DisplayInterface display = helpCommand.run("help awesomeness", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getMainTitle(), equalTo("Sorry"));
-        assertThat(display.getBody(), equalTo(" <dl><dt><b>NAME</b></dt><dd><b>Sorry</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd>Error messages.</dd><p/><dt><b>DESCRIPTION</b></dt><dd><H1><b>Sorry</b></H1><li><b>Sorry</b>, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>"));
+        assertThat(display).isNotNull();
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getMainTitle()).isEqualTo("Sorry");
+        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Sorry</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd>Error messages.</dd><p/><dt><b>DESCRIPTION</b></dt><dd><H1><b>Sorry</b></H1><li><b>Sorry</b>, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
         String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        assertThat(log).isEqualTo("");
     }
 
     /**
@@ -125,7 +120,7 @@ public class HelpCommandTest extends MudTest
     {
         HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
         helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr(), equalTo("help( (\\w)+)?"));
+        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
         new Expectations() // an "expectation block"
         {
 
@@ -135,12 +130,12 @@ public class HelpCommandTest extends MudTest
             }
         };
         DisplayInterface display = helpCommand.run("help", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getMainTitle(), equalTo("General help"));
-        assertThat(display.getBody(), equalTo(" <dl><dt><b>NAME</b></dt><dd><b>General help</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd></dd><p/><dt><b>DESCRIPTION</b></dt><dd>This is <b>general help</b>.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>"));
+        assertThat(display).isNotNull();
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getMainTitle()).isEqualTo("General help");
+        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>General help</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd></dd><p/><dt><b>DESCRIPTION</b></dt><dd>This is <b>general help</b>.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
         String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        assertThat(log).isEqualTo("");
     }
 
     @BeforeClass

@@ -16,10 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import javax.naming.NamingException;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
@@ -38,15 +34,14 @@ import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import javax.naming.NamingException;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -75,12 +70,12 @@ public class SellCommandTest extends MudTest
     public void sellItemYouDonotHave()
     {
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         DisplayInterface display = sellCommand.run("sell brush to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You don't have that.<br />\n"));
+        assertThat(log).isEqualTo("You don't have that.<br />\n");
     }
 
     @Test
@@ -100,12 +95,12 @@ public class SellCommandTest extends MudTest
         setField(Room.class, "persons", room1, persons);
 
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         DisplayInterface display = sellCommand.run("sell -2 ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("That is an illegal amount.<br />\n"));
+        assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
     }
 
     @Test
@@ -115,12 +110,12 @@ public class SellCommandTest extends MudTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         DisplayInterface display = sellCommand.run("sell 3 ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You do not have that many items in your inventory.<br />\n"));
+        assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\n");
     }
 
     @Test
@@ -130,12 +125,12 @@ public class SellCommandTest extends MudTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Unable to locate shopkeeper.<br />\n"));
+        assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\n");
     }
 
     @Test
@@ -154,12 +149,12 @@ public class SellCommandTest extends MudTest
         items.add(ring);
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("That's not a shopkeeper!<br />\n"));
+        assertThat(log).isEqualTo("That's not a shopkeeper!<br />\n");
     }
 
     @Test
@@ -180,7 +175,7 @@ public class SellCommandTest extends MudTest
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -191,10 +186,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Karcas says [to you] : That item is not worth anything.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -214,7 +209,7 @@ public class SellCommandTest extends MudTest
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -225,10 +220,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Karcas mutters something about not having enough money.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -249,7 +244,7 @@ public class SellCommandTest extends MudTest
         karn.wear(ring, Wearing.ON_LEFT_FINGER);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -260,10 +255,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -285,7 +280,7 @@ public class SellCommandTest extends MudTest
         karn.wield(ring, Wielding.WIELD_LEFT);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -296,10 +291,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -321,7 +316,7 @@ public class SellCommandTest extends MudTest
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -332,10 +327,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -357,7 +352,7 @@ public class SellCommandTest extends MudTest
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -368,10 +363,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n"));
+        assertThat(log).isEqualTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n");
     }
 
     @Test
@@ -392,7 +387,7 @@ public class SellCommandTest extends MudTest
         setField(Person.class, "items", karn, items);
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr(), equalTo("sell( (\\w|-)+){1,4} to (\\w)+"));
+        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -403,10 +398,10 @@ public class SellCommandTest extends MudTest
             }
         };
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\n"));
+        assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\n");
     }
 
     @BeforeClass

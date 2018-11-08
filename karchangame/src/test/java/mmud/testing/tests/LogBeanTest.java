@@ -16,7 +16,6 @@
  */
 package mmud.testing.tests;
 
-import javax.persistence.EntityManager;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Commandlog;
@@ -27,16 +26,12 @@ import mmud.testing.TestingConstants;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
+import org.testng.annotations.*;
+
+import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  *
@@ -83,11 +78,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), nullValue());
-                        assertThat(log.getMessage(), equalTo("Hello, world."));
-                        assertThat(log.getAddendum(), nullValue());
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isNull();
+                        assertThat(log.getMessage()).isEqualTo("Hello, world.");
+                        assertThat(log.getAddendum()).isNull();
+                        assertThat(log.getId()).isNull();
                     }
                 };
 
@@ -109,11 +104,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), nullValue());
-                        assertThat(log.getMessage(), equalTo("Hello, world."));
-                        assertThat(log.getAddendum(), equalTo("And that means: You!"));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isNull();
+                        assertThat(log.getMessage()).isEqualTo("Hello, world.");
+                        assertThat(log.getAddendum()).isEqualTo("And that means: You!");
+                        assertThat(log.getId()).isNull();
                     }
                 };
 
@@ -135,11 +130,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo("Hello, world."));
-                        assertThat(log.getAddendum(), nullValue());
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo("Hello, world.");
+                        assertThat(log.getAddendum()).isNull();
+                        assertThat(log.getId()).isNull();
                     }
                 };
 
@@ -161,11 +156,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo("Hello, world."));
-                        assertThat(log.getAddendum(), equalTo("And I mean earth!"));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo("Hello, world.");
+                        assertThat(log.getAddendum()).isEqualTo("And I mean earth!");
+                        assertThat(log.getId()).isNull();
                     }
                 };
 
@@ -189,17 +184,17 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo(longLogMessage));
-                        assertThat(log.getAddendum(), nullValue());
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo(longLogMessage);
+                        assertThat(log.getAddendum()).isNull();
+                        assertThat(log.getId()).isNull();
                     }
                 };
 
             }
         };
-        assertThat(longLogMessage.length(), equalTo(255));
+        assertThat(longLogMessage.length()).isEqualTo(255);
         logBean.writeLog(karn, longLogMessage);
     }
 
@@ -218,11 +213,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo("The log message was too long!"));
-                        assertThat(log.getAddendum(), equalTo(longLogMessage));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo("The log message was too long!");
+                        assertThat(log.getAddendum()).isEqualTo(longLogMessage);
+                        assertThat(log.getId()).isNull();
                     }
                 };
                 entityManager.persist((Log) any);
@@ -231,16 +226,16 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo(longLogMessage.substring(0, 255)));
-                        assertThat(log.getAddendum(), nullValue());
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo(longLogMessage.substring(0, 255));
+                        assertThat(log.getAddendum()).isNull();
+                        assertThat(log.getId()).isNull();
                     }
                 };
             }
         };
-        assertThat(longLogMessage.length(), equalTo(256));
+        assertThat(longLogMessage.length()).isEqualTo(256);
         logBean.writeLog(karn, longLogMessage);
     }
 
@@ -257,11 +252,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Commandlog log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        // assertThat(log.getStamp(), equalTo(new Date()));
-                        assertThat(log.getCommand(), equalTo("wave"));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        // assertThat(log.getStamp()).isEqualTo(new Date()));
+                        assertThat(log.getCommand()).isEqualTo("wave");
+                        assertThat(log.getId()).isNull();
                     }
                 };
             }
@@ -282,11 +277,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), nullValue());
-                        assertThat(log.getMessage(), equalTo("java.lang.NullPointerException"));
-                        assertThat(log.getAddendum().substring(0, 90), equalTo("java.lang.NullPointerException\n\tat mmud.testing.tests.LogBeanTest.testWriteLogException(Lo"));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isNull();
+                        assertThat(log.getMessage()).isEqualTo("java.lang.NullPointerException");
+                        assertThat(log.getAddendum().substring(0, 90)).isEqualTo("java.lang.NullPointerException\n\tat mmud.testing.tests.LogBeanTest.testWriteLogException(Lo");
+                        assertThat(log.getId()).isNull();
                     }
                 };
             }
@@ -315,11 +310,11 @@ public class LogBeanTest extends MudTest
                     // The name of this method can actually be anything.
                     void persist(Log log)
                     {
-                        assertThat(log, notNullValue());
-                        assertThat(log.getName(), equalTo("Karn"));
-                        assertThat(log.getMessage(), equalTo("java.lang.NullPointerException"));
-                        assertThat(log.getAddendum().substring(0, 97), equalTo("java.lang.NullPointerException\n\tat mmud.testing.tests.LogBeanTest.testWriteLogExceptionWithPerson"));
-                        assertThat(log.getId(), nullValue());
+                        assertThat(log).isNotNull();
+                        assertThat(log.getName()).isEqualTo("Karn");
+                        assertThat(log.getMessage()).isEqualTo("java.lang.NullPointerException");
+                        assertThat(log.getAddendum().substring(0, 97)).isEqualTo("java.lang.NullPointerException\n\tat mmud.testing.tests.LogBeanTest.testWriteLogExceptionWithPerson");
+                        assertThat(log.getId()).isNull();
                     }
                 };
             }

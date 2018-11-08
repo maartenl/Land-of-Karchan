@@ -16,11 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.WhoCommand;
@@ -35,16 +30,15 @@ import mmud.testing.TestingConstants;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -78,7 +72,7 @@ public class WhoCommandTest extends MudTest
     {
         WhoCommand whoCommand = new WhoCommand("who");
         whoCommand.setCallback(commandRunner);
-        assertThat(whoCommand.getRegExpr(), equalTo("who"));
+        assertThat(whoCommand.getRegExpr()).isEqualTo("who");
         new Expectations() // an "expectation block"
         {
 
@@ -90,13 +84,13 @@ public class WhoCommandTest extends MudTest
             }
         };
         DisplayInterface display = whoCommand.run("who", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(marvin.getLog(0), equalTo(""));
-        assertThat(display.getMainTitle(), equalTo("Who"));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getBody(), containsString("There are 2 players."));
-        assertThat(display.getBody(), containsString("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls"));
-        assertThat(display.getBody(), containsString("Marvin, The Paranoid Android"));
+        assertThat(display).isNotNull();
+        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(display.getMainTitle()).isEqualTo("Who");
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getBody()).contains("There are 2 players.");
+        assertThat(display.getBody()).contains("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        assertThat(display.getBody()).contains("Marvin, The Paranoid Android");
     }
 
     @Test
@@ -105,7 +99,7 @@ public class WhoCommandTest extends MudTest
         WhoCommand whoCommand = new WhoCommand("who");
         marvin.setSleep(true);
         whoCommand.setCallback(commandRunner);
-        assertThat(whoCommand.getRegExpr(), equalTo("who"));
+        assertThat(whoCommand.getRegExpr()).isEqualTo("who");
         new Expectations() // an "expectation block"
         {
 
@@ -117,13 +111,13 @@ public class WhoCommandTest extends MudTest
             }
         };
         DisplayInterface display = whoCommand.run("who", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(marvin.getLog(0), equalTo(""));
-        assertThat(display.getMainTitle(), equalTo("Who"));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getBody(), containsString("There are 2 players."));
-        assertThat(display.getBody(), containsString("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls"));
-        assertThat(display.getBody(), containsString("Marvin, The Paranoid Android, sleeping"));
+        assertThat(display).isNotNull();
+        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(display.getMainTitle()).isEqualTo("Who");
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getBody()).contains("There are 2 players.");
+        assertThat(display.getBody()).contains("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        assertThat(display.getBody()).contains("Marvin, The Paranoid Android, sleeping");
     }
 
     @Test
@@ -132,7 +126,7 @@ public class WhoCommandTest extends MudTest
         WhoCommand whoCommand = new WhoCommand("who");
         karn.setVisible(false);
         whoCommand.setCallback(commandRunner);
-        assertThat(whoCommand.getRegExpr(), equalTo("who"));
+        assertThat(whoCommand.getRegExpr()).isEqualTo("who");
         new Expectations() // an "expectation block"
         {
 
@@ -144,13 +138,13 @@ public class WhoCommandTest extends MudTest
             }
         };
         DisplayInterface display = whoCommand.run("who", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(marvin.getLog(0), equalTo(""));
-        assertThat(display.getMainTitle(), equalTo("Who"));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getBody(), containsString("There are 1 players."));
-        assertThat(display.getBody(), not(containsString("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls")));
-        assertThat(display.getBody(), containsString("Marvin, The Paranoid Android"));
+        assertThat(display).isNotNull();
+        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(display.getMainTitle()).isEqualTo("Who");
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getBody()).contains("There are 1 players.");
+        assertThat(display.getBody()).doesNotContain("Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        assertThat(display.getBody()).contains("Marvin, The Paranoid Android");
     }
 
     @Test
@@ -159,7 +153,7 @@ public class WhoCommandTest extends MudTest
         WhoCommand whoCommand = new WhoCommand("who");
         karn.setFrogging(5);
         whoCommand.setCallback(commandRunner);
-        assertThat(whoCommand.getRegExpr(), equalTo("who"));
+        assertThat(whoCommand.getRegExpr()).isEqualTo("who");
         new Expectations() // an "expectation block"
         {
 
@@ -171,13 +165,13 @@ public class WhoCommandTest extends MudTest
             }
         };
         DisplayInterface display = whoCommand.run("who", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(marvin.getLog(0), equalTo(""));
-        assertThat(display.getMainTitle(), equalTo("Who"));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getBody(), containsString("There are 2 players."));
-        assertThat(display.getBody(), containsString("a frog called Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls"));
-        assertThat(display.getBody(), containsString("Marvin, The Paranoid Android"));
+        assertThat(display).isNotNull();
+        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(display.getMainTitle()).isEqualTo("Who");
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getBody()).contains("There are 2 players.");
+        assertThat(display.getBody()).contains("a frog called Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        assertThat(display.getBody()).contains("Marvin, The Paranoid Android");
     }
 
     @Test
@@ -186,7 +180,7 @@ public class WhoCommandTest extends MudTest
         WhoCommand whoCommand = new WhoCommand("who");
         karn.setJackassing(5);
         whoCommand.setCallback(commandRunner);
-        assertThat(whoCommand.getRegExpr(), equalTo("who"));
+        assertThat(whoCommand.getRegExpr()).isEqualTo("who");
         new Expectations() // an "expectation block"
         {
 
@@ -198,13 +192,13 @@ public class WhoCommandTest extends MudTest
             }
         };
         DisplayInterface display = whoCommand.run("who", marvin);
-        assertThat(display, not(nullValue()));
-        assertThat(marvin.getLog(0), equalTo(""));
-        assertThat(display.getMainTitle(), equalTo("Who"));
-        assertThat(display.getImage(), nullValue());
-        assertThat(display.getBody(), containsString("There are 2 players."));
-        assertThat(display.getBody(), containsString("a jackass called Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls"));
-        assertThat(display.getBody(), containsString("Marvin, The Paranoid Android"));
+        assertThat(display).isNotNull();
+        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(display.getMainTitle()).isEqualTo("Who");
+        assertThat(display.getImage()).isNull();
+        assertThat(display.getBody()).contains("There are 2 players.");
+        assertThat(display.getBody()).contains("a jackass called Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls");
+        assertThat(display.getBody()).contains("Marvin, The Paranoid Android");
     }
 
     @BeforeClass

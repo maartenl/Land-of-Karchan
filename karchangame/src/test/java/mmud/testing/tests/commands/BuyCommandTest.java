@@ -16,10 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import javax.naming.NamingException;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.BuyCommand;
@@ -36,15 +32,15 @@ import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.naming.NamingException;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -84,12 +80,12 @@ public class BuyCommandTest extends MudTest
 
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         DisplayInterface display = buyCommand.run("buy brush from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("The shopkeeper doesn't have that.<br />\n"));
+        assertThat(log).isEqualTo("The shopkeeper doesn't have that.<br />\n");
     }
 
     @Test
@@ -104,12 +100,12 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         DisplayInterface display = buyCommand.run("buy -2 ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("That is an illegal amount.<br />\n"));
+        assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
     }
 
     @Test
@@ -129,12 +125,12 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         DisplayInterface display = buyCommand.run("buy 3 ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("The shopkeeper doesn't have that many items in stock.<br />\n"));
+        assertThat(log).isEqualTo("The shopkeeper doesn't have that many items in stock.<br />\n");
     }
 
     @Test
@@ -144,12 +140,12 @@ public class BuyCommandTest extends MudTest
         items.add(ring);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Unable to locate shopkeeper.<br />\n"));
+        assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\n");
     }
 
     @Test
@@ -169,12 +165,12 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("That's not a shopkeeper!<br />\n"));
+        assertThat(log).isEqualTo("That's not a shopkeeper!<br />\n");
     }
 
     @Test
@@ -195,7 +191,7 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -206,10 +202,10 @@ public class BuyCommandTest extends MudTest
             }
         };
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Karcas says [to you] : That item is not worth anything.<br />\nYou did not buy anything.<br />\n"));
+        assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\nYou did not buy anything.<br />\n");
     }
 
     @Test
@@ -229,7 +225,7 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -240,10 +236,10 @@ public class BuyCommandTest extends MudTest
             }
         };
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You do not have enough money.<br />\nYou did not buy anything.<br />\n"));
+        assertThat(log).isEqualTo("You do not have enough money.<br />\nYou did not buy anything.<br />\n");
     }
 
     @Test
@@ -265,7 +261,7 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -276,10 +272,10 @@ public class BuyCommandTest extends MudTest
             }
         };
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You cannot buy that item.<br />\nYou did not buy anything.<br />\n"));
+        assertThat(log).isEqualTo("You cannot buy that item.<br />\nYou did not buy anything.<br />\n");
     }
 
     @Test
@@ -301,7 +297,7 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -312,10 +308,10 @@ public class BuyCommandTest extends MudTest
             }
         };
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You cannot buy that item.<br />\nYou did not buy anything.<br />\n"));
+        assertThat(log).isEqualTo("You cannot buy that item.<br />\nYou did not buy anything.<br />\n");
     }
 
     @Test
@@ -336,7 +332,7 @@ public class BuyCommandTest extends MudTest
         setField(Person.class, "items", karcas, items);
         BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
         buyCommand.setCallback(commandRunner);
-        assertThat(buyCommand.getRegExpr(), equalTo("buy( (\\w|-)+){1,4} from (\\w)+"));
+        assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
         new Expectations() // an "expectation block"
         {
 
@@ -347,20 +343,10 @@ public class BuyCommandTest extends MudTest
             }
         };
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You buy a nice, golden, friendship ring from Karcas for 5 copper coins.<br />\n"));
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
+        assertThat(log).isEqualTo("You buy a nice, golden, friendship ring from Karcas for 5 copper coins.<br />\n");
     }
 
     @BeforeMethod
@@ -391,10 +377,5 @@ public class BuyCommandTest extends MudTest
         File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
         PrintWriter writer = new PrintWriter(file);
         writer.close();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
     }
 }

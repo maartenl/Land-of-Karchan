@@ -16,16 +16,13 @@
  */
 package mmud.testing.tests.database.entities.characters;
 
-import java.io.IOException;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.IOException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -63,7 +60,7 @@ public class UserTest
   {
     User person = new User();
     person.setNewpassword("secret");
-    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
+    assertThat(person.getNewpassword()).isEqualTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2");
   }
 
   @Test
@@ -72,7 +69,7 @@ public class UserTest
     User person = new User();
     person.setNewpassword("secret");
     person.setNewpassword("differentsecret");
-    assertThat(person.getNewpassword(), equalTo("dc6dac17e09f0cc84bfc54b09edcb2329bb7ea43927eb96fe2c279730537d56e91267bae81cbe28ae5df0ec589dd2d5fcfdbd0db4ff4248a27ec294f2074f063"));
+    assertThat(person.getNewpassword()).isEqualTo("dc6dac17e09f0cc84bfc54b09edcb2329bb7ea43927eb96fe2c279730537d56e91267bae81cbe28ae5df0ec589dd2d5fcfdbd0db4ff4248a27ec294f2074f063");
   }
 
   /**
@@ -84,7 +81,7 @@ public class UserTest
     User person = new User();
     person.setNewpassword("secret");
     person.setNewpassword(null);
-    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
+    assertThat(person.getNewpassword()).isEqualTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2");
   }
 
   @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "value itsa should match regexp .{5,}")
@@ -106,6 +103,6 @@ public class UserTest
     User person = new User();
     person.setNewpassword("woahnelly");
     person.setNewpassword("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2");
-    assertThat(person.getNewpassword(), equalTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"));
+    assertThat(person.getNewpassword()).isEqualTo("bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2");
   }
 }

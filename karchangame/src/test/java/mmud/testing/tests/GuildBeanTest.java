@@ -16,17 +16,6 @@
  */
 package mmud.testing.tests;
 
-import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Guild;
@@ -42,16 +31,23 @@ import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
+import org.testng.annotations.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import java.lang.reflect.Field;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  *
@@ -212,9 +208,9 @@ public class GuildBeanTest
         field.set(guildBean, privateBean);
         // Unit under test is exercised.
         List<PrivatePerson> result = guildBean.getMembers("Marvin");
-        assertThat(result, hasSize(2));
-        assertThat(result.get(0).name, equalTo("Hotblack"));
-        assertThat(result.get(1).name, equalTo("Marvin"));
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).name).isEqualTo("Hotblack");
+        assertThat(result.get(1).name).isEqualTo("Marvin");
     }
 
     @Test
@@ -247,7 +243,7 @@ public class GuildBeanTest
         // Unit under test is exercised.
         List<PrivatePerson> result = guildBean.getMembers("Marvin");
         // Verification code (JUnit/TestNG asserts), if any.
-        assertThat(result, hasSize(0));
+        assertThat(result).hasSize(0);
     }
 
     private void responseOkExpectations()

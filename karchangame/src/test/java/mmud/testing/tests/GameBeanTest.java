@@ -16,12 +16,6 @@
  */
 package mmud.testing.tests;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
@@ -38,15 +32,16 @@ import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.logging.Logger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -169,22 +164,22 @@ public class GameBeanTest extends MudTest
     };
     // Unit under test is exercised.
     PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-    assertThat(result.body, equalTo("You are standing on a small bridge."));
-    assertThat(result.image, nullValue());
-    assertThat(result.title, equalTo("The bridge"));
-    assertThat(result.down, nullValue());
-    assertThat(result.up, nullValue());
-    assertThat(result.east, nullValue());
-    assertThat(result.west, nullValue());
-    assertThat(result.north, nullValue());
-    assertThat(result.south, nullValue());
-    assertThat(result.items, hasSize(0));
-    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-    assertThat(result.persons.get(1).name, equalTo("Karn"));
-    assertThat(result.log.log, equalTo(""));
-    assertThat(result.log.offset, equalTo(0));
-    assertThat(result.log.size, equalTo(0));
+    assertThat(result.body).isEqualTo("You are standing on a small bridge.");
+    assertThat(result.image).isNull();
+    assertThat(result.title).isEqualTo("The bridge");
+    assertThat(result.down).isNull();
+    assertThat(result.up).isNull();
+    assertThat(result.east).isNull();
+    assertThat(result.west).isNull();
+    assertThat(result.north).isNull();
+    assertThat(result.south).isNull();
+    assertThat(result.items).hasSize(0);
+    assertThat(result.persons).hasSize(2); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
+    assertThat(result.persons.get(1).name).isEqualTo("Karn");
+    assertThat(result.log.log).isEqualTo("");
+    assertThat(result.log.offset).isEqualTo(0);
+    assertThat(result.log.size).isEqualTo(0);
   }
 
   /**
@@ -229,24 +224,24 @@ public class GameBeanTest extends MudTest
     };
     // Unit under test is exercised.
     PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-    assertThat(result.body, equalTo("You are standing on a small bridge."));
-    assertThat(result.image, nullValue());
-    assertThat(result.title, equalTo("The bridge"));
-    assertThat(result.down, nullValue());
-    assertThat(result.up, nullValue());
-    assertThat(result.east, nullValue());
-    assertThat(result.west, nullValue());
-    assertThat(result.north, nullValue());
-    assertThat(result.south, nullValue());
-    assertThat(result.items, hasSize(0));
-    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-    assertThat(result.persons.get(0).race, equalTo("frog"));
-    assertThat(result.persons.get(1).name, equalTo("Karn"));
-    assertThat(result.persons.get(1).race, equalTo("human"));
-    assertThat(result.log.log, equalTo(""));
-    assertThat(result.log.offset, equalTo(0));
-    assertThat(result.log.size, equalTo(0));
+    assertThat(result.body).isEqualTo("You are standing on a small bridge.");
+    assertThat(result.image).isNull();
+    assertThat(result.title).isEqualTo("The bridge");
+    assertThat(result.down).isNull();
+    assertThat(result.up).isNull();
+    assertThat(result.east).isNull();
+    assertThat(result.west).isNull();
+    assertThat(result.north).isNull();
+    assertThat(result.south).isNull();
+    assertThat(result.items).hasSize(0);
+    assertThat(result.persons).hasSize(2); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
+    assertThat(result.persons.get(0).race).isEqualTo("frog");
+    assertThat(result.persons.get(1).name).isEqualTo("Karn");
+    assertThat(result.persons.get(1).race).isEqualTo("human");
+    assertThat(result.log.log).isEqualTo("");
+    assertThat(result.log.offset).isEqualTo(0);
+    assertThat(result.log.size).isEqualTo(0);
   }
 
   /**
@@ -291,24 +286,24 @@ public class GameBeanTest extends MudTest
     };
     // Unit under test is exercised.
     PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-    assertThat(result.body, equalTo("You are standing on a small bridge."));
-    assertThat(result.image, nullValue());
-    assertThat(result.title, equalTo("The bridge"));
-    assertThat(result.down, nullValue());
-    assertThat(result.up, nullValue());
-    assertThat(result.east, nullValue());
-    assertThat(result.west, nullValue());
-    assertThat(result.north, nullValue());
-    assertThat(result.south, nullValue());
-    assertThat(result.items, hasSize(0));
-    assertThat(result.persons, hasSize(2)); // marvin doesn't show up, because he's the one playing
-    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
-    assertThat(result.persons.get(0).race, equalTo("jackass"));
-    assertThat(result.persons.get(1).name, equalTo("Karn"));
-    assertThat(result.persons.get(1).race, equalTo("human"));
-    assertThat(result.log.log, equalTo(""));
-    assertThat(result.log.offset, equalTo(0));
-    assertThat(result.log.size, equalTo(0));
+    assertThat(result.body).isEqualTo("You are standing on a small bridge.");
+    assertThat(result.image).isNull();
+    assertThat(result.title).isEqualTo("The bridge");
+    assertThat(result.down).isNull();
+    assertThat(result.up).isNull();
+    assertThat(result.east).isNull();
+    assertThat(result.west).isNull();
+    assertThat(result.north).isNull();
+    assertThat(result.south).isNull();
+    assertThat(result.items).hasSize(0);
+    assertThat(result.persons).hasSize(2); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
+    assertThat(result.persons.get(0).race).isEqualTo("jackass");
+    assertThat(result.persons.get(1).name).isEqualTo("Karn");
+    assertThat(result.persons.get(1).race).isEqualTo("human");
+    assertThat(result.log.log).isEqualTo("");
+    assertThat(result.log.offset).isEqualTo(0);
+    assertThat(result.log.size).isEqualTo(0);
   }
 
   /**
@@ -353,22 +348,22 @@ public class GameBeanTest extends MudTest
     };
     // Unit under test is exercised.
     PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
-    assertThat(result.body, equalTo("You are standing on a small bridge."));
-    assertThat(result.image, nullValue());
-    assertThat(result.title, equalTo("The bridge"));
-    assertThat(result.down, nullValue());
-    assertThat(result.up, nullValue());
-    assertThat(result.east, nullValue());
-    assertThat(result.west, nullValue());
-    assertThat(result.north, nullValue());
-    assertThat(result.south, nullValue());
-    assertThat(result.items, hasSize(0));
-    assertThat(result.persons, hasSize(1)); // marvin doesn't show up, because he's the one playing
-    assertThat(result.persons.get(0).name, equalTo("Hotblack"));
+    assertThat(result.body).isEqualTo("You are standing on a small bridge.");
+    assertThat(result.image).isNull();
+    assertThat(result.title).isEqualTo("The bridge");
+    assertThat(result.down).isNull();
+    assertThat(result.up).isNull();
+    assertThat(result.east).isNull();
+    assertThat(result.west).isNull();
+    assertThat(result.north).isNull();
+    assertThat(result.south).isNull();
+    assertThat(result.items).hasSize(0);
+    assertThat(result.persons).hasSize(1); // marvin doesn't show up, because he's the one playing
+    assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
     // karn doesn't show up! Which is awesome!
-    assertThat(result.log.log, equalTo(""));
-    assertThat(result.log.offset, equalTo(0));
-    assertThat(result.log.size, equalTo(0));
+    assertThat(result.log.log).isEqualTo("");
+    assertThat(result.log.offset).isEqualTo(0);
+    assertThat(result.log.size).isEqualTo(0);
   }
 
 }

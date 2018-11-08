@@ -16,18 +16,18 @@
  */
 package mmud.testing.tests.scripting;
 
+import mmud.database.entities.items.Item;
+import mmud.scripting.RunScript;
+import org.testng.annotations.Test;
+
+import javax.script.ScriptException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.script.ScriptException;
-import mmud.database.entities.items.Item;
-import mmud.scripting.RunScript;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
-import static org.hamcrest.core.IsEqual.equalTo;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
-import org.testng.annotations.Test;
 
 /**
  * Tests the new Items global javascript object that is used
@@ -58,9 +58,9 @@ public class ItemRunScriptTest extends RunScriptTest
         {
             Object result = runScript.run(hotblack, command, sourceCode.toString());
             Set<Item> inventory = hotblack.getItems();
-            assertThat(inventory, Matchers.hasSize(1));
+            assertThat(inventory).hasSize(1);
             Item item = inventory.iterator().next();
-            assertThat(item.getItemDefinition().getId(), equalTo(4));
+            assertThat(item.getItemDefinition().getId()).isEqualTo(4);
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(ItemRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,9 +84,9 @@ public class ItemRunScriptTest extends RunScriptTest
         {
             Object result = runScript.run(hotblack, command, sourceCode.toString());
             Set<Item> inventory = hotblack.getRoom().getItems();
-            assertThat(inventory, Matchers.hasSize(1));
+            assertThat(inventory).hasSize(1);
             Item item = inventory.iterator().next();
-            assertThat(item.getItemDefinition().getId(), equalTo(4));
+            assertThat(item.getItemDefinition().getId()).isEqualTo(4);
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(ItemRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,15 +112,15 @@ public class ItemRunScriptTest extends RunScriptTest
         {
             Object result = runScript.run(hotblack, command, sourceCode.toString());
             Set<Item> inventory = hotblack.getItems();
-            assertThat(inventory, Matchers.hasSize(1));
+            assertThat(inventory).hasSize(1);
             Item bag = inventory.iterator().next();
-            assertThat(bag.getItemDefinition().getId(), equalTo(1));
-            assertThat(bag.isContainer(), equalTo(true));
+            assertThat(bag.getItemDefinition().getId()).isEqualTo(1);
+            assertThat(bag.isContainer()).isEqualTo(true);
             Set<Item> inbag = bag.getItems();
-            assertThat(inbag, Matchers.hasSize(1));
+            assertThat(inbag).hasSize(1);
             Item item = inbag.iterator().next();
-            assertThat(item.getItemDefinition().getId(), equalTo(4));
-            assertThat(item.isContainer(), equalTo(false));
+            assertThat(item.getItemDefinition().getId()).isEqualTo(4);
+            assertThat(item.isContainer()).isEqualTo(false);
         } catch (ScriptException | NoSuchMethodException ex)
         {
             Logger.getLogger(ItemRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);

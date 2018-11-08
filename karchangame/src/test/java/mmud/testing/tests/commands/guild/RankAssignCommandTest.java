@@ -16,35 +16,26 @@
  */
 package mmud.testing.tests.commands.guild;
 
+import mmud.Constants;
+import mmud.commands.CommandRunner;
+import mmud.commands.guild.RankAssignCommand;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.*;
+import mmud.rest.services.LogBean;
+import mmud.testing.tests.MudTest;
+import mockit.Expectations;
+import mockit.Mocked;
+import org.testng.annotations.*;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import mmud.Constants;
-import mmud.commands.CommandRunner;
-import mmud.commands.guild.RankAssignCommand;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Guild;
-import mmud.database.entities.game.Guildrank;
-import mmud.database.entities.game.GuildrankPK;
-import mmud.database.entities.game.Room;
-import mmud.rest.services.LogBean;
-import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -75,7 +66,7 @@ public class RankAssignCommandTest extends MudTest
   {
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildassignrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -86,16 +77,16 @@ public class RankAssignCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildassignrank 0 Marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Rank Minion assigned to guild member Marvin.<br />\n"));
+    assertThat(karnLog).isEqualTo("Rank Minion assigned to guild member Marvin.<br />\n");
     // the important bit
     Guildrank rank = marvin.getGuildrank();
-    assertThat(rank.getTitle(), equalTo("Minion"));
-    assertThat(rank.getGuild(), equalTo(karn.getGuild()));
-    assertThat(rank.getGuildrankPK().getGuildlevel(), equalTo(0));
-    assertThat(rank.getGuildrankPK().getGuildname(), equalTo(karn.getGuild().getName()));
+    assertThat(rank.getTitle()).isEqualTo("Minion");
+    assertThat(rank.getGuild()).isEqualTo(karn.getGuild());
+    assertThat(rank.getGuildrankPK().getGuildlevel()).isEqualTo(0);
+    assertThat(rank.getGuildrankPK().getGuildname()).isEqualTo(karn.getGuild().getName());
   }
 
   @Test
@@ -103,7 +94,7 @@ public class RankAssignCommandTest extends MudTest
   {
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildassignrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -113,12 +104,12 @@ public class RankAssignCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildassignrank henk Marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Ranknumber not a number.<br />\n"));
+    assertThat(karnLog).isEqualTo("Ranknumber not a number.<br />\n");
     // the important bit
-    assertThat(marvin.getGuildrank(), nullValue());
+    assertThat(marvin.getGuildrank()).isNull();
   }
 
   @Test
@@ -126,7 +117,7 @@ public class RankAssignCommandTest extends MudTest
   {
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildassignrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -136,10 +127,10 @@ public class RankAssignCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildassignrank 0 Henk", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Guild member not found.<br />\n"));
+    assertThat(karnLog).isEqualTo("Guild member not found.<br />\n");
     // the important bit
   }
 
@@ -148,7 +139,7 @@ public class RankAssignCommandTest extends MudTest
   {
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildassignrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -158,14 +149,14 @@ public class RankAssignCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildassignrank 1 Marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Rank does not exist.<br />\n"));
+    assertThat(karnLog).isEqualTo("Rank does not exist.<br />\n");
     // the important bit
     Guildrank rank = karn.getGuild().getRank(1);
-    assertThat(rank, nullValue());
-    assertThat(marvin.getGuildrank(), nullValue());
+    assertThat(rank).isNull();
+    assertThat(marvin.getGuildrank()).isNull();
   }
 
   @Test
@@ -176,7 +167,7 @@ public class RankAssignCommandTest extends MudTest
 
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guildassignrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -186,13 +177,13 @@ public class RankAssignCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guildassignrank none Marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Rank removed from guild member Marvin.<br />\n"));
+    assertThat(karnLog).isEqualTo("Rank removed from guild member Marvin.<br />\n");
     // the important bit
-    assertThat(rank, not(nullValue()));
-    assertThat(marvin.getGuildrank(), nullValue());
+    assertThat(rank).isNotNull();
+    assertThat(marvin.getGuildrank()).isNull();
   }
 
   @BeforeClass

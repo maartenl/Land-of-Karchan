@@ -16,11 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.RibbitCommand;
@@ -34,15 +29,15 @@ import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -74,11 +69,11 @@ public class RibbitCommandTest extends MudTest
     {
         RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
         ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
+        assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
         DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, nullValue());
+        assertThat(display).isNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        assertThat(log).isEqualTo("");
     }
 
     /**
@@ -93,12 +88,12 @@ public class RibbitCommandTest extends MudTest
         setField(User.class, "lastcommand", marvin, calendar.getTime());
         RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
         ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
+        assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
         DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("A frog called Marvin says &quot;Rrribbit!&quot;.<br />\nYou feel the need to say 'Ribbit' just 4 times.<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log).isEqualTo("A frog called Marvin says &quot;Rrribbit!&quot;.<br />\nYou feel the need to say 'Ribbit' just 4 times.<br />\n");
+        assertThat(logBean.getLog()).isEqualTo("");
     }
 
     /**
@@ -112,12 +107,12 @@ public class RibbitCommandTest extends MudTest
         marvin.setNow();
         RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
         ribbitCommand.setCallback(commandRunner);
-        assertThat(ribbitCommand.getRegExpr(), equalTo("ribbit"));
+        assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
         DisplayInterface display = ribbitCommand.run("ribbit", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("You cannot say 'Ribbit' that fast! You will get tongue tied!<br />\n"));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log).isEqualTo("You cannot say 'Ribbit' that fast! You will get tongue tied!<br />\n");
+        assertThat(logBean.getLog()).isEqualTo("");
     }
 
     @BeforeClass

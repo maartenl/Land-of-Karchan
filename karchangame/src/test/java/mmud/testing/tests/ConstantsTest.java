@@ -16,17 +16,14 @@
  */
 package mmud.testing.tests;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import mmud.Constants;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -78,26 +75,7 @@ public class ConstantsTest
         Pattern p = Pattern.compile(regexp);
         Matcher m = p.matcher(matched);
         boolean b = m.matches();
-        assertThat(b, equalTo(positive));
+        assertThat(b).isEqualTo(positive);
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception
-    {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
-    }
 }

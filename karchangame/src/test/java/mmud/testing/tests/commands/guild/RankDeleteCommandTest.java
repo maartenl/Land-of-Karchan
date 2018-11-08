@@ -16,36 +16,28 @@
  */
 package mmud.testing.tests.commands.guild;
 
+import mmud.Constants;
+import mmud.commands.CommandRunner;
+import mmud.commands.guild.RankDeleteCommand;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.*;
+import mmud.rest.services.LogBean;
+import mmud.testing.tests.MudTest;
+import mockit.Expectations;
+import mockit.Mocked;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import mmud.Constants;
-import mmud.commands.CommandRunner;
-import mmud.commands.guild.RankDeleteCommand;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Guild;
-import mmud.database.entities.game.Guildrank;
-import mmud.database.entities.game.GuildrankPK;
-import mmud.database.entities.game.Room;
-import mmud.rest.services.LogBean;
-import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -80,7 +72,7 @@ public class RankDeleteCommandTest extends MudTest
   {
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guilddelrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -90,15 +82,15 @@ public class RankDeleteCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guilddelrank 100", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Rank removed.<br />\n"));
+    assertThat(karnLog).isEqualTo("Rank removed.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(1));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(1);
     Guildrank rank = karn.getGuild().getRank(100);
-    assertThat(rank, nullValue());
+    assertThat(rank).isNull();
   }
 
   /**
@@ -109,7 +101,7 @@ public class RankDeleteCommandTest extends MudTest
   {
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
-    assertThat(rankCommand.getRegExpr(), equalTo("guilddelrank (\\d){1,3} (\\w)+"));
+    assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -119,25 +111,15 @@ public class RankDeleteCommandTest extends MudTest
       }
     };
     DisplayInterface display = rankCommand.run("guilddelrank 50", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Rank not found.<br />\n"));
+    assertThat(karnLog).isEqualTo("Rank not found.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(karn.getGuild().getGuildrankCollection(), Matchers.hasSize(2));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(2);
     Guildrank rank = karn.getGuild().getRank(50);
-    assertThat(rank, nullValue());
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(rank).isNull();
   }
 
   @BeforeMethod

@@ -16,10 +16,6 @@
  */
 package mmud.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.List;
 import mmud.Constants;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
@@ -30,14 +26,14 @@ import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import static org.hamcrest.Matchers.hasSize;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -70,8 +66,8 @@ public class CommandFactoryTest extends MudTest
     public void checkForBogusCommand()
     {
         List<NormalCommand> commands = CommandFactory.getCommand("woahnelly");
-        assertThat(commands, hasSize(1));
-        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("BogusCommand"));
+        assertThat(commands).hasSize(1);
+        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("BogusCommand");
 
     }
     
@@ -79,23 +75,23 @@ public class CommandFactoryTest extends MudTest
     public void checkForTitleCommandSimple()
     {
         List<NormalCommand> commands = CommandFactory.getCommand("title");
-        assertThat(commands, hasSize(1));
-        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));       
+        assertThat(commands).hasSize(1);
+        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
     }
 
     @Test
     public void checkForTitleCommandRemove()
     {
         List<NormalCommand> commands = CommandFactory.getCommand("title remove");
-        assertThat(commands, hasSize(1));
-        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));
+        assertThat(commands).hasSize(1);
+        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
     }
     @Test
     public void checkForTitleCommandSetter()
     {
         List<NormalCommand> commands = CommandFactory.getCommand("title Ruler of the Land");
-        assertThat(commands, hasSize(1));
-        assertThat(commands.get(0).getClass().getSimpleName(), equalTo("TitleCommand"));
+        assertThat(commands).hasSize(1);
+        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
     }
 
     @BeforeClass

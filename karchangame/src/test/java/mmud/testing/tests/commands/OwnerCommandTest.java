@@ -16,10 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.OwnerCommand;
@@ -35,15 +31,14 @@ import mmud.rest.services.admin.AdminBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -75,12 +70,12 @@ public class OwnerCommandTest extends MudTest
     {
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?");
         ownerCommand.setCallback(commandRunner);
-        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You are not owned.<br />"));
+        assertThat(log).isEqualTo("You are not owned.<br />");
     }
 
     @Test
@@ -91,12 +86,12 @@ public class OwnerCommandTest extends MudTest
         karn.setOwner(owner);
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?");
         ownerCommand.setCallback(commandRunner);
-        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Your current owner is Midevia.<br />"));
+        assertThat(log).isEqualTo("Your current owner is Midevia.<br />");
     }
 
     @Test
@@ -115,13 +110,13 @@ public class OwnerCommandTest extends MudTest
             }
         };
         ownerCommand.setCallback(commandRunner);
-        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner remove", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("Owner removed.<br />"));
-        assertThat(logBean.getLog(), equalTo("Karn:has removed owner Midevia\n"));
+        assertThat(log).isEqualTo("Owner removed.<br />");
+        assertThat(logBean.getLog()).isEqualTo("Karn:has removed owner Midevia\n");
     }
 
     @Test
@@ -145,14 +140,14 @@ public class OwnerCommandTest extends MudTest
             }
         };
         ownerCommand.setCallback(commandRunner);
-        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner Karn", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You are now owned by Karn.<br />"));
-        assertThat(karn.getOwner(), equalTo(karnAdmin));
-        assertThat(logBean.getLog(), equalTo("Karn:has set owner to Karn\n"));
+        assertThat(log).isEqualTo("You are now owned by Karn.<br />");
+        assertThat(karn.getOwner()).isEqualTo(karnAdmin);
+        assertThat(logBean.getLog()).isEqualTo("Karn:has set owner to Karn\n");
     }
 
     @Test
@@ -177,14 +172,14 @@ public class OwnerCommandTest extends MudTest
 
         };
         ownerCommand.setCallback(commandRunner);
-        assertThat(ownerCommand.getRegExpr(), equalTo("owner( (\\w)+)?"));
+        assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner Karn", karn);
-        assertThat(display, not(nullValue()));
-        assertThat(display.getBody(), equalTo("You are in a small room."));
+        assertThat(display).isNotNull();
+        assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log, equalTo("You are now owned by Karn.<br />"));
-        assertThat(karn.getOwner(), equalTo(karnAdmin));
-        assertThat(logBean.getLog(), equalTo("Karn:has set owner to Karn\n"));
+        assertThat(log).isEqualTo("You are now owned by Karn.<br />");
+        assertThat(karn.getOwner()).isEqualTo(karnAdmin);
+        assertThat(logBean.getLog()).isEqualTo("Karn:has set owner to Karn\n");
     }
 
     @BeforeClass

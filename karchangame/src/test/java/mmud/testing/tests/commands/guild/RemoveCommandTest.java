@@ -16,12 +16,6 @@
  */
 package mmud.testing.tests.commands.guild;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.RemoveCommand;
@@ -35,15 +29,18 @@ import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -76,7 +73,7 @@ public class RemoveCommandTest extends MudTest
   {
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+    assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -86,16 +83,16 @@ public class RemoveCommandTest extends MudTest
       }
     };
     DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
+    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\n");
     String hotblackLog = hotblack.getLog(0);
-    assertThat(hotblackLog, equalTo(""));
+    assertThat(hotblackLog).isEqualTo("");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(hotblack.getGuild(), nullValue());
-    assertThat(hotblack.getGuildrank(), nullValue());
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(hotblack.getGuild()).isNull();
+    assertThat(hotblack.getGuildrank()).isNull();
   }
 
   /**
@@ -106,7 +103,7 @@ public class RemoveCommandTest extends MudTest
   {
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+    assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -116,12 +113,12 @@ public class RemoveCommandTest extends MudTest
       }
     };
     DisplayInterface display = removeCommand.run("guildremove karcas", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("Cannot find that person.<br />\n"));
+    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
   }
 
   /**
@@ -132,7 +129,7 @@ public class RemoveCommandTest extends MudTest
   {
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+    assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -142,12 +139,12 @@ public class RemoveCommandTest extends MudTest
       }
     };
     DisplayInterface display = removeCommand.run("guildremove karn", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("A guildmaster cannot remove him/herself from the guild.<br />\n"));
+    assertThat(karnLog).isEqualTo("A guildmaster cannot remove him/herself from the guild.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
+    assertThat(karn.getGuild()).isEqualTo(deputy);
   }
 
   /**
@@ -158,7 +155,7 @@ public class RemoveCommandTest extends MudTest
   {
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
-    assertThat(removeCommand.getRegExpr(), equalTo("guildremove (\\w)+"));
+    assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
     new Expectations() // an "expectation block"
     {
 
@@ -168,26 +165,16 @@ public class RemoveCommandTest extends MudTest
       }
     };
     DisplayInterface display = removeCommand.run("guildremove marvin", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("You have removed Marvin from your guild.<br />\n<b>Marvin</b>\n has been removed from the guild.<br />\n"));
+    assertThat(karnLog).isEqualTo("You have removed Marvin from your guild.<br />\n<b>Marvin</b>\n has been removed from the guild.<br />\n");
     String marvinLog = marvin.getLog(0);
-    assertThat(marvinLog, equalTo("<b>Marvin</b>\n has been removed from the guild.<br />\n"));
+    assertThat(marvinLog).isEqualTo("<b>Marvin</b>\n has been removed from the guild.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), equalTo(deputy));
-    assertThat(marvin.getGuild(), nullValue());
-    assertThat(marvin.getGuildrank(), nullValue());
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(karn.getGuild()).isEqualTo(deputy);
+    assertThat(marvin.getGuild()).isNull();
+    assertThat(marvin.getGuildrank()).isNull();
   }
 
   @BeforeMethod

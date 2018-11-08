@@ -16,11 +16,6 @@
  */
 package mmud.testing.tests.commands.communication;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.communication.OocCommand;
@@ -35,15 +30,15 @@ import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -72,15 +67,15 @@ public class OocCommandTest extends MudTest
     @Test
     public void runTurnOn()
     {
-        assertThat(marvin.getOoc(), equalTo(false));
+        assertThat(marvin.getOoc()).isEqualTo(false);
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("ooc .+"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc on", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("Your OOC channel is now turned on.<br />\n"));
-        assertThat(marvin.getOoc(), equalTo(true));
+        assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\n");
+        assertThat(marvin.getOoc()).isEqualTo(true);
     }
 
     /**
@@ -90,15 +85,15 @@ public class OocCommandTest extends MudTest
     public void runTurnOff()
     {
         marvin.setOoc(true);
-        assertThat(marvin.getOoc(), equalTo(true));
+        assertThat(marvin.getOoc()).isEqualTo(true);
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("ooc .+"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc off", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("Your OOC channel is now turned off.<br />\n"));
-        assertThat(marvin.getOoc(), equalTo(false));
+        assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\n");
+        assertThat(marvin.getOoc()).isEqualTo(false);
     }
 
     /**
@@ -107,15 +102,15 @@ public class OocCommandTest extends MudTest
     @Test
     public void runMessageTurnedOff()
     {
-        assertThat(marvin.getOoc(), equalTo(false));
+        assertThat(marvin.getOoc()).isEqualTo(false);
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("ooc .+"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("Sorry, you have your OOC channel turned off.<br />\n"));
-        assertThat(marvin.getOoc(), equalTo(false));
+        assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\n");
+        assertThat(marvin.getOoc()).isEqualTo(false);
     }
 
     /**
@@ -126,10 +121,10 @@ public class OocCommandTest extends MudTest
     {
         marvin.setOoc(true);
         karn.setOoc(true);
-        assertThat(marvin.getOoc(), equalTo(true));
+        assertThat(marvin.getOoc()).isEqualTo(true);
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("ooc .+"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         new Expectations() // an "expectation block"
         {
 
@@ -139,12 +134,12 @@ public class OocCommandTest extends MudTest
             }
         };
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n"));
+        assertThat(log).isEqualTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n");
         log = karn.getLog(0);
-        assertThat(log, equalTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n"));
-        assertThat(marvin.getOoc(), equalTo(true));
+        assertThat(log).isEqualTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n");
+        assertThat(marvin.getOoc()).isEqualTo(true);
     }
 
     @BeforeClass

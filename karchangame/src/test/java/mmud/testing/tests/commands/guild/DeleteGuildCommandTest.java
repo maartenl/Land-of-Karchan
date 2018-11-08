@@ -16,9 +16,6 @@
  */
 package mmud.testing.tests.commands.guild;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.DeleteGuildCommand;
@@ -32,15 +29,15 @@ import mmud.rest.services.LogBean;
 import mmud.testing.tests.MudTest;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -73,14 +70,14 @@ public class DeleteGuildCommandTest extends MudTest
   {
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
-    assertThat(deleteguildCommand.getRegExpr(), equalTo("deleteguild"));
+    assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog, equalTo("You are not a member of a guild.<br />\n"));
+    assertThat(karnLog).isEqualTo("You are not a member of a guild.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), nullValue());
+    assertThat(karn.getGuild()).isNull();
   }
 
   /**
@@ -94,7 +91,7 @@ public class DeleteGuildCommandTest extends MudTest
     karn.getGuild().setTitle("oldtitle");
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
-    assertThat(deleteguildCommand.getRegExpr(), equalTo("deleteguild"));
+    assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
     new Expectations() // an "expectation block"
     {
 
@@ -109,23 +106,13 @@ public class DeleteGuildCommandTest extends MudTest
       }
     };
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
-    assertThat(display, not(nullValue()));
-    assertThat(display.getBody(), equalTo("You are in a small room."));
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
 
-    assertThat(karnLog, equalTo("Guild oldguild deleted.<br />\n"));
+    assertThat(karnLog).isEqualTo("Guild oldguild deleted.<br />\n");
     // the important bit
-    assertThat(karn.getGuild(), nullValue());
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(karn.getGuild()).isNull();
   }
 
   @BeforeMethod

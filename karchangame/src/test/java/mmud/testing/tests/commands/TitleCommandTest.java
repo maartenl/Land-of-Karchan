@@ -16,14 +16,8 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
-import mmud.commands.HeehawCommand;
 import mmud.commands.TitleCommand;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
@@ -35,15 +29,13 @@ import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  *
@@ -69,43 +61,43 @@ public class TitleCommandTest extends MudTest
     @Test
     public void setTitle()
     {
-        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
         TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
         titleCommand.setCallback(commandRunner);
-        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title Ruler of the Land", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("Changed your title to : 'Ruler of the Land'.<br />\n"));
-        assertThat(marvin.getTitle(), equalTo("Ruler of the Land"));
+        assertThat(log).isEqualTo("Changed your title to : 'Ruler of the Land'.<br />\n");
+        assertThat(marvin.getTitle()).isEqualTo("Ruler of the Land");
     }
 
     @Test
     public void removeTitle()
     {
-        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
         TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
         titleCommand.setCallback(commandRunner);
-        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title remove", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("You have removed your current title.<br />\n"));
-        assertThat(marvin.getTitle(), nullValue());
+        assertThat(log).isEqualTo("You have removed your current title.<br />\n");
+        assertThat(marvin.getTitle()).isNull();
     }
 
     @Test
     public void getTitle()
     {
-        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
         TitleCommand titleCommand = new TitleCommand("(title|title ?.+)");
         titleCommand.setCallback(commandRunner);
-        assertThat(titleCommand.getRegExpr(), equalTo("(title|title ?.+)"));
+        assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("Your current title is 'The Paranoid Android'.<br />\n"));
-        assertThat(marvin.getTitle(), equalTo("The Paranoid Android"));
+        assertThat(log).isEqualTo("Your current title is 'The Paranoid Android'.<br />\n");
+        assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
     }
 
     @BeforeClass

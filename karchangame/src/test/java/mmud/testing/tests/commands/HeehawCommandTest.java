@@ -16,11 +16,6 @@
  */
 package mmud.testing.tests.commands;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.HeehawCommand;
@@ -34,15 +29,15 @@ import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import mockit.Mocked;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
@@ -72,14 +67,14 @@ public class HeehawCommandTest extends MudTest
     @Test
     public void runHeehawWithoutBeingFrogged()
     {
-        assertThat(marvin.getJackassing(), equalTo(0));
+        assertThat(marvin.getJackassing()).isEqualTo(0);
         HeehawCommand heehawCommand = new HeehawCommand("heehaw");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("heehaw"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
         DisplayInterface display = heehawCommand.run("heehaw", marvin);
-        assertThat(display, nullValue());
+        assertThat(display).isNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo(""));
+        assertThat(log).isEqualTo("");
     }
 
     /**
@@ -94,13 +89,13 @@ public class HeehawCommandTest extends MudTest
         setField(User.class, "lastcommand", marvin, calendar.getTime());
         HeehawCommand heehawCommand = new HeehawCommand("heehaw");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("heehaw"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
         DisplayInterface display = heehawCommand.run("heehaw", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("A jackass called Marvin says &quot;Heeehaw!&quot;.<br />\nYou feel the need to say 'Heehaw' just 4 times.<br />\n"));
-        assertThat(marvin.getJackassing(), equalTo(4));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log).isEqualTo("A jackass called Marvin says &quot;Heeehaw!&quot;.<br />\nYou feel the need to say 'Heehaw' just 4 times.<br />\n");
+        assertThat(marvin.getJackassing()).isEqualTo(4);
+        assertThat(logBean.getLog()).isEqualTo("");
     }
 
     /**
@@ -114,13 +109,13 @@ public class HeehawCommandTest extends MudTest
         marvin.setNow();
         HeehawCommand heehawCommand = new HeehawCommand("heehaw");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr(), equalTo("heehaw"));
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
         DisplayInterface display = heehawCommand.run("heehaw", marvin);
-        assertThat(display, not(nullValue()));
+        assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log, equalTo("You cannot say 'Heehaw' that fast! You will get tongue tied!<br />\n"));
-        assertThat(marvin.getJackassing(), equalTo(5));
-        assertThat(logBean.getLog(), equalTo(""));
+        assertThat(log).isEqualTo("You cannot say 'Heehaw' that fast! You will get tongue tied!<br />\n");
+        assertThat(marvin.getJackassing()).isEqualTo(5);
+        assertThat(logBean.getLog()).isEqualTo("");
     }
 
     @BeforeClass
