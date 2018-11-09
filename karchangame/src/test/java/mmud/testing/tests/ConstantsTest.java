@@ -26,56 +26,60 @@ import java.util.regex.Pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class ConstantsTest
 {
 
-    public ConstantsTest()
-    {
-    }
+  public ConstantsTest()
+  {
+  }
 
-    @DataProvider(name = "regExpDataProvider")
-    public Object[][] createData1()
-    {
-        return new Object[][]
+  @DataProvider(name = "regExpDataProvider")
+  public Object[][] createData1()
+  {
+    return new Object[][]
+      {
+        // regular expression, matches this, yesno
         {
-            // regular expression, matches this, yesno
-            {
-                Constants.NAME_REGEXP, "to", false // too short
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "many", true
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "Many", true
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "many fowled", false // no spaces allowed
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "many-fowled", true
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "<b>many</b>", false // no html allowed
-            },
-            {
-                Constants.ONLY_LETTERS_REGEXP, "", true
-            },
-            {
-                Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, "", false // at least one char required.
-            },
-        };
-    }
+          Constants.NAME_REGEXP, "to", false // too short
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "many", true
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "Many", true
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "many fowled", false // no spaces allowed
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "many-fowled", true
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "<b>many</b>", false // no html allowed
+        },
+        {
+          Constants.ONLY_LETTERS_REGEXP, "", true
+        },
+        {
+          Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, "", false // at least one char required.
+        },
+      };
+  }
 
-    @Test(dataProvider = "regExpDataProvider")
-    public void regExpTest(String regexp, String matched, Boolean positive)
-    {
-        Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(matched);
-        boolean b = m.matches();
-        assertThat(b).isEqualTo(positive);
-    }
+  @Test(dataProvider = "regExpDataProvider")
+  public void regExpTest(String regexp, String matched, Boolean positive)
+  {
+    Pattern p = Pattern.compile(regexp);
+    Matcher m = p.matcher(matched);
+    boolean b = m.matches();
+    assertThat(b).isEqualTo(positive);
+  }
 
+  @Test
+  public void getBasePath()
+  {
+    assertThat(Constants.getMudfilepath()).isEqualTo("/home/maartenl/temp");
+  }
 }

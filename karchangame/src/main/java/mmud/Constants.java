@@ -30,7 +30,6 @@ import java.io.File;
 import java.util.*;
 
 /**
- *
  * @author maartenl
  */
 public class Constants
@@ -49,13 +48,20 @@ public class Constants
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
-  private static final String PLAYERLOG_PATH = BASEPATH + File.separator + "temp";
+  private static final String PLAYERLOG_DIR = "temp";
 
   private static final String POLICY_FILE_LOCATION = "antisamy-myspace.xml";
 
+  public static final String MMUD_BASE_PATH_PROPERTY = "mmud.base.path";
+
+  public static String getBasepath()
+  {
+    return System.getProperty(MMUD_BASE_PATH_PROPERTY, BASEPATH);
+  }
+
   public static String getMudfilepath()
   {
-    return PLAYERLOG_PATH;
+    return getBasepath() + File.separator + PLAYERLOG_DIR;
   }
 
   /**
@@ -67,6 +73,7 @@ public class Constants
    * <li>antisamy-slashdot.xml</li>
    * <li>antisamy-tinymce.xml</li></ul>
    * </p>
+   *
    * @return a string indicating the used policy file for antisamy.
    */
   public static String getPolicyFile()
@@ -127,20 +134,16 @@ public class Constants
   /**
    * get a description based on the adjectives and the noun.
    *
-   * @param adject1
-   * String containing the first adjective.
-   * @param adject2
-   * String containing the second adjective.
-   * @param adject3
-   * String containing the third adjective.
-   * @param noun
-   * String containing the noun.
+   * @param adject1      String containing the first adjective.
+   * @param adject2      String containing the second adjective.
+   * @param adject3      String containing the third adjective.
+   * @param noun         String containing the noun.
    * @param with_a_or_an indicates if the word should include an a or an an.
    * @return String containing the description in the format: "an/a [adject1],
    * [adject2], [adject3] [noun]".
    */
   public static String getDescriptionOfItem(String adject1, String adject2,
-          String adject3, String noun, boolean with_a_or_an)
+                                            String adject3, String noun, boolean with_a_or_an)
   {
     int i = 0;
     StringBuilder buf = new StringBuilder();
@@ -176,15 +179,14 @@ public class Constants
   /**
    * Returns whether or not a character is a vowel.
    *
-   * @param aChar
-   * the character to check
+   * @param aChar the character to check
    * @return boolean which is true if the character is a vowel.
    */
   public static boolean isVowel(char aChar)
   {
     return aChar == 'a' || aChar == 'e' || aChar == 'u' || aChar == 'o'
-            || aChar == 'i' || aChar == 'A' || aChar == 'E' || aChar == 'U'
-            || aChar == 'I' || aChar == 'O';
+      || aChar == 'i' || aChar == 'A' || aChar == 'E' || aChar == 'U'
+      || aChar == 'I' || aChar == 'O';
   }
 
   @Deprecated
@@ -211,18 +213,18 @@ public class Constants
       case 2:
         // name and an adjective should be equals
         return possibleAdjectives.contains(parsed.get(0))
-                && name.equalsIgnoreCase(parsed.get(1));
+          && name.equalsIgnoreCase(parsed.get(1));
       case 3:
         // name and two adjectives should be equals
         return possibleAdjectives.contains(parsed.get(0))
-                && possibleAdjectives.contains(parsed.get(1))
-                && name.equalsIgnoreCase(parsed.get(2));
+          && possibleAdjectives.contains(parsed.get(1))
+          && name.equalsIgnoreCase(parsed.get(2));
       default:
         // name and all three adjective should be equals
         return possibleAdjectives.contains(parsed.get(0))
-                && possibleAdjectives.contains(parsed.get(1))
-                && possibleAdjectives.contains(parsed.get(2))
-                && name.equalsIgnoreCase(parsed.get(3));
+          && possibleAdjectives.contains(parsed.get(1))
+          && possibleAdjectives.contains(parsed.get(2))
+          && name.equalsIgnoreCase(parsed.get(3));
     }
   }
 
@@ -257,7 +259,7 @@ public class Constants
   /**
    * Adds a descriptive set of the items to the string builder.
    *
-   * @param set a set of items to be described.
+   * @param set     a set of items to be described.
    * @param builder the builder to append to. Should not be null.
    */
   @HtmlEscaped
@@ -291,7 +293,7 @@ public class Constants
           desc = desc.substring(2);
         }
         builder.append(amount).append(" ").append(
-                htmlEscaper.escape(desc));
+          htmlEscaper.escape(desc));
         if (!desc.endsWith("s"))
         {
           builder.append("s");
@@ -309,7 +311,7 @@ public class Constants
   /**
    * Adds a descriptive set of the items and their buy/sell price to the string builder.
    *
-   * @param set a set of items to be described.
+   * @param set     a set of items to be described.
    * @param builder the builder to append to. Should not be null.
    */
   public static void addShopkeeperList(Set<Item> set, StringBuilder builder)
@@ -341,7 +343,7 @@ public class Constants
           desc = desc.substring(2);
         }
         builder.append(amount).append(" ").append(
-                desc);
+          desc);
         if (!desc.endsWith("s"))
         {
           builder.append("s");
