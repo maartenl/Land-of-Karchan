@@ -18,3 +18,11 @@ List
 * scripts - php scripts
 * sqlscripts - database scripts
 * karchanangular - angular app for a user to change the settings
+
+* karchanpersonal - a WAR wrapper for karchanagular
+* karchananimations - a WAR wrapper for animations
+* karchandocs - a WAR wrapper for javadocs
+* karchanimages - a WAR wrapper for images
+* karchanscripts - a WAR wrapper for javascript files
+* karchansound - a WAR wrapper for sound files
+* karchantest - a REST testing project, uses RestAssured.
