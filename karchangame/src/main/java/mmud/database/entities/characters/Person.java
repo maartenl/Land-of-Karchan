@@ -16,89 +16,28 @@
  */
 package mmud.database.entities.characters;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import mmud.Attributes;
 import mmud.Constants;
 import mmud.Utils;
 import mmud.database.entities.Ownage;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Attribute;
-import mmud.database.entities.game.AttributeWrangler;
-import mmud.database.entities.game.Charattribute;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Room;
+import mmud.database.entities.game.*;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
-import mmud.database.enums.Alignment;
-import mmud.database.enums.Appetite;
-import mmud.database.enums.God;
-import mmud.database.enums.Health;
-import mmud.database.enums.Movement;
-import mmud.database.enums.Sex;
-import mmud.database.enums.Sobriety;
-import mmud.database.enums.Wearing;
-import static mmud.database.enums.Wearing.ABOUT_BODY;
-import static mmud.database.enums.Wearing.FLOATING_NEARBY;
-import static mmud.database.enums.Wearing.ON_ARMS;
-import static mmud.database.enums.Wearing.ON_EARS;
-import static mmud.database.enums.Wearing.ON_EYES;
-import static mmud.database.enums.Wearing.ON_FEET;
-import static mmud.database.enums.Wearing.ON_HANDS;
-import static mmud.database.enums.Wearing.ON_HEAD;
-import static mmud.database.enums.Wearing.ON_LEFT_FINGER;
-import static mmud.database.enums.Wearing.ON_LEFT_WRIST;
-import static mmud.database.enums.Wearing.ON_LEGS;
-import static mmud.database.enums.Wearing.ON_NECK;
-import static mmud.database.enums.Wearing.ON_RIGHT_FINGER;
-import static mmud.database.enums.Wearing.ON_RIGHT_WRIST;
-import static mmud.database.enums.Wearing.ON_TORSO;
-import static mmud.database.enums.Wearing.ON_WAIST;
-import mmud.database.enums.Wielding;
+import mmud.database.enums.*;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
-import org.eclipse.persistence.annotations.ConversionValue;
-import org.eclipse.persistence.annotations.Convert;
-import org.eclipse.persistence.annotations.ObjectTypeConverter;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A character in the game. Might be both a bot, a shopkeeper, a user, or an
@@ -111,17 +50,6 @@ import org.owasp.validator.html.ScanException;
 @DiscriminatorColumn(
         name = "god",
         discriminatorType = DiscriminatorType.INTEGER)
-@ObjectTypeConverter(
-        name = "genderConverter",
-        dataType = java.lang.String.class,
-        objectType = Sex.class,
-        conversionValues =
-        {
-          @ConversionValue(dataValue = "female", objectValue = "FEMALE")
-          ,
-             @ConversionValue(dataValue = "male", objectValue = "MALE")
-        }
-)
 @Table(name = "mm_usertable")
 @NamedQueries(
         {
@@ -151,9 +79,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Column(name = "race")
   private String race;
 
-  @Convert("genderConverter")
   @Basic(optional = false)
-  @Enumerated
   @NotNull
   @Column(name = "sex")
   private Sex sex = Sex.MALE;

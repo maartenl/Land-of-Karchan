@@ -16,37 +16,24 @@
  */
 package mmud.database.entities.game;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
-import java.util.SortedSet;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
 import org.eclipse.persistence.annotations.Customizer;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
  *
@@ -76,7 +63,7 @@ import org.eclipse.persistence.annotations.Customizer;
           ,
             @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation")
           ,
-            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, p.attributes c WHERE c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
+            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, Charattribute c WHERE c.charattributePK.charname = p.name and c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
         })
 @Customizer(PersonsFilterForGuild.class)
 public class Guild implements Serializable, DisplayInterface, Ownage

@@ -363,8 +363,15 @@ public class Utils
   public static String security(String dirtyInput) throws PolicyException, ScanException
   {
     URL resource = ClassLoader.getSystemResource("antisamy-myspace.xml");
-    Policy policy = Policy.getInstance(resource);
-
+    Policy policy = null;
+    if (resource == null) 
+    {
+      policy = Policy.getInstance("/home/wildfly/antisamy-myspace.xml");
+      // throw new MudException("Unable to get resource antisamy-myspace.xml");
+    } else 
+    {
+      policy = Policy.getInstance(resource);
+    }
     AntiSamy as = new AntiSamy();
 
     CleanResults cr = as.scan(dirtyInput, policy);

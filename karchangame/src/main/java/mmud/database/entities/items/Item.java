@@ -18,48 +18,23 @@ package mmud.database.entities.items;
 
 import com.google.gwt.thirdparty.guava.common.escape.Escaper;
 import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import mmud.Attributes;
 import mmud.Constants;
 import mmud.HtmlEscaped;
 import mmud.Utils;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Attribute;
-import mmud.database.entities.game.AttributeWrangler;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Room;
+import mmud.database.entities.game.*;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * An item. To be more precise an instance of an item definition.
@@ -74,927 +49,927 @@ import mmud.exceptions.MudException;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-        name = "discriminator",
-        discriminatorType = DiscriminatorType.INTEGER)
+  name = "discriminator",
+  discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_itemtable")
 @NamedQueries(
-        {
-            @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
-            @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
-            @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
-            @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
-            @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-            @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-            @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
-        })
+  {
+    @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
+    @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
+    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
+    @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+    @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+    @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
+  })
 abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler, Ownage
 {
 
-    private static final Logger itsLog = Logger.getLogger(Item.class.getName());
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
-    /**
-     * Indicates what kind of item it is. Current values are used:
-     * <ul><li>0, a normal item</li>
-     * <li>1, a shopkeeper list</li>
-     * <li>2, a writable item like a board</li></ul>
-     */
-    @Basic(optional = false)
-    @NotNull
+  private static final Logger itsLog = Logger.getLogger(Item.class.getName());
+  private static final long serialVersionUID = 1L;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id")
+  private Integer id;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "creation")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date creation;
+  /**
+   * Indicates what kind of item it is. Current values are used:
+   * <ul><li>0, a normal item</li>
+   * <li>1, a shopkeeper list</li>
+   * <li>2, a writable item like a board</li></ul>
+   */
+  @Basic(optional = false)
+  @NotNull
     @Column(name = "discriminator")
-    private Integer discriminator;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
-    private Set<Item> items = new HashSet<>();
-    @JoinColumn(name = "containerid", referencedColumnName = "id")
-    @ManyToOne
-    private Item container;
-    @ManyToOne
-    @JoinColumn(name = "room", referencedColumnName = "id")
-    private Room room;
-    @ManyToOne
-    @JoinColumn(name = "belongsto", referencedColumnName = "name")
-    private Person belongsto;
-    @ManyToOne
-    @JoinColumn(name = "itemid", referencedColumnName = "id")
-    private ItemDefinition itemDefinition;
-    @ManyToOne
-    @JoinColumn(name = "owner", referencedColumnName = "name")
-    private Admin owner;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
-    private List<Itemattribute> itemattributeCollection;
+  private Integer discriminator;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
+  private Set<Item> items = new HashSet<>();
+  @JoinColumn(name = "containerid", referencedColumnName = "id")
+  @ManyToOne
+  private Item container;
+  @ManyToOne
+  @JoinColumn(name = "room", referencedColumnName = "id")
+  private Room room;
+  @ManyToOne
+  @JoinColumn(name = "belongsto", referencedColumnName = "name")
+  private Person belongsto;
+  @ManyToOne
+  @JoinColumn(name = "itemid", referencedColumnName = "id")
+  private ItemDefinition itemDefinition;
+  @ManyToOne
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  private Admin owner;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
+  private List<Itemattribute> itemattributeCollection;
 
-    /**
-     * Constructor. Creates a completely empty item.
-     * Usually required by ORM.
-     */
-    public Item()
+  /**
+   * Constructor. Creates a completely empty item.
+   * Usually required by ORM.
+   */
+  public Item()
+  {
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param id the item definition used as a template of this (new) item.
+   */
+  public Item(ItemDefinition id)
+  {
+    this.itemDefinition = id;
+    this.creation = new Date();
+    this.discriminator = 0;
+  }
+
+  public Integer getId()
+  {
+    return id;
+  }
+
+  public void setId(Integer id)
+  {
+    this.id = id;
+  }
+
+  public Date getCreation()
+  {
+    return creation;
+  }
+
+  public void setCreation(Date creation)
+  {
+    this.creation = creation;
+  }
+
+  /**
+   * Indicates the items that are contained (if possible) inside this item.
+   * Will in most cases return an empty list.
+   *
+   * @return set of items.
+   */
+  @Override
+  public Set<Item> getItems()
+  {
+    return items;
+  }
+
+  public void setItems(Set<Item> items)
+  {
+    this.items = items;
+  }
+
+  /**
+   * Retrieves the item that contains this item (if possible). Might be null.
+   *
+   * @return the container
+   * @see #getBelongsTo()
+   * @see #getRoom()
+   */
+  public Item getContainer()
+  {
+    return container;
+  }
+
+  public boolean isContainer()
+  {
+    return getItemDefinition().isContainer();
+  }
+
+  public void setContainer(Item container)
+  {
+    if (!container.isContainer())
     {
+      throw new ItemException("Item  is not a container.");
     }
+    this.container = container;
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param id the item definition used as a template of this (new) item.
-     */
-    public Item(ItemDefinition id)
+  public ItemDefinition getItemDefinition()
+  {
+    return itemDefinition;
+  }
+
+  public void setItemDefinition(ItemDefinition itemDefinition)
+  {
+    this.itemDefinition = itemDefinition;
+  }
+
+  @Override
+  public Admin getOwner()
+  {
+    return owner;
+  }
+
+  @Override
+  public void setOwner(Admin owner)
+  {
+    this.owner = owner;
+  }
+
+  /**
+   * Will return the room in which this item can be found. Might be null.
+   *
+   * @return the room which contains this item.
+   * @see #getBelongsTo()
+   * @see #getContainer()
+   */
+  public Room getRoom()
+  {
+    return room;
+  }
+
+  /**
+   * Will return the person that owns this item. Might be null.
+   *
+   * @return the person who owns this item.
+   * @see #getRoom()
+   * @see #getContainer()
+   */
+  public Person getBelongsTo()
+  {
+    return belongsto;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (id != null ? id.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Item))
     {
-        this.itemDefinition = id;
-        this.creation = new Date();
-        this.discriminator = 0;
+      return false;
     }
-
-    public Integer getId()
+    Item other = (Item) object;
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
     {
-        return id;
+      return false;
     }
+    return true;
+  }
 
-    public void setId(Integer id)
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.items.Item[ id=" + id + " ]";
+  }
+
+  /**
+   * Description of the item, for example "a white, cloth pants".
+   *
+   * @return a description of the item.
+   */
+  @HtmlEscaped
+  public String getDescription()
+  {
+    Escaper htmlEscaper = HtmlEscapers.htmlEscaper();
+    return htmlEscaper.escape(getItemDefinition().getShortDescription());
+  }
+
+  /**
+   * @param parsed
+   * @return true if the item is properly described.
+   * @see ItemDefinition#isDescribedBy(java.util.List)
+   */
+  public boolean isDescribedBy(List<String> parsed)
+  {
+    return getItemDefinition().isDescribedBy(parsed);
+  }
+
+  public String getTitle() throws MudException
+  {
+    if (getItemDefinition().getTitle() != null)
     {
-        this.id = id;
+      return getItemDefinition().getTitle();
     }
+    return getItemDefinition().getShortDescription();
+  }
 
-    public Date getCreation()
+  @Override
+  public String getMainTitle() throws MudException
+  {
+    return Utils.startWithCapital(getTitle());
+  }
+
+  @Override
+  public String getImage() throws MudException
+  {
+    return getItemDefinition().getImage();
+  }
+
+  public String getLongDescription()
+  {
+    Attribute description = getAttribute(Attributes.DESCRIPTION);
+    if (description == null || description.getValue() == null || description.getValue().trim().equals(""))
     {
-        return creation;
+      return getItemDefinition().getDescription();
     }
+    return description.getValue();
+  }
 
-    public void setCreation(Date creation)
+  @Override
+  public String getBody() throws MudException
+  {
+    StringBuilder builder = new StringBuilder(getLongDescription());
+    if (getItemDefinition().getId() > 0)
     {
-        this.creation = creation;
+      builder.append("With your expert eye your judge this item to be worth ").
+        append(Constants.getDescriptionOfMoney(getCopper())).
+        append(".<br/>\r\n");
+      if (isDrinkable())
+      {
+        builder.append("You can try drinking it.<br/>\r\n");
+      }
+      if (isEatable())
+      {
+        builder.append("You can try eating it.<br/>\r\n");
+      }
+      Set<Wielding> wieldable = getItemDefinition().getWieldable();
+      Set<Wearing> wearable = getItemDefinition().getWearable();
+      for (Wielding wield : wieldable)
+      {
+        builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+      }
+      for (Wearing wear : wearable)
+      {
+        builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
+      }
     }
-
-    /**
-     * Indicates the items that are contained (if possible) inside this item.
-     * Will in most cases return an empty list.
-     *
-     * @return set of items.
-     */
-    @Override
-    public Set<Item> getItems()
+    if (isContainer())
     {
-        return items;
-    }
-
-    public void setItems(Set<Item> items)
-    {
-        this.items = items;
-    }
-
-    /**
-     * Retrieves the item that contains this item (if possible). Might be null.
-     *
-     * @return the container
-     * @see #getBelongsTo()
-     * @see #getRoom()
-     */
-    public Item getContainer()
-    {
-        return container;
-    }
-
-    public boolean isContainer()
-    {
-        return getItemDefinition().isContainer();
-    }
-
-    public void setContainer(Item container)
-    {
-        if (!container.isContainer())
-        {
-            throw new ItemException("Item  is not a container.");
-        }
-        this.container = container;
-    }
-
-    public ItemDefinition getItemDefinition()
-    {
-        return itemDefinition;
-    }
-
-    public void setItemDefinition(ItemDefinition itemDefinition)
-    {
-        this.itemDefinition = itemDefinition;
-    }
-
-    @Override
-    public Admin getOwner()
-    {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(Admin owner)
-    {
-        this.owner = owner;
-    }
-
-    /**
-     * Will return the room in which this item can be found. Might be null.
-     *
-     * @return the room which contains this item.
-     * @see #getBelongsTo()
-     * @see #getContainer()
-     */
-    public Room getRoom()
-    {
-        return room;
-    }
-
-    /**
-     * Will return the person that owns this item. Might be null.
-     *
-     * @return the person who owns this item.
-     * @see #getRoom()
-     * @see #getContainer()
-     */
-    public Person getBelongsTo()
-    {
-        return belongsto;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Item))
-        {
-            return false;
-        }
-        Item other = (Item) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.items.Item[ id=" + id + " ]";
-    }
-
-    /**
-     * Description of the item, for example "a white, cloth pants".
-     *
-     * @return a description of the item.
-     */
-    @HtmlEscaped
-    public String getDescription()
-    {
-        Escaper htmlEscaper = HtmlEscapers.htmlEscaper();
-        return htmlEscaper.escape(getItemDefinition().getShortDescription());
-    }
-
-    /**
-     * @see ItemDefinition#isDescribedBy(java.util.List)
-     * @param parsed
-     * @return true if the item is properly described.
-     */
-    public boolean isDescribedBy(List<String> parsed)
-    {
-        return getItemDefinition().isDescribedBy(parsed);
-    }
-
-    public String getTitle() throws MudException
-    {
-        if (getItemDefinition().getTitle() != null)
-        {
-            return getItemDefinition().getTitle();
-        }
-        return getItemDefinition().getShortDescription();
-    }
-
-    @Override
-    public String getMainTitle() throws MudException
-    {
-        return Utils.startWithCapital(getTitle());
-    }
-
-    @Override
-    public String getImage() throws MudException
-    {
-        return getItemDefinition().getImage();
-    }
-
-    public String getLongDescription()
-    {
-        Attribute description = getAttribute(Attributes.DESCRIPTION);
-        if (description == null || description.getValue() == null || description.getValue().trim().equals(""))
-        {
-            return getItemDefinition().getDescription();
-        }
-        return description.getValue();
-    }
-
-    @Override
-    public String getBody() throws MudException
-    {
-        StringBuilder builder = new StringBuilder(getLongDescription());
-        if (getItemDefinition().getId() > 0)
-        {
-            builder.append("With your expert eye your judge this item to be worth ").
-                    append(Constants.getDescriptionOfMoney(getCopper())).
-                    append(".<br/>\r\n");
-            if (isDrinkable())
-            {
-                builder.append("You can try drinking it.<br/>\r\n");
-            }
-            if (isEatable())
-            {
-                builder.append("You can try eating it.<br/>\r\n");
-            }
-            Set<Wielding> wieldable = getItemDefinition().getWieldable();
-            Set<Wearing> wearable = getItemDefinition().getWearable();
-            for (Wielding wield : wieldable)
-            {
-                builder.append("It can be wielded ").append(wield.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
-            }
-            for (Wearing wear : wearable)
-            {
-                builder.append("It can be worn ").append(wear.toString().replace("%SHISHER", "your")).append(".<br/>\r\n");
-            }
-        }
-        if (isContainer())
-        {
-            if (hasLid())
-            {
-                if (isOpen())
-                {
-                    builder.append("It is open.<br/>\r\n");
-                } else
-                {
-                    builder.append("It is closed.<br/>\r\n");
-                }
-            }
-            if (hasLock())
-            {
-                if (isLocked())
-                {
-                    builder.append("It is locked.<br/>\r\n");
-                } else
-                {
-                    builder.append("It is unlocked.<br/>\r\n");
-                }
-            }
-        }
-        return builder.toString();
-    }
-
-    public Integer getCopper()
-    {
-        return getItemDefinition().getCopper();
-    }
-
-    @Override
-    public boolean removeAttribute(String name)
-    {
-        Itemattribute attr = getItemattribute(name);
-        if (attr == null)
-        {
-            return false;
-        }
-        itemattributeCollection.remove(attr);
-        return true;
-    }
-
-    private Itemattribute getItemattribute(String name)
-    {
-        if (itemattributeCollection == null)
-        {
-            itsLog.finer("getItemattribute name=" + name + " collection is null");
-            return null;
-        }
-        for (Itemattribute attr : itemattributeCollection)
-        {
-            itsLog.finer("getItemattribute name=" + name + " attr=" + attr);
-            if (attr.getName().equals(name))
-            {
-                return attr;
-            }
-        }
-        itsLog.finer("getItemattribute name=" + name + " not found");
-        return null;
-    }
-
-    @Override
-    public Attribute getAttribute(String name)
-    {
-        return getItemattribute(name);
-    }
-
-    @Override
-    public void setAttribute(String name, String value)
-    {
-        itsLog.finer("setAttribute name=" + name + " value=" + value);
-        Itemattribute attr = getItemattribute(name);
-        if (attr == null)
-        {
-            attr = new Itemattribute(name, getId());
-            attr.setItem(this);
-        }
-        attr.setValue(value);
-        attr.setValueType(Attributes.VALUETYPE_STRING);
-        itemattributeCollection.add(attr);
-    }
-
-    @Override
-    public boolean verifyAttribute(String name, String value)
-    {
-        Itemattribute attr = getItemattribute(name);
-        if (attr == null)
-        {
-            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
-            return false;
-        }
-        if (attr.getValue() == value)
-        {
-            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
-            return true;
-        }
-        if (attr.getValue().equals(value))
-        {
-            itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
-            return true;
-        }
-        itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
-        return false;
-    }
-
-    /**
-     * Indicates if the container is open or closed.
-     * Only makes sense if this item is in fact a container.
-     *
-     * @return true if there is an attribute named "isopen".
-     */
-    public boolean isOpen()
-    {
-        return verifyAttribute("isopen", "true");
-    }
-
-    /**
-     * Returns true if the container has a lid, if the
-     * container can be opened.
-     *
-     * @return boolean true if the container has a lid.
-     */
-    public boolean hasLid()
-    {
-        return isOpenable();
-    }
-
-    /**
-     * Returns true if the container has a lid, if the
-     * container can be opened.
-     *
-     * @return boolean true if the container has a lid.
-     */
-    public boolean isOpenable()
-    {
-        if (getAttribute("isopenable") != null)
-        {
-            return verifyAttribute("isopenable", "true");
-        }
-        return getItemDefinition().isOpenable();
-    }
-
-    /**
-     * Returns whether or not the container is locked. If it can be locked, it
-     * needs a key.
-     *
-     * @return boolean true if the container is locked.
-     * @see ItemDefinition#getKey()
-     */
-    public boolean isLocked()
-    {
-        return verifyAttribute(Attributes.LOCKED, "true");
-    }
-
-    public void open()
-    {
-        if (!isContainer())
-        {
-            throw new ItemException("Item is not a container, and cannot be opened.");
-        }
-        if (!isOpenable())
-        {
-            throw new ItemException(getDescription()
-                    + "cannot be opened.");
-        }
+      if (hasLid())
+      {
         if (isOpen())
         {
-            throw new ItemException(getDescription()
-                    + " is already open.");
+          builder.append("It is open.<br/>\r\n");
+        } else
+        {
+          builder.append("It is closed.<br/>\r\n");
         }
+      }
+      if (hasLock())
+      {
         if (isLocked())
         {
-            throw new ItemException(getDescription()
-                    + " is locked.");
+          builder.append("It is locked.<br/>\r\n");
+        } else
+        {
+          builder.append("It is unlocked.<br/>\r\n");
         }
-        setAttribute("isopen", "true");
+      }
     }
+    return builder.toString();
+  }
 
-    public void close()
+  public Integer getCopper()
+  {
+    return getItemDefinition().getCopper();
+  }
+
+  @Override
+  public boolean removeAttribute(String name)
+  {
+    Itemattribute attr = getItemattribute(name);
+    if (attr == null)
     {
-        if (!isContainer())
-        {
-            throw new ItemException("Item is not a container, and cannot be closed.");
-        }
-        if (!isOpenable())
-        {
-            throw new ItemException(getDescription()
-                    + "cannot be closed.");
-        }
-        if (!isOpen())
-        {
-            throw new ItemException(getDescription()
-                    + " is already closed.");
-        }
-        if (isLocked())
-        {
-            throw new ItemException(getDescription()
-                    + " is locked.");
-        }
-        setAttribute("isopen", "false");
+      return false;
     }
+    itemattributeCollection.remove(attr);
+    return true;
+  }
 
-    /**
-     * Returns true if the item can be eaten. This is better than just using
-     * a compare on the getEatable.
-     *
-     * @return true if eatable, false otherwise
-     * @see #getEatable
-     */
-    public boolean isEatable()
+  private Itemattribute getItemattribute(String name)
+  {
+    if (itemattributeCollection == null)
     {
-        if (getAttribute("eatable") != null)
-        {
-            return verifyAttribute("eatable", "true");
-        }
-        return getItemDefinition().getEatable() != null && !getItemDefinition().getEatable().trim().equals("");
+      itsLog.finer("getItemattribute name=" + name + " collection is null");
+      return null;
     }
-
-    /**
-     * Provides the description of what happens when you try to eat it.
-     * Can be null or empty, for example if the item cannot be eaten.
-     * Eating an item will always destroy that item.
-     *
-     * @return
-     */
-    public String getEatable()
+    for (Itemattribute attr : itemattributeCollection)
     {
-        return getItemDefinition().getEatable();
+      itsLog.finer("getItemattribute name=" + name + " attr=" + attr);
+      if (attr.getName().equals(name))
+      {
+        return attr;
+      }
     }
+    itsLog.finer("getItemattribute name=" + name + " not found");
+    return null;
+  }
 
-    @Override
-    public List<Item> findItems(List<String> parsed)
+  @Override
+  public Attribute getAttribute(String name)
+  {
+    return getItemattribute(name);
+  }
+
+  @Override
+  public void setAttribute(String name, String value)
+  {
+    itsLog.finer("setAttribute name=" + name + " value=" + value);
+    Itemattribute attr = getItemattribute(name);
+    if (attr == null)
     {
-        List<Item> result = new ArrayList<>();
-        for (Item item : getItems())
-        {
-            if (item.isDescribedBy(parsed))
-            {
-                result.add(item);
-            }
-        }
-        return result;
+      attr = new Itemattribute(name, getId());
+      attr.setItem(this);
     }
+    attr.setValue(value);
+    attr.setValueType(Attributes.VALUETYPE_STRING);
+    itemattributeCollection.add(attr);
+  }
 
-    @Override
-    public boolean destroyItem(Item item)
+  @Override
+  public boolean verifyAttribute(String name, String value)
+  {
+    Itemattribute attr = getItemattribute(name);
+    if (attr == null)
     {
-        // TODO: move this to a container
-        // return items.remove(item);
-        // note: as the collection is an orphan, the delete
-        // on the set will take place automatically.
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
+      return false;
     }
-
-    /**
-     * Returns true if the item can be drunk. This is better than just using
-     * a compare on the getDrinkable.
-     *
-     * @return true if drinkable, false otherwise
-     * @see #getDrinkable
-     */
-    public boolean isDrinkable()
+    if (attr.getValue() == value)
     {
-        if (getAttribute("drinkable") != null)
-        {
-            return verifyAttribute("drinkable", "true");
-        }
-        return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().equals("");
+      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
+      return true;
     }
-
-    /**
-     * Provides the description of what happens when you try to drink it.
-     * Can be null or empty, for example if the item cannot be drunk.
-     * Drinking an item will always destroy that item.
-     *
-     * @return
-     */
-    public String getDrinkable()
+    if (attr.getValue().equals(value))
     {
-        return getItemDefinition().getDrinkable();
-
+      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
+      return true;
     }
+    itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
+    return false;
+  }
 
-    public boolean isWearable(Wearing position)
+  /**
+   * Indicates if the container is open or closed.
+   * Only makes sense if this item is in fact a container.
+   *
+   * @return true if there is an attribute named "isopen".
+   */
+  public boolean isOpen()
+  {
+    return verifyAttribute("isopen", "true");
+  }
+
+  /**
+   * Returns true if the container has a lid, if the
+   * container can be opened.
+   *
+   * @return boolean true if the container has a lid.
+   */
+  public boolean hasLid()
+  {
+    return isOpenable();
+  }
+
+  /**
+   * Returns true if the container has a lid, if the
+   * container can be opened.
+   *
+   * @return boolean true if the container has a lid.
+   */
+  public boolean isOpenable()
+  {
+    if (getAttribute("isopenable") != null)
     {
-        return getItemDefinition().isWearable(position);
+      return verifyAttribute("isopenable", "true");
     }
+    return getItemDefinition().isOpenable();
+  }
 
-    public boolean isWieldable(Wielding position)
+  /**
+   * Returns whether or not the container is locked. If it can be locked, it
+   * needs a key.
+   *
+   * @return boolean true if the container is locked.
+   * @see ItemDefinition#getKey()
+   */
+  public boolean isLocked()
+  {
+    return verifyAttribute(Attributes.LOCKED, "true");
+  }
+
+  public void open()
+  {
+    if (!isContainer())
     {
-        return getItemDefinition().isWieldable(position);
+      throw new ItemException("Item is not a container, and cannot be opened.");
     }
-
-    /**
-     * Whether or not you are able to drop this item.
-     *
-     * @return true, in case you can, false otherwise.
-     */
-    public boolean isDroppable()
+    if (!isOpenable())
     {
-        if (isBound())
-        {
-            return false;
-        }
-        if (getItemDefinition().getId() < 0)
-        {
-            return false;
-        }
-        if (getAttribute("notdropable") != null)
-        {
-            return !verifyAttribute("notdropable", "true");
-        }
-        return getItemDefinition().getDropable();
+      throw new ItemException(getDescription()
+        + "cannot be opened.");
     }
-
-    /**
-     * Whether or not you are able to drop this item or give this item, or in
-     * some other way dispose of this item, besides selling it to a vendor or
-     * just destroying it.
-     *
-     * @return true, in case you cannot, false otherwise.
-     */
-    public boolean isBound()
+    if (isOpen())
     {
-        if (getAttribute("bound") != null)
-        {
-            return verifyAttribute("bound", "true");
-        }
-        return getItemDefinition().isBound();
+      throw new ItemException(getDescription()
+        + " is already open.");
     }
-
-    /**
-     * Whether or not you are able to retrieve this item from the floor of the room.
-     *
-     * @return true, in case you can, false otherwise.
-     */
-    public boolean isGetable()
+    if (isLocked())
     {
-        if (isBound())
-        {
-            return false;
-        }
-        if (getItemDefinition().getId() < 0)
-        {
-            return false;
-        }
-        if (getAttribute("notgetable") != null)
-        {
-            return !verifyAttribute("notgetable", "true");
-        }
-        return getItemDefinition().getGetable();
+      throw new ItemException(getDescription()
+        + " is locked.");
     }
+    setAttribute("isopen", "true");
+  }
 
-    public void drop(Person person, Room room)
+  public void close()
+  {
+    if (!isContainer())
     {
-        if (isBound())
-        {
-            throw new ItemException("You are not allowed to drop this item.");
-        }
-        if (getBelongsTo() == null || !getBelongsTo().equals(person))
-        {
-            throw new ItemException("Cannot drop the item, it's not yours.");
-        }
-        // TODO: equals directly on room doesn't seem to work right. Different objects
-        // same ids.
-        if (!person.getRoom().getId().equals(room.getId()))
-        {
-            throw new ItemException("You are not in the room.");
-        }
-        belongsto = null;
-        this.room = room;
+      throw new ItemException("Item is not a container, and cannot be closed.");
     }
-
-    /**
-     * Specialty method for the creation of new items in a room. Only used by
-     * {@link Room#createItem(mmud.database.entities.items.ItemDefinition) }
-     *
-     * @param room the room to drop the new item into.
-     */
-    public void drop(Room room)
+    if (!isOpenable())
     {
-        if (isBound())
-        {
-            throw new ItemException("You are not allowed to drop this item.");
-        }
-        // TODO: equals directly on room doesn't seem to work right. Different objects
-        // same ids.
-        belongsto = null;
-        this.room = room;
+      throw new ItemException(getDescription()
+        + "cannot be closed.");
     }
-
-    public void get(Person person, Room room)
+    if (!isOpen())
     {
-        if (isBound())
-        {
-            throw new ItemException("You are not allowed to drop this item.");
-        }
-        if (getRoom() == null || !getRoom().equals(room))
-        {
-            throw new ItemException("Item not in the room.");
-        }
-        if (!person.getRoom().equals(room))
-        {
-            throw new ItemException("You are not in the room.");
-        }
-        belongsto = person;
-        this.room = null;
+      throw new ItemException(getDescription()
+        + " is already closed.");
     }
-
-    public void give(Person toperson)
+    if (isLocked())
     {
-        if (isBound())
-        {
-            throw new ItemException("You are not allowed to give this item.");
-        }
-        if (room != null)
-        {
-            throw new ItemException("Cannot give an item that is in a room.");
-        }
-        if (container != null)
-        {
-            throw new ItemException("Cannot give an item that is stored in a container.");
-        }
-        belongsto = toperson;
+      throw new ItemException(getDescription()
+        + " is locked.");
     }
+    setAttribute("isopen", "false");
+  }
 
-    public boolean isReadable()
+  /**
+   * Returns true if the item can be eaten. This is better than just using
+   * a compare on the getEatable.
+   *
+   * @return true if eatable, false otherwise
+   * @see #getEatable
+   */
+  public boolean isEatable()
+  {
+    if (getAttribute("eatable") != null)
     {
-        boolean foundAttribute = getAttribute("readable") != null && getAttribute("readable").getValue() != null && !getAttribute("readable").getValue().trim().equals("");
-        boolean foundReadable = (getItemDefinition().getReaddescription() != null && !getItemDefinition().getReaddescription().trim().equals(""));
-        return foundAttribute || foundReadable;
+      return verifyAttribute("eatable", "true");
     }
+    return getItemDefinition().getEatable() != null && !getItemDefinition().getEatable().trim().equals("");
+  }
 
-    public DisplayInterface getRead()
+  /**
+   * Provides the description of what happens when you try to eat it.
+   * Can be null or empty, for example if the item cannot be eaten.
+   * Eating an item will always destroy that item.
+   *
+   * @return
+   */
+  public String getEatable()
+  {
+    return getItemDefinition().getEatable();
+  }
+
+  @Override
+  public List<Item> findItems(List<String> parsed)
+  {
+    List<Item> result = new ArrayList<>();
+    for (Item item : getItems())
     {
-        itsLog.info("Item getRead");
-        if (!isReadable())
-        {
-            throw new ItemException("Item cannot be read.");
-        }
-        return new DisplayInterface()
-        {
-            @Override
-            public String getMainTitle() throws MudException
-            {
-                return getDescription();
-            }
-
-            @Override
-            public String getImage() throws MudException
-            {
-                return getItemDefinition().getImage();
-            }
-
-            @Override
-            public String getBody() throws MudException
-            {
-                String read
-                        = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
-                if (read == null || read.trim().equals(""))
-                {
-                    read = getItemDefinition().getReaddescription();
-                }
-                if (read == null || read.trim().equals(""))
-                {
-                    return null;
-                }
-                return read;
-            }
-        };
+      if (item.isDescribedBy(parsed))
+      {
+        result.add(item);
+      }
     }
+    return result;
+  }
 
-    /**
-     * Returns whether or not the container has a lock. Meaning whether or not the
-     * container can be unlocked/locked.
-     *
-     * @return boolean true if the container can be locked/unlocked.
-     */
-    public boolean hasLock()
+  @Override
+  public boolean destroyItem(Item item)
+  {
+    // TODO: move this to a container
+    // return items.remove(item);
+    // note: as the collection is an orphan, the delete
+    // on the set will take place automatically.
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  /**
+   * Returns true if the item can be drunk. This is better than just using
+   * a compare on the getDrinkable.
+   *
+   * @return true if drinkable, false otherwise
+   * @see #getDrinkable
+   */
+  public boolean isDrinkable()
+  {
+    if (getAttribute("drinkable") != null)
     {
-        return getItemDefinition().hasLock();
+      return verifyAttribute("drinkable", "true");
     }
+    return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().equals("");
+  }
 
-    /**
-     * Verifies that the key provided can open this container.
-     *
-     * @param key the key to hopefully open this container.
-     * @return true, if it is possible to open this container with the key provided.
-     */
-    public boolean isKey(Item key)
+  /**
+   * Provides the description of what happens when you try to drink it.
+   * Can be null or empty, for example if the item cannot be drunk.
+   * Drinking an item will always destroy that item.
+   *
+   * @return
+   */
+  public String getDrinkable()
+  {
+    return getItemDefinition().getDrinkable();
+
+  }
+
+  public boolean isWearable(Wearing position)
+  {
+    return getItemDefinition().isWearable(position);
+  }
+
+  public boolean isWieldable(Wielding position)
+  {
+    return getItemDefinition().isWieldable(position);
+  }
+
+  /**
+   * Whether or not you are able to drop this item.
+   *
+   * @return true, in case you can, false otherwise.
+   */
+  public boolean isDroppable()
+  {
+    if (isBound())
     {
-        if (key == null)
-        {
-            return false;
-        }
-        return key.getItemDefinition().equals(getItemDefinition().getKey());
+      return false;
     }
-
-    public void lock()
+    if (getItemDefinition().getId() < 0)
     {
-        setAttribute(Attributes.LOCKED, "true");
+      return false;
     }
-
-    public void unlock()
+    if (getAttribute("notdropable") != null)
     {
-        setAttribute(Attributes.LOCKED, "false");
+      return !verifyAttribute("notdropable", "true");
     }
+    return getItemDefinition().getDropable();
+  }
 
-    public boolean isVisible()
+  /**
+   * Whether or not you are able to drop this item or give this item, or in
+   * some other way dispose of this item, besides selling it to a vendor or
+   * just destroying it.
+   *
+   * @return true, in case you cannot, false otherwise.
+   */
+  public boolean isBound()
+  {
+    if (getAttribute("bound") != null)
     {
-        return getItemDefinition().getId() >= 0
-                && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
+      return verifyAttribute("bound", "true");
     }
+    return getItemDefinition().isBound();
+  }
 
-    /**
-     * Returns the category of the item.
-     *
-     * @return
-     */
-    abstract public ItemCategory getCategory();
-
-    /**
-     * Items are sellable by default, unless attribute "notsellable" is set.
-     *
-     * @see Attributes#NOTSELLABLE
-     * @return
-     */
-    public boolean isSellable()
+  /**
+   * Whether or not you are able to retrieve this item from the floor of the room.
+   *
+   * @return true, in case you can, false otherwise.
+   */
+  public boolean isGetable()
+  {
+    if (isBound())
     {
-        if (isBound())
-        {
-            return false;
-        }
-        if (containsItems())
-        {
-            return false;
-        }
-        if (getCopper() == 0)
-        {
-            return false;
-        }
-        if (getItemDefinition().getId() < 0)
-        {
-            return false;
-        }
-        if (getAttribute(Attributes.NOTSELLABLE) != null)
-        {
-            return !verifyAttribute(Attributes.NOTSELLABLE, "true");
-        }
-        return true;
-        // TODO: getItemDefinition().isSellable();
+      return false;
     }
-
-    /**
-     * Items are buyable by default, unless attribute "notbuyable" is set.
-     *
-     * @see Attributes#NOTBUYABLE
-     * @return
-     */
-    public boolean isBuyable()
+    if (getItemDefinition().getId() < 0)
     {
-        if (isBound())
-        {
-            return false;
-        }
-        if (getItemDefinition().getId() < 0)
-        {
-            return false;
-        }
-        if (getCopper() == 0)
-        {
-            return false;
-        }
-        if (getAttribute(Attributes.NOTBUYABLE) != null)
-        {
-            return !verifyAttribute(Attributes.NOTBUYABLE, "true");
-        }
-        return true;
-        // TODO: getItemDefinition().isBuyable();
+      return false;
     }
-
-    /**
-     * Tells you if this item contains other items, for example if it is a bag.
-     *
-     * @return
-     */
-    public boolean containsItems()
+    if (getAttribute("notgetable") != null)
     {
-        return items != null && !items.isEmpty();
+      return !verifyAttribute("notgetable", "true");
     }
+    return getItemDefinition().getGetable();
+  }
 
-    /**
-     * Adds an {@link Item} to the bag (container).
-     *
-     * @param item the new item. May not be null.
-     * @return the new item, null if unable to add.
-     */
-    @Override
-    public Item addItem(Item item)
+  public void drop(Person person, Room room)
+  {
+    if (isBound())
     {
-        if (item.getBelongsTo() != null || item.getRoom() != null || item.getContainer() != null)
-        {
-            throw new MudException("Item already assigned.");
-        }
-        if (!this.isContainer())
-        {
-            throw new MudException("You cannot drop a new item in another item, if the other item is not a container.");
-        }
-        if (!items.add(item))
-        {
-            return null;
-        }
-        item.setContainer(this);
-        return item;
+      throw new ItemException("You are not allowed to drop this item.");
     }
+    if (getBelongsTo() == null || !getBelongsTo().equals(person))
+    {
+      throw new ItemException("Cannot drop the item, it's not yours.");
+    }
+    // TODO: equals directly on room doesn't seem to work right. Different objects
+    // same ids.
+    if (!person.getRoom().getId().equals(room.getId()))
+    {
+      throw new ItemException("You are not in the room.");
+    }
+    belongsto = null;
+    this.room = room;
+  }
 
-    public void assignTo(Room room)
+  /**
+   * Specialty method for the creation of new items in a room. Only used by
+   * {@link Room#createItem(mmud.database.entities.items.ItemDefinition) }
+   *
+   * @param room the room to drop the new item into.
+   */
+  public void drop(Room room)
+  {
+    if (isBound())
     {
-        if (getBelongsTo() != null || getRoom() != null || getContainer() != null)
-        {
-            throw new MudException("Item already assigned.");
-        }
-        this.room = room;
+      throw new ItemException("You are not allowed to drop this item.");
     }
+    // TODO: equals directly on room doesn't seem to work right. Different objects
+    // same ids.
+    belongsto = null;
+    this.room = room;
+  }
+
+  public void get(Person person, Room room)
+  {
+    if (isBound())
+    {
+      throw new ItemException("You are not allowed to drop this item.");
+    }
+    if (getRoom() == null || !getRoom().equals(room))
+    {
+      throw new ItemException("Item not in the room.");
+    }
+    if (!person.getRoom().equals(room))
+    {
+      throw new ItemException("You are not in the room.");
+    }
+    belongsto = person;
+    this.room = null;
+  }
+
+  public void give(Person toperson)
+  {
+    if (isBound())
+    {
+      throw new ItemException("You are not allowed to give this item.");
+    }
+    if (room != null)
+    {
+      throw new ItemException("Cannot give an item that is in a room.");
+    }
+    if (container != null)
+    {
+      throw new ItemException("Cannot give an item that is stored in a container.");
+    }
+    belongsto = toperson;
+  }
+
+  public boolean isReadable()
+  {
+    boolean foundAttribute = getAttribute("readable") != null && getAttribute("readable").getValue() != null && !getAttribute("readable").getValue().trim().equals("");
+    boolean foundReadable = (getItemDefinition().getReaddescription() != null && !getItemDefinition().getReaddescription().trim().equals(""));
+    return foundAttribute || foundReadable;
+  }
+
+  public DisplayInterface getRead()
+  {
+    itsLog.info("Item getRead");
+    if (!isReadable())
+    {
+      throw new ItemException("Item cannot be read.");
+    }
+    return new DisplayInterface()
+    {
+      @Override
+      public String getMainTitle() throws MudException
+      {
+        return getDescription();
+      }
+
+      @Override
+      public String getImage() throws MudException
+      {
+        return getItemDefinition().getImage();
+      }
+
+      @Override
+      public String getBody() throws MudException
+      {
+        String read
+          = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
+        if (read == null || read.trim().equals(""))
+        {
+          read = getItemDefinition().getReaddescription();
+        }
+        if (read == null || read.trim().equals(""))
+        {
+          return null;
+        }
+        return read;
+      }
+    };
+  }
+
+  /**
+   * Returns whether or not the container has a lock. Meaning whether or not the
+   * container can be unlocked/locked.
+   *
+   * @return boolean true if the container can be locked/unlocked.
+   */
+  public boolean hasLock()
+  {
+    return getItemDefinition().hasLock();
+  }
+
+  /**
+   * Verifies that the key provided can open this container.
+   *
+   * @param key the key to hopefully open this container.
+   * @return true, if it is possible to open this container with the key provided.
+   */
+  public boolean isKey(Item key)
+  {
+    if (key == null)
+    {
+      return false;
+    }
+    return key.getItemDefinition().equals(getItemDefinition().getKey());
+  }
+
+  public void lock()
+  {
+    setAttribute(Attributes.LOCKED, "true");
+  }
+
+  public void unlock()
+  {
+    setAttribute(Attributes.LOCKED, "false");
+  }
+
+  public boolean isVisible()
+  {
+    return getItemDefinition().getId() >= 0
+      && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
+  }
+
+  /**
+   * Returns the category of the item.
+   *
+   * @return
+   */
+  abstract public ItemCategory getCategory();
+
+  /**
+   * Items are sellable by default, unless attribute "notsellable" is set.
+   *
+   * @return
+   * @see Attributes#NOTSELLABLE
+   */
+  public boolean isSellable()
+  {
+    if (isBound())
+    {
+      return false;
+    }
+    if (containsItems())
+    {
+      return false;
+    }
+    if (getCopper() == 0)
+    {
+      return false;
+    }
+    if (getItemDefinition().getId() < 0)
+    {
+      return false;
+    }
+    if (getAttribute(Attributes.NOTSELLABLE) != null)
+    {
+      return !verifyAttribute(Attributes.NOTSELLABLE, "true");
+    }
+    return true;
+    // TODO: getItemDefinition().isSellable();
+  }
+
+  /**
+   * Items are buyable by default, unless attribute "notbuyable" is set.
+   *
+   * @return
+   * @see Attributes#NOTBUYABLE
+   */
+  public boolean isBuyable()
+  {
+    if (isBound())
+    {
+      return false;
+    }
+    if (getItemDefinition().getId() < 0)
+    {
+      return false;
+    }
+    if (getCopper() == 0)
+    {
+      return false;
+    }
+    if (getAttribute(Attributes.NOTBUYABLE) != null)
+    {
+      return !verifyAttribute(Attributes.NOTBUYABLE, "true");
+    }
+    return true;
+    // TODO: getItemDefinition().isBuyable();
+  }
+
+  /**
+   * Tells you if this item contains other items, for example if it is a bag.
+   *
+   * @return
+   */
+  public boolean containsItems()
+  {
+    return items != null && !items.isEmpty();
+  }
+
+  /**
+   * Adds an {@link Item} to the bag (container).
+   *
+   * @param item the new item. May not be null.
+   * @return the new item, null if unable to add.
+   */
+  @Override
+  public Item addItem(Item item)
+  {
+    if (item.getBelongsTo() != null || item.getRoom() != null || item.getContainer() != null)
+    {
+      throw new MudException("Item already assigned.");
+    }
+    if (!this.isContainer())
+    {
+      throw new MudException("You cannot drop a new item in another item, if the other item is not a container.");
+    }
+    if (!items.add(item))
+    {
+      return null;
+    }
+    item.setContainer(this);
+    return item;
+  }
+
+  public void assignTo(Room room)
+  {
+    if (getBelongsTo() != null || getRoom() != null || getContainer() != null)
+    {
+      throw new MudException("Item already assigned.");
+    }
+    this.room = room;
+  }
 }

@@ -44,7 +44,7 @@ public class Constants
   public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-]*";
   public static final String ONLY_LETTERS_MESSAGE = "Only letters and dash (-) are allowed.";
 
-  private static final String BASEPATH = "/home/glassfish";
+  private static final String BASEPATH = "/home/wildfly";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
