@@ -31,7 +31,6 @@ connect.php
 /karchangame/build/
 /karchangame/dist/
 /karchangame/target/
-/webappkarchan/nbproject/private/app.gif
 /karchangame/web/cc.gif
 /karchangame/web/cg.gif
 /karchangame/web/collapse.gif
@@ -50,6 +49,10 @@ connect.php
 # this one is an odd one, it just creates a war containing the angular app
 # from karchanangular. No need to check it in.
 /karchanpersonal
+
+karchan/.idea/
+karchan/nb-configuration.xml
+karchan/target/
 
 # the below is specific for angular projects in this repo.
 
