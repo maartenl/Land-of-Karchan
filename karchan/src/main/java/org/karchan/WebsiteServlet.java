@@ -47,7 +47,7 @@ public class WebsiteServlet extends HttpServlet
   @Inject 
   private Freemarker freemarker;
   
-  @PersistenceContext(unitName = "karchanPU")
+  @PersistenceContext
   private EntityManager entityManager;
   
   @Override
@@ -75,12 +75,16 @@ public class WebsiteServlet extends HttpServlet
     root.put("blogs", blogs);
     
     /* Get the template (uses cache internally) */
-    Template temp = freemarker.getConfiguration().getTemplate("test.ftlh");
+    Template header = freemarker.getConfiguration().getTemplate("header");
+    Template main = freemarker.getConfiguration().getTemplate("main");
+    Template footer = freemarker.getConfiguration().getTemplate("footer");
 
     try
     {
       /* Merge data-model with template */
-      temp.process(root, out);
+      header.process(root, out);
+      main.process(root, out);
+      footer.process(root, out);
     } catch (TemplateException ex)
     {
       Logger.getLogger(WebsiteServlet.class.getName()).log(Level.SEVERE, null, ex);

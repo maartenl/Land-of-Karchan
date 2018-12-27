@@ -21,13 +21,15 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.TypedQuery;
+import mmud.database.entities.web.HtmlTemplate;
 
 /**
  *
@@ -38,8 +40,8 @@ import javax.persistence.EntityManagerFactory;
 public class Freemarker implements TemplateLoader
 {
 
-//  @Inject
-//  private EntityManagerFactory entityManagerFactory;
+  @PersistenceUnit
+  private EntityManagerFactory entityManagerFactory;
   
   private Configuration configuration;
 
@@ -63,6 +65,8 @@ public class Freemarker implements TemplateLoader
     // a good choice in most applications:
     configuration.setDefaultEncoding("UTF-8");
 
+    configuration.setLocale(Locale.US);
+            
     // Sets how errors will appear.
     // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
     configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -73,18 +77,18 @@ public class Freemarker implements TemplateLoader
     // Wrap unchecked exceptions thrown during template processing into TemplateException-s.
     configuration.setWrapUncheckedExceptions(true);
   }
-
-  private Map<String, HtmlTemplate> map = new HashMap<>();
   
   @Override
   public Object findTemplateSource(String name) throws IOException
   {
-    HtmlTemplate template = map.get(name);
-    if (template == null) {
-      template = new HtmlTemplate(name);
-      template.setContents("Maarten van Leunen ${user}   <#list blogs as blog> ${blog.content} </#list>" + name);
-      map.put(name, template);
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    TypedQuery<HtmlTemplate> findByNameQuery = entityManager.createNamedQuery("HtmlTemplate.findByName", HtmlTemplate.class);
+    String templateName = name;
+    if (name.endsWith("_en_US")) {
+      templateName = templateName.substring(0, templateName.indexOf("_en_US"));
     }
+    findByNameQuery.setParameter("name", templateName);
+    HtmlTemplate template = findByNameQuery.getSingleResult();
     return template;
   }
 
