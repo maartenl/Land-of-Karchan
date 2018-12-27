@@ -82,7 +82,7 @@ public class Freemarker implements TemplateLoader
     HtmlTemplate template = map.get(name);
     if (template == null) {
       template = new HtmlTemplate(name);
-      template.setContents("Maarten van Leunen ${user} " + name);
+      template.setContents("Maarten van Leunen ${user}   <#list blogs as blog> ${blog.content} </#list>" + name);
       map.put(name, template);
     }
     return template;

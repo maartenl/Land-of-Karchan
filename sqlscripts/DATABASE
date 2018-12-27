@@ -392,3 +392,16 @@ ALTER TABLE `mmud`.`mm_usertable` ADD COLUMN `newpassword` VARCHAR(128);
 drop trigger password_trigger;
 
 ALTER TABLE mm_usertable DROP COLUMN password;
+
+create table blogs (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  name varchar(20) NOT NULL DEFAULT '',
+  createDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modifiedDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title varchar(150) not null,
+  content text not null,
+  INDEX createDate (createDate),
+  CONSTRAINT FOREIGN KEY (`name`) REFERENCES
+  `mm_usertable` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

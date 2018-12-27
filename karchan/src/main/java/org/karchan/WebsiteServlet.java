@@ -16,22 +16,29 @@
  */
 package org.karchan;
 
+import freemarker.ext.beans.ArrayModel;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.TemplateSequenceModel;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mmud.database.entities.web.Blog;
 
 @WebServlet("*.html")
 public class WebsiteServlet extends HttpServlet
@@ -39,6 +46,9 @@ public class WebsiteServlet extends HttpServlet
 
   @Inject 
   private Freemarker freemarker;
+  
+  @PersistenceContext(unitName = "karchanPU")
+  private EntityManager entityManager;
   
   @Override
   public void init() throws ServletException
@@ -55,11 +65,15 @@ public class WebsiteServlet extends HttpServlet
     // Actual logic goes here.
     PrintWriter out = response.getWriter();
     out.println(request.getRequestURI() + "</br>");
+
+    TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
+    List<Blog> blogs = blogsQuery.getResultList();
     
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
-
+    root.put("blogs", blogs);
+    
     /* Get the template (uses cache internally) */
     Template temp = freemarker.getConfiguration().getTemplate("test.ftlh");
 
