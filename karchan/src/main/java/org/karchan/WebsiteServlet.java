@@ -72,6 +72,7 @@ public class WebsiteServlet extends HttpServlet
     Menu techSpecs = new Menu("Tech Specs", "/help/tech_specs.html");
     Menu source = new Menu("Source", "/help/source.html");
     Menu security = new Menu("Security", "/help/security.html");
+    Menu faq = new Menu("FAQ", "/help/faq.html");
 
     Menu welcome = new Menu("Welcome", "/index.html");
     Menu logon = new Menu("Logon", "/logon.html");
@@ -85,7 +86,7 @@ public class WebsiteServlet extends HttpServlet
     Menu theLaw = new Menu("The Law", "/the_law.html");
 
     Menu help = new Menu("Help", "/help/index.html",
-            Arrays.asList(status, guide, techSpecs, source, security));
+            Arrays.asList(status, guide, techSpecs, source, security, faq));
 
     Menu links = new Menu("Links", "/links.html");
     Menu wiki = new Menu("Wiki", "/wiki.html");
