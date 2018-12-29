@@ -21,6 +21,7 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -65,6 +66,7 @@ public class Freemarker implements TemplateLoader
     // a good choice in most applications:
     configuration.setDefaultEncoding("UTF-8");
 
+    configuration.setLocalizedLookup(false);
     configuration.setLocale(Locale.US);
             
     // Sets how errors will appear.
@@ -83,13 +85,12 @@ public class Freemarker implements TemplateLoader
   {
     EntityManager entityManager = entityManagerFactory.createEntityManager();
     TypedQuery<HtmlTemplate> findByNameQuery = entityManager.createNamedQuery("HtmlTemplate.findByName", HtmlTemplate.class);
-    String templateName = name;
-    if (name.endsWith("_en_US")) {
-      templateName = templateName.substring(0, templateName.indexOf("_en_US"));
+    findByNameQuery.setParameter("name", name);
+    List<HtmlTemplate> templates = findByNameQuery.getResultList();
+    if (templates == null || templates.size() != 1) {
+      return null;
     }
-    findByNameQuery.setParameter("name", templateName);
-    HtmlTemplate template = findByNameQuery.getSingleResult();
-    return template;
+    return templates.get(0);
   }
 
   @Override

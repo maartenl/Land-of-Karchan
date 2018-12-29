@@ -16,14 +16,13 @@
  */
 package org.karchan;
 
-import freemarker.ext.beans.ArrayModel;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.TemplateNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,17 +38,63 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mmud.database.entities.web.Blog;
+import org.assertj.core.util.VisibleForTesting;
 
 @WebServlet("*.html")
 public class WebsiteServlet extends HttpServlet
 {
 
-  @Inject 
+  @Inject
   private Freemarker freemarker;
-  
+
   @PersistenceContext
   private EntityManager entityManager;
-  
+
+  @VisibleForTesting 
+  static final Menu rootMenu;
+
+  private static final Menu notFoundMenu;
+
+  static
+  {
+    notFoundMenu = new Menu("Not found", "/notFound.html");
+
+    Menu dash = new Menu("--", "--");
+
+    Menu map = new Menu("Map", "/chronicles/map.html");
+    Menu history = new Menu("History", "/chronicles/history.html");
+    Menu people = new Menu("People", "/chronicles/people.html");
+    Menu fortunes = new Menu("Fortunes", "/chronicles/fortunes.html");
+    Menu guilds = new Menu("Guilds", "/chronicles/guilds.html");
+
+    Menu status = new Menu("Status", "/help/status.html");
+    Menu guide = new Menu("The Guide", "/help/guide.html");
+    Menu techSpecs = new Menu("Tech Specs", "/help/tech_specs.html");
+    Menu source = new Menu("Source", "/help/source.html");
+    Menu security = new Menu("Security", "/help/security.html");
+
+    Menu welcome = new Menu("Welcome", "/index.html");
+    Menu logon = new Menu("Logon", "/logon.html");
+    Menu introduction = new Menu("Introduction", "/introduction.html");
+    Menu newCharacter = new Menu("New character", "/new_character.html");
+
+    Menu chronicles = new Menu("Chronicles", "/chronicles/index.html",
+            Arrays.asList(map, history, dash, people, fortunes, guilds));
+
+    Menu who = new Menu("Who", "/who.html");
+    Menu theLaw = new Menu("The Law", "/the_law.html");
+
+    Menu help = new Menu("Help", "/help/index.html",
+            Arrays.asList(status, guide, techSpecs, source, security));
+
+    Menu links = new Menu("Links", "/links.html");
+    Menu wiki = new Menu("Wiki", "/wiki.html");
+
+    rootMenu = new Menu("root", " root ",
+            Arrays.asList(welcome, logon, introduction, newCharacter,
+                    chronicles, who, theLaw, help, links, wiki));
+  }
+
   @Override
   public void init() throws ServletException
   {
@@ -62,21 +107,55 @@ public class WebsiteServlet extends HttpServlet
     // Set response content type
     response.setContentType("text/html");
 
-    // Actual logic goes here.
-    PrintWriter out = response.getWriter();
-    out.println(request.getRequestURI() + "</br>");
+    List<String> breadcrumbs = Arrays.asList(request.getRequestURI().split("/"));
 
+    String filename = "index.html";
+
+    String url = request.getRequestURI();
+    PrintWriter out = response.getWriter();
+    if (url.equals("/"))
+    {
+      url = "/index.html";
+    }
+    final String templateName = url.replace(".html", "");
+
+    // Actual logic goes here.
     TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
     List<Blog> blogs = blogsQuery.getResultList();
-    
+
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
     root.put("blogs", blogs);
-    
+    root.put("menus", rootMenu.getSubMenu());
+    root.put("url", url);
+    root.put("template", templateName);
+
+    Menu activeMenu = rootMenu.findMenu(url);
+    if (activeMenu != null)
+    {
+      root.put("activeMenu", activeMenu.getName());
+      root.put("breadcrumbs", activeMenu.getParent() == rootMenu ? Collections.emptyList() : Arrays.asList(activeMenu.getParent()));
+    } else
+    {
+      root.put("activeMenu", "none");
+      root.put("breadcrumbs", Collections.emptyList());
+    }
+    root.put("lastBreadcrumb", activeMenu);
+
     /* Get the template (uses cache internally) */
     Template header = freemarker.getConfiguration().getTemplate("header");
-    Template main = freemarker.getConfiguration().getTemplate("main");
+    Template main = null;
+    try
+    {
+      main = freemarker.getConfiguration().getTemplate(templateName);
+    } catch (TemplateNotFoundException notFound)
+    {
+      root.put("activeMenu", "none");
+      root.put("breadcrumbs", Collections.emptyList());
+      root.put("lastBreadcrumb", notFoundMenu);
+      main = freemarker.getConfiguration().getTemplate("notFound");
+    }
     Template footer = freemarker.getConfiguration().getTemplate("footer");
 
     try

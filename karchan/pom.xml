@@ -24,7 +24,7 @@
       <artifactId>assertj-core</artifactId>
       <!-- use 2.9.1 for Java 7 projects -->
       <version>3.11.1</version>
-      <scope>test</scope>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
