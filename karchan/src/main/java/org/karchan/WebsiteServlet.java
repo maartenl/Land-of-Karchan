@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mmud.database.entities.web.Blog;
+import mmud.database.entities.web.Faq;
 import org.assertj.core.util.VisibleForTesting;
 
 @WebServlet("*.html")
@@ -123,11 +124,14 @@ public class WebsiteServlet extends HttpServlet
     // Actual logic goes here.
     TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
     List<Blog> blogs = blogsQuery.getResultList();
+    TypedQuery<Faq> faqQuery = entityManager.createNamedQuery("Faq.findAll", Faq.class);
+    List<Faq> faq = faqQuery.getResultList();
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
     root.put("blogs", blogs);
+    root.put("faq", faq);
     root.put("menus", rootMenu.getSubMenu());
     root.put("url", url);
     root.put("template", templateName);
