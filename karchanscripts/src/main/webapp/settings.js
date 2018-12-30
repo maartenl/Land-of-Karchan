@@ -85,7 +85,7 @@ function playGame()
     var enterGame = function () {
         if (window.console)
             console.log("enterGame");
-        window.location.href = "/web/guest/play";
+        window.location.href = "/game/play.html";
     } // enterGame
     return false;
 }
@@ -115,7 +115,7 @@ function logoff()
         if (window.console)
             console.log("processLogoff");
         clearName();
-        window.location.href = "/web/guest/goodbye";
+        window.location.href = "/game/goodbye.html";
     } // processLogoff
     return false;
 }

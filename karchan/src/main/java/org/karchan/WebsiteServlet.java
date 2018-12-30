@@ -150,7 +150,7 @@ public class WebsiteServlet extends HttpServlet
 
     /* Get the template (uses cache internally) */
     Template header = freemarker.getConfiguration().getTemplate("header");
-    Template main = null;
+    Template main;
     try
     {
       main = freemarker.getConfiguration().getTemplate(templateName);

@@ -30,9 +30,9 @@ export class GameComponent implements OnInit {
       .subscribe(
       (result: any) => { // on success
         if (window.location != window.parent.location) {
-              window.parent.location.href = "/web/guest/play";
+              window.parent.location.href = "/game/play";
         }
-        window.location.href = "/web/guest/play";
+        window.location.href = "/game/play";
       },
       (err: any) => { // error
         // console.log("error", err);
@@ -49,9 +49,9 @@ export class GameComponent implements OnInit {
       (result: any) => { // on success
         game.playerService.clearName();
         if (window.location != window.parent.location) {
-              window.parent.location.href = "/web/guest/goodbye";
+              window.parent.location.href = "/game/goodbye";
         }
-        window.location.href = "/web/guest/goodbye";
+        window.location.href = "/game/goodbye";
       },
       (err: any) => { // error
         // console.log("error", err);

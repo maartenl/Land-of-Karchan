@@ -69,7 +69,7 @@ function logon()
         } else {
             Cookies.set('karchanname', name, {path: '/'});
         }
-        window.location.href = "/web/guest/settings";
+        window.location.href = "/game/settings.html";
     } // processLogon
     return false;
 }

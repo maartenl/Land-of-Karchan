@@ -104,7 +104,7 @@ values(3, "index", now(), now(), '
                                 <div class="form-group">
                                     <label for="name">Name <span class="form-required">*</span></label>
                                     <input type="text" maxlength="36" name="name" class="form-control" id="name" aria-describedby="characterHelp" placeholder="Enter character name" required>
-                                    <small id="characterHelp" class="form-text text-muted">If you wish to create a new character, click <a href="#">here</a>.</small>
+                                    <small id="characterHelp" class="form-text text-muted">If you wish to create a new character, click <a href="/new_character.html">here</a>.</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password <span class="form-required">*</span></label>
@@ -168,6 +168,7 @@ values(3, "index", now(), now(), '
             </div>
         </div>
         <script src="/javascripts/who.js" type="text/javascript"></script>
+        <script src="/javascripts/logon.js" type="text/javascript"></script> 
         <script type="text/javascript">
             $(document).ready(function () {
                 showWho("short");
@@ -186,7 +187,7 @@ replace into templates
 (id, name, created, modified, content)
 values(5, "introduction", now(), now(), '
         <div class="container">
-            <p>This is the MUD (multi-user dungeon) called Land of Karchan, and it is one of the first real MUD''s on the World Wide Web. If you are new here, the game is very simple. Just type below, a fictive name (and make it a little original) and a password (to prevent people from using your character with devastating problems). If you already have a character here, you will automatically get where you were when you left this great game. Look at the following links:</p> <ul> <li><a href="/logon">Loggging into Karchan</a></li> </ul> <ul> <li><a href="/the-guide">Manual and Explanation</a></li> </ul> <p>&nbsp;If you have entered your name and password, please hit the Submit button. (Remember that you are not supposed to type multiple names, just one name will suffice and more will give grave problems.) Or hit Clear for a new try...</p> <p>If you wish to create a new character, click <a href="/new-character">here</a>.</p> <p><em>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost Souls)</em> <a href="/deputy-logon">&gt;</a></p> <p>&nbsp;</p> 
+            <p>This is the MUD (multi-user dungeon) called Land of Karchan, and it is one of the first real MUD''s on the World Wide Web. If you are new here, the game is very simple. Just type below, a fictive name (and make it a little original) and a password (to prevent people from using your character with devastating problems). If you already have a character here, you will automatically get where you were when you left this great game. Look at the following links:</p> <ul> <li><a href="/logon.html">Loggging into Karchan</a></li> </ul> <ul> <li><a href="/help/guide.html">Manual and Explanation</a></li> </ul> <p>&nbsp;If you have entered your name and password, please hit the Submit button. (Remember that you are not supposed to type multiple names, just one name will suffice and more will give grave problems.) Or hit Clear for a new try...</p> <p>If you wish to create a new character, click <a href="/new_character.html">here</a>.</p> <p><em>Karn (Ruler of Karchan, Keeper of the Key to the Room of Lost Souls)</em> <a href="/deputy-logon">&gt;</a></p> <p>&nbsp;</p> 
         </div>
 ');
 replace into templates 
@@ -263,7 +264,7 @@ values(7, "logon", now(), now(), '
                                 <div class="form-group">
                                     <label for="name">Name <span class="form-required">*</span></label>
                                     <input type="text" maxlength="36" name="name" class="form-control" id="name" aria-describedby="characterHelp" placeholder="Enter character name" required>
-                                    <small id="characterHelp" class="form-text text-muted">If you wish to create a new character, click <a href="#">here</a>.</small>
+                                    <small id="characterHelp" class="form-text text-muted">If you wish to create a new character, click <a href="/new_character.html">here</a>.</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password <span class="form-required">*</span></label>
@@ -277,6 +278,7 @@ values(7, "logon", now(), now(), '
                 </div>                
             </div>
         </div>
+        <script src="/javascripts/logon.js" type="text/javascript"></script> 
 ');
 replace into templates 
 (id, name, created, modified, content)
@@ -1829,3 +1831,57 @@ values(24, "chronicles/person", now(), now(), '
   <div id="karchan_charactersheet">Loading content. Please hold...</div>
 </div>');
 
+-- Game --
+replace into templates 
+(id, name, created, modified, content)
+values(25, "game/settings", now(), now(), '
+<div class="container-fluid">
+  <iframe id="embeddedIframe" src="/karchanpersonal" style="position:absolute;" height="100%" class="autosizeiframe-monitored-height" width="100%" frameborder="0"></iframe>
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(26, "game/play", now(), now(), '
+<div class="container-fluid">
+  <p><img alt="compass" border="0" src="/images/png/compass.png" usemap="#roosmap" /><map name="roosmap"><area alt="North" coords="0,0,80,75,160,0,0,0" href="javascript:void(0)" onclick="goNorth();" shape="poly" /> <area alt="South" coords="0,151,80,75,160,151,0,151" href="javascript:void(0)" onclick="goSouth();" shape="poly" /> <area alt="West" coords="0,0,80,75,0,151,0,0" href="javascript:void(0)" onclick="goWest();" shape="poly" /> <area alt="East" coords="160,0,80,75,160,151,160,0" href="javascript:void(0)" onclick="goEast()" shape="poly" /></map></p>
+
+  <p><a class="karchanbutton" href="/game/settings" target="_blank" title="Read your mail"><span>Mail</span></a></p>
+
+  <p><a class="karchanbutton" href="/game/settings" target="_blank" title="Charactersheet"><span>Settings</span></a></p>
+
+  <p><a class="karchanbutton" href="javascript:void(0)" onclick="toggleSleep();return false;"><span id="sleepButtonSpanId">Sleep</span></a></p>
+
+  <p><a class="karchanbutton" href="javascript:void(0)" onclick="toggleEntry();return false;" title="Provide a big entry form"><span>Big talk</span></a></p>
+
+  <p><a class="karchanbutton" href="javascript:void(0)" onclick="clearLog();return false;" title="Clear your log"><span>Clear</span></a></p>
+
+  <p><a class="karchanbutton" href="/game/settings" onclick="return quit();" title="Quit the game"><span>Quit</span></a></p>
+</div>
+<div class="container-fluid">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.3/js.cookie.min.js">
+  </script><script src="/javascripts/play.js" type="text/javascript"></script>
+  <div id="page-title">&nbsp;</div>
+
+  <div id="karchan_body">Loading content. Please hold...</div>
+
+  <div id="karchan_log">Loading content. Please hold...</div>
+
+  <p>&nbsp;</p>
+
+  <form id="commandForm" method="post" onsubmit="play(); return false;">
+  <input id="command" name="command" size="60" type="text" />
+  <textarea class="form-textarea" cols="60" id="bigcommand" name="bigcommand" rows="5" style="display:none"></textarea> 
+
+  <input type="submit" value="Submit" />&nbsp;</form>
+
+  <div id="warning" style="color: red;">&nbsp;</div>
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(27, "game/play", now(), now(), '
+<div class="container">
+  <p><img alt="Y" src="/images/gif/letters/y.gif" style="float: left;" />our game has been saved and we look forward to seeing you again in the near future.</p>
+
+  <p>Click above to go somewhere else.</p>
+</div>');
