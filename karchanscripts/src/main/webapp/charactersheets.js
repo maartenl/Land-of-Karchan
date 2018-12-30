@@ -35,7 +35,7 @@ function showCharactersheets()
            formatted_html += "<br/><p><img src=\"/images/gif/letters/" +
            first_letter.toLowerCase() + ".gif\"></p>";
          }
-         formatted_html += "<a href=\"/web/guest/person?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
+         formatted_html += "<a href=\"/chronicles/person.html?name=" + data[i].name + "\">"+ data[i].name + "</a><br/>";
     }
     formatted_html += "</td></tr></table>";
     $('#karchan_charactersheets').html(formatted_html); // data.products);

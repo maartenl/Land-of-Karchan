@@ -1816,3 +1816,16 @@ values(23, "new_character", now(), now(), '
     <button type="submit" id="edit-submit" class="btn btn-primary">Submit</button>
   </form>
 </div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(24, "chronicles/person", now(), now(), '
+<div class="container">
+  <script src="/javascripts/charactersheet.js" type="text/javascript"></script>
+  <h1 id="page-title">Charactersheet of</h1>
+
+  <p><a href="/chronicles/people.html">Back to People</a></p>
+
+  <div id="karchan_charactersheet">Loading content. Please hold...</div>
+</div>');
+
