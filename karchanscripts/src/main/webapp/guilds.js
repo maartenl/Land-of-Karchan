@@ -22,7 +22,7 @@ function showGuilds()
          {
            continue;
          }
-         formatted_html += "<h1><img src=\"/karchan-theme/images/favicon.ico\" id=\"karchan_guildtitle_" + i + "\"/>";
+         formatted_html += "<h1><img src=\"/favicon.ico\" id=\"karchan_guildtitle_" + i + "\"/>";
          if (data[i].guildurl != undefined && data[i].guildurl != "")
          {
            formatted_html += "<a href=\"" + data[i].guildurl + "\">";

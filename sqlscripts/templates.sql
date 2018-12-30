@@ -19,6 +19,8 @@ values(1, "header", now(), now(),
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+        <link rel="icon" href="/favicon.ico">
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/css/karchan.css"/>
@@ -1556,4 +1558,261 @@ values(22, "help/faq", now(), now(), '<div class="container">
   </div>
 </#list>
 </div>
+</div>');
+replace into templates 
+(id, name, created, modified, content)
+values(23, "new_character", now(), now(), '
+<div class="container">
+  <p>You are presently in the room of lost souls. It is dark all around you, but you see transparent souls everywhere. You are yourself a soul. A sign is visible on the west-wall. You make an attempt to read it. After a while you figure it out. This is what it says:</p>
+
+  <p><em>Hello</em></p>
+
+  <p><em>Let me introduce myself. I am Karn. You probably haven''t heard of me, but I am the diety of this place, and I am here to see that everything goes according to the rules that I have made.</em></p>
+
+  <p><em>You are just a spirit, a soul, a ghost, a what-ever-you-call-it. You have no substance whatsoever. You can''t go about playing with no body! So here you can mould and form your own body, just the way <strong>you</strong> like it. </em></p>
+
+  <p><em>There are certain rules which you have to abide by if you want to be able to play without any problems: </em></p>
+
+  <ul>
+    <li><em>leave this game every time you play it with the commando <strong>quit</strong>. If you don''t, your session will continue without you. </em></li>
+    <li><em>do not start another session while you are still playing in one, that will result in an error </em></li>
+    <li><em>read the book in the cave </em></li>
+    <li><em>do not go to another link while you are playing, this will make it extremely hard to come back! </em></li>
+    <li><em>remember that this game is in the development stages yet, al lot of things won''t work, but this game will keep getting better </em></li>
+  </ul>
+
+  <p><em>That is about it. More detailed information can be found in the book mentioned. If you have entered everything, please hit the <strong>Submit</strong> button.</em></p>
+
+  <p style="text-align: right;"><em>Karn, Ruler of Karchan, Keeper of the Key to the Room of Lost Souls </em></p>
+
+  <script src="/javascripts/newchar.js" type="text/javascript"></script>
+  <form accept-charset="UTF-8" enctype="multipart/form-data" id="webform-client-form-18" method="post" onsubmit="createNewchar();return false;">
+    <div class="form-group">
+      <label for="edit-submitted-fictional-name">Name <span class="form-required">*</span></label>
+      <input type="text" class="form-control" id="edit-submitted-fictional-name" aria-describedby="fictionalNameHelp" size="19" maxlength="19">
+      <small id="fictionalNameHelp" class="form-text text-muted">The fictional name of your new character.</small>
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-password">Password <span class="form-required">*</span></label>
+      <input type="password" class="form-control" id="edit-submitted-password" placeholder="Password" size="60" maxlength="128">
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-password2">Password (again for verification) <span class="form-required">*</span></label>
+      <input type="password" class="form-control" id="edit-submitted-password2" placeholder="Password again" size="60" maxlength="128">
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-title-except-name">Title</label>
+      <input type="text" class="form-control" id="edit-submitted-title-except-name" size="50" maxlength="79">
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-real-name">Your name</label>
+      <input type="text" class="form-control" id="edit-submitted-real-name" size="49" maxlength="49">
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-email">Email address</label>
+      <input type="email" class="form-control" id="edit-submitted-email" aria-describedby="emailHelp" placeholder="Enter email">
+      <small id="emailHelp" class="form-text text-muted">This will only be used for sending you password reset links.</small>
+    </div>
+    <div class="form-group">
+      <label for="edit-submitted-race">Race <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-race">
+        <option selected="selected" value="human">human</option>
+        <option value="dwarf">dwarf</option>
+        <option value="elf">elf</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Sex <span class="form-required">*</span></label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sexRadios" id="edit-submitted-sex-1" value="male" checked>
+      <label class="form-check-label" for="edit-submitted-sex-1">
+        male
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="sexRadios" id="edit-submitted-sex-2" value="female">
+      <label class="form-check-label" for="edit-submitted-sex-2">
+        female
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-age">Age <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-age">
+        <option selected="selected" value="young">young</option>
+        <option value="middle-aged">middle-aged</option>
+        <option value="old">old</option> 
+        <option value="very old">very old</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-length">Length <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-length">
+        <option value="very small">very small</option>
+        <option value="small">small</option>
+        <option value="medium height">medium height</option> 
+        <option selected="selected" value="tall">tall</option> 
+        <option value="very tall">very tall</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-width">Width <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-width">
+        <option value="very thin">very thin</option>
+        <option value="thin">thin</option>
+        <option value="transparent">transparent</option>
+        <option value="skinny">skinny</option>
+        <option value="slender">slender</option>
+        <option value="medium">medium</option>
+        <option value="corpulescent">corpulescent</option>
+        <option value="fat">fat</option>
+        <option value="very fat">very fat</option>
+        <option value="ascetic">ascetic</option>
+        <option value="athlethic">athlethic</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-complexion">Complexion <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-complexion">
+        <option value="black">black</option>
+        <option value="brown-skinned">brown-skinned</option>
+        <option value="dark-skinned">dark-skinned</option>
+        <option value="ebony-skinned">ebony-skinned</option>
+        <option value="green-skinned">green-skinned</option>
+        <option value="ivory-skinned">ivory-skinned</option>
+        <option value="light-skinned">light-skinned</option>
+        <option value="pale">pale</option>
+        <option value="pallid">pallid</option>
+        <option selected="selected" value="swarthy">swarthy</option>
+        <option value="white">white</option>
+        <option value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-eyes">Eyes <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-eyes">
+        <option selected="selected" value="black-eyed">black-eyed</option>
+        <option value="blue-eyed">blue-eyed</option>
+        <option value="brown-eyed">brown-eyed</option>
+        <option value="dark-eyed">dark-eyed</option>
+        <option value="gray-eyed">gray-eyed</option>
+        <option value="green-eyed">green-eyed</option>
+        <option value="one-eyed">one-eyed</option>
+        <option value="red-eyed">red-eyed</option>
+        <option value="round-eyed">round-eyed</option>
+        <option value="slant-eyed">slant-eyed</option>
+        <option value="squinty-eyed">squinty-eyed</option>
+        <option value="yellow-eyed">yellow-eyed</option>
+        <option value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-face">Face <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-face">
+        <option value="big-nosed">big-nosed</option>
+        <option value="chinless">chinless</option>
+        <option value="dimpled">dimpled</option>
+        <option value="double-chinned">double-chinned</option>
+        <option value="furry-eared">furry-eared</option>
+        <option value="hook-nosed">hook-nosed</option>
+        <option value="jug-eared">jug-eared</option>
+        <option value="knobnosed">knobnosed</option>
+        <option selected="selected" value="long-faced">long-faced</option>
+        <option value="pointy-eared">pointy-eared</option>
+        <option value="poppy-eyed">poppy-eyed</option>
+        <option value="potato-nosed">potato-nosed</option>
+        <option value="pug-nosed">pug-nosed</option>
+        <option value="red-nosed">red-nosed</option>
+        <option value="roman-nosed">roman-nosed</option>
+        <option value="round-faced">round-faced</option>
+        <option value="sad-faced">sad-faced</option>
+        <option value="square-faced">square-faced</option>
+        <option value="square-jawed">square-jawed</option>
+        <option value="stone-faced">stone-faced</option>
+        <option value="thin-faced">thin-faced</option>
+        <option value="upnosed">upnosed</option>
+        <option value="wide-mouthed">wide-mouthed</option>
+        <option value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-hair">Hair <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-hair">
+        <option value="bald">bald</option>
+        <option value="balding">balding</option>
+        <option selected="selected" value="black-haired">black-haired</option>
+        <option value="blond-haired">blond-haired</option>
+        <option value="blue-haired">blue-haired</option>
+        <option value="brown-haired">brown-haired</option>
+        <option value="chestnut-haired">chestnut-haired</option>
+        <option value="dark-haired">dark-haired</option>
+        <option value="gray-haired">gray-haired</option>
+        <option value="green-haired">green-haired</option>
+        <option value="light-haired">light-haired</option>
+        <option value="long haired">long haired</option>
+        <option value="orange-haired">orange-haired</option>
+        <option value="purple-haired">purple-haired</option>
+        <option value="white-haired">white-haired</option>
+        <option value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-beard">Beard <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-beard">
+        <option value="black-bearded">black-bearded</option>
+        <option value="blond-bearded">blond-bearded</option>
+        <option value="blue-bearded">blue-bearded</option>
+        <option value="brown-bearded">brown-bearded</option>
+        <option value="clean">clean</option>
+        <option value="shaven">shaven</option>
+        <option value="fork-bearded">fork-bearded</option>
+        <option value="gray-bearded">gray-bearded</option>
+        <option value="green-bearded">green-bearded</option>
+        <option value="long bearded">long bearded</option>
+        <option value="mustachioed">mustachioed</option>
+        <option value="orange-bearded">orange-bearded</option>
+        <option value="purple-bearded">purple-bearded</option>
+        <option value="red-bearded">red-bearded</option>
+        <option value="thinly-bearded">thinly-bearded</option>
+        <option value="white-bearded">white-bearded</option>
+        <option value="with a ponytale">with a ponytale</option>
+        <option selected="selected" value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-arms">Arms <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-arms">
+        <option value="long-armed">long-armed</option>
+        <option value="short-armed">short-armed</option>
+        <option value="thick-armed">thick-armed</option>
+        <option value="thin-armed">thin-armed</option>
+        <option selected="selected" value="none">none</option> 
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-submitted-legs">Legs <span class="form-required">*</span></label>
+      <select class="form-control" id="edit-submitted-legs">
+        <option value="bandy-legged">bandy-legged</option>
+        <option value="long-legged">long-legged</option>
+        <option value="short-legged">short-legged</option>
+        <option value="skinny-legged">skinny-legged</option>
+        <option value="thin-legged">thin-legged</option>
+        <option value="thick-legged">thick-legged</option>
+        <option selected="selected" value="none">none</option> 
+      </select>
+    </div>
+
+    <button type="submit" id="edit-submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>');
