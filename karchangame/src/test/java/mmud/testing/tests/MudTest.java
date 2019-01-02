@@ -19,6 +19,7 @@ package mmud.testing.tests;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.testng.annotations.BeforeMethod;
 
 /**
  *
@@ -27,6 +28,12 @@ import java.util.logging.Logger;
 public class MudTest
 {
 
+  @BeforeMethod
+  public void setupBasePath()
+  {
+    System.setProperty("mmud.base.path", "/home/maartenl");
+  }
+  
     /**
      * Sets the field 'fieldname' in object 'object' to the value 'value'. Where 'object' is an object
      * of class 'targetClass'.

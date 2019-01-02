@@ -68,7 +68,7 @@ public class TitleCommandTest extends MudTest
         DisplayInterface display = titleCommand.run("title Ruler of the Land", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("Changed your title to : 'Ruler of the Land'.<br />\n");
+        assertThat(log).isEqualTo("Changed your title to : &#39;Ruler of the Land&#39;.<br />\r\n");
         assertThat(marvin.getTitle()).isEqualTo("Ruler of the Land");
     }
 
@@ -82,7 +82,7 @@ public class TitleCommandTest extends MudTest
         DisplayInterface display = titleCommand.run("title remove", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("You have removed your current title.<br />\n");
+        assertThat(log).isEqualTo("You have removed your current title.<br />\r\n");
         assertThat(marvin.getTitle()).isNull();
     }
 
@@ -96,7 +96,7 @@ public class TitleCommandTest extends MudTest
         DisplayInterface display = titleCommand.run("title", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("Your current title is 'The Paranoid Android'.<br />\n");
+        assertThat(log).isEqualTo("Your current title is &#39;The Paranoid Android&#39;.<br />\r\n");
         assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
     }
 

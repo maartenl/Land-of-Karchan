@@ -1268,7 +1268,7 @@ public class PrivateBeanTest
     person.homepageurl = "http://www.homepages.com/homepage.html";
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
-    person.storyline = "Life, don't talk to me about life.";
+    person.storyline = "Life, don&#39;t talk to me about life.";
     Response response = privateBean.updateCharacterSheet("Marvin", person);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(cinfo.getName(), person.name);
@@ -1319,7 +1319,7 @@ public class PrivateBeanTest
             assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
             assertEquals(cinfo.getDateofbirth(), "Beginning of time");
             assertEquals(cinfo.getCityofbirth(), "Sirius");
-            assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
+            assertEquals(cinfo.getStoryline(), "Life, don&#39;t talk to me about life.");
           }
         };
       }
@@ -1389,7 +1389,7 @@ public class PrivateBeanTest
     assertEquals(cinfo.getHomepageurl(), person.homepageurl);
     assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
     assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
-    assertEquals(cinfo.getStoryline(), "Life, don't talk to me about life.");
+    assertEquals(cinfo.getStoryline(), "Life, don&#39;t talk to me about life.");
 
   }
 

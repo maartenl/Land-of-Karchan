@@ -86,7 +86,7 @@ public class RemoveCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\n");
+    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\r\n");
     String hotblackLog = hotblack.getLog(0);
     assertThat(hotblackLog).isEqualTo("");
     // the important bit
@@ -116,7 +116,7 @@ public class RemoveCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\n");
+    assertThat(karnLog).isEqualTo("Cannot find that person.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
   }
@@ -142,7 +142,7 @@ public class RemoveCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("A guildmaster cannot remove him/herself from the guild.<br />\n");
+    assertThat(karnLog).isEqualTo("A guildmaster cannot remove him/herself from the guild.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
   }
@@ -168,9 +168,9 @@ public class RemoveCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("You have removed Marvin from your guild.<br />\n<b>Marvin</b>\n has been removed from the guild.<br />\n");
+    assertThat(karnLog).isEqualTo("You have removed Marvin from your guild.<br />\r\n<b>Marvin</b> has been removed from the guild.<br />\r\n");
     String marvinLog = marvin.getLog(0);
-    assertThat(marvinLog).isEqualTo("<b>Marvin</b>\n has been removed from the guild.<br />\n");
+    assertThat(marvinLog).isEqualTo("<b>Marvin</b> has been removed from the guild.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
     assertThat(marvin.getGuild()).isNull();

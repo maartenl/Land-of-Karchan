@@ -92,7 +92,7 @@ public class RibbitCommandTest extends MudTest
         DisplayInterface display = ribbitCommand.run("ribbit", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("A frog called Marvin says &quot;Rrribbit!&quot;.<br />\nYou feel the need to say 'Ribbit' just 4 times.<br />\n");
+        assertThat(log).isEqualTo("A frog called Marvin says &#34;Rrribbit!&#34;.<br />\nYou feel the need to say &#39;Ribbit&#39; just 4 times.<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("");
     }
 
@@ -111,7 +111,7 @@ public class RibbitCommandTest extends MudTest
         DisplayInterface display = ribbitCommand.run("ribbit", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("You cannot say 'Ribbit' that fast! You will get tongue tied!<br />\n");
+        assertThat(log).isEqualTo("You cannot say &#39;Ribbit&#39; that fast! You will get tongue tied!<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("");
     }
 

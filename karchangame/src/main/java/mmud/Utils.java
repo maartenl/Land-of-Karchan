@@ -17,9 +17,6 @@
 package mmud;
 
 import mmud.exceptions.MudException;
-import org.owasp.validator.html.*;
-
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,279 +34,279 @@ public class Utils
   private static final TreeMap<String, String> theEmotionStructure = new TreeMap<>();
   private static final TreeMap<String, String> theEmotion2Structure = new TreeMap<>();
   private final static String[] adverb =
-    {
-      "absentmindedly", "aimlessly", "amazedly", "amusedly", "angrily",
-      "anxiously", "appreciatively", "appropriately", "archly",
-      "astonishingly", "attentively", "badly", "barely", "belatedly",
-      "bitterly", "boringly", "breathlessly", "briefly", "brightly",
-      "brotherly", "busily", "carefully", "cautiously", "charmingly",
-      "cheerfully", "childishly", "clumsily", "coaxingly", "coldly",
-      "completely", "confidently", "confusedly", "contentedly",
-      "coquetishly", "courageously", "coyly", "crazily", "cunningly",
-      "curiously", "cutely", "cynically", "dangerously", "deeply",
-      "defiantly", "dejectedly", "delightedly", "delightfully",
-      "deliriously", "demonically", "depressively", "derisively",
-      "desperately", "devilishly", "dirtily", "disappointedly",
-      "discretely", "disgustedly", "doubtfully", "dreamily", "dubiously",
-      "earnestly", "egocentrically", "egoistically", "encouragingly",
-      "endearingly", "enthusiastically", "enviously", "erotically",
-      "evilly", "exhaustedly", "exuberantly", "faintly", "fanatically",
-      "fatherly", "fiercefully", "firmly", "foolishly", "formally",
-      "frantically", "friendly", "frostily", "funnily", "furiously",
-      "generously", "gleefully", "gracefully", "graciously",
-      "gratefully", "greedily", "grimly", "happily", "harmonically",
-      "headlessly", "heartbrokenly", "heavily", "helpfully",
-      "helplessly", "honestly", "hopefully", "humbly", "hungrily",
-      "hysterically", "ignorantly", "impatiently", "inanely",
-      "indecently", "indifferently", "innocently", "inquiringly",
-      "inquisitively", "insanely", "instantly", "intensely",
-      "interestedly", "ironically", "jauntily", "jealously", "joyfully",
-      "joyously", "kindly", "knowingly", "lazily", "loudly", "lovingly",
-      "lustfully", "madly", "maniacally", "melancholically",
-      "menacingly", "mercilessly", "merrily", "mischieviously",
-      "motherly", "musically", "mysteriously", "nastily", "naughtily",
-      "nervously", "nicely", "noisily", "nonchalantly", "outrageously",
-      "overwhelmingly", "painfully", "passionately", "patiently",
-      "patronizingly", "perfectly", "personally", "physically",
-      "pitifully", "playfully", "politely", "professionally",
-      "profoundly", "profusely", "proudly", "questioningly", "quickly",
-      "quietly", "quizzically", "randomly", "rapidly", "really",
-      "rebelliously", "relieved", "reluctantly", "remorsefully",
-      "repeatedly", "resignedly", "respectfully", "romantically",
-      "rudely", "sadistically", "sadly", "sarcastically", "sardonically",
-      "satanically", "scornfully", "searchingly", "secretively",
-      "seductively", "sensually", "seriously", "sexily", "shamelessly",
-      "sheepishly", "shyly", "sickly", "significantly", "silently",
-      "sisterly", "skilfully", "sleepily", "slightly", "slowly", "slyly",
-      "smilingly", "smugly", "socially", "softly", "solemnly",
-      "strangely", "stupidly", "sweetly", "tearfully", "tenderly",
-      "terribly", "thankfully", "theoretically", "thoughtfully",
-      "tightly", "tiredly", "totally", "tragically", "truly",
-      "trustfully", "uncontrollably", "understandingly", "unexpectedly",
-      "unhappily", "unintentionally", "unknowingly", "vaguely",
-      "viciously", "vigorously", "violently", "virtually", "warmly",
-      "wearily", "wholeheartedly", "wickedly", "wildly", "wisely",
-      "wistfully"
-    };
+  {
+    "absentmindedly", "aimlessly", "amazedly", "amusedly", "angrily",
+    "anxiously", "appreciatively", "appropriately", "archly",
+    "astonishingly", "attentively", "badly", "barely", "belatedly",
+    "bitterly", "boringly", "breathlessly", "briefly", "brightly",
+    "brotherly", "busily", "carefully", "cautiously", "charmingly",
+    "cheerfully", "childishly", "clumsily", "coaxingly", "coldly",
+    "completely", "confidently", "confusedly", "contentedly",
+    "coquetishly", "courageously", "coyly", "crazily", "cunningly",
+    "curiously", "cutely", "cynically", "dangerously", "deeply",
+    "defiantly", "dejectedly", "delightedly", "delightfully",
+    "deliriously", "demonically", "depressively", "derisively",
+    "desperately", "devilishly", "dirtily", "disappointedly",
+    "discretely", "disgustedly", "doubtfully", "dreamily", "dubiously",
+    "earnestly", "egocentrically", "egoistically", "encouragingly",
+    "endearingly", "enthusiastically", "enviously", "erotically",
+    "evilly", "exhaustedly", "exuberantly", "faintly", "fanatically",
+    "fatherly", "fiercefully", "firmly", "foolishly", "formally",
+    "frantically", "friendly", "frostily", "funnily", "furiously",
+    "generously", "gleefully", "gracefully", "graciously",
+    "gratefully", "greedily", "grimly", "happily", "harmonically",
+    "headlessly", "heartbrokenly", "heavily", "helpfully",
+    "helplessly", "honestly", "hopefully", "humbly", "hungrily",
+    "hysterically", "ignorantly", "impatiently", "inanely",
+    "indecently", "indifferently", "innocently", "inquiringly",
+    "inquisitively", "insanely", "instantly", "intensely",
+    "interestedly", "ironically", "jauntily", "jealously", "joyfully",
+    "joyously", "kindly", "knowingly", "lazily", "loudly", "lovingly",
+    "lustfully", "madly", "maniacally", "melancholically",
+    "menacingly", "mercilessly", "merrily", "mischieviously",
+    "motherly", "musically", "mysteriously", "nastily", "naughtily",
+    "nervously", "nicely", "noisily", "nonchalantly", "outrageously",
+    "overwhelmingly", "painfully", "passionately", "patiently",
+    "patronizingly", "perfectly", "personally", "physically",
+    "pitifully", "playfully", "politely", "professionally",
+    "profoundly", "profusely", "proudly", "questioningly", "quickly",
+    "quietly", "quizzically", "randomly", "rapidly", "really",
+    "rebelliously", "relieved", "reluctantly", "remorsefully",
+    "repeatedly", "resignedly", "respectfully", "romantically",
+    "rudely", "sadistically", "sadly", "sarcastically", "sardonically",
+    "satanically", "scornfully", "searchingly", "secretively",
+    "seductively", "sensually", "seriously", "sexily", "shamelessly",
+    "sheepishly", "shyly", "sickly", "significantly", "silently",
+    "sisterly", "skilfully", "sleepily", "slightly", "slowly", "slyly",
+    "smilingly", "smugly", "socially", "softly", "solemnly",
+    "strangely", "stupidly", "sweetly", "tearfully", "tenderly",
+    "terribly", "thankfully", "theoretically", "thoughtfully",
+    "tightly", "tiredly", "totally", "tragically", "truly",
+    "trustfully", "uncontrollably", "understandingly", "unexpectedly",
+    "unhappily", "unintentionally", "unknowingly", "vaguely",
+    "viciously", "vigorously", "violently", "virtually", "warmly",
+    "wearily", "wholeheartedly", "wickedly", "wildly", "wisely",
+    "wistfully"
+  };
   private static final String[][] emotions =
+  {
     {
-      {
-        "agree", "agrees"
-      },
-      {
-        "apologize", "apologizes"
-      },
-      {
-        "blink", "blinks"
-      },
-      {
-        "cheer", "cheers"
-      },
-      {
-        "chuckle", "chuckles"
-      },
-      {
-        "cough", "coughs"
-      },
-      {
-        "dance", "dances"
-      },
-      {
-        "disagree", "disagrees"
-      },
-      {
-        "flinch", "flinches"
-      },
-      {
-        "flirt", "flirts"
-      },
-      {
-        "frown", "frowns"
-      },
-      {
-        "giggle", "giggles"
-      },
-      {
-        "glare", "glares"
-      },
-      {
-        "grimace", "grimaces"
-      },
-      {
-        "grin", "grins"
-      },
-      {
-        "groan", "groans"
-      },
-      {
-        "growl", "growls"
-      },
-      {
-        "grumble", "grumbles"
-      },
-      {
-        "grunt", "grunts"
-      },
-      {
-        "hmm", "hmms"
-      },
-      {
-        "howl", "howls"
-      },
-      {
-        "hum", "hums"
-      },
-      {
-        "kneel", "kneels"
-      },
-      {
-        "kneel", "kneels"
-      },
-      {
-        "listen", "listens"
-      },
-      {
-        "melt", "melts"
-      },
-      {
-        "mumble", "mumbles"
-      },
-      {
-        "mutter", "mutters"
-      },
-      {
-        "nod", "nods"
-      },
-      {
-        "purr", "purrs"
-      },
-      {
-        "shrug", "shrugs"
-      },
-      {
-        "sigh", "sighs"
-      },
-      {
-        "smile", "smiles"
-      },
-      {
-        "smirk", "smirks"
-      },
-      {
-        "snarl", "snarls"
-      },
-      {
-        "sneeze", "sneezes"
-      },
-      {
-        "stare", "stares"
-      },
-      {
-        "think", "thinks"
-      },
-      {
-        "wave", "waves"
-      },
-      {
-        "whistle", "whistles"
-      },
-      {
-        "wink", "winks"
-      },
-      {
-        "laugh", "laughs out loud"
-      },
-      {
-        "wonder", "wonders"
-      },
-      {
-        "wince", "winces"
-      }
-    };
+      "agree", "agrees"
+    },
+    {
+      "apologize", "apologizes"
+    },
+    {
+      "blink", "blinks"
+    },
+    {
+      "cheer", "cheers"
+    },
+    {
+      "chuckle", "chuckles"
+    },
+    {
+      "cough", "coughs"
+    },
+    {
+      "dance", "dances"
+    },
+    {
+      "disagree", "disagrees"
+    },
+    {
+      "flinch", "flinches"
+    },
+    {
+      "flirt", "flirts"
+    },
+    {
+      "frown", "frowns"
+    },
+    {
+      "giggle", "giggles"
+    },
+    {
+      "glare", "glares"
+    },
+    {
+      "grimace", "grimaces"
+    },
+    {
+      "grin", "grins"
+    },
+    {
+      "groan", "groans"
+    },
+    {
+      "growl", "growls"
+    },
+    {
+      "grumble", "grumbles"
+    },
+    {
+      "grunt", "grunts"
+    },
+    {
+      "hmm", "hmms"
+    },
+    {
+      "howl", "howls"
+    },
+    {
+      "hum", "hums"
+    },
+    {
+      "kneel", "kneels"
+    },
+    {
+      "kneel", "kneels"
+    },
+    {
+      "listen", "listens"
+    },
+    {
+      "melt", "melts"
+    },
+    {
+      "mumble", "mumbles"
+    },
+    {
+      "mutter", "mutters"
+    },
+    {
+      "nod", "nods"
+    },
+    {
+      "purr", "purrs"
+    },
+    {
+      "shrug", "shrugs"
+    },
+    {
+      "sigh", "sighs"
+    },
+    {
+      "smile", "smiles"
+    },
+    {
+      "smirk", "smirks"
+    },
+    {
+      "snarl", "snarls"
+    },
+    {
+      "sneeze", "sneezes"
+    },
+    {
+      "stare", "stares"
+    },
+    {
+      "think", "thinks"
+    },
+    {
+      "wave", "waves"
+    },
+    {
+      "whistle", "whistles"
+    },
+    {
+      "wink", "winks"
+    },
+    {
+      "laugh", "laughs out loud"
+    },
+    {
+      "wonder", "wonders"
+    },
+    {
+      "wince", "winces"
+    }
+  };
   private static final String[][] emotions2 =
+  {
     {
-      {
-        "caress", "caresses"
-      },
-      {
-        "comfort", "comforts"
-      },
-      {
-        "confuse", "confuses"
-      },
-      {
-        "congratulate", "congratulates"
-      },
-      {
-        "cuddle", "cuddles"
-      },
-      {
-        "fondle", "fondles"
-      },
-      {
-        "greet", "greets"
-      },
-      {
-        "hug", "hugs"
-      },
-      {
-        "ignore", "ignores"
-      },
-      {
-        "kick", "kicks"
-      },
-      {
-        "kiss", "kisses"
-      },
-      {
-        "knee", "knees"
-      },
-      {
-        "lick", "licks"
-      },
-      {
-        "like", "likes"
-      },
-      {
-        "love", "loves"
-      },
-      {
-        "nudge", "nudges"
-      },
-      {
-        "pat", "pats"
-      },
-      {
-        "pinch", "pinches"
-      },
-      {
-        "poke", "pokes"
-      },
-      {
-        "slap", "slaps"
-      },
-      {
-        "smooch", "smooches"
-      },
-      {
-        "sniff", "sniffes"
-      },
-      {
-        "squeeze", "squeezes"
-      },
-      {
-        "tackle", "tackles"
-      },
-      {
-        "thank", "thanks"
-      },
-      {
-        "tickle", "tickles"
-      },
-      {
-        "worship", "worships"
-      }
-    };
+      "caress", "caresses"
+    },
+    {
+      "comfort", "comforts"
+    },
+    {
+      "confuse", "confuses"
+    },
+    {
+      "congratulate", "congratulates"
+    },
+    {
+      "cuddle", "cuddles"
+    },
+    {
+      "fondle", "fondles"
+    },
+    {
+      "greet", "greets"
+    },
+    {
+      "hug", "hugs"
+    },
+    {
+      "ignore", "ignores"
+    },
+    {
+      "kick", "kicks"
+    },
+    {
+      "kiss", "kisses"
+    },
+    {
+      "knee", "knees"
+    },
+    {
+      "lick", "licks"
+    },
+    {
+      "like", "likes"
+    },
+    {
+      "love", "loves"
+    },
+    {
+      "nudge", "nudges"
+    },
+    {
+      "pat", "pats"
+    },
+    {
+      "pinch", "pinches"
+    },
+    {
+      "poke", "pokes"
+    },
+    {
+      "slap", "slaps"
+    },
+    {
+      "smooch", "smooches"
+    },
+    {
+      "sniff", "sniffes"
+    },
+    {
+      "squeeze", "squeezes"
+    },
+    {
+      "tackle", "tackles"
+    },
+    {
+      "thank", "thanks"
+    },
+    {
+      "tickle", "tickles"
+    },
+    {
+      "worship", "worships"
+    }
+  };
 
   static
   {
@@ -328,11 +325,11 @@ public class Utils
   }
 
   /**
-   * Returns an unmodifiable map with emotions, like cheer. Can have a target, but isn't
-   * necessary.
+   * Returns an unmodifiable map with emotions, like cheer. Can have a target,
+   * but isn't necessary.
    *
-   * @return returns an unmodifiable map containing emotions. They form pairs for example
-   * ['agree','agrees'].
+   * @return returns an unmodifiable map containing emotions. They form pairs
+   * for example ['agree','agrees'].
    */
   public static Map<String, String> getEmotions()
   {
@@ -342,8 +339,8 @@ public class Utils
   /**
    * Returns an unmodifiable map with emotions, like greet. Must have a target.
    *
-   * @return returns an unmodifiable map containing emotions. They form pairs for example
-   * ['congratulate','congratulates'].
+   * @return returns an unmodifiable map containing emotions. They form pairs
+   * for example ['congratulate','congratulates'].
    */
   public static Map<String, String> getTargetEmotions()
   {
@@ -354,28 +351,11 @@ public class Utils
    * Returns a safe string, containing no javascript at all.
    *
    * @param dirtyInput the original string.
-   * @return the new string, sanse javascript.
-   * @throws org.owasp.validator.html.PolicyException if the dirty input
-   *                                                  fails the policy
-   * @throws org.owasp.validator.html.ScanException   if the dirty input
-   *                                                  borked parsing.
+   * @return the new string, without javascript.
    */
-  public static String security(String dirtyInput) throws PolicyException, ScanException
+  public static String security(String dirtyInput)
   {
-    URL resource = ClassLoader.getSystemResource("antisamy-myspace.xml");
-    Policy policy = null;
-    if (resource == null) 
-    {
-      policy = Policy.getInstance("/home/wildfly/antisamy-myspace.xml");
-      // throw new MudException("Unable to get resource antisamy-myspace.xml");
-    } else 
-    {
-      policy = Policy.getInstance(resource);
-    }
-    AntiSamy as = new AntiSamy();
-
-    CleanResults cr = as.scan(dirtyInput, policy);
-    return cr.getCleanHTML(); // some custom function
+    return EbayPolicy.sanitize(dirtyInput);
   }
 
   /**
@@ -401,8 +381,7 @@ public class Utils
   }
 
   /**
-   * Returns a safe string, containing only alphanumerical characters and
-   * space.
+   * Returns a safe string, containing only alphanumerical characters and space.
    *
    * @param value the original string.
    * @return the new string
@@ -471,7 +450,7 @@ public class Utils
    * Checks to see that an adverb is valid.
    *
    * @param anAdverb String containing the adverb to check, for example
-   *                 "aimlessly".
+   * "aimlessly".
    * @return boolean which is true if the adverb is real.
    */
   public static boolean existsAdverb(String anAdverb)
@@ -508,9 +487,9 @@ public class Utils
    * Changes a sentence to always start with a capital.
    *
    * @param string the string to change, may be empty or null.
-   * @return a new string, containing a capital for the first
-   * letter. If original is null, returns null. If original is empty string,
-   * returns empty string.
+   * @return a new string, containing a capital for the first letter. If
+   * original is null, returns null. If original is empty string, returns empty
+   * string.
    */
   public static String startWithCapital(String string)
   {

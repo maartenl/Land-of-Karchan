@@ -74,8 +74,6 @@ import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.scripting.RoomsInterface;
 import mmud.scripting.WorldInterface;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
 
 /**
  * Takes care of all the game-related functions.
@@ -722,13 +720,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
   {
     itsLog.entering(this.getClass().getName(), "playGame");
-    try
-    {
-      command = Utils.security(command);
-    } catch (PolicyException | ScanException ex)
-    {
-      throw new MudWebException(name, ex, Response.Status.BAD_REQUEST);
-    }
+    command = Utils.security(command);
     PrivateDisplay display = null;
     User person = authenticate(name);
     try

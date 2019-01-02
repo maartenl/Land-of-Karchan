@@ -1,7 +1,5 @@
 package mmud;
 
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -10,23 +8,23 @@ public class UtilsTest
 {
 
   @Test
-  public void testSecurity() throws ScanException, PolicyException
+  public void testSecurity()
   {
     String security = Utils.security("Try this!");
     assertEquals(security, "Try this!");
   }
 
   @Test
-  public void testSecurityWithIncompleteHtml() throws ScanException, PolicyException
+  public void testSecurityWithIncompleteHtml()
   {
     String security = Utils.security("<p>Try this!");
     assertEquals(security, "<p>Try this!</p>");
   }
 
   @Test
-  public void testSecurityWithJavascript() throws ScanException, PolicyException
+  public void testSecurityWithJavascript()
   {
     String security = Utils.security("<javascript>alert('Hmm');</javascript>Try this!");
-    assertEquals(security, "alert('Hmm');Try this!");
+    assertEquals(security, "alert(&#39;Hmm&#39;);Try this!");
   }
 }

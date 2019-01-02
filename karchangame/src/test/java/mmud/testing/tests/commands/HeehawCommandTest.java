@@ -93,7 +93,7 @@ public class HeehawCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("heehaw", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("A jackass called Marvin says &quot;Heeehaw!&quot;.<br />\nYou feel the need to say 'Heehaw' just 4 times.<br />\n");
+        assertThat(log).isEqualTo("A jackass called Marvin says &#34;Heeehaw!&#34;.<br />\nYou feel the need to say &#39;Heehaw&#39; just 4 times.<br />\r\n");
         assertThat(marvin.getJackassing()).isEqualTo(4);
         assertThat(logBean.getLog()).isEqualTo("");
     }
@@ -113,7 +113,7 @@ public class HeehawCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("heehaw", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("You cannot say 'Heehaw' that fast! You will get tongue tied!<br />\n");
+        assertThat(log).isEqualTo("You cannot say &#39;Heehaw&#39; that fast! You will get tongue tied!<br />\r\n");
         assertThat(marvin.getJackassing()).isEqualTo(5);
         assertThat(logBean.getLog()).isEqualTo("");
     }

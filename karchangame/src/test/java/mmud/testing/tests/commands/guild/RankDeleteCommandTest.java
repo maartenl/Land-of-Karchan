@@ -85,7 +85,7 @@ public class RankDeleteCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Rank removed.<br />\n");
+    assertThat(karnLog).isEqualTo("Rank removed.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
     assertThat(karn.getGuild().getGuildrankCollection()).hasSize(1);
@@ -114,7 +114,7 @@ public class RankDeleteCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Rank not found.<br />\n");
+    assertThat(karnLog).isEqualTo("Rank not found.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
     assertThat(karn.getGuild().getGuildrankCollection()).hasSize(2);

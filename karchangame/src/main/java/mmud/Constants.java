@@ -44,7 +44,7 @@ public class Constants
   public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-]*";
   public static final String ONLY_LETTERS_MESSAGE = "Only letters and dash (-) are allowed.";
 
-  private static final String BASEPATH = "/home/wildfly";
+  private static final String BASEPATH = "/home/payara";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
@@ -54,6 +54,11 @@ public class Constants
 
   public static final String MMUD_BASE_PATH_PROPERTY = "mmud.base.path";
 
+  /**
+   * Returns the base file path. This property can be set as a startup parameter called "mmud.base.path".
+   * So for instance upon startup "-Dmmud.base.path=/home/payara".
+   * @return the base file path to use.
+   */
   public static String getBasepath()
   {
     return System.getProperty(MMUD_BASE_PATH_PROPERTY, BASEPATH);

@@ -74,7 +74,7 @@ public class OocCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("ooc on", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\n");
+        assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(true);
     }
 
@@ -92,7 +92,7 @@ public class OocCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("ooc off", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\n");
+        assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(false);
     }
 
@@ -109,7 +109,7 @@ public class OocCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\n");
+        assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(false);
     }
 
@@ -136,9 +136,9 @@ public class OocCommandTest extends MudTest
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n");
+        assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
         log = karn.getLog(0);
-        assertThat(log).isEqualTo("<span style=\"color: rgb(76,118,162);\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span>\n<br />\n");
+        assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(true);
     }
 

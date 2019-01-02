@@ -42,110 +42,106 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CommandFactoryTest extends MudTest
 {
 
-    private Administrator karn;
-    private User marvin;
+  private Administrator karn;
+  private User marvin;
 
-    private LogBeanStub logBean;
+  private LogBeanStub logBean;
 
-    @Mocked
-    private CommandRunner commandRunner;
+  @Mocked
+  private CommandRunner commandRunner;
 
-    private PersonBean personBean;
+  private PersonBean personBean;
 
-    public CommandFactoryTest()
+  public CommandFactoryTest()
+  {
+  }
+
+  @Test
+  public void checkForBogusCommand()
+  {
+    List<NormalCommand> commands = CommandFactory.getCommand("woahnelly");
+    assertThat(commands).hasSize(1);
+    assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("BogusCommand");
+
+  }
+
+  @Test
+  public void checkForTitleCommandSimple()
+  {
+    List<NormalCommand> commands = CommandFactory.getCommand("title");
+    assertThat(commands).hasSize(1);
+    assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
+  }
+
+  @Test
+  public void checkForTitleCommandRemove()
+  {
+    List<NormalCommand> commands = CommandFactory.getCommand("title remove");
+    assertThat(commands).hasSize(1);
+    assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
+  }
+
+  @Test
+  public void checkForTitleCommandSetter()
+  {
+    List<NormalCommand> commands = CommandFactory.getCommand("title Ruler of the Land");
+    assertThat(commands).hasSize(1);
+    assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
+  }
+
+  @BeforeClass
+  public static void setUpClass() throws Exception
+  {
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception
+  {
+  }
+
+  @BeforeMethod
+  public void setUpMethod() throws Exception
+  {
+    logBean = new LogBeanStub();
+    personBean = new PersonBean()
     {
-    }
-
-    @BeforeMethod
-    public void setup()
-    {
-        logBean = new LogBeanStub();
-    }
-
-    @Test
-    public void checkForBogusCommand()
-    {
-        List<NormalCommand> commands = CommandFactory.getCommand("woahnelly");
-        assertThat(commands).hasSize(1);
-        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("BogusCommand");
-
-    }
-    
-    @Test
-    public void checkForTitleCommandSimple()
-    {
-        List<NormalCommand> commands = CommandFactory.getCommand("title");
-        assertThat(commands).hasSize(1);
-        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
-    }
-
-    @Test
-    public void checkForTitleCommandRemove()
-    {
-        List<NormalCommand> commands = CommandFactory.getCommand("title remove");
-        assertThat(commands).hasSize(1);
-        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
-    }
-    @Test
-    public void checkForTitleCommandSetter()
-    {
-        List<NormalCommand> commands = CommandFactory.getCommand("title Ruler of the Land");
-        assertThat(commands).hasSize(1);
-        assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception
-    {
-        personBean = new PersonBean()
+      @Override
+      public User getActiveUser(String name)
+      {
+        if (name.equalsIgnoreCase("Marvin"))
         {
-            @Override
-            public User getActiveUser(String name)
-            {
-                if (name.equalsIgnoreCase("Marvin"))
-                {
-                    return marvin;
-                }
-                if (name.equalsIgnoreCase("Karn"))
-                {
-                    return karn;
-                }
-                return null;
-            }
-        };
-        setField(PersonBean.class, "logBean", personBean, logBean);
+          return marvin;
+        }
+        if (name.equalsIgnoreCase("Karn"))
+        {
+          return karn;
+        }
+        return null;
+      }
+    };
+    setField(PersonBean.class, "logBean", personBean, logBean);
 
-        karn = TestingConstants.getKarn();
-        final Room room = TestingConstants.getRoom(TestingConstants.getArea());
-        karn.setRoom(room);
-        marvin = TestingConstants.getMarvin(room);
-        karn.clearLog();
-        marvin.clearLog();
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(marvin);
-        setField(Room.class, "persons", room, persons);
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
-        file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
-        writer = new PrintWriter(file);
-        writer.close();
-    }
+    karn = TestingConstants.getKarn();
+    final Room room = TestingConstants.getRoom(TestingConstants.getArea());
+    karn.setRoom(room);
+    marvin = TestingConstants.getMarvin(room);
+    karn.clearLog();
+    marvin.clearLog();
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(marvin);
+    setField(Room.class, "persons", room, persons);
+    File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+    PrintWriter writer = new PrintWriter(file);
+    writer.close();
+    file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
+    writer = new PrintWriter(file);
+    writer.close();
+  }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
-    }
+  @AfterMethod
+  public void tearDownMethod() throws Exception
+  {
+  }
 
 }

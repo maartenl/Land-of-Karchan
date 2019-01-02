@@ -32,8 +32,6 @@ import javax.validation.constraints.Size;
 import mmud.Utils;
 import mmud.exceptions.MudException;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
 
 /**
  *
@@ -201,14 +199,7 @@ public class CharacterInfo implements Serializable
   {
     if (storyline != null)
     {
-      try
-      {
-        storyline = Utils.security(storyline);
-      } catch (PolicyException | ScanException ex)
-      {
-        Logger.getLogger(CharacterInfo.class.getName()).log(Level.SEVERE, null, ex);
-        throw new MudException(ex);
-      }
+      storyline = Utils.security(storyline);
     }
     this.storyline = storyline;
   }

@@ -79,7 +79,7 @@ public class AdminCommandTest extends MudTest
         DisplayInterface display = adminCommand.run("admin visible false", marvin);
         assertThat(display).isNotNull();
         String log = marvin.getLog(0);
-        assertThat(log).isEqualTo("You are not an administrator.<br />\n");
+        assertThat(log).isEqualTo("You are not an administrator.<br />\r\n");
     }
 
     @Test
@@ -101,7 +101,7 @@ public class AdminCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(karn.getVisible()).isEqualTo(true);
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("Setting visibility to true.<br />\n");
+        assertThat(log).isEqualTo("Setting visibility to true.<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("Karn: turned visible.\n");
     }
 
@@ -124,7 +124,7 @@ public class AdminCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(karn.getVisible()).isEqualTo(false);
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("Setting visibility to false.<br />\n");
+        assertThat(log).isEqualTo("Setting visibility to false.<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("Karn: turned invisible.\n");
     }
 
@@ -150,8 +150,8 @@ public class AdminCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(marvin.getFrogging()).isEqualTo(5);
         assertThat(marvin.getJackassing()).isEqualTo(0);
-        assertThat(karn.getLog(0)).isEqualTo("Changed Marvin into frog (5).<br />\nMarvin is suddenly changed into a frog!<br />\n");
-        assertThat(marvin.getLog(0)).isEqualTo("You are suddenly changed into a frog!<br />\n");
+        assertThat(karn.getLog(0)).isEqualTo("Changed Marvin into frog (5).<br />\r\nMarvin is suddenly changed into a frog!<br />\r\n");
+        assertThat(marvin.getLog(0)).isEqualTo("You are suddenly changed into a frog!<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("Marvin: was changed into a frog by Karn for 5.\n");
     }
 
@@ -177,8 +177,8 @@ public class AdminCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(marvin.getFrogging()).isEqualTo(0);
         assertThat(marvin.getJackassing()).isEqualTo(5);
-        assertThat(karn.getLog(0)).isEqualTo("Changed Marvin into jackass (5).<br />\nMarvin is suddenly changed into a jackass!<br />\n");
-        assertThat(marvin.getLog(0)).isEqualTo("You are suddenly changed into a jackass!<br />\n");
+        assertThat(karn.getLog(0)).isEqualTo("Changed Marvin into jackass (5).<br />\r\nMarvin is suddenly changed into a jackass!<br />\r\n");
+        assertThat(marvin.getLog(0)).isEqualTo("You are suddenly changed into a jackass!<br />\r\n");
         assertThat(logBean.getLog()).isEqualTo("Marvin: was changed into a jackass by Karn for 5.\n");
     }
 
@@ -363,7 +363,7 @@ public class AdminCommandTest extends MudTest
 
         // check for deactivation
         assertThat(marvin.isActive()).isEqualTo(false);
-        assertThat(marvin.getTimeout()).isEqualTo(59);
+        assertThat(marvin.getTimeout()).isEqualTo(60);
 
         assertThat(display).isNotNull();
         String log = karn.getLog(0);

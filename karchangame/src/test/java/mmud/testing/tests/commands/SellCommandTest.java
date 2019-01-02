@@ -75,7 +75,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You don't have that.<br />\n");
+        assertThat(log).isEqualTo("You don&#39;t have that.<br />\n");
     }
 
     @Test
@@ -115,7 +115,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\n");
+        assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\r\n");
     }
 
     @Test
@@ -130,7 +130,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\n");
+        assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
     }
 
     @Test
@@ -154,7 +154,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("That's not a shopkeeper!<br />\n");
+        assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
     }
 
     @Test
@@ -189,7 +189,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -223,7 +223,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -258,7 +258,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -294,7 +294,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -330,7 +330,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -366,7 +366,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You cannot sell that item.<br />\nYou did not sell anything.<br />\n");
+        assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
     }
 
     @Test
@@ -401,7 +401,7 @@ public class SellCommandTest extends MudTest
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = karn.getLog(0);
-        assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\n");
+        assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\r\n");
     }
 
     @BeforeClass

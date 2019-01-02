@@ -80,7 +80,7 @@ public class RankAssignCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Rank Minion assigned to guild member Marvin.<br />\n");
+    assertThat(karnLog).isEqualTo("Rank Minion assigned to guild member Marvin.<br />\r\n");
     // the important bit
     Guildrank rank = marvin.getGuildrank();
     assertThat(rank.getTitle()).isEqualTo("Minion");
@@ -107,7 +107,7 @@ public class RankAssignCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Ranknumber not a number.<br />\n");
+    assertThat(karnLog).isEqualTo("Ranknumber not a number.<br />\r\n");
     // the important bit
     assertThat(marvin.getGuildrank()).isNull();
   }
@@ -130,7 +130,7 @@ public class RankAssignCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Guild member not found.<br />\n");
+    assertThat(karnLog).isEqualTo("Guild member not found.<br />\r\n");
     // the important bit
   }
 
@@ -152,7 +152,7 @@ public class RankAssignCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Rank does not exist.<br />\n");
+    assertThat(karnLog).isEqualTo("Rank does not exist.<br />\r\n");
     // the important bit
     Guildrank rank = karn.getGuild().getRank(1);
     assertThat(rank).isNull();
@@ -180,7 +180,7 @@ public class RankAssignCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Rank removed from guild member Marvin.<br />\n");
+    assertThat(karnLog).isEqualTo("Rank removed from guild member Marvin.<br />\r\n");
     // the important bit
     assertThat(rank).isNotNull();
     assertThat(marvin.getGuildrank()).isNull();

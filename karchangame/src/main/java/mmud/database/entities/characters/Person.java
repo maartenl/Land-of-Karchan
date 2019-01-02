@@ -27,8 +27,6 @@ import mmud.database.enums.*;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -53,9 +51,8 @@ import java.util.logging.Logger;
 @Table(name = "mm_usertable")
 @NamedQueries(
         {
-          @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
-          ,
-            @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
+          @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
+          @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
         })
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
@@ -614,8 +611,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   /**
    * Returns the experience of the character.
    *
-   * @return integer between 0 and 1000. The closer to 1000 is the closer to
-   * the next level.
+   * @return integer between 0 and 1000. The closer to 1000 is the closer to the
+   * next level.
    */
   public int getExperience()
   {
@@ -661,8 +658,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Indicates if this person can be fought with by other
-   * persons/users/players.
+   * Indicates if this person can be fought with by other persons/users/players.
    *
    * @return true if can be fought with, false otherwise.
    */
@@ -1002,8 +998,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * returns the state of the character, for example "He seems to be on
-   * fire.". Primarily used for roleplaying.
+   * returns the state of the character, for example "He seems to be on fire.".
+   * Primarily used for roleplaying.
    *
    * @return String containing the description of the current condition of the
    * character.
@@ -1016,8 +1012,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   /**
    * sets the state/condition of the character.
    *
-   * @param state String containing the description of the current condition
-   * of the character.
+   * @param state String containing the description of the current condition of
+   * the character.
    */
   public void setState(String state)
   {
@@ -1045,9 +1041,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Returns the description of the character. All characteristics, if
-   * possible, are taken into account. Does not provide any info on the name
-   * or title. It contains a strictly visual cue.
+   * Returns the description of the character. All characteristics, if possible,
+   * are taken into account. Does not provide any info on the name or title. It
+   * contains a strictly visual cue.
    *
    * @return String containing the description
    */
@@ -1133,8 +1129,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * communication and messages. The sentence will start with a capital.
    *
    * <p>
-   * <b>Important!</b> : Use this method only for Environmental communication
-   * or personal communication , as it does not check the Ignore Flag. Use the
+   * <b>Important!</b> : Use this method only for Environmental communication or
+   * personal communication , as it does not check the Ignore Flag. Use the
    * writeMessage(Person aSource, String aMessage) for specific communication
    * between users.</p> TODO : move the logging to a protected hashtable in a
    * singleton bean containing StringBuffers.
@@ -1150,13 +1146,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     {
       return;
     }
-    try
-    {
-      aMessage = Utils.security(aMessage);
-    } catch (PolicyException | ScanException ex)
-    {
-      throw new MudException(ex);
-    }
+    aMessage = Utils.security(aMessage);
 
     int i = 0;
     int _container = 0;
@@ -1187,7 +1177,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
               + Character.toUpperCase(aMessage.charAt(foundit))
               + aMessage.substring(foundit + 1);
     }
-    try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
+    try ( FileWriter myFileWriter = new FileWriter(getLogfile(), true))
     {
       myFileWriter.write(aMessage, 0, aMessage.length());
 
@@ -1208,8 +1198,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * </TR> <TR> <TD>%THIMHER</TD> <TD>you</TD> <TD>him/her</TD> </TR> <TR>
    * <TD>%THESHE</TD> <TD>you</TD> <TD>he/she</TD> </TR> <TR> <TD>%TISARE</TD>
    * <TD>are</TD> <TD>is</TD> </TR> <TR> <TD>%THASHAVE</TD> <TD>have</TD>
-   * <TD>has</TD> </TR> <TR> <TD>%TYOUPOSS</TD> <TD>your</TD> <TD>name +
-   * s</TD> </TR> <TR> <TD></TD> <TD></TD> <TD></TD> </TR> </TABLE>
+   * <TD>has</TD> </TR> <TR> <TD>%TYOUPOSS</TD> <TD>your</TD> <TD>name + s</TD>
+   * </TR> <TR> <TD></TD> <TD></TD> <TD></TD> </TR> </TABLE>
    *
    * @param aMessage the message to be written to the logfile.
    * @param aSource the source of the message, the thing originating the
@@ -1261,8 +1251,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * </TR> <TR> <TD>%SHIMHER</TD> <TD>you</TD> <TD>him/her</TD> </TR> <TR>
    * <TD>%SHESHE</TD> <TD>you</TD> <TD>he/she</TD> </TR> <TR> <TD>%SISARE</TD>
    * <TD>are</TD> <TD>is</TD> </TR> <TR> <TD>%SHASHAVE</TD> <TD>have</TD>
-   * <TD>has</TD> </TR> <TR> <TD>%SYOUPOSS</TD> <TD>your</TD> <TD>name +
-   * s</TD> </TR> <TR> <TD>%VERB1</TD> <TD></TD> <TD>es</TD> </TR> <TR>
+   * <TD>has</TD> </TR> <TR> <TD>%SYOUPOSS</TD> <TD>your</TD> <TD>name + s</TD>
+   * </TR> <TR> <TD>%VERB1</TD> <TD></TD> <TD>es</TD> </TR> <TR>
    * <TD>%VERB2</TD> <TD></TD> <TD>s</TD> </TR> <TR> <TD></TD> <TD></TD>
    * <TD></TD> </TR> </TABLE>
    *
@@ -1345,7 +1335,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     File file = getLogfile();
 
-    try (BufferedReader reader = new BufferedReader(
+    try ( BufferedReader reader = new BufferedReader(
             new FileReader(file)))
     {
       theLog = new StringBuffer(1000);
@@ -1380,12 +1370,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Returns the log starting from the offset, or an empty string if the
-   * offset is past the length of the log.Can also contain the empty string,
-   * if the log happens to be empty.
+   * Returns the log starting from the offset, or an empty string if the offset
+   * is past the length of the log.Can also contain the empty string, if the log
+   * happens to be empty.
    *
-   * @param offset the offset from whence to read the log. Offset starts with
-   * 0 and is inclusive.
+   * @param offset the offset from whence to read the log. Offset starts with 0
+   * and is inclusive.
    * @return a String, part of the Log.
    * @throws MudException in case of accidents with reading the log, or a
    * negative offset.
@@ -1454,8 +1444,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * returns the description of the character. All characteristics, if
-   * possible, are taken into account.
+   * returns the description of the character. All characteristics, if possible,
+   * are taken into account.
    *
    * @return String containing the description
    */
@@ -1695,8 +1685,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * Returns items in the inventory of this character, based on description
    * provided by the user.
    *
-   * @param parsed the parsed description of the item as given by the user,
-   * for example {"light-green", "leather", "pants"}.
+   * @param parsed the parsed description of the item as given by the user, for
+   * example {"light-green", "leather", "pants"}.
    * @return list of found items, empty if not found.
    */
   @Override
@@ -2179,8 +2169,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * Returns the item being wielded at that position.
    *
    * @param position the position to check.
-   * @return the item wielded at that position, may be null if nothing is
-   * being wielded there.
+   * @return the item wielded at that position, may be null if nothing is being
+   * wielded there.
    */
   public Item wields(Wielding position)
   {
@@ -2221,10 +2211,10 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   /**
    * Makes you wield an item at a specific position
    *
-   * @param item the item to be wielded. In case this is null, it means an
-   * item that used to be wielded at this position will be removed.
-   * @param position the position on which the item is to be wielded,
-   * lefthand, righthand or with both hands.
+   * @param item the item to be wielded. In case this is null, it means an item
+   * that used to be wielded at this position will be removed.
+   * @param position the position on which the item is to be wielded, lefthand,
+   * righthand or with both hands.
    *
    */
   public void wield(Item item, Wielding position)
@@ -2318,8 +2308,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    *
    * @param newamount the amount of copper (base currency to move)
    * @param target the target that is to receive said money
-   * @throws MoneyException if the money amount is illegal, or the person
-   * simply does not have that much money.
+   * @throws MoneyException if the money amount is illegal, or the person simply
+   * does not have that much money.
    */
   public void transferMoney(Integer newamount, Person target) throws MoneyException
   {
@@ -2345,8 +2335,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Indicates whether or not this person can receive items or money from
-   * other players.
+   * Indicates whether or not this person can receive items or money from other
+   * players.
    *
    * @return
    */
@@ -2368,9 +2358,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Adds an {@link Item} to the inventory of this person.
-   * It is assumed that this item has not yet been assigned
-   * to something (a person, a room or a container (bag)).
+   * Adds an {@link Item} to the inventory of this person. It is assumed that
+   * this item has not yet been assigned to something (a person, a room or a
+   * container (bag)).
    *
    * @param item the new item. May not be null.
    * @return the new item, null if unable to add.

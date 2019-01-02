@@ -78,7 +78,7 @@ public class CreateGuildCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
-    assertThat(karnLog).isEqualTo("Guild deputies created.<br />\n");
+    assertThat(karnLog).isEqualTo("Guild deputies created.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isNotNull();
     Guild guild = karn.getGuild();

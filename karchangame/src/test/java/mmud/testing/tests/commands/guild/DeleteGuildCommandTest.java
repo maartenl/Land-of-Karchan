@@ -110,7 +110,7 @@ public class DeleteGuildCommandTest extends MudTest
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = karn.getLog(0);
 
-    assertThat(karnLog).isEqualTo("Guild oldguild deleted.<br />\n");
+    assertThat(karnLog).isEqualTo("Guild oldguild deleted.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isNull();
   }
