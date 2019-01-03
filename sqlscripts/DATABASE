@@ -393,18 +393,6 @@ drop trigger password_trigger;
 
 ALTER TABLE mm_usertable DROP COLUMN password;
 
-create table blogs (
-  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
-  name varchar(20) NOT NULL DEFAULT '',
-  createDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  modifiedDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title varchar(150) not null,
-  content text not null,
-  INDEX createDate (createDate),
-  CONSTRAINT FOREIGN KEY (`name`) REFERENCES
-  `mm_usertable` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 drop table if exists templates;
 
 create table templates (
@@ -425,3 +413,139 @@ create table faq (
   deleted tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+// liferay import tables
+drop table if exists lr_wikipages;
+
+create table lr_wikipages (
+  __uuid varchar(100) NOT NULL primary key,
+  __new varchar(10) not null,
+  __originalUuid varchar(100),
+  __pageId int(10),
+  __userId int(10),
+  __userUuid varchar(100),
+  __originalUserId int(10),
+  __userName varchar(100),
+  __createDate timestamp,
+  __modifiedDate timestamp,
+  __nodeId int(10),
+  __originalNodeId int(10),
+  __title varchar(200),
+  __originalTitle varchar(200),
+  __version varchar(10),
+  __originalVersion varchar(10),
+  __minorEdit varchar(10),
+  __content text,
+  __summary text,
+  __format varchar(100),
+  __originalFormat varchar(100),
+  __head varchar(10),
+  __originalhead tinyint(1),
+  __parentTitle varchar(100),
+  __originalParentTitle varchar(100),
+  __redirectTitle varchar(100),
+  __originalRedirectTitle varchar(100),
+  __status tinyint(1),
+  __originalStatus tinyint(1),
+  __statusByUserId int(10),
+  __statusByUserName varchar(100),
+  __statusDate timestamp
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+load xml local infile '/home/maartenl/mmud_backups/liferay_backups/wiki/group/20181/com.liferay.portlet.wiki.model.WikiPage/24239.xml' 
+into table lr_wikipages 
+rows identified by '<WikiPage>';
+
+load xml local infile '24239.xml' into table lr_wikipages rows identified by '<WikiPage>';
+
+create table lr_tags (
+  __tagId bigint(20) NOT NULL primary key,
+  __new varchar(10),
+  __cachedModel varchar(10),
+  __groupId int(10),
+  __originalGroupId int(10),
+  __userId int(10),
+  __userUuid varchar(100),
+  __userName varchar(100),
+  __createDate timestamp,
+  __modifiedDate timestamp,
+  __name varchar(100),
+  __originalName varchar(100),
+  __assetCount int(10)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+load xml local infile '24239.xml' into table lr_tags rows identified by '<com.liferay.portlet.asset.model.impl.AssetTagImpl>';
+
+create table lr_tagrelations (
+  class_pk bigint(20) NOT NULL primary key,
+  class_name varchar(210),
+  tags varchar(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+create table lr_blogs (
+  __uuid varchar(100) NOT NULL primary key,
+  __originalUuid varchar(100),
+  __new varchar(10),
+  __cachedModel varchar(10),
+  __entryId int(10),
+  __groupId int(10),
+  __originalGroupId int(10),
+  __userId int(10),
+  __userUuid varchar(100),
+  __originalUserId int(10),
+  __userName varchar(100),
+  __createDate timestamp,
+  __modifiedDate timestamp,
+  __title varchar(100),
+  __urlTitle varchar(100),
+  __originalUrlTitle varchar(100),
+  __description text,
+  __content text,
+  __displayDate timestamp,
+  __originalDisplayDate timestamp,
+  __statusByUserId int(10),
+  __statusByUserName varchar(100),
+  __statusDate timestamp,
+  __smallImage varchar(10),
+  __smallImageId int(10),
+  __smallImageURL varchar(100), 
+  __assetCount int(10)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+load xml local infile '24239.xml' into table lr_blogs rows identified by '<BlogsEntry>';
+
+update lr_blogs set __userName = 'Karn' where __userName='Karn Ruler of Karchan, Keeper of the Key to the Room of Lost Souls.';
+update lr_blogs set __statusByUserName = 'Karn' where __statusByUserName='Karn Ruler of Karchan, Keeper of the Key to the Room of Lost Souls.';
+
+drop table if exists blogs;
+
+create table blogs (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  name varchar(20) NOT NULL DEFAULT '',
+  createDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modifiedDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title varchar(250) not null,
+  urlTitle varchar(250) not null,
+  content text not null,
+  INDEX createDate (createDate),
+  CONSTRAINT FOREIGN KEY (`name`) REFERENCES
+  `mm_usertable` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into blogs select __entryId, __statusByUserName, __modifiedDate, __modifiedDate, __title, __urlTitle, __content from lr_blogs;
+
+drop table if exists wikipages;
+
+create table wikipages (
+  id bigint(20) NOT NULL AUTO_INCREMENT primary key,
+  name varchar(100),
+  createDate timestamp,
+  modifiedDate timestamp,
+  title varchar(200),
+  version varchar(10),
+  content text,
+  summary text,
+  parentTitle varchar(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into wikipages select __pageId, __userName, __createDate, __modifiedDate, __title, __version, __content, __summary, __parentTitle from lr_wikipages;

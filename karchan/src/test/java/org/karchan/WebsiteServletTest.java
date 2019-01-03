@@ -16,6 +16,7 @@
  */
 package org.karchan;
 
+import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -36,34 +37,54 @@ public class WebsiteServletTest
   }
 
   @Test
-  public void rootMenuFindTest()
+  public void rootVisibleMenuFindTest()
   {
     WebsiteServlet servlet = new WebsiteServlet();
-    Menu findMenu = servlet.rootMenu.findMenu("/introduction.html");
+    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/introduction.html");
 
-    assertThat(findMenu).isNotNull();
-    assertThat(findMenu.getUrl()).isEqualTo("/introduction.html");
-    assertThat(findMenu.getName()).isEqualTo("Introduction");
+    assertThat(findMenu).isPresent();
+    assertThat(findMenu.get().getUrl()).isEqualTo("/introduction.html");
+    assertThat(findMenu.get().getName()).isEqualTo("Introduction");
   }
   
   @Test
-  public void rootMenuFindMainTest()
+  public void rootVisibleMenuFindMainTest()
   {
     WebsiteServlet servlet = new WebsiteServlet();
-    Menu findMenu = servlet.rootMenu.findMenu("/index.html");
+    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/index.html");
 
-    assertThat(findMenu).isNotNull();
-    assertThat(findMenu.getUrl()).isEqualTo("/index.html");
-    assertThat(findMenu.getName()).isEqualTo("Welcome");
+    assertThat(findMenu).isPresent();
+    assertThat(findMenu.get().getUrl()).isEqualTo("/index.html");
+    assertThat(findMenu.get().getName()).isEqualTo("Welcome");
+  }
+
+  @Test
+  public void rootVisibleMenuNotFindTest()
+  {
+    WebsiteServlet servlet = new WebsiteServlet();
+    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/instroduction.html");
+
+    assertThat(findMenu).isNotPresent();
+  }
+
+  @Test
+  public void rootMenuFindTest()
+  {
+    WebsiteServlet servlet = new WebsiteServlet();
+    Optional<Menu> findMenu = Menu.findMenu("/notFound.html");
+
+    assertThat(findMenu).isPresent();
+    assertThat(findMenu.get().getUrl()).isEqualTo("/notFound.html");
+    assertThat(findMenu.get().getName()).isEqualTo("Not found");
   }
 
   @Test
   public void rootMenuNotFindTest()
   {
     WebsiteServlet servlet = new WebsiteServlet();
-    Menu findMenu = servlet.rootMenu.findMenu("/instroduction.html");
+    Optional<Menu> findMenu = Menu.findMenu("/instroduction.html");
 
-    assertThat(findMenu).isNull();
+    assertThat(findMenu).isNotPresent();
   }
 
   @BeforeClass

@@ -41,7 +41,7 @@ import javax.validation.constraints.Size;
 @Table(name = "blogs")
 @NamedQueries(
 {
-  @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b"),
+  @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b order by b.createDate desc"),
   @NamedQuery(name = "Blog.findById", query = "SELECT b FROM Blog b WHERE b.id = :id"),
   @NamedQuery(name = "Blog.findByCreateDate", query = "SELECT b FROM Blog b WHERE b.createDate = :createDate"),
   @NamedQuery(name = "Blog.findByModifiedDate", query = "SELECT b FROM Blog b WHERE b.modifiedDate = :modifiedDate"),
@@ -51,31 +51,43 @@ public class Blog implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Basic(optional = false)
   @Column(name = "id")
   private Long id;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate")
   @Temporal(TemporalType.TIMESTAMP)
   private Date createDate;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate")
   @Temporal(TemporalType.TIMESTAMP)
   private Date modifiedDate;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 20)
   @Column(name = "name")
   private String name;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 150)
   @Column(name = "title")
   private String title;
+
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 150)
+  @Column(name = "urltitle")
+  private String urlTitle;
+
   @Basic(optional = false)
   @NotNull
   @Lob
@@ -176,6 +188,22 @@ public class Blog implements Serializable
   public String toString()
   {
     return "mmud.database.entities.web.Blog[ id=" + id + " ]";
+  }
+
+  /**
+   * @return the urlTitle
+   */
+  public String getUrlTitle()
+  {
+    return urlTitle;
+  }
+
+  /**
+   * @param urlTitle the urlTitle to set
+   */
+  public void setUrlTitle(String urlTitle)
+  {
+    this.urlTitle = urlTitle;
   }
   
 }

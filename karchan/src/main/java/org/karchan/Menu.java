@@ -19,7 +19,11 @@ package org.karchan;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -27,7 +31,8 @@ import java.util.List;
  */
 public class Menu
 {
-
+  private static final Map<String, Menu> menus = new HashMap<>();
+  
   private final String name;
   private final String template;
   private final String url;
@@ -46,6 +51,7 @@ public class Menu
     this.url = url;
     this.subMenu = subMenu;
     subMenu.forEach(menu -> menu.setParent(this));
+    menus.put(url, this);
   }
 
   public String getName()
@@ -68,21 +74,27 @@ public class Menu
     return template;
   }
 
-  public Menu findMenu(String url)
+  /**
+   * Returns the visible menu, based on the URL. Can return Null, in case the 
+   * menu option is not visible in the nagigation bar.
+   * @param url the url to check.
+   * @return a Menu or no menu.
+   */
+  public Optional<Menu> findVisibleMenu(String url)
   {
     if (getUrl().equals(url))
     {
-      return this;
+      return Optional.of(this);
     }
     for (Menu submenu : getSubMenu())
     {
-      Menu findMenu = submenu.findMenu(url);
-      if (findMenu != null)
+      Optional<Menu> findMenu = submenu.findVisibleMenu(url);
+      if (findMenu.isPresent())
       {
         return findMenu;
       }
     }
-    return null;
+    return Optional.empty();
   }
 
   private void setParent(Menu parentMenu)
@@ -94,5 +106,22 @@ public class Menu
   {
     return parent;
   }
+
+  /**
+   * By default does nothing, as simple pages do not require a specific
+   * datamodel. Override this to implement a datamodel.
+   * @param entityManager the entitymanager to get things from the database.
+   * @param root the map to add data to, is a tree. See freemarker on how this 
+   * works.
+   */
+  public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+  {
+    // nothing here on purpose.
+  }
   
+  public static Optional<Menu> findMenu(String url)
+  {
+    return Optional.ofNullable(menus.get(url));
+  }
+
 }

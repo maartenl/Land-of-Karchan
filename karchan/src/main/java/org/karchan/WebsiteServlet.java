@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -51,7 +52,7 @@ public class WebsiteServlet extends HttpServlet
   @PersistenceContext
   private EntityManager entityManager;
 
-  @VisibleForTesting 
+  @VisibleForTesting
   static final Menu rootMenu;
 
   private static final Menu notFoundMenu;
@@ -73,9 +74,29 @@ public class WebsiteServlet extends HttpServlet
     Menu techSpecs = new Menu("Tech Specs", "/help/tech_specs.html");
     Menu source = new Menu("Source", "/help/source.html");
     Menu security = new Menu("Security", "/help/security.html");
-    Menu faq = new Menu("FAQ", "/help/faq.html");
+    Menu faq = new Menu("FAQ", "/help/faq.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      {
+        TypedQuery<Faq> faqQuery = entityManager.createNamedQuery("Faq.findAll", Faq.class);
+        List<Faq> faq = faqQuery.getResultList();
+        root.put("faq", faq);
+      }
+    };
 
-    Menu welcome = new Menu("Welcome", "/index.html");
+    Menu welcome = new Menu("Welcome", "/index.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      {
+        TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
+        blogsQuery.setMaxResults(5);
+        List<Blog> blogs = blogsQuery.getResultList();
+        root.put("blogs", blogs);
+      }
+
+    };
     Menu logon = new Menu("Logon", "/logon.html");
     Menu introduction = new Menu("Introduction", "/introduction.html");
     Menu newCharacter = new Menu("New character", "/new_character.html");
@@ -122,23 +143,18 @@ public class WebsiteServlet extends HttpServlet
     final String templateName = url.replace(".html", "");
 
     // Actual logic goes here.
-    TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
-    List<Blog> blogs = blogsQuery.getResultList();
-    TypedQuery<Faq> faqQuery = entityManager.createNamedQuery("Faq.findAll", Faq.class);
-    List<Faq> faq = faqQuery.getResultList();
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
-    root.put("blogs", blogs);
-    root.put("faq", faq);
     root.put("menus", rootMenu.getSubMenu());
     root.put("url", url);
     root.put("template", templateName);
 
-    Menu activeMenu = rootMenu.findMenu(url);
-    if (activeMenu != null)
+    Optional<Menu> visibleMenu = rootMenu.findVisibleMenu(url);
+    if (visibleMenu.isPresent())
     {
+      Menu activeMenu = visibleMenu.get();
       root.put("activeMenu", activeMenu.getName());
       root.put("breadcrumbs", activeMenu.getParent() == rootMenu ? Collections.emptyList() : Arrays.asList(activeMenu.getParent()));
     } else
@@ -146,7 +162,11 @@ public class WebsiteServlet extends HttpServlet
       root.put("activeMenu", "none");
       root.put("breadcrumbs", Collections.emptyList());
     }
-    root.put("lastBreadcrumb", activeMenu);
+    Menu.findMenu(url).ifPresent(menu ->
+    {
+      root.put("lastBreadcrumb", menu);
+      menu.setDatamodel(entityManager, root);
+    });
 
     /* Get the template (uses cache internally) */
     Template header = freemarker.getConfiguration().getTemplate("header");
