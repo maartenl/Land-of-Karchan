@@ -143,7 +143,7 @@ values(3, "index", now(), now(), '
                 <div class="col-12 col-lg-8">
                     <div class="card m-3">
                         <div class="card-header">
-                            Blogs
+                            <a href="/blogs/index.html">Blogs</a>
                         </div>
                         <div class="card-body">
                             <p class="card-text">
@@ -152,7 +152,7 @@ values(3, "index", now(), now(), '
                             <div class="card m-1">
                                 <div class="card-body">
                                     <h5 class="card-title">  
-                                        <a href="#">${blog.title}</a>
+                                        <a href="/blogs/${blog.urlTitle}.html">${blog.title}</a>
                                     </h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
                                     <p class="card-text">
@@ -1884,4 +1884,11 @@ values(27, "game/play", now(), now(), '
   <p><img alt="Y" src="/images/gif/letters/y.gif" style="float: left;" />our game has been saved and we look forward to seeing you again in the near future.</p>
 
   <p>Click above to go somewhere else.</p>
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(28, "wiki/index", now(), now(), '
+<div class="container">
+  <#noparse>${wikicontent}</#noparse>
 </div>');

@@ -111,11 +111,48 @@ public class WebsiteServlet extends HttpServlet
             Arrays.asList(status, guide, techSpecs, source, security, faq));
 
     Menu links = new Menu("Links", "/links.html");
-    Menu wiki = new Menu("Wiki", "/wiki.html");
+    Menu wiki = new Menu("Wiki", "/wiki/index.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      {
+        root.put("wikicontent", "<p>Woah nelly!</p>");
+      }
+    };
 
     rootMenu = new Menu("root", " root ",
             Arrays.asList(welcome, logon, introduction, newCharacter,
                     chronicles, who, theLaw, help, links, wiki));
+
+    Menu blogs = new Menu("Blogs", "/blogs/index.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      {
+        TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
+        if (root.get("parameters") != null)
+        {
+          String get = ((Map<String, String>) root.get("parameters")).get("offset");
+          if (get != null)
+          {
+            try
+            {
+              Integer offset = Integer.valueOf(get);
+              if (offset > 0)
+              {
+                blogsQuery.setFirstResult(offset);
+              }
+            } catch (NumberFormatException e)
+            {
+            }
+          }
+        }
+        blogsQuery.setMaxResults(5);
+        List<Blog> blogs = blogsQuery.getResultList();
+        root.put("blogs", blogs);
+      }
+    };
+
   }
 
   @Override
@@ -147,6 +184,7 @@ public class WebsiteServlet extends HttpServlet
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
+    root.put("parameters", request.getParameterMap());
     root.put("menus", rootMenu.getSubMenu());
     root.put("url", url);
     root.put("template", templateName);
