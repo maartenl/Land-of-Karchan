@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.karchan;
+package org.karchan.menus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class Menu
    * @param name the name of the menu
    * @param url the url the menu refers to (any .html extension will be removed)
    */
-  public Menu(String name, String url)
+  Menu(String name, String url)
   {
     this(name, url, Collections.emptyList());
   }
@@ -63,7 +63,7 @@ public class Menu
    * @param url the url the menu refers to (any .html extension will be removed)
    * @param subMenu the list of submenus, if any.
    */
-  public Menu(String name, String url, List<Menu> subMenu)
+  Menu(String name, String url, List<Menu> subMenu)
   {
     this.name = name;
     this.template = url.replace(".html", "");
@@ -116,7 +116,7 @@ public class Menu
    * @param url the url to check.
    * @return a Menu or no menu.
    */
-  public Optional<Menu> findVisibleMenu(String url)
+  Optional<Menu> findVisibleMenu(String url)
   {
     if (getUrl().equals(url))
     {

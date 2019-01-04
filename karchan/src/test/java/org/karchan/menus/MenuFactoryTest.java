@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.karchan;
+package org.karchan.menus;
 
+import org.karchan.menus.Menu;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+import org.karchan.menus.MenuFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,18 +30,17 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class WebsiteServletTest
+public class MenuFactoryTest
 {
 
-  public WebsiteServletTest()
+  public MenuFactoryTest()
   {
   }
 
   @Test
   public void rootVisibleMenuFindTest()
   {
-    WebsiteServlet servlet = new WebsiteServlet();
-    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/introduction.html");
+    Optional<Menu> findMenu = MenuFactory.getRootMenu().findVisibleMenu("/introduction.html");
 
     assertThat(findMenu).isPresent();
     assertThat(findMenu.get().getUrl()).isEqualTo("/introduction.html");
@@ -50,8 +50,7 @@ public class WebsiteServletTest
   @Test
   public void rootVisibleMenuFindMainTest()
   {
-    WebsiteServlet servlet = new WebsiteServlet();
-    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/index.html");
+    Optional<Menu> findMenu = MenuFactory.getRootMenu().findVisibleMenu("/index.html");
 
     assertThat(findMenu).isPresent();
     assertThat(findMenu.get().getUrl()).isEqualTo("/index.html");
@@ -61,8 +60,7 @@ public class WebsiteServletTest
   @Test
   public void rootVisibleMenuNotFindTest()
   {
-    WebsiteServlet servlet = new WebsiteServlet();
-    Optional<Menu> findMenu = servlet.rootMenu.findVisibleMenu("/instroduction.html");
+    Optional<Menu> findMenu = MenuFactory.getRootMenu().findVisibleMenu("/instroduction.html");
 
     assertThat(findMenu).isNotPresent();
   }
@@ -70,7 +68,7 @@ public class WebsiteServletTest
   @Test
   public void rootMenuFindTest()
   {
-    WebsiteServlet servlet = new WebsiteServlet();
+    Menu rootMenu = MenuFactory.getRootMenu();
     Optional<Menu> findMenu = Menu.findMenu("/notFound.html");
 
     assertThat(findMenu).isPresent();
@@ -81,7 +79,6 @@ public class WebsiteServletTest
   @Test
   public void rootMenuNotFindTest()
   {
-    WebsiteServlet servlet = new WebsiteServlet();
     Optional<Menu> findMenu = Menu.findMenu("/instroduction.html");
 
     assertThat(findMenu).isNotPresent();

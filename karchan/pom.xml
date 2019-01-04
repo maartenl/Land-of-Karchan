@@ -24,7 +24,7 @@
       <artifactId>assertj-core</artifactId>
       <!-- use 2.9.1 for Java 7 projects -->
       <version>3.11.1</version>
-      <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -78,6 +78,12 @@
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
       <version>2.5.2</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>javax</groupId>

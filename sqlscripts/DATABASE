@@ -455,7 +455,7 @@ load xml local infile '/home/maartenl/mmud_backups/liferay_backups/wiki/group/20
 into table lr_wikipages 
 rows identified by '<WikiPage>';
 
-load xml local infile '24239.xml' into table lr_wikipages rows identified by '<WikiPage>';
+load xml local infile '24239.xml' into table lr_wikipages character set utf8  rows identified by '<WikiPage>';
 
 create table lr_tags (
   __tagId bigint(20) NOT NULL primary key,
@@ -473,7 +473,7 @@ create table lr_tags (
   __assetCount int(10)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-load xml local infile '24239.xml' into table lr_tags rows identified by '<com.liferay.portlet.asset.model.impl.AssetTagImpl>';
+load xml local infile '24239.xml' into table lr_tags character set utf8  rows identified by '<com.liferay.portlet.asset.model.impl.AssetTagImpl>';
 
 create table lr_tagrelations (
   class_pk bigint(20) NOT NULL primary key,
@@ -512,7 +512,7 @@ create table lr_blogs (
   __assetCount int(10)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-load xml local infile '24239.xml' into table lr_blogs rows identified by '<BlogsEntry>';
+load xml local infile '24239.xml' into table lr_blogs character set utf8 rows identified by '<BlogsEntry>';
 
 update lr_blogs set __userName = 'Karn' where __userName='Karn Ruler of Karchan, Keeper of the Key to the Room of Lost Souls.';
 update lr_blogs set __statusByUserName = 'Karn' where __statusByUserName='Karn Ruler of Karchan, Keeper of the Key to the Room of Lost Souls.';
@@ -549,3 +549,13 @@ create table wikipages (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 insert into wikipages select __pageId, __userName, __createDate, __modifiedDate, __title, __version, __content, __summary, __parentTitle from lr_wikipages;
+
+UPDATE blogs SET content = REPLACE(content, '”', '"');
+UPDATE blogs SET content = REPLACE(content, '“', '"');
+UPDATE blogs SET content = REPLACE(content, '’', "'");
+UPDATE blogs SET content = REPLACE(content, '""', '"');
+
+UPDATE wikipages SET content = REPLACE(content, '”', '"');
+UPDATE wikipages SET content = REPLACE(content, '“', '"');
+UPDATE wikipages SET content = REPLACE(content, '’', "'");
+UPDATE wikipages SET content = REPLACE(content, '""', '"');
