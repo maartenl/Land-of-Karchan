@@ -16,13 +16,13 @@
  */
 package org.karchan;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -31,19 +31,38 @@ import javax.persistence.EntityManager;
  */
 public class Menu
 {
-  private static final Map<String, Menu> menus = new HashMap<>();
-  
-  private final String name;
+
+  private final static Logger LOGGER = Logger.getLogger(Menu.class.getName());
+
+  /**
+   * Contains a mapping between the url (for example "blogs/index.html") and the menu
+   * (for example "Blogs" with template name "blogs/index").
+   */
+  private static final Map<String, Menu> MENUS = new HashMap<>();
+
+  private String name;
   private final String template;
   private final String url;
   private final List<Menu> subMenu;
   private Menu parent;
 
+  /**
+   * 
+   * @see #Menu(java.lang.String, java.lang.String, java.util.List) 
+   * @param name the name of the menu
+   * @param url the url the menu refers to (any .html extension will be removed)
+   */
   public Menu(String name, String url)
   {
     this(name, url, Collections.emptyList());
   }
 
+  /**
+   * Create a new menu.
+   * @param name the name of the menu
+   * @param url the url the menu refers to (any .html extension will be removed)
+   * @param subMenu the list of submenus, if any.
+   */
   public Menu(String name, String url, List<Menu> subMenu)
   {
     this.name = name;
@@ -51,7 +70,7 @@ public class Menu
     this.url = url;
     this.subMenu = subMenu;
     subMenu.forEach(menu -> menu.setParent(this));
-    menus.put(url, this);
+    MENUS.put(url, this);
   }
 
   public String getName()
@@ -59,6 +78,22 @@ public class Menu
     return name;
   }
 
+  /**
+   * Primary use here is to set the name in the case the name is not known until
+   * the datamodel has been evaluated.
+   *
+   * @param name the new name
+   */
+  protected void setName(String name)
+  {
+    this.name = name;
+  }
+
+  /**
+   * Returns the url matching this menu, the url has no .html extension.
+   *
+   * @return for example "/blogs/index".
+   */
   public String getUrl()
   {
     return url;
@@ -75,8 +110,9 @@ public class Menu
   }
 
   /**
-   * Returns the visible menu, based on the URL. Can return Null, in case the 
+   * Returns the visible menu, based on the URL. Can return Null, in case the
    * menu option is not visible in the nagigation bar.
+   *
    * @param url the url to check.
    * @return a Menu or no menu.
    */
@@ -97,8 +133,12 @@ public class Menu
     return Optional.empty();
   }
 
-  private void setParent(Menu parentMenu)
+  protected void setParent(Menu parentMenu)
   {
+    LOGGER.log(Level.FINEST, "Menu with url {0} gets parent {1}.", new Object[]
+    {
+      url, parentMenu
+    });
     parent = parentMenu;
   }
 
@@ -110,18 +150,42 @@ public class Menu
   /**
    * By default does nothing, as simple pages do not require a specific
    * datamodel. Override this to implement a datamodel.
+   *
    * @param entityManager the entitymanager to get things from the database.
-   * @param root the map to add data to, is a tree. See freemarker on how this 
+   * @param root the map to add data to, is a tree. See freemarker on how this
    * works.
+   * @param parameters the list of parameters provided by the client in the
+   * request.
    */
-  public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+  public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
   {
     // nothing here on purpose.
   }
-  
+
+  /**
+   * Looks in all menus that have been created.
+   *
+   * @param url the url to find, for example "/blogs/index.html".
+   * @return an optional indicating a found menu or nothing.
+   */
   public static Optional<Menu> findMenu(String url)
   {
-    return Optional.ofNullable(menus.get(url));
+    Optional<Menu> result = Optional.ofNullable(MENUS.get(url));
+    if (!result.isPresent())
+    {
+      LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
+      LOGGER.log(Level.FINEST, "Available menus are {0}.", MENUS.keySet());
+    } else
+    {
+      LOGGER.log(Level.FINEST, "Menu with url {0} found.", url);
+    }
+    return result;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "Menu{" + "name=" + name + '}';
   }
 
 }

@@ -46,6 +46,8 @@ import org.assertj.core.util.VisibleForTesting;
 public class WebsiteServlet extends HttpServlet
 {
 
+  private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
+
   @Inject
   private Freemarker freemarker;
 
@@ -77,7 +79,7 @@ public class WebsiteServlet extends HttpServlet
     Menu faq = new Menu("FAQ", "/help/faq.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
         TypedQuery<Faq> faqQuery = entityManager.createNamedQuery("Faq.findAll", Faq.class);
         List<Faq> faq = faqQuery.getResultList();
@@ -88,7 +90,7 @@ public class WebsiteServlet extends HttpServlet
     Menu welcome = new Menu("Welcome", "/index.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
         TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
         blogsQuery.setMaxResults(5);
@@ -114,7 +116,7 @@ public class WebsiteServlet extends HttpServlet
     Menu wiki = new Menu("Wiki", "/wiki/index.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
         root.put("wikicontent", "<p>Woah nelly!</p>");
       }
@@ -127,30 +129,38 @@ public class WebsiteServlet extends HttpServlet
     Menu blogs = new Menu("Blogs", "/blogs/index.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root)
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
+        Integer page = 1;
+        TypedQuery<Long> numberOfBlogsQuery = entityManager.createNamedQuery("Blog.count", Long.class);
+        Long numberOfPages = numberOfBlogsQuery.getSingleResult() / PAGE_SIZE + 1;
+
         TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
-        if (root.get("parameters") != null)
+        if (parameters != null)
         {
-          String get = ((Map<String, String>) root.get("parameters")).get("offset");
-          if (get != null)
+          String[] get = parameters.get("page");
+          if (get != null && get.length == 1)
           {
             try
             {
-              Integer offset = Integer.valueOf(get);
-              if (offset > 0)
+              page = Integer.valueOf(get[0]);
+              if (page > 0)
               {
-                blogsQuery.setFirstResult(offset);
+                blogsQuery.setFirstResult((page - 1) * PAGE_SIZE);
               }
             } catch (NumberFormatException e)
             {
+              // do nothing, default to an offset of 0.
             }
           }
         }
-        blogsQuery.setMaxResults(5);
+        blogsQuery.setMaxResults(PAGE_SIZE);
         List<Blog> blogs = blogsQuery.getResultList();
         root.put("blogs", blogs);
+        root.put("page", page);
+        root.put("size", numberOfPages);
       }
+      private static final int PAGE_SIZE = 10;
     };
 
   }
@@ -167,44 +177,93 @@ public class WebsiteServlet extends HttpServlet
     // Set response content type
     response.setContentType("text/html");
 
-    List<String> breadcrumbs = Arrays.asList(request.getRequestURI().split("/"));
-
     String filename = "index.html";
 
-    String url = request.getRequestURI();
+    final String url = getUrl(request);
     PrintWriter out = response.getWriter();
-    if (url.equals("/"))
-    {
-      url = "/index.html";
-    }
-    final String templateName = url.replace(".html", "");
 
     // Actual logic goes here.
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
-    root.put("parameters", request.getParameterMap());
+
     root.put("menus", rootMenu.getSubMenu());
     root.put("url", url);
-    root.put("template", templateName);
 
     Optional<Menu> visibleMenu = rootMenu.findVisibleMenu(url);
     if (visibleMenu.isPresent())
     {
       Menu activeMenu = visibleMenu.get();
       root.put("activeMenu", activeMenu.getName());
-      root.put("breadcrumbs", activeMenu.getParent() == rootMenu ? Collections.emptyList() : Arrays.asList(activeMenu.getParent()));
     } else
     {
       root.put("activeMenu", "none");
-      root.put("breadcrumbs", Collections.emptyList());
     }
-    Menu.findMenu(url).ifPresent(menu ->
+    Optional<Menu> foundMenu = Menu.findMenu(url);
+    if (!foundMenu.isPresent())
     {
+      LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
+      if (url.startsWith("/blogs/"))
+      {
+        LOGGER.log(Level.FINEST, "Url {0} starts with /blogs/.", url);
+        Menu specificBlogMenu = new Menu("Blog", "blogs/specific.html")
+        {
+          @Override
+          public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+          {
+            LOGGER.finest("setDatamodel called for BlogSpecific menu");
+            TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findByUrlTitle", Blog.class);
+            String searchBlog = url.substring("/blogs/".length()).replace(".html", "");
+            blogsQuery.setParameter("title", searchBlog);
+            List<Blog> blogs = blogsQuery.getResultList();
+            if (blogs.size() == 1)
+            {
+              root.put("blog", blogs.get(0));
+              setName(blogs.get(0).getTitle());
+              Menu.findMenu("/blogs/index.html").ifPresent(menu -> this.setParent(menu));
+            }
+            if (blogs.size() > 1)
+            {
+              LOGGER.log(Level.SEVERE, "{0} blogs found... expected only one with name {1}.", new Object[]
+              {
+                blogs.size(), searchBlog
+              });
+            }
+            if (blogs.isEmpty())
+            {
+              LOGGER.log(Level.SEVERE, "No blogs with name {0} found.", searchBlog);
+            }
+          }
+        };
+        foundMenu = Optional.of(specificBlogMenu);
+      }
+    }
+    foundMenu.ifPresent(menu ->
+    {
+      LOGGER.log(Level.FINEST, "Menu {0} found with url {1}.", new Object[]
+      {
+        menu, url
+      });
+      menu.setDatamodel(entityManager, root, request.getParameterMap());
       root.put("lastBreadcrumb", menu);
-      menu.setDatamodel(entityManager, root);
+      List<Menu> breadcrumbs = menu.getParent() == rootMenu || menu.getParent() == null ? Collections.emptyList() : Arrays.asList(menu.getParent());
+      if (menu.getParent() != null)
+      {
+        LOGGER.log(Level.FINEST, "Menu {0} has parent with name {1}.", new Object[]
+        {
+          menu, menu.getParent()
+        });
+      } else
+      {
+        LOGGER.log(Level.FINEST, "Menu {0} has no parent.", menu);
+      }
+      LOGGER.log(Level.FINEST, "Breadcrumbs set to {0}.", breadcrumbs);
+      root.put("breadcrumbs", breadcrumbs);
     });
+
+    String templateName = foundMenu.map(menu -> menu.getTemplate()).orElse(url.replace(".html", ""));
+    root.put("template", templateName);
 
     /* Get the template (uses cache internally) */
     Template header = freemarker.getConfiguration().getTemplate("header");
@@ -214,6 +273,7 @@ public class WebsiteServlet extends HttpServlet
       main = freemarker.getConfiguration().getTemplate(templateName);
     } catch (TemplateNotFoundException notFound)
     {
+      LOGGER.log(Level.FINEST, "Template {0} not found.", templateName);
       root.put("activeMenu", "none");
       root.put("breadcrumbs", Collections.emptyList());
       root.put("lastBreadcrumb", notFoundMenu);
@@ -229,9 +289,18 @@ public class WebsiteServlet extends HttpServlet
       footer.process(root, out);
     } catch (TemplateException ex)
     {
-      Logger.getLogger(WebsiteServlet.class.getName()).log(Level.SEVERE, null, ex);
+      LOGGER.log(Level.SEVERE, null, ex);
       throw new ServletException(ex);
     }
+  }
+
+  private String getUrl(HttpServletRequest url)
+  {
+    if (url.getRequestURI().equals("/"))
+    {
+      return "/index.html";
+    }
+    return url.getRequestURI();
   }
 
 }

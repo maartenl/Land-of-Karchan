@@ -363,7 +363,7 @@ public class AdminCommandTest extends MudTest
 
         // check for deactivation
         assertThat(marvin.isActive()).isEqualTo(false);
-        assertThat(marvin.getTimeout()).isEqualTo(60);
+        assertThat(marvin.getTimeout() == 59 || marvin.getTimeout() == 60).isTrue();
 
         assertThat(display).isNotNull();
         String log = karn.getLog(0);

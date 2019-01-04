@@ -1845,9 +1845,9 @@ values(26, "game/play", now(), now(), '
 <div class="container-fluid">
   <p><img alt="compass" border="0" src="/images/png/compass.png" usemap="#roosmap" /><map name="roosmap"><area alt="North" coords="0,0,80,75,160,0,0,0" href="javascript:void(0)" onclick="goNorth();" shape="poly" /> <area alt="South" coords="0,151,80,75,160,151,0,151" href="javascript:void(0)" onclick="goSouth();" shape="poly" /> <area alt="West" coords="0,0,80,75,0,151,0,0" href="javascript:void(0)" onclick="goWest();" shape="poly" /> <area alt="East" coords="160,0,80,75,160,151,160,0" href="javascript:void(0)" onclick="goEast()" shape="poly" /></map></p>
 
-  <p><a class="karchanbutton" href="/game/settings" target="_blank" title="Read your mail"><span>Mail</span></a></p>
+  <p><a class="karchanbutton" href="/game/settings.html" target="_blank" title="Read your mail"><span>Mail</span></a></p>
 
-  <p><a class="karchanbutton" href="/game/settings" target="_blank" title="Charactersheet"><span>Settings</span></a></p>
+  <p><a class="karchanbutton" href="/game/settings.html" target="_blank" title="Charactersheet"><span>Settings</span></a></p>
 
   <p><a class="karchanbutton" href="javascript:void(0)" onclick="toggleSleep();return false;"><span id="sleepButtonSpanId">Sleep</span></a></p>
 
@@ -1855,7 +1855,7 @@ values(26, "game/play", now(), now(), '
 
   <p><a class="karchanbutton" href="javascript:void(0)" onclick="clearLog();return false;" title="Clear your log"><span>Clear</span></a></p>
 
-  <p><a class="karchanbutton" href="/game/settings" onclick="return quit();" title="Quit the game"><span>Quit</span></a></p>
+  <p><a class="karchanbutton" href="/game/settings.html" onclick="return quit();" title="Quit the game"><span>Quit</span></a></p>
 </div>
 <div class="container-fluid">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.3/js.cookie.min.js">
@@ -1879,7 +1879,7 @@ values(26, "game/play", now(), now(), '
 
 replace into templates 
 (id, name, created, modified, content)
-values(27, "game/play", now(), now(), '
+values(27, "game/goodbye", now(), now(), '
 <div class="container">
   <p><img alt="Y" src="/images/gif/letters/y.gif" style="float: left;" />our game has been saved and we look forward to seeing you again in the near future.</p>
 
@@ -1891,4 +1891,58 @@ replace into templates
 values(28, "wiki/index", now(), now(), '
 <div class="container">
   <#noparse>${wikicontent}</#noparse>
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(29, "blogs/index", now(), now(), '
+<div class="container">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item <#if page lte 1>disabled</#if>"><a class="page-link" href="/blogs/index.html?page=${page-1}">Previous</a></li>
+  <#list 1..size as i>
+      <li class="page-item <#if page == i>active</#if>"><a class="page-link" href="/blogs/index.html?page=${i}">${i}</a></li>
+  </#list>
+      <li class="page-item <#if page gte size>disabled</#if>"><a class="page-link" href="/blogs/index.html?page=${page+1}">Next</a></li>
+    </ul>
+  </nav>
+<#list blogs as blog> 
+  <div class="card m-1">
+      <div class="card-body">
+          <h5 class="card-title">  
+              <a href="/blogs/${blog.urlTitle}.html">${blog.title}</a>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
+          <p class="card-text">
+              ${blog.content?keep_before("</p>")}...
+          </p>
+          <small class="text-muted">By ${blog.name}.</small>
+      </div>
+  </div>
+</#list>                           
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(30, "blogs/specific", now(), now(), '
+<div class="container">
+<#if blog??>
+  <div class="card m-1">
+      <div class="card-body">
+          <h5 class="card-title">  
+              ${blog.title}
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
+          <p class="card-text">
+              ${blog.content}
+          </p>
+          <small class="text-muted">By ${blog.name}.</small>
+      </div>
+  </div>
+<#else>
+  <div class="alert alert-danger" role="alert">
+    <span class="alert-link">Blog</span> not found!
+  </div>
+  <p>Click <a href="/blogs/index.html">here</a> to return to the blogs.</p>
+</#if>
 </div>');

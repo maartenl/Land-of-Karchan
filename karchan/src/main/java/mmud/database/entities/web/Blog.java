@@ -42,10 +42,11 @@ import javax.validation.constraints.Size;
 @NamedQueries(
 {
   @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b order by b.createDate desc"),
+  @NamedQuery(name = "Blog.count", query = "SELECT count(b) FROM Blog b"),
   @NamedQuery(name = "Blog.findById", query = "SELECT b FROM Blog b WHERE b.id = :id"),
   @NamedQuery(name = "Blog.findByCreateDate", query = "SELECT b FROM Blog b WHERE b.createDate = :createDate"),
   @NamedQuery(name = "Blog.findByModifiedDate", query = "SELECT b FROM Blog b WHERE b.modifiedDate = :modifiedDate"),
-  @NamedQuery(name = "Blog.findByTitle", query = "SELECT b FROM Blog b WHERE b.title = :title")
+  @NamedQuery(name = "Blog.findByUrlTitle", query = "SELECT b FROM Blog b WHERE b.urlTitle = :title")
 })
 public class Blog implements Serializable
 {
