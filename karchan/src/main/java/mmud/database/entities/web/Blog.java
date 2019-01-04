@@ -179,6 +179,11 @@ public class Blog implements Serializable
     return content;
   }
 
+  /**
+   * Returns HTML content, to be more specific, it capitalizes the first letter 
+   * of the blogpost into a pretty image.
+   * @return capitalized blogpost
+   */
   public String getHtmlContent()
   {
     String htmlContent = getContent();
