@@ -156,7 +156,7 @@ values(3, "index", now(), now(), '
                                     </h5>
                                     <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
                                     <p class="card-text">
-                                        ${blog.content}
+                                        ${blog.htmlContent}
                                     </p>
                                     <small class="text-muted">By ${blog.name}.</small>
                                 </div>
@@ -1914,12 +1914,21 @@ values(29, "blogs/index", now(), now(), '
           </h5>
           <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
           <p class="card-text">
-              ${blog.content?keep_before("</p>")}...
+              ${blog.htmlContent?keep_before("</p>")}...
           </p>
           <small class="text-muted">By ${blog.name}.</small>
       </div>
   </div>
 </#list>                           
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item <#if page lte 1>disabled</#if>"><a class="page-link" href="/blogs/index.html?page=${page-1}">Previous</a></li>
+  <#list 1..size as i>
+      <li class="page-item <#if page == i>active</#if>"><a class="page-link" href="/blogs/index.html?page=${i}">${i}</a></li>
+  </#list>
+      <li class="page-item <#if page gte size>disabled</#if>"><a class="page-link" href="/blogs/index.html?page=${page+1}">Next</a></li>
+    </ul>
+  </nav>
 </div>');
 
 replace into templates 
@@ -1934,7 +1943,7 @@ values(30, "blogs/specific", now(), now(), '
           </h5>
           <h6 class="card-subtitle mb-2 text-muted">Published Date ${blog.createDate?datetime}</h6>
           <p class="card-text">
-              ${blog.content}
+              ${blog.htmlContent}
           </p>
           <small class="text-muted">By ${blog.name}.</small>
       </div>

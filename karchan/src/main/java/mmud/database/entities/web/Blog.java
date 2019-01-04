@@ -34,20 +34,22 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * A blog from one of the administrators of the game. Will be shown on the main page.
+ * A blog from one of the administrators of the game. Will be shown on the main
+ * page.
+ *
  * @author maartenl
  */
 @Entity
 @Table(name = "blogs")
 @NamedQueries(
-{
-  @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b order by b.createDate desc"),
-  @NamedQuery(name = "Blog.count", query = "SELECT count(b) FROM Blog b"),
-  @NamedQuery(name = "Blog.findById", query = "SELECT b FROM Blog b WHERE b.id = :id"),
-  @NamedQuery(name = "Blog.findByCreateDate", query = "SELECT b FROM Blog b WHERE b.createDate = :createDate"),
-  @NamedQuery(name = "Blog.findByModifiedDate", query = "SELECT b FROM Blog b WHERE b.modifiedDate = :modifiedDate"),
-  @NamedQuery(name = "Blog.findByUrlTitle", query = "SELECT b FROM Blog b WHERE b.urlTitle = :title")
-})
+        {
+          @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b order by b.createDate desc"),
+          @NamedQuery(name = "Blog.count", query = "SELECT count(b) FROM Blog b"),
+          @NamedQuery(name = "Blog.findById", query = "SELECT b FROM Blog b WHERE b.id = :id"),
+          @NamedQuery(name = "Blog.findByCreateDate", query = "SELECT b FROM Blog b WHERE b.createDate = :createDate"),
+          @NamedQuery(name = "Blog.findByModifiedDate", query = "SELECT b FROM Blog b WHERE b.modifiedDate = :modifiedDate"),
+          @NamedQuery(name = "Blog.findByUrlTitle", query = "SELECT b FROM Blog b WHERE b.urlTitle = :title")
+        })
 public class Blog implements Serializable
 {
 
@@ -143,7 +145,63 @@ public class Blog implements Serializable
 
   public String getContent()
   {
+    content = content.trim();
+    if (content.contains("gif/letters"))
+    {
+      int letterPos = content.indexOf("gif/letters/");
+      if (letterPos != -1)
+      {
+        String letter = content.substring(letterPos + 12, letterPos + 13);
+        int beginpos = letterPos;
+        int endpos = letterPos;
+        while (beginpos != -1)
+        {
+          if (content.substring(beginpos, beginpos + 1).equals("<"))
+          {
+            break;
+          }
+          beginpos--;
+        }
+        while (endpos < content.length())
+        {
+          if (content.substring(endpos, endpos + 1).equals(">"))
+          {
+            break;
+          }
+          endpos++;
+        }
+        if (beginpos != -1 && endpos != content.length())
+        {
+          content = content.replace(content.substring(beginpos, endpos + 1), letter.toUpperCase());
+        }
+      }
+    }
     return content;
+  }
+
+  public String getHtmlContent()
+  {
+    String htmlContent = getContent();
+    boolean intag = false;
+    int pos = 0;
+    while (pos < htmlContent.length())
+    {
+      if (htmlContent.charAt(pos) == '<')
+      {
+        intag = true;
+      }
+      if (htmlContent.charAt(pos) == '>')
+      {
+        intag = false;
+      }
+      if (!intag && htmlContent.charAt(pos) >= 'A' && htmlContent.charAt(pos) <= 'Z')
+      {
+        char charAt = htmlContent.charAt(pos);
+        return htmlContent.substring(0, pos) + "<img alt=\"" + charAt + "\" src=\"/images/gif/letters/" + (charAt + "").toLowerCase() + ".gif\" style=\"float: left;\">" + htmlContent.substring(pos + 1);
+      }
+      pos++;
+    }
+    return htmlContent;
   }
 
   public void setContent(String content)
@@ -206,5 +264,5 @@ public class Blog implements Serializable
   {
     this.urlTitle = urlTitle;
   }
-  
+
 }
