@@ -32,6 +32,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.karchan.wiki.WikiRenderer;
 
 /**
  *
@@ -46,7 +47,7 @@ import javax.validation.constraints.Size;
   @NamedQuery(name = "Wikipage.findByName", query = "SELECT w FROM Wikipage w WHERE w.name = :name"),
   @NamedQuery(name = "Wikipage.findByCreateDate", query = "SELECT w FROM Wikipage w WHERE w.createDate = :createDate"),
   @NamedQuery(name = "Wikipage.findByModifiedDate", query = "SELECT w FROM Wikipage w WHERE w.modifiedDate = :modifiedDate"),
-  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title order by w.version desc"),
   @NamedQuery(name = "Wikipage.findByVersion", query = "SELECT w FROM Wikipage w WHERE w.version = :version"),
   @NamedQuery(name = "Wikipage.findByParentTitle", query = "SELECT w FROM Wikipage w WHERE w.parentTitle = :parentTitle")
 })
@@ -184,6 +185,11 @@ public class Wikipage implements Serializable
     this.content = content;
   }
 
+  public String getHtmlContent()
+  {
+    return new WikiRenderer().render(content);
+  }
+  
   public String getSummary()
   {
     return summary;

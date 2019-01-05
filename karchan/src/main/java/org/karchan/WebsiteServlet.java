@@ -33,14 +33,11 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mmud.database.entities.web.Blog;
-import mmud.database.entities.web.Faq;
 import org.karchan.menus.MenuFactory;
 
 @WebServlet("*.html")
@@ -95,6 +92,11 @@ public class WebsiteServlet extends HttpServlet
       {
         LOGGER.log(Level.FINEST, "Url {0} starts with /blogs/.", url);
         foundMenu = Optional.of(MenuFactory.createBlogMenu(url));
+      }
+      if (url.startsWith("/wiki/"))
+      {
+        LOGGER.log(Level.FINEST, "Url {0} starts with /wiki/.", url);
+        foundMenu = Optional.of(MenuFactory.createWikiMenu(url));
       }
     }
     foundMenu.ifPresent(menu ->

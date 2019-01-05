@@ -17,6 +17,8 @@
 package org.karchan.menus;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
+import mmud.database.entities.web.Wikipage;
 
 /**
  *
@@ -35,7 +38,7 @@ import mmud.database.entities.web.Faq;
  */
 public class MenuFactory
 {
-  
+
   private final static Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
 
   /**
@@ -108,7 +111,19 @@ public class MenuFactory
       @Override
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
-        root.put("wikicontent", "<p>Woah nelly!</p>");
+        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findByTitle", Wikipage.class);
+        blogsQuery.setParameter("title", "FrontPage");
+        List<Wikipage> wikipages = blogsQuery.getResultList();
+        if (wikipages.size() >= 1)
+        {
+          root.put("wikipage", wikipages.get(0));
+          setName(wikipages.get(0).getTitle());
+          Menu.findMenu("/wiki/index.html").ifPresent(menu -> this.setParent(menu));
+        }
+        if (wikipages.isEmpty())
+        {
+          LOGGER.log(Level.SEVERE, "No main wikipage ('FrontPage') found.");
+        }
       }
     };
 
@@ -178,15 +193,18 @@ public class MenuFactory
   }
 
   /**
-   * Returns the top level menus (and the appropriate sub menus) for displaying 
+   * Returns the top level menus (and the appropriate sub menus) for displaying
    * purposes.
+   *
    * @return list of top level menus.
    */
-  public static List<Menu> getNavigationBarMenus() {
+  public static List<Menu> getNavigationBarMenus()
+  {
     return getRootMenu().getSubMenu();
   }
-  
-  public static Menu createBlogMenu(String url) {
+
+  public static Menu createBlogMenu(String url)
+  {
     Menu specificBlogMenu = new Menu("Blog", "blogs/specific.html")
     {
       @Override
@@ -217,5 +235,40 @@ public class MenuFactory
       }
     };
     return specificBlogMenu;
+  }
+
+  public static Menu createWikiMenu(String url)
+  {
+    Menu specificWikipageMenu = new Menu("Wiki", "wiki/specific.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+      {
+        LOGGER.finest("setDatamodel called for WikiSpecific menu");
+        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findByTitle", Wikipage.class);
+        String searchWiki;
+        try
+        {
+          searchWiki = URLDecoder.decode(url.substring("/wiki/".length()).replace(".html", ""), "UTF-8");
+        } catch (UnsupportedEncodingException ex)
+        {
+          Logger.getLogger(MenuFactory.class.getName()).log(Level.SEVERE, null, ex);
+          throw new RuntimeException(ex);
+        }
+        blogsQuery.setParameter("title", searchWiki);
+        List<Wikipage> wikipages = blogsQuery.getResultList();
+        if (wikipages.size() >= 1)
+        {
+          root.put("wikipage", wikipages.get(0));
+          setName(wikipages.get(0).getTitle());
+          Menu.findMenu("/wiki/index.html").ifPresent(menu -> this.setParent(menu));
+        }
+        if (wikipages.isEmpty())
+        {
+          LOGGER.log(Level.SEVERE, "No wikipages with name {0} found.", searchWiki);
+        }
+      }
+    };
+    return specificWikipageMenu;
   }
 }
