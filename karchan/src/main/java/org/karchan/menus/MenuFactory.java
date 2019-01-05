@@ -117,8 +117,6 @@ public class MenuFactory
         if (wikipages.size() >= 1)
         {
           root.put("wikipage", wikipages.get(0));
-          setName(wikipages.get(0).getTitle());
-          Menu.findMenu("/wiki/index.html").ifPresent(menu -> this.setParent(menu));
         }
         if (wikipages.isEmpty())
         {
