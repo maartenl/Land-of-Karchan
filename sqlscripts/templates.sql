@@ -42,13 +42,16 @@ values(1, "header", now(), now(),
             </div>
         </div>
         <div class="container-fluid">
-            <nav class="navbar navbar-expand-lg">
-                <ul class="nav">
-
+          <nav class="navbar navbar-expand-lg">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
 <#list menus as menu>
 <#if menu.subMenu?size == 0>
-                    <li class="nav-item">
-                        <a class="nav-link<#if activeMenu == menu.name> active</#if>" href="${menu.url}">${menu.name}</a>
+              <li class="nav-item">
+                  <a class="nav-link<#if activeMenu == menu.name> active</#if>" href="${menu.url}">${menu.name}</a>
                     </li>
 <#else>
                     <li class="nav-item dropdown">
@@ -68,6 +71,7 @@ values(1, "header", now(), now(),
 </#if>
 </#list>
                 </ul>
+              </div>
             </nav>
         </div>
         <div class="container-fluid">
@@ -1888,14 +1892,7 @@ values(27, "game/goodbye", now(), now(), '
 
 replace into templates 
 (id, name, created, modified, content)
-values(28, "wiki/index", now(), now(), '
-<div class="container">
-  <#noparse>${wikicontent}</#noparse>
-</div>');
-
-replace into templates 
-(id, name, created, modified, content)
-values(29, "blogs/index", now(), now(), '
+values(28, "blogs/index", now(), now(), '
 <div class="container">
   <nav aria-label="Page navigation example">
     <ul class="pagination">
@@ -1933,7 +1930,7 @@ values(29, "blogs/index", now(), now(), '
 
 replace into templates 
 (id, name, created, modified, content)
-values(30, "blogs/specific", now(), now(), '
+values(29, "blogs/specific", now(), now(), '
 <div class="container">
 <#if blog??>
   <div class="card m-1">
@@ -1953,5 +1950,35 @@ values(30, "blogs/specific", now(), now(), '
     <span class="alert-link">Blog</span> not found!
   </div>
   <p>Click <a href="/blogs/index.html">here</a> to return to the blogs.</p>
+</#if>
+</div>');
+
+
+replace into templates 
+(id, name, created, modified, content)
+values(30, "wiki/index", now(), now(), '
+<div class="container">
+<#if wikipage??>
+  ${wikipage.htmlContent}
+<#else>
+  <div class="alert alert-danger" role="alert">
+    <span class="alert-link">Wikipage</span> not found!
+  </div>
+  <p>Click <a href="/wiki/index.html">here</a> to return to the wiki.</p>
+</#if>
+</div>');
+
+replace into templates 
+(id, name, created, modified, content)
+values(31, "wiki/specific", now(), now(), '
+<div class="container">
+<#if wikipage??>
+  <h1>${wikipage.title}</h1><hr/>
+  ${wikipage.htmlContent}
+<#else>
+  <div class="alert alert-danger" role="alert">
+    <span class="alert-link">Wikipage</span> not found!
+  </div>
+  <p>Click <a href="/wiki/index.html">here</a> to return to the wiki.</p>
 </#if>
 </div>');
