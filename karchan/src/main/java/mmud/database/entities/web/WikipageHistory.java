@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 maartenl
+ * Copyright (C) 2019 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,58 +17,60 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.karchan.wiki.WikiRenderer;
 
 /**
  *
  * @author maartenl
  */
 @Entity
-@Table(name = "wikipages")
+@Table(name = "wikipages_his")
 @NamedQueries(
 {
-  @NamedQuery(name = "Wikipage.findAll", query = "SELECT w FROM Wikipage w"),
-  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
-  @NamedQuery(name = "Wikipage.findByParentTitle", query = "SELECT w FROM Wikipage w WHERE w.parent.title = :parentTitle")
+  @NamedQuery(name = "WikipageHistory.findAll", query = "SELECT w FROM WikipageHistory w"),
+  @NamedQuery(name = "WikipageHistory.findById", query = "SELECT w FROM WikipageHistory w WHERE w.id = :id"),
+  @NamedQuery(name = "WikipageHistory.findByTitle", query = "SELECT w FROM WikipageHistory w WHERE w.title = :title"),
+  @NamedQuery(name = "WikipageHistory.findByName", query = "SELECT w FROM WikipageHistory w WHERE w.name = :name"),
+  @NamedQuery(name = "WikipageHistory.findByCreateDate", query = "SELECT w FROM WikipageHistory w WHERE w.createDate = :createDate"),
+  @NamedQuery(name = "WikipageHistory.findByModifiedDate", query = "SELECT w FROM WikipageHistory w WHERE w.modifiedDate = :modifiedDate"),
+  @NamedQuery(name = "WikipageHistory.findByVersion", query = "SELECT w FROM WikipageHistory w WHERE w.version = :version"),
+  @NamedQuery(name = "WikipageHistory.findByParentTitle", query = "SELECT w FROM WikipageHistory w WHERE w.parentTitle = :parentTitle")
 })
-public class Wikipage implements Serializable
+public class WikipageHistory implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
-  
-  private final static Logger LOGGER = Logger.getLogger(Wikipage.class.getName());
 
-  
   @Id
-  @Size(max = 200)
-  @Column(name = "title", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id")
+  private Long id;
+
+  @Basic(optional = false)
   @NotNull
+  @Size(min = 1, max = 200)
+  @Column(name = "title", nullable = false)
   private String title;
 
-  @Size(max = 100)
-  @Column(name = "name", nullable = false)
+  @Basic(optional = false)
   @NotNull
+  @Size(min = 1, max = 100)
+  @Column(name = "name", nullable = false)
   private String name;
 
   @Basic(optional = false)
@@ -83,14 +85,16 @@ public class Wikipage implements Serializable
   @Temporal(TemporalType.TIMESTAMP)
   private Date modifiedDate;
 
-  @Size(max = 10)
+  @Basic(optional = false)
   @NotNull
+  @Size(min = 1, max = 10)
   @Column(name = "version", nullable = false)
   private String version;
 
-  @Lob
-  @Size(max = 65535)
+  @Basic(optional = false)
   @NotNull
+  @Lob
+  @Size(min = 1, max = 65535)
   @Column(name = "content", nullable = false)
   private String content;
 
@@ -99,21 +103,48 @@ public class Wikipage implements Serializable
   @Column(name = "summary")
   private String summary;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "parentTitle")
-  private Wikipage parent;
+  @Size(max = 100)
+  @Column(name = "parentTitle")
+  private String parentTitle;
 
-  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-  private Set<Wikipage> children;
-  
-  public Wikipage()
+  public WikipageHistory()
   {
   }
 
-  public Wikipage(Date createDate, Date modifiedDate)
+  public WikipageHistory(Long id)
   {
+    this.id = id;
+  }
+
+  public WikipageHistory(Long id, String title, String name, Date createDate, Date modifiedDate, String version, String content)
+  {
+    this.id = id;
+    this.title = title;
+    this.name = name;
     this.createDate = createDate;
     this.modifiedDate = modifiedDate;
+    this.version = version;
+    this.content = content;
+  }
+
+  public Long getId()
+  {
+    return id;
+  }
+
+  public void setId(Long id)
+  {
+    this.id = id;
+  }
+
+  public String getTitle()
+  {
+    return title;
+  }
+
+  public void setTitle(String title)
+  {
+    this.title = title;
   }
 
   public String getName()
@@ -146,16 +177,6 @@ public class Wikipage implements Serializable
     this.modifiedDate = modifiedDate;
   }
 
-  public String getTitle()
-  {
-    return title;
-  }
-
-  public void setTitle(String title)
-  {
-    this.title = title;
-  }
-
   public String getVersion()
   {
     return version;
@@ -176,11 +197,6 @@ public class Wikipage implements Serializable
     this.content = content;
   }
 
-  public String getHtmlContent()
-  {
-    return new WikiRenderer().render(content);
-  }
-  
   public String getSummary()
   {
     return summary;
@@ -191,36 +207,21 @@ public class Wikipage implements Serializable
     this.summary = summary;
   }
 
-  public Wikipage getParent()
+  public String getParentTitle()
   {
-    LOGGER.log(Level.FINEST, "{0} returns {1}.", new Object[]{this, parent});
-    return parent;
+    return parentTitle;
   }
 
-  public void setParent(Wikipage parent)
+  public void setParentTitle(String parentTitle)
   {
-    this.parent = parent;
+    this.parentTitle = parentTitle;
   }
 
-  public boolean removePage(Wikipage childPage)
-  {
-    return children.remove(childPage);
-  }
-  
-  public boolean addPage(Wikipage childPage)
-  {
-    return children.add(childPage);
-  }
-
-  public Set<Wikipage> getChildren() {
-    return Collections.unmodifiableSet(children);
-  }
-  
   @Override
   public int hashCode()
   {
     int hash = 0;
-    hash += (title != null ? title.hashCode() : 0);
+    hash += (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -228,12 +229,12 @@ public class Wikipage implements Serializable
   public boolean equals(Object object)
   {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Wikipage))
+    if (!(object instanceof WikipageHistory))
     {
       return false;
     }
-    Wikipage other = (Wikipage) object;
-    if ((this.title == null && other.title != null) || (this.title != null && !this.title.equals(other.title)))
+    WikipageHistory other = (WikipageHistory) object;
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
     {
       return false;
     }
@@ -243,7 +244,7 @@ public class Wikipage implements Serializable
   @Override
   public String toString()
   {
-    return "mmud.database.entities.web.Wikipage[ title=" + title + " ]";
+    return "mmud.database.entities.web.WikipageHistory[ id=" + id + " ]";
   }
-
+  
 }

@@ -114,13 +114,12 @@ public class MenuFactory
         TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findByTitle", Wikipage.class);
         blogsQuery.setParameter("title", "FrontPage");
         List<Wikipage> wikipages = blogsQuery.getResultList();
-        if (wikipages.size() >= 1)
+        if (wikipages.size() == 1)
         {
           root.put("wikipage", wikipages.get(0));
-        }
-        if (wikipages.isEmpty())
+        } else
         {
-          LOGGER.log(Level.SEVERE, "No main wikipage ('FrontPage') found.");
+          LOGGER.log(Level.SEVERE, "{0} main wikipages ('FrontPage') found.", wikipages.size());
         }
       }
     };
@@ -255,18 +254,40 @@ public class MenuFactory
         }
         blogsQuery.setParameter("title", searchWiki);
         List<Wikipage> wikipages = blogsQuery.getResultList();
-        if (wikipages.size() >= 1)
+        if (wikipages.size() == 1)
         {
           root.put("wikipage", wikipages.get(0));
           setName(wikipages.get(0).getTitle());
           Menu.findMenu("/wiki/index.html").ifPresent(menu -> this.setParent(menu));
-        }
-        if (wikipages.isEmpty())
+        } else
         {
-          LOGGER.log(Level.SEVERE, "No wikipages with name {0} found.", searchWiki);
+          LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found.", new Object[]
+          {
+            wikipages.size(), searchWiki
+          });
         }
       }
     };
     return specificWikipageMenu;
+  }
+
+  private static void createBreadcrumbsFromWikipages(Wikipage childPage, Menu childMenu)
+  {
+    Wikipage parent = childPage.getParent();
+    while (parent != null)
+    {
+      Menu menu = new Menu(parent.getTitle(), "/wiki/" + parent.getTitle() + ".html");
+      childMenu.setParent(menu);
+      childMenu = menu;
+      if (parent.getParent() == null)
+      {
+        Optional<Menu> rootMenu = Menu.findMenu("/wiki/index.html");
+        if (rootMenu.isPresent())
+        {
+          childMenu.setParent(rootMenu.get());
+        }
+      }
+      parent = parent.getParent();
+    }
   }
 }

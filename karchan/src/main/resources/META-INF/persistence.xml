@@ -7,6 +7,7 @@
     <class>mmud.database.entities.web.HtmlTemplate</class>
     <class>mmud.database.entities.web.Faq</class>
     <class>mmud.database.entities.web.Wikipage</class>
+    <class>mmud.database.entities.web.WikipageHistory</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="none"/>

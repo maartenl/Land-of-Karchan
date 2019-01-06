@@ -534,21 +534,52 @@ create table blogs (
 
 insert into blogs select __entryId, __statusByUserName, __modifiedDate, __modifiedDate, __title, __urlTitle, __content from lr_blogs;
 
+drop table if exists wikipages_his;
 drop table if exists wikipages;
 
-create table wikipages (
+create table wikipages_his (
   id bigint(20) NOT NULL AUTO_INCREMENT primary key,
-  name varchar(100),
-  createDate timestamp,
-  modifiedDate timestamp,
-  title varchar(200),
-  version varchar(10),
-  content text,
+  title varchar(200) not null,
+  name varchar(100) not null,
+  createDate timestamp not null,
+  modifiedDate timestamp not null,
+  version varchar(10) not null,
+  content text not null,
+  summary text,
+  parentTitle varchar(100),
+  UNIQUE KEY (title, version)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table wikipages (
+  title varchar(200) NOT NULL primary key,
+  name varchar(100) not null,
+  createDate timestamp not null,
+  modifiedDate timestamp not null,
+  version varchar(10) not null,
+  content text not null,
   summary text,
   parentTitle varchar(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert into wikipages select __pageId, __userName, __createDate, __modifiedDate, __title, __version, __content, __summary, __parentTitle from lr_wikipages;
+insert into wikipages_his 
+(title, name, createDate, modifiedDate, version, content, summary, parentTitle) 
+select __title, __userName, __createDate, __modifiedDate,  __version, __content, __summary, __parentTitle 
+from lr_wikipages
+where __content is not null;
+
+insert into wikipages 
+select title, name, createDate, modifiedDate, version, content, summary, parentTitle
+from wikipages_his his
+where version = (select max(version) from wikipages_his his2 where his2.title = his.title);
+
+delete from wikipages_his
+where exists (select 1 from wikipages 
+              where wikipages.title = wikipages_his.title 
+              and wikipages.version = wikipages_his.version);
+
+alter table wikipages 
+  add CONSTRAINT fk_parentTitle
+    FOREIGN KEY (parentTitle) REFERENCES wikipages (title);
 
 UPDATE blogs SET content = REPLACE(content, '”', '"');
 UPDATE blogs SET content = REPLACE(content, '“', '"');
@@ -559,3 +590,8 @@ UPDATE wikipages SET content = REPLACE(content, '”', '"');
 UPDATE wikipages SET content = REPLACE(content, '“', '"');
 UPDATE wikipages SET content = REPLACE(content, '’', "'");
 UPDATE wikipages SET content = REPLACE(content, '""', '"');
+
+UPDATE wikipages_his SET content = REPLACE(content, '”', '"');
+UPDATE wikipages_his SET content = REPLACE(content, '“', '"');
+UPDATE wikipages_his SET content = REPLACE(content, '’', "'");
+UPDATE wikipages_his SET content = REPLACE(content, '""', '"');
