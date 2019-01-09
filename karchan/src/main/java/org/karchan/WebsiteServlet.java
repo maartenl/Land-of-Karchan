@@ -49,8 +49,8 @@ public class WebsiteServlet extends HttpServlet
   @Inject
   private Freemarker freemarker;
 
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private MenuFactory menuFactory;
 
   @Override
   public void init() throws ServletException
@@ -91,12 +91,12 @@ public class WebsiteServlet extends HttpServlet
       if (url.startsWith("/blogs/"))
       {
         LOGGER.log(Level.FINEST, "Url {0} starts with /blogs/.", url);
-        foundMenu = Optional.of(MenuFactory.createBlogMenu(url));
+        foundMenu = Optional.of(menuFactory.createBlogMenu(url));
       }
       if (url.startsWith("/wiki/"))
       {
         LOGGER.log(Level.FINEST, "Url {0} starts with /wiki/.", url);
-        foundMenu = Optional.of(MenuFactory.createWikiMenu(url));
+        foundMenu = Optional.of(menuFactory.createWikiMenu(url));
       }
     }
     foundMenu.ifPresent(menu ->
@@ -105,7 +105,7 @@ public class WebsiteServlet extends HttpServlet
       {
         menu, url
       });
-      menu.setDatamodel(entityManager, root, request.getParameterMap());
+      menuFactory.setDatamodel(menu, root, request.getParameterMap());
       root.put("lastBreadcrumb", menu);
       List<Menu> breadcrumbs = menu.getParent() == MenuFactory.getRootMenu() || menu.getParent() == null ? Collections.emptyList() : Arrays.asList(menu.getParent());
       if (menu.getParent() != null)

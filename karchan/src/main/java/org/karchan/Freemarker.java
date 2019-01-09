@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -36,10 +37,11 @@ import mmud.database.entities.web.HtmlTemplate;
  *
  * @author maartenl
  */
-@Stateless
+@Singleton
 @LocalBean
 public class Freemarker implements TemplateLoader
 {
+  private final static Logger LOGGER = Logger.getLogger(Freemarker.class.getName());
 
   @PersistenceUnit
   private EntityManagerFactory entityManagerFactory;
@@ -54,6 +56,7 @@ public class Freemarker implements TemplateLoader
   @PostConstruct
   private void init()
   {
+    LOGGER.info("Started Freemarker initialization.");
     // Create your Configuration instance, and specify if up to what FreeMarker
     // version (here 2.3.27) do you want to apply the fixes that are not 100%
     // backward-compatible. See the Configuration JavaDoc for details.
@@ -78,6 +81,8 @@ public class Freemarker implements TemplateLoader
 
     // Wrap unchecked exceptions thrown during template processing into TemplateException-s.
     configuration.setWrapUncheckedExceptions(true);
+
+    LOGGER.info("Finished Freemarker initialization.");
   }
   
   @Override

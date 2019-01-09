@@ -157,7 +157,7 @@ public class Menu
    * @param parameters the list of parameters provided by the client in the
    * request.
    */
-  public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+  void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
   {
     // nothing here on purpose.
   }

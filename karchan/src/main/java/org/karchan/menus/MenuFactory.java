@@ -26,7 +26,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
@@ -36,6 +39,8 @@ import mmud.database.entities.web.Wikipage;
  *
  * @author maartenl
  */
+@Stateless
+@LocalBean
 public class MenuFactory
 {
 
@@ -47,6 +52,9 @@ public class MenuFactory
    */
   private static final Map<String, Menu> MENUS = new HashMap<>();
 
+  @PersistenceContext
+  private EntityManager entityManager;
+
   @VisibleForTesting
   private static final Menu rootMenu;
 
@@ -56,19 +64,19 @@ public class MenuFactory
   {
     notFoundMenu = new Menu("Not found", "/notFound.html");
 
-    Menu dash = new Menu("--", "--");
+    Menu dash = new SimpleMenu("--", "--");
 
-    Menu map = new Menu("Map", "/chronicles/map.html");
-    Menu history = new Menu("History", "/chronicles/history.html");
-    Menu people = new Menu("People", "/chronicles/people.html");
-    Menu fortunes = new Menu("Fortunes", "/chronicles/fortunes.html");
-    Menu guilds = new Menu("Guilds", "/chronicles/guilds.html");
+    Menu map = new SimpleMenu("Map", "/chronicles/map.html");
+    Menu history = new SimpleMenu("History", "/chronicles/history.html");
+    Menu people = new SimpleMenu("People", "/chronicles/people.html");
+    Menu fortunes = new SimpleMenu("Fortunes", "/chronicles/fortunes.html");
+    Menu guilds = new SimpleMenu("Guilds", "/chronicles/guilds.html");
 
-    Menu status = new Menu("Status", "/help/status.html");
-    Menu guide = new Menu("The Guide", "/help/guide.html");
-    Menu techSpecs = new Menu("Tech Specs", "/help/tech_specs.html");
-    Menu source = new Menu("Source", "/help/source.html");
-    Menu security = new Menu("Security", "/help/security.html");
+    Menu status = new SimpleMenu("Status", "/help/status.html");
+    Menu guide = new SimpleMenu("The Guide", "/help/guide.html");
+    Menu techSpecs = new SimpleMenu("Tech Specs", "/help/tech_specs.html");
+    Menu source = new SimpleMenu("Source", "/help/source.html");
+    Menu security = new SimpleMenu("Security", "/help/security.html");
     Menu faq = new Menu("FAQ", "/help/faq.html")
     {
       @Override
@@ -92,20 +100,20 @@ public class MenuFactory
       }
 
     };
-    Menu logon = new Menu("Logon", "/logon.html");
-    Menu introduction = new Menu("Introduction", "/introduction.html");
-    Menu newCharacter = new Menu("New character", "/new_character.html");
+    Menu logon = new SimpleMenu("Logon", "/logon.html");
+    Menu introduction = new SimpleMenu("Introduction", "/introduction.html");
+    Menu newCharacter = new SimpleMenu("New character", "/new_character.html");
 
-    Menu chronicles = new Menu("Chronicles", "/chronicles/index.html",
+    Menu chronicles = new SimpleMenu("Chronicles", "/chronicles/index.html",
             Arrays.asList(map, history, dash, people, fortunes, guilds));
 
-    Menu who = new Menu("Who", "/who.html");
-    Menu theLaw = new Menu("The Law", "/the_law.html");
+    Menu who = new SimpleMenu("Who", "/who.html");
+    Menu theLaw = new SimpleMenu("The Law", "/the_law.html");
 
-    Menu help = new Menu("Help", "/help/index.html",
+    Menu help = new SimpleMenu("Help", "/help/index.html",
             Arrays.asList(status, guide, techSpecs, source, security, faq));
 
-    Menu links = new Menu("Links", "/links.html");
+    Menu links = new SimpleMenu("Links", "/links.html");
     Menu wiki = new Menu("Wiki", "/wiki/index.html")
     {
       @Override
@@ -124,7 +132,7 @@ public class MenuFactory
       }
     };
 
-    rootMenu = new Menu("root", " root ",
+    rootMenu = new SimpleMenu("root", " root ",
             Arrays.asList(welcome, logon, introduction, newCharacter,
                     chronicles, who, theLaw, help, links, wiki));
 
@@ -200,7 +208,7 @@ public class MenuFactory
     return getRootMenu().getSubMenu();
   }
 
-  public static Menu createBlogMenu(String url)
+  public Menu createBlogMenu(String url)
   {
     Menu specificBlogMenu = new Menu("Blog", "blogs/specific.html")
     {
@@ -234,7 +242,7 @@ public class MenuFactory
     return specificBlogMenu;
   }
 
-  public static Menu createWikiMenu(String url)
+  public Menu createWikiMenu(String url)
   {
     Menu specificWikipageMenu = new Menu("Wiki", "wiki/specific.html")
     {
@@ -289,5 +297,10 @@ public class MenuFactory
       }
       parent = parent.getParent();
     }
+  }
+
+  public void setDatamodel(Menu menu, Map<String, Object> root, Map<String, String[]> parameterMap)
+  {
+    menu.setDatamodel(entityManager, root, parameterMap);
   }
 }
