@@ -24,18 +24,14 @@ import freemarker.template.TemplateNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -114,6 +110,7 @@ public class WebsiteServlet extends HttpServlet
         foundMenu = Optional.of(menuFactory.createWikiMenu(url));
       }
     }
+    List<Menu> breadcrumbs = new ArrayList<>();
     foundMenu.ifPresent(menu ->
     {
       LOGGER.log(Level.FINEST, "Menu {0} found with url {1}.", new Object[]
@@ -122,10 +119,10 @@ public class WebsiteServlet extends HttpServlet
       });
       menuFactory.setDatamodel(menu, root, request.getParameterMap());
       root.put("lastBreadcrumb", menu);
-      List<Menu> breadcrumbs = createBreadcrumbs(menu);
+      breadcrumbs.addAll(createBreadcrumbs(menu));
       LOGGER.log(Level.FINEST, "Breadcrumbs set to {0}.", breadcrumbs);
-      root.put("breadcrumbs", breadcrumbs);
     });
+    root.put("breadcrumbs", breadcrumbs);
 
     String templateName = foundMenu.map(menu -> menu.getTemplate()).orElse(url.replace(".html", ""));
     root.put("template", templateName);

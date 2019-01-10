@@ -189,6 +189,9 @@ public class MenuFactory
     };
     add(blogs);
 
+    Menu settings = new SimpleMenu("Settings", "/game/settings.html");
+    add(settings);
+    
   }
 
   public static Menu getRootMenu()
