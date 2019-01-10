@@ -546,7 +546,7 @@ create table wikipages_his (
   version varchar(10) not null,
   content text not null,
   summary text,
-  parentTitle varchar(100),
+  parentTitle varchar(100), -- no fk
   UNIQUE KEY (title, version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -595,3 +595,16 @@ UPDATE wikipages_his SET content = REPLACE(content, '”', '"');
 UPDATE wikipages_his SET content = REPLACE(content, '“', '"');
 UPDATE wikipages_his SET content = REPLACE(content, '’', "'");
 UPDATE wikipages_his SET content = REPLACE(content, '""', '"');
+
+create table images (
+  url varchar(200) NOT NULL primary key,
+  owner varchar(20) not null,
+  createDate timestamp not null,
+  mimeType varchar(100) not null,
+  content mediumblob not null,
+  length int(10) not null,
+  CONSTRAINT FOREIGN KEY (owner) REFERENCES
+  mm_usertable (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- mimeType in ("image/gif","image/jpeg","image/png");
