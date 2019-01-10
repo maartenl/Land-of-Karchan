@@ -266,7 +266,7 @@ public class MenuFactory
         {
           root.put("wikipage", wikipages.get(0));
           setName(wikipages.get(0).getTitle());
-          Menu.findMenu("/wiki/index.html").ifPresent(menu -> this.setParent(menu));
+          createBreadcrumbsFromWikipages(wikipages.get(0), this);
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found.", new Object[]
@@ -281,10 +281,20 @@ public class MenuFactory
 
   private static void createBreadcrumbsFromWikipages(Wikipage childPage, Menu childMenu)
   {
+    LOGGER.finest("createBreadcrumbsFromWikipages: " + childPage);
     Wikipage parent = childPage.getParent();
+    if (parent == null) {
+      Optional<Menu> rootMenu = Menu.findMenu("/wiki/index.html");
+      if (rootMenu.isPresent())
+      {
+        childMenu.setParent(rootMenu.get());
+      }
+      return;
+    }
     while (parent != null)
     {
-      Menu menu = new Menu(parent.getTitle(), "/wiki/" + parent.getTitle() + ".html");
+      LOGGER.finest("createBreadcrumbsFromWikipages: has parent " + parent);
+      Menu menu = new SimpleMenu(parent.getTitle(), "/wiki/" + parent.getTitle() + ".html");
       childMenu.setParent(menu);
       childMenu = menu;
       if (parent.getParent() == null)

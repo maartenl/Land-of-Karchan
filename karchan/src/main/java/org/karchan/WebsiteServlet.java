@@ -16,18 +16,21 @@
  */
 package org.karchan;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.karchan.menus.Menu;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -52,6 +55,18 @@ public class WebsiteServlet extends HttpServlet
   @Inject
   private MenuFactory menuFactory;
 
+  @VisibleForTesting
+  void setFreemarker(Freemarker freemarker)
+  {
+    this.freemarker = freemarker;
+  }
+
+  @VisibleForTesting
+  void setMenuFactory(MenuFactory menuFactory)
+  {
+    this.menuFactory = menuFactory;
+  }
+  
   @Override
   public void init() throws ServletException
   {
@@ -107,17 +122,7 @@ public class WebsiteServlet extends HttpServlet
       });
       menuFactory.setDatamodel(menu, root, request.getParameterMap());
       root.put("lastBreadcrumb", menu);
-      List<Menu> breadcrumbs = menu.getParent() == MenuFactory.getRootMenu() || menu.getParent() == null ? Collections.emptyList() : Arrays.asList(menu.getParent());
-      if (menu.getParent() != null)
-      {
-        LOGGER.log(Level.FINEST, "Menu {0} has parent with name {1}.", new Object[]
-        {
-          menu, menu.getParent()
-        });
-      } else
-      {
-        LOGGER.log(Level.FINEST, "Menu {0} has no parent.", menu);
-      }
+      List<Menu> breadcrumbs = createBreadcrumbs(menu);
       LOGGER.log(Level.FINEST, "Breadcrumbs set to {0}.", breadcrumbs);
       root.put("breadcrumbs", breadcrumbs);
     });
@@ -133,7 +138,7 @@ public class WebsiteServlet extends HttpServlet
       main = freemarker.getConfiguration().getTemplate(templateName);
     } catch (TemplateNotFoundException notFound)
     {
-      LOGGER.log(Level.FINEST, "Template {0} not found.", templateName);
+      LOGGER.log(Level.SEVERE, "Template {0} not found.", templateName);
       root.put("activeMenu", "none");
       root.put("breadcrumbs", Collections.emptyList());
       root.put("lastBreadcrumb", MenuFactory.getNotFoundMenu());
@@ -149,9 +154,25 @@ public class WebsiteServlet extends HttpServlet
       footer.process(root, out);
     } catch (TemplateException ex)
     {
-      LOGGER.log(Level.SEVERE, null, ex);
+      LOGGER.log(Level.SEVERE, ex, () -> "Error processing template " + templateName);
       throw new ServletException(ex);
     }
+  }
+
+  private List<Menu> createBreadcrumbs(Menu menu)
+  {
+    if (menu.getParent() == null)
+    {
+      LOGGER.log(Level.FINEST, "Menu {0} has no parent.", menu);
+      return Collections.emptyList();
+    }
+    List<Menu> breadcrumbs = new ArrayList<>();
+    while (menu.getParent() != null && menu.getParent() != menuFactory.getRootMenu())
+    {
+      breadcrumbs.add(0, menu.getParent());
+      menu = menu.getParent();
+    }
+    return breadcrumbs;
   }
 
   private String getUrl(HttpServletRequest url)

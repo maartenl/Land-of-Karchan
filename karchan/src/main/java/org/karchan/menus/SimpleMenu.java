@@ -27,6 +27,9 @@ import javax.persistence.EntityManager;
 public final class SimpleMenu extends Menu
 {
   
+  /**
+   * @see Menu#Menu(java.lang.String, java.lang.String) 
+   */
   public SimpleMenu(String name, String url)
   {
     super(name, url);
