@@ -1548,15 +1548,13 @@ values(22, "help/faq", now(), now(), '<div class="container">
 <div class="accordion" id="accordionFaq">
 <#list faq as faq>
   <div class="card">
-    <div class="card-header" id="heading${faq.id}">
-      <h2 class="mb-0">
+    <div class="card-header text-truncate" id="heading${faq.id}">
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${faq.id}" aria-expanded="true" aria-controls="collapse${faq.id}">
-          ${faq.question}
+          <h4>${faq.question}</h4>
         </button>
-      </h2>
     </div>
 
-    <div id="collapse${faq.id}" class="collapse show" aria-labelledby="heading${faq.id}" data-parent="#accordionFaq">
+    <div id="collapse${faq.id}" class="collapse" aria-labelledby="heading${faq.id}" data-parent="#accordionFaq">
       <div class="card-body">
         ${faq.answer}
       </div>
