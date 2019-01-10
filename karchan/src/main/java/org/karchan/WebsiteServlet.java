@@ -99,7 +99,7 @@ public class WebsiteServlet extends HttpServlet
     {
       root.put("activeMenu", "none");
     }
-    Optional<Menu> foundMenu = Menu.findMenu(url);
+    Optional<Menu> foundMenu = MenuFactory.findMenu(url);
     if (!foundMenu.isPresent())
     {
       LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);

@@ -60,23 +60,31 @@ public class MenuFactory
 
   private static final Menu notFoundMenu;
 
+  private static void add(Menu... menus)
+  {
+    Arrays.stream(menus).forEach(menu -> MENUS.put(menu.getUrl(), menu));
+  }
+
   static
   {
-    notFoundMenu = new Menu("Not found", "/notFound.html");
-
-    Menu dash = new SimpleMenu("--", "--");
+    notFoundMenu = new SimpleMenu("Not found", "/notFound.html");
+    add(notFoundMenu);
+    
+    Menu dash = new Dash();
 
     Menu map = new SimpleMenu("Map", "/chronicles/map.html");
     Menu history = new SimpleMenu("History", "/chronicles/history.html");
     Menu people = new SimpleMenu("People", "/chronicles/people.html");
     Menu fortunes = new SimpleMenu("Fortunes", "/chronicles/fortunes.html");
     Menu guilds = new SimpleMenu("Guilds", "/chronicles/guilds.html");
+    add(map, history, people, fortunes, guilds);
 
     Menu status = new SimpleMenu("Status", "/help/status.html");
     Menu guide = new SimpleMenu("The Guide", "/help/guide.html");
     Menu techSpecs = new SimpleMenu("Tech Specs", "/help/tech_specs.html");
     Menu source = new SimpleMenu("Source", "/help/source.html");
     Menu security = new SimpleMenu("Security", "/help/security.html");
+    add(status, guide, techSpecs, source, security);
     Menu faq = new Menu("FAQ", "/help/faq.html")
     {
       @Override
@@ -87,7 +95,8 @@ public class MenuFactory
         root.put("faq", faq);
       }
     };
-
+    add(faq);
+    
     Menu welcome = new Menu("Welcome", "/index.html")
     {
       @Override
@@ -103,15 +112,19 @@ public class MenuFactory
     Menu logon = new SimpleMenu("Logon", "/logon.html");
     Menu introduction = new SimpleMenu("Introduction", "/introduction.html");
     Menu newCharacter = new SimpleMenu("New character", "/new_character.html");
-
+    add(welcome, logon, introduction, newCharacter);
+    
     Menu chronicles = new SimpleMenu("Chronicles", "/chronicles/index.html",
             Arrays.asList(map, history, dash, people, fortunes, guilds));
+    add(chronicles);
 
     Menu who = new SimpleMenu("Who", "/who.html");
     Menu theLaw = new SimpleMenu("The Law", "/the_law.html");
+    add(who, theLaw);
 
     Menu help = new SimpleMenu("Help", "/help/index.html",
             Arrays.asList(status, guide, techSpecs, source, security, faq));
+    add(help);
 
     Menu links = new SimpleMenu("Links", "/links.html");
     Menu wiki = new Menu("Wiki", "/wiki/index.html")
@@ -131,10 +144,12 @@ public class MenuFactory
         }
       }
     };
+    add(links, wiki);
 
     rootMenu = new SimpleMenu("root", " root ",
             Arrays.asList(welcome, logon, introduction, newCharacter,
                     chronicles, who, theLaw, help, links, wiki));
+    add(rootMenu);
 
     Menu blogs = new Menu("Blogs", "/blogs/index.html")
     {
@@ -172,6 +187,7 @@ public class MenuFactory
       }
       private static final int PAGE_SIZE = 10;
     };
+    add(blogs);
 
   }
 
@@ -224,7 +240,7 @@ public class MenuFactory
         {
           root.put("blog", blogs.get(0));
           setName(blogs.get(0).getTitle());
-          Menu.findMenu("/blogs/index.html").ifPresent(menu -> this.setParent(menu));
+          MenuFactory.findMenu("/blogs/index.html").ifPresent(menu -> this.setParent(menu));
         }
         if (blogs.size() > 1)
         {
@@ -281,10 +297,11 @@ public class MenuFactory
 
   private static void createBreadcrumbsFromWikipages(Wikipage childPage, Menu childMenu)
   {
-    LOGGER.finest("createBreadcrumbsFromWikipages: " + childPage);
+    LOGGER.log(Level.FINEST, "createBreadcrumbsFromWikipages: {0}", childPage);
     Wikipage parent = childPage.getParent();
-    if (parent == null) {
-      Optional<Menu> rootMenu = Menu.findMenu("/wiki/index.html");
+    if (parent == null)
+    {
+      Optional<Menu> rootMenu = MenuFactory.findMenu("/wiki/index.html");
       if (rootMenu.isPresent())
       {
         childMenu.setParent(rootMenu.get());
@@ -293,13 +310,13 @@ public class MenuFactory
     }
     while (parent != null)
     {
-      LOGGER.finest("createBreadcrumbsFromWikipages: has parent " + parent);
+      LOGGER.log(Level.FINEST, "createBreadcrumbsFromWikipages: has parent {0}", parent);
       Menu menu = new SimpleMenu(parent.getTitle(), "/wiki/" + parent.getTitle() + ".html");
       childMenu.setParent(menu);
       childMenu = menu;
       if (parent.getParent() == null)
       {
-        Optional<Menu> rootMenu = Menu.findMenu("/wiki/index.html");
+        Optional<Menu> rootMenu = MenuFactory.findMenu("/wiki/index.html");
         if (rootMenu.isPresent())
         {
           childMenu.setParent(rootMenu.get());
@@ -313,4 +330,25 @@ public class MenuFactory
   {
     menu.setDatamodel(entityManager, root, parameterMap);
   }
+
+  /**
+   * Looks in all menus that have been created.
+   *
+   * @param url the url to find, for example "/blogs/index.html".
+   * @return an optional indicating a found menu or nothing.
+   */
+  public static Optional<Menu> findMenu(String url)
+  {
+    Optional<Menu> result = Optional.ofNullable(MENUS.get(url));
+    if (!result.isPresent())
+    {
+      LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
+      LOGGER.log(Level.FINEST, "Available menus are {0}.", MENUS.keySet());
+    } else
+    {
+      LOGGER.log(Level.FINEST, "Menu with url {0} found.", url);
+    }
+    return result;
+  }
+
 }

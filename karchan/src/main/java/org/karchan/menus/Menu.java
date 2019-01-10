@@ -34,12 +34,6 @@ public class Menu
 
   private final static Logger LOGGER = Logger.getLogger(Menu.class.getName());
 
-  /**
-   * Contains a mapping between the url (for example "blogs/index.html") and the menu
-   * (for example "Blogs" with template name "blogs/index").
-   */
-  private static final Map<String, Menu> MENUS = new HashMap<>();
-
   private String name;
   private final String template;
   private final String url;
@@ -70,7 +64,6 @@ public class Menu
     this.url = url;
     this.subMenu = subMenu;
     subMenu.forEach(menu -> menu.setParent(this));
-    MENUS.put(url, this);
   }
 
   public String getName()
@@ -111,7 +104,7 @@ public class Menu
 
   /**
    * Returns the visible menu, based on the URL. Can return Null, in case the
-   * menu option is not visible in the nagigation bar.
+   * menu option is not visible in the navigation bar.
    *
    * @param url the url to check.
    * @return a Menu or no menu.
@@ -160,26 +153,6 @@ public class Menu
   void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
   {
     // nothing here on purpose.
-  }
-
-  /**
-   * Looks in all menus that have been created.
-   *
-   * @param url the url to find, for example "/blogs/index.html".
-   * @return an optional indicating a found menu or nothing.
-   */
-  public static Optional<Menu> findMenu(String url)
-  {
-    Optional<Menu> result = Optional.ofNullable(MENUS.get(url));
-    if (!result.isPresent())
-    {
-      LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
-      LOGGER.log(Level.FINEST, "Available menus are {0}.", MENUS.keySet());
-    } else
-    {
-      LOGGER.log(Level.FINEST, "Menu with url {0} found.", url);
-    }
-    return result;
   }
 
   @Override

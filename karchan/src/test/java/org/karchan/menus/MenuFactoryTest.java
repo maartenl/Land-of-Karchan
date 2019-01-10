@@ -68,8 +68,7 @@ public class MenuFactoryTest
   @Test
   public void rootMenuFindTest()
   {
-    Menu rootMenu = MenuFactory.getRootMenu();
-    Optional<Menu> findMenu = Menu.findMenu("/notFound.html");
+    Optional<Menu> findMenu = MenuFactory.findMenu("/notFound.html");
 
     assertThat(findMenu).isPresent();
     assertThat(findMenu.get().getUrl()).isEqualTo("/notFound.html");
@@ -79,7 +78,7 @@ public class MenuFactoryTest
   @Test
   public void rootMenuNotFindTest()
   {
-    Optional<Menu> findMenu = Menu.findMenu("/instroduction.html");
+    Optional<Menu> findMenu = MenuFactory.findMenu("/instroduction.html");
 
     assertThat(findMenu).isNotPresent();
   }
