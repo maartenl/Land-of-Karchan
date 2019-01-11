@@ -20,13 +20,12 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.karchan.menus.MenuFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -49,12 +48,12 @@ public class WebsiteServletTest
   {
   }
   
-  @Before
+  @BeforeMethod
   public void setUp()
   {
   }
   
-  @After
+  @AfterMethod
   public void tearDown()
   {
   }
