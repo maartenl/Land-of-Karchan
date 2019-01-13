@@ -10,12 +10,9 @@ You can find the game running at http://www.karchan.org
 List
 ====
 
-* client - directory containing a first attempt at a graphical client/abandoned
-* drupal - modules and stylesheets for the drupal
 * karchangame - new version of the game, currently under construction
 * server - old server version of the game
-* karchan - old html files
-* scripts - php scripts
+* karchan - the new website
 * sqlscripts - database scripts
 * karchanangular - angular app for a user to change the settings
 
