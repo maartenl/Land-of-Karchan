@@ -21,6 +21,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
@@ -47,6 +49,11 @@ public class Image implements Serializable
   private static final long serialVersionUID = 1L;
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id")
+  private Long id;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 200)
@@ -67,12 +74,6 @@ public class Image implements Serializable
 
   @Basic(optional = false)
   @NotNull
-  @Lob
-  @Column(name = "content")
-  private byte[] content;
-
-  @Basic(optional = false)
-  @NotNull
   @Column(name = "length")
   private int length;
 
@@ -82,22 +83,14 @@ public class Image implements Serializable
   @Column(name = "owner")
   private String owner;
 
+  @Basic(optional = false)
+  @NotNull
+  @Lob
+  @Column(name = "content")
+  private byte[] content;
+
   public Image()
   {
-  }
-
-  public Image(String url)
-  {
-    this.url = url;
-  }
-
-  public Image(String url, Date createDate, String mimeType, byte[] content, int length)
-  {
-    this.url = url;
-    this.createDate = createDate;
-    this.mimeType = mimeType;
-    this.content = content;
-    this.length = length;
   }
 
   public String getUrl()
@@ -130,16 +123,6 @@ public class Image implements Serializable
     this.mimeType = mimeType;
   }
 
-  public byte[] getContent()
-  {
-    return content;
-  }
-
-  public void setContent(byte[] content)
-  {
-    this.content = content;
-  }
-
   public int getLength()
   {
     return length;
@@ -160,11 +143,31 @@ public class Image implements Serializable
     this.owner = owner;
   }
 
+  public Long getId()
+  {
+    return id;
+  }
+
+  public void setId(Long id)
+  {
+    this.id = id;
+  }
+
+  public byte[] getContent()
+  {
+    return content;
+  }
+
+  public void setContent(byte[] content)
+  {
+    this.content = content;
+  }
+
   @Override
   public int hashCode()
   {
     int hash = 0;
-    hash += (url != null ? url.hashCode() : 0);
+    hash += (id != null ? id.hashCode() : 0);
     return hash;
   }
 
@@ -177,7 +180,7 @@ public class Image implements Serializable
       return false;
     }
     Image other = (Image) object;
-    if ((this.url == null && other.url != null) || (this.url != null && !this.url.equals(other.url)))
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
     {
       return false;
     }
@@ -187,7 +190,7 @@ public class Image implements Serializable
   @Override
   public String toString()
   {
-    return "mmud.database.entities.web.Image[ url=" + url + " ]";
+    return "mmud.database.entities.web.Image[ url=" + url + " owner=" + owner + " ]";
   }
   
 }
