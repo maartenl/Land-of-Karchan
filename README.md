@@ -11,11 +11,8 @@ List
 ====
 
 * karchangame - new version of the game, currently under construction
-* server - old server version of the game
 * karchan - the new website
-* sqlscripts - database scripts
 * karchanangular - angular app for a user to change the settings
-
 * karchanpersonal - a WAR wrapper for karchanagular
 * karchananimations - a WAR wrapper for animations
 * karchandocs - a WAR wrapper for javadocs

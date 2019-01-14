@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Created-By: 0.92-gcc
-Main-Class: mmud.Main
-
