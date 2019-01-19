@@ -1,9 +1,10 @@
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import { Error } from './errors/error.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ErrorsService {
   private listener: (error: Error) => void;
 
@@ -13,8 +14,7 @@ export class ErrorsService {
     this.listener = listener;
   }
 
-  public addError(error: Error) : void {
+  public addError(error: Error): void {
     this.listener(error);
   }
-
 }

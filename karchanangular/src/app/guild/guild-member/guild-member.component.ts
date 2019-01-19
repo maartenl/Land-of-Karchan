@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Guild, GuildHopefuls, GuildRanks, GuildMembers } from '../guild.model';
-import { PlayerService } from 'app/player.service';
+import { Guild, GuildHopefuls, GuildRanks, GuildMembers, GuildMember, GuildRank, GuildHopeful } from '../guild.model';
+import { PlayerService } from '../../player.service';
 
 @Component({
   selector: 'app-guild-member',
@@ -9,7 +9,6 @@ import { PlayerService } from 'app/player.service';
   styleUrls: ['./guild-member.component.css']
 })
 export class GuildMemberComponent implements OnInit {
-
   @Input() guild: Guild;
   guildMembers: GuildMembers;
   guildRanks: GuildRanks;
@@ -22,19 +21,25 @@ export class GuildMemberComponent implements OnInit {
 
   public checkMembers() {
     if (this.guildMembers === undefined) {
-      this.playerService.getGuildmembers().subscribe((result: GuildMembers) => { this.guildMembers = result; });
+      this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
+        this.guildMembers = new GuildMembers(result);
+      });
     }
   }
 
   public checkRanks() {
     if (this.guildRanks === undefined) {
-      this.playerService.getGuildranks().subscribe((result: GuildRanks) => { this.guildRanks = result; });
+      this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
+        this.guildRanks = new GuildRanks(result);
+      });
     }
   }
 
   public checkHopefuls() {
     if (this.guildHopefuls === undefined) {
-      this.playerService.getGuildhopefuls().subscribe((result: GuildHopefuls) => { this.guildHopefuls = result; });
+      this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
+        this.guildHopefuls = new GuildHopefuls(result);
+      });
     }
   }
 

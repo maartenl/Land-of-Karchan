@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Guild, GuildHopefuls, GuildHopeful, GuildRanks, GuildRank, GuildMembers, GuildMember } from '../guild.model';
-import { PlayerService } from 'app/player.service';
+import { PlayerService } from '../../player.service';
 
 @Component({
   selector: 'app-guild-master',
@@ -48,20 +48,29 @@ export class GuildMasterComponent implements OnInit {
 
   public checkMembers() {
     this.checkRanks();
+    const those = this;
     if (this.guildMembers === undefined) {
-      this.playerService.getGuildmembers().subscribe((result: GuildMembers) => { this.guildMembers = result; });
+      this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
+        those.guildMembers = new GuildMembers(result);
+        });
     }
   }
 
   public checkRanks() {
+    const those = this;
     if (this.guildRanks === undefined) {
-      this.playerService.getGuildranks().subscribe((result: GuildRanks) => { this.guildRanks = result; });
+      this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
+        those.guildRanks = new GuildRanks(result);
+      });
     }
   }
 
   public checkHopefuls() {
     if (this.guildHopefuls === undefined) {
-      this.playerService.getGuildhopefuls().subscribe((result: GuildHopefuls) => { this.guildHopefuls = result; });
+      const those = this;
+      this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
+        those.guildHopefuls = new GuildHopefuls(result);
+      });
     }
   }
 
@@ -186,8 +195,7 @@ export class GuildMasterComponent implements OnInit {
       this.playerService.createGuildrank(newRank).subscribe(
         (result: any) => { this.guildRanks.ranks.push(newRank); }
       );
-    }
-    else {
+    } else {
       // old rank changed!
       this.playerService.updateGuildrank(newRank).subscribe(
         (result: any) => { oldRank.title = newRank.title; }

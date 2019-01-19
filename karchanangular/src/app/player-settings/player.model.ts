@@ -1,5 +1,4 @@
 import { Family } from "./family.model";
-import { JsonProperty } from 'json-typescript-mapper';
 
 export class Player {
   name: string;
@@ -13,7 +12,6 @@ export class Player {
   cityofbirth: string;
   storyline: string;
 
-  @JsonProperty({ clazz: Family, name: 'familyvalues' })
   familyvalues: Family[];
 
   constructor() {

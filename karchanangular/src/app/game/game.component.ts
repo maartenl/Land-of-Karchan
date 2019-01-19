@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PlayerService } from 'app/player.service';
+import { PlayerService } from '../player.service';
 
 @Component({
   selector: 'app-game',
@@ -8,56 +8,55 @@ import { PlayerService } from 'app/player.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-
   constructor(private playerService: PlayerService) { }
 
   hasNewMail: boolean;
 
-  error: boolean = false;
+  error = false;
 
   ngOnInit() {
     this.playerService.hasNewMail()
-      .subscribe( (result: boolean) => { // on success
-        this.hasNewMail = result; 
-       },
-       (err: any) => { // error
-         this.error = true;
-       }); 
+      .subscribe((result: boolean) => { // on success
+        this.hasNewMail = result;
+      },
+        (err: any) => { // error
+          this.error = true;
+        });
   }
 
   public playGame(): void {
     this.playerService.enterGame()
       .subscribe(
-      (result: any) => { // on success
-        if (window.location != window.parent.location) {
-              window.parent.location.href = "/game/play";
+        (result: any) => { // on success
+          if (window.location !== window.parent.location) {
+            window.parent.location.href = '/game/play.html';
+          }
+          window.location.href = '/game/play.html';
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
         }
-        window.location.href = "/game/play";
-      },
-      (err: any) => { // error
-        // console.log("error", err);
-      },
-      () => { // on completion
-      }
       );
   }
 
   public logoff(): void {
-    let game = this;
+    const game = this;
     this.playerService.logoff()
       .subscribe(
-      (result: any) => { // on success
-        game.playerService.clearName();
-        if (window.location != window.parent.location) {
-              window.parent.location.href = "/game/goodbye";
+        (result: any) => { // on success
+          game.playerService.clearName();
+          if (window.location !== window.parent.location) {
+            window.parent.location.href = '/game/goodbye.html';
+          }
+          window.location.href = '/game/goodbye.html';
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
         }
-        window.location.href = "/game/goodbye";
-      },
-      (err: any) => { // error
-        // console.log("error", err);
-      },
-      () => { // on completion
-      }
       );
 
   }
@@ -72,4 +71,5 @@ export class GameComponent implements OnInit {
   public getPlayer(): string {
     return this.playerService.getName();
   }
+
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ErrorsService} from 'app/errors.service';
+import { ErrorsService} from '../errors.service';
 import { Error } from './error.model';
 
 @Component({
@@ -9,9 +9,8 @@ import { Error } from './error.model';
   styleUrls: ['./errors.component.css']
 })
 export class ErrorsComponent implements OnInit {
-
   errors: Error[] = [];
-  
+
   constructor(private errorsService: ErrorsService) { }
 
   ngOnInit() {
@@ -19,11 +18,11 @@ export class ErrorsComponent implements OnInit {
   }
 
   public ifError(): boolean {
-    return this.errors.length != 0;
+    return this.errors.length !== 0;
   }
 
   public removeError(error: Error): void {
-    let index = this.errors.indexOf(error);
+    const index = this.errors.indexOf(error);
     if (index === -1) {
       // not found. do nothing.
       return;
@@ -34,4 +33,5 @@ export class ErrorsComponent implements OnInit {
   public addError(error: Error): void {
     this.errors.push(error);
   }
+
 }

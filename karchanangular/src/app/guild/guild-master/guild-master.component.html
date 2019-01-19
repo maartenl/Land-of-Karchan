@@ -72,7 +72,7 @@
             </h5>
           </div>
 
-          <div id="collapseMembers" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div id="collapseMembers" role="tabpanel" aria-labelledby="headingOne">
             <div class="card-block" *ngIf="guildMembers !== undefined">
               <ul class="list-group">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
@@ -113,7 +113,7 @@
              </a>
             </h5>
           </div>
-          <div id="collapseRanks" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div id="collapseRanks" role="tabpanel" aria-labelledby="headingTwo">
             <div class="card-block" *ngIf="guildRanks !== undefined">
               <ul class="list-group">
                 <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks" (click)="selectRank(rank)">
@@ -150,7 +150,7 @@
               </a>
             </h5>
           </div>
-          <div id="collapseHopefuls" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div id="collapseHopefuls" role="tabpanel" aria-labelledby="headingThree">
             <div class="card-block">
               <ul class="list-group" *ngIf="guildHopefuls !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">

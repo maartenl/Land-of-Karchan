@@ -1,4 +1,3 @@
-import { JsonProperty } from 'json-typescript-mapper';
 
 export class GuildRank {
   title: string;
@@ -20,7 +19,6 @@ export class GuildRank {
 
 export class GuildMember {
   name: string;
-  @JsonProperty({ clazz: GuildRank, name: 'guildrank' })
   guildrank: GuildRank;
 
   constructor() {
@@ -42,15 +40,14 @@ export class GuildHopeful {
 }
 
 export class GuildHopefuls {
-  @JsonProperty({ clazz: GuildHopeful, name: 'hopefuls' })
   hopefuls: GuildHopeful[];
 
-  constructor() {
-    this.hopefuls = void 0;
+  constructor(guildHopefuls: GuildHopeful[]) {
+    this.hopefuls = guildHopefuls;
   }
 
   public delete(hopeful: GuildHopeful) {
-    let index: number = this.hopefuls.indexOf(hopeful);
+    const index: number = this.hopefuls.indexOf(hopeful);
     if (index !== -1) {
       this.hopefuls.splice(index, 1);
     }
@@ -58,13 +55,12 @@ export class GuildHopefuls {
 }
 
 export class GuildMembers {
-  @JsonProperty({ clazz: GuildMember, name: 'members' })
   members: GuildMember[];
 
   currentMember: GuildMember;
 
-  constructor() {
-    this.members = void 0;
+  constructor(guildMembers: GuildMember[]) {
+    this.members = guildMembers;
   }
 
   public delete(member: GuildMember) {
@@ -76,13 +72,12 @@ export class GuildMembers {
 }
 
 export class GuildRanks {
-  @JsonProperty({ clazz: GuildRank, name: 'ranks' })
   ranks: GuildRank[];
 
   currentRank: GuildRank;
 
-  constructor() {
-    this.ranks = void 0;
+  constructor(guildRanks: GuildRank[]) {
+    this.ranks = guildRanks;
   }
 
   public delete(rank: GuildRank) {

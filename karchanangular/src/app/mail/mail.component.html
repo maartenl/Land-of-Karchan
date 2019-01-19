@@ -29,7 +29,7 @@
             </td>
             <td (click)="setMail(mail)">{{ mail.name }}</td>
             <td (click)="setMail(mail)">{{ mail.subject }}</td>
-            <td (click)="setMail(mail)">{{ mail.getWhen() }}</td>
+            <td (click)="setMail(mail)">{{ mail.whensent | date:'medium' }}</td>
             <td>
               <a href="#" (click)="replyMail(mail)"><i class="material-icons align-middle">reply</i></a>
               <a href="#" (click)="deleteMail(mail)"><i class="material-icons align-middle">delete</i></a>

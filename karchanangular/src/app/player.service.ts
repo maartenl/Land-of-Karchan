@@ -1,20 +1,24 @@
-import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
-import { environment } from 'app/../environments/environment';
-
-import { deserialize, serialize, JsonProperty } from 'json-typescript-mapper';
+import { environment } from '../environments/environment';
 
 import { ErrorsService } from './errors.service';
 import { Player } from './player-settings/player.model';
 import { Mail, MailList } from './mail/mail.model';
-import { Guild, GuildHopeful, GuildMember, GuildRank, GuildHopefuls, GuildMembers, GuildRanks } from './guild/guild.model';
+import {
+  Guild, GuildHopeful, GuildMember, GuildRank,
+  GuildHopefuls, GuildMembers, GuildRanks
+} from './guild/guild.model';
 import { Family } from './player-settings/family.model';
 import { Error } from './errors/error.model';
 
-@Injectable()
+
+@Injectable({
+  providedIn: 'root'
+})
 export class PlayerService {
   name: string;
 
@@ -36,7 +40,7 @@ export class PlayerService {
 
   gameUrl: string;
 
-  constructor(private http: Http, private errorsService: ErrorsService) {
+  constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
     this.gameUrl = environment.GAME_URL;
@@ -55,16 +59,16 @@ export class PlayerService {
     if (this.name != null) {
       return this.name;
     }
-    if (typeof (Storage) !== "undefined") {
+    if (typeof (Storage) !== 'undefined') {
       // Store
-      this.name = localStorage.getItem("karchanname");
+      this.name = localStorage.getItem('karchanname');
       if (this.name !== null) {
         return this.name;
       }
     }
-    let error: Error = new Error();
-    error.type = "404";
-    error.message = "Character not found. Are you sure you are logged in?";
+    const error: Error = new Error();
+    error.type = '404';
+    error.message = 'Character not found. Are you sure you are logged in?';
     this.errorsService.addError(error);
   }
 
@@ -72,9 +76,9 @@ export class PlayerService {
     if (this.name != null) {
       return true;
     }
-    if (typeof (Storage) !== "undefined") {
+    if (typeof (Storage) !== 'undefined') {
       // Store
-      this.name = localStorage.getItem("karchanname");
+      this.name = localStorage.getItem('karchanname');
       if (this.name !== null) {
         return true;
       }
@@ -86,331 +90,152 @@ export class PlayerService {
    * Clears the name of the player from the local storage.
    */
   public clearName(): void {
-    if (typeof (Storage) !== "undefined") {
+    if (typeof (Storage) !== 'undefined') {
       // Store
-      localStorage.removeItem("karchanname");
+      localStorage.removeItem('karchanname');
     }
     this.name = null;
   }
 
+  // get appropriate urls for rest calls
+
   private getCharactersheetUrl(): string {
-    return this.charactersheetUrl.replace("[player]", this.getName());
+    return this.charactersheetUrl.replace('[player]', this.getName());
   }
 
   private getMailUrl(): string {
-    return this.mailUrl.replace("[player]", this.getName());
+    return this.mailUrl.replace('[player]', this.getName());
   }
 
   private getHasNewMailUrl(): string {
-    return this.hasNewMailUrl.replace("[player]", this.getName());
+    return this.hasNewMailUrl.replace('[player]', this.getName());
   }
 
   private getFamilyUrl(toname: string): string {
-    return this.familyUrl.replace("[player]", this.getName()) + toname;
+    return this.familyUrl.replace('[player]', this.getName()) + toname;
   }
 
   private getGuildUrl(): string {
-    return this.guildUrl.replace("[player]", this.getName());
+    return this.guildUrl.replace('[player]', this.getName());
   }
 
   private getGuildmembersUrl(): string {
-    return this.guildmembersUrl.replace("[player]", this.getName());
+    return this.guildmembersUrl.replace('[player]', this.getName());
   }
 
   private getGuildranksUrl(): string {
-    return this.guildranksUrl.replace("[player]", this.getName());
+    return this.guildranksUrl.replace('[player]', this.getName());
   }
 
   private getGuildhopefulsUrl(): string {
-    return this.guildhopefulsUrl.replace("[player]", this.getName());
+    return this.guildhopefulsUrl.replace('[player]', this.getName());
   }
 
   private getGameUrl(): string {
-    return this.gameUrl.replace("[player]", this.getName());
+    return this.gameUrl.replace('[player]', this.getName());
   }
 
   // charactersheet calls
 
   public getPlayer(): Observable<any> {
-    let headers = new Headers({
+    const httpOptions = {
+      headers: new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getCharactersheetUrl(), options)
-      .map(this.extractData)
-      .catch((n) => this.handleError(n));
+      })
+    };
+    return this.http.get<Player>(this.getCharactersheetUrl(), httpOptions);
   }
 
   public updatePlayer(player: Player): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.put(this.getCharactersheetUrl(), player, options)
-      .catch((n) => this.handleError(n));
+    return this.http.put(this.getCharactersheetUrl(), player);
   }
 
   // mail calls
 
   public getMail(offset: number): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getMailUrl() + "?offset=" + offset, options)
-      .map(this.extractMail)
-      .catch((n) => this.handleError(n));
+    return this.http.get<Mail[]>(this.getMailUrl() + '?offset=' + offset);
   }
 
   public hasNewMail(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getHasNewMailUrl(), options)
-      .map((res) => res.status === 200);
+    return this.http.get(this.getHasNewMailUrl());
   }
 
   public sendMail(mail: Mail): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.getMailUrl(), mail, options)
-      .catch((n) => this.handleError(n));
+    return this.http.post(this.getMailUrl(), mail);
   }
 
   public deleteMail(mail: Mail): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.getMailUrl() + "/" + mail.id, options)
-      .catch((n) => this.handleError(n));
+    return this.http.delete(this.getMailUrl() + '/' + mail.id);
   }
 
   // guild calls
 
   public getGuild(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getGuildUrl(), options)
-      .map(this.extractGuild)
-      .catch((n) => this.handleError(n));
+    return this.http.get<Guild>(this.getGuildUrl());
   }
 
   public getGuildmembers(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getGuildmembersUrl(), options)
-      .map(this.extractGuildmembers)
-      .catch((n) => this.handleError(n));
+    return this.http.get<GuildMember[]>(this.getGuildmembersUrl());
   }
 
   public getGuildranks(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getGuildranksUrl(), options)
-      .map(this.extractGuildranks)
-      .catch((n) => this.handleError(n));
+    return this.http.get<GuildRank[]>(this.getGuildranksUrl());
   }
 
   public getGuildhopefuls(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(this.getGuildhopefulsUrl(), options)
-      .map(this.extractGuildhopefuls)
-      .catch((n) => this.handleError(n));
+    return this.http.get<GuildHopeful[]>(this.getGuildhopefulsUrl());
   }
 
   public updateGuild(guild: Guild): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.put(this.getGuildUrl(), guild, options)
-      .catch((n) => this.handleError(n));
+    return this.http.put(this.getGuildUrl(), guild);
   }
 
   public updateGuildmember(member: GuildMember): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.put(this.getGuildmembersUrl() + '/' + member.name, member, options)
-      .catch((n) => this.handleError(n));
+    return this.http.put(this.getGuildmembersUrl() + '/' + member.name, member);
   }
 
   public updateGuildrank(rank: GuildRank): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.put(this.getGuildranksUrl() + '/' + rank.guildlevel, rank, options)
-      .catch((n) => this.handleError(n));
+    return this.http.put(this.getGuildranksUrl() + '/' + rank.guildlevel, rank);
   }
 
   public createGuildrank(rank: GuildRank): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.post(this.getGuildranksUrl(), rank, options)
-      .catch((n) => this.handleError(n));
+    return this.http.post(this.getGuildranksUrl(), rank);
   }
 
   public deleteMember(member: GuildMember): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.getGuildmembersUrl() + "/" + member.name, options)
-      .catch((n) => this.handleError(n));
+    return this.http.delete(this.getGuildmembersUrl() + '/' + member.name);
   }
 
   public deleteRank(rank: GuildRank): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.getGuildranksUrl() + "/" + rank.guildlevel, options)
-      .catch((n) => this.handleError(n));
+    return this.http.delete(this.getGuildranksUrl() + '/' + rank.guildlevel);
   }
 
   public deleteHopeful(hopeful: GuildHopeful): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.delete(this.getGuildhopefulsUrl() + "/" + hopeful.name, options)
-      .catch((n) => this.handleError(n));
+    return this.http.delete(this.getGuildhopefulsUrl() + '/' + hopeful.name);
   }
+
   // family calls
 
   public deleteFamily(family: Family): Observable<any> {
-    return this.http.delete(this.getFamilyUrl(family.toname))
-      .catch((n) => this.handleError(n));
+    return this.http.delete(this.getFamilyUrl(family.toname));
   }
 
   public updateFamily(family: Family): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    let url: string = this.getFamilyUrl(family.toname) + "/" + family.getDescriptionAsInteger();
-    return this.http.put(url, null, options)
-      .catch((n) => this.handleError(n));
+    const url: string = this.getFamilyUrl(family.toname) + '/' + family.getDescriptionAsInteger();
+    return this.http.put(url, null);
   }
 
   // game calls
 
   public enterGame(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    let url: string = this.getGameUrl() + "enter";
-    return this.http.post(url, null, options)
-      .catch((n) => this.handleError(n));
+    const url: string = this.getGameUrl() + 'enter';
+    return this.http.post(url, null);
   }
 
   public logoff(): Observable<any> {
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-    let options = new RequestOptions({ headers: headers });
-    let url: string = this.getGameUrl() + "logoff";
-    return this.http.put(url, null, options)
-      .catch((n) => this.handleError(n));
+    const url: string = this.getGameUrl() + 'logoff';
+    return this.http.put(url, null);
   }
 
-  private extractData(res: Response): Player {
-    let body = res.json();
-    const player = deserialize(Player, body);
-    return player || new Player();
-  }
-
-  private extractMail(res: Response): MailList {
-    let body = res.json();
-    const mails = deserialize(MailList, { mails: body });
-    return mails;
-  }
-
-  private extractGuild(res: Response): Guild {
-    let body = res.json();
-    const guild = deserialize(Guild, body);
-    return guild;
-  }
-
-  private extractGuildmembers(res: Response): GuildMembers {
-    let body = res.json();
-    const members = deserialize(GuildMembers, { members: body });
-    return members;
-  }
-
-  private extractGuildranks(res: Response): GuildRanks {
-    let body = res.json();
-    const ranks = deserialize(GuildRanks, { ranks: body });
-    return ranks;
-  }
-
-  private extractGuildhopefuls(res: Response): GuildHopefuls {
-    let body = res.json();
-    const hopefuls = deserialize(GuildHopefuls, { hopefuls: body });
-    return hopefuls;
-  }
-
-  private handleError(response: Response | any): Observable<{}> {
-    let error: Error = new Error();
-    let errMsg: string;
-    if (response instanceof Response) {
-      try {
-        const body = response.json() || '';
-        error.type = response.status + ":" + (response.statusText || '');
-        if (body !== '' && body.errormessage) {
-          error.message = body.errormessage;
-          error.detailedmessage = body.stacktrace;
-        } else {
-          error.message = JSON.stringify(body);
-        }
-      } catch (e) {
-        // cannot json-parse
-        error.type = response.status + "";
-        error.message = response.statusText || '';
-      }
-    } else {
-      errMsg = response.message ? response.message : response.toString();
-      error.message = errMsg;
-    }
-    this.errorsService.addError(error);
-    return Observable.throw(errMsg);
-  }
 }

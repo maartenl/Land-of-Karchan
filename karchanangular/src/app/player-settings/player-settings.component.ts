@@ -3,7 +3,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Player } from './player.model';
 import { Family } from './family.model';
-import { PlayerService } from 'app/player.service';
+import { PlayerService } from '../player.service';
 
 @Component({
   selector: 'app-player-settings',
@@ -75,7 +75,7 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   save() {
-    let newPlayer = this.prepareSavePlayer();
+    const newPlayer = this.prepareSavePlayer();
     // TODO: add in the subscribe that the player is updated
     this.playerService.updatePlayer(newPlayer).subscribe();
   }
@@ -123,8 +123,8 @@ export class PlayerSettingsComponent implements OnInit {
   }
 
   private getFamily(toname: string): Family {
-    let found: Family[] = this.player.familyvalues.filter((fam) => fam.toname === toname);
-    if (found.length == 0) {
+    const found: Family[] = this.player.familyvalues.filter((fam) => fam.toname === toname);
+    if (found.length === 0) {
       return null;
     }
     return found[0];
@@ -133,7 +133,7 @@ export class PlayerSettingsComponent implements OnInit {
   delete(family: Family) {
     this.playerService.deleteFamily(family).subscribe(
       (result: any) => { // on success
-        let index = this.player.familyvalues.indexOf(family, 0);
+        const index = this.player.familyvalues.indexOf(family, 0);
         if (index > -1) {
           this.player.familyvalues.splice(index, 1);
         }
@@ -144,7 +144,7 @@ export class PlayerSettingsComponent implements OnInit {
   add(family: Family) {
     this.playerService.updateFamily(family).subscribe(
       (result: any) => { // on success
-        let length = this.player.familyvalues.push(family);
+        const length = this.player.familyvalues.push(family);
       }
     );
   }

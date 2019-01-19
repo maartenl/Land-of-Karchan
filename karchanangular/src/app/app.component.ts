@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { environment } from 'app/../environments/environment';
+import { environment } from '../environments/environment';
 
 export enum Tab {
   Game, Settings, Mail, Guild
 }
-
 
 @Component({
   selector: 'app-root',
@@ -19,7 +18,7 @@ export class AppComponent {
 
   constructor() {
     this.production = environment.production;
-    if (window.console) {console.log("Production: " + this.production);}
+    if (window.console) {console.log('Production: ' + this.production);}
   }
 
   setGameTabActive() {

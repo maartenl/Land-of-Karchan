@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Mail, MailList } from './mail.model';
-import { PlayerService } from 'app/player.service';
+import { PlayerService } from '../player.service';
 
 @Component({
   selector: 'app-mail',
@@ -10,6 +10,21 @@ import { PlayerService } from 'app/player.service';
   styleUrls: ['./mail.component.css']
 })
 export class MailComponent implements OnInit {
+  public static readonly MONTHS = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
   mails: MailList;
 
   mail: Mail;
@@ -26,11 +41,16 @@ export class MailComponent implements OnInit {
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
-      (result: any) => { // on success
-        this.mails.addAll(result);
+      (result: Mail[]) => { // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach(function (value) {
+            value.whensent = value.whensent.replace('[UTC]', '');
+          });
+          this.mails.addAll(result);
+        }
       },
       (err: any) => { // error
-        // console.log("error", err);
+        // console.log('error', err);
       },
       () => { // on completion
       }
@@ -56,8 +76,8 @@ export class MailComponent implements OnInit {
   replyMail(mail: Mail) {
     this.mailForm.reset({
       toname: mail.name,
-      subject: "Re: " + mail.subject,
-      body: "\n\n<p>On " + mail.getFullWhen() + " " + mail.name + " wrote:</p><hr/>\n" + mail.body + "\n<hr/>"
+      subject: 'Re: ' + mail.subject,
+      body: '\n\n<p>On ' + this.getFullWhen(mail) + ' ' + mail.name + ' wrote:</p><hr/>\n' + mail.body + '\n<hr/>'
     });
   }
 
@@ -66,14 +86,14 @@ export class MailComponent implements OnInit {
   }
 
   public send(): void {
-    let newMails: Mail[] = this.prepareSaveMail();
-    for (let newMail of newMails) {
+    const newMails: Mail[] = this.prepareSaveMail();
+    for (const newMail of newMails) {
       this.playerService.sendMail(newMail).subscribe(
         (result: any) => { // on success
           this.resetForm();
         },
         (err: any) => { // error
-          // console.log("error", err);
+          // console.log('error', err);
         },
         () => { // on completion
         }
@@ -87,27 +107,26 @@ export class MailComponent implements OnInit {
         this.mails.delete(mail);
       },
       (err: any) => { // error
-        // console.log("error", err);
+        // console.log('error', err);
       },
       () => { // on completion
       }
     );
   }
-
   public deleteSelectedMails(): void {
     this.mails.getSelectedMails().forEach((mail) => this.deleteMail(mail));
   }
 
   prepareSaveMail(): Mail[] {
-    let result: Mail[] = [];
+    const result: Mail[] = [];
     const formModel = this.mailForm.value;
-    let namesFromForm: string = formModel.toname as string;
-    if (namesFromForm === null || namesFromForm.trim() === "") {
+    const namesFromForm: string = formModel.toname as string;
+    if (namesFromForm === null || namesFromForm.trim() === '') {
       return result;
     }
-    let names = (namesFromForm).split(",");
+    const names = (namesFromForm).split(',');
 
-    for (let name of names) {
+    for (const name of names) {
       // return new `Mail` object
       const mail: Mail = new Mail();
       mail.subject = formModel.subject as string;
@@ -123,24 +142,31 @@ export class MailComponent implements OnInit {
   }
 
   public next(): void {
-    if (this.mails.page != this.mails.getNumberOfPages() - 1) {
+    if (this.mails.page !== this.mails.getNumberOfPages() - 1) {
       this.mails.next();
       return;
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
-      (result: any) => { // on success
-        if (result.getNumberOfMails() != 0) {
+      (result: Mail[]) => { // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach(function (value) {
+            value.whensent = value.whensent.replace('[UTC]', '');
+          });
           this.mails.addAll(result);
           this.mails.next();
         }
       },
       (err: any) => { // error
-        // console.log("error", err);
+        // console.log('error', err);
       },
       () => { // on completion
       }
     );
   }
 
+  public getFullWhen(mail: Mail): string {
+    const date: Date = new Date(mail.whensent);
+    return date.toDateString() + ' ' + date.toTimeString();
+  }
 }

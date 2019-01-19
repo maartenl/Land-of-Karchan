@@ -1,4 +1,3 @@
-import { JsonProperty } from 'json-typescript-mapper';
 
 export class Mail {
   name: string;
@@ -10,23 +9,7 @@ export class Mail {
   newmail: boolean;
   whensent: string;
   deleted: boolean;
-  selected: boolean = false;
-
-  public static readonly MONTHS = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
-
+  selected = false;
 
   constructor() {
     this.name = void 0;
@@ -40,32 +23,20 @@ export class Mail {
     this.deleted = void 0;
   }
 
-  public getWhen(): string {
-    let date: Date = new Date(this.whensent);
-    let now: Date = new Date();
-    if (now.getFullYear() === date.getFullYear()) {
-      return Mail.MONTHS[date.getMonth()] + " " + date.getDate();
-    }
-    return Mail.MONTHS[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
-  }
-
-  public getFullWhen(): string {
-    let date: Date = new Date(this.whensent);
-    return date.toDateString() + " " + date.toTimeString();
-  }
-
-
 }
 
 export class MailList {
-  @JsonProperty({ clazz: Mail, name: 'mails' })
   mails: Mail[];
   page: number;
-  allSelected: boolean = false;
+  allSelected = false;
 
   constructor() {
     this.mails = void 0;
     this.page = 0;
+  }
+
+  public setMails(mails: Mail[]) {
+    this.mails = mails;
   }
 
   /**
@@ -86,7 +57,7 @@ export class MailList {
   }
 
   public delete(mail: Mail) {
-    let index: number = this.mails.indexOf(mail);
+    const index: number = this.mails.indexOf(mail);
     if (index !== -1) {
       this.mails.splice(index, 1);
     }
@@ -105,9 +76,9 @@ export class MailList {
     // 0 / 20 + 1 => 1
     // 19 / 20 + 1 => 1
     // 20 / 20 + 1 => 1
-    // 21 / 20 + 1 => 2 
-    // 40 / 20 + 1 => 2 
-    // 41 / 20 + 1 => 3 
+    // 21 / 20 + 1 => 2
+    // 40 / 20 + 1 => 2
+    // 41 / 20 + 1 => 3
     if (this.getNumberOfMails() === 0) {
       return 1;
     }
@@ -115,8 +86,8 @@ export class MailList {
   }
 
   public generatePages(): number[] {
-    var numbers: number[] = [];
-    for (var i = 1; i <= this.getNumberOfPages(); i++) {
+    const numbers: number[] = [];
+    for (let i = 1; i <= this.getNumberOfPages(); i++) {
       numbers.push(i);
     }
     return numbers;
@@ -138,15 +109,15 @@ export class MailList {
     this.page = page;
   }
 
-  public addAll(newMails: MailList) {
+  public addAll(newMails: Mail[]) {
     if (this.mails === undefined) {
       this.mails = [];
     }
-    this.mails = this.mails.concat(newMails.mails);
+    this.mails = this.mails.concat(newMails);
   }
 
   public toggleAll(): void {
-    for (let mail of this.getMails()) {
+    for (const mail of this.getMails()) {
       mail.selected = !this.allSelected;
     }
     this.allSelected = !this.allSelected;
