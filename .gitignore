@@ -49,7 +49,6 @@ karchangame/nb-configuration.xml
 /karchantest/target/
 # this one is an odd one, it just creates a war containing the angular app
 # from karchanangular. No need to check it in.
-/karchanpersonal
 
 karchan/.idea/
 karchan/nb-configuration.xml
