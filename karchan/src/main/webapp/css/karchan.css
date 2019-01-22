@@ -24,6 +24,11 @@ h4 {
   font-family: 'GabrielleRegular';
 }
 
+.btn {
+  font-family: 'GabrielleRegular';
+  font-weight: bold;
+}
+
 .card-title {
   font-family: 'GabrielleRegular';
   font-size: 2.75rem;
