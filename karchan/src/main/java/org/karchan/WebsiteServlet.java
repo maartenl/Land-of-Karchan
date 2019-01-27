@@ -73,7 +73,7 @@ public class WebsiteServlet extends HttpServlet
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
     // Set response content type
-    response.setContentType("text/html");
+    response.setContentType("text/html;charset=UTF-8");
 
     final String url = getUrl(request);
     PrintWriter out = response.getWriter();

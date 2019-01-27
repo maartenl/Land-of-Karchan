@@ -80,9 +80,9 @@ public class ImageServlet extends HttpServlet
     TypedQuery<Image> queryImage = entityManager.createNamedQuery("Image.find", Image.class);
     queryImage.setParameter("url", imageData.getImageUrl());
     queryImage.setParameter("owner", imageData.getPlayerName());
-    Image image = queryImage.getSingleResult();
-
-    if (image == null)
+    List<Image> resultList = queryImage.getResultList();
+    
+    if (resultList.isEmpty())
     {
       LOGGER.log(Level.SEVERE, "Image {0} of {1} not found.", new Object[]
       {
@@ -91,6 +91,8 @@ public class ImageServlet extends HttpServlet
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+
+    Image image = resultList.get(0);
 
     // Set response content type
     response.setContentType(image.getMimeType());

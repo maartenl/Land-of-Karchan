@@ -62,3 +62,16 @@ h4 {
   background: blue;
   font-weight: bold;
 }
+
+.navbar-toggler {
+  background-image: url('/images/gif/dragon.gif');
+  background-color: grey;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.navbar-brand {
+  font-family: 'GabrielleRegular';
+  color: white !important; 
+}
