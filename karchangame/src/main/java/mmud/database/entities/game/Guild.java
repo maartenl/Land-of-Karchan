@@ -63,7 +63,7 @@ import java.util.SortedSet;
           ,
             @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation")
           ,
-            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from User p, Charattribute c WHERE c.charattributePK.charname = p.name and c.charattributePK.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
+            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.person = p and c.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
         })
 @Customizer(PersonsFilterForGuild.class)
 public class Guild implements Serializable, DisplayInterface, Ownage

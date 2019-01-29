@@ -1497,7 +1497,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     Charattribute attr = getCharattribute(name);
     if (attr == null)
     {
-      attr = new Charattribute(name, getName());
+      attr = new Charattribute(name, this);
       attr.setPerson(this);
     }
     attr.setValue(value);

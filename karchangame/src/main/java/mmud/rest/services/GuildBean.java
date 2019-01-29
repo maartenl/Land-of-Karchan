@@ -26,6 +26,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -34,6 +35,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
@@ -47,6 +49,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Attributes;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
@@ -58,9 +61,11 @@ import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PrivateRank;
 
 /**
- * Takes care of the guilds. All the REST services in this bean, can be subdivided
- * into two categories:<ul><li>persons who are a member of the guild, can view information of the guild</li>
- * <li>guildmasters (who are also member of the guild) can change/delete/add information to the guild</li></ul>
+ * Takes care of the guilds. All the REST services in this bean, can be
+ * subdivided into two categories:<ul><li>persons who are a member of the guild,
+ * can view information of the guild</li>
+ * <li>guildmasters (who are also member of the guild) can change/delete/add
+ * information to the guild</li></ul>
  * TODO: need to add different access rights.
  *
  * @author maartenl
@@ -110,23 +115,23 @@ public class GuildBean
   }
 
   /**
-   * returns a list of persons that wish to
-   * become a member of a guild.
+   * returns a list of persons that wish to become a member of a guild.
    *
    * @return list of guild hopefuls.
-   * @param aGuild
-   * the guild
-   * @throws MudException
-   * if something goes wrong.
+   * @param aGuild the guild
+   * @throws MudException if something goes wrong.
    */
   public List<User> getGuildHopefuls(Guild aGuild)
   {
-    Query query = getEntityManager().createNamedQuery("Guild.findGuildHopefuls");
+    TypedQuery<Person> query = getEntityManager().createNamedQuery("Guild.findGuildHopefuls", Person.class);
     query.setParameter("guildname", aGuild.getName());
     query.setParameter("attributename", Attributes.GUILDWISH);
     query.setParameter("valuetype", "string");
 
-    return query.getResultList();
+    return query.getResultList().stream()
+            .filter(person -> person.isUser())
+            .map(person -> (User) person)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -170,8 +175,8 @@ public class GuildBean
    * @param name the name of the user
    * @param cinfo the guild object containing the new stuff to update.
    * @return Response.ok if everything is okay.
-   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-   * failed. BAD_REQUEST if an unexpected exception crops up.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+   * BAD_REQUEST if an unexpected exception crops up.
    */
   @PUT
   @RolesAllowed("guildmaster")
@@ -208,8 +213,8 @@ public class GuildBean
    * @param name the name of the user
    * @param cinfo the guild object containing the new stuff to create.
    * @return Response.ok if everything is okay.
-   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-   * failed. BAD_REQUEST if an unexpected exception crops up.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+   * BAD_REQUEST if an unexpected exception crops up.
    */
   @POST
   @RolesAllowed("player")
@@ -260,8 +265,8 @@ public class GuildBean
    *
    * @param name the name of the user
    * @return Response.ok if everything is okay.
-   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
-   * failed. BAD_REQUEST if an unexpected exception crops up.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+   * BAD_REQUEST if an unexpected exception crops up.
    */
   @DELETE
   @RolesAllowed("guildmaster")

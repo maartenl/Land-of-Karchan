@@ -18,17 +18,21 @@ package mmud.database.entities.game;
 
 /**
  * An attribute interface, containing name, value, value type.
+ *
  * @author maartenl
  */
 public interface Attribute
 {
-    public String getName();
 
-    public String getValue();
+  public Long getAttributeId();
 
-    public void setValue(String value);
+  public String getName();
 
-    public String getValueType();
+  public String getValue();
 
-    public void setValueType(String valueType);
+  public void setValue(String value);
+
+  public String getValueType();
+
+  public void setValueType(String valueType);
 }

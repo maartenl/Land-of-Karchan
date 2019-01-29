@@ -19,8 +19,8 @@ package mmud.database.entities.items;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -39,123 +39,124 @@ import mmud.database.entities.game.Attribute;
 @Table(name = "mm_itemattributes")
 @NamedQueries(
         {
-            @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),
-            @NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.name = :name"),
-            @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType"),
-            @NamedQuery(name = "Itemattribute.findById", query = "SELECT i FROM Itemattribute i WHERE i.itemattributePK.id = :id")
+          @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),
+          @NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.name = :name"),
+          @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType")
         })
 public class Itemattribute implements Serializable, Attribute
 {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ItemattributePK itemattributePK;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "value")
-    private String value;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "value_type")
-    private String valueType;
-    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Item item;
+  private static final long serialVersionUID = 1L;
 
-    public Itemattribute()
-    {
-    }
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "attrid")
+  private Long attributeId;
 
-    public Itemattribute(ItemattributePK itemattributePK)
-    {
-        this.itemattributePK = itemattributePK;
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 32)
+  @Column(name = "name")
+  private String name;
 
-    public Itemattribute(ItemattributePK itemattributePK, String valueType)
-    {
-        this.itemattributePK = itemattributePK;
-        this.valueType = valueType;
-    }
+  @Lob
+  @Size(max = 65535)
+  @Column(name = "value")
+  private String value;
 
-    public Itemattribute(String name, int id)
-    {
-        this.itemattributePK = new ItemattributePK(name, id);
-    }
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "value_type")
+  private String valueType;
 
-    public ItemattributePK getItemattributePK()
-    {
-        return itemattributePK;
-    }
+  @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(optional = false)
+  private Item item;
 
-    public void setItemattributePK(ItemattributePK itemattributePK)
-    {
-        this.itemattributePK = itemattributePK;
-    }
+  public Itemattribute()
+  {
+  }
 
-    public String getValue()
-    {
-        return value;
-    }
+  public Itemattribute(String name, Item item)
+  {
+    this.name = name;
+    this.item = item;
+  }
 
-    public void setValue(String value)
-    {
-        this.value = value;
-    }
+  @Override
+  public Long getAttributeId()
+  {
+    return attributeId;
+  }
 
-    public String getValueType()
-    {
-        return valueType;
-    }
+  @Override
+  public String getValue()
+  {
+    return value;
+  }
 
-    public void setValueType(String valueType)
-    {
-        this.valueType = valueType;
-    }
+  @Override
+  public void setValue(String value)
+  {
+    this.value = value;
+  }
 
-    public Item getItem()
-    {
-        return item;
-    }
+  public String getValueType()
+  {
+    return valueType;
+  }
 
-    public void setItem(Item item)
-    {
-        this.item = item;
-    }
+  @Override
+  public void setValueType(String valueType)
+  {
+    this.valueType = valueType;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (itemattributePK != null ? itemattributePK.hashCode() : 0);
-        return hash;
-    }
+  public Item getItem()
+  {
+    return item;
+  }
 
-    @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Itemattribute))
-        {
-            return false;
-        }
-        Itemattribute other = (Itemattribute) object;
-        if ((this.itemattributePK == null && other.itemattributePK != null) || (this.itemattributePK != null && !this.itemattributePK.equals(other.itemattributePK)))
-        {
-            return false;
-        }
-        return true;
-    }
+  public void setItem(Item item)
+  {
+    this.item = item;
+  }
 
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.Itemattribute[ itemattributePK=" + itemattributePK + " value=" + value + " ]";
-    }
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (attributeId != null ? attributeId.hashCode() : 0);
+    return hash;
+  }
 
-    @Override
-    public String getName()
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Itemattribute))
     {
-        return itemattributePK.getName();
+      return false;
     }
+    Itemattribute other = (Itemattribute) object;
+    if ((this.attributeId == null && other.attributeId != null) || (this.attributeId != null && !this.attributeId.equals(other.attributeId)))
+    {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.Itemattribute[ attributeId=" + attributeId + " value=" + value + " ]";
+  }
+
+  @Override
+  public String getName()
+  {
+    return name;
+  }
 }

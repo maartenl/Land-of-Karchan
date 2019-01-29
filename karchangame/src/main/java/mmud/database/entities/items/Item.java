@@ -34,6 +34,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -405,7 +406,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
         return attr;
       }
     }
-    itsLog.finer("getItemattribute name=" + name + " not found");
+    itsLog.log(Level.FINER, "getItemattribute name={0} not found", name);
     return null;
   }
 
@@ -418,11 +419,11 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   @Override
   public void setAttribute(String name, String value)
   {
-    itsLog.finer("setAttribute name=" + name + " value=" + value);
+    itsLog.log(Level.FINER, "setAttribute name={0} value={1}", new Object[]{name, value});
     Itemattribute attr = getItemattribute(name);
     if (attr == null)
     {
-      attr = new Itemattribute(name, getId());
+      attr = new Itemattribute(name, this);
       attr.setItem(this);
     }
     attr.setValue(value);
@@ -436,7 +437,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     Itemattribute attr = getItemattribute(name);
     if (attr == null)
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on item " + getId() + ".");
+      itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on item {2}.", new Object[]{name, value, getId()});
       return false;
     }
     if (attr.getValue() == value)

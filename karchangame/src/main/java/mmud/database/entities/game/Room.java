@@ -650,7 +650,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     Roomattribute attr = getRoomattribute(name);
     if (attr == null)
     {
-      attr = new Roomattribute(name, getId());
+      attr = new Roomattribute(name, this);
       attr.setRoom(this);
     }
     attr.setValue(value);
