@@ -46,10 +46,7 @@ import mmud.scripting.World;
  * <img
  * src="doc-files/Eventsbean.png">
  *
- * @startuml doc-files/Eventsbean.png
- * class EventsBean {
- * +events()
- * }
+ * @startuml doc-files/Eventsbean.png class EventsBean { +events() }
  * @enduml
  * @author maartenl
  */
@@ -130,8 +127,8 @@ public class EventsBean
   }
 
   /**
-   * Runs every minute, looks up which user-defined event to execute now.
-   * So, this takes care of the events that have been dictates by the deputies.
+   * Runs every minute, looks up which user-defined event to execute now. So,
+   * this takes care of the events that have been dictates by the deputies.
    *
    * @throws java.lang.IllegalAccessException
    * @throws java.lang.InstantiationException
@@ -160,26 +157,48 @@ public class EventsBean
       // itsLog.log(Level.INFO, "Event {0} executed.", event.getEventid());
       logBean.writeLog("Event " + event.getEventid() + " executed.");
       Method method = event.getMethod();
-      try
+      if (event.getRoom() != null)
       {
-        if (event.getRoom() != null)
+        try
         {
           boolean result = runScript.run(event.getRoom(), method.getSrc());
-        } else if (event.getPerson() != null)
+        } catch (ScriptException | NoSuchMethodException ex)
+        {
+          // Error occurred: turn this event off!
+          // TODO: that's for debugging,...
+          // event.setCallable(Boolean.FALSE);
+          // log it but keep going with the next event.
+          logBean.writeLogException(ex);
+          itsLog.throwing(EventsBean.class.getName(), String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName()), ex);
+        }
+      } else if (event.getPerson() != null)
+      {
+        try
         {
           boolean result = runScript.run(event.getPerson(), method.getSrc());
-        } else
+        } catch (ScriptException | NoSuchMethodException ex)
+        {
+          // Error occurred: turn this event off!
+          // TODO: that's for debugging,...
+          // event.setCallable(Boolean.FALSE);
+          // log it but keep going with the next event.
+          logBean.writeLogException(ex);
+          itsLog.throwing(EventsBean.class.getName(), String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName()), ex);
+        }
+      } else
+      {
+        try
         {
           boolean result = runScript.run(method.getSrc());
+        } catch (ScriptException | NoSuchMethodException ex)
+        {
+          // Error occurred: turn this event off!
+          // TODO: that's for debugging,...
+          // event.setCallable(Boolean.FALSE);
+          // log it but keep going with the next event.
+          logBean.writeLogException(ex);
+          itsLog.throwing(EventsBean.class.getName(), String.format("events(method=%s)", method.getName()), ex);
         }
-      } catch (ScriptException | NoSuchMethodException ex)
-      {
-        // Error occurred: turn this event off!
-        // TODO: that's for debugging,...
-        // event.setCallable(Boolean.FALSE);
-        // log it but keep going with the next event.
-        logBean.writeLogException(ex);
-        itsLog.throwing(EventsBean.class.getName(), "events()", ex);
       }
     }
   }
