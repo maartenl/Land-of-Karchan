@@ -16,6 +16,9 @@
  */
 package mmud.database.enums;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Enumerated type for the male/female thing.
  *
@@ -24,92 +27,90 @@ package mmud.database.enums;
 public enum Sex
 {
 
-    MALE("male", "his", "him", "he"), FEMALE("female", "her", "her", "she");
-    private String theSex;
-    private String thePosession;
-    private String theIndirect;
-    private String theDirect;
+  MALE("male", "his", "him", "he"), FEMALE("female", "her", "her", "she"),
+  /**
+   * Also known as gender-neutral or third gender or non-binary gender. Just
+   * pick one.
+   */
+  OTHER("other", "their", "them", "they");
+  private final String theSex;
+  private final String thePosession;
+  private final String theIndirect;
+  private final String theDirect;
 
-    private Sex(String aSex, String aPosession, String aIndirect, String aDirect)
-    {
-        theSex = aSex;
-        thePosession = aPosession;
-        theIndirect = aIndirect;
-        theDirect = aDirect;
+  private Sex(String aSex, String aPosession, String aIndirect, String aDirect)
+  {
+    theSex = aSex;
+    thePosession = aPosession;
+    theIndirect = aIndirect;
+    theDirect = aDirect;
 
-    }
+  }
 
-    /**
-     * Little factory method for creating a Sex object.
-     *
-     * @param aString string describing the sex object to be created: "female"
-     * or "male".
-     * @return Sex object, either male of female.
-     * @throws RuntimeException if the sex is neither male nor female. In this
-     * case we do not know what to do.
-     */
-    public static Sex createFromString(String aString)
-    {
-        if (aString.equals("female"))
-        {
-            return FEMALE;
-        }
-        if (aString.equals("male"))
-        {
-            return MALE;
-        }
-        throw new RuntimeException("Illegal sex for character!!!");
-    }
+  /**
+   * Little factory method for creating a Sex object.
+   *
+   * @param aString string describing the sex object to be created: "female",
+   * "male" or "other".
+   * @return Sex object, either male of female or other.
+   * @throws RuntimeException if the sex is neither male nor female nor other.
+   * In this case we do not know what to do.
+   */
+  public static Sex createFromString(String aString)
+  {
+    Optional<Sex> result = Arrays.stream(values()).filter(sex -> sex.theSex.equals(aString)).findFirst();
+    return result.orElseThrow(() -> new RuntimeException("Illegal sex '" + aString + "'."));
+  }
 
-    /**
-     * returns either "male" or "female"
-     *
-     * @return returns either "male" or "female"
-     */
-    @Override
-    public String toString()
-    {
-        return theSex;
-    }
+  /**
+   * returns either "male" or "female"
+   *
+   * @return returns either "male" or "female"
+   */
+  @Override
+  public String toString()
+  {
+    return theSex;
+  }
 
-    /**
-     * returns either "his" or "her"
-     *
-     * @return returns either "his" or "her"
-     */
-    public String posession()
-    {
-        return thePosession;
-    }
+  /**
+   * returns either "his" or "her"
+   *
+   * @return returns either "his" or "her"
+   */
+  public String posession()
+  {
+    return thePosession;
+  }
 
-    /**
-     * returns either "him" or "her"
-     *
-     * @return returns either "him" or "her"
-     */
-    public String indirect()
-    {
-        return theIndirect;
-    }
+  /**
+   * returns either "him" or "her"
+   *
+   * @return returns either "him" or "her"
+   */
+  public String indirect()
+  {
+    return theIndirect;
+  }
 
-    /**
-     * returns either "he" or "she"
-     *
-     * @return returns either "he" or "she"
-     */
-    public String direct()
-    {
-        return theDirect;
-    }
+  /**
+   * returns either "he" or "she"
+   *
+   * @return returns either "he" or "she"
+   */
+  public String direct()
+  {
+    return theDirect;
+  }
 
-    /**
-     * returns either "He" or "She"
-     *
-     * @return returns either "He" or "She"
-     * @see #direct()
-     */
-    public String Direct()
-    {
-        return theDirect.substring(0, 1).toUpperCase() + theDirect.substring(1);
-    }
+  /**
+   * returns either "He" or "She"
+   *
+   * @return returns either "He" or "She"
+   * @see #direct()
+   */
+  public String Direct()
+  {
+    return theDirect.substring(0, 1).toUpperCase() + theDirect.substring(1);
+  }
 }
