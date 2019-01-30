@@ -35,7 +35,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.characters.User;
-import org.eclipse.persistence.annotations.AdditionalCriteria;
 
 /**
  *
@@ -45,14 +44,11 @@ import org.eclipse.persistence.annotations.AdditionalCriteria;
 @Table(name = "mm_boardmessages")
 @NamedQueries(
         {
-          @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b")
-          ,
-            @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person")
-          ,
-            @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' order by b.id desc")
+          @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
+          @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person"),
+          @NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person"),
+          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.id desc")
         })
-@AdditionalCriteria("FUNCTION('yearweek', this.posttime) = FUNCTION('yearweek', current_date) "
-        + "and this.removed = 0)")
 public class BoardMessage implements Serializable
 {
 
@@ -88,8 +84,8 @@ public class BoardMessage implements Serializable
 
   /**
    * Returns the contents of the message as posted. If the message has been
-   * removed, it will return the message "Message has been removed due to offensive
-   * content.".
+   * removed, it will return the message "Message has been removed due to
+   * offensive content.".
    *
    * @return the contents of the message on the board.
    * @see #getRemoved()

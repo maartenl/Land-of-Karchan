@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.MessagesFilterForBoard;
 
 /**
  * Takes care of the public boards and the private boards.
@@ -76,6 +78,7 @@ public class BoardBean
   public List<BoardMessage> getNews()
   {
     Query query = getEntityManager().createNamedQuery("BoardMessage.news");
+    query.setParameter("lastSunday", MessagesFilterForBoard.getLastSunday(Calendar.getInstance()));
     List<BoardMessage> list = query.getResultList();
     return list;
   }

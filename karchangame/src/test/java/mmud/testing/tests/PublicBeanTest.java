@@ -376,6 +376,7 @@ public class PublicBeanTest
       {
         entityManager.createNamedQuery("BoardMessage.news");
         result = query;
+        query.setParameter("lastSunday", any);
         query.getResultList();
       }
     };
@@ -429,6 +430,7 @@ public class PublicBeanTest
       {
         entityManager.createNamedQuery("BoardMessage.news");
         result = query;
+        query.setParameter("lastSunday", any);
         query.getResultList();
         result = list;
       }

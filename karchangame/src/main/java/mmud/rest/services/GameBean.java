@@ -348,7 +348,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
   {
-    itsLog.finer("entering create");
+    itsLog.log(Level.FINER, "entering create {0}", name);
     String address = requestContext.getRemoteAddr();
     try
     {
@@ -498,7 +498,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   @Path("{name}/logon")
   public void logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
   {
-    itsLog.finer("entering logon");
+    itsLog.log(Level.FINER, "entering logon {0}", name);
 
     String address = requestContext.getHeader(X_FORWARDED_FOR);
     if ((address == null) || ("".equals(address.trim())))
@@ -561,7 +561,7 @@ public class GameBean implements RoomsInterface, WorldInterface
 
   /**
    * Logs a player off.
-   *
+   * TODO MLE: should be moved elsewhere, is not specifically part of the game.
    * @param requestContext the context of the request, useful for example querying
    * for the IP address.
    */

@@ -45,6 +45,7 @@ import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
+import org.eclipse.persistence.annotations.Customizer;
 
 /**
  *
@@ -59,6 +60,7 @@ import mmud.exceptions.MudWebException;
             @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
             @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation")
         })
+@Customizer(MessagesFilterForBoard.class)
 public class Board implements Serializable, DisplayInterface, Ownage
 {
 

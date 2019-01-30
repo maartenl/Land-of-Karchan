@@ -31,6 +31,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,6 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -77,6 +79,9 @@ public class PrivateBean
 
   @EJB
   private PublicBean publicBean;
+
+  @EJB
+  private GameBean gameBean;
 
   @Resource
   private SessionContext context;
@@ -569,6 +574,38 @@ public class PrivateBean
     Mail mail = getMail(person.getName(), id);
     mail.setDeleted(Boolean.TRUE);
     itsLog.finer("exiting deleteMail");
+    return Response.ok().build();
+  }
+
+  /**
+   * Deletes an entire character.
+   *
+   * @param name the name of the user
+   * @param requestContext the context to log the player off who just deleted 
+   * his entire character.
+   * @return Response.ok() if all is well.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
+   * BAD_REQUEST if an unexpected exception crops up.
+   */
+  @DELETE
+  @Path("{name}")
+  @Consumes(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name)
+  {
+    itsLog.log(Level.FINER, "entering deletePerson {0}", name);
+    Person person = authenticate(name);
+    Query deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
+    deleteBoardMessagesQuery.setParameter("person", person);
+    itsLog.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
+    Query deleteMailsQuery = em.createNamedQuery("Mail.deleteByName");
+    deleteMailsQuery.setParameter("person", person);
+    itsLog.log(Level.FINER, "deleting {0} mudmails", deleteMailsQuery.executeUpdate());
+    em.remove(person);
+    gameBean.logoff(requestContext);
+    itsLog.finer("exiting deletePerson");
     return Response.ok().build();
   }
 

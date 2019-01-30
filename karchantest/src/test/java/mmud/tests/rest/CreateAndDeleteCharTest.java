@@ -16,39 +16,81 @@
  */
 package mmud.tests.rest;
 
+import io.restassured.response.Response;
 import mmud.tests.RestTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
 
 /**
- * This test will try to create a new character, and delete it again, using 
- * the "private" rest service.
+ * This test will try to create a new character, and delete it again, using the
+ * "private" rest service.
+ *
  * @author maartenl
  */
 public class CreateAndDeleteCharTest extends RestTest
 {
-  
+
+  public static Response createCharacter(final String player)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    pathParam("player", player).
+                    contentType("application/json").header("Accept", "application/json").
+                    body("{\"name\":\"" + player + "\",\"title\":\"W\",\"sex\":\"male\",\"password\":\"secret\",\"password2\":\"secret\",\"realname\":\"w\",\"email\":\"\",\"race\":\"human\",\"age\":\"young\",\"height\":\"tall\",\"width\":\"very thin\",\"complexion\":\"swarthy\",\"eyes\":\"black-eyed\",\"face\":\"long-faced\",\"hair\":\"black-haired\",\"beard\":\"none\",\"arm\":\"none\",\"leg\":\"none\"}").
+                    when().
+                    post("/game/{player}").
+                    then().statusCode(200).
+                    and().extract().response();
+    // {"name":"Tralala","title":"W","sex":"male","password":"secret","password2":"secret","realname":"w","email":"","race":"human","age":"young","height":"tall","width":"very thin","complexion":"swarthy","eyes":"black-eyed","face":"long-faced","hair":"black-haired","beard":"none","arm":"none","leg":"none"}
+    return gameResponse;
+  }
+
+  public static Response deleteCharacter(String jsession, final String player)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JSESSIONID", jsession).
+                    pathParam("player", player).
+                    contentType("application/json").header("Accept", "application/json").
+                    when().
+                    delete("/private/{player}").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
   /**
-   * Verifies the guild of Karn.
+   * Create a character called Tralala, and deletes it at once again.
    */
   @Test
-  public void testCreateaAndDestroy()
+  public void testCreateAndDestroy()
   {
-//    final String karn = "Karn";
-//    final String password = "secret";
-//
-//    String jsession = login(karn, password);
-//    Response gameResponse
-//            = Helper.getGuild(jsession, karn);
-//    print(gameResponse);
-//    assertThat(gameResponse.path("title"), equalTo("Benefactors of Karchan"));
-//    assertThat(gameResponse.path("name"), equalTo("deputy"));
-//    assertThat(gameResponse.path("bossname"), equalTo("Karn"));
-//    assertThat(gameResponse.path("guildurl"), equalTo("http://www.karchan.org"));
-//    logoff(jsession, karn);
+    final String tralala = "Tralala";
+    final String password = "secret";
+
+    createCharacter(tralala);
+    String jsession = login(tralala, password);
+    Response gameResponse
+            = CreateAndDeleteCharTest.deleteCharacter(jsession, tralala);
+  }
+
+  /**
+   * Attempts to delete Karn, this isn't a test. It's here to try it on a
+   * more complex character.
+   */
+//  @Test
+  public void testDestroyKarn()
+  {
+    final String karn = "Karn";
+    final String password = "secret";
+
+    String jsession = login(karn, password);
+    Response gameResponse
+            = CreateAndDeleteCharTest.deleteCharacter(jsession, karn);
   }
 
   @AfterClass
