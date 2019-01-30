@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests.emotes;
+package mmud.tests.game;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
-import mmud.rest.tests.GameRestTest;
-import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,7 +27,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class BowTest extends GameRestTest
+public class ClearTest extends GameRestTest
 {
 
   @BeforeClass
@@ -38,16 +37,15 @@ public class BowTest extends GameRestTest
   }
 
   @Test
-  public void testBowCommand()
+  public void testClearCommand()
   {
     final String hotblack = "Hotblack";
     final String password = "secret";
-    String jsession = enterGame(password, hotblack);
-    final String command = "bow";
+    String jsessionHotblack = enterGame(password, hotblack);
+    final String command = "clear";
 
-    // bow
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JSESSIONID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -59,11 +57,11 @@ public class BowTest extends GameRestTest
             then().statusCode(200).
             and().body("title", equalTo("The Cave")).
             and().body("image", equalTo("/images/gif/cave.gif")).
-            and().body("log.log", endsWith("You bow.<br />\n")).
             and().extract().response();
-    print(gameResponse);
+    String log = gameResponse.body().jsonPath().get("log.log").toString();
+    assertThat(log, equalTo("You cleared your mind.<br />\n"));
 
-    quit(jsession, hotblack);
+    quit(jsessionHotblack, hotblack);
   }
 
 }

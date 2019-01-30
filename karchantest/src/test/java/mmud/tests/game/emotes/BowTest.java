@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests;
+package mmud.tests.game.emotes;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
-import static org.hamcrest.MatcherAssert.assertThat;
+import mmud.tests.game.GameRestTest;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -27,7 +28,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class ClearTest extends GameRestTest
+public class BowTest extends GameRestTest
 {
 
   @BeforeClass
@@ -37,15 +38,16 @@ public class ClearTest extends GameRestTest
   }
 
   @Test
-  public void testSayCommand()
+  public void testBowCommand()
   {
     final String hotblack = "Hotblack";
     final String password = "secret";
-    String jsessionHotblack = enterGame(password, hotblack);
-    final String command = "clear";
+    String jsession = enterGame(password, hotblack);
+    final String command = "bow";
 
+    // bow
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JSESSIONID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -57,11 +59,11 @@ public class ClearTest extends GameRestTest
             then().statusCode(200).
             and().body("title", equalTo("The Cave")).
             and().body("image", equalTo("/images/gif/cave.gif")).
+            and().body("log.log", endsWith("You bow.<br />\n")).
             and().extract().response();
-    String log = gameResponse.body().jsonPath().get("log.log").toString();
-    assertThat(log, equalTo("You cleared your mind.<br />\n"));
+    print(gameResponse);
 
-    quit(jsessionHotblack, hotblack);
+    quit(jsession, hotblack);
   }
 
 }

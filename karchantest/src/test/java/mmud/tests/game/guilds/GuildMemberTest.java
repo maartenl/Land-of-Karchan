@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests.guilds;
+package mmud.tests.game.guilds;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
-import mmud.rest.tests.GameRestTest;
+import mmud.tests.game.GameRestTest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;

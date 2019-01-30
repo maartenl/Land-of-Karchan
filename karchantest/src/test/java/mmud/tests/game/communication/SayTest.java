@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests.communication;
+package mmud.tests.game.communication;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
-import mmud.rest.tests.GameRestTest;
+import mmud.tests.game.GameRestTest;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,7 +29,7 @@ import org.testng.annotations.Test;
  *
  * @author maartenl
  */
-public class TellTest extends GameRestTest
+public class SayTest extends GameRestTest
 {
 
   @BeforeClass
@@ -38,16 +39,13 @@ public class TellTest extends GameRestTest
   }
 
   @Test
-  public void testTellToCommand()
+  public void testSayCommand()
   {
     final String hotblack = "Hotblack";
-    final String karn = "Karn";
     final String password = "secret";
     String jsessionHotblack = enterGame(password, hotblack);
-    String jsessionKarn = enterGame(password, karn);
-    final String command = "tell to karn Hello!";
+    final String command = "say Something!";
 
-    clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
             cookie("JSESSIONID", jsessionHotblack).
             queryParam("log", "true").
@@ -63,37 +61,22 @@ public class TellTest extends GameRestTest
             and().body("image", equalTo("/images/gif/cave.gif")).
             and().extract().response();
     String log = gameResponse.body().jsonPath().get("log.log").toString();
-    assertThat(log, equalTo("You cleared your mind.<br />\n<b>You tell [to Karn]</b>\n : Hello!<br />\n"));
-
-    print(gameResponse);
+    assertThat(log, endsWith("<b>You say</b>\n : Something!<br />\n"));
 
     quit(jsessionHotblack, hotblack);
-    quit(jsessionKarn, karn);
   }
 
   @Test
-  public void testTellToOtherRoomCommand()
+  public void testSayToCommand()
   {
     final String hotblack = "Hotblack";
     final String karn = "Karn";
     final String password = "secret";
     String jsessionHotblack = enterGame(password, hotblack);
     String jsessionKarn = enterGame(password, karn);
-    final String command = "tell to karn Hello!";
+    final String command = "say to karn Hello!";
 
     clear(jsessionHotblack, hotblack);
-    given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionKarn).
-            queryParam("log", "true").
-            pathParam("player", karn).
-            queryParam("offset", "").
-            contentType("application/json").
-            header("Accept", "application/json").
-            body("w").
-            when().
-            post("/game/{player}/play").
-            then().statusCode(200);
-
     Response gameResponse = given().log().ifValidationFails().
             cookie("JSESSIONID", jsessionHotblack).
             queryParam("log", "true").
@@ -108,21 +91,8 @@ public class TellTest extends GameRestTest
             and().body("title", equalTo("The Cave")).
             and().body("image", equalTo("/images/gif/cave.gif")).
             and().extract().response();
-
-    given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionKarn).
-            queryParam("log", "true").
-            pathParam("player", karn).
-            queryParam("offset", "").
-            contentType("application/json").
-            header("Accept", "application/json").
-            body("e").
-            when().
-            post("/game/{player}/play").
-            then().statusCode(200);
-
     String log = gameResponse.body().jsonPath().get("log.log").toString();
-    assertThat(log, equalTo("You cleared your mind.<br />\nKarn leaves west.<br />\n<b>You tell [to Karn]</b>\n : Hello!<br />\n"));
+    assertThat(log, equalTo("You cleared your mind.<br />\n<b>You say [to Karn]</b>\n : Hello!<br />\n"));
 
     quit(jsessionHotblack, hotblack);
     quit(jsessionKarn, karn);
@@ -134,7 +104,7 @@ public class TellTest extends GameRestTest
     final String hotblack = "Hotblack";
     final String password = "secret";
     String jsessionHotblack = enterGame(password, hotblack);
-    final String command = "tell to karn Hello!";
+    final String command = "say to karn Hello!";
 
     clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
@@ -156,5 +126,4 @@ public class TellTest extends GameRestTest
 
     quit(jsessionHotblack, hotblack);
   }
-
 }

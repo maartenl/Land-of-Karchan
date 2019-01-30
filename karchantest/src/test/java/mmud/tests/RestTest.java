@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests;
+package mmud.tests;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -27,10 +27,10 @@ import static org.hamcrest.Matchers.nullValue;
  *
  * @author maartenl
  */
-class RestTest
+public class RestTest
 {
 
-  private static boolean DEBUGGING = false;
+  private static final boolean DEBUGGING = false;
 
   public static void init()
   {

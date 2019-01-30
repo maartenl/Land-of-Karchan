@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 maartenl
+ * Copyright (C) 2019 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,11 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mmud.rest.tests;
+package mmud.tests.rest;
 
-import io.restassured.response.Response;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import mmud.tests.RestTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -26,51 +24,31 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Tests the private rest services of Karchan.
- *
+ * This test will try to create a new character, and delete it again, using 
+ * the "private" rest service.
  * @author maartenl
  */
-public class PrivateRestTest extends RestTest
+public class CreateAndDeleteCharTest extends RestTest
 {
-
-  public PrivateRestTest()
-  {
-  }
-
+  
   /**
    * Verifies the guild of Karn.
    */
   @Test
-  public void testGuild()
+  public void testCreateaAndDestroy()
   {
-    final String karn = "Karn";
-    final String password = "secret";
-
-    String jsession = login(karn, password);
-    Response gameResponse
-            = Helper.getGuild(jsession, karn);
-    print(gameResponse);
-    assertThat(gameResponse.path("title"), equalTo("Benefactors of Karchan"));
-    assertThat(gameResponse.path("name"), equalTo("deputy"));
-    assertThat(gameResponse.path("bossname"), equalTo("Karn"));
-    assertThat(gameResponse.path("guildurl"), equalTo("http://www.karchan.org"));
-    logoff(jsession, karn);
-  }
-
-  /**
-   * Verifies the guild of Karn.
-   */
-  @Test
-  public void testGuildranks()
-  {
-    final String karn = "Karn";
-    final String password = "secret";
-
-    String jsession = login(karn, password);
-    Response gameResponse
-            = Helper.getGuildranks(jsession, karn);
-    assertThat(gameResponse.prettyPrint(), equalTo("[\n    \n]"));
-    logoff(jsession, karn);
+//    final String karn = "Karn";
+//    final String password = "secret";
+//
+//    String jsession = login(karn, password);
+//    Response gameResponse
+//            = Helper.getGuild(jsession, karn);
+//    print(gameResponse);
+//    assertThat(gameResponse.path("title"), equalTo("Benefactors of Karchan"));
+//    assertThat(gameResponse.path("name"), equalTo("deputy"));
+//    assertThat(gameResponse.path("bossname"), equalTo("Karn"));
+//    assertThat(gameResponse.path("guildurl"), equalTo("http://www.karchan.org"));
+//    logoff(jsession, karn);
   }
 
   @AfterClass
@@ -93,4 +71,5 @@ public class PrivateRestTest extends RestTest
   public void tearDownMethod() throws Exception
   {
   }
+
 }
