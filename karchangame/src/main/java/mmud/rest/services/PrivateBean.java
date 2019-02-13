@@ -86,6 +86,9 @@ public class PrivateBean
   @Resource
   private SessionContext context;
 
+  @EJB
+  private LogBean logBean;
+
   /**
    * Indicates that only 20 mails may be retrieved per time (basically a
    * page).
@@ -659,6 +662,39 @@ public class PrivateBean
       //ignore
       throw e;
     } catch (MudException e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+    return Response.ok().build();
+  }
+
+  /**
+   * Deletes a character, permanently. Use with extreme caution.
+   *
+   * @param name the name of the user
+   * @return Response.ok
+   * @throws WebApplicationException BAD_REQUEST if an unexpected exception
+   * crops up.
+   */
+  @DELETE
+  @Path("{name}")
+  @Produces(
+          {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+          })
+  public Response delete(@PathParam("name") String name)
+  {
+    itsLog.finer("entering delete");
+    Person person = authenticate(name);
+    try
+    {
+      logBean.writeLog(person, "character deleted.");
+      getEntityManager().remove(person);
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }

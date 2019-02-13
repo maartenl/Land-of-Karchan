@@ -40,6 +40,8 @@ export class PlayerService {
 
   gameUrl: string;
 
+  privateUrl: string;
+
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
@@ -50,6 +52,7 @@ export class PlayerService {
     this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
     this.guildmembersUrl = environment.GUILDMEMBERS_URL;
     this.guildranksUrl = environment.GUILDRANKS_URL;
+    this.privateUrl = environment.PRIVATE_URL;
   }
 
   /**
@@ -98,6 +101,10 @@ export class PlayerService {
   }
 
   // get appropriate urls for rest calls
+
+  private getPrivateUrl(): string {
+    return this.privateUrl.replace('[player]', this.getName());
+  }
 
   private getCharactersheetUrl(): string {
     return this.charactersheetUrl.replace('[player]', this.getName());
@@ -149,6 +156,13 @@ export class PlayerService {
 
   public updatePlayer(player: Player): Observable<any> {
     return this.http.put(this.getCharactersheetUrl(), player);
+  }
+
+  /**
+   * Permanently deletes a character, by calling the appropriate rest service.
+   */
+  public deleteCharacter(): Observable<any> {
+    return this.http.delete(this.getPrivateUrl());
   }
 
   // mail calls

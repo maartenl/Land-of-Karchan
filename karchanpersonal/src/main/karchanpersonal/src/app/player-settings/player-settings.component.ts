@@ -29,15 +29,15 @@ export class PlayerSettingsComponent implements OnInit {
   ngOnInit() {
     this.playerService.getPlayer()
       .subscribe(
-      (result: any) => { // on success
-        this.player = result;
-        this.resetForm(result);
-      },
-      (err: any) => { // error
-        // console.log("error", err);
-      },
-      () => { // on completion
-      }
+        (result: any) => { // on success
+          this.player = result;
+          this.resetForm(result);
+        },
+        (err: any) => { // error
+          // console.log("error", err);
+        },
+        () => { // on completion
+        }
       );
   }
 
@@ -120,6 +120,22 @@ export class PlayerSettingsComponent implements OnInit {
 
   cancel() {
     this.resetForm(this.player);
+  }
+
+  deleteCharacter() {
+    const game = this;
+    if (confirm('Are you sure you want to delete this character? This cannot be undone.')) {
+      // Delete it!
+      this.playerService.deleteCharacter().subscribe(
+        (result: any) => { // on success
+          game.playerService.clearName();
+          if (window.location !== window.parent.location) {
+            window.parent.location.href = '/game/goodbye.html';
+          }
+          window.location.href = '/game/goodbye.html';
+        }
+      );
+    }
   }
 
   private getFamily(toname: string): Family {

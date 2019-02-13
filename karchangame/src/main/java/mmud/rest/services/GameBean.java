@@ -452,39 +452,6 @@ public class GameBean implements RoomsInterface, WorldInterface
   }
 
   /**
-   * Deletes a character, permanently. Use with extreme caution.
-   *
-   * @param name the name of the user
-   * @return Response.ok
-   * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up.
-   */
-  @DELETE
-  @Path("{name}")
-  @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
-  public Response delete(@PathParam("name") String name)
-  {
-    itsLog.finer("entering delete");
-    Person person = authenticate(name);
-    try
-    {
-      getEntityManager().remove(person);
-      logBean.writeLog(person, "character deleted.");
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (Exception e)
-    {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-    }
-    return Response.ok().build();
-  }
-
-  /**
    * Logs a player into the server. Once logged in, he/she can start playing
    * the game. Url is for example http://localhost:8080/karchangame/resources/game/Karn/logon?password=itsasecret..
    *
@@ -554,6 +521,7 @@ public class GameBean implements RoomsInterface, WorldInterface
       Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
       throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
     }
+    itsLog.log(Level.FINER, "exiting logon successful {0}", name);
     person.setAddress(address);
     person.setNewpassword(password);
 
