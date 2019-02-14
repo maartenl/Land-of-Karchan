@@ -44,11 +44,15 @@ karchangame/nb-configuration.xml
 /karchangame/web/test-resbeans.css
 /karchangame/web/test-resbeans.html
 /karchangame/web/test-resbeans.js
+
 /karchanimages/target/
+/karchanimages/src/main/webapp
+
 /karchanscripts/target/
+
 /karchantest/target/
-# this one is an odd one, it just creates a war containing the angular app
-# from karchanangular. No need to check it in.
+
+/karchanpersonal/src/main/webapp/
 
 karchan/.idea/
 karchan/nb-configuration.xml
