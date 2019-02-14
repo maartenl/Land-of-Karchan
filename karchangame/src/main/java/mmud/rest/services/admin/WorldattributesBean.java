@@ -16,7 +16,8 @@
  */
 package mmud.rest.services.admin;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
@@ -72,7 +73,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
         final String name = sc.getUserPrincipal().getName();
         Admin admin = getEntityManager().find(Admin.class, name);
         itsLog.info(admin.toString());
-        entity.setCreation(new Date());
+        entity.setCreation(LocalDateTime.now());
         entity.setOwner(admin);
         itsLog.info(entity.toString());
         checkValidation(name, entity);

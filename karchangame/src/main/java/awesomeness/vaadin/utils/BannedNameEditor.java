@@ -30,7 +30,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.database.entities.game.Admin;
@@ -164,7 +165,7 @@ public class BannedNameEditor extends SimpleEditor
                 busyCreatingNewItem = true;
                 newInstance = new BannedName();
                 newInstance.setDeputy(currentUser.getName());
-                newInstance.setCreation(new Date());
+                newInstance.setCreation(LocalDateTime.now());
                 BeanItem beanItem = new BeanItem(newInstance);
                 group.setItemDataSource((beanItem));
                 date.setEnabled(false);

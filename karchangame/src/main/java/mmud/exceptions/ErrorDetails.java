@@ -18,7 +18,8 @@ package mmud.exceptions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 import mmud.Constants;
@@ -34,7 +35,7 @@ import mmud.Constants;
 public class ErrorDetails
 {
 
-  public Date timestamp;
+  public LocalDateTime timestamp;
   public String errormessage;
   public String stacktrace;
   public String user;
@@ -46,7 +47,7 @@ public class ErrorDetails
 
   ErrorDetails(String errormessage)
   {
-    this.timestamp = new Date();
+    this.timestamp = LocalDateTime.now();
     this.errormessage = errormessage;
   }
 
@@ -58,7 +59,7 @@ public class ErrorDetails
 
   ErrorDetails(Throwable t)
   {
-    this.timestamp = new Date();
+    this.timestamp = LocalDateTime.now();
     this.errormessage = t.getMessage();
     this.stacktrace = stackTraceToString(t);
   }

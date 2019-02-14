@@ -18,7 +18,8 @@ package mmud.rest.services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -258,7 +259,7 @@ public class LogBean
 
         Commandlog commandlog = new Commandlog();
         commandlog.setName(person == null ? null : person.getName());
-        commandlog.setStamp(new Date());
+        commandlog.setStamp(LocalDateTime.now());
         commandlog.setCommand(command);
         try
         {

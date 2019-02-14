@@ -17,7 +17,8 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,26 +49,30 @@ import javax.validation.constraints.Size;
 public class Link implements Serializable
 {
     private static final long serialVersionUID = 1L;
+
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "linkname")
     private String linkname;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "url")
     private String url;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "type")
     private int type;
+
     @Basic(optional = false)
     @NotNull
-    @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    @Column(name = "creation")    
+    private LocalDateTime creation;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
@@ -83,7 +88,7 @@ public class Link implements Serializable
         this.linkname = linkname;
     }
 
-    public Link(String linkname, String url, int type, Date creation, String name)
+    public Link(String linkname, String url, int type, LocalDateTime creation, String name)
     {
         this.linkname = linkname;
         this.url = url;
@@ -122,12 +127,12 @@ public class Link implements Serializable
         this.type = type;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

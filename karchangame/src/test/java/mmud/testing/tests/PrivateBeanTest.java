@@ -16,9 +16,10 @@
  */
 package mmud.testing.tests;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -227,8 +228,8 @@ public class PrivateBeanTest
   public void listMail()
   {
     logger.fine("listMail");
-    Date secondDate = new Date();
-    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    LocalDateTime secondDate = LocalDateTime.now();
+    LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final List<Mail> list = new ArrayList<>();
     Mail mail = new Mail();
     mail.setId(1l);
@@ -917,7 +918,7 @@ public class PrivateBeanTest
           void persist(Item item)
           {
             assertNotNull(item);
-            // assertEquals(item.getCreation(), new Date());
+            // assertEquals(item.getCreation(), LocalDateTime.now());
             assertNull(item.getId());
             assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
             assertEquals(item.getOwner(), admin);
@@ -987,7 +988,7 @@ public class PrivateBeanTest
           void persist(Item item)
           {
             assertNotNull(item);
-            // assertEquals(item.getCreation(), new Date());
+            // assertEquals(item.getCreation(), LocalDateTime.now());
             assertNull(item.getId());
             assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
             assertEquals(item.getOwner(), admin);

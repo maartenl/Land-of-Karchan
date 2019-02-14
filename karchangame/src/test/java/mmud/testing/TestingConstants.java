@@ -16,7 +16,7 @@
  */
 package mmud.testing;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
@@ -69,8 +69,7 @@ public class TestingConstants
   public static User getHotblack(Room aRoom) throws MudException
   {
     User person = new User();
-
-    person.setLastlogin(new Date((new Date()).getTime() - 1_000_000));
+    person.setLastlogin(LocalDateTime.now().plusSeconds(- 1_000L));
     person.setAddress("82-170-94-123.ip.telfort.nl");
     person.setNewpassword("secret"); // sha1 of "marvin"
     person.setRealname(null);
@@ -106,7 +105,7 @@ public class TestingConstants
   {
     User person = new User();
 
-    person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+    person.setLastlogin(LocalDateTime.now().plusSeconds(- 2_000L));
     person.setAddress("82-170-94-123.ip.telfort.nl");
     person.setNewpassword("secret"); // sha1 of "marvin"
     person.setRealname(null);
@@ -143,7 +142,7 @@ public class TestingConstants
     admin.setEmail("maarten_l@yahoo.com");
     admin.setName("Karn");
     admin.setPasswd("somesecretpasswordthatnobodycanguessinanmillionyears");
-    admin.setValiduntil(new Date((new Date()).getTime() + 100_000_000));
+    admin.setValiduntil(LocalDateTime.now().plusSeconds(100_000_000L));
     return admin;
   }
 
@@ -159,7 +158,7 @@ public class TestingConstants
   {
     Administrator person = new Administrator();
 
-    person.setLastlogin(new Date((new Date()).getTime() - 2_000_000));
+    person.setLastlogin(LocalDateTime.now().plusSeconds(- 2_000L));
     person.setAddress("82-170-94-123.ip.telfort.nl");
     person.setNewpassword("secret"); // sha1 of "marvin"
     person.setRealname(null);

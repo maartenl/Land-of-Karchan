@@ -16,7 +16,8 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.game.Method;
 
@@ -28,7 +29,7 @@ import mmud.database.entities.game.Method;
 public class DeputyScript
 {
 
-    public Date creation;
+    public LocalDateTime creation;
     public String name;
     public String owner;
     public String src;

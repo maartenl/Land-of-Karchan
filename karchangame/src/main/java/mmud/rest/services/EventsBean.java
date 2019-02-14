@@ -17,8 +17,9 @@
 package mmud.rest.services;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -140,8 +141,8 @@ public class EventsBean
   @Schedule(hour = "*", minute = "*/1")
   public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
-    // itsLog.log(Level.INFO, "Events scheduled at time {0}.", new Date());
-    // logBean.writeLog(null, "Events scheduled at time " + new Date() + ".");
+    // itsLog.log(Level.INFO, "Events scheduled at time {0}.", LocalDateTime.now());
+    // logBean.writeLog(null, "Events scheduled at time " + LocalDateTime.now() + ".");
     Query query = getEntityManager().createNamedQuery("Event.list");
     Calendar calendar = Calendar.getInstance();
     query.setParameter("month", calendar.get(Calendar.MONTH));
@@ -193,7 +194,7 @@ public class EventsBean
   @Schedule(hour = "*", minute = "1")
   private void executeIdleCleanup()
   {
-    logBean.writeLog("executeIdleCleanup(): scheduled at time " + new Date() + ".");
+    logBean.writeLog("executeIdleCleanup(): scheduled at time " + LocalDateTime.now() + ".");
     Query query = getEntityManager().createNamedQuery("User.who");
     List<User> list = query.getResultList();
     for (User user : list)

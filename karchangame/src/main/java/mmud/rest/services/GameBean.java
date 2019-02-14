@@ -18,8 +18,9 @@ package mmud.rest.services;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -411,8 +412,8 @@ public class GameBean implements RoomsInterface, WorldInterface
       person.setBeard(pperson.beard);
       person.setArm(pperson.arm);
       person.setLeg(pperson.leg);
-      person.setBirth(new Date());
-      person.setCreation(new Date());
+      person.setBirth(LocalDateTime.now());
+      person.setCreation(LocalDateTime.now());
       person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
 
       getEntityManager().persist(person);

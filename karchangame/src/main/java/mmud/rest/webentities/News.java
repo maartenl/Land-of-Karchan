@@ -16,7 +16,8 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,7 +35,7 @@ public class News
     }
 
     public String name;
-    public Date posttime;
+    public LocalDateTime posttime;
     public String message;
 
 }

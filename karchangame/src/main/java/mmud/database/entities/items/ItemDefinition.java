@@ -17,8 +17,9 @@
 package mmud.database.entities.items;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -64,117 +65,153 @@ public class ItemDefinition implements Serializable, Ownage
 {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
     // TODO : fix this, make it automatically get an id.
     @Column(name = "id")
     private Integer id;
+    
     @Size(min = 1, max = 100)
     @Column(name = "name")
     @Pattern(regexp = Constants.ONLY_LETTERS_ONE_OR_MORE_REGEXP, message = Constants.ONLY_LETTERS_ONE_OR_MORE_MESSAGE)
     private String name;
+    
     @Size(max = 30)
     @Column(name = "adject1")
     @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject1;
+    
     @Size(max = 30)
     @Column(name = "adject2")
     @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject2;
+    
     @Size(max = 30)
     @Column(name = "adject3")
     @Pattern(regexp = Constants.ONLY_LETTERS_REGEXP, message = Constants.ONLY_LETTERS_MESSAGE)
     private String adject3;
+    
     @Column(name = "manaincrease")
     private Integer manaincrease;
+    
     @Column(name = "hitincrease")
     private Integer hitincrease;
+    
     @Column(name = "vitalincrease")
     private Integer vitalincrease;
+    
     @Column(name = "movementincrease")
     private Integer movementincrease;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "eatable")
     private String eatable;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "drinkable")
     private String drinkable;
+    
     @Column(name = "lightable")
     private Boolean lightable;
+    
     @Column(name = "getable")
     private Integer getable;
+    
     @Column(name = "dropable")
     private Integer dropable;
+    
     @Column(name = "visible")
     private Integer visible;
+    
     @Column(name = "wieldable")
     private Integer wieldable;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "description")
     private String description;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "readdescr")
     private String readdescription;
+    
     @Column(name = "wearable")
     private Integer wearable;
+    
     @Column(name = "copper")
     private Integer copper;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "weight")
     private int weight;
+    
     @Column(name = "pasdefense")
     private Integer pasdefense;
+    
     @Column(name = "damageresistance")
     private Integer damageresistance;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "container")
     private int container;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
+    
     @Column(name = "capacity")
     private Integer capacity;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "isopenable")
     private int isopenable;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "bound")
     private boolean bound = false;
+    
     @JoinColumn(name = "keyid", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ItemDefinition key;
+    
     @Column(name = "containtype")
     private Integer containtype;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
+    
     @OneToMany(mappedBy = "itemDefinition")
     private Collection<Item> itemCollection;
+    
     @OneToMany(mappedBy = "itemDefinition")
     private Collection<Mail> mailCollection;
+    
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
+    
     @Column(name = "image")
     private String image;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "discriminator")
     private Integer discriminator;
+    
     @Column(name = "title")
     private String title;
 
@@ -197,7 +234,7 @@ public class ItemDefinition implements Serializable, Ownage
         this.id = id;
     }
 
-    public ItemDefinition(Integer id, String description, int weight, int container, Date creation, int isopenable)
+    public ItemDefinition(Integer id, String description, int weight, int container, LocalDateTime creation, int isopenable)
     {
         this.id = id;
         this.description = description;
@@ -578,12 +615,12 @@ public class ItemDefinition implements Serializable, Ownage
      *
      * @return date
      */
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

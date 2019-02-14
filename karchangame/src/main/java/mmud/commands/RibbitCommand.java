@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
@@ -33,36 +34,35 @@ import mmud.exceptions.MudException;
 public class RibbitCommand extends NormalCommand
 {
 
-    public RibbitCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public RibbitCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    if (aUser.getFrogging() == 0)
     {
-        if (aUser.getFrogging() == 0)
-        {
-            return null;
-        }
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.SECOND, -10);
-        if (calendar.getTime().before(aUser.getLastcommand()))
-        {
-            aUser.writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
-            return aUser.getRoom();
-        }
-        aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " says \"Rrribbit!\""
-                + ".<br/>\n");
-        aUser.lessFrogging();
-        if (aUser.getFrogging() == 0)
-        {
-            aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
-        } else
-        {
-            aUser.writeMessage("You feel the need to say 'Ribbit' just " + aUser.getFrogging() + " times.<br/>\r\n");
-        }
-        return aUser.getRoom();
+      return null;
     }
+    LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
+    if (tenSecondsAgo.isBefore(aUser.getLastcommand()))
+    {
+      aUser.writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
+      return aUser.getRoom();
+    }
+    aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " says \"Rrribbit!\""
+            + ".<br/>\n");
+    aUser.lessFrogging();
+    if (aUser.getFrogging() == 0)
+    {
+      aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
+    } else
+    {
+      aUser.writeMessage("You feel the need to say 'Ribbit' just " + aUser.getFrogging() + " times.<br/>\r\n");
+    }
+    return aUser.getRoom();
+  }
 
 }

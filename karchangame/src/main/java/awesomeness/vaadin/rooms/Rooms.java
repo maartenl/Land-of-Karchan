@@ -40,7 +40,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -254,7 +255,7 @@ public class Rooms extends VerticalLayout implements
         busyCreatingNewItem = true;
         newInstance = new Room();
         newInstance.setOwner(currentUser);
-        newInstance.setCreation(new Date());
+        newInstance.setCreation(LocalDateTime.now());
         item = new BeanItem(newInstance);
         binder = new FieldGroup(item);
         binder.setBuffered(true);

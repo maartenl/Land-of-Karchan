@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,8 +72,7 @@ public class UserCommand implements Serializable, Ownage
     private Room room;
     @Basic(optional = false)
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -89,7 +89,7 @@ public class UserCommand implements Serializable, Ownage
         this.id = id;
     }
 
-    public UserCommand(Integer id, String command, Date creation)
+    public UserCommand(Integer id, String command, LocalDateTime creation)
     {
         this.id = id;
         this.command = command;
@@ -141,12 +141,12 @@ public class UserCommand implements Serializable, Ownage
         this.room = room;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,8 +70,7 @@ public class BanTable implements Serializable
     @Column(name = "deputy")
     private String deputy;
     @Column(name = "date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    private LocalDateTime date;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -145,12 +145,12 @@ public class BanTable implements Serializable
         this.deputy = deputy;
     }
 
-    public Date getDate()
+    public LocalDateTime getDate()
     {
         return date;
     }
 
-    public void setDate(Date date)
+    public void setDate(LocalDateTime date)
     {
         this.date = date;
     }

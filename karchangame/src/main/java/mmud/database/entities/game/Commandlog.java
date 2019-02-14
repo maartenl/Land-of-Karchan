@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,21 +53,24 @@ public class Commandlog implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "stamp")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date stamp;
+    private LocalDateTime stamp;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 0, max = 255)
@@ -82,7 +86,7 @@ public class Commandlog implements Serializable
         this.id = id;
     }
 
-    public Commandlog(Long id, Date stamp, String name, String command)
+    public Commandlog(Long id, LocalDateTime stamp, String name, String command)
     {
         this.id = id;
         this.stamp = stamp;
@@ -100,12 +104,12 @@ public class Commandlog implements Serializable
         this.id = id;
     }
 
-    public Date getStamp()
+    public LocalDateTime getStamp()
     {
         return stamp;
     }
 
-    public void setStamp(Date stamp)
+    public void setStamp(LocalDateTime stamp)
     {
         this.stamp = stamp;
     }

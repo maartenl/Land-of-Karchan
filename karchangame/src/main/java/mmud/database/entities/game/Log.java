@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -57,31 +58,35 @@ public class Log implements Serializable
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
+    
     @Basic(optional = true)
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "message")
     private String message;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "addendum")
     private String addendum;
+    
     @Basic(optional = false)
     @Column(name = "deputy")
     private boolean deputy;
 
     public Log()
     {
-        this.creation = new Date();
+        this.creation = LocalDateTime.now();
     }
 
     public Long getId()
@@ -94,12 +99,12 @@ public class Log implements Serializable
         this.id = id;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,8 +99,7 @@ public class Event implements Serializable, Ownage
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
@@ -116,7 +116,7 @@ public class Event implements Serializable, Ownage
         this.eventid = eventid;
     }
 
-    public Event(Integer eventid, Integer month, Integer dayofmonth, Integer hour, Integer minute, Integer dayofweek, boolean callable, Date creation)
+    public Event(Integer eventid, Integer month, Integer dayofmonth, Integer hour, Integer minute, Integer dayofweek, boolean callable, LocalDateTime creation)
     {
         this.eventid = eventid;
         this.month = month;
@@ -257,12 +257,12 @@ public class Event implements Serializable, Ownage
         this.room = room;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

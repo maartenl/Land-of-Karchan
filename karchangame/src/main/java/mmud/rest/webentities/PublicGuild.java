@@ -16,7 +16,8 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -31,6 +32,6 @@ public class PublicGuild
     public String title;
     public String bossname;
     public String guilddescription;
-    public Date creation;
+    public LocalDateTime creation;
     public String image;
 }

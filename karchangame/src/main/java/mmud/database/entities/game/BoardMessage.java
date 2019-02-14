@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,8 +72,7 @@ public class BoardMessage implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "posttime")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date posttime;
+  private LocalDateTime posttime;
   @Basic(optional = false)
   @NotNull
   @Lob
@@ -157,12 +157,12 @@ public class BoardMessage implements Serializable
     this.user = user;
   }
 
-  public Date getPosttime()
+  public LocalDateTime getPosttime()
   {
     return posttime;
   }
 
-  public void setPosttime(Date posttime)
+  public void setPosttime(LocalDateTime posttime)
   {
     this.posttime = posttime;
   }
