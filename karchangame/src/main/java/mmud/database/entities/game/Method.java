@@ -17,8 +17,9 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -74,8 +75,7 @@ public class Method implements Serializable, Ownage
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "method")
     private Collection<Event> eventCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
@@ -93,7 +93,7 @@ public class Method implements Serializable, Ownage
         this.name = name;
     }
 
-    public Method(String name, String src, Date creation)
+    public Method(String name, String src, LocalDateTime creation)
     {
         this.name = name;
         this.src = src;
@@ -125,12 +125,12 @@ public class Method implements Serializable, Ownage
         this.src = src;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

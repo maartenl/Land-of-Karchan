@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,8 +74,7 @@ public class Worldattribute implements Serializable, Ownage
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
 
     public Worldattribute()
     {
@@ -133,12 +133,12 @@ public class Worldattribute implements Serializable, Ownage
         this.owner = owner;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

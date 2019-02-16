@@ -16,8 +16,9 @@
  */
 package mmud.rest.services.admin;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
@@ -128,7 +129,7 @@ public class EventBean extends AbstractFacade<Event>
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
-    entity.setCreation(new Date());
+    entity.setCreation(LocalDateTime.now());
     entity.setOwner(admin);
     checkValidation(name, entity);
     getEntityManager().persist(entity);

@@ -33,13 +33,14 @@ import mmud.exceptions.MudException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An item. To be more precise an instance of an item definition.
- * An item can either reside in a room, on a person or in another item.
+ * An item. To be more precise an instance of an item definition. An item can
+ * either reside in a room, on a person or in another item.
  *
  * @author maartenl
  */
@@ -50,34 +51,37 @@ import java.util.logging.Logger;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-  name = "discriminator",
-  discriminatorType = DiscriminatorType.INTEGER)
+        name = "discriminator",
+        discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_itemtable")
 @NamedQueries(
-  {
-    @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
-    @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
-    @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
-    @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
-    @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
-  })
+        {
+          @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
+          @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+          @NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),// and i.itemDefinition.dropable <> 0"),
+          @NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null"),//  and i.itemDefinition.getable <> 0")
+          @NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+          @NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null"),//  and i.itemDefinition.getable <> 0")
+          @NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container")//  and i.itemDefinition.getable <> 0")
+        })
 abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler, Ownage
 {
 
   private static final Logger itsLog = Logger.getLogger(Item.class.getName());
+
   private static final long serialVersionUID = 1L;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Basic(optional = false)
   @Column(name = "id")
   private Integer id;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "creation")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date creation;
+  private LocalDateTime creation;
+  
   /**
    * Indicates what kind of item it is. Current values are used:
    * <ul><li>0, a normal item</li>
@@ -86,31 +90,37 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
    */
   @Basic(optional = false)
   @NotNull
-    @Column(name = "discriminator")
+  @Column(name = "discriminator")
   private Integer discriminator;
+  
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "container", orphanRemoval = true)
   private Set<Item> items = new HashSet<>();
+  
   @JoinColumn(name = "containerid", referencedColumnName = "id")
   @ManyToOne
   private Item container;
+  
   @ManyToOne
   @JoinColumn(name = "room", referencedColumnName = "id")
   private Room room;
+  
   @ManyToOne
   @JoinColumn(name = "belongsto", referencedColumnName = "name")
   private Person belongsto;
+  
   @ManyToOne
   @JoinColumn(name = "itemid", referencedColumnName = "id")
   private ItemDefinition itemDefinition;
+  
   @ManyToOne
   @JoinColumn(name = "owner", referencedColumnName = "name")
   private Admin owner;
+  
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
   private List<Itemattribute> itemattributeCollection;
 
   /**
-   * Constructor. Creates a completely empty item.
-   * Usually required by ORM.
+   * Constructor. Creates a completely empty item. Usually required by ORM.
    */
   public Item()
   {
@@ -124,7 +134,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   public Item(ItemDefinition id)
   {
     this.itemDefinition = id;
-    this.creation = new Date();
+    this.creation = LocalDateTime.now();
     this.discriminator = 0;
   }
 
@@ -138,19 +148,19 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     this.id = id;
   }
 
-  public Date getCreation()
+  public LocalDateTime getCreation()
   {
     return creation;
   }
 
-  public void setCreation(Date creation)
+  public void setCreation(LocalDateTime creation)
   {
     this.creation = creation;
   }
 
   /**
-   * Indicates the items that are contained (if possible) inside this item.
-   * Will in most cases return an empty list.
+   * Indicates the items that are contained (if possible) inside this item. Will
+   * in most cases return an empty list.
    *
    * @return set of items.
    */
@@ -327,8 +337,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (getItemDefinition().getId() > 0)
     {
       builder.append("With your expert eye your judge this item to be worth ").
-        append(Constants.getDescriptionOfMoney(getCopper())).
-        append(".<br/>\r\n");
+              append(Constants.getDescriptionOfMoney(getCopper())).
+              append(".<br/>\r\n");
       if (isDrinkable())
       {
         builder.append("You can try drinking it.<br/>\r\n");
@@ -455,8 +465,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Indicates if the container is open or closed.
-   * Only makes sense if this item is in fact a container.
+   * Indicates if the container is open or closed. Only makes sense if this item
+   * is in fact a container.
    *
    * @return true if there is an attribute named "isopen".
    */
@@ -466,8 +476,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Returns true if the container has a lid, if the
-   * container can be opened.
+   * Returns true if the container has a lid, if the container can be opened.
    *
    * @return boolean true if the container has a lid.
    */
@@ -477,8 +486,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Returns true if the container has a lid, if the
-   * container can be opened.
+   * Returns true if the container has a lid, if the container can be opened.
    *
    * @return boolean true if the container has a lid.
    */
@@ -512,17 +520,17 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (!isOpenable())
     {
       throw new ItemException(getDescription()
-        + "cannot be opened.");
+              + "cannot be opened.");
     }
     if (isOpen())
     {
       throw new ItemException(getDescription()
-        + " is already open.");
+              + " is already open.");
     }
     if (isLocked())
     {
       throw new ItemException(getDescription()
-        + " is locked.");
+              + " is locked.");
     }
     setAttribute("isopen", "true");
   }
@@ -536,24 +544,24 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (!isOpenable())
     {
       throw new ItemException(getDescription()
-        + "cannot be closed.");
+              + "cannot be closed.");
     }
     if (!isOpen())
     {
       throw new ItemException(getDescription()
-        + " is already closed.");
+              + " is already closed.");
     }
     if (isLocked())
     {
       throw new ItemException(getDescription()
-        + " is locked.");
+              + " is locked.");
     }
     setAttribute("isopen", "false");
   }
 
   /**
-   * Returns true if the item can be eaten. This is better than just using
-   * a compare on the getEatable.
+   * Returns true if the item can be eaten. This is better than just using a
+   * compare on the getEatable.
    *
    * @return true if eatable, false otherwise
    * @see #getEatable
@@ -568,9 +576,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Provides the description of what happens when you try to eat it.
-   * Can be null or empty, for example if the item cannot be eaten.
-   * Eating an item will always destroy that item.
+   * Provides the description of what happens when you try to eat it. Can be
+   * null or empty, for example if the item cannot be eaten. Eating an item will
+   * always destroy that item.
    *
    * @return
    */
@@ -604,8 +612,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Returns true if the item can be drunk. This is better than just using
-   * a compare on the getDrinkable.
+   * Returns true if the item can be drunk. This is better than just using a
+   * compare on the getDrinkable.
    *
    * @return true if drinkable, false otherwise
    * @see #getDrinkable
@@ -620,9 +628,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Provides the description of what happens when you try to drink it.
-   * Can be null or empty, for example if the item cannot be drunk.
-   * Drinking an item will always destroy that item.
+   * Provides the description of what happens when you try to drink it. Can be
+   * null or empty, for example if the item cannot be drunk. Drinking an item
+   * will always destroy that item.
    *
    * @return
    */
@@ -665,9 +673,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Whether or not you are able to drop this item or give this item, or in
-   * some other way dispose of this item, besides selling it to a vendor or
-   * just destroying it.
+   * Whether or not you are able to drop this item or give this item, or in some
+   * other way dispose of this item, besides selling it to a vendor or just
+   * destroying it.
    *
    * @return true, in case you cannot, false otherwise.
    */
@@ -681,7 +689,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   }
 
   /**
-   * Whether or not you are able to retrieve this item from the floor of the room.
+   * Whether or not you are able to retrieve this item from the floor of the
+   * room.
    *
    * @return true, in case you can, false otherwise.
    */
@@ -807,7 +816,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
       public String getBody() throws MudException
       {
         String read
-          = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
+                = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
         if (read == null || read.trim().equals(""))
         {
           read = getItemDefinition().getReaddescription();
@@ -836,7 +845,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
    * Verifies that the key provided can open this container.
    *
    * @param key the key to hopefully open this container.
-   * @return true, if it is possible to open this container with the key provided.
+   * @return true, if it is possible to open this container with the key
+   * provided.
    */
   public boolean isKey(Item key)
   {
@@ -860,7 +870,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   public boolean isVisible()
   {
     return getItemDefinition().getId() >= 0
-      && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
+            && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
   }
 
   /**

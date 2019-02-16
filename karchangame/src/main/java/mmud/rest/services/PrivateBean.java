@@ -16,8 +16,9 @@
  */
 package mmud.rest.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -354,7 +355,7 @@ public class PrivateBean
     mail.setNewmail(Boolean.TRUE);
     mail.setSubject(subject);
     mail.setToname(toperson);
-    mail.setWhensent(new Date());
+    mail.setWhensent(LocalDateTime.now());
     getEntityManager().persist(mail);
   }
 
@@ -504,7 +505,7 @@ public class PrivateBean
 //                newdef.setCopper(definition.getCopper());
 //                newdef.setOwner(definition.getOwner());
 //                newdef.setNotes(definition.getNotes());
-//                newdef.setCreation(new Date());
+//                newdef.setCreation(LocalDateTime.now());
 //                getEntityManager().persist(newdef);
 //
 //                // set itemDefinitionId definition into the mail
@@ -518,7 +519,7 @@ public class PrivateBean
 //            Item item = new Item();
 //            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
 //            item.setItemDefinition(mail.getItemDefinition());
-//            item.setCreation(new Date());
+//            item.setCreation(LocalDateTime.now());
 //            getEntityManager().persist(item);
 //
 //            if (item.getId() != null)

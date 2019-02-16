@@ -17,8 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,8 +31,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -77,8 +75,7 @@ public class Area implements Serializable, Ownage
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "area")
     private Collection<Room> roomCollection;
     @JoinColumn(name = "owner", referencedColumnName = "name")
@@ -94,7 +91,7 @@ public class Area implements Serializable, Ownage
         this.area = area;
     }
 
-    public Area(String area, String description, String shortdesc, Date creation)
+    public Area(String area, String description, String shortdesc, LocalDateTime creation)
     {
         this.area = area;
         this.description = description;
@@ -132,12 +129,12 @@ public class Area implements Serializable, Ownage
         this.shortdescription = shortdescription;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

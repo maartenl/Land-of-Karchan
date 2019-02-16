@@ -32,7 +32,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.Constants;
@@ -171,7 +172,7 @@ public class Guilds extends Editor
       protected void instantiate()
       {
         newInstance = new Guild();
-        newInstance.setCreation(new Date());
+        newInstance.setCreation(LocalDateTime.now());
         newInstance.setOwner(currentUser);
         newInstance.setDescription("Mandatory description goes here.");
         BeanItem beanItem = new BeanItem(newInstance);

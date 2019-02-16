@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,6 +61,7 @@ public class Mail implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
+    
     /**
      * Contains the item ids of the different items that represent letters/mail.
      * The readdescription of said letters looks a little like the following:
@@ -71,41 +73,50 @@ public class Mail implements Serializable
     {
         8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015
     };
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "subject")
     private String subject;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "whensent")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date whensent;
+    private LocalDateTime whensent;
+    
     @Column(name = "haveread")
     private Boolean haveread;
+    
     @Column(name = "newmail")
     private Boolean newmail;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "body")
     private String body;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "deleted")
     private Boolean deleted;
+    
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     @ManyToOne
     private ItemDefinition itemDefinition;
+    
     @JoinColumn(name = "toname", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Person toname;
+    
     @JoinColumn(name = "name", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Person name;
@@ -134,12 +145,12 @@ public class Mail implements Serializable
         this.subject = subject;
     }
 
-    public Date getWhensent()
+    public LocalDateTime getWhensent()
     {
         return whensent;
     }
 
-    public void setWhensent(Date whensent)
+    public void setWhensent(LocalDateTime whensent)
     {
         this.whensent = whensent;
     }

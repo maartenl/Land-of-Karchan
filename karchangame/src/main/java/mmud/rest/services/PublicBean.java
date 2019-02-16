@@ -16,8 +16,13 @@
  */
 package mmud.rest.services;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,14 +162,13 @@ public class PublicBean
         publicPerson.title = person.getTitle();
         publicPerson.sleep = person.getSleep() ? "sleeping" : "";
         publicPerson.area = person.getRoom().getArea().getShortdescription();
-        Long now = (new Date()).getTime();
         if (person.getLastlogin() == null)
         {
           continue;
         }
-        Long backThen = person.getLastlogin().getTime();
-        publicPerson.min = (now - backThen) / 60000;
-        publicPerson.sec = ((now - backThen) / 1000) % 60;
+        Duration between = Duration.between(person.getLastlogin(),LocalDateTime.now());
+        publicPerson.min = between.getSeconds() / 60;
+        publicPerson.sec = between.getSeconds() % 60;
         res.add(publicPerson);
       }
     } catch (Exception e)

@@ -4,7 +4,8 @@
  */
 package mmud.rest.webentities;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.game.Mail;
 
@@ -41,7 +42,7 @@ public class PrivateMail
     public Long id;
     public Boolean haveread;
     public Boolean newmail;
-    public Date whensent;
+    public LocalDateTime whensent;
     public Boolean deleted;
     public Integer item_id;
 }

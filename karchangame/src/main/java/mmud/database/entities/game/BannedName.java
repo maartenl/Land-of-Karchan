@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,8 +57,7 @@ public class BannedName implements Serializable
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
     @Column(name = "days")
     private Integer days;
     @Size(max = 255)
@@ -73,7 +73,7 @@ public class BannedName implements Serializable
         this.name = name;
     }
 
-    public BannedName(String name, Date creation)
+    public BannedName(String name, LocalDateTime creation)
     {
         this.name = name;
         this.creation = creation;
@@ -99,12 +99,12 @@ public class BannedName implements Serializable
         this.deputy = deputy;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

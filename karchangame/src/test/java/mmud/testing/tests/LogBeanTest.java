@@ -254,7 +254,7 @@ public class LogBeanTest extends MudTest
                     {
                         assertThat(log).isNotNull();
                         assertThat(log.getName()).isEqualTo("Karn");
-                        // assertThat(log.getStamp()).isEqualTo(new Date()));
+                        // assertThat(log.getStamp()).isEqualTo(LocalDateTime.now()));
                         assertThat(log.getCommand()).isEqualTo("wave");
                         assertThat(log.getId()).isNull();
                     }

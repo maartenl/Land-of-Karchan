@@ -17,9 +17,10 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,8 +98,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   @Basic(optional = false)
   @NotNull
   @Column(name = "creation")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date creation;
+  private LocalDateTime creation;
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 120)
@@ -161,7 +161,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     this.id = id;
   }
 
-  public Room(Integer id, String contents, Date creation, String title)
+  public Room(Integer id, String contents, LocalDateTime creation, String title)
   {
     this.id = id;
     this.contents = contents;
@@ -204,12 +204,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     return contents;
   }
 
-  public Date getCreation()
+  public LocalDateTime getCreation()
   {
     return creation;
   }
 
-  public void setCreation(Date creation)
+  public void setCreation(LocalDateTime creation)
   {
     this.creation = creation;
   }

@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -141,8 +142,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Column(name = "active")
   private Integer active;
   @Column(name = "birth")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date birth;
+  private LocalDateTime birth;
   @Column(name = "god", insertable = false, updatable = false)
   private Integer god;
   @Column(name = "strength")
@@ -182,8 +182,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Basic(optional = false)
   @NotNull
   @Column(name = "creation_date")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date creation;
+  private LocalDateTime creation;
   @Lob
   @Size(max = 65535)
   @Column(name = "notes")
@@ -276,7 +275,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     this.drinkstats = 0;
     this.eatstats = 0;
     this.active = 0;
-    this.birth = new Date();
+    this.birth = LocalDateTime.now();
     this.god = God.DEFAULT_USER.getValue();
     this.strength = 0;
     this.intelligence = 0;
@@ -295,7 +294,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     this.jumpmana = 1;
     this.jumpmove = 1;
     this.jumpvital = 1;
-    this.creation = new Date();
+    this.creation = LocalDateTime.now();
     this.notes = null;
     this.state = null;
   }
@@ -792,12 +791,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     this.active = active ? 1 : 0;
   }
 
-  public Date getBirth()
+  public LocalDateTime getBirth()
   {
     return birth;
   }
 
-  public void setBirth(Date birth)
+  public void setBirth(LocalDateTime birth)
   {
     this.birth = birth;
   }
@@ -977,12 +976,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     this.jumpvital = jumpvital;
   }
 
-  public Date getCreation()
+  public LocalDateTime getCreation()
   {
     return creation;
   }
 
-  public void setCreation(Date creation)
+  public void setCreation(LocalDateTime creation)
   {
     this.creation = creation;
   }

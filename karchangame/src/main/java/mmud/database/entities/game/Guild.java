@@ -30,8 +30,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
+
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -112,8 +113,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   private Boolean active;
   @Basic(optional = false)
   @Column(name = "creation")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date creation;
+  private LocalDateTime creation;
   @Lob
   @Size(max = 65535)
   @Column(name = "logonmessage")
@@ -143,7 +143,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     this.name = name;
   }
 
-  public Guild(String name, Boolean active, Date creation)
+  public Guild(String name, Boolean active, LocalDateTime creation)
   {
     this.name = name;
     this.active = active;
@@ -252,12 +252,12 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     this.active = active;
   }
 
-  public Date getCreation()
+  public LocalDateTime getCreation()
   {
     return creation;
   }
 
-  public void setCreation(Date creation)
+  public void setCreation(LocalDateTime creation)
   {
     this.creation = creation;
   }

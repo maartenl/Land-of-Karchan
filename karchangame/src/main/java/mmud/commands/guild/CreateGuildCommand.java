@@ -16,7 +16,7 @@
  */
 package mmud.commands.guild;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -54,7 +54,7 @@ public class CreateGuildCommand extends NormalCommand
     Guild guild = new Guild();
     guild.setBoss(aUser);
     guild.setActive(Boolean.TRUE);
-    guild.setCreation(new Date());
+    guild.setCreation(LocalDateTime.now());
     guild.setName(myParsed[1]);
     guild.setTitle(myParsed[2]);
     aUser.setGuild(guild);

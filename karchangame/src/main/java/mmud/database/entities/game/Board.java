@@ -17,8 +17,9 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
+
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -75,29 +76,34 @@ public class Board implements Serializable, DisplayInterface, Ownage
     @NotNull
     @Column(name = "id")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 80)
     @Column(name = "name")
     private String name;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "description")
     private String description;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
+    
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne(optional = false)
     private Admin owner;
+    
     @JoinColumn(name = "room", nullable = false, referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Room room;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", fetch = FetchType.LAZY)
     @OrderBy
     private Set<BoardMessage> messages;
@@ -111,7 +117,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
         this.id = id;
     }
 
-    public Board(Integer id, String name, String description, Date creation)
+    public Board(Integer id, String name, String description, LocalDateTime creation)
     {
         this.id = id;
         this.name = name;
@@ -149,12 +155,12 @@ public class Board implements Serializable, DisplayInterface, Ownage
         this.description = description;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }
@@ -227,7 +233,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
         boardMessage.setBoard(this);
         boardMessage.setMessage(message);
         boardMessage.setPerson(aUser);
-        boardMessage.setPosttime(new Date());
+        boardMessage.setPosttime(LocalDateTime.now());
         boardMessage.setRemoved(false);
         return messages.add(boardMessage);
     }
@@ -251,7 +257,6 @@ public class Board implements Serializable, DisplayInterface, Ownage
     public String getBody() throws MudException
     {
         StringBuilder builder = new StringBuilder(getDescription());
-        Long now = (new Date()).getTime();
         builder.append("<hr/>");
         final Set<BoardMessage> sortedMessages = new TreeSet<>(new Comparator<BoardMessage>()
         {

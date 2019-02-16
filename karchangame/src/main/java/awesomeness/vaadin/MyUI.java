@@ -104,12 +104,6 @@ public class MyUI extends UI implements UserInterface
     commandsPanel.setContent(commands);
     layout.addComponent(commandsPanel);
 
-    final Panel logsPanel = new Panel("Logs");
-    logsPanel.setVisible(false);
-    Layout logs = new Logs(admin, servlet.getLogBean());
-    logsPanel.setContent(logs);
-    layout.addComponent(logsPanel);
-
     final Panel helpPanel = new Panel("Help");
     helpPanel.setVisible(false);
     Explanations explanations = new Explanations(admin, servlet.getLogBean());
@@ -164,7 +158,6 @@ public class MyUI extends UI implements UserInterface
         eventsPanel.setVisible(false);
         roomsPanel.setVisible(false);
         commandsPanel.setVisible(false);
-        logsPanel.setVisible(false);
         banishmentPanel.setVisible(false);
         itemDefinitionsPanel.setVisible(false);
         helpPanel.setVisible(false);
@@ -191,9 +184,6 @@ public class MyUI extends UI implements UserInterface
             break;
           case "Commands":
             commandsPanel.setVisible(true);
-            break;
-          case "Logs":
-            logsPanel.setVisible(true);
             break;
           case "Banishment":
             banishmentPanel.setVisible(true);
@@ -251,7 +241,7 @@ public class MyUI extends UI implements UserInterface
     SimpleDateFormat simpleDateFormat
             = new SimpleDateFormat("EEEE, dd MMMM yyyy");// yyyy/MM/dd
     String dateString
-            = simpleDateFormat.format(admin.getValiduntil().getTime());
+            = admin.getValiduntil().toString();
     Label nameLabel = new Label("Name: " + admin.getName());
     Label emailLabel = new Label("Email: " + admin.getEmail());
     Label validUntilLabel = new Label("Valid until: " + dateString);

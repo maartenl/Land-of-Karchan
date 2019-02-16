@@ -16,7 +16,8 @@
  */
 package mmud.rest.webentities.admin;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Event;
@@ -38,7 +39,7 @@ public class AdminEvent
     public Integer dayofweek;
     public Boolean callable;
     public Integer room;
-    public Date creation;
+    public LocalDateTime creation;
     public Admin owner;
     public String method;
 }

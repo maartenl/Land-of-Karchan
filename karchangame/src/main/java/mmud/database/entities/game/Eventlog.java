@@ -17,7 +17,8 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,21 +57,24 @@ public class Eventlog implements Serializable
     @NotNull
     @Column(name = "id")
     private Long id;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "creation")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creation;
+    private LocalDateTime creation;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "message")
     private String message;
+
     @Lob
     @Size(max = 65535)
     @Column(name = "addendum")
@@ -85,7 +89,7 @@ public class Eventlog implements Serializable
         this.id = id;
     }
 
-    public Eventlog(Long id, Date creation, String name, String message)
+    public Eventlog(Long id, LocalDateTime creation, String name, String message)
     {
         this.id = id;
         this.creation = creation;
@@ -103,12 +107,12 @@ public class Eventlog implements Serializable
         this.id = id;
     }
 
-    public Date getCreation()
+    public LocalDateTime getCreation()
     {
         return creation;
     }
 
-    public void setCreation(Date creation)
+    public void setCreation(LocalDateTime creation)
     {
         this.creation = creation;
     }

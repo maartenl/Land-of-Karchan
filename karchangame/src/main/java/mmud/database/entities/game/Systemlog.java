@@ -17,7 +17,11 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,7 +84,7 @@ public class Systemlog implements Serializable
     @Column(name = "message")
     private String message;
     @Transient
-    private Date creationdate;
+    private LocalDateTime creationdate;
 
     public Systemlog()
     {
@@ -117,7 +121,7 @@ public class Systemlog implements Serializable
     public void setMillis(long millis)
     {
         this.millis = millis;
-        this.creationdate = new Date(millis);
+        creationdate = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public long getSequence()
@@ -190,15 +194,15 @@ public class Systemlog implements Serializable
         this.message = message;
     }
 
-    public Date getCreationdate()
+    public LocalDateTime getCreationdate()
     {
-        creationdate = new Date(millis);
+        creationdate = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();        
         return creationdate;
     }
 
-    public void setCreationdate(Date creationdate)
+    public void setCreationdate(LocalDateTime creationdate)
     {
-        millis = creationdate.getTime();
+        millis = creationdate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         this.creationdate = creationdate;
     }
 

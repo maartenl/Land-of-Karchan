@@ -16,9 +16,13 @@
  */
 package mmud.database.entities.characters;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -96,11 +100,9 @@ public class User extends Person
   @Column(name = "punishment")
   private Integer punishment;
   @Column(name = "lastlogin")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date lastlogin;
+  private LocalDateTime lastlogin;
   @Column(name = "timeout")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date timeout;
+  private LocalDateTime timeout;
   @Size(max = 40)
   @Column(name = "cgiServerSoftware")
   private String cgiServerSoftware;
@@ -153,8 +155,7 @@ public class User extends Person
   @Column(name = "cgiUserAgent")
   private String cgiUserAgent;
   @Column(name = "lastcommand")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date lastcommand;
+  private LocalDateTime lastcommand;
   @Column(name = "rrribbits")
   private Integer rrribbits;
   @Column(name = "heehaws")
@@ -326,12 +327,12 @@ public class User extends Person
    *
    * @return the date of last logged on.
    */
-  public Date getLastlogin()
+  public LocalDateTime getLastlogin()
   {
     return lastlogin;
   }
 
-  public void setLastlogin(Date lastlogin)
+  public void setLastlogin(LocalDateTime lastlogin)
   {
     this.lastlogin = lastlogin;
     this.lastcommand = lastlogin;
@@ -513,7 +514,7 @@ public class User extends Person
    *
    * @return the date of the last time a command was entered.
    */
-  public Date getLastcommand()
+  public LocalDateTime getLastcommand()
   {
     return lastcommand;
   }
@@ -523,7 +524,7 @@ public class User extends Person
    */
   public void setNow()
   {
-    this.lastcommand = new Date();
+    this.lastcommand = LocalDateTime.now();
   }
 
   /**
@@ -538,7 +539,7 @@ public class User extends Person
     {
       throw new MudException("user not a user");
     }
-    this.setLastlogin(new Date());
+    this.setLastlogin(LocalDateTime.now());
     this.setActive(true);
     createLog();
   }
@@ -552,7 +553,7 @@ public class User extends Person
   public void deactivate()
   {
     setActive(false);
-    setLastlogin(new Date());
+    setLastlogin(LocalDateTime.now());
   }
 
   public boolean isNewUser()
@@ -702,19 +703,19 @@ public class User extends Person
    */
   public Long getIdleTime()
   {
-    Date date = getLastcommand();
-    Date now = new Date();
+    LocalDateTime date = getLastcommand();
+    LocalDateTime now = LocalDateTime.now();
     if (date == null)
     {
       return null;
     }
-    return (now.getTime() - date.getTime()) / MILLISECONDS_IN_A_SECOND / SECONDS_IN_A_MINUTE;
+    return Duration.between(date, now).toMinutes();
   }
 
   /**
    * Check to see if the User was inactive for more than an hour.
    *
-   * @return boolean, true if the User was inactive (i.e. has not entered a
+   * @return true if the User was inactive (i.e. has not entered a
    * command) for more than an hour.
    */
   public boolean isIdleTooLong()
@@ -730,8 +731,8 @@ public class User extends Person
    */
   public String getIdleTimeInMinAndSeconds()
   {
-    Calendar now = Calendar.getInstance();
-    long timeDiff = (now.getTimeInMillis() - getLastcommand().getTime()) / 1000;
+    LocalDateTime now = LocalDateTime.now();
+    Long timeDiff = Duration.between(getLastcommand(), now).toMillis() / 1000;
     return "(" + timeDiff / 60 + " min, " + timeDiff % 60 + " sec idle)";
   }
 
@@ -813,9 +814,7 @@ public class User extends Person
       timeout = null;
       return;
     }
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.MINUTE, minutes);
-    timeout = calendar.getTime();
+    timeout = LocalDateTime.now().plusMinutes(minutes);
   }
 
   /**
@@ -824,18 +823,18 @@ public class User extends Person
    *
    * @return
    */
-  public int getTimeout()
+  public long getTimeout()
   {
     if (timeout == null)
     {
       return 0;
     }
-    Calendar calendar = Calendar.getInstance();
-    if (timeout.compareTo(calendar.getTime()) < 0)
+    LocalDateTime now = LocalDateTime.now();
+    if (timeout.isBefore(now))
     {
       return 0;
     }
-    return (int) ((timeout.getTime() - calendar.getTime().getTime()) / 60000);
+    return Duration.between(now, timeout).toMinutes();
   }
 
   public int getFrogging()

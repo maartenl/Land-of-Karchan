@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
@@ -45,9 +46,8 @@ public class HeehawCommand extends NormalCommand
         {
             return null;
         }
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.SECOND, -10);
-        if (calendar.getTime().before(aUser.getLastcommand()))
+      LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
+        if (tenSecondsAgo.isBefore(aUser.getLastcommand()))
         {
             aUser.writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
             return aUser.getRoom();

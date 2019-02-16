@@ -33,7 +33,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mmud.Constants;
@@ -215,7 +216,7 @@ public class ItemDefinitions extends Editor
       {
         newInstance = new ItemDefinition();
         id.setValue("");
-        newInstance.setCreation(new Date());
+        newInstance.setCreation(LocalDateTime.now());
         newInstance.setDiscriminator(0);
         newInstance.setOwner(currentUser);
         newInstance.setDescription("Mandatory description goes here.");

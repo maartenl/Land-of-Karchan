@@ -17,8 +17,9 @@
 package mmud.testing.tests;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -175,7 +176,7 @@ public class PublicBeanTest
     {
       return;
     }
-    assertEquals(actual.posttime.getTime(), expected.posttime.getTime(), "posttime");
+    assertEquals(actual.posttime, expected.posttime, "posttime");
   }
 
   @Test
@@ -391,8 +392,8 @@ public class PublicBeanTest
   public void newsTest() throws ParseException
   {
     logger.fine("newsTest");
-    Date secondDate = new Date();
-    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    LocalDateTime secondDate = LocalDateTime.now();
+    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final List<BoardMessage> list = new ArrayList<>();
     BoardMessage message = new BoardMessage();
     message.setId(1);
@@ -552,8 +553,8 @@ public class PublicBeanTest
   public void guildsTest() throws MudException
   {
     logger.fine("guildsTest");
-    Date secondDate = new Date();
-    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    LocalDateTime secondDate = LocalDateTime.now();
+    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final List<Guild> list = new ArrayList<>();
     Guild guild = new Guild();
     guild.setName("disasterarea");
@@ -646,8 +647,8 @@ public class PublicBeanTest
   public void charactersheetTest() throws MudException
   {
     logger.fine("charactersheetTest");
-    Date secondDate = new Date();
-    Date firstDate = new Date(secondDate.getTime() - 1_000_000);
+    LocalDateTime secondDate = LocalDateTime.now();
+    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final CharacterInfo charinfo = new CharacterInfo();
     charinfo.setImageurl("http://www.images.com/imageurl.jpg");
     charinfo.setHomepageurl("http://www.homepage.com/");

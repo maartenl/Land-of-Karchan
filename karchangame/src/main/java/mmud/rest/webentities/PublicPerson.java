@@ -16,8 +16,9 @@
  */
 package mmud.rest.webentities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -41,7 +42,7 @@ public class PublicPerson
     public String homepageurl;
     public String dateofbirth;
     public String cityofbirth;
-    public Date lastlogin;
+    public LocalDateTime lastlogin;
     public String storyline;
     public Long min;
     public Long sec;
