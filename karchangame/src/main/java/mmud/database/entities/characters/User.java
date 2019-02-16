@@ -16,11 +16,8 @@
  */
 package mmud.database.entities.characters;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
-import java.util.Calendar;
 import java.util.Collections;
 
 import java.util.HashSet;
@@ -39,8 +36,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import mmud.Attributes;
 import mmud.Utils;

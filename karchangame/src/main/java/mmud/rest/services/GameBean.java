@@ -343,10 +343,6 @@ public class GameBean implements RoomsInterface, WorldInterface
   @PermitAll
   @POST
   @Path("{name}")
-  @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
   public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
   {
     itsLog.log(Level.FINER, "entering create {0}", name);
@@ -449,6 +445,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
+    itsLog.log(Level.FINER, "exiting create {0}", name);
     return Response.ok().build();
   }
 

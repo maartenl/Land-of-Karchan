@@ -363,8 +363,9 @@ public class AdminCommandTest extends MudTest
 
     // check for deactivation
     assertThat(marvin.isActive()).isEqualTo(false);
-    assertThat(marvin.getTimeout() == 59 || marvin.getTimeout() == 60)
-            .as("timeout was " + marvin.getTimeout())
+    long timeout = marvin.getTimeout();
+    assertThat(timeout == 59 || timeout == 60)
+            .as("timeout was " + timeout)
             .isTrue();
 
     assertThat(display).isNotNull();
