@@ -285,10 +285,10 @@ public class GameBean implements RoomsInterface, WorldInterface
     }
 
     // check address banned
-    String address2 = "bogushostman!";
+    String address2 = "bogushostman";
     try
     {
-      InetAddress inetAddress = InetAddress.getByName(address2);
+      InetAddress inetAddress = InetAddress.getByName(address);
       address2 = inetAddress.getHostName();
     } catch (UnknownHostException e)
     {
