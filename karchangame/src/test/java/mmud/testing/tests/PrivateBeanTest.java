@@ -72,6 +72,7 @@ public class PrivateBeanTest
 
   // Obtain a suitable logger.
   private static final Logger logger = Logger.getLogger(PrivateBeanTest.class.getName());
+
   @Mocked
   EntityManager entityManager;
 
@@ -145,7 +146,7 @@ public class PrivateBeanTest
   /**
    * Person not found, cannot authenticate. WebApplicationException expected.
    */
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void listMailAuthenticate2()
   {
     logger.fine("listMailAuthenticate2");
@@ -172,14 +173,7 @@ public class PrivateBeanTest
       }
     };
     // Unit under test is exercised.
-    try
-    {
-      List<PrivateMail> result = privateBean.listMail("Marvin", null);
-      fail("We are supposed to get an exception here.");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
+    List<PrivateMail> result = privateBean.listMail("Marvin", null);
   }
 
   @Test
@@ -593,7 +587,7 @@ public class PrivateBeanTest
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void newMailToUnknownUser()
   {
     logger.fine("newMailToUnknownUser");
@@ -628,18 +622,10 @@ public class PrivateBeanTest
       }
     };
     // Unit under test is exercised.
-    try
-    {
-      Response result = privateBean.newMail(privateMail, "Marvin");
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
-    // Verification code (JUnit/TestNG asserts), if any.
+    Response result = privateBean.newMail(privateMail, "Marvin");
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void getMailDoesnotExist()
   {
     logger.fine("getMailDoesnotExist");
@@ -671,18 +657,10 @@ public class PrivateBeanTest
       }
     };
     // Unit under test is exercised.
-    try
-    {
-      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
-    // Verification code (JUnit/TestNG asserts), if any.
+    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void getMailSomeoneElse()
   {
     logger.fine("getMailSomeoneElse");
@@ -721,18 +699,10 @@ public class PrivateBeanTest
       }
     };
     // Unit under test is exercised.
-    try
-    {
-      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
-    // Verification code (JUnit/TestNG asserts), if any.
+    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void getMailDeleted()
   {
     logger.fine("getMailDeleted");
@@ -771,15 +741,7 @@ public class PrivateBeanTest
       }
     };
     // Unit under test is exercised.
-    try
-    {
-      PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
-    // Verification code (JUnit/TestNG asserts), if any.
+    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
   }
 
   @Test
@@ -1177,14 +1139,14 @@ public class PrivateBeanTest
     {
       privateBean.deleteMail("Marvin", 1l);
       fail("Exception expected");
-    } catch (WebApplicationException result)
+    } catch (MudWebException result)
     {
       // Yay! We get an exception!
     }// Verification code (JUnit/TestNG asserts), if any.
     assertEquals(mail.getDeleted(), Boolean.FALSE);
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void deleteMailNotFound() throws MudException
   {
     logger.fine("deleteMail");
@@ -1213,16 +1175,8 @@ public class PrivateBeanTest
         result = null;
       }
     };
-    try
-    {
-      // Unit under test is exercised.
-      Response response = privateBean.deleteMail("Marvin", 1l);
-      // Verification code (JUnit/TestNG asserts), if any.
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
+    // Unit under test is exercised.
+    Response response = privateBean.deleteMail("Marvin", 1l);
   }
 
   @Test
@@ -1394,7 +1348,7 @@ public class PrivateBeanTest
 
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void updateCharacterSheetOfSomebodyElse() throws MudException
   {
     logger.fine("updateCharacterSheetOfSomebodyElse");
@@ -1436,14 +1390,7 @@ public class PrivateBeanTest
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-    try
-    {
-      Response response = privateBean.updateCharacterSheet("Marvin", person);
-      fail("We are supposed to get an exception here.");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
+    Response response = privateBean.updateCharacterSheet("Marvin", person);
   }
 
   @Test
@@ -1497,7 +1444,7 @@ public class PrivateBeanTest
 
   }
 
-  @Test
+  @Test(expectedExceptions = MudWebException.class)
   public void updateFamilyvaluesNotFound() throws MudException
   {
     logger.fine("updateFamilyvaluesNotFound");
@@ -1539,16 +1486,7 @@ public class PrivateBeanTest
         result = null;
       }
     };
-    try
-    {
-      // Unit under test is exercised.
       Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
-      fail("We are supposed to get an exception here.");
-    } catch (WebApplicationException result)
-    {
-      // Yay! We get an exception!
-    }
-
   }
 
   @Test

@@ -56,219 +56,212 @@ import static org.testng.Assert.fail;
 public class GuildBeanTest
 {
 
-    // Obtain a suitable logger.
-    private static final Logger logger = Logger.getLogger(GuildBeanTest.class.getName());
-    @Mocked
-    EntityManager entityManager;
+  // Obtain a suitable logger.
+  private static final Logger logger = Logger.getLogger(GuildBeanTest.class.getName());
+  @Mocked
+  EntityManager entityManager;
 
-    @Mocked(
-            {
-                "ok", "status"
-            })
-    javax.ws.rs.core.Response response;
+  @Mocked(
+          {
+            "ok", "status"
+          })
+  javax.ws.rs.core.Response response;
 
-    @Mocked
-    MudWebException webApplicationException;
+  @Mocked
+  MudWebException webApplicationException;
 
-    @Mocked
-    ErrorDetails errorDetails;
+  @Mocked
+  ErrorDetails errorDetails;
 
-    @Mocked
-    ResponseBuilder responseBuilder;
+  @Mocked
+  ResponseBuilder responseBuilder;
 
-    @Mocked
-    Query query;
+  @Mocked
+  Query query;
 
-    private User hotblack;
-    private User marvin;
+  private User hotblack;
+  private User marvin;
 
-    private final PrivateBean privateBean = new PrivateBean()
+  private final PrivateBean privateBean = new PrivateBean()
+  {
+    @Override
+    public User authenticate(String name)
     {
-        @Override
-        public User authenticate(String name)
-        {
-            if (name.equals("Hotblack"))
-            {
-                return hotblack;
-            }
-            if (name.equals("Marvin"))
-            {
-                return marvin;
-            }
-            return null;
-        }
+      if (name.equals("Hotblack"))
+      {
+        return hotblack;
+      }
+      if (name.equals("Marvin"))
+      {
+        return marvin;
+      }
+      return null;
+    }
+  };
+
+  public GuildBeanTest()
+  {
+  }
+
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
+
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
+
+  @BeforeMethod
+  public void setUp() throws MudException
+  {
+    Area aArea = TestingConstants.getArea();
+    Room aRoom = TestingConstants.getRoom(aArea);
+    hotblack = TestingConstants.getHotblack(aRoom);
+    marvin = TestingConstants.getMarvin(aRoom);
+  }
+
+  @AfterMethod
+  public void tearDown()
+  {
+  }
+
+  private void compare(PrivateMail actual, PrivateMail expected)
+  {
+    if (TestingUtils.compareBase(actual, expected))
+    {
+      return;
+    }
+    assertEquals(actual.body, expected.body, "body:");
+    assertEquals(actual.deleted, expected.deleted, "deleted");
+    assertEquals(actual.haveread, expected.haveread, "haveread");
+    assertEquals(actual.id, expected.id, "id");
+    assertEquals(actual.item_id, expected.item_id, "item_id");
+    assertEquals(actual.name, expected.name, "name");
+    assertEquals(actual.newmail, expected.newmail, "newmail");
+    assertEquals(actual.subject, expected.subject, "subject");
+    assertEquals(actual.toname, expected.toname, "toname");
+    assertEquals(actual.whensent, expected.whensent, "whensent");
+  }
+
+  /**
+   * Marvin isn't member of a guild.
+   */
+  @Test(expectedExceptions = MudWebException.class)
+  public void getMembersButNotInAGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+  {
+    logger.fine("getMembersButNotInAGuild");
+    GuildBean guildBean = new GuildBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
     };
+    Field field = GuildBean.class.getDeclaredField("privateBean");
+    field.setAccessible(true);
+    field.set(guildBean, privateBean);
+    // Unit under test is exercised.
+    List<PrivatePerson> result = guildBean.getMembers("Marvin");
+  }
 
-    public GuildBeanTest()
+  /**
+   * Marvin is a member of a guild, so we are expecting a nice list of members.
+   */
+  @Test
+  public void getMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+  {
+    logger.fine("getMembers");
+    final Guild guild = TestingConstants.getGuild();
+    marvin.setGuild(guild);
+    SortedSet<User> members = new TreeSet<>(new Comparator<User>()
     {
-    }
 
-    @BeforeClass
-    public void setUpClass()
+      @Override
+      public int compare(User arg0, User arg1)
+      {
+        return arg0.getName().compareTo(arg1.getName());
+      }
+    });
+    members.add(marvin);
+    members.add(hotblack);
+    guild.setMembers(members);
+    GuildBean guildBean = new GuildBean()
     {
-    }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Field field = GuildBean.class.getDeclaredField("privateBean");
+    field.setAccessible(true);
+    field.set(guildBean, privateBean);
+    // Unit under test is exercised.
+    List<PrivatePerson> result = guildBean.getMembers("Marvin");
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).name).isEqualTo("Hotblack");
+    assertThat(result.get(1).name).isEqualTo("Marvin");
+  }
 
-    @AfterClass
-    public void tearDownClass()
+  @Test
+  public void getNoMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+  {
+    logger.fine("getNoMembers");
+    final Guild guild = TestingConstants.getGuild();
+    marvin.setGuild(guild);
+    SortedSet<User> members = new TreeSet<>(new Comparator<User>()
     {
-    }
 
-    @BeforeMethod
-    public void setUp() throws MudException
+      @Override
+      public int compare(User arg0, User arg1)
+      {
+        return arg0.getName().compareTo(arg1.getName());
+      }
+    });
+    guild.setMembers(members);
+    GuildBean guildBean = new GuildBean()
     {
-        Area aArea = TestingConstants.getArea();
-        Room aRoom = TestingConstants.getRoom(aArea);
-        hotblack = TestingConstants.getHotblack(aRoom);
-        marvin = TestingConstants.getMarvin(aRoom);
-    }
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+    };
+    Field field = GuildBean.class.getDeclaredField("privateBean");
+    field.setAccessible(true);
+    field.set(guildBean, privateBean);
+    // Unit under test is exercised.
+    List<PrivatePerson> result = guildBean.getMembers("Marvin");
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(result).hasSize(0);
+  }
 
-    @AfterMethod
-    public void tearDown()
+  private void responseOkExpectations()
+  {
+    new Expectations() // an "expectation block"
     {
-    }
 
-    private void compare(PrivateMail actual, PrivateMail expected)
+      {
+        Response.ok();
+        result = responseBuilder;
+        responseBuilder.build();
+      }
+    };
+  }
+
+  private void responseNoContentExpectations()
+  {
+    new Expectations() // an "expectation block"
     {
-        if (TestingUtils.compareBase(actual, expected))
-        {
-            return;
-        }
-        assertEquals(actual.body, expected.body, "body:");
-        assertEquals(actual.deleted, expected.deleted, "deleted");
-        assertEquals(actual.haveread, expected.haveread, "haveread");
-        assertEquals(actual.id, expected.id, "id");
-        assertEquals(actual.item_id, expected.item_id, "item_id");
-        assertEquals(actual.name, expected.name, "name");
-        assertEquals(actual.newmail, expected.newmail, "newmail");
-        assertEquals(actual.subject, expected.subject, "subject");
-        assertEquals(actual.toname, expected.toname, "toname");
-        assertEquals(actual.whensent, expected.whensent, "whensent");
-    }
 
-    /**
-     * Marvin isn't member of a guild.
-     */
-    @Test
-    public void getMembersButNotInAGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
-    {
-        logger.fine("getMembersButNotInAGuild");
-        GuildBean guildBean = new GuildBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Field field = GuildBean.class.getDeclaredField("privateBean");
-        field.setAccessible(true);
-        field.set(guildBean, privateBean);
-        // Unit under test is exercised.
-        try
-        {
-            List<PrivatePerson> result = guildBean.getMembers("Marvin");
-            fail("We are supposed to get an exception here.");
-        } catch (WebApplicationException result)
-        {
-            // Yay! We get an exception!
-        }
-    }
-
-    /**
-     * Marvin is a member of a guild, so we are expecting a nice list of members.
-     */
-    @Test
-    public void getMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
-    {
-        logger.fine("getMembers");
-        final Guild guild = TestingConstants.getGuild();
-        marvin.setGuild(guild);
-        SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-        {
-
-            @Override
-            public int compare(User arg0, User arg1)
-            {
-                return arg0.getName().compareTo(arg1.getName());
-            }
-        });
-        members.add(marvin);
-        members.add(hotblack);
-        guild.setMembers(members);
-        GuildBean guildBean = new GuildBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Field field = GuildBean.class.getDeclaredField("privateBean");
-        field.setAccessible(true);
-        field.set(guildBean, privateBean);
-        // Unit under test is exercised.
-        List<PrivatePerson> result = guildBean.getMembers("Marvin");
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).name).isEqualTo("Hotblack");
-        assertThat(result.get(1).name).isEqualTo("Marvin");
-    }
-
-    @Test
-    public void getNoMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
-    {
-        logger.fine("getNoMembers");
-        final Guild guild = TestingConstants.getGuild();
-        marvin.setGuild(guild);
-        SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-        {
-
-            @Override
-            public int compare(User arg0, User arg1)
-            {
-                return arg0.getName().compareTo(arg1.getName());
-            }
-        });
-        guild.setMembers(members);
-        GuildBean guildBean = new GuildBean()
-        {
-            @Override
-            protected EntityManager getEntityManager()
-            {
-                return entityManager;
-            }
-        };
-        Field field = GuildBean.class.getDeclaredField("privateBean");
-        field.setAccessible(true);
-        field.set(guildBean, privateBean);
-        // Unit under test is exercised.
-        List<PrivatePerson> result = guildBean.getMembers("Marvin");
-        // Verification code (JUnit/TestNG asserts), if any.
-        assertThat(result).hasSize(0);
-    }
-
-    private void responseOkExpectations()
-    {
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                Response.ok();
-                result = responseBuilder;
-                responseBuilder.build();
-            }
-        };
-    }
-
-    private void responseNoContentExpectations()
-    {
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                Response.noContent();
-                result = responseBuilder;
-                responseBuilder.build();
-            }
-        };
-    }
+      {
+        Response.noContent();
+        result = responseBuilder;
+        responseBuilder.build();
+      }
+    };
+  }
 }
