@@ -41,7 +41,7 @@ public class MudWebException extends MudException
     super(message);
     this.name = name;
     this.status = status;
-    this.friendlyMessage = null;
+    this.friendlyMessage = message;
   }
 
   /**

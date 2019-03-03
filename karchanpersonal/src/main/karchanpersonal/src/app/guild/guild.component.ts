@@ -16,7 +16,7 @@ export class GuildComponent implements OnInit {
 
   constructor(private playerService: PlayerService,
     private formBuilder: FormBuilder) {
-    this.guild = new Guild();
+    this.guild = null;
   }
 
   ngOnInit() {

@@ -17,26 +17,15 @@ export class GuildRank {
   }
 }
 
-export class GuildMember {
+export interface GuildMember {
   name: string;
   guildrank: GuildRank;
-
-  constructor() {
-    this.name = void 0;
-    this.guildrank = void 0;
-  }
 }
 
-export class GuildHopeful {
+export interface GuildHopeful {
   name: string;
   guild: string;
   guildrank: string;
-
-  constructor() {
-    this.name = void 0;
-    this.guild = void 0;
-    this.guildrank = void 0;
-  }
 }
 
 export class GuildHopefuls {
@@ -94,7 +83,7 @@ export class GuildRanks {
 
 }
 
-export class Guild {
+export interface Guild {
   name: string;
   logonmessage: string;
   colour: string;
@@ -103,15 +92,4 @@ export class Guild {
   bossname: string;
   guilddescription: string;
   creation: string;
-
-  constructor() {
-    this.name = void 0;
-    this.logonmessage = void 0;
-    this.colour = void 0;
-    this.guildurl = void 0;
-    this.title = void 0;
-    this.bossname = void 0;
-    this.guilddescription = void 0;
-    this.creation = void 0;
-  }
 }
