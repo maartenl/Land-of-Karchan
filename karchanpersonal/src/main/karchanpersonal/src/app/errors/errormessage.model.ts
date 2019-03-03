@@ -1,5 +1,5 @@
 
-export class Error {
+export class ErrorMessage {
   type: string;
   message: string;
   detailedmessage: string;

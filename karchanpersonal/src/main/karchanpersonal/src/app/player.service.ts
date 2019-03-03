@@ -13,7 +13,7 @@ import {
   GuildHopefuls, GuildMembers, GuildRanks
 } from './guild/guild.model';
 import { Family } from './player-settings/family.model';
-import { Error } from './errors/error.model';
+import { ErrorMessage } from './errors/errormessage.model';
 
 
 @Injectable({
@@ -69,7 +69,7 @@ export class PlayerService {
         return this.name;
       }
     }
-    const error: Error = new Error();
+    const error: ErrorMessage = new ErrorMessage();
     error.type = '404';
     error.message = 'Character not found. Are you sure you are logged in?';
     this.errorsService.addError(error);
@@ -235,8 +235,17 @@ export class PlayerService {
     return this.http.delete(this.getFamilyUrl(family.toname));
   }
 
+  private getDescriptionAsInteger(family: Family): string {
+    for (let v in Family.FAMILYVALUES) {
+      if (family.description === Family.FAMILYVALUES[v]) {
+        return v;
+      }
+    }
+    throw new Error('Could not translate familyrelation.');
+  }
+
   public updateFamily(family: Family): Observable<any> {
-    const url: string = this.getFamilyUrl(family.toname) + '/' + family.getDescriptionAsInteger();
+    const url: string = this.getFamilyUrl(family.toname) + '/' + this.getDescriptionAsInteger(family);
     return this.http.put(url, null);
   }
 

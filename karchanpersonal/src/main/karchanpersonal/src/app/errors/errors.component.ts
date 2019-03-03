@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ErrorsService} from '../errors.service';
-import { Error } from './error.model';
+import { ErrorMessage } from './errormessage.model';
 
 @Component({
   selector: 'app-errors',
@@ -9,19 +9,19 @@ import { Error } from './error.model';
   styleUrls: ['./errors.component.css']
 })
 export class ErrorsComponent implements OnInit {
-  errors: Error[] = [];
+  errors: ErrorMessage[] = [];
 
   constructor(private errorsService: ErrorsService) { }
 
   ngOnInit() {
-    this.errorsService.setListener((error: Error) => this.addError(error));
+    this.errorsService.setListener((error: ErrorMessage) => this.addError(error));
   }
 
   public ifError(): boolean {
     return this.errors.length !== 0;
   }
 
-  public removeError(error: Error): void {
+  public removeError(error: ErrorMessage): void {
     const index = this.errors.indexOf(error);
     if (index === -1) {
       // not found. do nothing.
@@ -30,7 +30,7 @@ export class ErrorsComponent implements OnInit {
     this.errors.splice(index, 1);
   }
 
-  public addError(error: Error): void {
+  public addError(error: ErrorMessage): void {
     this.errors.push(error);
   }
 
