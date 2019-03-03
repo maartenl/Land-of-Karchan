@@ -16,74 +16,126 @@
  */
 package mmud.exceptions;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 /**
  *
  * @author maartenl
  */
-public class MudWebException extends WebApplicationException
+public class MudWebException extends MudException
 {
 
-    /**
-     * Create a new MudWebException.
-     *
-     * @param name the name of the player.
-     * @param message the message to send to the player.
-     * @param status the HTTP status code.
-     */
-    public MudWebException(String name, String message, Response.Status status)
-    {
-        super(message, (new ErrorDetails(name, message)).getResponse(status));
-    }
+  private final String name;
+  private final Response.Status status;
+  private final String friendlyMessage;
 
-    /**
-     * Create a new MudWebException.
-     *
-     * @param name the name of the player.
-     * @param message the message to send to the player.
-     * @param status the HTTP status code.
-     * @param errormessage the error message to log in GlassFish (which can provide additional information too sensitive for the user).
-     */
-    public MudWebException(String name, String message, String errormessage, Response.Status status)
-    {
-        super(errormessage, (new ErrorDetails(name, message)).getResponse(status));
-    }
+  /**
+   * Create a new MudWebException.
+   *
+   * @param name the name of the player.
+   * @param message the message to send to the player.
+   * @param status the HTTP status code.
+   */
+  public MudWebException(String name, String message, Response.Status status)
+  {
+    super(message);
+    this.name = name;
+    this.status = status;
+    this.friendlyMessage = null;
+  }
 
-    /**
-     * Create a new MudWebException caused by a different exception.
-     *
-     * @param name the name of the player.
-     * @param message the message to send to the player.
-     * @param status the HTTP status code.
-     * @param e the underlying exception that was thrown.
-     */
-    public MudWebException(String name, String message, Throwable e, Response.Status status)
-    {
-        super(e, (new ErrorDetails(name, message, e)).getResponse(status));
-    }
+  /**
+   * Create a new MudWebException.
+   *
+   * @param name the name of the player.
+   * @param friendlyMessage the message to send to the player.
+   * @param errormessage the error message to log in GlassFish (which can
+   * provide additional information too sensitive for the user).
+   */
+  public MudWebException(String name, String friendlyMessage, String errormessage)
+  {
+    super(errormessage);
+    this.name = name;
+    this.status = Response.Status.BAD_REQUEST;
+    this.friendlyMessage = friendlyMessage;
+  }
+  
+  /**
+   * Create a new MudWebException.
+   *
+   * @param name the name of the player.
+   * @param friendlyMessage the message to send to the player.
+   * @param status the HTTP status code.
+   * @param errormessage the error message to log in GlassFish (which can
+   * provide additional information too sensitive for the user).
+   */
+  public MudWebException(String name, String friendlyMessage, String errormessage, Response.Status status)
+  {
+    super(errormessage);
+    this.name = name;
+    this.status = status;
+    this.friendlyMessage = friendlyMessage;
+  }
 
-    /**
-     * Create a new MudWebException caused by a different exception.
-     *
-     * @param name the name of the player.
-     * @param status the HTTP status code.
-     * @param e the underlying exception that was thrown.
-     */
-    public MudWebException(String name, Throwable e, Response.Status status)
-    {
-        super(e, (new ErrorDetails(name, e)).getResponse(status));
-    }
+  /**
+   * Create a new MudWebException caused by a different exception.
+   *
+   * @param name the name of the player.
+   * @param friendlyMessage the message to send to the player.
+   * @param status the HTTP status code.
+   * @param e the underlying exception that was thrown.
+   */
+  public MudWebException(String name, String friendlyMessage, Throwable e, Response.Status status)
+  {
+    super(e);
+    this.name = name;
+    this.status = status;
+    this.friendlyMessage = friendlyMessage;
+  }
 
-    /**
-     * Create a new MudWebException caused by a different exception.
-     *
-     * @param status the HTTP status code.
-     * @param e the underlying exception that was thrown.
-     */
-    public MudWebException(Throwable e, Response.Status status)
-    {
-        super(e, (new ErrorDetails(e)).getResponse(status));
-    }
+  /**
+   * Create a new MudWebException caused by a different exception.
+   *
+   * @param name the name of the player.
+   * @param status the HTTP status code.
+   * @param e the underlying exception that was thrown.
+   */
+  public MudWebException(String name, Throwable e, Response.Status status)
+  {
+    super(e);
+    this.name = name;
+    this.status = status;
+    this.friendlyMessage = null;
+  }
+
+  /**
+   * Create a new MudWebException caused by a different exception.
+   *
+   * @param status the HTTP status code.
+   * @param e the underlying exception that was thrown.
+   */
+  public MudWebException(Throwable e, Response.Status status)
+  {
+    super(e);
+    this.name = null;
+    this.status = status;
+    this.friendlyMessage = null;
+  }
+
+  String getName()
+  {
+    return name;
+  }
+
+  Response.Status getStatus()
+  {
+    return status;
+  }
+
+  String getFriendlyMessage()
+  {
+    return friendlyMessage;
+  }
+  
+  
 }

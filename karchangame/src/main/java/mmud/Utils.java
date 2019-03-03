@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import mmud.exceptions.RegularExpressionException;
 
 /**
  * @author maartenl
@@ -425,13 +426,19 @@ public class Utils
     return false;
   }
 
-  public static void checkRegexp(String regexp, String value) throws MudException
+  /**
+   * Checks if the value matches the regular expression
+   * @param regexp the regular expression
+   * @param value the value to verify
+   * @throws RegularExpressionException a checked exception indicating failure.
+   */
+  public static void checkRegexp(String regexp, String value) throws RegularExpressionException
   {
     Pattern p = Pattern.compile(regexp);
     Matcher m = p.matcher(value);
     if (!m.matches())
     {
-      throw new MudException("value " + value + " should match regexp " + regexp);
+      throw new RegularExpressionException("value " + value + " should match regexp " + regexp);
     }
   }
 

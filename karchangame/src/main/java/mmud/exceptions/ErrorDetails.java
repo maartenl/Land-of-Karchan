@@ -37,7 +37,6 @@ public class ErrorDetails
 
   public LocalDateTime timestamp;
   public String errormessage;
-  public String stacktrace;
   public String user;
 
   public ErrorDetails()
@@ -61,7 +60,6 @@ public class ErrorDetails
   {
     this.timestamp = LocalDateTime.now();
     this.errormessage = t.getMessage();
-    this.stacktrace = stackTraceToString(t);
   }
 
   ErrorDetails(String user, Throwable t)
@@ -75,14 +73,6 @@ public class ErrorDetails
     this(t);
     this.user = user;
     this.errormessage = message;
-  }
-
-  private String stackTraceToString(Throwable e)
-  {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    e.printStackTrace(pw);
-    return sw.toString();
   }
 
   public Response getResponse(Response.Status status)

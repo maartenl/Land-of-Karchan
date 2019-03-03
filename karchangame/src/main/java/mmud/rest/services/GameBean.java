@@ -38,7 +38,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -68,6 +67,7 @@ import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
 import mmud.database.entities.game.Worldattribute;
 import mmud.database.enums.Sex;
+import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateDisplay;
@@ -81,14 +81,8 @@ import mmud.scripting.WorldInterface;
  * <img
  * src="doc-files/Gamebean.png">
  *
- * @startuml doc-files/Gamebean.png
- * (*) --> "Create character"
- * --> "Login"
- * --> "Play"
- * --> "Retrieve log"
- * --> "Play"
- * --> "Quit"
- * -->(*)
+ * @startuml doc-files/Gamebean.png (*) --> "Create character" --> "Login" -->
+ * "Play" --> "Retrieve log" --> "Play" --> "Quit" -->(*)
  * @enduml
  * @author maartenl
  */
@@ -122,16 +116,15 @@ public class GameBean implements RoomsInterface, WorldInterface
   private SessionContext context;
 
   /**
-   * The ip address of the karchan server (vps386.directvps.nl).
-   * This address means that the call
-   * to the game came from the server itself, and therefore we require
-   * access to the {@link #X_FORWARDED_FOR} header.
+   * The ip address of the karchan server (vps386.directvps.nl). This address
+   * means that the call to the game came from the server itself, and therefore
+   * we require access to the {@link #X_FORWARDED_FOR} header.
    */
   public static final String VPS386 = "194.145.201.161";
 
   /**
-   * If the call was forwarded from an Internet
-   * proxy, then the original ip is stored in this http header.
+   * If the call was forwarded from an Internet proxy, then the original ip is
+   * stored in this http header.
    */
   public static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
@@ -150,22 +143,19 @@ public class GameBean implements RoomsInterface, WorldInterface
 
   /**
    * <p>
-   * This method should be called to verify that the target of a certain
-   * action is indeed a proper authenticated user.</p>
+   * This method should be called to verify that the target of a certain action
+   * is indeed a proper authenticated user.</p>
    * <p>
    * <img
    * src="doc-files/Gamebean_authenticate.png"></p>
    *
    * @param name the name to identify the person
-   * @throws WebApplicationException NOT_FOUND, if the user is either not
-   * found or is not a proper user. BAD_REQUEST if an unexpected exception
-   * crops up or provided info is really not proper. UNAUTHORIZED if session
-   * passwords do not match.
-   * @startuml doc-files/Gamebean_authenticate.png
-   * (*) --> "find character"
-   * --> "character found"
-   * --> "character == user"
-   * --> "session password is good"
+   * @throws WebApplicationException NOT_FOUND, if the user is either not found
+   * or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
+   * provided info is really not proper. UNAUTHORIZED if session passwords do
+   * not match.
+   * @startuml doc-files/Gamebean_authenticate.png (*) --> "find character" -->
+   * "character found" --> "character == user" --> "session password is good"
    * -->(*)
    * @enduml
    */
@@ -195,8 +185,8 @@ public class GameBean implements RoomsInterface, WorldInterface
 
   /**
    * <p>
-   * This method should be called to verify that the target of a certain
-   * action is a user with the appropriate password.</p>
+   * This method should be called to verify that the target of a certain action
+   * is a user with the appropriate password.</p>
    * <p>
    * <img
    * src="doc-files/Gamebean_authenticateWithPassword.png"></p>
@@ -206,12 +196,9 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    * crops up or provided info is really not proper. UNAUTHORIZED if session
    * passwords do not match or user not found.
-   * @startuml doc-files/Gamebean_authenticateWithPassword.png
-   * (*) --> "find character"
-   * --> "character found"
-   * --> "character == user"
-   * --> "password is good"
-   * -->(*)
+   * @startuml doc-files/Gamebean_authenticateWithPassword.png (*) --> "find
+   * character" --> "character found" --> "character == user" --> "password is
+   * good" -->(*)
    * @enduml
    */
   protected User getPlayer(String name)
@@ -254,12 +241,8 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @param name the name of the person
    * @param address the ip address the person is playing from
    * @return true if banned, false otherwise.
-   * @startuml doc-files/Gamebean_isBanned.png
-   * (*) --> "check silly names"
-   * --> "check unbanned"
-   * --> "check address banned"
-   * --> "check name banned"
-   * -->(*)
+   * @startuml doc-files/Gamebean_isBanned.png (*) --> "check silly names" -->
+   * "check unbanned" --> "check address banned" --> "check name banned" -->(*)
    * @enduml
    */
   public boolean isBanned(String name, String address)
@@ -322,22 +305,18 @@ public class GameBean implements RoomsInterface, WorldInterface
    * Creates a new character, suitable for playing.</p>
    * <p>
    * <img
-   * src="doc-files/Gamebean_create.png"></p>
-   * @param requestContext for headers, like remote address.
+   * src="doc-files/Gamebean_create.png"></p> @param requestContext for headers,
+   * like remote address.
+   *
    * @param name the name of the user
    * @param pperson the data of the new character
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    * crops up or something could not be validated.
-   * @startuml doc-files/Gamebean_create.png
-   * (*) --> "check for offline"
-   * --> "check presence of data"
-   * --> "check name == pperson.name"
-   * --> "check password == password2"
-   * --> "check isBanned"
-   * --> "check already person"
-   * --> "create person"
-   * -->(*)
+   * @startuml doc-files/Gamebean_create.png (*) --> "check for offline" -->
+   * "check presence of data" --> "check name == pperson.name" --> "check
+   * password == password2" --> "check isBanned" --> "check already person" -->
+   * "create person" -->(*)
    * @enduml
    */
   @PermitAll
@@ -387,7 +366,7 @@ public class GameBean implements RoomsInterface, WorldInterface
         throw new MudWebException(name,
                 name + " already exists.",
                 "User already exists (" + name + ", " + address + ")",
-                Response.Status.FOUND);
+                Response.Status.BAD_REQUEST);
       }
       // everything's cool! Let's do this!
       person.setActive(false);
@@ -421,26 +400,15 @@ public class GameBean implements RoomsInterface, WorldInterface
       throw e;
     } catch (ConstraintViolationException e)
     {
-      StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-      for (ConstraintViolation<?> violation : e.getConstraintViolations())
-      {
-        buffer.append(violation);
-      }
-      throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
 
     } catch (javax.persistence.PersistenceException f)
     {
-      if (f.getCause().getClass().getName().equals("ConstraintViolationException"))
+      ExceptionUtils.createMessage(f).ifPresent(message ->
       {
-        ConstraintViolationException e = (ConstraintViolationException) f.getCause();
-        StringBuilder buffer = new StringBuilder("PersistenceException:");
-        for (ConstraintViolation<?> violation : e.getConstraintViolations())
-        {
-          buffer.append(violation);
-        }
-        throw new MudWebException(name, buffer.toString(), f, Response.Status.BAD_REQUEST);
-      }
-      throw f;
+        throw new MudWebException(name, message, f, Response.Status.BAD_REQUEST);
+      });
+      throw new MudWebException(name, f.getMessage(), f, Response.Status.BAD_REQUEST);
     } catch (MudException e)
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
@@ -450,11 +418,12 @@ public class GameBean implements RoomsInterface, WorldInterface
   }
 
   /**
-   * Logs a player into the server. Once logged in, he/she can start playing
-   * the game. Url is for example http://localhost:8080/karchangame/resources/game/Karn/logon?password=itsasecret..
+   * Logs a player into the server. Once logged in, he/she can start playing the
+   * game. Url is for example
+   * http://localhost:8080/karchangame/resources/game/Karn/logon?password=itsasecret..
    *
-   * @param requestContext the context of the request, useful for example querying
-   * for the IP address.
+   * @param requestContext the context of the request, useful for example
+   * querying for the IP address.
    * @param password password for verification of the user.
    * @param name the name of the user
    */
@@ -526,10 +495,11 @@ public class GameBean implements RoomsInterface, WorldInterface
   }
 
   /**
-   * Logs a player off.
-   * TODO MLE: should be moved elsewhere, is not specifically part of the game.
-   * @param requestContext the context of the request, useful for example querying
-   * for the IP address.
+   * Logs a player off. TODO MLE: should be moved elsewhere, is not specifically
+   * part of the game.
+   *
+   * @param requestContext the context of the request, useful for example
+   * querying for the IP address.
    */
   @PUT
   @Path("{name}/logoff")
@@ -563,8 +533,8 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @param requestContext used for retrieving the ip address/hostname of the
    * player for determining ban-rules and the like.
    * @param name the name of the character/player
-   * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected exception
-   * crops up.</li>
+   * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected
+   * exception crops up.</li>
    * <li>NO_CONTENT if the game is offline</li>
    * <li>FORBIDDEN, if the player is banned.</li>
    * </ul>
@@ -631,21 +601,15 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     } catch (PersistenceException e)
-    {
-      StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-      for (ConstraintViolation<?> violation : ((ConstraintViolationException) e.getCause()).getConstraintViolations())
+    {    
+      ExceptionUtils.createMessage(e).ifPresent(message ->
       {
-        buffer.append(violation);
-      }
-      throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
+        throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
+      });
+      throw new MudWebException(name, e.getMessage(), e, Response.Status.BAD_REQUEST);
     } catch (ConstraintViolationException e)
     {
-      StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-      for (ConstraintViolation<?> violation : e.getConstraintViolations())
-      {
-        buffer.append(violation);
-      }
-      throw new MudWebException(name, buffer.toString(), e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
     }
   }
 
@@ -671,8 +635,8 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @param name the name of the player. Should match the authorized user.
    * @param command the command issued
    * @param offset the offset used for the log
-   * @param log indicates with true or false, whether or not we are
-   * interested in the log.
+   * @param log indicates with true or false, whether or not we are interested
+   * in the log.
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    * crops up or something could not be validated.
@@ -776,8 +740,8 @@ public class GameBean implements RoomsInterface, WorldInterface
   }
 
   /**
-   * It parses and executes the command of the
-   * user. The main batch of the server.
+   * It parses and executes the command of the user. The main batch of the
+   * server.
    *
    * @param person User who wishes to execute a command.
    * @param command String containing the command entered

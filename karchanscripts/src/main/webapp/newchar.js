@@ -1,3 +1,38 @@
+function showError(jqXHR, textStatus, errorThrown)
+{
+  if (window.console) {console.log(jqXHR);console.log(textStatus);console.log(errorThrown);}
+  if (errorThrown !== undefined) 
+  {
+    var errormessage = errorThrown;
+  } 
+  else
+  {
+    var errormessage = "An error occurred.";
+  }
+  try
+  {
+      var errorDetails = JSON.parse(jqXHR.responseText);
+      if (window.console)
+          console.log(errorDetails);
+  } catch (e)
+  {
+      if (window.console)
+          console.log(e);        
+      return;
+  }
+  if (errorDetails !== undefined && errorDetails.errormessage!== undefined)
+  {
+      if (window.console) console.log(errorDetails);
+      var errormessage = errorDetails.errormessage;
+  }
+  $("#newchar-form-id").append( "<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">" +
+      errormessage +
+    "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +
+      "<span aria-hidden=\"true\">&times;</span>" +
+    "</button>" +
+  "</div>");
+}
+
 function createNewchar() 
 {
   if (window.console) console.log("createNewchar");
@@ -38,17 +73,7 @@ function createNewchar()
           success: (function (data) {
               processLogon();
           }),
-          error: (function(jqXHR, textStatus, errorThrown) {
-              if (window.console) {console.log(jqXHR);console.log(textStatus);console.log(errorThrown);}
-              if (jqXHR.responseJSON === undefined)
-              {
-                if (window.console) console.log("an error occurred.");
-              }
-              else
-              {
-                alert(jqXHR.responseJSON.errormessage);
-              }
-          }),
+          error: showError,
           complete: (function () {
               if (window.console)
                   console.log("complete");
@@ -70,18 +95,7 @@ function createNewchar()
       } // processLogon
       return;
     }),
-    error: (function(jqXHR, textStatus, errorThrown) 
-            {
-              if (window.console) {console.log(jqXHR);console.log(textStatus);console.log(errorThrown);}
-              if (jqXHR.responseJSON === undefined)
-              {
-                if (window.console) console.log("an error occurred.");
-              }
-              else
-              {
-                alert(jqXHR.responseJSON.errormessage);
-              }
-            }),
+    error: showError,
     complete: (function() { if (window.console) console.log("complete"); }),        
     dataType: 'text', //define the type of data that is going to get back from the server
     contentType: 'application/json; charset=utf-8',

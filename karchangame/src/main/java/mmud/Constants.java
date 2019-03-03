@@ -36,7 +36,7 @@ public class Constants
 {
 
   public static final String NAME_REGEXP = "[a-zA-Z]{3,}";
-  public static final String NAME_MESSAGE = "Invalid name. Only letters are allowed and at least three letters are required.";
+  public static final String NAME_MESSAGE = "Invalid name. Only letters are allowed and at least three letters are required, but not more than 20.";
 
   public static final String ONLY_LETTERS_ONE_OR_MORE_REGEXP = "[a-zA-Z-]{1,}";
   public static final String ONLY_LETTERS_ONE_OR_MORE_MESSAGE = "Only letters and dash (-) are allowed and at least one letter is required.";

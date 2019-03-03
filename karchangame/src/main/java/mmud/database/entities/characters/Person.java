@@ -64,7 +64,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Id
   @Basic(optional = false)
   @NotNull
-  @Size(min = 3, max = 20)
+  @Size(min = 3, max = 20, message = Constants.NAME_MESSAGE)
   @Column(name = "name")
   @Pattern(regexp = Constants.NAME_REGEXP, message = Constants.NAME_MESSAGE)
   private String name;

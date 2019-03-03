@@ -6,33 +6,36 @@ function webError(jqXHR, textStatus, errorThrown)
         console.log(textStatus);
         console.log(errorThrown);
     }
+    if (errorThrown !== undefined) 
+    {
+      var errormessage = errorThrown;
+    } 
+    else
+    {
+      var errormessage = "An error occurred.";
+    }
     try
     {
-        var errorDetails = JSON.parse(jqXHR.responseText);
+        var errorDetails = jqXHR.responseJSON;
         if (window.console)
             console.log(errorDetails);
     } catch (e)
     {
-        alert(Karchan.getGenericError());
         if (window.console)
-            console.log(e);
+            console.log(e);        
         return;
     }
-    if (errorDetails.stacktrace !== undefined)
+    if (errorDetails !== undefined && errorDetails.errormessage!== undefined)
     {
-        var buffer = "Timestamp: " + errorDetails.timestamp + "<br/>";
-        buffer += "Errormessage: " + errorDetails.errormessage + "<br/>";
-        buffer += "Stacktrace: " + errorDetails.stacktrace + "<br/>";
-        buffer += "User: " + errorDetails.user + "<br/>";
-        buffer += "Browser CodeName: " + navigator.appCodeName + "<br/>";
-        buffer += "Browser Name: " + navigator.appName + "<br/>";
-        buffer += "Browser Version: " + navigator.appVersion + "<br/>";
-        buffer += "Cookies Enabled: " + navigator.cookieEnabled + "<br/>";
-        buffer += "Platform: " + navigator.platform + "<br/>";
-        buffer += "User-agent header: " + navigator.userAgent + "<br/>";
-        $("#warning").html(buffer);
+        if (window.console) console.log(errorDetails);
+        var errormessage = errorDetails.errormessage;
     }
-    alert(errorDetails.errormessage);
+    $("#logon-form-card").append( "<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">" +
+        errormessage +
+      "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">" +
+        "<span aria-hidden=\"true\">&times;</span>" +
+      "</button>" +
+    "</div>");
 }
 
 function logon()

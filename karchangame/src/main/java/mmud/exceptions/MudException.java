@@ -36,7 +36,7 @@ public class MudException extends RuntimeException
      * constructor for creating a exception with a message.
      * @param ex the original exception.
      */
-    public MudException(Exception ex)
+    public MudException(Throwable ex)
     {
         super(ex);
     }

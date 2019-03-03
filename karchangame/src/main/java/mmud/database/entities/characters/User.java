@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,7 +47,9 @@ import mmud.database.entities.game.Macro;
 import mmud.database.enums.God;
 import mmud.encryption.Hash;
 import mmud.encryption.HexEncoder;
+import mmud.exceptions.MudWebException;
 import mmud.exceptions.MudException;
+import mmud.exceptions.RegularExpressionException;
 
 /**
  * A user in the game. Might be an administrator.
@@ -282,7 +285,14 @@ public class User extends Person
       this.newpassword = newpassword;
       return;
     }
-    Utils.checkRegexp(PASSWORD_REGEXP, newpassword);
+    try
+    {
+      Utils.checkRegexp(PASSWORD_REGEXP, newpassword);
+    } catch (RegularExpressionException ex)
+    {
+      Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+      throw new MudWebException(getName(), "Your password needs to be at least 5 characters.", ex.getMessage());
+    }
     this.newpassword = new HexEncoder(128).encrypt(newpassword, Hash.SHA_512);
   }
 
