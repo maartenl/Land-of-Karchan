@@ -216,7 +216,7 @@ function play()
     }
     else
     {
-      tinyMCE.get('bigcommand').setContent("");
+      Karchan.editor.getData('bigcommand').setContent("");
     }
   } // processPlay
   if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
@@ -224,10 +224,7 @@ function play()
     var command = $("#command").val();
   } else
   {
-    var command = tinyMCE.get('bigcommand').getContent();
-    if (command.substring(0,3) === "<p>") {command = command.substring(3);}
-    while (command.substring(0,6) === "&nbsp;") {command = command.substring(6);}
-    if (command.substring(command.length - 4, command.length) === "</p>") {command = command.substring(0, command.length - 4);}
+    var command = $("#command").val() + Karchan.editor.getData();
   }
   processCall(command, true, processPlay); 
 }
@@ -275,37 +272,23 @@ function toggleEntry()
   if (Karchan.bigEntry === undefined || Karchan.bigEntry === false)
   {
     // we need Big Entry command!
-    $("#command").css("display","none");
     if (Karchan.bigEntry === undefined)
     {
       $("#bigcommand").css("display","block");
-      tinyMCE.init({
-        // General options
-        mode : "textareas",
-        theme : "modern",
-        plugins : ["textcolor,table,save,insertdatetime,preview,searchreplace,contextmenu,",
-                   "paste,directionality,fullscreen,noneditable,visualchars,nonbreaking",
-                   "wordcount,advlist,autosave,code,visualblocks,hr,charmap"
-                  ],
-        toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft " +
-                  "aligncenter alignright alignjustify | bullist numlist outdent indent" +
-                  " | link image",
-        toolbar2: "print preview media | forecolor backcolor emoticons",
-        image_advtab: true
-      });
-    }
-    else
-    {
-      tinyMCE.get('bigcommand').show();
-      //$("#mceu_16").css("display","block");
-    }
-  
+      ClassicEditor
+              .create( document.querySelector( '#bigcommand' ) )
+              .then( newEditor => {
+                     Karchan.editor = newEditor;
+               })
+              .catch( error => {
+                  console.error( error );
+              } );
+    }  
     Karchan.bigEntry = true;
   } else
   {
     // change back to teh usual!
-    $("#command").css("display","block");
-    tinyMCE.get('bigcommand').hide();
+    Karchan.editor.destroy();
     $("#bigcommand").css("display","none");
     Karchan.bigEntry = false;
   }
