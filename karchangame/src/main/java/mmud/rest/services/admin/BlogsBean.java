@@ -43,6 +43,7 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminBlog;
 
 /**
+ * The REST service for dealing with Blogs.
  *
  * @author maartenl
  */

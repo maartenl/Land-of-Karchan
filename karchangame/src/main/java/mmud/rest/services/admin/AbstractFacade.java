@@ -34,74 +34,56 @@ import mmud.exceptions.MudWebException;
 public abstract class AbstractFacade<T>
 {
 
-    private Class<T> entityClass;
+  private Class<T> entityClass;
 
-    public AbstractFacade(Class<T> entityClass)
-    {
-        this.entityClass = entityClass;
-    }
+  public AbstractFacade(Class<T> entityClass)
+  {
+    this.entityClass = entityClass;
+  }
 
-    protected abstract EntityManager getEntityManager();
+  protected abstract EntityManager getEntityManager();
 
-    abstract public void create(T entity, SecurityContext sc);
+  abstract public void create(T entity, SecurityContext sc);
 
-    protected void remove(T entity)
-    {
-        getEntityManager().remove(entity);
-    }
+  protected void remove(T entity)
+  {
+    getEntityManager().remove(entity);
+  }
 
-    public T find(Object id)
-    {
-        return getEntityManager().find(entityClass, id);
-    }
+  public T find(Object id)
+  {
+    return getEntityManager().find(entityClass, id);
+  }
 
-    public List<T> findAll()
-    {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
-    }
+  public List<T> findAll()
+  {
+    javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+    cq.select(cq.from(entityClass));
+    return getEntityManager().createQuery(cq).getResultList();
+  }
 
-    public List<T> findRange(int[] range)
-    {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0] + 1);
-        q.setFirstResult(range[0]);
-        return q.getResultList();
-    }
+  public List<T> findRange(int[] range)
+  {
+    javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+    cq.select(cq.from(entityClass));
+    javax.persistence.Query q = getEntityManager().createQuery(cq);
+    q.setMaxResults(range[1] - range[0] + 1);
+    q.setFirstResult(range[0]);
+    return q.getResultList();
+  }
 
-    public int count()
-    {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
-        cq.select(getEntityManager().getCriteriaBuilder().count(rt));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        return ((Long) q.getSingleResult()).intValue();
-    }
+  public int count()
+  {
+    javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+    javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
+    cq.select(getEntityManager().getCriteriaBuilder().count(rt));
+    javax.persistence.Query q = getEntityManager().createQuery(cq);
+    return ((Long) q.getSingleResult()).intValue();
+  }
 
-    protected void checkValidation(String name, T attribute)
-    {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<T>> constraintViolations = validator.validate(attribute);
-        StringBuffer buffer = null;
-        if (!constraintViolations.isEmpty())
-        {
-            for (ConstraintViolation<T> cv : constraintViolations)
-            {
-                if (buffer == null)
-                {
-                    buffer = new StringBuffer();
-                }
-                buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
-            }
-        }
-        if (buffer != null)
-        {
-            throw new MudWebException(name, buffer.toString(), Response.Status.BAD_REQUEST);
-        }
-    }
+  protected void checkValidation(String name, T attribute)
+  {
+    ValidationUtils.checkValidation(name, attribute);
+  }
 
 }

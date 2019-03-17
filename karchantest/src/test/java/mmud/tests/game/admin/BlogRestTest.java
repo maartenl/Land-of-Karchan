@@ -28,7 +28,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Tests the admin rest services of Karchan.
+ * Tests the admin rest services for blogs of Karchan.
  *
  * @author maartenl
  */

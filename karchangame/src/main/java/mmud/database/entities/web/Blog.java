@@ -32,7 +32,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 
@@ -46,7 +45,6 @@ import mmud.database.entities.game.Admin;
 {
   @NamedQuery(name = "Blog.find", query = "SELECT b FROM Blog b WHERE b.owner = :user ORDER BY b.id DESC")
 })
-@XmlRootElement
 public class Blog implements Serializable, Ownage
 {
 
