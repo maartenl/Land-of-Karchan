@@ -392,7 +392,7 @@ export class PlayerService {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
-      const errormessage = new ErrorMessage();      
+      const errormessage = new ErrorMessage();
       errormessage.message = error.error.message;
       errormessage.type = 'Network Error';
       this.errorsService.addError(errormessage);

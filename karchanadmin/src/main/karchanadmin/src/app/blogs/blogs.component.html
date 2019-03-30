@@ -1,3 +1,30 @@
-<p>
-  blogs works!
-</p>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <table class="table table-sm table-striped table-bordered">
+        <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let blog of blogs">
+            <td (click)="setBlog(blog)">{{ blog.id }}</td>
+            <td (click)="setBlog(blog)">{{ blog.title }}</td>
+            <td (click)="setBlog(blog)">{{ blog.urlTitle }}</td>
+            <td>
+              <a href="#" (click)="deleteBlog(blog)"><i class="material-icons align-middle">delete</i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    <div class="col-xs-12 col-sm-12">
+      <h3>Compose Blog</h3>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+    </div>
+  </div>
+</div>

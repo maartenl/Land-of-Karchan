@@ -1,3 +1,9 @@
-<p>
-  errors works!
-</p>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngFor="let error of errors">
+  <i class="material-icons align-middle" aria-hidden="true">warning</i>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="removeError(error)">
+    <i class="material-icons" aria-hidden="true">clear</i>
+  </button>
+  <strong (click)="error.toggleDetails()">{{ error.type }}</strong> {{ error.message }}
+  <p *ngIf="error.showDetailedMessage()">{{ error.detailedmessage }}</p>
+</div>
+

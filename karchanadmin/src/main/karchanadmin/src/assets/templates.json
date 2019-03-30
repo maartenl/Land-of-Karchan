@@ -1,0 +1,25 @@
+[
+    {
+      "content": "the content in html with freemarker tags",
+      "created": "2019-03-16T22:46:00",
+      "id": 1,
+      "modified": "2019-03-16T22:46:00",
+      "name": "header",
+      "version": 1
+    },
+    {
+      "content": "    </body>\n</html>",
+      "created": "2019-03-16T22:46:00",
+      "id": 2,
+      "modified": "2019-03-16T22:46:00",
+      "name": "footer",
+      "version": 1
+    },
+    {
+      "content": "<h1>Play the game</h1>etc….",
+      "created": "2019-03-16T22:46:00",
+      "id": 3,
+      "modified": "2019-03-16T22:46:00",
+      "name": "index",
+      "version": 1
+    }]
