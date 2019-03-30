@@ -5,16 +5,20 @@
         <thead class="thead-inverse">
           <tr>
             <th>#</th>
-            <th>Title</th>
-            <th>URL</th>
+            <th>Name</th>
+            <th>Version</th>
+            <th>Created</th>
+            <th>Modified</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let template of templates">
             <td (click)="setTemplate(template)">{{ template.id }}</td>
-            <td (click)="setTemplate(template)">{{ template.title }}</td>
-            <td (click)="setTemplate(template)">{{ template.urlTitle }}</td>
+            <td (click)="setTemplate(template)">{{ template.name }}</td>
+            <td (click)="setTemplate(template)">{{ template.version }}</td>
+            <td (click)="setTemplate(template)">{{ template.created | date:'medium' }}</td>
+            <td (click)="setTemplate(template)">{{ template.modified | date:'medium' }}</td>
             <td>
               <a href="#" (click)="deleteTemplate(template)"><i class="material-icons align-middle">delete</i></a>
             </td>

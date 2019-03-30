@@ -7,6 +7,8 @@
             <th>#</th>
             <th>Title</th>
             <th>URL</th>
+            <th>Created</th>
+            <th>Modified</th>
             <th></th>
           </tr>
         </thead>
@@ -15,6 +17,8 @@
             <td (click)="setBlog(blog)">{{ blog.id }}</td>
             <td (click)="setBlog(blog)">{{ blog.title }}</td>
             <td (click)="setBlog(blog)">{{ blog.urlTitle }}</td>
+            <td (click)="setBlog(blog)">{{ blog.creation | date:'medium' }}</td>
+            <td (click)="setBlog(blog)">{{ blog.modification | date:'medium' }}</td>
             <td>
               <a href="#" (click)="deleteBlog(blog)"><i class="material-icons align-middle">delete</i></a>
             </td>
