@@ -35,6 +35,8 @@ public class AdminTemplate
   public LocalDateTime modified;
   public String content;
   public BigDecimal version;
+  public String editor;
+  public String comment;
 
   public AdminTemplate()
   {
@@ -49,5 +51,7 @@ public class AdminTemplate
     modified = template.getModified();
     content = template.getContent();
     version = template.getVersion();
+    editor = template.getEditor();
+    comment = template.getComment();
   }
 }

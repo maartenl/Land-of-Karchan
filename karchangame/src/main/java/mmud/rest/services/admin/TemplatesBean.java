@@ -16,7 +16,6 @@
  */
 package mmud.rest.services.admin;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,7 +80,9 @@ public class TemplatesBean
     entity.setContent(template.content);
     entity.setModified(LocalDateTime.now());
     entity.setName(template.name);
-    entity.increaseVersion();
+    entity.setEditor(name);
+    entity.setComment(template.comment);
+    entity.increaseVersion();    
     ValidationUtils.checkValidation(name, entity);
   }
 

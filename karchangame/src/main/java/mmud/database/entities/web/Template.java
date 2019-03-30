@@ -88,6 +88,19 @@ public class Template implements Serializable
   @NotNull
   @Column(name = "version")
   private BigDecimal version;
+  
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "editor")
+  private String editor;
+
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "comment")
+  private String comment;
+
 
   public Template()
   {
@@ -186,6 +199,38 @@ public class Template implements Serializable
   public String toString()
   {
     return "mmud.database.entities.web.Template[ id=" + id + " ]";
+  }
+
+  /**
+   * @return the editor
+   */
+  public String getEditor()
+  {
+    return editor;
+  }
+
+  /**
+   * @param editor the editor to set
+   */
+  public void setEditor(String editor)
+  {
+    this.editor = editor;
+  }
+
+  /**
+   * @return the comment
+   */
+  public String getComment()
+  {
+    return comment;
+  }
+
+  /**
+   * @param comment the comment to set
+   */
+  public void setComment(String comment)
+  {
+    this.comment = comment;
   }
   
 }

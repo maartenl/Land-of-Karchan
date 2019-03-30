@@ -109,7 +109,7 @@ public class TemplateRestTest extends RestTest
     List<Integer> ids = gameResponse.path("id");
     assertThat(names.size()).isGreaterThan(20);
     assertThat(ids.size()).isEqualTo(names.size());
-    assertThat(names).containsAnyOf("header","footer");
+    assertThat(names).containsAnyOf("header", "footer");
     logoff(jsession, karn);
   }
 
@@ -132,10 +132,14 @@ public class TemplateRestTest extends RestTest
     Float version = gameResponse.path("version");
     String created = gameResponse.path("created");
     String modified = gameResponse.path("modified");
+    String editor = gameResponse.path("editor");
+    String comment = gameResponse.path("comment");
     assertThat(content).isEqualTo("    </body>\n</html>");
     assertThat(id).isEqualTo(2);
     assertThat(name).isEqualTo("footer");
 //    assertThat(version).isEqualTo(Float.valueOf("1"));
+    assertThat(editor).isEqualTo("Karn");
+    assertThat(comment).isEqualTo("Initial version");
     logoff(jsession, karn);
   }
 
@@ -169,12 +173,14 @@ public class TemplateRestTest extends RestTest
     final String password = "secret";
 
     String jsession = login(karn, password);
-    
+
     updateTemplate(jsession, karn, 2L, "{\n"
             + "        \"id\": " + 2L + ",\n"
             + "        \"content\": \"woah    </body>\\n</html>\",\n"
             + "        \"name\": \"footer\",\n"
-            + "        \"version\": 1\n"
+            + "        \"version\": 1,\n"
+            + "        \"editor\": \"Karn\",\n"
+            + "        \"comment\": \"An update\"\n"
             + "    }");
 
     Response gameResponse
@@ -187,17 +193,23 @@ public class TemplateRestTest extends RestTest
     Float version = gameResponse.path("version");
     String created = gameResponse.path("created");
     String modified = gameResponse.path("modified");
+    String editor = gameResponse.path("editor");
+    String comment = gameResponse.path("comment");
 
     assertThat(id).isEqualTo(2);
     assertThat(name).isEqualTo("footer");
     assertThat(version).isEqualTo(Float.valueOf("1.1"));
     assertThat(content).isEqualTo("woah    </body>\n</html>");
-
+    assertThat(editor).isEqualTo("Karn");
+    assertThat(comment).isEqualTo("An update");
+    
     updateTemplate(jsession, karn, 2L, "{\n"
             + "        \"id\": " + 2L + ",\n"
             + "        \"content\": \"    </body>\\n</html>\",\n"
             + "        \"name\": \"footer\",\n"
-            + "        \"version\": 1\n"
+            + "        \"version\": 1,\n"
+            + "        \"editor\": \"Karn\",\n"
+            + "        \"comment\": \"Initial version\"\n"
             + "    }");
 
     logoff(jsession, karn);
