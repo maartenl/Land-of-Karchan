@@ -87,8 +87,22 @@ export class BlogsComponent implements OnInit {
   }
 
   public saveBlog(): void {
+    const index = this.blogs.indexOf(this.blog);
     const blog = this.prepareSave();
-    this.blogService.updateBlog(blog).subscribe();    
+    this.blogService.updateBlog(blog).subscribe(
+      (result: any) => { // on success
+        if (blog.id === undefined) {
+          this.blogs.unshift(blog);
+        } else {
+          this.blogs[index] = blog;
+        }
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
   prepareSave(): Blog {

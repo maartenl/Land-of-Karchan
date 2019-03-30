@@ -76,8 +76,17 @@ export class TemplatesComponent implements OnInit {
     if (this.template.id === undefined) {
       return;
     }
+    const index = this.templates.indexOf(this.template);
     const template = this.prepareSave();
-    this.templateService.updateTemplate(template).subscribe();
+    this.templateService.updateTemplate(template).subscribe(
+      (result: any) => { // on success
+        this.templates[index] = template;
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      });
   }
 
   prepareSave(): Template {
