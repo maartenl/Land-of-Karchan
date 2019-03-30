@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+
 import { Blog } from './blog.model';
 import { BlogService } from '../blog.service';
 
@@ -13,7 +15,13 @@ export class BlogsComponent implements OnInit {
 
   blog: Blog;
 
-  constructor(private blogService: BlogService) { }
+  blogForm: FormGroup;
+
+  constructor(private blogService: BlogService,
+              private formBuilder: FormBuilder) {
+    this.createForm();
+    this.blog = new Blog();
+  }
 
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
@@ -35,8 +43,34 @@ export class BlogsComponent implements OnInit {
     );
   }
 
+  createForm() {
+    this.blogForm = this.formBuilder.group({
+      title: '',
+      urlTitle: '',
+      contents: ''
+    });
+  }
+
+  resetForm() {
+    this.blogForm.reset({
+      title: '',
+      urlTitle: '',
+      contents: ''
+    });
+  }
+
+  public cancel(): void {
+    this.resetForm();
+    this.blog = new Blog();
+  }
+
   public setBlog(blog: Blog): void {
     this.blog = blog;
+    this.blogForm.reset({
+      title: blog.title,
+      urlTitle: blog.urlTitle,
+      contents: blog.contents
+    });
   }
 
   public deleteBlog(blog: Blog): void {
@@ -52,4 +86,25 @@ export class BlogsComponent implements OnInit {
     );
   }
 
+  public saveBlog(): void {
+    const blog = this.prepareSave();
+    this.blogService.updateBlog(blog).subscribe();
+  }
+
+  prepareSave(): Blog {
+    const formModel = this.blogForm.value;
+
+    // return new `Blog` object containing a combination of original blog value(s)
+    // and deep copies of changed form model values
+    const savePlayer: Blog = {
+      id: this.blog.id as number,
+      title: formModel.title as string,
+      urlTitle: formModel.urlTitle as string,
+      contents: formModel.contents as string,
+      creation: this.blog.creation as string,
+      modification: this.blog.modification as string,
+      name: this.blog.name as string
+    };
+    return savePlayer;
+  }
 }

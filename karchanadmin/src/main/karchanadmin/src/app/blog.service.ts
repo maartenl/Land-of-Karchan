@@ -31,8 +31,36 @@ export class BlogService {
     );
   }
 
-  deleteBlog(blog: Blog): any {
-    throw new Error('Method not implemented.');
+  public deleteBlog(blog: Blog): any {
+    return this.http.delete(this.url + '/' + blog.id)
+    .pipe(
+      catchError(err => {
+        this.handleError(err);
+        return [];
+      })
+    );
+  }
+
+  public updateBlog(blog: Blog): any {
+    console.log(blog);
+    if (blog.id !== undefined) {
+      // update
+      return this.http.put<Blog[]>(this.url + '/' + blog.id, blog)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+    }
+    // new
+    return this.http.post(this.url, blog)
+    .pipe(
+      catchError(err => {
+        this.handleError(err);
+        return [];
+      })
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
