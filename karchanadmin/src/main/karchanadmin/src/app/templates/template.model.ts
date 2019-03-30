@@ -5,4 +5,6 @@ export class Template {
     modified: string;
     name: string;
     version: number;
+    editor: string;
+    comment: string;
 }

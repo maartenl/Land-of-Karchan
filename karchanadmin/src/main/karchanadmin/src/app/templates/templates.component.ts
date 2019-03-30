@@ -45,14 +45,16 @@ export class TemplatesComponent implements OnInit {
   createForm() {
     this.templateForm = this.formBuilder.group({
       name: '',
-      content: ''
+      content: '',
+      comment: ''
     });
   }
 
   resetForm() {
     this.templateForm.reset({
       name: '',
-      content: ''
+      content: '',
+      comment: ''
     });
   }
 
@@ -65,7 +67,8 @@ export class TemplatesComponent implements OnInit {
     this.template = template;
     this.templateForm.reset({
       name: template.name,
-      content: template.content
+      content: template.content,
+      comment: template.comment
     });
   }
 
@@ -88,7 +91,9 @@ export class TemplatesComponent implements OnInit {
       created: this.template.created as string,
       modified: this.template.modified as string,
       name: this.template.name as string,
-      version: this.template.version as number
+      version: this.template.version as number,
+      editor: this.template.editor as string,
+      comment: formModel.comment as string
     };
     return saveTemplate;
   }
