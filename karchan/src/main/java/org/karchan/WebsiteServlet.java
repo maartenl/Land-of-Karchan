@@ -83,7 +83,7 @@ public class WebsiteServlet extends HttpServlet
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
     root.put("user", "Big Joe");
-    root.put("version", "2.0.1-SNAPSHOT");
+    root.put("version", "2.0.1");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
 
