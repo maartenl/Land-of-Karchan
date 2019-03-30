@@ -12,8 +12,8 @@ List
 
 * karchangame - new version of the game, currently under construction
 * karchan - the new website
-* karchanangular - angular app for a user to change the settings
-* karchanpersonal - a WAR wrapper for karchanagular
+* karchanadmin - angular app for admin to change settings (in a WAR wrapper)
+* karchanpersonal - angular app for user to change settings (in a WAR wrapper)
 * karchananimations - a WAR wrapper for animations
 * karchandocs - a WAR wrapper for javadocs
 * karchanimages - a WAR wrapper for images
