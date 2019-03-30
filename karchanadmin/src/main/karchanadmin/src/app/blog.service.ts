@@ -42,7 +42,6 @@ export class BlogService {
   }
 
   public updateBlog(blog: Blog): any {
-    console.log(blog);
     if (blog.id !== undefined) {
       // update
       return this.http.put<Blog[]>(this.url + '/' + blog.id, blog)

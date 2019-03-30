@@ -88,7 +88,7 @@ export class BlogsComponent implements OnInit {
 
   public saveBlog(): void {
     const blog = this.prepareSave();
-    this.blogService.updateBlog(blog).subscribe();
+    this.blogService.updateBlog(blog).subscribe();    
   }
 
   prepareSave(): Blog {
@@ -96,7 +96,7 @@ export class BlogsComponent implements OnInit {
 
     // return new `Blog` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const savePlayer: Blog = {
+    const saveBlog: Blog = {
       id: this.blog.id as number,
       title: formModel.title as string,
       urlTitle: formModel.urlTitle as string,
@@ -105,6 +105,6 @@ export class BlogsComponent implements OnInit {
       modification: this.blog.modification as string,
       name: this.blog.name as string
     };
-    return savePlayer;
+    return saveBlog;
   }
 }

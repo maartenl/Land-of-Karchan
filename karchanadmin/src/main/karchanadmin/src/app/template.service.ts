@@ -31,8 +31,15 @@ export class TemplateService {
     );
   }
 
-  deleteTemplate(template: Template): any {
-    throw new Error('Method not implemented.');
+  public updateTemplate(template: Template): any {
+    // update
+    return this.http.put<Template[]>(this.url + '/' + template.id, template)
+    .pipe(
+      catchError(err => {
+        this.handleError(err);
+        return [];
+      })
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
