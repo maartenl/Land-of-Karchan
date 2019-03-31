@@ -16,6 +16,8 @@
  */
 package mmud.database.entities.game;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -35,23 +37,28 @@ public class MessagesFilterForBoardTest
   }
 
   /**
-   * Test of customize method, of class MessagesFilterForBoard.
+   * Returns the last Sunday, of date 2019-02-09, at 15:05:02, which was a Saturday.
+   * Expected result: Sunday, 2019-02-03.
    */
   @Test
   public void testGetLastSundayOnASaturday()
   {
-    Calendar calendar = new GregorianCalendar(2019, Calendar.FEBRUARY, 9);
-    Date actual = MessagesFilterForBoard.getLastSunday(calendar);
-    Date expected = new GregorianCalendar(2019, Calendar.FEBRUARY, 3, 0, 0).getTime();
+    LocalDateTime calendar = LocalDateTime.of(2019, Month.FEBRUARY, 9, 15, 5, 2);
+    LocalDateTime actual = MessagesFilterForBoard.getLastSunday(calendar);
+    LocalDateTime expected = LocalDateTime.of(2019, Month.FEBRUARY, 3, 0, 1, 0);
     assertThat(actual).isEqualTo(expected);
   }
   
+  /**
+   * Returns the last Sunday, of date 2019-02-09, at 15:05:02, which was a Monday.
+   * Expected result: Sunday, 2019-02-10.
+   */
   @Test
   public void testGetLastSundayOnAMonday()
   {
-    Calendar calendar = new GregorianCalendar(2019, Calendar.FEBRUARY, 11);
-    Date actual = MessagesFilterForBoard.getLastSunday(calendar);
-    Date expected = new GregorianCalendar(2019, Calendar.FEBRUARY, 10, 0, 0).getTime();
+    LocalDateTime calendar = LocalDateTime.of(2019, Month.FEBRUARY, 11, 15, 5, 2);
+    LocalDateTime actual = MessagesFilterForBoard.getLastSunday(calendar);
+    LocalDateTime expected = LocalDateTime.of(2019, Month.FEBRUARY, 10, 0, 1, 0);
     assertThat(actual).isEqualTo(expected);
   }
 

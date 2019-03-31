@@ -16,6 +16,7 @@
  */
 package mmud.rest.services;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -78,7 +79,7 @@ public class BoardBean
   public List<BoardMessage> getNews()
   {
     Query query = getEntityManager().createNamedQuery("BoardMessage.news");
-    query.setParameter("lastSunday", MessagesFilterForBoard.getLastSunday(Calendar.getInstance()));
+    query.setParameter("lastSunday", MessagesFilterForBoard.getLastSunday(LocalDateTime.now()));
     List<BoardMessage> list = query.getResultList();
     return list;
   }

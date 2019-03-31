@@ -16,6 +16,12 @@
  */
 package mmud.database.entities.game;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -47,22 +53,13 @@ public class MessagesFilterForBoard implements DescriptorCustomizer
 //    TemporalField fieldUS = WeekFields.of(Locale.US).dayOfWeek();
 //    LocalDate lastSunday = LocalDate.now().with(fieldUS, 1);
 
-    Expression recent = eb.get("posttime").greaterThan(getLastSunday(Calendar.getInstance()));
+    Expression recent = eb.get("posttime").greaterThan(getLastSunday(LocalDateTime.now()));
     mapping.setSelectionCriteria(fkExp.and(activeExp).and(recent));
   }
 
-  public static Date getLastSunday(Calendar calendar)
+  public static LocalDateTime getLastSunday(LocalDateTime now)
   {
-    while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY)
-    {
-      calendar.add(Calendar.DAY_OF_YEAR, -1);
-    }
-    Calendar lastSunday = new GregorianCalendar(calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH),
-            0,
-            0);
-    return lastSunday.getTime();
+    return now.with(DayOfWeek.SUNDAY).minus(7, ChronoUnit.DAYS).with(LocalTime.of(0, 1));
   }
 
 }
