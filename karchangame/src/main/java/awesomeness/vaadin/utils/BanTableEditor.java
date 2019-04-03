@@ -85,8 +85,8 @@ public class BanTableEditor extends SimpleEditor
         Field<?> ip = group.buildAndBind("ip", "ip");
         Field<?> name = group.buildAndBind("name", "name");
         final Field<?> deputy = group.buildAndBind("deputy", "deputy");
-        final Field<?> date = group.buildAndBind("date", "date");
-        date.setEnabled(false);
+//        final Field<?> date = group.buildAndBind("date", "date");
+//        date.setEnabled(false);
         deputy.setEnabled(false);
         Field<?> reason = group.buildAndBind("reason", "reason");
         reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
@@ -95,14 +95,14 @@ public class BanTableEditor extends SimpleEditor
         ip.addValidator(new BeanValidator(BanTable.class, "ip"));
         name.addValidator(new BeanValidator(BanTable.class, "name"));
         deputy.addValidator(new BeanValidator(BanTable.class, "deputy"));
-        date.addValidator(new BeanValidator(BanTable.class, "date"));
+//        date.addValidator(new BeanValidator(BanTable.class, "date"));
         reason.addValidator(new BeanValidator(BanTable.class, "reason"));
         layout.addComponent(address);
         layout.addComponent(days);
         layout.addComponent(ip);
         layout.addComponent(name);
         layout.addComponent(deputy);
-        layout.addComponent(date);
+//        layout.addComponent(date);
         layout.addComponent(reason);
 
         table.addValueChangeListener(new Property.ValueChangeListener()
@@ -117,7 +117,7 @@ public class BanTableEditor extends SimpleEditor
                 if (entitySelected)
                 {
                     group.setItemDataSource((item));
-                    date.setEnabled(false);
+//                    date.setEnabled(false);
                     deputy.setEnabled(false);
                 }
             }
@@ -175,7 +175,7 @@ public class BanTableEditor extends SimpleEditor
                 newInstance.setDate(LocalDateTime.now());
                 BeanItem beanItem = new BeanItem(newInstance);
                 group.setItemDataSource((beanItem));
-                date.setEnabled(false);
+//                date.setEnabled(false);
                 deputy.setEnabled(false);
             }
         });

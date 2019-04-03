@@ -82,20 +82,20 @@ public class BannedNameEditor extends SimpleEditor
         Field<?> name = group.buildAndBind("Name", "name");
         Field<?> days = group.buildAndBind("days", "days");
         final Field<?> deputy = group.buildAndBind("deputy", "deputy");
-        final Field<?> date = group.buildAndBind("creation", "creation");
-        date.setEnabled(false);
+//        final Field<?> date = group.buildAndBind("creation", "creation");
+//        date.setEnabled(false);
         deputy.setEnabled(false);
         Field<?> reason = group.buildAndBind("reason", "reason");
         reason.setWidth(80, Sizeable.Unit.PERCENTAGE);
         name.addValidator(new BeanValidator(BannedName.class, "name"));
         days.addValidator(new BeanValidator(BannedName.class, "days"));
         deputy.addValidator(new BeanValidator(BannedName.class, "deputy"));
-        date.addValidator(new BeanValidator(BannedName.class, "creation"));
+//        date.addValidator(new BeanValidator(BannedName.class, "creation"));
         reason.addValidator(new BeanValidator(BannedName.class, "reason"));
         layout.addComponent(name);
         layout.addComponent(days);
         layout.addComponent(deputy);
-        layout.addComponent(date);
+//        layout.addComponent(date);
         layout.addComponent(reason);
 
         table.addValueChangeListener(new Property.ValueChangeListener()
@@ -110,7 +110,7 @@ public class BannedNameEditor extends SimpleEditor
                 if (entitySelected)
                 {
                     group.setItemDataSource((item));
-                    date.setEnabled(false);
+//                    date.setEnabled(false);
                     deputy.setEnabled(false);
                 }
             }
@@ -168,7 +168,7 @@ public class BannedNameEditor extends SimpleEditor
                 newInstance.setCreation(LocalDateTime.now());
                 BeanItem beanItem = new BeanItem(newInstance);
                 group.setItemDataSource((beanItem));
-                date.setEnabled(false);
+//                date.setEnabled(false);
                 deputy.setEnabled(false);
             }
         });
