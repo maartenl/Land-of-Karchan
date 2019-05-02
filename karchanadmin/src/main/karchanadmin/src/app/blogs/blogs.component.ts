@@ -24,7 +24,6 @@ export class BlogsComponent implements OnInit {
   }
 
   ngOnInit() {
-    // retrieve the next page of mails starting from the last mail in the array
     this.blogService.getBlogs().subscribe(
       (result: Blog[]) => { // on success
         if (result !== undefined && result.length !== 0) {
