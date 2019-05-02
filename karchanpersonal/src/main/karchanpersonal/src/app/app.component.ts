@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { environment } from '../environments/environment';
 
 export enum Tab {
-  Game, Settings, Mail, Guild
+  Settings, Mail, Guild
 }
 
 @Component({
@@ -11,7 +11,7 @@ export enum Tab {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  currentTab: Tab = Tab.Game;
+  currentTab: Tab = Tab.Settings;
   production: boolean;
 
   Tab: Tab;
@@ -19,14 +19,6 @@ export class AppComponent {
   constructor() {
     this.production = environment.production;
     if (window.console) {console.log('Production: ' + this.production);}
-  }
-
-  setGameTabActive() {
-    this.currentTab = Tab.Game;
-  }
-
-  isGameTabActive() {
-    return this.currentTab === Tab.Game;
   }
 
   setSettingsTabActive() {

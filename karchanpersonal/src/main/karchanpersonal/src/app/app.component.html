@@ -1,33 +1,36 @@
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isGameTabActive()}" (click)="setGameTabActive()"
-    href="#"><img src="assets/logo.png" height="24" class="align-middle"> Game</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#"><i class="material-icons align-middle">settings</i> Settings</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#"><i class="material-icons align-middle">mail</i> Mail</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#"><i class="material-icons align-middle">group</i> Guild</a>
-  </li>
-</ul>
-<app-game *ngIf="isGameTabActive()"></app-game>
-<app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
-<div class="container" *ngIf="isMailTabActive()"> 
-  <app-mail></app-mail>
-</div>
-<div class="container" *ngIf="isGuildTabActive()"> 
-  <div class="row row-content">
-    <app-guild></app-guild>
-  </div>    
-</div>
-<div class="container"> 
+<div class="container">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
-      <app-errors></app-errors>
+      <app-game></app-game>
     </div>
   </div>
 </div>
-
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#"><i
+              class="material-icons align-middle">settings</i> Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#"><i
+              class="material-icons align-middle">mail</i> Mail</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#"><i
+              class="material-icons align-middle">group</i> Guild</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
+  <app-mail *ngIf="isMailTabActive()"></app-mail>
+  <app-guild *ngIf="isGuildTabActive()"></app-guild>
+  <div class="container">
+    <div class="row row-content">
+      <div class="col-xs-12 col-sm-12">
+        <app-errors></app-errors>
+      </div>
+    </div>
+  </div>
