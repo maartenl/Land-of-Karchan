@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { PlayerService } from './player.service';
@@ -31,6 +32,7 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule
