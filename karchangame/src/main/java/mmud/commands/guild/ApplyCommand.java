@@ -16,8 +16,6 @@
  */
 package mmud.commands.guild;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.Attributes;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
@@ -69,8 +67,9 @@ public class ApplyCommand extends NormalCommand
             return aUser.getRoom();
         }
         aUser.setAttribute(Attributes.GUILDWISH, guild.getName());
+        
         aUser.writeMessage("You have applied to guild <I>" + guild.getTitle()
-                + "</I>.<BR>\r\n");
+                + "</I>.<BR>\r\n");        
         return aUser.getRoom();
     }
 
