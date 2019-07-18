@@ -18,35 +18,24 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()"
-            href="#">Settings</a>
+          <a routerLink="/settings" class="nav-link" routerLinkActive="active">Settings</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#">Mail</a>
+          <a routerLink="/mail" class="nav-link" routerLinkActive="active">Mail</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#">Guild</a>
+          <a routerLink="/guild" class="nav-link" routerLinkActive="active">Guild</a>
         </li>
       </ul>
     </div>
   </nav>
 </div>
 <app-game></app-game>
+<router-outlet></router-outlet>
 <div class="container">
-  <div class="container">
-    <div class="row row-content">
-      <div class="col-xs-12 col-sm-12">
-        <router-outlet></router-outlet>
-      </div>
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <app-errors></app-errors>
     </div>
   </div>
-  <app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>
-  <app-mail *ngIf="isMailTabActive()"></app-mail>
-  <app-guild *ngIf="isGuildTabActive()"></app-guild>
-  <div class="container">
-    <div class="row row-content">
-      <div class="col-xs-12 col-sm-12">
-        <app-errors></app-errors>
-      </div>
-    </div>
-  </div>
+</div>
