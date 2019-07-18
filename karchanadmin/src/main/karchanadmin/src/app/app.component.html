@@ -1,10 +1,32 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<h1>
-  Administration console
-</h1>
-<nav>
-  <a routerLink="/blogs">Blogs</a>
-  <a routerLink="/templates">Templates</a>
-</nav>
+<div class="container-fluid d-none d-sm-block">
+  <div class="media">
+    <img class="mr-3" src="assets/images/dragon.gif" alt="Dragon">
+    <div class="media-body">
+      <h1 class="mt-0">Land of Karchan</h1>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-lg">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-expand d-block d-sm-none">
+      <a class="navbar-brand">Land of Karchan</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a routerLink="/blogs" class="nav-link" routerLinkActive="active">Blogs</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/templates" class="nav-link" routerLinkActive="active">Templates</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
 <router-outlet></router-outlet>
 <app-errors></app-errors>
