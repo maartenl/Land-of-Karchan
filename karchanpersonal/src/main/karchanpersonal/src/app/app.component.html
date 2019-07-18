@@ -1,28 +1,43 @@
-<div class="container">
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12">
-<router-outlet></router-outlet>
-      <app-game></app-game>
+<div class="container-fluid d-none d-sm-block">
+  <div class="media">
+    <img class="mr-3" src="assets/images/dragon.gif" alt="Dragon">
+    <div class="media-body">
+      <h1 class="mt-0">Land of Karchan</h1>
     </div>
   </div>
 </div>
-<div class="container">
-  <div class="row row-content">
-    <div class="col-xs-12 col-sm-12">
-      <ul class="nav nav-tabs">
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-lg">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-expand d-block d-sm-none">
+      <a class="navbar-brand">Land of Karchan</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()" href="#"><i
-              class="material-icons align-middle">settings</i> Settings</a>
+          <a class="nav-link" [ngClass]="{active: isSettingsTabActive()}" (click)="setSettingsTabActive()"
+            href="#">Settings</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#"><i
-              class="material-icons align-middle">mail</i> Mail</a>
+          <a class="nav-link" [ngClass]="{active: isMailTabActive()}" (click)="setMailTabActive()" href="#">Mail</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#"><i
-              class="material-icons align-middle">group</i> Guild</a>
+          <a class="nav-link" [ngClass]="{active: isGuildTabActive()}" (click)="setGuildTabActive()" href="#">Guild</a>
         </li>
       </ul>
+    </div>
+  </nav>
+</div>
+<app-game></app-game>
+<div class="container">
+  <div class="container">
+    <div class="row row-content">
+      <div class="col-xs-12 col-sm-12">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
   <app-player-settings *ngIf="isSettingsTabActive()"></app-player-settings>

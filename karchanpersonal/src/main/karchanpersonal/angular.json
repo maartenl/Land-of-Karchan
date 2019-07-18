@@ -21,12 +21,14 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/assets/fonts",
+              "src/assets/images"
             ],
             "styles": [
-              "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/material-icons/iconfont/material-icons.css"
+              "node_modules/material-icons/iconfont/material-icons.css",
+              "src/styles.css"
             ],
             "scripts": []
           },
