@@ -16,6 +16,8 @@
  */
 package org.karchan.security;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
@@ -32,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RememberMe(
         cookieMaxAgeSeconds = 60 * 60 * 24,
-        cookieSecureOnly = false        
+        cookieSecureOnly = false
 )
 @ApplicationScoped
 public class KarchanAuthenticationMechanism implements HttpAuthenticationMechanism
@@ -49,8 +51,23 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
           HttpMessageContext context)
   {
     LOGGER.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
-    String name = request.getParameter("name");
-    String password = request.getParameter("password");
+    final String authorization = request.getHeader("Authorization");
+    String name = null;
+    String password = null;
+    if (authorization != null && authorization.toLowerCase().startsWith("basic"))
+    {
+      // Authorization: Basic base64credentials
+      String base64Credentials = authorization.substring("Basic".length()).trim();
+      byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+      String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+      // credentials = username:password
+      final String[] values = credentials.split(":", 2);
+      if (values != null && values.length == 2)
+      {
+        name = values[0];
+        password = values[1];
+      }
+    }
     if (name != null && password != null)
     {
       LOGGER.log(Level.INFO, "credentials : {0}, {1}", new String[]

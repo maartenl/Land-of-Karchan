@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,12 +94,25 @@ public class WebsiteServlet extends HttpServlet
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
-    root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
-    root.put("isDeputy", securityContext.isCallerInRole(KarchanAuthorizationStore.DEPUTY_ROLE));
-    root.put("isPlayer", securityContext.isCallerInRole(KarchanAuthorizationStore.PLAYER_ROLE));
     root.put("version", "2.0.2-SNAPSHOT");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
+    if (request.getParameter("logout") != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if (cookie.getName().equals("JREMEMBERMEID")) {
+          cookie.setMaxAge(0);
+          response.addCookie(cookie);          
+        }
+      }
+      root.put("user", null);
+      root.put("isDeputy", false);
+      root.put("isPlayer", false);
+    } else
+    {
+      root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
+      root.put("isDeputy", securityContext.isCallerInRole(KarchanAuthorizationStore.DEPUTY_ROLE));
+      root.put("isPlayer", securityContext.isCallerInRole(KarchanAuthorizationStore.PLAYER_ROLE));
+    }
 
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);
     if (visibleMenu.isPresent())
