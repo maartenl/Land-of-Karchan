@@ -31,19 +31,30 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
+import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.karchan.menus.MenuFactory;
+import org.karchan.security.KarchanAuthenticationStore;
+import org.karchan.security.KarchanAuthorizationStore;
 
+@DeclareRoles(
+        {
+          KarchanAuthorizationStore.PLAYER_ROLE, KarchanAuthorizationStore.DEPUTY_ROLE
+        })
 @WebServlet("*.html")
 public class WebsiteServlet extends HttpServlet
 {
 
   private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
+
+  @Inject
+  private SecurityContext securityContext;
 
   @Inject
   private Freemarker freemarker;
@@ -62,7 +73,7 @@ public class WebsiteServlet extends HttpServlet
   {
     this.menuFactory = menuFactory;
   }
-  
+
   @Override
   public void init() throws ServletException
   {
@@ -82,7 +93,9 @@ public class WebsiteServlet extends HttpServlet
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
-    root.put("user", "Big Joe");
+    root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
+    root.put("isDeputy", securityContext.isCallerInRole(KarchanAuthorizationStore.DEPUTY_ROLE));
+    root.put("isPlayer", securityContext.isCallerInRole(KarchanAuthorizationStore.PLAYER_ROLE));
     root.put("version", "2.0.2-SNAPSHOT");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
