@@ -101,7 +101,7 @@
       <groupId>javax</groupId>
       <artifactId>javaee-web-api</artifactId>
       <version>${javaee.version}</version>
-      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
    </dependencies>
 
