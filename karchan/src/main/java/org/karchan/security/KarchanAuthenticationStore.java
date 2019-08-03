@@ -97,14 +97,9 @@ public class KarchanAuthenticationStore implements IdentityStore
       query.setParameter("name", userCredential.getCaller());
       query.setParameter("password", encryptThisString(userCredential.getPasswordAsString()));
       List<Users> users = query.getResultList();
-      String expectedPW = null;
-      if (users != null && !users.isEmpty())
-      {
-        expectedPW = users.get(0).getPassword();
-      }
 
       LOGGER.info("instanceof " + userCredential.getCaller() + ":" + userCredential.getPasswordAsString());
-      if (expectedPW != null && expectedPW.equals(userCredential.getPasswordAsString()))
+      if (users.size() == 1)
       {
         LOGGER.info("VALID!");
         return new CredentialValidationResult(userCredential.getCaller());

@@ -41,13 +41,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.karchan.menus.MenuFactory;
-import org.karchan.security.KarchanAuthenticationStore;
-import org.karchan.security.KarchanAuthorizationStore;
+import org.karchan.security.Roles;
 
 @DeclareRoles(
         {
-          KarchanAuthorizationStore.PLAYER_ROLE, KarchanAuthorizationStore.DEPUTY_ROLE
-        })
+          Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
+        }
+)
 @WebServlet("*.html")
 public class WebsiteServlet extends HttpServlet
 {
@@ -97,21 +97,30 @@ public class WebsiteServlet extends HttpServlet
     root.put("version", "2.0.2-SNAPSHOT");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
-    if (request.getParameter("logout") != null) {
-      for (Cookie cookie : request.getCookies()) {
-        if (cookie.getName().equals("JREMEMBERMEID")) {
+    if (request.getParameter("logout") != null)
+    {
+      for (Cookie cookie : request.getCookies())
+      {
+        if (cookie.getName().equals("JREMEMBERMEID"))
+        {
           cookie.setMaxAge(0);
-          response.addCookie(cookie);          
+          response.addCookie(cookie);
         }
       }
       root.put("user", null);
       root.put("isDeputy", false);
       root.put("isPlayer", false);
+      root.put("isGuildmember", false);
+      root.put("isGuildmaster", false);
+      root.put("isGod", false);
     } else
     {
       root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
-      root.put("isDeputy", securityContext.isCallerInRole(KarchanAuthorizationStore.DEPUTY_ROLE));
-      root.put("isPlayer", securityContext.isCallerInRole(KarchanAuthorizationStore.PLAYER_ROLE));
+      root.put("isDeputy", securityContext.isCallerInRole(Roles.DEPUTY));
+      root.put("isPlayer", securityContext.isCallerInRole(Roles.PLAYER));
+      root.put("isGuildmember", securityContext.isCallerInRole(Roles.GUILDMEMBER));
+      root.put("isGuildmaster", securityContext.isCallerInRole(Roles.GUILDMASTER));
+      root.put("isGod", securityContext.isCallerInRole(Roles.GOD));
     }
 
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);

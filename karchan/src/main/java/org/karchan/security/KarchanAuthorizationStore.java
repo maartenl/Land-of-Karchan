@@ -17,8 +17,11 @@
 package org.karchan.security;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -41,13 +44,6 @@ public class KarchanAuthorizationStore implements IdentityStore
   @PersistenceUnit
   private EntityManagerFactory entityManagerFactory;
 
-  /**
-   *
-   */
-  public static final String PLAYER_ROLE = "player";
-
-  public static final String DEPUTY_ROLE = "deputy";
-
   @Override
   public Set<String> getCallerGroups(CredentialValidationResult validationResult)
   {
@@ -56,10 +52,13 @@ public class KarchanAuthorizationStore implements IdentityStore
     Query query = entityManager.createNativeQuery("select groupid from mmv_groups where name = ?");
     // named parameters are not defined in the JPA spec for Native queries.
     query.setParameter(1, validationResult.getCallerPrincipal().getName());
-    query.getResultList().forEach(System.out::println);
-
-//    LOGGER.info("getCallerGroups" + result);
-    return Collections.emptySet();
+    Set<String> roles = new HashSet<>();
+    for (Object object : query.getResultList()) 
+    {
+      roles.add(object.toString());
+    }
+    
+    return roles;
   }
 
   @Override
