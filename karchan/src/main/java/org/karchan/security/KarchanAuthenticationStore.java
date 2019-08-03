@@ -16,21 +16,29 @@
  */
 package org.karchan.security;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.TypedQuery;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import static javax.security.enterprise.identitystore.CredentialValidationResult.INVALID_RESULT;
 import static javax.security.enterprise.identitystore.CredentialValidationResult.NOT_VALIDATED_RESULT;
 import javax.security.enterprise.identitystore.IdentityStore;
+import mmud.database.entities.web.Users;
 
 /**
  * Can locate a user and verify his/her password.
+ *
  * @author maartenl
  */
 @ApplicationScoped
@@ -39,14 +47,40 @@ public class KarchanAuthenticationStore implements IdentityStore
 
   private static final Logger LOGGER = Logger.getLogger(KarchanAuthenticationStore.class.getName());
 
-  private final Map<String, String> callerToPassword;
+  @PersistenceUnit
+  private EntityManagerFactory entityManagerFactory;
 
-  public KarchanAuthenticationStore()
+  private static String encryptThisString(String input)
   {
-    callerToPassword
-            = new HashMap<>();
-    callerToPassword.put("Karn", "secret");
-    callerToPassword.put("Marvin", "secret");
+    try
+    {
+      // getInstance() method is called with algorithm SHA-512 
+      MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+      // digest() method is called 
+      // to calculate message digest of the input string 
+      // returned as array of byte 
+      byte[] messageDigest = md.digest(input.getBytes());
+
+      // Convert byte array into signum representation 
+      BigInteger no = new BigInteger(1, messageDigest);
+
+      // Convert message digest into hex value 
+      String hashtext = no.toString(16);
+
+      // Add preceding 0s to make it 32 bit 
+      while (hashtext.length() < 32)
+      {
+        hashtext = "0" + hashtext;
+      }
+
+      // return the HashText 
+      return hashtext;
+    } // For specifying wrong message digest algorithms 
+    catch (NoSuchAlgorithmException e)
+    {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -57,7 +91,18 @@ public class KarchanAuthenticationStore implements IdentityStore
     if (credential instanceof UsernamePasswordCredential)
     {
       UsernamePasswordCredential userCredential = (UsernamePasswordCredential) credential;
-      String expectedPW = callerToPassword.get(userCredential.getCaller());
+
+      EntityManager entityManager = entityManagerFactory.createEntityManager();
+      TypedQuery<Users> query = entityManager.createNamedQuery("Users.findByNameAndPassword", Users.class);
+      query.setParameter("name", userCredential.getCaller());
+      query.setParameter("password", encryptThisString(userCredential.getPasswordAsString()));
+      List<Users> users = query.getResultList();
+      String expectedPW = null;
+      if (users != null && !users.isEmpty())
+      {
+        expectedPW = users.get(0).getPassword();
+      }
+
       LOGGER.info("instanceof " + userCredential.getCaller() + ":" + userCredential.getPasswordAsString());
       if (expectedPW != null && expectedPW.equals(userCredential.getPasswordAsString()))
       {

@@ -16,21 +16,20 @@
  */
 package org.karchan.security;
 
-import static java.util.Arrays.asList;
 import java.util.Collections;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
 
 /**
  * Can retrieve the groups a user has access to.
+ *
  * @author maartenl
  */
 @ApplicationScoped
@@ -39,33 +38,28 @@ public class KarchanAuthorizationStore implements IdentityStore
 
   private static final Logger LOGGER = Logger.getLogger(KarchanAuthorizationStore.class.getName());
 
+  @PersistenceUnit
+  private EntityManagerFactory entityManagerFactory;
+
   /**
-   * 
+   *
    */
   public static final String PLAYER_ROLE = "player";
 
   public static final String DEPUTY_ROLE = "deputy";
 
-  private final Map<String, Set<String>> groupsPerCaller;
-
-  public KarchanAuthorizationStore()
-  {
-    groupsPerCaller = new HashMap<>();
-    groupsPerCaller.put("Karn", new HashSet<>(asList(DEPUTY_ROLE, PLAYER_ROLE)));
-    groupsPerCaller.put("Marvin", singleton(PLAYER_ROLE));
-  }
-
   @Override
   public Set<String> getCallerGroups(CredentialValidationResult validationResult)
   {
     LOGGER.info("getCallerGroups");
-    Set<String> result = groupsPerCaller.get(validationResult.getCallerPrincipal().getName());
-    if (result == null)
-    {
-      result = emptySet();
-    }
-    LOGGER.info("getCallerGroups" + result);
-    return result;
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    Query query = entityManager.createNativeQuery("select groupid from mmv_groups where name = ?");
+    // named parameters are not defined in the JPA spec for Native queries.
+    query.setParameter(1, validationResult.getCallerPrincipal().getName());
+    query.getResultList().forEach(System.out::println);
+
+//    LOGGER.info("getCallerGroups" + result);
+    return Collections.emptySet();
   }
 
   @Override
@@ -74,5 +68,4 @@ public class KarchanAuthorizationStore implements IdentityStore
     return Collections.singleton(ValidationType.PROVIDE_GROUPS);
   }
 
-  
 }
