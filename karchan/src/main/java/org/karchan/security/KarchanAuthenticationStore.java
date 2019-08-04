@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -98,7 +99,7 @@ public class KarchanAuthenticationStore implements IdentityStore
       query.setParameter("password", encryptThisString(userCredential.getPasswordAsString()));
       List<Users> users = query.getResultList();
 
-      LOGGER.info("instanceof " + userCredential.getCaller() + ":" + userCredential.getPasswordAsString());
+      LOGGER.log(Level.INFO, "instanceof {0}:{1}", new Object[]{userCredential.getCaller(), userCredential.getPasswordAsString()});
       if (users.size() == 1)
       {
         LOGGER.info("VALID!");

@@ -16,11 +16,19 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <javaee.version>8.0</javaee.version>
+    <javaee.version>8.0.1</javaee.version>
     <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+    <microprofile.version>2.2</microprofile.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.eclipse.microprofile</groupId>
+      <artifactId>microprofile</artifactId>
+      <version>${microprofile.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency> 
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
@@ -99,7 +107,7 @@
     </dependency>
     <dependency>
       <groupId>javax</groupId>
-      <artifactId>javaee-web-api</artifactId>
+      <artifactId>javaee-api</artifactId>
       <version>${javaee.version}</version>
       <scope>provided</scope>
     </dependency>

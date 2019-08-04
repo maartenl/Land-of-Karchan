@@ -29,8 +29,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.joining;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -44,19 +45,17 @@ public class JsonWebTokenProvider
 
   private static final String AUTHORITIES_KEY = "auth";
 
+  /**
+   * For example : "my-secret-jwt-key".
+   */
+  @Inject
+  @ConfigProperty(name = "karchan.jwt.secret.key")
   private String secretKey;
 
   /**
    * Validity of token in the REMEMBER_ME cookie is 24 hours.
    */
-  private long TOKEN_VALIDITY_HOURS = 24;
-  
-  @PostConstruct
-  public void init()
-  {
-    // load from config
-    this.secretKey = "my-secret-jwt-key";
-  }
+  private final long TOKEN_VALIDITY_HOURS = 24;
 
   public String createToken(String username, Set<String> authorities)
   {
