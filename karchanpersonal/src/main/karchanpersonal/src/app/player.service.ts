@@ -44,6 +44,8 @@ export class PlayerService {
 
   privateUrl: string;
 
+  wikipagesUrl: string;
+
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
@@ -54,6 +56,7 @@ export class PlayerService {
     this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
     this.guildmembersUrl = environment.GUILDMEMBERS_URL;
     this.guildranksUrl = environment.GUILDRANKS_URL;
+    this.wikipagesUrl = environment.WIKIPAGES_URL;
     this.privateUrl = environment.PRIVATE_URL;
   }
 
