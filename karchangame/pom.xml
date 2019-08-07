@@ -20,6 +20,7 @@
     <project.target.version>1.8</project.target.version>
     <javaee.version>8.0</javaee.version>
     <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+    <microprofile.version>2.2</microprofile.version>
   </properties>
 
   <repositories>
@@ -52,6 +53,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.eclipse.microprofile</groupId>
+      <artifactId>microprofile</artifactId>
+      <version>${microprofile.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency> 
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
