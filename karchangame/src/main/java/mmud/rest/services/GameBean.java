@@ -139,7 +139,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     return em;
   }
 
-  private static final Logger itsLog = Logger.getLogger(GameBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(GameBean.class.getName());
 
   /**
    * <p>
@@ -324,7 +324,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   @Path("{name}")
   public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
   {
-    itsLog.log(Level.FINER, "entering create {0}", name);
+    LOGGER.log(Level.FINER, "entering create {0}", name);
     String address = requestContext.getRemoteAddr();
     try
     {
@@ -413,7 +413,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
-    itsLog.log(Level.FINER, "exiting create {0}", name);
+    LOGGER.log(Level.FINER, "exiting create {0}", name);
     return Response.ok().build();
   }
 
@@ -432,7 +432,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   @Path("{name}/logon")
   public void logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
   {
-    itsLog.log(Level.FINER, "entering logon {0}", name);
+    LOGGER.log(Level.FINER, "entering logon {0}", name);
 
     String address = requestContext.getHeader(X_FORWARDED_FOR);
     if ((address == null) || ("".equals(address.trim())))
@@ -488,7 +488,7 @@ public class GameBean implements RoomsInterface, WorldInterface
       Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
       throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
     }
-    itsLog.log(Level.FINER, "exiting logon successful {0}", name);
+    LOGGER.log(Level.FINER, "exiting logon successful {0}", name);
     person.setAddress(address);
     person.setNewpassword(password);
 
@@ -505,7 +505,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   @Path("{name}/logoff")
   public void logoff(@Context HttpServletRequest requestContext)
   {
-    itsLog.finer("entering logoff");
+    LOGGER.finer("entering logoff");
     // nasty work-around for Catalina AuthenticatorBase to be able to
     // change/create the session cookie
     requestContext.getSession();
@@ -547,7 +547,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
-    itsLog.finer("entering enterGame");
+    LOGGER.finer("entering enterGame");
     User person = authenticateToEnterGame(name);
     try
     {
@@ -649,7 +649,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
   {
-    itsLog.entering(this.getClass().getName(), "playGame");
+    LOGGER.entering(this.getClass().getName(), "playGame");
     command = Utils.security(command);
     PrivateDisplay display = null;
     User person = authenticate(name);
@@ -689,7 +689,7 @@ public class GameBean implements RoomsInterface, WorldInterface
       }
     } catch (WebApplicationException e)
     {
-      itsLog.log(Level.INFO, "caught and rethrowing WebApplicationException {0}  {1}", new Object[]
+      LOGGER.log(Level.INFO, "caught and rethrowing WebApplicationException {0}  {1}", new Object[]
       {
         e.getClass().getName(), e.getMessage()
       });
@@ -720,7 +720,7 @@ public class GameBean implements RoomsInterface, WorldInterface
         display.log = retrieveLog(person, offset);
       } catch (MudException ex)
       {
-        itsLog.throwing("play: throws ", ex.getMessage(), ex);
+        LOGGER.throwing("play: throws ", ex.getMessage(), ex);
       }
     }
     return display;
@@ -750,12 +750,12 @@ public class GameBean implements RoomsInterface, WorldInterface
    */
   private PrivateDisplay gameMain(User person, String command) throws MudException
   {
-    itsLog.log(Level.FINER, "{0}.gameMain", this.getClass().getName());
+    LOGGER.log(Level.FINER, "{0}.gameMain", this.getClass().getName());
     logBean.writeCommandLog(person, command);
     if (CommandFactory.noUserCommands())
     {
       // get all user commands
-      itsLog.log(Level.FINER, "{0}.gameMain - get all user commands", this.getClass().getName());
+      LOGGER.log(Level.FINER, "{0}.gameMain - get all user commands", this.getClass().getName());
       Query query = getEntityManager().createNamedQuery("UserCommand.findActive");
       List<UserCommand> list = query.getResultList();
       for (UserCommand userCommand : list)
@@ -816,7 +816,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public PrivateLog getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
-    itsLog.finer("entering retrieveLog");
+    LOGGER.finer("entering retrieveLog");
     Person person = authenticate(name);
     if (offset == null)
     {
@@ -851,7 +851,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public Response deleteLog(@PathParam("name") String name)
   {
-    itsLog.finer("entering deleteLog");
+    LOGGER.finer("entering deleteLog");
     Person person = authenticate(name);
 
     try
@@ -884,7 +884,7 @@ public class GameBean implements RoomsInterface, WorldInterface
           })
   public Response quitGame(@PathParam("name") String name)
   {
-    itsLog.finer("entering quit");
+    LOGGER.finer("entering quit");
 
     User person = authenticate(name);
     try

@@ -87,7 +87,7 @@ public class KarchanAuthenticationStore implements IdentityStore
   @Override
   public CredentialValidationResult validate(Credential credential)
   {
-    LOGGER.info("validate");
+    LOGGER.entering(this.getClass().getName(), "validate");
 
     if (credential instanceof UsernamePasswordCredential)
     {
@@ -99,18 +99,17 @@ public class KarchanAuthenticationStore implements IdentityStore
       query.setParameter("password", encryptThisString(userCredential.getPasswordAsString()));
       List<Users> users = query.getResultList();
 
-      LOGGER.log(Level.INFO, "instanceof {0}:{1}", new Object[]{userCredential.getCaller(), userCredential.getPasswordAsString()});
       if (users.size() == 1)
       {
-        LOGGER.info("VALID!");
+        LOGGER.finest("VALID_RESULT");
         return new CredentialValidationResult(userCredential.getCaller());
       } else
       {
-        LOGGER.info("INVALID_RESULT");
+        LOGGER.finest("INVALID_RESULT");
         return INVALID_RESULT;
       }
     }
-    LOGGER.info("NOT_VALIDATED_RESULT");
+    LOGGER.finest("NOT_VALIDATED_RESULT");
     return NOT_VALIDATED_RESULT;
   }
 

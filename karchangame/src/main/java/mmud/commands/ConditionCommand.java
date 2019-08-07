@@ -32,7 +32,7 @@ import mmud.exceptions.MudException;
 public class ConditionCommand extends NormalCommand
 {
 
-    private static final Logger itsLog = Logger.getLogger(ConditionCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConditionCommand.class.getName());
 
     public ConditionCommand(String aRegExpr)
     {

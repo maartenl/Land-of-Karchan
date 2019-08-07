@@ -77,7 +77,7 @@ public class User extends Person
   private static final int MILLISECONDS_IN_A_SECOND = 1000;
 
   private static final String PASSWORD_REGEXP = ".{5,}";
-  private static final Logger itsLog = java.util.logging.Logger.getLogger(User.class.getName());
+  private static final Logger LOGGER = java.util.logging.Logger.getLogger(User.class.getName());
   /**
    * Max idle time is currently set to 60 minutes.
    */

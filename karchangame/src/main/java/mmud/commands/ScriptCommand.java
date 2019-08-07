@@ -36,7 +36,7 @@ import mmud.scripting.RunScript;
 public class ScriptCommand extends NormalCommand
 {
 
-    private static final Logger itsLog = Logger.getLogger(ScriptCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ScriptCommand.class.getName());
 
     private final UserCommand theUserCommand;
 
@@ -64,7 +64,7 @@ public class ScriptCommand extends NormalCommand
          - returning null means, show the room
          - returning a Display, which implements DisplayInterface, means everything's fine.
          */
-        itsLog.entering(this.getClass().getName(), "run");
+        LOGGER.entering(this.getClass().getName(), "run");
         String mySource = theUserCommand.getMethodName().getSrc();
         try
         {

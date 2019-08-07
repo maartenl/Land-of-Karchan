@@ -32,7 +32,7 @@ import mmud.rest.services.LogBean;
 public class RemoveCommand extends GuildMasterCommand
 {
 
-    private static final Logger itsLog = Logger.getLogger(RemoveCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RemoveCommand.class.getName());
 
     public RemoveCommand(String aRegExpr)
     {

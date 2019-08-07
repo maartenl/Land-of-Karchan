@@ -45,7 +45,7 @@ import mmud.rest.services.LogBean;
 public class Players extends Editor
 {
 
-  private static final Logger logger = Logger.getLogger(Players.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Players.class.getName());
 
   private User newInstance;
 
@@ -166,7 +166,7 @@ public class Players extends Editor
           group.commit();
         } catch (FieldGroup.CommitException ex)
         {
-          logger.log(Level.SEVERE, null, ex);
+          LOGGER.log(Level.SEVERE, null, ex);
         }
         return item.toString();
       }

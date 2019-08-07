@@ -37,7 +37,7 @@ import mmud.rest.services.admin.AdminBean;
 public abstract class NormalCommand implements Command
 {
 
-    private static final Logger itsLog = Logger.getLogger(NormalCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(NormalCommand.class.getName());
 
     /**
      * the regular expression the command structure must follow
@@ -84,7 +84,7 @@ public abstract class NormalCommand implements Command
      */
     DisplayInterface start(String command, User aUser) throws MudException
     {
-        itsLog.log(Level.FINER, "{0}({1}) : {2}", new Object[]
+        LOGGER.log(Level.FINER, "{0}({1}) : {2}", new Object[]
         {
             aUser.getName(), this.getClass().getName(), command
         });

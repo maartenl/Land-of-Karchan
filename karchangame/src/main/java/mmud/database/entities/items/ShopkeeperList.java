@@ -36,7 +36,7 @@ import mmud.exceptions.MudException;
 public class ShopkeeperList extends Item
 {
 
-    private static final Logger itsLog = Logger.getLogger(ShopkeeperList.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ShopkeeperList.class.getName());
 
     /**
      * In the database, this column is actually Nullable, as it has no value
@@ -61,7 +61,7 @@ public class ShopkeeperList extends Item
     @Override
     public DisplayInterface getRead()
     {
-        itsLog.info("ShopkeeperList getRead");
+        LOGGER.info("ShopkeeperList getRead");
         final DisplayInterface display = super.getRead();
         return new DisplayInterface()
         {

@@ -52,7 +52,7 @@ import mmud.rest.webentities.admin.AdminTemplate;
 public class TemplatesBean
 {
 
-  private static final Logger itsLog = Logger.getLogger(TemplatesBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(TemplatesBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -65,7 +65,7 @@ public class TemplatesBean
           })
   public void edit(@PathParam("id") Long id, AdminTemplate template, @Context SecurityContext sc)
   {
-    itsLog.info("edit");
+    LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
 
     Template entity = getEntityManager().find(Template.class, id);

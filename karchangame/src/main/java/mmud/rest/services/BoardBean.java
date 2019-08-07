@@ -40,7 +40,7 @@ import mmud.database.entities.game.MessagesFilterForBoard;
 public class BoardBean
 {
 
-  private static final Logger itsLog = Logger.getLogger(BoardBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BoardBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -63,7 +63,7 @@ public class BoardBean
 
   public Board getBoard(String name)
   {
-    itsLog.log(Level.FINER, "getBoard {0}", name);
+    LOGGER.log(Level.FINER, "getBoard {0}", name);
     Query query = getEntityManager().createNamedQuery("Board.findByName");
     query.setParameter("name", name);
     Board result = (Board) query.getSingleResult();

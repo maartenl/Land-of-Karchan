@@ -32,7 +32,7 @@ import mmud.rest.services.LogBean;
 public class Banishment extends VerticalLayout
 {
 
-    private static final Logger logger = Logger.getLogger(Banishment.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Banishment.class.getName());
 
     private final LogBean logBean;
     private final Admin currentUser;

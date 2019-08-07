@@ -52,7 +52,7 @@ import mmud.scripting.World;
 public class CommandRunner
 {
 
-  private static final Logger itsLog = Logger.getLogger(CommandRunner.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(CommandRunner.class.getName());
 
   @EJB
   private PersonBean personBean;
@@ -93,7 +93,7 @@ public class CommandRunner
    */
   public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands) throws MudException
   {
-    itsLog.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
+    LOGGER.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
     {
       this.getClass().getName(), aUser.getName(), aCommand
     });
@@ -121,7 +121,7 @@ public class CommandRunner
       {
         ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);
         myCol.add(scriptCommand);
-        itsLog.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
+        LOGGER.log(Level.FINE, "added script command {0}", myCom.getMethodName().getName());
       }
       myCol.addAll(CommandFactory.getCommand(aCommand));
       for (NormalCommand command : myCol)
@@ -143,7 +143,7 @@ public class CommandRunner
         aUser.writeMessage(e.getMessage());
       } catch (MudException ex)
       {
-        itsLog.throwing("play: throws ", ex.getMessage(), ex);
+        LOGGER.throwing("play: throws ", ex.getMessage(), ex);
       }
       return null;
     }

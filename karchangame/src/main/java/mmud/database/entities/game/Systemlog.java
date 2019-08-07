@@ -64,7 +64,7 @@ public class Systemlog implements Serializable
     @Column(name = "sequence")
     private long sequence;
     @Size(max = 255)
-    @Column(name = "logger")
+    @Column(name = "LOGGER")
     private String logger;
     @Size(max = 25)
     @Column(name = "level")

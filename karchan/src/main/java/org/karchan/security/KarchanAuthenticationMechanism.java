@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @RememberMe(
         cookieMaxAgeSeconds = 60 * 60 * 24,
+        // this should really be set to true, which is the default.
+        // this will be removed sometime.
         cookieSecureOnly = false
 )
 @ApplicationScoped
@@ -50,7 +52,7 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
           HttpServletResponse res,
           HttpMessageContext context)
   {
-    LOGGER.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
+    LOGGER.entering(this.getClass().getName(), "validateRequest", request.getRequestURI());
     final String authorization = request.getHeader("Authorization");
     String name = null;
     String password = null;
@@ -70,7 +72,7 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
     }
     if (name != null && password != null)
     {
-      LOGGER.log(Level.INFO, "credentials : {0}, {1}", new String[]
+      LOGGER.log(Level.FINEST, "credentials : {0}, {1}", new String[]
       {
         name, password
       });

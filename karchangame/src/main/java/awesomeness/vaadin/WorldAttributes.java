@@ -51,7 +51,7 @@ class WorldAttributes extends VerticalLayout implements
         Property.ValueChangeListener
 {
 
-    private static final Logger logger = Logger.getLogger(WorldAttributes.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WorldAttributes.class.getName());
 
     private final CheckBox filterOnOwner;
 
@@ -139,7 +139,7 @@ class WorldAttributes extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                logger.log(Level.FINEST, "commit clicked.");
+                LOGGER.log(Level.FINEST, "commit clicked.");
                 item.getItemProperty("owner").setValue(currentUser);
                 try
                 {
@@ -156,7 +156,7 @@ class WorldAttributes extends VerticalLayout implements
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
-                    logger.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
                 busyCreatingNewItem = false;
             }
@@ -168,7 +168,7 @@ class WorldAttributes extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                logger.log(Level.FINEST, "discard clicked.");
+                LOGGER.log(Level.FINEST, "discard clicked.");
                 binder.discard();
             }
         });
@@ -217,14 +217,14 @@ class WorldAttributes extends VerticalLayout implements
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                logger.log(Level.FINEST, "disown clicked.");
+                LOGGER.log(Level.FINEST, "disown clicked.");
                 item.getItemProperty("owner").setValue(null);
 //                try
 //                {
 //                    binder.commit();
 //                } catch (FieldGroup.CommitException ex)
 //                {
-//                    logger.log(Level.SEVERE, null, ex);
+//                    LOGGER.log(Level.SEVERE, null, ex);
 //                }
             }
         });

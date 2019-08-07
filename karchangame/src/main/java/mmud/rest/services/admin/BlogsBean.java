@@ -54,7 +54,7 @@ import mmud.rest.webentities.admin.AdminBlog;
 public class BlogsBean extends AbstractFacade<Blog>
 {
 
-  private static final Logger itsLog = Logger.getLogger(BlogsBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BlogsBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -75,7 +75,7 @@ public class BlogsBean extends AbstractFacade<Blog>
           })
   public AdminBlog create(AdminBlog blog, @Context SecurityContext sc)
   {
-    itsLog.info("create");
+    LOGGER.info("create");
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
     Blog entity = new Blog();
@@ -99,7 +99,7 @@ public class BlogsBean extends AbstractFacade<Blog>
           })
   public void edit(@PathParam("id") Long id, AdminBlog blog, @Context SecurityContext sc)
   {
-    itsLog.info("edit");
+    LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
 
     Blog entity = super.find(id);

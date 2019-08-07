@@ -51,7 +51,7 @@ import mmud.exceptions.MudWebException;
 public class WorldattributesBean extends AbstractFacade<Worldattribute>
 {
 
-    private static final Logger itsLog = Logger.getLogger(WorldattributesBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WorldattributesBean.class.getName());
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -69,13 +69,13 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             })
     public void create(Worldattribute entity, @Context SecurityContext sc)
     {
-        itsLog.info("create");
+        LOGGER.info("create");
         final String name = sc.getUserPrincipal().getName();
         Admin admin = getEntityManager().find(Admin.class, name);
-        itsLog.info(admin.toString());
+        LOGGER.info(admin.toString());
         entity.setCreation(LocalDateTime.now());
         entity.setOwner(admin);
-        itsLog.info(entity.toString());
+        LOGGER.info(entity.toString());
         checkValidation(name, entity);
         getEntityManager().persist(entity);
     }
@@ -88,7 +88,7 @@ public class WorldattributesBean extends AbstractFacade<Worldattribute>
             })
     public void edit(@PathParam("id") String id, Worldattribute entity, @Context SecurityContext sc)
     {
-        itsLog.info("edit");
+        LOGGER.info("edit");
         final String name = sc.getUserPrincipal().getName();
 
         Worldattribute attribute = find(id);

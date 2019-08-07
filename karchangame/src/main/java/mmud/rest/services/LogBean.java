@@ -55,7 +55,7 @@ public class LogBean
         return em;
     }
 
-    private static final Logger itsLog = Logger.getLogger(LogBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LogBean.class.getName());
 
     /**
      * <p>
@@ -184,7 +184,7 @@ public class LogBean
      */
     public void writeLog(Person person, String message)
     {
-        itsLog.finer("writeLog");
+        LOGGER.finer("writeLog");
         createLog(person, message);
     }
 
@@ -207,7 +207,7 @@ public class LogBean
      */
     public void writeLog(Person person, String message, String addendum)
     {
-        itsLog.finer("writeLog");
+        LOGGER.finer("writeLog");
         createLogWithPerson(person, message, addendum);
     }
 
@@ -219,7 +219,7 @@ public class LogBean
      */
     public void writeLogException(Person person, Throwable throwable)
     {
-        itsLog.finer("writeLogException");
+        LOGGER.finer("writeLogException");
 
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
         try (PrintStream myPrintStream = new PrintStream(myStream))
@@ -236,7 +236,7 @@ public class LogBean
      */
     public void writeLogException(Throwable throwable)
     {
-        itsLog.finer("writeLogException");
+        LOGGER.finer("writeLogException");
         ByteArrayOutputStream myStream = new ByteArrayOutputStream();
         try (PrintStream myPrintStream = new PrintStream(myStream))
         {
@@ -255,7 +255,7 @@ public class LogBean
      */
     public void writeCommandLog(Person person, String command)
     {
-        itsLog.finer("writeCommandLog");
+        LOGGER.finer("writeCommandLog");
 
         Commandlog commandlog = new Commandlog();
         commandlog.setName(person == null ? null : person.getName());

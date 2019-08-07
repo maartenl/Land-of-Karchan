@@ -51,7 +51,7 @@ import mmud.exceptions.MudWebException;
 public class AreaBean extends AbstractFacade<Area>
 {
 
-    private static final Logger itsLog = Logger.getLogger(AreaBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AreaBean.class.getName());
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -128,7 +128,7 @@ public class AreaBean extends AbstractFacade<Area>
             })
     public List<Area> findAll()
     {
-        itsLog.info("findAll");
+        LOGGER.info("findAll");
         final List<Area> all = super.findAll();
         return all;
     }

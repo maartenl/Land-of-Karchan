@@ -45,7 +45,7 @@ public class KarchanAuthorizationStore implements IdentityStore
   @Override
   public Set<String> getCallerGroups(CredentialValidationResult validationResult)
   {
-    LOGGER.info("getCallerGroups");
+    LOGGER.entering(this.getClass().getName(), "getCallerGroups");
     EntityManager entityManager = entityManagerFactory.createEntityManager();
     Query query = entityManager.createNativeQuery("select groupid from mmv_groups where name = ?");
     // named parameters are not defined in the JPA spec for Native queries.

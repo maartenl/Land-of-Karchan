@@ -78,7 +78,7 @@ import org.eclipse.persistence.annotations.Customizer;
 public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler, Ownage
 {
 
-  private static final Logger itsLog = Logger.getLogger(Room.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Room.class.getName());
   /**
    * The first room that new characters appear in.
    */
@@ -664,20 +664,20 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     Roomattribute attr = getRoomattribute(name);
     if (attr == null)
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on room " + getId() + ".");
+      LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") not found on room " + getId() + ".");
       return false;
     }
     if (attr.getValue() == value)
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on room " + getId() + "!");
+      LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on room " + getId() + "!");
       return true;
     }
     if (attr.getValue().equals(value))
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on room " + getId() + "!");
+      LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on room " + getId() + "!");
       return true;
     }
-    itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on room " + getId() + ".");
+    LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on room " + getId() + ".");
     return false;
   }
 
@@ -685,18 +685,18 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   {
     if (attributes == null)
     {
-      itsLog.finer("getRoomattribute name=" + name + " collection is null");
+      LOGGER.finer("getRoomattribute name=" + name + " collection is null");
       return null;
     }
     for (Roomattribute attr : attributes)
     {
-      itsLog.finer("getRoomattribute name=" + name + " attr=" + attr);
+      LOGGER.finer("getRoomattribute name=" + name + " attr=" + attr);
       if (attr.getName().equals(name))
       {
         return attr;
       }
     }
-    itsLog.finer("getRoomattribute name=" + name + " not found");
+    LOGGER.finer("getRoomattribute name=" + name + " not found");
     return null;
   }
 

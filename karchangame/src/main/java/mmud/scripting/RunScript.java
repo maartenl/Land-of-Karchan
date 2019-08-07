@@ -37,7 +37,7 @@ import mmud.scripting.entities.Room;
 public class RunScript
 {
 
-    private static final Logger itsLog = Logger.getLogger(RunScript.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RunScript.class.getName());
 
     private Persons persons;
 
@@ -84,7 +84,7 @@ public class RunScript
      */
     public DisplayInterface run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ", " + command + ")");
+        LOGGER.entering(this.getClass().getName(), "run(" + person.getName() + ", " + command + ")");
 
         final Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -149,7 +149,7 @@ public class RunScript
      */
     public boolean run(mmud.database.entities.characters.Person person, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        itsLog.entering(this.getClass().getName(), "run(" + person.getName() + ")");
+        LOGGER.entering(this.getClass().getName(), "run(" + person.getName() + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -174,7 +174,7 @@ public class RunScript
      */
     public boolean run(mmud.database.entities.game.Room room, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        itsLog.entering(this.getClass().getName(), "run(" + room.getId() + ")");
+        LOGGER.entering(this.getClass().getName(), "run(" + room.getId() + ")");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -197,7 +197,7 @@ public class RunScript
      */
     public boolean run(String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        itsLog.entering(this.getClass().getName(), "run()");
+        LOGGER.entering(this.getClass().getName(), "run()");
 
         Invocable inv = initialiseScriptEngine(sourceCode);
 
@@ -208,19 +208,19 @@ public class RunScript
 
     private Invocable initialiseScriptEngine(String sourceCode) throws ScriptException, IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        itsLog.entering(this.getClass().getName(), "initialiseScriptEngine");
+        LOGGER.entering(this.getClass().getName(), "initialiseScriptEngine");
         // create a script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();
         // create a JavaScript engine
         ScriptEngine engine = factory.getEngineByExtension("js");
         if (engine == null)
         {
-            itsLog.warning("Javascript engine missing!");
+            LOGGER.warning("Javascript engine missing!");
             List<ScriptEngineFactory> engineFactories = factory.getEngineFactories();
-            itsLog.warning("Available scripting engines:");
+            LOGGER.warning("Available scripting engines:");
             for (ScriptEngineFactory engines : engineFactories)
             {
-                itsLog.warning(engines.getEngineName());
+                LOGGER.warning(engines.getEngineName());
             }
             throw new MudException("Javascript engine missing!");
         }

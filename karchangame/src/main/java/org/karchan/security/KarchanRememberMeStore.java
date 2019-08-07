@@ -45,21 +45,21 @@ public class KarchanRememberMeStore implements RememberMeIdentityStore
   @Override
   public CredentialValidationResult validate(RememberMeCredential rememberMeCredential)
   {
-    LOGGER.log(Level.INFO, "validate: {0}", rememberMeCredential.getToken());
+    LOGGER.entering(this.getClass().getName(), "validate", rememberMeCredential.getToken());
     try
     {
       if (tokenProvider.validateToken(rememberMeCredential.getToken()))
       {
         JsonWebTokenCredential credential = tokenProvider.getCredential(rememberMeCredential.getToken());
-        LOGGER.log(Level.INFO, "validated: {0}", credential.getPrincipal());
+        LOGGER.log(Level.FINEST, "validated: {0}", credential.getPrincipal());
         return new CredentialValidationResult(credential.getPrincipal(), credential.getAuthorities());
       }
       // if token invalid, response with invalid result status
-      LOGGER.log(Level.INFO, "invalid");
+      LOGGER.log(Level.FINEST, "invalid");
       return INVALID_RESULT;
     } catch (ExpiredJwtException eje)
     {
-      LOGGER.log(Level.INFO, "Security exception for user {0} - {1}", new Object[]
+      LOGGER.log(Level.FINEST, "Security exception for user {0} - {1}", new Object[]
       {
         eje.getClaims().getSubject(), eje.getMessage()
       });
@@ -71,7 +71,7 @@ public class KarchanRememberMeStore implements RememberMeIdentityStore
   public String generateLoginToken(CallerPrincipal callerPrincipal, Set<String> groups)
   {
     String token = tokenProvider.createToken(callerPrincipal.getName(), groups);
-    LOGGER.log(Level.INFO, "created token {0}", token);
+    LOGGER.finest("created token");
     return token;
   }
 

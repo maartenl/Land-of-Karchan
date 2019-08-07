@@ -69,7 +69,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
 
     private static final long ONE_WEEK = 1000l * 60l * 60l * 24l * 7l;
 
-    private static final Logger itsLog = Logger.getLogger(Board.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Board.class.getName());
 
     @Id
     @Basic(optional = false)

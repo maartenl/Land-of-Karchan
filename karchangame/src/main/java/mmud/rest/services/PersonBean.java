@@ -53,7 +53,7 @@ public class PersonBean implements PersonsInterface
   {
     return em;
   }
-  private static final Logger itsLog = Logger.getLogger(PersonBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PersonBean.class.getName());
 
   /**
    * Retrieves a person from the pool of all persons. Bear in mind that

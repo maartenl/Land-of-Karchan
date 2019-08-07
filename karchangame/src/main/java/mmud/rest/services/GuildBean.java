@@ -100,7 +100,7 @@ public class GuildBean
   {
     return em;
   }
-  private static final Logger itsLog = Logger.getLogger(GuildBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(GuildBean.class.getName());
 
   /**
    * Retrieves the guild by name. Returns null if not found.
@@ -148,7 +148,7 @@ public class GuildBean
           })
   public PrivateGuild getGuildInfo(@PathParam("name") String name)
   {
-    itsLog.finer("entering getGuild");
+    LOGGER.finer("entering getGuild");
     Guild guild = authenticate(name);
     PrivateGuild privateGuild = new PrivateGuild();
     privateGuild.guildurl = guild.getHomepage();
@@ -159,7 +159,7 @@ public class GuildBean
     privateGuild.logonmessage = guild.getLogonmessage();
     if (guild.getBoss() == null)
     {
-      itsLog.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
+      LOGGER.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
     } else
     {
       privateGuild.bossname = guild.getBoss().getName();
@@ -186,7 +186,7 @@ public class GuildBean
           })
   public Response updateGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
-    itsLog.finer("entering updateGuild");
+    LOGGER.finer("entering updateGuild");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     if (cinfo.bossname == null || !cinfo.bossname.equals(person.getName()))
@@ -224,7 +224,7 @@ public class GuildBean
           })
   public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
-    itsLog.finer("entering createGuild");
+    LOGGER.finer("entering createGuild");
     User person = privateBean.authenticate(name);
     if (person.getGuild() != null)
     {
@@ -253,7 +253,7 @@ public class GuildBean
       {
         buffer.append(violation);
       }
-      itsLog.warning(buffer.toString());
+      LOGGER.warning(buffer.toString());
       throw ex;
     }
     person.setGuild(guild);
@@ -276,7 +276,7 @@ public class GuildBean
           })
   public Response deleteGuild(@PathParam("name") String name)
   {
-    itsLog.finer("entering deleteGuild");
+    LOGGER.finer("entering deleteGuild");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     for (User guildmember : guild.getMembers())
@@ -310,7 +310,7 @@ public class GuildBean
           })
   public List<PrivatePerson> getMembers(@PathParam("name") String name)
   {
-    itsLog.finer("entering getGuildMembers");
+    LOGGER.finer("entering getGuildMembers");
     Guild guild = authenticate(name);
     Collection<User> members = guild.getMembers();
     List<PrivatePerson> result = new ArrayList<>();
@@ -345,7 +345,7 @@ public class GuildBean
   public PrivatePerson getMember(@PathParam("name") String name,
           @PathParam("membername") String membername)
   {
-    itsLog.finer("entering getMember");
+    LOGGER.finer("entering getMember");
     Guild guild = authenticate(name);
     User member = guild.getMember(membername);
     if (member == null)
@@ -378,7 +378,7 @@ public class GuildBean
   public Response deleteMember(@PathParam("name") String name,
           @PathParam("membername") String membername)
   {
-    itsLog.finer("entering deleteMember");
+    LOGGER.finer("entering deleteMember");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     if (membername != null && membername.equals(person.getName()))
@@ -416,7 +416,7 @@ public class GuildBean
           })
   public Response createMember(@PathParam("name") String name, PrivatePerson member)
   {
-    itsLog.finer("entering createMember");
+    LOGGER.finer("entering createMember");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     String membername = member.name;
@@ -456,7 +456,7 @@ public class GuildBean
   public Response updateMember(@PathParam("name") String name,
           @PathParam("membername") String membername, PrivatePerson member)
   {
-    itsLog.finer("entering updateMember");
+    LOGGER.finer("entering updateMember");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     User user = guild.getMember(membername);
@@ -467,7 +467,7 @@ public class GuildBean
     if (member.guildrank == null)
     {
       user.setGuildrank(null);
-      itsLog.finer("updateMember cleared rank");
+      LOGGER.finer("updateMember cleared rank");
       return Response.ok().build();
     }
     Guildrank rank = guild.getRank(member.guildrank.guildlevel);
@@ -494,7 +494,7 @@ public class GuildBean
           })
   public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name)
   {
-    itsLog.finer("entering getGuildHopefuls");
+    LOGGER.finer("entering getGuildHopefuls");
     Guild guild = authenticate(name);
     Collection<User> hopefuls = getGuildHopefuls(guild);
     List<PrivatePerson> result = new ArrayList<>();
@@ -541,7 +541,7 @@ public class GuildBean
   public Response deleteGuildHopeful(@PathParam("name") String name,
           @PathParam("hopefulname") String hopefulname)
   {
-    itsLog.finer("entering getGuildHopefuls");
+    LOGGER.finer("entering getGuildHopefuls");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     User possibleMember = personBean.getUser(hopefulname);
@@ -568,7 +568,7 @@ public class GuildBean
           })
   public List<PrivateRank> getGuildRanks(@PathParam("name") String name)
   {
-    itsLog.finer("entering getGuildRanks");
+    LOGGER.finer("entering getGuildRanks");
     Guild guild = authenticate(name);
     Guildrank[] ranks = guild.getGuildrankCollection().toArray(new Guildrank[0]);
     Arrays.sort(ranks, new Comparator<Guildrank>()
@@ -614,7 +614,7 @@ public class GuildBean
           })
   public PrivateRank getGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {
-    itsLog.finer("entering getGuildRank");
+    LOGGER.finer("entering getGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
@@ -646,7 +646,7 @@ public class GuildBean
           })
   public Response createGuildRank(@PathParam("name") String name, PrivateRank rank)
   {
-    itsLog.finer("entering createGuildRank");
+    LOGGER.finer("entering createGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     Guildrank newRank = new Guildrank();
@@ -692,7 +692,7 @@ public class GuildBean
           })
   public Response updateGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank)
   {
-    itsLog.finer("entering updateGuildRank");
+    LOGGER.finer("entering updateGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
@@ -729,7 +729,7 @@ public class GuildBean
           })
   public Response deleteGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {
-    itsLog.finer("entering deleteGuildRank");
+    LOGGER.finer("entering deleteGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
