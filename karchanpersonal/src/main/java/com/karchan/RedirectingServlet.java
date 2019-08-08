@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "RedirectingServlet", urlPatterns =
 {
-  "/settings/*", "/mail/*", "/guild/*"
+  "/settings/*", "/mail/*", "/guild/*", "/wikipages/*"
 })
 public class RedirectingServlet extends HttpServlet
 {

@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: 'settings', component: PlayerSettingsComponent },
   { path: 'mail', component: MailComponent },
   { path: 'guild', component: GuildComponent },
-  { path: 'wikipages', component: WikipagesComponent }
+  { path: 'wikipages/:title', component: WikipagesComponent }
 ];
 
 @NgModule({
