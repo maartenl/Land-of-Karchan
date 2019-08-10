@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.security.enterprise.AuthenticationStatus;
@@ -29,8 +30,10 @@ import javax.security.enterprise.authentication.mechanism.http.RememberMe;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
 @RememberMe(
         cookieMaxAgeSeconds = 60 * 60 * 24,
@@ -49,7 +52,7 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
 
   @Override
   public AuthenticationStatus validateRequest(HttpServletRequest request,
-          HttpServletResponse res,
+          HttpServletResponse response,
           HttpMessageContext context)
   {
     LOGGER.entering(this.getClass().getName(), "validateRequest", request.getRequestURI());
@@ -79,7 +82,24 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
       CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(name, password));
       if (result.getStatus() == CredentialValidationResult.Status.VALID)
       {
-        return context.notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());
+        String karchanname = result.getCallerPrincipal().getName();
+        String karchanroles = result.getCallerGroups().stream().collect(Collectors.joining(","));
+        Cookie nameCookie = new Cookie("karchanname", karchanname);
+        nameCookie.setMaxAge(-1);
+        nameCookie.setHttpOnly(false);
+        nameCookie.setPath("/");
+        response.addCookie(nameCookie);
+        Cookie rolesCookie = new Cookie("karchanroles", karchanroles);
+        rolesCookie.setMaxAge(-1);
+        rolesCookie.setHttpOnly(false);
+        rolesCookie.setPath("/");
+        response.addCookie(rolesCookie);
+        Cookie xsrfCookie = new Cookie("XSRF-TOKEN", (karchanname+":"+karchanroles).hashCode()+"");
+        xsrfCookie.setMaxAge(-1);
+        xsrfCookie.setHttpOnly(false);
+        xsrfCookie.setPath("/");
+        response.addCookie(xsrfCookie);
+        return context.notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());        
       }
       return context.responseUnauthorized();
     } else if (context.isProtected())

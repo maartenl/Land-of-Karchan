@@ -101,7 +101,10 @@ public class WebsiteServlet extends HttpServlet
     {
       for (Cookie cookie : request.getCookies())
       {
-        if (cookie.getName().equals("JREMEMBERMEID"))
+        if (cookie.getName().equals("JREMEMBERMEID")
+                || cookie.getName().equals("karchanname")
+                || cookie.getName().equals("karchanroles")
+                || cookie.getName().equals("XSRF-TOKEN"))
         {
           cookie.setMaxAge(0);
           response.addCookie(cookie);
