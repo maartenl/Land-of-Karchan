@@ -47,8 +47,8 @@ public class KarchanDummyAuthenticationMechanism implements HttpAuthenticationMe
           HttpServletResponse res,
           HttpMessageContext context)
   {
-    LOGGER.info("We shouldn't really come here.");
-    return context.responseUnauthorized();
+    // we only come here if there's no credentials. In which case we do nothing.
+    return context.doNothing();
   }
 
 }
