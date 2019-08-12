@@ -14,6 +14,7 @@ import {
   GuildHopefuls, GuildMembers, GuildRanks
 } from './guild/guild.model';
 import { Family } from './player-settings/family.model';
+import { Wikipage } from './wikipages/wikipage.model';
 import { ErrorMessage } from './errors/errormessage.model';
 
 import { catchError, map, tap } from 'rxjs/operators';
@@ -44,6 +45,8 @@ export class PlayerService {
 
   privateUrl: string;
 
+  wikipagesUrl: string;
+
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
@@ -54,6 +57,7 @@ export class PlayerService {
     this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
     this.guildmembersUrl = environment.GUILDMEMBERS_URL;
     this.guildranksUrl = environment.GUILDRANKS_URL;
+    this.wikipagesUrl = environment.WIKIPAGES_URL;
     this.privateUrl = environment.PRIVATE_URL;
   }
 
@@ -134,9 +138,7 @@ export class PlayerService {
 
   private getGuildranksUrl(): string {
     return this.guildranksUrl.replace('[player]', this.getName());
-  }
-
-  private getGuildhopefulsUrl(): string {
+  } private getGuildhopefulsUrl(): string {
     return this.guildhopefulsUrl.replace('[player]', this.getName());
   }
 
@@ -144,32 +146,38 @@ export class PlayerService {
     return this.gameUrl.replace('[player]', this.getName());
   }
 
-  // charactersheet calls
+  private getWikipagesUrl(title?: string): string {
+    if (title === undefined) {
+      return this.wikipagesUrl;
+    }
+    return this.wikipagesUrl + '/' + title;
+  }
 
+  // charactersheet calls
   public getPlayer(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json'
       })
     };
     return this.http.get<Player>(this.getCharactersheetUrl(), httpOptions)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public updatePlayer(player: Player): Observable<any> {
     return this.http.put(this.getCharactersheetUrl(), player)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   /**
@@ -177,183 +185,183 @@ export class PlayerService {
    */
   public deleteCharacter(): Observable<any> {
     return this.http.delete(this.getPrivateUrl())
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   // mail calls
 
   public getMail(offset: number): Observable<any> {
     return this.http.get<Mail[]>(this.getMailUrl() + '?offset=' + offset)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public hasNewMail(): Observable<any> {
     return this.http.get(this.getHasNewMailUrl())
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public sendMail(mail: Mail): Observable<any> {
     return this.http.post(this.getMailUrl(), mail)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public deleteMail(mail: Mail): Observable<any> {
     return this.http.delete(this.getMailUrl() + '/' + mail.id)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   // guild calls
 
   public getGuild(): Observable<any> {
     return this.http.get<Guild>(this.getGuildUrl())
-    .pipe(
-      catchError(err => {
-        console.log(err);
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          console.log(err);
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public getGuildmembers(): Observable<any> {
     return this.http.get<GuildMember[]>(this.getGuildmembersUrl())
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public getGuildranks(): Observable<any> {
     return this.http.get<GuildRank[]>(this.getGuildranksUrl())
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public getGuildhopefuls(): Observable<any> {
     return this.http.get<GuildHopeful[]>(this.getGuildhopefulsUrl())
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public updateGuild(guild: Guild): Observable<any> {
     return this.http.put(this.getGuildUrl(), guild)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public updateGuildmember(member: GuildMember): Observable<any> {
     return this.http.put(this.getGuildmembersUrl() + '/' + member.name, member)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public updateGuildrank(rank: GuildRank): Observable<any> {
     return this.http.put(this.getGuildranksUrl() + '/' + rank.guildlevel, rank)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public createGuildrank(rank: GuildRank): Observable<any> {
     return this.http.post(this.getGuildranksUrl(), rank)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public deleteMember(member: GuildMember): Observable<any> {
     return this.http.delete(this.getGuildmembersUrl() + '/' + member.name)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public deleteRank(rank: GuildRank): Observable<any> {
     return this.http.delete(this.getGuildranksUrl() + '/' + rank.guildlevel)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public deleteHopeful(hopeful: GuildHopeful): Observable<any> {
     return this.http.delete(this.getGuildhopefulsUrl() + '/' + hopeful.name)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   // family calls
 
   public deleteFamily(family: Family): Observable<any> {
     return this.http.delete(this.getFamilyUrl(family.toname))
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   private getDescriptionAsInteger(family: Family): string {
-    for (let v in Family.FAMILYVALUES) {
+    for (const v in Family.FAMILYVALUES) {
       if (family.description === Family.FAMILYVALUES[v]) {
         return v;
       }
@@ -376,6 +384,38 @@ export class PlayerService {
       );
   }
 
+  // wikipages
+
+  public getWikipage(title: string): Observable<Wikipage> {
+    return this.http.get<Wikipage>(this.getWikipagesUrl(title))
+      .pipe(
+        catchError(err => {
+          this.handleError(err, ['404']);
+          return [];
+        })
+      );
+  }
+
+  public createWikipage(wikipage: Wikipage): Observable<any> {
+    return this.http.post(this.getWikipagesUrl(), wikipage)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public updateWikipage(wikipage: Wikipage): Observable<any> {
+    return this.http.put(this.getWikipagesUrl(wikipage.title), wikipage)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
   // game calls
 
   public enterGame(): Observable<any> {
@@ -388,7 +428,12 @@ export class PlayerService {
     return this.http.put(url, null);
   }
 
-  private handleError(error: HttpErrorResponse) {
+  /**
+   * Handles error, delivers them to the errorService.
+   * @param error the error message received from the HTTP call
+   * @param ignore which states can we choose to ignore?
+   */
+  private handleError(error: HttpErrorResponse, ignore ?: string[]) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);
@@ -396,9 +441,12 @@ export class PlayerService {
       errormessage.message = error.error.message;
       errormessage.type = 'Network Error';
       this.errorsService.addError(errormessage);
-  } else {
+    } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
+      if (ignore !== undefined && ignore.includes(error.status.toString())) {
+        return;
+      }
       const errormessage = new ErrorMessage();
       errormessage.message = error.error.errormessage;
       if (error.error.errormessage === undefined) {
@@ -408,4 +456,5 @@ export class PlayerService {
       this.errorsService.addError(errormessage);
     }
   }
+
 }

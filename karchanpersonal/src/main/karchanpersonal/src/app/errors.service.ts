@@ -15,6 +15,9 @@ export class ErrorsService {
   }
 
   public addError(error: ErrorMessage): void {
+    if (this.listener === undefined) {
+      return;
+    }
     this.listener(error);
   }
 }

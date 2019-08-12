@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12 col-sm-2">
+            <h3>{{wikipage.title}}</h3>
+        </div>
+        <div class="col-xs-12 col-sm-12">
+            <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+                <fieldset class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="{{wikipage.title}}" [readonly]="isReadOnly()">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="parentTitle">Parent title</label>
+                    <input type="text" class="form-control" id="parentTitle" name="parentTitle"
+                        formControlName="parentTitle">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="name">Last modified by</label>
+                    <input type="text" class="form-control-plaintext" id="name" name="name"
+                        value="{{wikipage.name}}" readonly>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="created">Created</label>
+                    <input type="text" class="form-control-plaintext" id="created" name="created"
+                        value="{{ wikipage.createDate | date:'medium' }}" readonly>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="modified">Last modified</label>
+                    <input type="text" class="form-control-plaintext" id="modified" name="modified"
+                        value="{{ wikipage.modifiedDate | date:'medium' }}" readonly>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="version">Version</label>
+                    <input type="text" class="form-control-plaintext" id="version" name="version"
+                        value="{{wikipage.version}}" readonly>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="summary">Summary</label>
+                    <textarea class="form-control" id="storyline" rows="13" formControlName="summary"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" rows="13" formControlName="content"></textarea>
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
+                    <button type="reset" [disabled]="form.pristine" class="btn btn-primary"
+                        (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

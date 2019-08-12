@@ -12,7 +12,8 @@ export const environment = {
   GUILD_URL: '/assets/guild.json',
   GUILDHOPEFULS_URL: '/assets/guildhopefuls.json',
   GUILDRANKS_URL: '/assets//guildranks.json',
-  GUILDMEMBERS_URL: '/assets//guildmembers.json',
+  GUILDMEMBERS_URL: '/assets/guildmembers.json',
+  WIKIPAGES_URL: '/assets/wikipages',
   GAME_URL: '/karchangame/resources/game/[player]/'
 };
 

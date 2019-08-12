@@ -21,7 +21,7 @@ export class PlayerSettingsComponent implements OnInit {
   familyForm: FormGroup;
 
   constructor(private playerService: PlayerService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.player = new Player(); // dummy player
     this.createForms();
   }
