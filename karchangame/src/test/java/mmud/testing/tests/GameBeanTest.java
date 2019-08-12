@@ -50,8 +50,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GameBeanTest extends MudTest
 {
 
-  // Obtain a suitable logger.
-  private static final Logger logger = Logger.getLogger(GameBeanTest.class.getName());
+  // Obtain a suitable LOGGER.
+  private static final Logger LOGGER = Logger.getLogger(GameBeanTest.class.getName());
 
   @Mocked
   private EntityManager entityManager;
@@ -128,7 +128,7 @@ public class GameBeanTest extends MudTest
   @Test
   public void lookAround()
   {
-    logger.fine("authenticate1");
+    LOGGER.fine("authenticate1");
     marvin.setActive(true);
     GameBean gameBean = new GameBean()
     {
@@ -188,7 +188,7 @@ public class GameBeanTest extends MudTest
   @Test
   public void lookAroundWithFrog()
   {
-    logger.fine("authenticate1");
+    LOGGER.fine("authenticate1");
     marvin.setActive(true);
     hotblack.setFrogging(5);
     GameBean gameBean = new GameBean()
@@ -250,7 +250,7 @@ public class GameBeanTest extends MudTest
   @Test
   public void lookAroundWithJackass()
   {
-    logger.fine("authenticate1");
+    LOGGER.fine("authenticate1");
     marvin.setActive(true);
     hotblack.setJackassing(5);
     GameBean gameBean = new GameBean()
@@ -312,7 +312,7 @@ public class GameBeanTest extends MudTest
   @Test
   public void lookAroundWithInvisible()
   {
-    logger.fine("authenticate1");
+    LOGGER.fine("authenticate1");
     marvin.setActive(true);
     karn.setVisible(false);
     GameBean gameBean = new GameBean()

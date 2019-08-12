@@ -62,8 +62,8 @@ import org.testng.annotations.Test;
 public class PublicBeanTest
 {
 
-  // Obtain a suitable logger.
-  private static final Logger logger = Logger.getLogger(PublicBeanTest.class.getName());
+  // Obtain a suitable LOGGER.
+  private static final Logger LOGGER = Logger.getLogger(PublicBeanTest.class.getName());
 
   @Mocked
   EntityManager entityManager;
@@ -182,7 +182,7 @@ public class PublicBeanTest
   @Test
   public void fortunesEmptyTest()
   {
-    logger.fine("fortunesEmptyTest");
+    LOGGER.fine("fortunesEmptyTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -208,7 +208,7 @@ public class PublicBeanTest
   @Test
   public void fortunesTest()
   {
-    logger.fine("fortunesTest");
+    LOGGER.fine("fortunesTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -262,7 +262,7 @@ public class PublicBeanTest
   @Test
   public void whoEmptyTest()
   {
-    logger.fine("whoEmptyTest");
+    LOGGER.fine("whoEmptyTest");
 
     PublicBean publicBean = new PublicBean()
     {
@@ -297,7 +297,7 @@ public class PublicBeanTest
   @Test
   public void whoTest()
   {
-    logger.fine("whoTest");
+    LOGGER.fine("whoTest");
 
     final List<Person> list = new ArrayList<>();
     list.add(hotblack);
@@ -354,7 +354,7 @@ public class PublicBeanTest
   @Test
   public void newsEmptyTest() throws ParseException
   {
-    logger.fine("newsEmptyTest");
+    LOGGER.fine("newsEmptyTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -391,7 +391,7 @@ public class PublicBeanTest
   @Test
   public void newsTest() throws ParseException
   {
-    logger.fine("newsTest");
+    LOGGER.fine("newsTest");
     LocalDateTime secondDate = LocalDateTime.now();
     LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final List<BoardMessage> list = new ArrayList<>();
@@ -456,7 +456,7 @@ public class PublicBeanTest
   @Test
   public void statusEmptyTest()
   {
-    logger.fine("statusEmptyTest");
+    LOGGER.fine("statusEmptyTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -484,7 +484,7 @@ public class PublicBeanTest
   @Test
   public void statusTest()
   {
-    logger.fine("statusTest");
+    LOGGER.fine("statusTest");
     final List<Person> list = new ArrayList<>();
     list.add(hotblack);
     list.add(marvin);
@@ -524,7 +524,7 @@ public class PublicBeanTest
   @Test
   public void guildsEmptyTest()
   {
-    logger.fine("guildsEmptyTest");
+    LOGGER.fine("guildsEmptyTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -552,7 +552,7 @@ public class PublicBeanTest
   @Test
   public void guildsTest() throws MudException
   {
-    logger.fine("guildsTest");
+    LOGGER.fine("guildsTest");
     LocalDateTime secondDate = LocalDateTime.now();
     LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final List<Guild> list = new ArrayList<>();
@@ -614,7 +614,7 @@ public class PublicBeanTest
   @Test
   public void charactersheetNotFoundTest()
   {
-    logger.fine("charactersheetNotFoundTest");
+    LOGGER.fine("charactersheetNotFoundTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -646,7 +646,7 @@ public class PublicBeanTest
   @Test
   public void charactersheetTest() throws MudException
   {
-    logger.fine("charactersheetTest");
+    LOGGER.fine("charactersheetTest");
     LocalDateTime secondDate = LocalDateTime.now();
     LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final CharacterInfo charinfo = new CharacterInfo();
@@ -698,7 +698,7 @@ public class PublicBeanTest
   @Test
   public void charactersheetsEmptyTest()
   {
-    logger.fine("charactersheetsEmptyTest");
+    LOGGER.fine("charactersheetsEmptyTest");
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -726,7 +726,7 @@ public class PublicBeanTest
   @Test
   public void charactersheetsTest()
   {
-    logger.fine("charactersheetsTest");
+    LOGGER.fine("charactersheetsTest");
     final List<String> list = new ArrayList<>();
     list.add("Marvin");
     list.add("Hotblack");

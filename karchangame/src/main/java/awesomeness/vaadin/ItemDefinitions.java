@@ -49,7 +49,7 @@ import mmud.rest.services.LogBean;
 public class ItemDefinitions extends Editor
 {
 
-  private static final Logger logger = Logger.getLogger(ItemDefinitions.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ItemDefinitions.class.getName());
 
   private ItemDefinition newInstance;
 
@@ -249,7 +249,7 @@ public class ItemDefinitions extends Editor
           group.commit();
         } catch (FieldGroup.CommitException ex)
         {
-          logger.log(Level.SEVERE, null, ex);
+          LOGGER.log(Level.SEVERE, null, ex);
         }
         return item.toString();
       }

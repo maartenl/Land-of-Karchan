@@ -46,11 +46,14 @@ function logon()
     var password = $("#password").val();
     if (window.console)
         console.log("logon name=" + name + " password=" + password);
-
+    
     $.ajax({
-        type: 'PUT',
-        url: "/karchangame/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
+        type: 'GET',
+        url: "/",
         cache: false,
+        headers: {
+          "Authorization": "Basic " + btoa(name + ":" + password)
+        },
         success: (function (data) {
             processLogon();
         }),
@@ -59,21 +62,13 @@ function logon()
             if (window.console)
                 console.log("complete");
         }),
-        dataType: 'json', //define the type of data that is going to get back from the server
-        data: 'js=1' //Pass a key/value pair
+        dataType: 'html' //define the type of data that is going to get back from the server
     }); // end of ajax
 
     var processLogon = function () {
         if (window.console)
-            console.log("processLogon");
-        if (typeof (Storage) !== "undefined") {
-            // Store
-            localStorage.setItem("karchanname", name);
-        } else {
-            Cookies.set('karchanname', name, {path: '/'});
-        }
-        window.location.href = "/game/settings.html";
+            console.log("processLogon");        
+        window.location.href = "/";
     } // processLogon
     return false;
 }
-

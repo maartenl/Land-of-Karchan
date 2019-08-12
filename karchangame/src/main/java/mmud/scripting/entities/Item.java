@@ -26,7 +26,7 @@ import mmud.database.entities.items.ItemDefinition;
 public class Item
 {
 
-    private static final Logger itsLog = Logger.getLogger(Item.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
     private final mmud.database.entities.items.Item item;
 

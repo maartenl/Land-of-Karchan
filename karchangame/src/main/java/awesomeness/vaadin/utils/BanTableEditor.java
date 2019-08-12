@@ -45,7 +45,7 @@ import mmud.rest.services.LogBean;
 public class BanTableEditor extends SimpleEditor
 {
 
-    private static final Logger logger = Logger.getLogger(BanTableEditor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BanTableEditor.class.getName());
 
     private Table table;
     private boolean busyCreatingNewItem;
@@ -144,7 +144,7 @@ public class BanTableEditor extends SimpleEditor
                     }
                 } catch (FieldGroup.CommitException ex)
                 {
-                    logger.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
                 busyCreatingNewItem = false;
             }
@@ -157,7 +157,7 @@ public class BanTableEditor extends SimpleEditor
             @Override
             public void buttonClick(Button.ClickEvent event)
             {
-                logger.log(Level.FINEST, "discard clicked.");
+                LOGGER.log(Level.FINEST, "discard clicked.");
                 group.discard();
             }
         });

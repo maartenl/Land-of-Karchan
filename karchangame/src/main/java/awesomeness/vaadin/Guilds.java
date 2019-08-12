@@ -48,7 +48,7 @@ import mmud.rest.services.LogBean;
 public class Guilds extends Editor
 {
 
-  private static final Logger logger = Logger.getLogger(Guilds.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Guilds.class.getName());
 
   private Guild newInstance;
 
@@ -204,7 +204,7 @@ public class Guilds extends Editor
           group.commit();
         } catch (FieldGroup.CommitException ex)
         {
-          logger.log(Level.SEVERE, null, ex);
+          LOGGER.log(Level.SEVERE, null, ex);
         }
         return item.toString();
       }

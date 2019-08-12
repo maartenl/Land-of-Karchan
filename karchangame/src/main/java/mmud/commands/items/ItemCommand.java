@@ -31,7 +31,7 @@ import mmud.exceptions.MudException;
 public abstract class ItemCommand implements Command
 {
 
-    private static final Logger itsLog = Logger.getLogger(ItemCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ItemCommand.class.getName());
     /**
      * the regular expression the command structure must follow
      */
@@ -72,7 +72,7 @@ public abstract class ItemCommand implements Command
      */
     DisplayInterface start(String command, User aUser) throws MudException
     {
-        itsLog.log(Level.FINER, "{0}({1}) : {2}", new Object[]
+        LOGGER.log(Level.FINER, "{0}({1}) : {2}", new Object[]
         {
             aUser.getName(), this.getClass().getName(), command
         });

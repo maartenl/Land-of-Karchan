@@ -70,8 +70,8 @@ import org.testng.annotations.Test;
 public class PrivateBeanTest
 {
 
-  // Obtain a suitable logger.
-  private static final Logger logger = Logger.getLogger(PrivateBeanTest.class.getName());
+  // Obtain a suitable LOGGER.
+  private static final Logger LOGGER = Logger.getLogger(PrivateBeanTest.class.getName());
 
   @Mocked
   EntityManager entityManager;
@@ -149,7 +149,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void listMailAuthenticate2()
   {
-    logger.fine("listMailAuthenticate2");
+    LOGGER.fine("listMailAuthenticate2");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -179,7 +179,7 @@ public class PrivateBeanTest
   @Test
   public void listMailEmpty()
   {
-    logger.fine("listMailEmpty");
+    LOGGER.fine("listMailEmpty");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -221,7 +221,7 @@ public class PrivateBeanTest
   @Test
   public void listMail()
   {
-    logger.fine("listMail");
+    LOGGER.fine("listMail");
     LocalDateTime secondDate = LocalDateTime.now();
     LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final List<Mail> list = new ArrayList<>();
@@ -315,7 +315,7 @@ public class PrivateBeanTest
   @Test
   public void hasNewMail()
   {
-    logger.fine("hasNewMail");
+    LOGGER.fine("hasNewMail");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -364,7 +364,7 @@ public class PrivateBeanTest
   // @Test
   public void hasNoNewMail()
   {
-    logger.fine("hasNoNewMail");
+    LOGGER.fine("hasNoNewMail");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -404,7 +404,7 @@ public class PrivateBeanTest
   @Test
   public void newMail()
   {
-    logger.fine("newMail");
+    LOGGER.fine("newMail");
     PrivateMail privateMail = new PrivateMail();
     privateMail.body = "First mail";
     privateMail.subject = "Subject";
@@ -466,7 +466,7 @@ public class PrivateBeanTest
   @Test
   public void newMailToDeputies()
   {
-    logger.fine("newMail");
+    LOGGER.fine("newMail");
     PrivateMail privateMail = new PrivateMail();
     privateMail.body = "First mail";
     privateMail.subject = "Subject";
@@ -590,7 +590,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void newMailToUnknownUser()
   {
-    logger.fine("newMailToUnknownUser");
+    LOGGER.fine("newMailToUnknownUser");
     PrivateMail privateMail = new PrivateMail();
     privateMail.body = "First mail";
     privateMail.subject = "Subject";
@@ -628,7 +628,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void getMailDoesnotExist()
   {
-    logger.fine("getMailDoesnotExist");
+    LOGGER.fine("getMailDoesnotExist");
     // all other props are ignored by the method under test
 
     PrivateBean privateBean = new PrivateBean()
@@ -663,7 +663,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void getMailSomeoneElse()
   {
-    logger.fine("getMailSomeoneElse");
+    LOGGER.fine("getMailSomeoneElse");
     final Mail mail = new Mail();
     mail.setToname(hotblack);
     mail.setName(hotblack);
@@ -705,7 +705,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void getMailDeleted()
   {
-    logger.fine("getMailDeleted");
+    LOGGER.fine("getMailDeleted");
     final Mail mail = new Mail();
     mail.setToname(marvin);
     mail.setName(hotblack);
@@ -747,7 +747,7 @@ public class PrivateBeanTest
   @Test
   public void getMail()
   {
-    logger.fine("getMail");
+    LOGGER.fine("getMail");
     final Mail mail = new Mail();
     mail.setToname(marvin);
     mail.setName(hotblack);
@@ -800,7 +800,7 @@ public class PrivateBeanTest
   //@Test
   public void createMailItem()
   {
-    logger.fine("createMailItem");
+    LOGGER.fine("createMailItem");
     final Admin admin = TestingConstants.getAdmin();
     final ItemDefinition itemDef = new ItemDefinition();
     itemDef.setId(8009);
@@ -900,7 +900,7 @@ public class PrivateBeanTest
   //@Test
   public void createSecondMailItem() throws MudException
   {
-    logger.fine("createSecondMailItem");
+    LOGGER.fine("createSecondMailItem");
     final Admin admin = TestingConstants.getAdmin();
     final ItemDefinition itemDef = new ItemDefinition();
     itemDef.setId(12);
@@ -970,7 +970,7 @@ public class PrivateBeanTest
   //@Test
   public void createMailItemError1() throws MudException
   {
-    logger.fine("createMailItemError1");
+    LOGGER.fine("createMailItemError1");
     final Mail mail = new Mail();
     mail.setToname(marvin);
     mail.setName(hotblack);
@@ -1013,7 +1013,7 @@ public class PrivateBeanTest
   //@Test
   public void createMailItemError2() throws MudException
   {
-    logger.fine("createMailItemError1");
+    LOGGER.fine("createMailItemError1");
     final Mail mail = new Mail();
     mail.setToname(marvin);
     mail.setName(hotblack);
@@ -1055,7 +1055,7 @@ public class PrivateBeanTest
   @Test
   public void deleteMail() throws MudException
   {
-    logger.fine("deleteMail");
+    LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
     mail.setId(1l);
     mail.setToname(marvin);
@@ -1099,7 +1099,7 @@ public class PrivateBeanTest
   @Test
   public void deleteMailNotYours() throws MudException
   {
-    logger.fine("deleteMail");
+    LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
     mail.setId(1l);
     mail.setToname(hotblack);
@@ -1149,7 +1149,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void deleteMailNotFound() throws MudException
   {
-    logger.fine("deleteMail");
+    LOGGER.fine("deleteMail");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1182,7 +1182,7 @@ public class PrivateBeanTest
   @Test
   public void updateCharacterSheet() throws MudException
   {
-    logger.fine("updateCharacterSheet");
+    LOGGER.fine("updateCharacterSheet");
     final CharacterInfo cinfo = new CharacterInfo();
     cinfo.setName("Marvin");
     cinfo.setImageurl("http://www.images.com/image.jpg");
@@ -1238,7 +1238,7 @@ public class PrivateBeanTest
   @Test
   public void newCharacterSheet() throws MudException
   {
-    logger.fine("newCharacterSheet");
+    LOGGER.fine("newCharacterSheet");
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1295,7 +1295,7 @@ public class PrivateBeanTest
   @Test
   public void updateCharacterSheetScriptInjection() throws MudException
   {
-    logger.fine("updateCharacterSheetScriptInjection");
+    LOGGER.fine("updateCharacterSheetScriptInjection");
     final CharacterInfo cinfo = new CharacterInfo();
     cinfo.setName("Marvin");
     cinfo.setImageurl("http://www.images.com/image.jpg");
@@ -1351,7 +1351,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void updateCharacterSheetOfSomebodyElse() throws MudException
   {
-    logger.fine("updateCharacterSheetOfSomebodyElse");
+    LOGGER.fine("updateCharacterSheetOfSomebodyElse");
     final CharacterInfo cinfo = new CharacterInfo();
     cinfo.setName("Marvin");
     cinfo.setImageurl("http://www.images.com/image.jpg");
@@ -1396,7 +1396,7 @@ public class PrivateBeanTest
   @Test
   public void updateFamilyvalues() throws MudException
   {
-    logger.fine("updateFamilyvalues");
+    LOGGER.fine("updateFamilyvalues");
     final FamilyValue value = new FamilyValue();
     value.setDescription("friend");
     value.setId(1);
@@ -1447,7 +1447,7 @@ public class PrivateBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void updateFamilyvaluesNotFound() throws MudException
   {
-    logger.fine("updateFamilyvaluesNotFound");
+    LOGGER.fine("updateFamilyvaluesNotFound");
     final FamilyValue value = new FamilyValue();
     value.setDescription("friend");
     value.setId(1);
@@ -1492,7 +1492,7 @@ public class PrivateBeanTest
   @Test
   public void newFamilyvalues() throws MudException
   {
-    logger.fine("newFamilyvalues");
+    LOGGER.fine("newFamilyvalues");
     final FamilyValue value = new FamilyValue();
     value.setDescription("friend");
     value.setId(1);
@@ -1545,7 +1545,7 @@ public class PrivateBeanTest
   @Test
   public void deleteFamilyvalues() throws MudException
   {
-    logger.fine("deleteFamilyvalues");
+    LOGGER.fine("deleteFamilyvalues");
     final FamilyValue value = new FamilyValue();
     value.setDescription("friend");
     value.setId(1);

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -80,7 +82,7 @@ public class PublicBean
   {
     return em;
   }
-  private static final Logger itsLog = Logger.getLogger(PublicBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PublicBean.class.getName());
 
   /**
    * Returns a Fortune 100 of players on karchan. The URL:
@@ -97,7 +99,7 @@ public class PublicBean
           })
   public List<Fortune> fortunes()
   {
-    itsLog.finer("entering fortunes");
+    LOGGER.finer("entering fortunes");
     List<Fortune> res = new ArrayList<>();
     try
     {
@@ -114,7 +116,7 @@ public class PublicBean
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
 
-    itsLog.finer("exiting fortunes");
+    LOGGER.finer("exiting fortunes");
     return res;
   }
 
@@ -133,7 +135,7 @@ public class PublicBean
           })
   public List<PublicPerson> who()
   {
-    itsLog.finer("entering who");
+    LOGGER.finer("entering who");
     List<PublicPerson> res = new ArrayList<>();
     try
     {
@@ -172,7 +174,7 @@ public class PublicBean
     {
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
-    itsLog.finer("exiting who");
+    LOGGER.finer("exiting who");
     return res;
   }
 
@@ -191,14 +193,14 @@ public class PublicBean
           })
   public List<News> news()
   {
-    itsLog.finer("entering news");
+    LOGGER.finer("entering news");
 
     List<News> res = new ArrayList<>();
     try
     {
-      itsLog.finer("news: getting news");
+      LOGGER.finer("news: getting news");
       List<BoardMessage> list = boardBean.getNews();
-      itsLog.log(Level.FINER, "news: found {0} entries.", list.size());
+      LOGGER.log(Level.FINER, "news: found {0} entries.", list.size());
       for (BoardMessage message : list)
       {
         News news = new News();
@@ -212,7 +214,7 @@ public class PublicBean
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
 
-    itsLog.finer("exiting news");
+    LOGGER.finer("exiting news");
     return res;
   }
 
@@ -231,7 +233,7 @@ public class PublicBean
           })
   public List<PublicPerson> status()
   {
-    itsLog.finer("entering status");
+    LOGGER.finer("entering status");
     List<PublicPerson> res = new ArrayList<>();
     try
     {
@@ -249,7 +251,7 @@ public class PublicBean
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
 
-    itsLog.finer("exiting status");
+    LOGGER.finer("exiting status");
     return res;
   }
 
@@ -274,7 +276,7 @@ public class PublicBean
           })
   public List<PublicGuild> guilds()
   {
-    itsLog.finer("entering guilds");
+    LOGGER.finer("entering guilds");
     List<PublicGuild> res = new ArrayList<>();
     try
     {
@@ -288,7 +290,7 @@ public class PublicBean
         newGuild.title = guild.getTitle();
         if (guild.getBoss() == null)
         {
-          itsLog.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
+          LOGGER.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
         } else
         {
           newGuild.bossname = guild.getBoss().getName();
@@ -302,7 +304,7 @@ public class PublicBean
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
 
-    itsLog.finer("exiting guilds");
+    LOGGER.finer("exiting guilds");
     return res;
   }
 
@@ -322,7 +324,7 @@ public class PublicBean
           })
   public PublicPerson charactersheet(@PathParam("name") String name)
   {
-    itsLog.finer("entering charactersheet");
+    LOGGER.finer("entering charactersheet");
     PublicPerson res = new PublicPerson();
 
     User person = getEntityManager().find(User.class, name);
@@ -353,7 +355,7 @@ public class PublicBean
     List<Family> list = query.getResultList();
     for (Family fam : list)
     {
-      itsLog.log(Level.FINER, "{0}", fam);
+      LOGGER.log(Level.FINER, "{0}", fam);
       PublicFamily pfam = new PublicFamily();
       pfam.description = fam.getDescription().getDescription();
       pfam.toname = fam.getFamilyPK().getToname();
@@ -361,7 +363,7 @@ public class PublicBean
     }
 
     // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
-    itsLog.finer("exiting charactersheet");
+    LOGGER.finer("exiting charactersheet");
     return res;
   }
 
@@ -381,7 +383,7 @@ public class PublicBean
   public List<PublicPerson> charactersheets()
   {
 
-    itsLog.finer("entering charactersheets");
+    LOGGER.finer("entering charactersheets");
 
     List<PublicPerson> res = new ArrayList<>();
     try
@@ -400,7 +402,7 @@ public class PublicBean
     {
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
-    itsLog.finer("exiting charactersheets");
+    LOGGER.finer("exiting charactersheets");
     return res;
   }
 }

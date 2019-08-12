@@ -47,7 +47,7 @@ public class MailBean
     {
         return em;
     }
-    private static final Logger itsLog = Logger.getLogger(MailBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MailBean.class.getName());
 
     public boolean hasNewMail(Person person)
     {

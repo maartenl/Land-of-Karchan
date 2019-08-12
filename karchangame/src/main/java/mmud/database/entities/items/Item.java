@@ -67,7 +67,7 @@ import java.util.logging.Logger;
 abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler, Ownage
 {
 
-  private static final Logger itsLog = Logger.getLogger(Item.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Item.class.getName());
 
   private static final long serialVersionUID = 1L;
 
@@ -405,18 +405,18 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   {
     if (itemattributeCollection == null)
     {
-      itsLog.finer("getItemattribute name=" + name + " collection is null");
+      LOGGER.finer("getItemattribute name=" + name + " collection is null");
       return null;
     }
     for (Itemattribute attr : itemattributeCollection)
     {
-      itsLog.finer("getItemattribute name=" + name + " attr=" + attr);
+      LOGGER.finer("getItemattribute name=" + name + " attr=" + attr);
       if (attr.getName().equals(name))
       {
         return attr;
       }
     }
-    itsLog.log(Level.FINER, "getItemattribute name={0} not found", name);
+    LOGGER.log(Level.FINER, "getItemattribute name={0} not found", name);
     return null;
   }
 
@@ -429,7 +429,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   @Override
   public void setAttribute(String name, String value)
   {
-    itsLog.log(Level.FINER, "setAttribute name={0} value={1}", new Object[]{name, value});
+    LOGGER.log(Level.FINER, "setAttribute name={0} value={1}", new Object[]{name, value});
     Itemattribute attr = getItemattribute(name);
     if (attr == null)
     {
@@ -447,20 +447,20 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     Itemattribute attr = getItemattribute(name);
     if (attr == null)
     {
-      itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on item {2}.", new Object[]{name, value, getId()});
+      LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on item {2}.", new Object[]{name, value, getId()});
       return false;
     }
     if (attr.getValue() == value)
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
+      LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") same object on item " + getId() + "!");
       return true;
     }
     if (attr.getValue().equals(value))
     {
-      itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
+      LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") matches on item " + getId() + "!");
       return true;
     }
-    itsLog.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
+    LOGGER.finer("verifyAttribute (name=" + name + ", value=" + value + ") with (name=" + attr.getName() + ", value=" + attr.getValue() + ") no match on item " + getId() + ".");
     return false;
   }
 
@@ -793,7 +793,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
   public DisplayInterface getRead()
   {
-    itsLog.info("Item getRead");
+    LOGGER.info("Item getRead");
     if (!isReadable())
     {
       throw new ItemException("Item cannot be read.");

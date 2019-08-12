@@ -58,7 +58,7 @@ import java.util.logging.Logger;
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 
-  private static final Logger itsLog = java.util.logging.Logger.getLogger(Person.class.getName());
+  private static final Logger LOGGER = java.util.logging.Logger.getLogger(Person.class.getName());
   private static final long serialVersionUID = 1L;
   public static final String EMPTY_LOG = "";
   @Id
@@ -1469,18 +1469,18 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     if (attributes == null)
     {
-      itsLog.finer("getCharattribute name=" + name + " collection is null");
+      LOGGER.finer("getCharattribute name=" + name + " collection is null");
       return null;
     }
     for (Charattribute attr : attributes)
     {
-      itsLog.finer("getCharattribute name=" + name + " attr=" + attr);
+      LOGGER.finer("getCharattribute name=" + name + " attr=" + attr);
       if (attr.getName().equals(name))
       {
         return attr;
       }
     }
-    itsLog.log(Level.FINER, "getCharattribute name={0} not found", name);
+    LOGGER.log(Level.FINER, "getCharattribute name={0} not found", name);
     return null;
   }
 
@@ -1510,7 +1510,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     Charattribute attr = getCharattribute(name);
     if (attr == null)
     {
-      itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]
+      LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]
       {
         name, value, getName()
       });
@@ -1518,13 +1518,13 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     }
     if (attr.getValue().equals(value))
     {
-      itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]
+      LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]
       {
         name, value, getName()
       });
       return true;
     }
-    itsLog.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]
+    LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]
     {
       name, value, attr.getName(), attr.getValue(), getName()
     });

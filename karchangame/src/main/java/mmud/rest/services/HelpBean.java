@@ -46,7 +46,7 @@ public class HelpBean
     {
         return em;
     }
-    private static final Logger itsLog = Logger.getLogger(HelpBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HelpBean.class.getName());
 
     /**
      * returns a help message on the current command, or general help

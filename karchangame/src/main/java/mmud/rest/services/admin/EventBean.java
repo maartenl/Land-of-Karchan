@@ -56,7 +56,7 @@ import mmud.rest.webentities.admin.AdminEvent;
 public class EventBean extends AbstractFacade<Event>
 {
 
-  private static final Logger itsLog = Logger.getLogger(EventBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(EventBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -231,7 +231,7 @@ public class EventBean extends AbstractFacade<Event>
           })
   public List<AdminEvent> findAllAdminEvents()
   {
-    itsLog.info("findAll");
+    LOGGER.info("findAll");
     List<Event> all = super.findAll();
     final List<AdminEvent> result = new ArrayList<>();
     for (Event event : all)

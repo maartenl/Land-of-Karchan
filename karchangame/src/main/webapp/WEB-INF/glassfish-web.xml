@@ -2,26 +2,6 @@
 <!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
 <glassfish-web-app error-url="">
   <context-root>/karchangame</context-root>
-  <security-role-mapping>
-    <role-name>deputy</role-name>
-    <group-name>deputy</group-name>
-  </security-role-mapping>
-  <security-role-mapping>
-    <role-name>god</role-name>
-    <group-name>god</group-name>
-  </security-role-mapping>
-  <security-role-mapping>
-    <role-name>player</role-name>
-    <group-name>player</group-name>
-  </security-role-mapping>
-  <security-role-mapping>
-    <role-name>guildmaster</role-name>
-    <group-name>guildmaster</group-name>
-  </security-role-mapping>
-  <security-role-mapping>
-    <role-name>guildmember</role-name>
-    <group-name>guildmember</group-name>
-  </security-role-mapping>
   <class-loader delegate="true"/>
   <jsp-config>
     <property name="keepgenerated" value="true">

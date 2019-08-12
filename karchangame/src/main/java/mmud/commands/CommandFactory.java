@@ -89,7 +89,7 @@ import mmud.exceptions.MudException;
 public class CommandFactory
 {
 
-  private static final Logger itsLog = Logger.getLogger(CommandFactory.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(CommandFactory.class.getName());
   private static final CommandCreator BOGUS = () -> new BogusCommand(".+");
 
   static final CommandCreator AWAKEN = () -> new AwakenCommand("awaken");
@@ -324,7 +324,7 @@ public class CommandFactory
    */
   public static List<UserCommandInfo> getUserCommands(User user, String aCommand)
   {
-    itsLog.entering("CommandFactory", "getUserCommands " + user + " " + aCommand);
+    LOGGER.entering("CommandFactory", "getUserCommands " + user + " " + aCommand);
     List<UserCommandInfo> result = new ArrayList<>();
     for (UserCommandInfo myCom : theUserCommandStructure)
     {

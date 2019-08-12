@@ -53,7 +53,7 @@ import mmud.exceptions.MudWebException;
 public class MethodBean extends AbstractFacade<Method>
 {
 
-    private static final Logger itsLog = Logger.getLogger(MethodBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MethodBean.class.getName());
 
     @PersistenceContext(unitName = "karchangamePU")
     private EntityManager em;
@@ -71,13 +71,13 @@ public class MethodBean extends AbstractFacade<Method>
             })
     public void create(Method entity, @Context SecurityContext sc)
     {
-        itsLog.info("create");
+        LOGGER.info("create");
         final String name = sc.getUserPrincipal().getName();
         Admin admin = getEntityManager().find(Admin.class, name);
-        itsLog.info(admin.toString());
+        LOGGER.info(admin.toString());
         entity.setCreation(LocalDateTime.now());
         entity.setOwner(admin);
-        itsLog.info(entity.toString());
+        LOGGER.info(entity.toString());
         checkValidation(name, entity);
         getEntityManager().persist(entity);
     }
@@ -90,7 +90,7 @@ public class MethodBean extends AbstractFacade<Method>
             })
     public void edit(@PathParam("alphabet") String alphabet, @PathParam("id") String id, Method entity, @Context SecurityContext sc)
     {
-        itsLog.info("edit");
+        LOGGER.info("edit");
         final String name = sc.getUserPrincipal().getName();
 
         Method attribute = find(id);
@@ -152,7 +152,7 @@ public class MethodBean extends AbstractFacade<Method>
             })
     public List<Method> findLike(@PathParam("alphabet") String alphabet)
     {
-        itsLog.log(Level.FINER, "findRange {0}", alphabet);
+        LOGGER.log(Level.FINER, "findRange {0}", alphabet);
         Query query = getEntityManager().createNamedQuery("Method.findRange");
         query.setParameter("alphabet", alphabet + "%");
         List<Method> result = query.getResultList();

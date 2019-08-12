@@ -30,7 +30,7 @@ import mmud.exceptions.PersonNotFoundException;
 public class Room
 {
 
-    private static final Logger itsLog = Logger.getLogger(Room.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Room.class.getName());
 
     private final mmud.database.entities.game.Room room;
 
@@ -235,7 +235,7 @@ public class Room
 
     public Item[] getItems(Integer itemdefid)
     {
-        itsLog.entering(this.getClass().getName(), "getItems");
+        LOGGER.entering(this.getClass().getName(), "getItems");
         List<Item> result = new ArrayList<>();
         final Set<mmud.database.entities.items.Item> items = room.getItems();
         for (mmud.database.entities.items.Item item : items)
@@ -245,7 +245,7 @@ public class Room
                 result.add(new Item(item));
             }
         }
-        itsLog.exiting(this.getClass().getName(), "getItems");
+        LOGGER.exiting(this.getClass().getName(), "getItems");
         return result.toArray(new Item[result.size()]);
     }
 //Item addItem(integer)

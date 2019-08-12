@@ -42,7 +42,7 @@ import mmud.database.entities.game.Admin;
 public class AdminBean
 {
 
-  private static final Logger itsLog = Logger.getLogger(AdminBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AdminBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
