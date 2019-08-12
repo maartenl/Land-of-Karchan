@@ -18,6 +18,7 @@ package mmud.tests.rest;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
+import static mmud.tests.RestTest.BASEPATH;
 
 /**
  *
@@ -30,11 +31,11 @@ public class Helper
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     pathParam("player", player).
                     contentType("application/json").header("Accept", "application/json").
                     when().
-                    get("/private/{player}/guild").
+                    get(BASEPATH + "/private/{player}/guild").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;
@@ -44,11 +45,55 @@ public class Helper
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     pathParam("player", player).
                     contentType("application/json").header("Accept", "application/json").
                     when().
-                    get("/private/{player}/guild/ranks").
+                    get(BASEPATH + "/private/{player}/guild/ranks").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
+  static Response getWikipage(String jsession, String player, String title)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JREMEMBERMEID", jsession).
+                    pathParam("title", title).
+                    contentType("application/json").header("Accept", "application/json").
+                    when().
+                    get(BASEPATH + "/wikipages/{title}").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
+  static Response createWikipage(String json, String jsession, String karn)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JREMEMBERMEID", jsession).
+                    pathParam("title", "Testingpage").
+                    contentType("application/json").header("Accept", "application/json").
+                    body(json).
+                    when().
+                    post(BASEPATH + "/wikipages/{title}").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
+  static Response updateWikipage(String json, String jsession, String karn)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JREMEMBERMEID", jsession).
+                    pathParam("title", "Testingpage").
+                    contentType("application/json").header("Accept", "application/json").
+                    body(json).
+                    when().
+                    put(BASEPATH + "/wikipages/{title}").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;

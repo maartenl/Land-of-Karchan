@@ -47,7 +47,7 @@ public class BowTest extends GameRestTest
 
     // bow
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").

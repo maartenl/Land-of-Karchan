@@ -66,7 +66,7 @@ public class GuildMasterTest extends GameRestTest
 
     String command = "createguild disaster Disaster Area";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -80,7 +80,7 @@ public class GuildMasterTest extends GameRestTest
 
     command = "deleteguild";
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -112,7 +112,7 @@ public class GuildMasterTest extends GameRestTest
 
     String command = "createguild disaster Disaster Area";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -127,7 +127,7 @@ public class GuildMasterTest extends GameRestTest
     // make rank
     command = "guildaddrank 1 Minion";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -142,7 +142,7 @@ public class GuildMasterTest extends GameRestTest
     // assign rank
     command = "guildassignrank 1 Marvin";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -157,7 +157,7 @@ public class GuildMasterTest extends GameRestTest
     // unassign rank
     command = "guildassignrank none Marvin";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -174,7 +174,7 @@ public class GuildMasterTest extends GameRestTest
     System.out.println(guildranks.prettyPrint());
     command = "guilddelrank 1";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -188,7 +188,7 @@ public class GuildMasterTest extends GameRestTest
 
     command = "deleteguild";
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").

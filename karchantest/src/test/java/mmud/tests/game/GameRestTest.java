@@ -35,7 +35,7 @@ public abstract class GameRestTest extends RestTest
     String jsession = login(player, password);
     // enter game
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
@@ -49,7 +49,7 @@ public abstract class GameRestTest extends RestTest
   {
     final String command = "clear";
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", player).
             queryParam("offset", "").
@@ -64,7 +64,7 @@ public abstract class GameRestTest extends RestTest
   protected void quit(String jsession, String player)
   {
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").

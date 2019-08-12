@@ -49,7 +49,7 @@ public class BlogRestTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     contentType("application/json").header("Accept", "application/json").
                     when().
                     get("/administration/blogs").
@@ -67,7 +67,7 @@ public class BlogRestTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     contentType("application/json").header("Accept", "application/json").
                     pathParam("id", id).
                     when().
@@ -81,7 +81,7 @@ public class BlogRestTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     contentType("application/json").header("Accept", "application/json").
                     body(body).
                     when().
@@ -95,7 +95,7 @@ public class BlogRestTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     contentType("application/json").header("Accept", "application/json").
                     pathParam("id", id).
                     body(body).
@@ -115,7 +115,7 @@ public class BlogRestTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     contentType("application/json").header("Accept", "application/json").
                     pathParam("id", id).
                     when().

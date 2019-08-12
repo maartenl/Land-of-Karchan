@@ -70,7 +70,7 @@ public class GuildMemberTest extends GameRestTest
 
     String command = "guilddetails";
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", karn).
             queryParam("offset", "").
@@ -111,7 +111,7 @@ public class GuildMemberTest extends GameRestTest
 
     String command = "guild Good morning, everyone.";
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
+            cookie("JREMEMBERMEID", jsession).
             queryParam("log", "true").
             pathParam("player", karn).
             queryParam("offset", "").
