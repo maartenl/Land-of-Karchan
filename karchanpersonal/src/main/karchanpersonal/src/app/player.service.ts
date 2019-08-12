@@ -15,6 +15,7 @@ import {
 } from './guild/guild.model';
 import { Family } from './player-settings/family.model';
 import { Wikipage } from './wikipages/wikipage.model';
+import { Picture } from './pictures/picture.model';
 import { ErrorMessage } from './errors/errormessage.model';
 
 import { catchError, map, tap } from 'rxjs/operators';
@@ -47,6 +48,8 @@ export class PlayerService {
 
   wikipagesUrl: string;
 
+  picturesUrl: string;
+
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
@@ -58,6 +61,7 @@ export class PlayerService {
     this.guildmembersUrl = environment.GUILDMEMBERS_URL;
     this.guildranksUrl = environment.GUILDRANKS_URL;
     this.wikipagesUrl = environment.WIKIPAGES_URL;
+    this.picturesUrl = environment.PICTURES_URL;
     this.privateUrl = environment.PRIVATE_URL;
   }
 
@@ -151,6 +155,13 @@ export class PlayerService {
       return this.wikipagesUrl;
     }
     return this.wikipagesUrl + '/' + title;
+  }
+
+  private getPicturesUrl(id?: string): string {
+    if (id === undefined) {
+      return this.picturesUrl;
+    }
+    return this.picturesUrl + '/' + id;
   }
 
   // charactersheet calls
@@ -408,6 +419,28 @@ export class PlayerService {
 
   public updateWikipage(wikipage: Wikipage): Observable<any> {
     return this.http.put(this.getWikipagesUrl(wikipage.title), wikipage)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  // pictures
+
+  public getPictures(): Observable<any> {
+    return this.http.get<Picture[]>(this.getPicturesUrl())
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public createPicture(picture: Picture): Observable<any> {
+    return this.http.post(this.getPicturesUrl(), picture)
       .pipe(
         catchError(err => {
           this.handleError(err);

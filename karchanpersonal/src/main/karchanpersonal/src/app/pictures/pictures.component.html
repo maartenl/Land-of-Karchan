@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="row row-content">
+      <div class="col-xs-12 col-sm-12">
+        <table class="table table-sm table-striped table-bordered">
+          <thead class="thead-inverse">
+            <tr>
+              <th>#</th>
+              <th>Url</th>
+              <th>mimeType</th>
+              <th>On</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let picture of pictures">
+              <td (click)="setPicture(picture)">{{ picture.id }}</td>
+              <td (click)="setPicture(picture)">{{ picture.url }}</td>
+              <td (click)="setPicture(picture)">{{ picture.mimeType }}</td>
+              <td (click)="setPicture(picture)">{{ picture.createDate | date:'medium' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card" *ngIf="picture !== undefined">
+          <div class="card-block">
+            <h4 class="card-title">{{ picture.url }}</h4>
+            <p class="card-text"><strong>Id:</strong> {{ picture.id }}</p>
+            <p class="card-text"><strong>MimeType:</strong> {{ picture.mimeType }}</p>
+            <p class="card-text"><strong>On:</strong> {{ picture.createDate | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12">
+        <h3>Compose Picture</h3>
+      </div>
+      <div class="col-xs-12 col-sm-12">
+        <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+          <fieldset class="form-group">
+            <label for="url">Url</label>
+            <input type="text" class="form-control" id="url" name="url" formControlName="url">
+          </fieldset>
+          <div class="col-xs-12 col-sm-12 text-right">
+            <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Send</button>
+            <button type="reset" [disabled]="form.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

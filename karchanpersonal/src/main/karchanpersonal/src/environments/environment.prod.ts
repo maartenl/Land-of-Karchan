@@ -10,5 +10,6 @@ export const environment = {
   GUILDRANKS_URL: '/karchangame/resources/private/[player]/guild/ranks',
   GUILDMEMBERS_URL: '/karchangame/resources/private/[player]/guild/members',
   WIKIPAGES_URL: '/karchangame/resources/private/[player]/wikipages',
+  PICTURES_URL: '/karchangame/resources/private/[player]/pictures',
   GAME_URL: '/karchangame/resources/game/[player]/'
 };

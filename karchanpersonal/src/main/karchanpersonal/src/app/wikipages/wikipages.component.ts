@@ -58,7 +58,6 @@ export class WikipagesComponent implements OnInit {
           this.resetForm(result);
         },
         (err: any) => { // error
-          console.log("woah nelly!", err);
           this.isNew = true;
           this.wikipage = {
             title,

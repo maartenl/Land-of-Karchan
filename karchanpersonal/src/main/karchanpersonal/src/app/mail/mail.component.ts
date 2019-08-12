@@ -32,7 +32,7 @@ export class MailComponent implements OnInit {
   mailForm: FormGroup;
 
   constructor(private playerService: PlayerService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.mails = new MailList();
     this.mail = new Mail();
     this.createForm();
