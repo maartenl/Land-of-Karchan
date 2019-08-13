@@ -125,24 +125,22 @@ public class WikipageBean
   /**
    * Create a new wikipage.
    *
-   * @param title the (unique) title of the wikipage, should not exist yet.
    * @param json the new wikipage to store in json format.
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorization failed.
    * BAD_REQUEST if an unexpected exception crops up.
    */
   @POST
-  @Path("{title}")
   @Consumes(
           {
             MediaType.APPLICATION_JSON
           })
-  public Response createWikipage(String json, @PathParam("title") String title)
+  public Response createWikipage(String json)
   {
     Jsonb jsonb = JsonbBuilder.create();
     PrivateWikipage newWikipage = jsonb.fromJson(json, PrivateWikipage.class);
     Query queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.findByTitle");
-    queryCheckExistence.setParameter("title", title);
+    queryCheckExistence.setParameter("title", newWikipage.title );
 
     List<Wikipage> list = queryCheckExistence.getResultList();
 
@@ -168,7 +166,7 @@ public class WikipageBean
     }
 
     Wikipage wikipage = new Wikipage();
-    wikipage.setTitle(title);
+    wikipage.setTitle(newWikipage.title);
     wikipage.setSummary(newWikipage.summary);
     wikipage.setContent(newWikipage.content);
     wikipage.setCreateDate(LocalDateTime.now());
