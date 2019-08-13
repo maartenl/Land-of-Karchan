@@ -29,12 +29,12 @@ export class WikipagesComponent implements OnInit {
     this.wikipage = {
       title: 'Unknown',
       name: '',
-      createDate: '',
-      modifiedDate: '',
+      createDate: null,
+      modifiedDate: null,
       version: '0',
       content: '',
       summary: '',
-      parentTitle: ''
+      parentTitle: null
     };
     this.isNew = true;
     this.createForms();
@@ -63,12 +63,12 @@ export class WikipagesComponent implements OnInit {
           this.wikipage = {
             title,
             name: '',
-            createDate: '',
-            modifiedDate: '',
-            version: '0',
+            createDate: null,
+            modifiedDate: null,
+            version: '1.0',
             content: '',
             summary: '',
-            parentTitle: ''
+            parentTitle: null
           };
         },
         () => { // on completion
@@ -81,7 +81,7 @@ export class WikipagesComponent implements OnInit {
       title: '',
       content: '',
       summary: '',
-      parentTitle: ''
+      parentTitle: null
     });
   }
 
@@ -129,12 +129,12 @@ export class WikipagesComponent implements OnInit {
     this.wikipage = {
       title: 'Unknown',
       name: '',
-      createDate: '',
-      modifiedDate: '',
+      createDate: null,
+      modifiedDate: null,
       version: '0',
       content: '',
       summary: '',
-      parentTitle: ''
+      parentTitle: null
     };
     this.isNew = true;
     this.createForms();
