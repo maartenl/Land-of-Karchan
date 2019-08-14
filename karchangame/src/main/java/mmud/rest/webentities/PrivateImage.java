@@ -16,48 +16,43 @@
  */
 package mmud.rest.webentities;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import javax.json.bind.JsonbBuilder;
-import javax.xml.bind.annotation.XmlRootElement;
-import mmud.database.entities.web.Wikipage;
+import mmud.database.entities.web.Image;
 
 /**
  *
  * @author maartenl
  */
-@XmlRootElement
-public class PrivateWikipage
+public class PrivateImage
 {
 
-  public String title;
-  public String name;
-  public String summary;
+  /**
+   * Base 64 encoded content for the image.
+   */
   public String content;
   public LocalDateTime createDate;
-  public LocalDateTime modifiedDate;
-  public String parentTitle;
-  public String version;
+  public Long id;
+  public String mimeType;
+  public String owner;
+  public String url;
 
-  public PrivateWikipage()
+  public PrivateImage()
   {
   }
 
-  public PrivateWikipage(Wikipage wikipage)
+  public PrivateImage(Image image)
   {
-    this.title = wikipage.getTitle();
-    this.name = wikipage.getName();
-    this.summary = wikipage.getSummary();
-    this.content = wikipage.getContent();
-    this.createDate = wikipage.getCreateDate();
-    this.modifiedDate = wikipage.getModifiedDate();
-    this.parentTitle = wikipage.getParentTitle() == null ? null : wikipage.getParentTitle().getTitle();
-    this.version = wikipage.getVersion();
+//    this.content = image.getContent();
+    this.createDate = image.getCreateDate();
+    this.id = image.getId();
+    this.mimeType = image.getMimeType();
+    this.owner = image.getOwner().getName();
+    this.url = image.getUrl();
   }
 
   public String toJson()
   {
     return JsonbBuilder.create().toJson(this);
   }
-
 }

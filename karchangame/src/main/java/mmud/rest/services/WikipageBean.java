@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 maartenl
+ *  Copyright (C) 2019 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 package mmud.rest.services;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -112,7 +111,7 @@ public class WikipageBean
 
       return new PrivateWikipage(list.get(0)).toJson();
 
-    } catch (WebApplicationException e)
+    } catch (MudWebException e)
     {
       //ignore
       throw e;

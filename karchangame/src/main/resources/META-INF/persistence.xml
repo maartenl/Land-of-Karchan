@@ -5,6 +5,7 @@
     <jta-data-source>jdbc/mmud</jta-data-source>
     <class>mmud.database.entities.web.Wikipage</class>
     <class>mmud.database.entities.web.WikipageHistory</class>
+    <class>mmud.database.entities.web.Image</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="none"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 maartenl
+ * Copyright (C) 2019 maartenl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ package mmud.tests.rest;
 
 import mmud.tests.RestTest;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

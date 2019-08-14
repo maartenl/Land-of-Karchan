@@ -74,11 +74,10 @@ public class Helper
     Response gameResponse
             = given().log().ifValidationFails().
                     cookie("JREMEMBERMEID", jsession).
-                    pathParam("title", "Testingpage").
                     contentType("application/json").header("Accept", "application/json").
                     body(json).
                     when().
-                    post(BASEPATH + "/wikipages/{title}").
+                    post(BASEPATH + "/wikipages").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;
@@ -94,6 +93,35 @@ public class Helper
                     body(json).
                     when().
                     put(BASEPATH + "/wikipages/{title}").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
+  static Response getImages(String jsession, String player)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JREMEMBERMEID", jsession).
+                    pathParam("player", player).
+                    contentType("application/json").header("Accept", "application/json").
+                    when().
+                    get(BASEPATH + "/private/{player}/images").
+                    then().statusCode(200).
+                    and().extract().response();
+    return gameResponse;
+  }
+
+  static Response createImage(String json, String jsession, String player)
+  {
+    Response gameResponse
+            = given().log().ifValidationFails().
+                    cookie("JREMEMBERMEID", jsession).
+                    pathParam("player", player).
+                    contentType("application/json").header("Accept", "application/json").
+                    body(json).
+                    when().
+                    post(BASEPATH + "/private/{player}/images").
                     then().statusCode(200).
                     and().extract().response();
     return gameResponse;
