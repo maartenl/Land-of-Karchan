@@ -77,7 +77,7 @@ public class EventsBean
   {
     return em;
   }
-  private static final Logger itsLog = Logger.getLogger(EventsBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(EventsBean.class.getName());
 
   /**
    * Runs a single event, right now. Used by administrators for testing.
@@ -87,7 +87,7 @@ public class EventsBean
    */
   public void runSingleEvent(Administrator aUser, Integer eventid)
   {
-    itsLog.entering(this.getClass().getName(), "runSingleEvent");
+    LOGGER.entering(this.getClass().getName(), "runSingleEvent");
     if (eventid == null)
     {
       throw new MudWebException(null, "Event id was empty.", Response.Status.BAD_REQUEST);
@@ -122,7 +122,7 @@ public class EventsBean
       // event.setCallable(Boolean.FALSE);
       // log it but keep going with the next event.
       logBean.writeLogException(ex);
-      itsLog.throwing(EventsBean.class.getName(), "events()", ex);
+      LOGGER.throwing(EventsBean.class.getName(), "events()", ex);
       throw new MudWebException(aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
     }
   }
@@ -138,7 +138,7 @@ public class EventsBean
   @Schedule(hour = "*", minute = "*/1")
   public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
-    // itsLog.log(Level.INFO, "Events scheduled at time {0}.", LocalDateTime.now());
+    // LOGGER.log(Level.INFO, "Events scheduled at time {0}.", LocalDateTime.now());
     // logBean.writeLog(null, "Events scheduled at time " + LocalDateTime.now() + ".");
     Query query = getEntityManager().createNamedQuery("Event.list");
     Calendar calendar = Calendar.getInstance();
@@ -155,7 +155,7 @@ public class EventsBean
     RunScript runScript = new RunScript(persons, rooms, items, world);
     for (Event event : list)
     {
-      // itsLog.log(Level.INFO, "Event {0} executed.", event.getEventid());
+      // LOGGER.log(Level.INFO, "Event {0} executed.", event.getEventid());
       logBean.writeLog("Event " + event.getEventid() + " executed.");
       Method method = event.getMethod();
       if (event.getRoom() != null)
@@ -170,7 +170,7 @@ public class EventsBean
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
           logBean.writeLogException(ex);
-          itsLog.throwing(EventsBean.class.getName(), String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName()), ex);
+          LOGGER.throwing(EventsBean.class.getName(), String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName()), ex);
         }
       } else if (event.getPerson() != null)
       {
@@ -184,7 +184,7 @@ public class EventsBean
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
           logBean.writeLogException(ex);
-          itsLog.throwing(EventsBean.class.getName(), String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName()), ex);
+          LOGGER.throwing(EventsBean.class.getName(), String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName()), ex);
         }
       } else
       {
@@ -198,7 +198,7 @@ public class EventsBean
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
           logBean.writeLogException(ex);
-          itsLog.throwing(EventsBean.class.getName(), String.format("events(method=%s)", method.getName()), ex);
+          LOGGER.throwing(EventsBean.class.getName(), String.format("events(method=%s)", method.getName()), ex);
         }
       }
     }
@@ -221,7 +221,7 @@ public class EventsBean
       if (user.isIdleTooLong())
       {
         final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + user.getIdleTime() + " minutes. Deactivated.";
-        itsLog.info(message);
+        LOGGER.info(message);
         logBean.writeLog(message);
         user.getRoom().sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");
         user.deactivate();

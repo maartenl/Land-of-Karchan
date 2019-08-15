@@ -120,7 +120,7 @@ public class PrivateBean
     return publicBean;
   }
 
-  private static final Logger itsLog = Logger.getLogger(PrivateBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PrivateBean.class.getName());
 
   /**
    * This method should be called to verify that the target of a certain
@@ -201,7 +201,7 @@ public class PrivateBean
           })
   public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
-    itsLog.finer("entering listMail");
+    LOGGER.finer("entering listMail");
     User person = authenticate(name);
     List<PrivateMail> res = new ArrayList<>();
     try
@@ -253,7 +253,7 @@ public class PrivateBean
           })
   public Response hasNewMail(@PathParam("name") String name)
   {
-    itsLog.finer("entering hasNewMail");
+    LOGGER.finer("entering hasNewMail");
     Person person = authenticate(name);
     boolean result = mailBean.hasNewMail(person);
     if (!result)
@@ -282,7 +282,7 @@ public class PrivateBean
     }
     if (!toperson.isUser())
     {
-      itsLog.log(Level.INFO, "user not proper user, {0}", name);
+      LOGGER.log(Level.INFO, "user not proper user, {0}", name);
       throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
     }
     return toperson;
@@ -306,7 +306,7 @@ public class PrivateBean
           })
   public Response newMail(PrivateMail newMail, @PathParam("name") String name)
   {
-    itsLog.finer("entering newMail");
+    LOGGER.finer("entering newMail");
     User person = authenticate(name);
     if (newMail.toname != null && "deputies".equalsIgnoreCase(newMail.toname))
     {
@@ -339,7 +339,7 @@ public class PrivateBean
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
-    itsLog.finer("exiting newMail");
+    LOGGER.finer("exiting newMail");
     return Response.ok().build();
   }
 
@@ -373,7 +373,7 @@ public class PrivateBean
     }
     if (!mail.getToname().getName().equals(toname))
     {
-      itsLog.log(Level.INFO, "mail {0} not for {1}", new Object[]
+      LOGGER.log(Level.INFO, "mail {0} not for {1}", new Object[]
       {
         id, toname
       });
@@ -401,14 +401,14 @@ public class PrivateBean
           })
   public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
   {
-    itsLog.finer("entering getMail");
+    LOGGER.finer("entering getMail");
     Person person = authenticate(name);
     try
     {
       Mail mail = getMail(person.getName(), id);
       // turn off the "have not read" sign.
       mail.setHaveread(Boolean.TRUE);
-      itsLog.finer("exiting getMail");
+      LOGGER.finer("exiting getMail");
       return new PrivateMail(mail);
     } catch (WebApplicationException e)
     {
@@ -461,7 +461,7 @@ public class PrivateBean
     return Response.noContent().build();
     // TODO MLE: this needs to get fixed.
 //
-//        itsLog.finer("entering createMailItem");
+//        LOGGER.finer("entering createMailItem");
 //        Person person = authenticate(name, lok);
 //
 //        try
@@ -469,14 +469,14 @@ public class PrivateBean
 //            // get the specific mail with id {id}
 //            Mail mail = getMail(person.getName(), id);
 //
-//            itsLog.finer("createMailItem: retrieve template item definition");
+//            LOGGER.finer("createMailItem: retrieve template item definition");
 //
 //            ItemDefinition newdef = null;
 //            if (mail.getItemDefinition() == null)
 //            {
 //                if (itemDefinitionId >= Mail.ITEMS.length && itemDefinitionId < 0)
 //                {
-//                    itsLog.finer("createMailItem: wrong item def");
+//                    LOGGER.finer("createMailItem: wrong item def");
 //                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
 //                }
 //
@@ -484,12 +484,12 @@ public class PrivateBean
 //
 //                int max_id = 0;
 //                // retrieve max item_idItemDefinition.maxid
-//                itsLog.finer("createMailItem: retrieve max id");
+//                LOGGER.finer("createMailItem: retrieve max id");
 //                Query query = getEntityManager().createNamedQuery("ItemDefinition.maxid");
 //                max_id = (Integer) query.getSingleResult();
 //
 //                // create itemDefinitionId definition
-//                itsLog.finer("createMailItem: create item definition");
+//                LOGGER.finer("createMailItem: create item definition");
 //                newdef = new ItemDefinition();
 //                newdef.setId(max_id + 1);
 //                newdef.setName(definition.getName());
@@ -509,12 +509,12 @@ public class PrivateBean
 //                getEntityManager().persist(newdef);
 //
 //                // set itemDefinitionId definition into the mail
-//                itsLog.finer("createMailItem: set itemdefinition into the mail");
+//                LOGGER.finer("createMailItem: set itemdefinition into the mail");
 //                mail.setItemDefinition(newdef);
 //            }
 //
 //            // create itemDefinitionId instance
-//            itsLog.finer("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
+//            LOGGER.finer("createMailItem: create instance object " + mail.getItemDefinition() + " " + name);
 //
 //            Item item = new Item();
 //            item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
@@ -525,7 +525,7 @@ public class PrivateBean
 //            if (item.getId() != null)
 //            {
 //                // put item instance into inventory
-//                itsLog.finer("createMailItem: create inventory object for " + name);
+//                LOGGER.finer("createMailItem: create inventory object for " + name);
 //
 //                CharitemTable inventory = new CharitemTable();
 //                inventory.setId(item.getId());
@@ -548,10 +548,10 @@ public class PrivateBean
 //
 //        } catch (Exception e)
 //        {
-//            itsLog.finer("createMailItem: throws ", e);
+//            LOGGER.finer("createMailItem: throws ", e);
 //            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
 //        }
-//        itsLog.finer("exiting createMailItem");
+//        LOGGER.finer("exiting createMailItem");
 //        return Response.ok().build();
   }
 
@@ -572,12 +572,12 @@ public class PrivateBean
           })
   public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
   {
-    itsLog.finer("entering deleteMail");
+    LOGGER.finer("entering deleteMail");
     Person person = authenticate(name);
     // get the specific mail with id {id}
     Mail mail = getMail(person.getName(), id);
     mail.setDeleted(Boolean.TRUE);
-    itsLog.finer("exiting deleteMail");
+    LOGGER.finer("exiting deleteMail");
     return Response.ok().build();
   }
 
@@ -599,17 +599,17 @@ public class PrivateBean
           })
   public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
-    itsLog.log(Level.FINER, "entering deletePerson {0}", name);
+    LOGGER.log(Level.FINER, "entering deletePerson {0}", name);
     Person person = authenticate(name);
     Query deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
     deleteBoardMessagesQuery.setParameter("person", person);
-    itsLog.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
+    LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
     Query deleteMailsQuery = em.createNamedQuery("Mail.deleteByName");
     deleteMailsQuery.setParameter("person", person);
-    itsLog.log(Level.FINER, "deleting {0} mudmails", deleteMailsQuery.executeUpdate());
+    LOGGER.log(Level.FINER, "deleting {0} mudmails", deleteMailsQuery.executeUpdate());
     em.remove(person);
     gameBean.logoff(requestContext);
-    itsLog.finer("exiting deletePerson");
+    LOGGER.finer("exiting deletePerson");
     return Response.ok().build();
   }
 
@@ -630,7 +630,7 @@ public class PrivateBean
           })
   public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
   {
-    itsLog.finer("entering updateCharacterSheet");
+    LOGGER.finer("entering updateCharacterSheet");
     Person person = authenticate(name);
     if (!person.getName().equals(cinfo.name))
     {
@@ -685,7 +685,7 @@ public class PrivateBean
           })
   public Response delete(@PathParam("name") String name)
   {
-    itsLog.finer("entering delete");
+    LOGGER.finer("entering delete");
     Person person = authenticate(name);
     try
     {
@@ -741,7 +741,7 @@ public class PrivateBean
           })
   public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
   {
-    itsLog.finer("entering updateFamilyvalues");
+    LOGGER.finer("entering updateFamilyvalues");
     if (description == null || description == 0)
     {
       throw new MudWebException(name, "An invalid relationship was provided.", Response.Status.BAD_REQUEST);
@@ -782,7 +782,7 @@ public class PrivateBean
       //ignore
       throw e;
     }
-    itsLog.finer("exiting updateFamilyvalues");
+    LOGGER.finer("exiting updateFamilyvalues");
     return Response.ok().build();
   }
 
@@ -803,7 +803,7 @@ public class PrivateBean
           })
   public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
   {
-    itsLog.finer("entering deleteFamilyValues");
+    LOGGER.finer("entering deleteFamilyValues");
     Person person = authenticate(name);
     FamilyPK pk = new FamilyPK();
     pk.setName(person.getName());
@@ -814,7 +814,7 @@ public class PrivateBean
       throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
     }
     getEntityManager().remove(family);
-    itsLog.finer("exiting deleteFamilyValues");
+    LOGGER.finer("exiting deleteFamilyValues");
     return Response.ok().build();
   }
 

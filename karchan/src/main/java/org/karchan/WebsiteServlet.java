@@ -31,19 +31,31 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
+import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.karchan.menus.MenuFactory;
+import org.karchan.security.Roles;
 
+@DeclareRoles(
+        {
+          Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
+        }
+)
 @WebServlet("*.html")
 public class WebsiteServlet extends HttpServlet
 {
 
   private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
+
+  @Inject
+  private SecurityContext securityContext;
 
   @Inject
   private Freemarker freemarker;
@@ -62,7 +74,7 @@ public class WebsiteServlet extends HttpServlet
   {
     this.menuFactory = menuFactory;
   }
-  
+
   @Override
   public void init() throws ServletException
   {
@@ -82,10 +94,37 @@ public class WebsiteServlet extends HttpServlet
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
-    root.put("user", "Big Joe");
     root.put("version", "2.0.2-SNAPSHOT");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
+    if (request.getParameter("logout") != null)
+    {
+      for (Cookie cookie : request.getCookies())
+      {
+        if (cookie.getName().equals("JREMEMBERMEID")
+                || cookie.getName().equals("karchanname")
+                || cookie.getName().equals("karchanroles")
+                || cookie.getName().equals("XSRF-TOKEN"))
+        {
+          cookie.setMaxAge(0);
+          response.addCookie(cookie);
+        }
+      }
+      root.put("user", null);
+      root.put("isDeputy", false);
+      root.put("isPlayer", false);
+      root.put("isGuildmember", false);
+      root.put("isGuildmaster", false);
+      root.put("isGod", false);
+    } else
+    {
+      root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
+      root.put("isDeputy", securityContext.isCallerInRole(Roles.DEPUTY));
+      root.put("isPlayer", securityContext.isCallerInRole(Roles.PLAYER));
+      root.put("isGuildmember", securityContext.isCallerInRole(Roles.GUILDMEMBER));
+      root.put("isGuildmaster", securityContext.isCallerInRole(Roles.GUILDMASTER));
+      root.put("isGod", securityContext.isCallerInRole(Roles.GOD));
+    }
 
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);
     if (visibleMenu.isPresent())

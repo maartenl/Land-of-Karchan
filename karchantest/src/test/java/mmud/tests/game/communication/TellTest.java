@@ -49,7 +49,7 @@ public class TellTest extends GameRestTest
 
     clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -83,7 +83,7 @@ public class TellTest extends GameRestTest
 
     clear(jsessionHotblack, hotblack);
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionKarn).
+            cookie("JREMEMBERMEID", jsessionKarn).
             queryParam("log", "true").
             pathParam("player", karn).
             queryParam("offset", "").
@@ -95,7 +95,7 @@ public class TellTest extends GameRestTest
             then().statusCode(200);
 
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -110,7 +110,7 @@ public class TellTest extends GameRestTest
             and().extract().response();
 
     given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionKarn).
+            cookie("JREMEMBERMEID", jsessionKarn).
             queryParam("log", "true").
             pathParam("player", karn).
             queryParam("offset", "").
@@ -138,7 +138,7 @@ public class TellTest extends GameRestTest
 
     clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").

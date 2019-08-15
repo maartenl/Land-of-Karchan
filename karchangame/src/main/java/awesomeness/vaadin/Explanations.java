@@ -29,7 +29,7 @@ import mmud.rest.services.LogBean;
 public class Explanations extends VerticalLayout
 {
 
-    private static final Logger logger = Logger.getLogger(Explanations.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Explanations.class.getName());
 
     private final LogBean logBean;
     private final Admin currentUser;

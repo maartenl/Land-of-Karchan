@@ -60,7 +60,7 @@ public class ItemBean implements ItemsInterface
     {
         return em;
     }
-    private static final Logger itsLog = Logger.getLogger(ItemBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ItemBean.class.getName());
 
     /**
      * Drops an item on the floor.

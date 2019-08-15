@@ -31,7 +31,7 @@ import mmud.rest.services.LogBean;
 public abstract class Buttons extends HorizontalLayout
 {
 
-  private static final Logger logger = Logger.getLogger(Buttons.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Buttons.class.getName());
 
   private boolean busyCreatingNewItem;
 
@@ -106,7 +106,7 @@ public abstract class Buttons extends HorizontalLayout
   /**
    *
    * @param currentUser current administrator
-   * @param logBean the logger
+   * @param logBean the LOGGER
    * @param itemname the name of the items to be edited, for example "Item definition". Used for logging.
    * @param permitDeletes indicates that deleteing of information is permitted.
    */
@@ -140,7 +140,7 @@ public abstract class Buttons extends HorizontalLayout
       @Override
       public void buttonClick(Button.ClickEvent event)
       {
-        logger.log(Level.FINEST, "discard clicked.");
+        LOGGER.log(Level.FINEST, "discard clicked.");
         discard();
       }
     });
@@ -185,7 +185,7 @@ public abstract class Buttons extends HorizontalLayout
       @Override
       public void buttonClick(Button.ClickEvent event)
       {
-        logger.log(Level.FINEST, "disown clicked.");
+        LOGGER.log(Level.FINEST, "disown clicked.");
         logBean.writeDeputyLog(currentUser, itemname + " '" + disown() + "' deleted.");
       }
     });

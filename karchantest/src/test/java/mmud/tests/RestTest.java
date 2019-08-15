@@ -19,6 +19,7 @@ package mmud.tests;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.response.Response;
+import java.util.Base64;
 import org.hamcrest.MatcherAssert;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -32,9 +33,11 @@ public class RestTest
 
   private static final boolean DEBUGGING = false;
 
+  public static final String BASEPATH = "/karchangame/resources";
+  
   public static void init()
   {
-    RestAssured.basePath = "/karchangame/resources";
+    RestAssured.basePath = "/";
   }
 
   /**
@@ -46,16 +49,17 @@ public class RestTest
    */
   public String login(final String player, final String password)
   {
+    String header = player + ":" + password;
+    header = new String(Base64.getEncoder().encode(header.getBytes()));   
     Response response = given().log().ifValidationFails().
-            param("password", password).
-            pathParam("player", player).
             contentType("application/json").
             header("Accept", "application/json").
+            header("Authorization", "Basic "  + header).
             when().
-            put("/game/{player}/logon").
-            then().statusCode(204). // no content
+            get("/").
+            then().statusCode(200).
             and().extract().response();
-    String jsession = response.cookie("JSESSIONID");
+    String jsession = response.cookie("JREMEMBERMEID");
     MatcherAssert.assertThat(jsession, not(nullValue()));
     return jsession;
   }
@@ -69,13 +73,13 @@ public class RestTest
   public void logoff(String jsession, final String player)
   {
     Response response = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsession).
-            pathParam("player", player).
+            cookie("JREMEMBERMEID", jsession).
+            param("logout", "true").
             contentType("application/json").
-            header("Accept", "application/json").
+            header("Accept", "application/json").            
             when().
-            put("/game/{player}/logoff").
-            then().statusCode(204). // no content
+            get("/").
+            then().statusCode(200). // no content
             and().extract().response();
   }
 

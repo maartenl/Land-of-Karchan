@@ -47,7 +47,7 @@ public class SayTest extends GameRestTest
     final String command = "say Something!";
 
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -78,7 +78,7 @@ public class SayTest extends GameRestTest
 
     clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
@@ -108,7 +108,7 @@ public class SayTest extends GameRestTest
 
     clear(jsessionHotblack, hotblack);
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").

@@ -8,13 +8,14 @@
     <class>mmud.database.entities.web.Faq</class>
     <class>mmud.database.entities.web.Wikipage</class>
     <class>mmud.database.entities.web.WikipageHistory</class>
+    <class>mmud.database.entities.web.Users</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="none"/>
       <property name="eclipselink.cache.shared.default" value="false"/>
       <property name="eclipselink.logging.level" value="INFO"/>
-      <!-- line below is for logging of sql, set to FINE if you need to see it--> 
-      <property name="eclipselink.logging.level.sql" value="INFO"/>      
+      <!-- line below is for logging of sql, set to FINE if you need to see it-->
+      <property name="eclipselink.logging.level.sql" value="INFO"/>
     </properties>
   </persistence-unit>
 </persistence>

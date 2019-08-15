@@ -53,7 +53,7 @@ public class CreateAndDeleteCharTest extends RestTest
   {
     Response gameResponse
             = given().log().ifValidationFails().
-                    cookie("JSESSIONID", jsession).
+                    cookie("JREMEMBERMEID", jsession).
                     pathParam("player", player).
                     contentType("application/json").header("Accept", "application/json").
                     when().

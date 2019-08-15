@@ -56,8 +56,8 @@ import static org.testng.Assert.fail;
 public class GuildBeanTest
 {
 
-  // Obtain a suitable logger.
-  private static final Logger logger = Logger.getLogger(GuildBeanTest.class.getName());
+  // Obtain a suitable LOGGER.
+  private static final Logger LOGGER = Logger.getLogger(GuildBeanTest.class.getName());
   @Mocked
   EntityManager entityManager;
 
@@ -151,7 +151,7 @@ public class GuildBeanTest
   @Test(expectedExceptions = MudWebException.class)
   public void getMembersButNotInAGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
-    logger.fine("getMembersButNotInAGuild");
+    LOGGER.fine("getMembersButNotInAGuild");
     GuildBean guildBean = new GuildBean()
     {
       @Override
@@ -173,7 +173,7 @@ public class GuildBeanTest
   @Test
   public void getMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
-    logger.fine("getMembers");
+    LOGGER.fine("getMembers");
     final Guild guild = TestingConstants.getGuild();
     marvin.setGuild(guild);
     SortedSet<User> members = new TreeSet<>(new Comparator<User>()
@@ -209,7 +209,7 @@ public class GuildBeanTest
   @Test
   public void getNoMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
-    logger.fine("getNoMembers");
+    LOGGER.fine("getNoMembers");
     final Guild guild = TestingConstants.getGuild();
     marvin.setGuild(guild);
     SortedSet<User> members = new TreeSet<>(new Comparator<User>()

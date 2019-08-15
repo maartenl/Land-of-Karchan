@@ -45,7 +45,7 @@ public class ClearTest extends GameRestTest
     final String command = "clear";
 
     Response gameResponse = given().log().ifValidationFails().
-            cookie("JSESSIONID", jsessionHotblack).
+            cookie("JREMEMBERMEID", jsessionHotblack).
             queryParam("log", "true").
             pathParam("player", hotblack).
             queryParam("offset", "").
