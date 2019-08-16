@@ -59,7 +59,7 @@ import mmud.rest.webentities.PrivateImage;
 @RolesAllowed(Roles.PLAYER)
 @Stateless
 @LocalBean
-@Path("/private/{name}/images")
+@Path("/private/{name}/pictures")
 public class PicturesBean
 {
 
@@ -79,6 +79,7 @@ public class PicturesBean
   {
     return em;
   }
+
   private static final Logger LOGGER = Logger.getLogger(PicturesBean.class.getName());
 
   /**
@@ -150,10 +151,6 @@ public class PicturesBean
 
     String name = securityContext.getCallerPrincipal().getName();
     if (name == null)
-    {
-      throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
-    }
-    if (!name.equals(newImage.owner))
     {
       throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
     }

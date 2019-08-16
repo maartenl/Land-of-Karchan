@@ -157,11 +157,8 @@ export class PlayerService {
     return this.wikipagesUrl + '/' + title;
   }
 
-  private getPicturesUrl(id?: string): string {
-    if (id === undefined) {
-      return this.picturesUrl;
-    }
-    return this.picturesUrl + '/' + id;
+  private getPicturesUrl(): string {
+    return this.picturesUrl.replace('[player]', this.getName());
   }
 
   // charactersheet calls

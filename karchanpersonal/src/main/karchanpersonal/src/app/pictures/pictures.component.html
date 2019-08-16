@@ -33,13 +33,14 @@
         <h3>Compose Picture</h3>
       </div>
       <div class="col-xs-12 col-sm-12">
-        <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+        <form [formGroup]="form" (ngSubmit)="save()" novalidate>
           <fieldset class="form-group">
             <label for="url">Url</label>
             <input type="text" class="form-control" id="url" name="url" formControlName="url">
           </fieldset>
+          <input type="file" (change)="onFileChange($event)"/>
           <div class="col-xs-12 col-sm-12 text-right">
-            <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Send</button>
+            <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
             <button type="reset" [disabled]="form.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
           </div>
         </form>
