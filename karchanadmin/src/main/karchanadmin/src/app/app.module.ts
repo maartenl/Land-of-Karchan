@@ -13,13 +13,15 @@ import { AppComponent } from './app.component';
 import { BlogsComponent } from './blogs/blogs.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
+import { SystemlogComponent } from './systemlog/systemlog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlogsComponent,
     TemplatesComponent,
-    ErrorsComponent
+    ErrorsComponent,
+    SystemlogComponent
   ],
   imports: [
     BrowserModule,

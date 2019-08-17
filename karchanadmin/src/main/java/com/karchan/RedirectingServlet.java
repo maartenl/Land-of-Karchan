@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "RedirectingServlet", urlPatterns =
 {
-  "/blogs/*", "/templates/*"
+  "/blogs/*", "/templates/*", "/systemlog/*"
 })
 public class RedirectingServlet extends HttpServlet
 {

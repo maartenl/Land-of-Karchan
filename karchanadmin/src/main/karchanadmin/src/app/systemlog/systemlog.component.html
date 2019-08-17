@@ -1,0 +1,36 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <div class="card" *ngIf="log !== undefined">
+        <div class="card-body">
+          <h5 class="card-title">Message</h5>
+          <p class="card-text">{{ log.message }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <table class="table table-sm table-striped table-bordered">
+        <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>loggerName</th>
+            <th>Type</th>
+            <th>Organization</th>
+            <th>When</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td (click)="setLog(log)">{{ log.messageID }}</td>
+            <td (click)="setLog(log)">{{ log.loggerName }}</td>
+            <td (click)="setLog(log)">{{ log.messageTypeLevel }}</td>
+            <td (click)="setLog(log)">{{ log.organizationID }}</td>
+            <td (click)="setLog(log)">{{ log.timestamp | date:'medium' }}</td>
+            <td (click)="setLog(log)">{{ log.message.substring(0,40) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

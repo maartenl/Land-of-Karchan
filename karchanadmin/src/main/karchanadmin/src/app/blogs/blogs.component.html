@@ -1,7 +1,37 @@
-<div class="container">
+<div class="container-fluid">
   <div class="row row-content">
-    <div class="col-xs-12 col-sm-12">
-      <table class="table table-sm table-striped table-bordered">
+      <div class="col-xs-12 col-xl-6">
+        <h3>Compose Blog</h3>
+        <form [formGroup]="blogForm" (ngSubmit)="saveBlog()" novalidate>
+          <fieldset class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" formControlName="title">
+          </fieldset>
+          <fieldset class="form-group">
+            <label for="urlTitle">URL</label>
+            <input type="text" class="form-control" id="urlTitle" name="urlTitle" formControlName="urlTitle">
+            <small id="urlTitle" class="form-text text-muted">Only alphanumeric in small caps and dashes, please. For example: 'upgrade-postponed-indefinitely'.</small>
+          </fieldset>
+          <div class="card">
+            <div class="card-header">
+              Contents
+            </div>
+            <div class="card-block" [innerHTML]="blogForm.get('contents').value">
+            </div>
+          </div>
+          <fieldset class="form-group">
+            <label for="body">Contents</label>
+            <textarea class="form-control" id="contents" rows="13" formControlName="contents"></textarea>
+            <small id="contents" class="form-text text-muted">First letter will automatically be turned into a calligraphic picture.</small>
+          </fieldset>
+          <div class="col-xs-12 col-sm-12 text-right">
+            <button type="submit" [disabled]="blogForm.pristine" class="btn btn-primary">Save</button>
+            <button type="reset" [disabled]="blogForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-xs-12 col-xl-6">
+        <table class="table table-sm table-striped table-bordered">
         <thead class="thead-inverse">
           <tr>
             <th>#</th>
@@ -25,37 +55,6 @@
           </tr>
         </tbody>
       </table>
-    <div class="col-xs-12 col-sm-12">
-      <h3>Compose Blog</h3>
-    </div>
-    <div class="col-xs-12 col-sm-12">
-      <form [formGroup]="blogForm" (ngSubmit)="saveBlog()" novalidate>
-        <fieldset class="form-group">
-          <label for="title">Title</label>
-          <input type="text" class="form-control" id="title" name="title" formControlName="title">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="urlTitle">URL</label>
-          <input type="text" class="form-control" id="urlTitle" name="urlTitle" formControlName="urlTitle">
-          <small id="urlTitle" class="form-text text-muted">Only alphanumeric in small caps and dashes, please. For example: 'upgrade-postponed-indefinitely'.</small>
-        </fieldset>
-        <div class="card" style="width: 40rem;">
-          <div class="card-header">
-            Contents
-          </div>
-          <div class="card-block" [innerHTML]="blogForm.get('contents').value">
-          </div>
-        </div>
-        <fieldset class="form-group">
-          <label for="body">Contents</label>
-          <textarea class="form-control" id="contents" rows="13" formControlName="contents"></textarea>
-          <small id="contents" class="form-text text-muted">First letter will automatically be turned into a calligraphic picture.</small>
-        </fieldset>
-        <div class="col-xs-12 col-sm-12 text-right">
-          <button type="submit" [disabled]="blogForm.pristine" class="btn btn-primary">Save</button>
-          <button type="reset" [disabled]="blogForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
-        </div>
-      </form>
     </div>
   </div>
 </div>

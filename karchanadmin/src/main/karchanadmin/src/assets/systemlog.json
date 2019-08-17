@@ -1,0 +1,18 @@
+[
+  {
+    "loggerName": "mmud.rest.services.PublicBean",
+    "message": "exiting who",
+    "messageID": "",
+    "messageTypeLevel": "FINER",
+    "organizationID": "Payara 5.184",
+    "timestamp": "2019-08-17T11:53:05.252Z"
+  },
+  {
+    "loggerName": "mmud.rest.services.PublicBean",
+    "message": "entering who",
+    "messageID": "",
+    "messageTypeLevel": "FINER",
+    "organizationID": "Payara 5.184",
+    "timestamp": "2019-08-17T11:53:05.220Z"
+  }
+]
