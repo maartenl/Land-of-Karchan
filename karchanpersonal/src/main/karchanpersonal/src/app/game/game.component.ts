@@ -41,26 +41,6 @@ export class GameComponent implements OnInit {
       );
   }
 
-  public logoff(): void {
-    const game = this;
-    this.playerService.logoff()
-      .subscribe(
-        (result: any) => { // on success
-          game.playerService.clearName();
-          if (window.location !== window.parent.location) {
-            window.parent.location.href = '/game/goodbye.html';
-          }
-          window.location.href = '/game/goodbye.html';
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
-
-  }
-
   public isLoggedIn(): boolean {
     if (this.error) {
       return false;

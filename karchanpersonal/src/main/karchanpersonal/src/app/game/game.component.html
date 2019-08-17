@@ -1,20 +1,19 @@
 <div class="container-fluid">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
-      <div *ngIf="isLoggedIn()" class="alert alert-success" role="alert">
-        You are logged on as {{ getPlayer() }}.
+      <div *ngIf="isLoggedIn()" class="alert alert-primary" role="alert">
+        Welcome to Karchan, {{ getPlayer() }}!
+        <span class="float-right">
+          <div *ngIf="hasNewMail">
+            [<a href="/mail">New mail!</a>]
+          </div>
+          [<a href="#" (click)="playGame()">Play</a>]
+          [<a href="https://www.karchan.org/game/goodbye.html?logout=true">Log out</a>]
+        </span>
       </div>
       <div *ngIf="!isLoggedIn()" class="alert alert-danger" role="alert">
         You are not logged in! Please click <a target="_parent" href="/">here</a> to log in.
       </div>
-      <div *ngIf="hasNewMail" class="alert alert-success" role="alert">
-        You have new mudmail.
-      </div>
-    </div>
-    <div class="col-xs-12 col-sm-12">
-      <button *ngIf="isLoggedIn()" class="btn btn-primary btn-block" (click)="playGame()" type="button">Play the Game</button>
-      <button *ngIf="isLoggedIn()" class="btn btn-outline-primary btn-block" (click)="logoff()" type="button">Log Out</button>
     </div>
   </div>
 </div>
-

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 import { environment } from '../environments/environment';
 
@@ -50,7 +51,10 @@ export class PlayerService {
 
   picturesUrl: string;
 
-  constructor(private http: HttpClient, private errorsService: ErrorsService) {
+  constructor(
+    private cookieService: CookieService,
+    private http: HttpClient,
+    private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
     this.gameUrl = environment.GAME_URL;
@@ -66,18 +70,15 @@ export class PlayerService {
   }
 
   /**
-   * Retrieves the name of the player from the local storage.
+   * Retrieves the name of the player from the karchanname cookie.
    */
   public getName(): string {
     if (this.name != null) {
       return this.name;
     }
-    if (typeof (Storage) !== 'undefined') {
-      // Store
-      this.name = localStorage.getItem('karchanname');
-      if (this.name !== null) {
-        return this.name;
-      }
+    this.name = this.cookieService.get('karchanname');
+    if (this.name !== null) {
+      return this.name;
     }
     const error: ErrorMessage = new ErrorMessage();
     error.type = '404';
@@ -89,25 +90,11 @@ export class PlayerService {
     if (this.name != null) {
       return true;
     }
-    if (typeof (Storage) !== 'undefined') {
-      // Store
-      this.name = localStorage.getItem('karchanname');
-      if (this.name !== null) {
-        return true;
-      }
+    this.name = this.cookieService.get('karchanname');
+    if (this.name !== null) {
+      return true;
     }
     return false;
-  }
-
-  /**
-   * Clears the name of the player from the local storage.
-   */
-  public clearName(): void {
-    if (typeof (Storage) !== 'undefined') {
-      // Store
-      localStorage.removeItem('karchanname');
-    }
-    this.name = null;
   }
 
   // get appropriate urls for rest calls
@@ -453,17 +440,12 @@ export class PlayerService {
     return this.http.post(url, null);
   }
 
-  public logoff(): Observable<any> {
-    const url: string = this.getGameUrl() + 'logoff';
-    return this.http.put(url, null);
-  }
-
   /**
    * Handles error, delivers them to the errorService.
    * @param error the error message received from the HTTP call
    * @param ignore which states can we choose to ignore?
    */
-  private handleError(error: HttpErrorResponse, ignore ?: string[]) {
+  private handleError(error: HttpErrorResponse, ignore?: string[]) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error.message);

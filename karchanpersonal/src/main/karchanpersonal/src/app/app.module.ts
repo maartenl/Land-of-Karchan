@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -43,7 +43,8 @@ import { PicturesComponent } from './pictures/pictures.component';
   ],
   providers: [
     PlayerService,
-    ErrorsService
+    ErrorsService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })
