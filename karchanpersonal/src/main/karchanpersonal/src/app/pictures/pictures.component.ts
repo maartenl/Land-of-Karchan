@@ -27,7 +27,8 @@ export class PicturesComponent implements OnInit {
   ngOnInit() {
     this.player = this.playerService.getName();
     // retrieve all pictures
-    this.playerService.getPictures().subscribe(
+    this.playerService.getPictures().subscribe({
+      next:
       (result: Picture[]) => { // on success
         if (result !== undefined && result.length !== 0) {
           result.forEach(value => {
@@ -35,13 +36,8 @@ export class PicturesComponent implements OnInit {
           });
           this.pictures = result;
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
-    );
+    });
   }
 
   createForm() {
@@ -54,7 +50,9 @@ export class PicturesComponent implements OnInit {
 
   save() {
     const newPicture = this.prepareSavePicture();
-    this.playerService.createPicture(newPicture).subscribe();
+    this.playerService.createPicture(newPicture).subscribe({
+      complete: () => this.ngOnInit()
+    });
   }
 
   prepareSavePicture(): Picture {
@@ -100,4 +98,5 @@ export class PicturesComponent implements OnInit {
       };
     }
   }
+
 }
