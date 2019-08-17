@@ -16,6 +16,8 @@ export class PicturesComponent implements OnInit {
 
   picture: Picture;
 
+  player: string;
+
   constructor(
     private playerService: PlayerService,
     private formBuilder: FormBuilder) {
@@ -23,6 +25,7 @@ export class PicturesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.player = this.playerService.getName();
     // retrieve all pictures
     this.playerService.getPictures().subscribe(
       (result: Picture[]) => { // on success
