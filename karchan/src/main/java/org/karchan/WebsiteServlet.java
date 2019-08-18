@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
@@ -97,6 +98,14 @@ public class WebsiteServlet extends HttpServlet
     root.put("version", "2.0.2-SNAPSHOT");
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
+    if (request.getCookies() == null)
+    {
+      root.put("darkmode", false);
+    } else
+    {
+      root.put("darkmode", Stream.of(request.getCookies())
+              .anyMatch(cookie -> cookie.getName().equals("karchandarkmode")));
+    }
     if (request.getParameter("logout") != null)
     {
       for (Cookie cookie : request.getCookies())
