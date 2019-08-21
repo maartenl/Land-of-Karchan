@@ -1,17 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   production: boolean;
 
-  constructor() {
+  darkmode: boolean;
+
+  constructor(private cookieService: CookieService) {
     this.production = environment.production;
     if (window.console) {console.log('Production: ' + this.production);}
+  }
+
+  ngOnInit(): void {
+    this.darkmode = this.cookieService.check('karchandarkmode');
+    if (this.darkmode) {
+      document.getElementById('pagestyle').setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
+    }
   }
 
 }

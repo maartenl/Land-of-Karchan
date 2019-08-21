@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 
-
+import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -30,7 +30,7 @@ import { SystemlogComponent } from './systemlog/systemlog.component';
     AppRoutingModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

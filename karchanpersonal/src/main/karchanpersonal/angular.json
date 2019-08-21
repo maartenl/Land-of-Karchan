@@ -26,7 +26,6 @@
               "src/assets/images"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/material-icons/iconfont/material-icons.css",
               "src/styles.css"
             ],

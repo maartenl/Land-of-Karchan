@@ -76,8 +76,8 @@ export class PlayerService {
     if (this.name != null) {
       return this.name;
     }
-    this.name = this.cookieService.get('karchanname');
-    if (this.name !== null) {
+    if (this.cookieService.check('karchanname')) {
+      this.name = this.cookieService.get('karchanname');
       return this.name;
     }
     const error: ErrorMessage = new ErrorMessage();
@@ -87,14 +87,10 @@ export class PlayerService {
   }
 
   public isLoggedIn(): boolean {
-    if (this.name != null) {
+    if (this.name != null && this.name !== '') {
       return true;
     }
-    this.name = this.cookieService.get('karchanname');
-    if (this.name !== null) {
-      return true;
-    }
-    return false;
+    return this.cookieService.check('karchanname');
   }
 
   // get appropriate urls for rest calls
