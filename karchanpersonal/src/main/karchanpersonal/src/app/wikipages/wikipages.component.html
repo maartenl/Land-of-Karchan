@@ -11,6 +11,11 @@
                         formControlName="title" [readonly]="isReadOnly()">
                 </fieldset>
                 <fieldset class="form-group">
+                    <label for="completeUrl">Url</label>
+                    <a class="form-control-plaintext" id="completeUrl" name="completeUrl"
+                        href="https://www.karchan.org/wiki/{{ wikipage.title }}.html">https://www.karchan.org/wiki/{{ wikipage.title }}.html</a>
+                </fieldset>
+                <fieldset class="form-group">
                     <label for="parentTitle">Parent title</label>
                     <input type="text" class="form-control" id="parentTitle" name="parentTitle"
                         formControlName="parentTitle">
@@ -19,6 +24,11 @@
                     <label for="name">Last modified by</label>
                     <input type="text" class="form-control-plaintext" id="name" name="name"
                         value="{{wikipage.name}}" readonly>
+                </fieldset>
+                <fieldset class="form-group form-check" *ngIf="isDeputy()">
+                    <input type="checkbox" class="form-check-input" id="administration" name="administration" 
+                        formControlName="administration" [readonly]="isReadOnly()">
+                    <label class="form-check-label" for="administration">Administration</label>
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="created">Created</label>
@@ -42,6 +52,11 @@
                 <fieldset class="form-group">
                     <label for="content">Content</label>
                     <textarea class="form-control" id="content" rows="13" formControlName="content"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="comment">Comments</label>
+                    <input type="text" class="form-control" id="comment" name="comment" 
+                        formControlName="comment">
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
                     <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>

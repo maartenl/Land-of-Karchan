@@ -3,8 +3,10 @@
     "name": "Pravas",
     "createDate": "2017-03-09T11:37:16Z",
     "modifiedDate": "2017-03-09T11:37:16Z",
-    "version": 36099,
+    "version": 1.1,
     "content": "This is a wiki page.",
     "summary": "This is a wiki page.",
-    "parentTitle": "woah"
+    "parentTitle": "woah",
+    "administration":false,
+    "comment": "No comments."
 }

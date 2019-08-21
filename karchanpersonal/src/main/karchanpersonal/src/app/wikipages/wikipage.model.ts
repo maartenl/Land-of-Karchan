@@ -7,4 +7,6 @@ export interface Wikipage {
   content: string;
   summary: string;
   parentTitle: string;
+  administration: boolean;
+  comment: string;
 }

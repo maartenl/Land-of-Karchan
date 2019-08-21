@@ -3,8 +3,8 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { PlayerService } from '../player.service';
 import { Wikipage } from './wikipage.model';
-import { Observable } from 'rxjs';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+// import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-wikipages',
@@ -22,10 +22,11 @@ export class WikipagesComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private playerService: PlayerService,
-              private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
-              private router: Router) {
+  constructor(
+    private playerService: PlayerService,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private router: Router) {
     this.wikipage = {
       title: 'Unknown',
       name: '',
@@ -34,30 +35,30 @@ export class WikipagesComponent implements OnInit {
       version: '0',
       content: '',
       summary: '',
-      parentTitle: null
+      parentTitle: null,
+      administration: false,
+      comment: undefined
     };
     this.isNew = true;
     this.createForms();
   }
 
   ngOnInit() {
-    let title: string;
-    const thingy: Observable<Wikipage> = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => {
-        title = params.get('title');
-        return this.playerService.getWikipage(title);
-      }));
+    const title: string = this.route.snapshot.paramMap.get('title');
+    this.setWikipage(title);
+  }
 
-    thingy
-      .subscribe(
-        (result: Wikipage) => { // on success
+  private setWikipage(title: string) {
+    this.playerService.getWikipage(title)
+      .subscribe({
+        next: (result: Wikipage) => { // on success
           result.createDate = result.createDate.replace('[UTC]', '');
           result.modifiedDate = result.modifiedDate.replace('[UTC]', '');
           this.wikipage = result;
           this.isNew = false;
           this.resetForm(result);
         },
-        (err: any) => { // error
+        error: (err: any) => { // error
           this.isNew = true;
           this.wikipage = {
             title,
@@ -67,12 +68,12 @@ export class WikipagesComponent implements OnInit {
             version: '1.0',
             content: '',
             summary: '',
-            parentTitle: null
+            parentTitle: null,
+            administration: false,
+            comment: undefined
           };
-        },
-        () => { // on completion
         }
-      );
+      });
   }
 
   createForms() {
@@ -80,7 +81,9 @@ export class WikipagesComponent implements OnInit {
       title: '',
       content: '',
       summary: '',
-      parentTitle: null
+      parentTitle: null,
+      administration: false,
+      comment: ''
     });
   }
 
@@ -90,6 +93,8 @@ export class WikipagesComponent implements OnInit {
       content: wikipage.content,
       summary: wikipage.summary,
       parentTitle: wikipage.parentTitle,
+      administration: wikipage.administration,
+      comment: wikipage.comment
     });
   }
 
@@ -100,9 +105,13 @@ export class WikipagesComponent implements OnInit {
   save() {
     const newWikipage = this.prepareSaveWikipage();
     if (this.isNew) {
-      this.playerService.createWikipage(newWikipage).subscribe();
+      this.playerService.createWikipage(newWikipage).subscribe({
+         complete: () => this.setWikipage(newWikipage.title)
+        });
     } else {
-      this.playerService.updateWikipage(newWikipage).subscribe();
+      this.playerService.updateWikipage(newWikipage).subscribe({
+        complete: () => this.setWikipage(newWikipage.title)
+      });
     }
   }
 
@@ -119,7 +128,9 @@ export class WikipagesComponent implements OnInit {
       createDate: this.wikipage.createDate,
       modifiedDate: this.wikipage.modifiedDate,
       name: this.wikipage.name,
-      version: this.wikipage.version
+      version: this.wikipage.version,
+      administration: formModel.administration as boolean,
+      comment: formModel.comment as string
     };
     return saveWikipage;
   }
@@ -133,9 +144,15 @@ export class WikipagesComponent implements OnInit {
       version: '0',
       content: '',
       summary: '',
-      parentTitle: null
+      parentTitle: null,
+      administration: false,
+      comment: undefined
     };
     this.isNew = true;
     this.createForms();
+  }
+
+  isDeputy(): boolean {
+    return this.playerService.isDeputy();
   }
 }

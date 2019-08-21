@@ -93,6 +93,13 @@ export class PlayerService {
     return this.cookieService.check('karchanname');
   }
 
+  public isDeputy(): boolean {
+    if (!this.cookieService.check('karchanroles')) {
+      return false;
+    }
+    return this.cookieService.get('karchanroles').includes('deputy');
+  }
+
   // get appropriate urls for rest calls
 
   private getPrivateUrl(): string {
