@@ -7,7 +7,8 @@
             <form [formGroup]="form" (ngSubmit)="save()" novalidate>
                 <fieldset class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{wikipage.title}}" [readonly]="isReadOnly()">
+                    <input type="text" class="form-control" id="title" name="title" 
+                        formControlName="title" [readonly]="isReadOnly()">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="parentTitle">Parent title</label>

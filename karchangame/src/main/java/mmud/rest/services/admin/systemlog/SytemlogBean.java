@@ -73,20 +73,14 @@ public class SytemlogBean
   private String logFilename;
 
   /**
-   * Returns all images of a player.
    *
-   * @param name the player in question
-   * @return a list of images in json format
+   * @return most recent 100 log messages from the system log.
    * @throws WebApplicationException <ul>
    * <li>UNAUTHORIZED, if the authorization failed.</li>
    * <li>NOT_FOUND if this wikipage does not exist.</li>
    * <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
    */
   @GET
-  @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
   public String getSystemLog()
   {
     String userName = securityContext.getCallerPrincipal().getName();

@@ -150,7 +150,7 @@ public class WikipageBean
 
     Wikipage parent = null;
 
-    if (newWikipage.parentTitle != null && "".equals(newWikipage.parentTitle.trim()))
+    if (newWikipage.parentTitle != null && !"".equals(newWikipage.parentTitle.trim()))
     {
       Query query = getEntityManager().createNamedQuery("Wikipage.findByTitle");
       query.setParameter("title", newWikipage.parentTitle);
@@ -207,11 +207,11 @@ public class WikipageBean
 
       if (list.isEmpty())
       {
-        throw new MudWebException(null, "Wikipage not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(name, "Wikipage not found.", Response.Status.NOT_FOUND);
       }
       Wikipage parent = null;
 
-      if (privateWikipage.parentTitle != null && "".equals(privateWikipage.parentTitle.trim()))
+      if (privateWikipage.parentTitle != null && !"".equals(privateWikipage.parentTitle.trim()))
       {
         Query query = getEntityManager().createNamedQuery("Wikipage.findByTitle");
         query.setParameter("title", privateWikipage.parentTitle);
@@ -220,7 +220,7 @@ public class WikipageBean
 
         if (parents.isEmpty())
         {
-          throw new MudWebException(null, "Parent wikipage not found.", Response.Status.BAD_REQUEST);
+          throw new MudWebException(name, "Parent wikipage not found.", Response.Status.NOT_FOUND);
         }
         parent = parents.get(0);
       }
@@ -238,11 +238,11 @@ public class WikipageBean
       wikipage.increaseVersion();
       wikipage.setParentTitle(parent);
 
-    } catch (WebApplicationException e)
+    } catch (MudWebException e)
     {
       //ignore
       throw e;
-    } catch (MudException e)
+    } catch (Exception e)
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
