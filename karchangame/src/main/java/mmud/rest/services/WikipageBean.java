@@ -40,7 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
 import org.karchan.security.Roles;
@@ -99,7 +98,10 @@ public class WikipageBean
   {
     try
     {
-      Query query = getEntityManager().createNamedQuery("Wikipage.findByTitle");
+      String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY) 
+              ? "Wikipage.findByTitleAuthorized" 
+              : "Wikipage.findByTitle";              
+      Query query = getEntityManager().createNamedQuery(namedQuery);
       query.setParameter("title", title);
 
       List<Wikipage> list = query.getResultList();
@@ -138,8 +140,8 @@ public class WikipageBean
   {
     Jsonb jsonb = JsonbBuilder.create();
     PrivateWikipage newWikipage = jsonb.fromJson(json, PrivateWikipage.class);
-    Query queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.findByTitle");
-    queryCheckExistence.setParameter("title", newWikipage.title );
+    Query queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage");
+    queryCheckExistence.setParameter("title", newWikipage.title);
 
     List<Wikipage> list = queryCheckExistence.getResultList();
 
@@ -148,6 +150,10 @@ public class WikipageBean
       throw new MudWebException(null, "Wikipage already exists.", Response.Status.FORBIDDEN);
     }
 
+    if (!securityContext.isCallerInRole(Roles.DEPUTY) && newWikipage.administration) {
+      throw new MudWebException(null, "Creation of administrative wikipages not allowed.", Response.Status.UNAUTHORIZED);
+    }
+    
     Wikipage parent = null;
 
     if (newWikipage.parentTitle != null && !"".equals(newWikipage.parentTitle.trim()))
@@ -159,9 +165,14 @@ public class WikipageBean
 
       if (parents.isEmpty())
       {
-        throw new MudWebException(null, "Parent wikipage not found.", Response.Status.BAD_REQUEST);
+        throw new MudWebException(null, "Parent wikipage not found.", Response.Status.NOT_FOUND);
       }
       parent = parents.get(0);
+
+      if (parent.getAdministration() != newWikipage.administration)
+      {
+        throw new MudWebException(null, "Parent wikipage does not have the same rights.", Response.Status.FORBIDDEN);
+      }
     }
 
     Wikipage wikipage = new Wikipage();
@@ -173,6 +184,8 @@ public class WikipageBean
     wikipage.setVersion("1.0");
     wikipage.setName(securityContext.getCallerPrincipal().getName());
     wikipage.setParentTitle(parent);
+    wikipage.setAdministration(newWikipage.administration);
+    wikipage.setComment(newWikipage.comment);
     getEntityManager().persist(wikipage);
 
     return Response.ok().build();
@@ -200,7 +213,10 @@ public class WikipageBean
     PrivateWikipage privateWikipage = jsonb.fromJson(json, PrivateWikipage.class);
     try
     {
-      Query queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.findByTitle");
+      String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY)
+              ? "Wikipage.findByTitleAuthorized"
+              : "Wikipage.findByTitle";
+      Query queryCheckExistence = getEntityManager().createNamedQuery(namedQuery);
       queryCheckExistence.setParameter("title", title);
 
       List<Wikipage> list = queryCheckExistence.getResultList();
@@ -209,6 +225,13 @@ public class WikipageBean
       {
         throw new MudWebException(name, "Wikipage not found.", Response.Status.NOT_FOUND);
       }
+      Wikipage wikipage = list.get(0);
+
+      if (!securityContext.isCallerInRole(Roles.DEPUTY) && wikipage.getAdministration())
+      {
+        throw new MudWebException(null, "Editing of administrative wikipages not allowed.", Response.Status.UNAUTHORIZED);
+      }
+      
       Wikipage parent = null;
 
       if (privateWikipage.parentTitle != null && !"".equals(privateWikipage.parentTitle.trim()))
@@ -224,26 +247,27 @@ public class WikipageBean
         }
         parent = parents.get(0);
       }
-
-      Wikipage wikipage = list.get(0);
-
+      
       WikipageHistory historie = new WikipageHistory(wikipage);
       getEntityManager().persist(historie);
       wikipage.setContent(privateWikipage.content);
       // createDate not changed, obviously.
       // title not changed, obviously.
+      // administration not changed, obviously.
       wikipage.setModifiedDate(LocalDateTime.now());
       wikipage.setName(name);
       wikipage.setSummary(privateWikipage.summary);
       wikipage.increaseVersion();
+      wikipage.setComment(privateWikipage.comment);
       wikipage.setParentTitle(parent);
 
     } catch (MudWebException e)
     {
-      //ignore
+      //ignore and rethrow
       throw e;
     } catch (Exception e)
     {
+      // anything else, throw a BAD REQUEST
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();

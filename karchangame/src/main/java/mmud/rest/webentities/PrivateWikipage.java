@@ -38,6 +38,8 @@ public class PrivateWikipage
   public LocalDateTime modifiedDate;
   public String parentTitle;
   public String version;
+  public boolean administration;
+  public String comment;
 
   public PrivateWikipage()
   {
@@ -53,6 +55,8 @@ public class PrivateWikipage
     this.modifiedDate = wikipage.getModifiedDate();
     this.parentTitle = wikipage.getParentTitle() == null ? null : wikipage.getParentTitle().getTitle();
     this.version = wikipage.getVersion();
+    this.administration = wikipage.getAdministration();
+    this.comment = wikipage.getComment();
   }
 
   public String toJson()

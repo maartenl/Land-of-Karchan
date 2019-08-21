@@ -42,48 +42,68 @@ import javax.validation.constraints.Size;
 @Table(name = "wikipages")
 @NamedQueries(
 {
-  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
+  @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+  @NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title")
 })
 public class Wikipage implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
+
   @Id
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 200)
   @Column(name = "title")
   private String title;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 100)
   @Column(name = "name")
   private String name;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate")
   private LocalDateTime createDate;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate")
   private LocalDateTime modifiedDate;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 10)
   @Column(name = "version")
   private String version;
+
   @Basic(optional = false)
   @NotNull
   @Lob
   @Size(min = 1, max = 65535)
   @Column(name = "content")
   private String content;
+
   @Lob
   @Size(max = 65535)
   @Column(name = "summary")
   private String summary;
+
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "administration")
+  private boolean administration;
+
+  @Size(max = 200)
+  @Column(name = "comment")
+  private String comment;
+
   @OneToMany(mappedBy = "parentTitle")
   private List<Wikipage> wikipageList;
+
   @JoinColumn(name = "parentTitle", referencedColumnName = "title")
   @ManyToOne
   private Wikipage parentTitle;
@@ -200,14 +220,34 @@ public class Wikipage implements Serializable
   {
     this.parentTitle = parentTitle;
   }
+  
+  public boolean getAdministration()
+  {
+    return administration;
+  }
 
+  public void setAdministration(boolean administration)
+  {
+    this.administration = administration;
+  }
+
+  public String getComment()
+  {
+    return comment;
+  }
+
+  public void setComment(String comment)
+  {
+    this.comment = comment;
+  }
+  
   @Override
   public int hashCode()
   {
     int hash = 0;
     hash += (title != null ? title.hashCode() : 0);
     return hash;
-  }
+}
 
   @Override
   public boolean equals(Object object)

@@ -39,17 +39,6 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "wikipages_his")
-@NamedQueries(
-{
-  @NamedQuery(name = "WikipageHistory.findAll", query = "SELECT w FROM WikipageHistory w"),
-  @NamedQuery(name = "WikipageHistory.findById", query = "SELECT w FROM WikipageHistory w WHERE w.id = :id"),
-  @NamedQuery(name = "WikipageHistory.findByTitle", query = "SELECT w FROM WikipageHistory w WHERE w.title = :title"),
-  @NamedQuery(name = "WikipageHistory.findByName", query = "SELECT w FROM WikipageHistory w WHERE w.name = :name"),
-  @NamedQuery(name = "WikipageHistory.findByCreateDate", query = "SELECT w FROM WikipageHistory w WHERE w.createDate = :createDate"),
-  @NamedQuery(name = "WikipageHistory.findByModifiedDate", query = "SELECT w FROM WikipageHistory w WHERE w.modifiedDate = :modifiedDate"),
-  @NamedQuery(name = "WikipageHistory.findByVersion", query = "SELECT w FROM WikipageHistory w WHERE w.version = :version"),
-  @NamedQuery(name = "WikipageHistory.findByParentTitle", query = "SELECT w FROM WikipageHistory w WHERE w.parentTitle = :parentTitle")
-})
 public class WikipageHistory implements Serializable
 {
 
@@ -107,6 +96,15 @@ public class WikipageHistory implements Serializable
   @Column(name = "parentTitle")
   private String parentTitle;
 
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "administration")
+  private boolean administration;
+
+  @Size(max = 200)
+  @Column(name = "comment")
+  private String comment;
+  
   public WikipageHistory()
   {
   }
@@ -215,6 +213,26 @@ public class WikipageHistory implements Serializable
   public void setParentTitle(String parentTitle)
   {
     this.parentTitle = parentTitle;
+  }
+
+  public boolean getAdministration()
+  {
+    return administration;
+  }
+
+  public void setAdministration(boolean administration)
+  {
+    this.administration = administration;
+  }
+
+  public String getComment()
+  {
+    return comment;
+  }
+
+  public void setComment(String comment)
+  {
+    this.comment = comment;
   }
 
   @Override

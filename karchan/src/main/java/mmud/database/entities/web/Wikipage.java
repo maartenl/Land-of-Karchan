@@ -48,9 +48,10 @@ import org.karchan.wiki.WikiRenderer;
 @Table(name = "wikipages")
 @NamedQueries(
 {
-  @NamedQuery(name = "Wikipage.findAll", query = "SELECT w FROM Wikipage w"),
-  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
-  @NamedQuery(name = "Wikipage.findByParentTitle", query = "SELECT w FROM Wikipage w WHERE w.parent.title = :parentTitle")
+  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
+  @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+  @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
+  @NamedQuery(name = "Wikipage.findByParentTitle", query = "SELECT w FROM Wikipage w WHERE w.parent.title = :parentTitle and w.administration = false")
 })
 public class Wikipage implements Serializable
 {
@@ -103,6 +104,15 @@ public class Wikipage implements Serializable
   @JoinColumn(name = "parentTitle")
   private Wikipage parent;
 
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "administration")
+  private boolean administration;
+
+  @Size(max = 200)
+  @Column(name = "comment")
+  private String comment;
+  
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
   private Set<Wikipage> children;
   
@@ -216,6 +226,26 @@ public class Wikipage implements Serializable
     return Collections.unmodifiableSet(children);
   }
   
+  public boolean getAdministration()
+  {
+    return administration;
+  }
+
+  public void setAdministration(boolean administration)
+  {
+    this.administration = administration;
+  }
+
+  public String getComment()
+  {
+    return comment;
+  }
+
+  public void setComment(String comment)
+  {
+    this.comment = comment;
+  }
+
   @Override
   public int hashCode()
   {

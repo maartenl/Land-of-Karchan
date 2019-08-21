@@ -31,9 +31,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.security.enterprise.SecurityContext;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
 import mmud.database.entities.web.Wikipage;
+import org.karchan.security.Roles;
 
 /**
  *
@@ -133,8 +135,7 @@ public class MenuFactory
       @Override
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
-        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findByTitle", Wikipage.class);
-        blogsQuery.setParameter("title", "FrontPage");
+        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
         List<Wikipage> wikipages = blogsQuery.getResultList();
         if (wikipages.size() == 1)
         {
@@ -262,7 +263,7 @@ public class MenuFactory
     return specificBlogMenu;
   }
 
-  public Menu createWikiMenu(String url)
+  public Menu createWikiMenu(String url, boolean isDeputy)
   {
     Menu specificWikipageMenu = new Menu("Wiki", "wiki/specific.html")
     {
@@ -270,7 +271,6 @@ public class MenuFactory
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
         LOGGER.finest("setDatamodel called for WikiSpecific menu");
-        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findByTitle", Wikipage.class);
         String searchWiki;
         try
         {
@@ -280,6 +280,11 @@ public class MenuFactory
           Logger.getLogger(MenuFactory.class.getName()).log(Level.SEVERE, null, ex);
           throw new RuntimeException(ex);
         }
+
+        String namedQuery = isDeputy
+                ? "Wikipage.findByTitleAuthorized"
+                : "Wikipage.findByTitle";
+        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery(namedQuery, Wikipage.class);
         blogsQuery.setParameter("title", searchWiki);
         List<Wikipage> wikipages = blogsQuery.getResultList();
         if (wikipages.size() == 1)
@@ -289,9 +294,9 @@ public class MenuFactory
           createBreadcrumbsFromWikipages(wikipages.get(0), this);
         } else
         {
-          LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found.", new Object[]
+          LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found. (deputy={2})", new Object[]
           {
-            wikipages.size(), searchWiki
+            wikipages.size(), searchWiki, isDeputy
           });
         }
       }

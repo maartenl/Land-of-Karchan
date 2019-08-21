@@ -52,47 +52,65 @@ public class WikipageHistory implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Basic(optional = false)
   @Column(name = "id")
   private Long id;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 200)
   @Column(name = "title")
   private String title;
+
   @Basic(optional = false)
-  @NotNull
+  @NotNull()
   @Size(min = 1, max = 100)
   @Column(name = "name")
   private String name;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate")
   private LocalDateTime createDate;
+
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate")
   private LocalDateTime modifiedDate;
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 10)
   @Column(name = "version")
   private String version;
+
   @Basic(optional = false)
   @NotNull
   @Lob
   @Size(min = 1, max = 65535)
   @Column(name = "content")
   private String content;
+
   @Lob
   @Size(max = 65535)
   @Column(name = "summary")
   private String summary;
+
   @Size(max = 100)
   @Column(name = "parentTitle")
   private String parentTitle;
+
+  @Basic(optional = false)
+  @NotNull()
+  @Column(name = "administration")
+  private boolean administration;
+
+  @Size(max = 200)
+  @Column(name = "comment")
+  private String comment;
 
   public WikipageHistory()
   {
@@ -106,6 +124,8 @@ public class WikipageHistory implements Serializable
     this.modifiedDate = wikipage.getModifiedDate();
     this.version = wikipage.getVersion();
     this.content = wikipage.getContent();
+    this.administration = wikipage.getAdministration();
+    this.comment = wikipage.getComment();
     this.parentTitle = wikipage.getParentTitle() == null ? null : wikipage.getParentTitle().getTitle();
   }
 
@@ -199,6 +219,26 @@ public class WikipageHistory implements Serializable
     this.parentTitle = parentTitle;
   }
 
+  public boolean getAdministration()
+  {
+    return administration;
+  }
+
+  public void setAdministration(boolean administration)
+  {
+    this.administration = administration;
+  }
+
+  public String getComment()
+  {
+    return comment;
+  }
+
+  public void setComment(String comment)
+  {
+    this.comment = comment;
+  }
+  
   @Override
   public int hashCode()
   {
@@ -214,12 +254,12 @@ public class WikipageHistory implements Serializable
     if (!(object instanceof WikipageHistory))
     {
       return false;
-    }
+  }
     WikipageHistory other = (WikipageHistory) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
-    {
+  {
       return false;
-    }
+  }
     return true;
   }
 
