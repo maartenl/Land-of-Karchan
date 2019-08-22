@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  website: 'https://www.karchan.org',
   PRIVATE_URL: '/karchangame/resources/private/[player]',
   CHARACTERSHEET_URL: '/karchangame/resources/private/[player]/charactersheet',
   MAIL_URL: '/karchangame/resources/private/[player]/mail',
