@@ -186,6 +186,7 @@ public class WikipageBean
     wikipage.setParentTitle(parent);
     wikipage.setAdministration(newWikipage.administration);
     wikipage.setComment(newWikipage.comment);
+    wikipage.setOrdering(newWikipage.ordering);
     getEntityManager().persist(wikipage);
 
     return Response.ok().build();
@@ -259,6 +260,7 @@ public class WikipageBean
       wikipage.setSummary(privateWikipage.summary);
       wikipage.increaseVersion();
       wikipage.setComment(privateWikipage.comment);
+      wikipage.setOrdering(privateWikipage.ordering);
       wikipage.setParentTitle(parent);
 
     } catch (MudWebException e)

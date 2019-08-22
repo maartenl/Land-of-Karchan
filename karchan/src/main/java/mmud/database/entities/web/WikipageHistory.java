@@ -104,7 +104,10 @@ public class WikipageHistory implements Serializable
   @Size(max = 200)
   @Column(name = "comment")
   private String comment;
-  
+
+  @Column(name = "ordering")
+  private Integer ordering;
+
   public WikipageHistory()
   {
   }
@@ -233,6 +236,16 @@ public class WikipageHistory implements Serializable
   public void setComment(String comment)
   {
     this.comment = comment;
+  }
+
+  public Integer getOrdering()
+  {
+    return ordering;
+  }
+
+  public void setOrdering(Integer ordering)
+  {
+    this.ordering = ordering;
   }
 
   @Override

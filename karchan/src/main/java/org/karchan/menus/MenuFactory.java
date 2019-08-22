@@ -135,11 +135,15 @@ public class MenuFactory
       @Override
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
-        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
-        List<Wikipage> wikipages = blogsQuery.getResultList();
+        TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
+        List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
         {
+          TypedQuery<Wikipage> childrenQuery = entityManager.createNamedQuery("Wikipage.findChildrenOfFrontpage", Wikipage.class);
+          List<Wikipage> children = childrenQuery.getResultList();
+
           root.put("wikipage", wikipages.get(0));
+          root.put("children", children);
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} main wikipages ('FrontPage') found.", wikipages.size());
@@ -284,14 +288,15 @@ public class MenuFactory
         String namedQuery = isDeputy
                 ? "Wikipage.findByTitleAuthorized"
                 : "Wikipage.findByTitle";
-        TypedQuery<Wikipage> blogsQuery = entityManager.createNamedQuery(namedQuery, Wikipage.class);
-        blogsQuery.setParameter("title", searchWiki);
-        List<Wikipage> wikipages = blogsQuery.getResultList();
+        TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery(namedQuery, Wikipage.class);
+        wikipageQuery.setParameter("title", searchWiki);
+        List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
         {
           root.put("wikipage", wikipages.get(0));
           setName(wikipages.get(0).getTitle());
           createBreadcrumbsFromWikipages(wikipages.get(0), this);
+          root.put("children", wikipages.get(0).getChildren());
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found. (deputy={2})", new Object[]

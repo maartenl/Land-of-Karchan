@@ -40,7 +40,8 @@ public class PrivateWikipage
   public String version;
   public boolean administration;
   public String comment;
-
+  public Integer ordering;
+  
   public PrivateWikipage()
   {
   }
@@ -57,6 +58,7 @@ public class PrivateWikipage
     this.version = wikipage.getVersion();
     this.administration = wikipage.getAdministration();
     this.comment = wikipage.getComment();
+    this.ordering = wikipage.getOrdering();
   }
 
   public String toJson()

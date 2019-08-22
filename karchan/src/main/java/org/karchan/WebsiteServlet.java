@@ -101,10 +101,13 @@ public class WebsiteServlet extends HttpServlet
     if (request.getCookies() == null)
     {
       root.put("darkmode", false);
+      root.put("hideToc", false);
     } else
     {
       root.put("darkmode", Stream.of(request.getCookies())
               .anyMatch(cookie -> cookie.getName().equals("karchandarkmode")));
+      root.put("hideToc", Stream.of(request.getCookies())
+              .anyMatch(cookie -> cookie.getName().equals("karchanhidetoc")));
     }
     if (request.getParameter("logout") != null)
     {

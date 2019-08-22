@@ -19,6 +19,7 @@ package mmud.database.entities.web;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +34,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,7 +53,7 @@ import org.karchan.wiki.WikiRenderer;
   @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
   @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
   @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
-  @NamedQuery(name = "Wikipage.findByParentTitle", query = "SELECT w FROM Wikipage w WHERE w.parent.title = :parentTitle and w.administration = false")
+  @NamedQuery(name = "Wikipage.findChildrenOfFrontpage", query = "SELECT w FROM Wikipage w WHERE (w.parent.title = 'FrontPage' or w.parent is null) and w.administration = false order by w.ordering")
 })
 public class Wikipage implements Serializable
 {
@@ -113,8 +115,12 @@ public class Wikipage implements Serializable
   @Column(name = "comment")
   private String comment;
   
+  @Column(name = "ordering")
+  private Integer ordering;
+
   @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-  private Set<Wikipage> children;
+  @OrderBy("ordering ASC")
+  private List<Wikipage> children;
   
   public Wikipage()
   {
@@ -222,8 +228,8 @@ public class Wikipage implements Serializable
     return children.add(childPage);
   }
 
-  public Set<Wikipage> getChildren() {
-    return Collections.unmodifiableSet(children);
+  public List<Wikipage> getChildren() {
+    return Collections.unmodifiableList(children);
   }
   
   public boolean getAdministration()
@@ -244,6 +250,16 @@ public class Wikipage implements Serializable
   public void setComment(String comment)
   {
     this.comment = comment;
+  }
+
+  public Integer getOrdering()
+  {
+    return ordering;
+  }
+
+  public void setOrdering(Integer ordering)
+  {
+    this.ordering = ordering;
   }
 
   @Override
