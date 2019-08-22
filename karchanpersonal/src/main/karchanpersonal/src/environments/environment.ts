@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  website: 'http://localhost:8080',
   PRIVATE_URL: '/karchangame/resources/private/[player]',
   CHARACTERSHEET_URL: 'assets/charactersheet.json',
   MAIL_URL: 'assets/mail.json',

@@ -5,6 +5,7 @@ import { PlayerService } from '../player.service';
 import { Wikipage } from './wikipage.model';
 // import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-wikipages',
@@ -48,6 +49,10 @@ export class WikipagesComponent implements OnInit {
     this.setWikipage(title);
   }
 
+  getWebsite(): string {
+    return environment.website;
+  }
+  
   private setWikipage(title: string) {
     this.playerService.getWikipage(title)
       .subscribe({

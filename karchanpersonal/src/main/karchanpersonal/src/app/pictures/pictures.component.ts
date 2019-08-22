@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PlayerService } from '../player.service';
 import { Picture } from './picture.model';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pictures',
@@ -38,6 +39,10 @@ export class PicturesComponent implements OnInit {
         }
       }
     });
+  }
+
+  getWebsite(): string {
+    return environment.website;
   }
 
   createForm() {

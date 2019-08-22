@@ -2,11 +2,11 @@
     <div class="row row-content">
       <div class="col-xs-12 col-sm-12">
         <div class="card" *ngIf="picture !== undefined">
-          <img src="https://www.karchan.org/images/player/{{ player }}{{ picture.url }}" class="card-img-top" alt="{{ picture.url }}">
+          <img src="{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}" class="card-img-top" alt="{{ picture.url }}">
           <div class="card-body">
             <h4 class="card-title">{{ picture.url }}</h4>
             <p class="card-text"><strong>Id:</strong> {{ picture.id }}</p>
-            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="https://www.karchan.org/images/player/{{ player }}{{ picture.url }}">https://www.karchan.org/images/player/{{ player }}{{ picture.url }}</a></p>
+            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}">{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}</a></p>
             <p class="card-text"><strong>MimeType:</strong> {{ picture.mimeType }}</p>
             <p class="card-text"><strong>On:</strong> {{ picture.createDate | date:'medium' }}</p>          
           </div>
