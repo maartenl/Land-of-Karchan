@@ -48,6 +48,10 @@ public class MenuFactory
 
   private final static Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
 
+  private static final int MAX_RECENT_WIKIPAGES_EDITED = 5;
+
+  private static final int MAX_LATEST_BLOGS = 5;
+
   /**
    * Contains a mapping between the url (for example "blogs/index.html") and the
    * menu (for example "Blogs" with template name "blogs/index").
@@ -106,7 +110,7 @@ public class MenuFactory
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
         TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
-        blogsQuery.setMaxResults(5);
+        blogsQuery.setMaxResults(MAX_LATEST_BLOGS);
         List<Blog> blogs = blogsQuery.getResultList();
         root.put("blogs", blogs);
       }
@@ -135,6 +139,11 @@ public class MenuFactory
       @Override
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
+        TypedQuery<Wikipage> recentQuery = entityManager.createNamedQuery("Wikipage.findRecentEdits", Wikipage.class);
+        recentQuery.setMaxResults(MAX_RECENT_WIKIPAGES_EDITED);
+        List<Wikipage> recentEdits = recentQuery.getResultList();
+        root.put("recentEdits", recentEdits);
+
         TypedQuery<Wikipage> childrenQuery = entityManager.createNamedQuery("Wikipage.findChildrenOfFrontpage", Wikipage.class);
         List<Wikipage> children = childrenQuery.getResultList();
         root.put("children", children);
@@ -142,7 +151,7 @@ public class MenuFactory
         TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
-        {
+        {         
           root.put("wikipage", wikipages.get(0));
         } else
         {

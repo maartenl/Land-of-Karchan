@@ -17,7 +17,7 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,11 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -65,14 +61,12 @@ public class WikipageHistory implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createDate;
+  private LocalDateTime createDate;
 
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date modifiedDate;
+  private LocalDateTime modifiedDate;
 
   @Basic(optional = false)
   @NotNull
@@ -117,7 +111,7 @@ public class WikipageHistory implements Serializable
     this.id = id;
   }
 
-  public WikipageHistory(Long id, String title, String name, Date createDate, Date modifiedDate, String version, String content)
+  public WikipageHistory(Long id, String title, String name, LocalDateTime createDate, LocalDateTime modifiedDate, String version, String content)
   {
     this.id = id;
     this.title = title;
@@ -158,22 +152,22 @@ public class WikipageHistory implements Serializable
     this.name = name;
   }
 
-  public Date getCreateDate()
+  public LocalDateTime getCreateDate()
   {
     return createDate;
   }
 
-  public void setCreateDate(Date createDate)
+  public void setCreateDate(LocalDateTime createDate)
   {
     this.createDate = createDate;
   }
 
-  public Date getModifiedDate()
+  public LocalDateTime getModifiedDate()
   {
     return modifiedDate;
   }
 
-  public void setModifiedDate(Date modifiedDate)
+  public void setModifiedDate(LocalDateTime modifiedDate)
   {
     this.modifiedDate = modifiedDate;
   }

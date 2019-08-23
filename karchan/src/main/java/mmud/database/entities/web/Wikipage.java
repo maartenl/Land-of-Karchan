@@ -17,10 +17,9 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
@@ -36,8 +35,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.karchan.wiki.WikiRenderer;
@@ -53,6 +50,7 @@ import org.karchan.wiki.WikiRenderer;
   @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
   @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
   @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
+  @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate"),
   @NamedQuery(name = "Wikipage.findChildrenOfFrontpage", query = "SELECT w FROM Wikipage w WHERE (w.parent.title = 'FrontPage' or w.parent is null) and w.administration = false order by w.ordering")
 })
 public class Wikipage implements Serializable
@@ -77,14 +75,12 @@ public class Wikipage implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createDate;
+  private LocalDateTime createDate;
 
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate", nullable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date modifiedDate;
+  private LocalDateTime modifiedDate;
 
   @Size(max = 10)
   @NotNull
@@ -126,7 +122,7 @@ public class Wikipage implements Serializable
   {
   }
 
-  public Wikipage(Date createDate, Date modifiedDate)
+  public Wikipage(LocalDateTime createDate, LocalDateTime modifiedDate)
   {
     this.createDate = createDate;
     this.modifiedDate = modifiedDate;
@@ -142,22 +138,22 @@ public class Wikipage implements Serializable
     this.name = name;
   }
 
-  public Date getCreateDate()
+  public LocalDateTime getCreateDate()
   {
     return createDate;
   }
 
-  public void setCreateDate(Date createDate)
+  public void setCreateDate(LocalDateTime createDate)
   {
     this.createDate = createDate;
   }
 
-  public Date getModifiedDate()
+  public LocalDateTime getModifiedDate()
   {
     return modifiedDate;
   }
 
-  public void setModifiedDate(Date modifiedDate)
+  public void setModifiedDate(LocalDateTime modifiedDate)
   {
     this.modifiedDate = modifiedDate;
   }
