@@ -66,33 +66,7 @@ function createNewchar()
     cache: false,
     success: (function(data) {
       if (window.console) console.log("character " + name + " has been created."); 
-      $.ajax({
-          type: 'PUT',
-          url: "/karchangame/resources/game/" + name + "/logon" + "?password=" + password, // Which url should be handle the ajax request.
-          cache: false,
-          success: (function (data) {
-              processLogon();
-          }),
-          error: showError,
-          complete: (function () {
-              if (window.console)
-                  console.log("complete");
-          }),
-          dataType: 'text', //define the type of data that is going to get back from the server
-          data: 'js=1' //Pass a key/value pair
-      }); // end of ajax
-
-      var processLogon = function () {
-          if (window.console)
-              console.log("processLogon");
-          if (typeof (Storage) !== "undefined") {
-              // Store
-              localStorage.setItem("karchanname", name);
-          } else {
-              Cookies.set('karchanname', name, {path: '/'});
-          }
-          window.location.href = "/game/settings.html";
-      } // processLogon
+      logon(name, password);
       return;
     }),
     error: showError,
@@ -104,3 +78,36 @@ function createNewchar()
   return false;
 } // createNewchar
 
+
+function logon(name, password)
+{
+  if (window.console)
+    console.log("logon");
+  if (window.console)
+    console.log("logon name=" + name + " password=" + password);
+
+  $.ajax({
+    type: 'GET',
+    url: "/",
+    cache: false,
+    headers: {
+      "Authorization": "Basic " + btoa(name + ":" + password)
+    },
+    success: (function (data) {
+      processLogon();
+    }),
+    error: showError,
+    complete: (function () {
+      if (window.console)
+        console.log("complete");
+    }),
+    dataType: 'html' //define the type of data that is going to get back from the server
+  }); // end of ajax
+
+  var processLogon = function () {
+    if (window.console)
+      console.log("processLogon");
+    window.location.href = "/";
+  } // processLogon
+  return false;
+}
