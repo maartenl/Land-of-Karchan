@@ -9,4 +9,5 @@ export interface Wikipage {
   parentTitle: string;
   administration: boolean;
   comment: string;
+  ordering: number;
 }

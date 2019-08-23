@@ -25,6 +25,12 @@
                     <input type="text" class="form-control-plaintext" id="name" name="name"
                         value="{{wikipage.name}}" readonly>
                 </fieldset>
+                <fieldset class="form-group">
+                    <label for="ordering">Ordering</label>
+                    <input type="text" class="form-control" id="ordering" name="ordering"
+                        formControlName="ordering">
+                    <small id="contents" class="form-text text-muted">An optional (whole) number indicating the priority among the other children of the parent page.</small>
+                </fieldset>
                 <fieldset class="form-group form-check" *ngIf="isDeputy()">
                     <input type="checkbox" class="form-check-input" id="administration" name="administration" 
                         formControlName="administration" [readonly]="isReadOnly()">
