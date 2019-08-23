@@ -158,7 +158,7 @@ public class WikipageBean
 
     if (newWikipage.parentTitle != null && !"".equals(newWikipage.parentTitle.trim()))
     {
-      Query query = getEntityManager().createNamedQuery("Wikipage.findByTitle");
+      Query query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized");
       query.setParameter("title", newWikipage.parentTitle);
 
       List<Wikipage> parents = query.getResultList();
@@ -237,7 +237,7 @@ public class WikipageBean
 
       if (privateWikipage.parentTitle != null && !"".equals(privateWikipage.parentTitle.trim()))
       {
-        Query query = getEntityManager().createNamedQuery("Wikipage.findByTitle");
+        Query query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized");
         query.setParameter("title", privateWikipage.parentTitle);
 
         List<Wikipage> parents = query.getResultList();
@@ -247,6 +247,10 @@ public class WikipageBean
           throw new MudWebException(name, "Parent wikipage not found.", Response.Status.NOT_FOUND);
         }
         parent = parents.get(0);
+        if (parent.getAdministration() != wikipage.getAdministration())
+        {
+          throw new MudWebException(null, "Parent wikipage does not have the same rights.", Response.Status.FORBIDDEN);
+        }
       }
       
       WikipageHistory historie = new WikipageHistory(wikipage);
