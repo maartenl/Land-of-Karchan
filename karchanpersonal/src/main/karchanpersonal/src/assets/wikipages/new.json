@@ -8,5 +8,6 @@
     "summary": "This is a wiki page.",
     "parentTitle": "woah",
     "administration":false,
-    "comment": "No comments."
+    "comment": "No comments.",
+    "ordering": 0
 }

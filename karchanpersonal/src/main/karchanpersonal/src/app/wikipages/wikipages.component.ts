@@ -28,18 +28,7 @@ export class WikipagesComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router) {
-    this.wikipage = {
-      title: 'Unknown',
-      name: '',
-      createDate: null,
-      modifiedDate: null,
-      version: '0',
-      content: '',
-      summary: '',
-      parentTitle: null,
-      administration: false,
-      comment: undefined
-    };
+    this.wikipage = this.createEmptyWikipage();
     this.isNew = true;
     this.createForms();
   }
@@ -52,7 +41,7 @@ export class WikipagesComponent implements OnInit {
   getWebsite(): string {
     return environment.website;
   }
-  
+
   private setWikipage(title: string) {
     this.playerService.getWikipage(title)
       .subscribe({
@@ -65,18 +54,8 @@ export class WikipagesComponent implements OnInit {
         },
         error: (err: any) => { // error
           this.isNew = true;
-          this.wikipage = {
-            title,
-            name: '',
-            createDate: null,
-            modifiedDate: null,
-            version: '1.0',
-            content: '',
-            summary: '',
-            parentTitle: null,
-            administration: false,
-            comment: undefined
-          };
+          this.wikipage = this.createEmptyWikipage();
+          this.wikipage.title = title;
         }
       });
   }
@@ -88,7 +67,8 @@ export class WikipagesComponent implements OnInit {
       summary: '',
       parentTitle: null,
       administration: false,
-      comment: ''
+      comment: '',
+      ordering: 0
     });
   }
 
@@ -99,7 +79,8 @@ export class WikipagesComponent implements OnInit {
       summary: wikipage.summary,
       parentTitle: wikipage.parentTitle,
       administration: wikipage.administration,
-      comment: wikipage.comment
+      comment: wikipage.comment,
+      ordering: wikipage.ordering
     });
   }
 
@@ -135,24 +116,30 @@ export class WikipagesComponent implements OnInit {
       name: this.wikipage.name,
       version: this.wikipage.version,
       administration: formModel.administration as boolean,
-      comment: formModel.comment as string
+      comment: formModel.comment as string,
+      ordering: formModel.ordering as number
     };
     return saveWikipage;
   }
 
-  cancel() {
-    this.wikipage = {
+  private createEmptyWikipage(): Wikipage {
+    return {
       title: 'Unknown',
       name: '',
       createDate: null,
       modifiedDate: null,
-      version: '0',
+      version: '1.0',
       content: '',
       summary: '',
       parentTitle: null,
       administration: false,
-      comment: undefined
+      comment: undefined,
+      ordering: undefined
     };
+  }
+
+  cancel() {
+    this.wikipage = this.createEmptyWikipage();
     this.isNew = true;
     this.createForms();
   }
