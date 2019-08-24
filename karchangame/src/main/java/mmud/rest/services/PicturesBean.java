@@ -16,16 +16,23 @@
  */
 package mmud.rest.services;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import static java.util.Arrays.stream;
 import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -49,9 +56,12 @@ import org.karchan.security.Roles;
 import mmud.rest.webentities.PrivateImage;
 
 /**
- * <p>Allows getting pictures and creating new ones. You can find them at
+ * <p>
+ * Allows getting pictures and creating new ones. You can find them at
  * /karchangame/resources/private/{playername}/images.</p>
- * <p>The pictures themselves will be put at the url : /images/players/{playername}/{path}.</p>
+ * <p>
+ * The pictures themselves will be put at the url :
+ * /images/players/{playername}/{path}.</p>
  *
  * @author maartenl
  */
@@ -162,27 +172,47 @@ public class PicturesBean
     User user = getEntityManager().find(User.class, name);
     if (user == null)
     {
-      throw new MudWebException(null, "Player does not exist.", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Player does not exist.", Response.Status.BAD_REQUEST);
     }
 
     Query queryCheckExistence = getEntityManager().createNamedQuery("Image.findByOwnerAndUrl");
     queryCheckExistence.setParameter("url", newImage.url);
-    queryCheckExistence.setParameter("player", user);
-
+    queryCheckExistence.setParameter("player", user);  
+    
     List<Image> list = queryCheckExistence.getResultList();
 
     if (!list.isEmpty())
     {
-      throw new MudWebException(null, "Image already exists.", Response.Status.FORBIDDEN);
+      throw new MudWebException(name, "Image already exists.", Response.Status.FORBIDDEN);
     }
 
+    if (newImage.url == null || !newImage.url.startsWith("/"))
+    {
+      throw new MudWebException(name, "URL did not start with '/'.", Response.Status.BAD_REQUEST);
+    }
+    
     Image image = new Image();
     image.setUrl(newImage.url);
     image.setOwner(user);
     byte[] decodedString = Base64.getDecoder().decode(newImage.content.getBytes("UTF-8"));
     if (decodedString == null)
     {
-      throw new NullPointerException();
+      throw new MudWebException(name, "No content.", Response.Status.BAD_REQUEST);
+    }
+    try
+    {
+      BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedString));
+      if (bufferedImage == null)
+      {
+        throw new MudWebException(name, "That isn't an image. Supported formats are PNG, JPG, BMP and GIF.", Response.Status.BAD_REQUEST);
+      }
+    } catch (IOException ex)
+    {
+      throw new MudWebException(name, "Error occurred during parsing of image.", Response.Status.BAD_REQUEST);
+    }
+    if (decodedString == null)
+    {
+      throw new MudWebException(name, "No content.", Response.Status.NO_CONTENT);
     }
     image.setContent(decodedString);
     image.setCreateDate(LocalDateTime.now());
