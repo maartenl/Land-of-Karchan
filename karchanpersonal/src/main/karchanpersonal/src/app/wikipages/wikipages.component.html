@@ -7,8 +7,8 @@
             <form [formGroup]="form" (ngSubmit)="save()" novalidate>
                 <fieldset class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" 
-                        formControlName="title" [readonly]="isReadOnly()">
+                    <input type="text" class="form-control" id="title" name="title" formControlName="title"
+                        [readonly]="isReadOnly()">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="completeUrl">Url</label>
@@ -22,17 +22,17 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="name">Last modified by</label>
-                    <input type="text" class="form-control-plaintext" id="name" name="name"
-                        value="{{wikipage.name}}" readonly>
+                    <input type="text" class="form-control-plaintext" id="name" name="name" value="{{wikipage.name}}"
+                        readonly>
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="ordering">Ordering</label>
-                    <input type="text" class="form-control" id="ordering" name="ordering"
-                        formControlName="ordering">
-                    <small id="contents" class="form-text text-muted">An optional (whole) number indicating the priority among the other children of the parent page.</small>
+                    <input type="text" class="form-control" id="ordering" name="ordering" formControlName="ordering">
+                    <small id="contents" class="form-text text-muted">An optional (whole) number indicating the priority
+                        among the other children of the parent page.</small>
                 </fieldset>
                 <fieldset class="form-group form-check" *ngIf="isDeputy()">
-                    <input type="checkbox" class="form-check-input" id="administration" name="administration" 
+                    <input type="checkbox" class="form-check-input" id="administration" name="administration"
                         formControlName="administration" [readonly]="isReadOnly()">
                     <label class="form-check-label" for="administration">Administration</label>
                 </fieldset>
@@ -59,10 +59,12 @@
                     <label for="content">Content</label>
                     <textarea class="form-control" id="content" rows="13" formControlName="content"></textarea>
                 </fieldset>
+                <button type="button" (click)="preview()" class="btn btn-primary">Preview</button>
+                <div *ngIf="previewHtml !== undefined && previewHtml !== null" class="card card-body" [innerHTML]="previewHtml">
+                </div>
                 <fieldset class="form-group">
                     <label for="comment">Comments</label>
-                    <input type="text" class="form-control" id="comment" name="comment" 
-                        formControlName="comment">
+                    <input type="text" class="form-control" id="comment" name="comment" formControlName="comment">
                 </fieldset>
                 <div class="col-xs-12 text-right">
                     <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>

@@ -51,6 +51,8 @@ export class PlayerService {
 
   picturesUrl: string;
 
+  wikipagesPreviewUrl: string;
+
   constructor(
     private cookieService: CookieService,
     private http: HttpClient,
@@ -67,6 +69,7 @@ export class PlayerService {
     this.wikipagesUrl = environment.WIKIPAGES_URL;
     this.picturesUrl = environment.PICTURES_URL;
     this.privateUrl = environment.PRIVATE_URL;
+    this.wikipagesPreviewUrl = environment.WIKIPAGES_PREVIEW_URL;
   }
 
   /**
@@ -383,6 +386,25 @@ export class PlayerService {
   }
 
   // wikipages
+
+  public getWikipagePreview(contents: string): Observable<string> {
+    if (!environment.production) {
+      return new Observable(observer => {
+        observer.next('<p>This is a <i>preview</i></p>');
+        observer.complete();
+      });
+    }
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'text/html; charset=utf-8')
+      .append('Accept', 'text/html');
+    return this.http.post(this.wikipagesPreviewUrl, contents, { responseType: 'text' , headers })
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
 
   public getWikipage(title: string): Observable<Wikipage> {
     return this.http.get<Wikipage>(this.getWikipagesUrl(title))

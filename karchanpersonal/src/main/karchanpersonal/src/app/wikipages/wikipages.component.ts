@@ -23,6 +23,8 @@ export class WikipagesComponent implements OnInit {
 
   form: FormGroup;
 
+  previewHtml: string;
+
   constructor(
     private playerService: PlayerService,
     private route: ActivatedRoute,
@@ -41,7 +43,7 @@ export class WikipagesComponent implements OnInit {
   getWebsite(): string {
     return environment.website;
   }
-  
+
   private setWikipage(title: string) {
     this.playerService.getWikipage(title)
       .subscribe({
@@ -79,7 +81,7 @@ export class WikipagesComponent implements OnInit {
       summary: wikipage.summary,
       parentTitle: wikipage.parentTitle,
       administration: wikipage.administration,
-      comment: wikipage.comment,
+      comment: '',
       ordering: wikipage.ordering
     });
   }
@@ -88,12 +90,21 @@ export class WikipagesComponent implements OnInit {
     return !this.isNew;
   }
 
+  preview() {
+    const formModel = this.form.value;
+    this.playerService.getWikipagePreview(formModel.content as string).subscribe({
+      next: (formattedText: string) => {
+        this.previewHtml = formattedText;
+      }
+    });
+  }
+
   save() {
     const newWikipage = this.prepareSaveWikipage();
     if (this.isNew) {
       this.playerService.createWikipage(newWikipage).subscribe({
-         complete: () => this.setWikipage(newWikipage.title)
-        });
+        complete: () => this.setWikipage(newWikipage.title)
+      });
     } else {
       this.playerService.updateWikipage(newWikipage).subscribe({
         complete: () => this.setWikipage(newWikipage.title)
