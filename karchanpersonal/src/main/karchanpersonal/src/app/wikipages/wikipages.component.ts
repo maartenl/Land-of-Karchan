@@ -158,4 +158,12 @@ export class WikipagesComponent implements OnInit {
   isDeputy(): boolean {
     return this.playerService.isDeputy();
   }
+
+  hasComment(): boolean {
+    return this.wikipage !== null &&
+      this.wikipage !== undefined &&
+      this.wikipage.comment !== null &&
+      this.wikipage.comment !== undefined &&
+      this.wikipage.comment.trim() !== '';
+  }
 }
