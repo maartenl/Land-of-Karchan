@@ -144,15 +144,12 @@ public class MenuFactory
         List<Wikipage> recentEdits = recentQuery.getResultList();
         root.put("recentEdits", recentEdits);
 
-        TypedQuery<Wikipage> childrenQuery = entityManager.createNamedQuery("Wikipage.findChildrenOfFrontpage", Wikipage.class);
-        List<Wikipage> children = childrenQuery.getResultList();
-        root.put("children", children);
-
         TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
         {         
           root.put("wikipage", wikipages.get(0));
+          root.put("children", wikipages.get(0).getChildren());
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} main wikipages ('FrontPage') found.", wikipages.size());

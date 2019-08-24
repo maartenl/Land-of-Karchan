@@ -50,8 +50,7 @@ import org.karchan.wiki.WikiRenderer;
   @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
   @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
   @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
-  @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate"),
-  @NamedQuery(name = "Wikipage.findChildrenOfFrontpage", query = "SELECT w FROM Wikipage w WHERE (w.parent.title = 'FrontPage' or w.parent is null) and w.administration = false order by w.ordering")
+  @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate")
 })
 public class Wikipage implements Serializable
 {
