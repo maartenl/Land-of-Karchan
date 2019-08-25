@@ -83,6 +83,8 @@ public class ImageServlet extends HttpServlet
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+
+    response.addHeader("Cache-Control","private, max-age=31536000");
     
     Image image = optionalImage.get();
     
