@@ -6,7 +6,7 @@
           <div class="card-body">
             <h4 class="card-title">{{ picture.url }}</h4>
             <p class="card-text"><strong>Id:</strong> {{ picture.id }}</p>
-            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}">{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}</a></p>
+            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="/images/player/{{ player }}{{ picture.url }}">/images/player/{{ player }}{{ picture.url }}</a></p>
             <p class="card-text"><strong>MimeType:</strong> {{ picture.mimeType }}</p>
             <p class="card-text"><strong>On:</strong> {{ picture.createDate | date:'medium' }}</p>          
           </div>
