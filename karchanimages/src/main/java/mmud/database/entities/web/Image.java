@@ -17,6 +17,7 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -40,9 +41,9 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "images")
 @NamedQueries(
-{
-  @NamedQuery(name = "Image.find", query = "SELECT i FROM Image i WHERE i.owner = :owner and i.url = :url")
-})
+        {
+          @NamedQuery(name = "Image.find", query = "SELECT i FROM Image i WHERE i.owner = :owner and i.url = :url")
+        })
 public class Image implements Serializable
 {
 
@@ -63,8 +64,7 @@ public class Image implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createDate;
+  private LocalDateTime createDate;
 
   @Basic(optional = false)
   @NotNull
@@ -89,6 +89,14 @@ public class Image implements Serializable
   @Column(name = "content")
   private byte[] content;
 
+  @Basic
+  @Column(name = "accessDate")
+  private LocalDateTime accessDate;
+
+  @Basic
+  @Column(name = "counter")
+  private Long counter;
+
   public Image()
   {
   }
@@ -103,12 +111,12 @@ public class Image implements Serializable
     this.url = url;
   }
 
-  public Date getCreateDate()
+  public LocalDateTime getCreateDate()
   {
     return createDate;
   }
 
-  public void setCreateDate(Date createDate)
+  public void setCreateDate(LocalDateTime createDate)
   {
     this.createDate = createDate;
   }
@@ -192,5 +200,26 @@ public class Image implements Serializable
   {
     return "mmud.database.entities.web.Image[ url=" + url + " owner=" + owner + " ]";
   }
-  
+
+  /**
+   * Increased the access counter, to show that the picture has been accessed.
+   */
+  public void addHit()
+  {
+    if (counter == null)
+    {
+      counter = 1L;
+      return;
+    }
+    counter++;
+  }
+
+  /**
+   * Enter the last accessed time to indicate when this image was last viewed.
+   */
+  public void lastAccessed()
+  {
+    this.accessDate = LocalDateTime.now();
+  }
+
 }

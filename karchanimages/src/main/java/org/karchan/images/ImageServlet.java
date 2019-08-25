@@ -18,8 +18,10 @@ package org.karchan.images;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -42,8 +44,8 @@ public class ImageServlet extends HttpServlet
 
   private final static Logger LOGGER = Logger.getLogger(ImageServlet.class.getName());
 
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private ImageBean imageBean;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -71,13 +73,9 @@ public class ImageServlet extends HttpServlet
       return;
     }
 
-    TypedQuery<Image> queryImage = entityManager.createNamedQuery("Image.find", Image.class);
-    queryImage.setParameter("url", imageData.getImageUrl());
-    queryImage.setParameter("owner", imageData.getPlayerName());
-    List<Image> resultList = queryImage.getResultList();
-    
-    if (resultList.isEmpty())
-    {
+    Optional<Image> optionalImage = imageBean.getImage(imageData.getImageUrl(), imageData.getPlayerName());
+
+    if (!optionalImage.isPresent()) {
       LOGGER.log(Level.SEVERE, "Image {0} of {1} not found.", new Object[]
       {
         imageData.getImageUrl(), imageData.getPlayerName()
@@ -85,12 +83,12 @@ public class ImageServlet extends HttpServlet
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-
-    Image image = resultList.get(0);
-
+    
+    Image image = optionalImage.get();
+    
     // Set response content type
     response.setContentType(image.getMimeType());
-
+    
     response.setContentLength(image.getContent().length);
     ServletOutputStream outputStream = response.getOutputStream();
 
