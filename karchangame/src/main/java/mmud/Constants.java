@@ -49,6 +49,12 @@ public class Constants
   public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-]*";
   public static final String ONLY_LETTERS_MESSAGE = "Only letters and dash (-) are allowed.";
 
+  public static final String COMMENTS_REGEXP = "^[a-zA-Z0-9- ]*$";
+  public static final String COMMENTS_MESSAGE = "For comments only letters, digits, dash and spaces are allowed.";
+
+  public static final String WIKIPAGE_TITLE_REGEXP = "^[a-zA-Z0-9- ]*$";
+  public static final String WIKIPAGE_TITLE_MESSAGE = "For the title of a wikipage only letters, digits, dash and spaces are allowed.";
+
   private static final String BASEPATH = "/home/payara";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";

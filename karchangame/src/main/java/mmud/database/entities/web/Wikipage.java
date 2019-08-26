@@ -32,7 +32,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Constants;
 
 /**
  *
@@ -56,6 +58,7 @@ public class Wikipage implements Serializable
   @NotNull
   @Size(min = 1, max = 200)
   @Column(name = "title")
+  @Pattern(regexp = Constants.WIKIPAGE_TITLE_REGEXP, message = Constants.WIKIPAGE_TITLE_MESSAGE)
   private String title;
 
   @Basic(optional = false)
@@ -99,6 +102,7 @@ public class Wikipage implements Serializable
 
   @Size(max = 200)
   @Column(name = "comment")
+  @Pattern(regexp = Constants.COMMENTS_REGEXP, message = Constants.COMMENTS_MESSAGE)
   private String comment;
   
   @Column(name = "ordering")
