@@ -29,6 +29,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -98,6 +99,10 @@ public class PrivateBean
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  public static class PrivateHasMail {
+    public boolean hasMail;       
+  }
 
   public PrivateBean()
   {
@@ -197,7 +202,7 @@ public class PrivateBean
   @Path("{name}/mail")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
@@ -249,18 +254,16 @@ public class PrivateBean
   @Path("{name}/newmail")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
-  public Response hasNewMail(@PathParam("name") String name)
+  public String hasNewMail(@PathParam("name") String name)
   {
     LOGGER.finer("entering hasNewMail");
     Person person = authenticate(name);
-    boolean result = mailBean.hasNewMail(person);
-    if (!result)
-    {
-      return Response.noContent().build();
-    }
-    return Response.ok().build();
+    boolean result = mailBean.hasNewMail(person);   
+    PrivateHasMail privateHasMail = new PrivateHasMail();
+    privateHasMail.hasMail = result;
+    return JsonbBuilder.create().toJson(privateHasMail);
   }
 
   private Person getPerson(String name)
@@ -302,7 +305,7 @@ public class PrivateBean
   @Path("{name}/mail")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response newMail(PrivateMail newMail, @PathParam("name") String name)
   {
@@ -397,7 +400,7 @@ public class PrivateBean
   @Path("{name}/mail/{id}")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
   {
@@ -454,7 +457,7 @@ public class PrivateBean
   @Path("{name}/mail/{id}/createMailItem/{item}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
   {
@@ -568,7 +571,7 @@ public class PrivateBean
   @Path("{name}/mail/{id}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
   {
@@ -595,7 +598,7 @@ public class PrivateBean
   @Path("{name}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
@@ -626,7 +629,7 @@ public class PrivateBean
   @Path("{name}/charactersheet")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
   {
@@ -681,7 +684,7 @@ public class PrivateBean
   @Path("{name}")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response delete(@PathParam("name") String name)
   {
@@ -714,7 +717,7 @@ public class PrivateBean
   @Path("{name}/charactersheet")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PublicPerson getCharacterSheet(@PathParam("name") String name)
   {
@@ -737,7 +740,7 @@ public class PrivateBean
   @Path("{name}/charactersheet/familyvalues/{toname}/{description}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
   {
@@ -799,7 +802,7 @@ public class PrivateBean
   @Path("{name}/charactersheet/familyvalues/{toname}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
   {

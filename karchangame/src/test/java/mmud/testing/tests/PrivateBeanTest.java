@@ -53,6 +53,7 @@ import mockit.Deencapsulation;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
@@ -310,95 +311,6 @@ public class PrivateBeanTest
     expected.deleted = false;
     compare(result.get(1), expected);
 
-  }
-
-  @Test
-  public void hasNewMail()
-  {
-    LOGGER.fine("hasNewMail");
-    PrivateBean privateBean = new PrivateBean()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-    };
-    Deencapsulation.setField(privateBean, "mailBean", new MailBean()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-    });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-
-        entityManager.createNamedQuery("Mail.hasnewmail");
-        result = query;
-        query.setParameter("name", marvin);
-        query.getSingleResult();
-        result = 1l;
-
-      }
-    };
-    responseOkExpectations();
-    // Unit under test is exercised.
-    privateBean.hasNewMail("Marvin");
-    // Verification code (JUnit/TestNG asserts), if any.
-  }
-
-  //TODO : fix this
-  // @Test
-  public void hasNoNewMail()
-  {
-    LOGGER.fine("hasNoNewMail");
-    PrivateBean privateBean = new PrivateBean()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-    };
-    Deencapsulation.setField(privateBean, "mailBean", new MailBean()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-    });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-
-        entityManager.createNamedQuery("Mail.hasnewmail");
-        result = query;
-        query.setParameter("name", marvin);
-        query.getSingleResult();
-        result = 0l;
-
-      }
-    };
-    // Unit under test is exercised.
-    privateBean.hasNewMail("Marvin");
-    // Verification code (JUnit/TestNG asserts), if any.
   }
 
   @Test
