@@ -46,6 +46,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import mmud.Constants;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Image;
 import mmud.exceptions.MudWebException;
@@ -174,8 +175,8 @@ public class PicturesBean
 
     Query queryCheckExistence = getEntityManager().createNamedQuery("Image.findByOwnerAndUrl");
     queryCheckExistence.setParameter("url", newImage.url);
-    queryCheckExistence.setParameter("player", user);  
-    
+    queryCheckExistence.setParameter("player", user);
+
     List<Image> list = queryCheckExistence.getResultList();
 
     if (!list.isEmpty())
@@ -187,7 +188,11 @@ public class PicturesBean
     {
       throw new MudWebException(name, "URL did not start with '/'.", Response.Status.BAD_REQUEST);
     }
-    
+    if (!Constants.regExpTest(Constants.URL_REGEXP, newImage.url))
+    {
+      throw new MudWebException(name, Constants.URL_MESSAGE, Response.Status.BAD_REQUEST);
+    }
+
     Image image = new Image();
     image.setUrl(newImage.url);
     image.setOwner(user);

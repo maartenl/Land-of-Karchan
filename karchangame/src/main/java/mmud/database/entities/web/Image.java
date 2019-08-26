@@ -34,7 +34,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import mmud.Constants;
 import mmud.database.entities.characters.User;
 
 /**
@@ -64,6 +66,7 @@ public class Image implements Serializable
   @NotNull
   @Size(min = 1, max = 200)
   @Column(name = "url")
+  @Pattern(regexp = Constants.URL_REGEXP, message = Constants.URL_MESSAGE)
   private String url;
 
   @Basic(optional = false)

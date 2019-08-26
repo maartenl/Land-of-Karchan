@@ -28,6 +28,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author maartenl
@@ -37,6 +39,9 @@ public class Constants
 
   public static final String NAME_REGEXP = "[a-zA-Z]{3,}";
   public static final String NAME_MESSAGE = "Invalid name. Only letters are allowed and at least three letters are required, but not more than 20.";
+
+  public static final String URL_REGEXP = "^\\/[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)*\\.[a-zA-Z]{3,3}$";
+  public static final String URL_MESSAGE = "Invalid url. Only letters, digits and a - or / are allowed, must start with a / and end with a file extention containing three letters.";
 
   public static final String ONLY_LETTERS_ONE_OR_MORE_REGEXP = "[a-zA-Z-]{1,}";
   public static final String ONLY_LETTERS_ONE_OR_MORE_MESSAGE = "Only letters and dash (-) are allowed and at least one letter is required.";
@@ -426,5 +431,12 @@ public class Constants
       }
     }
     return buffer == null ? null : buffer.toString();
+  }
+    
+  public static boolean regExpTest(String regexp, String matches)
+  {
+    Pattern p = Pattern.compile(regexp);
+    Matcher m = p.matcher(matches);
+    return m.matches();
   }
 }
