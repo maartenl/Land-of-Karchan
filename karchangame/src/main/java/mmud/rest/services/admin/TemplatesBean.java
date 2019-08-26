@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -35,14 +36,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.HistoricTemplate;
 import mmud.database.entities.web.Template;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminTemplate;
 
 /**
  * The REST service for dealing with Templates.
+ *
  * @author maartenl
  */
 @DeclareRoles("deputy")
@@ -56,6 +60,9 @@ public class TemplatesBean
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  @Inject
+  private LogBean logBean;
 
   @PUT
   @Path("{id}")
@@ -82,8 +89,9 @@ public class TemplatesBean
     entity.setName(template.name);
     entity.setEditor(name);
     entity.setComment(template.comment);
-    entity.increaseVersion();    
+    entity.increaseVersion();
     ValidationUtils.checkValidation(name, entity);
+    logBean.writeDeputyLog(getAdmin(name), "Template " + id + " updated.");
   }
 
   @GET
@@ -123,6 +131,16 @@ public class TemplatesBean
   protected EntityManager getEntityManager()
   {
     return em;
+  }
+
+  private Admin getAdmin(String name)
+  {
+    Admin person = getEntityManager().find(Admin.class, name);
+    if (person == null)
+    {
+      throw new MudWebException(name, "Admin was not found.", "Admin was not found  (" + name + ")", Response.Status.BAD_REQUEST);
+    }
+    return person;
   }
 
 }

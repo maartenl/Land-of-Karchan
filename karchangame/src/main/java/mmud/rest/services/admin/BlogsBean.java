@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -40,6 +41,7 @@ import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.Blog;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminBlog;
 
 /**
@@ -59,9 +61,22 @@ public class BlogsBean extends AbstractFacade<Blog>
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
+  @Inject
+  private LogBean logBean;
+
   public BlogsBean()
   {
     super(Blog.class);
+  }
+
+  private Admin getAdmin(String name)
+  {
+    Admin person = getEntityManager().find(Admin.class, name);
+    if (person == null)
+    {
+      throw new MudWebException(name, "Admin was not found.", "Admin was not found  (" + name + ")", Response.Status.BAD_REQUEST);
+    }
+    return person;
   }
 
   @POST
@@ -88,6 +103,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     checkValidation(name, entity);
     getEntityManager().persist(entity);
     getEntityManager().flush();
+    logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " created.");
     return new AdminBlog(entity);
   }
 
@@ -114,6 +130,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
     checkValidation(name, entity);
+    logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " edited.");
   }
 
   @DELETE
@@ -127,6 +144,7 @@ public class BlogsBean extends AbstractFacade<Blog>
       throw new MudWebException(name, "Blog " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, blog);
+    logBean.writeDeputyLog(getAdmin(name), "Blog " + blog.getUrlTitle() + " removed.");
     remove(blog);
   }
 

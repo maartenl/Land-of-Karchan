@@ -41,6 +41,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Constants;
+import mmud.database.entities.characters.User;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
 import org.karchan.security.Roles;
@@ -67,6 +68,9 @@ public class WikipageBean
   @Inject
   private SecurityContext securityContext;
 
+  @Inject
+  private LogBean logBean;
+
   /**
    * Returns the entity manager of JPA. This is defined in
    * build/web/WEB-INF/classes/META-INF/persistence.xml.
@@ -79,6 +83,20 @@ public class WikipageBean
   }
   private static final Logger LOGGER = Logger.getLogger(WikipageBean.class.getName());
 
+    private User getUser(String name)
+  {
+    User person = getEntityManager().find(User.class, name);
+    if (person == null)
+    {
+      throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Response.Status.NOT_FOUND);
+    }
+    if (!person.isUser())
+    {
+      throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Response.Status.BAD_REQUEST);
+    }
+    return person;
+  }
+    
   /**
    * Returns a wikipage with that specific title.
    *
@@ -199,7 +217,7 @@ public class WikipageBean
     wikipage.setComment(newWikipage.comment);
     wikipage.setOrdering(newWikipage.ordering);
     getEntityManager().persist(wikipage);
-
+    logBean.writeLog(getUser(name), "Wikipage created with title " + wikipage.getTitle());
     return Response.ok().build();
   }
 
@@ -289,6 +307,7 @@ public class WikipageBean
       wikipage.setComment(privateWikipage.comment);
       wikipage.setOrdering(privateWikipage.ordering);
       wikipage.setParentTitle(parent);
+      logBean.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + "updated.");
 
     } catch (MudWebException e)
     {

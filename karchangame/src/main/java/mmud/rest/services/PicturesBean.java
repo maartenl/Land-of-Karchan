@@ -77,6 +77,9 @@ public class PicturesBean
   @Inject
   private SecurityContext securityContext;
 
+  @Inject
+  private LogBean logBean;
+
   /**
    * Returns the entity manager of JPA. This is defined in
    * build/web/WEB-INF/classes/META-INF/persistence.xml.
@@ -89,6 +92,20 @@ public class PicturesBean
   }
 
   private static final Logger LOGGER = Logger.getLogger(PicturesBean.class.getName());
+
+  private User getUser(String name)
+  {
+    User person = getEntityManager().find(User.class, name);
+    if (person == null)
+    {
+      throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Response.Status.NOT_FOUND);
+    }
+    if (!person.isUser())
+    {
+      throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Response.Status.BAD_REQUEST);
+    }
+    return person;
+  }
 
   /**
    * Returns all images of a player.
@@ -115,7 +132,7 @@ public class PicturesBean
 
     try
     {
-      User owner = getEntityManager().find(User.class, userName);
+      User owner = getUser(name);
 
       Query query = getEntityManager().createNamedQuery("Image.findByOwner");
       query.setParameter("player", owner);
@@ -167,11 +184,7 @@ public class PicturesBean
       throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
     }
 
-    User user = getEntityManager().find(User.class, name);
-    if (user == null)
-    {
-      throw new MudWebException(name, "Player does not exist.", Response.Status.BAD_REQUEST);
-    }
+    User user = getUser(name);
 
     Query queryCheckExistence = getEntityManager().createNamedQuery("Image.findByOwnerAndUrl");
     queryCheckExistence.setParameter("url", newImage.url);
@@ -220,7 +233,7 @@ public class PicturesBean
     image.setCreateDate(LocalDateTime.now());
     image.setMimeType(newImage.mimeType);
     getEntityManager().persist(image);
-
+    logBean.writeLog(user, "Picture added with url " + image.getUrl());
     return Response.ok().build();
   }
 }
