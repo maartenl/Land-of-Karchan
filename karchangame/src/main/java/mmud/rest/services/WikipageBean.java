@@ -307,7 +307,7 @@ public class WikipageBean
       wikipage.setComment(privateWikipage.comment);
       wikipage.setOrdering(privateWikipage.ordering);
       wikipage.setParentTitle(parent);
-      logBean.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + "updated.");
+      logBean.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + " updated.");
 
     } catch (MudWebException e)
     {
