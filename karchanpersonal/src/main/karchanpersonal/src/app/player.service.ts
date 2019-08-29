@@ -17,6 +17,7 @@ import {
 import { Family } from './player-settings/family.model';
 import { Wikipage } from './wikipages/wikipage.model';
 import { Picture } from './pictures/picture.model';
+import { HasNewMail } from './game/newmail.model';
 import { ErrorMessage } from './errors/errormessage.model';
 
 import { catchError, map, tap } from 'rxjs/operators';
@@ -206,8 +207,8 @@ export class PlayerService {
       );
   }
 
-  public hasNewMail(): Observable<any> {
-    return this.http.get(this.getHasNewMailUrl())
+  public hasNewMail(): Observable<HasNewMail> {
+    return this.http.get<HasNewMail>(this.getHasNewMailUrl())
       .pipe(
         catchError(err => {
           this.handleError(err);

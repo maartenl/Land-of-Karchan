@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { PlayerService } from '../player.service';
+import { HasNewMail } from './newmail.model';
 
 @Component({
   selector: 'app-game',
@@ -16,8 +17,8 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.playerService.hasNewMail()
-      .subscribe((result: boolean) => { // on success
-        this.hasNewMail = result;
+      .subscribe((result: HasNewMail) => { // on success
+        this.hasNewMail = result.hasMail;
       },
         (err: any) => { // error
           this.error = true;
