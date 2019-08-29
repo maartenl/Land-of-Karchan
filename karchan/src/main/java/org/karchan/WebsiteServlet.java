@@ -112,7 +112,7 @@ public class WebsiteServlet extends HttpServlet
       root.put("hideToc", Stream.of(request.getCookies())
               .anyMatch(cookie -> cookie.getName().equals("karchanhidetoc")));
     }
-    if (request.getParameter("logout") != null)
+    if (request.getParameter("logout") != null && request.getCookies() != null)
     {
       for (Cookie cookie : request.getCookies())
       {
