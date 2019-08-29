@@ -33,10 +33,9 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 
 @RememberMe(
-        cookieMaxAgeSeconds = 60 * 60 * 24,
+        cookieMaxAgeSeconds = KarchanAuthenticationMechanism.TWENTYFOUR_HOURS,
         // this should really be set to true, which is the default.
         // this will be removed sometime.
         cookieSecureOnly = false
@@ -46,6 +45,8 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
 {
 
   private static final Logger LOGGER = Logger.getLogger(KarchanAuthenticationMechanism.class.getName());
+  
+  public static final int TWENTYFOUR_HOURS = 60 * 60 * 24;
 
   @Inject
   private IdentityStoreHandler identityStoreHandler;
@@ -85,17 +86,17 @@ public class KarchanAuthenticationMechanism implements HttpAuthenticationMechani
         String karchanname = result.getCallerPrincipal().getName();
         String karchanroles = result.getCallerGroups().stream().collect(Collectors.joining(","));
         Cookie nameCookie = new Cookie("karchanname", karchanname);
-        nameCookie.setMaxAge(-1);
+        nameCookie.setMaxAge(TWENTYFOUR_HOURS);
         nameCookie.setHttpOnly(false);
         nameCookie.setPath("/");
         response.addCookie(nameCookie);
         Cookie rolesCookie = new Cookie("karchanroles", karchanroles);
-        rolesCookie.setMaxAge(-1);
+        rolesCookie.setMaxAge(TWENTYFOUR_HOURS);
         rolesCookie.setHttpOnly(false);
         rolesCookie.setPath("/");
         response.addCookie(rolesCookie);
         Cookie xsrfCookie = new Cookie("XSRF-TOKEN", (karchanname+":"+karchanroles).hashCode()+"");
-        xsrfCookie.setMaxAge(-1);
+        xsrfCookie.setMaxAge(TWENTYFOUR_HOURS);
         xsrfCookie.setHttpOnly(false);
         xsrfCookie.setPath("/");
         response.addCookie(xsrfCookie);
