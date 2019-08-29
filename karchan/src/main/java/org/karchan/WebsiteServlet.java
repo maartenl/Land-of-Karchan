@@ -63,6 +63,9 @@ public class WebsiteServlet extends HttpServlet
 
   @Inject
   private MenuFactory menuFactory;
+  
+  @Inject
+  private MailChecker mailChecker;
 
   @VisibleForTesting
   void setFreemarker(Freemarker freemarker)
@@ -128,6 +131,7 @@ public class WebsiteServlet extends HttpServlet
       root.put("isGuildmember", false);
       root.put("isGuildmaster", false);
       root.put("isGod", false);
+      root.put("hasNewMail", false);
     } else
     {
       root.put("user", securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null);
@@ -136,8 +140,8 @@ public class WebsiteServlet extends HttpServlet
       root.put("isGuildmember", securityContext.isCallerInRole(Roles.GUILDMEMBER));
       root.put("isGuildmaster", securityContext.isCallerInRole(Roles.GUILDMASTER));
       root.put("isGod", securityContext.isCallerInRole(Roles.GOD));
+      root.put("hasNewMail", mailChecker.checkMail(securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null));
     }
-
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);
     if (visibleMenu.isPresent())
     {
