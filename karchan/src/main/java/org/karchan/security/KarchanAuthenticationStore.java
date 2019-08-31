@@ -71,7 +71,7 @@ public class KarchanAuthenticationStore implements IdentityStore
       // Convert message digest into hex value 
       String hashtext = no.toString(16);
 
-      // Add preceding 0s to make it 32 bit 
+      // Add preceding 0s to make it 128 bit 
       while (hashtext.length() < 128)
       {
         hashtext = "0" + hashtext;
