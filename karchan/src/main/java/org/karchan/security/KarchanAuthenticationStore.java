@@ -16,6 +16,7 @@
  */
 package org.karchan.security;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +52,8 @@ public class KarchanAuthenticationStore implements IdentityStore
   @PersistenceUnit
   private EntityManagerFactory entityManagerFactory;
 
-  private static String encryptThisString(String input)
+  @VisibleForTesting
+  static String encryptThisString(String input)
   {
     try
     {
@@ -70,7 +72,7 @@ public class KarchanAuthenticationStore implements IdentityStore
       String hashtext = no.toString(16);
 
       // Add preceding 0s to make it 32 bit 
-      while (hashtext.length() < 32)
+      while (hashtext.length() < 128)
       {
         hashtext = "0" + hashtext;
       }
@@ -105,7 +107,7 @@ public class KarchanAuthenticationStore implements IdentityStore
         return new CredentialValidationResult(userCredential.getCaller());
       } else
       {
-        LOGGER.finest("INVALID_RESULT");
+        LOGGER.log(Level.FINEST, "INVALID_RESULT");
         return INVALID_RESULT;
       }
     }
