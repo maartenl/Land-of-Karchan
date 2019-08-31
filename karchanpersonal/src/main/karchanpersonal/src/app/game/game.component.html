@@ -1,11 +1,13 @@
 <div class="container-fluid">
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
-            <div *ngIf="isLoggedIn()" class="alert alert-primary" role="alert">
+      <div *ngIf="isLoggedIn()" class="alert alert-primary" role="alert">
         Welcome to Karchan, {{ getPlayer() }}!
         <span class="float-right d-none d-sm-block">
+          [<a href="/?logout=true">Log out</a>]
+        </span>
+        <span class="float-right">
           [<a href="#" (click)="playGame()">Play</a>]
-          [<a href="/game/goodbye.html?logout=true">Log out</a>]
         </span>
       </div>
       <div *ngIf="isLoggedIn() && hasNewMail" class="alert alert-warning" role="alert">
