@@ -31,11 +31,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.security.enterprise.SecurityContext;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
 import mmud.database.entities.web.Wikipage;
-import org.karchan.security.Roles;
 
 /**
  *
