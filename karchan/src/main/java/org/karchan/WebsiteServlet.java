@@ -55,6 +55,10 @@ public class WebsiteServlet extends HttpServlet
 
   private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
 
+  private static final String VERSION_PARAMETER = "version";
+
+  private static final String CURRENT_VERSION = "2.0.3-SNAPSHOT";
+
   @Inject
   private SecurityContext securityContext;
 
@@ -98,7 +102,7 @@ public class WebsiteServlet extends HttpServlet
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
-    root.put("version", "2.0.2");
+    root.put(VERSION_PARAMETER, request.getParameter(VERSION_PARAMETER) != null ? request.getParameter(VERSION_PARAMETER) : CURRENT_VERSION);
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
     if (request.getCookies() == null)
