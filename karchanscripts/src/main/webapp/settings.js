@@ -39,13 +39,7 @@ function retrieveName()
 {
     if (window.console)
         console.log("retrieveName");
-    if (typeof (Storage) !== "undefined") {
-        // Store
-        return localStorage.getItem("karchanname");
-    } else {
-        return Cookies.get('karchanname');
-    }
-    alert("Unable to find you. Are you sure you are logged in?");
+    return Cookies.get('karchanname');
 }
 
 function clearName()
