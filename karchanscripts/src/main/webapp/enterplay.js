@@ -24,7 +24,7 @@ function retrieveName()
   if (window.console)
     console.log("retrieveName");
   if (typeof (Storage) !== "undefined") {
-    return localStorage.removeItem("karchanname");
+    localStorage.removeItem("karchanname");
   }
   return Cookies.get('karchanname');
 }

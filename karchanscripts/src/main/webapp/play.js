@@ -64,20 +64,6 @@ function isVowel(aChar)
           aChar === 'O';
 }
 
-/**
- * 
- * @returns name of player or "undefined"
- */
-function retrieveName()
-{
-  if (window.console)
-    console.log("retrieveName");
-  if (typeof (Storage) !== "undefined") {
-    return localStorage.removeItem("karchanname");
-  } 
-  return Cookies.get('karchanname');
-}
-
 function processCall(command, log, processor)
 {
   if (command === "clear")
