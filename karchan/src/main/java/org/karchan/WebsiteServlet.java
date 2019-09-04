@@ -57,7 +57,7 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_PARAMETER = "version";
 
-  private static final String CURRENT_VERSION = "2.0.3";
+  private static final String CURRENT_VERSION = "2.0.4-SNAPSHOT";
 
   @Inject
   private SecurityContext securityContext;
