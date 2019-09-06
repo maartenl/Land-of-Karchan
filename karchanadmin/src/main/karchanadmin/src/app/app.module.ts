@@ -15,6 +15,7 @@ import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
 import { SystemlogComponent } from './systemlog/systemlog.component';
 import { RoomsComponent } from './rooms/rooms.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { RoomsComponent } from './rooms/rooms.component';
     RoomsComponent
   ],
   imports: [
+    NgxDatatableModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,

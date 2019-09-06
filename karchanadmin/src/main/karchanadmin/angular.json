@@ -25,7 +25,8 @@
             ],
             "styles": [
               "node_modules/material-icons/iconfont/material-icons.css",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@swimlane/ngx-datatable/themes/bootstrap.min.css"
             ],
             "scripts": []
           },
