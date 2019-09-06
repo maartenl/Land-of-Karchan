@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -84,18 +85,18 @@ public class SytemlogBean
   public String getSystemLog()
   {
     String userName = securityContext.getCallerPrincipal().getName();
-    List<Log> result = Collections.emptyList();
+    List<String> result = Collections.emptyList();
 
     try
     {
       File file = new File(logFilename);
       InputStream stream = new FileInputStream(file);
       result = new LogReader().readFile(stream);
-    } catch (IOException | ParseLogException e)
+    } catch (IOException e)
     {
       throw new MudWebException(userName, e, Response.Status.BAD_REQUEST);
     }
-    return JsonbBuilder.create().toJson(result.subList(FIRST_ENTRY, MAXIMUM_ENTRIES));
+    return "[" + result.subList(FIRST_ENTRY, MAXIMUM_ENTRIES).stream().collect(Collectors.joining(",")) + "]";
   }
 
 }
