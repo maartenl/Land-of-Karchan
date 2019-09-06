@@ -14,6 +14,7 @@ import { BlogsComponent } from './blogs/blogs.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
 import { SystemlogComponent } from './systemlog/systemlog.component';
+import { RoomsComponent } from './rooms/rooms.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SystemlogComponent } from './systemlog/systemlog.component';
     BlogsComponent,
     TemplatesComponent,
     ErrorsComponent,
-    SystemlogComponent
+    SystemlogComponent,
+    RoomsComponent
   ],
   imports: [
     BrowserModule,
