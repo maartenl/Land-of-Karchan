@@ -39,7 +39,7 @@ public class Room
         this.room = room;
     }
 
-    public Integer getId()
+    public Long getId()
     {
         return room.getId();
     }

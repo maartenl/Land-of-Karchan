@@ -36,6 +36,12 @@ public class ValidationUtils
     // defeat instantiation, static utility class.
   }
 
+  /**
+   * Checks the validation of a JPA entity. 
+   * @param name the player/user
+   * @param attribute the entity to check
+   * @throws MudWebException with the ConstraintViolations
+   */
   public static <T> void checkValidation(String name, T attribute)
   {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

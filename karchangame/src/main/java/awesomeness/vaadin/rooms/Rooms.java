@@ -18,6 +18,7 @@ package awesomeness.vaadin.rooms;
 
 import awesomeness.vaadin.editor.SearchPanel;
 import awesomeness.vaadin.utils.IntegerProperty;
+import awesomeness.vaadin.utils.LongProperty;
 import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
@@ -324,7 +325,7 @@ public class Rooms extends VerticalLayout implements
       if (northProperty != null && northProperty.getValue() != null)
       {
         Room room = (Room) northProperty.getValue();
-        north.setPropertyDataSource(new IntegerProperty(room.getId()));
+        north.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         north.setPropertyDataSource(new IntegerProperty());
@@ -333,7 +334,7 @@ public class Rooms extends VerticalLayout implements
       if (southProperty != null && southProperty.getValue() != null)
       {
         Room room = (Room) southProperty.getValue();
-        south.setPropertyDataSource(new IntegerProperty(room.getId()));
+        south.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         south.setPropertyDataSource(new IntegerProperty());
@@ -342,7 +343,7 @@ public class Rooms extends VerticalLayout implements
       if (westProperty != null && westProperty.getValue() != null)
       {
         Room room = (Room) westProperty.getValue();
-        west.setPropertyDataSource(new IntegerProperty(room.getId()));
+        west.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         west.setPropertyDataSource(new IntegerProperty());
@@ -351,7 +352,7 @@ public class Rooms extends VerticalLayout implements
       if (eastProperty != null && eastProperty.getValue() != null)
       {
         Room room = (Room) eastProperty.getValue();
-        east.setPropertyDataSource(new IntegerProperty(room.getId()));
+        east.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         east.setPropertyDataSource(new IntegerProperty());
@@ -360,7 +361,7 @@ public class Rooms extends VerticalLayout implements
       if (upProperty != null && upProperty.getValue() != null)
       {
         Room room = (Room) upProperty.getValue();
-        up.setPropertyDataSource(new IntegerProperty(room.getId()));
+        up.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         up.setPropertyDataSource(new IntegerProperty());
@@ -369,7 +370,7 @@ public class Rooms extends VerticalLayout implements
       if (downProperty != null && downProperty.getValue() != null)
       {
         Room room = (Room) downProperty.getValue();
-        down.setPropertyDataSource(new IntegerProperty(room.getId()));
+        down.setPropertyDataSource(new LongProperty(room.getId()));
       } else
       {
         down.setPropertyDataSource(new IntegerProperty());

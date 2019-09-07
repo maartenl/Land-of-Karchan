@@ -57,22 +57,22 @@ import org.eclipse.persistence.annotations.Customizer;
  * east, west, up and down, which are also rooms. The structure forms a kind of
  * graph.
  *
- * @see <a href="http://www.eclipse.org/eclipselink/documentation/2.5/concepts/app_dev007.htm">About weaving</a>
+ * @see
+ * <a href="http://www.eclipse.org/eclipselink/documentation/2.5/concepts/app_dev007.htm">About
+ * weaving</a>
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_rooms")
 @NamedQueries(
         {
-          @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r")
-          ,
-            @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id")
-          ,
-            @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation")
-          ,
-            @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title")
-          ,
-            @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
+          @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r order by r.id"),
+          @NamedQuery(name = "Room.countAll", query = "SELECT count(r) FROM Room r"),
+          @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
+          @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation"),
+          @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
+          @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
+
         })
 @Customizer(PersonsFilterForRoom.class)
 public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler, Ownage
@@ -88,7 +88,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   @Basic(optional = false)
   @NotNull
   @Column(name = "id")
-  private Integer id;
+  private Long id;
   @Basic(optional = false)
   @NotNull
   @Lob
@@ -156,12 +156,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   {
   }
 
-  public Room(Integer id)
+  public Room(Long id)
   {
     this.id = id;
   }
 
-  public Room(Integer id, String contents, LocalDateTime creation, String title)
+  public Room(Long id, String contents, LocalDateTime creation, String title)
   {
     this.id = id;
     this.contents = contents;
@@ -169,12 +169,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     this.title = title;
   }
 
-  public Integer getId()
+  public Long getId()
   {
     return id;
   }
 
-  public void setId(Integer id)
+  public void setId(Long id)
   {
     this.id = id;
   }
@@ -416,7 +416,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
    * @param aPerson the person who is the source of the message.
    * @param aMessage the message
    *
-   * @see Person#writeMessage(mmud.database.entities.characters.Person, java.lang.String)
+   * @see Person#writeMessage(mmud.database.entities.characters.Person,
+   * java.lang.String)
    */
   public void sendMessage(Person aPerson, String aMessage) throws MudException
   {
@@ -427,11 +428,10 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   }
 
   /**
-   * character communication method to everyone in the room. The first person
-   * is the source of the message. The second person is the target of the
-   * message. The message is parsed based on the source and target.
-   * Will also be sent to the person doing the communicatin' and
-   * the target.
+   * character communication method to everyone in the room. The first person is
+   * the source of the message. The second person is the target of the message.
+   * The message is parsed based on the source and target. Will also be sent to
+   * the person doing the communicatin' and the target.
    *
    * @param aPerson the person doing the communicatin'.
    * @param aSecondPerson the person communicated to.
@@ -451,10 +451,10 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
 
   /**
    * room communication method to everyone in the room. The message is not
-   * parsed. Bear in mind that this method should only be used for
-   * communication about environmental issues. If the communication originates
-   * from a User/Person, you should use {@link #sendMessage(mmud.database.entities.characters.Person, java.lang.String) }.
-   * Otherwise the Ignore functionality will be omitted.
+   * parsed. Bear in mind that this method should only be used for communication
+   * about environmental issues. If the communication originates from a
+   * User/Person, you should use {@link #sendMessage(mmud.database.entities.characters.Person, java.lang.String)
+   * }. Otherwise the Ignore functionality will be omitted.
    *
    * @param aMessage the message
    * @throws MudException if the room is not correct
@@ -471,8 +471,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
 
   /**
    * character communication method to everyone in the room except to the two
-   * persons mentioned in the header. The message is parsed based on the
-   * source and target.
+   * persons mentioned in the header. The message is parsed based on the source
+   * and target.
    *
    * @param aPerson the person doing the communicatin'.
    * @param aSecondPerson the person communicated to.
@@ -495,9 +495,9 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   }
 
   /**
-   * character communication method to everyone in the room excluded the
-   * person mentioned in the parameters. The message is parsed, based on who
-   * is sending the message.
+   * character communication method to everyone in the room excluded the person
+   * mentioned in the parameters. The message is parsed, based on who is sending
+   * the message.
    *
    * @param aPerson the person who is the source of the message.
    * @param aMessage the message
@@ -548,12 +548,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   }
 
   /**
-   * retrieve the character from the list of characters currently active in
-   * the current room.
+   * retrieve the character from the list of characters currently active in the
+   * current room.
    *
    * @param aName name of the character to search for. Case matters not.
-   * @return Character/Person in the room. Will return null pointer if
-   * character not found.
+   * @return Character/Person in the room. Will return null pointer if character
+   * not found.
    * @see #retrieveUser(java.lang.String)
    */
   public Person retrievePerson(String aName)
@@ -569,12 +569,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   }
 
   /**
-   * retrieve the player from the list of characters currently active in
-   * the current room.
+   * retrieve the player from the list of characters currently active in the
+   * current room.
    *
    * @param aName name of the player to search for.
-   * @return Player in the room. Will return null pointer if
-   * character not found or character is not a "real" player.
+   * @return Player in the room. Will return null pointer if character not found
+   * or character is not a "real" player.
    * @see #retrievePerson(java.lang.String)
    */
   public User retrieveUser(String aName)
@@ -591,8 +591,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
    * retrieve the board in the room. May be null if there is no board.
    *
    * @param aName name of the board to search for.
-   * @return Board in the room. Will return null pointer if
-   * board not found.
+   * @return Board in the room. Will return null pointer if board not found.
    */
   public Board getBoard(String aName)
   {
@@ -609,8 +608,8 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   /**
    * Returns items if found, otherwise returns an empty list.
    *
-   * @param parsed the parsed description of the item as given by the user,
-   * for example {"light-green", "leather", "pants"}.
+   * @param parsed the parsed description of the item as given by the user, for
+   * example {"light-green", "leather", "pants"}.
    * @return list of found items, empty if not found.
    */
   public List<Item> findItems(List<String> parsed)

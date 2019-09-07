@@ -115,7 +115,7 @@ public class CreateGuildCommandTest extends MudTest
   public void setUpMethod() throws Exception
   {
     room1 = new Room();
-    room1.setId(1);
+    room1.setId(1L);
     room1.setContents("You are in a small room.");
 
     karn = new User();

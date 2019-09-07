@@ -17,6 +17,7 @@
 package awesomeness.vaadin;
 
 import awesomeness.vaadin.utils.IntegerProperty;
+import awesomeness.vaadin.utils.LongProperty;
 import awesomeness.vaadin.utils.Utilities;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.Container;
@@ -469,7 +470,7 @@ public class Events extends VerticalLayout implements
             if (roomProperty != null && roomProperty.getValue() != null)
             {
                 Room roomroom = (Room) roomProperty.getValue();
-                room.setPropertyDataSource(new IntegerProperty(roomroom.getId()));
+                room.setPropertyDataSource(new LongProperty(roomroom.getId()));
             } else
             {
                 room.setPropertyDataSource(new IntegerProperty());

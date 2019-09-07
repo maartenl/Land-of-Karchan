@@ -38,7 +38,7 @@ public class AdminEvent
     public Integer minute;
     public Integer dayofweek;
     public Boolean callable;
-    public Integer room;
+    public Long room;
     public LocalDateTime creation;
     public Admin owner;
     public String method;

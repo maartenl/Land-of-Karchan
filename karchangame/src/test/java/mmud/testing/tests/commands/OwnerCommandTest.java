@@ -198,7 +198,7 @@ public class OwnerCommandTest extends MudTest
         logBean = new LogBeanStub();
 
         room1 = new Room();
-        room1.setId(1);
+        room1.setId(1L);
         room1.setContents("You are in a small room.");
 
         karnAdmin = new Admin();
