@@ -247,18 +247,18 @@ public class RoomsBean
   }
 
   @GET
-  @Path("{from}/{to}")
+  @Path("{offset}/{pageSize}")
   @Produces(
           {
             "application/json"
           })
-  public String findRange(@PathParam("from") Integer from,
-          @PathParam("to") Integer to
+  public String findRange(@PathParam("offset") Integer offset,
+          @PathParam("pageSize") Integer pageSize
   )
   {
     final List<Room> rooms = getEntityManager().createNamedQuery("Room.findAll")
-            .setMaxResults(to - from + 1)
-            .setFirstResult(from)
+            .setMaxResults(pageSize)
+            .setFirstResult(offset)
             .getResultList();
     List<AdminRoom> adminRooms = rooms.stream().map(room -> new AdminRoom(room)).collect(Collectors.toList());
     return JsonbBuilder.create().toJson(adminRooms);
