@@ -20,6 +20,7 @@
     <project.target.version>1.8</project.target.version>
     <javaee.version>8.0</javaee.version>
     <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+    <karchanentities.version>1.0.0-SNAPSHOT</karchanentities.version>
     <microprofile.version>2.2</microprofile.version>
   </properties>
 
@@ -53,6 +54,11 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>mmud</groupId>
+      <artifactId>karchanentities</artifactId>
+      <version>${karchanentities.version}</version>
+    </dependency> 
     <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
