@@ -1,4 +1,19 @@
-<div>
-    <ngx-datatable [rows]="rows" [columns]="columns">
-    </ngx-datatable>
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Room</h1>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+        <div>
+            <ag-grid-angular 
+                style="width: 100%; height: 500px;" 
+                rowSelection="single"
+                class="ag-theme-balham" 
+                [rowData]="rooms"
+                [columnDefs]="columnDefs"
+                >                
+            </ag-grid-angular>
+        </div>
+        </div>
+    </div>
 </div>

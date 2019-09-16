@@ -15,7 +15,7 @@ import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
 import { SystemlogComponent } from './systemlog/systemlog.component';
 import { RoomsComponent } from './rooms/rooms.component';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -27,8 +27,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     RoomsComponent
   ],
   imports: [
-    NgxDatatableModule,
     BrowserModule,
+    AgGridModule.withComponents([]),
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,

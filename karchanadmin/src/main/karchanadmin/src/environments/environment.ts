@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   BLOGS_URL: '/assets/blogs.json',
   TEMPLATES_URL: '/assets/templates.json',
-  SYSTEMLOG_URL: '/assets/systemlog.json'
+  SYSTEMLOG_URL: '/assets/systemlog.json',
+  ROOMS_URL: '/assets/rooms.json'
 };
 
 /*
