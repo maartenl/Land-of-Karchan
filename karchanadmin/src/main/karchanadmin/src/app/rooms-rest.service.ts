@@ -59,13 +59,12 @@ export class RoomsRestService {
       );
   }
 
-  public getRooms(page: Page): Observable<PagedData<Room>> {
+  public getRooms(startRow: number, endRow: number): Observable<Room[]> {
     if (window.console) {
-      console.log('rooms-rest.service getRooms');
-      console.log(page);
+      console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);
     }
     if (environment.production === false) {
-      return of(this.rooms).pipe(map(d => this.getPagedData(page)));
+      return of(this.rooms.slice(startRow, endRow));
     }
     return this.http.get<Room[]>(this.url)
       .pipe(

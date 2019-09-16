@@ -7,10 +7,13 @@
         <div>
             <ag-grid-angular 
                 style="width: 100%; height: 500px;" 
+                [gridOptions]="gridOptions"
                 rowSelection="single"
                 class="ag-theme-balham" 
                 [rowData]="rooms"
                 [columnDefs]="columnDefs"
+                rowModelType="infinite"
+                [datasource]="datasource"
                 >                
             </ag-grid-angular>
         </div>
