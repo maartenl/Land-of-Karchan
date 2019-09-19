@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~8.1.1",
+    "@angular/cdk": "^8.2.0",
     "@angular/common": "~8.1.1",
     "@angular/compiler": "~8.1.1",
     "@angular/core": "~8.1.1",
@@ -19,8 +20,6 @@
     "@angular/platform-browser": "~8.1.1",
     "@angular/platform-browser-dynamic": "~8.1.1",
     "@angular/router": "~8.1.1",
-    "ag-grid-angular": "^21.2.1",
-    "ag-grid-community": "^21.2.1",
     "bootstrap": "^4.3.1",
     "bootswatch": "^4.3.1",
     "jquery": "^3.4.1",

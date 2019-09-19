@@ -4,19 +4,30 @@
             <h1>Room</h1>
         </div>
         <div class="col-xs-12 col-xl-6">
-        <div>
-            <ag-grid-angular 
-                style="width: 100%; height: 500px;" 
-                [gridOptions]="gridOptions"
-                rowSelection="single"
-                class="ag-theme-balham" 
-                [rowData]="rooms"
-                [columnDefs]="columnDefs"
-                rowModelType="infinite"
-                [datasource]="datasource"
-                >                
-            </ag-grid-angular>
-        </div>
-        </div>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="20">
+                <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">North</th>
+                        <th scope="col">South</th>
+                        <th scope="col">West</th>
+                        <th scope="col">East</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr *cdkVirtualFor="let room of rooms">
+                            <th scope="row">{{ room.id }}</th>
+                            <td>{{ room.title }}</td>
+                            <td>{{ room.north }}</td>
+                            <td>{{ room.south }}</td>
+                            <td>{{ room.west }}</td>
+                            <td>{{ room.east }}</td>
+                        </tr>
+                </tbody>
+            </table>
+        </cdk-virtual-scroll-viewport>
+    </div>
     </div>
 </div>

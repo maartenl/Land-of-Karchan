@@ -15,7 +15,8 @@ import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
 import { SystemlogComponent } from './systemlog/systemlog.component';
 import { RoomsComponent } from './rooms/rooms.component';
-import { AgGridModule } from 'ag-grid-angular';
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -28,11 +29,11 @@ import { AgGridModule } from 'ag-grid-angular';
   ],
   imports: [
     BrowserModule,
-    AgGridModule.withComponents([]),
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
+    ScrollingModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

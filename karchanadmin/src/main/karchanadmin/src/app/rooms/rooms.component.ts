@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
 import { Page } from '../page.model';
-import { GridOptions, IDatasource, IGetRowsParams, ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'app-rooms',
@@ -11,7 +10,7 @@ import { GridOptions, IDatasource, IGetRowsParams, ColDef } from 'ag-grid-commun
 })
 export class RoomsComponent implements OnInit {
 
-  public gridOptions: any;
+  rooms: Room[];
 
   public datasource: any;
 
@@ -30,19 +29,11 @@ export class RoomsComponent implements OnInit {
     if (window.console) {
       console.log('construcotr roomscomponent');
     }
-    this.datasource = {
-      getRows: (params: IGetRowsParams) => {
-        this.roomsRestService.getRooms(params.startRow, params.endRow)
-        .subscribe(data => params.successCallback(data));
+    this.roomsRestService.getAllRooms().subscribe({
+      next: (data) => {
+        this.rooms = data;
       }
-    };
-    this.gridOptions = {
-      cacheBlockSize: 100,
-      enableServerSideFilter: false,
-      enableServerSideSorting: false,
-      rowModelType: 'infinite',
-      datasource: this.datasource
-    };
+    });
   }
 
   ngOnInit() {
